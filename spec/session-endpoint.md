@@ -959,8 +959,8 @@ sync gate and transport tests.
 
 ## Management authority and recovery
 
-This is the executable application contract for the 20 registrations the
-listener (§Transport listener) knows. It imports the Client-
+This is the executable application contract for the 22 management
+registrations below. It imports the Client-
 owned Session Endpoint v2 DTOs from the authority lock under
 `fixtures/endpoint/authority/` and binds them to Kernel durable operations.
 The imported DTO names, omission rules, and JSON unions are normative. This
@@ -968,10 +968,18 @@ file owns the native Kernel author path, idempotency, crash recovery, and the
 two native extensions `workspace.unarchiveSession` and the all-session stream
 lifecycle.
 
-There are exactly **20 registrations**, not 20 unary methods: 17 ordinary
+There are exactly **22 registrations**, not 22 unary methods: 19 ordinary
 `POST /api/{method}` RPCs, the bare-response `POST /api/respond`, and two
-WebSocket registrations. A server and `.tekes` Client driver MUST compare this
-table in both directions before advertising readiness.
+WebSocket registrations. `scripts/check-endpoint-transport-fixtures.py` compares
+this table with its management route registry in both directions.
+
+This table is not the public protocol version 3 registry. Under V3 the public
+routes are the 16 unary methods in §Routes and streams plus `remote.mux`; that
+list includes `models.list`, which this table does not. `host.describe`,
+`workspace.list`, `session.list`, `session.history`, `events.mux`,
+`events.host`, and `respond` are not public V3 routes. Their names remain in
+internal code (the `respond` idempotency operation and the stream channel
+names) and in the management fixtures.
 
 ### JSON notation and common rules
 
