@@ -879,7 +879,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_daemon_inner` | `TransportConfig::loopback(args.listen, BearerToken::new(credential))         .with_readiness_identity` | [820](../../src/daemon.rs#L820) | receiver-type-required |
 | `run_daemon_inner` | `TransportConfig::loopback` | [820](../../src/daemon.rs#L820) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
 | `run_daemon_inner` | `BearerToken::new` | [820](../../src/daemon.rs#L820) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
-| `run_daemon_inner` | `ProductionCarrierAssembly::assemble` | [826](../../src/daemon.rs#L826) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L1670) |
+| `run_daemon_inner` | `ProductionCarrierAssembly::assemble` | [826](../../src/daemon.rs#L826) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L1691) |
 | `run_daemon_inner` | `assembly.host` | [827](../../src/daemon.rs#L827), [905](../../src/daemon.rs#L905) | receiver-type-required |
 | `run_daemon_inner` | `access_log.install_health_hook` | [829](../../src/daemon.rs#L829) | receiver-type-required |
 | `run_daemon_inner` | `readiness_process_host.is_draining` | [830](../../src/daemon.rs#L830) | receiver-type-required |

@@ -6,6 +6,14 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.2.1 — 2026-10-05
+
+### Added
+- Optional native context composition projections use the actual prepared request,
+  safe tool inventories and independent byte bounds. Usage/details share a clock;
+  model changes and compaction invalidate stale request readings.
+
+
 ### Changed
 - `tekes-selector stage` of a different build under an already published
   version returns `invalid-state` with state `version-already-published`

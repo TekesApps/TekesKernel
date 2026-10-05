@@ -27,6 +27,10 @@
    "workspace-unsafe-integer.invalid.json",
    "workspace.canonical.json"
   ],
+  "context-details": [
+   "native-unknown-v1.json",
+   "native-v1.json"
+  ],
   "credential-broker": [
    "README.md",
    "cases.canonical.json",

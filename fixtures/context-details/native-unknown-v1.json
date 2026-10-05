@@ -1,0 +1,35 @@
+{
+  "asOfSeq": 43,
+  "values": {
+    "contextDetails": {
+      "coverage": "unknown",
+      "evidence": {
+        "clock": "native-context-sample-v1",
+        "model": "gpt-5",
+        "origin": "harness",
+        "provider": "p",
+        "scope": "preparedRequest",
+        "sourceKey": "native-prepared-request"
+      },
+      "relation": "unknown",
+      "revision": "native-context-v1:4c2f185b47c15e01e2e5eb043a7e1f140bd3f57b8b74ab5acb435b1cd36777ca",
+      "rows": [],
+      "schemaVersion": 1,
+      "unavailableReason": "No valid prepared request bound: absent or unreadable request, changed config/model/epoch, replacement/compaction or opaque context.",
+      "usage": {
+        "basis": "unknown",
+        "contextWindow": 100000,
+        "model": "gpt-5",
+        "provider": "p",
+        "usedTokens": null
+      }
+    },
+    "contextUsage": {
+      "basis": "unknown",
+      "contextWindow": 100000,
+      "model": "gpt-5",
+      "provider": "p",
+      "usedTokens": null
+    }
+  }
+}

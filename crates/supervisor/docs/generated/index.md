@@ -56,11 +56,11 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 120 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 108 | 849 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 136 | 1567 | [Symbols and calls](src--client_extensions.md) |
-| [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 15 | 172 | [Symbols and calls](src--context_usage.md) |
+| [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 25 | 339 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/daemon.rs](../../src/daemon.rs) | 93 | 916 | [Symbols and calls](src--daemon.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 7 | 37 | [Symbols and calls](src--dynamic_bindings.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 107 | 1052 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 108 | 1057 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 150 | 1019 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
@@ -83,7 +83,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 117 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
-| [crates/supervisor/tests/slice9_endpoint_carrier.rs](../../tests/slice9_endpoint_carrier.rs) | 38 | 615 | `inventory.json` |
+| [crates/supervisor/tests/slice9_endpoint_carrier.rs](../../tests/slice9_endpoint_carrier.rs) | 39 | 703 | `inventory.json` |
 | [crates/supervisor/tests/slice9_endpoint_host.rs](../../tests/slice9_endpoint_host.rs) | 47 | 836 | `inventory.json` |
 | [crates/supervisor/tests/workspace_routes.rs](../../tests/workspace_routes.rs) | 3 | 51 | `inventory.json` |
 
