@@ -1294,7 +1294,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_event_time` | `time         .duration_since(std::time::UNIX_EPOCH)         .map_err(&#124;error&#124; DaemonError::protocol(error.to_string()))?         .as_millis` | [178](../../src/process_host.rs#L178) | receiver-type-required |
 | `session_event_time` | `time         .duration_since(std::time::UNIX_EPOCH)         .map_err` | [178](../../src/process_host.rs#L178) | receiver-type-required |
 | `session_event_time` | `time         .duration_since` | [178](../../src/process_host.rs#L178) | receiver-type-required |
-| `session_event_time` | `DaemonError::protocol` | [180](../../src/process_host.rs#L180), [183](../../src/process_host.rs#L183) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `session_event_time` | `DaemonError::protocol` | [180](../../src/process_host.rs#L180), [183](../../src/process_host.rs#L183) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `session_event_time` | `error.to_string` | [180](../../src/process_host.rs#L180) | receiver-type-required |
 | `session_event_time` | `u64::try_from(millis)         .map_err` | [182](../../src/process_host.rs#L182) | receiver-type-required |
 | `session_event_time` | `u64::try_from` | [182](../../src/process_host.rs#L182) | external-constructor-callback-or-unresolved |
@@ -1382,7 +1382,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `accepted_stream_event` | `Ok` | [407](../../src/process_host.rs#L407), [412](../../src/process_host.rs#L412) | external-constructor-callback-or-unresolved |
 | `accepted_stream_event` | `Some` | [407](../../src/process_host.rs#L407) | external-constructor-callback-or-unresolved |
 | `accepted_stream_event` | `Err` | [413](../../src/process_host.rs#L413) | external-constructor-callback-or-unresolved |
-| `accepted_stream_event` | `DaemonError::protocol` | [413](../../src/process_host.rs#L413) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `accepted_stream_event` | `DaemonError::protocol` | [413](../../src/process_host.rs#L413) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `accepted_stream_event` | `error.to_string` | [413](../../src/process_host.rs#L413) | receiver-type-required |
 | `child_mut` | `self.child.as_mut().expect` | [500](../../src/process_host.rs#L500) | receiver-type-required |
 | `child_mut` | `self.child.as_mut` | [500](../../src/process_host.rs#L500) | receiver-type-required |
@@ -1411,7 +1411,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_credential_bindings` | `current.availability.get` | [588](../../src/process_host.rs#L588) | receiver-type-required |
 | `reconcile_credential_bindings` | `active_material` | [599](../../src/process_host.rs#L599), [600](../../src/process_host.rs#L600), [615](../../src/process_host.rs#L615), [657](../../src/process_host.rs#L657) | [tekes-supervisor::process_host::active_material](../../src/process_host.rs#L690) |
 | `reconcile_credential_bindings` | `Err` | [602](../../src/process_host.rs#L602), [670](../../src/process_host.rs#L670) | external-constructor-callback-or-unresolved |
-| `reconcile_credential_bindings` | `DaemonError::required_broker` | [602](../../src/process_host.rs#L602), [616](../../src/process_host.rs#L616), [624](../../src/process_host.rs#L624), [647](../../src/process_host.rs#L647), [658](../../src/process_host.rs#L658), [666](../../src/process_host.rs#L666), [670](../../src/process_host.rs#L670) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `reconcile_credential_bindings` | `DaemonError::required_broker` | [602](../../src/process_host.rs#L602), [616](../../src/process_host.rs#L616), [624](../../src/process_host.rs#L624), [647](../../src/process_host.rs#L647), [658](../../src/process_host.rs#L658), [666](../../src/process_host.rs#L666), [670](../../src/process_host.rs#L670) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `reconcile_credential_bindings` | `active_material(current, &credential_id).ok_or_else` | [615](../../src/process_host.rs#L615), [657](../../src/process_host.rs#L657) | receiver-type-required |
 | `reconcile_credential_bindings` | `credential_control(worker)?                     .rotate(                         credential_id.clone(),                         after_generation.to_string(),                         material.to_owned(),                     )                     .map_err` | [618](../../src/process_host.rs#L618), [660](../../src/process_host.rs#L660) | receiver-type-required |
 | `reconcile_credential_bindings` | `credential_control(worker)?                     .rotate` | [618](../../src/process_host.rs#L618), [660](../../src/process_host.rs#L660) | receiver-type-required |
@@ -1426,7 +1426,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `credential_control` | `worker         .credential_control         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .clone` | [682](../../src/process_host.rs#L682) | receiver-type-required |
 | `credential_control` | `worker         .credential_control         .lock()         .unwrap_or_else` | [682](../../src/process_host.rs#L682) | receiver-type-required |
 | `credential_control` | `worker         .credential_control         .lock` | [682](../../src/process_host.rs#L682) | receiver-type-required |
-| `credential_control` | `DaemonError::required_broker` | [687](../../src/process_host.rs#L687) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `credential_control` | `DaemonError::required_broker` | [687](../../src/process_host.rs#L687) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `active_material` | `bindings         .active         .iter()         .filter` | [694](../../src/process_host.rs#L694) | receiver-type-required |
 | `active_material` | `bindings         .active         .iter` | [694](../../src/process_host.rs#L694) | receiver-type-required |
 | `active_material` | `scopes.next()?.material.as_str` | [698](../../src/process_host.rs#L698) | receiver-type-required |
@@ -1461,11 +1461,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_secret_authorities` | `validate_worker_binary` | [792](../../src/process_host.rs#L792) | [tekes-supervisor::process_host::validate_worker_binary](../../src/process_host.rs#L5630) |
 | `open_with_secret_authorities` | `ConfigRepository::open(&root)             .map_err` | [793](../../src/process_host.rs#L793) | receiver-type-required |
 | `open_with_secret_authorities` | `ConfigRepository::open` | [793](../../src/process_host.rs#L793) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
-| `open_with_secret_authorities` | `DaemonError::invalid_config` | [794](../../src/process_host.rs#L794) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `open_with_secret_authorities` | `DaemonError::invalid_config` | [794](../../src/process_host.rs#L794) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `open_with_secret_authorities` | `error.to_string` | [794](../../src/process_host.rs#L794), [796](../../src/process_host.rs#L796), [798](../../src/process_host.rs#L798), [807](../../src/process_host.rs#L807) | receiver-type-required |
 | `open_with_secret_authorities` | `NativeEndpoint::open(&root).map_err` | [796](../../src/process_host.rs#L796) | receiver-type-required |
 | `open_with_secret_authorities` | `NativeEndpoint::open` | [796](../../src/process_host.rs#L796) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L130) |
-| `open_with_secret_authorities` | `DaemonError::corrupt` | [796](../../src/process_host.rs#L796), [798](../../src/process_host.rs#L798) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `open_with_secret_authorities` | `DaemonError::corrupt` | [796](../../src/process_host.rs#L796), [798](../../src/process_host.rs#L798) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `open_with_secret_authorities` | `schedule::ScheduleAuthority::open(&root)             .map_err` | [797](../../src/process_host.rs#L797) | receiver-type-required |
 | `open_with_secret_authorities` | `schedule::ScheduleAuthority::open` | [797](../../src/process_host.rs#L797) | [schedule::ScheduleAuthority::open](../../../schedule/src/lib.rs#L216) |
 | `open_with_secret_authorities` | `build.into` | [799](../../src/process_host.rs#L799) | receiver-type-required |
@@ -1473,7 +1473,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_secret_authorities` | `McpRuntime::open_production_authorities_with_mutation` | [800](../../src/process_host.rs#L800) | [tekes-supervisor::mcp_runtime::McpRuntime::open_production_authorities_with_mutation](../../src/mcp_runtime.rs#L236) |
 | `open_with_secret_authorities` | `root.join` | [801](../../src/process_host.rs#L801), [802](../../src/process_host.rs#L802) | receiver-type-required |
 | `open_with_secret_authorities` | `Arc::clone` | [804](../../src/process_host.rs#L804) | external-constructor-callback-or-unresolved |
-| `open_with_secret_authorities` | `DaemonError::required_broker` | [807](../../src/process_host.rs#L807) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `open_with_secret_authorities` | `DaemonError::required_broker` | [807](../../src/process_host.rs#L807) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `open_with_secret_authorities` | `Arc::new` | [808](../../src/process_host.rs#L808), [825](../../src/process_host.rs#L825) | external-constructor-callback-or-unresolved |
 | `open_with_secret_authorities` | `Arc::new_cyclic` | [809](../../src/process_host.rs#L809) | external-constructor-callback-or-unresolved |
 | `open_with_secret_authorities` | `user_agent_dir.into` | [815](../../src/process_host.rs#L815) | receiver-type-required |
@@ -1501,7 +1501,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `credential_is_ready` | `Ok` | [877](../../src/process_host.rs#L877), [879](../../src/process_host.rs#L879) | external-constructor-callback-or-unresolved |
 | `validate_workspace_policy_candidate` | `self             .repository             .resolve(workspace_id)             .map_err` | [895](../../src/process_host.rs#L895) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `self             .repository             .resolve` | [895](../../src/process_host.rs#L895) | receiver-type-required |
-| `validate_workspace_policy_candidate` | `DaemonError::invalid_config` | [898](../../src/process_host.rs#L898), [906](../../src/process_host.rs#L906) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `validate_workspace_policy_candidate` | `DaemonError::invalid_config` | [898](../../src/process_host.rs#L898), [906](../../src/process_host.rs#L906) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `validate_workspace_policy_candidate` | `error.to_string` | [898](../../src/process_host.rs#L898), [906](../../src/process_host.rs#L906), [934](../../src/process_host.rs#L934), [945](../../src/process_host.rs#L945) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `policy.clone` | [899](../../src/process_host.rs#L899) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `profile::InstructionResolver::new_scoped(             &self.user_agent_dir,             self.root.join("workspaces").join(workspace_id),             config.workspace.cwd.iter().map(PathBuf::from),         )         .capture()         .map_err` | [900](../../src/process_host.rs#L900) | receiver-type-required |
@@ -1521,7 +1521,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_workspace_policy_candidate` | `policy.writable_roots.iter().collect::<BTreeSet<_>>` | [912](../../src/process_host.rs#L912) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `policy.writable_roots.iter` | [912](../../src/process_host.rs#L912) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `Err` | [915](../../src/process_host.rs#L915), [947](../../src/process_host.rs#L947), [953](../../src/process_host.rs#L953) | external-constructor-callback-or-unresolved |
-| `validate_workspace_policy_candidate` | `DaemonError::required_broker` | [915](../../src/process_host.rs#L915), [934](../../src/process_host.rs#L934), [945](../../src/process_host.rs#L945), [947](../../src/process_host.rs#L947), [953](../../src/process_host.rs#L953) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `validate_workspace_policy_candidate` | `DaemonError::required_broker` | [915](../../src/process_host.rs#L915), [934](../../src/process_host.rs#L934), [945](../../src/process_host.rs#L945), [947](../../src/process_host.rs#L947), [953](../../src/process_host.rs#L953) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `validate_workspace_policy_candidate` | `policy             .allowed_tools             .iter()             .cloned()             .collect::<BTreeSet<_>>` | [920](../../src/process_host.rs#L920) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `policy             .allowed_tools             .iter()             .cloned` | [920](../../src/process_host.rs#L920) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `policy             .allowed_tools             .iter` | [920](../../src/process_host.rs#L920) | receiver-type-required |
@@ -1546,7 +1546,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_workspace_policy_candidate` | `Ok` | [957](../../src/process_host.rs#L957) | external-constructor-callback-or-unresolved |
 | `workspace_policy_published` | `self             .repository             .resolve(workspace_id)             .map_err` | [969](../../src/process_host.rs#L969) | receiver-type-required |
 | `workspace_policy_published` | `self             .repository             .resolve` | [969](../../src/process_host.rs#L969) | receiver-type-required |
-| `workspace_policy_published` | `DaemonError::invalid_config` | [972](../../src/process_host.rs#L972) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `workspace_policy_published` | `DaemonError::invalid_config` | [972](../../src/process_host.rs#L972) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `workspace_policy_published` | `error.to_string` | [972](../../src/process_host.rs#L972) | receiver-type-required |
 | `workspace_policy_published` | `current.requires_respawn_from` | [973](../../src/process_host.rs#L973) | receiver-type-required |
 | `workspace_policy_published` | `self                 .workers                 .lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .values()                 .filter(&#124;worker&#124; worker.config_snapshot.workspace.id == workspace_id)                 .cloned()                 .collect::<Vec<_>>` | [974](../../src/process_host.rs#L974) | receiver-type-required |
@@ -1567,7 +1567,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `plugin_store` | `self.plugin_store.clone` | [1011](../../src/process_host.rs#L1011) | receiver-type-required |
 | `client_file_changes` | `endpoint::validate_session_id(session_id)             .map_err` | [1018](../../src/process_host.rs#L1018) | receiver-type-required |
 | `client_file_changes` | `endpoint::validate_session_id` | [1018](../../src/process_host.rs#L1018) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `client_file_changes` | `DaemonError::invalid_config` | [1019](../../src/process_host.rs#L1019), [1024](../../src/process_host.rs#L1024) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `client_file_changes` | `DaemonError::invalid_config` | [1019](../../src/process_host.rs#L1019), [1024](../../src/process_host.rs#L1024) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `client_file_changes` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1020](../../src/process_host.rs#L1020) | receiver-type-required |
 | `client_file_changes` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find` | [1020](../../src/process_host.rs#L1020) | receiver-type-required |
 | `client_file_changes` | `["threads", "archive"]             .into_iter()             .map` | [1020](../../src/process_host.rs#L1020) | receiver-type-required |
@@ -1593,7 +1593,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_file_changes` | `"Session workspace authority changed".into` | [1044](../../src/process_host.rs#L1044) | receiver-type-required |
 | `client_file_page` | `endpoint::validate_session_id(session_id)             .map_err` | [1060](../../src/process_host.rs#L1060) | receiver-type-required |
 | `client_file_page` | `endpoint::validate_session_id` | [1060](../../src/process_host.rs#L1060) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `client_file_page` | `DaemonError::invalid_config` | [1061](../../src/process_host.rs#L1061), [1066](../../src/process_host.rs#L1066), [1074](../../src/process_host.rs#L1074), [1081](../../src/process_host.rs#L1081), [1087](../../src/process_host.rs#L1087) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `client_file_page` | `DaemonError::invalid_config` | [1061](../../src/process_host.rs#L1061), [1066](../../src/process_host.rs#L1066), [1074](../../src/process_host.rs#L1074), [1081](../../src/process_host.rs#L1081), [1087](../../src/process_host.rs#L1087) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `client_file_page` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1062](../../src/process_host.rs#L1062) | receiver-type-required |
 | `client_file_page` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find` | [1062](../../src/process_host.rs#L1062) | receiver-type-required |
 | `client_file_page` | `["threads", "archive"]             .into_iter()             .map` | [1062](../../src/process_host.rs#L1062) | receiver-type-required |
@@ -1617,7 +1617,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_file_page` | `result.map_err` | [1086](../../src/process_host.rs#L1086) | receiver-type-required |
 | `client_session_roots` | `endpoint::validate_session_id(session_id)             .map_err` | [1099](../../src/process_host.rs#L1099) | receiver-type-required |
 | `client_session_roots` | `endpoint::validate_session_id` | [1099](../../src/process_host.rs#L1099) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `client_session_roots` | `DaemonError::invalid_config` | [1100](../../src/process_host.rs#L1100), [1105](../../src/process_host.rs#L1105), [1113](../../src/process_host.rs#L1113) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `client_session_roots` | `DaemonError::invalid_config` | [1100](../../src/process_host.rs#L1100), [1105](../../src/process_host.rs#L1105), [1113](../../src/process_host.rs#L1113) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `client_session_roots` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1101](../../src/process_host.rs#L1101) | receiver-type-required |
 | `client_session_roots` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find` | [1101](../../src/process_host.rs#L1101) | receiver-type-required |
 | `client_session_roots` | `["threads", "archive"]             .into_iter()             .map` | [1101](../../src/process_host.rs#L1101) | receiver-type-required |
@@ -1646,7 +1646,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_resource_catalog` | `session_id.is_empty` | [1134](../../src/process_host.rs#L1134) | receiver-type-required |
 | `client_resource_catalog` | `session_id.contains` | [1135](../../src/process_host.rs#L1135) | receiver-type-required |
 | `client_resource_catalog` | `Err` | [1139](../../src/process_host.rs#L1139) | external-constructor-callback-or-unresolved |
-| `client_resource_catalog` | `DaemonError::invalid_config` | [1139](../../src/process_host.rs#L1139), [1145](../../src/process_host.rs#L1145), [1153](../../src/process_host.rs#L1153), [1160](../../src/process_host.rs#L1160), [1162](../../src/process_host.rs#L1162) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `client_resource_catalog` | `DaemonError::invalid_config` | [1139](../../src/process_host.rs#L1139), [1145](../../src/process_host.rs#L1145), [1153](../../src/process_host.rs#L1153), [1160](../../src/process_host.rs#L1160), [1162](../../src/process_host.rs#L1162) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `client_resource_catalog` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1141](../../src/process_host.rs#L1141) | receiver-type-required |
 | `client_resource_catalog` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(session_id))             .find` | [1141](../../src/process_host.rs#L1141) | receiver-type-required |
 | `client_resource_catalog` | `["threads", "archive"]             .into_iter()             .map` | [1141](../../src/process_host.rs#L1141) | receiver-type-required |
@@ -1684,7 +1684,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_tool_catalog` | `error.to_string` | [1188](../../src/process_host.rs#L1188), [1200](../../src/process_host.rs#L1200), [1207](../../src/process_host.rs#L1207), [1211](../../src/process_host.rs#L1211), [1219](../../src/process_host.rs#L1219) | receiver-type-required |
 | `client_tool_catalog` | `self.repository.resolve_for_session_binding` | [1191](../../src/process_host.rs#L1191) | receiver-type-required |
 | `client_tool_catalog` | `self.repository.resolve_for_session` | [1196](../../src/process_host.rs#L1196) | receiver-type-required |
-| `client_tool_catalog` | `DaemonError::invalid_config` | [1200](../../src/process_host.rs#L1200), [1207](../../src/process_host.rs#L1207) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `client_tool_catalog` | `DaemonError::invalid_config` | [1200](../../src/process_host.rs#L1200), [1207](../../src/process_host.rs#L1207) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `client_tool_catalog` | `profile::InstructionResolver::new_scoped(             &self.user_agent_dir,             self.root.join("workspaces").join(workspace_id),             config.workspace.cwd.iter().map(PathBuf::from),         )         .capture()         .map_err` | [1201](../../src/process_host.rs#L1201) | receiver-type-required |
 | `client_tool_catalog` | `profile::InstructionResolver::new_scoped(             &self.user_agent_dir,             self.root.join("workspaces").join(workspace_id),             config.workspace.cwd.iter().map(PathBuf::from),         )         .capture` | [1201](../../src/process_host.rs#L1201) | receiver-type-required |
 | `client_tool_catalog` | `profile::InstructionResolver::new_scoped` | [1201](../../src/process_host.rs#L1201) | [profile::instruction::InstructionResolver::new_scoped](../../../profile/src/instruction.rs#L300) |
@@ -1693,7 +1693,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_tool_catalog` | `config.workspace.cwd.iter` | [1204](../../src/process_host.rs#L1204) | receiver-type-required |
 | `client_tool_catalog` | `self             .mcp_runtime             .prepare_workspace(workspace_id)             .map_err` | [1208](../../src/process_host.rs#L1208) | receiver-type-required |
 | `client_tool_catalog` | `self             .mcp_runtime             .prepare_workspace` | [1208](../../src/process_host.rs#L1208) | receiver-type-required |
-| `client_tool_catalog` | `DaemonError::required_broker` | [1211](../../src/process_host.rs#L1211), [1213](../../src/process_host.rs#L1213), [1219](../../src/process_host.rs#L1219) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `client_tool_catalog` | `DaemonError::required_broker` | [1211](../../src/process_host.rs#L1211), [1213](../../src/process_host.rs#L1213), [1219](../../src/process_host.rs#L1219) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `client_tool_catalog` | `mcp_failure_is_required` | [1212](../../src/process_host.rs#L1212) | [tekes-supervisor::process_host::mcp_failure_is_required](../../src/process_host.rs#L4236) |
 | `client_tool_catalog` | `Err` | [1213](../../src/process_host.rs#L1213) | external-constructor-callback-or-unresolved |
 | `client_tool_catalog` | `resolve_worker_launch_bindings(&config, &instruction, None, mcp.catalog.tools)                 .map_err` | [1218](../../src/process_host.rs#L1218) | receiver-type-required |
@@ -1734,13 +1734,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `schedule_has_work` | `tasks                     .into_iter()                     .any` | [1341](../../src/process_host.rs#L1341) | receiver-type-required |
 | `schedule_has_work` | `tasks                     .into_iter` | [1341](../../src/process_host.rs#L1341) | receiver-type-required |
 | `schedule_has_work` | `task.last_status.is_active` | [1343](../../src/process_host.rs#L1343) | receiver-type-required |
-| `schedule_has_work` | `DaemonError::corrupt` | [1345](../../src/process_host.rs#L1345) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `schedule_has_work` | `DaemonError::corrupt` | [1345](../../src/process_host.rs#L1345) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `schedule_has_work` | `error.to_string` | [1345](../../src/process_host.rs#L1345) | receiver-type-required |
 | `drive_schedule` | `self.reconcile_schedule_statuses` | [1349](../../src/process_host.rs#L1349) | [tekes-supervisor::process_host::ProductionProcessHost::reconcile_schedule_statuses](../../src/process_host.rs#L1432) |
 | `drive_schedule` | `if startup {             self.schedule.recover(now)         } else {             self.schedule.poll_due(now)         }         .map_err` | [1350](../../src/process_host.rs#L1350) | receiver-type-required |
 | `drive_schedule` | `self.schedule.recover` | [1351](../../src/process_host.rs#L1351) | receiver-type-required |
 | `drive_schedule` | `self.schedule.poll_due` | [1353](../../src/process_host.rs#L1353) | receiver-type-required |
-| `drive_schedule` | `DaemonError::corrupt` | [1355](../../src/process_host.rs#L1355) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `drive_schedule` | `DaemonError::corrupt` | [1355](../../src/process_host.rs#L1355) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `drive_schedule` | `error.to_string` | [1355](../../src/process_host.rs#L1355) | receiver-type-required |
 | `drive_schedule` | `self.execute_schedule_claim` | [1357](../../src/process_host.rs#L1357) | [tekes-supervisor::process_host::ProductionProcessHost::execute_schedule_claim](../../src/process_host.rs#L1362) |
 | `drive_schedule` | `Ok` | [1359](../../src/process_host.rs#L1359) | external-constructor-callback-or-unresolved |
@@ -1748,11 +1748,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_schedule_claim` | `DateTime::parse_from_rfc3339(&claim.scheduled_for)             .map_err(&#124;error&#124; DaemonError::corrupt(error.to_string()))?             .with_timezone` | [1370](../../src/process_host.rs#L1370) | receiver-type-required |
 | `execute_schedule_claim` | `DateTime::parse_from_rfc3339(&claim.scheduled_for)             .map_err` | [1370](../../src/process_host.rs#L1370) | receiver-type-required |
 | `execute_schedule_claim` | `DateTime::parse_from_rfc3339` | [1370](../../src/process_host.rs#L1370) | external-constructor-callback-or-unresolved |
-| `execute_schedule_claim` | `DaemonError::corrupt` | [1371](../../src/process_host.rs#L1371), [1384](../../src/process_host.rs#L1384), [1397](../../src/process_host.rs#L1397), [1428](../../src/process_host.rs#L1428) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `execute_schedule_claim` | `DaemonError::corrupt` | [1371](../../src/process_host.rs#L1371), [1384](../../src/process_host.rs#L1384), [1397](../../src/process_host.rs#L1397), [1428](../../src/process_host.rs#L1428) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `execute_schedule_claim` | `error.to_string` | [1371](../../src/process_host.rs#L1371), [1375](../../src/process_host.rs#L1375), [1384](../../src/process_host.rs#L1384), [1397](../../src/process_host.rs#L1397), [1428](../../src/process_host.rs#L1428) | receiver-type-required |
 | `execute_schedule_claim` | `serde_json_canonicalizer::to_vec(claim)             .map_err` | [1374](../../src/process_host.rs#L1374) | receiver-type-required |
 | `execute_schedule_claim` | `serde_json_canonicalizer::to_vec` | [1374](../../src/process_host.rs#L1374) | external-constructor-callback-or-unresolved |
-| `execute_schedule_claim` | `DaemonError::protocol` | [1375](../../src/process_host.rs#L1375), [1419](../../src/process_host.rs#L1419) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `execute_schedule_claim` | `DaemonError::protocol` | [1375](../../src/process_host.rs#L1375), [1419](../../src/process_host.rs#L1419) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `execute_schedule_claim` | `Sha256::digest(&request_bytes).iter().fold` | [1376](../../src/process_host.rs#L1376) | receiver-type-required |
 | `execute_schedule_claim` | `Sha256::digest(&request_bytes).iter` | [1376](../../src/process_host.rs#L1376) | receiver-type-required |
 | `execute_schedule_claim` | `Sha256::digest` | [1376](../../src/process_host.rs#L1376) | external-constructor-callback-or-unresolved |
@@ -1775,7 +1775,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_schedule_claim` | `Ok` | [1429](../../src/process_host.rs#L1429) | external-constructor-callback-or-unresolved |
 | `reconcile_schedule_statuses` | `self             .schedule             .list(None)             .map_err` | [1433](../../src/process_host.rs#L1433) | receiver-type-required |
 | `reconcile_schedule_statuses` | `self             .schedule             .list` | [1433](../../src/process_host.rs#L1433) | receiver-type-required |
-| `reconcile_schedule_statuses` | `DaemonError::corrupt` | [1436](../../src/process_host.rs#L1436), [1447](../../src/process_host.rs#L1447), [1459](../../src/process_host.rs#L1459), [1477](../../src/process_host.rs#L1477), [1487](../../src/process_host.rs#L1487), [1498](../../src/process_host.rs#L1498) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `reconcile_schedule_statuses` | `DaemonError::corrupt` | [1436](../../src/process_host.rs#L1436), [1447](../../src/process_host.rs#L1447), [1459](../../src/process_host.rs#L1459), [1477](../../src/process_host.rs#L1477), [1487](../../src/process_host.rs#L1487), [1498](../../src/process_host.rs#L1498) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `reconcile_schedule_statuses` | `error.to_string` | [1436](../../src/process_host.rs#L1436), [1498](../../src/process_host.rs#L1498) | receiver-type-required |
 | `reconcile_schedule_statuses` | `tasks.into_iter().filter` | [1437](../../src/process_host.rs#L1437) | receiver-type-required |
 | `reconcile_schedule_statuses` | `tasks.into_iter` | [1437](../../src/process_host.rs#L1437) | receiver-type-required |
@@ -1861,7 +1861,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_worker_credentials` | `provider::resolve_config_credentials(             &worker.config_snapshot,             self.secret_store.as_ref(),         )         .map_err` | [1632](../../src/process_host.rs#L1632) | receiver-type-required |
 | `refresh_worker_credentials` | `provider::resolve_config_credentials` | [1632](../../src/process_host.rs#L1632) | [provider::secret_store::resolve_config_credentials](../../../provider/src/secret_store.rs#L294) |
 | `refresh_worker_credentials` | `self.secret_store.as_ref` | [1634](../../src/process_host.rs#L1634) | receiver-type-required |
-| `refresh_worker_credentials` | `DaemonError::required_broker` | [1636](../../src/process_host.rs#L1636), [1644](../../src/process_host.rs#L1644) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `refresh_worker_credentials` | `DaemonError::required_broker` | [1636](../../src/process_host.rs#L1636), [1644](../../src/process_host.rs#L1644) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `refresh_worker_credentials` | `worker             .credential_bindings             .lock()             .unwrap_or_else` | [1637](../../src/process_host.rs#L1637) | receiver-type-required |
 | `refresh_worker_credentials` | `worker             .credential_bindings             .lock` | [1637](../../src/process_host.rs#L1637) | receiver-type-required |
 | `refresh_worker_credentials` | `prior.as_ref` | [1641](../../src/process_host.rs#L1641) | receiver-type-required |
@@ -1907,7 +1907,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_client_sessions` | `self                     .root                     .join("threads")                     .join` | [1716](../../src/process_host.rs#L1716) | receiver-type-required |
 | `recover_client_sessions` | `self                     .root                     .join` | [1716](../../src/process_host.rs#L1716) | receiver-type-required |
 | `recover_client_sessions` | `Err` | [1723](../../src/process_host.rs#L1723) | external-constructor-callback-or-unresolved |
-| `recover_client_sessions` | `DaemonError::invalid_config` | [1723](../../src/process_host.rs#L1723) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `recover_client_sessions` | `DaemonError::invalid_config` | [1723](../../src/process_host.rs#L1723) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `recover_client_sessions` | `self                 .deferred_recovery                 .lock()                 .unwrap_or_else` | [1727](../../src/process_host.rs#L1727) | receiver-type-required |
 | `recover_client_sessions` | `self                 .deferred_recovery                 .lock` | [1727](../../src/process_host.rs#L1727) | receiver-type-required |
 | `recover_client_sessions` | `deferred.remove` | [1732](../../src/process_host.rs#L1732) | receiver-type-required |
@@ -1965,7 +1965,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_ledger_scan` | `name.to_str` | [1856](../../src/process_host.rs#L1856) | receiver-type-required |
 | `sweep_ledger_scan` | `bytes.len` | [1858](../../src/process_host.rs#L1858) | receiver-type-required |
 | `sweep_ledger_scan` | `Err` | [1861](../../src/process_host.rs#L1861) | external-constructor-callback-or-unresolved |
-| `sweep_ledger_scan` | `DaemonError::corrupt` | [1861](../../src/process_host.rs#L1861), [1866](../../src/process_host.rs#L1866), [1869](../../src/process_host.rs#L1869) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `sweep_ledger_scan` | `DaemonError::corrupt` | [1861](../../src/process_host.rs#L1861), [1866](../../src/process_host.rs#L1866), [1869](../../src/process_host.rs#L1869) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `sweep_ledger_scan` | `projection             .events             .first()             .ok_or_else` | [1863](../../src/process_host.rs#L1863) | receiver-type-required |
 | `sweep_ledger_scan` | `projection             .events             .first` | [1863](../../src/process_host.rs#L1863) | receiver-type-required |
 | `sweep_ledger_scan` | `genesis             .string_field("thread")             .ok_or_else(&#124;&#124; DaemonError::corrupt("line genesis has no thread"))?             .to_owned` | [1867](../../src/process_host.rs#L1867) | receiver-type-required |
@@ -1978,7 +1978,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_ledger_scan` | `serde_json::to_value(genesis.raw())             .map_err` | [1871](../../src/process_host.rs#L1871) | receiver-type-required |
 | `sweep_ledger_scan` | `serde_json::to_value` | [1871](../../src/process_host.rs#L1871) | external-constructor-callback-or-unresolved |
 | `sweep_ledger_scan` | `genesis.raw` | [1871](../../src/process_host.rs#L1871) | receiver-type-required |
-| `sweep_ledger_scan` | `DaemonError::protocol` | [1872](../../src/process_host.rs#L1872) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `sweep_ledger_scan` | `DaemonError::protocol` | [1872](../../src/process_host.rs#L1872) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `sweep_ledger_scan` | `error.to_string` | [1872](../../src/process_host.rs#L1872) | receiver-type-required |
 | `sweep_ledger_scan` | `parent.get` | [1874](../../src/process_host.rs#L1874) | receiver-type-required |
 | `sweep_ledger_scan` | `Arc::new` | [1877](../../src/process_host.rs#L1877) | external-constructor-callback-or-unresolved |
@@ -2123,7 +2123,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `self             .protocol_quarantine             .lock()             .unwrap_or_else` | [2148](../../src/process_host.rs#L2148) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `self             .protocol_quarantine             .lock` | [2148](../../src/process_host.rs#L2148) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `Err` | [2155](../../src/process_host.rs#L2155), [2197](../../src/process_host.rs#L2197), [2288](../../src/process_host.rs#L2288), [2290](../../src/process_host.rs#L2290) | external-constructor-callback-or-unresolved |
-| `spawn_worker_at_with_handshake_timeout` | `DaemonError::protocol` | [2155](../../src/process_host.rs#L2155), [2251](../../src/process_host.rs#L2251), [2256](../../src/process_host.rs#L2256), [2261](../../src/process_host.rs#L2261), [2288](../../src/process_host.rs#L2288), [2290](../../src/process_host.rs#L2290), [2305](../../src/process_host.rs#L2305) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `spawn_worker_at_with_handshake_timeout` | `DaemonError::protocol` | [2155](../../src/process_host.rs#L2155), [2251](../../src/process_host.rs#L2251), [2256](../../src/process_host.rs#L2256), [2261](../../src/process_host.rs#L2261), [2288](../../src/process_host.rs#L2288), [2290](../../src/process_host.rs#L2290), [2305](../../src/process_host.rs#L2305) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `spawn_worker_at_with_handshake_timeout` | `session_workspace_binding` | [2159](../../src/process_host.rs#L2159) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L5428) |
 | `spawn_worker_at_with_handshake_timeout` | `store::NamedLock::shared(workspace_quiescence_lock_path(&self.root, &workspace_id))                 .map_err` | [2161](../../src/process_host.rs#L2161) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `store::NamedLock::shared` | [2161](../../src/process_host.rs#L2161) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
@@ -2133,11 +2133,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `Arc::clone` | [2166](../../src/process_host.rs#L2166), [2176](../../src/process_host.rs#L2176), [2339](../../src/process_host.rs#L2339), [2354](../../src/process_host.rs#L2354) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `session_controls::bound_goal_id(&self.root, session_id)             .map_err` | [2170](../../src/process_host.rs#L2170) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `session_controls::bound_goal_id` | [2170](../../src/process_host.rs#L2170) | [session-controls::bound_goal_id](../../../session-controls/src/lib.rs#L352) |
-| `spawn_worker_at_with_handshake_timeout` | `DaemonError::invalid_config` | [2171](../../src/process_host.rs#L2171) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `spawn_worker_at_with_handshake_timeout` | `DaemonError::invalid_config` | [2171](../../src/process_host.rs#L2171) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `spawn_worker_at_with_handshake_timeout` | `error.to_string` | [2171](../../src/process_host.rs#L2171), [2195](../../src/process_host.rs#L2195), [2213](../../src/process_host.rs#L2213), [2223](../../src/process_host.rs#L2223), [2290](../../src/process_host.rs#L2290), [2305](../../src/process_host.rs#L2305) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `self.next_run.fetch_add` | [2172](../../src/process_host.rs#L2172) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `crate::daemon::system_timestamp().map_err` | [2173](../../src/process_host.rs#L2173) | receiver-type-required |
-| `spawn_worker_at_with_handshake_timeout` | `crate::daemon::system_timestamp` | [2173](../../src/process_host.rs#L2173) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1383) |
+| `spawn_worker_at_with_handshake_timeout` | `crate::daemon::system_timestamp` | [2173](../../src/process_host.rs#L2173) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1412) |
 | `spawn_worker_at_with_handshake_timeout` | `Vec::<SessionNotice>::new` | [2175](../../src/process_host.rs#L2175) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `launch_profiled_worker_with_secret_store_and_binding_resolver(             &self.repository,             &ProfiledWorkerLaunchSpec {                 binary: self.worker_binary.clone(),                 ledger: ledger.clone(),                 timestamp,                 run_id: run_id.clone(),                 binary_attribution: self.build.clone(),                 workspace_id,                 folder_binding,                 user_agent_dir: self.user_agent_dir.clone(),             },             self.secret_store.as_ref(),             move &#124;config, instruction&#124; {                 // MCP tools join the effective catalog before the policy is                 // validated against it: a policy may allow-list an MCP tool.                 let mcp = mcp_runtime                     .prepare_workspace(&config.workspace.id)                     .map_err(&#124;error&#124; error.to_string())?;                 if mcp_failure_is_required(&mcp.failures, &config.workspace.policy.allowed_tools) {                     return Err("workspace policy requires an unavailable MCP server".to_owned());                 }                 // A degraded MCP catalog still launches; the session learns                 // what it is missing through a notice rather than a dead turn.                 *launch_notices_capture                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner) =                     mcp_launch_notices(mcp.registry_failure.as_deref(), &mcp.failures);                 // The bound goal is the session's durable goals.v1 record id                 // (never a session, ledger, or process id).                 let bindings = resolve_worker_launch_bindings(                     config,                     instruction,                     goal_id.clone(),                     mcp.catalog.tools,                 )                 .map_err(&#124;error&#124; error.to_string())?;                 *mcp_routes_capture                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner) = Some((                     bindings.dynamic_catalog.clone(),                     mcp.authority as Arc<dyn DynamicSupervisorAuthority>,                 ));                 Ok(bindings)             },         )         .map_err` | [2177](../../src/process_host.rs#L2177) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `launch_profiled_worker_with_secret_store_and_binding_resolver` | [2177](../../src/process_host.rs#L2177) | [tekes-supervisor::launch_profiled_worker_with_secret_store_and_binding_resolver](../../src/lib.rs#L193) |
@@ -2163,7 +2163,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `Some` | [2216](../../src/process_host.rs#L2216), [2234](../../src/process_host.rs#L2234), [2319](../../src/process_host.rs#L2319) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `bindings.dynamic_catalog.clone` | [2217](../../src/process_host.rs#L2217) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `Ok` | [2220](../../src/process_host.rs#L2220), [2356](../../src/process_host.rs#L2356) | external-constructor-callback-or-unresolved |
-| `spawn_worker_at_with_handshake_timeout` | `DaemonError::required_broker` | [2223](../../src/process_host.rs#L2223) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `spawn_worker_at_with_handshake_timeout` | `DaemonError::required_broker` | [2223](../../src/process_host.rs#L2223) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `spawn_worker_at_with_handshake_timeout` | `std::mem::take` | [2224](../../src/process_host.rs#L2224) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `launch_notices                 .lock()                 .unwrap_or_else` | [2225](../../src/process_host.rs#L2225) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `launch_notices                 .lock` | [2225](../../src/process_host.rs#L2225) | receiver-type-required |
@@ -2230,7 +2230,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_limits` | `workspace_id` | [2369](../../src/process_host.rs#L2369) | [tekes-supervisor::process_host::workspace_id](../../src/process_host.rs#L5381) |
 | `refresh_limits` | `self             .repository             .resolve(&workspace)             .map_err` | [2370](../../src/process_host.rs#L2370) | receiver-type-required |
 | `refresh_limits` | `self             .repository             .resolve` | [2370](../../src/process_host.rs#L2370) | receiver-type-required |
-| `refresh_limits` | `DaemonError::invalid_config` | [2373](../../src/process_host.rs#L2373) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `refresh_limits` | `DaemonError::invalid_config` | [2373](../../src/process_host.rs#L2373) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `refresh_limits` | `error.to_string` | [2373](../../src/process_host.rs#L2373) | receiver-type-required |
 | `refresh_limits` | `snapshot.settings.limits.as_ref` | [2374](../../src/process_host.rs#L2374) | receiver-type-required |
 | `refresh_limits` | `self.max_workers.store` | [2375](../../src/process_host.rs#L2375) | receiver-type-required |
@@ -2243,7 +2243,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preflight_mandatory_authorities` | `self.root.join("jobs").is_dir` | [2389](../../src/process_host.rs#L2389) | receiver-type-required |
 | `preflight_mandatory_authorities` | `self.root.join` | [2389](../../src/process_host.rs#L2389) | receiver-type-required |
 | `preflight_mandatory_authorities` | `Err` | [2390](../../src/process_host.rs#L2390) | external-constructor-callback-or-unresolved |
-| `preflight_mandatory_authorities` | `DaemonError::required_broker` | [2390](../../src/process_host.rs#L2390), [2396](../../src/process_host.rs#L2396), [2402](../../src/process_host.rs#L2402) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `preflight_mandatory_authorities` | `DaemonError::required_broker` | [2390](../../src/process_host.rs#L2390), [2396](../../src/process_host.rs#L2396), [2402](../../src/process_host.rs#L2402) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `preflight_mandatory_authorities` | `self.is_mcp_only_app_sandbox_host` | [2394](../../src/process_host.rs#L2394) | [tekes-supervisor::process_host::ProductionProcessHost::is_mcp_only_app_sandbox_host](../../src/process_host.rs#L2407) |
 | `preflight_mandatory_authorities` | `tools::HelperJobLauncher::disabled(self.worker_binary.with_file_name("tekes-helper"))                 .map_err` | [2395](../../src/process_host.rs#L2395) | receiver-type-required |
 | `preflight_mandatory_authorities` | `tools::HelperJobLauncher::disabled` | [2395](../../src/process_host.rs#L2395) | [tools::runtime_backends::HelperJobLauncher::disabled](../../../tools/src/runtime_backends.rs#L499) |
@@ -2263,9 +2263,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `is_mcp_only_app_sandbox_host` | `metadata.mode` | [2415](../../src/process_host.rs#L2415) | receiver-type-required |
 | `is_mcp_only_app_sandbox_host` | `Ok` | [2417](../../src/process_host.rs#L2417), [2422](../../src/process_host.rs#L2422) | external-constructor-callback-or-unresolved |
 | `is_mcp_only_app_sandbox_host` | `Err` | [2419](../../src/process_host.rs#L2419), [2423](../../src/process_host.rs#L2423) | external-constructor-callback-or-unresolved |
-| `is_mcp_only_app_sandbox_host` | `DaemonError::required_broker` | [2419](../../src/process_host.rs#L2419) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `is_mcp_only_app_sandbox_host` | `DaemonError::required_broker` | [2419](../../src/process_host.rs#L2419) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `is_mcp_only_app_sandbox_host` | `error.kind` | [2422](../../src/process_host.rs#L2422) | receiver-type-required |
-| `is_mcp_only_app_sandbox_host` | `DaemonError::io` | [2423](../../src/process_host.rs#L2423) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1443) |
+| `is_mcp_only_app_sandbox_host` | `DaemonError::io` | [2423](../../src/process_host.rs#L2423) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1472) |
 | `freeze_tool_authority` | `frozen_tool_launch_policy` | [2432](../../src/process_host.rs#L2432) | [tekes-supervisor::process_host::frozen_tool_launch_policy](../../src/process_host.rs#L4123) |
 | `freeze_tool_authority` | `self.worker_binary.with_file_name` | [2433](../../src/process_host.rs#L2433) | receiver-type-required |
 | `freeze_tool_authority` | `if self.is_mcp_only_app_sandbox_host()? {             tools::HelperJobLauncher::disabled(executable)         } else {             tools::HelperJobLauncher::new(                 executable,                 tools::probe_backend(production_sandbox_backend()),             )         }         .map_err` | [2434](../../src/process_host.rs#L2434) | receiver-type-required |
@@ -2274,7 +2274,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `freeze_tool_authority` | `tools::HelperJobLauncher::new` | [2437](../../src/process_host.rs#L2437) | [tools::runtime_backends::HelperJobLauncher::new](../../../tools/src/runtime_backends.rs#L481) |
 | `freeze_tool_authority` | `tools::probe_backend` | [2439](../../src/process_host.rs#L2439) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L235) |
 | `freeze_tool_authority` | `production_sandbox_backend` | [2439](../../src/process_host.rs#L2439) | [tekes-supervisor::process_host::production_sandbox_backend](../../src/process_host.rs#L122) |
-| `freeze_tool_authority` | `DaemonError::required_broker` | [2442](../../src/process_host.rs#L2442) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `freeze_tool_authority` | `DaemonError::required_broker` | [2442](../../src/process_host.rs#L2442) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `freeze_tool_authority` | `error.to_string` | [2442](../../src/process_host.rs#L2442) | receiver-type-required |
 | `freeze_tool_authority` | `Arc::new` | [2443](../../src/process_host.rs#L2443) | external-constructor-callback-or-unresolved |
 | `freeze_tool_authority` | `Ok` | [2444](../../src/process_host.rs#L2444) | external-constructor-callback-or-unresolved |
@@ -2308,7 +2308,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `schedule_worker_at_with_startup` | `session_id.to_owned` | [2517](../../src/process_host.rs#L2517) | receiver-type-required |
 | `schedule_worker_at_with_startup` | `pending.startup.as_ref` | [2522](../../src/process_host.rs#L2522) | receiver-type-required |
 | `schedule_worker_at_with_startup` | `Err` | [2524](../../src/process_host.rs#L2524), [2545](../../src/process_host.rs#L2545) | external-constructor-callback-or-unresolved |
-| `schedule_worker_at_with_startup` | `DaemonError::protocol` | [2524](../../src/process_host.rs#L2524), [2545](../../src/process_host.rs#L2545) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `schedule_worker_at_with_startup` | `DaemonError::protocol` | [2524](../../src/process_host.rs#L2524), [2545](../../src/process_host.rs#L2545) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `schedule_worker_at_with_startup` | `startup.clone` | [2529](../../src/process_host.rs#L2529) | receiver-type-required |
 | `schedule_worker_at_with_startup` | `startup.is_some` | [2534](../../src/process_host.rs#L2534) | receiver-type-required |
 | `schedule_worker_at_with_startup` | `self             .pending_workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get(process_key)             .and_then` | [2537](../../src/process_host.rs#L2537) | receiver-type-required |
@@ -2366,7 +2366,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_for_worker` | `Arc::clone` | [2628](../../src/process_host.rs#L2628) | external-constructor-callback-or-unresolved |
 | `wait_for_worker` | `self.draining.load` | [2630](../../src/process_host.rs#L2630) | receiver-type-required |
 | `wait_for_worker` | `Err` | [2631](../../src/process_host.rs#L2631), [2635](../../src/process_host.rs#L2635) | external-constructor-callback-or-unresolved |
-| `wait_for_worker` | `DaemonError::required_broker` | [2631](../../src/process_host.rs#L2631), [2635](../../src/process_host.rs#L2635) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `wait_for_worker` | `DaemonError::required_broker` | [2631](../../src/process_host.rs#L2631), [2635](../../src/process_host.rs#L2635) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `wait_for_worker` | `self                 .workers_changed                 .wait_timeout(workers, deadline - now)                 .unwrap_or_else` | [2637](../../src/process_host.rs#L2637) | receiver-type-required |
 | `wait_for_worker` | `self                 .workers_changed                 .wait_timeout` | [2637](../../src/process_host.rs#L2637) | receiver-type-required |
 | `start_pending_workers` | `self.draining.load` | [2647](../../src/process_host.rs#L2647) | receiver-type-required |
@@ -2632,7 +2632,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_control` | `handle.tool_launch_policy.clone` | [3245](../../src/process_host.rs#L3245) | receiver-type-required |
 | `handle_tool_control` | `Arc::clone` | [3246](../../src/process_host.rs#L3246), [3256](../../src/process_host.rs#L3256) | external-constructor-callback-or-unresolved |
 | `handle_tool_control` | `handle.tool_cancellation.clone` | [3247](../../src/process_host.rs#L3247) | receiver-type-required |
-| `handle_tool_control` | `DaemonError::required_broker` | [3249](../../src/process_host.rs#L3249) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `handle_tool_control` | `DaemonError::required_broker` | [3249](../../src/process_host.rs#L3249) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `handle_tool_control` | `error.to_string` | [3249](../../src/process_host.rs#L3249), [3266](../../src/process_host.rs#L3266) | receiver-type-required |
 | `handle_tool_control` | `self.self_weak.clone` | [3251](../../src/process_host.rs#L3251) | receiver-type-required |
 | `handle_tool_control` | `ProductionToolControlHandler::new` | [3253](../../src/process_host.rs#L3253) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::new](../../src/production_tool_control.rs#L273) |
@@ -2645,14 +2645,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_control` | `tools::SecretScanner::default` | [3262](../../src/process_host.rs#L3262) | external-constructor-callback-or-unresolved |
 | `handle_tool_control` | `session             .handle_line(line)             .map_err` | [3264](../../src/process_host.rs#L3264) | receiver-type-required |
 | `handle_tool_control` | `session             .handle_line` | [3264](../../src/process_host.rs#L3264) | receiver-type-required |
-| `handle_tool_control` | `DaemonError::protocol` | [3266](../../src/process_host.rs#L3266) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `handle_tool_control` | `DaemonError::protocol` | [3266](../../src/process_host.rs#L3266) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `handle_tool_control` | `self             .metrics             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .as_ref` | [3267](../../src/process_host.rs#L3267) | receiver-type-required |
 | `handle_tool_control` | `self             .metrics             .lock()             .unwrap_or_else` | [3267](../../src/process_host.rs#L3267) | receiver-type-required |
 | `handle_tool_control` | `self             .metrics             .lock` | [3267](../../src/process_host.rs#L3267) | receiver-type-required |
 | `handle_tool_control` | `metrics.increment` | [3273](../../src/process_host.rs#L3273) | receiver-type-required |
 | `handle_tool_continuation` | `worker_control::continuation::decode_tool_continuation(line)             .map_err` | [3286](../../src/process_host.rs#L3286) | receiver-type-required |
 | `handle_tool_continuation` | `worker_control::continuation::decode_tool_continuation` | [3286](../../src/process_host.rs#L3286) | [worker-control::continuation::decode_tool_continuation](../../../worker-control/src/continuation.rs#L279) |
-| `handle_tool_continuation` | `DaemonError::protocol` | [3287](../../src/process_host.rs#L3287), [3290](../../src/process_host.rs#L3290), [3292](../../src/process_host.rs#L3292), [3316](../../src/process_host.rs#L3316) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `handle_tool_continuation` | `DaemonError::protocol` | [3287](../../src/process_host.rs#L3287), [3290](../../src/process_host.rs#L3290), [3292](../../src/process_host.rs#L3292), [3316](../../src/process_host.rs#L3316) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `handle_tool_continuation` | `error.to_string` | [3287](../../src/process_host.rs#L3287), [3303](../../src/process_host.rs#L3303), [3316](../../src/process_host.rs#L3316) | receiver-type-required |
 | `handle_tool_continuation` | `self.root.join("threads").join` | [3288](../../src/process_host.rs#L3288) | receiver-type-required |
 | `handle_tool_continuation` | `self.root.join` | [3288](../../src/process_host.rs#L3288), [3297](../../src/process_host.rs#L3297) | receiver-type-required |
@@ -2667,7 +2667,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_continuation` | `handle.tool_launch_policy.clone` | [3299](../../src/process_host.rs#L3299) | receiver-type-required |
 | `handle_tool_continuation` | `Arc::clone` | [3300](../../src/process_host.rs#L3300), [3310](../../src/process_host.rs#L3310) | external-constructor-callback-or-unresolved |
 | `handle_tool_continuation` | `handle.tool_cancellation.clone` | [3301](../../src/process_host.rs#L3301) | receiver-type-required |
-| `handle_tool_continuation` | `DaemonError::required_broker` | [3303](../../src/process_host.rs#L3303) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `handle_tool_continuation` | `DaemonError::required_broker` | [3303](../../src/process_host.rs#L3303) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `handle_tool_continuation` | `self.self_weak.clone` | [3305](../../src/process_host.rs#L3305) | receiver-type-required |
 | `handle_tool_continuation` | `ProductionToolControlHandler::new` | [3307](../../src/process_host.rs#L3307) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::new](../../src/production_tool_control.rs#L273) |
 | `handle_tool_continuation` | `self.root.clone` | [3307](../../src/process_host.rs#L3307) | receiver-type-required |
@@ -2687,7 +2687,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_child_proof` | `fs::read` | [3325](../../src/process_host.rs#L3325) | external-constructor-callback-or-unresolved |
 | `validate_child_proof` | `scan_valid_prefix(&bytes, 1)             .projection             .ok_or_else` | [3326](../../src/process_host.rs#L3326) | receiver-type-required |
 | `validate_child_proof` | `scan_valid_prefix` | [3326](../../src/process_host.rs#L3326) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `validate_child_proof` | `DaemonError::corrupt` | [3328](../../src/process_host.rs#L3328), [3332](../../src/process_host.rs#L3332), [3334](../../src/process_host.rs#L3334) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `validate_child_proof` | `DaemonError::corrupt` | [3328](../../src/process_host.rs#L3328), [3332](../../src/process_host.rs#L3332), [3334](../../src/process_host.rs#L3334) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `validate_child_proof` | `projection             .events             .first()             .ok_or_else` | [3329](../../src/process_host.rs#L3329) | receiver-type-required |
 | `validate_child_proof` | `projection             .events             .first` | [3329](../../src/process_host.rs#L3329) | receiver-type-required |
 | `validate_child_proof` | `genesis.string_field` | [3333](../../src/process_host.rs#L3333) | receiver-type-required |
@@ -2709,7 +2709,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_appended` | `bytes.len` | [3355](../../src/process_host.rs#L3355) | receiver-type-required |
 | `publish_appended` | `scan_valid_prefix(&bytes, 1)             .projection             .ok_or_else` | [3356](../../src/process_host.rs#L3356) | receiver-type-required |
 | `publish_appended` | `scan_valid_prefix` | [3356](../../src/process_host.rs#L3356) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `publish_appended` | `DaemonError::corrupt` | [3358](../../src/process_host.rs#L3358), [3360](../../src/process_host.rs#L3360), [3363](../../src/process_host.rs#L3363), [3371](../../src/process_host.rs#L3371) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `publish_appended` | `DaemonError::corrupt` | [3358](../../src/process_host.rs#L3358), [3360](../../src/process_host.rs#L3360), [3363](../../src/process_host.rs#L3363), [3371](../../src/process_host.rs#L3371) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `publish_appended` | `EndpointJournal::open(&folder)             .map_err` | [3359](../../src/process_host.rs#L3359) | receiver-type-required |
 | `publish_appended` | `EndpointJournal::open` | [3359](../../src/process_host.rs#L3359) | [endpoint::journal::EndpointJournal::open](../../../endpoint/src/journal.rs#L154) |
 | `publish_appended` | `error.to_string` | [3360](../../src/process_host.rs#L3360), [3363](../../src/process_host.rs#L3363), [3371](../../src/process_host.rs#L3371) | receiver-type-required |
@@ -2796,7 +2796,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_frame` | `fs::read` | [3508](../../src/process_host.rs#L3508) | external-constructor-callback-or-unresolved |
 | `publish_frame` | `scan_valid_prefix(&bytes, 1)                 .projection                 .ok_or_else` | [3509](../../src/process_host.rs#L3509) | receiver-type-required |
 | `publish_frame` | `scan_valid_prefix` | [3509](../../src/process_host.rs#L3509) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `publish_frame` | `DaemonError::corrupt` | [3511](../../src/process_host.rs#L3511), [3513](../../src/process_host.rs#L3513), [3519](../../src/process_host.rs#L3519), [3560](../../src/process_host.rs#L3560), [3615](../../src/process_host.rs#L3615) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `publish_frame` | `DaemonError::corrupt` | [3511](../../src/process_host.rs#L3511), [3513](../../src/process_host.rs#L3513), [3519](../../src/process_host.rs#L3519), [3560](../../src/process_host.rs#L3560), [3615](../../src/process_host.rs#L3615) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `publish_frame` | `EndpointJournal::open(&folder)                 .map_err` | [3512](../../src/process_host.rs#L3512) | receiver-type-required |
 | `publish_frame` | `EndpointJournal::open` | [3512](../../src/process_host.rs#L3512) | [endpoint::journal::EndpointJournal::open](../../../endpoint/src/journal.rs#L154) |
 | `publish_frame` | `error.to_string` | [3513](../../src/process_host.rs#L3513), [3519](../../src/process_host.rs#L3519), [3560](../../src/process_host.rs#L3560), [3615](../../src/process_host.rs#L3615) | receiver-type-required |
@@ -2868,14 +2868,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_child` | `fs::read` | [3655](../../src/process_host.rs#L3655), [3682](../../src/process_host.rs#L3682) | external-constructor-callback-or-unresolved |
 | `launch_child` | `scan_valid_prefix(&bytes, 1)                 .projection                 .ok_or_else` | [3656](../../src/process_host.rs#L3656), [3683](../../src/process_host.rs#L3683) | receiver-type-required |
 | `launch_child` | `scan_valid_prefix` | [3656](../../src/process_host.rs#L3656), [3683](../../src/process_host.rs#L3683) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `launch_child` | `DaemonError::corrupt` | [3658](../../src/process_host.rs#L3658), [3685](../../src/process_host.rs#L3685) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `launch_child` | `DaemonError::corrupt` | [3658](../../src/process_host.rs#L3658), [3685](../../src/process_host.rs#L3685) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `launch_child` | `projection.events.first` | [3659](../../src/process_host.rs#L3659) | receiver-type-required |
 | `launch_child` | `genesis.string_field` | [3662](../../src/process_host.rs#L3662) | receiver-type-required |
 | `launch_child` | `request.child.as_str` | [3662](../../src/process_host.rs#L3662) | receiver-type-required |
 | `launch_child` | `serde_json::to_value(genesis.raw())                 .map_err` | [3665](../../src/process_host.rs#L3665) | receiver-type-required |
 | `launch_child` | `serde_json::to_value` | [3665](../../src/process_host.rs#L3665) | external-constructor-callback-or-unresolved |
 | `launch_child` | `genesis.raw` | [3665](../../src/process_host.rs#L3665) | receiver-type-required |
-| `launch_child` | `DaemonError::protocol` | [3666](../../src/process_host.rs#L3666) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `launch_child` | `DaemonError::protocol` | [3666](../../src/process_host.rs#L3666) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `launch_child` | `error.to_string` | [3666](../../src/process_host.rs#L3666) | receiver-type-required |
 | `launch_child` | `genesis_value                 .get("parent")                 .and_then(&#124;parent&#124; parent.get("spawn_id"))                 .and_then` | [3667](../../src/process_host.rs#L3667) | receiver-type-required |
 | `launch_child` | `genesis_value                 .get("parent")                 .and_then` | [3667](../../src/process_host.rs#L3667) | receiver-type-required |
@@ -2903,7 +2903,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `propagate_parent_stop` | `fs::read` | [3726](../../src/process_host.rs#L3726), [3752](../../src/process_host.rs#L3752) | external-constructor-callback-or-unresolved |
 | `propagate_parent_stop` | `scan_valid_prefix(&parent_bytes, 1)             .projection             .ok_or_else` | [3727](../../src/process_host.rs#L3727) | receiver-type-required |
 | `propagate_parent_stop` | `scan_valid_prefix` | [3727](../../src/process_host.rs#L3727), [3753](../../src/process_host.rs#L3753) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `propagate_parent_stop` | `DaemonError::corrupt` | [3729](../../src/process_host.rs#L3729), [3738](../../src/process_host.rs#L3738), [3741](../../src/process_host.rs#L3741), [3748](../../src/process_host.rs#L3748), [3755](../../src/process_host.rs#L3755) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `propagate_parent_stop` | `DaemonError::corrupt` | [3729](../../src/process_host.rs#L3729), [3738](../../src/process_host.rs#L3738), [3741](../../src/process_host.rs#L3741), [3748](../../src/process_host.rs#L3748), [3755](../../src/process_host.rs#L3755) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `propagate_parent_stop` | `Ok` | [3731](../../src/process_host.rs#L3731), [3767](../../src/process_host.rs#L3767), [3789](../../src/process_host.rs#L3789) | external-constructor-callback-or-unresolved |
 | `propagate_parent_stop` | `parent             .events             .iter()             .rev()             .find(&#124;event&#124; event.kind() == &schema::EventKind::StopRequested)             .ok_or_else` | [3733](../../src/process_host.rs#L3733) | receiver-type-required |
 | `propagate_parent_stop` | `parent             .events             .iter()             .rev()             .find` | [3733](../../src/process_host.rs#L3733) | receiver-type-required |
@@ -2915,7 +2915,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `propagate_parent_stop` | `serde_json::to_value(stop.raw())             .map_err` | [3742](../../src/process_host.rs#L3742) | receiver-type-required |
 | `propagate_parent_stop` | `serde_json::to_value` | [3742](../../src/process_host.rs#L3742) | external-constructor-callback-or-unresolved |
 | `propagate_parent_stop` | `stop.raw` | [3742](../../src/process_host.rs#L3742) | receiver-type-required |
-| `propagate_parent_stop` | `DaemonError::protocol` | [3743](../../src/process_host.rs#L3743), [3750](../../src/process_host.rs#L3750), [3788](../../src/process_host.rs#L3788), [3803](../../src/process_host.rs#L3803), [3805](../../src/process_host.rs#L3805), [3807](../../src/process_host.rs#L3807) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `propagate_parent_stop` | `DaemonError::protocol` | [3743](../../src/process_host.rs#L3743), [3750](../../src/process_host.rs#L3750), [3788](../../src/process_host.rs#L3788), [3803](../../src/process_host.rs#L3803), [3805](../../src/process_host.rs#L3805), [3807](../../src/process_host.rs#L3807) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `propagate_parent_stop` | `error.to_string` | [3743](../../src/process_host.rs#L3743), [3750](../../src/process_host.rs#L3750), [3803](../../src/process_host.rs#L3803), [3805](../../src/process_host.rs#L3805), [3807](../../src/process_host.rs#L3807) | receiver-type-required |
 | `propagate_parent_stop` | `serde_json::from_value(             value                 .get("origin_tuple")                 .cloned()                 .ok_or_else(&#124;&#124; DaemonError::corrupt("parent stop has no origin tuple"))?,         )         .map_err` | [3744](../../src/process_host.rs#L3744) | receiver-type-required |
 | `propagate_parent_stop` | `serde_json::from_value` | [3744](../../src/process_host.rs#L3744) | external-constructor-callback-or-unresolved |
@@ -2956,7 +2956,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `cascade_stop_from` | `parent_ledger.canonicalize` | [3818](../../src/process_host.rs#L3818) | receiver-type-required |
 | `cascade_stop_from` | `visited.insert` | [3819](../../src/process_host.rs#L3819) | receiver-type-required |
 | `cascade_stop_from` | `Err` | [3820](../../src/process_host.rs#L3820), [3853](../../src/process_host.rs#L3853), [3867](../../src/process_host.rs#L3867) | external-constructor-callback-or-unresolved |
-| `cascade_stop_from` | `DaemonError::corrupt` | [3820](../../src/process_host.rs#L3820), [3824](../../src/process_host.rs#L3824), [3828](../../src/process_host.rs#L3828), [3853](../../src/process_host.rs#L3853), [3858](../../src/process_host.rs#L3858), [3863](../../src/process_host.rs#L3863), [3867](../../src/process_host.rs#L3867) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `cascade_stop_from` | `DaemonError::corrupt` | [3820](../../src/process_host.rs#L3820), [3824](../../src/process_host.rs#L3824), [3828](../../src/process_host.rs#L3828), [3853](../../src/process_host.rs#L3853), [3858](../../src/process_host.rs#L3858), [3863](../../src/process_host.rs#L3863), [3867](../../src/process_host.rs#L3867) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `cascade_stop_from` | `parent_ledger             .parent()             .ok_or_else` | [3822](../../src/process_host.rs#L3822) | receiver-type-required |
 | `cascade_stop_from` | `parent_ledger             .parent` | [3822](../../src/process_host.rs#L3822) | receiver-type-required |
 | `cascade_stop_from` | `fs::read(parent_ledger).map_err` | [3825](../../src/process_host.rs#L3825) | receiver-type-required |
@@ -3009,7 +3009,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_after_exit` | `fs::read` | [3912](../../src/process_host.rs#L3912) | external-constructor-callback-or-unresolved |
 | `reconcile_after_exit` | `scan_valid_prefix(&bytes, 1)                 .projection                 .ok_or_else` | [3913](../../src/process_host.rs#L3913) | receiver-type-required |
 | `reconcile_after_exit` | `scan_valid_prefix` | [3913](../../src/process_host.rs#L3913) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `reconcile_after_exit` | `DaemonError::corrupt` | [3915](../../src/process_host.rs#L3915) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `reconcile_after_exit` | `DaemonError::corrupt` | [3915](../../src/process_host.rs#L3915) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `reconcile_after_exit` | `probe_line_lock` | [3917](../../src/process_host.rs#L3917) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L5507) |
 | `reconcile_after_exit` | `classify` | [3922](../../src/process_host.rs#L3922) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
 | `reconcile_after_exit` | `ensure_action_at` | [3923](../../src/process_host.rs#L3923) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
@@ -3057,7 +3057,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `record_spawn_failure` | `self.record_session_notice` | [4043](../../src/process_host.rs#L4043) | [tekes-supervisor::process_host::ProductionProcessHost::record_session_notice](../../src/process_host.rs#L4058) |
 | `record_spawn_failure` | `"worker_launch".to_owned` | [4048](../../src/process_host.rs#L4048) | receiver-type-required |
 | `record_spawn_failure` | `operation.to_owned` | [4049](../../src/process_host.rs#L4049) | receiver-type-required |
-| `record_session_notice` | `crate::daemon::system_timestamp` | [4059](../../src/process_host.rs#L4059) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1383) |
+| `record_session_notice` | `crate::daemon::system_timestamp` | [4059](../../src/process_host.rs#L4059) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1412) |
 | `record_session_notice` | `"host".to_owned` | [4067](../../src/process_host.rs#L4067) | receiver-type-required |
 | `record_session_notice` | `"tekes-supervisor".to_owned` | [4068](../../src/process_host.rs#L4068) | receiver-type-required |
 | `record_session_notice` | `session_id.to_owned` | [4069](../../src/process_host.rs#L4069) | receiver-type-required |
@@ -3075,18 +3075,18 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `frozen_tool_launch_policy` | `config         .execution_cwd()         .map(str::to_owned)         .ok_or_else` | [4128](../../src/process_host.rs#L4128) | receiver-type-required |
 | `frozen_tool_launch_policy` | `config         .execution_cwd()         .map` | [4128](../../src/process_host.rs#L4128) | receiver-type-required |
 | `frozen_tool_launch_policy` | `config         .execution_cwd` | [4128](../../src/process_host.rs#L4128) | receiver-type-required |
-| `frozen_tool_launch_policy` | `DaemonError::invalid_config` | [4131](../../src/process_host.rs#L4131) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `frozen_tool_launch_policy` | `DaemonError::invalid_config` | [4131](../../src/process_host.rs#L4131) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `frozen_tool_launch_policy` | `config.workspace.cwd.clone` | [4134](../../src/process_host.rs#L4134) | receiver-type-required |
 | `frozen_tool_launch_policy` | `Vec::new` | [4135](../../src/process_host.rs#L4135) | external-constructor-callback-or-unresolved |
 | `frozen_tool_launch_policy` | `tools::JobLaunchPolicy::new(execution_cwd, sandbox, effective.writable_roots)         .map_err` | [4144](../../src/process_host.rs#L4144) | receiver-type-required |
 | `frozen_tool_launch_policy` | `tools::JobLaunchPolicy::new` | [4144](../../src/process_host.rs#L4144) | [tools::runtime_backends::JobLaunchPolicy::new](../../../tools/src/runtime_backends.rs#L319) |
-| `frozen_tool_launch_policy` | `DaemonError::required_broker` | [4145](../../src/process_host.rs#L4145) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `frozen_tool_launch_policy` | `DaemonError::required_broker` | [4145](../../src/process_host.rs#L4145) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `frozen_tool_launch_policy` | `error.to_string` | [4145](../../src/process_host.rs#L4145) | receiver-type-required |
 | `validator_tool_launch_policy` | `fs::read(ledger).map_err` | [4153](../../src/process_host.rs#L4153) | receiver-type-required |
 | `validator_tool_launch_policy` | `fs::read` | [4153](../../src/process_host.rs#L4153) | external-constructor-callback-or-unresolved |
 | `validator_tool_launch_policy` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [4154](../../src/process_host.rs#L4154) | receiver-type-required |
 | `validator_tool_launch_policy` | `scan_valid_prefix` | [4154](../../src/process_host.rs#L4154) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `validator_tool_launch_policy` | `DaemonError::corrupt` | [4156](../../src/process_host.rs#L4156) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `validator_tool_launch_policy` | `DaemonError::corrupt` | [4156](../../src/process_host.rs#L4156) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `validator_tool_launch_policy` | `projection         .events         .first()         .is_some_and` | [4157](../../src/process_host.rs#L4157) | receiver-type-required |
 | `validator_tool_launch_policy` | `projection         .events         .first` | [4157](../../src/process_host.rs#L4157) | receiver-type-required |
 | `validator_tool_launch_policy` | `genesis.has_field` | [4160](../../src/process_host.rs#L4160) | receiver-type-required |
@@ -3095,7 +3095,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validator_tool_launch_policy` | `ledger         .parent()         .ok_or_else(&#124;&#124; DaemonError::protocol("validator ledger has no folder"))?         .canonicalize` | [4164](../../src/process_host.rs#L4164) | receiver-type-required |
 | `validator_tool_launch_policy` | `ledger         .parent()         .ok_or_else` | [4164](../../src/process_host.rs#L4164) | receiver-type-required |
 | `validator_tool_launch_policy` | `ledger         .parent` | [4164](../../src/process_host.rs#L4164) | receiver-type-required |
-| `validator_tool_launch_policy` | `DaemonError::protocol` | [4166](../../src/process_host.rs#L4166), [4172](../../src/process_host.rs#L4172) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `validator_tool_launch_policy` | `DaemonError::protocol` | [4166](../../src/process_host.rs#L4166), [4172](../../src/process_host.rs#L4172) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `validator_tool_launch_policy` | `ledger         .file_stem()         .and_then(&#124;value&#124; value.to_str())         .ok_or_else` | [4169](../../src/process_host.rs#L4169) | receiver-type-required |
 | `validator_tool_launch_policy` | `ledger         .file_stem()         .and_then` | [4169](../../src/process_host.rs#L4169) | receiver-type-required |
 | `validator_tool_launch_policy` | `ledger         .file_stem` | [4169](../../src/process_host.rs#L4169) | receiver-type-required |
@@ -3109,7 +3109,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validator_tool_launch_policy` | `private         .join("snapshot")         .canonicalize` | [4178](../../src/process_host.rs#L4178) | receiver-type-required |
 | `validator_tool_launch_policy` | `private.join` | [4182](../../src/process_host.rs#L4182) | receiver-type-required |
 | `validator_tool_launch_policy` | `Err` | [4183](../../src/process_host.rs#L4183) | external-constructor-callback-or-unresolved |
-| `validator_tool_launch_policy` | `DaemonError::required_broker` | [4183](../../src/process_host.rs#L4183) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `validator_tool_launch_policy` | `DaemonError::required_broker` | [4183](../../src/process_host.rs#L4183) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `validator_tool_launch_policy` | `private_validator_launch_policy(&scratch, &snapshot, config, instruction).map` | [4187](../../src/process_host.rs#L4187) | receiver-type-required |
 | `validator_tool_launch_policy` | `private_validator_launch_policy` | [4187](../../src/process_host.rs#L4187) | [tekes-supervisor::process_host::private_validator_launch_policy](../../src/process_host.rs#L4190) |
 | `private_validator_launch_policy` | `scratch.to_string_lossy().into_owned` | [4196](../../src/process_host.rs#L4196) | receiver-type-required |
@@ -3124,7 +3124,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `private_validator_launch_policy` | `tools::JobLaunchPolicy::new(scratch.clone(), sandbox, vec![scratch])         .map_err` | [4214](../../src/process_host.rs#L4214) | receiver-type-required |
 | `private_validator_launch_policy` | `tools::JobLaunchPolicy::new` | [4214](../../src/process_host.rs#L4214) | [tools::runtime_backends::JobLaunchPolicy::new](../../../tools/src/runtime_backends.rs#L319) |
 | `private_validator_launch_policy` | `scratch.clone` | [4214](../../src/process_host.rs#L4214) | receiver-type-required |
-| `private_validator_launch_policy` | `DaemonError::required_broker` | [4215](../../src/process_host.rs#L4215) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1498) |
+| `private_validator_launch_policy` | `DaemonError::required_broker` | [4215](../../src/process_host.rs#L4215) | [tekes-supervisor::daemon::DaemonError::required_broker](../../src/daemon.rs#L1527) |
 | `private_validator_launch_policy` | `error.to_string` | [4215](../../src/process_host.rs#L4215) | receiver-type-required |
 | `web_search_scope_ready` | `provider::endpoint_origin` | [4225](../../src/process_host.rs#L4225) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
 | `web_search_scope_ready` | `bindings.active.iter().any` | [4228](../../src/process_host.rs#L4228) | receiver-type-required |
@@ -3215,7 +3215,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `worker_reader` | `owner                     .upgrade()                     .ok_or_else(&#124;&#124; DaemonError::protocol("process host was dropped"))                     .and_then` | [4458](../../src/process_host.rs#L4458) | receiver-type-required |
 | `worker_reader` | `owner                     .upgrade()                     .ok_or_else` | [4458](../../src/process_host.rs#L4458) | receiver-type-required |
 | `worker_reader` | `owner                     .upgrade` | [4458](../../src/process_host.rs#L4458) | receiver-type-required |
-| `worker_reader` | `DaemonError::protocol` | [4460](../../src/process_host.rs#L4460), [4494](../../src/process_host.rs#L4494) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `worker_reader` | `DaemonError::protocol` | [4460](../../src/process_host.rs#L4460), [4494](../../src/process_host.rs#L4494) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `worker_reader` | `owner.launch_child` | [4462](../../src/process_host.rs#L4462) | receiver-type-required |
 | `worker_reader` | `error.bootstrap_code().to_owned` | [4470](../../src/process_host.rs#L4470) | receiver-type-required |
 | `worker_reader` | `error.bootstrap_code` | [4470](../../src/process_host.rs#L4470) | receiver-type-required |
@@ -3525,7 +3525,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_running` | `operation_value` | [5154](../../src/process_host.rs#L5154) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L5368) |
 | `deliver_input` | `self.host` | [5161](../../src/process_host.rs#L5161) | receiver-type-required |
 | `deliver_input` | `crate::daemon::system_timestamp().map_err` | [5163](../../src/process_host.rs#L5163) | receiver-type-required |
-| `deliver_input` | `crate::daemon::system_timestamp` | [5163](../../src/process_host.rs#L5163) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1383) |
+| `deliver_input` | `crate::daemon::system_timestamp` | [5163](../../src/process_host.rs#L5163) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1412) |
 | `deliver_input` | `"kernel-worker".into` | [5165](../../src/process_host.rs#L5165) | receiver-type-required |
 | `deliver_input` | `"context".into` | [5166](../../src/process_host.rs#L5166) | receiver-type-required |
 | `deliver_input` | `request.target_session.clone` | [5167](../../src/process_host.rs#L5167) | receiver-type-required |
@@ -3538,7 +3538,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `deliver_input` | `operation_value` | [5186](../../src/process_host.rs#L5186) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L5368) |
 | `interrupt` | `self.host` | [5197](../../src/process_host.rs#L5197) | receiver-type-required |
 | `interrupt` | `crate::daemon::system_timestamp().map_err` | [5199](../../src/process_host.rs#L5199) | receiver-type-required |
-| `interrupt` | `crate::daemon::system_timestamp` | [5199](../../src/process_host.rs#L5199) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1383) |
+| `interrupt` | `crate::daemon::system_timestamp` | [5199](../../src/process_host.rs#L5199) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1412) |
 | `interrupt` | `"kernel-worker".into` | [5201](../../src/process_host.rs#L5201) | receiver-type-required |
 | `interrupt` | `"context".into` | [5202](../../src/process_host.rs#L5202) | receiver-type-required |
 | `interrupt` | `request.target_session.clone` | [5203](../../src/process_host.rs#L5203) | receiver-type-required |
@@ -3560,7 +3560,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `unresolved_parent_dependency` | `scan_valid_prefix` | [5260](../../src/process_host.rs#L5260) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
 | `unresolved_parent_dependency` | `fs::read(path).map_err` | [5260](../../src/process_host.rs#L5260) | receiver-type-required |
 | `unresolved_parent_dependency` | `fs::read` | [5260](../../src/process_host.rs#L5260) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `DaemonError::corrupt` | [5262](../../src/process_host.rs#L5262), [5268](../../src/process_host.rs#L5268), [5270](../../src/process_host.rs#L5270), [5273](../../src/process_host.rs#L5273), [5279](../../src/process_host.rs#L5279), [5284](../../src/process_host.rs#L5284), [5288](../../src/process_host.rs#L5288), [5297](../../src/process_host.rs#L5297), [5301](../../src/process_host.rs#L5301), [5304](../../src/process_host.rs#L5304), [5309](../../src/process_host.rs#L5309), [5313](../../src/process_host.rs#L5313) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `unresolved_parent_dependency` | `DaemonError::corrupt` | [5262](../../src/process_host.rs#L5262), [5268](../../src/process_host.rs#L5268), [5270](../../src/process_host.rs#L5270), [5273](../../src/process_host.rs#L5273), [5279](../../src/process_host.rs#L5279), [5284](../../src/process_host.rs#L5284), [5288](../../src/process_host.rs#L5288), [5297](../../src/process_host.rs#L5297), [5301](../../src/process_host.rs#L5301), [5304](../../src/process_host.rs#L5304), [5309](../../src/process_host.rs#L5309), [5313](../../src/process_host.rs#L5313) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `unresolved_parent_dependency` | `read` | [5264](../../src/process_host.rs#L5264), [5290](../../src/process_host.rs#L5290) | external-constructor-callback-or-unresolved |
 | `unresolved_parent_dependency` | `child         .events         .first()         .ok_or_else` | [5265](../../src/process_host.rs#L5265) | receiver-type-required |
 | `unresolved_parent_dependency` | `child         .events         .first` | [5265](../../src/process_host.rs#L5265) | receiver-type-required |
@@ -3607,7 +3607,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `line_schedule_target` | `file_path             .extension` | [5336](../../src/process_host.rs#L5336) | receiver-type-required |
 | `line_schedule_target` | `extension.to_str` | [5338](../../src/process_host.rs#L5338) | receiver-type-required |
 | `line_schedule_target` | `Err` | [5341](../../src/process_host.rs#L5341), [5345](../../src/process_host.rs#L5345), [5352](../../src/process_host.rs#L5352) | external-constructor-callback-or-unresolved |
-| `line_schedule_target` | `DaemonError::corrupt` | [5341](../../src/process_host.rs#L5341), [5345](../../src/process_host.rs#L5345), [5352](../../src/process_host.rs#L5352) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `line_schedule_target` | `DaemonError::corrupt` | [5341](../../src/process_host.rs#L5341), [5345](../../src/process_host.rs#L5345), [5352](../../src/process_host.rs#L5352) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `line_schedule_target` | `session_id.to_owned` | [5349](../../src/process_host.rs#L5349) | receiver-type-required |
 | `line_schedule_target` | `Ok` | [5358](../../src/process_host.rs#L5358) | external-constructor-callback-or-unresolved |
 | `line_schedule_target` | `root.join("threads").join(session_id).join` | [5360](../../src/process_host.rs#L5360) | receiver-type-required |
@@ -3632,7 +3632,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `scoped_client_file_path` | `requested             .components()             .any` | [5392](../../src/process_host.rs#L5392) | receiver-type-required |
 | `scoped_client_file_path` | `requested             .components` | [5392](../../src/process_host.rs#L5392) | receiver-type-required |
 | `scoped_client_file_path` | `Err` | [5396](../../src/process_host.rs#L5396) | external-constructor-callback-or-unresolved |
-| `scoped_client_file_path` | `DaemonError::invalid_config` | [5396](../../src/process_host.rs#L5396), [5410](../../src/process_host.rs#L5410), [5418](../../src/process_host.rs#L5418), [5423](../../src/process_host.rs#L5423) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `scoped_client_file_path` | `DaemonError::invalid_config` | [5396](../../src/process_host.rs#L5396), [5410](../../src/process_host.rs#L5410), [5418](../../src/process_host.rs#L5418), [5423](../../src/process_host.rs#L5423) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `scoped_client_file_path` | `workspace         .cwd         .iter()         .map(&#124;root&#124; Path::new(root).canonicalize().map_err(DaemonError::io))         .collect::<Result<Vec<_>, _>>` | [5398](../../src/process_host.rs#L5398) | receiver-type-required |
 | `scoped_client_file_path` | `workspace         .cwd         .iter()         .map` | [5398](../../src/process_host.rs#L5398) | receiver-type-required |
 | `scoped_client_file_path` | `workspace         .cwd         .iter` | [5398](../../src/process_host.rs#L5398) | receiver-type-required |
@@ -3662,7 +3662,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_workspace_binding` | `fs::read` | [5429](../../src/process_host.rs#L5429) | external-constructor-callback-or-unresolved |
 | `session_workspace_binding` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [5430](../../src/process_host.rs#L5430) | receiver-type-required |
 | `session_workspace_binding` | `scan_valid_prefix` | [5430](../../src/process_host.rs#L5430) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `session_workspace_binding` | `DaemonError::corrupt` | [5432](../../src/process_host.rs#L5432), [5436](../../src/process_host.rs#L5436), [5440](../../src/process_host.rs#L5440) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `session_workspace_binding` | `DaemonError::corrupt` | [5432](../../src/process_host.rs#L5432), [5436](../../src/process_host.rs#L5436), [5440](../../src/process_host.rs#L5440) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `session_workspace_binding` | `projection         .events         .first()         .ok_or_else` | [5433](../../src/process_host.rs#L5433) | receiver-type-required |
 | `session_workspace_binding` | `projection         .events         .first` | [5433](../../src/process_host.rs#L5433) | receiver-type-required |
 | `session_workspace_binding` | `genesis         .string_field("workspace")         .map(str::to_owned)         .ok_or_else` | [5437](../../src/process_host.rs#L5437) | receiver-type-required |
@@ -3675,7 +3675,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ledger_needs_worker` | `fs::read` | [5446](../../src/process_host.rs#L5446) | external-constructor-callback-or-unresolved |
 | `ledger_needs_worker` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [5447](../../src/process_host.rs#L5447) | receiver-type-required |
 | `ledger_needs_worker` | `scan_valid_prefix` | [5447](../../src/process_host.rs#L5447) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `ledger_needs_worker` | `DaemonError::corrupt` | [5449](../../src/process_host.rs#L5449) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `ledger_needs_worker` | `DaemonError::corrupt` | [5449](../../src/process_host.rs#L5449) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `ledger_needs_worker` | `probe_line_lock` | [5451](../../src/process_host.rs#L5451) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L5507) |
 | `ledger_needs_worker` | `Ok` | [5456](../../src/process_host.rs#L5456) | external-constructor-callback-or-unresolved |
 | `ledger_needs_worker` | `ensure_action_at` | [5457](../../src/process_host.rs#L5457) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
@@ -3689,7 +3689,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `goal_continuation_due` | `Ok` | [5465](../../src/process_host.rs#L5465), [5481](../../src/process_host.rs#L5481), [5484](../../src/process_host.rs#L5484), [5492](../../src/process_host.rs#L5492), [5495](../../src/process_host.rs#L5495), [5497](../../src/process_host.rs#L5497) | external-constructor-callback-or-unresolved |
 | `goal_continuation_due` | `ledger         .parent()         .ok_or_else` | [5467](../../src/process_host.rs#L5467) | receiver-type-required |
 | `goal_continuation_due` | `ledger         .parent` | [5467](../../src/process_host.rs#L5467) | receiver-type-required |
-| `goal_continuation_due` | `DaemonError::corrupt` | [5469](../../src/process_host.rs#L5469), [5473](../../src/process_host.rs#L5473), [5477](../../src/process_host.rs#L5477), [5489](../../src/process_host.rs#L5489) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
+| `goal_continuation_due` | `DaemonError::corrupt` | [5469](../../src/process_host.rs#L5469), [5473](../../src/process_host.rs#L5473), [5477](../../src/process_host.rs#L5477), [5489](../../src/process_host.rs#L5489) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
 | `goal_continuation_due` | `folder         .file_name()         .and_then(&#124;name&#124; name.to_str())         .ok_or_else` | [5470](../../src/process_host.rs#L5470) | receiver-type-required |
 | `goal_continuation_due` | `folder         .file_name()         .and_then` | [5470](../../src/process_host.rs#L5470) | receiver-type-required |
 | `goal_continuation_due` | `folder         .file_name` | [5470](../../src/process_host.rs#L5470) | receiver-type-required |
@@ -3699,7 +3699,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `goal_continuation_due` | `folder         .parent` | [5474](../../src/process_host.rs#L5474) | receiver-type-required |
 | `goal_continuation_due` | `session_controls::read_goal(root, session)         .map_err` | [5478](../../src/process_host.rs#L5478) | receiver-type-required |
 | `goal_continuation_due` | `session_controls::read_goal` | [5478](../../src/process_host.rs#L5478) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
-| `goal_continuation_due` | `DaemonError::invalid_config` | [5479](../../src/process_host.rs#L5479) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
+| `goal_continuation_due` | `DaemonError::invalid_config` | [5479](../../src/process_host.rs#L5479) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1519) |
 | `goal_continuation_due` | `error.to_string` | [5479](../../src/process_host.rs#L5479) | receiver-type-required |
 | `goal_continuation_due` | `fs::read(ledger).map_err` | [5486](../../src/process_host.rs#L5486) | receiver-type-required |
 | `goal_continuation_due` | `fs::read` | [5486](../../src/process_host.rs#L5486) | external-constructor-callback-or-unresolved |
@@ -3730,8 +3730,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `probe_line_lock` | `descriptor.ino` | [5519](../../src/process_host.rs#L5519) | receiver-type-required |
 | `probe_line_lock` | `pathname.ino` | [5519](../../src/process_host.rs#L5519) | receiver-type-required |
 | `probe_line_lock` | `Err` | [5520](../../src/process_host.rs#L5520), [5526](../../src/process_host.rs#L5526), [5536](../../src/process_host.rs#L5536) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `DaemonError::corrupt` | [5520](../../src/process_host.rs#L5520) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1494) |
-| `probe_line_lock` | `DaemonError::io` | [5526](../../src/process_host.rs#L5526), [5536](../../src/process_host.rs#L5536) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1443) |
+| `probe_line_lock` | `DaemonError::corrupt` | [5520](../../src/process_host.rs#L5520) | [tekes-supervisor::daemon::DaemonError::corrupt](../../src/daemon.rs#L1523) |
+| `probe_line_lock` | `DaemonError::io` | [5526](../../src/process_host.rs#L5526), [5536](../../src/process_host.rs#L5536) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1472) |
 | `probe_line_lock` | `std::io::Error::last_os_error` | [5526](../../src/process_host.rs#L5526), [5530](../../src/process_host.rs#L5530) | external-constructor-callback-or-unresolved |
 | `probe_line_lock` | `Ok` | [5528](../../src/process_host.rs#L5528), [5533](../../src/process_host.rs#L5533) | external-constructor-callback-or-unresolved |
 | `probe_line_lock` | `error.raw_os_error` | [5531](../../src/process_host.rs#L5531) | receiver-type-required |
@@ -3747,10 +3747,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_worker_hello` | `reader.get_ref` | [5563](../../src/process_host.rs#L5563) | receiver-type-required |
 | `read_worker_hello` | `libc::poll` | [5568](../../src/process_host.rs#L5568) | external-constructor-callback-or-unresolved |
 | `read_worker_hello` | `Err` | [5570](../../src/process_host.rs#L5570), [5577](../../src/process_host.rs#L5577), [5580](../../src/process_host.rs#L5580), [5587](../../src/process_host.rs#L5587), [5592](../../src/process_host.rs#L5592), [5598](../../src/process_host.rs#L5598) | external-constructor-callback-or-unresolved |
-| `read_worker_hello` | `DaemonError::protocol` | [5570](../../src/process_host.rs#L5570), [5580](../../src/process_host.rs#L5580), [5587](../../src/process_host.rs#L5587), [5592](../../src/process_host.rs#L5592), [5598](../../src/process_host.rs#L5598), [5606](../../src/process_host.rs#L5606) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `read_worker_hello` | `DaemonError::protocol` | [5570](../../src/process_host.rs#L5570), [5580](../../src/process_host.rs#L5580), [5587](../../src/process_host.rs#L5587), [5592](../../src/process_host.rs#L5592), [5598](../../src/process_host.rs#L5598), [5606](../../src/process_host.rs#L5606) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `read_worker_hello` | `std::io::Error::last_os_error` | [5573](../../src/process_host.rs#L5573) | external-constructor-callback-or-unresolved |
 | `read_worker_hello` | `error.kind` | [5574](../../src/process_host.rs#L5574) | receiver-type-required |
-| `read_worker_hello` | `DaemonError::io` | [5577](../../src/process_host.rs#L5577) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1443) |
+| `read_worker_hello` | `DaemonError::io` | [5577](../../src/process_host.rs#L5577) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1472) |
 | `read_worker_hello` | `reader.fill_buf().map_err` | [5585](../../src/process_host.rs#L5585) | receiver-type-required |
 | `read_worker_hello` | `reader.fill_buf` | [5585](../../src/process_host.rs#L5585) | receiver-type-required |
 | `read_worker_hello` | `available.is_empty` | [5586](../../src/process_host.rs#L5586) | receiver-type-required |
@@ -3784,20 +3784,20 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `next_stop_generation` | `event.integer_field` | [5622](../../src/process_host.rs#L5622) | receiver-type-required |
 | `validate_worker_binary` | `fs::symlink_metadata(path)         .map_err` | [5631](../../src/process_host.rs#L5631) | receiver-type-required |
 | `validate_worker_binary` | `fs::symlink_metadata` | [5631](../../src/process_host.rs#L5631) | external-constructor-callback-or-unresolved |
-| `validate_worker_binary` | `DaemonError::invalid_install` | [5632](../../src/process_host.rs#L5632) | [tekes-supervisor::daemon::DaemonError::invalid_install](../../src/daemon.rs#L1474) |
+| `validate_worker_binary` | `DaemonError::invalid_install` | [5632](../../src/process_host.rs#L5632) | [tekes-supervisor::daemon::DaemonError::invalid_install](../../src/daemon.rs#L1503) |
 | `validate_worker_binary` | `path.to_path_buf` | [5632](../../src/process_host.rs#L5632) | receiver-type-required |
 | `validate_worker_binary` | `metadata.file_type().is_symlink` | [5633](../../src/process_host.rs#L5633) | receiver-type-required |
 | `validate_worker_binary` | `metadata.file_type` | [5633](../../src/process_host.rs#L5633) | receiver-type-required |
 | `validate_worker_binary` | `metadata.file_type().is_file` | [5633](../../src/process_host.rs#L5633) | receiver-type-required |
 | `validate_worker_binary` | `Err` | [5634](../../src/process_host.rs#L5634) | external-constructor-callback-or-unresolved |
-| `validate_worker_binary` | `DaemonError::invalid_install_reason` | [5634](../../src/process_host.rs#L5634) | [tekes-supervisor::daemon::DaemonError::invalid_install_reason](../../src/daemon.rs#L1482) |
+| `validate_worker_binary` | `DaemonError::invalid_install_reason` | [5634](../../src/process_host.rs#L5634) | [tekes-supervisor::daemon::DaemonError::invalid_install_reason](../../src/daemon.rs#L1511) |
 | `validate_worker_binary` | `Ok` | [5639](../../src/process_host.rs#L5639) | external-constructor-callback-or-unresolved |
 | `failure` | `ProductionRouteFailure::new` | [5643](../../src/process_host.rs#L5643) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
 | `failure` | `IJsonValue::parse_str("{}").expect` | [5646](../../src/process_host.rs#L5646) | receiver-type-required |
 | `failure` | `IJsonValue::parse_str` | [5646](../../src/process_host.rs#L5646) | [schema::ijson::IJsonValue::parse_str](../../../schema/src/ijson.rs#L23) |
 | `internal` | `failure` | [5651](../../src/process_host.rs#L5651) | [tekes-supervisor::process_host::failure](../../src/process_host.rs#L5642) |
 | `internal` | `error.to_string` | [5651](../../src/process_host.rs#L5651) | receiver-type-required |
-| `from` | `DaemonError::protocol` | [5656](../../src/process_host.rs#L5656) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1439) |
+| `from` | `DaemonError::protocol` | [5656](../../src/process_host.rs#L5656) | [tekes-supervisor::daemon::DaemonError::protocol](../../src/daemon.rs#L1468) |
 | `from` | `error.to_string` | [5656](../../src/process_host.rs#L5656) | receiver-type-required |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `tempfile::tempdir().unwrap` | [5664](../../src/process_host.rs#L5664), [5665](../../src/process_host.rs#L5665), [5666](../../src/process_host.rs#L5666) | receiver-type-required |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `tempfile::tempdir` | [5664](../../src/process_host.rs#L5664), [5665](../../src/process_host.rs#L5665), [5666](../../src/process_host.rs#L5666) | external-constructor-callback-or-unresolved |

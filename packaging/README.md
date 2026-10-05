@@ -25,6 +25,11 @@ with the contract fd3/fd4 handoff and rejects embedded build/version mismatch.
 `macos/build-signed-release.sh` takes that release version explicitly and
 requires the signed supervisor's canonical `--describe-build` response to bind
 both the same version and the exact authority-registry digest before publish.
+It also requires `--source-revision`, the 40-hex Git commit that the
+supervisor was compiled from with `TEKES_SOURCE_REVISION`, and the probe must
+report the same commit. Run `tekes-supervisor --describe-build` from a built
+bundle to read the commit back. `scripts/ci-slice10.sh` refuses to build the
+signed release from a tree with local changes or untracked files.
 An installed version is immutable: the selector rejects a different build with
 an already published version (`invalid-state`, `version-already-published`).
 Give every build its own version. For development builds, append a pre-release

@@ -6,6 +6,13 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- Release builds record their Git commit. With `TEKES_SOURCE_REVISION` set at
+  compile time, `tekes-supervisor --describe-build` adds `source_revision`.
+  `build-signed-release.sh` requires `--source-revision` and rejects a
+  supervisor that reports another commit; `scripts/ci-slice10.sh` refuses a
+  tree with local changes ([#5](https://github.com/TekesApps/TekesKernel/issues/5)).
+
 ### Fixed
 - The workspace-service `process_files` tests no longer fail intermittently on
   Linux with ETXTBSY ("Text file busy"); the fixture warm-up exec now retries.

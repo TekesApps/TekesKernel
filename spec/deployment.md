@@ -249,10 +249,16 @@ writer-profile obligation through the existing frozen supervisor contracts;
 they do not read selector state.
 
 The supervisor's sole side-effect-free `--describe-build` invocation prints
-canonical-plus-LF `{authority_registry_sha256,format:1,identifier,version}`
-from compile-time constants. Signed assembly accepts the release version as an
-explicit input and rejects any probe byte, embedded version, or registry digest
-that differs before publication.
+canonical-plus-LF `{authority_registry_sha256,format:1,identifier,source_revision?,version}`
+from compile-time constants. `source_revision` is the 40-hex Git commit given
+at compile time in `TEKES_SOURCE_REVISION`; development builds omit it, and any
+other value fails the build. Signed assembly accepts the release version and
+the source revision as explicit inputs and rejects any probe byte, embedded
+version, source revision, or registry digest that differs before publication.
+The revision is provenance only: signatures and digests stay the authority.
+Because the signed supervisor is a bundle file, the bundle manifest digest
+binds it, and `tekes-supervisor --describe-build` on the artifact recovers the
+commit without a new manifest field.
 
 ## Ownership and readiness
 

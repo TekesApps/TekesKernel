@@ -39,6 +39,35 @@ use crate::resource_capability::EndpointCommandInputAuthority;
 
 pub const AUTHORITY_REGISTRY_SHA256: &str =
     "f1f084f11ee379fd19ff0b62db653e245a088f7055f2146a5e1adf49decf5469";
+/// Git commit a release build came from, set at compile time with `TEKES_SOURCE_REVISION`.
+/// Development builds leave it unset. Any other value than 40 lowercase hex digits fails
+/// the build.
+pub const SOURCE_REVISION: Option<&str> = match option_env!("TEKES_SOURCE_REVISION") {
+    Some(revision) => {
+        assert!(
+            is_source_revision(revision),
+            "TEKES_SOURCE_REVISION must be 40 lowercase hex digits"
+        );
+        Some(revision)
+    }
+    None => None,
+};
+
+const fn is_source_revision(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.len() != 40 {
+        return false;
+    }
+    let mut index = 0;
+    while index < bytes.len() {
+        if !matches!(bytes[index], b'0'..=b'9' | b'a'..=b'f') {
+            return false;
+        }
+        index += 1;
+    }
+    true
+}
+
 pub const PRODUCTION_WEB_LISTEN: &str = "127.0.0.1:7357";
 pub const BOOTSTRAP_STATUS_FD: RawFd = 3;
 pub const LAUNCHER_LIFETIME_FD: RawFd = 4;
