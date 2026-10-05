@@ -460,7 +460,14 @@ fn open_private_root(
     let traversal_path = path.to_path_buf();
     let flags = OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW;
     let parent = if path.is_absolute() {
-        open("/", flags, Mode::empty()).map_err(rustix_profile_error)?
+        match open("/", flags, Mode::empty()) {
+            Ok(parent) => parent,
+            #[cfg(target_os = "macos")]
+            Err(rustix::io::Errno::PERM) => {
+                return open_private_root_sandboxed(path, &traversal_path, flags, expected_uid);
+            }
+            Err(error) => return Err(rustix_profile_error(error)),
+        }
     } else {
         open(".", flags, Mode::empty()).map_err(rustix_profile_error)?
     };
@@ -512,6 +519,10 @@ fn open_private_root(
         }
         match result {
             Ok(next) => descriptor = next,
+            #[cfg(target_os = "macos")]
+            Err(rustix::io::Errno::PERM) => {
+                return open_private_root_sandboxed(path, &traversal_path, flags, expected_uid);
+            }
             Err(error)
                 if error == rustix::io::Errno::LOOP || error == rustix::io::Errno::NOTDIR =>
             {
@@ -589,6 +600,25 @@ fn open_private_root_darwin(
         Err(error) => return Err(ProfileError::from(error)),
     };
     validate_private_directory_fd(&descriptor, &path, expected_uid)?;
+    Ok(descriptor)
+}
+
+#[cfg(target_os = "macos")]
+fn open_private_root_sandboxed(
+    requested_path: &Path,
+    traversal_path: &Path,
+    flags: OFlags,
+    expected_uid: libc::uid_t,
+) -> Result<OwnedFd, ProfileError> {
+    let canonical = fs::canonicalize(traversal_path)?;
+    if canonical != traversal_path {
+        return Err(invalid_private_directory(
+            requested_path,
+            "private data root traverses a symlink",
+        ));
+    }
+    let descriptor = open(&canonical, flags, Mode::empty()).map_err(rustix_profile_error)?;
+    validate_private_directory_fd(&descriptor, requested_path, expected_uid)?;
     Ok(descriptor)
 }
 
@@ -1801,6 +1831,12 @@ fn enabled_provider_models(providers: &ProvidersConfig) -> BTreeSet<(&str, &str)
 mod private_directory_tests {
     use super::{open_private_root, validate_private_directory_fd};
 
+    #[cfg(target_os = "macos")]
+    use super::open_private_root_sandboxed;
+
+    #[cfg(target_os = "macos")]
+    use rustix::fs::OFlags;
+
     #[test]
     fn private_directory_rejects_wrong_owner() {
         let root = tempfile::tempdir().expect("root");
@@ -1810,6 +1846,24 @@ mod private_directory_tests {
             validate_private_directory_fd(&descriptor, root.path(), actual_uid.wrapping_add(1))
                 .expect_err("wrong owner");
         assert!(error.to_string().contains("wrong owner"));
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn sandbox_fallback_rejects_a_symlinked_path() {
+        let root = tempfile::tempdir().expect("root");
+        let directory = root.path().join("directory");
+        std::fs::create_dir(&directory).expect("directory");
+        let alias = root.path().join("alias");
+        std::os::unix::fs::symlink(&directory, &alias).expect("alias");
+        let error = open_private_root_sandboxed(
+            &alias,
+            &alias,
+            OFlags::RDONLY | OFlags::DIRECTORY | OFlags::CLOEXEC | OFlags::NOFOLLOW,
+            rustix::process::geteuid().as_raw(),
+        )
+        .expect_err("symlink must fail closed");
+        assert!(error.to_string().contains("traverses a symlink"));
     }
 }
 

@@ -41,7 +41,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
-| [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 114 | 1115 | [Symbols and calls](src--runtime_backends.md) |
+| [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 114 | 1114 | [Symbols and calls](src--runtime_backends.md) |
 | [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 21 | 161 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |

@@ -742,7 +742,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `store.sweep_ephemeral` | [579](../../src/daemon.rs#L579) | receiver-type-required |
 | `prepare_storage` | `sweep_semantic_ledgers` | [580](../../src/daemon.rs#L580) | [tekes-supervisor::daemon::sweep_semantic_ledgers](../../src/daemon.rs#L656) |
 | `prepare_storage` | `profile::ConfigRepository::open(root)         .map_err` | [581](../../src/daemon.rs#L581) | receiver-type-required |
-| `prepare_storage` | `profile::ConfigRepository::open` | [581](../../src/daemon.rs#L581) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `prepare_storage` | `profile::ConfigRepository::open` | [581](../../src/daemon.rs#L581) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `prepare_storage` | `DaemonError::invalid_config` | [582](../../src/daemon.rs#L582) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
 | `prepare_storage` | `error.to_string` | [582](../../src/daemon.rs#L582) | receiver-type-required |
 | `prepare_storage` | `Ok` | [583](../../src/daemon.rs#L583) | external-constructor-callback-or-unresolved |
@@ -974,7 +974,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_production_endpoint_host` | `assemble_endpoint_host` | [1030](../../src/daemon.rs#L1030) | [tekes-supervisor::daemon::assemble_endpoint_host](../../src/daemon.rs#L1057) |
 | `assemble_application_endpoint_host` | `assemble_endpoint_host` | [1047](../../src/daemon.rs#L1047) | [tekes-supervisor::daemon::assemble_endpoint_host](../../src/daemon.rs#L1057) |
 | `assemble_endpoint_host` | `ConfigRepository::open(authority_root)         .map_err` | [1065](../../src/daemon.rs#L1065) | receiver-type-required |
-| `assemble_endpoint_host` | `ConfigRepository::open` | [1065](../../src/daemon.rs#L1065) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `assemble_endpoint_host` | `ConfigRepository::open` | [1065](../../src/daemon.rs#L1065) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `assemble_endpoint_host` | `DaemonError::invalid_config` | [1066](../../src/daemon.rs#L1066), [1069](../../src/daemon.rs#L1069), [1071](../../src/daemon.rs#L1071), [1074](../../src/daemon.rs#L1074), [1098](../../src/daemon.rs#L1098), [1111](../../src/daemon.rs#L1111), [1114](../../src/daemon.rs#L1114), [1142](../../src/daemon.rs#L1142), [1150](../../src/daemon.rs#L1150) | [tekes-supervisor::daemon::DaemonError::invalid_config](../../src/daemon.rs#L1490) |
 | `assemble_endpoint_host` | `error.to_string` | [1066](../../src/daemon.rs#L1066), [1069](../../src/daemon.rs#L1069), [1071](../../src/daemon.rs#L1071), [1074](../../src/daemon.rs#L1074), [1098](../../src/daemon.rs#L1098), [1111](../../src/daemon.rs#L1111), [1114](../../src/daemon.rs#L1114), [1129](../../src/daemon.rs#L1129), [1154](../../src/daemon.rs#L1154), [1165](../../src/daemon.rs#L1165) | receiver-type-required |
 | `assemble_endpoint_host` | `InstructionResolver::new(user_agent_dir, std::iter::empty::<&Path>())         .capture()         .map_err` | [1067](../../src/daemon.rs#L1067) | receiver-type-required |

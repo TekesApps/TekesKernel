@@ -618,7 +618,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `plugin_store` | `failure` | [421](../../src/client_extensions.rs#L421) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L2967) |
 | `workspace_snapshot` | `profile::ConfigRepository::open(&self.root)             .and_then(&#124;repository&#124; repository.resolve(workspace_id))             .map_err` | [433](../../src/client_extensions.rs#L433) | receiver-type-required |
 | `workspace_snapshot` | `profile::ConfigRepository::open(&self.root)             .and_then` | [433](../../src/client_extensions.rs#L433) | receiver-type-required |
-| `workspace_snapshot` | `profile::ConfigRepository::open` | [433](../../src/client_extensions.rs#L433) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `workspace_snapshot` | `profile::ConfigRepository::open` | [433](../../src/client_extensions.rs#L433) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `workspace_snapshot` | `repository.resolve` | [434](../../src/client_extensions.rs#L434) | receiver-type-required |
 | `workspace_snapshot` | `failure` | [436](../../src/client_extensions.rs#L436) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L2967) |
 | `workspace_resource_catalog` | `self.workspace_resources.get(workspace_id).ok_or_else` | [448](../../src/client_extensions.rs#L448) | receiver-type-required |
@@ -1563,7 +1563,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `skill_resources_never_cross_configured_workspace_catalogs` | `fs::create_dir_all(&agent).expect` | [3537](../../src/client_extensions.rs#L3537) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `fs::create_dir_all` | [3537](../../src/client_extensions.rs#L3537), [3544](../../src/client_extensions.rs#L3544) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `profile::ConfigRepository::open(root.path()).expect` | [3538](../../src/client_extensions.rs#L3538) | receiver-type-required |
-| `skill_resources_never_cross_configured_workspace_catalogs` | `profile::ConfigRepository::open` | [3538](../../src/client_extensions.rs#L3538) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `skill_resources_never_cross_configured_workspace_catalogs` | `profile::ConfigRepository::open` | [3538](../../src/client_extensions.rs#L3538) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `BTreeMap::new` | [3539](../../src/client_extensions.rs#L3539) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `project.join` | [3543](../../src/client_extensions.rs#L3543) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `fs::create_dir_all(&package).expect` | [3544](../../src/client_extensions.rs#L3544) | receiver-type-required |
