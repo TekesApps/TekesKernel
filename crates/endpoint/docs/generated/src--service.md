@@ -353,7 +353,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_config_snapshot` | `projection             .events             .first` | [315](../../src/service.rs#L315) | receiver-type-required |
 | `session_config_snapshot` | `genesis             .string_field("workspace")             .ok_or` | [319](../../src/service.rs#L319) | receiver-type-required |
 | `session_config_snapshot` | `genesis             .string_field` | [319](../../src/service.rs#L319) | receiver-type-required |
-| `session_config_snapshot` | `profile::ConfigRepository::open` | [322](../../src/service.rs#L322) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `session_config_snapshot` | `profile::ConfigRepository::open` | [322](../../src/service.rs#L322) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `session_config_snapshot` | `self.store.root` | [322](../../src/service.rs#L322) | receiver-type-required |
 | `session_config_snapshot` | `Ok` | [323](../../src/service.rs#L323) | external-constructor-callback-or-unresolved |
 | `session_config_snapshot` | `genesis.string_field` | [323](../../src/service.rs#L323) | receiver-type-required |

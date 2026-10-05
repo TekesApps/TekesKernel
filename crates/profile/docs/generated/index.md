@@ -28,7 +28,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/profile/src/config.rs](../../src/config.rs) | 93 | 895 | [Symbols and calls](src--config.md) |
+| [crates/profile/src/config.rs](../../src/config.rs) | 95 | 920 | [Symbols and calls](src--config.md) |
 | [crates/profile/src/instruction.rs](../../src/instruction.rs) | 51 | 459 | [Symbols and calls](src--instruction.md) |
 | [crates/profile/src/launch.rs](../../src/launch.rs) | 41 | 287 | [Symbols and calls](src--launch.md) |
 | [crates/profile/src/lib.rs](../../src/lib.rs) | 5 | 38 | [Symbols and calls](src--lib.md) |

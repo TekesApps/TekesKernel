@@ -483,7 +483,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `root.as_ref` | [51](../../src/client_admin.rs#L51) | receiver-type-required |
 | `for_application` | `Self::open` | [58](../../src/client_admin.rs#L58) | [tekes-supervisor::client_admin::ClientAdminRoutes::open](../../src/client_admin.rs#L61) |
 | `open` | `ConfigRepository::open(root).map_err` | [68](../../src/client_admin.rs#L68) | receiver-type-required |
-| `open` | `ConfigRepository::open` | [68](../../src/client_admin.rs#L68) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `open` | `ConfigRepository::open` | [68](../../src/client_admin.rs#L68) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `open` | `Mutex::new` | [70](../../src/client_admin.rs#L70) | external-constructor-callback-or-unresolved |
 | `open` | `AdminMutationJournal::open(root).map_err` | [71](../../src/client_admin.rs#L71) | receiver-type-required |
 | `open` | `AdminMutationJournal::open` | [71](../../src/client_admin.rs#L71) | [tekes-supervisor::client_admin::AdminMutationJournal::open](../../src/client_admin.rs#L1334) |
