@@ -4,6 +4,21 @@ Notable changes per release. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); versions follow the
 workspace version in `Cargo.toml`.
 
+## Unreleased
+
+### Changed
+- `tekes-selector stage` of a different build under an already published
+  version returns `invalid-state` with state `version-already-published`
+  instead of `invalid-bundle`. Each build needs its own version; see
+  `packaging/README.md` ([#4](https://github.com/TekesApps/TekesKernel/issues/4)).
+
+### Fixed
+- Private data roots open inside the macOS App Sandbox. When the sandbox denies
+  the descriptor walk from `/`, the profile opens the canonical path and still
+  rejects a path that traverses a symlink.
+- The job sandbox error names the probe failure class and detail.
+- The test suite builds and passes on Linux; CI now requires the Linux job.
+
 ## 0.2.0 — 2026-10-05
 
 First public release. It also contains everything in 0.1.4.

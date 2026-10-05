@@ -503,7 +503,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `Err` | [484](../../src/runtime_backends.rs#L484), [489](../../src/runtime_backends.rs#L489) | external-constructor-callback-or-unresolved |
 | `new` | `BackendFailure::Unavailable` | [484](../../src/runtime_backends.rs#L484), [489](../../src/runtime_backends.rs#L489) | external-constructor-callback-or-unresolved |
 | `new` | `"tekes-helper executable is not an absolute regular file".to_owned` | [485](../../src/runtime_backends.rs#L485) | receiver-type-required |
-| `new` | `"job sandbox backend is unavailable".to_owned` | [490](../../src/runtime_backends.rs#L490) | receiver-type-required |
 | `new` | `Ok` | [493](../../src/runtime_backends.rs#L493) | external-constructor-callback-or-unresolved |
 | `disabled` | `executable.into` | [500](../../src/runtime_backends.rs#L500) | receiver-type-required |
 | `disabled` | `executable.is_absolute` | [501](../../src/runtime_backends.rs#L501) | receiver-type-required |

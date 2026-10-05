@@ -1016,7 +1016,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_session` | `to_ijson` | [1016](../../src/endpoint_host.rs#L1016) | [tekes-supervisor::endpoint_host::to_ijson](../../src/endpoint_host.rs#L2175) |
 | `draft_models` | `require_object_fields` | [1020](../../src/endpoint_host.rs#L1020) | [tekes-supervisor::endpoint_host::require_object_fields](../../src/endpoint_host.rs#L2149) |
 | `draft_models` | `profile::ConfigRepository::open(&self.storage_root).map_err` | [1022](../../src/endpoint_host.rs#L1022) | receiver-type-required |
-| `draft_models` | `profile::ConfigRepository::open` | [1022](../../src/endpoint_host.rs#L1022) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `draft_models` | `profile::ConfigRepository::open` | [1022](../../src/endpoint_host.rs#L1022) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `draft_models` | `internal_failure` | [1022](../../src/endpoint_host.rs#L1022), [1023](../../src/endpoint_host.rs#L1023), [1024](../../src/endpoint_host.rs#L1024) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2092) |
 | `draft_models` | `repository.providers().map_err` | [1023](../../src/endpoint_host.rs#L1023) | receiver-type-required |
 | `draft_models` | `repository.providers` | [1023](../../src/endpoint_host.rs#L1023) | receiver-type-required |

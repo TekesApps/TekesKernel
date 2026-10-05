@@ -16,8 +16,9 @@ builds and tests the workspace on Linux, where those components are absent;
 Linux and Windows are not supported targets.
 
 **Clients.** The native Tekes client is maintained separately and is not part
-of this repository. A browser client and the full protocol contract are, so
-any client can be built against the [Session Endpoint](spec/session-endpoint.md).
+of this repository; its Kernel integration is currently suspended. A browser
+client and the full protocol contract are, so any client can be built against
+the [Session Endpoint](spec/session-endpoint.md).
 Some fixtures and documents record provenance from earlier, closed-source Tekes
 repositories (names and pinned revisions only).
 

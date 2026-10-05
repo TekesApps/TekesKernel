@@ -485,10 +485,10 @@ impl HelperJobLauncher {
                 "tekes-helper executable is not an absolute regular file".to_owned(),
             ));
         }
-        if !matches!(probe, ProbeStatus::Available { .. }) {
-            return Err(BackendFailure::Unavailable(
-                "job sandbox backend is unavailable".to_owned(),
-            ));
+        if let ProbeStatus::Unavailable { class, detail } = &probe {
+            return Err(BackendFailure::Unavailable(format!(
+                "job sandbox backend is unavailable ({class:?}): {detail}"
+            )));
         }
         Ok(Self { executable, probe })
     }

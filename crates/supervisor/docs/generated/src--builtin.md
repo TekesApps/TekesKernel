@@ -118,7 +118,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `storage.join` | [75](../../src/builtin.rs#L75) | receiver-type-required |
 | `run` | `daemon::ProductionRootLock::acquire` | [76](../../src/builtin.rs#L76) | [tekes-supervisor::daemon::ProductionRootLock::acquire](../../src/daemon.rs#L381) |
 | `run` | `daemon::preflight_storage` | [77](../../src/builtin.rs#L77) | [tekes-supervisor::daemon::preflight_storage](../../src/daemon.rs#L589) |
-| `run` | `profile::ConfigRepository::open` | [78](../../src/builtin.rs#L78) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `run` | `profile::ConfigRepository::open` | [78](../../src/builtin.rs#L78) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `run` | `repository.providers` | [79](../../src/builtin.rs#L79) | receiver-type-required |
 | `run` | `current         .revision         .checked_add(1)         .ok_or_else` | [81](../../src/builtin.rs#L81) | receiver-type-required |
 | `run` | `current         .revision         .checked_add` | [81](../../src/builtin.rs#L81) | receiver-type-required |

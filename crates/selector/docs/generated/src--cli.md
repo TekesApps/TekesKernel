@@ -102,7 +102,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `parse_args` | `args.get(2).cloned` | [137](../../src/cli.rs#L137) | receiver-type-required |
 | `parse_args` | `args.get` | [137](../../src/cli.rs#L137) | receiver-type-required |
 | `parse_args` | `Ok` | [141](../../src/cli.rs#L141) | external-constructor-callback-or-unresolved |
-| `run_command` | `cli_command_sha256` | [149](../../src/cli.rs#L149) | [tekes-selector::selector::cli_command_sha256](../../src/selector.rs#L2613) |
+| `run_command` | `cli_command_sha256` | [149](../../src/cli.rs#L149) | [tekes-selector::selector::cli_command_sha256](../../src/selector.rs#L2612) |
 | `run_command` | `reply(selector.stage(bundle, version, command_hash)?).map` | [152](../../src/cli.rs#L152) | receiver-type-required |
 | `run_command` | `reply` | [152](../../src/cli.rs#L152), [154](../../src/cli.rs#L154), [155](../../src/cli.rs#L155), [156](../../src/cli.rs#L156), [157](../../src/cli.rs#L157), [166](../../src/cli.rs#L166), [179](../../src/cli.rs#L179), [183](../../src/cli.rs#L183) | [tekes-selector::cli::reply](../../src/cli.rs#L196) |
 | `run_command` | `selector.stage` | [152](../../src/cli.rs#L152) | receiver-type-required |

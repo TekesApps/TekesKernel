@@ -462,7 +462,10 @@ is subject to the same equality but grants neither Keychain group.
 paths. Paths are normalized relative paths with no `..`; targets are regular
 files. The manifest digest is SHA-256 over the exact canonical-plus-LF bytes.
 `stage` verifies counts, hashes, modes, architecture, OS, compatibility and
-code requirement before publication.
+code requirement before publication. A published version directory is never
+replaced: `stage` of a valid bundle whose version is already published with a
+different manifest digest returns `invalid-state`/66 with state
+`version-already-published`, so every distinct build needs a distinct version.
 
 The authority registry is RFC-8785 canonical JSON plus LF, its rows are sorted
 by `authority`, and its digest covers the exact bytes. It is the closed Slice 10

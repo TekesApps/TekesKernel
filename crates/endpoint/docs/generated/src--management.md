@@ -832,7 +832,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_at_with_queue_driver` | `fs::OpenOptions::new()             .create(true)             .append` | [337](../../src/management.rs#L337) | receiver-type-required |
 | `open_at_with_queue_driver` | `fs::OpenOptions::new()             .create` | [337](../../src/management.rs#L337) | receiver-type-required |
 | `open_at_with_queue_driver` | `fs::OpenOptions::new` | [337](../../src/management.rs#L337) | external-constructor-callback-or-unresolved |
-| `open_at_with_queue_driver` | `ConfigRepository::open` | [342](../../src/management.rs#L342) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `open_at_with_queue_driver` | `ConfigRepository::open` | [342](../../src/management.rs#L342) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `open_at_with_queue_driver` | `store.recover_with_queue_driver` | [346](../../src/management.rs#L346) | receiver-type-required |
 | `open_at_with_queue_driver` | `store.seed_missing_workspace_policies` | [347](../../src/management.rs#L347) | receiver-type-required |
 | `open_at_with_queue_driver` | `store.reconcile_workspace_metadata` | [348](../../src/management.rs#L348) | receiver-type-required |
@@ -2357,7 +2357,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path())             .expect("repository")             .resolve(&view.workspace_id)             .expect` | [3507](../../src/management.rs#L3507) | receiver-type-required |
 | `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path())             .expect("repository")             .resolve` | [3507](../../src/management.rs#L3507) | receiver-type-required |
 | `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path())             .expect` | [3507](../../src/management.rs#L3507) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open` | [3507](../../src/management.rs#L3507) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L654) |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open` | [3507](../../src/management.rs#L3507) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir().expect` | [3523](../../src/management.rs#L3523) | receiver-type-required |
 | `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir` | [3523](../../src/management.rs#L3523) | external-constructor-callback-or-unresolved |
 | `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root.path().join` | [3524](../../src/management.rs#L3524) | receiver-type-required |
