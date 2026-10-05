@@ -920,7 +920,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `Ok` | [1343](../../src/client_admin.rs#L1343) | external-constructor-callback-or-unresolved |
 | `open` | `authority_root.to_path_buf` | [1344](../../src/client_admin.rs#L1344) | receiver-type-required |
 | `begin` | `NamedLock::exclusive(&self.lock).map_err` | [1359](../../src/client_admin.rs#L1359) | receiver-type-required |
-| `begin` | `NamedLock::exclusive` | [1359](../../src/client_admin.rs#L1359) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `begin` | `NamedLock::exclusive` | [1359](../../src/client_admin.rs#L1359) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `begin` | `request_digest` | [1360](../../src/client_admin.rs#L1360) | [tekes-supervisor::client_admin::request_digest](../../src/client_admin.rs#L1535) |
 | `begin` | `self.record_path` | [1361](../../src/client_admin.rs#L1361) | [tekes-supervisor::client_admin::AdminMutationJournal::record_path](../../src/client_admin.rs#L1529) |
 | `begin` | `read_record` | [1362](../../src/client_admin.rs#L1362) | [tekes-supervisor::client_admin::read_record](../../src/client_admin.rs#L1545) |
@@ -939,7 +939,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin` | `desired_bytes.to_vec` | [1407](../../src/client_admin.rs#L1407) | receiver-type-required |
 | `begin` | `result.clone` | [1409](../../src/client_admin.rs#L1409) | receiver-type-required |
 | `recover` | `NamedLock::exclusive(&self.lock).map_err` | [1419](../../src/client_admin.rs#L1419) | receiver-type-required |
-| `recover` | `NamedLock::exclusive` | [1419](../../src/client_admin.rs#L1419) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `recover` | `NamedLock::exclusive` | [1419](../../src/client_admin.rs#L1419) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `recover` | `self.record_path` | [1420](../../src/client_admin.rs#L1420) | [tekes-supervisor::client_admin::AdminMutationJournal::record_path](../../src/client_admin.rs#L1529) |
 | `recover` | `read_record` | [1421](../../src/client_admin.rs#L1421) | [tekes-supervisor::client_admin::read_record](../../src/client_admin.rs#L1545) |
 | `recover` | `Ok` | [1422](../../src/client_admin.rs#L1422), [1440](../../src/client_admin.rs#L1440) | external-constructor-callback-or-unresolved |
@@ -952,7 +952,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover` | `publish_record` | [1438](../../src/client_admin.rs#L1438) | [tekes-supervisor::client_admin::publish_record](../../src/client_admin.rs#L1565) |
 | `recover` | `(record.phase == AdminPhase::Committed).then_some` | [1440](../../src/client_admin.rs#L1440) | receiver-type-required |
 | `commit` | `NamedLock::exclusive(&self.lock).map_err` | [1444](../../src/client_admin.rs#L1444) | receiver-type-required |
-| `commit` | `NamedLock::exclusive` | [1444](../../src/client_admin.rs#L1444) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `commit` | `NamedLock::exclusive` | [1444](../../src/client_admin.rs#L1444) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `commit` | `self.record_path` | [1445](../../src/client_admin.rs#L1445) | [tekes-supervisor::client_admin::AdminMutationJournal::record_path](../../src/client_admin.rs#L1529) |
 | `commit` | `read_record(&path)?.ok_or_else` | [1447](../../src/client_admin.rs#L1447) | receiver-type-required |
 | `commit` | `read_record` | [1447](../../src/client_admin.rs#L1447) | [tekes-supervisor::client_admin::read_record](../../src/client_admin.rs#L1545) |
@@ -966,7 +966,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `commit` | `publish_record` | [1463](../../src/client_admin.rs#L1463) | [tekes-supervisor::client_admin::publish_record](../../src/client_admin.rs#L1565) |
 | `commit` | `Ok` | [1464](../../src/client_admin.rs#L1464) | external-constructor-callback-or-unresolved |
 | `records` | `NamedLock::exclusive(&self.lock).map_err` | [1468](../../src/client_admin.rs#L1468) | receiver-type-required |
-| `records` | `NamedLock::exclusive` | [1468](../../src/client_admin.rs#L1468) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `records` | `NamedLock::exclusive` | [1468](../../src/client_admin.rs#L1468) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `records` | `fs::read_dir(&self.root)             .map_err(internal_io)?             .collect::<Result<Vec<_>, _>>()             .map_err` | [1469](../../src/client_admin.rs#L1469) | receiver-type-required |
 | `records` | `fs::read_dir(&self.root)             .map_err(internal_io)?             .collect::<Result<Vec<_>, _>>` | [1469](../../src/client_admin.rs#L1469) | receiver-type-required |
 | `records` | `fs::read_dir(&self.root)             .map_err` | [1469](../../src/client_admin.rs#L1469) | receiver-type-required |
@@ -980,7 +980,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `records` | `entry.path` | [1477](../../src/client_admin.rs#L1477) | receiver-type-required |
 | `records` | `internal` | [1477](../../src/client_admin.rs#L1477) | [tekes-supervisor::client_admin::internal](../../src/client_admin.rs#L1080) |
 | `commit_record` | `NamedLock::exclusive(&self.lock).map_err` | [1483](../../src/client_admin.rs#L1483) | receiver-type-required |
-| `commit_record` | `NamedLock::exclusive` | [1483](../../src/client_admin.rs#L1483) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `commit_record` | `NamedLock::exclusive` | [1483](../../src/client_admin.rs#L1483) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `commit_record` | `self.record_path` | [1484](../../src/client_admin.rs#L1484) | [tekes-supervisor::client_admin::AdminMutationJournal::record_path](../../src/client_admin.rs#L1529) |
 | `commit_record` | `read_record(&path)?.ok_or_else` | [1486](../../src/client_admin.rs#L1486) | receiver-type-required |
 | `commit_record` | `read_record` | [1486](../../src/client_admin.rs#L1486) | [tekes-supervisor::client_admin::read_record](../../src/client_admin.rs#L1545) |
@@ -991,7 +991,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `commit_record` | `Err` | [1488](../../src/client_admin.rs#L1488) | external-constructor-callback-or-unresolved |
 | `commit_record` | `publish_record` | [1493](../../src/client_admin.rs#L1493) | [tekes-supervisor::client_admin::publish_record](../../src/client_admin.rs#L1565) |
 | `abort` | `NamedLock::exclusive(&self.lock).map_err` | [1497](../../src/client_admin.rs#L1497) | receiver-type-required |
-| `abort` | `NamedLock::exclusive` | [1497](../../src/client_admin.rs#L1497) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `abort` | `NamedLock::exclusive` | [1497](../../src/client_admin.rs#L1497) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `abort` | `self.record_path` | [1498](../../src/client_admin.rs#L1498) | [tekes-supervisor::client_admin::AdminMutationJournal::record_path](../../src/client_admin.rs#L1529) |
 | `abort` | `read_record` | [1499](../../src/client_admin.rs#L1499) | [tekes-supervisor::client_admin::read_record](../../src/client_admin.rs#L1545) |
 | `abort` | `Ok` | [1500](../../src/client_admin.rs#L1500) | external-constructor-callback-or-unresolved |

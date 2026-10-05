@@ -204,7 +204,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 |---|---|---|---|
 | `open` | `root.as_ref().to_path_buf` | [36](../../src/folder.rs#L36) | receiver-type-required |
 | `open` | `root.as_ref` | [36](../../src/folder.rs#L36) | receiver-type-required |
-| `open` | `probe_local_filesystem` | [37](../../src/folder.rs#L37) | [store::platform::probe_local_filesystem](../../src/platform.rs#L219) |
+| `open` | `probe_local_filesystem` | [37](../../src/folder.rs#L37) | [store::platform::probe_local_filesystem](../../src/platform.rs#L220) |
 | `open` | `root.join` | [45](../../src/folder.rs#L45) | receiver-type-required |
 | `open` | `fs::symlink_metadata` | [46](../../src/folder.rs#L46) | external-constructor-callback-or-unresolved |
 | `open` | `metadata.file_type().is_dir` | [47](../../src/folder.rs#L47) | receiver-type-required |
@@ -228,7 +228,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_has_live_line_holder` | `value.to_str` | [79](../../src/folder.rs#L79) | receiver-type-required |
 | `session_has_live_line_holder` | `Some` | [79](../../src/folder.rs#L79) | external-constructor-callback-or-unresolved |
 | `session_has_live_line_holder` | `File::open` | [83](../../src/folder.rs#L83) | external-constructor-callback-or-unresolved |
-| `session_has_live_line_holder` | `crate::platform::try_lock_exclusive` | [84](../../src/folder.rs#L84) | [store::platform::try_lock_exclusive](../../src/platform.rs#L165) |
+| `session_has_live_line_holder` | `crate::platform::try_lock_exclusive` | [84](../../src/folder.rs#L84) | [store::platform::try_lock_exclusive](../../src/platform.rs#L166) |
 | `session_has_live_line_holder` | `Ok` | [86](../../src/folder.rs#L86), [90](../../src/folder.rs#L90) | external-constructor-callback-or-unresolved |
 | `create_thread` | `self.create_thread_with_assets` | [98](../../src/folder.rs#L98) | [store::folder::ThreadStore::create_thread_with_assets](../../src/folder.rs#L105) |
 | `create_thread_with_assets` | `genesis.seq` | [112](../../src/folder.rs#L112) | receiver-type-required |
@@ -242,9 +242,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_thread_with_assets` | `"genesis is missing origin tuple".to_owned` | [121](../../src/folder.rs#L121) | receiver-type-required |
 | `create_thread_with_assets` | `crate::tail::check_write_versions` | [122](../../src/folder.rs#L122) | [store::tail::check_write_versions](../../src/tail.rs#L121) |
 | `create_thread_with_assets` | `std::iter::once` | [122](../../src/folder.rs#L122) | external-constructor-callback-or-unresolved |
-| `create_thread_with_assets` | `NamedLock::exclusive` | [127](../../src/folder.rs#L127) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `create_thread_with_assets` | `NamedLock::exclusive` | [127](../../src/folder.rs#L127) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `create_thread_with_assets` | `self.root.join` | [127](../../src/folder.rs#L127), [128](../../src/folder.rs#L128), [132](../../src/folder.rs#L132), [133](../../src/folder.rs#L133), [154](../../src/folder.rs#L154), [155](../../src/folder.rs#L155), [161](../../src/folder.rs#L161), [162](../../src/folder.rs#L162), [168](../../src/folder.rs#L168), [169](../../src/folder.rs#L169), [194](../../src/folder.rs#L194) | receiver-type-required |
-| `create_thread_with_assets` | `open_exclusive_create` | [129](../../src/folder.rs#L129) | [store::platform::open_exclusive_create](../../src/platform.rs#L169) |
+| `create_thread_with_assets` | `open_exclusive_create` | [129](../../src/folder.rs#L129) | [store::platform::open_exclusive_create](../../src/platform.rs#L170) |
 | `create_thread_with_assets` | `self.find_by_origin` | [131](../../src/folder.rs#L131) | [store::folder::ThreadStore::find_by_origin](../../src/folder.rs#L596) |
 | `create_thread_with_assets` | `self.root.join("threads").join` | [132](../../src/folder.rs#L132), [154](../../src/folder.rs#L154), [168](../../src/folder.rs#L168) | receiver-type-required |
 | `create_thread_with_assets` | `self.root.join("archive").join` | [133](../../src/folder.rs#L133), [155](../../src/folder.rs#L155), [169](../../src/folder.rs#L169) | receiver-type-required |
@@ -299,7 +299,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validated_line_projection` | `self.source_has_live_rewrite` | [269](../../src/folder.rs#L269), [277](../../src/folder.rs#L277) | receiver-type-required |
 | `validated_line_projection` | `self.root.join("threads").join` | [272](../../src/folder.rs#L272) | receiver-type-required |
 | `validated_line_projection` | `folder.is_dir` | [273](../../src/folder.rs#L273) | receiver-type-required |
-| `validated_line_projection` | `DirectoryLock::shared` | [276](../../src/folder.rs#L276) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L57) |
+| `validated_line_projection` | `DirectoryLock::shared` | [276](../../src/folder.rs#L276) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L58) |
 | `validated_line_projection` | `Vec::new` | [280](../../src/folder.rs#L280) | external-constructor-callback-or-unresolved |
 | `validated_line_projection` | `folder.join` | [281](../../src/folder.rs#L281) | receiver-type-required |
 | `validated_line_projection` | `fs::symlink_metadata(&path)?.file_type().is_file` | [282](../../src/folder.rs#L282) | receiver-type-required |
@@ -333,7 +333,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_line_keyed_with_projection_if` | `self.source_has_live_rewrite` | [330](../../src/folder.rs#L330), [338](../../src/folder.rs#L338) | receiver-type-required |
 | `append_line_keyed_with_projection_if` | `self.root.join("threads").join` | [333](../../src/folder.rs#L333) | receiver-type-required |
 | `append_line_keyed_with_projection_if` | `folder.is_dir` | [334](../../src/folder.rs#L334) | receiver-type-required |
-| `append_line_keyed_with_projection_if` | `DirectoryLock::shared` | [337](../../src/folder.rs#L337) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L57) |
+| `append_line_keyed_with_projection_if` | `DirectoryLock::shared` | [337](../../src/folder.rs#L337) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L58) |
 | `append_line_keyed_with_projection_if` | `LockedLedger::open` | [341](../../src/folder.rs#L341) | [store::tail::LockedLedger::open](../../src/tail.rs#L153) |
 | `append_line_keyed_with_projection_if` | `folder.join` | [341](../../src/folder.rs#L341) | receiver-type-required |
 | `append_line_keyed_with_projection_if` | `validate_line_ancestry` | [343](../../src/folder.rs#L343) | [store::folder::validate_line_ancestry](../../src/folder.rs#L725) |
@@ -370,7 +370,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_keyed_with_ledger_if` | `self.source_has_live_rewrite` | [410](../../src/folder.rs#L410), [418](../../src/folder.rs#L418) | receiver-type-required |
 | `append_keyed_with_ledger_if` | `self.root.join("threads").join` | [413](../../src/folder.rs#L413) | receiver-type-required |
 | `append_keyed_with_ledger_if` | `folder.is_dir` | [414](../../src/folder.rs#L414) | receiver-type-required |
-| `append_keyed_with_ledger_if` | `DirectoryLock::shared` | [417](../../src/folder.rs#L417) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L57) |
+| `append_keyed_with_ledger_if` | `DirectoryLock::shared` | [417](../../src/folder.rs#L417) | [store::platform::DirectoryLock::shared](../../src/platform.rs#L58) |
 | `append_keyed_with_ledger_if` | `LockedLedger::open` | [421](../../src/folder.rs#L421) | [store::tail::LockedLedger::open](../../src/tail.rs#L153) |
 | `append_keyed_with_ledger_if` | `folder.join` | [421](../../src/folder.rs#L421) | receiver-type-required |
 | `append_keyed_with_ledger_if` | `ledger             .projection()             .ok_or_else(&#124;&#124; StoreError::Corruption("empty thread ledger".to_owned()))?             .origin_tuples             .get` | [422](../../src/folder.rs#L422) | receiver-type-required |
@@ -391,14 +391,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_keyed_with_ledger_if` | `BarrierContext::default` | [445](../../src/folder.rs#L445) | external-constructor-callback-or-unresolved |
 | `archive` | `self.move_folder` | [453](../../src/folder.rs#L453) | [store::folder::ThreadStore::move_folder](../../src/folder.rs#L460) |
 | `archive_nonblocking` | `self.move_folder` | [457](../../src/folder.rs#L457) | [store::folder::ThreadStore::move_folder](../../src/folder.rs#L460) |
-| `move_folder` | `NamedLock::exclusive` | [470](../../src/folder.rs#L470) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `move_folder` | `NamedLock::exclusive` | [470](../../src/folder.rs#L470) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `move_folder` | `self.root.join` | [470](../../src/folder.rs#L470), [474](../../src/folder.rs#L474), [486](../../src/folder.rs#L486), [487](../../src/folder.rs#L487), [488](../../src/folder.rs#L488) | receiver-type-required |
 | `move_folder` | `self.source_has_live_rewrite` | [471](../../src/folder.rs#L471), [483](../../src/folder.rs#L483) | receiver-type-required |
 | `move_folder` | `Err` | [472](../../src/folder.rs#L472), [476](../../src/folder.rs#L476), [484](../../src/folder.rs#L484) | external-constructor-callback-or-unresolved |
 | `move_folder` | `self.root.join(source_area).join` | [474](../../src/folder.rs#L474) | receiver-type-required |
 | `move_folder` | `source.is_dir` | [475](../../src/folder.rs#L475) | receiver-type-required |
-| `move_folder` | `DirectoryLock::try_exclusive` | [479](../../src/folder.rs#L479) | [store::platform::DirectoryLock::try_exclusive](../../src/platform.rs#L65) |
-| `move_folder` | `DirectoryLock::exclusive` | [481](../../src/folder.rs#L481) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L61) |
+| `move_folder` | `DirectoryLock::try_exclusive` | [479](../../src/folder.rs#L479) | [store::platform::DirectoryLock::try_exclusive](../../src/platform.rs#L66) |
+| `move_folder` | `DirectoryLock::exclusive` | [481](../../src/folder.rs#L481) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L62) |
 | `move_folder` | `fs::rename` | [486](../../src/folder.rs#L486) | external-constructor-callback-or-unresolved |
 | `move_folder` | `self.root.join(destination_area).join` | [486](../../src/folder.rs#L486) | receiver-type-required |
 | `move_folder` | `File::open(self.root.join(source_area))?.sync_all` | [487](../../src/folder.rs#L487) | receiver-type-required |
@@ -411,20 +411,20 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_is_ephemeral` | `folder.is_dir` | [501](../../src/folder.rs#L501) | receiver-type-required |
 | `session_is_ephemeral` | `Err` | [502](../../src/folder.rs#L502) | external-constructor-callback-or-unresolved |
 | `session_is_ephemeral` | `folder_is_ephemeral` | [504](../../src/folder.rs#L504) | [store::folder::folder_is_ephemeral](../../src/folder.rs#L813) |
-| `discard_ephemeral` | `NamedLock::exclusive` | [513](../../src/folder.rs#L513) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `discard_ephemeral` | `NamedLock::exclusive` | [513](../../src/folder.rs#L513) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `discard_ephemeral` | `self.root.join` | [513](../../src/folder.rs#L513), [517](../../src/folder.rs#L517) | receiver-type-required |
 | `discard_ephemeral` | `self.source_has_live_rewrite` | [514](../../src/folder.rs#L514) | receiver-type-required |
 | `discard_ephemeral` | `Err` | [515](../../src/folder.rs#L515), [519](../../src/folder.rs#L519), [523](../../src/folder.rs#L523), [526](../../src/folder.rs#L526) | external-constructor-callback-or-unresolved |
 | `discard_ephemeral` | `self.root.join("threads").join` | [517](../../src/folder.rs#L517) | receiver-type-required |
 | `discard_ephemeral` | `source.is_dir` | [518](../../src/folder.rs#L518) | receiver-type-required |
-| `discard_ephemeral` | `DirectoryLock::try_exclusive` | [521](../../src/folder.rs#L521) | [store::platform::DirectoryLock::try_exclusive](../../src/platform.rs#L65) |
+| `discard_ephemeral` | `DirectoryLock::try_exclusive` | [521](../../src/folder.rs#L521) | [store::platform::DirectoryLock::try_exclusive](../../src/platform.rs#L66) |
 | `discard_ephemeral` | `folder_is_ephemeral` | [522](../../src/folder.rs#L522) | [store::folder::folder_is_ephemeral](../../src/folder.rs#L813) |
 | `discard_ephemeral` | `self.session_has_live_line_holder` | [525](../../src/folder.rs#L525) | [store::folder::ThreadStore::session_has_live_line_holder](../../src/folder.rs#L71) |
 | `discard_ephemeral` | `self.retire_ephemeral_folder` | [528](../../src/folder.rs#L528) | [store::folder::ThreadStore::retire_ephemeral_folder](../../src/folder.rs#L572) |
 | `discard_ephemeral` | `drop` | [531](../../src/folder.rs#L531) | external-constructor-callback-or-unresolved |
 | `discard_ephemeral` | `Self::remove_tombstone` | [532](../../src/folder.rs#L532) | [store::folder::ThreadStore::remove_tombstone](../../src/folder.rs#L590) |
 | `discard_ephemeral` | `self.root` | [532](../../src/folder.rs#L532) | [store::folder::ThreadStore::root](../../src/folder.rs#L64) |
-| `sweep_ephemeral` | `NamedLock::exclusive` | [540](../../src/folder.rs#L540) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `sweep_ephemeral` | `NamedLock::exclusive` | [540](../../src/folder.rs#L540) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `sweep_ephemeral` | `self.root.join` | [540](../../src/folder.rs#L540), [543](../../src/folder.rs#L543), [557](../../src/folder.rs#L557), [566](../../src/folder.rs#L566) | receiver-type-required |
 | `sweep_ephemeral` | `Vec::new` | [541](../../src/folder.rs#L541) | external-constructor-callback-or-unresolved |
 | `sweep_ephemeral` | `fs::read_dir(self.root.join("threads"))?.collect::<Result<Vec<_>, _>>` | [543](../../src/folder.rs#L543) | receiver-type-required |
@@ -668,7 +668,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `temp.path().join("threads").join` | [990](../../src/folder.rs#L990) | receiver-type-required |
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `temp.path().join` | [990](../../src/folder.rs#L990), [1009](../../src/folder.rs#L1009) | receiver-type-required |
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `crate::platform::try_lock_exclusive(&ledger).unwrap` | [991](../../src/folder.rs#L991) | receiver-type-required |
-| `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `crate::platform::try_lock_exclusive` | [991](../../src/folder.rs#L991) | [store::platform::try_lock_exclusive](../../src/platform.rs#L165) |
+| `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `crate::platform::try_lock_exclusive` | [991](../../src/folder.rs#L991) | [store::platform::try_lock_exclusive](../../src/platform.rs#L166) |
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `drop` | [997](../../src/folder.rs#L997) | external-constructor-callback-or-unresolved |
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `store.discard_ephemeral(scratch).unwrap` | [999](../../src/folder.rs#L999) | receiver-type-required |
 | `discard_removes_only_idle_ephemeral_folders_and_sweep_leaves_durable_ones` | `store.discard_ephemeral` | [999](../../src/folder.rs#L999) | receiver-type-required |

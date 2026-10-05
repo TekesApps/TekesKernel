@@ -1,4 +1,5 @@
 use std::collections::BTreeSet;
+#[cfg(target_os = "macos")]
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -412,6 +413,7 @@ fn escape_sbpl(value: &str) -> Result<String, SandboxError> {
     Ok(value.replace('\\', "\\\\").replace('"', "\\\""))
 }
 
+#[cfg(target_os = "macos")]
 fn probe_nonce() -> u64 {
     use std::sync::atomic::{AtomicU64, Ordering};
     static NONCE: AtomicU64 = AtomicU64::new(0);

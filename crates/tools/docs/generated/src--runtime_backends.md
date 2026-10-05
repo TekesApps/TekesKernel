@@ -514,7 +514,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `disabled` | `Ok` | [506](../../src/runtime_backends.rs#L506) | external-constructor-callback-or-unresolved |
 | `disabled` | `"per-job sandbox unavailable in MCP-only App Sandbox host".to_owned` | [510](../../src/runtime_backends.rs#L510) | receiver-type-required |
 | `runner_command` | `sandbox_command(effective_policy, &self.probe, &self.executable)             .map_err` | [522](../../src/runtime_backends.rs#L522) | receiver-type-required |
-| `runner_command` | `sandbox_command` | [522](../../src/runtime_backends.rs#L522) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L257) |
+| `runner_command` | `sandbox_command` | [522](../../src/runtime_backends.rs#L522) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L258) |
 | `runner_command` | `BackendFailure::Unavailable` | [523](../../src/runtime_backends.rs#L523) | external-constructor-callback-or-unresolved |
 | `runner_command` | `error.to_string` | [523](../../src/runtime_backends.rs#L523) | receiver-type-required |
 | `new` | `Err` | [537](../../src/runtime_backends.rs#L537), [548](../../src/runtime_backends.rs#L548) | external-constructor-callback-or-unresolved |
@@ -668,7 +668,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `job_directory` | `self.root.join` | [819](../../src/runtime_backends.rs#L819) | receiver-type-required |
 | `read_record` | `self.job_directory` | [823](../../src/runtime_backends.rs#L823) | [tools::runtime_backends::JobBroker::job_directory](../../src/runtime_backends.rs#L818) |
 | `read_record` | `NamedLock::shared(directory.join("job.lock")).map_err` | [824](../../src/runtime_backends.rs#L824) | receiver-type-required |
-| `read_record` | `NamedLock::shared` | [824](../../src/runtime_backends.rs#L824) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `read_record` | `NamedLock::shared` | [824](../../src/runtime_backends.rs#L824) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `read_record` | `directory.join` | [824](../../src/runtime_backends.rs#L824), [825](../../src/runtime_backends.rs#L825) | receiver-type-required |
 | `read_record` | `fs::read(directory.join("job.json")).map_err` | [825](../../src/runtime_backends.rs#L825) | receiver-type-required |
 | `read_record` | `fs::read` | [825](../../src/runtime_backends.rs#L825) | external-constructor-callback-or-unresolved |
@@ -681,7 +681,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_record` | `error.to_string` | [832](../../src/runtime_backends.rs#L832) | receiver-type-required |
 | `write_record` | `self.job_directory` | [836](../../src/runtime_backends.rs#L836) | [tools::runtime_backends::JobBroker::job_directory](../../src/runtime_backends.rs#L818) |
 | `write_record` | `NamedLock::exclusive(directory.join("job.lock")).map_err` | [837](../../src/runtime_backends.rs#L837) | receiver-type-required |
-| `write_record` | `NamedLock::exclusive` | [837](../../src/runtime_backends.rs#L837) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `write_record` | `NamedLock::exclusive` | [837](../../src/runtime_backends.rs#L837) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `write_record` | `directory.join` | [837](../../src/runtime_backends.rs#L837), [840](../../src/runtime_backends.rs#L840) | receiver-type-required |
 | `write_record` | `serde_json_canonicalizer::to_vec(record)             .map_err` | [838](../../src/runtime_backends.rs#L838) | receiver-type-required |
 | `write_record` | `serde_json_canonicalizer::to_vec` | [838](../../src/runtime_backends.rs#L838) | external-constructor-callback-or-unresolved |

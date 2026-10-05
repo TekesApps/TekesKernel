@@ -189,7 +189,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `folder.is_dir` | [156](../../src/journal.rs#L156) | receiver-type-required |
 | `open` | `Err` | [157](../../src/journal.rs#L157) | external-constructor-callback-or-unresolved |
 | `open` | `JournalError::Corruption` | [157](../../src/journal.rs#L157) | external-constructor-callback-or-unresolved |
-| `open` | `DirectoryLock::shared` | [162](../../src/journal.rs#L162) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L57) |
+| `open` | `DirectoryLock::shared` | [162](../../src/journal.rs#L162) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
 | `open` | `folder.join` | [163](../../src/journal.rs#L163), [164](../../src/journal.rs#L164) | receiver-type-required |
 | `open` | `retire_legacy_journal` | [165](../../src/journal.rs#L165) | [endpoint::journal::retire_legacy_journal](../../src/journal.rs#L98) |
 | `open` | `retire_outdated_journal` | [166](../../src/journal.rs#L166) | [endpoint::journal::retire_outdated_journal](../../src/journal.rs#L73) |
@@ -209,7 +209,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `Ok` | [184](../../src/journal.rs#L184) | external-constructor-callback-or-unresolved |
 | `thread_folder` | `self.path             .parent()             .expect` | [194](../../src/journal.rs#L194) | receiver-type-required |
 | `thread_folder` | `self.path             .parent` | [194](../../src/journal.rs#L194) | receiver-type-required |
-| `records` | `NamedLock::shared` | [200](../../src/journal.rs#L200) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `records` | `NamedLock::shared` | [200](../../src/journal.rs#L200) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `records` | `self             .cache             .lock()             .unwrap_or_else` | [201](../../src/journal.rs#L201) | receiver-type-required |
 | `records` | `self             .cache             .lock` | [201](../../src/journal.rs#L201) | receiver-type-required |
 | `records` | `self.refresh_cache_unlocked` | [205](../../src/journal.rs#L205) | [endpoint::journal::EndpointJournal::refresh_cache_unlocked](../../src/journal.rs#L406) |
@@ -217,7 +217,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `records` | `cache.as_ref().expect("cache was refreshed").records.clone` | [206](../../src/journal.rs#L206) | receiver-type-required |
 | `records` | `cache.as_ref().expect` | [206](../../src/journal.rs#L206) | receiver-type-required |
 | `records` | `cache.as_ref` | [206](../../src/journal.rs#L206) | receiver-type-required |
-| `event` | `NamedLock::shared` | [213](../../src/journal.rs#L213) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `event` | `NamedLock::shared` | [213](../../src/journal.rs#L213) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `event` | `self             .cache             .lock()             .unwrap_or_else` | [214](../../src/journal.rs#L214) | receiver-type-required |
 | `event` | `self             .cache             .lock` | [214](../../src/journal.rs#L214) | receiver-type-required |
 | `event` | `self.refresh_cache_unlocked` | [218](../../src/journal.rs#L218) | [endpoint::journal::EndpointJournal::refresh_cache_unlocked](../../src/journal.rs#L406) |
@@ -286,7 +286,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_batch` | `candidates.is_empty` | [339](../../src/journal.rs#L339) | receiver-type-required |
 | `append_batch` | `Ok` | [340](../../src/journal.rs#L340), [387](../../src/journal.rs#L387) | external-constructor-callback-or-unresolved |
 | `append_batch` | `Vec::new` | [340](../../src/journal.rs#L340), [350](../../src/journal.rs#L350) | external-constructor-callback-or-unresolved |
-| `append_batch` | `NamedLock::exclusive` | [342](../../src/journal.rs#L342) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `append_batch` | `NamedLock::exclusive` | [342](../../src/journal.rs#L342) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `append_batch` | `self             .cache             .lock()             .unwrap_or_else` | [343](../../src/journal.rs#L343) | receiver-type-required |
 | `append_batch` | `self             .cache             .lock` | [343](../../src/journal.rs#L343) | receiver-type-required |
 | `append_batch` | `self.refresh_cache_unlocked` | [347](../../src/journal.rs#L347) | [endpoint::journal::EndpointJournal::refresh_cache_unlocked](../../src/journal.rs#L406) |
@@ -321,10 +321,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_batch` | `OpenOptions::new().append` | [382](../../src/journal.rs#L382) | receiver-type-required |
 | `append_batch` | `OpenOptions::new` | [382](../../src/journal.rs#L382) | external-constructor-callback-or-unresolved |
 | `append_batch` | `file.write_all` | [383](../../src/journal.rs#L383) | receiver-type-required |
-| `append_batch` | `FullSync::full_sync` | [384](../../src/journal.rs#L384) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `append_batch` | `FullSync::full_sync` | [384](../../src/journal.rs#L384) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `append_batch` | `cache.file_len.saturating_add` | [385](../../src/journal.rs#L385) | receiver-type-required |
 | `append_batch` | `bytes.len` | [385](../../src/journal.rs#L385) | receiver-type-required |
-| `repair_tail` | `NamedLock::exclusive` | [391](../../src/journal.rs#L391) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `repair_tail` | `NamedLock::exclusive` | [391](../../src/journal.rs#L391) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `repair_tail` | `fs::read` | [392](../../src/journal.rs#L392) | external-constructor-callback-or-unresolved |
 | `repair_tail` | `parse_records` | [393](../../src/journal.rs#L393) | [endpoint::journal::parse_records](../../src/journal.rs#L424) |
 | `repair_tail` | `bytes.len` | [394](../../src/journal.rs#L394) | receiver-type-required |
@@ -332,7 +332,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `repair_tail` | `OpenOptions::new().write` | [395](../../src/journal.rs#L395) | receiver-type-required |
 | `repair_tail` | `OpenOptions::new` | [395](../../src/journal.rs#L395) | external-constructor-callback-or-unresolved |
 | `repair_tail` | `file.set_len` | [396](../../src/journal.rs#L396) | receiver-type-required |
-| `repair_tail` | `FullSync::full_sync` | [397](../../src/journal.rs#L397) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `repair_tail` | `FullSync::full_sync` | [397](../../src/journal.rs#L397) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `repair_tail` | `self             .cache             .lock()             .unwrap_or_else` | [399](../../src/journal.rs#L399) | receiver-type-required |
 | `repair_tail` | `self             .cache             .lock` | [399](../../src/journal.rs#L399) | receiver-type-required |
 | `repair_tail` | `Ok` | [403](../../src/journal.rs#L403) | external-constructor-callback-or-unresolved |

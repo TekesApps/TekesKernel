@@ -731,7 +731,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `Err` | [568](../../src/daemon.rs#L568) | external-constructor-callback-or-unresolved |
 | `prepare_storage` | `DaemonError::io` | [568](../../src/daemon.rs#L568) | [tekes-supervisor::daemon::DaemonError::io](../../src/daemon.rs#L1443) |
 | `prepare_storage` | `store::probe_local_filesystem(root).map_err` | [571](../../src/daemon.rs#L571) | receiver-type-required |
-| `prepare_storage` | `store::probe_local_filesystem` | [571](../../src/daemon.rs#L571) | [store::platform::probe_local_filesystem](../../../store/src/platform.rs#L219) |
+| `prepare_storage` | `store::probe_local_filesystem` | [571](../../src/daemon.rs#L571) | [store::platform::probe_local_filesystem](../../../store/src/platform.rs#L220) |
 | `prepare_storage` | `ThreadStore::open(root).map_err` | [572](../../src/daemon.rs#L572) | receiver-type-required |
 | `prepare_storage` | `ThreadStore::open` | [572](../../src/daemon.rs#L572) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L35) |
 | `prepare_storage` | `store         .recover_rewrites_for_startup()         .map_err` | [573](../../src/daemon.rs#L573) | receiver-type-required |

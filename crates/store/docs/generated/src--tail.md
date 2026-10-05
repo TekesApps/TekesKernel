@@ -180,7 +180,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_sync` | `OpenOptions::new()             .read(true)             .append` | [163](../../src/tail.rs#L163) | receiver-type-required |
 | `open_with_sync` | `OpenOptions::new()             .read` | [163](../../src/tail.rs#L163) | receiver-type-required |
 | `open_with_sync` | `OpenOptions::new` | [163](../../src/tail.rs#L163) | external-constructor-callback-or-unresolved |
-| `open_with_sync` | `try_lock_exclusive` | [168](../../src/tail.rs#L168) | [store::platform::try_lock_exclusive](../../src/platform.rs#L165) |
+| `open_with_sync` | `try_lock_exclusive` | [168](../../src/tail.rs#L168) | [store::platform::try_lock_exclusive](../../src/platform.rs#L166) |
 | `open_with_sync` | `revalidate_inode` | [169](../../src/tail.rs#L169) | [store::tail::revalidate_inode](../../src/tail.rs#L303) |
 | `open_with_sync` | `file.seek` | [171](../../src/tail.rs#L171) | receiver-type-required |
 | `open_with_sync` | `SeekFrom::Start` | [171](../../src/tail.rs#L171) | external-constructor-callback-or-unresolved |
@@ -234,7 +234,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append` | `Ok` | [284](../../src/tail.rs#L284) | external-constructor-callback-or-unresolved |
 | `append_contract` | `requires_barrier` | [292](../../src/tail.rs#L292) | [store::requires_barrier](../../src/lib.rs#L37) |
 | `append_contract` | `self.append` | [293](../../src/tail.rs#L293) | [store::tail::LockedLedger::append](../../src/tail.rs#L256) |
-| `drop` | `unlock` | [299](../../src/tail.rs#L299) | [store::platform::unlock](../../src/platform.rs#L296) |
+| `drop` | `unlock` | [299](../../src/tail.rs#L299) | [store::platform::unlock](../../src/platform.rs#L297) |
 | `revalidate_inode` | `file.metadata` | [304](../../src/tail.rs#L304) | receiver-type-required |
 | `revalidate_inode` | `path.metadata` | [305](../../src/tail.rs#L305) | receiver-type-required |
 | `revalidate_inode` | `held.dev` | [306](../../src/tail.rs#L306) | receiver-type-required |

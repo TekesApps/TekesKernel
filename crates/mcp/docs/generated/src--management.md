@@ -389,7 +389,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover` | `self.with_lock` | [526](../../src/management.rs#L526) | [mcp::management::McpRegistryStore::with_lock](../../src/management.rs#L529) |
 | `recover` | `Ok` | [526](../../src/management.rs#L526) | external-constructor-callback-or-unresolved |
 | `with_lock` | `fs::create_dir_all` | [533](../../src/management.rs#L533) | external-constructor-callback-or-unresolved |
-| `with_lock` | `NamedLock::exclusive` | [534](../../src/management.rs#L534) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `with_lock` | `NamedLock::exclusive` | [534](../../src/management.rs#L534) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `with_lock` | `self.root.join` | [534](../../src/management.rs#L534) | receiver-type-required |
 | `with_lock` | `self.recover_locked` | [535](../../src/management.rs#L535) | [mcp::management::McpRegistryStore::recover_locked](../../src/management.rs#L719) |
 | `with_lock` | `action` | [536](../../src/management.rs#L536) | external-constructor-callback-or-unresolved |
@@ -652,8 +652,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_sync` | `OpenOptions::new().create_new` | [1168](../../src/management.rs#L1168) | receiver-type-required |
 | `write_sync` | `OpenOptions::new` | [1168](../../src/management.rs#L1168) | external-constructor-callback-or-unresolved |
 | `write_sync` | `file.write_all` | [1169](../../src/management.rs#L1169) | receiver-type-required |
-| `write_sync` | `FullSync::full_sync` | [1170](../../src/management.rs#L1170) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `write_sync` | `FullSync::full_sync` | [1170](../../src/management.rs#L1170) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `write_sync` | `Ok` | [1171](../../src/management.rs#L1171) | external-constructor-callback-or-unresolved |
-| `sync_directory` | `FullSync::full_sync` | [1175](../../src/management.rs#L1175) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `sync_directory` | `FullSync::full_sync` | [1175](../../src/management.rs#L1175) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `sync_directory` | `File::open` | [1175](../../src/management.rs#L1175) | external-constructor-callback-or-unresolved |
 | `sync_directory` | `Ok` | [1176](../../src/management.rs#L1176) | external-constructor-callback-or-unresolved |

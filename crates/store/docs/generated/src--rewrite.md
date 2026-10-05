@@ -435,7 +435,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin_redact` | `"redact requires non-empty forbidden byte strings".to_owned` | [203](../../src/rewrite.rs#L203) | receiver-type-required |
 | `begin_redact` | `self.begin_rewrite` | [206](../../src/rewrite.rs#L206) | [store::rewrite::ThreadStore::begin_rewrite](../../src/rewrite.rs#L215) |
 | `begin_redact` | `RewriteMode::Redact` | [211](../../src/rewrite.rs#L211) | external-constructor-callback-or-unresolved |
-| `begin_rewrite` | `NamedLock::exclusive` | [227](../../src/rewrite.rs#L227), [228](../../src/rewrite.rs#L228) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `begin_rewrite` | `NamedLock::exclusive` | [227](../../src/rewrite.rs#L227), [228](../../src/rewrite.rs#L228) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `begin_rewrite` | `self.root().join` | [227](../../src/rewrite.rs#L227), [228](../../src/rewrite.rs#L228), [242](../../src/rewrite.rs#L242), [246](../../src/rewrite.rs#L246), [251](../../src/rewrite.rs#L251), [293](../../src/rewrite.rs#L293), [296](../../src/rewrite.rs#L296) | receiver-type-required |
 | `begin_rewrite` | `self.root` | [227](../../src/rewrite.rs#L227), [228](../../src/rewrite.rs#L228), [242](../../src/rewrite.rs#L242), [246](../../src/rewrite.rs#L246), [251](../../src/rewrite.rs#L251), [293](../../src/rewrite.rs#L293), [296](../../src/rewrite.rs#L296) | receiver-type-required |
 | `begin_rewrite` | `validate_path_id` | [229](../../src/rewrite.rs#L229) | [store::rewrite::validate_path_id](../../src/rewrite.rs#L563) |
@@ -453,7 +453,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin_rewrite` | `entry.file_name` | [247](../../src/rewrite.rs#L247) | receiver-type-required |
 | `begin_rewrite` | `self.root().join("threads").join` | [251](../../src/rewrite.rs#L251) | receiver-type-required |
 | `begin_rewrite` | `source_folder.is_dir` | [252](../../src/rewrite.rs#L252) | receiver-type-required |
-| `begin_rewrite` | `DirectoryLock::exclusive` | [255](../../src/rewrite.rs#L255) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L61) |
+| `begin_rewrite` | `DirectoryLock::exclusive` | [255](../../src/rewrite.rs#L255) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L62) |
 | `begin_rewrite` | `read_source_ledgers` | [256](../../src/rewrite.rs#L256) | [store::rewrite::read_source_ledgers](../../src/rewrite.rs#L739) |
 | `begin_rewrite` | `fork_anchor.as_ref` | [257](../../src/rewrite.rs#L257), [278](../../src/rewrite.rs#L278) | receiver-type-required |
 | `begin_rewrite` | `source_prefix_ledgers` | [258](../../src/rewrite.rs#L258) | [store::rewrite::source_prefix_ledgers](../../src/rewrite.rs#L781) |
@@ -480,7 +480,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin_rewrite` | `File::open(self.root().join("staging"))?.sync_all` | [296](../../src/rewrite.rs#L296) | receiver-type-required |
 | `begin_rewrite` | `File::open` | [296](../../src/rewrite.rs#L296) | external-constructor-callback-or-unresolved |
 | `begin_rewrite` | `Ok` | [297](../../src/rewrite.rs#L297) | external-constructor-callback-or-unresolved |
-| `advance_rewrite` | `NamedLock::exclusive` | [301](../../src/rewrite.rs#L301), [302](../../src/rewrite.rs#L302) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `advance_rewrite` | `NamedLock::exclusive` | [301](../../src/rewrite.rs#L301), [302](../../src/rewrite.rs#L302) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `advance_rewrite` | `self.root().join` | [301](../../src/rewrite.rs#L301), [302](../../src/rewrite.rs#L302), [304](../../src/rewrite.rs#L304), [311](../../src/rewrite.rs#L311), [339](../../src/rewrite.rs#L339), [343](../../src/rewrite.rs#L343), [370](../../src/rewrite.rs#L370), [371](../../src/rewrite.rs#L371), [389](../../src/rewrite.rs#L389) | receiver-type-required |
 | `advance_rewrite` | `self.root` | [301](../../src/rewrite.rs#L301), [302](../../src/rewrite.rs#L302), [304](../../src/rewrite.rs#L304), [311](../../src/rewrite.rs#L311), [324](../../src/rewrite.rs#L324), [331](../../src/rewrite.rs#L331), [339](../../src/rewrite.rs#L339), [343](../../src/rewrite.rs#L343), [359](../../src/rewrite.rs#L359), [370](../../src/rewrite.rs#L370), [371](../../src/rewrite.rs#L371), [389](../../src/rewrite.rs#L389), [401](../../src/rewrite.rs#L401) | receiver-type-required |
 | `advance_rewrite` | `validate_path_id` | [303](../../src/rewrite.rs#L303) | [store::rewrite::validate_path_id](../../src/rewrite.rs#L563) |
@@ -493,7 +493,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `advance_rewrite` | `self.tombstone_path` | [312](../../src/rewrite.rs#L312) | [store::rewrite::ThreadStore::tombstone_path](../../src/rewrite.rs#L549) |
 | `advance_rewrite` | `source.is_dir` | [313](../../src/rewrite.rs#L313), [366](../../src/rewrite.rs#L366) | receiver-type-required |
 | `advance_rewrite` | `Some` | [314](../../src/rewrite.rs#L314), [316](../../src/rewrite.rs#L316) | external-constructor-callback-or-unresolved |
-| `advance_rewrite` | `DirectoryLock::exclusive` | [314](../../src/rewrite.rs#L314), [316](../../src/rewrite.rs#L316) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L61) |
+| `advance_rewrite` | `DirectoryLock::exclusive` | [314](../../src/rewrite.rs#L314), [316](../../src/rewrite.rs#L316) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L62) |
 | `advance_rewrite` | `tombstone.is_dir` | [315](../../src/rewrite.rs#L315), [366](../../src/rewrite.rs#L366) | receiver-type-required |
 | `advance_rewrite` | `verify_source_digest` | [323](../../src/rewrite.rs#L323), [330](../../src/rewrite.rs#L330), [337](../../src/rewrite.rs#L337), [358](../../src/rewrite.rs#L358), [368](../../src/rewrite.rs#L368), [380](../../src/rewrite.rs#L380), [387](../../src/rewrite.rs#L387) | [store::rewrite::verify_source_digest](../../src/rewrite.rs#L992) |
 | `advance_rewrite` | `build_payload` | [324](../../src/rewrite.rs#L324) | [store::rewrite::build_payload](../../src/rewrite.rs#L1075) |
@@ -538,7 +538,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_rewrites_impl` | `value.phase.is_none` | [448](../../src/rewrite.rs#L448) | receiver-type-required |
 | `recover_rewrites_impl` | `completed.push` | [450](../../src/rewrite.rs#L450) | receiver-type-required |
 | `recover_rewrites_impl` | `Ok` | [455](../../src/rewrite.rs#L455) | external-constructor-callback-or-unresolved |
-| `quarantine_unpublished_fork` | `NamedLock::exclusive` | [463](../../src/rewrite.rs#L463), [464](../../src/rewrite.rs#L464) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `quarantine_unpublished_fork` | `NamedLock::exclusive` | [463](../../src/rewrite.rs#L463), [464](../../src/rewrite.rs#L464) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `quarantine_unpublished_fork` | `self.root().join` | [463](../../src/rewrite.rs#L463), [464](../../src/rewrite.rs#L464), [465](../../src/rewrite.rs#L465), [470](../../src/rewrite.rs#L470), [474](../../src/rewrite.rs#L474), [477](../../src/rewrite.rs#L477), [492](../../src/rewrite.rs#L492) | receiver-type-required |
 | `quarantine_unpublished_fork` | `self.root` | [463](../../src/rewrite.rs#L463), [464](../../src/rewrite.rs#L464), [465](../../src/rewrite.rs#L465), [470](../../src/rewrite.rs#L470), [474](../../src/rewrite.rs#L474), [477](../../src/rewrite.rs#L477), [482](../../src/rewrite.rs#L482), [492](../../src/rewrite.rs#L492) | receiver-type-required |
 | `quarantine_unpublished_fork` | `self.root().join("staging").join` | [465](../../src/rewrite.rs#L465) | receiver-type-required |
@@ -546,7 +546,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `quarantine_unpublished_fork` | `self.root().join("threads").join(&operation.dest).exists` | [470](../../src/rewrite.rs#L470) | receiver-type-required |
 | `quarantine_unpublished_fork` | `self.root().join("threads").join` | [470](../../src/rewrite.rs#L470), [474](../../src/rewrite.rs#L474) | receiver-type-required |
 | `quarantine_unpublished_fork` | `Ok` | [472](../../src/rewrite.rs#L472), [485](../../src/rewrite.rs#L485), [497](../../src/rewrite.rs#L497) | external-constructor-callback-or-unresolved |
-| `quarantine_unpublished_fork` | `DirectoryLock::exclusive` | [475](../../src/rewrite.rs#L475) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L61) |
+| `quarantine_unpublished_fork` | `DirectoryLock::exclusive` | [475](../../src/rewrite.rs#L475) | [store::platform::DirectoryLock::exclusive](../../src/platform.rs#L62) |
 | `quarantine_unpublished_fork` | `verify_source_digest` | [476](../../src/rewrite.rs#L476) | [store::rewrite::verify_source_digest](../../src/rewrite.rs#L992) |
 | `quarantine_unpublished_fork` | `fs::DirBuilder::new()             .recursive(true)             .mode(0o700)             .create` | [478](../../src/rewrite.rs#L478) | receiver-type-required |
 | `quarantine_unpublished_fork` | `fs::DirBuilder::new()             .recursive(true)             .mode` | [478](../../src/rewrite.rs#L478) | receiver-type-required |
@@ -562,7 +562,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `quarantine_unpublished_fork` | `fs::rename` | [490](../../src/rewrite.rs#L490) | external-constructor-callback-or-unresolved |
 | `quarantine_unpublished_fork` | `File::open(quarantine)?.sync_all` | [491](../../src/rewrite.rs#L491) | receiver-type-required |
 | `quarantine_unpublished_fork` | `File::open(self.root().join("staging"))?.sync_all` | [492](../../src/rewrite.rs#L492) | receiver-type-required |
-| `gc_rewrite_debris` | `NamedLock::exclusive` | [501](../../src/rewrite.rs#L501) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L102) |
+| `gc_rewrite_debris` | `NamedLock::exclusive` | [501](../../src/rewrite.rs#L501) | [store::platform::NamedLock::exclusive](../../src/platform.rs#L103) |
 | `gc_rewrite_debris` | `self.root().join` | [501](../../src/rewrite.rs#L501), [502](../../src/rewrite.rs#L502) | receiver-type-required |
 | `gc_rewrite_debris` | `self.root` | [501](../../src/rewrite.rs#L501), [502](../../src/rewrite.rs#L502) | receiver-type-required |
 | `gc_rewrite_debris` | `Vec::new` | [503](../../src/rewrite.rs#L503) | external-constructor-callback-or-unresolved |

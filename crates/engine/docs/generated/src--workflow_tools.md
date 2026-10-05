@@ -271,7 +271,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_log_exclusive` | `File::open(&self.root).map_err` | [297](../../src/workflow_tools.rs#L297) | receiver-type-required |
 | `open_log_exclusive` | `File::open` | [297](../../src/workflow_tools.rs#L297) | external-constructor-callback-or-unresolved |
 | `open_log_exclusive` | `NamedLock::exclusive(path.with_extension("lock")).map_err` | [301](../../src/workflow_tools.rs#L301) | receiver-type-required |
-| `open_log_exclusive` | `NamedLock::exclusive` | [301](../../src/workflow_tools.rs#L301) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `open_log_exclusive` | `NamedLock::exclusive` | [301](../../src/workflow_tools.rs#L301) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `open_log_exclusive` | `path.with_extension` | [301](../../src/workflow_tools.rs#L301) | receiver-type-required |
 | `open_log_exclusive` | `OpenOptions::new()             .create(true)             .read(true)             .append(true)             .open(&path)             .map_err` | [302](../../src/workflow_tools.rs#L302) | receiver-type-required |
 | `open_log_exclusive` | `OpenOptions::new()             .create(true)             .read(true)             .append(true)             .open` | [302](../../src/workflow_tools.rs#L302) | receiver-type-required |

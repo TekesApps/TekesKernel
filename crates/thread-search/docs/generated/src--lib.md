@@ -178,10 +178,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `ThreadStore::open` | [97](../../src/lib.rs#L97) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L35) |
 | `search` | `validate_request` | [105](../../src/lib.rs#L105) | [thread-search::validate_request](../../src/lib.rs#L254) |
 | `search` | `normalize` | [106](../../src/lib.rs#L106) | [thread-search::normalize](../../src/lib.rs#L565) |
-| `search` | `NamedLock::exclusive` | [107](../../src/lib.rs#L107) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `search` | `NamedLock::exclusive` | [107](../../src/lib.rs#L107) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `search` | `self.store.root().join` | [107](../../src/lib.rs#L107), [108](../../src/lib.rs#L108), [109](../../src/lib.rs#L109) | receiver-type-required |
 | `search` | `self.store.root` | [107](../../src/lib.rs#L107), [108](../../src/lib.rs#L108), [109](../../src/lib.rs#L109) | receiver-type-required |
-| `search` | `NamedLock::shared` | [108](../../src/lib.rs#L108), [109](../../src/lib.rs#L109) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `search` | `NamedLock::shared` | [108](../../src/lib.rs#L108), [109](../../src/lib.rs#L109) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `search` | `self.scan_and_repair_indices` | [110](../../src/lib.rs#L110) | [thread-search::ThreadSearchAuthority::scan_and_repair_indices](../../src/lib.rs#L182) |
 | `search` | `entries             .into_iter()             .filter(&#124;entry&#124; entry.workspace_id == request.workspace_id)             .filter(&#124;entry&#124; visibility_includes(request.visibility, entry.archived))             .collect::<Vec<_>>` | [111](../../src/lib.rs#L111) | receiver-type-required |
 | `search` | `entries             .into_iter()             .filter(&#124;entry&#124; entry.workspace_id == request.workspace_id)             .filter` | [111](../../src/lib.rs#L111) | receiver-type-required |
@@ -218,10 +218,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `search` | `catalog_digest.clone` | [153](../../src/lib.rs#L153) | receiver-type-required |
 | `search` | `last.session_id.clone` | [155](../../src/lib.rs#L155) | receiver-type-required |
 | `search` | `Ok` | [159](../../src/lib.rs#L159) | external-constructor-callback-or-unresolved |
-| `rebuild_index` | `NamedLock::exclusive` | [172](../../src/lib.rs#L172) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `rebuild_index` | `NamedLock::exclusive` | [172](../../src/lib.rs#L172) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `rebuild_index` | `self.store.root().join` | [172](../../src/lib.rs#L172), [173](../../src/lib.rs#L173), [174](../../src/lib.rs#L174) | receiver-type-required |
 | `rebuild_index` | `self.store.root` | [172](../../src/lib.rs#L172), [173](../../src/lib.rs#L173), [174](../../src/lib.rs#L174), [175](../../src/lib.rs#L175) | receiver-type-required |
-| `rebuild_index` | `NamedLock::shared` | [173](../../src/lib.rs#L173), [174](../../src/lib.rs#L174) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `rebuild_index` | `NamedLock::shared` | [173](../../src/lib.rs#L173), [174](../../src/lib.rs#L174) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `rebuild_index` | `scan_sources` | [175](../../src/lib.rs#L175) | [thread-search::scan_sources](../../src/lib.rs#L310) |
 | `rebuild_index` | `publish_index` | [177](../../src/lib.rs#L177) | [thread-search::publish_index](../../src/lib.rs#L423) |
 | `rebuild_index` | `digest_entries` | [179](../../src/lib.rs#L179) | [thread-search::digest_entries](../../src/lib.rs#L483) |

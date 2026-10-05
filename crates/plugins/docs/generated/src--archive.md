@@ -426,7 +426,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `descriptor_stat` | `PluginError::InvalidArchive` | [535](../../src/archive.rs#L535) | external-constructor-callback-or-unresolved |
 | `descriptor_stat` | `error.to_string` | [535](../../src/archive.rs#L535) | receiver-type-required |
 | `full_sync` | `FullSync::full_sync(file).map_err` | [539](../../src/archive.rs#L539) | receiver-type-required |
-| `full_sync` | `FullSync::full_sync` | [539](../../src/archive.rs#L539) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `full_sync` | `FullSync::full_sync` | [539](../../src/archive.rs#L539) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `full_sync` | `PluginError::Storage` | [539](../../src/archive.rs#L539) | external-constructor-callback-or-unresolved |
 | `full_sync` | `error.to_string` | [539](../../src/archive.rs#L539) | receiver-type-required |
 | `full_sync_path` | `File::open(path).map_err` | [543](../../src/archive.rs#L543) | receiver-type-required |

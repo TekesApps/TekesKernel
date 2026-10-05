@@ -452,7 +452,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `install` | `validate_grants` | [268](../../src/store.rs#L268) | [plugins::store::validate_grants](../../src/store.rs#L1153) |
 | `install` | `require_all_grants` | [270](../../src/store.rs#L270) | [plugins::store::require_all_grants](../../src/store.rs#L1166) |
 | `install` | `self.verify_native_helpers` | [272](../../src/store.rs#L272) | [plugins::store::PluginStore::verify_native_helpers](../../src/store.rs#L848) |
-| `install` | `verify_publisher` | [273](../../src/store.rs#L273) | [plugins::signature::verify_publisher](../../src/signature.rs#L130) |
+| `install` | `verify_publisher` | [273](../../src/store.rs#L273) | [plugins::signature::verify_publisher](../../src/signature.rs#L131) |
 | `install` | `package_digest` | [274](../../src/store.rs#L274), [289](../../src/store.rs#L289), [320](../../src/store.rs#L320) | [plugins::store::package_digest](../../src/store.rs#L1179) |
 | `install` | `Some` | [274](../../src/store.rs#L274), [280](../../src/store.rs#L280), [369](../../src/store.rs#L369) | external-constructor-callback-or-unresolved |
 | `install` | `publisher.as_ref().is_some_and` | [276](../../src/store.rs#L276) | receiver-type-required |
@@ -532,7 +532,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `freeze_source` | `sync_directory` | [429](../../src/store.rs#L429) | [plugins::store::sync_directory](../../src/store.rs#L1513) |
 | `inspect_staged` | `self.load_package` | [437](../../src/store.rs#L437) | [plugins::store::PluginStore::load_package](../../src/store.rs#L804) |
 | `inspect_staged` | `self.verify_native_helpers` | [438](../../src/store.rs#L438) | [plugins::store::PluginStore::verify_native_helpers](../../src/store.rs#L848) |
-| `inspect_staged` | `verify_publisher` | [439](../../src/store.rs#L439) | [plugins::signature::verify_publisher](../../src/signature.rs#L130) |
+| `inspect_staged` | `verify_publisher` | [439](../../src/store.rs#L439) | [plugins::signature::verify_publisher](../../src/signature.rs#L131) |
 | `inspect_staged` | `package_digest` | [440](../../src/store.rs#L440), [458](../../src/store.rs#L458) | [plugins::store::package_digest](../../src/store.rs#L1179) |
 | `inspect_staged` | `Some` | [440](../../src/store.rs#L440), [446](../../src/store.rs#L446) | external-constructor-callback-or-unresolved |
 | `inspect_staged` | `publisher.as_ref().is_some_and` | [442](../../src/store.rs#L442) | receiver-type-required |
@@ -695,7 +695,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `verify_stored_receipt` | `require_all_grants` | [753](../../src/store.rs#L753) | [plugins::store::require_all_grants](../../src/store.rs#L1166) |
 | `verify_stored_receipt` | `self.verify_native_helpers` | [760](../../src/store.rs#L760) | [plugins::store::PluginStore::verify_native_helpers](../../src/store.rs#L848) |
 | `verify_stored_receipt` | `PluginError::Signature` | [761](../../src/store.rs#L761), [770](../../src/store.rs#L770) | external-constructor-callback-or-unresolved |
-| `verify_stored_receipt` | `verify_publisher` | [766](../../src/store.rs#L766) | [plugins::signature::verify_publisher](../../src/signature.rs#L130) |
+| `verify_stored_receipt` | `verify_publisher` | [766](../../src/store.rs#L766) | [plugins::signature::verify_publisher](../../src/signature.rs#L131) |
 | `verify_stored_receipt` | `Some` | [767](../../src/store.rs#L767), [779](../../src/store.rs#L779) | external-constructor-callback-or-unresolved |
 | `verify_stored_receipt` | `publisher.as_ref().is_some_and` | [775](../../src/store.rs#L775) | receiver-type-required |
 | `verify_stored_receipt` | `publisher.as_ref` | [775](../../src/store.rs#L775) | receiver-type-required |
@@ -804,7 +804,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_plugin_data_directory` | `fchmod` | [980](../../src/store.rs#L980) | external-constructor-callback-or-unresolved |
 | `ensure_plugin_data_directory` | `error.to_string` | [980](../../src/store.rs#L980), [981](../../src/store.rs#L981) | receiver-type-required |
 | `ensure_plugin_data_directory` | `FullSync::full_sync(&directory).map_err` | [981](../../src/store.rs#L981) | receiver-type-required |
-| `ensure_plugin_data_directory` | `FullSync::full_sync` | [981](../../src/store.rs#L981) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `ensure_plugin_data_directory` | `FullSync::full_sync` | [981](../../src/store.rs#L981) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `ensure_plugin_data_directory` | `Ok` | [982](../../src/store.rs#L982) | external-constructor-callback-or-unresolved |
 | `crash` | `Some` | [986](../../src/store.rs#L986) | external-constructor-callback-or-unresolved |
 | `crash` | `Err` | [987](../../src/store.rs#L987) | external-constructor-callback-or-unresolved |
@@ -933,7 +933,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `package_digest` | `Err` | [1204](../../src/store.rs#L1204) | external-constructor-callback-or-unresolved |
 | `package_digest` | `PluginError::InvalidArchive` | [1204](../../src/store.rs#L1204) | external-constructor-callback-or-unresolved |
 | `package_digest` | `Ok` | [1209](../../src/store.rs#L1209) | external-constructor-callback-or-unresolved |
-| `package_digest` | `hex` | [1209](../../src/store.rs#L1209) | [plugins::signature::hex](../../src/signature.rs#L180) |
+| `package_digest` | `hex` | [1209](../../src/store.rs#L1209) | [plugins::signature::hex](../../src/signature.rs#L181) |
 | `package_digest` | `hasher.finalize` | [1209](../../src/store.rs#L1209) | receiver-type-required |
 | `collect_entries` | `fs::read_dir(current).map_err` | [1217](../../src/store.rs#L1217) | receiver-type-required |
 | `collect_entries` | `fs::read_dir` | [1217](../../src/store.rs#L1217) | external-constructor-callback-or-unresolved |
@@ -982,7 +982,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_canonical` | `file.write_all(&bytes)         .map_err` | [1272](../../src/store.rs#L1272) | receiver-type-required |
 | `write_canonical` | `file.write_all` | [1272](../../src/store.rs#L1272) | receiver-type-required |
 | `write_canonical` | `FullSync::full_sync(&file).map_err` | [1274](../../src/store.rs#L1274) | receiver-type-required |
-| `write_canonical` | `FullSync::full_sync` | [1274](../../src/store.rs#L1274) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `write_canonical` | `FullSync::full_sync` | [1274](../../src/store.rs#L1274) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `write_canonical` | `fs::rename(&temporary, path).map_err` | [1275](../../src/store.rs#L1275) | receiver-type-required |
 | `write_canonical` | `fs::rename` | [1275](../../src/store.rs#L1275) | external-constructor-callback-or-unresolved |
 | `write_canonical` | `sync_directory` | [1276](../../src/store.rs#L1276) | [plugins::store::sync_directory](../../src/store.rs#L1513) |
@@ -1036,7 +1036,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sync_tree` | `PluginError::Storage` | [1336](../../src/store.rs#L1336), [1337](../../src/store.rs#L1337) | external-constructor-callback-or-unresolved |
 | `sync_tree` | `error.to_string` | [1336](../../src/store.rs#L1336), [1337](../../src/store.rs#L1337) | receiver-type-required |
 | `sync_tree` | `FullSync::full_sync(&entry).map_err` | [1337](../../src/store.rs#L1337) | receiver-type-required |
-| `sync_tree` | `FullSync::full_sync` | [1337](../../src/store.rs#L1337) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `sync_tree` | `FullSync::full_sync` | [1337](../../src/store.rs#L1337) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `sync_tree` | `Ok` | [1339](../../src/store.rs#L1339) | external-constructor-callback-or-unresolved |
 | `collect_paths` | `fs::symlink_metadata(root).map_err` | [1344](../../src/store.rs#L1344) | receiver-type-required |
 | `collect_paths` | `fs::symlink_metadata` | [1344](../../src/store.rs#L1344) | external-constructor-callback-or-unresolved |
@@ -1159,4 +1159,4 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sync_directory` | `PluginError::Storage` | [1514](../../src/store.rs#L1514), [1515](../../src/store.rs#L1515) | external-constructor-callback-or-unresolved |
 | `sync_directory` | `error.to_string` | [1514](../../src/store.rs#L1514), [1515](../../src/store.rs#L1515) | receiver-type-required |
 | `sync_directory` | `FullSync::full_sync(&directory).map_err` | [1515](../../src/store.rs#L1515) | receiver-type-required |
-| `sync_directory` | `FullSync::full_sync` | [1515](../../src/store.rs#L1515) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `sync_directory` | `FullSync::full_sync` | [1515](../../src/store.rs#L1515) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |

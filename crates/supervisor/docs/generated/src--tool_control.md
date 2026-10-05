@@ -320,7 +320,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `control_root` | `self.thread_folder.join` | [490](../../src/tool_control.rs#L490) | receiver-type-required |
 | `lock` | `self.control_root` | [496](../../src/tool_control.rs#L496) | [tekes-supervisor::tool_control::ToolControlReceiptStore::control_root](../../src/tool_control.rs#L489) |
 | `lock` | `fs::create_dir_all` | [497](../../src/tool_control.rs#L497) | external-constructor-callback-or-unresolved |
-| `lock` | `NamedLock::exclusive` | [498](../../src/tool_control.rs#L498) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `lock` | `NamedLock::exclusive` | [498](../../src/tool_control.rs#L498) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `lock` | `root.join` | [498](../../src/tool_control.rs#L498) | receiver-type-required |
 | `lock` | `self.retire_legacy_layout` | [499](../../src/tool_control.rs#L499) | [tekes-supervisor::tool_control::ToolControlReceiptStore::retire_legacy_layout](../../src/tool_control.rs#L503) |
 | `lock` | `Ok` | [500](../../src/tool_control.rs#L500) | external-constructor-callback-or-unresolved |
