@@ -5692,13 +5692,11 @@ mod tests {
         assert!(super::scoped_client_file_path(&workspace, "escape").is_err());
     }
     include!("process_live_tests.rs");
-    #[cfg(target_os = "macos")]
     use std::future::Future;
     use std::io::{Read as _, Write as _};
     use std::net::TcpListener;
     use std::os::unix::fs::PermissionsExt;
     use std::sync::mpsc;
-    #[cfg(target_os = "macos")]
     use std::task::{Context, Poll, Waker};
 
     use serde_json::{Value, json};
@@ -6434,6 +6432,7 @@ mod tests {
         host.shutdown();
     }
 
+    #[cfg(target_os = "macos")]
     fn session_notices(ledger: &[u8]) -> Vec<serde_json::Value> {
         ledger
             .split(|byte| *byte == b'\n')
@@ -6697,7 +6696,6 @@ mod tests {
         host.shutdown();
     }
 
-    #[cfg(target_os = "macos")]
     fn block_on_ready<F: Future>(future: F) -> F::Output {
         let waker = Waker::noop();
         let mut context = Context::from_waker(waker);
@@ -7026,6 +7024,7 @@ mod tests {
         host.shutdown();
     }
 
+    #[cfg(target_os = "macos")]
     /// Polls a V3 stream until a frame is ready or the deadline passes. Reaper-driven
     /// repairs run on another thread, so the frame cannot be assumed ready on the first poll.
     fn wait_for_mux_frame(
@@ -8928,7 +8927,6 @@ mod tests {
         );
     }
 
-    #[cfg(target_os = "macos")]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
         bytes.push(b'\n');
@@ -9202,7 +9200,6 @@ mod tests {
         fs::write(path, bytes).expect("genesis ledger");
     }
 
-    #[cfg(target_os = "macos")]
     fn append_test_input(path: &Path, thread: &str) {
         let event = schema::Event::decode(
             &serde_json::to_vec(&json!({

@@ -2,6 +2,7 @@ use std::ffi::CString;
 use std::fs::{File, OpenOptions};
 use std::io;
 use std::os::fd::AsRawFd;
+#[cfg(target_os = "macos")]
 use std::os::unix::ffi::OsStrExt;
 use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};

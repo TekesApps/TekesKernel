@@ -16,12 +16,11 @@ use test_support::{FixtureRoot, read};
 use tools::{
     Availability, Backend, BuiltinManifest, ByteString, CatalogContext, CatalogRole, CreateMode,
     Effect, ExecRequest, HelperClient, HelperErrorClass, HelperOperation, HelperRequest,
-    HelperResponse, HelperServer, HelperValue, HookBinding, HookFailureMode, HookPhase,
-    HookRequest, NetworkPolicy, PipelineDecision, ProbeFailure, ProbeStatus, ProcessHook,
-    RootBinding, SandboxApproval, SandboxBackend, SandboxPolicy, SecretScanner, ToolExecution,
-    ToolPipeline, compile_darwin_profile, compile_linux_plan, decode_helper_line,
-    decode_hook_request, decode_hook_response, policy_digest, probe_backend,
-    validate_unsandboxed_approval,
+    HelperResponse, HelperServer, HookBinding, HookFailureMode, HookPhase, HookRequest,
+    NetworkPolicy, PipelineDecision, ProbeFailure, ProbeStatus, ProcessHook, RootBinding,
+    SandboxApproval, SandboxBackend, SandboxPolicy, SecretScanner, ToolExecution, ToolPipeline,
+    compile_darwin_profile, compile_linux_plan, decode_helper_line, decode_hook_request,
+    decode_hook_response, policy_digest, probe_backend, validate_unsandboxed_approval,
 };
 
 const TS: &str = "2026-08-26T09:00:00.000Z";
@@ -426,7 +425,10 @@ fn slice4_gate_44_exec_helper_process_protocol() {
     #[cfg(target_os = "macos")]
     assert!(matches!(probe, ProbeStatus::Available { .. }), "{probe:?}");
     #[cfg(not(target_os = "macos"))]
-    assert!(matches!(probe, ProbeStatus::Unavailable { .. }));
+    {
+        assert!(matches!(probe, ProbeStatus::Unavailable { .. }));
+        drop(policy);
+    }
 
     #[cfg(target_os = "macos")]
     {
@@ -450,7 +452,7 @@ fn slice4_gate_44_exec_helper_process_protocol() {
         assert!(matches!(
             read_response,
             HelperResponse::Result {
-                value: HelperValue::Read(ref value),
+                value: tools::HelperValue::Read(ref value),
                 ..
             } if value.content.decode().expect("read bytes") == b"ok"
         ));
@@ -468,7 +470,7 @@ fn slice4_gate_44_exec_helper_process_protocol() {
         assert!(matches!(
             write_response,
             HelperResponse::Result {
-                value: HelperValue::Write(_),
+                value: tools::HelperValue::Write(_),
                 ..
             }
         ));

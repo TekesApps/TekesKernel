@@ -977,6 +977,7 @@ fn real_provider_400_releases_queue_over_public_transport() {
 /// Register the fixture MCP server's `local-tools` scenario as the stdio
 /// server `local` (tools `mcp__local__<name>`): resident when `always_on`,
 /// otherwise schema-deferred behind `tool_search`.
+#[cfg(target_os = "macos")]
 fn register_local_tools_server(root: &std::path::Path, always_on: bool) {
     let fixture = std::env::var("TEKES_TEST_MCP_FIXTURE_SERVER").expect("built mcp-fixture-server path (TEKES_TEST_MCP_FIXTURE_SERVER)");
     fs::create_dir_all(root.join("config")).unwrap();

@@ -1,5 +1,7 @@
 use std::path::Path;
+#[cfg(target_os = "macos")]
 use std::process::{Command, Stdio};
+#[cfg(target_os = "macos")]
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use crate::SelectorError;
