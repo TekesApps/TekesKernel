@@ -23,6 +23,9 @@ workspace version in `Cargo.toml`.
 
 First public release. It also contains everything in 0.1.4.
 
+Versions 0.1.1 to 0.1.4 were released from the earlier closed-source history;
+their tags are not in this repository. Version 0.1.3 was skipped.
+
 ### Added
 - `scripts/ci.sh`, the single hermetic check entry point, and a GitHub Actions
   workflow that runs it on macOS.
@@ -85,6 +88,6 @@ First public release. It also contains everything in 0.1.4.
   tokens.
 - Clients are never offered a `none` reasoning effort; the lowest is `low`.
 
-## 0.1.1
+## 0.1.1 — 2026-10-04
 
 First tagged release.
