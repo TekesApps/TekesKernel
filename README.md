@@ -11,9 +11,9 @@ but APIs and on-disk layouts can still change between releases.
 
 **Platforms.** macOS on Apple silicon is the supported platform: the shell
 sandbox (Seatbelt), credential storage (Keychain), the LaunchAgent and the
-installer are macOS-specific, and some recovery tests run only there. The
-workspace also builds on Linux, where those components are absent; Linux and
-Windows are not supported targets.
+installer are macOS-specific, and some recovery tests run only there. CI also
+builds and tests the workspace on Linux, where those components are absent;
+Linux and Windows are not supported targets.
 
 **Clients.** The native Tekes client is maintained separately and is not part
 of this repository. A browser client and the full protocol contract are, so
