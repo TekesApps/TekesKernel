@@ -1,7 +1,7 @@
 # Security policy
 
 TekesKernel runs model-directed shell commands and file edits, holds provider
-credentials, and serves a local network endpoint. Please report
+credentials, and serves a loopback-only local endpoint. Please report
 vulnerabilities privately so they can be fixed before disclosure.
 
 ## Reporting a vulnerability
@@ -16,6 +16,10 @@ days. Please allow up to 90 days for a fix before public disclosure; we will
 coordinate the date with you.
 
 ## In scope
+
+Reports apply to the supported platform, macOS on Apple silicon. On Linux the
+shell sandbox is absent, and commands that require it are refused rather than
+run unsandboxed.
 
 - Escaping the shell sandbox or the workspace root (file or Git operations
   outside the resolved workspace).
@@ -36,4 +40,6 @@ coordinate the date with you.
 
 ## Supported versions
 
-Only the latest release receives security fixes while the project is in alpha.
+Only the latest tagged version, the newest release entry in
+[CHANGELOG.md](CHANGELOG.md), receives security fixes while the project is in
+alpha.
