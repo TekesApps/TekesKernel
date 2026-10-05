@@ -6,6 +6,10 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Fixed
+- The workspace-service `process_files` tests no longer fail intermittently on
+  Linux with ETXTBSY ("Text file busy"); the fixture warm-up exec now retries.
+
 ## 0.2.1 — 2026-10-05
 
 ### Added
