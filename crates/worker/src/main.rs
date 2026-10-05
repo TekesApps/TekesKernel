@@ -12866,6 +12866,7 @@ print(json.dumps(reply,sort_keys=True,separators=(',',':')))
 
     /// A permission mode change in the session folder takes effect on the
     /// next tool batch of the same (running) ledger: no restart, no reopen.
+    #[cfg(target_os = "macos")]
     #[test]
     fn permission_mode_file_change_applies_to_the_next_tool_batch() {
         let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);

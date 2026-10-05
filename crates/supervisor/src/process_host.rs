@@ -7673,11 +7673,13 @@ mod tests {
         check_sweep_recovery(false);
     }
 
+    #[cfg(target_os = "macos")]
     #[test]
     fn builtin_recovery_waits_for_explicit_request_and_is_idempotent() {
         check_sweep_recovery(true);
     }
 
+    #[cfg(target_os = "macos")]
     fn check_sweep_recovery(defer_recovery: bool) {
         let root = tempfile::tempdir().expect("process host root");
         let workspace = root.path().join("workspace");
@@ -8927,6 +8929,7 @@ mod tests {
         );
     }
 
+    #[cfg(target_os = "macos")]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
         bytes.push(b'\n');
