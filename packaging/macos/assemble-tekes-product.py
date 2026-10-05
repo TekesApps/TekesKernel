@@ -19,16 +19,12 @@ import tempfile
 
 TEAM = re.compile(r"[A-Z0-9]{10}")
 VERSION = re.compile(r"[A-Za-z0-9_-][A-Za-z0-9._-]{0,127}")
-INSTALLER_REQUIREMENT = "anchor apple generic and identifier com.tekes.kernel.installer"
-CONTRACT = {
-    "format": 1,
-    "identifier": "com.tekes.kernel.installer",
-    "operations": [
-        "disable", "enable", "ensure-running", "install-or-upgrade",
-        "migrate-provider-credential", "status",
-    ],
-    "protocol": "tekes-kernel-product-installer",
-}
+INSTALLER_IDENTIFIER = "com.tekes.kernel.installer"
+INSTALLER_REQUIREMENT = f"anchor apple generic and identifier {INSTALLER_IDENTIFIER}"
+INSTALLER_PROTOCOL = "tekes-kernel-product-installer"
+# The installer embeds this file and prints it for --describe-contract, so it is
+# the single source of the operation list.
+CONTRACT_PATH = Path(__file__).resolve().parent / "product-installer/contract.canonical.json"
 
 
 class InvalidProduct(Exception):
@@ -47,6 +43,25 @@ def read_canonical(path: Path) -> tuple[object, bytes]:
     if canonical(value) != raw:
         raise InvalidProduct(f"{path}: noncanonical JSON")
     return value, raw
+
+
+def load_contract(path: Path = CONTRACT_PATH) -> bytes:
+    value, raw = read_canonical(path)
+    if not isinstance(value, dict) or set(value) != {"format", "identifier", "operations", "protocol"}:
+        raise InvalidProduct("installer contract fields differ")
+    operations = value["operations"]
+    if (
+        type(value["format"]) is not int
+        or value["format"] != 1
+        or value["identifier"] != INSTALLER_IDENTIFIER
+        or value["protocol"] != INSTALLER_PROTOCOL
+        or not isinstance(operations, list)
+        or not operations
+        or not all(isinstance(operation, str) for operation in operations)
+        or operations != sorted(set(operations))
+    ):
+        raise InvalidProduct("installer contract values differ")
+    return raw
 
 
 def digest(path: Path) -> str:
@@ -163,9 +178,7 @@ def main() -> int:
         reject_symlinks(release)
         reject_symlinks(installer)
         team, version = verify_release(release, args.selector_conformance.resolve(), repository)
-        contract = canonical(CONTRACT)
-        if contract != (repository / "packaging/macos/product-installer/contract.canonical.json").read_bytes():
-            raise InvalidProduct("Kernel installer contract fixture drifted")
+        contract = load_contract()
         verify_installer(installer, team, contract)
         with tempfile.TemporaryDirectory(prefix="tekes-kernel-product-") as temporary:
             staging = Path(temporary) / "TekesKernelProduct"
