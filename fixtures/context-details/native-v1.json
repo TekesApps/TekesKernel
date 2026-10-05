@@ -1,0 +1,127 @@
+{
+  "asOfSeq": 42,
+  "values": {
+    "contextDetails": {
+      "coverage": "partial",
+      "evidence": {
+        "clock": "native-context-sample-v1",
+        "epochID": "e1",
+        "model": "gpt-5",
+        "origin": "harness",
+        "provider": "p",
+        "requestID": "a1",
+        "scope": "preparedRequest",
+        "sourceKey": "native-prepared-request",
+        "sourceRevision": "sha256-2f123f14033a566ee1e831e897d51313687a28cf87b9237559ffddb27b37847e"
+      },
+      "relation": "independentEstimate",
+      "revision": "native-context-v1:3b2442cedbe62eafa7c351281d45eae9b0b63f196c23584817f5e5c966bc6769",
+      "rows": [
+        {
+          "category": "messages",
+          "children": [],
+          "childrenCoverage": "complete",
+          "id": "messages",
+          "role": "occupied",
+          "title": "Messages",
+          "tokens": {
+            "accountingID": "native-serialized-json-bytes-v1",
+            "basis": "upperBound",
+            "value": 95
+          }
+        },
+        {
+          "category": "systemPrompt",
+          "children": [],
+          "childrenCoverage": "complete",
+          "id": "system",
+          "role": "occupied",
+          "title": "System prompt",
+          "tokens": {
+            "accountingID": "native-serialized-json-bytes-v1",
+            "basis": "upperBound",
+            "value": 51
+          }
+        },
+        {
+          "category": "tools",
+          "children": [
+            {
+              "category": "tool",
+              "children": [],
+              "childrenCoverage": "complete",
+              "id": "tools:2419329067823cab5b4e5ac5dd18a6abf1f57f45e753f5fc934292f3085a3717",
+              "role": "occupied",
+              "title": "search",
+              "tokens": {
+                "accountingID": "native-serialized-json-bytes-v1",
+                "basis": "upperBound",
+                "value": 78
+              }
+            }
+          ],
+          "childrenCoverage": "complete",
+          "id": "tools",
+          "itemCount": {
+            "coverage": "complete",
+            "value": 1
+          },
+          "role": "occupied",
+          "title": "Tools (origin unavailable)",
+          "tokens": {
+            "accountingID": "native-serialized-json-bytes-v1",
+            "basis": "upperBound",
+            "value": 159
+          }
+        },
+        {
+          "category": "tools",
+          "children": [
+            {
+              "category": "tool",
+              "children": [],
+              "childrenCoverage": "complete",
+              "id": "tools-deferred:089001a35679a33ef3db0ca350db9b9a2f0136e0e327577b04b3b98127470961",
+              "role": "deferred",
+              "title": "late",
+              "tokens": {
+                "accountingID": "native-serialized-json-bytes-v1",
+                "basis": "upperBound",
+                "value": 36
+              }
+            }
+          ],
+          "childrenCoverage": "complete",
+          "id": "tools-deferred",
+          "itemCount": {
+            "coverage": "complete",
+            "value": 1
+          },
+          "role": "deferred",
+          "title": "Tools (deferred declarations)",
+          "tokens": {
+            "accountingID": "native-serialized-json-bytes-v1",
+            "basis": "upperBound",
+            "value": 38
+          }
+        }
+      ],
+      "schemaVersion": 1,
+      "unavailableReason": "Serialized request byte upper bounds only; provider framing and later retained events are not apportioned. Tool origin/server, Skills, Memory files, MCP instructions and reserve have no request-level manifest. Deferred definition flags do not prove activation state.",
+      "usage": {
+        "basis": "upperBound",
+        "contextWindow": 100000,
+        "model": "gpt-5",
+        "provider": "p",
+        "usedTokens": 379
+      }
+    },
+    "contextUsage": {
+      "basis": "upperBound",
+      "contextWindow": 100000,
+      "model": "gpt-5",
+      "provider": "p",
+      "usedTokens": 379
+    }
+  }
+}

@@ -1832,6 +1832,41 @@ publication errors do not change the outcome of committed management commands;
 control baseline refresh retries publication. Catalog models additionally expose
 `contextWindow` from their resolved configuration.
 
+Native also emits the optional `contextDetails` v1 replacement envelope (common
+ClientKit Context details v1). Required fields are `schemaVersion:1`, `revision`,
+`evidence`, `coverage`, `relation`, and `rows`; `usage` embeds the same legacy
+`contextUsage` sample. Evidence uses `origin:harness`, `scope:preparedRequest`,
+`sourceKey:native-prepared-request`, `clock:native-context-sample-v1`, selected
+provider/model, and valid request/epoch/asset revision identity when observable.
+Both keys are persisted together by the per-session clock and installed in the
+control cache under one lock before emitting incremental frames. The frames have
+one shared sequence; details is emitted first, and clients track each key and
+use embedded usage for atomic interpretation. Reconnect/control baseline reconstructs both from one ledger and
+configuration snapshot. Legacy saved usage-only values migrate on next refresh.
+
+Rows use serialized JSON byte `upperBound` measures with accounting ID
+`native-serialized-json-bytes-v1`: messages (including calls/results), system
+prompt, and actual tool definitions. System/developer message entries are removed
+from the message bucket before system measurement. Tools expose safe identifier
+titles and name-identity children (schema identity only for unnamed declarations),
+deduplicated within a declaration group;
+Google functionDeclarations and Chat function wrappers are handled. Children
+explain their parent and are never added again. Tools flagged `defer_loading`
+appear as deferred declarations, outside occupied buckets; these flags alone do
+not prove loaded/activation state. Loaded schema results remain message content.
+No wire-name heuristic claims System/MCP provenance.
+
+Details are `coverage:partial`, `relation:independentEstimate`: request component
+bounds do not apportion provider framing, subsequent events, or the legacy total's
+provider-observation maximum. No tokenizer or exact token claim is made. Skills,
+Memory file and MCP-instruction manifests, server attribution, and reserve are
+unavailable, explicitly explained by `unavailableReason`; compact trigger is not
+a reserve. Raw request text, descriptions, schemas, file contents, endpoints and
+credentials are not emitted. Missing/invalid/opaque request samples replace rows
+with an empty list and embed unknown usage, retaining only current route evidence.
+Example: `fixtures/context-details/native-v1.json` (synthetic content).
+
+
 #### Native model projection
 
 The provider-runtime readiness seam supplies, per configured provider, this

@@ -337,7 +337,134 @@ fn context_control_baseline_restores_unknown_without_resetting_its_clock() {
     let first = read();
     assert_eq!(first["values"]["contextUsage"]["basis"], "unknown");
     assert!(first["values"]["contextUsage"]["usedTokens"].is_null());
+    let details = &first["values"]["contextDetails"];
+    assert_eq!(details["schemaVersion"], 1);
+    assert_eq!(details["usage"], first["values"]["contextUsage"]);
+    assert_eq!(details["coverage"], "unknown");
+    assert!(details["rows"].as_array().expect("rows").is_empty());
+    assert!(details["unavailableReason"].as_str().is_some());
     assert_eq!(read(), first);
+}
+
+#[test]
+fn context_control_reconnect_restores_valid_pair_and_replaces_it_after_compaction() {
+    use serde_json::json;
+    let root = tempfile::tempdir().expect("root");
+    write_held_session(root.path());
+    profile::ConfigRepository::open(root.path()).expect("config layout");
+    std::fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
+    std::fs::create_dir_all(root.path().join("workspace")).unwrap();
+    std::fs::write(
+        root.path().join("config/providers.json"),
+        include_bytes!("../../../fixtures/config/providers.canonical.json"),
+    )
+    .unwrap();
+    std::fs::write(
+        root.path().join("config/settings.json"),
+        include_bytes!("../../../fixtures/config/settings.canonical.json"),
+    )
+    .unwrap();
+    let mut workspace = serde_json_canonicalizer::to_vec(&json!({
+        "format":1,"revision":1,"id":"ws","name":"ws",
+        "cwd":[std::fs::canonicalize(root.path().join("workspace")).unwrap()],
+        "policy":{"network":true}
+    }))
+    .unwrap();
+    workspace.push(b'\n');
+    std::fs::write(root.path().join("workspaces/ws/workspace.json"), workspace).unwrap();
+    let config = endpoint::NativeEndpoint::open(root.path())
+        .unwrap()
+        .session_config_snapshot(SESSION)
+        .unwrap();
+    let folder = root.path().join("threads").join(SESSION);
+    let assets = store::AssetStore::new(folder.join("assets")).unwrap();
+    let system = assets.publish(b"synthetic system").unwrap();
+    let tools = assets.publish(b"[]").unwrap();
+    let request = assets.publish(br#"{"model":"gpt-5","instructions":"synthetic system","input":[{"role":"user","content":"hello"}],"tools":[]}"#).unwrap();
+    let mut events = std::fs::read_to_string(folder.join("main.jsonl"))
+        .unwrap()
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .collect::<Vec<_>>();
+    events[2]["config_digest"] = json!(config.digest().unwrap());
+    events[4]["adapter"] = json!("openai_responses_v1");
+    events[4]["model"] = json!("gpt-5");
+    events[4]["system"] = json!({"asset":system.asset,"digest":"s"});
+    events[4]["tools"] = json!({"asset":tools.asset,"digest":"t"});
+    events[5]["request"] = json!({"asset":request.asset,"bytes":request.bytes});
+    events[6]["sealed"]["adapter"] = json!("openai_responses_v1");
+    let write_events = |events: &[serde_json::Value]| {
+        let lines = events
+            .iter()
+            .map(|event| serde_json::to_string(event).unwrap())
+            .collect::<Vec<_>>();
+        std::fs::write(folder.join("main.jsonl"), lines.join("\n") + "\n").unwrap();
+    };
+    write_events(&events);
+    let read = || {
+        let assembly = assembly(root.path());
+        assembly.finish_recovery().unwrap();
+        let mut stream = block_on_ready(
+            assembly
+                .host()
+                .open_mux_stream(32, SessionStreamTarget::SessionControl),
+        )
+        .unwrap();
+        let SessionSyncFrame::ControlBaseline { items, .. } =
+            block_on_ready(stream.recv()).unwrap().unwrap()
+        else {
+            panic!("control baseline")
+        };
+        serde_json::from_slice::<serde_json::Value>(
+            &items
+                .iter()
+                .find(|item| item.session_id == SESSION)
+                .unwrap()
+                .projections
+                .canonical_bytes()
+                .unwrap(),
+        )
+        .unwrap()
+    };
+    let valid = read();
+    assert_eq!(valid["values"]["contextUsage"]["basis"], "upperBound");
+    assert_eq!(
+        valid["values"]["contextDetails"]["usage"],
+        valid["values"]["contextUsage"]
+    );
+    assert_eq!(
+        valid["values"]["contextDetails"]["evidence"]["requestID"],
+        "a1"
+    );
+    assert_eq!(
+        valid["values"]["contextDetails"]["rows"]
+            .as_array()
+            .unwrap()
+            .len(),
+        3
+    );
+    assert_eq!(read(), valid);
+    events.push(json!({"v":1,"seq":10,"kind":"compact","ts":TIMESTAMP,
+        "covers":[{"from":2,"to":9}],"summary":"synthetic summary"}));
+    write_events(&events);
+    let unknown = read();
+    assert!(unknown["asOfSeq"].as_u64().unwrap() > valid["asOfSeq"].as_u64().unwrap());
+    assert_eq!(unknown["values"]["contextUsage"]["basis"], "unknown");
+    assert_eq!(
+        unknown["values"]["contextDetails"]["usage"],
+        unknown["values"]["contextUsage"]
+    );
+    assert!(
+        unknown["values"]["contextDetails"]["rows"]
+            .as_array()
+            .unwrap()
+            .is_empty()
+    );
+    assert_ne!(
+        unknown["values"]["contextDetails"]["revision"],
+        valid["values"]["contextDetails"]["revision"]
+    );
+    assert_eq!(read(), unknown);
 }
 
 #[test]

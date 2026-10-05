@@ -673,37 +673,48 @@ impl ProductionCarrierStreams {
         &self,
         frame: &endpoint::MuxFrame,
     ) -> Result<(), ProductionCarrierError> {
-        let Some(session_id) = frame.session_id() else {
-            return Ok(());
-        };
+        self.update_control_frames(std::slice::from_ref(frame))
+    }
+
+    fn update_control_frames(
+        &self,
+        frames: &[endpoint::MuxFrame],
+    ) -> Result<(), ProductionCarrierError> {
         let mut controls = self.inner.controls.lock().map_err(|_| poisoned())?;
-        let control = controls
-            .entry(session_id.to_owned())
-            .or_insert_with(|| SessionControlItem {
-                session_id: session_id.to_owned(),
-                queue: Vec::new(),
-                jobs: Vec::new(),
-                projections: IJsonValue::parse_str(r#"{"asOfSeq":-1,"values":{}}"#)
-                    .expect("empty control projection is I-JSON"),
-            });
-        match frame {
-            endpoint::MuxFrame::Queue { items, .. } => control.queue.clone_from(items),
-            endpoint::MuxFrame::Jobs { jobs, .. } => control.jobs.clone_from(jobs),
-            endpoint::MuxFrame::Projection {
-                key, value, seq, ..
-            } => {
-                let mut projection: Value = serde_json::from_slice(
-                    &control
-                        .projections
-                        .canonical_bytes()
-                        .map_err(internal_carrier)?,
-                )?;
-                projection["asOfSeq"] = Value::from(*seq);
-                projection["values"][key] =
-                    serde_json::from_slice(&value.canonical_bytes().map_err(internal_carrier)?)?;
-                control.projections = IJsonValue::parse(&serde_json::to_vec(&projection)?)?;
+        for frame in frames {
+            let Some(session_id) = frame.session_id() else {
+                continue;
+            };
+            let control =
+                controls
+                    .entry(session_id.to_owned())
+                    .or_insert_with(|| SessionControlItem {
+                        session_id: session_id.to_owned(),
+                        queue: Vec::new(),
+                        jobs: Vec::new(),
+                        projections: IJsonValue::parse_str(r#"{"asOfSeq":-1,"values":{}}"#)
+                            .expect("empty control projection is I-JSON"),
+                    });
+            match frame {
+                endpoint::MuxFrame::Queue { items, .. } => control.queue.clone_from(items),
+                endpoint::MuxFrame::Jobs { jobs, .. } => control.jobs.clone_from(jobs),
+                endpoint::MuxFrame::Projection {
+                    key, value, seq, ..
+                } => {
+                    let mut projection: Value = serde_json::from_slice(
+                        &control
+                            .projections
+                            .canonical_bytes()
+                            .map_err(internal_carrier)?,
+                    )?;
+                    projection["asOfSeq"] = Value::from(*seq);
+                    projection["values"][key] = serde_json::from_slice(
+                        &value.canonical_bytes().map_err(internal_carrier)?,
+                    )?;
+                    control.projections = IJsonValue::parse(&serde_json::to_vec(&projection)?)?;
+                }
+                _ => continue,
             }
-            _ => return Ok(()),
         }
         Ok(())
     }
@@ -834,7 +845,7 @@ impl ProductionCarrierStreams {
         let ledger = semantic_projection(&folder).map_err(internal_carrier)?;
         let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
         let config = endpoint.session_config_snapshot(session_id).ok();
-        let value = crate::context_usage::derive(&folder, &ledger.events, config.as_ref());
+        let value = crate::context_usage::sample(&folder, &ledger.events, config.as_ref());
         let journal = EndpointJournal::open(&folder)?;
         let journal_sequence = journal.last_seq()?.map_or(0, |seq| seq.saturating_add(1));
         let control_sequence = self
@@ -854,16 +865,26 @@ impl ProductionCarrierStreams {
             journal_sequence.max(control_sequence),
         )
         .map_err(internal_carrier)?;
-        let frame = endpoint::MuxFrame::Projection {
-            session_id: session_id.to_owned(),
-            key: "contextUsage".to_owned(),
-            value: IJsonValue::parse(&serde_json::to_vec(&value)?)?,
-            seq,
-        };
+        let frames = ["contextDetails", "contextUsage"]
+            .map(|key| {
+                Ok(endpoint::MuxFrame::Projection {
+                    session_id: session_id.to_owned(),
+                    key: key.to_owned(),
+                    value: IJsonValue::parse(&serde_json::to_vec(&value[key])?)?,
+                    seq,
+                })
+            })
+            .into_iter()
+            .collect::<Result<Vec<_>, ProductionCarrierError>>()?;
+        // Install both keys under one control lock before exposing either frame. Baseline
+        // and reconnect cannot observe a new total with an older manifest in the cache.
+        self.update_control_frames(&frames)?;
         if changed {
-            self.publish_session_frame(session_id, frame)?;
-        } else {
-            self.update_control_cache(&frame)?;
+            for frame in frames {
+                self.inner
+                    .hub
+                    .publish_frame(session_id, self.next_rpc_id("mux"), frame)?;
+            }
         }
         Ok(())
     }
