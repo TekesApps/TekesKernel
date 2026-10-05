@@ -66,8 +66,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `std::env::args().skip` | [11](../../src/main.rs#L11) | receiver-type-required |
 | `main` | `std::env::args` | [11](../../src/main.rs#L11) | external-constructor-callback-or-unresolved |
 | `main` | `describe_conformance().and_then` | [13](../../src/main.rs#L13) | receiver-type-required |
-| `main` | `describe_conformance` | [13](../../src/main.rs#L13) | [tekes-selector::selector::describe_conformance](../../src/selector.rs#L2645) |
-| `main` | `reply_bytes` | [13](../../src/main.rs#L13) | [tekes-selector::selector::reply_bytes](../../src/selector.rs#L2641) |
+| `main` | `describe_conformance` | [13](../../src/main.rs#L13) | [tekes-selector::selector::describe_conformance](../../src/selector.rs#L2644) |
+| `main` | `reply_bytes` | [13](../../src/main.rs#L13) | [tekes-selector::selector::reply_bytes](../../src/selector.rs#L2640) |
 | `main` | `std::io::stdout().write_all(&bytes).is_err` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | receiver-type-required |
 | `main` | `std::io::stdout().write_all` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | receiver-type-required |
 | `main` | `std::io::stdout` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | external-constructor-callback-or-unresolved |

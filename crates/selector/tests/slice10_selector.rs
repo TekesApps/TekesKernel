@@ -634,7 +634,11 @@ fn stage_rejects_an_existing_version_with_different_durable_bytes() {
             cli_command_sha256(&stage_argv(&fixture.kernel, &conflicting, "1.0.0")).expect("hash"),
         )
         .expect_err("immutable version collision must fail");
-    assert_eq!(error.code, tekes_selector::ErrorCode::InvalidBundle);
+    assert_eq!(error.code, tekes_selector::ErrorCode::InvalidState);
+    assert_eq!(
+        error.details,
+        serde_json::json!({"state": "version-already-published"})
+    );
     assert_eq!(
         fs::read(&fixture.selector.paths().operation).expect("operation after rejection"),
         operation_before,
