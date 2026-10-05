@@ -1,0 +1,111 @@
+#!/usr/bin/python3
+import json
+import os
+import sys
+
+
+TOOL_ARGUMENTS = {
+    "click": ["app", "click_count", "element_index", "mouse_button", "x", "y"],
+    "drag": ["app", "from_x", "from_y", "to_x", "to_y"],
+    "get_app_state": ["app", "disableDiff"],
+    "list_apps": [],
+    "perform_secondary_action": ["action", "app", "element_index"],
+    "permission_status": [],
+    "press_key": ["app", "key"],
+    "request_permissions": ["accessibility", "screen_capture"],
+    "scroll": ["app", "direction", "element_index", "pages"],
+    "select_text": ["app", "element_index", "prefix", "selection_type", "suffix", "text"],
+    "set_value": ["app", "element_index", "value"],
+    "type_text": ["app", "text"],
+}
+READ_ONLY = {"get_app_state", "list_apps", "permission_status"}
+
+
+def emit(value):
+    sys.stdout.write(json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n")
+    sys.stdout.flush()
+
+
+def catalog():
+    tools = []
+    # Deliberately advertise reverse order so the host must bind projected and
+    # remote identities by name rather than by post-sort position.
+    for name, arguments in reversed(sorted(TOOL_ARGUMENTS.items())):
+        annotations = {"readOnlyHint": name in READ_ONLY}
+        if name == "request_permissions":
+            annotations["destructiveHint"] = True
+        tools.append({
+            "annotations": annotations,
+            "description": "Hermetic reference operation.",
+            "inputSchema": {
+                "additionalProperties": False,
+                "properties": {argument: {"type": "string"} for argument in arguments},
+                "required": [],
+                "type": "object",
+            },
+            "name": name,
+        })
+    return tools
+
+
+def permission_state():
+    try:
+        with open("tcc-state.canonical.json", "r", encoding="utf-8") as stream:
+            state = json.load(stream)
+    except FileNotFoundError:
+        state = {"accessibility": False, "screen_capture": False}
+    return state
+
+
+def call_result(name):
+    if name == "list_apps" and os.path.exists("crash-next-call"):
+        os.unlink("crash-next-call")
+        os._exit(70)
+    state = permission_state()
+    if name == "permission_status":
+        text = json.dumps(state, sort_keys=True, separators=(",", ":"))
+        return {"content": [{"text": text, "type": "text"}], "isError": False}
+    if name == "request_permissions":
+        return {
+            "content": [{"text": "hermetic-tcc-prompt-forbidden", "type": "text"}],
+            "isError": True,
+        }
+    if name == "list_apps":
+        return {"content": [{"text": "[]", "type": "text"}], "isError": False}
+    if not state.get("accessibility") or (name == "get_app_state" and not state.get("screen_capture")):
+        return {"content": [{"text": "tcc-denied", "type": "text"}], "isError": True}
+    return {"content": [{"text": "fixture-ok:" + name, "type": "text"}], "isError": False}
+
+
+with open("server.pid", "w", encoding="utf-8") as stream:
+    stream.write(str(os.getpid()) + "\n")
+
+for line in sys.stdin:
+    request = json.loads(line)
+    method = request.get("method")
+    if "id" not in request:
+        continue
+    if method == "initialize":
+        result = {
+            "capabilities": {"tools": {}},
+            "protocolVersion": "2025-11-25",
+            "serverInfo": {"name": "generic-reference", "version": "0.1.6"},
+        }
+    elif method == "server/discover":
+        result = {
+            "capabilities": {"tools": {}},
+            "resultType": "complete",
+            "supportedVersions": ["2026-07-28"],
+        }
+    elif method == "tools/list":
+        result = {"tools": catalog()}
+    elif method == "tools/call":
+        result = call_result(request.get("params", {}).get("name", ""))
+    else:
+        emit({
+            "error": {"code": -32601, "message": "method not found"},
+            "id": request["id"],
+            "jsonrpc": "2.0",
+        })
+        continue
+    emit({"id": request["id"], "jsonrpc": "2.0", "result": result})

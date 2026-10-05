@@ -1,0 +1,1106 @@
+[
+ {
+  "run": "KW1",
+  "responses_by_turn": [
+   6,
+   8,
+   4,
+   2
+  ],
+  "tool_calls": 25,
+  "all": {
+   "requests": 21,
+   "input": 608166,
+   "cached": 594432,
+   "uncached": 13734,
+   "output": 33810,
+   "reasoning": 20257,
+   "hit_rate": 97.74,
+   "cost": 0.024129
+  },
+  "agent": {
+   "requests": 20,
+   "input": 607851,
+   "cached": 594304,
+   "uncached": 13547,
+   "output": 33781,
+   "reasoning": 20257,
+   "hit_rate": 97.77,
+   "cost": 0.024084
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 29,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 4.6e-05
+  },
+  "followup": {
+   "requests": 14,
+   "input": 504786,
+   "cached": 497024,
+   "uncached": 7762,
+   "output": 15406,
+   "reasoning": 8176,
+   "hit_rate": 98.46,
+   "cost": 0.011899
+  },
+  "by_turn": {
+   "1": {
+    "requests": 6,
+    "input": 103065,
+    "cached": 97280,
+    "uncached": 5785,
+    "output": 18375,
+    "reasoning": 12081,
+    "hit_rate": 94.39,
+    "cost": 0.012185
+   },
+   "2": {
+    "requests": 8,
+    "input": 252679,
+    "cached": 247680,
+    "uncached": 4999,
+    "output": 9984,
+    "reasoning": 5370,
+    "hit_rate": 98.02,
+    "cost": 0.007483
+   },
+   "3": {
+    "requests": 4,
+    "input": 163760,
+    "cached": 161792,
+    "uncached": 1968,
+    "output": 4278,
+    "reasoning": 2309,
+    "hit_rate": 98.8,
+    "cost": 0.003347
+   },
+   "4": {
+    "requests": 2,
+    "input": 88347,
+    "cached": 87552,
+    "uncached": 795,
+    "output": 1144,
+    "reasoning": 497,
+    "hit_rate": 99.1,
+    "cost": 0.001068
+   }
+  }
+ },
+ {
+  "run": "KW2",
+  "responses_by_turn": [
+   6,
+   8,
+   6,
+   2
+  ],
+  "tool_calls": 24,
+  "all": {
+   "requests": 23,
+   "input": 498653,
+   "cached": 489088,
+   "uncached": 9565,
+   "output": 27451,
+   "reasoning": 10786,
+   "hit_rate": 98.08,
+   "cost": 0.019373
+  },
+  "agent": {
+   "requests": 22,
+   "input": 498338,
+   "cached": 488960,
+   "uncached": 9378,
+   "output": 27441,
+   "reasoning": 10786,
+   "hit_rate": 98.12,
+   "cost": 0.019338
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 10,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 3.4e-05
+  },
+  "followup": {
+   "requests": 16,
+   "input": 431274,
+   "cached": 425984,
+   "uncached": 5290,
+   "output": 13909,
+   "reasoning": 5996,
+   "hit_rate": 98.77,
+   "cost": 0.010417
+  },
+  "by_turn": {
+   "1": {
+    "requests": 6,
+    "input": 67064,
+    "cached": 62976,
+    "uncached": 4088,
+    "output": 13532,
+    "reasoning": 4790,
+    "hit_rate": 93.9,
+    "cost": 0.008921
+   },
+   "2": {
+    "requests": 8,
+    "input": 181580,
+    "cached": 178944,
+    "uncached": 2636,
+    "output": 7144,
+    "reasoning": 3279,
+    "hit_rate": 98.55,
+    "cost": 0.005219
+   },
+   "3": {
+    "requests": 6,
+    "input": 181127,
+    "cached": 178944,
+    "uncached": 2183,
+    "output": 6032,
+    "reasoning": 2576,
+    "hit_rate": 98.79,
+    "cost": 0.004483
+   },
+   "4": {
+    "requests": 2,
+    "input": 68567,
+    "cached": 68096,
+    "uncached": 471,
+    "output": 733,
+    "reasoning": 141,
+    "hit_rate": 99.31,
+    "cost": 0.000715
+   }
+  }
+ },
+ {
+  "run": "KW3",
+  "responses_by_turn": [
+   4,
+   4,
+   5,
+   2
+  ],
+  "tool_calls": 16,
+  "all": {
+   "requests": 16,
+   "input": 275095,
+   "cached": 265472,
+   "uncached": 9623,
+   "output": 20211,
+   "reasoning": 8534,
+   "hit_rate": 96.5,
+   "cost": 0.014366
+  },
+  "agent": {
+   "requests": 15,
+   "input": 274780,
+   "cached": 265344,
+   "uncached": 9436,
+   "output": 20202,
+   "reasoning": 8534,
+   "hit_rate": 96.57,
+   "cost": 0.014333
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 9,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 3.4e-05
+  },
+  "followup": {
+   "requests": 11,
+   "input": 243987,
+   "cached": 238336,
+   "uncached": 5651,
+   "output": 10087,
+   "reasoning": 4223,
+   "hit_rate": 97.68,
+   "cost": 0.007615
+  },
+  "by_turn": {
+   "1": {
+    "requests": 4,
+    "input": 30793,
+    "cached": 27008,
+    "uncached": 3785,
+    "output": 10115,
+    "reasoning": 4311,
+    "hit_rate": 87.71,
+    "cost": 0.006718
+   },
+   "2": {
+    "requests": 4,
+    "input": 69987,
+    "cached": 66944,
+    "uncached": 3043,
+    "output": 4107,
+    "reasoning": 2087,
+    "hit_rate": 95.65,
+    "cost": 0.003121
+   },
+   "3": {
+    "requests": 5,
+    "input": 119382,
+    "cached": 117376,
+    "uncached": 2006,
+    "output": 4711,
+    "reasoning": 1488,
+    "hit_rate": 98.32,
+    "cost": 0.00348
+   },
+   "4": {
+    "requests": 2,
+    "input": 54618,
+    "cached": 54016,
+    "uncached": 602,
+    "output": 1269,
+    "reasoning": 648,
+    "hit_rate": 98.9,
+    "cost": 0.001014
+   }
+  }
+ },
+ {
+  "run": "KW4",
+  "responses_by_turn": [
+   10,
+   7,
+   6,
+   2
+  ],
+  "tool_calls": 21,
+  "all": {
+   "requests": 26,
+   "input": 451111,
+   "cached": 441728,
+   "uncached": 9383,
+   "output": 20761,
+   "reasoning": 8240,
+   "hit_rate": 97.92,
+   "cost": 0.015189
+  },
+  "agent": {
+   "requests": 25,
+   "input": 450796,
+   "cached": 441600,
+   "uncached": 9196,
+   "output": 20697,
+   "reasoning": 8240,
+   "hit_rate": 97.96,
+   "cost": 0.015122
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 64,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 6.7e-05
+  },
+  "followup": {
+   "requests": 15,
+   "input": 333132,
+   "cached": 329600,
+   "uncached": 3532,
+   "output": 8513,
+   "reasoning": 3153,
+   "hit_rate": 98.94,
+   "cost": 0.006626
+  },
+  "by_turn": {
+   "1": {
+    "requests": 10,
+    "input": 117664,
+    "cached": 112000,
+    "uncached": 5664,
+    "output": 12184,
+    "reasoning": 5087,
+    "hit_rate": 95.19,
+    "cost": 0.008496
+   },
+   "2": {
+    "requests": 7,
+    "input": 133905,
+    "cached": 132224,
+    "uncached": 1681,
+    "output": 3977,
+    "reasoning": 1358,
+    "hit_rate": 98.74,
+    "cost": 0.003035
+   },
+   "3": {
+    "requests": 6,
+    "input": 145997,
+    "cached": 144640,
+    "uncached": 1357,
+    "output": 3646,
+    "reasoning": 1436,
+    "hit_rate": 99.07,
+    "cost": 0.002825
+   },
+   "4": {
+    "requests": 2,
+    "input": 53230,
+    "cached": 52736,
+    "uncached": 494,
+    "output": 890,
+    "reasoning": 359,
+    "hit_rate": 99.07,
+    "cost": 0.000766
+   }
+  }
+ },
+ {
+  "run": "KW5",
+  "responses_by_turn": [
+   7,
+   6,
+   7,
+   2
+  ],
+  "tool_calls": 18,
+  "all": {
+   "requests": 23,
+   "input": 395182,
+   "cached": 383360,
+   "uncached": 11822,
+   "output": 20079,
+   "reasoning": 9053,
+   "hit_rate": 97.01,
+   "cost": 0.014971
+  },
+  "agent": {
+   "requests": 22,
+   "input": 394867,
+   "cached": 383232,
+   "uncached": 11635,
+   "output": 20063,
+   "reasoning": 9053,
+   "hit_rate": 97.05,
+   "cost": 0.014933
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 16,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 3.8e-05
+  },
+  "followup": {
+   "requests": 15,
+   "input": 342733,
+   "cached": 336000,
+   "uncached": 6733,
+   "output": 9685,
+   "reasoning": 5428,
+   "hit_rate": 98.04,
+   "cost": 0.007829
+  },
+  "by_turn": {
+   "1": {
+    "requests": 7,
+    "input": 52134,
+    "cached": 47232,
+    "uncached": 4902,
+    "output": 10378,
+    "reasoning": 3625,
+    "hit_rate": 90.6,
+    "cost": 0.007104
+   },
+   "2": {
+    "requests": 6,
+    "input": 117412,
+    "cached": 113536,
+    "uncached": 3876,
+    "output": 4474,
+    "reasoning": 2987,
+    "hit_rate": 96.7,
+    "cost": 0.003606
+   },
+   "3": {
+    "requests": 7,
+    "input": 170572,
+    "cached": 168064,
+    "uncached": 2508,
+    "output": 3762,
+    "reasoning": 1509,
+    "hit_rate": 98.53,
+    "cost": 0.003138
+   },
+   "4": {
+    "requests": 2,
+    "input": 54749,
+    "cached": 54400,
+    "uncached": 349,
+    "output": 1449,
+    "reasoning": 932,
+    "hit_rate": 99.36,
+    "cost": 0.001085
+   }
+  }
+ },
+ {
+  "run": "KW6",
+  "responses_by_turn": [
+   6,
+   4,
+   5,
+   2
+  ],
+  "tool_calls": 15,
+  "all": {
+   "requests": 18,
+   "input": 274986,
+   "cached": 265216,
+   "uncached": 9770,
+   "output": 18279,
+   "reasoning": 6411,
+   "hit_rate": 96.45,
+   "cost": 0.013229
+  },
+  "agent": {
+   "requests": 17,
+   "input": 274671,
+   "cached": 265088,
+   "uncached": 9583,
+   "output": 18269,
+   "reasoning": 6411,
+   "hit_rate": 96.51,
+   "cost": 0.013194
+  },
+  "title": {
+   "requests": 1,
+   "input": 315,
+   "cached": 128,
+   "uncached": 187,
+   "output": 10,
+   "reasoning": 0,
+   "hit_rate": 40.63,
+   "cost": 3.4e-05
+  },
+  "followup": {
+   "requests": 11,
+   "input": 222157,
+   "cached": 216960,
+   "uncached": 5197,
+   "output": 9211,
+   "reasoning": 3695,
+   "hit_rate": 97.66,
+   "cost": 0.006957
+  },
+  "by_turn": {
+   "1": {
+    "requests": 6,
+    "input": 52514,
+    "cached": 48128,
+    "uncached": 4386,
+    "output": 9058,
+    "reasoning": 2716,
+    "hit_rate": 91.65,
+    "cost": 0.006237
+   },
+   "2": {
+    "requests": 4,
+    "input": 63469,
+    "cached": 60288,
+    "uncached": 3181,
+    "output": 2825,
+    "reasoning": 1352,
+    "hit_rate": 94.99,
+    "cost": 0.002353
+   },
+   "3": {
+    "requests": 5,
+    "input": 108729,
+    "cached": 107520,
+    "uncached": 1209,
+    "output": 5815,
+    "reasoning": 2233,
+    "hit_rate": 98.89,
+    "cost": 0.003993
+   },
+   "4": {
+    "requests": 2,
+    "input": 49959,
+    "cached": 49152,
+    "uncached": 807,
+    "output": 571,
+    "reasoning": 110,
+    "hit_rate": 98.38,
+    "cost": 0.000611
+   }
+  }
+ },
+ {
+  "run": "PW1",
+  "responses_by_turn": [
+   14,
+   8,
+   14,
+   2
+  ],
+  "tool_calls": 42,
+  "all": {
+   "requests": 38,
+   "input": 1649226,
+   "cached": 1632512,
+   "uncached": 16714,
+   "output": 58773,
+   "reasoning": 31608,
+   "hit_rate": 98.99,
+   "cost": 0.042668
+  },
+  "agent": {
+   "requests": 38,
+   "input": 1649226,
+   "cached": 1632512,
+   "uncached": 16714,
+   "output": 58773,
+   "reasoning": 31608,
+   "hit_rate": 98.99,
+   "cost": 0.042668
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 24,
+   "input": 1355240,
+   "cached": 1346944,
+   "uncached": 8296,
+   "output": 33685,
+   "reasoning": 20288,
+   "hit_rate": 99.39,
+   "cost": 0.025496
+  },
+  "by_turn": {
+   "1": {
+    "requests": 14,
+    "input": 293986,
+    "cached": 285568,
+    "uncached": 8418,
+    "output": 25088,
+    "reasoning": 11320,
+    "hit_rate": 97.14,
+    "cost": 0.017172
+   },
+   "2": {
+    "requests": 8,
+    "input": 325810,
+    "cached": 323968,
+    "uncached": 1842,
+    "output": 11949,
+    "reasoning": 7334,
+    "hit_rate": 99.43,
+    "cost": 0.008418
+   },
+   "3": {
+    "requests": 14,
+    "input": 886501,
+    "cached": 880384,
+    "uncached": 6117,
+    "output": 20303,
+    "reasoning": 12178,
+    "hit_rate": 99.31,
+    "cost": 0.015741
+   },
+   "4": {
+    "requests": 2,
+    "input": 142929,
+    "cached": 142592,
+    "uncached": 337,
+    "output": 1433,
+    "reasoning": 776,
+    "hit_rate": 99.76,
+    "cost": 0.001338
+   }
+  }
+ },
+ {
+  "run": "PW2",
+  "responses_by_turn": [
+   17,
+   37,
+   15,
+   3
+  ],
+  "tool_calls": 68,
+  "all": {
+   "requests": 72,
+   "input": 5503794,
+   "cached": 5443456,
+   "uncached": 60338,
+   "output": 81272,
+   "reasoning": 47022,
+   "hit_rate": 98.9,
+   "cost": 0.074144
+  },
+  "agent": {
+   "requests": 72,
+   "input": 5503794,
+   "cached": 5443456,
+   "uncached": 60338,
+   "output": 81272,
+   "reasoning": 47022,
+   "hit_rate": 98.9,
+   "cost": 0.074144
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 55,
+   "input": 5222416,
+   "cached": 5171456,
+   "uncached": 50960,
+   "output": 63931,
+   "reasoning": 41851,
+   "hit_rate": 99.02,
+   "cost": 0.061517
+  },
+  "by_turn": {
+   "1": {
+    "requests": 17,
+    "input": 281378,
+    "cached": 272000,
+    "uncached": 9378,
+    "output": 17341,
+    "reasoning": 5171,
+    "hit_rate": 96.67,
+    "cost": 0.012627
+   },
+   "2": {
+    "requests": 37,
+    "input": 2934555,
+    "cached": 2889216,
+    "uncached": 45339,
+    "output": 46757,
+    "reasoning": 32425,
+    "hit_rate": 98.45,
+    "cost": 0.043523
+   },
+   "3": {
+    "requests": 15,
+    "input": 1886585,
+    "cached": 1881600,
+    "uncached": 4985,
+    "output": 15100,
+    "reasoning": 8298,
+    "hit_rate": 99.74,
+    "cost": 0.015453
+   },
+   "4": {
+    "requests": 3,
+    "input": 401276,
+    "cached": 400640,
+    "uncached": 636,
+    "output": 2074,
+    "reasoning": 1128,
+    "hit_rate": 99.84,
+    "cost": 0.002542
+   }
+  }
+ },
+ {
+  "run": "PW3",
+  "responses_by_turn": [
+   8,
+   11,
+   12,
+   2
+  ],
+  "tool_calls": 29,
+  "all": {
+   "requests": 33,
+   "input": 1212326,
+   "cached": 1199744,
+   "uncached": 12582,
+   "output": 51514,
+   "reasoning": 24378,
+   "hit_rate": 98.96,
+   "cost": 0.036395
+  },
+  "agent": {
+   "requests": 33,
+   "input": 1212326,
+   "cached": 1199744,
+   "uncached": 12582,
+   "output": 51514,
+   "reasoning": 24378,
+   "hit_rate": 98.96,
+   "cost": 0.036395
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 25,
+   "input": 1100455,
+   "cached": 1092224,
+   "uncached": 8231,
+   "output": 34868,
+   "reasoning": 16937,
+   "hit_rate": 99.25,
+   "cost": 0.025432
+  },
+  "by_turn": {
+   "1": {
+    "requests": 8,
+    "input": 111871,
+    "cached": 107520,
+    "uncached": 4351,
+    "output": 16646,
+    "reasoning": 7441,
+    "hit_rate": 96.11,
+    "cost": 0.010963
+   },
+   "2": {
+    "requests": 11,
+    "input": 341618,
+    "cached": 338432,
+    "uncached": 3186,
+    "output": 16785,
+    "reasoning": 7704,
+    "hit_rate": 99.07,
+    "cost": 0.011564
+   },
+   "3": {
+    "requests": 12,
+    "input": 638529,
+    "cached": 633984,
+    "uncached": 4545,
+    "output": 16685,
+    "reasoning": 8636,
+    "hit_rate": 99.29,
+    "cost": 0.012595
+   },
+   "4": {
+    "requests": 2,
+    "input": 120308,
+    "cached": 119808,
+    "uncached": 500,
+    "output": 1398,
+    "reasoning": 597,
+    "hit_rate": 99.58,
+    "cost": 0.001273
+   }
+  }
+ },
+ {
+  "run": "PW4",
+  "responses_by_turn": [
+   10,
+   8,
+   5,
+   3
+  ],
+  "tool_calls": 23,
+  "all": {
+   "requests": 26,
+   "input": 685600,
+   "cached": 673408,
+   "uncached": 12192,
+   "output": 35742,
+   "reasoning": 19402,
+   "hit_rate": 98.22,
+   "cost": 0.025294
+  },
+  "agent": {
+   "requests": 26,
+   "input": 685600,
+   "cached": 673408,
+   "uncached": 12192,
+   "output": 35742,
+   "reasoning": 19402,
+   "hit_rate": 98.22,
+   "cost": 0.025294
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 16,
+   "input": 558641,
+   "cached": 551936,
+   "uncached": 6705,
+   "output": 22652,
+   "reasoning": 13554,
+   "hit_rate": 98.8,
+   "cost": 0.016253
+  },
+  "by_turn": {
+   "1": {
+    "requests": 10,
+    "input": 126959,
+    "cached": 121472,
+    "uncached": 5487,
+    "output": 13090,
+    "reasoning": 5848,
+    "hit_rate": 95.68,
+    "cost": 0.009041
+   },
+   "2": {
+    "requests": 8,
+    "input": 226701,
+    "cached": 222336,
+    "uncached": 4365,
+    "output": 11404,
+    "reasoning": 7227,
+    "hit_rate": 98.07,
+    "cost": 0.008164
+   },
+   "3": {
+    "requests": 5,
+    "input": 198862,
+    "cached": 197120,
+    "uncached": 1742,
+    "output": 9390,
+    "reasoning": 5384,
+    "hit_rate": 99.12,
+    "cost": 0.006487
+   },
+   "4": {
+    "requests": 3,
+    "input": 133078,
+    "cached": 132480,
+    "uncached": 598,
+    "output": 1858,
+    "reasoning": 943,
+    "hit_rate": 99.55,
+    "cost": 0.001602
+   }
+  }
+ },
+ {
+  "run": "PW5",
+  "responses_by_turn": [
+   9,
+   9,
+   10,
+   3
+  ],
+  "tool_calls": 27,
+  "all": {
+   "requests": 31,
+   "input": 855161,
+   "cached": 837760,
+   "uncached": 17401,
+   "output": 31846,
+   "reasoning": 11565,
+   "hit_rate": 97.97,
+   "cost": 0.024231
+  },
+  "agent": {
+   "requests": 31,
+   "input": 855161,
+   "cached": 837760,
+   "uncached": 17401,
+   "output": 31846,
+   "reasoning": 11565,
+   "hit_rate": 97.97,
+   "cost": 0.024231
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 22,
+   "input": 761649,
+   "cached": 749568,
+   "uncached": 12081,
+   "output": 20728,
+   "reasoning": 8540,
+   "hit_rate": 98.41,
+   "cost": 0.016498
+  },
+  "by_turn": {
+   "1": {
+    "requests": 9,
+    "input": 93512,
+    "cached": 88192,
+    "uncached": 5320,
+    "output": 11118,
+    "reasoning": 3025,
+    "hit_rate": 94.31,
+    "cost": 0.007733
+   },
+   "2": {
+    "requests": 9,
+    "input": 231196,
+    "cached": 224128,
+    "uncached": 7068,
+    "output": 10706,
+    "reasoning": 5274,
+    "hit_rate": 96.94,
+    "cost": 0.008156
+   },
+   "3": {
+    "requests": 10,
+    "input": 394631,
+    "cached": 390144,
+    "uncached": 4487,
+    "output": 8054,
+    "reasoning": 2267,
+    "hit_rate": 98.86,
+    "cost": 0.006676
+   },
+   "4": {
+    "requests": 3,
+    "input": 135822,
+    "cached": 135296,
+    "uncached": 526,
+    "output": 1968,
+    "reasoning": 999,
+    "hit_rate": 99.61,
+    "cost": 0.001666
+   }
+  }
+ },
+ {
+  "run": "PW6",
+  "responses_by_turn": [
+   6,
+   10,
+   6,
+   3
+  ],
+  "tool_calls": 21,
+  "all": {
+   "requests": 25,
+   "input": 728456,
+   "cached": 716672,
+   "uncached": 11784,
+   "output": 36913,
+   "reasoning": 18548,
+   "hit_rate": 98.38,
+   "cost": 0.026065
+  },
+  "agent": {
+   "requests": 25,
+   "input": 728456,
+   "cached": 716672,
+   "uncached": 11784,
+   "output": 36913,
+   "reasoning": 18548,
+   "hit_rate": 98.38,
+   "cost": 0.026065
+  },
+  "title": {
+   "requests": 0,
+   "input": 0,
+   "cached": 0,
+   "uncached": 0,
+   "output": 0,
+   "reasoning": 0,
+   "hit_rate": null,
+   "cost": 0.0
+  },
+  "followup": {
+   "requests": 19,
+   "input": 656342,
+   "cached": 648576,
+   "uncached": 7766,
+   "output": 20858,
+   "reasoning": 10393,
+   "hit_rate": 98.82,
+   "cost": 0.015625
+  },
+  "by_turn": {
+   "1": {
+    "requests": 6,
+    "input": 72114,
+    "cached": 68096,
+    "uncached": 4018,
+    "output": 16055,
+    "reasoning": 8155,
+    "hit_rate": 94.43,
+    "cost": 0.01044
+   },
+   "2": {
+    "requests": 10,
+    "input": 278735,
+    "cached": 274176,
+    "uncached": 4559,
+    "output": 10460,
+    "reasoning": 5873,
+    "hit_rate": 98.36,
+    "cost": 0.007782
+   },
+   "3": {
+    "requests": 6,
+    "input": 242538,
+    "cached": 240000,
+    "uncached": 2538,
+    "output": 8484,
+    "reasoning": 3624,
+    "hit_rate": 98.95,
+    "cost": 0.006191
+   },
+   "4": {
+    "requests": 3,
+    "input": 135069,
+    "cached": 134400,
+    "uncached": 669,
+    "output": 1914,
+    "reasoning": 896,
+    "hit_rate": 99.5,
+    "cost": 0.001652
+   }
+  }
+ }
+]

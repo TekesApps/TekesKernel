@@ -1,0 +1,1 @@
+{"content":[{"text":"fyi","type":"text"}],"kind":"input","origin_key":"k9","origin_tuple":{"client":"cli","key":"k9","op":"submit","principal":"frank","target":"t1"},"seq":2,"source":"cross_thread","ts":"2026-08-26T09:00:00.000Z","v":1}

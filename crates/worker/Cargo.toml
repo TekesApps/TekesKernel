@@ -1,0 +1,36 @@
+[package]
+name = "tekes-worker"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono.workspace = true
+base64.workspace = true
+libc.workspace = true
+engine = { path = "../engine" }
+profile = { path = "../profile" }
+provider = { path = "../provider" }
+reqwest.workspace = true
+schema = { path = "../schema" }
+session-controls = { path = "../session-controls" }
+serde_json.workspace = true
+serde_json_canonicalizer.workspace = true
+sha2.workspace = true
+store = { path = "../store" }
+tools = { path = "../tools" }
+tokio.workspace = true
+worker-control = { path = "../worker-control" }
+workspace-service = { path = "../workspace-service" }
+tempfile.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+endpoint = { path = "../endpoint" }
+test-support = { path = "../test-support" }
+tekes-supervisor = { path = "../supervisor" }
+
+[lints]
+workspace = true

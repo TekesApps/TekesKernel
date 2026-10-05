@@ -1,0 +1,57 @@
+{
+  "body" : {
+    "input" : [
+      {
+        "content" : [
+          {
+            "text" : "Use lookup and produce a stable response.",
+            "type" : "input_text"
+          }
+        ],
+        "role" : "user",
+        "type" : "message"
+      }
+    ],
+    "instructions" : "You are a contract test adapter.",
+    "model" : "gpt-5-snapshot",
+    "prompt_cache_key" : "tekes-1b9337ffa2678ec0",
+    "reasoning" : {
+      "effort" : "medium"
+    },
+    "store" : true,
+    "stream" : false,
+    "tool_choice" : {
+      "name" : "lookup",
+      "type" : "function"
+    },
+    "tools" : [
+      {
+        "description" : "Look up stable contract-test facts.",
+        "name" : "lookup",
+        "parameters" : {
+          "properties" : {
+            "query" : {
+              "description" : "Lookup query",
+              "type" : "string"
+            }
+          },
+          "required" : [
+            "query"
+          ],
+          "type" : "object"
+        },
+        "strict" : true,
+        "type" : "function"
+      }
+    ]
+  },
+  "callerId" : "snapshot-openai-responses",
+  "headers" : {
+    "Accept" : "application/json",
+    "Authorization" : "Bearer openai-key",
+    "Content-Type" : "application/json"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://api.openai.test/v1/responses"
+}

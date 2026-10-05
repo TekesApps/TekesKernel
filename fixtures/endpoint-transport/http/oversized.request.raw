@@ -1,0 +1,2 @@
+# tekes-endpoint-transport
+{"body_repeat":{"byte":120,"count":16777217},"headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","16777217"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/session.prompt"}

@@ -1,0 +1,1 @@
+{"attempt":"a1","content":[{"text":"done","type":"text"}],"kind":"output","sealed":{"adapter":"anthropic","fragments":{"$spill":{"asset":"sha256-bb","bytes":20480}},"version":1},"seq":5,"ts":"2026-08-26T09:00:00.000Z","turn":1,"usage":{"availability":"reported","input_tokens":"10","output_tokens":"5"},"v":1}

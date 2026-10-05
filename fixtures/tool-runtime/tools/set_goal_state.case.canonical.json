@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"in_process","effect":"goal_state","validation":"accepted"},"input":{"arguments":{"progress":null,"reason":null,"state":"active","user_action":null},"name":"set_goal_state"},"preconditions":{"availability":"selection_controlled","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

@@ -1,0 +1,41 @@
+{
+  "id": "chatcmpl_snapshot",
+  "object": "chat.completion",
+  "created": 1781310000,
+  "model": "chat-snapshot",
+  "choices": [
+    {
+      "message": {
+        "role": "assistant",
+        "content": null,
+        "reasoning_content": "Need lookup before answering.",
+        "tool_calls": [
+          {
+            "id": "call_lookup",
+            "type": "function",
+            "function": {
+              "name": "lookup",
+              "arguments": "{\"query\":\"contract\"}"
+            }
+          }
+        ]
+      },
+      "finish_reason": "tool_calls"
+    }
+  ],
+  "usage": {
+    "prompt_tokens": 90,
+    "completion_tokens": 18,
+    "total_tokens": 108,
+    "prompt_tokens_details": {
+      "cached_tokens": 8,
+      "audio_tokens": 0
+    },
+    "completion_tokens_details": {
+      "reasoning_tokens": 6,
+      "audio_tokens": 0,
+      "accepted_prediction_tokens": 2,
+      "rejected_prediction_tokens": 1
+    }
+  }
+}

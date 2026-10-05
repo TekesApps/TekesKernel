@@ -1,0 +1,10 @@
+data: {"type": "response.output_item.added", "output_index": 0, "item": {"type": "function_call", "call_id": "left", "name": "record_left", "arguments": ""}}
+
+data: {"type": "response.function_call_arguments.done", "output_index": 0, "arguments": "{\"value\":\"A\"}"}
+
+data: {"type": "response.output_item.added", "output_index": 1, "item": {"type": "function_call", "call_id": "right", "name": "record_right", "arguments": ""}}
+
+data: {"type": "response.function_call_arguments.done", "output_index": 1, "arguments": "{\"value\":\"B\"}"}
+
+data: {"type": "response.completed", "response": {"id": "parallel", "status": "completed", "output": [{"type": "function_call", "call_id": "left", "name": "record_left", "arguments": "{\"value\":\"A\"}"}, {"type": "function_call", "call_id": "right", "name": "record_right", "arguments": "{\"value\":\"B\"}"}]}}
+

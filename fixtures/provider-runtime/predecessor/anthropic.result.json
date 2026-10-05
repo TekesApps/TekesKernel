@@ -1,0 +1,38 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"query\":\"contract\"}",
+      "id" : "call_lookup",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "messages",
+    "has_thinking_blocks" : "true",
+    "provider" : "anthropic",
+    "response_id" : "msg_snapshot",
+    "served_model" : "claude-snapshot",
+    "status" : "tool_use"
+  },
+  "reasoningData" : null,
+  "status" : "tool_use",
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : 4,
+    "cachedInputTokens" : 6,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 80,
+    "model" : "claude-snapshot",
+    "outputTokens" : 12,
+    "providerDetails" : {
+      "service_tier" : "standard"
+    },
+    "reasoningTokens" : null,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 92
+  }
+}

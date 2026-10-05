@@ -1,0 +1,5 @@
+# tekes-endpoint-transport
+{"headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]],"kind":"ws-open","path":"/api/events.mux"}
+{"kind":"fault","name":"endpoint-restart"}
+{"kind":"client-action","name":"reconnect","session_id":"018f0000-0000-7000-8000-000000000003"}
+{"headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]],"kind":"ws-open","path":"/api/events.mux"}

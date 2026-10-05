@@ -1,0 +1,29 @@
+[package]
+name = "transport"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+axum = { version = "=0.8.4", features = ["http1", "json", "tokio", "ws"] }
+base64.workspace = true
+endpoint = { path = "../endpoint" }
+schema = { path = "../schema" }
+serde.workspace = true
+serde_json.workspace = true
+serde_json_canonicalizer.workspace = true
+subtle.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["rt-multi-thread", "sync"] }
+zeroize.workspace = true
+
+[dev-dependencies]
+futures-util.workspace = true
+sha2.workspace = true
+tokio-tungstenite = "=0.26.2"
+tower = { version = "=0.5.2", features = ["util"] }
+
+[lints]
+workspace = true

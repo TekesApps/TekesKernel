@@ -1,0 +1,1 @@
+{"default_model":"gpt-5","default_provider":"openai","format":1,"limits":{"max_provider_leases":2,"max_workers":8},"revision":5}

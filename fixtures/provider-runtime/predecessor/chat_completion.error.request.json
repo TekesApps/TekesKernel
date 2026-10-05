@@ -1,0 +1,25 @@
+{
+  "body" : {
+    "messages" : [
+      {
+        "content" : "You are a contract test.",
+        "role" : "system"
+      },
+      {
+        "content" : "Return a deterministic error shape.",
+        "role" : "user"
+      }
+    ],
+    "model" : "gpt-4.1-snapshot",
+    "stream" : false
+  },
+  "callerId" : "snapshot-error",
+  "headers" : {
+    "Accept" : "application/json",
+    "Authorization" : "Bearer chat-key",
+    "Content-Type" : "application/json"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://api.compat.test/v1/chat/completions"
+}

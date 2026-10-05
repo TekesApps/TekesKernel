@@ -1,0 +1,2 @@
+{"credential_get":{"adapter":"responses","attempt":"a5","credential_id":"main","endpoint_origin":"https://api.example:443","purpose":"provider","request_id":"fe62c9bfbbe58bc8c2c1f5aa24b6ed1b19a126c6da2b2fb8107a0a9692584876"}}
+{"credential_error":{"code":"revoked","request_id":"fe62c9bfbbe58bc8c2c1f5aa24b6ed1b19a126c6da2b2fb8107a0a9692584876"}}

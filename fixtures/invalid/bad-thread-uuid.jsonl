@@ -1,0 +1,8 @@
+{"config":{"digest":"cfg"},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"k1","origin_tuple":{"client":"cli","key":"k1","op":"create","principal":"frank","target":"018f0000-0000-7000-8000-000000000003"},"resume":"never","seq":1,"thread":"not-a-uuid","ts":"2026-08-26T09:00:00.000Z","v":1,"workspace":"ws"}
+{"content":[{"text":"hi","type":"text"}],"kind":"input","origin_key":"k9","origin_tuple":{"client":"cli","key":"k9","op":"submit","principal":"frank","target":"t1"},"seq":2,"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"binary":"tekes-worker-1.0.0","config_digest":"cfg","instruction_digest":"ins","kind":"run_start","mode":"ordinary","policy":"default","recovery_ordinal":0,"run":"r1","seq":3,"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"kind":"turn_open","seq":4,"trigger":{"inputs":[2]},"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}
+{"adapter":"anthropic","id":"e1","kind":"epoch","model":"claude-fable-5","reason":"initial","renderer":1,"seq":5,"system":{"asset":"sha256-aa","digest":"d1"},"tools":{"asset":"sha256-td1","digest":"td1"},"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"admits":[{"from":2,"to":2}],"attempt":"a1","epoch":"e1","kind":"attempt","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096},"seq":6,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1,"wire_digest":"wd1"}
+{"attempt":"a1","content":[{"text":"done","type":"text"}],"kind":"output","sealed":{"adapter":"anthropic","fragments":"frag","version":1},"seq":7,"ts":"2026-08-26T09:00:00.000Z","turn":1,"usage":{"availability":"reported","input_tokens":"10","output_tokens":"5"},"v":1}
+{"kind":"settle","outcome":"completed","seq":8,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}

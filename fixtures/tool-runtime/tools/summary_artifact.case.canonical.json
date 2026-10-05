@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"in_process","effect":"none","validation":"accepted"},"input":{"arguments":{"continuation":"continue from evidence","evidence_refs":[7,9]},"name":"summary_artifact"},"preconditions":{"availability":"role_compactor","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

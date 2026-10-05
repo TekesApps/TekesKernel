@@ -1,0 +1,6 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJzZXNzaW9uL3N1YnNjcmliZWQiLCJwYXlsb2FkIjp7Imxhc3RTZXEiOjYsInNlc3Npb25JZCI6InNlc3Npb24tMSIsInR5cGUiOiJzZXNzaW9uL3N1YnNjcmliZWQifSwicnBjSWQiOiJwdXNoLXN1Yi0xIiwidHlwZSI6InNlcnZlci1yZXF1ZXN0In0=","kind":"ws-text"}
+{"body_b64":"eyJtZXRob2QiOiJzdHJlYW0vZXJyb3IiLCJwYXlsb2FkIjp7ImVycm9yIjp7ImNvZGUiOiJpbnRlcm5hbC1lcnJvciIsImRldGFpbHMiOnt9LCJtZXNzYWdlIjoiaW50ZXJuYWwtZXJyb3IifSwidHlwZSI6InN0cmVhbS9lcnJvciJ9LCJycGNJZCI6InB1c2gtaW50ZXJuYWwtMSIsInR5cGUiOiJzZXJ2ZXItcmVxdWVzdCJ9","kind":"ws-text"}
+{"code":1011,"kind":"ws-close","reason":"internal-error"}
+{"kind":"client-action","name":"reconnect","session_id":"018f0000-0000-7000-8000-000000000003"}
+{"body_b64":"eyJtZXRob2QiOiJzZXNzaW9uL3N1YnNjcmliZWQiLCJwYXlsb2FkIjp7Imxhc3RTZXEiOjYsInNlc3Npb25JZCI6InNlc3Npb24tMSIsInR5cGUiOiJzZXNzaW9uL3N1YnNjcmliZWQifSwicnBjSWQiOiJwdXNoLXN1Yi0xIiwidHlwZSI6InNlcnZlci1yZXF1ZXN0In0=","kind":"ws-text"}

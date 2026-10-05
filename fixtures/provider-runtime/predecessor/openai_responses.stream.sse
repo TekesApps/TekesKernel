@@ -1,0 +1,9 @@
+data: {"type":"response.output_item.added","item":{"type":"message","role":"assistant","phase":"final_answer","status":"completed"}}
+
+data: {"type":"response.output_text.delta","delta":"Streamed "}
+
+data: {"type":"response.output_text.delta","delta":"answer"}
+
+data: {"type":"response.done","response":{"id":"resp_stream","status":"completed","usage":{"input_tokens":31,"output_tokens":4,"total_tokens":35,"output_tokens_details":{"reasoning_tokens":2}}}}
+
+data: [DONE]

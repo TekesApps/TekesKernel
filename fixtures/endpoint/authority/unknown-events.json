@@ -1,0 +1,15 @@
+{
+  "required": {
+    "type": "future/required",
+    "seq": 8,
+    "time": 1787713202000,
+    "data": {}
+  },
+  "ignorable": {
+    "type": "future/advisory",
+    "seq": 8,
+    "time": 1787713202000,
+    "data": { "hint": "safe to skip" },
+    "ignorable": true
+  }
+}

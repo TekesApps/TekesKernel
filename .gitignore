@@ -1,0 +1,7 @@
+**/target/
+*.swp
+**/.DS_Store
+**/__pycache__/
+*.pyc
+.claude/
+docs/architecture/generated/inventory.json

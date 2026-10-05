@@ -1,0 +1,102 @@
+flowchart LR
+  p0["conformance"]
+  p1["deployment-tests"]
+  p2["endpoint"]
+  p3["engine"]
+  p4["host-files"]
+  p5["mcp"]
+  p6["plugins"]
+  p7["profile"]
+  p8["provider"]
+  p9["schedule"]
+  p10["schema"]
+  p11["session-controls"]
+  p12["store"]
+  p13["tekes-kernel-installer"]
+  p14["tekes-selector"]
+  p15["tekes-supervisor"]
+  p16["tekes-worker"]
+  p17["test-support"]
+  p18["thread-search"]
+  p19["tools"]
+  p20["transport"]
+  p21["user-documents"]
+  p22["worker-control"]
+  p23["workspace-service"]
+  p0 --> p2
+  p0 --> p3
+  p0 --> p7
+  p0 --> p10
+  p0 --> p12
+  p0 --> p15
+  p0 --> p17
+  p0 --> p20
+  p0 --> p22
+  p1 --> p14
+  p2 --> p7
+  p2 --> p10
+  p2 --> p12
+  p2 --> p19
+  p3 --> p7
+  p3 --> p10
+  p3 --> p12
+  p3 --> p19
+  p3 --> p22
+  p4 --> p2
+  p4 --> p10
+  p4 --> p12
+  p5 --> p6
+  p5 --> p7
+  p5 --> p10
+  p5 --> p12
+  p6 --> p12
+  p7 --> p10
+  p7 --> p12
+  p7 --> p19
+  p8 --> p7
+  p8 --> p10
+  p9 --> p12
+  p11 --> p2
+  p11 --> p10
+  p11 --> p12
+  p12 --> p10
+  p15 --> p2
+  p15 --> p3
+  p15 --> p4
+  p15 --> p5
+  p15 --> p6
+  p15 --> p7
+  p15 --> p8
+  p15 --> p9
+  p15 --> p10
+  p15 --> p11
+  p15 --> p12
+  p15 --> p18
+  p15 --> p19
+  p15 --> p20
+  p15 --> p21
+  p15 --> p22
+  p15 --> p23
+  p16 --> p3
+  p16 --> p7
+  p16 --> p8
+  p16 --> p10
+  p16 --> p11
+  p16 --> p12
+  p16 --> p19
+  p16 --> p22
+  p16 --> p23
+  p17 --> p3
+  p17 --> p10
+  p17 --> p12
+  p17 --> p22
+  p18 --> p10
+  p18 --> p12
+  p19 --> p10
+  p19 --> p12
+  p20 --> p2
+  p20 --> p10
+  p21 --> p2
+  p21 --> p10
+  p21 --> p12
+  p22 --> p10

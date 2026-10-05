@@ -1,0 +1,40 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"query\":\"contract\"}",
+      "id" : "call_lookup",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "chat_completions",
+    "provider" : "OpenAICompat",
+    "reasoning_content" : "Need lookup before answering.",
+    "response_id" : "chatcmpl_snapshot",
+    "status" : "tool_calls"
+  },
+  "reasoningData" : "Need lookup before answering.",
+  "status" : "tool_calls",
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : 8,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 90,
+    "model" : "chat-snapshot",
+    "outputTokens" : 18,
+    "providerDetails" : {
+      "accepted_prediction_tokens" : "2",
+      "completion_audio_tokens" : "0",
+      "prompt_audio_tokens" : "0",
+      "rejected_prediction_tokens" : "1"
+    },
+    "reasoningTokens" : 6,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 108
+  }
+}

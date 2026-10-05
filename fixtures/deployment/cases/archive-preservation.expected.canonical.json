@@ -1,0 +1,1 @@
+{"case":"archive-preservation","filesystem":{"absent":[],"modes":{},"present":[]},"format":1,"gate":76,"observability":{"codes":[],"forbidden":[]},"preserved":["threads/active-a","threads/archive-b"],"processes":{"listeners":1,"orphans":0,"selectors":1,"supervisors":1},"readiness":{"ready":true},"selection":{"current":"1.0.0","generation":1}}

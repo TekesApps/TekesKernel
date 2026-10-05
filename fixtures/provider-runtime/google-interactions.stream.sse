@@ -1,0 +1,14 @@
+data: {"event_id":"evt-1","event_type":"interaction.created","interaction":{"id":"interaction-stream","model":"fixture-model","object":"interaction","status":"in_progress"}}
+
+data: {"event_type":"step.start","index":0,"step":{"type":"model_output"}}
+
+data: {"delta":{"text":"hello","type":"text"},"event_type":"step.delta","index":0}
+
+data: {"event_type":"step.stop","index":0}
+
+data: {"event_type":"step.start","index":1,"step":{"arguments":{"query":"contract"},"id":"call-stream","name":"lookup","type":"function_call"}}
+
+data: {"event_type":"step.stop","index":1}
+
+data: {"event_id":"evt-2","event_type":"interaction.completed","interaction":{"id":"interaction-stream","model":"fixture-model","object":"interaction","status":"requires_action","usage":{"total_cached_tokens":0,"total_input_tokens":12,"total_output_tokens":4,"total_tokens":16}}}
+

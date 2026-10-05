@@ -1,0 +1,2 @@
+{"input":{"content":[{"text":"hi","type":"text"}],"delivery":"d1","origin":{"client":"cli","key":"k9","op":"submit","principal":"frank","target":"t1"}}}
+{"receipt":{"deduplicated":false,"delivery":"d1","seq":2}}

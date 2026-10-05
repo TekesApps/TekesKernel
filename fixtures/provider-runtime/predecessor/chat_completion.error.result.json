@@ -1,0 +1,17 @@
+{
+  "error" : "rate_limit_error: rate_limit: rate limited",
+  "functionCalls" : [
+
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "chat_completions",
+    "provider" : "OpenAICompat",
+    "response_id" : "chatcmpl_error",
+    "status" : ""
+  },
+  "reasoningData" : null,
+  "status" : null,
+  "text" : "",
+  "usage" : null
+}

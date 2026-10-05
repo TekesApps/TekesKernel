@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"supervisor_control","effect":"child_spawn","validation":"accepted"},"input":{"arguments":{"brief":"audit the files","report_back_session_id":""},"name":"subagent"},"preconditions":{"availability":"selection_controlled","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

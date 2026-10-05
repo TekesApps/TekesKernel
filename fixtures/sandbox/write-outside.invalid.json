@@ -1,0 +1,1 @@
+{"allow_process":false,"format":1,"network":"deny","read_roots":["/tmp/read"],"write_roots":["/tmp/write"]}

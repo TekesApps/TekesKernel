@@ -1,0 +1,36 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"q\":\"x\"}",
+      "id" : "toolu_snap",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "messages",
+    "provider" : "anthropic",
+    "response_id" : "snapshot-anthropic-stream",
+    "status" : "tool_use"
+  },
+  "reasoningData" : null,
+  "status" : "tool_use",
+  "text" : "Streamed answer",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : 3,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 21,
+    "model" : "claude-snapshot",
+    "outputTokens" : 5,
+    "providerDetails" : {
+      "service_tier" : "standard"
+    },
+    "reasoningTokens" : null,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 26
+  }
+}

@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"worker_http","effect":"network_read","validation":"accepted"},"input":{"arguments":{"url":"https://example.com"},"name":"web_fetch"},"preconditions":{"availability":"default","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

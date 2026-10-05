@@ -1,0 +1,2 @@
+{"request":{"id":"e1","operation":{"exec":{"argv":["/usr/bin/printf","ok"],"env":{},"stderr_bytes":4096,"stdout_bytes":4096,"timeout_ms":1000}}}}
+{"result":{"id":"e1","value":{"exec":{"status":0,"stderr":{"data":"","encoding":"utf8"},"stderr_truncated":false,"stdout":{"data":"ok","encoding":"utf8"},"stdout_truncated":false}}}}

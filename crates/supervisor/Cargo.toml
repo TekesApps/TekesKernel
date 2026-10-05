@@ -1,0 +1,49 @@
+[package]
+name = "tekes-supervisor"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+chrono.workspace = true
+base64.workspace = true
+endpoint = { path = "../endpoint" }
+engine = { path = "../engine" }
+libc.workspace = true
+mcp = { path = "../mcp" }
+profile = { path = "../profile" }
+plugins = { path = "../plugins" }
+provider = { path = "../provider" }
+schedule = { path = "../schedule" }
+schema = { path = "../schema" }
+serde.workspace = true
+serde_json.workspace = true
+serde_json_canonicalizer.workspace = true
+sha2.workspace = true
+store = { path = "../store" }
+thiserror.workspace = true
+tools = { path = "../tools" }
+thread-search = { path = "../thread-search" }
+transport = { path = "../transport" }
+tokio = { workspace = true, features = ["rt-multi-thread", "sync", "time"] }
+worker-control = { path = "../worker-control" }
+zeroize.workspace = true
+url.workspace = true
+uuid.workspace = true
+workspace-service = { path = "../workspace-service" }
+host-files = { path = "../host-files" }
+user-documents = { path = "../user-documents" }
+session-controls = { path = "../session-controls" }
+tempfile.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints.rust]
+unsafe_code = "allow"
+unsafe_op_in_unsafe_fn = "deny"
+
+[lints.clippy]
+all = "warn"

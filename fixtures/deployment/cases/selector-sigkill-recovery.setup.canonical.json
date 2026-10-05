@@ -1,0 +1,1 @@
+{"case":"selector-sigkill-recovery","format":1,"gate":72,"initial":{"current":"1.0.0","generation":1,"service":"running","threads":["running"]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

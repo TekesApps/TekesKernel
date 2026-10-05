@@ -1,0 +1,2 @@
+{"credential_get":{"adapter":"responses","attempt":"a3","credential_id":"main","endpoint_origin":"https://wrong.example:443","purpose":"provider","request_id":"8ee70bef72e985e2ad5b7ca212aaf1af942ce09bba05f781230c8e114ede5fc7"}}
+{"credential_error":{"code":"scope_mismatch","request_id":"8ee70bef72e985e2ad5b7ca212aaf1af942ce09bba05f781230c8e114ede5fc7"}}

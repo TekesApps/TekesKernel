@@ -1,0 +1,2 @@
+{"id":1,"jsonrpc":"2.0","method":"server/discover"}
+{"id":1,"jsonrpc":"2.0","result":{"_meta":{"io.modelcontextprotocol/serverInfo":{"name":"fixture","version":"1"}},"capabilities":{"prompts":{},"resources":{},"tasks":{},"tools":{}},"resultType":"complete","supportedVersions":["2026-07-28"]}}

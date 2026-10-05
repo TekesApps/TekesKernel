@@ -1,0 +1,1 @@
+{"finish_reason":"tool_calls","response_identity":"interaction-fixture","tool_calls":[{"arguments":{"query":"contract"},"call_id":"call-interaction","name":"lookup"}],"usage":{"cache_read":"0","input_tokens":"11","output_tokens":"3"}}

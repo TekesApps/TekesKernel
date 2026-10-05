@@ -1,0 +1,26 @@
+[package]
+name = "conformance"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+endpoint = { path = "../endpoint" }
+engine = { path = "../engine" }
+profile = { path = "../profile" }
+schema = { path = "../schema" }
+serde_json.workspace = true
+serde_json_canonicalizer.workspace = true
+sha2.workspace = true
+store = { path = "../store" }
+tekes-supervisor = { path = "../supervisor" }
+test-support = { path = "../test-support" }
+tempfile.workspace = true
+tokio.workspace = true
+transport = { path = "../transport" }
+worker-control = { path = "../worker-control" }
+
+[lints]
+workspace = true

@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"address":"127.0.0.1:0","kind":"listener","result":"accepted"}
+{"address":"0.0.0.0:0","kind":"listener","result":"rejected"}

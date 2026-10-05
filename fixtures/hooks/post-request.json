@@ -1,0 +1,1 @@
+{"call":"c1","format":1,"hook_id":"audit","invocation":{"argv":["/usr/bin/true"]},"name":"exec","phase":"post","result":{"content":{"status":0},"outcome":"ok"}}

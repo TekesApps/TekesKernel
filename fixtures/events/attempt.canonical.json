@@ -1,0 +1,1 @@
+{"admits":[{"from":2,"to":2}],"attempt":"a1","epoch":"e1","kind":"attempt","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096},"seq":4,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1,"wire_digest":"w1"}

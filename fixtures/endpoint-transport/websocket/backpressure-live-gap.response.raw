@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJzdHJlYW0vZXJyb3IiLCJwYXlsb2FkIjp7ImVycm9yIjp7ImNvZGUiOiJsaXZlLWdhcCIsImRldGFpbHMiOnt9LCJtZXNzYWdlIjoibGl2ZS1nYXAifSwidHlwZSI6InN0cmVhbS9lcnJvciJ9LCJycGNJZCI6InB1c2gtbGl2ZS1nYXAtMSIsInR5cGUiOiJzZXJ2ZXItcmVxdWVzdCJ9","kind":"ws-text"}
+{"code":1013,"kind":"ws-close","reason":"live-gap"}

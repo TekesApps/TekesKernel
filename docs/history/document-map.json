@@ -1,0 +1,1132 @@
+[
+  {
+    "source": "docs/00-overview.md",
+    "section": "intro",
+    "destination": "docs/README.md"
+  },
+  {
+    "source": "docs/00-overview.md",
+    "section": "The reduction",
+    "destination": "docs/README.md"
+  },
+  {
+    "source": "docs/00-overview.md",
+    "section": "The kernel: four components",
+    "destination": "docs/README.md"
+  },
+  {
+    "source": "docs/00-overview.md",
+    "section": "What evaporates",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/00-overview.md",
+    "section": "What is carried over unchanged",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/00-overview.md",
+    "section": "Layer picture",
+    "destination": "docs/README.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "intro",
+    "destination": "docs/concepts/thread.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "Thread fundamentals (A)",
+    "destination": "docs/concepts/thread.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "Persistence scope",
+    "destination": "docs/data/storage.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "Layout",
+    "destination": "docs/data/storage.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "Rules",
+    "destination": "docs/data/storage.md"
+  },
+  {
+    "source": "docs/01-thread-folder.md",
+    "section": "Placement",
+    "destination": "docs/data/storage.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "intro",
+    "destination": "docs/data/events.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Envelope",
+    "destination": "docs/data/events.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Core kinds",
+    "destination": "docs/data/events.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Durability",
+    "destination": "docs/data/durability.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Concurrency",
+    "destination": "docs/data/durability.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Replay",
+    "destination": "docs/data/durability.md"
+  },
+  {
+    "source": "docs/02-event-schema.md",
+    "section": "Settlement",
+    "destination": "docs/data/durability.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "intro",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Invocation",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Startup sequence",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "The loop",
+    "destination": "docs/flows/turn.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "stdio protocol",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Waiting and idling",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Signals and exit",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Sub-agents",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Recovery transitions (D-61, closed R7)",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/03-worker.md",
+    "section": "Budgets, retry, compaction",
+    "destination": "docs/runtime/worker.md"
+  },
+  {
+    "source": "docs/04-supervisor.md",
+    "section": "intro",
+    "destination": "docs/runtime/supervisor.md"
+  },
+  {
+    "source": "docs/04-supervisor.md",
+    "section": "Components",
+    "destination": "docs/runtime/supervisor.md"
+  },
+  {
+    "source": "docs/04-supervisor.md",
+    "section": "Rules",
+    "destination": "docs/runtime/supervisor.md"
+  },
+  {
+    "source": "docs/04-supervisor.md",
+    "section": "Core vs bundled services (R2 cap ruling)",
+    "destination": "docs/runtime/supervisor.md"
+  },
+  {
+    "source": "docs/04-supervisor.md",
+    "section": "What the supervisor is not",
+    "destination": "docs/runtime/supervisor.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "intro",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "1. Provider render (the hot one)",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "2. UI projection",
+    "destination": "docs/interfaces/client.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "3. Compaction",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "4. Child seed",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "5. Manifest and indexes",
+    "destination": "docs/data/storage.md"
+  },
+  {
+    "source": "docs/05-projections.md",
+    "section": "6. Diagnostics",
+    "destination": "docs/interfaces/client.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "intro",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "The ABI",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Backends",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Sandboxing",
+    "destination": "docs/runtime/tool-permissions.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Approval gate",
+    "destination": "docs/runtime/tool-permissions.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Hooks",
+    "destination": "docs/runtime/tool-permissions.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Side-effect discipline",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Background jobs",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/06-tools.md",
+    "section": "Tool catalog",
+    "destination": "docs/runtime/tools.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "intro",
+    "destination": "docs/flows/turn.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Turn execution and validation",
+    "destination": "docs/flows/turn.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Root is a position, not a type",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Spawning a child",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Isolation is the point",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Root executor and independent validator",
+    "destination": "docs/flows/turn.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Workflows",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Cross-thread communication",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/07-topology.md",
+    "section": "Concurrency shape",
+    "destination": "docs/flows/delegation.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "intro",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "Platform reality",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "Seam 1: process semantics",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "Seam 2: tool backends",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "The complete seam inventory (D-51)",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "What ports without seams",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "Mobile strategy",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/08-portability.md",
+    "section": "Language (decided — D-63; supersedes D-59's implementation choice)",
+    "destination": "docs/architecture/platform.md"
+  },
+  {
+    "source": "docs/09-migration.md",
+    "section": "intro",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/09-migration.md",
+    "section": "Carry as-is (the valuable 90%)",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/09-migration.md",
+    "section": "Dissolve into primitives",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/09-migration.md",
+    "section": "Transform",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/09-migration.md",
+    "section": "New code (complete list — the published topology, R3-13)",
+    "destination": "docs/history/migration.md"
+  },
+  {
+    "source": "docs/10-decisions.md",
+    "section": "intro",
+    "destination": "docs/history/decisions.md"
+  },
+  {
+    "source": "docs/10-decisions.md",
+    "section": "Settled",
+    "destination": "docs/history/decisions.md"
+  },
+  {
+    "source": "docs/10-decisions.md",
+    "section": "Current terminology clarification (2026-09-04)",
+    "destination": "docs/history/decisions.md"
+  },
+  {
+    "source": "docs/10-decisions.md",
+    "section": "Open",
+    "destination": "docs/history/decisions.md"
+  },
+  {
+    "source": "docs/10-decisions.md",
+    "section": "Closed (historical)",
+    "destination": "docs/history/decisions.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "intro",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Shape",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Epochs",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Visibility: the kind table",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Admission, baseline, and continuation",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Supersedes vs. prefix stability",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Compaction interplay",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/11-context-projection.md",
+    "section": "Determinism obligations (test surface)",
+    "destination": "docs/data/context.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "intro",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "Rule 1 — Ensure, never start (lock-arbitrated liveness)",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "Rule 2 — Externally-originated mutations are keyed",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "Rule 3 — Intent before side effect (attempt discipline)",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "Rule 4 — Watermarks may coalesce; the truth path never debounces",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/12-idempotency.md",
+    "section": "Operation table",
+    "destination": "docs/data/idempotency.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "intro",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "The ruling",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "What the kernel contributes (substrate, not subsystem)",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "One act, three names",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "The internalization path (explicitly deferred)",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/13-evolution.md",
+    "section": "Conformance seed",
+    "destination": "docs/history/evolution.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "intro",
+    "destination": "docs/verification/gates/README.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Thread semantics coverage",
+    "destination": "docs/verification/gates/README.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Creation, delivery, idempotency",
+    "destination": "docs/verification/gates/core.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Provider path",
+    "destination": "docs/verification/gates/core.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Tools and hooks",
+    "destination": "docs/verification/gates/core.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Session Endpoint v2",
+    "destination": "docs/verification/gates/client.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Production provider runtime",
+    "destination": "docs/verification/gates/providers.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Production tool runtime",
+    "destination": "docs/verification/gates/tools.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Endpoint transport",
+    "destination": "docs/verification/gates/client.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "macOS production deployment",
+    "destination": "docs/verification/gates/deployment.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Plugin lifecycle",
+    "destination": "docs/verification/gates/tools.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "MCP runtime and management",
+    "destination": "docs/verification/gates/tools.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Provider dialect and model-profile parity",
+    "destination": "docs/verification/gates/providers.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Supervisor lifecycle",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Rewrite and evolution substrate",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Epoch and admission",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Format and protocol gates (added R5)",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Config and instruction gates (Slice 2)",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Checkpoint acceleration gates (Slice 3)",
+    "destination": "docs/verification/gates/recovery-and-data.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Fixtures contract",
+    "destination": "docs/verification/gates/README.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "External pipeline (ownership only — not kernel CI)",
+    "destination": "docs/verification/gates/deployment.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 1",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 2",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 3",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 4",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 5",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 6",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 7",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 8",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 9",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 10",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 11",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 12",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 13",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14B",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14C",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14D",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14E",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14F",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/14-conformance.md",
+    "section": "Slice 14A",
+    "destination": "docs/history/gate-rollout.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "intro",
+    "destination": "docs/interfaces/client.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Current public boundary",
+    "destination": "docs/interfaces/client.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Historical V2 baseline: scope of the remaining sections",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Decisions",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Contract import rule",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Canonical external session URI",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "The mapping (kernel → v2)",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Settle → `turn/end` mapping (exhaustive — R8-4)",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Kernel storage adaptations (never wire divergences)",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/15-client-endpoint.md",
+    "section": "Consequences",
+    "destination": "docs/history/client-v2.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "intro",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Readiness boundary",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Logical component graph",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Fixture loading and test identity",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 1 decomposition",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-1 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 2 — authoritative launch profiles",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-2 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 3 — checkpoint-seeded replay",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-3 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 4 — fixed catalog and execution substrate",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-4 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 5 — rewrite publication",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-5 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 6 — Session Endpoint v2",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-6 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 7 — production provider/worker runtime",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-7 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 8 — production builtin-tool integration",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-8 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 9 — physical Session Endpoint transport",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-9 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 10 — macOS production packaging and acceptance",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-10 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice 11 — Skills and commands",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice-11 gate map and execution order",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "CI semantics",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Slice completion and publication",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "Later-slice closure contracts",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/16-implementation-plan.md",
+    "section": "First three implementation increments",
+    "destination": "docs/history/implementation-plan.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "intro",
+    "destination": "docs/architecture/rust.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Toolchain and platform",
+    "destination": "docs/architecture/rust.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Cargo workspace",
+    "destination": "docs/architecture/rust.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Dependency policy",
+    "destination": "docs/architecture/rust.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Darwin durability boundary",
+    "destination": "docs/architecture/rust.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Fixtures and test mapping",
+    "destination": "docs/verification/running-tests.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Rust CI",
+    "destination": "docs/verification/running-tests.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "First three Rust increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 2 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 3 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 4 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 5 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 6 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 7 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 8 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 9 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 10 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 11 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/17-rust-implementation.md",
+    "section": "Slice 13 increments",
+    "destination": "docs/history/rust-rollout.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "intro",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Status vocabulary and parity bar",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Current capability matrix",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Skill package compatibility",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Command execution",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Plugin and MCP closure",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Capability-closure sequence after Slice 10 (completed)",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/18-feature-parity.md",
+    "section": "Re-audit rule",
+    "destination": "docs/verification/feature-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "intro",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Purpose and status",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Required layering",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Known blocking example: DeepSeek Responses",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Initial closure inventory",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Provider-specific behavior to preserve",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Production-control wiring",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Required oracle and gates",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/19-provider-dialect-parity.md",
+    "section": "Sequencing and completion",
+    "destination": "docs/verification/provider-parity.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "intro",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "Runtime boundary",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "Browser surface",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "Local access and origin policy",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "Client state model",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/20-web-client.md",
+    "section": "Product integrity",
+    "destination": "docs/interfaces/web.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "intro",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Baseline and evidence",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Four architectural layers",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Where to start",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Key scenarios",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Current interface boundary",
+    "destination": "docs/architecture/README.md"
+  },
+  {
+    "source": "docs/21-code-architecture.md",
+    "section": "Documentation ownership and maintenance",
+    "destination": "docs/architecture/README.md"
+  }
+]

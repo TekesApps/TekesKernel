@@ -1,0 +1,2 @@
+{"launch_child":{"child":"child-2.jsonl","resume":{"bounded":2},"spawn_id":"s2"}}
+{"launch_result":{"child":"child-2.jsonl","error":"missing","ok":false,"spawn_id":"s2"}}

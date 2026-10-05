@@ -1,0 +1,2 @@
+{"compact":{"delivery":"d5","origin":{"client":"cli","key":"k9","op":"compact","principal":"frank","target":"t1"}}}
+{"receipt":{"deduplicated":false,"delivery":"d5","seq":21}}

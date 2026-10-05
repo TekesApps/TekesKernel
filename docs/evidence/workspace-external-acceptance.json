@@ -1,0 +1,115 @@
+{
+  "scope": "Kernel production HTTP carrier + dispatcher + workspace helper",
+  "passed": true,
+  "checks": [
+    {
+      "method": "unauthenticated",
+      "outcome": "rejected"
+    },
+    {
+      "method": "tekesWorkspace.capabilities",
+      "outcome": "success"
+    },
+    {
+      "method": "workspace.create",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.filesList",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.filesRead",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.filesSearch",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitRepository",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitStatus",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitBranches",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitLog",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitChangesNavigator",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitDiff",
+      "outcome": "success"
+    },
+    {
+      "method": "default Git write",
+      "outcome": "rejected"
+    },
+    {
+      "method": "tekesWorkspace.gitCommit",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitCommit",
+      "outcome": "success"
+    },
+    {
+      "method": "RPC id conflict",
+      "outcome": "rejected"
+    },
+    {
+      "method": "tekesWorkspace.gitChangeBranch",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitPush",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.gitChangeBranch",
+      "outcome": "success"
+    },
+    {
+      "method": "session.create",
+      "outcome": "success"
+    },
+    {
+      "method": "tekesWorkspace.turnChanges",
+      "outcome": "success"
+    },
+    {
+      "method": "foreign session",
+      "outcome": "rejected"
+    }
+  ],
+  "limits": [
+    "fixture turn fact; real Worker pipeline tested separately",
+    "no signed installation or Client UI acceptance"
+  ],
+  "clientValueCheck": {
+    "methodsCovered": 14,
+    "responsesDecoded": 16,
+    "scope": "Swift DTO decoding only; no Client routing or UI acceptance"
+  },
+  "artifacts": [
+    {
+      "role": "carrierHarness",
+      "path": "/tmp/tekes-workspace-goal2-target/debug/examples/slice9_production_client_harness_server",
+      "sha256": "da695506a4ad59c41706138da2f2dcaaf666934e77fda8c5cbdd44675aa8faec"
+    },
+    {
+      "role": "workspaceService",
+      "path": "/private/tmp/tekes-goal2-signed/current/bundle/bin/tekes-workspace-service",
+      "sha256": "326e18a267ac4537a7167eb7be67160d42bbb709aa79e98bd068070214262514"
+    }
+  ]
+}

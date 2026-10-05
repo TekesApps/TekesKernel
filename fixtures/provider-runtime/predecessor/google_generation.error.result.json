@@ -1,0 +1,33 @@
+{
+  "error" : "Google response blocked: SAFETY",
+  "functionCalls" : [
+
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "generate_content",
+    "block_reason" : "SAFETY",
+    "provider" : "google",
+    "response_id" : "google_error",
+    "status" : ""
+  },
+  "reasoningData" : null,
+  "status" : null,
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : null,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 12,
+    "model" : "gemini-snapshot",
+    "outputTokens" : null,
+    "providerDetails" : {
+
+    },
+    "reasoningTokens" : null,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 12
+  }
+}

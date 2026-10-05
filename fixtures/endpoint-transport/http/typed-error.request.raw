@@ -1,0 +1,2 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJzZXNzaW9uLmhpc3RvcnkiLCJwYXlsb2FkIjp7Im1heE1lc3NhZ2VzIjo1MCwic2Vzc2lvbklkIjoic2Vzc2lvbi0xIn0sInJwY0lkIjoicnBjLWhpc3RvcnktMSIsInR5cGUiOiJjbGllbnQtcmVxdWVzdCJ9","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","129"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/session.history"}

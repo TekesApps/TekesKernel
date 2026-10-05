@@ -1,0 +1,1 @@
+{"case":"selector-update-power-loss","format":1,"gate":73,"initial":{"current":"1.0.0","generation":1,"service":"stopped","threads":[]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

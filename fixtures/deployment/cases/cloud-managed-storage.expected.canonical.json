@@ -1,0 +1,1 @@
+{"case":"cloud-managed-storage","filesystem":{"absent":[],"modes":{},"present":[]},"format":1,"gate":71,"observability":{"codes":["unsupported-filesystem"],"forbidden":[]},"preserved":[],"processes":{"listeners":0,"orphans":0,"selectors":1,"supervisors":0},"readiness":{"code":"unsupported-filesystem","ready":false},"selection":{"current":"1.0.0","generation":1}}

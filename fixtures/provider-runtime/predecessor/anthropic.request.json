@@ -1,0 +1,76 @@
+{
+  "body" : {
+    "max_tokens" : 512,
+    "messages" : [
+      {
+        "content" : [
+          {
+            "id" : "call_lookup",
+            "input" : {
+              "query" : "contract"
+            },
+            "name" : "lookup",
+            "type" : "tool_use"
+          }
+        ],
+        "role" : "assistant"
+      },
+      {
+        "content" : [
+          {
+            "content" : "{\"answer\":\"stable\"}",
+            "is_error" : false,
+            "tool_use_id" : "call_lookup",
+            "type" : "tool_result"
+          }
+        ],
+        "role" : "user"
+      },
+      {
+        "content" : [
+          {
+            "text" : "Use lookup and produce a stable response.",
+            "type" : "text"
+          }
+        ],
+        "role" : "user"
+      }
+    ],
+    "model" : "claude-snapshot",
+    "stream" : false,
+    "system" : "You are a contract test adapter.",
+    "tool_choice" : {
+      "name" : "lookup",
+      "type" : "tool"
+    },
+    "tools" : [
+      {
+        "description" : "Look up stable contract-test facts.",
+        "input_schema" : {
+          "properties" : {
+            "query" : {
+              "description" : "Lookup query",
+              "type" : "string"
+            }
+          },
+          "required" : [
+            "query"
+          ],
+          "type" : "object"
+        },
+        "name" : "lookup"
+      }
+    ]
+  },
+  "callerId" : "snapshot-anthropic",
+  "headers" : {
+    "Accept" : "application/json",
+    "anthropic-beta" : "tools-2026-01-01",
+    "anthropic-version" : "2023-06-01",
+    "Content-Type" : "application/json",
+    "x-api-key" : "anthropic-key"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://api.anthropic.test/v1/messages"
+}

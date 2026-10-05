@@ -1,0 +1,1 @@
+{"format":1,"providers":[],"revision":1,"web_search":{"adapter":"tavily_v1","credential_key":"web-search-main","endpoint":"https://[::ffff:127.0.0.1]"}}

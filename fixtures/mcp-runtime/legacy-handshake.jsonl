@@ -1,0 +1,3 @@
+{"id":1,"jsonrpc":"2.0","method":"initialize","params":{"capabilities":{},"clientInfo":{"name":"TekesKernel","version":"0.1.0"},"protocolVersion":"2025-11-25"}}
+{"id":1,"jsonrpc":"2.0","result":{"capabilities":{"prompts":{},"resources":{},"tasks":{},"tools":{}},"protocolVersion":"2025-11-25","serverInfo":{"name":"fixture","version":"1"}}}
+{"jsonrpc":"2.0","method":"notifications/initialized"}

@@ -1,0 +1,11 @@
+{
+  "name": "tekes-official-sdk-live-servers",
+  "private": true,
+  "type": "module",
+  "description": "Official TypeScript MCP SDK servers for the Kernel public-tunnel live gates (tasks lifecycle, forced-SSE conformance). Not a product artifact.",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.30.0",
+    "express": "^5.1.0",
+    "zod": "^3.25.0"
+  }
+}

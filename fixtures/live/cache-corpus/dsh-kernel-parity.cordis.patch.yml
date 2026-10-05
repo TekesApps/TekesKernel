@@ -1,0 +1,32 @@
+# DSH A/B: one-line complete prompt (see dsh-no-system-prompt.cordis.patch.yml)
+# and a tool catalog reduced to the Kernel corpus set: bash, read/write/edit,
+# glob/grep. Applied through scripts/run-dsh-long-session-cache.py --cordis-patch ...
+#   --cordis-patch-asset fixtures/live/cache-corpus/ab-complete-prompt.mjs
+- insert:
+    - id: ab-complete-prompt
+      name: ./ab-complete-prompt.mjs
+      config:
+        text: You are a helpful software engineer assistant.
+        suppressRuntimeContext: true
+- id: tool-todo
+  disabled: true
+- id: tool-goal
+  disabled: true
+- id: tool-ralph
+  disabled: true
+- id: tool-workflow
+  disabled: true
+- id: tool-subagent
+  disabled: true
+- id: tool-subagent-fork
+  disabled: true
+- id: tool-subagent-control
+  disabled: true
+- id: tool-subagent-list-agents
+  disabled: true
+- id: tool-web
+  disabled: true
+- id: tool-skill
+  disabled: true
+- id: tool-jobs
+  disabled: true

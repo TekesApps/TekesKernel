@@ -1,0 +1,2 @@
+{"launch_child":{"child":"child-1.jsonl","resume":"never","spawn_id":"s9"}}
+{"launch_result":{"child":"child-1.jsonl","error":"spawn_mismatch","ok":false,"spawn_id":"s9"}}

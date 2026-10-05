@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"helper_fs","effect":"read_only","validation":"accepted"},"input":{"arguments":{"path":null,"pattern":"**/*.rs"},"name":"glob"},"preconditions":{"availability":"default","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

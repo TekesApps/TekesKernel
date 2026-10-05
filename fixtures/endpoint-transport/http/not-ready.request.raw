@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"kind":"fault","name":"endpoint-not-ready"}
+{"body_b64":"eyJtZXRob2QiOiJob3N0LmRlc2NyaWJlIiwicGF5bG9hZCI6e30sInJwY0lkIjoicnBjLWhvc3QtMSIsInR5cGUiOiJjbGllbnQtcmVxdWVzdCJ9","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","84"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/host.describe"}

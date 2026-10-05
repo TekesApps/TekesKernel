@@ -1,0 +1,102 @@
+//! Durable projection from Kernel ledgers and worker stream frames to the
+//! Client-owned Session Endpoint v2 contract.
+
+mod all_session;
+mod approval_policy;
+mod attachment;
+mod carrier_adapter;
+mod history;
+mod host;
+mod hub;
+mod idempotency;
+mod journal;
+mod management;
+mod mux;
+mod projection;
+mod requests;
+mod respond;
+mod rpc;
+mod service;
+mod session_event_registry_generated;
+mod stitch;
+mod stream_queue;
+mod types;
+
+pub use all_session::{AllSessionMux, AllSessionMuxError, AllSessionMuxHandle};
+pub use approval_policy::{
+    ApprovalOption, ApprovalPolicy, PERMISSION_MODE_DANGER_FULL_ACCESS, PERMISSION_MODE_IDS,
+    PERMISSION_MODE_READ_ONLY, PERMISSION_MODE_WORKSPACE_WRITE, ServerApprovalState,
+};
+pub use attachment::{
+    AttachmentAuthority, AttachmentErrorReason, AttachmentPolicy, AttachmentReadError,
+    DEFAULT_FILE_MEDIA_TYPE, FileAttachment, FileAttachmentRef, ImageAttachment,
+    ImageAttachmentRef, ImageMediaType, MaterializedPrompt, PromptMaterializeError, PromptPart,
+    UPLOADS_DIR, UploadReceipt, UploadedFile, project_content_blocks,
+};
+pub use carrier_adapter::{
+    CarrierRespondHandler, CarrierStreamHandler, ComposedEndpointCarrierHost,
+    JournalRespondHandler, LocatedRespond, RespondAuthorReceipt, RespondAuthority, RespondDelivery,
+    SESSION_ENDPOINT_PUBLIC_METHODS,
+};
+pub use history::{HistoryError, HistoryPage, history_page};
+pub use host::{
+    CallContext, CarrierHostFuture, DrainSignal, DurableHandoffError, DurableHandoffProof,
+    DurableHandoffSignal, EndpointCarrierHost, EndpointDispatchError, EndpointDispatcher,
+    EndpointHost, EndpointHostCall, EndpointHostFuture, EndpointStream, EndpointStreamReceiver,
+    HostFailure, HostReadiness, MethodClass, SessionHostDescription, SessionStream,
+    SessionStreamReceiver, StreamChannel, StreamErrorCode, StreamFailure,
+};
+pub use hub::{
+    DEFAULT_SUBSCRIPTION_MAX_BYTES, DEFAULT_SUBSCRIPTION_MAX_FRAMES, EndpointSubscription,
+    EndpointSubscriptionHub, HostFrame, HostFrameKind, HubError, MAX_MUX_SESSIONS, MuxFrame,
+    MuxRegistration, MuxReplayRegistration, SubscriptionBaseline, SubscriptionPoll,
+};
+pub use idempotency::{
+    RpcBegin, RpcClaim, RpcDurableIdentity, RpcLookup, RpcRegistry, RpcRegistryError,
+};
+pub use journal::{EndpointJournal, JOURNAL_FILE, JournalError, JournalRecord, LOCK_FILE};
+pub use management::{
+    ForkSessionOperation, LEGACY_ORIGIN_CLIENT, ManagementError, ManagementStore, ORIGIN_CLIENT,
+    PendingQueueTransaction, QueueRecoveryDriver, QueueTransactionCompletion,
+    QueueTransactionDecision, QueueTransactionOperation, QueueTransactionState,
+    SelectModelOperation, SelectedModel, SessionCreateOperation, WorkspaceList, WorkspaceView,
+    is_endpoint_origin_client,
+};
+pub use mux::{
+    ActionableRegistry, DEFAULT_JOURNAL_WINDOW_MESSAGES, JournalFollow,
+    MAX_JOURNAL_WINDOW_MESSAGES, MuxHostDescription, MuxHostProduct, MuxProtocolError,
+    Retryability, SESSION_ENDPOINT_PROTOCOL_VERSION, SessionActionable, SessionActionableKind,
+    SessionAddress, SessionControlItem, SessionEndpointCapability, SessionErrorCategory,
+    SessionJournalPage, SessionJournalSnapshot, SessionMuxClientFrame, SessionMuxGeneration,
+    SessionMuxServerFrame, SessionRemoteError, SessionStreamTarget, SessionSummary,
+    SessionSyncFrame, WorkspaceBaseline, WorkspaceSummary, frozen_history_page,
+    open_journal_follow,
+};
+pub use projection::{AcceptedStreamFrame, ProjectionError, Projector};
+pub use requests::{
+    PendingRequest, RequestError, RequestFrameType, RequestState, ResolutionOutcome,
+    derive_line_request_rpc_id, derive_request_rpc_id,
+};
+pub use respond::{
+    RespondAuthorization, RespondDecision, RespondLifecycle, RespondLifecycleError,
+    RespondPrepareContext, RespondRejectionReason,
+};
+pub use rpc::{
+    ClientRequest, ClientResponse, ClientResponseResult, MuxBuffer, MuxBufferError, RespondReceipt,
+    RpcError, RpcResult, ServerRequest, ServerResponse, validate_request, validate_response,
+    validate_rpc_id,
+};
+pub use service::{
+    AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, ArchiveResult,
+    MutationReceipt, NativeEndpoint, NativeEndpointError, SESSION_NOTICE_OPERATION,
+    SessionInventoryItem, SessionNotice, SessionNoticeSeverity, UnarchiveResult,
+};
+pub use stitch::{StitchDecision, StitchError, stitch_window};
+pub use stream_queue::{EndpointFrameQueue, FrameQueueError};
+pub use types::{
+    EndpointTypeError, SessionEvent, SessionHistoryEntry, SessionToolEventView, SurfaceOperation,
+    validate_session_id,
+};
+
+mod client_wire;
+pub use client_wire::{client_mux_frames, client_sync_frames};

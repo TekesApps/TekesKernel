@@ -1,0 +1,38 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"query\":\"contract\"}",
+      "id" : "call_lookup",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "responses",
+    "continuation_cache_routing_key" : "tekes-1b9337ffa2678ec0",
+    "has_final_answer_phase" : "false",
+    "provider" : "openai",
+    "response_id" : "resp_snapshot",
+    "status" : "completed"
+  },
+  "reasoningData" : "Need lookup before answering.",
+  "status" : "completed",
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : 7,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 100,
+    "model" : "gpt-5-snapshot",
+    "outputTokens" : 20,
+    "providerDetails" : {
+
+    },
+    "reasoningTokens" : 11,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 120
+  }
+}

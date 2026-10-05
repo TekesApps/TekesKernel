@@ -1,0 +1,29 @@
+#!/bin/sh
+set -eu
+
+: "${TEKES_KERNEL_FIXTURES:=$(pwd)/fixtures}"
+export TEKES_KERNEL_FIXTURES
+
+run_gate() {
+  cargo test -p conformance --locked "$1" -- --exact
+}
+
+run_gate slice1_gate_28_canonical_envelope_fixtures
+run_gate slice1_gate_17_downgrade_evolution
+run_gate slice1_gate_32_resume_policy_encoding
+run_gate slice1_gate_18_upgrade_gate_barrier
+run_gate slice1_gate_29_torn_tail_fault_injection
+run_gate slice1_gate_30_checkpoint_marker_replay
+run_gate slice1_gate_31_protocol_negotiation_reject
+run_gate slice1_gate_04_attempt_lease_commit
+run_gate slice1_gate_05_outcome_usage_crash_window
+run_gate slice1_gate_06_completed_turn_usage_exit
+run_gate slice1_gate_33_run_mode_arbitration
+run_gate slice1_gate_34_slow_hold_lifecycle
+run_gate slice1_gate_01_cold_boot_create_retry
+run_gate slice1_gate_02_dead_target_keyed_delivery
+run_gate slice1_gate_03_alive_target_receipt_correlation
+run_gate slice1_gate_13_busy_unknown_worker
+run_gate slice1_gate_19_canary_per_run_attribution
+run_gate slice1_gate_12_supervisor_total_failure
+run_gate slice1_gate_14_stop_mid_grandchild_crash

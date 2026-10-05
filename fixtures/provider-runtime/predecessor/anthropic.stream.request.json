@@ -1,0 +1,51 @@
+{
+  "body" : {
+    "max_tokens" : 4096,
+    "messages" : [
+      {
+        "content" : [
+          {
+            "text" : "Use lookup and produce a stable response.",
+            "type" : "text"
+          }
+        ],
+        "role" : "user"
+      }
+    ],
+    "model" : "claude-snapshot",
+    "stream" : true,
+    "system" : "You are a contract test adapter.",
+    "tool_choice" : {
+      "name" : "lookup",
+      "type" : "tool"
+    },
+    "tools" : [
+      {
+        "description" : "Look up stable contract-test facts.",
+        "input_schema" : {
+          "properties" : {
+            "query" : {
+              "description" : "Lookup query",
+              "type" : "string"
+            }
+          },
+          "required" : [
+            "query"
+          ],
+          "type" : "object"
+        },
+        "name" : "lookup"
+      }
+    ]
+  },
+  "callerId" : "snapshot-anthropic-stream",
+  "headers" : {
+    "Accept" : "text/event-stream",
+    "anthropic-version" : "2023-06-01",
+    "Content-Type" : "application/json",
+    "x-api-key" : "anthropic-key"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://api.anthropic.test/v1/messages"
+}

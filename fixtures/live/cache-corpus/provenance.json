@@ -1,0 +1,7 @@
+{
+  "repository": "TekesAppServer",
+  "commit": "e4df9dc94e60025d0e8f62bcf98c95241181793a",
+  "path": "Tests/Core/AppServerWorkflowSwiftTestingTests.swift",
+  "source_sha256": "4f2e505b8cc51bf388c642b974eb7c66134a46cac25f7bea9c02af7c1851353d",
+  "extraction": "Swift multiline indentation removed and escaped line breaks joined; mainlineConstraint interpolation expanded without editing prompt text."
+}

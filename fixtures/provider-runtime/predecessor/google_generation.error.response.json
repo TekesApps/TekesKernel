@@ -1,0 +1,10 @@
+{
+  "promptFeedback": {
+    "blockReason": "SAFETY"
+  },
+  "usageMetadata": {
+    "promptTokenCount": 12,
+    "totalTokenCount": 12
+  },
+  "responseId": "google_error"
+}

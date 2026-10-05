@@ -1,0 +1,38 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"query\":\"contract\"}",
+      "id" : "call_lookup",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "generate_content",
+    "finish_reason" : "STOP",
+    "model_version" : "gemini-snapshot-2026-06",
+    "provider" : "google",
+    "response_id" : "google_snapshot",
+    "status" : "STOP"
+  },
+  "reasoningData" : null,
+  "status" : "STOP",
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : null,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 70,
+    "model" : "gemini-snapshot",
+    "outputTokens" : 9,
+    "providerDetails" : {
+
+    },
+    "reasoningTokens" : 5,
+    "toolUseInputTokens" : 3,
+    "totalTokens" : 79
+  }
+}

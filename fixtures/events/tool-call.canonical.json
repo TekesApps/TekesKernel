@@ -1,0 +1,1 @@
+{"args":{"argv":["ls","-la"]},"attempt":"a1","call":"c1","kind":"tool_call","name":"shell","seq":6,"source":"provider","ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}

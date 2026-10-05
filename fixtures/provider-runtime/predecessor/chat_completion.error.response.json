@@ -1,0 +1,10 @@
+{
+  "id": "chatcmpl_error",
+  "object": "chat.completion",
+  "model": "chat-snapshot",
+  "error": {
+    "message": "rate limited",
+    "type": "rate_limit_error",
+    "code": "rate_limit"
+  }
+}

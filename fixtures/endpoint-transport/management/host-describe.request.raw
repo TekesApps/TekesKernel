@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJob3N0LmRlc2NyaWJlIiwicGF5bG9hZCI6e30sInJwY0lkIjoicnBjLW1nbXQtaG9zdC1kZXNjcmliZS1vayIsInR5cGUiOiJjbGllbnQtcmVxdWVzdCJ9","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","99"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/host.describe"}
+{"body_b64":"eyJtZXRob2QiOiJob3N0LmRlc2NyaWJlIiwicGF5bG9hZCI6e30sInJwY0lkIjoicnBjLW1nbXQtaG9zdC1kZXNjcmliZS1lcnIiLCJ0eXBlIjoiY2xpZW50LXJlcXVlc3QifQ==","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","100"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/host.describe"}

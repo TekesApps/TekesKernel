@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJzdHJlYW0vZXJyb3IiLCJwYXlsb2FkIjp7ImVycm9yIjp7ImNvZGUiOiJwcm90b2NvbC1lcnJvciIsImRldGFpbHMiOnt9LCJtZXNzYWdlIjoicHJvdG9jb2wtZXJyb3IifSwidHlwZSI6InN0cmVhbS9lcnJvciJ9LCJycGNJZCI6InB1c2gtcHJvdG9jb2wtMSIsInR5cGUiOiJzZXJ2ZXItcmVxdWVzdCJ9","kind":"ws-text"}
+{"code":1002,"kind":"ws-close","reason":"protocol-error"}

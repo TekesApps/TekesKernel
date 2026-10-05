@@ -1,0 +1,2 @@
+{"approval_response":{"call":"c1","delivery":"d9","grant":false,"origin":{"client":"cli","key":"k11","op":"approve","principal":"frank","target":"t1"}}}
+{"receipt":{"deduplicated":false,"delivery":"d9","seq":11}}

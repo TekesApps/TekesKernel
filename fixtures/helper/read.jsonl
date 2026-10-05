@@ -1,0 +1,2 @@
+{"request":{"id":"r1","operation":{"read":{"max_bytes":4096,"path":"a.txt","root":"workspace"}}}}
+{"result":{"id":"r1","value":{"read":{"bytes":2,"content":{"data":"ok","encoding":"utf8"},"sha256":"sha256-2689367b205c16ce32ed4200942b8b1e324f9e1cfc6a0e8d9a8f1d450c7bcb6e"}}}}

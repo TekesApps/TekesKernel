@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]],"kind":"ws-open","path":"/api/events.mux"}
+{"kind":"fault","name":"unknown-required-session-event"}

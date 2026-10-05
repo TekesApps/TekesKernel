@@ -1,0 +1,2 @@
+{"credential_get":{"adapter":"responses","attempt":"a1","credential_id":"main","endpoint_origin":"https://api.example:443","purpose":"provider","request_id":"bb0f97d89ed8c57763d03410c8a96c7ee4fd2a381b5153f843146038c455ca7d"}}
+{"credential_get":{"adapter":"anthropic","attempt":"a1","credential_id":"main","endpoint_origin":"https://api.example:443","purpose":"provider","request_id":"bb0f97d89ed8c57763d03410c8a96c7ee4fd2a381b5153f843146038c455ca7d"}}

@@ -1,0 +1,34 @@
+{
+  "error" : null,
+  "functionCalls" : [
+
+  ],
+  "isFinalAnswer" : true,
+  "rawMetadata" : {
+    "api" : "responses",
+    "continuation_cache_routing_key" : "tekes-1b9337ffa2678ec0",
+    "has_final_answer_phase" : "true",
+    "provider" : "openai",
+    "response_id" : "resp_stream",
+    "status" : "completed"
+  },
+  "reasoningData" : null,
+  "status" : "completed",
+  "text" : "Streamed answer",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : null,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 31,
+    "model" : "gpt-5-snapshot",
+    "outputTokens" : 4,
+    "providerDetails" : {
+
+    },
+    "reasoningTokens" : 2,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 35
+  }
+}

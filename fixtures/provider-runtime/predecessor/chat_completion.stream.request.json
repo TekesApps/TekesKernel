@@ -1,0 +1,58 @@
+{
+  "body" : {
+    "messages" : [
+      {
+        "content" : "You are a contract test adapter.",
+        "role" : "system"
+      },
+      {
+        "content" : "Use lookup and produce a stable response.",
+        "role" : "user"
+      }
+    ],
+    "model" : "gpt-4.1-snapshot",
+    "stream" : true,
+    "stream_options" : {
+      "include_usage" : true
+    },
+    "temperature" : 0.25,
+    "tool_choice" : {
+      "function" : {
+        "name" : "lookup"
+      },
+      "type" : "function"
+    },
+    "tools" : [
+      {
+        "function" : {
+          "description" : "Look up stable contract-test facts.",
+          "name" : "lookup",
+          "parameters" : {
+            "properties" : {
+              "query" : {
+                "description" : "Lookup query",
+                "type" : "string"
+              }
+            },
+            "required" : [
+              "query"
+            ],
+            "type" : "object"
+          },
+          "strict" : true
+        },
+        "type" : "function"
+      }
+    ],
+    "top_p" : 0.75
+  },
+  "callerId" : "snapshot-chat-stream",
+  "headers" : {
+    "Accept" : "text/event-stream",
+    "Authorization" : "Bearer chat-key",
+    "Content-Type" : "application/json"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://api.compat.test/v1/chat/completions"
+}

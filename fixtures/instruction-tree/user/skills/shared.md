@@ -1,0 +1,1 @@
+User shared skill.

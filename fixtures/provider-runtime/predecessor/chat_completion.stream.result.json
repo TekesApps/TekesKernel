@@ -1,0 +1,37 @@
+{
+  "error" : null,
+  "functionCalls" : [
+    {
+      "arguments" : "{\"query\":\"stream\"}",
+      "id" : "call_stream",
+      "name" : "lookup"
+    }
+  ],
+  "isFinalAnswer" : false,
+  "rawMetadata" : {
+    "api" : "chat_completions",
+    "provider" : "OpenAICompat",
+    "reasoning_content" : "Need stream lookup.",
+    "response_id" : "chat_stream",
+    "status" : "tool_calls"
+  },
+  "reasoningData" : "Need stream lookup.",
+  "status" : "tool_calls",
+  "text" : "",
+  "usage" : {
+    "cacheCreationInputTokens" : null,
+    "cachedInputTokens" : null,
+    "costDetails" : {
+
+    },
+    "inputTokens" : 44,
+    "model" : "gpt-4.1-snapshot",
+    "outputTokens" : 7,
+    "providerDetails" : {
+
+    },
+    "reasoningTokens" : 3,
+    "toolUseInputTokens" : null,
+    "totalTokens" : 51
+  }
+}

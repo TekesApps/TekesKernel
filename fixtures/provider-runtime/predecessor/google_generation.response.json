@@ -1,0 +1,30 @@
+{
+  "candidates": [
+    {
+      "content": {
+        "role": "model",
+        "parts": [
+          {
+            "functionCall": {
+              "id": "call_lookup",
+              "name": "lookup",
+              "args": {
+                "query": "contract"
+              }
+            }
+          }
+        ]
+      },
+      "finishReason": "STOP"
+    }
+  ],
+  "usageMetadata": {
+    "promptTokenCount": 70,
+    "candidatesTokenCount": 9,
+    "totalTokenCount": 79,
+    "thoughtsTokenCount": 5,
+    "toolUsePromptTokenCount": 3
+  },
+  "modelVersion": "gemini-snapshot-2026-06",
+  "responseId": "google_snapshot"
+}

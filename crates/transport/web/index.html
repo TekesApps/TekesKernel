@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#f6f6f7">
+  <title>Tekes</title>
+  <link rel="stylesheet" href="/web/assets/app.css">
+  <script type="module" src="/web/assets/app.js"></script>
+</head>
+<body>
+  <div class="app-shell" id="app-shell">
+    <aside class="sidebar" aria-label="Sessions">
+      <header class="sidebar-header">
+        <div class="brand" aria-label="Tekes">
+          <span class="brand-mark" aria-hidden="true">T</span>
+          <span class="brand-name">Tekes</span>
+        </div>
+        <button class="icon-button" id="new-session" type="button" aria-label="New session" title="New session">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v14M3 10h14"/></svg>
+        </button>
+      </header>
+      <div class="sidebar-scroll" id="workspace-list" aria-live="polite">
+        <div class="sidebar-loading"><span class="pulse-dot"></span>Connecting to TekesKernel</div>
+      </div>
+      <footer class="sidebar-footer">
+        <span class="status-dot" id="connection-dot"></span>
+        <span id="connection-label">Connecting</span>
+        <span class="build-label" id="build-label"></span>
+      </footer>
+    </aside>
+
+    <main class="conversation" aria-label="Conversation">
+      <header class="conversation-header">
+        <button class="icon-button sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Toggle sessions">
+          <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="2.5" y="3" width="15" height="14" rx="2"/><path d="M7 3v14"/></svg>
+        </button>
+        <div class="title-block">
+          <h1 id="session-title">Select a session</h1>
+          <p id="session-subtitle">Your native Tekes workspace, in the browser.</p>
+        </div>
+        <div class="session-actions">
+          <button class="icon-button" id="fork-session" type="button" aria-label="Fork session" title="Fork session" hidden>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3v7a4 4 0 0 0 4 4h4M10 6l4-3v6l-4-3ZM14 11v6"/></svg>
+          </button>
+          <button class="icon-button" id="archive-session" type="button" aria-label="Archive session" title="Archive session" hidden>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M3 6h14M5 6v10h10V6M3.5 3h13v3h-13zM8 10h4"/></svg>
+          </button>
+          <button class="stop-button" id="stop-button" type="button" hidden>
+            <span class="stop-glyph" aria-hidden="true"></span>Stop
+          </button>
+        </div>
+      </header>
+
+      <section class="transcript-scroll" id="transcript-scroll" tabindex="0">
+        <div class="empty-state" id="empty-state">
+          <div class="empty-mark" aria-hidden="true">T</div>
+          <h2>Work with Tekes</h2>
+          <p>Select an existing session or create a new one.</p>
+        </div>
+        <div class="transcript" id="transcript" aria-live="polite"></div>
+      </section>
+
+      <section class="request-panel" id="request-panel" hidden></section>
+
+      <footer class="composer-wrap">
+        <form class="composer" id="composer">
+          <div class="composer-input">
+            <textarea id="prompt-input" rows="1" placeholder="Describe what you want Tekes to do…" aria-label="Message" disabled></textarea>
+            <button class="send-button" id="send-button" type="submit" aria-label="Send message" disabled>
+              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 16V4M5.5 8.5 10 4l4.5 4.5"/></svg>
+            </button>
+          </div>
+          <div class="composer-toolbar">
+            <div class="composer-controls">
+              <label class="model-chip" id="model-chip-wrap" hidden>
+                <span class="model-dot" aria-hidden="true"></span>
+                <select id="model-select" aria-label="Model"></select>
+                <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4 3 3 3-3"/></svg>
+              </label>
+              <span class="queue-label" id="queue-label" hidden>Steers the current turn</span>
+            </div>
+          </div>
+        </form>
+        <p class="composer-note">Tekes can make mistakes. Review commands and file changes.</p>
+      </footer>
+    </main>
+  </div>
+  <div class="toast-stack" id="toast-stack" aria-live="assertive"></div>
+</body>
+</html>

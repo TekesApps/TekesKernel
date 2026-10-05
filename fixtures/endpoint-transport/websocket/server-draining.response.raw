@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJzdHJlYW0vZXJyb3IiLCJwYXlsb2FkIjp7ImVycm9yIjp7ImNvZGUiOiJzZXJ2ZXItZHJhaW5pbmciLCJkZXRhaWxzIjp7fSwibWVzc2FnZSI6InNlcnZlci1kcmFpbmluZyJ9LCJ0eXBlIjoic3RyZWFtL2Vycm9yIn0sInJwY0lkIjoicHVzaC1kcmFpbi0xIiwidHlwZSI6InNlcnZlci1yZXF1ZXN0In0=","kind":"ws-text"}
+{"code":1013,"kind":"ws-close","reason":"server-draining"}

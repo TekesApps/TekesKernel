@@ -1,0 +1,13 @@
+# DSH A/B: replace the agent prompt (identity, persona, every tool-guidance
+# section, runtime-context snapshots) with one line, keeping the full tool
+# catalog. The system-prompt service must stay mounted because tool plugins
+# depend on it, so ab-complete-prompt.mjs registers a section that declares
+# itself the complete prompt.
+# Applied through scripts/run-dsh-long-session-cache.py --cordis-patch ...
+#   --cordis-patch-asset fixtures/live/cache-corpus/ab-complete-prompt.mjs
+- insert:
+    - id: ab-complete-prompt
+      name: ./ab-complete-prompt.mjs
+      config:
+        text: You are a helpful software engineer assistant.
+        suppressRuntimeContext: true

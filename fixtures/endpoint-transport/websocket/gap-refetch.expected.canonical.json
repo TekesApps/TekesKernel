@@ -1,0 +1,1 @@
+{"carrier_status":"open","connection_action":"tail-refetch","durable_effect":"none","rpc_result":{"ok":true,"value":{"events":[{"event":{"data":{"turn":1},"seq":7,"time":1787713201000,"type":"turn/start"}},{"event":{"data":{"chunk":{"index":0,"text":"gap","type":"text-delta"},"step":0,"turn":1},"seq":8,"time":1787713201020,"type":"assistant/chunk"}}],"hasMore":false}}}

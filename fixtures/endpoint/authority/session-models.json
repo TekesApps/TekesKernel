@@ -1,0 +1,20 @@
+{
+  "current": { "provider": "deepseek", "model": "deepseek-chat", "reasoningEffort": "medium" },
+  "routable": true,
+  "groups": [{
+    "id": "deepseek",
+    "name": "DeepSeek",
+    "models": [{
+      "id": "deepseek-chat",
+      "name": "DeepSeek Chat",
+      "reasoning": {
+        "efforts": [
+          { "id": "low", "name": "Low" },
+          { "id": "medium", "name": "Medium" }
+        ],
+        "defaultEffort": "medium"
+      }
+    }]
+  }],
+  "failures": [{ "id": "offline", "name": "Offline Provider", "message": "unavailable" }]
+}

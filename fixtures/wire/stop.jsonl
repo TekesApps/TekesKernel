@@ -1,0 +1,2 @@
+{"stop":{"delivery":"d4","generation":1,"origin":{"client":"cli","key":"k12","op":"stop","principal":"frank","target":"t1"}}}
+{"receipt":{"deduplicated":false,"delivery":"d4","seq":13}}

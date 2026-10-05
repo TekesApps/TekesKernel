@@ -1,0 +1,45 @@
+{
+  "mux": [
+    {
+      "type": "server-request",
+      "rpcId": "push-sub-1",
+      "method": "session/subscribed",
+      "payload": { "type": "session/subscribed", "sessionId": "session-1", "lastSeq": 6 }
+    },
+    {
+      "type": "server-request",
+      "rpcId": "push-event-1",
+      "method": "session/event",
+      "payload": {
+        "type": "session/event",
+        "sessionId": "session-1",
+        "event": {
+          "type": "turn/start",
+          "seq": 7,
+          "time": 1787713201000,
+          "data": { "turn": 1 }
+        }
+      }
+    },
+    {
+      "type": "server-request",
+      "rpcId": "push-projection-1",
+      "method": "session/projection",
+      "payload": {
+        "type": "session/projection",
+        "sessionId": "session-1",
+        "key": "sessionTitle",
+        "value": { "title": "New title" },
+        "seq": 7
+      }
+    }
+  ],
+  "host": [
+    {
+      "type": "server-request",
+      "rpcId": "push-host-1",
+      "method": "host/session-status",
+      "payload": { "type": "host/session-status", "sessionId": "session-1", "running": true }
+    }
+  ]
+}

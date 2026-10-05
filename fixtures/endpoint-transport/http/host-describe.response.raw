@@ -1,0 +1,2 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJyZXN1bHQiOnsib2siOnRydWUsInZhbHVlIjp7ImF0dGFjaGVkU2Vzc2lvbnMiOjEsImNhbk9wZW5QYXRoIjp0cnVlLCJjd2QiOiIvd29ya3NwYWNlIiwiaG9tZSI6Ii9Vc2Vycy9leGFtcGxlIiwibW9kZWwiOiJkZWVwc2Vlay1jaGF0IiwicHJvdmlkZXIiOiJkZWVwc2VlayIsInZlcnNpb24iOiIwLjEuMC1yYy41In19LCJycGNJZCI6InJwYy1ob3N0LTEiLCJ0eXBlIjoic2VydmVyLXJlc3BvbnNlIn0=","headers":[["content-length","230"],["content-type","application/json"]],"kind":"http-response","status":200}

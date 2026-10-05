@@ -1,0 +1,3 @@
+# tekes-endpoint-transport
+{"body_b64":"eyJtZXRob2QiOiJ3b3Jrc3BhY2UubGlzdCIsInBheWxvYWQiOnt9LCJycGNJZCI6InJwYy1tZ210LXdvcmtzcGFjZS1saXN0LW9rIiwidHlwZSI6ImNsaWVudC1yZXF1ZXN0In0=","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","101"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/workspace.list"}
+{"body_b64":"eyJtZXRob2QiOiJ3b3Jrc3BhY2UubGlzdCIsInBheWxvYWQiOnt9LCJycGNJZCI6InJwYy1tZ210LXdvcmtzcGFjZS1saXN0LWVyciIsInR5cGUiOiJjbGllbnQtcmVxdWVzdCJ9","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","102"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/workspace.list"}

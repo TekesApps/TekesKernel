@@ -1,0 +1,1 @@
+{"format":1,"servers":[{"always_on":false,"enabled":true,"project_trusted":true,"protocol_mode":"legacy","reference":{"name":"fixture","scope":"project","workspace_id":"ws"},"transport":{"command":["/usr/bin/true"],"environment":{},"kind":"stdio"}}]}

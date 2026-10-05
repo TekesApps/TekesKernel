@@ -1,0 +1,1 @@
+{"hello":{"max":1,"min":1,"proto":"tekes-exec-helper"},"request":{"id":"x","operation":{"read":{"max_bytes":1,"path":"x","root":"r"}}}}

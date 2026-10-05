@@ -1,0 +1,1 @@
+{"args":{"$spill":{"asset":"sha256-ta","bytes":30000}},"attempt":"a2","call":"c11","kind":"tool_call","name":"patch","seq":31,"source":"provider","ts":"2026-08-26T09:00:00.000Z","turn":2,"v":1}

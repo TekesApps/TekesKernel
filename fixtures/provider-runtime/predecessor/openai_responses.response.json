@@ -1,0 +1,33 @@
+{
+  "id": "resp_snapshot",
+  "status": "completed",
+  "output": [
+    {
+      "type": "reasoning",
+      "summary": [
+        {
+          "type": "summary_text",
+          "text": "Need lookup before answering."
+        }
+      ]
+    },
+    {
+      "type": "function_call",
+      "status": "completed",
+      "call_id": "call_lookup",
+      "name": "lookup",
+      "arguments": "{\"query\":\"contract\"}"
+    }
+  ],
+  "usage": {
+    "input_tokens": 100,
+    "output_tokens": 20,
+    "total_tokens": 120,
+    "input_tokens_details": {
+      "cached_tokens": 7
+    },
+    "output_tokens_details": {
+      "reasoning_tokens": 11
+    }
+  }
+}

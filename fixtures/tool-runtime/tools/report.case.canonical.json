@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"supervisor_control","effect":"thread_control","validation":"accepted"},"input":{"arguments":{"result":"ok"},"name":"report"},"preconditions":{"availability":"role_subagent","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

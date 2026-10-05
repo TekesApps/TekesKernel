@@ -1,0 +1,1 @@
+{"nextCursor":"page-2","tools":[{"annotations":{"destructiveHint":false,"readOnlyHint":true},"description":"Echo one value","inputSchema":{"additionalProperties":false,"properties":{"value":{"type":"string"}},"required":["value"],"type":"object"},"name":"echo"}]}

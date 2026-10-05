@@ -1,0 +1,1 @@
+{"argv":["/usr/bin/true"],"env":{},"failure":"closed","format":1,"id":"pre.txt","phase":"pre","stderr_bytes":4096,"stdout_bytes":4096,"timeout_ms":1000}

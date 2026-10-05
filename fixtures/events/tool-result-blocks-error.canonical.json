@@ -1,0 +1,1 @@
+{"call":"c9","content":[{"call":"c9","content":[{"text":"boom","type":"text"}],"error":true,"type":"tool-result"}],"kind":"tool_result","outcome":"error","seq":8,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}

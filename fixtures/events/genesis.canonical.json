@@ -1,0 +1,1 @@
+{"config":{"digest":"cfg-1"},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"k1","origin_tuple":{"client":"cli","key":"k1","op":"create","principal":"frank","target":"018f0000-0000-7000-8000-000000000000"},"resume":"never","seq":1,"thread":"018f0000-0000-7000-8000-000000000000","ts":"2026-08-26T09:00:00.000Z","v":1,"workspace":"ws-main"}

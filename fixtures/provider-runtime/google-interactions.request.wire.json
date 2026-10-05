@@ -1,0 +1,1 @@
+{"input":[{"content":[{"text":"hello","type":"text"}],"role":"user","type":"message"}],"model":"fixture-model","store":true,"stream":false,"system_instruction":"","tools":[]}

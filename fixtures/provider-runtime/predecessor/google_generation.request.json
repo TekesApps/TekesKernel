@@ -1,0 +1,63 @@
+{
+  "body" : {
+    "contents" : [
+      {
+        "parts" : [
+          {
+            "text" : "You are a contract test adapter.\n\nUse lookup and produce a stable response."
+          },
+          {
+            "file_data" : {
+              "file_uri" : "gs://snapshot-bucket/video.mp4",
+              "mime_type" : "video/mp4"
+            }
+          }
+        ],
+        "role" : "user"
+      }
+    ],
+    "generationConfig" : {
+      "temperature" : 0.25,
+      "topP" : 0.75
+    },
+    "toolConfig" : {
+      "functionCallingConfig" : {
+        "allowedFunctionNames" : [
+          "lookup"
+        ],
+        "mode" : "ANY"
+      }
+    },
+    "tools" : [
+      {
+        "functionDeclarations" : [
+          {
+            "description" : "Look up stable contract-test facts.",
+            "name" : "lookup",
+            "parameters" : {
+              "properties" : {
+                "query" : {
+                  "description" : "Lookup query",
+                  "type" : "string"
+                }
+              },
+              "required" : [
+                "query"
+              ],
+              "type" : "object"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "callerId" : "snapshot-google-generation",
+  "headers" : {
+    "Accept" : "application/json",
+    "Content-Type" : "application/json",
+    "x-goog-api-key" : "google-key"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://generativelanguage.googleapis.test/v1beta/models/gemini-snapshot:generateContent"
+}

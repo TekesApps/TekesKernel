@@ -1,0 +1,2 @@
+{"queue_edit":{"delivery":"d3","origin":{"client":"cli","key":"k9","op":"queue_edit","principal":"frank","target":"t1"},"supersedes":[{"from":10,"to":10}]}}
+{"receipt":{"deduplicated":false,"delivery":"d3","seq":12}}

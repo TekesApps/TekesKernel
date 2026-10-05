@@ -1,0 +1,1 @@
+{"allow_process":true,"backend":"linux-landlock-seccomp","landlock_abi_min":1,"network":"deny","read_roots":["/private/tmp/tekes"],"scratch":"/private/tmp/tekes/scratch","seccomp_classes":["basic","filesystem","process"],"write_roots":["/private/tmp/tekes/work"]}

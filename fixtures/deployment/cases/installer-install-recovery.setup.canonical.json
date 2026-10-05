@@ -1,0 +1,1 @@
+{"case":"installer-install-recovery","format":1,"gate":73,"initial":{"generation":0,"service":"absent","threads":[]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

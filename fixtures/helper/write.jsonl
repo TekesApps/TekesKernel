@@ -1,0 +1,2 @@
+{"request":{"id":"w1","operation":{"write":{"content":{"data":"new","encoding":"utf8"},"create":"upsert","path":"a.txt","root":"workspace"}}}}
+{"result":{"id":"w1","value":{"write":{"bytes":3,"sha256":"sha256-11507a0e2f5e69d5dfa40a62a1bd7b6ee57e6bcd85c67c9b8431b36fff21c437"}}}}

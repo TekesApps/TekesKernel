@@ -1,0 +1,1 @@
+{"call":"c2","grant":true,"kind":"approval_response","origin_key":"k11","origin_tuple":{"client":"cli","key":"k11","op":"approve","principal":"frank","target":"t1"},"seq":10,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}

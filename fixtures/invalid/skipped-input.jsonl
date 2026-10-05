@@ -1,0 +1,6 @@
+{"config":{"digest":"cfg"},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"k1","origin_tuple":{"client":"cli","key":"k1","op":"create","principal":"frank","target":"018f0000-0000-7000-8000-000000000003"},"resume":"never","seq":1,"thread":"018f0000-0000-7000-8000-000000000003","ts":"2026-08-26T09:00:00.000Z","v":1,"workspace":"ws"}
+{"content":[{"text":"first","type":"text"}],"kind":"input","origin_key":"k9","origin_tuple":{"client":"cli","key":"k9","op":"submit","principal":"frank","target":"t1"},"seq":2,"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"content":[{"text":"second","type":"text"}],"kind":"input","origin_key":"k8","origin_tuple":{"client":"cli","key":"k8","op":"submit","principal":"frank","target":"t1"},"seq":3,"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"binary":"tekes-worker-1.0.0","config_digest":"cfg","instruction_digest":"ins","kind":"run_start","mode":"ordinary","policy":"default","recovery_ordinal":0,"run":"r1","seq":4,"ts":"2026-08-26T09:00:00.000Z","v":1}
+{"kind":"turn_open","seq":5,"trigger":{"inputs":[3]},"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}
+{"kind":"settle","outcome":"completed","seq":6,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}

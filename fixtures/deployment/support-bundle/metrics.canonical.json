@@ -1,0 +1,1 @@
+{"metrics":[{"labels":{"classification":"complete-line","component":"supervisor"},"name":"corruptions_total","type":"counter","value":1},{"labels":{"component":"supervisor"},"name":"readiness","type":"gauge","value":0}],"ts":"2026-08-28T00:00:00.000000000Z","v":1}

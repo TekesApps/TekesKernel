@@ -1,0 +1,26 @@
+{
+  "format": 1,
+  "revision": 1,
+  "providers": [
+    {
+      "id": "deepseek-responses",
+      "name": "DeepSeek",
+      "adapter": "responses",
+      "dialect": "deepseek_responses_v1",
+      "endpoint_owner": "deepseek",
+      "gateway_translation": "direct",
+      "evidence_revision": "deepseek-direct-responses-v4-2026-07-31+function-json-schema-strict-v1",
+      "endpoint": "http://127.0.0.1:PROXY_PORT",
+      "credential_key": "deepseek",
+      "models": [
+        {
+          "id": "deepseek-flash",
+          "profile": "deepseek_responses_v1:deepseek-flash",
+          "enabled": true,
+          "context_window_tokens": 1000000,
+          "compact_trigger_tokens": 900000
+        }
+      ]
+    }
+  ]
+}

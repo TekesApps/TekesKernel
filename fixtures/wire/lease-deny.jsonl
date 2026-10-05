@@ -1,0 +1,2 @@
+{"lease_request":{"attempt":"a1","class":"anthropic-key1"}}
+{"lease":{"attempt":"a1","granted":false}}

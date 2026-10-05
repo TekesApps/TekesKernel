@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>Label</key><string>com.tekes.kernel.supervisor</string>
+<key>ProgramArguments</key><array><string>/Users/test/Library/Application Support/Tekes/Kernel/selector/bin/tekes-selector</string><string>--install-root</string><string>/Users/test/Library/Application Support/Tekes/Kernel</string><string>serve</string><string>--storage-root</string><string>/Users/test/.agents/threads</string><string>--listen</string><string>127.0.0.1:7347</string></array>
+<key>KeepAlive</key><true/><key>RunAtLoad</key><true/><key>ProcessType</key><string>Background</string>
+<key>StandardOutPath</key><string>/Users/test/.agents/logs/kernel/stdout.log</string><key>StandardErrorPath</key><string>/Users/test/.agents/logs/kernel/stderr.log</string>
+</dict></plist>

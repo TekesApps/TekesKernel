@@ -1,0 +1,4 @@
+# tekes-endpoint-transport
+{"headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"]],"kind":"ws-open","path":"/api/events.mux"}
+{"kind":"fault","name":"live-seq-skips-current-tail"}
+{"body_b64":"eyJtZXRob2QiOiJzZXNzaW9uLmhpc3RvcnkiLCJwYXlsb2FkIjp7Im1heE1lc3NhZ2VzIjo1MCwic2Vzc2lvbklkIjoiMDE4ZjAwMDAtMDAwMC03MDAwLTgwMDAtMDAwMDAwMDAwMDAzIn0sInJwY0lkIjoicnBjLWdhcC1oaXN0b3J5LTEiLCJ0eXBlIjoiY2xpZW50LXJlcXVlc3QifQ==","headers":[["authorization","Bearer AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"],["content-length","160"],["content-type","application/json"]],"kind":"http-request","method":"POST","path":"/api/session.history"}

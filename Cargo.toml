@@ -1,0 +1,69 @@
+[workspace]
+members = [
+    "crates/schema",
+    "crates/store",
+    "crates/worker-control",
+    "crates/profile",
+    "crates/tools",
+    "crates/provider",
+    "crates/mcp",
+    "crates/thread-search",
+    "crates/schedule",
+    "crates/endpoint",
+    "crates/transport",
+    "crates/selector",
+    "crates/product-installer",
+    "crates/deployment-tests",
+    "crates/engine",
+    "crates/test-support",
+    "crates/conformance",
+    "crates/worker",
+    "crates/supervisor",
+    "crates/plugins",
+    "crates/workspace-service",
+    "crates/host-files",
+    "crates/user-documents",
+    "crates/session-controls",
+]
+resolver = "2"
+
+[workspace.package]
+version = "0.2.0"
+edition = "2024"
+license = "MIT"
+rust-version = "1.85.1"
+description = "Agent execution kernel: append-only ledgers, one worker process per line of work, and a supervisor that serves the Session Endpoint"
+# The crates are not published to crates.io; several names (schema, store, engine) are generic.
+publish = false
+repository = "https://github.com/TekesApps/TekesKernel"
+homepage = "https://github.com/TekesApps/TekesKernel"
+
+[workspace.dependencies]
+base64 = "0.21.7"
+chrono = { version = "=0.4.45", default-features = false, features = ["clock", "serde"] }
+chrono-tz = "=0.10.4"
+futures-util = "0.3.31"
+image = { version = "=0.25.5", default-features = false, features = ["gif", "jpeg", "png", "webp"] }
+libc = "0.2.175"
+reqwest = { version = "=0.12.15", default-features = false, features = ["rustls-tls", "stream"] }
+ring = "0.17.14"
+rustix = { version = "1.1.4", features = ["fs"] }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.143"
+serde_json_canonicalizer = "0.3.2"
+sha2 = "0.10.9"
+subtle = "2.6.1"
+tempfile = "3.21.0"
+thiserror = "2.0.16"
+tokio = { version = "1.47.1", features = ["io-util", "macros", "net", "process", "rt", "rt-multi-thread", "sync", "time"] }
+uuid = { version = "1.18.1", features = ["v4"] }
+unicode-normalization = "0.1.24"
+url = "2.5.4"
+zeroize = "1.8.1"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+unsafe_op_in_unsafe_fn = "deny"
+
+[workspace.lints.clippy]
+all = "warn"

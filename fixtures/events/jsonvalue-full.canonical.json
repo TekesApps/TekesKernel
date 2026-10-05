@@ -1,0 +1,1 @@
+{"args":{"big":1e+21,"fallback":null,"flag":true,"neg":-1.5,"pi":3.14,"ratio":0.5,"tiny":1e-7},"attempt":"a2","call":"c10","kind":"tool_call","name":"render","seq":28,"source":"provider","ts":"2026-08-26T09:00:00.000Z","turn":2,"v":1}

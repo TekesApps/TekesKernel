@@ -1,0 +1,1 @@
+{"crash_points":[],"expected_events":[],"expected_result":{"backend":"worker_http","effect":"network_read","validation":"accepted"},"input":{"arguments":{"max_results":5,"query":"Tekes","topic":"general"},"name":"web_search"},"preconditions":{"availability":"conditional_credential","backend_dependency":"ready","schema_revision":"builtin-tools/schema-4"}}

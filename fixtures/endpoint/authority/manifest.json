@@ -1,0 +1,13 @@
+{
+  "contract": "direct-session-endpoint",
+  "version": 2,
+  "authority": "DSH Host API",
+  "fixtures": [
+    "rpc-envelopes.json",
+    "session-history.json",
+    "session-inventory.json",
+    "session-models.json",
+    "session-streams.json",
+    "unknown-events.json"
+  ]
+}

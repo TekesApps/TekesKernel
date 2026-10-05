@@ -1,0 +1,1 @@
+{"cwd":["/workspace/alpha","/workspace/beta"],"format":1,"id":"ws-main","name":"Main","policy":{"allowed_tools":["read","write"],"max_wall_seconds":600,"network":true,"provider":"openai","writable_roots":["/workspace/alpha","/workspace/beta"]},"revision":3}

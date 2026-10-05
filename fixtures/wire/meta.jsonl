@@ -1,0 +1,2 @@
+{"meta":{"delivery":"d11","origin":{"client":"cli","key":"k15","op":"rename","principal":"frank","target":"t1"},"title":"renamed thread"}}
+{"receipt":{"deduplicated":false,"delivery":"d11","seq":18}}

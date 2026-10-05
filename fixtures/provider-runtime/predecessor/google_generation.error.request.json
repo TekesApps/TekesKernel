@@ -1,0 +1,26 @@
+{
+  "body" : {
+    "contents" : [
+      {
+        "parts" : [
+          {
+            "text" : "You are a contract test.\n\nReturn a deterministic error shape."
+          }
+        ],
+        "role" : "user"
+      }
+    ],
+    "generationConfig" : {
+
+    }
+  },
+  "callerId" : "snapshot-error",
+  "headers" : {
+    "Accept" : "application/json",
+    "Content-Type" : "application/json",
+    "x-goog-api-key" : "google-key"
+  },
+  "method" : "POST",
+  "timeoutInterval" : null,
+  "url" : "https://generativelanguage.googleapis.test/v1beta/models/gemini-snapshot:generateContent"
+}

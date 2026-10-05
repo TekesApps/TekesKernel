@@ -1,0 +1,1 @@
+{"credentialFields":{"environment.API_TOKEN":{"credential_id":"sentinel-credential","operation":"replace"}},"server":{"always_on":false,"enabled":true,"project_trusted":true,"protocol_mode":"legacy","reference":{"name":"fixture","scope":"project","workspace_id":"ws"},"transport":{"command":["/usr/bin/true"],"environment":{},"kind":"stdio"}}}

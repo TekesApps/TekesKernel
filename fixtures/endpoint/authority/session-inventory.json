@@ -1,0 +1,36 @@
+{
+  "host": {
+    "version": "0.1.0-rc.5",
+    "cwd": "/workspace",
+    "provider": "deepseek",
+    "model": "deepseek-chat",
+    "attachedSessions": 1,
+    "home": "/Users/example",
+    "canOpenPath": true
+  },
+  "workspaces": {
+    "items": [{
+      "workspaceId": "workspace-1",
+      "path": "/workspace/project",
+      "title": "Project",
+      "sessionIds": ["session-1"],
+      "createdAt": "2026-08-26T03:00:00.000Z",
+      "updatedAt": "2026-08-26T03:01:00.000Z"
+    }],
+    "archivedSessionIds": []
+  },
+  "sessions": {
+    "items": [{
+      "sessionId": "session-1",
+      "updatedAt": 1787713200010,
+      "running": false,
+      "blank": false,
+      "cwd": "/workspace/project",
+      "agentPreset": "standard",
+      "projections": {
+        "asOfSeq": 6,
+        "values": { "sessionTitle": { "title": "Greeting" } }
+      }
+    }]
+  }
+}

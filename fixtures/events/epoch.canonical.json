@@ -1,0 +1,1 @@
+{"adapter":"anthropic","id":"e1","kind":"epoch","model":"claude-fable-5","reason":"initial","renderer":1,"seq":3,"system":{"asset":"sha256-aa","digest":"d1"},"tools":{"asset":"sha256-td1","digest":"td1"},"ts":"2026-08-26T09:00:00.000Z","v":1}

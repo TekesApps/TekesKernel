@@ -1,0 +1,95 @@
+[
+  {
+    "id": "text",
+    "prompt": "This is an AppServer live flow transport test. Reply with exactly this token and nothing else:\nFLOW_OK_DONE_TEXT",
+    "token": "FLOW_OK_DONE_TEXT",
+    "seed_files": {},
+    "call": null
+  },
+  {
+    "id": "write",
+    "prompt": "Use the apply_patch tool to create docs/flow-write.md.\nThe file content must be exactly:\nFLOW_OK\n\n\nAfter the file is written, provide the final answer exactly:\nFLOW_OK_DONE_WRITE",
+    "token": "FLOW_OK_DONE_WRITE",
+    "seed_files": {},
+    "call": {
+      "name": "apply_patch",
+      "arguments": {
+        "operation": "create_file",
+        "path": "docs/flow-write.md",
+        "diff": "+FLOW_OK\n+",
+        "summary": "AppServer flow smoke marker.",
+        "expected_artifact_version": 0
+      }
+    }
+  },
+  {
+    "id": "shell",
+    "prompt": "Use the shell tool to run `pwd` in the workspace. Then reply with exactly this token and nothing else:\nFLOW_OK_DONE_SHELL",
+    "token": "FLOW_OK_DONE_SHELL",
+    "seed_files": {},
+    "call": {
+      "name": "shell",
+      "arguments": {
+        "working_directory": "",
+        "max_duration_ms": null,
+        "command": null,
+        "program": "pwd",
+        "args": [],
+        "steps": [],
+        "failure_policy": "stop_on_error",
+        "writable_paths": [],
+        "artifact_outputs": []
+      }
+    }
+  },
+  {
+    "id": "read",
+    "prompt": "Use the read tool to read the file docs/seed.md. Then reply with exactly this token and nothing else:\nFLOW_OK_DONE_READ",
+    "token": "FLOW_OK_DONE_READ",
+    "seed_files": {
+      "docs/seed.md": "FLOW_SEED_MARKER\n"
+    },
+    "call": {
+      "name": "read",
+      "arguments": {
+        "path": "docs/seed.md",
+        "offset": null,
+        "limit": null
+      }
+    }
+  },
+  {
+    "id": "glob",
+    "prompt": "Use the glob tool to list files matching the pattern **/*.md. Then reply with exactly this token and nothing else:\nFLOW_OK_DONE_GLOB",
+    "token": "FLOW_OK_DONE_GLOB",
+    "seed_files": {
+      "docs/seed.md": "FLOW_SEED_MARKER\n"
+    },
+    "call": {
+      "name": "glob",
+      "arguments": {
+        "pattern": "**/*.md",
+        "path": null
+      }
+    }
+  },
+  {
+    "id": "grep",
+    "prompt": "Use the grep tool to search the workspace for the text FLOW_SEED_MARKER. Then reply with exactly this token and nothing else:\nFLOW_OK_DONE_GREP",
+    "token": "FLOW_OK_DONE_GREP",
+    "seed_files": {
+      "docs/seed.md": "FLOW_SEED_MARKER\n"
+    },
+    "call": {
+      "name": "grep",
+      "arguments": {
+        "pattern": "FLOW_SEED_MARKER",
+        "path": null,
+        "glob": null,
+        "output_mode": "files_with_matches",
+        "case_insensitive": null,
+        "context_lines": null
+      }
+    }
+  }
+]

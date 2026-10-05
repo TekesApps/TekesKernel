@@ -1,0 +1,1 @@
+{"carrier_status":"http-200","connection_action":"reject","durable_effect":{"identity":"rpc-prompt-1","kind":"input","seq":12},"rpc_result":{"error":{"code":"idempotency-conflict","details":{"operation":"session.cancel","rpcId":"rpc-prompt-1"},"message":"rpcId was already used for another request"},"ok":false}}

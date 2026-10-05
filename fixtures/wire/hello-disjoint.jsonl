@@ -1,0 +1,2 @@
+{"hello":{"max":3,"min":3,"proto":"tekes-worker"}}
+{"reject":{"reason":"no_mutual_version"}}

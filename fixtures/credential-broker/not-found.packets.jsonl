@@ -1,0 +1,2 @@
+{"credential_get":{"adapter":"responses","attempt":"a2","credential_id":"missing","endpoint_origin":"https://api.example:443","purpose":"provider","request_id":"5a991540b500554d22866604be3322352ae86dce7d62011328ca3f75b8f75246"}}
+{"credential_error":{"code":"not_found","request_id":"5a991540b500554d22866604be3322352ae86dce7d62011328ca3f75b8f75246"}}

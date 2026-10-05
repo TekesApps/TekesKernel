@@ -1,0 +1,1 @@
+{"carrier_status":"http-200","connection_action":"keep-open","durable_effect":"none","rpc_result":{"ok":true,"value":{"items":[{"blank":false,"cwd":"/workspace/project","projections":{"asOfSeq":6,"values":{"sessionTitle":{"title":"Greeting"}}},"running":false,"sessionId":"018f0000-0000-7000-8000-000000000003","updatedAt":1787875260000}]}}}

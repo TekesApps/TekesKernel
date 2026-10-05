@@ -1,0 +1,7 @@
+data: {"id":"chat_stream","object":"chat.completion.chunk","model":"chat-snapshot","choices":[{"delta":{"role":"assistant","reasoning_content":"Need stream lookup. "}}]}
+
+data: {"id":"chat_stream","object":"chat.completion.chunk","model":"chat-snapshot","choices":[{"delta":{"tool_calls":[{"index":0,"id":"call_stream","type":"function","function":{"name":"lookup","arguments":"{\"query\":"}}]}}]}
+
+data: {"id":"chat_stream","object":"chat.completion.chunk","model":"chat-snapshot","choices":[{"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"stream\"}"}}]},"finish_reason":"tool_calls"}],"usage":{"prompt_tokens":44,"completion_tokens":7,"total_tokens":51,"completion_tokens_details":{"reasoning_tokens":3}}}
+
+data: [DONE]

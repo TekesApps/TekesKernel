@@ -1,0 +1,2 @@
+{"frame":{"attempt":"a1","block":1,"call_id":"c1","channel":"tool","delta":"{\"path\":","name":"read"}}
+{"frame":{"attempt":"a1","block":1,"call_id":"c1","channel":"tool","delta":"\"README.md\"}"}}
