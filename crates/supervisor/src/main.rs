@@ -62,9 +62,13 @@ fn main() -> ExitCode {
     {
         let embedded_build =
             option_env!("TEKES_SELECTED_BUILD").unwrap_or(env!("CARGO_PKG_VERSION"));
+        let source_revision = tekes_supervisor::daemon::SOURCE_REVISION
+            .map(|revision| format!("\"source_revision\":\"{revision}\","))
+            .unwrap_or_default();
         println!(
-            "{{\"authority_registry_sha256\":\"{}\",\"format\":1,\"identifier\":\"com.tekes.kernel.supervisor\",\"version\":\"{}\"}}",
+            "{{\"authority_registry_sha256\":\"{}\",\"format\":1,\"identifier\":\"com.tekes.kernel.supervisor\",{}\"version\":\"{}\"}}",
             tekes_supervisor::daemon::AUTHORITY_REGISTRY_SHA256,
+            source_revision,
             embedded_build,
         );
         return ExitCode::SUCCESS;

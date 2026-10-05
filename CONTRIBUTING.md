@@ -8,7 +8,8 @@ needs to be merged.
 - For a bug, open an issue with the steps to reproduce, the expected and actual
   behavior, and the release or commit (`git rev-parse --short HEAD`) you ran.
   A built supervisor prints its version with
-  `tekes-supervisor --describe-build`.
+  `tekes-supervisor --describe-build`; a signed release build also prints the
+  Git commit as `source_revision`.
 - For a feature or a protocol change, open an issue first. Contracts in `spec/`
   are the authority for behavior; a change that alters a contract needs that
   discussion before code.

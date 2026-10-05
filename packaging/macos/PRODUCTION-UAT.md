@@ -58,7 +58,7 @@ publication fails closed rather than leaving a nominally successful but
 unlaunchable app.
 
 `packaging/macos/build-signed-release.sh` separately accepts
-`--release-version VERSION` and
+`--release-version VERSION`, `--source-revision GIT_COMMIT` and
 `--supervisor-profile ABSOLUTE_SUPERVISOR_PROVISIONPROFILE`, copies the four
 Cargo release outputs into a new normalized descendant of that artifact root,
 wraps the supervisor in `TekesKernelSupervisor.app`, signs

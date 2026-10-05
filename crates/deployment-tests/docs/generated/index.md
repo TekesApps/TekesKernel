@@ -27,7 +27,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/deployment-tests/src/lib.rs](../../src/lib.rs) | 8 | 15 | [Symbols and calls](src--lib.md) |
 | [crates/deployment-tests/tests/gate76_installer.rs](../../tests/gate76_installer.rs) | 26 | 365 | `inventory.json` |
-| [crates/deployment-tests/tests/portable.rs](../../tests/portable.rs) | 12 | 313 | `inventory.json` |
+| [crates/deployment-tests/tests/portable.rs](../../tests/portable.rs) | 13 | 340 | `inventory.json` |
 
 ## Cross-file direct calls
 

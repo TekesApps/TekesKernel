@@ -102,7 +102,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `io::Error::other("credential bindings must match launch configuration").into` | [57](../../src/builtin.rs#L57) | receiver-type-required |
 | `run` | `Arc::new` | [60](../../src/builtin.rs#L60), [139](../../src/builtin.rs#L139) | external-constructor-callback-or-unresolved |
 | `run` | `provider::EnvironmentSecretStore::capture` | [60](../../src/builtin.rs#L60) | [provider::environment_secrets::EnvironmentSecretStore::capture](../../../provider/src/environment_secrets.rs#L14) |
-| `run` | `daemon::endpoint_token_from_environment` | [63](../../src/builtin.rs#L63) | [tekes-supervisor::daemon::endpoint_token_from_environment](../../src/daemon.rs#L349) |
+| `run` | `daemon::endpoint_token_from_environment` | [63](../../src/builtin.rs#L63) | [tekes-supervisor::daemon::endpoint_token_from_environment](../../src/daemon.rs#L378) |
 | `run` | `launch.root.join` | [64](../../src/builtin.rs#L64) | receiver-type-required |
 | `run` | `std::fs::DirBuilder::new()         .recursive(true)         .mode(0o700)         .create` | [65](../../src/builtin.rs#L65) | receiver-type-required |
 | `run` | `std::fs::DirBuilder::new()         .recursive(true)         .mode` | [65](../../src/builtin.rs#L65) | receiver-type-required |
@@ -116,8 +116,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::fs::OpenOptions::new()         .write` | [69](../../src/builtin.rs#L69) | receiver-type-required |
 | `run` | `std::fs::OpenOptions::new` | [69](../../src/builtin.rs#L69) | external-constructor-callback-or-unresolved |
 | `run` | `storage.join` | [75](../../src/builtin.rs#L75) | receiver-type-required |
-| `run` | `daemon::ProductionRootLock::acquire` | [76](../../src/builtin.rs#L76) | [tekes-supervisor::daemon::ProductionRootLock::acquire](../../src/daemon.rs#L381) |
-| `run` | `daemon::preflight_storage` | [77](../../src/builtin.rs#L77) | [tekes-supervisor::daemon::preflight_storage](../../src/daemon.rs#L589) |
+| `run` | `daemon::ProductionRootLock::acquire` | [76](../../src/builtin.rs#L76) | [tekes-supervisor::daemon::ProductionRootLock::acquire](../../src/daemon.rs#L410) |
+| `run` | `daemon::preflight_storage` | [77](../../src/builtin.rs#L77) | [tekes-supervisor::daemon::preflight_storage](../../src/daemon.rs#L618) |
 | `run` | `profile::ConfigRepository::open` | [78](../../src/builtin.rs#L78) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L684) |
 | `run` | `repository.providers` | [79](../../src/builtin.rs#L79) | receiver-type-required |
 | `run` | `current         .revision         .checked_add(1)         .ok_or_else` | [81](../../src/builtin.rs#L81) | receiver-type-required |
@@ -150,12 +150,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `option_env!("TEKES_SELECTED_BUILD").unwrap_or` | [118](../../src/builtin.rs#L118) | receiver-type-required |
 | `run` | `ProductionProcessHost::open_with_secret_authorities` | [119](../../src/builtin.rs#L119) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L782) |
 | `run` | `process.preflight_mandatory_authorities` | [127](../../src/builtin.rs#L127) | receiver-type-required |
-| `run` | `daemon::assemble_application_endpoint_host` | [128](../../src/builtin.rs#L128) | [tekes-supervisor::daemon::assemble_application_endpoint_host](../../src/daemon.rs#L1040) |
+| `run` | `daemon::assemble_application_endpoint_host` | [128](../../src/builtin.rs#L128) | [tekes-supervisor::daemon::assemble_application_endpoint_host](../../src/daemon.rs#L1069) |
 | `run` | `build.into` | [131](../../src/builtin.rs#L131) | receiver-type-required |
 | `run` | `launch.root.to_string_lossy().into` | [132](../../src/builtin.rs#L132), [136](../../src/builtin.rs#L136) | receiver-type-required |
 | `run` | `launch.root.to_string_lossy` | [132](../../src/builtin.rs#L132), [136](../../src/builtin.rs#L136) | receiver-type-required |
 | `run` | `daemon::system_timestamp().map_err` | [140](../../src/builtin.rs#L140) | receiver-type-required |
-| `run` | `daemon::system_timestamp` | [140](../../src/builtin.rs#L140) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1383) |
+| `run` | `daemon::system_timestamp` | [140](../../src/builtin.rs#L140) | [tekes-supervisor::daemon::system_timestamp](../../src/daemon.rs#L1412) |
 | `run` | `Arc::clone` | [143](../../src/builtin.rs#L143) | external-constructor-callback-or-unresolved |
 | `run` | `tokio::net::TcpListener::bind` | [145](../../src/builtin.rs#L145) | external-constructor-callback-or-unresolved |
 | `run` | `listener.local_addr` | [146](../../src/builtin.rs#L146) | receiver-type-required |
@@ -172,7 +172,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `assembly.finish_recovery` | [154](../../src/builtin.rs#L154) | receiver-type-required |
 | `run` | `process.start_periodic_sweep` | [155](../../src/builtin.rs#L155) | receiver-type-required |
 | `run` | `process.start_schedule_timer` | [156](../../src/builtin.rs#L156) | receiver-type-required |
-| `run` | `daemon::install_termination_handler` | [157](../../src/builtin.rs#L157) | [tekes-supervisor::daemon::install_termination_handler](../../src/daemon.rs#L1295) |
+| `run` | `daemon::install_termination_handler` | [157](../../src/builtin.rs#L157) | [tekes-supervisor::daemon::install_termination_handler](../../src/daemon.rs#L1324) |
 | `run` | `assembly.into_server` | [158](../../src/builtin.rs#L158) | receiver-type-required |
 | `run` | `server.handle` | [159](../../src/builtin.rs#L159) | receiver-type-required |
 | `run` | `io::stdout().flush` | [164](../../src/builtin.rs#L164) | receiver-type-required |
@@ -184,5 +184,5 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::thread::Builder::new` | [171](../../src/builtin.rs#L171) | external-constructor-callback-or-unresolved |
 | `run` | `"launcher-lifetime".into` | [172](../../src/builtin.rs#L172) | receiver-type-required |
 | `run` | `lifetime_sender.send` | [174](../../src/builtin.rs#L174) | receiver-type-required |
-| `run` | `daemon::wait_for_launcher_shutdown` | [174](../../src/builtin.rs#L174) | [tekes-supervisor::daemon::wait_for_launcher_shutdown](../../src/daemon.rs#L1286) |
+| `run` | `daemon::wait_for_launcher_shutdown` | [174](../../src/builtin.rs#L174) | [tekes-supervisor::daemon::wait_for_launcher_shutdown](../../src/daemon.rs#L1315) |
 | `run` | `Ok` | [185](../../src/builtin.rs#L185) | external-constructor-callback-or-unresolved |
