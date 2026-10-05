@@ -6,7 +6,9 @@ needs to be merged.
 ## Before you start
 
 - For a bug, open an issue with the steps to reproduce, the expected and actual
-  behavior, and the `tekes-supervisor --version` (or commit) you ran.
+  behavior, and the release or commit (`git rev-parse --short HEAD`) you ran.
+  A built supervisor prints its version with
+  `tekes-supervisor --describe-build`.
 - For a feature or a protocol change, open an issue first. Contracts in `spec/`
   are the authority for behavior; a change that alters a contract needs that
   discussion before code.
@@ -14,8 +16,10 @@ needs to be merged.
 ## Development setup
 
 The toolchain is pinned in `rust-toolchain.toml`; `rustup` installs it on first
-use. macOS on Apple silicon is the primary platform. Python 3 runs the fixture
-checks. To regenerate the architecture atlas, install its pinned dependencies:
+use. macOS on Apple silicon is the primary platform. CI also builds and tests
+on Linux and must pass there, so keep macOS-only code behind
+`#[cfg(target_os = "macos")]`. Python 3 runs the fixture checks. To regenerate
+the architecture atlas, install its pinned dependencies:
 
 ```sh
 python3 -m pip install -r scripts/architecture-requirements.txt
@@ -23,14 +27,17 @@ python3 -m pip install -r scripts/architecture-requirements.txt
 
 ## The pull request checklist
 
-1. `scripts/ci.sh` passes. It runs `cargo fmt --check`, `cargo clippy
-   --workspace --all-targets -D warnings`, `cargo test --workspace --locked`,
-   every `scripts/check-*.py`, and the dependency-free Python tests.
+1. `scripts/ci.sh` passes. It runs `cargo fmt --all -- --check`,
+   `cargo clippy --workspace --all-targets --locked -- -D warnings`,
+   `cargo test --workspace --locked`, every `scripts/check-*.py`, and the
+   dependency-free Python tests. When the architecture dependencies are
+   installed, it also runs the atlas `--check` and `--links` steps.
 2. A bug fix comes with a test that fails without the fix.
 3. A behavior change updates the contract in `spec/` and the explanation in
    `docs/` in the same pull request.
 4. A fixture change keeps the fixture byte-canonical (one JSON object plus one
-   LF, sorted keys) and updates `fixtures/manifest.json` with
+   LF, sorted keys, no whitespace between tokens, non-ASCII characters as UTF-8
+   rather than `\u` escapes) and updates `fixtures/manifest.json` with
    `python3 scripts/update-fixture-manifest.py`. Pinned digests in the code
    (for example in `crates/provider/src/dialect.rs`) change with it.
 5. A change to Rust source or Cargo configuration regenerates the architecture
