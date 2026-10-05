@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Changed
+- `tekes-selector stage` of a different build under an already published
+  version returns `invalid-state` with state `version-already-published`
+  instead of `invalid-bundle`. Each build needs its own version; see
+  `packaging/README.md` ([#4](https://github.com/TekesApps/TekesKernel/issues/4)).
+
 ### Fixed
 - Private data roots open inside the macOS App Sandbox. When the sandbox denies
   the descriptor walk from `/`, the profile opens the canonical path and still

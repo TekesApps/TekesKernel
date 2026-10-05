@@ -25,6 +25,11 @@ with the contract fd3/fd4 handoff and rejects embedded build/version mismatch.
 `macos/build-signed-release.sh` takes that release version explicitly and
 requires the signed supervisor's canonical `--describe-build` response to bind
 both the same version and the exact authority-registry digest before publish.
+An installed version is immutable: the selector rejects a different build with
+an already published version (`invalid-state`, `version-already-published`).
+Give every build its own version. For development builds, append a pre-release
+suffix such as `0.3.0-dev.20261005.1a2b3c4d` (date and commit); versions allow
+`[A-Za-z0-9._-]` up to 128 characters, so `+` build metadata is not accepted.
 It also runs the Web Client source-manifest checker and requires the signed
 supervisor's `--describe-web-client` digest to match the separately signed
 `Contents/Resources/WebClientManifest.canonical.json` resource. This keeps stale embedded

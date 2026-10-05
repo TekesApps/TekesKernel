@@ -8191,10 +8191,12 @@ mod tests {
         )
         .expect("queue result UTF-8");
         let bin = root.path().join("fake-worker");
+        // The pending worker stays alive after its queue result until shutdown closes stdin.
+        // If it exited at once, a slow waiter could miss the live worker and time out.
         fs::write(
             &bin,
             format!(
-                "#!/bin/sh\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nIFS= read -r selected\ncase \"$selected\" in\n  *queue-transaction*) IFS= read -r startup; printf '%s\\n' '{}' ;;\n  *) while IFS= read -r line; do :; done ;;\nesac\n",
+                "#!/bin/sh\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nIFS= read -r selected\ncase \"$selected\" in\n  *queue-transaction*) IFS= read -r startup; printf '%s\\n' '{}'; while IFS= read -r line; do :; done ;;\n  *) while IFS= read -r line; do :; done ;;\nesac\n",
                 result_line.trim_end()
             ),
         )

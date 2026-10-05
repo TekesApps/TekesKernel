@@ -33,7 +33,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/selector/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/selector/src/main.rs](../../src/main.rs) | 2 | 43 | [Symbols and calls](src--main.md) |
 | [crates/selector/src/model.rs](../../src/model.rs) | 25 | 0 | [Symbols and calls](src--model.md) |
-| [crates/selector/src/selector.rs](../../src/selector.rs) | 129 | 2186 | [Symbols and calls](src--selector.md) |
+| [crates/selector/src/selector.rs](../../src/selector.rs) | 129 | 2184 | [Symbols and calls](src--selector.md) |
 | [crates/selector/src/signature.rs](../../src/signature.rs) | 22 | 211 | [Symbols and calls](src--signature.md) |
 | [crates/selector/tests/macos_signature.rs](../../tests/macos_signature.rs) | 1 | 16 | `inventory.json` |
 | [crates/selector/tests/slice10_selector.rs](../../tests/slice10_selector.rs) | 38 | 591 | `inventory.json` |

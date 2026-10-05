@@ -512,10 +512,9 @@ impl<V: CodeSignatureVerifier> Selector<V> {
         let final_path = self.paths.bundles.join(version);
         let final_already_published = if final_path.exists() {
             let (_, published) = self.validate_bundle(&final_path, Some(version))?;
+            // Published versions are never replaced: a different build needs a new version.
             if published != selection {
-                return Err(SelectorError::invalid_bundle(
-                    final_path.display().to_string(),
-                ));
+                return Err(SelectorError::invalid_state("version-already-published"));
             }
             true
         } else {
