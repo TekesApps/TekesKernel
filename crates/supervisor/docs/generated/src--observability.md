@@ -531,7 +531,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append` | `self.rotate` | [756](../../src/observability.rs#L756) | [tekes-supervisor::observability::RotatingJsonlLog::rotate](../../src/observability.rs#L764) |
 | `append` | `open_active_secure` | [758](../../src/observability.rs#L758) | [tekes-supervisor::observability::open_active_secure](../../src/observability.rs#L806) |
 | `append` | `file.write_all` | [759](../../src/observability.rs#L759) | receiver-type-required |
-| `append` | `FullSync::full_sync` | [760](../../src/observability.rs#L760) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `append` | `FullSync::full_sync` | [760](../../src/observability.rs#L760) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `append` | `Ok` | [761](../../src/observability.rs#L761) | external-constructor-callback-or-unresolved |
 | `rotate` | `(1..LOG_RETAINED_GENERATIONS).rev` | [765](../../src/observability.rs#L765) | receiver-type-required |
 | `rotate` | `rotated_path` | [766](../../src/observability.rs#L766), [767](../../src/observability.rs#L767), [777](../../src/observability.rs#L777), [779](../../src/observability.rs#L779) | [tekes-supervisor::observability::rotated_path](../../src/observability.rs#L882) |
@@ -623,7 +623,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_support_bundle` | `ObservabilityError::Json` | [968](../../src/observability.rs#L968) | external-constructor-callback-or-unresolved |
 | `publish_support_bundle` | `error.to_string` | [968](../../src/observability.rs#L968) | receiver-type-required |
 | `publish_support_bundle` | `manifest.push` | [969](../../src/observability.rs#L969) | receiver-type-required |
-| `publish_support_bundle` | `FullSync::full_sync` | [972](../../src/observability.rs#L972) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `publish_support_bundle` | `FullSync::full_sync` | [972](../../src/observability.rs#L972) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `publish_support_bundle` | `File::open` | [972](../../src/observability.rs#L972) | external-constructor-callback-or-unresolved |
 | `publish_support_bundle` | `fs::rename` | [973](../../src/observability.rs#L973) | external-constructor-callback-or-unresolved |
 | `publish_support_bundle` | `sync_parent` | [974](../../src/observability.rs#L974) | [tekes-supervisor::observability::sync_parent](../../src/observability.rs#L1072) |
@@ -673,9 +673,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_private` | `OpenOptions::new()         .write` | [1062](../../src/observability.rs#L1062) | receiver-type-required |
 | `write_private` | `OpenOptions::new` | [1062](../../src/observability.rs#L1062) | external-constructor-callback-or-unresolved |
 | `write_private` | `file.write_all` | [1067](../../src/observability.rs#L1067) | receiver-type-required |
-| `write_private` | `FullSync::full_sync` | [1068](../../src/observability.rs#L1068) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `write_private` | `FullSync::full_sync` | [1068](../../src/observability.rs#L1068) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `write_private` | `Ok` | [1069](../../src/observability.rs#L1069) | external-constructor-callback-or-unresolved |
-| `sync_parent` | `FullSync::full_sync` | [1073](../../src/observability.rs#L1073) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `sync_parent` | `FullSync::full_sync` | [1073](../../src/observability.rs#L1073) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `sync_parent` | `File::open` | [1073](../../src/observability.rs#L1073) | external-constructor-callback-or-unresolved |
 | `sync_parent` | `path.parent().ok_or_else` | [1073](../../src/observability.rs#L1073) | receiver-type-required |
 | `sync_parent` | `path.parent` | [1073](../../src/observability.rs#L1073) | receiver-type-required |

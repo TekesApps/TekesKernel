@@ -688,16 +688,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspace_data_dir` | `self.root.join("workspaces").join` | [663](../../src/config.rs#L663) | receiver-type-required |
 | `workspace_data_dir` | `self.root.join` | [663](../../src/config.rs#L663) | receiver-type-required |
 | `resolve` | `validate_workspace_id` | [672](../../src/config.rs#L672) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
-| `resolve` | `NamedLock::shared` | [673](../../src/config.rs#L673) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `resolve` | `NamedLock::shared` | [673](../../src/config.rs#L673) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve` | `self.root.join` | [673](../../src/config.rs#L673) | receiver-type-required |
 | `resolve` | `self.resolve_unlocked` | [674](../../src/config.rs#L674) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1047) |
 | `resolve_for_binding` | `validate_workspace_id` | [685](../../src/config.rs#L685) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
-| `resolve_for_binding` | `NamedLock::shared` | [686](../../src/config.rs#L686) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `resolve_for_binding` | `NamedLock::shared` | [686](../../src/config.rs#L686) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_binding` | `self.root.join` | [686](../../src/config.rs#L686) | receiver-type-required |
 | `resolve_for_binding` | `self.resolve_unlocked` | [687](../../src/config.rs#L687) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1047) |
 | `resolve_for_binding` | `Some` | [687](../../src/config.rs#L687) | external-constructor-callback-or-unresolved |
 | `resolve_for_session` | `validate_workspace_id` | [695](../../src/config.rs#L695) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
-| `resolve_for_session` | `NamedLock::shared` | [696](../../src/config.rs#L696) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `resolve_for_session` | `NamedLock::shared` | [696](../../src/config.rs#L696) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_session` | `self.root.join` | [696](../../src/config.rs#L696) | receiver-type-required |
 | `resolve_for_session` | `self.resolve_unlocked` | [697](../../src/config.rs#L697) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1047) |
 | `resolve_for_session` | `Some` | [697](../../src/config.rs#L697) | external-constructor-callback-or-unresolved |
@@ -708,32 +708,32 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_for_session` | `"multi-folder session has no stable folder binding".to_owned` | [701](../../src/config.rs#L701) | receiver-type-required |
 | `resolve_for_session` | `Ok` | [704](../../src/config.rs#L704) | external-constructor-callback-or-unresolved |
 | `resolve_for_session_binding` | `validate_workspace_id` | [716](../../src/config.rs#L716) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
-| `resolve_for_session_binding` | `NamedLock::shared` | [717](../../src/config.rs#L717) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `resolve_for_session_binding` | `NamedLock::shared` | [717](../../src/config.rs#L717) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_session_binding` | `self.root.join` | [717](../../src/config.rs#L717) | receiver-type-required |
 | `resolve_for_session_binding` | `self.resolve_unlocked` | [718](../../src/config.rs#L718) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1047) |
 | `resolve_for_session_binding` | `Some` | [720](../../src/config.rs#L720), [721](../../src/config.rs#L721) | external-constructor-callback-or-unresolved |
 | `resolve_for_session_binding` | `session_folder.as_ref` | [720](../../src/config.rs#L720) | receiver-type-required |
-| `providers` | `NamedLock::shared` | [728](../../src/config.rs#L728) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `providers` | `NamedLock::shared` | [728](../../src/config.rs#L728) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `providers` | `self.root.join` | [728](../../src/config.rs#L728), [729](../../src/config.rs#L729) | receiver-type-required |
 | `providers` | `self.read_optional(&path)?.unwrap_or_default` | [730](../../src/config.rs#L730) | receiver-type-required |
 | `providers` | `self.read_optional` | [730](../../src/config.rs#L730) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `providers` | `validate_providers` | [731](../../src/config.rs#L731) | [profile::config::validate_providers](../../src/config.rs#L1308) |
 | `providers` | `Ok` | [732](../../src/config.rs#L732) | external-constructor-callback-or-unresolved |
-| `settings` | `NamedLock::shared` | [737](../../src/config.rs#L737) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `settings` | `NamedLock::shared` | [737](../../src/config.rs#L737) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `settings` | `self.root.join` | [737](../../src/config.rs#L737), [738](../../src/config.rs#L738) | receiver-type-required |
 | `settings` | `self.read_optional(&path)?.unwrap_or_default` | [739](../../src/config.rs#L739) | receiver-type-required |
 | `settings` | `self.read_optional` | [739](../../src/config.rs#L739) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `settings` | `validate_settings` | [740](../../src/config.rs#L740) | [profile::config::validate_settings](../../src/config.rs#L1405) |
 | `settings` | `Ok` | [741](../../src/config.rs#L741) | external-constructor-callback-or-unresolved |
 | `workspace` | `validate_workspace_id` | [747](../../src/config.rs#L747) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
-| `workspace` | `NamedLock::shared` | [748](../../src/config.rs#L748) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `workspace` | `NamedLock::shared` | [748](../../src/config.rs#L748) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `workspace` | `self.root.join` | [748](../../src/config.rs#L748) | receiver-type-required |
 | `workspace` | `workspace_document_path` | [749](../../src/config.rs#L749) | [profile::config::workspace_document_path](../../src/config.rs#L1240) |
 | `workspace` | `self.read_required` | [750](../../src/config.rs#L750) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1121) |
 | `workspace` | `validate_workspace` | [751](../../src/config.rs#L751) | [profile::config::validate_workspace](../../src/config.rs#L1268) |
 | `workspace` | `invalid` | [753](../../src/config.rs#L753) | [profile::config::invalid](../../src/config.rs#L1759) |
 | `workspace` | `Ok` | [755](../../src/config.rs#L755) | external-constructor-callback-or-unresolved |
-| `workspaces` | `NamedLock::shared` | [762](../../src/config.rs#L762) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `workspaces` | `NamedLock::shared` | [762](../../src/config.rs#L762) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `workspaces` | `self.root.join` | [762](../../src/config.rs#L762), [764](../../src/config.rs#L764) | receiver-type-required |
 | `workspaces` | `fs::read_dir(self.root.join("workspaces"))?.collect::<Result<Vec<_>, _>>` | [764](../../src/config.rs#L764) | receiver-type-required |
 | `workspaces` | `fs::read_dir` | [764](../../src/config.rs#L764) | external-constructor-callback-or-unresolved |
@@ -756,7 +756,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspaces` | `validate_workspace` | [783](../../src/config.rs#L783) | [profile::config::validate_workspace](../../src/config.rs#L1268) |
 | `workspaces` | `values.push` | [787](../../src/config.rs#L787) | receiver-type-required |
 | `workspaces` | `Ok` | [789](../../src/config.rs#L789) | external-constructor-callback-or-unresolved |
-| `resource_workspace_roots` | `NamedLock::shared` | [796](../../src/config.rs#L796) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `resource_workspace_roots` | `NamedLock::shared` | [796](../../src/config.rs#L796) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resource_workspace_roots` | `self.root.join` | [796](../../src/config.rs#L796), [797](../../src/config.rs#L797) | receiver-type-required |
 | `resource_workspace_roots` | `fs::read_dir(&directory)?.collect::<Result<Vec<_>, _>>` | [798](../../src/config.rs#L798) | receiver-type-required |
 | `resource_workspace_roots` | `fs::read_dir` | [798](../../src/config.rs#L798) | external-constructor-callback-or-unresolved |
@@ -787,7 +787,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resource_workspace_roots` | `Ok` | [833](../../src/config.rs#L833) | external-constructor-callback-or-unresolved |
 | `publish_workspace` | `validate_workspace_id` | [841](../../src/config.rs#L841) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
 | `publish_workspace` | `workspace_document_path` | [842](../../src/config.rs#L842) | [profile::config::workspace_document_path](../../src/config.rs#L1240) |
-| `publish_workspace` | `NamedLock::exclusive` | [843](../../src/config.rs#L843) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_workspace` | `NamedLock::exclusive` | [843](../../src/config.rs#L843) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_workspace` | `self.root.join` | [843](../../src/config.rs#L843) | receiver-type-required |
 | `publish_workspace` | `prepare_workspace_directory` | [844](../../src/config.rs#L844) | [profile::config::prepare_workspace_directory](../../src/config.rs#L620) |
 | `publish_workspace` | `self.read_optional::<WorkspaceConfig>` | [845](../../src/config.rs#L845) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
@@ -805,8 +805,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_providers_checked` | `management_path             .exists()             .then(&#124;&#124; NamedLock::shared(&management_path))             .transpose` | [883](../../src/config.rs#L883) | receiver-type-required |
 | `publish_providers_checked` | `management_path             .exists()             .then` | [883](../../src/config.rs#L883) | receiver-type-required |
 | `publish_providers_checked` | `management_path             .exists` | [883](../../src/config.rs#L883) | receiver-type-required |
-| `publish_providers_checked` | `NamedLock::shared` | [885](../../src/config.rs#L885) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
-| `publish_providers_checked` | `NamedLock::exclusive` | [887](../../src/config.rs#L887) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_providers_checked` | `NamedLock::shared` | [885](../../src/config.rs#L885) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
+| `publish_providers_checked` | `NamedLock::exclusive` | [887](../../src/config.rs#L887) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_providers_checked` | `self             .read_optional::<ProvidersConfig>(&path)?             .unwrap_or_default` | [888](../../src/config.rs#L888) | receiver-type-required |
 | `publish_providers_checked` | `self             .read_optional::<ProvidersConfig>` | [888](../../src/config.rs#L888) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `publish_providers_checked` | `validate_providers` | [891](../../src/config.rs#L891), [893](../../src/config.rs#L893) | [profile::config::validate_providers](../../src/config.rs#L1308) |
@@ -819,7 +819,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_settings` | `self.publish_global` | [905](../../src/config.rs#L905) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1023) |
 | `publish_settings` | `validate_settings` | [906](../../src/config.rs#L906) | [profile::config::validate_settings](../../src/config.rs#L1405) |
 | `publish_settings_checked` | `self.root.join` | [917](../../src/config.rs#L917), [918](../../src/config.rs#L918), [919](../../src/config.rs#L919) | receiver-type-required |
-| `publish_settings_checked` | `NamedLock::exclusive` | [919](../../src/config.rs#L919) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_settings_checked` | `NamedLock::exclusive` | [919](../../src/config.rs#L919) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_settings_checked` | `self             .read_optional::<SettingsConfig>(&path)?             .unwrap_or_default` | [920](../../src/config.rs#L920) | receiver-type-required |
 | `publish_settings_checked` | `self             .read_optional::<SettingsConfig>` | [920](../../src/config.rs#L920) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `publish_settings_checked` | `validate_settings` | [923](../../src/config.rs#L923), [925](../../src/config.rs#L925) | [profile::config::validate_settings](../../src/config.rs#L1405) |
@@ -836,7 +836,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_workspace_policy` | `validate_workspace_id` | [953](../../src/config.rs#L953) | [profile::config::validate_workspace_id](../../src/config.rs#L1223) |
 | `publish_workspace_policy` | `workspace_document_path` | [954](../../src/config.rs#L954) | [profile::config::workspace_document_path](../../src/config.rs#L1240) |
 | `publish_workspace_policy` | `self.root.join` | [955](../../src/config.rs#L955), [956](../../src/config.rs#L956), [957](../../src/config.rs#L957) | receiver-type-required |
-| `publish_workspace_policy` | `NamedLock::exclusive` | [957](../../src/config.rs#L957) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_workspace_policy` | `NamedLock::exclusive` | [957](../../src/config.rs#L957) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_workspace_policy` | `self.read_required` | [958](../../src/config.rs#L958) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1121) |
 | `publish_workspace_policy` | `validate_workspace` | [959](../../src/config.rs#L959), [971](../../src/config.rs#L971) | [profile::config::validate_workspace](../../src/config.rs#L1268) |
 | `publish_workspace_policy` | `value                 .revision                 .checked_add(1)                 .ok_or_else` | [961](../../src/config.rs#L961) | receiver-type-required |
@@ -857,7 +857,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_workspace_policy` | `Ok` | [982](../../src/config.rs#L982) | external-constructor-callback-or-unresolved |
 | `publish_session_settings` | `store::session_settings_path` | [991](../../src/config.rs#L991) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
 | `publish_session_settings` | `session_folder.as_ref` | [991](../../src/config.rs#L991) | receiver-type-required |
-| `publish_session_settings` | `NamedLock::exclusive` | [992](../../src/config.rs#L992) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_session_settings` | `NamedLock::exclusive` | [992](../../src/config.rs#L992) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_session_settings` | `self.root.join` | [992](../../src/config.rs#L992), [1002](../../src/config.rs#L1002) | receiver-type-required |
 | `publish_session_settings` | `self.read_optional::<SessionSettings>` | [993](../../src/config.rs#L993) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `publish_session_settings` | `validate_session_settings` | [995](../../src/config.rs#L995), [1001](../../src/config.rs#L1001) | [profile::config::validate_session_settings](../../src/config.rs#L1427) |
@@ -871,14 +871,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_session_settings` | `AtomicPublisher::replace` | [1006](../../src/config.rs#L1006) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
 | `publish_session_settings` | `canonical_line` | [1006](../../src/config.rs#L1006) | [profile::canonical_line](../../src/lib.rs#L109) |
 | `publish_session_settings` | `Ok` | [1007](../../src/config.rs#L1007) | external-constructor-callback-or-unresolved |
-| `session_settings` | `NamedLock::shared` | [1014](../../src/config.rs#L1014) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `session_settings` | `NamedLock::shared` | [1014](../../src/config.rs#L1014) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `session_settings` | `self.root.join` | [1014](../../src/config.rs#L1014) | receiver-type-required |
 | `session_settings` | `store::session_settings_path` | [1015](../../src/config.rs#L1015) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
 | `session_settings` | `session_folder.as_ref` | [1015](../../src/config.rs#L1015) | receiver-type-required |
 | `session_settings` | `self.read_optional::<SessionSettings>` | [1016](../../src/config.rs#L1016) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1125) |
 | `session_settings` | `validate_session_settings` | [1018](../../src/config.rs#L1018) | [profile::config::validate_session_settings](../../src/config.rs#L1427) |
 | `session_settings` | `Ok` | [1020](../../src/config.rs#L1020) | external-constructor-callback-or-unresolved |
-| `publish_global` | `NamedLock::exclusive` | [1031](../../src/config.rs#L1031) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `publish_global` | `NamedLock::exclusive` | [1031](../../src/config.rs#L1031) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_global` | `self.root.join` | [1031](../../src/config.rs#L1031) | receiver-type-required |
 | `publish_global` | `fs::read` | [1032](../../src/config.rs#L1032) | external-constructor-callback-or-unresolved |
 | `publish_global` | `parse_canonical` | [1034](../../src/config.rs#L1034) | [profile::parse_canonical](../../src/lib.rs#L64) |

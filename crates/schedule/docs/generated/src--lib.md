@@ -285,7 +285,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `fs::remove_file` | [222](../../src/lib.rs#L222) | external-constructor-callback-or-unresolved |
 | `open` | `Ok` | [224](../../src/lib.rs#L224) | external-constructor-callback-or-unresolved |
 | `list` | `validate_workspace` | [229](../../src/lib.rs#L229) | [schedule::validate_workspace](../../src/lib.rs#L623) |
-| `list` | `NamedLock::shared` | [231](../../src/lib.rs#L231) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `list` | `NamedLock::shared` | [231](../../src/lib.rs#L231) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `list` | `self.root.join` | [231](../../src/lib.rs#L231), [232](../../src/lib.rs#L232) | receiver-type-required |
 | `list` | `load_state` | [232](../../src/lib.rs#L232) | [schedule::load_state](../../src/lib.rs#L942) |
 | `list` | `Ok` | [233](../../src/lib.rs#L233) | external-constructor-callback-or-unresolved |
@@ -296,7 +296,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `save` | `validate_origin` | [246](../../src/lib.rs#L246) | [schedule::validate_origin](../../src/lib.rs#L611) |
 | `save` | `validate_definition` | [247](../../src/lib.rs#L247) | [schedule::validate_definition](../../src/lib.rs#L584) |
 | `save` | `fingerprint` | [248](../../src/lib.rs#L248) | external-constructor-callback-or-unresolved |
-| `save` | `NamedLock::exclusive` | [249](../../src/lib.rs#L249) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `save` | `NamedLock::exclusive` | [249](../../src/lib.rs#L249) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `save` | `self.root.join` | [249](../../src/lib.rs#L249), [250](../../src/lib.rs#L250) | receiver-type-required |
 | `save` | `load_state` | [251](../../src/lib.rs#L251) | [schedule::load_state](../../src/lib.rs#L942) |
 | `save` | `repair_tail` | [252](../../src/lib.rs#L252) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -325,7 +325,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `delete` | `validate_origin` | [301](../../src/lib.rs#L301) | [schedule::validate_origin](../../src/lib.rs#L611) |
 | `delete` | `validate_uuid` | [302](../../src/lib.rs#L302) | [schedule::validate_uuid](../../src/lib.rs#L636) |
 | `delete` | `fingerprint` | [303](../../src/lib.rs#L303) | external-constructor-callback-or-unresolved |
-| `delete` | `NamedLock::exclusive` | [304](../../src/lib.rs#L304) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `delete` | `NamedLock::exclusive` | [304](../../src/lib.rs#L304) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `delete` | `self.root.join` | [304](../../src/lib.rs#L304), [305](../../src/lib.rs#L305) | receiver-type-required |
 | `delete` | `load_state` | [306](../../src/lib.rs#L306) | [schedule::load_state](../../src/lib.rs#L942) |
 | `delete` | `repair_tail` | [307](../../src/lib.rs#L307) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -346,7 +346,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_now` | `validate_origin` | [346](../../src/lib.rs#L346) | [schedule::validate_origin](../../src/lib.rs#L611) |
 | `run_now` | `validate_uuid` | [347](../../src/lib.rs#L347) | [schedule::validate_uuid](../../src/lib.rs#L636) |
 | `run_now` | `fingerprint` | [348](../../src/lib.rs#L348) | external-constructor-callback-or-unresolved |
-| `run_now` | `NamedLock::exclusive` | [349](../../src/lib.rs#L349) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `run_now` | `NamedLock::exclusive` | [349](../../src/lib.rs#L349) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `run_now` | `self.root.join` | [349](../../src/lib.rs#L349), [350](../../src/lib.rs#L350) | receiver-type-required |
 | `run_now` | `load_state` | [351](../../src/lib.rs#L351) | [schedule::load_state](../../src/lib.rs#L942) |
 | `run_now` | `repair_tail` | [352](../../src/lib.rs#L352) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -370,7 +370,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_now` | `append` | [383](../../src/lib.rs#L383) | [schedule::append](../../src/lib.rs#L983) |
 | `run_now` | `apply` | [384](../../src/lib.rs#L384) | [schedule::apply](../../src/lib.rs#L693) |
 | `run_now` | `claim_from_state` | [385](../../src/lib.rs#L385) | [schedule::claim_from_state](../../src/lib.rs#L646) |
-| `poll_due` | `NamedLock::exclusive` | [391](../../src/lib.rs#L391) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `poll_due` | `NamedLock::exclusive` | [391](../../src/lib.rs#L391) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `poll_due` | `self.root.join` | [391](../../src/lib.rs#L391), [392](../../src/lib.rs#L392) | receiver-type-required |
 | `poll_due` | `load_state` | [393](../../src/lib.rs#L393) | [schedule::load_state](../../src/lib.rs#L942) |
 | `poll_due` | `repair_tail` | [394](../../src/lib.rs#L394) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -401,7 +401,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `poll_due` | `right.claim_id.as_bytes` | [440](../../src/lib.rs#L440) | receiver-type-required |
 | `poll_due` | `claims.dedup_by` | [441](../../src/lib.rs#L441) | receiver-type-required |
 | `poll_due` | `Ok` | [442](../../src/lib.rs#L442) | external-constructor-callback-or-unresolved |
-| `recover` | `NamedLock::exclusive` | [448](../../src/lib.rs#L448) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `recover` | `NamedLock::exclusive` | [448](../../src/lib.rs#L448) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `recover` | `self.root.join` | [448](../../src/lib.rs#L448), [449](../../src/lib.rs#L449) | receiver-type-required |
 | `recover` | `load_state` | [450](../../src/lib.rs#L450) | [schedule::load_state](../../src/lib.rs#L942) |
 | `recover` | `repair_tail` | [451](../../src/lib.rs#L451) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -425,7 +425,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bind_launch` | `validate_uuid` | [488](../../src/lib.rs#L488) | [schedule::validate_uuid](../../src/lib.rs#L636) |
 | `bind_launch` | `Err` | [490](../../src/lib.rs#L490), [502](../../src/lib.rs#L502), [510](../../src/lib.rs#L510) | external-constructor-callback-or-unresolved |
 | `bind_launch` | `ScheduleError::Invalid` | [490](../../src/lib.rs#L490) | external-constructor-callback-or-unresolved |
-| `bind_launch` | `NamedLock::exclusive` | [492](../../src/lib.rs#L492) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `bind_launch` | `NamedLock::exclusive` | [492](../../src/lib.rs#L492) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `bind_launch` | `self.root.join` | [492](../../src/lib.rs#L492), [493](../../src/lib.rs#L493) | receiver-type-required |
 | `bind_launch` | `load_state` | [494](../../src/lib.rs#L494) | [schedule::load_state](../../src/lib.rs#L942) |
 | `bind_launch` | `repair_tail` | [495](../../src/lib.rs#L495) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -451,7 +451,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `record_status` | `error             .as_ref()             .is_some_and` | [537](../../src/lib.rs#L537) | receiver-type-required |
 | `record_status` | `error             .as_ref` | [537](../../src/lib.rs#L537) | receiver-type-required |
 | `record_status` | `value.len` | [539](../../src/lib.rs#L539) | receiver-type-required |
-| `record_status` | `NamedLock::exclusive` | [543](../../src/lib.rs#L543) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `record_status` | `NamedLock::exclusive` | [543](../../src/lib.rs#L543) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `record_status` | `self.root.join` | [543](../../src/lib.rs#L543), [544](../../src/lib.rs#L544) | receiver-type-required |
 | `record_status` | `load_state` | [545](../../src/lib.rs#L545) | [schedule::load_state](../../src/lib.rs#L942) |
 | `record_status` | `repair_tail` | [546](../../src/lib.rs#L546) | [schedule::repair_tail](../../src/lib.rs#L971) |
@@ -635,7 +635,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `repair_tail` | `OpenOptions::new().write` | [976](../../src/lib.rs#L976) | receiver-type-required |
 | `repair_tail` | `OpenOptions::new` | [976](../../src/lib.rs#L976) | external-constructor-callback-or-unresolved |
 | `repair_tail` | `file.set_len` | [977](../../src/lib.rs#L977) | receiver-type-required |
-| `repair_tail` | `FullSync::full_sync` | [978](../../src/lib.rs#L978) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `repair_tail` | `FullSync::full_sync` | [978](../../src/lib.rs#L978) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `append` | `serde_json_canonicalizer::to_vec` | [984](../../src/lib.rs#L984) | external-constructor-callback-or-unresolved |
 | `append` | `bytes.push` | [985](../../src/lib.rs#L985) | receiver-type-required |
 | `append` | `path.exists` | [986](../../src/lib.rs#L986) | receiver-type-required |
@@ -646,7 +646,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append` | `OpenOptions::new()         .create` | [987](../../src/lib.rs#L987) | receiver-type-required |
 | `append` | `OpenOptions::new` | [987](../../src/lib.rs#L987) | external-constructor-callback-or-unresolved |
 | `append` | `file.write_all` | [993](../../src/lib.rs#L993) | receiver-type-required |
-| `append` | `FullSync::full_sync` | [994](../../src/lib.rs#L994) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `append` | `FullSync::full_sync` | [994](../../src/lib.rs#L994) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `append` | `File::open(             path.parent()                 .ok_or(ScheduleError::Invalid("schedule root"))?,         )?         .sync_all` | [996](../../src/lib.rs#L996) | receiver-type-required |
 | `append` | `File::open` | [996](../../src/lib.rs#L996) | external-constructor-callback-or-unresolved |
 | `append` | `path.parent()                 .ok_or` | [997](../../src/lib.rs#L997) | receiver-type-required |
@@ -657,7 +657,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sync_existing` | `OpenOptions::new().read(true).write` | [1006](../../src/lib.rs#L1006) | receiver-type-required |
 | `sync_existing` | `OpenOptions::new().read` | [1006](../../src/lib.rs#L1006) | receiver-type-required |
 | `sync_existing` | `OpenOptions::new` | [1006](../../src/lib.rs#L1006) | external-constructor-callback-or-unresolved |
-| `sync_existing` | `FullSync::full_sync` | [1008](../../src/lib.rs#L1008) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `sync_existing` | `FullSync::full_sync` | [1008](../../src/lib.rs#L1008) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `sync_existing` | `Ok` | [1009](../../src/lib.rs#L1009), [1011](../../src/lib.rs#L1011) | external-constructor-callback-or-unresolved |
 | `sync_existing` | `error.kind` | [1011](../../src/lib.rs#L1011) | receiver-type-required |
 | `sync_existing` | `Err` | [1012](../../src/lib.rs#L1012) | external-constructor-callback-or-unresolved |

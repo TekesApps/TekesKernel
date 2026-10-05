@@ -840,7 +840,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_at_with_queue_driver` | `Err` | [350](../../src/management.rs#L350) | external-constructor-callback-or-unresolved |
 | `open_at_with_queue_driver` | `Ok` | [352](../../src/management.rs#L352) | external-constructor-callback-or-unresolved |
 | `recover` | `self.recover_with_queue_driver` | [362](../../src/management.rs#L362) | [endpoint::management::ManagementStore::recover_with_queue_driver](../../src/management.rs#L365) |
-| `recover_with_queue_driver` | `NamedLock::exclusive` | [369](../../src/management.rs#L369) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `recover_with_queue_driver` | `NamedLock::exclusive` | [369](../../src/management.rs#L369) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `recover_with_queue_driver` | `self.root.join` | [369](../../src/management.rs#L369) | receiver-type-required |
 | `recover_with_queue_driver` | `self.remove_recordless_payloads` | [370](../../src/management.rs#L370) | [endpoint::management::ManagementStore::remove_recordless_payloads](../../src/management.rs#L2063) |
 | `recover_with_queue_driver` | `self.operation_paths` | [371](../../src/management.rs#L371) | [endpoint::management::ManagementStore::operation_paths](../../src/management.rs#L2187) |
@@ -880,7 +880,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_with_queue_driver` | `self.drive_queue_completion` | [446](../../src/management.rs#L446) | [endpoint::management::ManagementStore::drive_queue_completion](../../src/management.rs#L2004) |
 | `recover_with_queue_driver` | `unavailable_absolute_path` | [458](../../src/management.rs#L458) | [endpoint::management::unavailable_absolute_path](../../src/management.rs#L2540) |
 | `recover_with_queue_driver` | `Ok` | [467](../../src/management.rs#L467) | external-constructor-callback-or-unresolved |
-| `seed_missing_workspace_policies` | `NamedLock::exclusive` | [476](../../src/management.rs#L476) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `seed_missing_workspace_policies` | `NamedLock::exclusive` | [476](../../src/management.rs#L476) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `seed_missing_workspace_policies` | `self.root.join` | [476](../../src/management.rs#L476) | receiver-type-required |
 | `seed_missing_workspace_policies` | `self.workspace_configs()?.into_values` | [477](../../src/management.rs#L477) | receiver-type-required |
 | `seed_missing_workspace_policies` | `self.workspace_configs` | [477](../../src/management.rs#L477) | [endpoint::management::ManagementStore::workspace_configs](../../src/management.rs#L1605) |
@@ -890,7 +890,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `seed_missing_workspace_policies` | `self.config.publish_workspace_policy` | [482](../../src/management.rs#L482) | receiver-type-required |
 | `seed_missing_workspace_policies` | `default_workspace_policy` | [485](../../src/management.rs#L485) | [endpoint::management::default_workspace_policy](../../src/management.rs#L2494) |
 | `seed_missing_workspace_policies` | `Ok` | [488](../../src/management.rs#L488) | external-constructor-callback-or-unresolved |
-| `reconcile_workspace_metadata` | `NamedLock::exclusive` | [492](../../src/management.rs#L492) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `reconcile_workspace_metadata` | `NamedLock::exclusive` | [492](../../src/management.rs#L492) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `reconcile_workspace_metadata` | `self.root.join` | [492](../../src/management.rs#L492) | receiver-type-required |
 | `reconcile_workspace_metadata` | `self.workspace_configs()?.into_values` | [493](../../src/management.rs#L493) | receiver-type-required |
 | `reconcile_workspace_metadata` | `self.workspace_configs` | [493](../../src/management.rs#L493) | [endpoint::management::ManagementStore::workspace_configs](../../src/management.rs#L1605) |
@@ -906,7 +906,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_workspace_metadata` | `missing.then_some` | [517](../../src/management.rs#L517) | receiver-type-required |
 | `reconcile_workspace_metadata` | `self.drive_workspace_operation` | [520](../../src/management.rs#L520) | [endpoint::management::ManagementStore::drive_workspace_operation](../../src/management.rs#L1500) |
 | `reconcile_workspace_metadata` | `Ok` | [522](../../src/management.rs#L522) | external-constructor-callback-or-unresolved |
-| `list_workspaces` | `NamedLock::exclusive` | [529](../../src/management.rs#L529) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `list_workspaces` | `NamedLock::exclusive` | [529](../../src/management.rs#L529) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `list_workspaces` | `self.root.join` | [529](../../src/management.rs#L529) | receiver-type-required |
 | `list_workspaces` | `self.workspace_configs` | [530](../../src/management.rs#L530) | [endpoint::management::ManagementStore::workspace_configs](../../src/management.rs#L1605) |
 | `list_workspaces` | `BTreeMap::<String, Vec<&SessionInventoryItem>>::new` | [531](../../src/management.rs#L531) | external-constructor-callback-or-unresolved |
@@ -931,7 +931,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `list_workspaces` | `items.sort_by` | [555](../../src/management.rs#L555) | receiver-type-required |
 | `list_workspaces` | `left.workspace_id.cmp` | [555](../../src/management.rs#L555) | receiver-type-required |
 | `list_workspaces` | `Ok` | [556](../../src/management.rs#L556) | external-constructor-callback-or-unresolved |
-| `workspace_path` | `NamedLock::exclusive` | [563](../../src/management.rs#L563) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `workspace_path` | `NamedLock::exclusive` | [563](../../src/management.rs#L563) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `workspace_path` | `self.root.join` | [563](../../src/management.rs#L563) | receiver-type-required |
 | `workspace_path` | `self             .workspace_configs()?             .remove(workspace_id)             .ok_or_else` | [564](../../src/management.rs#L564) | receiver-type-required |
 | `workspace_path` | `self             .workspace_configs()?             .remove` | [564](../../src/management.rs#L564) | receiver-type-required |
@@ -941,7 +941,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspace_path` | `Ok` | [568](../../src/management.rs#L568) | external-constructor-callback-or-unresolved |
 | `workspace_path` | `primary_path(&config)?.to_owned` | [568](../../src/management.rs#L568) | receiver-type-required |
 | `workspace_path` | `primary_path` | [568](../../src/management.rs#L568) | [endpoint::management::primary_path](../../src/management.rs#L2251) |
-| `create_session` | `NamedLock::exclusive` | [579](../../src/management.rs#L579) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `create_session` | `NamedLock::exclusive` | [579](../../src/management.rs#L579) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `create_session` | `self.root.join` | [579](../../src/management.rs#L579) | receiver-type-required |
 | `create_session` | `self.operation_path` | [580](../../src/management.rs#L580) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `create_session` | `operation_path.exists` | [581](../../src/management.rs#L581) | receiver-type-required |
@@ -999,7 +999,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_session` | `publish_canonical` | [695](../../src/management.rs#L695) | [endpoint::management::publish_canonical](../../src/management.rs#L2667) |
 | `create_session` | `self.session_id_from_response` | [696](../../src/management.rs#L696) | [endpoint::management::ManagementStore::session_id_from_response](../../src/management.rs#L1816) |
 | `select_model` | `crate::validate_session_id` | [703](../../src/management.rs#L703) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `select_model` | `NamedLock::exclusive` | [704](../../src/management.rs#L704) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `select_model` | `NamedLock::exclusive` | [704](../../src/management.rs#L704) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `select_model` | `self.root.join` | [704](../../src/management.rs#L704) | receiver-type-required |
 | `select_model` | `self.operation_path` | [705](../../src/management.rs#L705) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `select_model` | `operation_path.exists` | [706](../../src/management.rs#L706) | receiver-type-required |
@@ -1038,7 +1038,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `select_model` | `candidate.reasoning_effort.clone` | [773](../../src/management.rs#L773) | receiver-type-required |
 | `select_model` | `publish_canonical` | [777](../../src/management.rs#L777) | [endpoint::management::publish_canonical](../../src/management.rs#L2667) |
 | `fork_session` | `crate::validate_session_id` | [785](../../src/management.rs#L785) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `fork_session` | `NamedLock::exclusive` | [786](../../src/management.rs#L786) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `fork_session` | `NamedLock::exclusive` | [786](../../src/management.rs#L786) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `fork_session` | `self.root.join` | [786](../../src/management.rs#L786) | receiver-type-required |
 | `fork_session` | `self.operation_path` | [787](../../src/management.rs#L787) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `fork_session` | `operation_path.exists` | [788](../../src/management.rs#L788) | receiver-type-required |
@@ -1073,7 +1073,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_queue_transaction` | `Err` | [880](../../src/management.rs#L880), [892](../../src/management.rs#L892) | external-constructor-callback-or-unresolved |
 | `prepare_queue_transaction` | `ManagementError::CorruptOperation` | [880](../../src/management.rs#L880), [916](../../src/management.rs#L916), [921](../../src/management.rs#L921) | external-constructor-callback-or-unresolved |
 | `prepare_queue_transaction` | `"queue transaction binding is invalid".to_owned` | [881](../../src/management.rs#L881) | receiver-type-required |
-| `prepare_queue_transaction` | `NamedLock::exclusive` | [884](../../src/management.rs#L884) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `prepare_queue_transaction` | `NamedLock::exclusive` | [884](../../src/management.rs#L884) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `prepare_queue_transaction` | `self.root.join` | [884](../../src/management.rs#L884) | receiver-type-required |
 | `prepare_queue_transaction` | `self.operation_path` | [885](../../src/management.rs#L885) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `prepare_queue_transaction` | `operation_path.exists` | [886](../../src/management.rs#L886) | receiver-type-required |
@@ -1113,7 +1113,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_queue_transaction` | `request.started_at.to_owned` | [955](../../src/management.rs#L955) | receiver-type-required |
 | `prepare_queue_transaction` | `to_ijson` | [956](../../src/management.rs#L956) | [endpoint::management::to_ijson](../../src/management.rs#L2704) |
 | `prepare_queue_transaction` | `publish_canonical` | [959](../../src/management.rs#L959) | [endpoint::management::publish_canonical](../../src/management.rs#L2667) |
-| `complete_queue_transaction` | `NamedLock::exclusive` | [971](../../src/management.rs#L971) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `complete_queue_transaction` | `NamedLock::exclusive` | [971](../../src/management.rs#L971) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `complete_queue_transaction` | `self.root.join` | [971](../../src/management.rs#L971) | receiver-type-required |
 | `complete_queue_transaction` | `self.operation_path` | [972](../../src/management.rs#L972) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `complete_queue_transaction` | `read_canonical::<OperationRecord>` | [973](../../src/management.rs#L973) | [endpoint::management::read_canonical](../../src/management.rs#L2672) |
@@ -1122,7 +1122,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `complete_queue_transaction` | `"queue completion does not match its operation".to_owned` | [976](../../src/management.rs#L976) | receiver-type-required |
 | `complete_queue_transaction` | `self.drive_queue_completion` | [979](../../src/management.rs#L979) | [endpoint::management::ManagementStore::drive_queue_completion](../../src/management.rs#L2004) |
 | `has_incomplete_session_operation` | `crate::validate_session_id` | [986](../../src/management.rs#L986) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `has_incomplete_session_operation` | `NamedLock::shared` | [987](../../src/management.rs#L987) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `has_incomplete_session_operation` | `NamedLock::shared` | [987](../../src/management.rs#L987) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `has_incomplete_session_operation` | `self.root.join` | [987](../../src/management.rs#L987) | receiver-type-required |
 | `has_incomplete_session_operation` | `self.operation_paths` | [988](../../src/management.rs#L988) | [endpoint::management::ManagementStore::operation_paths](../../src/management.rs#L2187) |
 | `has_incomplete_session_operation` | `read_canonical::<OperationRecord>` | [989](../../src/management.rs#L989) | [endpoint::management::read_canonical](../../src/management.rs#L2672) |
@@ -1130,7 +1130,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `has_incomplete_session_operation` | `operation_target_session` | [991](../../src/management.rs#L991) | [endpoint::management::operation_target_session](../../src/management.rs#L3017) |
 | `has_incomplete_session_operation` | `Some` | [991](../../src/management.rs#L991) | external-constructor-callback-or-unresolved |
 | `has_incomplete_session_operation` | `Ok` | [993](../../src/management.rs#L993), [996](../../src/management.rs#L996) | external-constructor-callback-or-unresolved |
-| `completed_fork_lineage` | `NamedLock::shared` | [1000](../../src/management.rs#L1000) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `completed_fork_lineage` | `NamedLock::shared` | [1000](../../src/management.rs#L1000) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `completed_fork_lineage` | `self.root.join` | [1000](../../src/management.rs#L1000) | receiver-type-required |
 | `completed_fork_lineage` | `BTreeMap::new` | [1001](../../src/management.rs#L1001) | external-constructor-callback-or-unresolved |
 | `completed_fork_lineage` | `self.operation_paths` | [1002](../../src/management.rs#L1002) | [endpoint::management::ManagementStore::operation_paths](../../src/management.rs#L2187) |
@@ -1143,7 +1143,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `completed_fork_lineage` | `ManagementError::CorruptOperation` | [1011](../../src/management.rs#L1011) | external-constructor-callback-or-unresolved |
 | `completed_fork_lineage` | `"fork destination has more than one completed lineage".to_owned` | [1012](../../src/management.rs#L1012) | receiver-type-required |
 | `completed_fork_lineage` | `Ok` | [1017](../../src/management.rs#L1017) | external-constructor-callback-or-unresolved |
-| `create_workspace` | `NamedLock::exclusive` | [1027](../../src/management.rs#L1027) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `create_workspace` | `NamedLock::exclusive` | [1027](../../src/management.rs#L1027) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `create_workspace` | `self.root.join` | [1027](../../src/management.rs#L1027) | receiver-type-required |
 | `create_workspace` | `canonical_workspace_path` | [1028](../../src/management.rs#L1028) | [endpoint::management::canonical_workspace_path](../../src/management.rs#L2531) |
 | `create_workspace` | `canonical.to_string_lossy().into_owned` | [1029](../../src/management.rs#L1029) | receiver-type-required |
@@ -1181,7 +1181,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_workspace` | `serde_json::from_value` | [1082](../../src/management.rs#L1082) | external-constructor-callback-or-unresolved |
 | `create_workspace` | `workspace.clone` | [1082](../../src/management.rs#L1082) | receiver-type-required |
 | `rename_workspace` | `validate_title` | [1093](../../src/management.rs#L1093) | [endpoint::management::validate_title](../../src/management.rs#L2573) |
-| `rename_workspace` | `NamedLock::exclusive` | [1094](../../src/management.rs#L1094) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `rename_workspace` | `NamedLock::exclusive` | [1094](../../src/management.rs#L1094) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `rename_workspace` | `self.root.join` | [1094](../../src/management.rs#L1094) | receiver-type-required |
 | `rename_workspace` | `self.workspace_configs` | [1095](../../src/management.rs#L1095) | [endpoint::management::ManagementStore::workspace_configs](../../src/management.rs#L1605) |
 | `rename_workspace` | `ensure_unique_title` | [1096](../../src/management.rs#L1096) | [endpoint::management::ensure_unique_title](../../src/management.rs#L2585) |
@@ -1207,7 +1207,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `canonical_workspace_path` | [1139](../../src/management.rs#L1139) | [endpoint::management::canonical_workspace_path](../../src/management.rs#L2531) |
 | `relocate_workspace` | `canonical.to_string_lossy().into_owned` | [1140](../../src/management.rs#L1140) | receiver-type-required |
 | `relocate_workspace` | `canonical.to_string_lossy` | [1140](../../src/management.rs#L1140) | receiver-type-required |
-| `relocate_workspace` | `NamedLock::exclusive` | [1141](../../src/management.rs#L1141) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `relocate_workspace` | `NamedLock::exclusive` | [1141](../../src/management.rs#L1141) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `relocate_workspace` | `self.root.join` | [1141](../../src/management.rs#L1141) | receiver-type-required |
 | `relocate_workspace` | `self.workspace_configs` | [1142](../../src/management.rs#L1142) | [endpoint::management::ManagementStore::workspace_configs](../../src/management.rs#L1605) |
 | `relocate_workspace` | `configs             .get(workspace_id)             .ok_or_else` | [1143](../../src/management.rs#L1143) | receiver-type-required |
@@ -1269,7 +1269,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `unarchive_session` | `ManagementError::CorruptOperation` | [1246](../../src/management.rs#L1246) | external-constructor-callback-or-unresolved |
 | `unarchive_session` | `"unarchive response lacks sessionId".to_owned` | [1246](../../src/management.rs#L1246) | receiver-type-required |
 | `discard_session` | `crate::validate_session_id` | [1260](../../src/management.rs#L1260) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `discard_session` | `NamedLock::exclusive` | [1261](../../src/management.rs#L1261) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `discard_session` | `NamedLock::exclusive` | [1261](../../src/management.rs#L1261) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `discard_session` | `self.root.join` | [1261](../../src/management.rs#L1261) | receiver-type-required |
 | `discard_session` | `self.operation_path` | [1262](../../src/management.rs#L1262) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `discard_session` | `operation_path.exists` | [1263](../../src/management.rs#L1263) | receiver-type-required |
@@ -1289,7 +1289,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `discard_session` | `folder_is_ephemeral` | [1283](../../src/management.rs#L1283) | [endpoint::management::folder_is_ephemeral](../../src/management.rs#L2759) |
 | `discard_session` | `ManagementError::SessionNotEphemeral` | [1284](../../src/management.rs#L1284) | external-constructor-callback-or-unresolved |
 | `discard_session` | `DirectoryLock::try_exclusive(&source).map_err` | [1286](../../src/management.rs#L1286) | receiver-type-required |
-| `discard_session` | `DirectoryLock::try_exclusive` | [1286](../../src/management.rs#L1286) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L65) |
+| `discard_session` | `DirectoryLock::try_exclusive` | [1286](../../src/management.rs#L1286) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L66) |
 | `discard_session` | `ManagementError::SessionRunning` | [1287](../../src/management.rs#L1287), [1291](../../src/management.rs#L1291) | external-constructor-callback-or-unresolved |
 | `discard_session` | `ManagementError::Store` | [1288](../../src/management.rs#L1288) | external-constructor-callback-or-unresolved |
 | `discard_session` | `ThreadStore::open(&self.storage_root)?.session_has_live_line_holder` | [1290](../../src/management.rs#L1290) | receiver-type-required |
@@ -1326,7 +1326,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_discard` | `serde_json::from_slice` | [1366](../../src/management.rs#L1366) | external-constructor-callback-or-unresolved |
 | `drive_discard` | `response.canonical_bytes` | [1366](../../src/management.rs#L1366) | receiver-type-required |
 | `folder_move` | `crate::validate_session_id` | [1377](../../src/management.rs#L1377) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `folder_move` | `NamedLock::exclusive` | [1378](../../src/management.rs#L1378) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `folder_move` | `NamedLock::exclusive` | [1378](../../src/management.rs#L1378) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `folder_move` | `self.root.join` | [1378](../../src/management.rs#L1378) | receiver-type-required |
 | `folder_move` | `self.operation_path` | [1379](../../src/management.rs#L1379) | [endpoint::management::ManagementStore::operation_path](../../src/management.rs#L2207) |
 | `folder_move` | `operation_path.exists` | [1385](../../src/management.rs#L1385) | receiver-type-required |
@@ -1344,7 +1344,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `folder_move` | `folder_is_ephemeral` | [1410](../../src/management.rs#L1410) | [endpoint::management::folder_is_ephemeral](../../src/management.rs#L2759) |
 | `folder_move` | `ManagementError::SessionEphemeral` | [1411](../../src/management.rs#L1411) | external-constructor-callback-or-unresolved |
 | `folder_move` | `DirectoryLock::try_exclusive(&source).map_err` | [1413](../../src/management.rs#L1413) | receiver-type-required |
-| `folder_move` | `DirectoryLock::try_exclusive` | [1413](../../src/management.rs#L1413) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L65) |
+| `folder_move` | `DirectoryLock::try_exclusive` | [1413](../../src/management.rs#L1413) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L66) |
 | `folder_move` | `ManagementError::SessionRunning` | [1414](../../src/management.rs#L1414) | external-constructor-callback-or-unresolved |
 | `folder_move` | `ManagementError::Store` | [1415](../../src/management.rs#L1415) | external-constructor-callback-or-unresolved |
 | `folder_move` | `folder_reservation` | [1417](../../src/management.rs#L1417) | [endpoint::management::folder_reservation](../../src/management.rs#L3113) |
@@ -1660,7 +1660,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_folder_move` | `publish_canonical` | [2123](../../src/management.rs#L2123), [2159](../../src/management.rs#L2159), [2166](../../src/management.rs#L2166), [2169](../../src/management.rs#L2169), [2179](../../src/management.rs#L2179) | [endpoint::management::publish_canonical](../../src/management.rs#L2667) |
 | `drive_folder_move` | `Path::new` | [2126](../../src/management.rs#L2126), [2127](../../src/management.rs#L2127), [2162](../../src/management.rs#L2162) | external-constructor-callback-or-unresolved |
 | `drive_folder_move` | `source.is_dir` | [2128](../../src/management.rs#L2128) | receiver-type-required |
-| `drive_folder_move` | `DirectoryLock::try_exclusive` | [2131](../../src/management.rs#L2131) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L65) |
+| `drive_folder_move` | `DirectoryLock::try_exclusive` | [2131](../../src/management.rs#L2131) | [store::platform::DirectoryLock::try_exclusive](../../../store/src/platform.rs#L66) |
 | `drive_folder_move` | `verify_folder_reservation` | [2133](../../src/management.rs#L2133), [2152](../../src/management.rs#L2152) | [endpoint::management::verify_folder_reservation](../../src/management.rs#L3131) |
 | `drive_folder_move` | `destination.exists` | [2134](../../src/management.rs#L2134) | receiver-type-required |
 | `drive_folder_move` | `"folder move destination already exists".to_owned` | [2136](../../src/management.rs#L2136) | receiver-type-required |

@@ -46,7 +46,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |
 | [crates/tools/tests/slice14e_web.rs](../../tests/slice14e_web.rs) | 5 | 86 | `inventory.json` |
-| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 29 | 528 | `inventory.json` |
+| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 29 | 529 | `inventory.json` |
 | [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) | 21 | 258 | `inventory.json` |
 | [crates/tools/tests/slice8_schema_registry.rs](../../tests/slice8_schema_registry.rs) | 15 | 170 | `inventory.json` |
 | [crates/tools/tests/slice8_tool_runtime_oracle.rs](../../tests/slice8_tool_runtime_oracle.rs) | 10 | 212 | `inventory.json` |

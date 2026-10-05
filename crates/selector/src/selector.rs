@@ -3596,7 +3596,9 @@ mod tests {
     #[test]
     fn resident_promotion_uses_the_frozen_selection_without_bundle_reverification() {
         let temp = tempfile::tempdir().expect("tempdir");
-        let selector = Selector::new(temp.path().join("Kernel"), UnusedVerifier);
+        let kernel = temp.path().join("Library/Application Support/Tekes/Kernel");
+        fs::create_dir_all(kernel.parent().expect("data root")).expect("data root");
+        let selector = Selector::new(&kernel, UnusedVerifier);
         selector
             .paths()
             .initialize_for_install()

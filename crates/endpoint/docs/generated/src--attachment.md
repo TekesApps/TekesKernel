@@ -298,7 +298,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `materialize_prompt_parts` | `self.publish_validated` | [264](../../src/attachment.rs#L264) | [endpoint::attachment::AttachmentAuthority::publish_validated](../../src/attachment.rs#L267) |
 | `publish_validated` | `self.storage_root.join("threads").join` | [272](../../src/attachment.rs#L272) | receiver-type-required |
 | `publish_validated` | `self.storage_root.join` | [272](../../src/attachment.rs#L272) | receiver-type-required |
-| `publish_validated` | `DirectoryLock::shared` | [273](../../src/attachment.rs#L273) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L57) |
+| `publish_validated` | `DirectoryLock::shared` | [273](../../src/attachment.rs#L273) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
 | `publish_validated` | `self.active_folder_for_prompt` | [276](../../src/attachment.rs#L276), [282](../../src/attachment.rs#L282) | [endpoint::attachment::AttachmentAuthority::active_folder_for_prompt](../../src/attachment.rs#L614) |
 | `publish_validated` | `Err` | [277](../../src/attachment.rs#L277), [278](../../src/attachment.rs#L278), [284](../../src/attachment.rs#L284), [309](../../src/attachment.rs#L309) | external-constructor-callback-or-unresolved |
 | `publish_validated` | `PromptMaterializeError::Store` | [278](../../src/attachment.rs#L278) | external-constructor-callback-or-unresolved |
@@ -343,7 +343,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `upload_file` | `bytes.is_empty` | [378](../../src/attachment.rs#L378) | receiver-type-required |
 | `upload_file` | `self.storage_root.join("threads").join` | [384](../../src/attachment.rs#L384) | receiver-type-required |
 | `upload_file` | `self.storage_root.join` | [384](../../src/attachment.rs#L384) | receiver-type-required |
-| `upload_file` | `DirectoryLock::shared` | [385](../../src/attachment.rs#L385) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L57) |
+| `upload_file` | `DirectoryLock::shared` | [385](../../src/attachment.rs#L385) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
 | `upload_file` | `self.active_folder_for_prompt` | [388](../../src/attachment.rs#L388), [394](../../src/attachment.rs#L394) | [endpoint::attachment::AttachmentAuthority::active_folder_for_prompt](../../src/attachment.rs#L614) |
 | `upload_file` | `PromptMaterializeError::Store` | [390](../../src/attachment.rs#L390) | external-constructor-callback-or-unresolved |
 | `upload_file` | `lifecycle.path` | [395](../../src/attachment.rs#L395) | receiver-type-required |

@@ -129,14 +129,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-selector::selector::tests::UnusedVerifier::verify_provisioned_app](../../src/selector.rs#L3546) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-selector::selector::tests::resident_observation_guard_accepts_only_the_validated_selection_generation](../../src/selector.rs#L3559) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-selector::selector::tests::resident_promotion_uses_the_frozen_selection_without_bundle_reverification](../../src/selector.rs#L3597) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::operational_log_propagates_full_sync_failure](../../src/selector.rs#L3667) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::bootstrap_record_must_bind_the_complete_frozen_selection](../../src/selector.rs#L3682) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn](../../src/selector.rs#L3728) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::transaction_lock_waits_for_a_short_resident_selector_tenure](../../src/selector.rs#L3754) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt](../../src/selector.rs#L3786) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::environment_retry_resets_on_a_detected_config_fact_change](../../src/selector.rs#L3837) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::candidate_conformance_probe_rejects_stderr_and_extra_lines](../../src/selector.rs#L3889) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-selector::selector::tests::candidate_conformance_probe_rejects_stderr_and_extra_lines::REPLY](../../src/selector.rs#L3890) | const_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::operational_log_propagates_full_sync_failure](../../src/selector.rs#L3669) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::bootstrap_record_must_bind_the_complete_frozen_selection](../../src/selector.rs#L3684) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn](../../src/selector.rs#L3730) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::transaction_lock_waits_for_a_short_resident_selector_tenure](../../src/selector.rs#L3756) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt](../../src/selector.rs#L3788) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::environment_retry_resets_on_a_detected_config_fact_change](../../src/selector.rs#L3839) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::candidate_conformance_probe_rejects_stderr_and_extra_lines](../../src/selector.rs#L3891) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-selector::selector::tests::candidate_conformance_probe_rejects_stderr_and_extra_lines::REPLY](../../src/selector.rs#L3892) | const_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -2211,178 +2211,181 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resident_observation_guard_accepts_only_the_validated_selection_generation` | `selector             .ensure_current_selection_unlocked(&expected)             .expect_err` | [3590](../../src/selector.rs#L3590) | receiver-type-required |
 | `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `tempfile::tempdir().expect` | [3598](../../src/selector.rs#L3598) | receiver-type-required |
 | `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `tempfile::tempdir` | [3598](../../src/selector.rs#L3598) | external-constructor-callback-or-unresolved |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `Selector::new` | [3599](../../src/selector.rs#L3599) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
 | `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `temp.path().join` | [3599](../../src/selector.rs#L3599) | receiver-type-required |
 | `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `temp.path` | [3599](../../src/selector.rs#L3599) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths()             .initialize_for_install()             .expect` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths()             .initialize_for_install` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `fs::create_dir_all(             selector                 .paths()                 .operational_log                 .parent()                 .expect("operational log parent"),         )         .expect` | [3604](../../src/selector.rs#L3604) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `fs::create_dir_all` | [3604](../../src/selector.rs#L3604) | external-constructor-callback-or-unresolved |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths()                 .operational_log                 .parent()                 .expect` | [3605](../../src/selector.rs#L3605) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths()                 .operational_log                 .parent` | [3605](../../src/selector.rs#L3605) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths` | [3605](../../src/selector.rs#L3605) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"a".repeat` | [3616](../../src/selector.rs#L3616) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2.0.0".to_owned` | [3617](../../src/selector.rs#L3617) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::atomic_json(&selector.paths().current, &expected).expect` | [3620](../../src/selector.rs#L3620) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::atomic_json` | [3620](../../src/selector.rs#L3620) | [tekes-selector::fs::atomic_json](../../src/fs.rs#L156) |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector.paths` | [3620](../../src/selector.rs#L3620), [3623](../../src/selector.rs#L3623) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `symlink(             super::relative_active_target(&expected.selection.version),             &selector.paths().active,         )         .expect` | [3621](../../src/selector.rs#L3621) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `symlink` | [3621](../../src/selector.rs#L3621) | external-constructor-callback-or-unresolved |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::relative_active_target` | [3622](../../src/selector.rs#L3622) | [tekes-selector::fs::relative_active_target](../../src/fs.rs#L324) |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:30.000000000Z".to_owned` | [3633](../../src/selector.rs#L3633) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"ready".to_owned` | [3636](../../src/selector.rs#L3636) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"7-1-0123456789abcdef0123456789abcdef".to_owned` | [3637](../../src/selector.rs#L3637) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `expected.selection.manifest_sha256.clone` | [3638](../../src/selector.rs#L3638) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:00.000000000Z".to_owned` | [3640](../../src/selector.rs#L3640) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `expected.selection.version.clone` | [3642](../../src/selector.rs#L3642) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `Some` | [3643](../../src/selector.rs#L3643) | external-constructor-callback-or-unresolved |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:20.000000000Z".to_owned` | [3643](../../src/selector.rs#L3643) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .publish_observation(&observation)             .expect` | [3645](../../src/selector.rs#L3645) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .publish_observation` | [3645](../../src/selector.rs#L3645) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation(&expected.selection.version)             .expect("read observation")             .expect` | [3657](../../src/selector.rs#L3657) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation(&expected.selection.version)             .expect` | [3657](../../src/selector.rs#L3657) | receiver-type-required |
-| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation` | [3657](../../src/selector.rs#L3657) | receiver-type-required |
-| `operational_log_propagates_full_sync_failure` | `tempfile::tempdir().expect` | [3668](../../src/selector.rs#L3668) | receiver-type-required |
-| `operational_log_propagates_full_sync_failure` | `tempfile::tempdir` | [3668](../../src/selector.rs#L3668) | external-constructor-callback-or-unresolved |
-| `operational_log_propagates_full_sync_failure` | `temp.path().join` | [3669](../../src/selector.rs#L3669) | receiver-type-required |
-| `operational_log_propagates_full_sync_failure` | `temp.path` | [3669](../../src/selector.rs#L3669) | receiver-type-required |
-| `operational_log_propagates_full_sync_failure` | `append_rotating_log_with_sync(&log, b"{}\n", &#124;_&#124; {             Err(SelectorError::io(                 "injected-log-full-sync",                 std::io::Error::other("fault"),             ))         })         .expect_err` | [3670](../../src/selector.rs#L3670) | receiver-type-required |
-| `operational_log_propagates_full_sync_failure` | `append_rotating_log_with_sync` | [3670](../../src/selector.rs#L3670) | [tekes-selector::selector::append_rotating_log_with_sync](../../src/selector.rs#L2850) |
-| `operational_log_propagates_full_sync_failure` | `Err` | [3671](../../src/selector.rs#L3671) | external-constructor-callback-or-unresolved |
-| `operational_log_propagates_full_sync_failure` | `SelectorError::io` | [3671](../../src/selector.rs#L3671) | [tekes-selector::error::SelectorError::io](../../src/error.rs#L105) |
-| `operational_log_propagates_full_sync_failure` | `std::io::Error::other` | [3673](../../src/selector.rs#L3673) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `tempfile::tempdir().expect` | [3683](../../src/selector.rs#L3683) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `tempfile::tempdir` | [3683](../../src/selector.rs#L3683) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `temp.path().join` | [3684](../../src/selector.rs#L3684), [3717](../../src/selector.rs#L3717) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `temp.path` | [3684](../../src/selector.rs#L3684), [3702](../../src/selector.rs#L3702), [3703](../../src/selector.rs#L3703), [3717](../../src/selector.rs#L3717) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::write(             &script,             b"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$2/argv.txt\"\nprintf '%s\\n' '{\"format\":1,\"launch_id\":\"1-1-0123456789abcdef0123456789abcdef\",\"state\":\"listener-bound\"}' >&3\nwhile :; do sleep 1; done\n",         )         .expect` | [3685](../../src/selector.rs#L3685) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::write` | [3685](../../src/selector.rs#L3685) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::set_permissions(&script, fs::Permissions::from_mode(0o755)).expect` | [3690](../../src/selector.rs#L3690) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::set_permissions` | [3690](../../src/selector.rs#L3690) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::Permissions::from_mode` | [3690](../../src/selector.rs#L3690) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"a".repeat` | [3695](../../src/selector.rs#L3695) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"1.0.0".to_owned` | [3696](../../src/selector.rs#L3696) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `launch_and_observe(             &NativeLaunchSpec {                 executable: &script,                 install_root: temp.path(),                 storage_root: temp.path(),                 listen: "127.0.0.1:7347",                 web_listen: None,                 selection: &selection,                 authority_registry_sha256: &"b".repeat(64),                 launch_id: "1-1-0123456789abcdef0123456789abcdef",                 canary_required: false,                 canary_deadline_at: None,             },             &#124;&#124; Ok(()),             &#124;&#124; Ok(None),         )         .expect` | [3699](../../src/selector.rs#L3699) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `launch_and_observe` | [3699](../../src/selector.rs#L3699) | [tekes-selector::selector::launch_and_observe](../../src/selector.rs#L3086) |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"b".repeat` | [3707](../../src/selector.rs#L3707) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `Ok` | [3712](../../src/selector.rs#L3712), [3713](../../src/selector.rs#L3713) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::read_to_string(temp.path().join("argv.txt")).expect` | [3717](../../src/selector.rs#L3717) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::read_to_string` | [3717](../../src/selector.rs#L3717) | external-constructor-callback-or-unresolved |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `argv.lines().collect::<Vec<_>>` | [3718](../../src/selector.rs#L3718) | receiver-type-required |
-| `bootstrap_record_must_bind_the_complete_frozen_selection` | `argv.lines` | [3718](../../src/selector.rs#L3718) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `tempfile::tempdir().expect` | [3729](../../src/selector.rs#L3729) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `tempfile::tempdir` | [3729](../../src/selector.rs#L3729) | external-constructor-callback-or-unresolved |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `temp.path().join` | [3730](../../src/selector.rs#L3730), [3743](../../src/selector.rs#L3743) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `temp.path` | [3730](../../src/selector.rs#L3730), [3743](../../src/selector.rs#L3743) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode(0o600)             .open(&root_lock)             .expect` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode(0o600)             .open` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new` | [3731](../../src/selector.rs#L3731) | external-constructor-callback-or-unresolved |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `Selector::new` | [3743](../../src/selector.rs#L3743) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
-| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `Instant::now` | [3744](../../src/selector.rs#L3744) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `tempfile::tempdir().expect` | [3755](../../src/selector.rs#L3755) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `tempfile::tempdir` | [3755](../../src/selector.rs#L3755) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Selector::new` | [3756](../../src/selector.rs#L3756) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `temp.path().join` | [3756](../../src/selector.rs#L3756) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `temp.path` | [3756](../../src/selector.rs#L3756) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths()             .initialize_for_install()             .expect` | [3757](../../src/selector.rs#L3757) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths()             .initialize_for_install` | [3757](../../src/selector.rs#L3757) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths` | [3757](../../src/selector.rs#L3757) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write(true)             .open(&selector.paths().lock)             .expect` | [3761](../../src/selector.rs#L3761) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write(true)             .open` | [3761](../../src/selector.rs#L3761) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write` | [3761](../../src/selector.rs#L3761) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read` | [3761](../../src/selector.rs#L3761) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new` | [3761](../../src/selector.rs#L3761) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector.paths` | [3764](../../src/selector.rs#L3764) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `std::thread::spawn` | [3771](../../src/selector.rs#L3771) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `std::thread::sleep` | [3772](../../src/selector.rs#L3772) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Duration::from_millis` | [3772](../../src/selector.rs#L3772) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `drop` | [3773](../../src/selector.rs#L3773), [3781](../../src/selector.rs#L3781) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Instant::now` | [3775](../../src/selector.rs#L3775) | external-constructor-callback-or-unresolved |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .acquire_transaction_lock()             .expect` | [3776](../../src/selector.rs#L3776) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .acquire_transaction_lock` | [3776](../../src/selector.rs#L3776) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `holder.join().expect` | [3782](../../src/selector.rs#L3782) | receiver-type-required |
-| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `holder.join` | [3782](../../src/selector.rs#L3782) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `tempfile::tempdir().expect` | [3787](../../src/selector.rs#L3787) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `tempfile::tempdir` | [3787](../../src/selector.rs#L3787) | external-constructor-callback-or-unresolved |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `temp.path().join` | [3788](../../src/selector.rs#L3788) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `temp.path` | [3788](../../src/selector.rs#L3788) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all(kernel.parent().expect("data root")).expect` | [3789](../../src/selector.rs#L3789) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all` | [3789](../../src/selector.rs#L3789), [3795](../../src/selector.rs#L3795) | external-constructor-callback-or-unresolved |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `kernel.parent().expect` | [3789](../../src/selector.rs#L3789) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `kernel.parent` | [3789](../../src/selector.rs#L3789) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `Selector::new` | [3790](../../src/selector.rs#L3790) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths()             .initialize_for_install()             .expect` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths()             .initialize_for_install` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all(             selector                 .paths()                 .operational_log                 .parent()                 .expect("log parent"),         )         .expect` | [3795](../../src/selector.rs#L3795) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths()                 .operational_log                 .parent()                 .expect` | [3796](../../src/selector.rs#L3796) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths()                 .operational_log                 .parent` | [3796](../../src/selector.rs#L3796) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths` | [3796](../../src/selector.rs#L3796) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `"a".repeat` | [3807](../../src/selector.rs#L3807) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `"2.0.0".to_owned` | [3808](../../src/selector.rs#L3808) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .record_predecessor_timeout(&current)             .expect` | [3811](../../src/selector.rs#L3811) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .record_predecessor_timeout` | [3811](../../src/selector.rs#L3811) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure()             .expect("read carrier")             .expect` | [3814](../../src/selector.rs#L3814) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure()             .expect` | [3814](../../src/selector.rs#L3814) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure` | [3814](../../src/selector.rs#L3814) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .clear_prelaunch_failure()             .expect` | [3825](../../src/selector.rs#L3825) | receiver-type-required |
-| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .clear_prelaunch_failure` | [3825](../../src/selector.rs#L3825) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `tempfile::tempdir().expect` | [3838](../../src/selector.rs#L3838) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `tempfile::tempdir` | [3838](../../src/selector.rs#L3838) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `temp.path().join` | [3839](../../src/selector.rs#L3839) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `temp.path` | [3839](../../src/selector.rs#L3839) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `data_root.join` | [3840](../../src/selector.rs#L3840), [3847](../../src/selector.rs#L3847), [3862](../../src/selector.rs#L3862), [3870](../../src/selector.rs#L3870) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir_all(&data_root).expect` | [3841](../../src/selector.rs#L3841) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir_all` | [3841](../../src/selector.rs#L3841) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `Selector::new` | [3842](../../src/selector.rs#L3842) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths()             .initialize_for_install()             .expect` | [3843](../../src/selector.rs#L3843) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths()             .initialize_for_install` | [3843](../../src/selector.rs#L3843) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths` | [3843](../../src/selector.rs#L3843) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&installer).expect` | [3848](../../src/selector.rs#L3848) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir` | [3848](../../src/selector.rs#L3848), [3863](../../src/selector.rs#L3863), [3871](../../src/selector.rs#L3871) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `super::atomic_json(             &selector.paths().install_identity,             &InstallIdentity {                 access_group: "TEKESAPP01.com.tekes.shared.endpoint".to_owned(),                 client_requirement: "client".to_owned(),                 format: 1,                 installer_requirement: "installer".to_owned(),                 selector_requirement: "selector".to_owned(),                 supervisor_requirement: "supervisor".to_owned(),                 team_id: "TEKESAPP01".to_owned(),             },         )         .expect` | [3849](../../src/selector.rs#L3849) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `super::atomic_json` | [3849](../../src/selector.rs#L3849) | [tekes-selector::fs::atomic_json](../../src/fs.rs#L156) |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `selector.paths` | [3850](../../src/selector.rs#L3850) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"TEKESAPP01.com.tekes.shared.endpoint".to_owned` | [3852](../../src/selector.rs#L3852) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"client".to_owned` | [3853](../../src/selector.rs#L3853) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"installer".to_owned` | [3855](../../src/selector.rs#L3855) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"selector".to_owned` | [3856](../../src/selector.rs#L3856) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"supervisor".to_owned` | [3857](../../src/selector.rs#L3857) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `"TEKESAPP01".to_owned` | [3858](../../src/selector.rs#L3858) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&storage).expect` | [3863](../../src/selector.rs#L3863) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(storage.join(".root-lock"), b"").expect` | [3864](../../src/selector.rs#L3864) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write` | [3864](../../src/selector.rs#L3864), [3872](../../src/selector.rs#L3872), [3876](../../src/selector.rs#L3876) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `storage.join` | [3864](../../src/selector.rs#L3864), [3866](../../src/selector.rs#L3866) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::set_permissions(             storage.join(".root-lock"),             fs::Permissions::from_mode(0o600),         )         .expect` | [3865](../../src/selector.rs#L3865) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::set_permissions` | [3865](../../src/selector.rs#L3865) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::Permissions::from_mode` | [3867](../../src/selector.rs#L3867) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&config).expect` | [3871](../../src/selector.rs#L3871) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(config.join("settings.json"), b"{}\n").expect` | [3872](../../src/selector.rs#L3872) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `config.join` | [3872](../../src/selector.rs#L3872), [3873](../../src/selector.rs#L3873) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `std::thread::spawn` | [3874](../../src/selector.rs#L3874) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `std::thread::sleep` | [3875](../../src/selector.rs#L3875) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `Duration::from_millis` | [3875](../../src/selector.rs#L3875) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(changed, b"{\"changed\":true}\n").expect` | [3876](../../src/selector.rs#L3876) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `Instant::now` | [3878](../../src/selector.rs#L3878) | external-constructor-callback-or-unresolved |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `writer.join().expect` | [3884](../../src/selector.rs#L3884) | receiver-type-required |
-| `environment_retry_resets_on_a_detected_config_fact_change` | `writer.join` | [3884](../../src/selector.rs#L3884) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `tempfile::tempdir().expect` | [3891](../../src/selector.rs#L3891) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `tempfile::tempdir` | [3891](../../src/selector.rs#L3891) | external-constructor-callback-or-unresolved |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `temp.path().join` | [3892](../../src/selector.rs#L3892), [3898](../../src/selector.rs#L3898), [3907](../../src/selector.rs#L3907) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `temp.path` | [3892](../../src/selector.rs#L3892), [3898](../../src/selector.rs#L3898), [3907](../../src/selector.rs#L3907) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(&good, format!("#!/bin/sh\nprintf '%s\\n' '{REPLY}'\n")).expect` | [3893](../../src/selector.rs#L3893) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write` | [3893](../../src/selector.rs#L3893), [3899](../../src/selector.rs#L3899), [3908](../../src/selector.rs#L3908) | external-constructor-callback-or-unresolved |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&good, fs::Permissions::from_mode(0o755)).expect` | [3894](../../src/selector.rs#L3894) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions` | [3894](../../src/selector.rs#L3894), [3904](../../src/selector.rs#L3904), [3913](../../src/selector.rs#L3913) | external-constructor-callback-or-unresolved |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::Permissions::from_mode` | [3894](../../src/selector.rs#L3894), [3904](../../src/selector.rs#L3904), [3913](../../src/selector.rs#L3913) | external-constructor-callback-or-unresolved |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `super::query_candidate_conformance(&good).expect` | [3895](../../src/selector.rs#L3895) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `super::query_candidate_conformance` | [3895](../../src/selector.rs#L3895) | [tekes-selector::selector::query_candidate_conformance](../../src/selector.rs#L2658) |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(             &noisy,             format!("#!/bin/sh\nprintf diagnostic >&2\nprintf '%s\\n' '{REPLY}'\n"),         )         .expect` | [3899](../../src/selector.rs#L3899) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&noisy, fs::Permissions::from_mode(0o755)).expect` | [3904](../../src/selector.rs#L3904) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(             &extra,             format!("#!/bin/sh\nprintf '%s\\n' '{REPLY}' '{{}}'\n"),         )         .expect` | [3908](../../src/selector.rs#L3908) | receiver-type-required |
-| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&extra, fs::Permissions::from_mode(0o755)).expect` | [3913](../../src/selector.rs#L3913) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `fs::create_dir_all(kernel.parent().expect("data root")).expect` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `fs::create_dir_all` | [3600](../../src/selector.rs#L3600), [3606](../../src/selector.rs#L3606) | external-constructor-callback-or-unresolved |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `kernel.parent().expect` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `kernel.parent` | [3600](../../src/selector.rs#L3600) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `Selector::new` | [3601](../../src/selector.rs#L3601) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths()             .initialize_for_install()             .expect` | [3602](../../src/selector.rs#L3602) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths()             .initialize_for_install` | [3602](../../src/selector.rs#L3602) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .paths` | [3602](../../src/selector.rs#L3602) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `fs::create_dir_all(             selector                 .paths()                 .operational_log                 .parent()                 .expect("operational log parent"),         )         .expect` | [3606](../../src/selector.rs#L3606) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths()                 .operational_log                 .parent()                 .expect` | [3607](../../src/selector.rs#L3607) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths()                 .operational_log                 .parent` | [3607](../../src/selector.rs#L3607) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector                 .paths` | [3607](../../src/selector.rs#L3607) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"a".repeat` | [3618](../../src/selector.rs#L3618) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2.0.0".to_owned` | [3619](../../src/selector.rs#L3619) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::atomic_json(&selector.paths().current, &expected).expect` | [3622](../../src/selector.rs#L3622) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::atomic_json` | [3622](../../src/selector.rs#L3622) | [tekes-selector::fs::atomic_json](../../src/fs.rs#L156) |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector.paths` | [3622](../../src/selector.rs#L3622), [3625](../../src/selector.rs#L3625) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `symlink(             super::relative_active_target(&expected.selection.version),             &selector.paths().active,         )         .expect` | [3623](../../src/selector.rs#L3623) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `symlink` | [3623](../../src/selector.rs#L3623) | external-constructor-callback-or-unresolved |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `super::relative_active_target` | [3624](../../src/selector.rs#L3624) | [tekes-selector::fs::relative_active_target](../../src/fs.rs#L324) |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:30.000000000Z".to_owned` | [3635](../../src/selector.rs#L3635) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"ready".to_owned` | [3638](../../src/selector.rs#L3638) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"7-1-0123456789abcdef0123456789abcdef".to_owned` | [3639](../../src/selector.rs#L3639) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `expected.selection.manifest_sha256.clone` | [3640](../../src/selector.rs#L3640) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:00.000000000Z".to_owned` | [3642](../../src/selector.rs#L3642) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `expected.selection.version.clone` | [3644](../../src/selector.rs#L3644) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `Some` | [3645](../../src/selector.rs#L3645) | external-constructor-callback-or-unresolved |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `"2026-09-01T00:00:20.000000000Z".to_owned` | [3645](../../src/selector.rs#L3645) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .publish_observation(&observation)             .expect` | [3647](../../src/selector.rs#L3647) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .publish_observation` | [3647](../../src/selector.rs#L3647) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation(&expected.selection.version)             .expect("read observation")             .expect` | [3659](../../src/selector.rs#L3659) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation(&expected.selection.version)             .expect` | [3659](../../src/selector.rs#L3659) | receiver-type-required |
+| `resident_promotion_uses_the_frozen_selection_without_bundle_reverification` | `selector             .read_observation` | [3659](../../src/selector.rs#L3659) | receiver-type-required |
+| `operational_log_propagates_full_sync_failure` | `tempfile::tempdir().expect` | [3670](../../src/selector.rs#L3670) | receiver-type-required |
+| `operational_log_propagates_full_sync_failure` | `tempfile::tempdir` | [3670](../../src/selector.rs#L3670) | external-constructor-callback-or-unresolved |
+| `operational_log_propagates_full_sync_failure` | `temp.path().join` | [3671](../../src/selector.rs#L3671) | receiver-type-required |
+| `operational_log_propagates_full_sync_failure` | `temp.path` | [3671](../../src/selector.rs#L3671) | receiver-type-required |
+| `operational_log_propagates_full_sync_failure` | `append_rotating_log_with_sync(&log, b"{}\n", &#124;_&#124; {             Err(SelectorError::io(                 "injected-log-full-sync",                 std::io::Error::other("fault"),             ))         })         .expect_err` | [3672](../../src/selector.rs#L3672) | receiver-type-required |
+| `operational_log_propagates_full_sync_failure` | `append_rotating_log_with_sync` | [3672](../../src/selector.rs#L3672) | [tekes-selector::selector::append_rotating_log_with_sync](../../src/selector.rs#L2850) |
+| `operational_log_propagates_full_sync_failure` | `Err` | [3673](../../src/selector.rs#L3673) | external-constructor-callback-or-unresolved |
+| `operational_log_propagates_full_sync_failure` | `SelectorError::io` | [3673](../../src/selector.rs#L3673) | [tekes-selector::error::SelectorError::io](../../src/error.rs#L105) |
+| `operational_log_propagates_full_sync_failure` | `std::io::Error::other` | [3675](../../src/selector.rs#L3675) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `tempfile::tempdir().expect` | [3685](../../src/selector.rs#L3685) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `tempfile::tempdir` | [3685](../../src/selector.rs#L3685) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `temp.path().join` | [3686](../../src/selector.rs#L3686), [3719](../../src/selector.rs#L3719) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `temp.path` | [3686](../../src/selector.rs#L3686), [3704](../../src/selector.rs#L3704), [3705](../../src/selector.rs#L3705), [3719](../../src/selector.rs#L3719) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::write(             &script,             b"#!/bin/sh\nprintf '%s\\n' \"$@\" > \"$2/argv.txt\"\nprintf '%s\\n' '{\"format\":1,\"launch_id\":\"1-1-0123456789abcdef0123456789abcdef\",\"state\":\"listener-bound\"}' >&3\nwhile :; do sleep 1; done\n",         )         .expect` | [3687](../../src/selector.rs#L3687) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::write` | [3687](../../src/selector.rs#L3687) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::set_permissions(&script, fs::Permissions::from_mode(0o755)).expect` | [3692](../../src/selector.rs#L3692) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::set_permissions` | [3692](../../src/selector.rs#L3692) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::Permissions::from_mode` | [3692](../../src/selector.rs#L3692) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"a".repeat` | [3697](../../src/selector.rs#L3697) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"1.0.0".to_owned` | [3698](../../src/selector.rs#L3698) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `launch_and_observe(             &NativeLaunchSpec {                 executable: &script,                 install_root: temp.path(),                 storage_root: temp.path(),                 listen: "127.0.0.1:7347",                 web_listen: None,                 selection: &selection,                 authority_registry_sha256: &"b".repeat(64),                 launch_id: "1-1-0123456789abcdef0123456789abcdef",                 canary_required: false,                 canary_deadline_at: None,             },             &#124;&#124; Ok(()),             &#124;&#124; Ok(None),         )         .expect` | [3701](../../src/selector.rs#L3701) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `launch_and_observe` | [3701](../../src/selector.rs#L3701) | [tekes-selector::selector::launch_and_observe](../../src/selector.rs#L3086) |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `"b".repeat` | [3709](../../src/selector.rs#L3709) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `Ok` | [3714](../../src/selector.rs#L3714), [3715](../../src/selector.rs#L3715) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::read_to_string(temp.path().join("argv.txt")).expect` | [3719](../../src/selector.rs#L3719) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `fs::read_to_string` | [3719](../../src/selector.rs#L3719) | external-constructor-callback-or-unresolved |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `argv.lines().collect::<Vec<_>>` | [3720](../../src/selector.rs#L3720) | receiver-type-required |
+| `bootstrap_record_must_bind_the_complete_frozen_selection` | `argv.lines` | [3720](../../src/selector.rs#L3720) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `tempfile::tempdir().expect` | [3731](../../src/selector.rs#L3731) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `tempfile::tempdir` | [3731](../../src/selector.rs#L3731) | external-constructor-callback-or-unresolved |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `temp.path().join` | [3732](../../src/selector.rs#L3732), [3745](../../src/selector.rs#L3745) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `temp.path` | [3732](../../src/selector.rs#L3732), [3745](../../src/selector.rs#L3745) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode(0o600)             .open(&root_lock)             .expect` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode(0o600)             .open` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new(true)             .mode` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write(true)             .create_new` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read(true)             .write` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new()             .read` | [3733](../../src/selector.rs#L3733) | receiver-type-required |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `fs::OpenOptions::new` | [3733](../../src/selector.rs#L3733) | external-constructor-callback-or-unresolved |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `Selector::new` | [3745](../../src/selector.rs#L3745) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
+| `predecessor_probe_waits_in_100ms_intervals_and_times_out_without_spawn` | `Instant::now` | [3746](../../src/selector.rs#L3746) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `tempfile::tempdir().expect` | [3757](../../src/selector.rs#L3757) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `tempfile::tempdir` | [3757](../../src/selector.rs#L3757) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Selector::new` | [3758](../../src/selector.rs#L3758) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `temp.path().join` | [3758](../../src/selector.rs#L3758) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `temp.path` | [3758](../../src/selector.rs#L3758) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths()             .initialize_for_install()             .expect` | [3759](../../src/selector.rs#L3759) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths()             .initialize_for_install` | [3759](../../src/selector.rs#L3759) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .paths` | [3759](../../src/selector.rs#L3759) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write(true)             .open(&selector.paths().lock)             .expect` | [3763](../../src/selector.rs#L3763) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write(true)             .open` | [3763](../../src/selector.rs#L3763) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read(true)             .write` | [3763](../../src/selector.rs#L3763) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new()             .read` | [3763](../../src/selector.rs#L3763) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `fs::OpenOptions::new` | [3763](../../src/selector.rs#L3763) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector.paths` | [3766](../../src/selector.rs#L3766) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `std::thread::spawn` | [3773](../../src/selector.rs#L3773) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `std::thread::sleep` | [3774](../../src/selector.rs#L3774) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Duration::from_millis` | [3774](../../src/selector.rs#L3774) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `drop` | [3775](../../src/selector.rs#L3775), [3783](../../src/selector.rs#L3783) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `Instant::now` | [3777](../../src/selector.rs#L3777) | external-constructor-callback-or-unresolved |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .acquire_transaction_lock()             .expect` | [3778](../../src/selector.rs#L3778) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `selector             .acquire_transaction_lock` | [3778](../../src/selector.rs#L3778) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `holder.join().expect` | [3784](../../src/selector.rs#L3784) | receiver-type-required |
+| `transaction_lock_waits_for_a_short_resident_selector_tenure` | `holder.join` | [3784](../../src/selector.rs#L3784) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `tempfile::tempdir().expect` | [3789](../../src/selector.rs#L3789) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `tempfile::tempdir` | [3789](../../src/selector.rs#L3789) | external-constructor-callback-or-unresolved |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `temp.path().join` | [3790](../../src/selector.rs#L3790) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `temp.path` | [3790](../../src/selector.rs#L3790) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all(kernel.parent().expect("data root")).expect` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all` | [3791](../../src/selector.rs#L3791), [3797](../../src/selector.rs#L3797) | external-constructor-callback-or-unresolved |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `kernel.parent().expect` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `kernel.parent` | [3791](../../src/selector.rs#L3791) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `Selector::new` | [3792](../../src/selector.rs#L3792) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths()             .initialize_for_install()             .expect` | [3793](../../src/selector.rs#L3793) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths()             .initialize_for_install` | [3793](../../src/selector.rs#L3793) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .paths` | [3793](../../src/selector.rs#L3793) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `fs::create_dir_all(             selector                 .paths()                 .operational_log                 .parent()                 .expect("log parent"),         )         .expect` | [3797](../../src/selector.rs#L3797) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths()                 .operational_log                 .parent()                 .expect` | [3798](../../src/selector.rs#L3798) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths()                 .operational_log                 .parent` | [3798](../../src/selector.rs#L3798) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector                 .paths` | [3798](../../src/selector.rs#L3798) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `"a".repeat` | [3809](../../src/selector.rs#L3809) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `"2.0.0".to_owned` | [3810](../../src/selector.rs#L3810) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .record_predecessor_timeout(&current)             .expect` | [3813](../../src/selector.rs#L3813) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .record_predecessor_timeout` | [3813](../../src/selector.rs#L3813) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure()             .expect("read carrier")             .expect` | [3816](../../src/selector.rs#L3816) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure()             .expect` | [3816](../../src/selector.rs#L3816) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .read_prelaunch_failure` | [3816](../../src/selector.rs#L3816) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .clear_prelaunch_failure()             .expect` | [3827](../../src/selector.rs#L3827) | receiver-type-required |
+| `prelaunch_timeout_is_a_synced_log_carrier_without_a_spawn_attempt` | `selector             .clear_prelaunch_failure` | [3827](../../src/selector.rs#L3827) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `tempfile::tempdir().expect` | [3840](../../src/selector.rs#L3840) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `tempfile::tempdir` | [3840](../../src/selector.rs#L3840) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `temp.path().join` | [3841](../../src/selector.rs#L3841) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `temp.path` | [3841](../../src/selector.rs#L3841) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `data_root.join` | [3842](../../src/selector.rs#L3842), [3849](../../src/selector.rs#L3849), [3864](../../src/selector.rs#L3864), [3872](../../src/selector.rs#L3872) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir_all(&data_root).expect` | [3843](../../src/selector.rs#L3843) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir_all` | [3843](../../src/selector.rs#L3843) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `Selector::new` | [3844](../../src/selector.rs#L3844) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths()             .initialize_for_install()             .expect` | [3845](../../src/selector.rs#L3845) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths()             .initialize_for_install` | [3845](../../src/selector.rs#L3845) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `selector             .paths` | [3845](../../src/selector.rs#L3845) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&installer).expect` | [3850](../../src/selector.rs#L3850) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir` | [3850](../../src/selector.rs#L3850), [3865](../../src/selector.rs#L3865), [3873](../../src/selector.rs#L3873) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `super::atomic_json(             &selector.paths().install_identity,             &InstallIdentity {                 access_group: "TEKESAPP01.com.tekes.shared.endpoint".to_owned(),                 client_requirement: "client".to_owned(),                 format: 1,                 installer_requirement: "installer".to_owned(),                 selector_requirement: "selector".to_owned(),                 supervisor_requirement: "supervisor".to_owned(),                 team_id: "TEKESAPP01".to_owned(),             },         )         .expect` | [3851](../../src/selector.rs#L3851) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `super::atomic_json` | [3851](../../src/selector.rs#L3851) | [tekes-selector::fs::atomic_json](../../src/fs.rs#L156) |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `selector.paths` | [3852](../../src/selector.rs#L3852) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"TEKESAPP01.com.tekes.shared.endpoint".to_owned` | [3854](../../src/selector.rs#L3854) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"client".to_owned` | [3855](../../src/selector.rs#L3855) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"installer".to_owned` | [3857](../../src/selector.rs#L3857) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"selector".to_owned` | [3858](../../src/selector.rs#L3858) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"supervisor".to_owned` | [3859](../../src/selector.rs#L3859) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `"TEKESAPP01".to_owned` | [3860](../../src/selector.rs#L3860) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&storage).expect` | [3865](../../src/selector.rs#L3865) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(storage.join(".root-lock"), b"").expect` | [3866](../../src/selector.rs#L3866) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write` | [3866](../../src/selector.rs#L3866), [3874](../../src/selector.rs#L3874), [3878](../../src/selector.rs#L3878) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `storage.join` | [3866](../../src/selector.rs#L3866), [3868](../../src/selector.rs#L3868) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::set_permissions(             storage.join(".root-lock"),             fs::Permissions::from_mode(0o600),         )         .expect` | [3867](../../src/selector.rs#L3867) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::set_permissions` | [3867](../../src/selector.rs#L3867) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::Permissions::from_mode` | [3869](../../src/selector.rs#L3869) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::create_dir(&config).expect` | [3873](../../src/selector.rs#L3873) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(config.join("settings.json"), b"{}\n").expect` | [3874](../../src/selector.rs#L3874) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `config.join` | [3874](../../src/selector.rs#L3874), [3875](../../src/selector.rs#L3875) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `std::thread::spawn` | [3876](../../src/selector.rs#L3876) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `std::thread::sleep` | [3877](../../src/selector.rs#L3877) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `Duration::from_millis` | [3877](../../src/selector.rs#L3877) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `fs::write(changed, b"{\"changed\":true}\n").expect` | [3878](../../src/selector.rs#L3878) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `Instant::now` | [3880](../../src/selector.rs#L3880) | external-constructor-callback-or-unresolved |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `writer.join().expect` | [3886](../../src/selector.rs#L3886) | receiver-type-required |
+| `environment_retry_resets_on_a_detected_config_fact_change` | `writer.join` | [3886](../../src/selector.rs#L3886) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `tempfile::tempdir().expect` | [3893](../../src/selector.rs#L3893) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `tempfile::tempdir` | [3893](../../src/selector.rs#L3893) | external-constructor-callback-or-unresolved |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `temp.path().join` | [3894](../../src/selector.rs#L3894), [3900](../../src/selector.rs#L3900), [3909](../../src/selector.rs#L3909) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `temp.path` | [3894](../../src/selector.rs#L3894), [3900](../../src/selector.rs#L3900), [3909](../../src/selector.rs#L3909) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(&good, format!("#!/bin/sh\nprintf '%s\\n' '{REPLY}'\n")).expect` | [3895](../../src/selector.rs#L3895) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write` | [3895](../../src/selector.rs#L3895), [3901](../../src/selector.rs#L3901), [3910](../../src/selector.rs#L3910) | external-constructor-callback-or-unresolved |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&good, fs::Permissions::from_mode(0o755)).expect` | [3896](../../src/selector.rs#L3896) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions` | [3896](../../src/selector.rs#L3896), [3906](../../src/selector.rs#L3906), [3915](../../src/selector.rs#L3915) | external-constructor-callback-or-unresolved |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::Permissions::from_mode` | [3896](../../src/selector.rs#L3896), [3906](../../src/selector.rs#L3906), [3915](../../src/selector.rs#L3915) | external-constructor-callback-or-unresolved |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `super::query_candidate_conformance(&good).expect` | [3897](../../src/selector.rs#L3897) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `super::query_candidate_conformance` | [3897](../../src/selector.rs#L3897) | [tekes-selector::selector::query_candidate_conformance](../../src/selector.rs#L2658) |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(             &noisy,             format!("#!/bin/sh\nprintf diagnostic >&2\nprintf '%s\\n' '{REPLY}'\n"),         )         .expect` | [3901](../../src/selector.rs#L3901) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&noisy, fs::Permissions::from_mode(0o755)).expect` | [3906](../../src/selector.rs#L3906) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::write(             &extra,             format!("#!/bin/sh\nprintf '%s\\n' '{REPLY}' '{{}}'\n"),         )         .expect` | [3910](../../src/selector.rs#L3910) | receiver-type-required |
+| `candidate_conformance_probe_rejects_stderr_and_extra_lines` | `fs::set_permissions(&extra, fs::Permissions::from_mode(0o755)).expect` | [3915](../../src/selector.rs#L3915) | receiver-type-required |

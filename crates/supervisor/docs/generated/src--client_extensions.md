@@ -636,7 +636,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `plugin_operation` | `std::fs::File::open(&authority)             .and_then(&#124;file&#124; file.sync_all())             .map_err` | [485](../../src/client_extensions.rs#L485) | receiver-type-required |
 | `plugin_operation` | `std::fs::File::open(&authority)             .and_then` | [485](../../src/client_extensions.rs#L485) | receiver-type-required |
 | `plugin_operation` | `store::NamedLock::exclusive(authority.join(".endpoint-rpc.lock")).map_err` | [495](../../src/client_extensions.rs#L495) | receiver-type-required |
-| `plugin_operation` | `store::NamedLock::exclusive` | [495](../../src/client_extensions.rs#L495) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `plugin_operation` | `store::NamedLock::exclusive` | [495](../../src/client_extensions.rs#L495) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `plugin_operation` | `self.recover_plugin_endpoint_journal_locked` | [502](../../src/client_extensions.rs#L502) | [tekes-supervisor::client_extensions::ProductionClientExtensions::recover_plugin_endpoint_journal_locked](../../src/client_extensions.rs#L567) |
 | `plugin_operation` | `authority.join("endpoint-rpc").join` | [504](../../src/client_extensions.rs#L504) | receiver-type-required |
 | `plugin_operation` | `authority.join("endpoint-sources").join` | [505](../../src/client_extensions.rs#L505) | receiver-type-required |
@@ -650,7 +650,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `plugin_operation` | `Some` | [547](../../src/client_extensions.rs#L547) | external-constructor-callback-or-unresolved |
 | `recover_plugin_endpoint_journal` | `self.root.join` | [555](../../src/client_extensions.rs#L555) | receiver-type-required |
 | `recover_plugin_endpoint_journal` | `store::NamedLock::exclusive(authority.join(".endpoint-rpc.lock")).map_err` | [557](../../src/client_extensions.rs#L557) | receiver-type-required |
-| `recover_plugin_endpoint_journal` | `store::NamedLock::exclusive` | [557](../../src/client_extensions.rs#L557) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `recover_plugin_endpoint_journal` | `store::NamedLock::exclusive` | [557](../../src/client_extensions.rs#L557) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `recover_plugin_endpoint_journal` | `authority.join` | [557](../../src/client_extensions.rs#L557) | receiver-type-required |
 | `recover_plugin_endpoint_journal` | `failure` | [558](../../src/client_extensions.rs#L558) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L2967) |
 | `recover_plugin_endpoint_journal` | `self.recover_plugin_endpoint_journal_locked` | [564](../../src/client_extensions.rs#L564) | [tekes-supervisor::client_extensions::ProductionClientExtensions::recover_plugin_endpoint_journal_locked](../../src/client_extensions.rs#L567) |

@@ -128,7 +128,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bind` | `ToolContinuationRequest::new` | [64](../../src/continuation_journal.rs#L64) | [worker-control::continuation::ToolContinuationRequest::new](../../../worker-control/src/continuation.rs#L32) |
 | `bind` | `binding.original.clone` | [65](../../src/continuation_journal.rs#L65) | receiver-type-required |
 | `bind` | `binding.continuation_id.clone` | [66](../../src/continuation_journal.rs#L66) | receiver-type-required |
-| `bind` | `NamedLock::exclusive` | [71](../../src/continuation_journal.rs#L71) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `bind` | `NamedLock::exclusive` | [71](../../src/continuation_journal.rs#L71) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `bind` | `self.root.join` | [71](../../src/continuation_journal.rs#L71), [72](../../src/continuation_journal.rs#L72) | receiver-type-required |
 | `bind` | `fs::create_dir_all` | [73](../../src/continuation_journal.rs#L73) | external-constructor-callback-or-unresolved |
 | `bind` | `fs::File::open(&self.root)?.sync_all` | [74](../../src/continuation_journal.rs#L74) | receiver-type-required |
@@ -148,7 +148,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve` | `request.validate().map_err` | [102](../../src/continuation_journal.rs#L102) | receiver-type-required |
 | `resolve` | `request.validate` | [102](../../src/continuation_journal.rs#L102) | receiver-type-required |
 | `resolve` | `self.folder` | [103](../../src/continuation_journal.rs#L103) | [tekes-supervisor::continuation_journal::ContinuationJournal::folder](../../src/continuation_journal.rs#L181) |
-| `resolve` | `NamedLock::exclusive` | [104](../../src/continuation_journal.rs#L104) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `resolve` | `NamedLock::exclusive` | [104](../../src/continuation_journal.rs#L104) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `resolve` | `folder.join` | [104](../../src/continuation_journal.rs#L104) | receiver-type-required |
 | `resolve` | `self.prepare` | [105](../../src/continuation_journal.rs#L105) | [tekes-supervisor::continuation_journal::ContinuationJournal::prepare](../../src/continuation_journal.rs#L114) |
 | `resolve` | `Ok` | [106](../../src/continuation_journal.rs#L106), [111](../../src/continuation_journal.rs#L111) | external-constructor-callback-or-unresolved |
@@ -157,7 +157,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve` | `self.commit` | [110](../../src/continuation_journal.rs#L110) | [tekes-supervisor::continuation_journal::ContinuationJournal::commit](../../src/continuation_journal.rs#L159) |
 | `prepare` | `request.validate().map_err` | [115](../../src/continuation_journal.rs#L115) | receiver-type-required |
 | `prepare` | `request.validate` | [115](../../src/continuation_journal.rs#L115) | receiver-type-required |
-| `prepare` | `NamedLock::exclusive` | [116](../../src/continuation_journal.rs#L116) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `prepare` | `NamedLock::exclusive` | [116](../../src/continuation_journal.rs#L116) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `prepare` | `self.root.join` | [116](../../src/continuation_journal.rs#L116) | receiver-type-required |
 | `prepare` | `self.folder` | [117](../../src/continuation_journal.rs#L117) | [tekes-supervisor::continuation_journal::ContinuationJournal::folder](../../src/continuation_journal.rs#L181) |
 | `prepare` | `folder.join` | [118](../../src/continuation_journal.rs#L118), [119](../../src/continuation_journal.rs#L119), [134](../../src/continuation_journal.rs#L134), [136](../../src/continuation_journal.rs#L136) | receiver-type-required |
@@ -177,7 +177,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare` | `self.publish` | [156](../../src/continuation_journal.rs#L156) | [tekes-supervisor::continuation_journal::ContinuationJournal::publish](../../src/continuation_journal.rs#L194) |
 | `commit` | `response.validate_for(request).map_err` | [164](../../src/continuation_journal.rs#L164) | receiver-type-required |
 | `commit` | `response.validate_for` | [164](../../src/continuation_journal.rs#L164) | receiver-type-required |
-| `commit` | `NamedLock::exclusive` | [165](../../src/continuation_journal.rs#L165) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `commit` | `NamedLock::exclusive` | [165](../../src/continuation_journal.rs#L165) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `commit` | `self.root.join` | [165](../../src/continuation_journal.rs#L165) | receiver-type-required |
 | `commit` | `self.folder` | [166](../../src/continuation_journal.rs#L166) | [tekes-supervisor::continuation_journal::ContinuationJournal::folder](../../src/continuation_journal.rs#L181) |
 | `commit` | `self.read` | [168](../../src/continuation_journal.rs#L168) | [tekes-supervisor::continuation_journal::ContinuationJournal::read](../../src/continuation_journal.rs#L191) |

@@ -31,14 +31,14 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [plugins::model::ResolvedPluginExecutable](../../src/model.rs#L415) | `pub` | not a function |
 | [plugins::model::safe_relative](../../src/model.rs#L424) | `pub(crate)` | [plugins::archive::validate_entries](../../src/archive.rs#L271); [plugins::model::Manifest::validate](../../src/model.rs#L249); [plugins::store::validate_receipt](../../src/store.rs#L1076) |
 | [plugins::model::qualified_id](../../src/model.rs#L435) | `pub(crate)` | [plugins::model::Manifest::validate](../../src/model.rs#L249); [plugins::store::validate_operation](../../src/store.rs#L1024); [plugins::store::validate_receipt](../../src/store.rs#L1076) |
-| [plugins::signature::PUBLISHER_ATTESTATION_PATH](../../src/signature.rs#L12) | `pub` | not a function |
-| [plugins::signature::NativeHelperIdentity](../../src/signature.rs#L16) | `pub` | not a function |
-| [plugins::signature::PublisherIdentity](../../src/signature.rs#L27) | `pub` | not a function |
-| [plugins::signature::SignaturePolicy](../../src/signature.rs#L34) | `pub` | not a function |
-| [plugins::signature::NativeHelperVerifier](../../src/signature.rs#L40) | `pub` | not a function |
-| [plugins::signature::MacOsNativeHelperVerifier](../../src/signature.rs#L50) | `pub` | not a function |
-| [plugins::signature::verify_publisher](../../src/signature.rs#L130) | `pub(crate)` | [plugins::store::PluginStore::install](../../src/store.rs#L258); [plugins::store::PluginStore::inspect_staged](../../src/store.rs#L436); [plugins::store::PluginStore::verify_stored_receipt](../../src/store.rs#L721) |
-| [plugins::signature::hex](../../src/signature.rs#L180) | `pub(crate)` | [plugins::signature::verify_publisher](../../src/signature.rs#L130); [plugins::store::package_digest](../../src/store.rs#L1179) |
+| [plugins::signature::PUBLISHER_ATTESTATION_PATH](../../src/signature.rs#L13) | `pub` | not a function |
+| [plugins::signature::NativeHelperIdentity](../../src/signature.rs#L17) | `pub` | not a function |
+| [plugins::signature::PublisherIdentity](../../src/signature.rs#L28) | `pub` | not a function |
+| [plugins::signature::SignaturePolicy](../../src/signature.rs#L35) | `pub` | not a function |
+| [plugins::signature::NativeHelperVerifier](../../src/signature.rs#L41) | `pub` | not a function |
+| [plugins::signature::MacOsNativeHelperVerifier](../../src/signature.rs#L51) | `pub` | not a function |
+| [plugins::signature::verify_publisher](../../src/signature.rs#L131) | `pub(crate)` | [plugins::store::PluginStore::install](../../src/store.rs#L258); [plugins::store::PluginStore::inspect_staged](../../src/store.rs#L436); [plugins::store::PluginStore::verify_stored_receipt](../../src/store.rs#L721) |
+| [plugins::signature::hex](../../src/signature.rs#L181) | `pub(crate)` | [plugins::signature::verify_publisher](../../src/signature.rs#L131); [plugins::store::package_digest](../../src/store.rs#L1179) |
 | [plugins::store::PluginError](../../src/store.rs#L29) | `pub` | not a function |
 | [plugins::store::FaultPoint](../../src/store.rs#L71) | `pub` | not a function |
 | [plugins::store::InstallOptions](../../src/store.rs#L78) | `pub` | not a function |

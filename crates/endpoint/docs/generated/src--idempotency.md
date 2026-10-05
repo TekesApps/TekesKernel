@@ -200,7 +200,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `registry.repair_all` | [139](../../src/idempotency.rs#L139) | receiver-type-required |
 | `open` | `Ok` | [140](../../src/idempotency.rs#L140) | external-constructor-callback-or-unresolved |
 | `begin` | `make_claim` | [149](../../src/idempotency.rs#L149) | [endpoint::idempotency::make_claim](../../src/idempotency.rs#L489) |
-| `begin` | `NamedLock::exclusive` | [150](../../src/idempotency.rs#L150) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `begin` | `NamedLock::exclusive` | [150](../../src/idempotency.rs#L150) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `begin` | `self.read_unlocked` | [151](../../src/idempotency.rs#L151) | [endpoint::idempotency::RpcRegistry::read_unlocked](../../src/idempotency.rs#L425) |
 | `begin` | `same_claim` | [157](../../src/idempotency.rs#L157) | [endpoint::idempotency::same_claim](../../src/idempotency.rs#L525) |
 | `begin` | `Ok` | [158](../../src/idempotency.rs#L158), [169](../../src/idempotency.rs#L169) | external-constructor-callback-or-unresolved |
@@ -209,7 +209,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `begin` | `RpcRegistryError::Conflict` | [166](../../src/idempotency.rs#L166) | external-constructor-callback-or-unresolved |
 | `begin` | `self.publish_prepared` | [168](../../src/idempotency.rs#L168) | [endpoint::idempotency::RpcRegistry::publish_prepared](../../src/idempotency.rs#L375) |
 | `lookup` | `make_claim` | [178](../../src/idempotency.rs#L178) | [endpoint::idempotency::make_claim](../../src/idempotency.rs#L489) |
-| `lookup` | `NamedLock::shared` | [179](../../src/idempotency.rs#L179) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `lookup` | `NamedLock::shared` | [179](../../src/idempotency.rs#L179) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `lookup` | `self.read_unlocked` | [180](../../src/idempotency.rs#L180) | [endpoint::idempotency::RpcRegistry::read_unlocked](../../src/idempotency.rs#L425) |
 | `lookup` | `Ok` | [181](../../src/idempotency.rs#L181), [189](../../src/idempotency.rs#L189) | external-constructor-callback-or-unresolved |
 | `lookup` | `Err` | [182](../../src/idempotency.rs#L182) | external-constructor-callback-or-unresolved |
@@ -217,7 +217,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `lookup` | `same_claim` | [188](../../src/idempotency.rs#L188) | [endpoint::idempotency::same_claim](../../src/idempotency.rs#L525) |
 | `lookup` | `RpcLookup::Completed` | [190](../../src/idempotency.rs#L190) | external-constructor-callback-or-unresolved |
 | `lookup` | `RpcLookup::Pending` | [191](../../src/idempotency.rs#L191) | external-constructor-callback-or-unresolved |
-| `handoff` | `NamedLock::shared` | [201](../../src/idempotency.rs#L201) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L98) |
+| `handoff` | `NamedLock::shared` | [201](../../src/idempotency.rs#L201) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `handoff` | `self             .read_unlocked(&claim.rpc_id, false)?             .ok_or_else` | [202](../../src/idempotency.rs#L202) | receiver-type-required |
 | `handoff` | `self             .read_unlocked` | [202](../../src/idempotency.rs#L202) | [endpoint::idempotency::RpcRegistry::read_unlocked](../../src/idempotency.rs#L425) |
 | `handoff` | `RpcRegistryError::MissingClaim` | [204](../../src/idempotency.rs#L204) | external-constructor-callback-or-unresolved |
@@ -227,7 +227,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handoff` | `same_claim` | [213](../../src/idempotency.rs#L213) | [endpoint::idempotency::same_claim](../../src/idempotency.rs#L525) |
 | `handoff` | `Ok` | [214](../../src/idempotency.rs#L214) | external-constructor-callback-or-unresolved |
 | `complete` | `result.validate` | [222](../../src/idempotency.rs#L222) | receiver-type-required |
-| `complete` | `NamedLock::exclusive` | [223](../../src/idempotency.rs#L223) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `complete` | `NamedLock::exclusive` | [223](../../src/idempotency.rs#L223) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `complete` | `self             .read_unlocked(&claim.rpc_id, false)?             .ok_or_else` | [224](../../src/idempotency.rs#L224) | receiver-type-required |
 | `complete` | `self             .read_unlocked` | [224](../../src/idempotency.rs#L224) | [endpoint::idempotency::RpcRegistry::read_unlocked](../../src/idempotency.rs#L425) |
 | `complete` | `RpcRegistryError::MissingClaim` | [226](../../src/idempotency.rs#L226) | external-constructor-callback-or-unresolved |
@@ -269,7 +269,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `mark_handed_off` | `"handoff delivery must be nonempty".to_owned` | [321](../../src/idempotency.rs#L321) | receiver-type-required |
 | `mark_handed_off` | `durable_identity.as_ref` | [324](../../src/idempotency.rs#L324) | receiver-type-required |
 | `mark_handed_off` | `validate_durable_identity` | [325](../../src/idempotency.rs#L325) | [endpoint::idempotency::validate_durable_identity](../../src/idempotency.rs#L732) |
-| `mark_handed_off` | `NamedLock::exclusive` | [327](../../src/idempotency.rs#L327) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `mark_handed_off` | `NamedLock::exclusive` | [327](../../src/idempotency.rs#L327) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `mark_handed_off` | `self             .read_unlocked(&claim.rpc_id, false)?             .ok_or_else` | [328](../../src/idempotency.rs#L328) | receiver-type-required |
 | `mark_handed_off` | `self             .read_unlocked` | [328](../../src/idempotency.rs#L328) | [endpoint::idempotency::RpcRegistry::read_unlocked](../../src/idempotency.rs#L425) |
 | `mark_handed_off` | `RpcRegistryError::MissingClaim` | [330](../../src/idempotency.rs#L330) | external-constructor-callback-or-unresolved |
@@ -307,7 +307,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_prepared` | `OpenOptions::new()             .write` | [402](../../src/idempotency.rs#L402) | receiver-type-required |
 | `publish_prepared` | `OpenOptions::new` | [402](../../src/idempotency.rs#L402) | external-constructor-callback-or-unresolved |
 | `publish_prepared` | `file.write_all` | [406](../../src/idempotency.rs#L406) | receiver-type-required |
-| `publish_prepared` | `FullSync::full_sync` | [407](../../src/idempotency.rs#L407) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `publish_prepared` | `FullSync::full_sync` | [407](../../src/idempotency.rs#L407) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `publish_prepared` | `drop` | [408](../../src/idempotency.rs#L408) | external-constructor-callback-or-unresolved |
 | `publish_prepared` | `fs::rename` | [409](../../src/idempotency.rs#L409) | external-constructor-callback-or-unresolved |
 | `publish_prepared` | `fs::File::open(shard)?.sync_all` | [410](../../src/idempotency.rs#L410) | receiver-type-required |
@@ -320,7 +320,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append` | `self.record_path` | [419](../../src/idempotency.rs#L419) | [endpoint::idempotency::RpcRegistry::record_path](../../src/idempotency.rs#L484) |
 | `append` | `rpc_hash` | [419](../../src/idempotency.rs#L419) | [endpoint::idempotency::rpc_hash](../../src/idempotency.rs#L747) |
 | `append` | `file.write_all` | [420](../../src/idempotency.rs#L420) | receiver-type-required |
-| `append` | `FullSync::full_sync` | [421](../../src/idempotency.rs#L421) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `append` | `FullSync::full_sync` | [421](../../src/idempotency.rs#L421) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `append` | `Ok` | [422](../../src/idempotency.rs#L422) | external-constructor-callback-or-unresolved |
 | `read_unlocked` | `rpc_hash` | [430](../../src/idempotency.rs#L430) | [endpoint::idempotency::rpc_hash](../../src/idempotency.rs#L747) |
 | `read_unlocked` | `self.record_path` | [431](../../src/idempotency.rs#L431) | [endpoint::idempotency::RpcRegistry::record_path](../../src/idempotency.rs#L484) |
@@ -329,7 +329,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_unlocked` | `Some` | [435](../../src/idempotency.rs#L435) | external-constructor-callback-or-unresolved |
 | `read_unlocked` | `parse` | [435](../../src/idempotency.rs#L435) | [endpoint::idempotency::parse](../../src/idempotency.rs#L533) |
 | `read_unlocked` | `fs::read` | [435](../../src/idempotency.rs#L435) | external-constructor-callback-or-unresolved |
-| `repair_all` | `NamedLock::exclusive` | [439](../../src/idempotency.rs#L439) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `repair_all` | `NamedLock::exclusive` | [439](../../src/idempotency.rs#L439) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `repair_all` | `fs::read_dir` | [440](../../src/idempotency.rs#L440), [447](../../src/idempotency.rs#L447) | external-constructor-callback-or-unresolved |
 | `repair_all` | `shard.file_type()?.is_dir` | [442](../../src/idempotency.rs#L442) | receiver-type-required |
 | `repair_all` | `shard.file_type` | [442](../../src/idempotency.rs#L442) | receiver-type-required |
@@ -363,7 +363,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `repair_all` | `OpenOptions::new().write` | [475](../../src/idempotency.rs#L475) | receiver-type-required |
 | `repair_all` | `OpenOptions::new` | [475](../../src/idempotency.rs#L475) | external-constructor-callback-or-unresolved |
 | `repair_all` | `handle.set_len` | [476](../../src/idempotency.rs#L476) | receiver-type-required |
-| `repair_all` | `FullSync::full_sync` | [477](../../src/idempotency.rs#L477) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `repair_all` | `FullSync::full_sync` | [477](../../src/idempotency.rs#L477) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `repair_all` | `Ok` | [481](../../src/idempotency.rs#L481) | external-constructor-callback-or-unresolved |
 | `record_path` | `self.rpc_root.join(&hash[..2]).join` | [485](../../src/idempotency.rs#L485) | receiver-type-required |
 | `record_path` | `self.rpc_root.join` | [485](../../src/idempotency.rs#L485) | receiver-type-required |

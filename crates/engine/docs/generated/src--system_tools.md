@@ -365,7 +365,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reject_ambiguous_legacy_path` | `BackendFailure::Conflict` | [205](../../src/system_tools.rs#L205) | external-constructor-callback-or-unresolved |
 | `reject_ambiguous_legacy_path` | `Ok` | [211](../../src/system_tools.rs#L211) | external-constructor-callback-or-unresolved |
 | `locked_state` | `NamedLock::exclusive(self.root.join("artifact-versions.lock"))             .map_err` | [217](../../src/system_tools.rs#L217) | receiver-type-required |
-| `locked_state` | `NamedLock::exclusive` | [217](../../src/system_tools.rs#L217) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L102) |
+| `locked_state` | `NamedLock::exclusive` | [217](../../src/system_tools.rs#L217) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `locked_state` | `self.root.join` | [217](../../src/system_tools.rs#L217), [219](../../src/system_tools.rs#L219) | receiver-type-required |
 | `locked_state` | `log_path.exists` | [220](../../src/system_tools.rs#L220) | receiver-type-required |
 | `locked_state` | `OpenOptions::new()             .read(true)             .append(true)             .create(true)             .mode(0o600)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open(log_path)             .map_err` | [221](../../src/system_tools.rs#L221) | receiver-type-required |
@@ -377,7 +377,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_state` | `OpenOptions::new()             .read` | [221](../../src/system_tools.rs#L221) | receiver-type-required |
 | `locked_state` | `OpenOptions::new` | [221](../../src/system_tools.rs#L221) | external-constructor-callback-or-unresolved |
 | `locked_state` | `FullSync::full_sync(&File::open(&self.root).map_err(backend_io)?)                 .map_err` | [230](../../src/system_tools.rs#L230) | receiver-type-required |
-| `locked_state` | `FullSync::full_sync` | [230](../../src/system_tools.rs#L230), [241](../../src/system_tools.rs#L241) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `locked_state` | `FullSync::full_sync` | [230](../../src/system_tools.rs#L230), [241](../../src/system_tools.rs#L241) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `locked_state` | `File::open(&self.root).map_err` | [230](../../src/system_tools.rs#L230) | receiver-type-required |
 | `locked_state` | `File::open` | [230](../../src/system_tools.rs#L230) | external-constructor-callback-or-unresolved |
 | `locked_state` | `Vec::new` | [233](../../src/system_tools.rs#L233) | external-constructor-callback-or-unresolved |
@@ -447,7 +447,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append` | `file.write_all(&bytes).map_err` | [345](../../src/system_tools.rs#L345) | receiver-type-required |
 | `append` | `file.write_all` | [345](../../src/system_tools.rs#L345) | receiver-type-required |
 | `append` | `FullSync::full_sync(file).map_err` | [346](../../src/system_tools.rs#L346) | receiver-type-required |
-| `append` | `FullSync::full_sync` | [346](../../src/system_tools.rs#L346) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L30) |
+| `append` | `FullSync::full_sync` | [346](../../src/system_tools.rs#L346) | [store::platform::FullSync::full_sync](../../../store/src/platform.rs#L31) |
 | `observe` | `self.locked_state` | [352](../../src/system_tools.rs#L352) | receiver-type-required |
 | `observe` | `Self::reject_ambiguous_legacy_path` | [353](../../src/system_tools.rs#L353) | external-constructor-callback-or-unresolved |
 | `observe` | `states.remove` | [354](../../src/system_tools.rs#L354) | receiver-type-required |

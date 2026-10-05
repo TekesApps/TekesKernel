@@ -1621,7 +1621,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `profile.config.providers.web_search.as_ref` | [842](../../src/main.rs#L842) | receiver-type-required |
 | `run` | `options         .ledger         .parent()         .ok_or` | [848](../../src/main.rs#L848) | receiver-type-required |
 | `run` | `options         .ledger         .parent` | [848](../../src/main.rs#L848) | receiver-type-required |
-| `run` | `DirectoryLock::shared` | [852](../../src/main.rs#L852) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L57) |
+| `run` | `DirectoryLock::shared` | [852](../../src/main.rs#L852) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
 | `run` | `LockedLedger::open` | [853](../../src/main.rs#L853) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L153) |
 | `run` | `Err` | [856](../../src/main.rs#L856), [899](../../src/main.rs#L899), [977](../../src/main.rs#L977) | external-constructor-callback-or-unresolved |
 | `run` | `error.into` | [856](../../src/main.rs#L856) | receiver-type-required |
@@ -2431,7 +2431,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `write_roots.sort` | [3023](../../src/main.rs#L3023) | receiver-type-required |
 | `assemble_tool_backends` | `write_roots.dedup` | [3024](../../src/main.rs#L3024) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.clone` | [3027](../../src/main.rs#L3027) | receiver-type-required |
-| `assemble_tool_backends` | `probe_backend` | [3043](../../src/main.rs#L3043) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L234) |
+| `assemble_tool_backends` | `probe_backend` | [3043](../../src/main.rs#L3043) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L235) |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .map(&#124;(index, path)&#124; {             (                 if index == 0 {                     "workspace".to_owned()                 } else {                     format!("workspace-{index}")                 },                 PathBuf::from(path),             )         })         .collect::<Vec<_>>` | [3044](../../src/main.rs#L3044) | receiver-type-required |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .map` | [3044](../../src/main.rs#L3044) | receiver-type-required |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate` | [3044](../../src/main.rs#L3044), [3132](../../src/main.rs#L3132) | receiver-type-required |
