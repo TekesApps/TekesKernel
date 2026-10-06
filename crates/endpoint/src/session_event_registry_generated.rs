@@ -73,21 +73,13 @@ pub(crate) const SESSION_EVENT_REGISTRY: &[SessionEventRegistryEntry] = &[
         event_type: "assistant/chunk",
         projection: SessionEventProjectionKind::Transient,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "assistant/message",
         projection: SessionEventProjectionKind::Surface,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "command/done",
@@ -261,11 +253,7 @@ pub(crate) const SESSION_EVENT_REGISTRY: &[SessionEventRegistryEntry] = &[
         event_type: "session/title",
         projection: SessionEventProjectionKind::StateOnly,
         ui_authority: SessionEventUiAuthority::TypedEndpoint,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "session/title-llm-request",
@@ -367,11 +355,7 @@ pub(crate) const SESSION_EVENT_REGISTRY: &[SessionEventRegistryEntry] = &[
         event_type: "tool/call",
         projection: SessionEventProjectionKind::Folded,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "tool/code-dispatch",
@@ -401,41 +385,25 @@ pub(crate) const SESSION_EVENT_REGISTRY: &[SessionEventRegistryEntry] = &[
         event_type: "tool/result",
         projection: SessionEventProjectionKind::Surface,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "turn/end",
         projection: SessionEventProjectionKind::Folded,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "turn/start",
         projection: SessionEventProjectionKind::Folded,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "user/message",
         projection: SessionEventProjectionKind::Surface,
         ui_authority: SessionEventUiAuthority::Event,
-        producers: &[
-            SessionEventProducer::Codex,
-            SessionEventProducer::Dsh,
-            SessionEventProducer::Kernel,
-        ],
+        producers: &[SessionEventProducer::Codex, SessionEventProducer::Dsh, SessionEventProducer::Kernel],
     },
     SessionEventRegistryEntry {
         event_type: "web/deepseek-search-llm-request",

@@ -75,10 +75,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate` | `self.time.fract` | [52](../../src/types.rs#L52) | receiver-type-required |
 | `validate` | `Some` | [57](../../src/types.rs#L57), [60](../../src/types.rs#L60), [79](../../src/types.rs#L79) | external-constructor-callback-or-unresolved |
 | `validate` | `session_event_registry_entry(&self.event_type).is_none` | [60](../../src/types.rs#L60) | receiver-type-required |
-| `validate` | `session_event_registry_entry` | [60](../../src/types.rs#L60) | [endpoint::session_event_registry_generated::session_event_registry_entry](../../src/session_event_registry_generated.rs#L454) |
+| `validate` | `session_event_registry_entry` | [60](../../src/types.rs#L60) | [endpoint::session_event_registry_generated::session_event_registry_entry](../../src/session_event_registry_generated.rs#L422) |
 | `validate` | `EndpointTypeError::UnknownRequired` | [62](../../src/types.rs#L62) | external-constructor-callback-or-unresolved |
 | `validate` | `self.event_type.clone` | [62](../../src/types.rs#L62), [66](../../src/types.rs#L66) | receiver-type-required |
-| `validate` | `is_surface_event_type` | [64](../../src/types.rs#L64) | [endpoint::session_event_registry_generated::is_surface_event_type](../../src/session_event_registry_generated.rs#L462) |
+| `validate` | `is_surface_event_type` | [64](../../src/types.rs#L64) | [endpoint::session_event_registry_generated::is_surface_event_type](../../src/session_event_registry_generated.rs#L430) |
 | `validate` | `self.source_event_seqs.is_some` | [65](../../src/types.rs#L65) | receiver-type-required |
 | `validate` | `self.surface_op.is_some` | [65](../../src/types.rs#L65) | receiver-type-required |
 | `validate` | `EndpointTypeError::SurfaceMetadata` | [66](../../src/types.rs#L66) | external-constructor-callback-or-unresolved |
