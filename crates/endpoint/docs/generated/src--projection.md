@@ -423,7 +423,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_surface_supersedes` | `endpoint_sources.into_iter` | [648](../../src/projection.rs#L648), [655](../../src/projection.rs#L655) | receiver-type-required |
 | `apply_surface_supersedes` | `"replace".to_owned` | [650](../../src/projection.rs#L650) | receiver-type-required |
 | `apply_surface_supersedes` | `endpoint_sources.is_empty` | [654](../../src/projection.rs#L654) | receiver-type-required |
-| `session_event` | `kernel_may_emit_event_type` | [666](../../src/projection.rs#L666) | [endpoint::session_event_registry_generated::kernel_may_emit_event_type](../../src/session_event_registry_generated.rs#L467) |
+| `session_event` | `kernel_may_emit_event_type` | [666](../../src/projection.rs#L666) | [endpoint::session_event_registry_generated::kernel_may_emit_event_type](../../src/session_event_registry_generated.rs#L435) |
 | `session_event` | `Err` | [667](../../src/projection.rs#L667) | external-constructor-callback-or-unresolved |
 | `session_event` | `ProjectionError::UnregisteredKernelEvent` | [667](../../src/projection.rs#L667) | external-constructor-callback-or-unresolved |
 | `session_event` | `event_type.to_owned` | [668](../../src/projection.rs#L668), [672](../../src/projection.rs#L672) | receiver-type-required |

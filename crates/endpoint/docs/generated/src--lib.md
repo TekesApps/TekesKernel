@@ -218,7 +218,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `endpoint::respond` | `private` |  |
 | `endpoint::rpc` | `private` |  |
 | `endpoint::service` | `private` |  |
-| `endpoint::session_event_registry_generated` | `private` |  |
+| `endpoint::session_event_registry_generated` | `private` | #[rustfmt::skip] |
 | `endpoint::stitch` | `private` |  |
 | `endpoint::stream_queue` | `private` |  |
 | `endpoint::types` | `private` |  |
