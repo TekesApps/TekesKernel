@@ -26,17 +26,17 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/selector/src/canary.rs](../../src/canary.rs) | 1 | 54 | [Symbols and calls](src--canary.md) |
-| [crates/selector/src/cli.rs](../../src/cli.rs) | 9 | 104 | [Symbols and calls](src--cli.md) |
+| [crates/selector/src/cli.rs](../../src/cli.rs) | 9 | 109 | [Symbols and calls](src--cli.md) |
 | [crates/selector/src/error.rs](../../src/error.rs) | 18 | 17 | [Symbols and calls](src--error.md) |
 | [crates/selector/src/fs.rs](../../src/fs.rs) | 25 | 269 | [Symbols and calls](src--fs.md) |
 | [crates/selector/src/installer.rs](../../src/installer.rs) | 49 | 233 | [Symbols and calls](src--installer.md) |
 | [crates/selector/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/selector/src/main.rs](../../src/main.rs) | 2 | 43 | [Symbols and calls](src--main.md) |
-| [crates/selector/src/model.rs](../../src/model.rs) | 25 | 0 | [Symbols and calls](src--model.md) |
-| [crates/selector/src/selector.rs](../../src/selector.rs) | 129 | 2184 | [Symbols and calls](src--selector.md) |
+| [crates/selector/src/model.rs](../../src/model.rs) | 26 | 0 | [Symbols and calls](src--model.md) |
+| [crates/selector/src/selector.rs](../../src/selector.rs) | 130 | 2235 | [Symbols and calls](src--selector.md) |
 | [crates/selector/src/signature.rs](../../src/signature.rs) | 22 | 211 | [Symbols and calls](src--signature.md) |
 | [crates/selector/tests/macos_signature.rs](../../tests/macos_signature.rs) | 1 | 16 | `inventory.json` |
-| [crates/selector/tests/slice10_selector.rs](../../tests/slice10_selector.rs) | 38 | 591 | `inventory.json` |
+| [crates/selector/tests/slice10_selector.rs](../../tests/slice10_selector.rs) | 39 | 625 | `inventory.json` |
 
 ## Cross-file direct calls
 
@@ -64,7 +64,7 @@ flowchart LR
   m5 -->|"3"| m6
   m6 -->|"1"| m0
   m6 -->|"6"| m1
-  m6 -->|"146"| m2
-  m6 -->|"143"| m3
+  m6 -->|"149"| m2
+  m6 -->|"151"| m3
   m7 -->|"31"| m2
 ```

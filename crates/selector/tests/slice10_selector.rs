@@ -659,6 +659,84 @@ fn stage_rejects_an_existing_version_with_different_durable_bytes() {
 }
 
 #[test]
+fn prune_removes_unselected_versions_so_a_version_can_be_staged_again() {
+    // https://github.com/TekesApps/TekesKernel/issues/4
+    let fixture = Fixture::new();
+    let stage = |version: &str, byte: u8| {
+        let source = fixture.make_bundle(version, byte);
+        fixture
+            .selector
+            .stage(
+                &source,
+                version,
+                cli_command_sha256(&stage_argv(&fixture.kernel, &source, version)).expect("hash"),
+            )
+            .expect("stage")
+            .selection
+    };
+    stage("1.0.0", b'1');
+    fixture.activate("1.0.0");
+    stage("2.0.0", b'2');
+    let unselected = stage("3.0.0", b'3');
+    fixture.activate("2.0.0");
+    let paths = fixture.selector.paths();
+    write_canonical(
+        &paths.observations.join("3.0.0.json"),
+        &Observation {
+            attempt: 1,
+            canary_deadline_at: None,
+            canary_required: false,
+            canary_run: None,
+            canary_session: None,
+            consecutive_failures: 2,
+            deadline_at: "2026-08-28T00:00:30.000000000Z".to_owned(),
+            format: 1,
+            generation: 9,
+            last_code: "readiness-crash-loop".to_owned(),
+            launch_id: "9-1-0123456789abcdef0123456789abcdef".to_owned(),
+            manifest_sha256: unselected.manifest_sha256.clone(),
+            rollback_eligible: false,
+            started_at: "2026-08-28T00:00:00.000000000Z".to_owned(),
+            state: ObservationState::Failed,
+            version: "3.0.0".to_owned(),
+            window_closes_at: None,
+        },
+    );
+    let interrupted = paths.bundles.join(".9.0.0.prune");
+    fs::create_dir_all(interrupted.join("bin")).expect("interrupted prune");
+
+    let reply = fixture.selector.prune().expect("prune");
+    assert_eq!(reply.removed, ["3.0.0"]);
+    assert!(!paths.bundles.join("3.0.0").exists());
+    assert!(!paths.observations.join("3.0.0.json").exists());
+    assert!(!interrupted.exists(), "an interrupted prune is finished");
+    assert!(
+        paths.bundles.join("1.0.0").is_dir(),
+        "previous selection stays"
+    );
+    assert!(
+        paths.bundles.join("2.0.0").is_dir(),
+        "current selection stays"
+    );
+    fixture.selector.status().expect("status after prune");
+
+    let restaged = stage("3.0.0", b'7');
+    assert_ne!(
+        restaged, unselected,
+        "a new build reuses the pruned version"
+    );
+    let reply = fixture.selector.prune().expect("second prune");
+    assert!(
+        reply.removed.is_empty(),
+        "the closed stage record keeps its bundle"
+    );
+    fixture
+        .selector
+        .recover()
+        .expect("closed stage record still validates");
+}
+
+#[test]
 fn recovery_fails_closed_on_conflicting_derived_state_and_extra_operation_files() {
     let fixture = Fixture::new();
     let (v1, v2) = fixture.stage_upgrade_pair();

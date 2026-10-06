@@ -66,8 +66,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `std::env::args().skip` | [11](../../src/main.rs#L11) | receiver-type-required |
 | `main` | `std::env::args` | [11](../../src/main.rs#L11) | external-constructor-callback-or-unresolved |
 | `main` | `describe_conformance().and_then` | [13](../../src/main.rs#L13) | receiver-type-required |
-| `main` | `describe_conformance` | [13](../../src/main.rs#L13) | [tekes-selector::selector::describe_conformance](../../src/selector.rs#L2644) |
-| `main` | `reply_bytes` | [13](../../src/main.rs#L13) | [tekes-selector::selector::reply_bytes](../../src/selector.rs#L2640) |
+| `main` | `describe_conformance` | [13](../../src/main.rs#L13) | [tekes-selector::selector::describe_conformance](../../src/selector.rs#L2714) |
+| `main` | `reply_bytes` | [13](../../src/main.rs#L13) | [tekes-selector::selector::reply_bytes](../../src/selector.rs#L2710) |
 | `main` | `std::io::stdout().write_all(&bytes).is_err` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | receiver-type-required |
 | `main` | `std::io::stdout().write_all` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | receiver-type-required |
 | `main` | `std::io::stdout` | [15](../../src/main.rs#L15), [40](../../src/main.rs#L40) | external-constructor-callback-or-unresolved |
@@ -78,11 +78,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `error.envelope_bytes` | [22](../../src/main.rs#L22), [46](../../src/main.rs#L46) | receiver-type-required |
 | `main` | `b"{\"error\":{\"code\":\"io\",\"details\":{\"operation\":\"error-format\"},\"message\":\"Selector I/O failed\"}}\n".to_vec` | [23](../../src/main.rs#L23), [47](../../src/main.rs#L47) | receiver-type-required |
 | `main` | `error.code.exit_code` | [26](../../src/main.rs#L26), [50](../../src/main.rs#L50) | receiver-type-required |
-| `main` | `parse_args` | [30](../../src/main.rs#L30) | [tekes-selector::cli::parse_args](../../src/cli.rs#L44) |
+| `main` | `parse_args` | [30](../../src/main.rs#L30) | [tekes-selector::cli::parse_args](../../src/cli.rs#L45) |
 | `main` | `sanitize_service_environment` | [32](../../src/main.rs#L32) | [tekes-selector::main::sanitize_service_environment](../../src/main.rs#L55) |
 | `main` | `parsed.and_then` | [34](../../src/main.rs#L34) | receiver-type-required |
 | `main` | `Selector::new` | [35](../../src/main.rs#L35) | [tekes-selector::selector::Selector::new](../../src/selector.rs#L386) |
-| `main` | `run_command` | [36](../../src/main.rs#L36) | [tekes-selector::cli::run_command](../../src/cli.rs#L144) |
+| `main` | `run_command` | [36](../../src/main.rs#L36) | [tekes-selector::cli::run_command](../../src/cli.rs#L146) |
 | `sanitize_service_environment` | `std::env::vars_os().next().is_none` | [56](../../src/main.rs#L56) | receiver-type-required |
 | `sanitize_service_environment` | `std::env::vars_os().next` | [56](../../src/main.rs#L56) | receiver-type-required |
 | `sanitize_service_environment` | `std::env::vars_os` | [56](../../src/main.rs#L56) | external-constructor-callback-or-unresolved |

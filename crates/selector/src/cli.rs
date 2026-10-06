@@ -21,6 +21,7 @@ pub enum Command {
     },
     Status,
     Recover,
+    Prune,
     AttestCanary {
         version: String,
         session: String,
@@ -75,6 +76,7 @@ pub fn parse_args(args: &[String]) -> Result<(PathBuf, Command), SelectorError> 
         }
         ("status", []) => Command::Status,
         ("recover", []) => Command::Recover,
+        ("prune", []) => Command::Prune,
         ("attest-canary", [v, version, s, session, r, run, root, storage])
             if v == "--version" && s == "--session" && r == "--run" && root == "--storage-root" =>
         {
@@ -155,6 +157,7 @@ pub fn run_command<V: CodeSignatureVerifier>(
         Command::Rollback { reason } => reply(selector.rollback(reason, command_hash)?).map(Some),
         Command::Status => reply(selector.status()?).map(Some),
         Command::Recover => reply(selector.recover()?).map(Some),
+        Command::Prune => reply(selector.prune()?).map(Some),
         Command::AttestCanary {
             version,
             session,
@@ -276,6 +279,12 @@ mod tests {
         ]
         .map(str::to_owned);
         assert!(parse_args(&reordered).is_err());
+
+        let prune = ["--install-root", "/tmp/Kernel", "prune"].map(str::to_owned);
+        assert_eq!(parse_args(&prune).expect("prune grammar").1, Command::Prune);
+        let prune_with_option =
+            ["--install-root", "/tmp/Kernel", "prune", "--all"].map(str::to_owned);
+        assert!(parse_args(&prune_with_option).is_err());
 
         let duplicated = [
             "--install-root",

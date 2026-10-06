@@ -386,6 +386,7 @@ tekes-selector --install-root <absolute-path> recover
 tekes-selector --install-root <absolute-path> attest-canary --version <id> --session <UUID> --run <id> --storage-root <absolute-path>
 tekes-selector --install-root <absolute-path> serve --storage-root <absolute-path> --listen 127.0.0.1:7347
 tekes-selector --install-root <absolute-path> update-selector --artifact <absolute-path> --manifest <absolute-path>
+tekes-selector --install-root <absolute-path> prune
 ```
 
 `id` and `reason` are 1–128 ASCII bytes from `[A-Za-z0-9._-]` and do not start
@@ -408,6 +409,7 @@ StatusReply   = {format:1,service:"running"|"stopped",
 CanaryReply   = {format:1,operation:"attest-canary",run:str,session:UUID,
                  version:str}
 UpdateReply   = {format:1,operation:"update-selector",sha256:hex,version:str}
+PruneReply    = {format:1,operation:"prune",removed:[id]}
 ConformanceReply = {architecture:"aarch64",conformance_sha256:hex,format:1,
                     operation:"describe-conformance",version:str}
 Failure       = {code:str,launch_id:str}
@@ -472,6 +474,17 @@ code requirement before publication. A published version directory is never
 replaced: `stage` of a valid bundle whose version is already published with a
 different manifest digest returns `invalid-state`/66 with state
 `version-already-published`, so every distinct build needs a distinct version.
+
+`prune` takes the transaction lock, recovers, and removes every published
+version except the current and previous selections and the `to`/`from`
+versions of the retained operation record (a closed `stage` record revalidates
+its bundle on each recovery). For each removed version it first deletes
+`observations/<version>.json`, then renames `bundles/<version>` to the hidden
+`bundles/.<version>.prune` and deletes it; a later `prune` finishes any hidden
+`.prune` directory that a crash left. It never touches `.staging` directories.
+`removed` lists the removed versions in ascending byte order. After a prune,
+the same version may be staged again with different bytes, and it starts with
+no observation history.
 
 The authority registry is RFC-8785 canonical JSON plus LF, its rows are sorted
 by `authority`, and its digest covers the exact bytes. It is the closed Slice 10
