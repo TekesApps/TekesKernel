@@ -6,6 +6,11 @@ mod helper;
 mod hook;
 mod lifecycle_hook;
 pub use lifecycle_hook::*;
+#[cfg(all(
+    target_os = "linux",
+    any(target_arch = "x86_64", target_arch = "aarch64")
+))]
+mod linux_sandbox;
 mod pipeline;
 mod runtime_backends;
 mod sandbox;

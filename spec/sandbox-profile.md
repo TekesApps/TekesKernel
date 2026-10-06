@@ -59,10 +59,39 @@ baseline is a probed platform dependency: a missing or behaviorally rejected
 baseline fails the backend probe rather than widening authority. It selects no network,
 loopback-only, or all network from `network`.
 
-`linux-landlock-seccomp` emits the canonical JSON plan consumed by the Linux
-launcher: the same roots and network class, Landlock ABI minimum, and a closed
-seccomp syscall class. Applying that plan is mandatory; compilation without a
-working kernel backend is not success.
+`linux-landlock-seccomp` emits the canonical JSON plan that describes what the
+Linux launcher applies: the same roots and network class, Landlock ABI
+minimum, and a closed seccomp syscall class. Applying it is mandatory;
+compilation without a working kernel backend is not success. The launcher
+prepares a Landlock ruleset and a seccomp filter in the parent and applies
+both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
+
+- **Landlock** handles every filesystem right the running ABI defines up to
+  `TRUNCATE` (ABI 3). Read roots and the fixed system runtime roots (`/usr`,
+  `/bin`, `/sbin`, `/lib*`, `/etc`, `/proc`, `/run/systemd/resolve`,
+  `/sys/devices/system/cpu`, `/sys/fs/cgroup`) get read access; write roots
+  and scratch get every handled right; `/dev/null`, `/dev/zero`, `/dev/full`,
+  `/dev/random`, `/dev/urandom` and `/dev/tty` are readable and writable.
+  Missing system roots grant nothing. Execution is granted on the readable
+  roots only when `allow_process` is true; the requested executable and its
+  ELF interpreter are always executable. Landlock also keeps the confined
+  tree from tracing or reading `/proc/<pid>` state of processes outside it.
+- **seccomp** kills a foreign syscall ABI (and refuses x32 numbers), and
+  refuses: kernel-module, kexec, mount, `pivot_root`, `setns`, `unshare` and
+  namespace-creating `clone` flags, the kernel keyring, `bpf`,
+  `perf_event_open`, `userfaultfd`, `io_uring` (whose operations bypass socket
+  rules) and the `TIOCSTI`/`TIOCLINUX` terminal-injection ioctls. `clone3`
+  returns `ENOSYS` so libc falls back to the inspectable `clone`.
+- **Network** `deny` refuses `socket()` for every domain (`socketpair` stays
+  available); `all` adds no socket rule. `loopback` cannot be enforced by
+  Landlock or seccomp and is refused at launch.
+- **Process** creation without `allow_process` refuses `fork`, `vfork` and
+  `clone` without `CLONE_THREAD`, so only threads of the requested program
+  run.
+
+The launcher supports x86_64 and aarch64; other architectures probe as
+`unsupported`. Filesystem Unix sockets are not mediated by either half, so
+`all` network also reaches local socket files the user can open.
 
 Profiles escape path literals and reject control/NUL characters. Golden bytes
 live in `fixtures/sandbox/`.
@@ -88,7 +117,9 @@ is a terminal denied tool result, not a fake empty success.
 
 macOS uses Seatbelt (`sandbox-exec` or equivalent libsandbox entry point) and
 the profile applies before the requested executable starts. Linux uses
-Landlock plus seccomp and fails closed when either required half is absent.
+Landlock (ABI 1 or later) plus seccomp and fails closed when either required
+half is absent: the probe reports `missing`, and a launch whose ruleset or
+filter cannot be applied fails to spawn.
 Mobile has no exec backend. Sandboxing is inherited by the full child tree;
 rlimits, clean environment, and advisory path validation are complementary,
 not substitutes.

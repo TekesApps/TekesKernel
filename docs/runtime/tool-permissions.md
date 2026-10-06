@@ -19,7 +19,9 @@ network authority. Containment is four layers from one policy source:
    two enforcement points; configuring them separately is a defect.
 
 Mechanics: macOS = Seatbelt (SBPL profile via libsandbox/sandbox-exec);
-Linux = landlock (+ seccomp; bubblewrap/netns where available). Both are
+Linux = Landlock for the filesystem plus seccomp for sockets, process
+creation and kernel interfaces, applied in the child before `execve`; no
+namespace or bubblewrap layer. Both are
 **inherited by the whole child tree**, which is why they work for `sh -c`
 and its grandchildren. Both are **probed dependencies that fail closed**
 (R3-21): the Seatbelt entry points are formally deprecated and landlock

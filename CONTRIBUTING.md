@@ -19,7 +19,10 @@ needs to be merged.
 The toolchain is pinned in `rust-toolchain.toml`; `rustup` installs it on first
 use. macOS on Apple silicon is the primary platform. CI also builds and tests
 on Linux and must pass there, so keep macOS-only code behind
-`#[cfg(target_os = "macos")]`. Python 3 runs the fixture checks. To regenerate
+`#[cfg(target_os = "macos")]`. On Linux the sandbox tests need a kernel with
+Landlock enabled (`/sys/kernel/security/lsm` lists `landlock`); a container
+whose seccomp profile blocks the Landlock syscalls fails them. Python 3 runs
+the fixture checks. To regenerate
 the architecture atlas, install its pinned dependencies:
 
 ```sh
