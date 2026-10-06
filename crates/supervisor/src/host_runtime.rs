@@ -361,25 +361,6 @@ fn sweep_semantic_ledgers(root: &Path) -> Result<(), DaemonError> {
     Ok(())
 }
 
-/// Builds the unary host with the `providerAdmin.v1` routes. Only tests use
-/// it; application-owned launch uses `assemble_application_endpoint_host`.
-pub fn assemble_production_endpoint_host(
-    authority_root: &Path,
-    description: SessionHostDescription,
-    clock: Arc<EndpointClock>,
-    user_agent_dir: &Path,
-    process_host: Arc<ProductionProcessHost>,
-) -> Result<ProductionEndpointHost, DaemonError> {
-    assemble_endpoint_host(
-        authority_root,
-        description,
-        clock,
-        user_agent_dir,
-        process_host,
-        false,
-    )
-}
-
 /// Builds the unary host for application-owned launch. Resource methods are
 /// captured once from user instructions. Workspace/project resources are
 /// captured independently per workspace, so unrelated workspaces cannot make
@@ -390,24 +371,6 @@ pub fn assemble_application_endpoint_host(
     clock: Arc<EndpointClock>,
     user_agent_dir: &Path,
     process_host: Arc<ProductionProcessHost>,
-) -> Result<ProductionEndpointHost, DaemonError> {
-    assemble_endpoint_host(
-        authority_root,
-        description,
-        clock,
-        user_agent_dir,
-        process_host,
-        true,
-    )
-}
-
-fn assemble_endpoint_host(
-    authority_root: &Path,
-    description: SessionHostDescription,
-    clock: Arc<EndpointClock>,
-    user_agent_dir: &Path,
-    process_host: Arc<ProductionProcessHost>,
-    application_owned: bool,
 ) -> Result<ProductionEndpointHost, DaemonError> {
     let repository = ConfigRepository::open(authority_root)
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
@@ -481,12 +444,8 @@ fn assemble_endpoint_host(
         .map_err(|error| DaemonError::corrupt(format!("{}: {}", error.code, error.message)))?,
     );
     let admin_routes = Arc::new(
-        (if application_owned {
-            ClientAdminRoutes::for_application(authority_root, Arc::clone(&process_host))
-        } else {
-            ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))
-        })
-        .map_err(|error| DaemonError::invalid_config(error.code))?,
+        ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))
+            .map_err(|error| DaemonError::invalid_config(error.code))?,
     );
     let mut extension_routes = extensions.routes();
     extension_routes.extend(admin_routes.routes());

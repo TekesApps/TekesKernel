@@ -597,7 +597,7 @@ fn real_validator_exhaustion_releases_queued_input() {
     let transport_runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = transport_runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"), host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root, unary, host.clone(),
@@ -797,7 +797,7 @@ fn real_legacy_simple_task() {
         let runtime = tokio::runtime::Runtime::new().unwrap();
         let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
         let address = listener.local_addr().unwrap();
-        let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+        let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
             endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
             Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"), host.clone()).unwrap();
         let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root, unary, host.clone(),
@@ -915,7 +915,7 @@ fn real_provider_400_releases_queue_over_public_transport() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),
@@ -1036,7 +1036,7 @@ fn real_public_deferred_tool_search() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),
@@ -1140,7 +1140,7 @@ fn real_public_image_attachment() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),
@@ -1241,7 +1241,7 @@ fn real_public_flow_case() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),
@@ -1284,7 +1284,7 @@ fn real_public_flow_case() {
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
-    let unary = crate::host_runtime::assemble_production_endpoint_host(&root,
+    let unary = crate::host_runtime::assemble_application_endpoint_host(&root,
         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},
         Arc::new(|| Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap();
     let assembly = crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),

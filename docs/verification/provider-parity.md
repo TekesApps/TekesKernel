@@ -163,7 +163,9 @@ incomplete/failed stream cases.
 
 The executable dialect/profile contract and hermetic oracle were developed in
 parallel with Slices 12 and 13. Gates 93–96 now gate the implemented
-provider/model advertisement and Slice-14F `providerAdmin.v1` capability. An
+provider/model advertisement; the Slice-14F `providerAdmin.v1` capability has
+since been removed, because the launching application owns provider
+configuration. An
 opt-in live route smoke remains supplemental and cannot upgrade an unproved
 tuple.
 

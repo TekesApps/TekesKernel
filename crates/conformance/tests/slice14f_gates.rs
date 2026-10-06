@@ -11,9 +11,7 @@ use endpoint::{
 use profile::{ConfigRepository, WorkspaceConfig, WorkspacePolicy};
 use schema::IJsonValue;
 use serde_json::{Value, json};
-use tekes_supervisor::client_admin::{
-    ClientAdminRoutes, PROVIDER_ADMIN_METHODS, WORKSPACE_POLICY_METHODS,
-};
+use tekes_supervisor::client_admin::{ClientAdminRoutes, WORKSPACE_POLICY_METHODS};
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
     HOST_FILE_METHODS, INITIAL_PRESET_METHODS, MCP_METHODS, PLUGIN_METHODS, RECOVERY_METHODS,
@@ -24,7 +22,7 @@ use tekes_supervisor::endpoint_host::{
     CompositeProductionEndpointRoutes, ProductionEndpointHost, ProductionEndpointRoutes,
     TEKES_UNARY_ROUTES,
 };
-use tekes_supervisor::host_runtime::assemble_production_endpoint_host;
+use tekes_supervisor::host_runtime::assemble_application_endpoint_host;
 use tekes_supervisor::process_host::ProductionProcessHost;
 use tempfile::TempDir;
 
@@ -102,7 +100,7 @@ fn production_fixture(with_workspace: bool) -> ProductionFixture {
     let process =
         ProductionProcessHost::open(root.path(), worker, env!("CARGO_PKG_VERSION"), &agent)
             .expect("process host");
-    let host = assemble_production_endpoint_host(
+    let host = assemble_application_endpoint_host(
         root.path(),
         SessionHostDescription {
             version: env!("CARGO_PKG_VERSION").to_owned(),
@@ -264,7 +262,6 @@ fn production_group_constants() -> BTreeMap<String, BTreeMap<String, MethodClass
         ("mcp.v1", MCP_METHODS.as_slice()),
         ("schedule.v1", SCHEDULE_METHODS.as_slice()),
         ("threadSearch.v1", THREAD_SEARCH_METHODS.as_slice()),
-        ("providerAdmin.v1", PROVIDER_ADMIN_METHODS.as_slice()),
         ("workspacePolicy.v1", WORKSPACE_POLICY_METHODS.as_slice()),
         ("usage.v1", USAGE_METHODS.as_slice()),
     ]
@@ -303,7 +300,7 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
         .values()
         .flat_map(|methods| methods.keys().cloned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(expected_methods.len(), 69);
+    assert_eq!(expected_methods.len(), 60);
 
     let production = production_fixture(false);
     assert_eq!(production.host.extension_capabilities(), expected_methods);
@@ -312,8 +309,8 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
             .all(|name| !production.host.extension_capabilities().contains(*name))
     );
 
-    // The two administration groups are real independently composed
-    // production route owners, not one eleven-method all-or-nothing shim.
+    // The workspace policy group is a real production route owner, and
+    // composing it twice is a duplicate-ownership assembly failure.
     let admin_root = TempDir::new().expect("admin root");
     let agent = admin_root.path().join(".agent");
     fs::create_dir_all(&agent).expect("agent");
@@ -323,11 +320,15 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
     let admin =
         Arc::new(ClientAdminRoutes::new(admin_root.path(), process).expect("admin authority"));
     let routes = admin.routes();
-    assert_eq!(routes.len(), 2);
-    let forward = CompositeProductionEndpointRoutes::compose(routes.clone()).expect("forward");
-    let reverse =
-        CompositeProductionEndpointRoutes::compose(routes.iter().rev().cloned()).expect("reverse");
-    assert_eq!(forward.capabilities(), reverse.capabilities());
+    assert_eq!(routes.len(), 1);
+    let composed = CompositeProductionEndpointRoutes::compose(routes.clone()).expect("compose");
+    assert_eq!(
+        composed.capabilities(),
+        WORKSPACE_POLICY_METHODS
+            .iter()
+            .map(|(name, _)| (*name).to_owned())
+            .collect::<BTreeSet<_>>()
+    );
     assert!(
         CompositeProductionEndpointRoutes::compose([
             Arc::clone(&routes[0]),
@@ -345,7 +346,7 @@ async fn slice14f_gate_114_closed_dtos_authorities_and_idempotency() {
         .as_array()
         .expect("method cases")
         .clone();
-    assert_eq!(cases.len(), 69);
+    assert_eq!(cases.len(), 60);
     for (index, case) in cases.iter().enumerate() {
         let method = case["method"].as_str().expect("method");
         let payload = &case["request"];
@@ -377,44 +378,6 @@ async fn slice14f_gate_114_closed_dtos_authorities_and_idempotency() {
         );
     }
 
-    let connection = json!({
-        "expectedProvidersRevision":0,
-        "connection":{
-            "id":"openai-main","protocolFamily":"responses",
-            "dialectId":"openai_responses_v1","endpointOwner":"openai",
-            "gatewayTranslation":"direct","evidenceRevision":"openai-2026-08-01",
-            "endpoint":"https://api.openai.com/v1"
-        }
-    });
-    let first = dispatch(
-        &production,
-        "provider-save-idempotent",
-        "providers.connection.save",
-        connection.clone(),
-    )
-    .await;
-    let repeated = dispatch(
-        &production,
-        "provider-save-idempotent",
-        "providers.connection.save",
-        connection.clone(),
-    )
-    .await;
-    assert_eq!(first.result, repeated.result, "equal retry must re-ack");
-    assert!(first.result.ok, "{first:?}");
-    let mut conflicting = connection;
-    conflicting["connection"]["endpoint"] = Value::String("https://example.invalid/v1".to_owned());
-    let conflict = dispatch(
-        &production,
-        "provider-save-idempotent",
-        "providers.connection.save",
-        conflicting,
-    )
-    .await;
-    assert_eq!(
-        conflict.result.error.expect("idempotency conflict").code,
-        "idempotency-conflict"
-    );
     let mcp_save = json!({"credentialFields":{},"server":{"always_on":false,"enabled":true,"project_trusted":true,"protocol_mode":"legacy","reference":{"name":"fixture","scope":"project","workspace_id":"workspace-1"},"transport":{"command":["/usr/bin/true"],"environment":{},"kind":"stdio"}}});
     let mcp_first = dispatch(
         &production,
@@ -514,7 +477,7 @@ async fn slice14f_gate_115_predecessor_disposition_and_no_special_cases() {
 #[tokio::test]
 async fn slice14f_gate_116_cross_capability_lifecycle() {
     let production = production_fixture(true);
-    assert_eq!(production.host.extension_capabilities().len(), 69);
+    assert_eq!(production.host.extension_capabilities().len(), 60);
 
     let package = write_plugin_package(production.root.path());
     let inspected = success_value(
@@ -679,15 +642,4 @@ async fn slice14f_gate_116_cross_capability_lifecycle() {
         escalated.result.error.expect("policy error").code,
         "policy-escalation"
     );
-
-    let connections = success_value(
-        &dispatch(
-            &production,
-            "providers-empty",
-            "providers.connections",
-            json!({}),
-        )
-        .await,
-    );
-    assert_eq!(connections["connections"], json!([]));
 }

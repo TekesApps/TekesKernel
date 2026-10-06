@@ -53,7 +53,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/supervisor/examples/slice9_production_client_harness_server.rs](../../examples/slice9_production_client_harness_server.rs) | 18 | 117 | `inventory.json` |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 132 | [Symbols and calls](src--builtin.md) |
-| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 108 | 849 | [Symbols and calls](src--client_admin.md) |
+| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 61 | 409 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 136 | 1567 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 25 | 339 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
@@ -62,7 +62,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 150 | 1019 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
-| [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 48 | 409 | [Symbols and calls](src--host_runtime.md) |
+| [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 46 | 405 | [Symbols and calls](src--host_runtime.md) |
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 183 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 43 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
@@ -76,7 +76,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) | 3 | 106 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 7 | 62 | `inventory.json` |
 | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 28 | 278 | `inventory.json` |
-| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 306 | `inventory.json` |
+| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 305 | `inventory.json` |
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 117 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
@@ -123,7 +123,7 @@ flowchart LR
   m7 -->|"2"| m4
   m7 -->|"1"| m9
   m8 -->|"1"| m15
-  m10 -->|"2"| m2
+  m10 -->|"1"| m2
   m10 -->|"1"| m3
   m10 -->|"3"| m8
   m10 -->|"1"| m17

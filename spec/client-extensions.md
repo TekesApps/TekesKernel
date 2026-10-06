@@ -234,118 +234,21 @@ camel-case field names:
 diagnostics are omitted. Every named internal error maps to the same
 kebab-case endpoint code. No transcript/body search is implied.
 
-## Provider and workspace administration
+## Workspace administration
 
-`providerAdmin.v1` exists only when `provider-dialect-profiles` proof
-loading and the config/secret-reference writers are installed. It is not
-advertised under an application-owned launch, where the application owns
-provider configuration (see [built-in launch](../docs/builtin-launch.md)).
-Its methods are:
+Provider configuration is owned by the launching application, which supplies
+it in the launch document (see [built-in launch](../docs/builtin-launch.md)).
+The earlier `providerAdmin.v1` group (`providers.*`) was removed together with
+the launchd deployment; no Kernel route edits providers or the default model.
+Abandoned provider or settings operation records from that group are ignored
+on recovery.
 
-```text
-providers.list                 read
-providers.verify               read
-providers.connections          read
-providers.connection.save      mutation
-providers.connection.delete    mutation
-providers.profiles             read
-providers.profile.save         mutation
-providers.profile.delete       mutation
-providers.profile.default      mutation
-```
-
-List requests are `{}`; verify is `{connectionId,exactSku}`. The secret-free
-public types map one-to-one to `config`:
-
-```text
-Connection = {id,protocolFamily,dialectId,endpointOwner,gatewayTranslation,
-              evidenceRevision,endpoint,credentialId?}
-ModelProfile = {connectionId,modelProfileId,exactSku,enabled,
-                contextWindowTokens,compactTriggerTokens}
-RouteTarget = {protocolFamily,dialectId,modelProfileId,endpointOwner,
-               gatewayTranslation,exactSku,evidenceRevision}
-ProviderReadiness = {state:"ready"}
-                  | {state:"unavailable",reason:"dialect-unproved"|
-                     "credential-unavailable"|"route-mismatch"}
-ConnectionView = Connection plus {readiness:ProviderReadiness}
-ModelProfileView = ModelProfile plus {readiness:ProviderReadiness}
-```
-
-The mapping is byte-authoritative rather than inferred: `protocolFamily`,
-`dialectId`, `endpointOwner`, `gatewayTranslation`, and `evidenceRevision` are
-the camel-case projection of Provider `adapter`, `dialect`, `endpoint_owner`,
-`gateway_translation`, and `evidence_revision` in `config`.
-`modelProfileId` and `exactSku` are Model `profile` and exact Model `id`;
-`connectionId` is the containing Provider `id`. A read returns those stored fields even if the currently
-installed proof is missing, but marks the row unready; it never reconstructs
-them from endpoint/model names.
-
-Connection readiness is independent of its model array. It is `ready` when
-the credential reference resolves and at least one installed advertised proof
-shares the connection's exact provider-level fields and normalized endpoint:
-`(protocolFamily,dialectId,endpointOwner,gatewayTranslation,evidenceRevision,
-endpoint)`. Therefore a connection with zero models can be ready, and adding
-multiple model rows does not change its connection readiness. Profile
-readiness additionally requires the one exact `RouteTarget` for that row.
-`ModelProfile.enabled` is orthogonal: disabling a proved profile makes it
-unadvertisable but does not make its proof/credential readiness false.
-
-`providers.profiles` is the read authority for both revision domains. It
-returns `{format:1,providersRevision,settingsRevision,profiles,default?}`;
-`default`, when present, is `{connectionId,exactSku}` and names the current
-global default. Its absence means no default is configured. A client MUST use
-the returned `settingsRevision` for `providers.profile.default`; it never
-guesses a revision.
-
-Connection save/delete are `{expectedProvidersRevision,connection}` and
-`{expectedProvidersRevision,connectionId}`. Profile save/delete are
-`{expectedProvidersRevision,profile}` and
-`{expectedProvidersRevision,connectionId,exactSku}`; they atomically rewrite
-the models inside the named Provider. Creating a connection writes an empty
-`models` array. Updating one preserves that array only when every row still
-matches an installed proof under the submitted route; otherwise it returns
-`route-mismatch` without publishing. Connection delete requires an empty model
-array and no workspace/default/session reference; profile delete likewise
-requires no such reference to that exact provider/model pair. The respective
-failures are `provider-in-use` and `profile-in-use`; callers remove references
-and profiles explicitly rather than receiving a cascading delete. Profile save
-requires the containing connection and one exact matching proof. Default is
-`{expectedSettingsRevision,connectionId,exactSku}` and updates `config`
-Settings only after resolving that exact provider/model pair. Results name the
-changed `providersRevision` or `settingsRevision`; `providers.list` returns
-the installed proof-registry entries and has no config revision, while
-connections/profiles return `ConnectionView`/`ModelProfileView` rows plus
-`providersRevision`. Save results also return the corresponding View after
-publication and readiness re-evaluation. A connection contains only
-a credential reference, never secret material. All durable config/reference
-scans and the publication occur under `config`'s single exclusive lock.
-Proof-registry and credential readiness are ephemeral observations outside
-that lock and are re-evaluated after publication; neither can authorize or
-change the durable bytes.
-Verify is a local, non-sending readiness check. It resolves the exact configured
-connection/profile tuple, requires an exact proof-registry match, validates the
-route-evidence revision, and proves that the referenced credential exists and
-is usable for the configured scope. The exact successful `target` is the
-`RouteTarget` above and must equal the stored fields. It never opens a provider connection,
-starts a billable request, or mutates proof/config/credential state. Its result
-is `{format:1,verified:true,target,credentialReady:true}`. Optional exact-route
-live smoke is a separately authorized release/UAT operation outside this
-endpoint contract; it is never implemented by `providers.verify`. The method
-does not upgrade an unproved tuple. `stale-revision`, `dialect-unproved`,
-`route-mismatch`, `credential-unavailable`, `provider-in-use`, and
-`profile-in-use` are closed errors. Until these
-checks are real, the capability and every method above remain absent; broad
-protocol-family fixtures are not readiness.
-Each list row is `{proofId,target}` where `proofId` is the exact
-`provider-dialect-profiles` oracle `proof_id`; it is never synthesized by
-the endpoint.
-
-Every provider/settings mutation and `workspace.policy.set` durably prepares,
+`workspace.policy.set` durably prepares,
 before config publication, an operation record keyed by `(rpcId, canonical
 request digest)` containing the authority path, expected/next revision, exact
 desired canonical bytes and digest, and exact result. Startup and every later
 mutation first finish any prepared record from those bytes, perform or
-idempotently reperform credential/policy lifecycle effects, then commit the
+idempotently reperform policy lifecycle effects, then commit the
 record; they do not wait for the original caller to retry. A committed retry
 re-acks its recorded result without consulting mutable current state. A later
 unrelated config revision is never inferred to prove the old request.
@@ -388,6 +291,19 @@ identity; absent provider data is `unavailable`, never inferred. Archived
 sessions are readable through this management capability because the
 authoritative folder remains present. Errors are `session-not-found` and
 `source-corrupt`.
+
+`RouteTarget` names one exact provider route:
+
+```text
+RouteTarget = {protocolFamily,dialectId,modelProfileId,endpointOwner,
+               gatewayTranslation,exactSku,evidenceRevision}
+```
+
+`protocolFamily`, `dialectId`, `endpointOwner`, `gatewayTranslation`, and
+`evidenceRevision` are the camel-case projection of Provider `adapter`,
+`dialect`, `endpoint_owner`, `gateway_translation`, and `evidence_revision` in
+`config`; `modelProfileId` and `exactSku` are Model `profile` and exact Model
+`id`.
 
 `usage.cacheAttribution` returns `entries:[CacheAttributionEntry]` in canonical
 `RouteTarget` order. The closed entry is

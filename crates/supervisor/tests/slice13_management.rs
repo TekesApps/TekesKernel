@@ -17,7 +17,7 @@ use plugins::{
 };
 use provider::{MemorySecretStore, SecretRecord};
 use schema::IJsonValue;
-use tekes_supervisor::client_admin::{PROVIDER_ADMIN_METHODS, WORKSPACE_POLICY_METHODS};
+use tekes_supervisor::client_admin::WORKSPACE_POLICY_METHODS;
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
     HOST_FILE_METHODS, INITIAL_PRESET_METHODS, PLUGIN_METHODS, RECOVERY_METHODS, RESOURCE_METHODS,
@@ -25,7 +25,7 @@ use tekes_supervisor::client_extensions::{
     USAGE_METHODS,
 };
 use tekes_supervisor::endpoint_host::TEKES_UNARY_ROUTES;
-use tekes_supervisor::host_runtime::assemble_production_endpoint_host;
+use tekes_supervisor::host_runtime::assemble_application_endpoint_host;
 use tekes_supervisor::mcp_runtime::{
     MCP_MANAGEMENT_METHODS, McpRuntime, PluginMcpResolver, PluginStoreMcpResolver,
 };
@@ -55,7 +55,7 @@ async fn slice13_gate_91_production_assembly_mounts_and_executes_management() {
         &agent,
     )
     .expect("production process host");
-    let host = assemble_production_endpoint_host(
+    let host = assemble_application_endpoint_host(
         root.path(),
         SessionHostDescription {
             version: env!("CARGO_PKG_VERSION").to_owned(),
@@ -92,7 +92,6 @@ async fn slice13_gate_91_production_assembly_mounts_and_executes_management() {
                 PLUGIN_METHODS.as_slice(),
                 SCHEDULE_METHODS.as_slice(),
                 THREAD_SEARCH_METHODS.as_slice(),
-                PROVIDER_ADMIN_METHODS.as_slice(),
                 WORKSPACE_POLICY_METHODS.as_slice(),
                 USAGE_METHODS.as_slice(),
             ]
@@ -186,7 +185,7 @@ fn production_assembly_keeps_unavailable_workspace_in_inventory_authority() {
         &agent,
     )
     .expect("production process host");
-    let _host = assemble_production_endpoint_host(
+    let _host = assemble_application_endpoint_host(
         root.path(),
         SessionHostDescription {
             version: env!("CARGO_PKG_VERSION").to_owned(),

@@ -23,7 +23,7 @@ use tekes_supervisor::endpoint_host::{
     ProductionEndpointRoutes, ProductionRouteFailure, SessionDeliveryAuthority,
     SessionInputAdmissionAuthority, TEKES_UNARY_ROUTES,
 };
-use tekes_supervisor::host_runtime::assemble_production_endpoint_host;
+use tekes_supervisor::host_runtime::assemble_application_endpoint_host;
 use tekes_supervisor::process_host::ProductionProcessHost;
 use tekes_supervisor::resource_capability::{
     COMMANDS_LIST, COMMANDS_RUN, ClientResourceService, CommandInputAuthority, CommandRunRequest,
@@ -886,7 +886,7 @@ fn slice11_gate_80_production_input_seam_and_mux_authority() {
         migration.join("user"),
     )
     .expect("production process host");
-    let production = assemble_production_endpoint_host(
+    let production = assemble_application_endpoint_host(
         production_root.path(),
         SessionHostDescription {
             version: "0.1.0".to_owned(),

@@ -2979,7 +2979,7 @@ mod tests {
     use endpoint::{EndpointHost, SessionHostDescription};
 
     use crate::endpoint_host::{SessionDeliveryAuthority, SessionInputAdmissionAuthority};
-    use crate::host_runtime::assemble_production_endpoint_host;
+    use crate::host_runtime::assemble_application_endpoint_host;
 
     use super::*;
 
@@ -3583,7 +3583,7 @@ mod tests {
             &agent,
         )
         .expect("process");
-        let production = assemble_production_endpoint_host(
+        let production = assemble_application_endpoint_host(
             root.path(),
             SessionHostDescription {
                 version: "1.0.0".to_owned(),
