@@ -11,9 +11,10 @@ must never be substituted for the product installer embedded in Tekes.
 
 The repository owns fixture validation, package assembly/verification,
 selector/supervisor process tests, the recoverable installer harness, and the
-buildable production coordinator in `packaging/macos/production-uat/`. Two ◆◆
-rows still require a clean production signing account, matching supervisor and
-installer provisioning profiles, and a real signed Tekes Client UAT app.
+buildable production coordinator in `packaging/macos/production-uat/`. Two
+Slice-10 gates, [72 and 76](../../docs/verification/gates/deployment.md), still
+require a clean production signing account, matching supervisor and installer
+provisioning profiles, and a real signed Tekes Client UAT app.
 `scripts/ci-slice10.sh` builds the coordinator as an `.app` and requires the
 Client actor at the explicit `TEKES_SLICE10_CLIENT_UAT` app path. None has a
 mock fallback.
@@ -33,12 +34,14 @@ entitlements remain exact: a wildcard in the profile is not permission to add
 another entitlement to the app. `fixtures/deployment/provisioning-profiles.canonical.json`
 is the byte oracle for this table.
 
-For local Tekes Xcode builds, `Debug Local Kernel` prepares these signing assets
-through Xcode automatic signing using the selected `DEVELOPMENT_TEAM`. The user
-must be signed into that team in Xcode. Each build lets Xcode refresh profiles;
-profile/certificate/team changes invalidate the signed product cache. There is
-no manual profile download or expiry-date setting for this workflow. Explicit
-profile and identity build-setting overrides remain available for managed CI.
+This paragraph applies to the sibling Tekes client repository; none of these
+names exist in this repository. For local Tekes Xcode builds,
+`Debug Local Kernel` prepares these signing assets through Xcode automatic
+signing using the selected `DEVELOPMENT_TEAM`. The user must be signed into that
+team in Xcode. Each build lets Xcode refresh profiles; profile/certificate/team
+changes invalidate the signed product cache. There is no manual profile download
+or expiry-date setting for this workflow. Explicit profile and identity
+build-setting overrides remain available for managed CI.
 
 Build the coordinator with the distribution identity:
 
@@ -53,19 +56,21 @@ packaging/macos/build-production-uat.sh \
 `TEKES_SIGNED_ARTIFACT_ROOT` is the trusted ancestor of `--output` and defaults
 to the repository `target/`. In a Finder/File Provider-managed checkout it must
 instead name a preselected local-APFS artifact directory outside the managed
-tree. Both builders verify the published path, so metadata attached during
-publication fails closed rather than leaving a nominally successful but
-unlaunchable app.
+tree. `scripts/ci-slice10.sh` sets it from `TEKES_SLICE10_ARTIFACT_ROOT`
+(default `target/slice10`). All three signed builders verify the published path,
+so metadata attached during publication fails closed rather than leaving a
+nominally successful but unlaunchable app.
 
-`packaging/macos/build-signed-release.sh` separately accepts
-`--release-version VERSION` and
-`--supervisor-profile ABSOLUTE_SUPERVISOR_PROVISIONPROFILE`, copies the four
-Cargo release outputs into a new normalized descendant of that artifact root,
-wraps the supervisor in `TekesKernelSupervisor.app`, signs
-selector/supervisor/worker/helper with fixed identifiers (only supervisor gets
-endpoint/provider Keychain groups), assembles both manifests and runs
-`verify-release --codesign`. Both build scripts reject an existing output,
-repository root, `/`, or a `..` alias; neither deletes an arbitrary output.
+`packaging/macos/build-signed-release.sh` takes a fixed, ordered argument list
+(see its usage), including `--release-version VERSION` and
+`--supervisor-profile ABSOLUTE_SUPERVISOR_PROVISIONPROFILE`. It copies the five
+Cargo release outputs (selector, supervisor, worker, helper and workspace
+service) into a new normalized descendant of that artifact root, wraps the
+supervisor in `TekesKernelSupervisor.app`, signs each with a fixed identifier
+(only the supervisor gets endpoint/provider Keychain groups), assembles both
+manifests and runs `verify-release --codesign`. Both build scripts reject an
+existing output, repository root, `/`, or a `..` alias; neither deletes an
+arbitrary output.
 
 The build generates, signs and verifies a native app with the endpoint,
 provider-secret management and exclusive production-UAT evidence access groups
@@ -129,16 +134,17 @@ author evidence.
 The external release controller records the prepare JSON/operation UUID,
 performs the hardware reboot, waits for target-user Aqua login, then invokes
 `scripts/ci-slice10.sh` with `TEKES_SLICE10_PRODUCTION_ACTION=verify` and the
-same `TEKES_SLICE10_PRODUCTION_OPERATION`/gate. After archiving that proof it
-invokes idempotent `consume` and archives its canonical final result. It then
-invokes `acknowledge`; acknowledgement writes a durable receipt tombstone and
-deletes the operation Keychain secret. A lost acknowledgement response is
-re-driven from that tombstone, but it is never release evidence. A prepare
-invocation itself exits 75 after publishing its
-canonical `reboot-required` record so it can never be mistaken for a completed
-release job. `check-production-prepare.py` accepts only that exact status plus
-the closed canonical evidence bytes; status 0 is a failure even when the bytes
-look valid.
+same `TEKES_SLICE10_PRODUCTION_OPERATION` and `TEKES_SLICE10_PRODUCTION_GATE`
+(`TEKES_SLICE10_PRODUCTION_UAT` overrides the runner path). After archiving that
+proof it invokes idempotent `consume` and archives its canonical final result.
+It then invokes `acknowledge`; acknowledgement writes a durable receipt
+tombstone and deletes the operation Keychain secret. A lost acknowledgement
+response is re-driven from that tombstone, but it is never release evidence. A
+prepare invocation itself exits 75 after publishing its canonical
+`reboot-required` record so it can never be mistaken for a completed release
+job. `check-production-prepare.py` accepts only that exact status plus the
+closed canonical evidence bytes; status 0 is a failure even when the bytes look
+valid.
 
 `TEKES_SLICE10_PRODUCTION_ACTION=preflight` is the non-mutating implementation
 integration lane. It builds and verifies all signed actors and runs every
@@ -167,14 +173,16 @@ reaping. The Aqua resume job retries unsuccessful exits at most five times;
 exhaustion leaves verification red and stops automatic retries. It uses
 Security.framework in-process to create/replace/delete only the exact endpoint
 and `provider-uat` fixture records, journals the installer phases, installs the
-four signed, `verify-release --codesign`-accepted binaries, invokes only the
-closed `launchctl` bootstrap/bootout
-argv, and cleans up only those identities and paths. The injected real sibling
-Tekes Client UAT app reads the endpoint item via `.tekes` and reports
-only endpoint-observable facts after the signed resume runner has proved the
-new boot/login session. An unsigned Kernel script cannot acquire those
-entitlements, and the existing Slice-9 Client test injects a bearer directly,
-so neither may be used as a green substitute.
+signed, `verify-release --codesign`-accepted selector, supervisor app, worker
+and helper (it does not yet install `tekes-workspace-service`, which a release
+bundle requires and the supervisor starts from beside the worker), invokes only
+the closed `launchctl` bootstrap/bootout argv, and cleans up only those
+identities and paths. The injected real sibling Tekes Client UAT app reads the
+endpoint item via `.tekes` and reports only endpoint-observable facts after the
+signed resume runner has proved the new boot/login session. An unsigned Kernel
+script cannot acquire those entitlements, and the existing Slice-9 Client test
+(`crates/transport/tests/client/LiveKernelTransportClientTests.swift`) injects a
+bearer directly, so neither may be used as a green substitute.
 
 ## Signed Client UAT protocol
 
@@ -254,7 +262,7 @@ selector, worker and helper must fail direct reads of this item. Cleanup
 revokes and deletes only the fixture account; it never reuses or changes the
 endpoint bearer item.
 
-The existing Slice-9 Swift test is reusable for same-instance
+The existing Slice-9 Swift test (see above) is reusable for same-instance
 create/history/archive/unarchive carrier work because its ready-file template
 accepts an arbitrary origin. It does not cover `.tekes` discovery or Keychain
 ACLs; that missing Client-side entrypoint/test belongs in the sibling Tekes
