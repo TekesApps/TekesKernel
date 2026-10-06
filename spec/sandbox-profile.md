@@ -113,6 +113,16 @@ only when replay finds a durable grant bound to the exact
 reusable; standing configuration cannot silently substitute for it. Refusal
 is a terminal denied tool result, not a fake empty success.
 
+## MCP-only hosts
+
+A host whose own application sandbox forbids applying a nested profile can
+place a regular file named `.mcp-only-app-sandbox` in the storage root,
+owned by the supervisor's effective uid with mode `0600`. The supervisor then
+keeps its job broker present but refuses every job as unavailable instead of
+probing a backend; MCP tools are unaffected. A marker with another owner,
+mode or file type fails startup with `required-broker-unavailable`. Other
+side-effect-capable tools still probe their backend and fail closed as above.
+
 ## Platform coverage
 
 macOS uses Seatbelt (`sandbox-exec` or equivalent libsandbox entry point) and

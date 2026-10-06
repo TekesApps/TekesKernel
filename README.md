@@ -23,12 +23,55 @@ the [Session Endpoint](spec/session-endpoint.md).
 Some fixtures and documents record provenance from earlier, closed-source Tekes
 repositories (names and pinned revisions only).
 
-The central rule is simple: a live worker holds a file lock; durable events
-record what happened. A turn is settled only after its terminal event is durable
-**and** the writer has exited. Client streams and projections are derived from
-the ledger, except for narrowly scoped protocol carriers that preserve
-externally visible bytes and identities. See [thread fundamentals](docs/concepts/thread.md)
-and the [tail lifecycle contract](spec/tail-lifecycle.md) for the precise rules.
+## Design principles
+
+1. **A service, not a client.** The supervisor runs each active line of work
+   in its own worker process and serves clients over the Session Endpoint.
+   A client can disconnect and reconnect without stopping the work, because
+   no client hosts the agent loop. See the
+   [supervisor](docs/runtime/supervisor.md) and the
+   [Session Endpoint](spec/session-endpoint.md).
+2. **The ledger is the truth, and a crash loses nothing.** A live worker holds
+   a file lock; durable events record what happened. A tool call is written
+   before it runs and a provider attempt before it is sent, so a crash can
+   leave a recorded call that never ran but never an effect without a record.
+   A turn is settled only after its terminal event is durable **and** the
+   writer has exited, and recovery is simply a new worker run over the same
+   ledger. Client streams, indexes and projections are derived from the
+   ledger and can be rebuilt, except for narrowly scoped protocol carriers
+   that preserve externally visible bytes and identities. See
+   [thread fundamentals](docs/concepts/thread.md),
+   [durability](docs/data/durability.md) and the
+   [tail lifecycle contract](spec/tail-lifecycle.md).
+3. **The sandbox is mandatory and fails closed.** Tools run under an OS profile
+   derived from the same policy as the permission checks: Seatbelt on macOS,
+   Landlock plus seccomp on Linux. When the profile cannot be applied, the
+   tool is refused; it never runs unconfined. See the
+   [sandbox profile](spec/sandbox-profile.md) and
+   [tool permissions](docs/runtime/tool-permissions.md).
+4. **Approvals are durable.** An approval request or a question to the user is
+   a ledger event. A long wait parks the worker without settling the turn, and
+   the answer resumes the same turn after any restart. Running a command
+   unsandboxed needs a grant bound to that exact run, call and policy; it is
+   never a standing setting. See the
+   [approval gate](docs/runtime/tool-permissions.md#approval-gate) and
+   [approval policy](spec/session-endpoint.md#approval-policy).
+5. **A substrate, not a platform.** Long-term memory is a separate MCP service.
+   Evolving prompts, tools and binaries goes through git, CI and the external
+   selector rather than through Kernel machinery. The Kernel contributes what
+   those need: each run records the binary, configuration and instruction
+   snapshot it used. See [evolution boundaries](docs/history/evolution.md).
+6. **Contracts come before code.** Event formats and protocols are specified in
+   `spec/` with language-neutral fixtures, and Rust is the first reference
+   implementation (decision D-63 in the [decision records](docs/history/decisions.md)).
+   When code and contract disagree, the discrepancy is recorded and resolved
+   against the contract rather than by redefining it.
+7. **Prompts are lean and measured.** Each built-in profile is under 500
+   characters. Their behavior rules were added or removed according to
+   controlled benchmarks: on DeepSeek Flash the coding rules cut cost by more
+   than half without lowering test quality, and per-tool usage paragraphs that showed no effect
+   were dropped. See the [cost benchmark](docs/benchmarks/deepseek-cost-2026-10.md)
+   and the [system prompt](docs/runtime/system-prompt.md).
 
 ## What is in this repository
 
