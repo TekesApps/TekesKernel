@@ -3,6 +3,9 @@ use std::io::Write;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
+mod support;
+use support::warm_first_exec;
+
 fn git(root: &Path, args: &[&str]) -> String {
     let result = Command::new("git")
         .args(args)
@@ -185,13 +188,7 @@ fn concurrent_mutations_wait_for_commit_and_recover_after_hook_failure() {
     // macOS assesses a new executable on its first exec, serially across the
     // machine; under a full parallel test run that alone could outlast the 4 s
     // bound below. Take the first exec here, untimed (git passes no arguments).
-    assert!(
-        Command::new(&hook)
-            .arg("--warm")
-            .status()
-            .unwrap()
-            .success()
-    );
+    warm_first_exec(&hook);
     std::fs::write(root.path().join("selected"), "pending change\n").unwrap();
     let head = git(root.path(), &["rev-parse", "HEAD"]);
     let first = start(
