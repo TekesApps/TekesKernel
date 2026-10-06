@@ -40,13 +40,14 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/hook.rs](../../src/hook.rs) | 25 | 154 | [Symbols and calls](src--hook.md) |
 | [crates/tools/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
+| [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 61 | 234 | [Symbols and calls](src--linux_sandbox.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
 | [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 114 | 1114 | [Symbols and calls](src--runtime_backends.md) |
-| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 21 | 161 | [Symbols and calls](src--sandbox.md) |
+| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 23 | 164 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |
 | [crates/tools/tests/slice14e_web.rs](../../tests/slice14e_web.rs) | 5 | 86 | `inventory.json` |
-| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 29 | 529 | `inventory.json` |
+| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 31 | 532 | `inventory.json` |
 | [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) | 21 | 258 | `inventory.json` |
 | [crates/tools/tests/slice8_schema_registry.rs](../../tests/slice8_schema_registry.rs) | 15 | 170 | `inventory.json` |
 | [crates/tools/tests/slice8_tool_runtime_oracle.rs](../../tests/slice8_tool_runtime_oracle.rs) | 10 | 212 | `inventory.json` |
@@ -62,14 +63,16 @@ flowchart LR
   m2["helper/native_grep.rs"]
   m3["hook.rs"]
   m4["lifecycle_hook.rs"]
-  m5["pipeline.rs"]
-  m6["runtime_backends.rs"]
-  m7["sandbox.rs"]
+  m5["linux_sandbox.rs"]
+  m6["pipeline.rs"]
+  m7["runtime_backends.rs"]
+  m8["sandbox.rs"]
   m0 -->|"3"| m1
-  m0 -->|"1"| m6
+  m0 -->|"1"| m7
   m1 -->|"1"| m2
-  m1 -->|"3"| m7
+  m1 -->|"3"| m8
   m4 -->|"6"| m3
-  m5 -->|"2"| m3
-  m6 -->|"1"| m7
+  m6 -->|"2"| m3
+  m7 -->|"1"| m8
+  m8 -->|"2"| m5
 ```

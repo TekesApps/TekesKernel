@@ -6,6 +6,16 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- Linux tool sandbox. The `linux-landlock-seccomp` backend now applies its
+  plan: Landlock confines the filesystem to the policy roots and seccomp
+  refuses sockets under `deny` network, process creation without
+  `allow_process`, and namespace, mount, keyring, `io_uring` and
+  terminal-injection interfaces. Shell, edit and job tools therefore run on
+  Linux instead of being refused. `loopback` network is refused on Linux
+  because neither mechanism can enforce it
+  ([#25](https://github.com/TekesApps/TekesKernel/issues/25)).
+
 ## 0.2.2 — 2026-10-06
 
 ### Added

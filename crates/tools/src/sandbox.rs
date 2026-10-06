@@ -1,5 +1,5 @@
 use std::collections::BTreeSet;
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "linux"))]
 use std::fs;
 use std::path::Path;
 use std::process::Command;
@@ -235,23 +235,7 @@ pub fn validate_unsandboxed_approval(
 pub fn probe_backend(backend: SandboxBackend) -> ProbeStatus {
     match backend {
         SandboxBackend::DarwinSeatbeltV1 => probe_darwin(),
-        SandboxBackend::LinuxLandlockSeccompV1 => {
-            #[cfg(target_os = "linux")]
-            {
-                ProbeStatus::Unavailable {
-                    class: ProbeFailure::Unsupported,
-                    detail: "Landlock/seccomp launcher is not linked in this Darwin-first build"
-                        .to_owned(),
-                }
-            }
-            #[cfg(not(target_os = "linux"))]
-            {
-                ProbeStatus::Unavailable {
-                    class: ProbeFailure::Unsupported,
-                    detail: "Linux sandbox requested on a non-Linux host".to_owned(),
-                }
-            }
-        }
+        SandboxBackend::LinuxLandlockSeccompV1 => probe_linux(),
     }
 }
 
@@ -278,7 +262,27 @@ pub(crate) fn sandbox_command(
         command.arg("-p").arg(profile).arg(executable);
         Ok(command)
     }
-    #[cfg(not(target_os = "macos"))]
+    #[cfg(all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
+    {
+        if backend != crate::linux_sandbox::BACKEND {
+            return Err(SandboxError::Unavailable(format!(
+                "probe selected incompatible backend {backend}"
+            )));
+        }
+        let mut command = Command::new(executable);
+        crate::linux_sandbox::confine(&mut command, policy, executable)?;
+        Ok(command)
+    }
+    #[cfg(not(any(
+        target_os = "macos",
+        all(
+            target_os = "linux",
+            any(target_arch = "x86_64", target_arch = "aarch64")
+        )
+    )))]
     {
         let _ = (policy, backend, executable);
         Err(SandboxError::Unavailable(
@@ -290,84 +294,114 @@ pub(crate) fn sandbox_command(
 fn probe_darwin() -> ProbeStatus {
     #[cfg(not(target_os = "macos"))]
     {
-        return ProbeStatus::Unavailable {
+        ProbeStatus::Unavailable {
             class: ProbeFailure::Unsupported,
             detail: "Seatbelt requested on a non-macOS host".to_owned(),
-        };
+        }
     }
     #[cfg(target_os = "macos")]
     {
-        let executable = Path::new("/usr/bin/sandbox-exec");
-        if !executable.is_file() {
+        if !Path::new("/usr/bin/sandbox-exec").is_file() {
             return ProbeStatus::Unavailable {
                 class: ProbeFailure::Missing,
                 detail: "sandbox-exec is missing".to_owned(),
             };
         }
-        let unresolved_root = std::env::temp_dir().join(format!(
-            "tekes-sandbox-probe-{}-{}",
-            std::process::id(),
-            probe_nonce()
-        ));
-        let allowed_unresolved = unresolved_root.join("allowed");
-        let outside_unresolved = unresolved_root.join("outside");
-        let result = (|| -> Result<bool, SandboxError> {
-            fs::create_dir_all(&allowed_unresolved)?;
-            fs::create_dir_all(&outside_unresolved)?;
-            let root = fs::canonicalize(&unresolved_root)?;
-            let allowed = root.join("allowed");
-            let outside = root.join("outside");
-            fs::write(allowed.join("read.txt"), b"ok")?;
-            let policy = SandboxPolicy {
-                format: 1,
-                read_roots: vec![allowed.to_string_lossy().into_owned()],
-                write_roots: vec![allowed.to_string_lossy().into_owned()],
-                network: NetworkPolicy::Deny,
-                allow_process: true,
-                scratch: None,
-            };
-            let profile = String::from_utf8(compile_darwin_profile(&policy)?)
-                .map_err(|_| SandboxError::Encoding("profile is not UTF-8".to_owned()))?;
-            let read = Command::new(executable)
-                .args(["-p", &profile, "/bin/cat"])
-                .arg(allowed.join("read.txt"))
-                .output()?;
-            let denied = Command::new(executable)
-                .args(["-p", &profile, "/usr/bin/touch"])
-                .arg(outside.join("denied.txt"))
-                .output()?;
-            if read.status.success()
-                && read.stdout == b"ok"
-                && !denied.status.success()
-                && !outside.join("denied.txt").exists()
-            {
-                Ok(true)
-            } else {
-                Err(SandboxError::Probe(format!(
-                    "read_status={:?} read_stderr={} denied_status={:?} denied_stderr={} outside_exists={}",
-                    read.status.code(),
-                    String::from_utf8_lossy(&read.stderr),
-                    denied.status.code(),
-                    String::from_utf8_lossy(&denied.stderr),
-                    outside.join("denied.txt").exists()
-                )))
-            }
-        })();
-        let _ = fs::remove_dir_all(&unresolved_root);
-        match result {
-            Ok(true) => ProbeStatus::Available {
-                backend: "darwin-seatbelt".to_owned(),
-                version: std::env::consts::OS.to_owned(),
-            },
-            Ok(false) => ProbeStatus::Unavailable {
-                class: ProbeFailure::Rejected,
-                detail: "probe did not prove allowed-read and denied-write".to_owned(),
-            },
-            Err(error) => ProbeStatus::Unavailable {
-                class: ProbeFailure::Rejected,
-                detail: error.to_string(),
-            },
+        probe_confinement(ProbeStatus::Available {
+            backend: "darwin-seatbelt".to_owned(),
+            version: std::env::consts::OS.to_owned(),
+        })
+    }
+}
+
+fn probe_linux() -> ProbeStatus {
+    #[cfg(not(all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    )))]
+    {
+        ProbeStatus::Unavailable {
+            class: ProbeFailure::Unsupported,
+            detail: "Landlock/seccomp requires Linux on x86_64 or aarch64".to_owned(),
         }
+    }
+    #[cfg(all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
+    {
+        match crate::linux_sandbox::supported_abi() {
+            Ok(abi) => probe_confinement(ProbeStatus::Available {
+                backend: crate::linux_sandbox::BACKEND.to_owned(),
+                version: format!("landlock-abi-{abi}"),
+            }),
+            Err((class, detail)) => ProbeStatus::Unavailable { class, detail },
+        }
+    }
+}
+
+/// Returns `candidate` only after a confined `cat` reads a file inside the
+/// policy and a confined `touch` fails to create one outside it.
+#[cfg(any(
+    target_os = "macos",
+    all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    )
+))]
+fn probe_confinement(candidate: ProbeStatus) -> ProbeStatus {
+    let unresolved_root = std::env::temp_dir().join(format!(
+        "tekes-sandbox-probe-{}-{}",
+        std::process::id(),
+        probe_nonce()
+    ));
+    let allowed_unresolved = unresolved_root.join("allowed");
+    let outside_unresolved = unresolved_root.join("outside");
+    let result = (|| -> Result<(), SandboxError> {
+        fs::create_dir_all(&allowed_unresolved)?;
+        fs::create_dir_all(&outside_unresolved)?;
+        let root = fs::canonicalize(&unresolved_root)?;
+        let allowed = root.join("allowed");
+        let outside = root.join("outside");
+        fs::write(allowed.join("read.txt"), b"ok")?;
+        let policy = SandboxPolicy {
+            format: 1,
+            read_roots: vec![allowed.to_string_lossy().into_owned()],
+            write_roots: vec![allowed.to_string_lossy().into_owned()],
+            network: NetworkPolicy::Deny,
+            allow_process: true,
+            scratch: None,
+        };
+        let read = sandbox_command(&policy, &candidate, Path::new("/bin/cat"))?
+            .arg(allowed.join("read.txt"))
+            .output()?;
+        let denied = sandbox_command(&policy, &candidate, Path::new("/usr/bin/touch"))?
+            .arg(outside.join("denied.txt"))
+            .output()?;
+        if read.status.success()
+            && read.stdout == b"ok"
+            && !denied.status.success()
+            && !outside.join("denied.txt").exists()
+        {
+            Ok(())
+        } else {
+            Err(SandboxError::Probe(format!(
+                "read_status={:?} read_stderr={} denied_status={:?} denied_stderr={} outside_exists={}",
+                read.status.code(),
+                String::from_utf8_lossy(&read.stderr),
+                denied.status.code(),
+                String::from_utf8_lossy(&denied.stderr),
+                outside.join("denied.txt").exists()
+            )))
+        }
+    })();
+    let _ = fs::remove_dir_all(&unresolved_root);
+    match result {
+        Ok(()) => candidate,
+        Err(error) => ProbeStatus::Unavailable {
+            class: ProbeFailure::Rejected,
+            detail: error.to_string(),
+        },
     }
 }
 
@@ -413,7 +447,13 @@ fn escape_sbpl(value: &str) -> Result<String, SandboxError> {
     Ok(value.replace('\\', "\\\\").replace('"', "\\\""))
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(
+    target_os = "macos",
+    all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    )
+))]
 fn probe_nonce() -> u64 {
     use std::sync::atomic::{AtomicU64, Ordering};
     static NONCE: AtomicU64 = AtomicU64::new(0);

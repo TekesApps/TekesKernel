@@ -421,61 +421,56 @@ fn slice4_gate_44_exec_helper_process_protocol() {
         allow_process: true,
         scratch: None,
     };
-    let probe = probe_backend(SandboxBackend::DarwinSeatbeltV1);
-    #[cfg(target_os = "macos")]
-    assert!(matches!(probe, ProbeStatus::Available { .. }), "{probe:?}");
-    #[cfg(not(target_os = "macos"))]
-    {
+    let probe = probe_backend(host_sandbox_backend());
+    if !host_has_sandbox() {
         assert!(matches!(probe, ProbeStatus::Unavailable { .. }));
-        drop(policy);
+        return;
     }
+    assert!(matches!(probe, ProbeStatus::Available { .. }), "{probe:?}");
 
-    #[cfg(target_os = "macos")]
-    {
-        let client = HelperClient::sandboxed(
-            &executable,
-            vec![("workspace".to_owned(), root_path.clone())],
-            policy,
-            probe,
-        )
-        .expect("sandboxed client");
-        let read_response = client
-            .execute(&HelperRequest {
-                id: "r1".to_owned(),
-                operation: HelperOperation::Read {
-                    root: "workspace".to_owned(),
-                    path: "a.txt".to_owned(),
-                    max_bytes: 4096,
-                },
-            })
-            .expect("read process");
-        assert!(matches!(
-            read_response,
-            HelperResponse::Result {
-                value: tools::HelperValue::Read(ref value),
-                ..
-            } if value.content.decode().expect("read bytes") == b"ok"
-        ));
-        let write_response = client
-            .execute(&HelperRequest {
-                id: "w1".to_owned(),
-                operation: HelperOperation::Write {
-                    root: "workspace".to_owned(),
-                    path: "b.txt".to_owned(),
-                    content: ByteString::from_bytes(b"written"),
-                    create: CreateMode::New,
-                },
-            })
-            .expect("write process");
-        assert!(matches!(
-            write_response,
-            HelperResponse::Result {
-                value: tools::HelperValue::Write(_),
-                ..
-            }
-        ));
-        assert_eq!(fs::read(root.path().join("b.txt")).unwrap(), b"written");
-    }
+    let client = HelperClient::sandboxed(
+        &executable,
+        vec![("workspace".to_owned(), root_path.clone())],
+        policy,
+        probe,
+    )
+    .expect("sandboxed client");
+    let read_response = client
+        .execute(&HelperRequest {
+            id: "r1".to_owned(),
+            operation: HelperOperation::Read {
+                root: "workspace".to_owned(),
+                path: "a.txt".to_owned(),
+                max_bytes: 4096,
+            },
+        })
+        .expect("read process");
+    assert!(matches!(
+        read_response,
+        HelperResponse::Result {
+            value: tools::HelperValue::Read(ref value),
+            ..
+        } if value.content.decode().expect("read bytes") == b"ok"
+    ));
+    let write_response = client
+        .execute(&HelperRequest {
+            id: "w1".to_owned(),
+            operation: HelperOperation::Write {
+                root: "workspace".to_owned(),
+                path: "b.txt".to_owned(),
+                content: ByteString::from_bytes(b"written"),
+                create: CreateMode::New,
+            },
+        })
+        .expect("write process");
+    assert!(matches!(
+        write_response,
+        HelperResponse::Result {
+            value: tools::HelperValue::Write(_),
+            ..
+        }
+    ));
+    assert_eq!(fs::read(root.path().join("b.txt")).unwrap(), b"written");
 }
 
 #[test]
@@ -997,14 +992,46 @@ fn slice4_gate_10_descriptor_first_file_open() {
 
 #[test]
 fn slice4_gate_11_sandbox_backend_probe() {
-    let status = probe_backend(SandboxBackend::DarwinSeatbeltV1);
-    #[cfg(target_os = "macos")]
-    assert!(
-        matches!(status, ProbeStatus::Available { .. }),
-        "{status:?}"
-    );
-    #[cfg(not(target_os = "macos"))]
-    assert!(matches!(status, ProbeStatus::Unavailable { .. }));
+    let status = probe_backend(host_sandbox_backend());
+    if host_has_sandbox() {
+        assert!(
+            matches!(status, ProbeStatus::Available { .. }),
+            "{status:?}"
+        );
+    } else {
+        assert!(matches!(status, ProbeStatus::Unavailable { .. }));
+    }
+    // A backend for another platform never reports available.
+    let foreign = if cfg!(target_os = "macos") {
+        SandboxBackend::LinuxLandlockSeccompV1
+    } else {
+        SandboxBackend::DarwinSeatbeltV1
+    };
+    assert!(matches!(
+        probe_backend(foreign),
+        ProbeStatus::Unavailable { .. }
+    ));
+}
+
+/// The backend production selects on this host.
+fn host_sandbox_backend() -> SandboxBackend {
+    if cfg!(target_os = "macos") {
+        SandboxBackend::DarwinSeatbeltV1
+    } else {
+        SandboxBackend::LinuxLandlockSeccompV1
+    }
+}
+
+/// Whether this host must provide a working sandbox: macOS, and Linux on the
+/// architectures the Landlock/seccomp launcher supports.
+fn host_has_sandbox() -> bool {
+    cfg!(any(
+        target_os = "macos",
+        all(
+            target_os = "linux",
+            any(target_arch = "x86_64", target_arch = "aarch64")
+        )
+    ))
 }
 
 #[derive(Default)]

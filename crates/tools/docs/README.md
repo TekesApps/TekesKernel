@@ -13,6 +13,7 @@ Provides tool schemas, hooks, approvals, sandboxing and concrete execution backe
 | `hook` | Before/after hook protocol and processes |
 | `helper` | Helper request/response and file/exec operations |
 | `sandbox` | Darwin/Linux policies and probes |
+| `linux_sandbox` | Landlock ruleset and seccomp filter applied to Linux tool processes before exec |
 | `runtime_backends` | Helper, HTTP/Web, job and cancellation backends |
 | `bin/tekes-helper` | Program entry point for the stdio helper or --job-runner |
 

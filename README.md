@@ -9,11 +9,12 @@ over the Session Endpoint (HTTP plus one WebSocket stream).
 **Status: alpha.** The ledger format and the Session Endpoint are versioned,
 but APIs and on-disk layouts can still change between releases.
 
-**Platforms.** macOS on Apple silicon is the supported platform: the shell
-sandbox (Seatbelt), credential storage (Keychain), the LaunchAgent and the
-installer are macOS-specific, and some recovery tests run only there. CI also
-builds and tests the workspace on Linux, where those components are absent;
-Linux and Windows are not supported targets.
+**Platforms.** macOS on Apple silicon is the supported product platform: the
+LaunchAgent, the installer, the selector and signed releases are
+macOS-specific, and some recovery tests run only there. Linux on x86_64 and
+aarch64 builds and passes the same tests in CI and confines tools with its own
+sandbox (Landlock plus seccomp, which needs a kernel with Landlock enabled),
+but has no service or installer packaging. Windows is not supported.
 
 **Clients.** The native Tekes client is maintained separately and is not part
 of this repository; its Kernel integration is currently suspended. A browser
