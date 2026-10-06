@@ -8,9 +8,23 @@ tekes-worker is a binary target that assembles logs, snapshots, providers, tools
 
 | Module / file group | Responsibility |
 |---|---|
-| `main` | Startup handshake, locks, delivery, recovery, provider loop, tool execution and settlement |
+| `main` | Process entry, option parsing, profile loading and the run loop |
+| `control_channel` | Supervisor control reader, cancellation and protocol failures |
+| `delivery` | Ready and parked delivery handling and post-turn exit |
+| `recovery` | Reconciliation of unresolved provider attempts and pending tool calls |
+| `ledger_events` | Run start, turn open, appended receipts and event helpers |
+| `queue` | Queue transactions: targets, retractions and replacements |
+| `provider_turn` | Provider turn loop, eager dispatch and provider selection |
+| `context_projection` | Provider context projection, epochs and rendering |
+| `compaction` | Automatic compaction and prefix token bounds |
+| `turn_terminal` | Terminal validation, provider failures, admission retry and settlement |
+| `tool_backends` | Tool catalog context, backend assembly and tool-control exchange |
+| `tool_calls` | Provider tool-call batch execution |
+| `continuation` | Remote tool continuations: polling, parking and input updates |
+| `child_agents` | Child agent spawn, launch and result delivery |
+| `web_search` | Tavily web-search provider |
 | `validation_runtime` | Validator launch, feedback and settlement for candidate outputs |
-| `live_tests / validation_tests` | Test modules, not additional runtime processes |
+| `provider_context_tests` (with `live_tests / validation_tests`) | Test modules, not additional runtime processes |
 
 ## Interfaces and calls
 

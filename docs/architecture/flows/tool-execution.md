@@ -65,5 +65,5 @@ Some system/Web backends run inside the worker without a helper; helper and supe
 [dispatcher](../../../crates/engine/src/dispatcher.rs) ·
 [dynamic dispatcher](../../../crates/engine/src/dynamic_catalog.rs) ·
 [pipeline](../../../crates/tools/src/pipeline.rs) ·
-[worker tool batch](../../../crates/worker/src/main.rs) ·
+[worker tool batch](../../../crates/worker/src/tool_calls.rs) ·
 [tool contract](../../../spec/tool-runtime.md)

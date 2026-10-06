@@ -8,23 +8,23 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [tekes-worker::live_tests::LiveValueHook](../../src/live_tests.rs#L4) | type_item | `private` | test;  |
-| [tekes-worker::live_tests::LiveBytesHook](../../src/live_tests.rs#L5) | type_item | `private` | test;  |
-| [tekes-worker::live_tests::LiveControl](../../src/live_tests.rs#L7) | struct_item | `private` | test;  |
-| [tekes-worker::live_tests::LiveControl::write](../../src/live_tests.rs#L10) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::LiveControl::flush](../../src/live_tests.rs#L14) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::Item](../../src/live_tests.rs#L18) | type_item | `private` | test;  |
-| [tekes-worker::live_tests::LiveControl::next](../../src/live_tests.rs#L19) | function_item | `private` | test;  |
+| [tekes-worker::live_tests::LiveValueHook](../../src/live_tests.rs#L4) | type_item | `private` |  |
+| [tekes-worker::live_tests::LiveBytesHook](../../src/live_tests.rs#L5) | type_item | `private` |  |
+| [tekes-worker::live_tests::LiveControl](../../src/live_tests.rs#L7) | struct_item | `private` |  |
+| [tekes-worker::live_tests::LiveControl::write](../../src/live_tests.rs#L10) | function_item | `private` |  |
+| [tekes-worker::live_tests::LiveControl::flush](../../src/live_tests.rs#L14) | function_item | `private` |  |
+| [tekes-worker::live_tests::Item](../../src/live_tests.rs#L18) | type_item | `private` |  |
+| [tekes-worker::live_tests::LiveControl::next](../../src/live_tests.rs#L19) | function_item | `private` |  |
 | [tekes-worker::live_tests::live_kernel_turn](../../src/live_tests.rs#L38) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects](../../src/live_tests.rs#L540) | struct_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::ensure_running](../../src/live_tests.rs#L542) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::deliver_input](../../src/live_tests.rs#L543) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::interrupt](../../src/live_tests.rs#L544) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::ensure_child](../../src/live_tests.rs#L545) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::deliver_report](../../src/live_tests.rs#L546) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::UnavailableLiveEffects::execute](../../src/live_tests.rs#L549) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::live_effect_unavailable](../../src/live_tests.rs#L551) | function_item | `private` | test;  |
-| [tekes-worker::live_tests::prepare_live_choice](../../src/live_tests.rs#L557) | function_item | `pub(super)` | test;  |
+| [tekes-worker::live_tests::UnavailableLiveEffects](../../src/live_tests.rs#L540) | struct_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::ensure_running](../../src/live_tests.rs#L542) | function_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::deliver_input](../../src/live_tests.rs#L543) | function_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::interrupt](../../src/live_tests.rs#L544) | function_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::ensure_child](../../src/live_tests.rs#L545) | function_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::deliver_report](../../src/live_tests.rs#L546) | function_item | `private` |  |
+| [tekes-worker::live_tests::UnavailableLiveEffects::execute](../../src/live_tests.rs#L549) | function_item | `private` |  |
+| [tekes-worker::live_tests::live_effect_unavailable](../../src/live_tests.rs#L551) | function_item | `private` |  |
+| [tekes-worker::live_tests::prepare_live_choice](../../src/live_tests.rs#L557) | function_item | `pub(super)` |  |
 
 ## Imports / reexports
 
@@ -39,6 +39,33 @@ Visibility is the declaration spelling; trait members and reexports require thei
 ## Function call graphs
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
+
+<details><summary>Functions 1–11: 7 direct edges</summary>
+
+```mermaid
+flowchart TD
+  n0["provider::request::prepare_with_tool_choice"]
+  n1["tekes-worker::live_tests::LiveControl::write"]
+  n2["tekes-worker::live_tests::LiveControl::flush"]
+  n3["tekes-worker::live_tests::LiveControl::next"]
+  n4["tekes-worker::live_tests::UnavailableLiveEffects::ensure_running"]
+  n5["tekes-worker::live_tests::UnavailableLiveEffects::deliver_input"]
+  n6["tekes-worker::live_tests::UnavailableLiveEffects::interrupt"]
+  n7["tekes-worker::live_tests::UnavailableLiveEffects::ensure_child"]
+  n8["tekes-worker::live_tests::UnavailableLiveEffects::deliver_report"]
+  n9["tekes-worker::live_tests::UnavailableLiveEffects::execute"]
+  n10["tekes-worker::live_tests::live_effect_unavailable"]
+  n11["tekes-worker::live_tests::prepare_live_choice"]
+  n4 --> n10
+  n5 --> n10
+  n6 --> n10
+  n7 --> n10
+  n8 --> n10
+  n9 --> n10
+  n11 --> n0
+```
+
+</details>
 
 ## Call sites
 
