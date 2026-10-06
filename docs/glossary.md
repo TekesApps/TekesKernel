@@ -43,4 +43,4 @@ names and commit messages, most of which come from how the project was built.
 | **dialect**, **profile** | A dialect is one provider wire protocol (for example `deepseek_responses_v1`); a model profile binds a dialect to an exact model id and its capabilities. See [spec/provider-dialect-profiles.md](../spec/provider-dialect-profiles.md). |
 | **identity profile** | The `coding` or `general` text a session's system prompt starts with; see [System prompt](runtime/system-prompt.md). |
 | **workspace service** | A child process that performs file and Git operations confined to one resolved workspace root. |
-| **selector**, **installer** | macOS deployment executables: the selector selects and supervises the installed deployment; the installer installs and upgrades it. See [Packaging](../packaging/README.md). |
+| **selector**, **installer** | macOS deployment executables: the selector selects and supervises the installed deployment; the installer installs and upgrades it. Both are retired: the host application now launches the Kernel. See [Packaging](../packaging/README.md). |

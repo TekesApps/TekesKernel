@@ -9,12 +9,12 @@ over the Session Endpoint (HTTP plus one WebSocket stream).
 **Status: alpha.** The ledger format and the Session Endpoint are versioned,
 but APIs and on-disk layouts can still change between releases.
 
-**Platforms.** macOS on Apple silicon is the supported product platform: the
-LaunchAgent, the installer, the selector and signed releases are
-macOS-specific, and some recovery tests run only there. Linux on x86_64 and
-aarch64 builds and passes the same tests in CI and confines tools with its own
-sandbox (Landlock plus seccomp, which needs a kernel with Landlock enabled),
-but has no service or installer packaging. Windows is not supported.
+**Platforms.** macOS on Apple silicon is the primary platform, and some
+recovery tests run only there. Linux on x86_64 and aarch64 builds and passes
+the same tests in CI and confines tools with its own sandbox (Landlock plus
+seccomp, which needs a kernel with Landlock enabled). On both, the host
+application starts the Kernel; see [Application-owned launch](docs/builtin-launch.md).
+Windows is not supported.
 
 **Clients.** The native Tekes client is maintained separately and is not part
 of this repository; its Kernel integration is currently suspended. A browser
@@ -57,8 +57,9 @@ repositories (names and pinned revisions only).
    [approval gate](docs/runtime/tool-permissions.md#approval-gate) and
    [approval policy](spec/session-endpoint.md#approval-policy).
 5. **A substrate, not a platform.** Long-term memory is a separate MCP service.
-   Evolving prompts, tools and binaries goes through git, CI and the external
-   selector rather than through Kernel machinery. The Kernel contributes what
+   Evolving prompts, tools and binaries goes through git, CI and the host
+   application that chooses which build to launch, rather than through Kernel
+   machinery. The Kernel contributes what
    those need: each run records the binary, configuration and instruction
    snapshot it used. See [evolution boundaries](docs/history/evolution.md).
 6. **Contracts come before code.** Event formats and protocols are specified in
@@ -77,16 +78,17 @@ repositories (names and pinned revisions only).
 
 The Session Endpoint server (protocol version 3), the provider and tool
 runtimes, an MCP client, plugin, schedule and thread-search services, a
-browser client, and the macOS deployment components (installer and selector).
+browser client. The retired macOS deployment components (launchd packaging,
+installer and selector) are still in the tree until they are removed.
 The endpoint registers 16 unary methods plus one multiplexed WebSocket stream
 (`remote.mux`); optional capabilities are registered separately. See the
 [Session Endpoint contract](spec/session-endpoint.md#routes-and-streams) and
 [Client extensions](spec/client-extensions.md).
 
-Passing the tests does not by itself qualify a signed production release. The
-[deployment contract](spec/deployment.md) and
-[production UAT](packaging/macos/PRODUCTION-UAT.md) describe the separate
-installation, signing, reboot and target-user checks.
+The host application launches the Kernel as its own child process and supplies
+the endpoint token and provider credentials. The launchd service, installer and
+selector described by the [deployment contract](spec/deployment.md) are retired
+and no longer maintained.
 
 ## Components
 

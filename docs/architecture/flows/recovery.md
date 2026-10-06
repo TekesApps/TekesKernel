@@ -40,7 +40,7 @@ A candidate worker must still acquire the lock and re-evaluate state; the superv
 Corrupt complete events and partial tail records require different treatment; not every validation failure is a truncatable tail.
 Recovery may only reconcile or may continue ordinary execution; resume policy, stops, approvals, pending input and validation obligations all affect the decision.
 
-For process reaping, see `reconcile_after_exit`. Recovery from a supervisor crash loop by the deployment selector is a separate layer;
+For process reaping, see `reconcile_after_exit`. Recovery from a supervisor crash loop belonged to the retired deployment selector;
 see [startup flow](startup.md). A checkpoint accelerates log folding.
 
 ## Source evidence

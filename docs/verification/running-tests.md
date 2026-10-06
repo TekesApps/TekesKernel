@@ -153,8 +153,9 @@ engine+worker, 62 spans worker-control+supervisor, and 63 runs the real helper
 and job broker. `ci-slice9.sh` runs 65/66 in transport, 67/69 in conformance
 over the supervisor host seam. Client-library and application acceptance belongs to their
 own repositories and is not source-coupled into the Kernel test graph.
-Slice 10 has process and external owners, so it does not pretend that every
-gate is one Rust test. These are the exact commands owned by
+Slice 10 covers the retired launchd deployment; its in-repository tests still
+run until that code is removed. It has process and external owners, so it does
+not pretend that every gate is one Rust test. These are the exact commands owned by
 `scripts/ci-slice10.sh` after the complete Slice-9 job:
 
 | order | gate | owner | exact command/evidence transition |

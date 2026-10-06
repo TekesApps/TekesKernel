@@ -2,15 +2,14 @@
 
 [Architecture entry point](README.md) · [Crate mapping](crates.md) · [Startup sequence](flows/startup.md)
 
-The following macOS product path is confirmed from source. It does not use the current machine's process list or a real startup run as evidence.
+The following process path is confirmed from source. It does not use the current machine's process list or a real startup run as evidence.
+The host application starts the supervisor directly ([Application-owned launch](../builtin-launch.md)); the earlier
+launchd → selector path through the product installer is retired.
 MCP, shell, helper and worker processes appear on demand; the diagram does not imply that all are resident.
 
 ```mermaid
 flowchart TD
-    app["Tekes Client (outside repository)"] -->|"installation operations"| installer["tekes-kernel-installer"]
-    installer -->|"LaunchAgent installation / enable"| launchd["launchd"]
-    launchd -->|"serve"| selector["tekes-selector"]
-    selector -->|"spawn / reap; inherited status + lifetime FDs"| supervisor["tekes-supervisor"]
+    app["Host application (outside repository)"] -->|"spawn --built-in; token and credentials in environment"| supervisor["tekes-supervisor"]
     app <-->|"HTTP + WebSocket remote.mux"| supervisor
     browser["Optional browser"] <-->|"loopback WebClientService"| supervisor
     supervisor -->|"spawn / reap"| worker["tekes-worker: one ledger execution"]
@@ -29,9 +28,9 @@ flowchart TD
 
 | Process | Owner / entry | Important boundary |
 |---|---|---|
-| installer | [main](../../crates/product-installer/src/main.rs), [platform](../../crates/product-installer/src/platform/macos.rs) | Deployment transactions, caller and signature verification; not a session executor |
-| selector | [main](../../crates/selector/src/main.rs), [selector](../../crates/selector/src/selector.rs) | Independently selects a version and supervises the supervisor; does not link the execution kernel |
-| supervisor | [main](../../crates/supervisor/src/main.rs), [daemon](../../crates/supervisor/src/daemon.rs) | `--install-root` selects the production daemon; every other invocation is a described sub-command (support bundle, build/web-client description) and there is no stdin control shell |
+| installer (retired) | [main](../../crates/product-installer/src/main.rs), [platform](../../crates/product-installer/src/platform/macos.rs) | Deployment transactions, caller and signature verification; not a session executor |
+| selector (retired) | [main](../../crates/selector/src/main.rs), [selector](../../crates/selector/src/selector.rs) | Independently selects a version and supervises the supervisor; does not link the execution kernel |
+| supervisor | [main](../../crates/supervisor/src/main.rs), [daemon](../../crates/supervisor/src/daemon.rs) | `--built-in` is the application-owned launch; `--install-root` selects the retired launchd daemon; every other invocation is a described sub-command (support bundle, build/web-client description) and there is no stdin control shell |
 | worker | [launch boundary](../../crates/supervisor/src/lib.rs), [process_host](../../crates/supervisor/src/process_host.rs), [worker main](../../crates/worker/src/main.rs) | Launch snapshot and credential FDs are separate from stdio control; the production handshake negotiates the one worker-control protocol version |
 | helper / shell | [helper main](../../crates/tools/src/bin/tekes-helper.rs), [helper](../../crates/tools/src/helper.rs), [backends](../../crates/tools/src/runtime_backends.rs) | The helper is a process; shell/external commands may create further child processes |
 | MCP | [supervisor MCP runtime](../../crates/supervisor/src/mcp_runtime.rs), [transport](../../crates/mcp/src/transport.rs) | The MCP client/pool runs in the host; local stdio servers are separate processes and HTTP servers are external |

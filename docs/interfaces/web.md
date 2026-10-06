@@ -14,8 +14,9 @@ existing health and `/api` routes. Constructing or starting the native
 `TransportServer` does not create a browser listener, and `/web/*` on the
 native listener remains absent.
 
-An operator may explicitly add this ordered suffix to the resident selector
-`serve` command:
+This switch belonged to the retired launchd deployment; the application-owned
+launch does not currently start the Web listener. An operator could explicitly
+add this ordered suffix to the resident selector `serve` command:
 
 ```text
 --web-listen 127.0.0.1:7357

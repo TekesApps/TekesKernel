@@ -58,8 +58,8 @@ are identical for all placements.
 the configured argv or connects the HTTP transport, pools the peer generation
 and exposes its frozen catalog to workers as `supervisor_control` dynamic
 tools; the worker never links the MCP client. OAuth and header secrets stay
-with the supervisor/keychain (Kernel-minted OAuth grants are exchanged inside
-the supervisor's HTTP authorization provider) and are never written to events.
+with the supervisor, which receives them from the launching application, and are
+never written to events.
 
 ## Side-effect discipline
 
