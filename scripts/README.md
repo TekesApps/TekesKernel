@@ -35,7 +35,7 @@ provided, and report "not qualified" otherwise.
 | Script | Needs |
 |---|---|
 | `test-builtin-launch.py` | `cargo build` first (`target/debug/tekes-supervisor`, `tekes-worker`) |
-| `test-builtin-client-contract.py` | macOS with `swiftc` (Swift 6), a `cargo build`, and the Tekes client sources (`TEKES_CLIENT_ROOT`, default `../Tekes`). Its source path is out of date: it reads `Tekes/SessionEndpoint/Contract/*.swift`, which has moved, so it does not currently run. |
+| `test-builtin-client-contract.py` | macOS with `swiftc` (Swift 6), a `cargo build`, and a TekesClientKit checkout (`TEKES_CLIENT_KIT_ROOT`, default `../TekesClientKit`). |
 
 ## Fixture tools
 

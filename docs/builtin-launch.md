@@ -18,10 +18,8 @@ python3 scripts/test-builtin-launch.py
 python3 scripts/test-builtin-client-contract.py
 ```
 
-`test-builtin-client-contract.py` also needs `swiftc` and the Tekes client
-sources (`TEKES_CLIENT_ROOT`, default `../Tekes`). Its source path is
-out of date: it reads `Tekes/SessionEndpoint/Contract/*.swift`, which has moved,
-so it does not currently run.
+`test-builtin-client-contract.py` also needs `swiftc` and a TekesClientKit
+checkout (`TEKES_CLIENT_KIT_ROOT`, default `../TekesClientKit`).
 
 `tekes-supervisor --models-available` returns the non-secret executable dialect
 proof catalog before startup, for application-side launch configuration.
@@ -71,10 +69,10 @@ launch notification.
 The smoke test uses a temporary state directory and synthetic provider key. It
 verifies readiness, workspace/session creation, model selection and routability,
 WebSocket handshake and all five stream baselines, and parent-pipe shutdown.
-The Client contract check (it needs the Tekes client sources, see above)
-compiles the sibling Tekes Swift DTO sources and decodes/validates actual Kernel
+The Client contract check (it needs TekesClientKit, see above) compiles the
+TekesClientKit Swift contract sources and decodes/validates actual Kernel
 frames without a Client translation shim. It also compiles the generic
-`NativeSessionEndpoint` from Tekes and runs its connection, workspace/session
+`NativeSessionEndpoint` from TekesClientKit and runs its connection, workspace/session
 creation, model selection, journal and history paging against the real child
 process. It does not prove a real provider response or Tekes application UI
 integration.
