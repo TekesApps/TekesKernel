@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::ffi::OsStr;
 use std::fmt::Write as FmtWrite;
 use std::fs::{self, File, OpenOptions};
@@ -27,8 +27,8 @@ use crate::fs::{
 use crate::model::{
     BundleManifest, CanaryReply, ConformanceReply, InstallHealthReply, InstallIdentity,
     MutationReply, Observation, ObservationState, OperationActor, OperationType, PrelaunchFailure,
-    PreviousFile, RecoverReply, Selection, SelectionFile, SelectorManifest, SelectorOperation,
-    StageReply, StatusReply, UpdateReply,
+    PreviousFile, PruneReply, RecoverReply, Selection, SelectionFile, SelectorManifest,
+    SelectorOperation, StageReply, StatusReply, UpdateReply,
 };
 use crate::signature::CodeSignatureVerifier;
 
@@ -559,6 +559,76 @@ impl<V: CodeSignatureVerifier> Selector<V> {
         operation.response = Some(to_value(&reply)?);
         atomic_json(&self.paths.operation, &operation)?;
         Ok(reply)
+    }
+
+    /// Removes every published version that no selection state names. It keeps the current
+    /// and previous selections and the versions in the retained operation record, because a
+    /// closed `stage` record revalidates its bundle on every recovery. The observation goes
+    /// first, then the bundle leaves `bundles/` by rename; a crash leaves at most a hidden
+    /// `.<version>.prune` directory, which the next prune deletes. Afterwards the same version
+    /// can be staged again with different bytes and starts with no observation history.
+    pub fn prune(&self) -> Result<PruneReply, SelectorError> {
+        let _lock = FileLock::try_exclusive(&self.paths.lock)?;
+        self.recover_locked()?;
+        let (current, previous) = self.read_selection_set()?;
+        let mut keep = BTreeSet::new();
+        if let Some(current) = current {
+            keep.insert(current.selection.version);
+        }
+        if let Some(selection) = previous.and_then(|file| file.selection) {
+            keep.insert(selection.version);
+        }
+        if self.paths.operation.exists() {
+            let operation: SelectorOperation = read_canonical(&self.paths.operation)?;
+            keep.insert(operation.to.version);
+            if let Some(from) = operation.from {
+                keep.insert(from.version);
+            }
+        }
+        let mut removed = Vec::new();
+        for entry in fs::read_dir(&self.paths.bundles).selector_io("bundles-read")? {
+            let entry = entry.selector_io("bundles-entry")?;
+            let path = entry.path();
+            let name = entry
+                .file_name()
+                .into_string()
+                .map_err(|_| SelectorError::corruption(path.display().to_string()))?;
+            if name.starts_with('.') {
+                // Staging directories belong to stage recovery; only finish earlier prunes.
+                if name.ends_with(".prune") {
+                    remove_dir_if_exists(&path)?;
+                }
+                continue;
+            }
+            if keep.contains(&name) {
+                continue;
+            }
+            if validate_id(&name).is_err()
+                || !entry
+                    .file_type()
+                    .selector_io("bundles-entry-type")?
+                    .is_dir()
+            {
+                return Err(SelectorError::corruption(path.display().to_string()));
+            }
+            match fs::remove_file(self.paths.observations.join(format!("{name}.json"))) {
+                Ok(()) => sync_directory(&self.paths.observations)?,
+                Err(error) if error.kind() == io::ErrorKind::NotFound => {}
+                Err(error) => return Err(SelectorError::io("observation-prune", error)),
+            }
+            let pruned = self.paths.bundles.join(format!(".{name}.prune"));
+            fs::rename(&path, &pruned).selector_io("bundle-prune-rename")?;
+            sync_directory(&self.paths.bundles)?;
+            remove_dir_if_exists(&pruned)?;
+            removed.push(name);
+        }
+        sync_directory(&self.paths.bundles)?;
+        removed.sort();
+        Ok(PruneReply {
+            format: 1,
+            operation: "prune".to_owned(),
+            removed,
+        })
     }
 
     pub fn activate(

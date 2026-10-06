@@ -12,6 +12,10 @@ workspace version in `Cargo.toml`.
   `build-signed-release.sh` requires `--source-revision` and rejects a
   supervisor that reports another commit; `scripts/ci-slice10.sh` refuses a
   tree with local changes ([#5](https://github.com/TekesApps/TekesKernel/issues/5)).
+- `tekes-selector prune` removes published versions that are neither the
+  current nor the previous selection, with their observations, so old
+  development versions do not accumulate and a pruned version can be staged
+  again ([#4](https://github.com/TekesApps/TekesKernel/issues/4)).
 
 ### Fixed
 - The workspace-service `process_files` tests no longer fail intermittently on

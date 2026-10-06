@@ -37,7 +37,10 @@ the selector rejects a different build with an already published version
 version. For development builds, append a pre-release suffix such as
 `0.3.0-dev.20261005.1a2b3c4d` (date and commit); versions are 1-128 characters
 from `[A-Za-z0-9._-]` and must not start with `.`, so `+` build metadata is not
-accepted. The supervisor reports the version embedded at compile time by
+accepted. Unique versions accumulate in `bundles/`: `tekes-selector
+--install-root <Kernel> prune` removes every version that is neither the
+current nor the previous selection, and a pruned version can be staged again.
+The supervisor reports the version embedded at compile time by
 `TEKES_SELECTED_BUILD`; without it, it reports the Cargo package version and the
 `--describe-build` check fails. Build the release binaries with
 `TEKES_SELECTED_BUILD` equal to `--release-version`, as `scripts/ci-slice10.sh`

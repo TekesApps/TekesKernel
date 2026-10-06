@@ -174,6 +174,13 @@ pub struct StageReply {
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
+pub struct PruneReply {
+    pub format: u8,
+    pub operation: String,
+    pub removed: Vec<String>,
+}
+
+#[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct MutationReply {
     pub current: SelectionFile,
     pub format: u8,

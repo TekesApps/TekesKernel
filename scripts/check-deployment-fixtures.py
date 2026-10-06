@@ -462,7 +462,7 @@ def main() -> int:
     selector = read(FIX / "selector.canonical.json")
     if set(selector) != {"commands", "current", "error_rows", "exits", "format", "observation", "operational", "previous", "replies", "state_guards"}:
         raise Bad("selector oracle top-level fields")
-    command_names = ["describe-conformance", "stage", "activate", "rollback", "status", "recover", "attest-canary", "serve", "update-selector"]
+    command_names = ["describe-conformance", "stage", "activate", "rollback", "status", "recover", "attest-canary", "serve", "update-selector", "prune"]
     if selector["format"] != 1 or [item["name"] for item in selector["commands"]] != command_names:
         raise Bad("selector command surface mismatch")
     if selector["commands"][0]["argv"] != ["describe-conformance"]:
@@ -495,11 +495,15 @@ def main() -> int:
         if selector["exits"].get(row["code"]) != expected_error_exits[row["code"]]:
             raise Bad(f"selector {row['code']} exit mismatch")
     replies = selector["replies"]
-    if set(replies) != {"stage", "activate", "rollback", "status", "recover", "attest_canary", "conformance", "update_selector"}:
+    if set(replies) != {"stage", "activate", "rollback", "status", "recover", "attest_canary", "conformance", "update_selector", "prune"}:
         raise Bad("selector success reply set mismatch")
-    for name in ("stage", "activate", "rollback", "recover"):
+    for name in ("stage", "activate", "rollback", "recover", "prune"):
         if replies[name].get("format") != 1 or replies[name].get("operation") != name:
             raise Bad(f"selector {name} reply mismatch")
+    if set(replies["prune"]) != {"format", "operation", "removed"} or not all(
+        isinstance(version, str) and version for version in replies["prune"]["removed"]
+    ):
+        raise Bad("selector prune reply mismatch")
     if replies["update_selector"].get("operation") != "update-selector" or replies["update_selector"].get("format") != 1:
         raise Bad("selector update reply mismatch")
     conformance = replies["conformance"]
