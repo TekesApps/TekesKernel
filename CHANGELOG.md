@@ -6,6 +6,8 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.2.2 — 2026-10-06
+
 ### Added
 - Release builds record their Git commit. With `TEKES_SOURCE_REVISION` set at
   compile time, `tekes-supervisor --describe-build` adds `source_revision`.
