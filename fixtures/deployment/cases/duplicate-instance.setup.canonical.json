@@ -1,1 +1,0 @@
-{"case":"duplicate-instance","format":1,"gate":71,"initial":{"current":"1.0.0","generation":1,"service":"running","threads":[]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

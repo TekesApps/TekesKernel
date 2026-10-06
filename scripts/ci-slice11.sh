@@ -4,7 +4,7 @@ set -eu
 : "${TEKES_KERNEL_FIXTURES:=$(pwd)/fixtures}"
 export TEKES_KERNEL_FIXTURES
 
-scripts/ci-slice10.sh
+scripts/ci-slice9.sh
 
 cargo test -p conformance --locked --test slice11_gates \
   slice11_gate_77_skill_package_migration_and_precedence -- --exact

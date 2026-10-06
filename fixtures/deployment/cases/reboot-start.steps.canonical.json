@@ -1,1 +1,0 @@
-{"command":[["deployment-harness","reboot"],["deployment-harness","GET","/health/ready"]],"expected_exit":[0,0],"expected_readiness":{"ready":true},"expected_selection":{"current":"1.0.0","generation":1},"fault_points":["sigkill-after-durable-state"]}

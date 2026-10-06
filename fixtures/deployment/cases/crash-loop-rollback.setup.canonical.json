@@ -1,1 +1,0 @@
-{"case":"crash-loop-rollback","format":1,"gate":74,"initial":{"current":"2.0.0","generation":2,"observation":"rollback-window","previous":"1.0.0","service":"running","threads":[]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

@@ -35,7 +35,6 @@ name. Do not infer support for a public capability from a filename.
 | [worker-control](worker-control.md) | Internal supervisor/worker control protocol (negotiated version integer; base and durable control messages) |
 | [session-endpoint](session-endpoint.md) | The Client boundary: routes and streams, journal projection, transport listener, management authority and recovery; start here |
 | [client-extensions](client-extensions.md) | Product extension capabilities and management semantics; V3 governs public entry points |
-| [deployment](deployment.md) | Installation, selector, hosting and release qualification (retired) |
 
 ## Tool calls and external capabilities
 

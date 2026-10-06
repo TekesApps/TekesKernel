@@ -112,7 +112,7 @@ RPC surface, tool registry, and config producers, and diff against these rows
    [endpoint-transport-v2](../../spec/session-endpoint.md)).
 8. External deployment assets and harness: launchd plist, installer/version
    selector, readiness/observability and rollback tests; these are packaging,
-   not a fifth Kernel authority ([deployment-v1](../../spec/deployment.md)).
+   not a fifth Kernel authority ([deployment-v1](https://github.com/TekesApps/TekesKernel/blob/f1af2fd/spec/deployment.md)).
 
 Anything appearing in an implementation that is not in one of these
 lists needs a decision recorded in [Design decision records](decisions.md) first.

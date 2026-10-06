@@ -317,14 +317,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4583a4551df46e2792f82ceeac45e850d2e2d5debba0b91f102385cda5b11f06"
 
 [[package]]
-name = "deployment-tests"
-version = "0.2.2"
-dependencies = [
- "serde_json",
- "tekes-selector",
-]
-
-[[package]]
 name = "digest"
 version = "0.10.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1754,32 +1746,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.119",
-]
-
-[[package]]
-name = "tekes-kernel-installer"
-version = "0.2.2"
-dependencies = [
- "libc",
- "serde_json",
- "sha2",
- "tempfile",
- "zeroize",
-]
-
-[[package]]
-name = "tekes-selector"
-version = "0.2.2"
-dependencies = [
- "libc",
- "serde",
- "serde_json",
- "serde_json_canonicalizer",
- "sha2",
- "tempfile",
- "thiserror",
- "unicode-normalization",
- "uuid",
 ]
 
 [[package]]

@@ -1,1 +1,0 @@
-{"command":[["tekes-selector","--install-root","ROOT","stage","--bundle","BUNDLE_INCOMPATIBLE","--version","2.0.0"],["deployment-harness","GET","/health/ready"]],"expected_exit":[65,0],"expected_readiness":{"ready":true},"expected_selection":{"current":"1.0.0","generation":1},"fault_points":["compatibility-validation"]}

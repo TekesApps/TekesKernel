@@ -1,1 +1,0 @@
-{"command":[["deployment-harness","emit-canary-failures"],["deployment-harness","build-support-bundle"]],"expected_exit":[0,0],"expected_readiness":{"ready":true},"expected_selection":{"current":"1.0.0","generation":1},"fault_points":["provider-failure","tool-failure","endpoint-failure","corruption","rollback"]}

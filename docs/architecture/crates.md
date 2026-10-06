@@ -21,11 +21,8 @@ The workspace has 24 packages. The table uses directory names as reading entry p
 | [schedule](../../crates/schedule/docs/README.md) | Durable scheduling | [Cargo/targets/modules](../../crates/schedule/docs/generated/index.md) |
 | [thread-search](../../crates/thread-search/docs/README.md) | Rebuildable session title search | [Cargo/targets/modules](../../crates/thread-search/docs/generated/index.md) |
 | [tools](../../crates/tools/docs/README.md) | Tool catalog, execution pipeline and helper | [Cargo/targets/modules](../../crates/tools/docs/generated/index.md) |
-| [selector](../../crates/selector/docs/README.md) | External deployment selection and supervision (retired) | [Cargo/targets/modules](../../crates/selector/docs/generated/index.md) |
-| [product-installer](../../crates/product-installer/docs/README.md) | Signed product installation (retired) | [Cargo/targets/modules](../../crates/product-installer/docs/generated/index.md) |
 | [test-support](../../crates/test-support/docs/README.md) | Shared test infrastructure | [Cargo/targets/modules](../../crates/test-support/docs/generated/index.md) |
 | [conformance](../../crates/conformance/docs/README.md) | Cross-crate conformance tests | [Cargo/targets/modules](../../crates/conformance/docs/generated/index.md) |
-| [deployment-tests](../../crates/deployment-tests/docs/README.md) | Deployment test harness | [Cargo/targets/modules](../../crates/deployment-tests/docs/generated/index.md) |
 | [host-files](../../crates/host-files/docs/README.md) | Host directory and session reference Client methods | [Cargo/targets/modules](../../crates/host-files/docs/generated/index.md) |
 | [session-controls](../../crates/session-controls/docs/README.md) | Durable goal controls and delegated child inventory | [Cargo/targets/modules](../../crates/session-controls/docs/generated/index.md) |
 | [user-documents](../../crates/user-documents/docs/README.md) | Feedback and user settings documents | [Cargo/targets/modules](../../crates/user-documents/docs/generated/index.md) |
@@ -39,8 +36,6 @@ The table below lists direct local dependencies available to these targets throu
 |---|---|---|
 | `tekes-helper` | `tools` | `tools (same package library)`, `schema`, `store` |
 | `mcp-fixture-server` | `mcp` | `mcp (same package library)`, `plugins`, `profile`, `schema`, `store` |
-| `tekes-selector` | `tekes-selector` | `tekes-selector (same package library)` |
-| `tekes-kernel-installer` | `tekes-kernel-installer` | `tekes-kernel-installer (same package library)` |
 | `tekes-supervisor` | `tekes-supervisor` | `tekes-supervisor (same package library)`, `endpoint`, `engine`, `host-files`, `mcp`, `plugins`, `profile`, `provider`, `schedule`, `schema`, `session-controls`, `store`, `thread-search`, `tools`, `transport`, `user-documents`, `worker-control`, `workspace-service` |
 | `tekes-worker` | `tekes-worker` | `engine`, `profile`, `provider`, `schema`, `session-controls`, `store`, `tools`, `worker-control`, `workspace-service` |
 | `tekes-workspace-service` | `workspace-service` | `workspace-service (same package library)` |
