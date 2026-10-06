@@ -8,7 +8,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [tekes-worker::validation_tests::validation_test_candidate](../../src/validation_tests.rs#L1) | function_item | `private` | test;  |
+| [tekes-worker::validation_tests::validation_test_candidate](../../src/validation_tests.rs#L1) | function_item | `private` |  |
 | [tekes-worker::validation_tests::validation_writer_rejects_nonfinal_and_foreign_candidates_without_writes](../../src/validation_tests.rs#L34) | function_item | `private` | test;  |
 | [tekes-worker::validation_tests::validation_candidate_and_decision_survive_reopen_without_second_writes](../../src/validation_tests.rs#L48) | function_item | `private` | test;  |
 | [tekes-worker::validation_tests::validation_decision_rejects_model_output_as_control_signal](../../src/validation_tests.rs#L114) | function_item | `private` | test;  |
@@ -41,6 +41,15 @@ Visibility is the declaration spelling; trait members and reexports require thei
 ## Function call graphs
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
+
+<details><summary>Functions 1–1: 0 direct edges</summary>
+
+```mermaid
+flowchart TD
+  n0["tekes-worker::validation_tests::validation_test_candidate"]
+```
+
+</details>
 
 ## Call sites
 
