@@ -1,4 +1,0 @@
-enum BuildIdentity {
-    static let teamID = "@TEAM_ID@"
-    static let clientRequirement = "@CLIENT_REQUIREMENT@"
-}

@@ -521,7 +521,7 @@ contracts; historical rationale below is not a parallel current state machine.
   endpoint, immutable install signing/access-group identity, shared
   Client/supervisor Keychain bearer, recoverable installer transaction,
   explicit local-APFS root, readiness/observability and install lifecycle in
-  [deployment-v1](../../spec/deployment.md). Binary activation, crash-loop
+  [deployment-v1](https://github.com/TekesApps/TekesKernel/blob/f1af2fd/spec/deployment.md). Binary activation, crash-loop
   observation and last-known-good rollback remain external authority (D-53),
   not supervisor self-evolution: launchd keeps `tekes-selector serve` alive,
   selector spawns/observes the supervisor from a frozen selection, and three

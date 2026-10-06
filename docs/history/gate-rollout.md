@@ -106,7 +106,7 @@ mock cannot establish readiness.
 
 ## Slice 10
 
-Slice 10 activates [deployment-v1](../../spec/deployment.md). The ◆◆ gates run
+Slice 10 activates [deployment-v1](https://github.com/TekesApps/TekesKernel/blob/f1af2fd/spec/deployment.md). The ◆◆ gates run
 71–76 after the complete Slice-9 job on macOS 15+ local APFS. In-repository
 selector gates own 73–74; the signed repository-built production coordinator
 app plus an explicitly injected signed Client UAT app additionally prove 72

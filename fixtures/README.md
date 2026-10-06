@@ -77,8 +77,6 @@ the JSONL LF; stored files end each line with one LF.
   effect, crash, approval, policy, secret, and dedup case inventory.
 - `endpoint-transport/` — Slice-9 HTTP/WebSocket wrapping matrix over the
   unchanged Client-v2 DTO authority.
-- `deployment/` — Slice-10 macOS install, ownership, fault, upgrade/rollback,
-  redaction, and uninstall acceptance matrix.
 - `resources/` — Slice-11 pinned AppServer/Runtime migration evidence,
   whole-directory user/project skill packages, command catalog/expansion
   oracle, negative arguments, and keyed-run request/result bytes.

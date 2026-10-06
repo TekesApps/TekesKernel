@@ -18,7 +18,6 @@ Helpers that these scripts call are not listed.
 |---|---|
 | `check-*.py` | Validate one fixture corpus each (byte-canonical JSON, closed tables, manifest agreement). Run without arguments. `check-endpoint-authority.py` also compares the vendored corpus with a sibling `../Tekes` checkout when one exists, and skips that step otherwise. |
 | `test_cache_corpus.py`, `test_agent_eval_audit.py`, `test_agent_eval_scored.py`, `test-audit-live-python-task.py`, `test-audit-live-task-validation.py` | Unit tests for the live-run audit and scoring helpers. |
-| `packaging/macos/tests/test_*.py` | Unit tests for the macOS release verifier and product assembler that need no signing identity. |
 | `code-architecture.py --check` and `--links` | Verifies the generated architecture atlas. Needs `pip install -r scripts/architecture-requirements.txt`. Run without `--check` to regenerate after code changes. |
 
 ## Narrower gate runners

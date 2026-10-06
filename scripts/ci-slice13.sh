@@ -4,11 +4,7 @@ set -eu
 repo_dir=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
 cd "$repo_dir"
 
-if [ -x scripts/ci-slice12.sh ]; then
-  scripts/ci-slice12.sh
-else
-  scripts/ci-slice10.sh
-fi
+scripts/ci-slice12.sh
 
 python3 scripts/check-mcp-runtime-fixtures.py
 

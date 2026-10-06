@@ -9,7 +9,6 @@
 | [Provider](providers.md) | Production providers and dialect qualification |
 | [Tools and integrations](tools.md) | Execution, plugins, MCP and extension tools |
 | [Client](client.md) | Endpoint and transport |
-| [Deployment](deployment.md) | macOS release and external pipelines (retired) |
 
 Gate numbers and fixture identities remain unchanged. Stage execution order is recorded separately in
 the [historical stage map](../../history/gate-rollout.md); common assertion conventions and fixture rules remain below.
@@ -36,9 +35,8 @@ marked ⏱; **Slice-14D thread-search gates** are marked ⌕; **Slice-14E
 Web-chain gates** are marked ⌁; **Slice-14F Client-extension gates** are
 marked ⊕. Tests
 25–27 belong to the external evolution
-pipeline ([Evolution mechanism](../../history/evolution.md)) and are listed for ownership, not kernel CI. Separately, the
-Slice-10 release job runs its in-repository selector gates; the signed
-production-harness gates 72 and 76 belonged to the retired launchd deployment.
+pipeline ([Evolution mechanism](../../history/evolution.md)) and are listed for ownership, not kernel CI. Slice-10 gates
+71–76 covered the launchd deployment, which has been removed.
 
 Conventions: "crash at every boundary" = kill the process between each
 adjacent pair of named steps and run recovery (sweep/respawn) after each;
@@ -74,7 +72,7 @@ and separate shipped-extension inventory (test 43);
 projection journal, history/live stitch cases, and typed native mutations
 (tests 47–52);
 `fixtures/provider-runtime/`, `fixtures/tool-runtime/`, `fixtures/web-tools/`,
-`fixtures/endpoint-transport/`, `fixtures/deployment/`, and
+`fixtures/endpoint-transport/` and
 `fixtures/mcp-runtime/` — the required-case registries for tests 53–76 and
 86–92; each later slice completes its immutable raw
 transcripts before implementation and adds them to the manifest before the

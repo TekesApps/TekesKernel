@@ -78,17 +78,15 @@ repositories (names and pinned revisions only).
 
 The Session Endpoint server (protocol version 3), the provider and tool
 runtimes, an MCP client, plugin, schedule and thread-search services, a
-browser client. The retired macOS deployment components (launchd packaging,
-installer and selector) are still in the tree until they are removed.
+browser client.
 The endpoint registers 16 unary methods plus one multiplexed WebSocket stream
 (`remote.mux`); optional capabilities are registered separately. See the
 [Session Endpoint contract](spec/session-endpoint.md#routes-and-streams) and
 [Client extensions](spec/client-extensions.md).
 
 The host application launches the Kernel as its own child process and supplies
-the endpoint token and provider credentials. The launchd service, installer and
-selector described by the [deployment contract](spec/deployment.md) are retired
-and no longer maintained.
+the endpoint token and provider credentials. The earlier launchd service, installer and
+selector have been removed.
 
 ## Components
 
@@ -125,8 +123,6 @@ document with your provider routes and the environment variable that holds
 each key; `tekes-supervisor --models-available` lists the provider and model
 routes the build supports. The launch document, authentication token and
 readiness record are described in [Application-owned launch](docs/builtin-launch.md).
-Installing the signed macOS product is a separate workflow; see
-[Packaging](packaging/README.md).
 
 ## Build and verify
 

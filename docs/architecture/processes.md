@@ -1,10 +1,9 @@
 # Process view
 
-[Architecture entry point](README.md) · [Crate mapping](crates.md) · [Startup sequence](flows/startup.md)
+[Architecture entry point](README.md) · [Crate mapping](crates.md)
 
 The following process path is confirmed from source. It does not use the current machine's process list or a real startup run as evidence.
-The host application starts the supervisor directly ([Application-owned launch](../builtin-launch.md)); the earlier
-launchd → selector path through the product installer is retired.
+The host application starts the supervisor directly ([Application-owned launch](../builtin-launch.md)).
 MCP, shell, helper and worker processes appear on demand; the diagram does not imply that all are resident.
 
 ```mermaid
@@ -28,8 +27,6 @@ flowchart TD
 
 | Process | Owner / entry | Important boundary |
 |---|---|---|
-| installer (retired) | [main](../../crates/product-installer/src/main.rs), [platform](../../crates/product-installer/src/platform/macos.rs) | Deployment transactions, caller and signature verification; not a session executor |
-| selector (retired) | [main](../../crates/selector/src/main.rs), [selector](../../crates/selector/src/selector.rs) | Independently selects a version and supervises the supervisor; does not link the execution kernel |
 | supervisor | [main](../../crates/supervisor/src/main.rs), [daemon](../../crates/supervisor/src/daemon.rs) | `--built-in` is the application-owned launch; `--install-root` selects the retired launchd daemon; every other invocation is a described sub-command (support bundle, build/web-client description) and there is no stdin control shell |
 | worker | [launch boundary](../../crates/supervisor/src/lib.rs), [process_host](../../crates/supervisor/src/process_host.rs), [worker main](../../crates/worker/src/main.rs) | Launch snapshot and credential FDs are separate from stdio control; the production handshake negotiates the one worker-control protocol version |
 | helper / shell | [helper main](../../crates/tools/src/bin/tekes-helper.rs), [helper](../../crates/tools/src/helper.rs), [backends](../../crates/tools/src/runtime_backends.rs) | The helper is a process; shell/external commands may create further child processes |

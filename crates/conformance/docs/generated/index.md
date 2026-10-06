@@ -8,7 +8,6 @@
 |---|---|---|
 | `conformance` | lib | [crates/conformance/src/lib.rs](../../src/lib.rs) |
 | `session_endpoint` | test | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) |
-| `slice10_gates` | test | [crates/conformance/tests/slice10_gates.rs](../../tests/slice10_gates.rs) |
 | `slice11_gates` | test | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) |
 | `slice14f_gates` | test | [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) |
 | `slice1_gates` | test | [crates/conformance/tests/slice1_gates.rs](../../tests/slice1_gates.rs) |
@@ -42,7 +41,6 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/conformance/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 2 | 17 | `inventory.json` |
-| [crates/conformance/tests/slice10_gates.rs](../../tests/slice10_gates.rs) | 11 | 99 | `inventory.json` |
 | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 449 | `inventory.json` |
 | [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 16 | 311 | `inventory.json` |
 | [crates/conformance/tests/slice1_gates.rs](../../tests/slice1_gates.rs) | 33 | 568 | `inventory.json` |

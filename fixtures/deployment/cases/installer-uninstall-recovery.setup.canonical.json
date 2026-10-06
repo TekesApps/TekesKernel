@@ -1,1 +1,0 @@
-{"case":"installer-uninstall-recovery","format":1,"gate":76,"initial":{"current":"1.0.0","generation":1,"service":"running","threads":["active-a","archive-b"]},"platform":{"architecture":"aarch64","filesystem":"local-apfs","minimum":"15.0","os":"macos"}}

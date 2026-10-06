@@ -69,7 +69,6 @@ exchanged inside the HTTP authorization provider through `SecretAccess`
 (`http_request_authorization`, `provider::OAuthTokenExchange`); production
 startup installs no mutation authority. Credentials are owned by the launching application.
 
-Behavior contract: [deployment.md](../../../spec/deployment.md) (retired with the launchd deployment).
 
 These are static descriptions of the worktree source. An unresolved method in a diagram does not imply no calls; runtime outcomes require separate evidence.
 

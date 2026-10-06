@@ -1,1 +1,0 @@
-{"format":1,"identifier":"com.tekes.kernel.installer","operations":["disable","enable","ensure-running","install-or-upgrade","status"],"protocol":"tekes-kernel-product-installer"}
