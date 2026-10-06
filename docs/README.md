@@ -146,8 +146,7 @@ Everything that remains after the reduction. Nothing else is kernel.
 ## Layer picture
 
 This is a logical execution-core diagram, not the complete OS process tree.
-The deployed product also has a resident selector and on-demand installer/helper/MCP
-processes. See [current process ownership](architecture/processes.md) and
+Helper, MCP and workspace-service processes also appear on demand. See [current process ownership](architecture/processes.md) and
 [the source atlas](architecture/README.md). The native Client uses the V3 endpoint;
 this conceptual diagram does not authorize direct Client filesystem access.
 

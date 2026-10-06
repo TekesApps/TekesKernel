@@ -2,7 +2,8 @@
 
 [Runtime · documentation home](../README.md) · [Worker](worker.md) · [Next: supervisor implementation](../../crates/supervisor/docs/README.md)
 
-The resident execution-core component (the deployed selector is separately resident).
+The resident execution-core component, started by the host application
+([Application-owned launch](../builtin-launch.md)).
 This chapter describes the logical design introduced by this
 architecture. Everything it owns is either an OS primitive wrapped thinly or a
 rebuildable cache. It holds no truth: kill the supervisor, restart it, sweep,
@@ -164,13 +165,15 @@ and the system is whole.
   hold, queued input, due wait) clears the backoff and is re-ensured at once.
   SWE-bench exposed the old behavior: an approval-heavy turn hit
   `process-host-restart-limit` after nine clean approval resumes.
-- **OAuth-bound MCP servers.** An `oauth` binding whose record is a
-  Kernel-minted refresh grant (`provider::OAuthGrant`) is exchanged for access
-  tokens by `provider::OAuthTokenExchange` inside the HTTP transport's
-  authorization provider (`http_request_authorization`); rotation and
-  revocation write through `SecretAccess.mutation` (production: the Keychain
-  lane behind `DurableSecretStore`, `daemon.rs`). Platform-installed tokens
-  keep the old as-is injection. Live gate: `scripts/run-live-mcp-oauth.py`.
+- **OAuth-bound MCP servers.** Production startup (both `builtin.rs` and
+  `daemon.rs`) installs no secret mutation authority, so an `oauth` binding
+  carries a platform-installed token, injected as-is; the application owns
+  minting, rotation and revocation. With a mutation authority, as tests and
+  explicit embedders supply, a Kernel-minted refresh grant
+  (`provider::OAuthGrant`) is exchanged for access tokens by
+  `provider::OAuthTokenExchange` inside the HTTP transport's authorization
+  provider (`http_request_authorization`), and rotation and revocation write
+  through `SecretAccess.mutation`. Live gate: `scripts/run-live-mcp-oauth.py`.
 - **Manual compaction (the `/compact` command).** `commands/run` with a body
   that is exactly `compact` is a control request, not an input
   (`SessionDeliveryAuthority::compact`). A live worker receives worker-control
@@ -229,7 +232,8 @@ The concrete loopback HTTP/WebSocket listener and its drain/readiness behavior
 are Slice 9's [session-endpoint §Transport listener](../../spec/session-endpoint.md#transport-listener), while
 the exact management author/recovery paths are
 [session-endpoint §Management authority and recovery](../../spec/session-endpoint.md#management-authority-and-recovery); Slice
-10 makes that listener launchd-owned production packaging. The current public
+10 made that listener launchd-owned production packaging, since retired in
+favour of [application-owned launch](../builtin-launch.md). The current public
 route and stream contract is [V3](../../spec/session-endpoint.md#routes-and-streams), which supersedes
 the V2 public list/history, dual-stream and respond routes. The concrete launcher
 and daemon composition is mapped in [processes](../architecture/processes.md).

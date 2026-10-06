@@ -84,7 +84,6 @@ Once the Kernel Client endpoint exists, reuse the same disposable-repository
 scenarios in Files, repository management and Changes UI. Verify thread switching
 shows only the selected session's latest turn and suppresses unknown counts.
 Exercise denied operations and interrupted mutation recovery as well as successes.
-Use the signed product at `/private/tmp/tekes-goal2-signed/TekesKernelProduct` for
-local acceptance; its service executables are Debug builds, not a distribution
-release. Actual installation is performed by the signed installer through its
-trusted Client caller. Do not substitute direct layout writes for that operation.
+For local acceptance, launch the Kernel the way the application does
+([Application-owned launch](builtin-launch.md)); the signed-installer path
+previously used here is retired.

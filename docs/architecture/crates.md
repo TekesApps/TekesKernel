@@ -21,8 +21,8 @@ The workspace has 24 packages. The table uses directory names as reading entry p
 | [schedule](../../crates/schedule/docs/README.md) | Durable scheduling | [Cargo/targets/modules](../../crates/schedule/docs/generated/index.md) |
 | [thread-search](../../crates/thread-search/docs/README.md) | Rebuildable session title search | [Cargo/targets/modules](../../crates/thread-search/docs/generated/index.md) |
 | [tools](../../crates/tools/docs/README.md) | Tool catalog, execution pipeline and helper | [Cargo/targets/modules](../../crates/tools/docs/generated/index.md) |
-| [selector](../../crates/selector/docs/README.md) | External deployment selection and supervision | [Cargo/targets/modules](../../crates/selector/docs/generated/index.md) |
-| [product-installer](../../crates/product-installer/docs/README.md) | Signed product installation | [Cargo/targets/modules](../../crates/product-installer/docs/generated/index.md) |
+| [selector](../../crates/selector/docs/README.md) | External deployment selection and supervision (retired) | [Cargo/targets/modules](../../crates/selector/docs/generated/index.md) |
+| [product-installer](../../crates/product-installer/docs/README.md) | Signed product installation (retired) | [Cargo/targets/modules](../../crates/product-installer/docs/generated/index.md) |
 | [test-support](../../crates/test-support/docs/README.md) | Shared test infrastructure | [Cargo/targets/modules](../../crates/test-support/docs/generated/index.md) |
 | [conformance](../../crates/conformance/docs/README.md) | Cross-crate conformance tests | [Cargo/targets/modules](../../crates/conformance/docs/generated/index.md) |
 | [deployment-tests](../../crates/deployment-tests/docs/README.md) | Deployment test harness | [Cargo/targets/modules](../../crates/deployment-tests/docs/generated/index.md) |

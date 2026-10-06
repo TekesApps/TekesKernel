@@ -57,7 +57,7 @@ Static diagrams show dependencies or possible calls. Sequence diagrams show orde
 
 | Scenario | Boundaries made explicit |
 |---|---|
-| [Service startup after installation](flows/startup.md) | launchd, selector, supervisor, listeners and background tasks |
+| [Service startup after installation](flows/startup.md) (retired) | launchd, selector, supervisor, listeners and background tasks |
 | [Input through one execution turn](flows/turn-execution.md) | transport → endpoint host → worker → provider → durable projection |
 | [Tool invocation and approval](flows/tool-execution.md) | dispatcher, pipeline, helper / supervisor / MCP |
 | [Crash and restart recovery](flows/recovery.md) | File locks, log tails, process reaping, recovery decisions and checkpoints |

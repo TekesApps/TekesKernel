@@ -6,6 +6,14 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Deprecated
+- The launchd deployment (LaunchAgent, product installer and selector) is
+  retired. The host application launches the Kernel and supplies its endpoint
+  token and credentials through the environment, as in
+  [Application-owned launch](docs/builtin-launch.md). The deployment contract,
+  packaging and UAT documents are marked retired; the code stays until it is
+  removed ([#28](https://github.com/TekesApps/TekesKernel/issues/28)).
+
 ### Added
 - Linux tool sandbox. The `linux-landlock-seccomp` backend now applies its
   plan: Landlock confines the filesystem to the policy roots and seccomp

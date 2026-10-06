@@ -1,5 +1,13 @@
 # spec: macOS local deployment v1
 
+> **Retired (2026-10-06).** The Kernel is launched only by its host application; see
+> [Application-owned launch](../docs/builtin-launch.md). The launchd service, product
+> installer and selector described here are no longer maintained, and their
+> Keychain credential model no longer matches the code: the endpoint token and
+> provider secrets come from the host's environment
+> ([secret-store](secret-store.md)). The code remains until it is removed
+> ([#28](https://github.com/TekesApps/TekesKernel/issues/28)); this document is kept for reference.
+
 This contract defines Slice 10: packaging the completed Kernel as a local,
 production App Server on macOS. It does not add semantic authority or a
 self-evolution subsystem. Ledger, config, protocol-carrier, secret-store, and
