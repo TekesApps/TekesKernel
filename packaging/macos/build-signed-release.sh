@@ -4,16 +4,17 @@ set -euo pipefail
 root="$(cd "$(dirname "$0")/../.." && pwd)"
 
 usage() {
-  echo 'usage: build-signed-release.sh --identity SIGNING_IDENTITY --team-id TEAMID --release-version VERSION --client-requirement REQUIREMENT --supervisor-profile ABSOLUTE_PROFILE --selector ABSOLUTE --supervisor ABSOLUTE --worker ABSOLUTE --helper ABSOLUTE --conformance ABSOLUTE --output ABSOLUTE --workspace-service ABSOLUTE' >&2
+  echo 'usage: build-signed-release.sh --identity SIGNING_IDENTITY --team-id TEAMID --release-version VERSION --client-requirement REQUIREMENT --supervisor-profile ABSOLUTE_PROFILE --selector ABSOLUTE --supervisor ABSOLUTE --worker ABSOLUTE --helper ABSOLUTE --conformance ABSOLUTE --output ABSOLUTE --workspace-service ABSOLUTE --source-revision GIT_COMMIT' >&2
   exit 64
 }
 
-[[ "$#" -eq 24 ]] || usage
+[[ "$#" -eq 26 ]] || usage
 [[ "$1" == --identity && "$3" == --team-id && "$5" == --release-version \
    && "$7" == --client-requirement && "$9" == --supervisor-profile \
    && "${11}" == --selector && "${13}" == --supervisor \
    && "${15}" == --worker && "${17}" == --helper \
-   && "${19}" == --conformance && "${21}" == --output && "${23}" == --workspace-service ]] || usage
+   && "${19}" == --conformance && "${21}" == --output && "${23}" == --workspace-service \
+   && "${25}" == --source-revision ]] || usage
 identity="$2"
 team_id="$4"
 release_version="$6"
@@ -26,9 +27,11 @@ helper="${18}"
 conformance="${20}"
 output="${22}"
 workspace_service="${24}"
+source_revision="${26}"
 artifact_root="${TEKES_SIGNED_ARTIFACT_ROOT:-$root/target}"
 [[ "$team_id" =~ ^[A-Z0-9]{10}$ \
    && "$release_version" =~ ^[A-Za-z0-9_-][A-Za-z0-9._-]{0,127}$ \
+   && "$source_revision" =~ ^[0-9a-f]{40}$ \
    && "$artifact_root" = /* && "$output" = /* ]] || usage
 [[ "$client_requirement" == 'anchor apple generic and identifier '* ]] || usage
 python3 "$root/packaging/macos/safe-target-output.py" validate \
@@ -115,12 +118,12 @@ sign com.tekes.kernel.worker "$temporary/bundle/bin/tekes-worker"
 sign com.tekes.kernel.helper "$temporary/bundle/bin/tekes-helper"
 sign com.tekes.kernel.workspace-service "$temporary/bundle/bin/tekes-workspace-service"
 registry_sha="$(/usr/bin/shasum -a 256 "$root/fixtures/deployment/authority-registry.canonical.json" | awk '{print $1}')"
-python3 - "$supervisor_contents/MacOS/tekes-supervisor" "$release_version" "$registry_sha" <<'PY'
+python3 - "$supervisor_contents/MacOS/tekes-supervisor" "$release_version" "$registry_sha" "$source_revision" <<'PY'
 import json
 import subprocess
 import sys
 
-executable, release_version, registry_sha = sys.argv[1:]
+executable, release_version, registry_sha, source_revision = sys.argv[1:]
 result = subprocess.run(
     [executable, "--describe-build"],
     stdin=subprocess.DEVNULL,
@@ -133,6 +136,7 @@ expected = {
     "authority_registry_sha256": registry_sha,
     "format": 1,
     "identifier": "com.tekes.kernel.supervisor",
+    "source_revision": source_revision,
     "version": release_version,
 }
 canonical = json.dumps(expected, sort_keys=True, separators=(",", ":")).encode() + b"\n"

@@ -1,6 +1,7 @@
 import importlib.util
 import json
 from pathlib import Path
+import re
 import tempfile
 import unittest
 
@@ -13,9 +14,30 @@ SPEC.loader.exec_module(MODULE)
 
 
 class ProductAssemblerTests(unittest.TestCase):
-    def test_contract_fixture_is_exact_canonical_bytes(self) -> None:
+    def test_contract_is_the_fixture_the_installer_embeds(self) -> None:
         fixture = SCRIPT.parent / "product-installer/contract.canonical.json"
-        self.assertEqual(fixture.read_bytes(), MODULE.canonical(MODULE.CONTRACT))
+        self.assertEqual(MODULE.load_contract(), fixture.read_bytes())
+        # Keep the assembler's view tied to the installer's argument parser.
+        source = (SCRIPT.parents[2] / "crates/product-installer/src/lib.rs").read_text()
+        parsed = sorted(re.findall(r'^\s*"([a-z-]+)" => Operation::', source, re.MULTILINE))
+        self.assertTrue(parsed)
+        self.assertEqual(json.loads(fixture.read_bytes())["operations"], parsed)
+
+    def test_contract_shape_errors_are_rejected(self) -> None:
+        valid = json.loads(MODULE.load_contract())
+        cases = [
+            {**valid, "format": True},
+            {**valid, "identifier": "com.example.installer"},
+            {**valid, "operations": list(reversed(valid["operations"]))},
+            {**valid, "operations": []},
+            {**valid, "extra": 1},
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "contract.canonical.json"
+            for case in cases:
+                path.write_bytes(MODULE.canonical(case))
+                with self.subTest(case=case), self.assertRaises(MODULE.InvalidProduct):
+                    MODULE.load_contract(path)
 
     def test_symlink_is_rejected_before_product_publication(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -34,11 +56,6 @@ class ProductAssemblerTests(unittest.TestCase):
             (root / "unexpected").write_bytes(b"forbidden")
             with self.assertRaisesRegex(MODULE.InvalidProduct, "differs from the deployment contract"):
                 MODULE.verify_release(root, root / "evidence", SCRIPT.parents[2])
-
-    def test_contract_format_is_integer_not_boolean(self) -> None:
-        contract = json.loads(MODULE.canonical(MODULE.CONTRACT))
-        self.assertIs(type(contract["format"]), int)
-        self.assertEqual(contract["format"], 1)
 
 
 if __name__ == "__main__":

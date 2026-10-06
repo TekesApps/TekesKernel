@@ -26,18 +26,23 @@ selector manifest and the digest embedded at selector compile time.
 with the contract fd3/fd4 handoff and rejects embedded build/version mismatch.
 `macos/build-signed-release.sh` takes that release version explicitly and
 requires the signed supervisor's canonical `--describe-build` response to bind
-both the same version and the exact authority-registry digest before publish. An
-installed version is immutable: the selector rejects a different build with an
-already published version (`invalid-state`, `version-already-published`). Give
-every build its own version. For development builds, append a pre-release suffix
-such as `0.3.0-dev.20261005.1a2b3c4d` (date and commit); versions are 1-128
-characters from `[A-Za-z0-9._-]` and must not start with `.`, so `+` build
-metadata is not accepted. The supervisor reports the version embedded at compile
-time by `TEKES_SELECTED_BUILD`; without it, it reports the Cargo package version
-and the `--describe-build` check fails. Build the release binaries with
+both the same version and the exact authority-registry digest before publish. It
+also requires `--source-revision`, the 40-hex Git commit that the supervisor was
+compiled from with `TEKES_SOURCE_REVISION`, and the probe must report the same
+commit. Run `tekes-supervisor --describe-build` from a built bundle to read the
+commit back. `scripts/ci-slice10.sh` refuses to build the signed release from a
+tree with local changes or untracked files. An installed version is immutable:
+the selector rejects a different build with an already published version
+(`invalid-state`, `version-already-published`). Give every build its own
+version. For development builds, append a pre-release suffix such as
+`0.3.0-dev.20261005.1a2b3c4d` (date and commit); versions are 1-128 characters
+from `[A-Za-z0-9._-]` and must not start with `.`, so `+` build metadata is not
+accepted. The supervisor reports the version embedded at compile time by
+`TEKES_SELECTED_BUILD`; without it, it reports the Cargo package version and the
+`--describe-build` check fails. Build the release binaries with
 `TEKES_SELECTED_BUILD` equal to `--release-version`, as `scripts/ci-slice10.sh`
-does for its release-mode workspace build. It also runs the Web Client
-source-manifest checker and requires the signed supervisor's
+does for its release-mode workspace build. `build-signed-release.sh` also runs
+the Web Client source-manifest checker and requires the signed supervisor's
 `--describe-web-client` digest to match the separately signed
 `Contents/Resources/WebClientManifest.canonical.json` resource. This keeps stale
 embedded browser bytes from entering an otherwise valid release bundle. All
@@ -67,10 +72,11 @@ files, re-verifies every signature/manifest/entitlement, emits the canonical
 product manifest with SHA-256 bindings, optionally invokes the sibling Tekes
 checker, and atomically publishes the wrapper. A typical release invocation
 first assembles the selector conformance evidence, then builds the signed
-deployment release (release-mode binaries built with `TEKES_SELECTED_BUILD`
-and `TEKES_SELECTOR_CONFORMANCE_SHA256`, as in `scripts/ci-slice10.sh`) and
-the installer, then assembles the product. `--selector-conformance` must be
-the same file passed to `build-signed-release.sh --conformance`:
+deployment release (release-mode binaries built with `TEKES_SELECTED_BUILD`,
+`TEKES_SELECTOR_CONFORMANCE_SHA256` and `TEKES_SOURCE_REVISION`, as in
+`scripts/ci-slice10.sh`) and the installer, then assembles the product.
+`--selector-conformance` must be the same file passed to
+`build-signed-release.sh --conformance`:
 
 ```text
 packaging/macos/assemble-selector-conformance.py \
@@ -90,7 +96,8 @@ packaging/macos/build-signed-release.sh \
   --helper ABSOLUTE_RELEASE_DIR/tekes-helper \
   --conformance /absolute/local-apfs/artifacts/selector-conformance.canonical.json \
   --output /absolute/local-apfs/artifacts/SIGNED_DEPLOYMENT_V1 \
-  --workspace-service ABSOLUTE_RELEASE_DIR/tekes-workspace-service
+  --workspace-service ABSOLUTE_RELEASE_DIR/tekes-workspace-service \
+  --source-revision GIT_COMMIT
 
 TEKES_SIGNED_ARTIFACT_ROOT=/absolute/local-apfs/artifacts \
 packaging/macos/build-product-installer.sh \

@@ -9,6 +9,6 @@ space.
 
 To report a problem, use GitHub's private vulnerability reporting
 (**Security → Report a vulnerability**) and state that it is a conduct report,
-or contact a maintainer listed on the repository. Reports are handled
-confidentially. Maintainers may edit or remove contributions and restrict
-participation for behavior that violates this code.
+or contact a maintainer. Reports are handled confidentially. Maintainers may
+edit or remove contributions and restrict participation for behavior that
+violates this code.

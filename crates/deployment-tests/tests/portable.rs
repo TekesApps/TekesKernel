@@ -433,6 +433,8 @@ fn entitled_actor_builders_require_profiled_apps_and_runtime_admission() {
     }
     assert!(release.contains("--describe-build"));
     assert!(release.contains("--release-version"));
+    assert!(release.contains("--source-revision"));
+    assert!(release.contains("\"source_revision\": source_revision"));
     assert!(release.contains("authority_registry_sha256"));
     assert!(release.contains("result.stdout != canonical"));
     assert!(release.matches("verify-release.py").count() >= 4);
@@ -600,4 +602,46 @@ fn production_uat_runner_has_closed_byte_contract_and_usage_failure() {
         b"{\"error\":{\"code\":\"usage\",\"message\":\"expected the closed production argv\"}}\n"
     );
     std::fs::remove_dir_all(scratch).expect("remove contract scratch");
+}
+
+#[test]
+fn signed_release_requires_a_full_source_revision() {
+    let root = workspace_root();
+    let input = root.join("packaging/macos/production-uat/main.swift");
+    let output = root.join("target/source-revision-rejection");
+    for revision in [
+        "",
+        "main",
+        "C871EC2DC5CB4BFBDF79BC6CE23E91FD63318A9C",
+        "c871ec2",
+    ] {
+        let release = Command::new(root.join("packaging/macos/build-signed-release.sh"))
+            .args(["--identity", "TEST", "--team-id", "TEKESAPP01"])
+            .args(["--release-version", "1.0.0"])
+            .args([
+                "--client-requirement",
+                "anchor apple generic and identifier com.tekes.client",
+            ])
+            .arg("--supervisor-profile")
+            .arg(&input)
+            .arg("--selector")
+            .arg(&input)
+            .arg("--supervisor")
+            .arg(&input)
+            .arg("--worker")
+            .arg(&input)
+            .arg("--helper")
+            .arg(&input)
+            .arg("--conformance")
+            .arg(&input)
+            .arg("--output")
+            .arg(&output)
+            .arg("--workspace-service")
+            .arg(&input)
+            .args(["--source-revision", revision])
+            .output()
+            .expect("signed release revision rejection");
+        assert_eq!(release.status.code(), Some(64), "revision {revision:?}");
+        assert!(!output.exists());
+    }
 }

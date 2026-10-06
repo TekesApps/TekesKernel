@@ -62,7 +62,8 @@ so metadata attached during publication fails closed rather than leaving a
 nominally successful but unlaunchable app.
 
 `packaging/macos/build-signed-release.sh` takes a fixed, ordered argument list
-(see its usage), including `--release-version VERSION` and
+(see its usage), including `--release-version VERSION`,
+`--source-revision GIT_COMMIT` and
 `--supervisor-profile ABSOLUTE_SUPERVISOR_PROVISIONPROFILE`. It copies the five
 Cargo release outputs (selector, supervisor, worker, helper and workspace
 service) into a new normalized descendant of that artifact root, wraps the

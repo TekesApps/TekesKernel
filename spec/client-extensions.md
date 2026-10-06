@@ -34,11 +34,15 @@ The base set remains exactly:
 workspace.create workspace.rename workspace.relocate
 workspace.archiveSession workspace.unarchiveSession
 session.create session.prompt session.updateQueue session.cancel
-session.rename session.fork session.attachment session.models session.selectModel
-remote.mux
+session.rename session.fork session.discard session.attachment session.models
+models.list session.selectModel remote.mux
 ```
 
-The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`.
+The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`:
+a 17-method base and 19 capabilities with 69 extension methods. This file
+specifies ten capabilities directly; the nine native-client capabilities are
+specified in Session Endpoint and listed under
+[Native-client capabilities](#native-client-capabilities).
 Capability ids and versions are Client metadata, not fields added to
 `host.describe`. Release qualification compares the Client driver's declared
 catalog with the server registry in both directions and rejects a collision
@@ -46,6 +50,9 @@ with the base set or another extension. The v1 capability groups are atomic:
 partial method registration or advertisement is a protocol defect. Extensions
 use the existing transport request/result/error envelope and do not define a
 new event stream, mux frame, endpoint generation, or Mirror partition.
+The `tekesWorkspace.*` routes of the
+[workspace service](../docs/workspace-service-wse.md) are a separate extension
+surface outside this catalog.
 
 Every extension supports `bad-request`, `unsupported-capability`, and
 `internal`. A mutation also supports `idempotency-conflict`. The tables below
@@ -61,8 +68,9 @@ rows are Coding and General, with the complete raw contents of
 or configuration bytes. `{model}` is resolved only in the worker's instructions.
 An explicit choice is applied in `session.create {identityProfile}`; omission
 retains automatic first-input selection. The resolved `identityProfile` is
-returned in inventory and stays fixed for the session. See Session Endpoint's
-initial-preset section for persistence and legacy behavior.
+returned in inventory and stays fixed for the session. See
+[Session Endpoint § Agent presets](session-endpoint.md#agent-presets) for
+persistence and legacy behavior.
 
 ## Resource and tool catalogs
 
@@ -182,9 +190,9 @@ and absence/current state alone is never proof that this request committed.
 There is no Computer-Use method, DTO, dispatcher, or special component arm.
 Marketplace fetching, distribution-policy administration, and direct
 native-helper TCC controls are permanently absent in v1. A generic plugin's
-native MCP executable owns its platform permission prompts; Slice 14A later
-qualifies that behavior through ordinary install/MCP discovery/call and may
-repair only generic lifecycle code.
+native MCP executable owns its platform permission prompts; the Kernel
+reaches it only through ordinary install, MCP discovery and call, with no
+plugin-specific lifecycle code.
 
 `mcp.v1` is exactly the seven methods and DTOs in `mcp-runtime`:
 `mcp.list`, `mcp.get`, `mcp.save`, `mcp.remove`, `mcp.probe`,
@@ -216,8 +224,11 @@ binding only by versioning the durable definition and this DTO. Ignoring
 either stored field is a protocol defect. The remaining error mapping is
 one-to-one from `schedule`.
 
-`threadSearch.v1` has one read method, `thread.search`, whose request is the
-exact `thread-search` internal request with camel-case field names:
+`threadSearch.v1` has two read methods. `session.search {query}` returns
+`{items:[{sessionId,snippet}],hasMore}`: a host-wide search over visible
+conversation text in active and archived sessions, capped at 50 results.
+`thread.search` takes the exact `thread-search` internal request with
+camel-case field names:
 `{workspaceId,query,limit,visibility,after?}`. The result is
 `{format:1,results,nextCursor?,reachedEnd,catalogDigest}`; internal index
 diagnostics are omitted. Every named internal error maps to the same
@@ -226,8 +237,10 @@ kebab-case endpoint code. No transcript/body search is implied.
 ## Provider and workspace administration
 
 `providerAdmin.v1` exists only when `provider-dialect-profiles` proof
-loading and the config/secret-reference writers are installed. Its methods
-are:
+loading and the config/secret-reference writers are installed. It is not
+advertised under an application-owned launch, where the application owns
+provider configuration (see [built-in launch](../docs/builtin-launch.md)).
+Its methods are:
 
 ```text
 providers.list                 read
@@ -395,28 +408,54 @@ if every member supplies cost under one identical currency/unit contract, the
 group sums it; a present/absent mixture or heterogeneous contract is
 `source-corrupt`.
 
+## Native-client capabilities
+
+These nine capabilities are atomic catalog groups like the ones above. Their
+requests, results and rules are specified in Session Endpoint; this table
+fixes only membership, method class and the closed capability errors from
+`errors.canonical.json`.
+
+| capability | methods (class) | additional errors | specified in |
+|---|---|---|---|
+| `recovery.v1` | `sessions.recover` (mutation) | `session-not-found` | [Built-in resource and recovery extensions](session-endpoint.md#built-in-resource-and-recovery-extensions) |
+| `attachments.v1` | `attachments.policy` (read), `session.uploadFile` (mutation), `session.fileAttachment` (read) | `archived`, `attachment-error`, `session-not-found` | [Inline attachment policy](session-endpoint.md#inline-attachment-policy), [File attachments](session-endpoint.md#file-attachments) |
+| `approvals.v1` | `approvals.policy` (read), `approvals.mode` (read), `approvals.select` (mutation) | `archived`, `session-not-found` | [Approval policy](session-endpoint.md#approval-policy) |
+| `sessionFiles.v1` | `session.files.stat`, `session.files.read`, `session.files.readBytes` (all read) | `file-unavailable` | [Session file reads](session-endpoint.md#session-file-reads) |
+| `hostFiles.v1` | `directory.list` (read), `directory.create` (mutation), `session.references.files` (read), `session.references.sessions` (read) | `directory-exists`, `directory-forbidden`, `directory-not-found`, `io-error`, `session-not-found` | [Host directories and mention candidates](session-endpoint.md#host-directories-and-mention-candidates) |
+| `feedback.v1` | `feedback.list` (read), `feedback.put` (mutation), `feedback.delete` (mutation) | `io`, `version-conflict` | [Message feedback](session-endpoint.md#message-feedback) |
+| `settings.v1` | `settings.describe` (read), `settings.mutate` (mutation), `settings.update` (mutation), `settings.document` (read) | `io`, `settings-invalid`, `stale-revision`, `unknown-namespace` | [Instruction settings](session-endpoint.md#instruction-settings) |
+| `goals.v1` | `goals.get` (read), `goals.edit`, `goals.clear`, `goals.pause`, `goals.resume` (mutation) | `goal-invalid-transition`, `goal-not-found`, `goal-stale`, `ledger-corrupt`, `session-not-found` | [Goals](session-endpoint.md#goals) |
+| `subagents.v1` | `subagents.list` (read) | `ledger-corrupt`, `session-not-found` | [Subagent catalog](session-endpoint.md#subagent-catalog) |
+
 ## Permanent dispositions
 
 `fixtures/client-extensions/dispositions.canonical.json` is the exhaustive
 route-disposition authority for the pinned TekesAppServer/TekesRuntime
-baseline. The following behavior classes have no Kernel v1 endpoint method:
+baseline. It disposes the predecessor behavior classes as follows; a retired
+class has no Kernel v1 endpoint method:
 
-- legacy mutable agent preset/type and thread-agent inventory: retired; instructions and
-  explicit child topology remain the supported mechanisms;
+- legacy agent presets: retired; instructions come from `AGENTS.md` scopes
+  only;
 - sidechat: replaced by `session.fork {ephemeral:true}` plus ordinary keyed
   prompt and `session.discard` (all base routes);
-- message feedback: Client-owned local product metadata, not AS truth;
+- message feedback: implemented as `feedback.v1` (Kernel-durable metadata
+  under `feedback/`, outside the ledger); the legacy `turn/evaluation/set` is
+  retired;
 - remote Git UI and Git/GitHub RPCs: retired for the built-in local Kernel;
   Client-local Git UI and model `shell` are the replacements;
-- interactive debug queries: replaced by the bounded redacted Slice-10
-  support bundle and readiness diagnostics;
 - marketplace/distribution policy and direct TCC actions: retired from the
   Kernel endpoint as described above;
+- safepoint list/restore: retired; safepoint snapshots were removed from the
+  Kernel and the user's version control owns file history;
+- credential describe/set/unset: retired; secrets never cross extension RPC;
+- process-private `initialize`/`initialized`/`shutdown`: retired;
 - legacy conversation freeze/read/message, events read/notify,
-  inventory/change aliases, offload/restore, context query, direct shell,
-  response-retry, goal mutations, subagent mutations, and compatibility
-  aliases: replaced by the base Session Endpoint, always-file folders,
-  ordinary tools, fork/history, and recovery contracts named in the fixture.
+  inventory changes, offload/restore, context query, and response-retry:
+  replaced by the base Session Endpoint, always-file folders, fork/history,
+  and recovery contracts named in the fixture;
+- legacy goal and subagent routes: goal state is managed by `goals.v1` and
+  delegation children are listed by `subagents.v1`; subagent prompt and
+  interrupt have no replacement beyond `session.prompt` and `session.cancel`.
 
 A retired method is absent from both Client catalog and server registry and
 returns `unsupported-capability` if the Client nevertheless invokes it. A

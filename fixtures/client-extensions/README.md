@@ -1,8 +1,9 @@
 # Client extension v1 oracle
 
-This corpus freezes the additive Slice-14F `.tekes` Client catalog. It is not
-a copy of the Session Endpoint v2 corpus and does not define a new
-`SessionEvent` family.
+This corpus is the executable `.tekes` Client extension catalog: a
+17-method base and 19 capabilities with 69 methods. It was first frozen in
+Slice 14F and has been extended since. It is separate from the Session
+Endpoint base routes and does not define a new `SessionEvent` family.
 
 - `catalog.canonical.json` is the atomic capability/method/class registry.
 - `method-cases.canonical.json` supplies one closed request and success value
@@ -14,7 +15,8 @@ a copy of the Session Endpoint v2 corpus and does not define a new
   or retired outcome.
 - `negative.canonical.json` freezes partial-capability, frozen-name collision,
   unknown-field, fake-empty-success, unproved-provider, ignored-schedule-
-  policy, non-cascading provider/profile delete, and TCU-special-case rejection.
+  policy, ignored-schedule-model, missing route identity, non-cascading
+  provider/profile delete, and TCU-special-case rejection.
 - `value-cases.canonical.json` covers every resource/content/tool-source union,
   plugin/provider readiness arm, zero/multiple-profile connection readiness,
   valid workspace-policy relaxation below its ceiling, and the complete

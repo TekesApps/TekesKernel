@@ -53,12 +53,13 @@ name. Do not infer support for a public capability from a filename.
 | [command-catalog](command-catalog.md) | Command catalog and execution |
 | [plugin-package](plugin-package.md) | Plugin packages, installation and lifecycle |
 | [schedule](schedule.md) | Durable scheduling |
+| [lifecycle-hook](lifecycle-hook.md) | Lifecycle hook protocol v2: frozen command bindings for `turn.before`, `context.prepare`, `tool.completed`, `context.before_compact` and `turn.settled` |
 
 ## Credentials and independent permission boundaries
 
 | Contract | Scope |
 |---|---|
-| [secret-store](secret-store.md) | Secret storage and version authority |
+| [secret-store](secret-store.md) | Application-owned launch credentials: immutable environment-captured store, runtime interface and connection authentication |
 | [credential-broker](credential-broker.md) | Credential authorization and delivery |
 
 ## Rules for changes and explanations
@@ -66,8 +67,3 @@ name. Do not infer support for a public capability from a filename.
 Domain terminology links to [Thread fundamentals](../docs/concepts/thread.md); fields/state machines belong to their topic specs, call relationships to code architecture,
 and runtime evidence to verification records. Behavior changes must also be checked against implementation and relevant tests; explanatory text must not
 hide implementation discrepancies. Add new contracts to this index; topic guides link to their contracts without copying the full text.
-
-## Host lifecycle extensions
-
-[Lifecycle hooks](lifecycle-hook.md) defines frozen command bindings for turn preparation,
-request context, final tool results, compaction and durable turn settlement.

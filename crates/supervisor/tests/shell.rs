@@ -37,15 +37,18 @@ fn supervisor_describe_build_binds_embedded_version_and_authority_registry() {
     assert!(output.status.success());
     assert!(output.stderr.is_empty());
     let embedded_build = option_env!("TEKES_SELECTED_BUILD").unwrap_or(env!("CARGO_PKG_VERSION"));
-    assert_eq!(
-        output.stdout,
-        format!(
-            "{{\"authority_registry_sha256\":\"{}\",\"format\":1,\"identifier\":\"com.tekes.kernel.supervisor\",\"version\":\"{}\"}}\n",
-            tekes_supervisor::daemon::AUTHORITY_REGISTRY_SHA256,
-            embedded_build,
-        )
-        .as_bytes()
-    );
+    let mut expected = json!({
+        "authority_registry_sha256": tekes_supervisor::daemon::AUTHORITY_REGISTRY_SHA256,
+        "format": 1,
+        "identifier": "com.tekes.kernel.supervisor",
+        "version": embedded_build,
+    });
+    if let Some(revision) = tekes_supervisor::daemon::SOURCE_REVISION {
+        expected["source_revision"] = revision.into();
+    }
+    let mut expected = serde_json_canonicalizer::to_vec(&expected).expect("canonical build");
+    expected.push(b'\n');
+    assert_eq!(output.stdout, expected);
 }
 
 #[test]

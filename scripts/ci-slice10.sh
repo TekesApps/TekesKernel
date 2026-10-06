@@ -289,8 +289,16 @@ run_gate cargo test -p deployment-tests --locked --test gate76_installer \
 
 # Build release-mode inputs, then copy/sign and verify the exact production
 # bytes. Raw Cargo outputs are never passed to the production coordinator.
+# The supervisor embeds the commit it is built from; a tree with local changes
+# or untracked files would make that commit wrong, so refuse it.
+if [[ -n "$(git -C "$kernel_root" status --porcelain)" ]]; then
+  echo "error: the signed release records its Git commit; commit or remove local changes first" >&2
+  exit 1
+fi
+source_revision="$(git -C "$kernel_root" rev-parse HEAD)"
 TEKES_SELECTED_BUILD="$TEKES_SLICE10_RELEASE_VERSION" \
 TEKES_SELECTOR_CONFORMANCE_SHA256="$TEKES_SELECTOR_CONFORMANCE_SHA256" \
+TEKES_SOURCE_REVISION="$source_revision" \
   cargo build --workspace --all-targets --release --locked
 : "${TEKES_SLICE10_SIGNING_IDENTITY:?set the distribution signing identity}"
 : "${TEKES_SLICE10_TEAM_ID:?set the ten-character signing team id}"
@@ -310,7 +318,8 @@ packaging/macos/build-signed-release.sh \
   --helper "$kernel_target_dir/release/tekes-helper" \
   --conformance "$selector_conformance" \
   --output "$signed_release" \
-  --workspace-service "$kernel_target_dir/release/tekes-workspace-service"
+  --workspace-service "$kernel_target_dir/release/tekes-workspace-service" \
+  --source-revision "$source_revision"
 export TEKES_SLICE10_SELECTOR_BIN="$signed_release/selector/bin/tekes-selector"
 export TEKES_SLICE10_SUPERVISOR_APP="$signed_release/bundle/apps/TekesKernelSupervisor.app"
 export TEKES_SLICE10_SUPERVISOR_BIN="$TEKES_SLICE10_SUPERVISOR_APP/Contents/MacOS/tekes-supervisor"

@@ -1,7 +1,7 @@
 # TekesKernel: overview and reading path
 
 TekesKernel records task history as durable events, executes tasks in workers, and manages their runtime through the supervisor.
-Start with how a thread progresses, then open the crate responsible for a particular step. You do not need to read the old numbered chapters in order.
+Start with how a thread progresses, then open the crate responsible for a particular step. Old numbered-chapter references are mapped in [history/document-map.md](history/document-map.md).
 
 ## First reading
 
@@ -83,7 +83,8 @@ understand ordering, and the linked source to check a specific branch. The
 | What context does the model receive? | [Context projection](data/context.md) |
 | Where are the Client and Web boundaries? | [Client](interfaces/client.md), [Web](interfaces/web.md), [Exact contracts](../spec/README.md) |
 | Where should I enter the source? | [Code architecture](architecture/README.md) → [Crate map](architecture/crates.md) → each crate's docs |
-| Which behaviors have been verified? | [Verification entry point](verification/README.md) |
+| Which behaviors have been verified? | [Verification entry point](verification/README.md), [DeepSeek cost benchmark](benchmarks/deepseek-cost-2026-10.md) |
+| How is the Kernel launched and integrated? | [Built-in launch](builtin-launch.md), [Workspace service endpoint](workspace-service-wse.md), [Workspace Client integration](workspace-client-integration.md) (response compatibility verified; Client endpoint adaptation and UI acceptance remain open) |
 | Why was it designed this way? | [History and decisions](history/README.md) |
 
 The following sections explain the system's core model.
@@ -110,7 +111,8 @@ Model the agent with exactly two primitives:
   exact-retry receipts that cannot be reproduced, but it is never semantic
   thread history or worker replay input.
 
-Consequences, each of which replaces a subsystem in the current stack:
+Consequences, each of which replaces a subsystem of the predecessor
+(TekesRuntime/TekesAppServer) stack:
 
 | Rule | Replaces |
 |---|---|
