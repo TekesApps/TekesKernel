@@ -1087,7 +1087,7 @@ fn internal(message: impl ToString) -> ProductionRouteFailure {
 fn internal_profile(error: profile::ProfileError) -> ProductionRouteFailure {
     internal(error)
 }
-fn internal_daemon(error: crate::daemon::DaemonError) -> ProductionRouteFailure {
+fn internal_daemon(error: crate::host_runtime::DaemonError) -> ProductionRouteFailure {
     internal(error)
 }
 fn stale(expected: u64, actual: u64) -> ProductionRouteFailure {

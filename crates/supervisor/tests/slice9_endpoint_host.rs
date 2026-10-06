@@ -1506,7 +1506,7 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
     let fork_genesis: Value =
         serde_json::from_str(fork_ledger.lines().next().unwrap()).expect("fork genesis");
     assert_eq!(fork_genesis["identity_profile"], "general");
-    // `daemon::prepare_storage` runs this sweep before any endpoint exists.
+    // `host_runtime::prepare_storage` runs this sweep before any endpoint exists.
     let swept = store::ThreadStore::open(root.path())
         .expect("store")
         .sweep_ephemeral()

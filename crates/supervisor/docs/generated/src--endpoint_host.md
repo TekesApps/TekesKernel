@@ -966,7 +966,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `required_string` | [894](../../src/endpoint_host.rs#L894), [895](../../src/endpoint_host.rs#L895), [896](../../src/endpoint_host.rs#L896) | [tekes-supervisor::endpoint_host::required_string](../../src/endpoint_host.rs#L2108) |
 | `relocate_workspace` | `store::NamedLock::try_exclusive(             crate::process_host::workspace_quiescence_lock_path(&self.storage_root, workspace_id),         )         .map_err` | [899](../../src/endpoint_host.rs#L899) | receiver-type-required |
 | `relocate_workspace` | `store::NamedLock::try_exclusive` | [899](../../src/endpoint_host.rs#L899) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [900](../../src/endpoint_host.rs#L900) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L5376) |
+| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [900](../../src/endpoint_host.rs#L900) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L5069) |
 | `relocate_workspace` | `EndpointRpcFailure::new` | [903](../../src/endpoint_host.rs#L903) | [tekes-supervisor::endpoint_host::EndpointRpcFailure::new](../../src/endpoint_host.rs#L2672) |
 | `relocate_workspace` | `internal_failure` | [908](../../src/endpoint_host.rs#L908) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2092) |
 | `relocate_workspace` | `(self.clock)().map_err` | [910](../../src/endpoint_host.rs#L910) | receiver-type-required |

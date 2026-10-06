@@ -1,5 +1,6 @@
-import os,json,tempfile,subprocess,select,secrets,urllib.request,base64
+import os,json,tempfile,subprocess,select,secrets,urllib.request,base64,socket
 from pathlib import Path
+from urllib.parse import urlparse
 repo=Path(__file__).resolve().parent.parent
 with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
     launch=Path(root)/'launch.json'
@@ -22,7 +23,7 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
     mock_provider=http.server.ThreadingHTTPServer(('127.0.0.1',0),MockProvider)
     threading.Thread(target=mock_provider.serve_forever,daemon=True).start()
     providers['providers'][0]['endpoint']=f'http://127.0.0.1:{mock_provider.server_port}/v1'
-    launch.write_text(json.dumps(dict(format=1,root=root,worker=str(repo/'target/debug/tekes-worker'),listen='127.0.0.1:0',providers=providers,credential_bindings={'openai-main':'TEKES_BUILTIN_TEST_KEY'})))
+    launch.write_text(json.dumps(dict(format=1,root=root,worker=str(repo/'target/debug/tekes-worker'),listen='127.0.0.1:0',web_listen='127.0.0.1:0',providers=providers,credential_bindings={'openai-main':'TEKES_BUILTIN_TEST_KEY'})))
     token=secrets.token_bytes(32)
     env=os.environ.copy();env['HOME']=root;env['TEKES_KERNEL_ENDPOINT_TOKEN']=token.hex();env['TEKES_BUILTIN_TEST_KEY']='synthetic-builtin-test-key'
     command=[str(repo/'target/debug/tekes-supervisor'),'--built-in',str(launch)]
@@ -62,6 +63,14 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
         try:
             with urllib.request.urlopen(req,timeout=5) as response: assert response.status in (200,204); print('HEALTH_READY',response.status)
         except urllib.error.HTTPError as error: raise AssertionError(f'health failed: {error.code}') from None
+        web=urlparse(ready['webUrl']); assert web.hostname=='127.0.0.1' and web.port,ready
+        with urllib.request.urlopen(ready['webUrl'],timeout=5) as response:
+            assert response.status==200 and b'<' in response.read(),response.status
+        sock=socket.create_connection((web.hostname,web.port),timeout=5)
+        sock.sendall(f'GET / HTTP/1.1\r\nHost: localhost:{web.port}\r\nConnection: close\r\n\r\n'.encode())
+        status=sock.recv(64).split(b'\r\n')[0]; sock.close()
+        assert not status.startswith(b'HTTP/1.1 2'),status
+        print('WEB_CLIENT_SERVED')
         def call(method,payload):
             rpc=secrets.token_hex(8)
             body=json.dumps({'type':'client-request','rpcId':rpc,'method':method,'payload':payload}).encode()

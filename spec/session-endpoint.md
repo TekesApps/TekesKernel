@@ -664,18 +664,11 @@ a remotely reachable listener.
 Health routes are the only unauthenticated paths and expose no inventory.
 Every `/api/*` HTTP request and WebSocket upgrade requires
 `Authorization: Bearer <token>`, where token is 32 random bytes encoded
-base64url without padding, generated once per installation and stored in the
-login Keychain under the exact generic-password handle
-`service=com.tekes.kernel.endpoint`, `account=loopback-bearer`, access group
-`<InstallIdentity.team_id>.com.tekes.shared.endpoint` as frozen by
-deployment; every accepted bundle team must equal that immutable identity.
-The deployment fixture uses the non-production test team id
-`TEKESAPP01`. The designated-requirement signed Tekes Client and supervisor
-each carry that same effective access-group entitlement and read the item
-directly; selector never reads,
-brokers, logs, or passes it, and helper/worker processes never receive it. It is
-never written under the storage root, plist, argv, environment, discovery
-material, or support bundle. The listener performs
+base64url without padding. The launching application generates it and passes
+the same bytes as 64 hexadecimal characters in `TEKES_KERNEL_ENDPOINT_TOKEN`
+([Application-owned launch](../docs/builtin-launch.md)); it is process-scoped.
+Helper and worker processes never receive it, and it is never written under
+the storage root or into argv, logs or discovery material. The listener performs
 a constant-time comparison after headers and before body dispatch or upgrade.
 Missing, malformed, or wrong credentials return the exact 401 row below.
 Authentication precedes browser-Origin policy; authenticated forbidden origins

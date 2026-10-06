@@ -1,7 +1,7 @@
 //! Application-owned child process entry point. stdin EOF ends the process;
 //! stdout emits one readiness record. The launch file contains no credentials.
 use crate::{
-    daemon, endpoint_carrier::ProductionCarrierAssembly, process_host::ProductionProcessHost,
+    endpoint_carrier::ProductionCarrierAssembly, host_runtime, process_host::ProductionProcessHost,
 };
 use serde::Deserialize;
 use std::os::unix::fs::{DirBuilderExt, OpenOptionsExt};
@@ -24,6 +24,9 @@ pub struct BuiltInLaunch {
     pub listen: SocketAddr,
     pub providers: profile::ProvidersConfig,
     pub credential_bindings: BTreeMap<String, String>,
+    /// Loopback address for the optional browser Web Client; absent means off.
+    #[serde(default)]
+    pub web_listen: Option<SocketAddr>,
 }
 
 pub async fn run(path: PathBuf) -> Result<()> {
@@ -32,6 +35,9 @@ pub async fn run(path: PathBuf) -> Result<()> {
         || !launch.root.is_absolute()
         || !launch.worker.is_absolute()
         || !launch.listen.ip().is_loopback()
+        || launch
+            .web_listen
+            .is_some_and(|address| !address.ip().is_loopback())
     {
         return Err(io::Error::other("invalid built-in launch configuration").into());
     }
@@ -60,7 +66,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
     let secrets = Arc::new(provider::EnvironmentSecretStore::capture(
         &launch.credential_bindings,
     )?);
-    let bearer = daemon::endpoint_token_from_environment()?;
+    let bearer = host_runtime::endpoint_token_from_environment()?;
     let storage = launch.root.join("threads");
     std::fs::DirBuilder::new()
         .recursive(true)
@@ -73,8 +79,8 @@ pub async fn run(path: PathBuf) -> Result<()> {
         .mode(0o600)
         .custom_flags(libc::O_NOFOLLOW)
         .open(storage.join(".root-lock"))?;
-    let _lock = daemon::ProductionRootLock::acquire(&storage)?;
-    daemon::preflight_storage(&storage)?;
+    let _lock = host_runtime::ProductionRootLock::acquire(&storage)?;
+    host_runtime::preflight_storage(&storage)?;
     let repository = profile::ConfigRepository::open(&launch.root)?;
     let current = repository.providers()?;
     let mut providers = launch.providers;
@@ -125,7 +131,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
         None,
     )?;
     process.preflight_mandatory_authorities()?;
-    let unary = daemon::assemble_application_endpoint_host(
+    let unary = host_runtime::assemble_application_endpoint_host(
         &launch.root,
         endpoint::SessionHostDescription {
             version: build.into(),
@@ -137,13 +143,18 @@ pub async fn run(path: PathBuf) -> Result<()> {
             can_open_path: false,
         },
         Arc::new(|| {
-            daemon::system_timestamp().map_err(crate::endpoint_host::EndpointAssemblyError::Clock)
+            host_runtime::system_timestamp()
+                .map_err(crate::endpoint_host::EndpointAssemblyError::Clock)
         }),
         &user_agent_dir,
         Arc::clone(&process),
     )?;
     let listener = tokio::net::TcpListener::bind(launch.listen).await?;
     let address = listener.local_addr()?;
+    let web_listener = match launch.web_listen {
+        Some(web_listen) => Some(tokio::net::TcpListener::bind(web_listen).await?),
+        None => None,
+    };
     let config = transport::TransportConfig::loopback(address, transport::BearerToken::new(bearer));
     let assembly =
         ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?
@@ -154,16 +165,34 @@ pub async fn run(path: PathBuf) -> Result<()> {
     assembly.finish_recovery()?;
     process.start_periodic_sweep();
     process.start_schedule_timer()?;
-    daemon::install_termination_handler()?;
+    host_runtime::install_termination_handler()?;
     let server = assembly.into_server();
     let handle = server.handle();
-    println!(
-        "{}",
-        serde_json::json!({"type":"ready","protocolVersion":3,"url":format!("http://{address}"),"pid":std::process::id()})
-    );
+    // The Web Client checks Host and Origin against its configured address,
+    // so configure it with the bound address rather than a requested port 0.
+    let web = match web_listener {
+        Some(listener) => {
+            let bound = listener.local_addr()?;
+            let service = server.web_client(transport::WebClientConfig::loopback(bound))?;
+            Some((service, listener, bound))
+        }
+        None => None,
+    };
+    let mut ready = serde_json::json!({"type":"ready","protocolVersion":3,"url":format!("http://{address}"),"pid":std::process::id()});
+    if let Some((_, _, bound)) = &web {
+        ready["webUrl"] = format!("http://{bound}/").into();
+    }
+    println!("{ready}");
     io::stdout().flush()?;
     let serve = server.serve(listener);
     tokio::pin!(serve);
+    let web_serve = async move {
+        match web {
+            Some((service, listener, _)) => service.serve(listener).await,
+            None => std::future::pending().await,
+        }
+    };
+    tokio::pin!(web_serve);
     // A server failure must be able to exit even while the parent keeps stdin
     // open. Tokio waits for blocking tasks on runtime drop, so the lifetime
     // watcher must not occupy its blocking pool.
@@ -171,10 +200,17 @@ pub async fn run(path: PathBuf) -> Result<()> {
     std::thread::Builder::new()
         .name("launcher-lifetime".into())
         .spawn(move || {
-            let _ = lifetime_sender.send(daemon::wait_for_launcher_shutdown(0));
+            let _ = lifetime_sender.send(host_runtime::wait_for_launcher_shutdown(0));
         })?;
     tokio::select! {
         result = &mut serve => { process.shutdown(); result?; }
+        result = &mut web_serve => {
+            // Either listener failing ends the shared lifetime.
+            handle.begin_drain();
+            process.shutdown();
+            serve.await?;
+            result?;
+        }
         result = lifetime => {
             result??;
             handle.begin_drain();
