@@ -35,11 +35,12 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/workspace-service/src/process.rs](../../src/process.rs) | 5 | 61 | [Symbols and calls](src--process.md) |
 | [crates/workspace-service/src/turn.rs](../../src/turn.rs) | 6 | 273 | [Symbols and calls](src--turn.md) |
 | [crates/workspace-service/src/write.rs](../../src/write.rs) | 5 | 104 | [Symbols and calls](src--write.md) |
-| [crates/workspace-service/tests/process_files.rs](../../tests/process_files.rs) | 8 | 150 | `inventory.json` |
+| [crates/workspace-service/tests/process_files.rs](../../tests/process_files.rs) | 7 | 142 | `inventory.json` |
 | [crates/workspace-service/tests/process_git.rs](../../tests/process_git.rs) | 9 | 160 | `inventory.json` |
-| [crates/workspace-service/tests/process_mutations.rs](../../tests/process_mutations.rs) | 9 | 197 | `inventory.json` |
+| [crates/workspace-service/tests/process_mutations.rs](../../tests/process_mutations.rs) | 9 | 198 | `inventory.json` |
 | [crates/workspace-service/tests/process_turn.rs](../../tests/process_turn.rs) | 12 | 188 | `inventory.json` |
 | [crates/workspace-service/tests/process_write.rs](../../tests/process_write.rs) | 7 | 97 | `inventory.json` |
+| [crates/workspace-service/tests/support/mod.rs](../../tests/support/mod.rs) | 1 | 8 | `inventory.json` |
 
 ## Cross-file direct calls
 
