@@ -17,6 +17,7 @@ or a live/benchmark runner that spends provider tokens.
 |---|---|
 | `check-*.py` | Validate one fixture corpus each (byte-canonical JSON, closed tables, manifest agreement). No arguments. |
 | `test_cache_corpus.py`, `test_agent_eval_audit.py`, `test_agent_eval_scored.py`, `test-audit-live-python-task.py`, `test-audit-live-task-validation.py` | Unit tests for the live-run audit and scoring helpers. |
+| `packaging/macos/tests/test_*.py` | Unit tests for the macOS release verifier and product assembler that need no signing identity. |
 | `code-architecture.py --check` and `--links` | Verifies the generated architecture atlas. Needs `pip install -r scripts/architecture-requirements.txt`. Run without `--check` to regenerate after code changes. |
 
 ## Narrower gate runners
