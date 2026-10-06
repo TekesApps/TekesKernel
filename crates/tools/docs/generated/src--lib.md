@@ -110,6 +110,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `tools::helper` | `private` |  |
 | `tools::hook` | `private` |  |
 | `tools::lifecycle_hook` | `private` |  |
+| `tools::linux_sandbox` | `private` | #[cfg(all(     target_os = "linux",     any(target_arch = "x86_64", target_arch = "aarch64") ))] |
 | `tools::pipeline` | `private` |  |
 | `tools::runtime_backends` | `private` |  |
 | `tools::sandbox` | `private` |  |

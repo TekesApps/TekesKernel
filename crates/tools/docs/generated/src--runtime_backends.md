@@ -513,7 +513,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `disabled` | `Ok` | [506](../../src/runtime_backends.rs#L506) | external-constructor-callback-or-unresolved |
 | `disabled` | `"per-job sandbox unavailable in MCP-only App Sandbox host".to_owned` | [510](../../src/runtime_backends.rs#L510) | receiver-type-required |
 | `runner_command` | `sandbox_command(effective_policy, &self.probe, &self.executable)             .map_err` | [522](../../src/runtime_backends.rs#L522) | receiver-type-required |
-| `runner_command` | `sandbox_command` | [522](../../src/runtime_backends.rs#L522) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L258) |
+| `runner_command` | `sandbox_command` | [522](../../src/runtime_backends.rs#L522) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L242) |
 | `runner_command` | `BackendFailure::Unavailable` | [523](../../src/runtime_backends.rs#L523) | external-constructor-callback-or-unresolved |
 | `runner_command` | `error.to_string` | [523](../../src/runtime_backends.rs#L523) | receiver-type-required |
 | `new` | `Err` | [537](../../src/runtime_backends.rs#L537), [548](../../src/runtime_backends.rs#L548) | external-constructor-callback-or-unresolved |
