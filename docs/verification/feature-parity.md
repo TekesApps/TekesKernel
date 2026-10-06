@@ -77,7 +77,7 @@ catalog MUST omit them; an empty success response is not a substitute.
 | Feedback list/put/delete | Client-owned local product metadata | **intentional retirement** | Feedback is not AS durable truth and no empty-success endpoint placeholder exists |
 | Git Changes/branch/commit/PR Client surface | Client-local Git UI and model-facing `shell` | **intentional retirement for the built-in local Kernel** | Remote Kernel Git UI/RPC parity is not claimed and no remote Git extension is advertised |
 | Usage summary and cache attribution queries | durable usage ledger projections plus `usage.v1` | **aligned** | Gates 113–116 close archived reads, exact route attribution, decimal aggregation and corrupt/unavailable behavior |
-| Thread debug and diagnostics query | bounded redacted Slice-10 support bundle and readiness diagnostics | **intentional replacement** | The predecessor's interactive debug query shapes are absent |
+| Thread debug and diagnostics query | readiness diagnostics; the Slice-10 support bundle was removed with the launchd deployment | **intentional replacement** | The predecessor's interactive debug query shapes are absent |
 | Legacy freeze/read, offload/restore, context query, direct shell and compatibility aliases | v2 history/mux, always-file folders, fork/prompt/recovery and model-facing shell | **intentional replacement** | Gate 115 fixture-locks every predecessor route as base, implemented, replaced or retired; no compatibility alias returns an empty success |
 
 ## Skill package compatibility

@@ -12,7 +12,6 @@
 | `live_oauth` | test | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) |
 | `secret_store` | test | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) |
 | `shell` | test | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) |
-| `slice10_daemon` | test | [crates/supervisor/tests/slice10_daemon.rs](../../tests/slice10_daemon.rs) |
 | `slice13_management` | test | [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) |
 | `slice14a_reference_package` | test | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) |
 | `slice14f_common_routes` | test | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) |
@@ -53,23 +52,22 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/supervisor/examples/slice9_production_client_harness_server.rs](../../examples/slice9_production_client_harness_server.rs) | 18 | 117 | `inventory.json` |
-| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 120 | [Symbols and calls](src--builtin.md) |
+| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 132 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 108 | 849 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 136 | 1567 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 25 | 339 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
-| [crates/supervisor/src/daemon.rs](../../src/daemon.rs) | 95 | 920 | [Symbols and calls](src--daemon.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 7 | 37 | [Symbols and calls](src--dynamic_bindings.md) |
 | [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 108 | 1057 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 150 | 1019 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
+| [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 48 | 409 | [Symbols and calls](src--host_runtime.md) |
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 183 | [Symbols and calls](src--lib.md) |
-| [crates/supervisor/src/main.rs](../../src/main.rs) | 5 | 125 | [Symbols and calls](src--main.md) |
+| [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 43 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 179 | 1928 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/observability.rs](../../src/observability.rs) | 73 | 568 | [Symbols and calls](src--observability.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 275 | 5263 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 267 | 5018 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 14 | 1796 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 82 | 817 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
@@ -78,7 +76,6 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) | 3 | 106 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 7 | 62 | `inventory.json` |
 | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 28 | 278 | `inventory.json` |
-| [crates/supervisor/tests/slice10_daemon.rs](../../tests/slice10_daemon.rs) | 6 | 258 | `inventory.json` |
 | [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 306 | `inventory.json` |
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 117 | `inventory.json` |
@@ -99,56 +96,50 @@ flowchart LR
   m3["client_extensions.rs"]
   m4["context_usage.rs"]
   m5["continuation_journal.rs"]
-  m6["daemon.rs"]
-  m7["dynamic_bindings.rs"]
-  m8["endpoint_carrier.rs"]
-  m9["endpoint_host.rs"]
-  m10["file_leases.rs"]
+  m6["dynamic_bindings.rs"]
+  m7["endpoint_carrier.rs"]
+  m8["endpoint_host.rs"]
+  m9["file_leases.rs"]
+  m10["host_runtime.rs"]
   m11["lib.rs"]
   m12["main.rs"]
   m13["mcp_continuation.rs"]
   m14["mcp_runtime.rs"]
-  m15["observability.rs"]
-  m16["process_host.rs"]
-  m17["production_tool_control.rs"]
-  m18["resource_capability.rs"]
-  m19["tool_control.rs"]
-  m20["workspace_routes.rs"]
-  m0 -->|"1"| m8
-  m0 -->|"2"| m9
-  m0 -->|"1"| m20
-  m1 -->|"7"| m6
-  m1 -->|"1"| m8
-  m1 -->|"1"| m16
-  m2 -->|"1"| m9
-  m3 -->|"1"| m9
+  m15["process_host.rs"]
+  m16["production_tool_control.rs"]
+  m17["resource_capability.rs"]
+  m18["tool_control.rs"]
+  m19["workspace_routes.rs"]
+  m0 -->|"1"| m7
+  m0 -->|"2"| m8
+  m0 -->|"1"| m19
+  m1 -->|"1"| m7
+  m1 -->|"7"| m10
+  m1 -->|"1"| m15
+  m2 -->|"1"| m8
+  m3 -->|"1"| m8
   m3 -->|"1"| m14
-  m3 -->|"2"| m18
-  m6 -->|"2"| m2
-  m6 -->|"1"| m3
-  m6 -->|"1"| m8
-  m6 -->|"3"| m9
-  m6 -->|"6"| m15
-  m6 -->|"1"| m16
-  m6 -->|"1"| m18
-  m6 -->|"1"| m20
-  m8 -->|"2"| m4
-  m8 -->|"1"| m10
-  m9 -->|"1"| m16
+  m3 -->|"2"| m17
+  m7 -->|"2"| m4
+  m7 -->|"1"| m9
+  m8 -->|"1"| m15
+  m10 -->|"2"| m2
+  m10 -->|"1"| m3
+  m10 -->|"3"| m8
+  m10 -->|"1"| m17
+  m10 -->|"1"| m19
   m12 -->|"1"| m1
-  m12 -->|"3"| m6
-  m12 -->|"1"| m15
   m14 -->|"2"| m5
-  m14 -->|"1"| m9
+  m14 -->|"1"| m8
   m14 -->|"2"| m13
-  m16 -->|"178"| m6
-  m16 -->|"3"| m7
-  m16 -->|"1"| m9
-  m16 -->|"1"| m11
-  m16 -->|"1"| m14
-  m16 -->|"6"| m17
-  m16 -->|"1"| m19
-  m17 -->|"1"| m19
-  m18 -->|"13"| m9
-  m20 -->|"1"| m9
+  m15 -->|"3"| m6
+  m15 -->|"1"| m8
+  m15 -->|"177"| m10
+  m15 -->|"1"| m11
+  m15 -->|"1"| m14
+  m15 -->|"6"| m16
+  m15 -->|"1"| m18
+  m16 -->|"1"| m18
+  m17 -->|"13"| m8
+  m19 -->|"1"| m8
 ```

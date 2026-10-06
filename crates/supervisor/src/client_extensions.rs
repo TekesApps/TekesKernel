@@ -2978,8 +2978,8 @@ mod tests {
 
     use endpoint::{EndpointHost, SessionHostDescription};
 
-    use crate::daemon::assemble_production_endpoint_host;
     use crate::endpoint_host::{SessionDeliveryAuthority, SessionInputAdmissionAuthority};
+    use crate::host_runtime::assemble_production_endpoint_host;
 
     use super::*;
 

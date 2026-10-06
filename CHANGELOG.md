@@ -6,13 +6,18 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-### Deprecated
-- The launchd deployment (LaunchAgent, product installer and selector) is
-  retired. The host application launches the Kernel and supplies its endpoint
-  token and credentials through the environment, as in
-  [Application-owned launch](docs/builtin-launch.md). The deployment contract,
-  packaging and UAT documents are marked retired; the code stays until it is
-  removed ([#28](https://github.com/TekesApps/TekesKernel/issues/28)).
+### Removed
+- The launchd deployment. The host application launches the Kernel and
+  supplies its endpoint token and credentials through the environment, as in
+  [Application-owned launch](docs/builtin-launch.md). Removed: the `selector`,
+  `product-installer` and `deployment-tests` crates, the signed release and UAT
+  packaging, the deployment fixtures and `ci-slice10.sh`; and from
+  `tekes-supervisor` the `--install-root` daemon mode, `support-bundle`,
+  `--web-launch-url`, `--describe-web-client`, and the operational metrics,
+  access log and support bundle that only the daemon wrote.
+  `--describe-build` no longer reports `authority_registry_sha256`, and the
+  storage preflight no longer creates `credential-state/`
+  ([#28](https://github.com/TekesApps/TekesKernel/issues/28)).
 
 ### Added
 - Linux tool sandbox. The `linux-landlock-seccomp` backend now applies its
@@ -23,6 +28,13 @@ workspace version in `Cargo.toml`.
   Linux instead of being refused. `loopback` network is refused on Linux
   because neither mechanism can enforce it
   ([#25](https://github.com/TekesApps/TekesKernel/issues/25)).
+- `web_listen` in the built-in launch document starts the browser Web Client on
+  a loopback address and adds `webUrl` to the readiness record. It is off when
+  omitted.
+
+### Fixed
+- Built-in launch now starts on Linux. The storage preflight required APFS on
+  every platform; outside macOS it now relies on the local-filesystem probe.
 
 ## 0.2.2 — 2026-10-06
 

@@ -9,30 +9,18 @@ It is disabled by default.
 
 ## Runtime boundary
 
-The native endpoint remains fixed at `127.0.0.1:7347` and owns only its
-existing health and `/api` routes. Constructing or starting the native
-`TransportServer` does not create a browser listener, and `/web/*` on the
-native listener remains absent.
+The native endpoint owns only its existing health and `/api` routes.
+Constructing or starting the native `TransportServer` does not create a browser
+listener, and `/web/*` on the native listener remains absent.
 
-This switch belonged to the retired launchd deployment; the application-owned
-launch does not currently start the Web listener. An operator could explicitly
-add this ordered suffix to the resident selector `serve` command:
-
-```text
---web-listen 127.0.0.1:7357
-```
-
-The selector passes that value to the selected supervisor. The supervisor
-binds `127.0.0.1:7357` before reporting bootstrap success and runs an optional
-`WebClientService` beside the native listener. If the suffix is absent, no Web
-socket is bound and no Web task is started. Either enabled listener failing
-causes the shared supervisor lifetime to drain; an ordinary shutdown drains
-both.
-
-The shipped LaunchAgent intentionally omits the suffix, so installation and
-upgrade preserve the default-off posture. A future Tekes settings action can
-choose the enabled selector invocation without changing the Session Endpoint
-contract.
+The application turns the Web Client on with the optional `web_listen` field of
+the [launch document](../builtin-launch.md), for example `"127.0.0.1:7357"` or
+`"127.0.0.1:0"` for an ephemeral port. The supervisor binds that loopback
+address before it reports readiness, adds `webUrl` to the stdout readiness
+record, and runs a `WebClientService` beside the native listener, configured
+with the bound address. Without `web_listen`, no Web socket is bound and no Web
+task is started. Either listener failing drains the shared supervisor
+lifetime; an ordinary shutdown drains both.
 
 ## Browser surface
 

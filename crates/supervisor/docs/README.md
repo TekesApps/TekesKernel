@@ -8,20 +8,19 @@ The host owns worker lifecycle, client management, dynamic bindings, credentials
 
 | Module / file group | Responsibility |
 |---|---|
-| `main / daemon` | CLI dispatch, installation identity, listeners, draining and service startup |
+| `main / builtin / host_runtime` | CLI dispatch, application-owned launch, storage preflight and root lock, endpoint host assembly, listeners and draining |
 | `lib / process_host` | Snapshot launch boundary, worker management, control frames, sweep and delivery |
 | `endpoint_host / endpoint_carrier` | Unary management, v3 streams and carrier wiring |
 | `client_admin / client_extensions / resource_capability` | Configuration, extension management and resource capabilities |
 | `tool_control / production_tool_control` | Internal tool RPC, idempotent receipts, child tasks and jobs |
 | `dynamic_bindings / mcp_runtime` | Launch bindings over the MCP catalog, MCP management and execution (including the `oauth` binding exchange through `SecretAccess`) |
 | `continuation_journal / mcp_continuation` | Durable remote tool-continuation journal and the MCP task continuation (bind/poll/update/cancel) behind worker-control durable control |
-| `builtin / observability` | Application-owned launch, logs, metrics and health |
 
 ## Interfaces and calls
 
-Main entry points: daemon::run_daemon, ProductionProcessHost, ProductionCarrierAssembly, launch_profiled_worker_with_secret_store_and_binding_resolver.
+Main entry points: builtin::run, ProductionProcessHost, ProductionCarrierAssembly, launch_profiled_worker_with_secret_store_and_binding_resolver.
 
-main::run_production → run_daemon → run_daemon_inner → ProductionProcessHost / endpoint assembly → TransportServer; inputs and worker lifecycle pass through process_host.
+main (`--built-in`) → builtin::run → ProductionProcessHost / host_runtime endpoint assembly → TransportServer; inputs and worker lifecycle pass through process_host.
 
 For complete declarations (including private functions), pub/re-export paths and call sites, see the [generated index](generated/index.md). Each src page contains grouped function call graphs; cross-file graphs live in the package index.
 

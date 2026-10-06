@@ -13,8 +13,8 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [workspace-service::Failure](../../src/lib.rs#L18) | `pub` | not a function |
 | [workspace-service::FilesRequest](../../src/lib.rs#L45) | `pub` | not a function |
 | [workspace-service::file_snapshot](../../src/lib.rs#L83) | `pub` | [tekes-supervisor::file_leases::WorkspaceFileTransfer::prepare](../../../supervisor/src/file_leases.rs#L39) |
-| [workspace-service::file_text_page](../../src/lib.rs#L128) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::client_file_page](../../../supervisor/src/process_host.rs#L1052) |
-| [workspace-service::file_byte_page](../../src/lib.rs#L199) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::client_file_page](../../../supervisor/src/process_host.rs#L1052); [workspace-service::observation::FileObservations::register](../../src/observation.rs#L13); [workspace-service::observation::FileObservations::poll](../../src/observation.rs#L30) |
+| [workspace-service::file_text_page](../../src/lib.rs#L128) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::client_file_page](../../../supervisor/src/process_host.rs#L1044) |
+| [workspace-service::file_byte_page](../../src/lib.rs#L199) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::client_file_page](../../../supervisor/src/process_host.rs#L1044); [workspace-service::observation::FileObservations::register](../../src/observation.rs#L13); [workspace-service::observation::FileObservations::poll](../../src/observation.rs#L30) |
 | [workspace-service::files](../../src/lib.rs#L295) | `pub` | [workspace-service::main::main](../../src/main.rs#L13) |
 | [workspace-service::observation::FileObservations](../../src/observation.rs#L8) | `pub` | not a function |
 | [workspace-service::observation::FileObservations::register](../../src/observation.rs#L13) | `pub` | no resolved direct caller |

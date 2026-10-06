@@ -45,9 +45,6 @@ goals/
 tool-state/
   artifact-versions.jsonl      # apply_patch version/SHA reservations + commits
   artifact-versions.lock       # cross-process serialization for that log
-credential-state/
-  .lock                        # serializes provider-secret generation floors
-  provider-secret-generations.json # durable anti-rollback authority; no secrets
 jobs/
   <job-id>/                    # durable ownerless JobBroker records/output tails;
                                # supervisor-created 0700, never a thread folder
@@ -117,7 +114,7 @@ The worker never reads workspace files — it receives the
 resolved cwd/writable-roots set as spawn config (D-36).
 
 `memory/log.jsonl`, `goals/log.jsonl`, `tool-state/artifact-versions.jsonl`,
-`credential-state/provider-secret-generations.json`, and the records below
+and the records below
 `jobs/` are D-1 named durable authorities,
 not cache. Tool transactions append canonical records under their adjacent
 named lock, sync each record before returning success, and deduplicate by the

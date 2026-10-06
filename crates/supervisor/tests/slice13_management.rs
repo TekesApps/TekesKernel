@@ -24,8 +24,8 @@ use tekes_supervisor::client_extensions::{
     SCHEDULE_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS, THREAD_SEARCH_METHODS, TOOL_METHODS,
     USAGE_METHODS,
 };
-use tekes_supervisor::daemon::assemble_production_endpoint_host;
 use tekes_supervisor::endpoint_host::TEKES_UNARY_ROUTES;
+use tekes_supervisor::host_runtime::assemble_production_endpoint_host;
 use tekes_supervisor::mcp_runtime::{
     MCP_MANAGEMENT_METHODS, McpRuntime, PluginMcpResolver, PluginStoreMcpResolver,
 };

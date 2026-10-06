@@ -33,12 +33,15 @@ The launch document is non-secret JSON:
   "worker": "/absolute/bin/tekes-worker",
   "listen": "127.0.0.1:0",
   "providers": {"format": 1, "revision": 1, "providers": []},
-  "credential_bindings": {}
+  "credential_bindings": {},
+  "web_listen": "127.0.0.1:0"
 }
 ```
 
 `format` must be 1, `root` and `worker` must be absolute paths, and `listen`
-must be a loopback address. Unknown fields are rejected. `tekes-helper` and
+must be a loopback address. The optional `web_listen` starts the browser
+[Web Client](interfaces/web.md) on a second loopback address; omit it to keep
+the Web Client off. Unknown fields are rejected. `tekes-helper` and
 `tekes-workspace-service` must be in the same directory as `worker`. `HOME`
 must be set; shared user skills are read from `$HOME/.agents`.
 
@@ -59,15 +62,15 @@ drain and shutdown; SIGTERM also requests shutdown. Exit code 64 means a usage
 error (wrong argument count) and 74 a startup or runtime failure.
 
 The first stdout line is a JSON readiness record containing `type: ready`,
-`protocolVersion: 3`, `url`, and `pid`. Use the reported URL, especially when
-requesting an ephemeral port. Health is `/health/ready`; unary requests are
+`protocolVersion: 3`, `url`, and `pid`, plus `webUrl` when `web_listen` is set.
+Use the reported URLs, especially when requesting an ephemeral port. Health is `/health/ready`; unary requests are
 `POST /api/{method}`, the multiplexed streams use `/api/remote.mux`, and
 file-change notifications use `GET /api/session.files.changes`. The
 authoritative protocol handshake is the WebSocket `ready` frame, not the stdout
 launch notification.
 
 The smoke test uses a temporary state directory and synthetic provider key. It
-verifies readiness, workspace/session creation, model selection and routability,
+verifies readiness, the Web Client listener, workspace/session creation, model selection and routability,
 WebSocket handshake and all five stream baselines, and parent-pipe shutdown. The
 Client contract check (it needs TekesClientKit, see above) compiles the
 TekesClientKit Swift contract sources and decodes/validates actual Kernel frames

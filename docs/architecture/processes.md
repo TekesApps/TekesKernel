@@ -27,7 +27,7 @@ flowchart TD
 
 | Process | Owner / entry | Important boundary |
 |---|---|---|
-| supervisor | [main](../../crates/supervisor/src/main.rs), [daemon](../../crates/supervisor/src/daemon.rs) | `--built-in` is the application-owned launch; `--install-root` selects the retired launchd daemon; every other invocation is a described sub-command (support bundle, build/web-client description) and there is no stdin control shell |
+| supervisor | [main](../../crates/supervisor/src/main.rs), [builtin](../../crates/supervisor/src/builtin.rs), [host_runtime](../../crates/supervisor/src/host_runtime.rs) | `--built-in` is the application-owned launch; `--models-available` and `--describe-build` print descriptions; there is no stdin control shell |
 | worker | [launch boundary](../../crates/supervisor/src/lib.rs), [process_host](../../crates/supervisor/src/process_host.rs), [worker main](../../crates/worker/src/main.rs) | Launch snapshot and credential FDs are separate from stdio control; the production handshake negotiates the one worker-control protocol version |
 | helper / shell | [helper main](../../crates/tools/src/bin/tekes-helper.rs), [helper](../../crates/tools/src/helper.rs), [backends](../../crates/tools/src/runtime_backends.rs) | The helper is a process; shell/external commands may create further child processes |
 | MCP | [supervisor MCP runtime](../../crates/supervisor/src/mcp_runtime.rs), [transport](../../crates/mcp/src/transport.rs) | The MCP client/pool runs in the host; local stdio servers are separate processes and HTTP servers are external |
@@ -37,7 +37,7 @@ flowchart TD
 ## Tasks, threads, and durable state
 
 `endpoint`, `transport` and `engine` are not additional resident processes. Tokio tasks, callbacks, threads and processes are identified separately;
-for example, the daemon's metrics task and launcher's lifetime watcher run inside the supervisor, while the worker's control-reading thread runs inside the worker.
+for example, the launcher-lifetime watcher runs inside the supervisor, while the worker's control-reading thread runs inside the worker.
 Do not infer scheduling from the number of participants in a sequence diagram.
 
 Runtime status requires lock/process facts; semantic history lives in the thread ledger. After the worker writes events, the supervisor projects them into the client carrier.

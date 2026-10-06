@@ -36,7 +36,6 @@ use worker_control::{
     encode_queue_transaction,
 };
 
-use crate::daemon::DaemonError;
 use crate::dynamic_bindings::resolve_worker_launch_bindings;
 use crate::endpoint_carrier::{
     LiveRespondAuthority, ProductionCarrierStreams, SupervisorSessionAuthority,
@@ -47,8 +46,8 @@ use crate::endpoint_host::{
     RuntimeProviderFailure, RuntimeProviderReadiness, RuntimeProviderStatus,
     SessionDeliveryAuthority,
 };
+use crate::host_runtime::DaemonError;
 use crate::mcp_runtime::McpRuntime;
-use crate::observability::{OperationalMetrics, ProductionAccessLog};
 use crate::production_tool_control::{
     ChildLaunchProof, DeliveryRequest, DynamicSupervisorAuthority, InterruptRequest,
     JobBrokerSupervisorAuthority, ParentReportProof, ProductionToolControlHandler,
@@ -90,7 +89,6 @@ impl SweepLedgerIdentity {
 #[derive(Debug)]
 struct SweepLedgerScan {
     identity: SweepLedgerIdentity,
-    needs_repair: bool,
     last_seq: u64,
     lifecycle: schema::LifecycleFacts,
     /// The line's thread id from its genesis.
@@ -443,9 +441,6 @@ pub struct ProductionProcessHost {
     max_provider_leases: AtomicU64,
     self_weak: Weak<ProductionProcessHost>,
     streams: Mutex<Option<ProductionCarrierStreams>>,
-    metrics: Mutex<Option<Arc<OperationalMetrics>>>,
-    observability: Mutex<Option<Arc<ProductionAccessLog>>>,
-    observed_tail_repairs: Mutex<HashSet<PathBuf>>,
     sweep_scans: Mutex<HashMap<PathBuf, Arc<SweepLedgerScan>>>,
     projection_repair_failures: Mutex<HashSet<String>>,
     context_projection_retries: Mutex<HashSet<String>>,
@@ -830,9 +825,6 @@ impl ProductionProcessHost {
             max_provider_leases: AtomicU64::new(1),
             self_weak: weak.clone(),
             streams: Mutex::new(None),
-            metrics: Mutex::new(None),
-            observability: Mutex::new(None),
-            observed_tail_repairs: Mutex::new(HashSet::new()),
             sweep_scans: Mutex::new(HashMap::new()),
             projection_repair_failures: Mutex::new(HashSet::new()),
             context_projection_retries: Mutex::new(HashSet::new()),
@@ -1524,47 +1516,6 @@ impl ProductionProcessHost {
         let running = self.live_sessions().contains(session_id);
         if let Err(error) = streams.publish_session_status(session_id, running) {
             eprintln!("process-host-session-status-failed: session={session_id} error={error}");
-            if let Some(observability) = self.observability() {
-                observability.record_owner_io_failure("session-status", session_id);
-            }
-        }
-    }
-
-    pub fn attach_metrics(&self, metrics: Arc<OperationalMetrics>) {
-        *self
-            .metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(metrics);
-        self.refresh_worker_metric();
-    }
-
-    pub fn attach_observability(&self, observability: Arc<ProductionAccessLog>) {
-        *self
-            .observability
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(observability);
-    }
-
-    fn metrics(&self) -> Option<Arc<OperationalMetrics>> {
-        self.metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .clone()
-    }
-
-    fn observability(&self) -> Option<Arc<ProductionAccessLog>> {
-        self.observability
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .clone()
-    }
-
-    fn record_barrier_latency(&self, started: Instant) {
-        if let Some(metrics) = self.metrics() {
-            metrics.set(
-                "barrier_latency_ms",
-                started.elapsed().as_secs_f64() * 1000.0,
-            );
         }
     }
 
@@ -1664,24 +1615,6 @@ impl ProductionProcessHost {
         Ok(())
     }
 
-    fn refresh_worker_metric(&self) {
-        let live = self
-            .workers
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .values()
-            .filter(|worker| worker.alive.load(Ordering::Acquire))
-            .count();
-        if let Some(metrics) = self
-            .metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .as_ref()
-        {
-            metrics.set("active_workers", live as f64);
-        }
-    }
-
     pub fn boot_sweep(&self) -> Result<(), DaemonError> {
         let _sweep = self
             .sweep_lock
@@ -1763,11 +1696,6 @@ impl ProductionProcessHost {
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner)
                     .remove(session_id);
-                if cached_through.is_some() {
-                    if let Some(metrics) = self.metrics() {
-                        metrics.increment("projection_repairs_total");
-                    }
-                }
             }
             Err(error) => {
                 // The retry itself stays per-tick; only the report is de-duplicated
@@ -1781,9 +1709,6 @@ impl ProductionProcessHost {
                     eprintln!(
                         "process-host-sweep-projection-failed: session={session_id} error={error}"
                     );
-                    if let Some(observability) = self.observability() {
-                        observability.record_owner_io_failure("sweep-projection", session_id);
-                    }
                 }
             }
         }
@@ -1821,11 +1746,7 @@ impl ProductionProcessHost {
     /// supervisor 15–20 % of a core while nothing ran (2026-09-20). A ledger is append-only and
     /// its repairs truncate, so an unchanged (inode, length, mtime) is the same bytes and the
     /// same facts; the scan is retaken the moment any of the three moves.
-    fn sweep_ledger_scan(
-        &self,
-        session_id: &str,
-        path: &Path,
-    ) -> Result<Arc<SweepLedgerScan>, DaemonError> {
+    fn sweep_ledger_scan(&self, path: &Path) -> Result<Arc<SweepLedgerScan>, DaemonError> {
         let identity = SweepLedgerIdentity::of(path)?;
         if let Some(cached) = self
             .sweep_scans
@@ -1840,24 +1761,11 @@ impl ProductionProcessHost {
         // The identity is taken before the bytes: a write landing between the two changes the
         // identity, so the next tick rescans rather than trusting facts from a shorter file.
         let scan = scan_valid_prefix(&bytes, 1);
-        let needs_repair = scan.needs_repair();
         let Some(projection) = scan.projection else {
             self.sweep_scans
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                 .remove(path);
-            if let Some(metrics) = self.metrics() {
-                metrics.increment("corruptions_total");
-            }
-            if let Some(observability) = self.observability() {
-                observability.record_corruption(
-                    session_id,
-                    path.file_name()
-                        .and_then(|name| name.to_str())
-                        .unwrap_or("ledger.jsonl"),
-                    bytes.len() as u64,
-                );
-            }
             return Err(DaemonError::corrupt("active thread has no projection"));
         };
         let genesis = projection
@@ -1876,7 +1784,6 @@ impl ProductionProcessHost {
             .map(str::to_owned);
         let scan = Arc::new(SweepLedgerScan {
             identity,
-            needs_repair,
             last_seq: projection.last_seq,
             lifecycle: projection.lifecycle,
             line,
@@ -1890,10 +1797,6 @@ impl ProductionProcessHost {
     }
 
     fn sweep_once(&self) -> Result<(), DaemonError> {
-        let sweep_started = Instant::now();
-        let mut parked = 0_u64;
-        let mut running = 0_u64;
-        let mut settled = 0_u64;
         let mut sessions = fs::read_dir(self.root.join("threads"))
             .map_err(DaemonError::io)?
             .collect::<Result<Vec<_>, _>>()
@@ -1927,24 +1830,7 @@ impl ProductionProcessHost {
                 self.propagate_durable_stops_before_sweep(&session_id, &ledgers)?;
                 for ledger in ledgers {
                     let path = ledger.path();
-                    let scan = self.sweep_ledger_scan(&session_id, &path)?;
-                    if scan.needs_repair {
-                        let first_observation = self
-                            .observed_tail_repairs
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner)
-                            .insert(path.clone());
-                        if first_observation {
-                            if let Some(metrics) = self.metrics() {
-                                metrics.increment("tail_repairs_total");
-                            }
-                        }
-                    } else {
-                        self.observed_tail_repairs
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner)
-                            .remove(&path);
-                    }
+                    let scan = self.sweep_ledger_scan(&path)?;
                     let ledger_last_seq = scan.last_seq;
                     let facts = &scan.lifecycle;
                     let key = if ledger.file_name() == std::ffi::OsStr::new("main.jsonl") {
@@ -1968,11 +1854,6 @@ impl ProductionProcessHost {
                         LockFacts::FREE
                     };
                     let state = classify(facts, lock_facts);
-                    match state {
-                        TailState::ParkedHold => parked += 1,
-                        TailState::Settled => settled += 1,
-                        _ => running += 1,
-                    }
                     if ensure_action_at(state, facts, Some(&now_rfc3339())) == EnsureAction::None
                         && !(key == session_id && goal_continuation_due(&path)?)
                     {
@@ -2005,29 +1886,8 @@ impl ProductionProcessHost {
                     "process-host-sweep-session-failed: session={} error={error}",
                     session.file_name().to_string_lossy()
                 );
-                if let Some(observability) = self.observability() {
-                    observability.record_owner_io_failure(
-                        "sweep-session",
-                        &session.file_name().to_string_lossy(),
-                    );
-                }
             }
         }
-        if let Some(metrics) = self
-            .metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .as_ref()
-        {
-            metrics.set("threads_parked", parked as f64);
-            metrics.set("threads_running", running as f64);
-            metrics.set("threads_settled", settled as f64);
-            metrics.set(
-                "sweep_duration_ms",
-                sweep_started.elapsed().as_secs_f64() * 1000.0,
-            );
-        }
-        self.refresh_worker_metric();
         Ok(())
     }
 
@@ -2044,7 +1904,7 @@ impl ProductionProcessHost {
         let mut active_paths = HashSet::new();
         for ledger in ledgers {
             let path = ledger.path();
-            let scan = self.sweep_ledger_scan(session_id, &path)?;
+            let scan = self.sweep_ledger_scan(&path)?;
             if !scan.lifecycle.stop_active {
                 continue;
             }
@@ -2093,7 +1953,6 @@ impl ProductionProcessHost {
             let _ = child.wait();
             worker.alive.store(false, Ordering::Release);
         }
-        self.refresh_worker_metric();
     }
 
     fn ensure_running(&self, session_id: &str) -> Result<Arc<WorkerHandle>, DaemonError> {
@@ -2170,7 +2029,7 @@ impl ProductionProcessHost {
         let goal_id = session_controls::bound_goal_id(&self.root, session_id)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let ordinal = self.next_run.fetch_add(1, Ordering::Relaxed);
-        let timestamp = crate::daemon::system_timestamp().map_err(DaemonError::protocol)?;
+        let timestamp = crate::host_runtime::system_timestamp().map_err(DaemonError::protocol)?;
         let run_id = format!("daemon-{}-{ordinal}", std::process::id());
         let launch_notices = Arc::new(Mutex::new(Vec::<SessionNotice>::new()));
         let launch_notices_capture = Arc::clone(&launch_notices);
@@ -2557,7 +2416,6 @@ impl ProductionProcessHost {
         workers.insert(process_key.to_owned(), Arc::clone(&worker));
         drop(workers);
         self.workers_changed.notify_all();
-        self.refresh_worker_metric();
         self.publish_session_status(session_id);
         Ok(ScheduledWorker {
             worker: Some(worker),
@@ -2609,7 +2467,6 @@ impl ProductionProcessHost {
         workers.insert(child_process_key.to_owned(), Arc::clone(&worker));
         drop(workers);
         self.workers_changed.notify_all();
-        self.refresh_worker_metric();
         self.publish_session_status(session_id);
         Ok(Some(worker))
     }
@@ -2744,17 +2601,8 @@ impl ProductionProcessHost {
                         && admission.request(lease.clone()))
                 {
                     waiters.pop_front();
-                    let held = admission.held_count();
                     drop(admission);
                     self.admission_changed.notify_all();
-                    if let Some(metrics) = self
-                        .metrics
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .as_ref()
-                    {
-                        metrics.set("provider_leases", held as f64);
-                    }
                     return true;
                 }
             }
@@ -3261,18 +3109,9 @@ impl ProductionProcessHost {
             handler,
             ProductionToolControlPolicy::new(tools::SecretScanner::default()),
         );
-        let result = session
+        session
             .handle_line(line)
-            .map_err(|error| DaemonError::protocol(error.to_string()));
-        if let Some(metrics) = self
-            .metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .as_ref()
-        {
-            metrics.increment("tool_outcomes_total");
-        }
-        result
+            .map_err(|error| DaemonError::protocol(error.to_string()))
     }
 
     /// One `tool_continuation` step from a worker whose tool-control result was
@@ -3339,7 +3178,6 @@ impl ProductionProcessHost {
     }
 
     fn publish_appended(&self, session_id: &str) -> Result<(), DaemonError> {
-        let started = Instant::now();
         let _projection_guard = self
             .projection_lock
             .lock()
@@ -3358,18 +3196,10 @@ impl ProductionProcessHost {
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
         let journal = EndpointJournal::open(&folder)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        let projected_through = journal
-            .records()
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?
-            .into_iter()
-            .flat_map(|record| record.kernel_seqs)
-            .max()
-            .unwrap_or(0);
         let mut projector = Projector::default();
         let appended = projector
             .reconcile(&projection.events, &journal)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        self.observe_semantic_failures(session_id, &projection.events, projected_through);
         if let Some(streams) = &streams {
             streams
                 .reconcile_actionables(session_id, None)
@@ -3418,69 +3248,7 @@ impl ProductionProcessHost {
             },
         );
         drop(projection_cache);
-        if let Some(metrics) = self
-            .metrics
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .as_ref()
-        {
-            metrics.set(
-                "append_latency_ms",
-                started.elapsed().as_secs_f64() * 1000.0,
-            );
-        }
         Ok(())
-    }
-
-    fn observe_semantic_failures(&self, session_id: &str, events: &[Event], after_seq: u64) {
-        let observability = self
-            .observability
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .clone();
-        let Some(observability) = observability else {
-            return;
-        };
-        for event in events.iter().filter(|event| event.seq() > after_seq) {
-            match event.kind() {
-                EventKind::Error if event.has_field("attempt") => {
-                    let classification = event.string_field("classification").unwrap_or("unknown");
-                    observability.record_semantic_failure(
-                        "provider-terminal",
-                        "Provider attempt reached a terminal error",
-                        classification,
-                        session_id,
-                        event.seq(),
-                    );
-                }
-                EventKind::ToolResult => {
-                    let value = event
-                        .canonical_bytes()
-                        .ok()
-                        .and_then(|bytes| serde_json::from_slice::<serde_json::Value>(&bytes).ok());
-                    let outcome = value.as_ref().and_then(|value| value.get("outcome"));
-                    if outcome.and_then(serde_json::Value::as_str) == Some("ok") {
-                        continue;
-                    }
-                    let classification = outcome
-                        .and_then(serde_json::Value::as_str)
-                        .or_else(|| {
-                            outcome
-                                .and_then(serde_json::Value::as_object)
-                                .and_then(|value| value.keys().next().map(String::as_str))
-                        })
-                        .unwrap_or("unknown");
-                    observability.record_semantic_failure(
-                        "tool-error",
-                        "Tool execution reached a non-success outcome",
-                        classification,
-                        session_id,
-                        event.seq(),
-                    );
-                }
-                _ => {}
-            }
-        }
     }
 
     fn publish_frame(&self, session_id: &str, frame: Frame) -> Result<(), DaemonError> {
@@ -3700,7 +3468,6 @@ impl ProductionProcessHost {
             {
                 self.schedule_child_from_parent(parent_process_key, &key, session_id, path)?;
             }
-            self.refresh_worker_metric();
             return Ok(LaunchResult {
                 child: request.child.clone(),
                 spawn_id: request.spawn_id.clone(),
@@ -3794,7 +3561,7 @@ impl ProductionProcessHost {
                 &serde_json::to_vec(&serde_json::json!({
                     "v":1,
                     "seq":ledger.next_seq(),
-                    "ts":crate::daemon::system_timestamp().map_err(DaemonError::protocol)?,
+                    "ts":crate::host_runtime::system_timestamp().map_err(DaemonError::protocol)?,
                     "kind":"stop_requested",
                     "generation":generation,
                     "origin_key":origin.key,
@@ -3940,16 +3707,7 @@ impl ProductionProcessHost {
                 None => self.reset_restart_backoff(process_key),
             }
             match self.schedule_worker_at(process_key, session_id, ledger.to_owned()) {
-                Ok(Some(_)) => {
-                    if let Some(metrics) = self
-                        .metrics
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .as_ref()
-                    {
-                        metrics.increment("restarts_total");
-                    }
-                }
+                Ok(Some(_)) => {}
                 Ok(None) => {}
                 Err(error) => {
                     self.note_restart_failure(
@@ -4032,14 +3790,6 @@ impl ProductionProcessHost {
         eprintln!(
             "process-host-spawn-failed: operation={operation} session={session_id} error={error}"
         );
-        if let Some(observability) = self.observability() {
-            let log_operation = match operation {
-                "prompt" => "spawn-prompt",
-                "cancel" => "spawn-cancel",
-                _ => "spawn-worker",
-            };
-            observability.record_owner_io_failure(log_operation, session_id);
-        }
         self.record_session_notice(
             session_id,
             &format!("input-{input_seq}"),
@@ -4056,7 +3806,7 @@ impl ProductionProcessHost {
     /// publishes it to the live streams. `key_suffix` scopes idempotency: the
     /// same suffix and session fold repeated appends into the original seq.
     fn record_session_notice(&self, session_id: &str, key_suffix: &str, notice: SessionNotice) {
-        let timestamp = match crate::daemon::system_timestamp() {
+        let timestamp = match crate::host_runtime::system_timestamp() {
             Ok(timestamp) => timestamp,
             Err(error) => {
                 eprintln!("process-host-session-notice-failed: session={session_id} error={error}");
@@ -4389,24 +4139,12 @@ fn worker_reader(
                         .unwrap_or_else(std::sync::PoisonError::into_inner)
                         .held_attempts
                         .remove(&settled.attempt);
-                    let held = {
-                        let mut admission = owner
-                            .admission
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner);
-                        admission.settle(&settled.attempt);
-                        admission.held_count()
-                    };
-                    owner.admission_changed.notify_all();
-                    if let Some(metrics) = owner
-                        .metrics
+                    owner
+                        .admission
                         .lock()
                         .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .as_ref()
-                    {
-                        metrics.set("provider_leases", held as f64);
-                        metrics.increment("provider_outcomes_total");
-                    }
+                        .settle(&settled.attempt);
+                    owner.admission_changed.notify_all();
                 }
             }
             Ok(WorkerMessage::Appended(_)) => {
@@ -4434,10 +4172,6 @@ fn worker_reader(
                     if let Some(owner) = owner.upgrade() {
                         if let Err(error) = owner.publish_appended(&session_id) {
                             eprintln!("process-host-publish-appended-failed: {error}");
-                            if let Some(observability) = owner.observability() {
-                                observability
-                                    .record_owner_io_failure("publish-appended", &session_id);
-                            }
                         }
                     }
                 }
@@ -4447,9 +4181,6 @@ fn worker_reader(
                     if let Some(owner) = owner.upgrade() {
                         if let Err(error) = owner.publish_frame(&session_id, frame) {
                             eprintln!("process-host-publish-frame-failed: {error}");
-                            if let Some(observability) = owner.observability() {
-                                observability.record_owner_io_failure("publish-frame", &session_id);
-                            }
                         }
                     }
                 }
@@ -4557,23 +4288,12 @@ fn worker_reader(
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                 .held_attempts,
         );
-        let provider_leases = {
-            let mut admission = owner
-                .admission
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner);
-            admission.reap(held_attempts);
-            admission.held_count()
-        };
-        owner.admission_changed.notify_all();
-        if let Some(metrics) = owner
-            .metrics
+        owner
+            .admission
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .as_ref()
-        {
-            metrics.set("provider_leases", provider_leases as f64);
-        }
+            .reap(held_attempts);
+        owner.admission_changed.notify_all();
         let mut workers = owner
             .workers
             .lock()
@@ -4587,9 +4307,7 @@ fn worker_reader(
         drop(workers);
         owner.workers_changed.notify_all();
         owner.publish_session_status(&session_id);
-        owner.refresh_worker_metric();
         owner.start_pending_workers();
-        owner.refresh_worker_metric();
         if !owner.draining.load(Ordering::Acquire) {
             let failure = if exited_cleanly {
                 None
@@ -4704,7 +4422,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         prompt: &MaterializedPrompt,
         steer: bool,
     ) -> Result<MutationReceipt, ProductionRouteFailure> {
-        let started = Instant::now();
         self.reset_restart_backoff(session_id);
         if let Some(worker) = self.live_worker(session_id) {
             let delivery = origin.key.clone();
@@ -4744,7 +4461,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
                     timestamp.to_owned(),
                     prompt_text(&prompt.blocks),
                 );
-                self.record_barrier_latency(started);
                 return Ok(MutationReceipt {
                     seq: receipt.seq,
                     deduplicated: receipt.deduplicated,
@@ -4758,11 +4474,7 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
             }
             worker.alive.store(false, Ordering::Release);
         }
-        let result = self.locked_prompt(session_id, timestamp, origin, prompt, steer);
-        if result.is_ok() {
-            self.record_barrier_latency(started);
-        }
-        result
+        self.locked_prompt(session_id, timestamp, origin, prompt, steer)
     }
 
     fn compact(
@@ -4810,7 +4522,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         timestamp: &str,
         origin: &OriginTuple,
     ) -> Result<MutationReceipt, ProductionRouteFailure> {
-        let started = Instant::now();
         self.reset_restart_backoff(session_id);
         if let Some(worker) = self.live_worker(session_id) {
             worker.tool_cancellation.cancel();
@@ -4841,7 +4552,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
             self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())
                 .map_err(internal)?;
             terminate_worker(&worker);
-            self.record_barrier_latency(started);
             return Ok(MutationReceipt {
                 seq: receipt.seq,
                 deduplicated: receipt.deduplicated,
@@ -4861,7 +4571,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         if let Err(error) = self.schedule_main(session_id) {
             self.record_spawn_failure("cancel", session_id, receipt.seq, &error);
         }
-        self.record_barrier_latency(started);
         Ok(receipt)
     }
 
@@ -4872,7 +4581,6 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         origin: &OriginTuple,
         title: &str,
     ) -> Result<MutationReceipt, ProductionRouteFailure> {
-        let started = Instant::now();
         self.reset_restart_backoff(session_id);
         if let Some(worker) = self.live_worker(session_id) {
             let delivery = origin.key.clone();
@@ -4891,20 +4599,14 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
                 )
                 .map_err(internal)?;
             let receipt = worker.receipt(&delivery)?;
-            self.record_barrier_latency(started);
             return Ok(MutationReceipt {
                 seq: receipt.seq,
                 deduplicated: receipt.deduplicated,
             });
         }
-        let result = self
-            .endpoint
+        self.endpoint
             .rename_session_for_endpoint(session_id, timestamp, origin, title)
-            .map_err(internal);
-        if result.is_ok() {
-            self.record_barrier_latency(started);
-        }
-        result
+            .map_err(internal)
     }
 }
 
@@ -4917,7 +4619,6 @@ impl LiveRespondAuthority for ProductionProcessHost {
         let Some(worker) = self.live_worker(session_id) else {
             return Ok(None);
         };
-        let started = Instant::now();
         let bytes = encode_line("approval_response", response).map_err(internal)?;
         let result = worker
             .write(&bytes)
@@ -4930,9 +4631,6 @@ impl LiveRespondAuthority for ProductionProcessHost {
             // Only process exit (and thus released ledger ownership) permits
             // fallback; a transport error or stale alive flag alone does not.
             return Ok(None);
-        }
-        if result.is_ok() {
-            self.record_barrier_latency(started);
         }
         result
     }
@@ -4993,7 +4691,6 @@ impl QueueTransactionAuthority for ProductionProcessHost {
         session_id: &str,
         transaction: &QueueTransaction,
     ) -> Result<QueueTransactionResult, ProductionRouteFailure> {
-        let started = Instant::now();
         self.reset_restart_backoff(session_id);
         let ledger = self
             .root
@@ -5012,11 +4709,7 @@ impl QueueTransactionAuthority for ProductionProcessHost {
                 .write(&encode_queue_transaction(transaction).map_err(internal)?)
                 .map_err(internal)?;
         }
-        let result = worker.queue_result(&transaction.delivery);
-        if result.is_ok() {
-            self.record_barrier_latency(started);
-        }
-        result
+        worker.queue_result(&transaction.delivery)
     }
 }
 
@@ -5160,7 +4853,7 @@ impl SupervisorRuntimeAuthority for ProcessToolRuntime {
     ) -> Result<IJsonValue, SupervisorOperationError> {
         let host = self.host()?;
         let timestamp =
-            crate::daemon::system_timestamp().map_err(SupervisorOperationError::Protocol)?;
+            crate::host_runtime::system_timestamp().map_err(SupervisorOperationError::Protocol)?;
         let origin = OriginTuple {
             principal: "kernel-worker".into(),
             client: "context".into(),
@@ -5196,7 +4889,7 @@ impl SupervisorRuntimeAuthority for ProcessToolRuntime {
     ) -> Result<IJsonValue, SupervisorOperationError> {
         let host = self.host()?;
         let timestamp =
-            crate::daemon::system_timestamp().map_err(SupervisorOperationError::Protocol)?;
+            crate::host_runtime::system_timestamp().map_err(SupervisorOperationError::Protocol)?;
         let origin = OriginTuple {
             principal: "kernel-worker".into(),
             client: "context".into(),
@@ -7368,129 +7061,6 @@ mod tests {
     }
 
     #[test]
-    fn production_observability_projection_and_corruption_are_inert_and_redacted() {
-        let root = tempfile::tempdir().expect("observability root");
-        fs::create_dir_all(root.path().join("threads/session-a")).expect("session root");
-        fs::create_dir(root.path().join("threads/session-a/assets")).expect("asset root");
-        let host = ProductionProcessHost::open(
-            root.path(),
-            std::env::current_exe().expect("test executable"),
-            "test-build",
-            root.path().join("missing-agent-home"),
-        )
-        .expect("process host");
-        let log_path = root.path().join("logs/supervisor.jsonl");
-        fs::create_dir_all(log_path.parent().expect("log parent")).expect("log root");
-        let metrics = Arc::new(OperationalMetrics::default());
-        let observability = Arc::new(ProductionAccessLog::new(
-            Arc::clone(&metrics),
-            Arc::new(crate::observability::RotatingJsonlLog::new(
-                log_path.clone(),
-            )),
-            crate::observability::FrozenAttribution {
-                build: "2.0.0".to_owned(),
-                launch_id: "2-2-0123456789abcdef0123456789abcdef".to_owned(),
-                attempt: 2,
-                generation: 2,
-                manifest_sha256: "f".repeat(64),
-            },
-        ));
-        host.attach_metrics(Arc::clone(&metrics));
-        host.attach_observability(observability);
-
-        let provider = Event::decode(
-            br#"{"attempt":"a1","classification":"provider_terminal","detail":"secret-provider-key","kind":"error","recoverable":false,"seq":7,"ts":"2026-08-28T00:00:07.000Z","turn":1,"usage":{"availability":"unavailable"},"v":1}"#,
-        )
-        .expect("provider error event");
-        let tool = Event::decode(
-            br#"{"call":"c1","content":[{"text":"secret-tool-output","type":"text"}],"kind":"tool_result","outcome":"error","seq":8,"ts":"2026-08-28T00:00:08.000Z","turn":1,"v":1}"#,
-        )
-        .expect("tool result event");
-        let semantic_before = [
-            provider.canonical_bytes().expect("provider bytes"),
-            tool.canonical_bytes().expect("tool bytes"),
-        ];
-        host.observe_semantic_failures("session-a", &[provider, tool], 0);
-
-        let corrupt = root.path().join("threads/session-a/main.jsonl");
-        fs::write(&corrupt, b"secret-prompt\n").expect("corrupt ledger");
-        let corrupt_before = fs::read(&corrupt).expect("corrupt bytes");
-        assert!(
-            host.periodic_sweep_once()
-                .expect("one corrupt session is isolated")
-        );
-        assert_eq!(
-            fs::read(&corrupt).expect("ledger after sweep"),
-            corrupt_before
-        );
-        assert_eq!(
-            semantic_before[0],
-            br#"{"attempt":"a1","classification":"provider_terminal","detail":"secret-provider-key","kind":"error","recoverable":false,"seq":7,"ts":"2026-08-28T00:00:07.000Z","turn":1,"usage":{"availability":"unavailable"},"v":1}"#
-        );
-
-        let logs = fs::read(&log_path).expect("production logs");
-        for code in ["provider-terminal", "tool-error", "corrupt-ledger"] {
-            assert!(
-                logs.windows(code.len())
-                    .any(|window| window == code.as_bytes()),
-                "missing production-path {code} after isolated sweep failure: {}",
-                String::from_utf8_lossy(&logs)
-            );
-        }
-        for forbidden in ["secret-provider-key", "secret-tool-output", "secret-prompt"] {
-            assert!(
-                !logs
-                    .windows(forbidden.len())
-                    .any(|window| window == forbidden.as_bytes()),
-                "production logs leaked {forbidden}"
-            );
-        }
-        let snapshot = metrics.snapshot("2026-08-28T00:00:09.000000000Z", false);
-        for (name, expected) in [
-            ("provider_outcomes_total", 0.0),
-            ("tool_outcomes_total", 0.0),
-            ("corruptions_total", 1.0),
-        ] {
-            assert_eq!(
-                snapshot
-                    .metrics
-                    .iter()
-                    .find(|metric| metric.name == name)
-                    .expect("metric")
-                    .value,
-                expected
-            );
-        }
-        let metrics_path = root.path().join("logs/metrics.canonical.json");
-        crate::observability::publish_metric_snapshot(&metrics_path, &snapshot)
-            .expect("publish production metrics");
-        let bundle = root.path().join("support-bundle");
-        crate::observability::publish_support_bundle_from_files(
-            &bundle,
-            "2026-08-28T00:00:10.000000000Z",
-            "2.0.0",
-            &"a".repeat(64),
-            &["b".repeat(64)],
-            root.path().join("logs").as_path(),
-        )
-        .expect("publish support bundle from production-path records");
-        let bundled_logs = fs::read(bundle.join("logs.jsonl")).expect("bundled logs");
-        assert_eq!(bundled_logs, logs);
-        for forbidden in ["secret-provider-key", "secret-tool-output", "secret-prompt"] {
-            assert!(
-                !fs::read_dir(&bundle)
-                    .expect("bundle entries")
-                    .flat_map(|entry| fs::read(entry.expect("bundle entry").path()).expect("entry"))
-                    .collect::<Vec<_>>()
-                    .windows(forbidden.len())
-                    .any(|window| window == forbidden.as_bytes()),
-                "support bundle leaked {forbidden}"
-            );
-        }
-        host.shutdown();
-    }
-
-    #[test]
     fn report_wake_targets_the_exact_nested_parent_line() {
         let root = Path::new("/kernel");
         let (key, ledger) =
@@ -7789,18 +7359,14 @@ mod tests {
         let ledger = folder.join("main.jsonl");
         write_test_genesis(&ledger, session);
 
-        let first = host
-            .sweep_ledger_scan(session, &ledger)
-            .expect("first scan");
-        let again = host
-            .sweep_ledger_scan(session, &ledger)
-            .expect("cached scan");
+        let first = host.sweep_ledger_scan(&ledger).expect("first scan");
+        let again = host.sweep_ledger_scan(&ledger).expect("cached scan");
         assert!(Arc::ptr_eq(&first, &again), "same bytes, same scan");
         assert_eq!(first.line, session);
         assert_eq!(first.last_seq, 1);
 
         append_test_input(&ledger, session);
-        let grown = host.sweep_ledger_scan(session, &ledger).expect("rescanned");
+        let grown = host.sweep_ledger_scan(&ledger).expect("rescanned");
         assert!(
             !Arc::ptr_eq(&first, &grown),
             "an appended ledger is scanned again"
@@ -7808,7 +7374,7 @@ mod tests {
         assert_eq!(grown.last_seq, 2);
 
         fs::write(&ledger, b"corrupt\n").expect("corrupt ledger");
-        assert!(host.sweep_ledger_scan(session, &ledger).is_err());
+        assert!(host.sweep_ledger_scan(&ledger).is_err());
         assert!(
             !host.sweep_scans.lock().unwrap().contains_key(&ledger),
             "a corrupt ledger holds no cached facts"

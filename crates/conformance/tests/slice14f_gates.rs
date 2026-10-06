@@ -20,11 +20,11 @@ use tekes_supervisor::client_extensions::{
     RESOURCE_METHODS, SCHEDULE_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS, THREAD_SEARCH_METHODS,
     TOOL_METHODS, USAGE_METHODS,
 };
-use tekes_supervisor::daemon::assemble_production_endpoint_host;
 use tekes_supervisor::endpoint_host::{
     CompositeProductionEndpointRoutes, ProductionEndpointHost, ProductionEndpointRoutes,
     TEKES_UNARY_ROUTES,
 };
+use tekes_supervisor::host_runtime::assemble_production_endpoint_host;
 use tekes_supervisor::process_host::ProductionProcessHost;
 use tempfile::TempDir;
 

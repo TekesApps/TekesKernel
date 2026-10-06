@@ -45,7 +45,7 @@ A checkpoint accelerates log folding.
 
 ## Source evidence
 
-[daemon storage preflight](../../../crates/supervisor/src/daemon.rs) ·
+[storage preflight](../../../crates/supervisor/src/host_runtime.rs) ·
 [sweep and exit recovery](../../../crates/supervisor/src/process_host.rs) ·
 [tail scan](../../../crates/store/src/tail.rs) ·
 [fold](../../../crates/schema/src/fold.rs) ·

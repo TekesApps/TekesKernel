@@ -29,7 +29,7 @@ const SESSION: &str = "018f0000-0000-7000-8000-000000000001";
 const TS: &str = "2026-08-26T09:00:00.000Z";
 
 #[test]
-fn supervisor_describe_build_binds_embedded_version_and_authority_registry() {
+fn supervisor_describe_build_binds_embedded_version() {
     let output = Command::new(env!("CARGO_BIN_EXE_tekes-supervisor"))
         .arg("--describe-build")
         .output()
@@ -38,12 +38,11 @@ fn supervisor_describe_build_binds_embedded_version_and_authority_registry() {
     assert!(output.stderr.is_empty());
     let embedded_build = option_env!("TEKES_SELECTED_BUILD").unwrap_or(env!("CARGO_PKG_VERSION"));
     let mut expected = json!({
-        "authority_registry_sha256": tekes_supervisor::daemon::AUTHORITY_REGISTRY_SHA256,
         "format": 1,
         "identifier": "com.tekes.kernel.supervisor",
         "version": embedded_build,
     });
-    if let Some(revision) = tekes_supervisor::daemon::SOURCE_REVISION {
+    if let Some(revision) = tekes_supervisor::host_runtime::SOURCE_REVISION {
         expected["source_revision"] = revision.into();
     }
     let mut expected = serde_json_canonicalizer::to_vec(&expected).expect("canonical build");
