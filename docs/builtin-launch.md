@@ -68,14 +68,14 @@ launch notification.
 
 The smoke test uses a temporary state directory and synthetic provider key. It
 verifies readiness, workspace/session creation, model selection and routability,
-WebSocket handshake and all five stream baselines, and parent-pipe shutdown.
-The Client contract check (it needs TekesClientKit, see above) compiles the
-TekesClientKit Swift contract sources and decodes/validates actual Kernel
-frames without a Client translation shim. It also compiles the generic
-`NativeSessionEndpoint` from TekesClientKit and runs its connection, workspace/session
-creation, model selection, journal and history paging against the real child
-process. It does not prove a real provider response or Tekes application UI
-integration.
+WebSocket handshake and all five stream baselines, and parent-pipe shutdown. The
+Client contract check (it needs TekesClientKit, see above) compiles the
+TekesClientKit Swift contract sources and decodes/validates actual Kernel frames
+without a Client translation shim. It also compiles the generic
+`NativeSessionEndpoint` from TekesClientKit and runs its connection,
+workspace/session creation, model selection, journal and history paging against
+the real child process. It does not prove a real provider response or Tekes
+application UI integration.
 
 This paragraph applies to the sibling Tekes client repository; none of these
 names exist in this repository. The sibling Tekes application bundles the four
