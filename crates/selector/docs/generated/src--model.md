@@ -24,15 +24,16 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-selector::model::OperationType](../../src/model.rs#L141) | enum_item | `pub` |  |
 | [tekes-selector::model::SelectorOperation](../../src/model.rs#L149) | struct_item | `pub` |  |
 | [tekes-selector::model::StageReply](../../src/model.rs#L170) | struct_item | `pub` |  |
-| [tekes-selector::model::MutationReply](../../src/model.rs#L177) | struct_item | `pub` |  |
-| [tekes-selector::model::RecoverReply](../../src/model.rs#L185) | struct_item | `pub` |  |
-| [tekes-selector::model::Failure](../../src/model.rs#L194) | struct_item | `pub` |  |
-| [tekes-selector::model::PrelaunchFailure](../../src/model.rs#L201) | struct_item | `pub` |  |
-| [tekes-selector::model::StatusReply](../../src/model.rs#L211) | struct_item | `pub` |  |
-| [tekes-selector::model::CanaryReply](../../src/model.rs#L227) | struct_item | `pub` |  |
-| [tekes-selector::model::InstallHealthReply](../../src/model.rs#L236) | struct_item | `pub` |  |
-| [tekes-selector::model::UpdateReply](../../src/model.rs#L243) | struct_item | `pub` |  |
-| [tekes-selector::model::ConformanceReply](../../src/model.rs#L252) | struct_item | `pub` |  |
+| [tekes-selector::model::PruneReply](../../src/model.rs#L177) | struct_item | `pub` |  |
+| [tekes-selector::model::MutationReply](../../src/model.rs#L184) | struct_item | `pub` |  |
+| [tekes-selector::model::RecoverReply](../../src/model.rs#L192) | struct_item | `pub` |  |
+| [tekes-selector::model::Failure](../../src/model.rs#L201) | struct_item | `pub` |  |
+| [tekes-selector::model::PrelaunchFailure](../../src/model.rs#L208) | struct_item | `pub` |  |
+| [tekes-selector::model::StatusReply](../../src/model.rs#L218) | struct_item | `pub` |  |
+| [tekes-selector::model::CanaryReply](../../src/model.rs#L234) | struct_item | `pub` |  |
+| [tekes-selector::model::InstallHealthReply](../../src/model.rs#L243) | struct_item | `pub` |  |
+| [tekes-selector::model::UpdateReply](../../src/model.rs#L250) | struct_item | `pub` |  |
+| [tekes-selector::model::ConformanceReply](../../src/model.rs#L259) | struct_item | `pub` |  |
 
 ## Imports / reexports
 
