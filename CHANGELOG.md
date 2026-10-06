@@ -18,6 +18,12 @@ workspace version in `Cargo.toml`.
   `--describe-build` no longer reports `authority_registry_sha256`, and the
   storage preflight no longer creates `credential-state/`
   ([#28](https://github.com/TekesApps/TekesKernel/issues/28)).
+- The `providerAdmin.v1` client-extension group (`providers.list`,
+  `providers.verify`, `providers.connections`, `providers.connection.*` and
+  `providers.profile*`). The launching application owns provider
+  configuration; abandoned provider and settings operation records are ignored
+  on recovery. The client-extension fixtures drop the group's catalog entry,
+  method and negative cases, error codes and readiness value cases.
 
 ### Added
 - Linux tool sandbox. The `linux-landlock-seccomp` backend now applies its

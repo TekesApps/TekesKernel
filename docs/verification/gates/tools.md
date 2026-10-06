@@ -256,8 +256,7 @@ This page retains the gates' original numbers and applicable baselines. It defin
     reads and mutations, crash after the durable commit before response, then
     retry equal and conflicting rpcIds. Assert: closed DTOs and error sets are
     exact, success follows the owning barrier, equal retries re-ack, changed
-    bytes conflict, `providers.verify` never reaches the network tripwire, and
-    no extension invents a second durable truth.
+    bytes conflict, and no extension invents a second durable truth.
     `[client-extensions §Resource and tool catalogs through §Usage
     projection]`
 115. ⊕ **ClientExtensionPredecessorDisposition** — Setup: the pinned

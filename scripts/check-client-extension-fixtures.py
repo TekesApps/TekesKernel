@@ -37,7 +37,6 @@ EXPECTED_CAPABILITIES = {
     "mcp.v1",
     "schedule.v1",
     "threadSearch.v1",
-    "providerAdmin.v1",
     "workspacePolicy.v1",
     "usage.v1",
 }
@@ -170,10 +169,6 @@ def main() -> None:
         "base-collision",
         "unknown-field",
         "fake-empty-success",
-        "generic-family-is-not-proof",
-        "missing-route-identity",
-        "provider-delete-in-use",
-        "profile-delete-in-use",
         "ignored-model-forbidden",
         "ignored-policy-forbidden",
         "tcu-method",
@@ -184,24 +179,6 @@ def main() -> None:
     definition = schedule["request"]["definition"]
     if definition["permission_mode"] != "inherit" or "model_id" in definition:
         raise SystemExit("default schedule case does not prove applied default authority")
-    provider = next(case for case in cases if case["method"] == "providers.profile.save")
-    if not provider["request"]["profile"].get("modelProfileId"):
-        raise SystemExit("provider profile lacks exact proof binding")
-    if not provider["request"]["profile"].get("exactSku"):
-        raise SystemExit("provider profile lacks exact model SKU")
-    connection = next(
-        case for case in cases if case["method"] == "providers.connection.save"
-    )["request"]["connection"]
-    required_connection_identity = {
-        "protocolFamily",
-        "dialectId",
-        "endpointOwner",
-        "gatewayTranslation",
-        "evidenceRevision",
-    }
-    if not required_connection_identity <= set(connection):
-        raise SystemExit("provider connection lacks durable exact-route identity")
-
     inspect = next(case for case in cases if case["method"] == "plugin/inspect")
     install = next(case for case in cases if case["method"] == "plugin/install")
     if "packageDigest" in inspect["request"]:
@@ -223,9 +200,6 @@ def main() -> None:
     fixed_tool = next(case for case in cases if case["method"] == "tools/resolve")
     if fixed_tool["success"]["tool"]["availability"] != "default":
         raise SystemExit("fixed tool availability diverges from builtin-tools")
-    proof_list = next(case for case in cases if case["method"] == "providers.list")
-    if proof_list["success"]["proofs"][0]["proofId"] != "proof-openai_responses_v1":
-        raise SystemExit("provider list does not retain proof-oracle identity")
     cache = next(case for case in cases if case["method"] == "usage.cacheAttribution")
     entries = cache["success"]["entries"]
     if not entries or set(entries[0]) != {
@@ -275,29 +249,6 @@ def main() -> None:
         "refresh-failed",
     }:
         raise SystemExit("plugin readiness union coverage drifted")
-    provider_unavailable = {
-        readiness["reason"]
-        for readiness in values["providerReadiness"]
-        if readiness["state"] == "unavailable"
-    }
-    if provider_unavailable != {
-        "dialect-unproved",
-        "credential-unavailable",
-        "route-mismatch",
-    }:
-        raise SystemExit("provider readiness union coverage drifted")
-    connection_cases = {
-        case["models"]: case["readiness"] for case in values["connectionReadinessCases"]
-    }
-    if connection_cases.get(0) != {"state": "ready"} or connection_cases.get(2) != {
-        "state": "ready"
-    }:
-        raise SystemExit("connection readiness incorrectly depends on model cardinality")
-    disabled_profile = next(
-        case for case in values["profileReadinessCases"] if case["enabled"] is False
-    )
-    if disabled_profile["readiness"] != {"state": "ready"}:
-        raise SystemExit("profile enabled state incorrectly changes proof readiness")
     policy_replacement = values["workspacePolicyReplacement"]
     if (
         policy_replacement["previous"]["network"] is not False

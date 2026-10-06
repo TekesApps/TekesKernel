@@ -194,7 +194,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SessionHostDescription` | `endpoint::SessionHostDescription` | `private` |
 | `SessionDeliveryAuthority` | `crate::endpoint_host::SessionDeliveryAuthority` | `private` |
 | `SessionInputAdmissionAuthority` | `crate::endpoint_host::SessionInputAdmissionAuthority` | `private` |
-| `assemble_production_endpoint_host` | `crate::host_runtime::assemble_production_endpoint_host` | `private` |
+| `assemble_application_endpoint_host` | `crate::host_runtime::assemble_application_endpoint_host` | `private` |
 | `*` | `super::*` | `private` |
 
 ## Module declarations
@@ -1588,8 +1588,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ProductionProcessHost::open` | [3579](../../src/client_extensions.rs#L3579) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `std::env::current_exe().expect` | [3581](../../src/client_extensions.rs#L3581) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `std::env::current_exe` | [3581](../../src/client_extensions.rs#L3581) | external-constructor-callback-or-unresolved |
-| `skill_resources_never_cross_configured_workspace_catalogs` | `assemble_production_endpoint_host(             root.path(),             SessionHostDescription {                 version: "1.0.0".to_owned(),                 cwd: root.path().display().to_string(),                 provider: None,                 model: None,                 attached_sessions: 0,                 home: root.path().display().to_string(),                 can_open_path: false,             },             Arc::new(&#124;&#124; Ok("2026-08-29T00:00:00.000Z".to_owned())),             &agent,             Arc::clone(&process),         )         .expect` | [3586](../../src/client_extensions.rs#L3586) | receiver-type-required |
-| `skill_resources_never_cross_configured_workspace_catalogs` | `assemble_production_endpoint_host` | [3586](../../src/client_extensions.rs#L3586) | [tekes-supervisor::host_runtime::assemble_production_endpoint_host](../../src/host_runtime.rs#L366) |
+| `skill_resources_never_cross_configured_workspace_catalogs` | `assemble_application_endpoint_host(             root.path(),             SessionHostDescription {                 version: "1.0.0".to_owned(),                 cwd: root.path().display().to_string(),                 provider: None,                 model: None,                 attached_sessions: 0,                 home: root.path().display().to_string(),                 can_open_path: false,             },             Arc::new(&#124;&#124; Ok("2026-08-29T00:00:00.000Z".to_owned())),             &agent,             Arc::clone(&process),         )         .expect` | [3586](../../src/client_extensions.rs#L3586) | receiver-type-required |
+| `skill_resources_never_cross_configured_workspace_catalogs` | `assemble_application_endpoint_host` | [3586](../../src/client_extensions.rs#L3586) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L368) |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `"1.0.0".to_owned` | [3589](../../src/client_extensions.rs#L3589) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `root.path().display().to_string` | [3590](../../src/client_extensions.rs#L3590), [3594](../../src/client_extensions.rs#L3594) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `root.path().display` | [3590](../../src/client_extensions.rs#L3590), [3594](../../src/client_extensions.rs#L3594) | receiver-type-required |

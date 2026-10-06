@@ -1,4 +1,5 @@
-//! Production providerAdmin.v1 and workspacePolicy.v1 endpoint routes.
+//! Production workspacePolicy.v1 endpoint routes. Provider configuration is
+//! owned by the launching application.
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -6,9 +7,7 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex};
 
 use endpoint::{DurableHandoffProof, EndpointHostCall, MethodClass, RpcDurableIdentity};
-use profile::{
-    ConfigRepository, Model, Provider, ProvidersConfig, SettingsConfig, WorkspacePolicy,
-};
+use profile::{ConfigRepository, WorkspacePolicy};
 use schema::IJsonValue;
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -18,25 +17,12 @@ use store::{AtomicPublisher, NamedLock};
 use crate::endpoint_host::{ProductionEndpointRoutes, ProductionRouteFailure};
 use crate::process_host::ProductionProcessHost;
 
-pub const PROVIDER_ADMIN_METHODS: [(&str, MethodClass); 9] = [
-    ("providers.list", MethodClass::ReadOnly),
-    ("providers.verify", MethodClass::ReadOnly),
-    ("providers.connections", MethodClass::ReadOnly),
-    ("providers.connection.save", MethodClass::Mutation),
-    ("providers.connection.delete", MethodClass::Mutation),
-    ("providers.profiles", MethodClass::ReadOnly),
-    ("providers.profile.save", MethodClass::Mutation),
-    ("providers.profile.delete", MethodClass::Mutation),
-    ("providers.profile.default", MethodClass::Mutation),
-];
-
 pub const WORKSPACE_POLICY_METHODS: [(&str, MethodClass); 2] = [
     ("workspace.policy.get", MethodClass::ReadOnly),
     ("workspace.policy.set", MethodClass::Mutation),
 ];
 
 pub struct ClientAdminRoutes {
-    provider_admin: bool,
     repository: ConfigRepository,
     process_host: Arc<ProductionProcessHost>,
     mutation_gate: Mutex<()>,
@@ -48,23 +34,8 @@ impl ClientAdminRoutes {
         root: impl AsRef<std::path::Path>,
         process_host: Arc<ProductionProcessHost>,
     ) -> Result<Self, ProductionRouteFailure> {
-        Self::open(root.as_ref(), process_host, true)
-    }
-
-    pub fn for_application(
-        root: &std::path::Path,
-        process_host: Arc<ProductionProcessHost>,
-    ) -> Result<Self, ProductionRouteFailure> {
-        Self::open(root, process_host, false)
-    }
-
-    fn open(
-        root: &std::path::Path,
-        process_host: Arc<ProductionProcessHost>,
-        provider_admin: bool,
-    ) -> Result<Self, ProductionRouteFailure> {
+        let root = root.as_ref();
         let routes = Self {
-            provider_admin,
             repository: ConfigRepository::open(root).map_err(internal_profile)?,
             process_host,
             mutation_gate: Mutex::new(()),
@@ -74,31 +45,24 @@ impl ClientAdminRoutes {
         Ok(routes)
     }
 
-    /// Returns the two independently negotiable administration capability
-    /// groups. Both wrappers share the same durable authority and mutation
-    /// journal; advertisement is nevertheless all-or-none within each group.
+    /// Returns the workspace policy capability group.
     #[must_use]
     pub fn routes(self: &Arc<Self>) -> Vec<Arc<dyn ProductionEndpointRoutes>> {
-        let mut routes: Vec<Arc<dyn ProductionEndpointRoutes>> =
-            vec![Arc::new(AdminCapabilityRoutes::new(
-                "workspacePolicy.v1",
-                &WORKSPACE_POLICY_METHODS,
-                Arc::clone(self),
-            ))];
-        if self.provider_admin {
-            routes.push(Arc::new(AdminCapabilityRoutes::new(
-                "providerAdmin.v1",
-                &PROVIDER_ADMIN_METHODS,
-                Arc::clone(self),
-            )));
-        }
-        routes
+        vec![Arc::new(AdminCapabilityRoutes::new(
+            "workspacePolicy.v1",
+            &WORKSPACE_POLICY_METHODS,
+            Arc::clone(self),
+        ))]
     }
 
     fn recover_pending_intents(&self) -> Result<(), ProductionRouteFailure> {
         for record in self.journal.records()? {
-            // Application launch configuration wins over abandoned standalone edits.
-            if !self.provider_admin && record.authority == "config/providers.json" {
+            // Provider and settings edits from the removed providerAdmin.v1 are
+            // abandoned: application launch configuration owns both files.
+            if matches!(
+                record.authority.as_str(),
+                "config/providers.json" | "config/settings.json"
+            ) {
                 continue;
             }
             if record.phase == AdminPhase::Committed {
@@ -108,20 +72,6 @@ impl ClientAdminRoutes {
                 != Some(&record.desired_sha256)
             {
                 match record.authority.as_str() {
-                    "config/providers.json" => {
-                        let desired = ProvidersConfig::decode(&record.desired)
-                            .map_err(map_profile_provider)?;
-                        self.repository
-                            .publish_providers_checked(record.expected_revision, &desired)
-                            .map_err(map_profile_provider)?;
-                    }
-                    "config/settings.json" => {
-                        let desired = SettingsConfig::decode(&record.desired)
-                            .map_err(map_profile_provider)?;
-                        self.repository
-                            .publish_settings_checked(record.expected_revision, &desired)
-                            .map_err(map_profile_provider)?;
-                    }
                     authority
                         if authority.starts_with("workspaces/") && authority.ends_with(".json") =>
                     {
@@ -152,488 +102,14 @@ impl ClientAdminRoutes {
                     }
                 }
             }
-            match record.authority.as_str() {
-                "config/providers.json" | "config/settings.json" => self
-                    .process_host
-                    .refresh_live_credentials()
-                    .map_err(internal_daemon)?,
-                authority if authority.starts_with("workspaces/") => {
-                    let desired =
-                        profile::WorkspaceConfig::decode(&record.desired).map_err(map_policy)?;
-                    self.process_host.workspace_policy_recovered(&desired.id);
-                }
-                _ => {}
+            if record.authority.starts_with("workspaces/") {
+                let desired =
+                    profile::WorkspaceConfig::decode(&record.desired).map_err(map_policy)?;
+                self.process_host.workspace_policy_recovered(&desired.id);
             }
             self.journal.commit_record(&record.rpc_id)?;
         }
         Ok(())
-    }
-
-    fn connections(&self) -> Result<IJsonValue, ProductionRouteFailure> {
-        let config = self.repository.providers().map_err(internal_profile)?;
-        let connections = config
-            .providers
-            .iter()
-            .map(|provider| {
-                let readiness = self.connection_readiness(provider);
-                connection_view(provider, readiness)
-            })
-            .collect::<Vec<_>>();
-        to_ijson(&json!({"format":1,"providersRevision":config.revision,"connections":connections}))
-    }
-
-    fn profiles(&self) -> Result<IJsonValue, ProductionRouteFailure> {
-        let config = self.repository.providers().map_err(internal_profile)?;
-        let settings = self.repository.settings().map_err(internal_profile)?;
-        let mut profiles = Vec::new();
-        for provider in &config.providers {
-            for model in &provider.models {
-                profiles.push(self.profile_view(provider, model));
-            }
-        }
-        let mut result = json!({
-            "format":1,
-            "providersRevision":config.revision,
-            "settingsRevision":settings.revision,
-            "profiles":profiles,
-        });
-        if let (Some(connection_id), Some(exact_sku)) =
-            (settings.default_provider, settings.default_model)
-        {
-            result
-                .as_object_mut()
-                .expect("provider profile result")
-                .insert(
-                    "default".to_owned(),
-                    json!({"connectionId":connection_id,"exactSku":exact_sku}),
-                );
-        }
-        to_ijson(&result)
-    }
-
-    fn connection_readiness(&self, provider: &Provider) -> Readiness {
-        if provider::endpoint_origin(&provider.endpoint).is_err() {
-            return Readiness::unavailable("invalid-endpoint");
-        }
-        let proof_verified = match provider::configured_route_is_verified(provider) {
-            Ok(value) => value,
-            Err(provider::DialectError::UnknownDialect(_))
-            | Err(provider::DialectError::UnprovedProfile(_)) => {
-                return Readiness::unavailable("dialect-unproved");
-            }
-            Err(_) => return Readiness::unavailable("route-mismatch"),
-        };
-        match self
-            .process_host
-            .credential_is_ready(provider.credential_key.as_deref())
-        {
-            Ok(true) if proof_verified => Readiness::Ready,
-            Ok(true) => Readiness::unverified("no-exact-proof"),
-            Ok(false) | Err(_) => Readiness::unavailable("credential-unavailable"),
-        }
-    }
-
-    fn profile_readiness(&self, provider: &Provider, model: &Model) -> Readiness {
-        if provider::endpoint_origin(&provider.endpoint).is_err() {
-            return Readiness::unavailable("invalid-endpoint");
-        }
-        match provider::resolve_profile(provider, model) {
-            Ok(profile) => match self
-                .process_host
-                .credential_is_ready(provider.credential_key.as_deref())
-            {
-                Ok(true) if profile.proof_verified => Readiness::Ready,
-                Ok(true) => Readiness::unverified("no-exact-proof"),
-                Ok(false) | Err(_) => Readiness::unavailable("credential-unavailable"),
-            },
-            Err(provider::DialectError::UnprovedProfile(_)) => {
-                Readiness::unavailable("dialect-unproved")
-            }
-            Err(_) => Readiness::unavailable("route-mismatch"),
-        }
-    }
-
-    fn profile_view(&self, provider: &Provider, model: &Model) -> Value {
-        let provider_name = provider.name.as_deref().unwrap_or(&provider.id);
-        let mut value = json!({
-            "connectionId":provider.id,
-            "provider":{"id":provider.id,"name":provider_name},
-            "modelProfileId":model.profile,
-            "exactSku":model.id,
-            "enabled":model.enabled,
-            "contextWindowTokens":model.context_window_tokens,
-            "compactTriggerTokens":model.compact_trigger_tokens,
-            "readiness":self.profile_readiness(provider, model),
-        });
-        if let Ok(profile) = provider::resolve_profile(provider, model) {
-            if !profile.reasoning_efforts().is_empty() {
-                value["reasoning"] = json!({
-                    "efforts":profile.reasoning_efforts().iter().map(|effort| json!({
-                        "id":effort,
-                        "name":effort,
-                    })).collect::<Vec<_>>(),
-                    "defaultEffort":profile.default_reasoning_effort(),
-                });
-            }
-        }
-        value
-    }
-
-    fn provider_list(&self) -> Result<IJsonValue, ProductionRouteFailure> {
-        let proofs = provider::advertised_dialect_proofs().map_err(|error| {
-            failure(
-                "dialect-unproved",
-                "Provider proof registry is unavailable",
-                json!({"reason":error.to_string()}),
-            )
-        })?;
-        let proofs = proofs.into_iter().map(|proof| json!({
-            "proofId":proof.proof_id,
-            "target":target(&proof.protocol_family, &proof.dialect_id, &proof.model_profile_id,
-                &proof.endpoint_owner, &proof.gateway_translation, &proof.exact_sku,
-                &proof.evidence_revision),
-        })).collect::<Vec<_>>();
-        to_ijson(&json!({"format":1,"proofs":proofs}))
-    }
-
-    fn verify(&self, input: VerifyRequest) -> Result<IJsonValue, ProductionRouteFailure> {
-        let config = self.repository.providers().map_err(internal_profile)?;
-        let provider = find_provider(&config, &input.connection_id)?;
-        let model = find_model(provider, &input.exact_sku)?;
-        let resolved = provider::resolve_profile(provider, model).map_err(map_dialect)?;
-        if !self
-            .process_host
-            .credential_is_ready(provider.credential_key.as_deref())
-            .map_err(internal_daemon)?
-        {
-            return Err(failure(
-                "credential-unavailable",
-                "Provider credential is unavailable",
-                json!({"connectionId":input.connection_id}),
-            ));
-        }
-        let route = &resolved.target.route;
-        to_ijson(&json!({"format":1,"verified":true,
-            "proofVerified":resolved.proof_verified,"credentialReady":true,
-            "target":target(&resolved.target.protocol_family, &resolved.target.dialect_id,
-                &resolved.target.model_profile_id, &route.endpoint_owner,
-                &route.gateway_translation, &route.exact_sku, &route.evidence_revision)}))
-    }
-
-    fn save_connection(
-        &self,
-        request: &EndpointHostCall,
-        input: SaveConnectionRequest,
-    ) -> Result<IJsonValue, ProductionRouteFailure> {
-        let _gate = self
-            .mutation_gate
-            .lock()
-            .map_err(|_| internal("admin mutation lock poisoned"))?;
-        self.recover_pending_intents()?;
-        if let Some(result) = self.journal.recover(request)? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        let mut config = self.repository.providers().map_err(internal_profile)?;
-        if config.revision != input.expected_providers_revision {
-            return Err(stale(input.expected_providers_revision, config.revision));
-        }
-        let mut candidate = Provider::from(&input.connection);
-        if let Some(existing) = config
-            .providers
-            .iter()
-            .find(|provider| provider.id == candidate.id)
-        {
-            candidate.models = existing.models.clone();
-        }
-        // Administration is the durable configuration authority. Exact proof controls the
-        // verified badge, not whether a known dialect configuration may execute best-effort.
-        match config
-            .providers
-            .iter()
-            .position(|provider| provider.id == candidate.id)
-        {
-            Some(index) => config.providers[index] = candidate.clone(),
-            None => config.providers.push(candidate.clone()),
-        }
-        config.revision = next_revision(config.revision)?;
-        let result = to_ijson(&json!({"format":1,"providersRevision":config.revision,
-            "connection":connection_view(&candidate, self.connection_readiness(&candidate))}))?;
-        let desired = config.canonical_bytes().map_err(map_profile_provider)?;
-        if let AdminBegin::Completed(result) = self.journal.begin(
-            request,
-            "config/providers.json",
-            input.expected_providers_revision,
-            config.revision,
-            &desired,
-            &result,
-        )? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        if let Err(error) = self
-            .repository
-            .publish_providers_checked(input.expected_providers_revision, &config)
-        {
-            self.journal.abort(request)?;
-            return Err(map_profile_provider(error));
-        }
-        self.process_host
-            .refresh_live_credentials()
-            .map_err(internal_daemon)?;
-        let result = self.journal.commit(request)?;
-        mark_handoff(request)?;
-        Ok(result)
-    }
-
-    fn delete_connection(
-        &self,
-        request: &EndpointHostCall,
-        input: DeleteConnectionRequest,
-    ) -> Result<IJsonValue, ProductionRouteFailure> {
-        let _gate = self
-            .mutation_gate
-            .lock()
-            .map_err(|_| internal("admin mutation lock poisoned"))?;
-        self.recover_pending_intents()?;
-        if let Some(result) = self.journal.recover(request)? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        let mut config = self.repository.providers().map_err(internal_profile)?;
-        if config.revision != input.expected_providers_revision {
-            return Err(stale(input.expected_providers_revision, config.revision));
-        }
-        let index = config
-            .providers
-            .iter()
-            .position(|provider| provider.id == input.connection_id)
-            .ok_or_else(|| {
-                failure(
-                    "route-mismatch",
-                    "Provider connection is absent",
-                    json!({"connectionId":input.connection_id}),
-                )
-            })?;
-        if !config.providers[index].models.is_empty() {
-            return Err(failure(
-                "provider-in-use",
-                "Provider connection still owns profiles",
-                json!({"connectionId":input.connection_id}),
-            ));
-        }
-        config.providers.remove(index);
-        config.revision = next_revision(config.revision)?;
-        let result =
-            to_ijson(&json!({"format":1,"providersRevision":config.revision,"deleted":true}))?;
-        let desired = config.canonical_bytes().map_err(map_profile_provider)?;
-        self.journal.begin(
-            request,
-            "config/providers.json",
-            input.expected_providers_revision,
-            config.revision,
-            &desired,
-            &result,
-        )?;
-        if let Err(error) = self
-            .repository
-            .publish_providers_checked(input.expected_providers_revision, &config)
-        {
-            self.journal.abort(request)?;
-            return Err(map_provider_in_use(error));
-        }
-        self.process_host
-            .refresh_live_credentials()
-            .map_err(internal_daemon)?;
-        let result = self.journal.commit(request)?;
-        mark_handoff(request)?;
-        Ok(result)
-    }
-
-    fn save_profile(
-        &self,
-        request: &EndpointHostCall,
-        input: SaveProfileRequest,
-    ) -> Result<IJsonValue, ProductionRouteFailure> {
-        let _gate = self
-            .mutation_gate
-            .lock()
-            .map_err(|_| internal("admin mutation lock poisoned"))?;
-        self.recover_pending_intents()?;
-        if let Some(result) = self.journal.recover(request)? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        let mut config = self.repository.providers().map_err(internal_profile)?;
-        if config.revision != input.expected_providers_revision {
-            return Err(stale(input.expected_providers_revision, config.revision));
-        }
-        let provider = config
-            .providers
-            .iter_mut()
-            .find(|provider| provider.id == input.profile.connection_id)
-            .ok_or_else(|| {
-                failure(
-                    "route-mismatch",
-                    "Provider connection is absent",
-                    json!({"connectionId":input.profile.connection_id}),
-                )
-            })?;
-        let model = Model::from(&input.profile);
-        // An unproved model remains executable through its configured dialect and is surfaced as
-        // unverified until exact route evidence is added.
-        match provider
-            .models
-            .iter()
-            .position(|value| value.id == model.id)
-        {
-            Some(index) => provider.models[index] = model.clone(),
-            None => provider.models.push(model.clone()),
-        }
-        let provider_copy = provider.clone();
-        config.revision = next_revision(config.revision)?;
-        let result = to_ijson(&json!({"format":1,"providersRevision":config.revision,
-            "profile":self.profile_view(&provider_copy, &model)}))?;
-        let desired = config.canonical_bytes().map_err(map_profile_provider)?;
-        self.journal.begin(
-            request,
-            "config/providers.json",
-            input.expected_providers_revision,
-            config.revision,
-            &desired,
-            &result,
-        )?;
-        if let Err(error) = self
-            .repository
-            .publish_providers_checked(input.expected_providers_revision, &config)
-        {
-            self.journal.abort(request)?;
-            return Err(map_profile_save(error));
-        }
-        self.process_host
-            .refresh_live_credentials()
-            .map_err(internal_daemon)?;
-        let result = self.journal.commit(request)?;
-        mark_handoff(request)?;
-        Ok(result)
-    }
-
-    fn delete_profile(
-        &self,
-        request: &EndpointHostCall,
-        input: DeleteProfileRequest,
-    ) -> Result<IJsonValue, ProductionRouteFailure> {
-        let _gate = self
-            .mutation_gate
-            .lock()
-            .map_err(|_| internal("admin mutation lock poisoned"))?;
-        self.recover_pending_intents()?;
-        if let Some(result) = self.journal.recover(request)? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        let mut config = self.repository.providers().map_err(internal_profile)?;
-        if config.revision != input.expected_providers_revision {
-            return Err(stale(input.expected_providers_revision, config.revision));
-        }
-        let provider = config
-            .providers
-            .iter_mut()
-            .find(|provider| provider.id == input.connection_id)
-            .ok_or_else(|| {
-                failure(
-                    "route-mismatch",
-                    "Provider connection is absent",
-                    json!({"connectionId":input.connection_id}),
-                )
-            })?;
-        let index = provider
-            .models
-            .iter()
-            .position(|model| model.id == input.exact_sku)
-            .ok_or_else(|| {
-                failure(
-                    "route-mismatch",
-                    "Provider profile is absent",
-                    json!({"exactSku":input.exact_sku}),
-                )
-            })?;
-        provider.models.remove(index);
-        config.revision = next_revision(config.revision)?;
-        let result =
-            to_ijson(&json!({"format":1,"providersRevision":config.revision,"deleted":true}))?;
-        let desired = config.canonical_bytes().map_err(map_profile_provider)?;
-        self.journal.begin(
-            request,
-            "config/providers.json",
-            input.expected_providers_revision,
-            config.revision,
-            &desired,
-            &result,
-        )?;
-        if let Err(error) = self
-            .repository
-            .publish_providers_checked(input.expected_providers_revision, &config)
-        {
-            self.journal.abort(request)?;
-            return Err(map_profile_in_use(error));
-        }
-        self.process_host
-            .refresh_live_credentials()
-            .map_err(internal_daemon)?;
-        let result = self.journal.commit(request)?;
-        mark_handoff(request)?;
-        Ok(result)
-    }
-
-    fn set_default(
-        &self,
-        request: &EndpointHostCall,
-        input: DefaultProfileRequest,
-    ) -> Result<IJsonValue, ProductionRouteFailure> {
-        let _gate = self
-            .mutation_gate
-            .lock()
-            .map_err(|_| internal("admin mutation lock poisoned"))?;
-        self.recover_pending_intents()?;
-        if let Some(result) = self.journal.recover(request)? {
-            mark_handoff(request)?;
-            return Ok(result);
-        }
-        let providers = self.repository.providers().map_err(internal_profile)?;
-        let provider = find_provider(&providers, &input.connection_id)?;
-        let model = find_model(provider, &input.exact_sku)?;
-        provider::resolve_profile(provider, model).map_err(map_dialect)?;
-        let mut settings = self.repository.settings().map_err(internal_profile)?;
-        if settings.revision != input.expected_settings_revision {
-            return Err(stale(input.expected_settings_revision, settings.revision));
-        }
-        settings.revision = next_revision(settings.revision)?;
-        settings.default_provider = Some(input.connection_id.clone());
-        settings.default_model = Some(input.exact_sku.clone());
-        let result = default_result(settings.revision, &input)?;
-        let desired = settings.canonical_bytes().map_err(map_profile_provider)?;
-        self.journal.begin(
-            request,
-            "config/settings.json",
-            input.expected_settings_revision,
-            settings.revision,
-            &desired,
-            &result,
-        )?;
-        if let Err(error) = self
-            .repository
-            .publish_settings_checked(input.expected_settings_revision, &settings)
-        {
-            self.journal.abort(request)?;
-            return Err(map_profile_route(error));
-        }
-        self.process_host
-            .refresh_live_credentials()
-            .map_err(internal_daemon)?;
-        let result = self.journal.commit(request)?;
-        mark_handoff(request)?;
-        Ok(result)
     }
 
     fn get_policy(&self, input: PolicyGetRequest) -> Result<IJsonValue, ProductionRouteFailure> {
@@ -801,26 +277,16 @@ impl ProductionEndpointRoutes for AdminCapabilityRoutes {
 
 impl ProductionEndpointRoutes for ClientAdminRoutes {
     fn capabilities(&self) -> BTreeSet<String> {
-        PROVIDER_ADMIN_METHODS
+        WORKSPACE_POLICY_METHODS
             .into_iter()
-            .chain(WORKSPACE_POLICY_METHODS)
             .map(|(name, _)| name.to_owned())
             .collect()
     }
 
     fn extension_method_class(&self, method: &str) -> Option<MethodClass> {
         Some(match method {
-            "providers.list"
-            | "providers.verify"
-            | "providers.connections"
-            | "providers.profiles"
-            | "workspace.policy.get" => MethodClass::ReadOnly,
-            "providers.connection.save"
-            | "providers.connection.delete"
-            | "providers.profile.save"
-            | "providers.profile.delete"
-            | "providers.profile.default"
-            | "workspace.policy.set" => MethodClass::Mutation,
+            "workspace.policy.get" => MethodClass::ReadOnly,
+            "workspace.policy.set" => MethodClass::Mutation,
             _ => return None,
         })
     }
@@ -831,15 +297,6 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         payload: &Value,
     ) -> Result<(), ProductionRouteFailure> {
         match operation {
-            "providers.list" | "providers.connections" | "providers.profiles" => {
-                parse::<Empty>(payload).map(|_| ())
-            }
-            "providers.verify" => parse::<VerifyRequest>(payload).map(|_| ()),
-            "providers.connection.save" => parse::<SaveConnectionRequest>(payload).map(|_| ()),
-            "providers.connection.delete" => parse::<DeleteConnectionRequest>(payload).map(|_| ()),
-            "providers.profile.save" => parse::<SaveProfileRequest>(payload).map(|_| ()),
-            "providers.profile.delete" => parse::<DeleteProfileRequest>(payload).map(|_| ()),
-            "providers.profile.default" => parse::<DefaultProfileRequest>(payload).map(|_| ()),
             "workspace.policy.get" => parse::<PolicyGetRequest>(payload).map(|_| ()),
             "workspace.policy.set" => parse::<PolicySetRequest>(payload).map(|_| ()),
             _ => Err(failure(
@@ -862,11 +319,6 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
                 | "internal"
                 | "idempotency-conflict"
                 | "stale-revision"
-                | "dialect-unproved"
-                | "route-mismatch"
-                | "credential-unavailable"
-                | "provider-in-use"
-                | "profile-in-use"
                 | "workspace-not-found"
                 | "policy-invalid"
                 | "policy-escalation"
@@ -880,15 +332,6 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         _principal: &str,
     ) -> Result<IJsonValue, ProductionRouteFailure> {
         match request.operation.as_str() {
-            "providers.list" => self.provider_list(),
-            "providers.verify" => self.verify(parse(payload)?),
-            "providers.connections" => self.connections(),
-            "providers.connection.save" => self.save_connection(request, parse(payload)?),
-            "providers.connection.delete" => self.delete_connection(request, parse(payload)?),
-            "providers.profiles" => self.profiles(),
-            "providers.profile.save" => self.save_profile(request, parse(payload)?),
-            "providers.profile.delete" => self.delete_profile(request, parse(payload)?),
-            "providers.profile.default" => self.set_default(request, parse(payload)?),
             "workspace.policy.get" => self.get_policy(parse(payload)?),
             "workspace.policy.set" => self.set_policy(request, parse(payload)?),
             _ => Err(failure(
@@ -901,132 +344,6 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
 }
 
 #[derive(Deserialize)]
-#[serde(deny_unknown_fields)]
-struct Empty {}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct VerifyRequest {
-    connection_id: String,
-    exact_sku: String,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Deserialize, Serialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct Connection {
-    id: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    name: Option<String>,
-    protocol_family: String,
-    dialect_id: String,
-    endpoint_owner: String,
-    gateway_translation: String,
-    evidence_revision: String,
-    endpoint: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    credential_id: Option<String>,
-}
-
-impl From<&Provider> for Connection {
-    fn from(value: &Provider) -> Self {
-        Self {
-            id: value.id.clone(),
-            name: value.name.clone(),
-            protocol_family: value.adapter.clone(),
-            dialect_id: value.dialect.clone(),
-            endpoint_owner: value.endpoint_owner.clone(),
-            gateway_translation: value.gateway_translation.clone(),
-            evidence_revision: value.evidence_revision.clone(),
-            endpoint: value.endpoint.clone(),
-            credential_id: value.credential_key.clone(),
-        }
-    }
-}
-impl From<&Connection> for Provider {
-    fn from(value: &Connection) -> Self {
-        Self {
-            id: value.id.clone(),
-            name: value.name.clone(),
-            adapter: value.protocol_family.clone(),
-            dialect: value.dialect_id.clone(),
-            endpoint_owner: value.endpoint_owner.clone(),
-            gateway_translation: value.gateway_translation.clone(),
-            evidence_revision: value.evidence_revision.clone(),
-            endpoint: value.endpoint.clone(),
-            credential_key: value.credential_id.clone(),
-            models: Vec::new(),
-        }
-    }
-}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct SaveConnectionRequest {
-    expected_providers_revision: u64,
-    connection: Connection,
-}
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct DeleteConnectionRequest {
-    expected_providers_revision: u64,
-    connection_id: String,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct ModelProfile {
-    connection_id: String,
-    model_profile_id: String,
-    exact_sku: String,
-    enabled: bool,
-    context_window_tokens: u64,
-    compact_trigger_tokens: u64,
-}
-impl From<(&String, &Model)> for ModelProfile {
-    fn from((connection, value): (&String, &Model)) -> Self {
-        Self {
-            connection_id: connection.clone(),
-            model_profile_id: value.profile.clone(),
-            exact_sku: value.id.clone(),
-            enabled: value.enabled,
-            context_window_tokens: value.context_window_tokens,
-            compact_trigger_tokens: value.compact_trigger_tokens,
-        }
-    }
-}
-impl From<&ModelProfile> for Model {
-    fn from(value: &ModelProfile) -> Self {
-        Self {
-            id: value.exact_sku.clone(),
-            profile: value.model_profile_id.clone(),
-            enabled: value.enabled,
-            context_window_tokens: value.context_window_tokens,
-            compact_trigger_tokens: value.compact_trigger_tokens,
-        }
-    }
-}
-
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct SaveProfileRequest {
-    expected_providers_revision: u64,
-    profile: ModelProfile,
-}
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct DeleteProfileRequest {
-    expected_providers_revision: u64,
-    connection_id: String,
-    exact_sku: String,
-}
-#[derive(Deserialize)]
-#[serde(rename_all = "camelCase", deny_unknown_fields)]
-struct DefaultProfileRequest {
-    expected_settings_revision: u64,
-    connection_id: String,
-    exact_sku: String,
-}
-#[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct PolicyGetRequest {
     workspace_id: String,
@@ -1037,22 +354,6 @@ struct PolicySetRequest {
     workspace_id: String,
     expected_revision: u64,
     policy: WorkspacePolicy,
-}
-
-#[derive(Serialize)]
-#[serde(tag = "state", rename_all = "kebab-case")]
-enum Readiness {
-    Ready,
-    Unverified { reason: &'static str },
-    Unavailable { reason: &'static str },
-}
-impl Readiness {
-    fn unverified(reason: &'static str) -> Self {
-        Self::Unverified { reason }
-    }
-    fn unavailable(reason: &'static str) -> Self {
-        Self::Unavailable { reason }
-    }
 }
 
 fn parse<T: for<'de> Deserialize<'de>>(payload: &Value) -> Result<T, ProductionRouteFailure> {
@@ -1109,119 +410,6 @@ fn next_revision(value: u64) -> Result<u64, ProductionRouteFailure> {
             )
         })
 }
-fn find_provider<'a>(
-    config: &'a ProvidersConfig,
-    id: &str,
-) -> Result<&'a Provider, ProductionRouteFailure> {
-    config
-        .providers
-        .iter()
-        .find(|provider| provider.id == id)
-        .ok_or_else(|| {
-            failure(
-                "route-mismatch",
-                "Provider connection is absent",
-                json!({"connectionId":id}),
-            )
-        })
-}
-fn find_model<'a>(provider: &'a Provider, id: &str) -> Result<&'a Model, ProductionRouteFailure> {
-    provider
-        .models
-        .iter()
-        .find(|model| model.id == id)
-        .ok_or_else(|| {
-            failure(
-                "route-mismatch",
-                "Provider profile is absent",
-                json!({"exactSku":id}),
-            )
-        })
-}
-fn map_dialect(error: provider::DialectError) -> ProductionRouteFailure {
-    match error {
-        provider::DialectError::UnprovedProfile(_) => failure(
-            "dialect-unproved",
-            "Provider dialect proof is unavailable",
-            json!({"reason":error.to_string()}),
-        ),
-        _ => failure(
-            "route-mismatch",
-            "Provider route does not match its proof",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
-fn map_profile_provider(error: profile::ProfileError) -> ProductionRouteFailure {
-    match error {
-        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
-        profile::ProfileError::InvalidReference { .. } => failure(
-            "provider-in-use",
-            "Provider configuration is referenced",
-            json!({"reason":error.to_string()}),
-        ),
-        _ => failure(
-            "route-mismatch",
-            "Provider configuration is invalid",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
-fn map_profile_in_use(error: profile::ProfileError) -> ProductionRouteFailure {
-    match error {
-        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
-        profile::ProfileError::InvalidReference { .. } => failure(
-            "profile-in-use",
-            "Provider profile is referenced",
-            json!({"reason":error.to_string()}),
-        ),
-        _ => failure(
-            "route-mismatch",
-            "Provider configuration is invalid",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
-fn map_provider_in_use(error: profile::ProfileError) -> ProductionRouteFailure {
-    match error {
-        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
-        profile::ProfileError::InvalidReference { .. } => failure(
-            "provider-in-use",
-            "Provider connection is referenced",
-            json!({"reason":error.to_string()}),
-        ),
-        _ => failure(
-            "route-mismatch",
-            "Provider configuration is invalid",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
-fn map_profile_save(error: profile::ProfileError) -> ProductionRouteFailure {
-    match error {
-        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
-        profile::ProfileError::InvalidReference { .. } => failure(
-            "profile-in-use",
-            "Provider profile is referenced",
-            json!({"reason":error.to_string()}),
-        ),
-        _ => failure(
-            "route-mismatch",
-            "Provider configuration is invalid",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
-fn map_profile_route(error: profile::ProfileError) -> ProductionRouteFailure {
-    match error {
-        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
-        _ => failure(
-            "route-mismatch",
-            "Provider default is invalid",
-            json!({"reason":error.to_string()}),
-        ),
-    }
-}
 fn map_workspace(error: profile::ProfileError) -> ProductionRouteFailure {
     match error {
         profile::ProfileError::Io(ref io) if io.kind() == std::io::ErrorKind::NotFound => {
@@ -1247,42 +435,6 @@ fn map_policy(error: profile::ProfileError) -> ProductionRouteFailure {
             json!({"reason":error.to_string()}),
         ),
     }
-}
-fn target(
-    family: &str,
-    dialect: &str,
-    profile: &str,
-    owner: &str,
-    gateway: &str,
-    sku: &str,
-    revision: &str,
-) -> Value {
-    json!({"protocolFamily":family,"dialectId":dialect,"modelProfileId":profile,"endpointOwner":owner,"gatewayTranslation":gateway,"exactSku":sku,"evidenceRevision":revision})
-}
-fn connection_view(provider: &Provider, readiness: Readiness) -> Value {
-    let c = Connection::from(provider);
-    let mut value = json!({"id":c.id,"protocolFamily":c.protocol_family,"dialectId":c.dialect_id,"endpointOwner":c.endpoint_owner,"gatewayTranslation":c.gateway_translation,"evidenceRevision":c.evidence_revision,"endpoint":c.endpoint,"readiness":readiness});
-    if let Some(name) = c.name {
-        value
-            .as_object_mut()
-            .expect("connection object")
-            .insert("name".to_owned(), Value::String(name));
-    }
-    if let Some(id) = c.credential_id {
-        value
-            .as_object_mut()
-            .expect("connection object")
-            .insert("credentialId".to_owned(), Value::String(id));
-    }
-    value
-}
-fn default_result(
-    revision: u64,
-    input: &DefaultProfileRequest,
-) -> Result<IJsonValue, ProductionRouteFailure> {
-    to_ijson(
-        &json!({"format":1,"settingsRevision":revision,"default":{"connectionId":input.connection_id,"exactSku":input.exact_sku}}),
-    )
 }
 fn policy_result(
     revision: u64,
@@ -1316,7 +468,7 @@ struct AdminRecord {
 
 enum AdminBegin {
     Execute,
-    Completed(IJsonValue),
+    Completed,
 }
 
 /// The durable config-admin rpc carrier directory under the authority root.
@@ -1390,7 +542,7 @@ impl AdminMutationJournal {
                 publish_record(&path, &old)?;
             }
             return Ok(if old.phase == AdminPhase::Committed {
-                AdminBegin::Completed(old.result)
+                AdminBegin::Completed
             } else {
                 AdminBegin::Execute
             });
@@ -1630,274 +782,6 @@ mod tests {
         }
     }
 
-    fn openai_connection() -> Value {
-        json!({
-            "id":"openai-main",
-            "name":"OpenAI",
-            "protocolFamily":"responses",
-            "dialectId":"openai_responses_v1",
-            "endpointOwner":"openai",
-            "gatewayTranslation":"direct",
-            "evidenceRevision":"openai-2026-08-01",
-            "endpoint":"https://api.openai.com/v1"
-        })
-    }
-
-    #[test]
-    fn provider_profile_projection_uses_exact_model_reasoning_capabilities() {
-        let (_root, _host, routes) = fixture();
-        let provider = Provider {
-            id: "deepseek-main".to_owned(),
-            name: Some("DeepSeek".to_owned()),
-            adapter: "responses".to_owned(),
-            dialect: "deepseek_responses_v1".to_owned(),
-            endpoint_owner: "deepseek".to_owned(),
-            gateway_translation: "direct".to_owned(),
-            evidence_revision:
-                "deepseek-direct-responses-v4-2026-07-31+function-json-schema-strict-v1".to_owned(),
-            endpoint: "https://api.deepseek.com".to_owned(),
-            credential_key: None,
-            models: vec![Model {
-                id: "deepseek-v4-flash".to_owned(),
-                profile: "deepseek_responses_v1:deepseek-v4-flash".to_owned(),
-                enabled: true,
-                context_window_tokens: 128_000,
-                compact_trigger_tokens: 96_000,
-            }],
-        };
-
-        let value = routes.profile_view(&provider, &provider.models[0]);
-
-        assert_eq!(
-            value["reasoning"]["efforts"],
-            json!([
-                {"id":"low","name":"low"},
-                {"id":"high","name":"high"},
-                {"id":"max","name":"max"},
-            ])
-        );
-        assert_eq!(value["reasoning"]["defaultEffort"], "high");
-    }
-
-    #[test]
-    fn provider_admin_publishes_exact_identity_and_reacks_from_journal() {
-        let (_root, _host, routes) = fixture();
-        let save = call(
-            "rpc-connection",
-            "providers.connection.save",
-            json!({"expectedProvidersRevision":0,"connection":openai_connection()}),
-            false,
-        );
-        let first = routes
-            .execute(
-                &save,
-                &serde_json::to_value(&save.payload).expect("payload value"),
-                "uid:1",
-            )
-            .expect("save");
-        assert!(save.handoff.is_durable());
-        let retry = call(
-            "rpc-connection",
-            "providers.connection.save",
-            json!({"expectedProvidersRevision":0,"connection":openai_connection()}),
-            true,
-        );
-        let repeated = routes
-            .execute(
-                &retry,
-                &serde_json::to_value(&retry.payload).expect("payload value"),
-                "uid:1",
-            )
-            .expect("re-ack");
-        assert_eq!(first, repeated);
-        assert!(retry.handoff.is_durable());
-
-        let listed = routes.connections().expect("connections");
-        let value = serde_json::to_value(listed).expect("list value");
-        assert_eq!(value["connections"][0]["readiness"]["state"], "ready");
-        assert_eq!(value["connections"][0]["name"], "OpenAI");
-        assert_eq!(value["connections"][0]["protocolFamily"], "responses");
-    }
-
-    #[test]
-    fn exact_proof_verify_and_reference_protection_share_one_config_authority() {
-        let (_root, _host, routes) = fixture();
-        let save_connection = call(
-            "rpc-proof-connection",
-            "providers.connection.save",
-            json!({"expectedProvidersRevision":0,"connection":openai_connection()}),
-            false,
-        );
-        routes
-            .execute(
-                &save_connection,
-                &serde_json::to_value(&save_connection.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("connection");
-
-        let save_profile = call(
-            "rpc-proof-profile",
-            "providers.profile.save",
-            json!({"expectedProvidersRevision":1,"profile":{
-                "connectionId":"openai-main",
-                "modelProfileId":"openai_responses_v1:gpt-5",
-                "exactSku":"gpt-5",
-                "enabled":true,
-                "contextWindowTokens":200000,
-                "compactTriggerTokens":180000
-            }}),
-            false,
-        );
-        routes
-            .execute(
-                &save_profile,
-                &serde_json::to_value(&save_profile.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("profile");
-
-        let profiles =
-            serde_json::to_value(routes.profiles().expect("profiles")).expect("profile result");
-        assert_eq!(profiles["profiles"][0]["provider"]["name"], "OpenAI");
-
-        let proofs =
-            serde_json::to_value(routes.provider_list().expect("proofs")).expect("proof result");
-        assert_eq!(proofs["proofs"][0]["proofId"], "proof-openai_responses_v1");
-        let verified = serde_json::to_value(
-            routes
-                .verify(VerifyRequest {
-                    connection_id: "openai-main".to_owned(),
-                    exact_sku: "gpt-5".to_owned(),
-                })
-                .expect("verify"),
-        )
-        .expect("verify result");
-        assert_eq!(verified["verified"], true);
-        assert_eq!(verified["target"]["exactSku"], "gpt-5");
-
-        let select_default = call(
-            "rpc-proof-default",
-            "providers.profile.default",
-            json!({"expectedSettingsRevision":0,"connectionId":"openai-main","exactSku":"gpt-5"}),
-            false,
-        );
-        routes
-            .execute(
-                &select_default,
-                &serde_json::to_value(&select_default.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("default");
-        let delete = call(
-            "rpc-proof-delete",
-            "providers.profile.delete",
-            json!({"expectedProvidersRevision":2,"connectionId":"openai-main","exactSku":"gpt-5"}),
-            false,
-        );
-        let error = routes
-            .execute(
-                &delete,
-                &serde_json::to_value(&delete.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect_err("referenced profile must not delete");
-        assert_eq!(error.code, "profile-in-use");
-        assert_eq!(
-            routes.repository.providers().expect("providers").revision,
-            2
-        );
-    }
-
-    #[test]
-    fn unproved_configured_route_is_usable_and_distinct_from_verified() {
-        let (_root, _host, routes) = fixture();
-        let connection = json!({
-            "id":"example-cloudflare-openai-responses-v1",
-            "protocolFamily":"responses",
-            "dialectId":"openai_responses_v1",
-            "endpointOwner":"cloudflare",
-            "gatewayTranslation":"router",
-            "evidenceRevision":"legacy-example-v2",
-            "endpoint":"https://api.cloudflare.com/client/v4/accounts/example/ai/v1",
-            "credentialId":null
-        });
-        let save_connection = call(
-            "rpc-legacy-connection",
-            "providers.connection.save",
-            json!({"expectedProvidersRevision":0,"connection":connection}),
-            false,
-        );
-        routes
-            .execute(
-                &save_connection,
-                &serde_json::to_value(&save_connection.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("legacy connection is configurable");
-        let save_profile = call(
-            "rpc-legacy-profile",
-            "providers.profile.save",
-            json!({"expectedProvidersRevision":1,"profile":{
-                "connectionId":"example-cloudflare-openai-responses-v1",
-                "modelProfileId":"openai_responses_v1:openai/gpt-5.6-luna",
-                "exactSku":"openai/gpt-5.6-luna",
-                "enabled":true,
-                "contextWindowTokens":200000,
-                "compactTriggerTokens":180000
-            }}),
-            false,
-        );
-        routes
-            .execute(
-                &save_profile,
-                &serde_json::to_value(&save_profile.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("legacy profile is configurable");
-
-        let connections = serde_json::to_value(routes.connections().expect("connections"))
-            .expect("connections value");
-        assert_eq!(
-            connections["connections"][0]["readiness"]["state"],
-            "unverified"
-        );
-        assert_eq!(
-            connections["connections"][0]["readiness"]["reason"],
-            "no-exact-proof"
-        );
-        let profiles =
-            serde_json::to_value(routes.profiles().expect("profiles")).expect("profiles value");
-        assert_eq!(profiles["profiles"][0]["readiness"]["state"], "unverified");
-        let configured = serde_json::to_value(
-            routes
-                .verify(VerifyRequest {
-                    connection_id: "example-cloudflare-openai-responses-v1".to_owned(),
-                    exact_sku: "openai/gpt-5.6-luna".to_owned(),
-                })
-                .expect("configured route validation"),
-        );
-        let configured = configured.expect("configured route value");
-        assert_eq!(configured["verified"], true);
-        assert_eq!(configured["proofVerified"], false);
-
-        let select_default = call(
-            "rpc-unverified-default",
-            "providers.profile.default",
-            json!({"expectedSettingsRevision":0,
-                "connectionId":"example-cloudflare-openai-responses-v1",
-                "exactSku":"openai/gpt-5.6-luna"}),
-            false,
-        );
-        routes
-            .execute(
-                &select_default,
-                &serde_json::to_value(&select_default.payload).expect("payload"),
-                "uid:1",
-            )
-            .expect("unverified configured route can become default");
-    }
-
     #[test]
     fn policy_replacement_can_relax_local_default_below_ceiling() {
         let (_root, _host, routes) = fixture();
@@ -1952,36 +836,30 @@ mod tests {
     #[test]
     fn crash_before_publish_is_completed_before_an_unrelated_rpc() {
         let (_root, _host, routes) = fixture();
-        let connection = Connection {
-            id: "openai-main".to_owned(),
-            name: Some("OpenAI".to_owned()),
-            protocol_family: "responses".to_owned(),
-            dialect_id: "openai_responses_v1".to_owned(),
-            endpoint_owner: "openai".to_owned(),
-            gateway_translation: "direct".to_owned(),
-            evidence_revision: "openai-2026-08-01".to_owned(),
-            endpoint: "https://api.openai.com/v1".to_owned(),
-            credential_id: None,
-        };
-        let desired = ProvidersConfig {
-            format: 1,
-            revision: 1,
-            providers: vec![Provider::from(&connection)],
-            web_search: None,
-        };
+        let mut desired = routes
+            .repository
+            .workspace("workspace-1")
+            .expect("workspace");
+        desired.revision = 2;
+        desired.policy = Some(WorkspacePolicy {
+            allowed_tools: vec!["read".to_owned()],
+            ..WorkspacePolicy::default()
+        });
         let interrupted = call(
-            "rpc-interrupted-provider",
-            "providers.connection.save",
-            json!({"expectedProvidersRevision":0,"connection":openai_connection()}),
+            "rpc-interrupted-policy",
+            "workspace.policy.set",
+            json!({"workspaceId":"workspace-1","expectedRevision":1,"policy":{
+                "network":false,"allowed_tools":["read"],"writable_roots":[]
+            }}),
             false,
         );
-        let result = to_ijson(&json!({"format":1,"providersRevision":1,"connection":connection_view(&desired.providers[0],Readiness::Ready)})).expect("result");
+        let result = policy_result(2, desired.policy.as_ref().expect("policy")).expect("result");
         assert!(matches!(
             routes.journal.begin(
                 &interrupted,
-                "config/providers.json",
-                0,
+                "workspaces/workspace-1/workspace.json",
                 1,
+                2,
                 &desired.canonical_bytes().expect("desired"),
                 &result,
             ),
@@ -1991,23 +869,26 @@ mod tests {
         let unrelated = call(
             "rpc-unrelated-policy",
             "workspace.policy.set",
-            json!({"workspaceId":"workspace-1","expectedRevision":1,"policy":{
-                "network":false,"allowed_tools":["read"],"writable_roots":[]
+            json!({"workspaceId":"workspace-1","expectedRevision":2,"policy":{
+                "network":false,"allowed_tools":[],"writable_roots":[]
             }}),
             false,
         );
         let payload = serde_json::to_value(&unrelated.payload).expect("payload value");
-        routes
+        let completed = routes
             .execute(&unrelated, &payload, "uid:1")
             .expect("unrelated succeeds after recovery");
-        assert_eq!(routes.repository.providers().expect("providers"), desired);
+        assert_eq!(
+            serde_json::to_value(completed).expect("result")["revision"],
+            3
+        );
         let record = routes
             .journal
             .records()
             .expect("records")
             .into_iter()
-            .find(|record| record.rpc_id == "rpc-interrupted-provider")
-            .expect("provider record");
+            .find(|record| record.rpc_id == "rpc-interrupted-policy")
+            .expect("interrupted record");
         assert_eq!(record.phase, AdminPhase::Committed);
     }
 

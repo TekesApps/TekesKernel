@@ -155,12 +155,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `option_env!("TEKES_SELECTED_BUILD").unwrap_or` | [124](../../src/builtin.rs#L124) | receiver-type-required |
 | `run` | `ProductionProcessHost::open_with_secret_authorities` | [125](../../src/builtin.rs#L125) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L777) |
 | `run` | `process.preflight_mandatory_authorities` | [133](../../src/builtin.rs#L133) | receiver-type-required |
-| `run` | `host_runtime::assemble_application_endpoint_host` | [134](../../src/builtin.rs#L134) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L387) |
+| `run` | `host_runtime::assemble_application_endpoint_host` | [134](../../src/builtin.rs#L134) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L368) |
 | `run` | `build.into` | [137](../../src/builtin.rs#L137) | receiver-type-required |
 | `run` | `launch.root.to_string_lossy().into` | [138](../../src/builtin.rs#L138), [142](../../src/builtin.rs#L142) | receiver-type-required |
 | `run` | `launch.root.to_string_lossy` | [138](../../src/builtin.rs#L138), [142](../../src/builtin.rs#L142) | receiver-type-required |
 | `run` | `host_runtime::system_timestamp()                 .map_err` | [146](../../src/builtin.rs#L146) | receiver-type-required |
-| `run` | `host_runtime::system_timestamp` | [146](../../src/builtin.rs#L146) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L592) |
+| `run` | `host_runtime::system_timestamp` | [146](../../src/builtin.rs#L146) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L551) |
 | `run` | `Arc::clone` | [150](../../src/builtin.rs#L150) | external-constructor-callback-or-unresolved |
 | `run` | `tokio::net::TcpListener::bind` | [152](../../src/builtin.rs#L152), [155](../../src/builtin.rs#L155) | external-constructor-callback-or-unresolved |
 | `run` | `listener.local_addr` | [153](../../src/builtin.rs#L153), [175](../../src/builtin.rs#L175) | receiver-type-required |
@@ -177,7 +177,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `assembly.finish_recovery` | [165](../../src/builtin.rs#L165) | receiver-type-required |
 | `run` | `process.start_periodic_sweep` | [166](../../src/builtin.rs#L166) | receiver-type-required |
 | `run` | `process.start_schedule_timer` | [167](../../src/builtin.rs#L167) | receiver-type-required |
-| `run` | `host_runtime::install_termination_handler` | [168](../../src/builtin.rs#L168) | [tekes-supervisor::host_runtime::install_termination_handler](../../src/host_runtime.rs#L561) |
+| `run` | `host_runtime::install_termination_handler` | [168](../../src/builtin.rs#L168) | [tekes-supervisor::host_runtime::install_termination_handler](../../src/host_runtime.rs#L520) |
 | `run` | `assembly.into_server` | [169](../../src/builtin.rs#L169) | receiver-type-required |
 | `run` | `server.handle` | [170](../../src/builtin.rs#L170) | receiver-type-required |
 | `run` | `server.web_client` | [176](../../src/builtin.rs#L176) | receiver-type-required |
@@ -194,5 +194,5 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::thread::Builder::new` | [200](../../src/builtin.rs#L200) | external-constructor-callback-or-unresolved |
 | `run` | `"launcher-lifetime".into` | [201](../../src/builtin.rs#L201) | receiver-type-required |
 | `run` | `lifetime_sender.send` | [203](../../src/builtin.rs#L203) | receiver-type-required |
-| `run` | `host_runtime::wait_for_launcher_shutdown` | [203](../../src/builtin.rs#L203) | [tekes-supervisor::host_runtime::wait_for_launcher_shutdown](../../src/host_runtime.rs#L552) |
+| `run` | `host_runtime::wait_for_launcher_shutdown` | [203](../../src/builtin.rs#L203) | [tekes-supervisor::host_runtime::wait_for_launcher_shutdown](../../src/host_runtime.rs#L511) |
 | `run` | `Ok` | [221](../../src/builtin.rs#L221) | external-constructor-callback-or-unresolved |
