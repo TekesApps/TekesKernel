@@ -6,6 +6,8 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.3.0 — 2026-10-08
+
 ### Removed
 - The launchd deployment. The host application launches the Kernel and
   supplies its endpoint token and credentials through the environment, as in
