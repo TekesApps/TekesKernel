@@ -117,7 +117,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `Ok` | [47](../../src/workspace_routes.rs#L47) | external-constructor-callback-or-unresolved |
 | `open` | `root.to_owned` | [48](../../src/workspace_routes.rs#L48) | receiver-type-required |
 | `open` | `ManagementStore::open(root)                 .map_err` | [50](../../src/workspace_routes.rs#L50) | receiver-type-required |
-| `open` | `ManagementStore::open` | [50](../../src/workspace_routes.rs#L50) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L316) |
+| `open` | `ManagementStore::open` | [50](../../src/workspace_routes.rs#L50) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L339) |
 | `open` | `e.to_string` | [51](../../src/workspace_routes.rs#L51), [52](../../src/workspace_routes.rs#L52) | receiver-type-required |
 | `open` | `NativeEndpoint::open(root).map_err` | [52](../../src/workspace_routes.rs#L52) | receiver-type-required |
 | `open` | `NativeEndpoint::open` | [52](../../src/workspace_routes.rs#L52) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L130) |

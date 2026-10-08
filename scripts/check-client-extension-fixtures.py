@@ -38,6 +38,7 @@ EXPECTED_CAPABILITIES = {
     "schedule.v1",
     "threadSearch.v1",
     "workspacePolicy.v1",
+    "workspaceFolders.v1",
     "usage.v1",
 }
 
