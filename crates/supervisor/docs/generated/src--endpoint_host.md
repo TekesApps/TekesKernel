@@ -881,7 +881,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_route_ownership` | `PathBuf::from` | [699](../../src/endpoint_host.rs#L699) | external-constructor-callback-or-unresolved |
 | `open_with_route_ownership` | `queue_authority             .as_deref()             .map` | [700](../../src/endpoint_host.rs#L700) | receiver-type-required |
 | `open_with_route_ownership` | `queue_authority             .as_deref` | [700](../../src/endpoint_host.rs#L700) | receiver-type-required |
-| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [703](../../src/endpoint_host.rs#L703) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L327) |
+| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [703](../../src/endpoint_host.rs#L703) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L350) |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref()                 .map` | [706](../../src/endpoint_host.rs#L706) | receiver-type-required |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref` | [706](../../src/endpoint_host.rs#L706) | receiver-type-required |
 | `open_with_route_ownership` | `Ok` | [712](../../src/endpoint_host.rs#L712) | external-constructor-callback-or-unresolved |

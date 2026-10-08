@@ -1,5 +1,5 @@
-//! Production workspacePolicy.v1 endpoint routes. Provider configuration is
-//! owned by the launching application.
+//! Production workspacePolicy.v1 and workspaceFolders.v1 endpoint routes.
+//! Provider configuration is owned by the launching application.
 
 use std::collections::BTreeSet;
 use std::fs;
@@ -22,7 +22,14 @@ pub const WORKSPACE_POLICY_METHODS: [(&str, MethodClass); 2] = [
     ("workspace.policy.set", MethodClass::Mutation),
 ];
 
+pub const WORKSPACE_FOLDER_METHODS: [(&str, MethodClass); 3] = [
+    ("workspace.listFolders", MethodClass::ReadOnly),
+    ("workspace.addFolder", MethodClass::Mutation),
+    ("workspace.removeFolder", MethodClass::Mutation),
+];
+
 pub struct ClientAdminRoutes {
+    root: PathBuf,
     repository: ConfigRepository,
     process_host: Arc<ProductionProcessHost>,
     mutation_gate: Mutex<()>,
@@ -36,6 +43,7 @@ impl ClientAdminRoutes {
     ) -> Result<Self, ProductionRouteFailure> {
         let root = root.as_ref();
         let routes = Self {
+            root: root.to_path_buf(),
             repository: ConfigRepository::open(root).map_err(internal_profile)?,
             process_host,
             mutation_gate: Mutex::new(()),
@@ -45,14 +53,21 @@ impl ClientAdminRoutes {
         Ok(routes)
     }
 
-    /// Returns the workspace policy capability group.
+    /// Returns the workspace policy and workspace folder capability groups.
     #[must_use]
     pub fn routes(self: &Arc<Self>) -> Vec<Arc<dyn ProductionEndpointRoutes>> {
-        vec![Arc::new(AdminCapabilityRoutes::new(
-            "workspacePolicy.v1",
-            &WORKSPACE_POLICY_METHODS,
-            Arc::clone(self),
-        ))]
+        vec![
+            Arc::new(AdminCapabilityRoutes::new(
+                "workspacePolicy.v1",
+                &WORKSPACE_POLICY_METHODS,
+                Arc::clone(self),
+            )),
+            Arc::new(AdminCapabilityRoutes::new(
+                "workspaceFolders.v1",
+                &WORKSPACE_FOLDER_METHODS,
+                Arc::clone(self),
+            )),
+        ]
     }
 
     fn recover_pending_intents(&self) -> Result<(), ProductionRouteFailure> {
@@ -193,6 +208,93 @@ impl ClientAdminRoutes {
     }
 }
 
+impl ClientAdminRoutes {
+    fn list_folders(&self, input: FoldersGetRequest) -> Result<IJsonValue, ProductionRouteFailure> {
+        let folders = self
+            .management()?
+            .workspace_folders(&input.workspace_id)
+            .map_err(map_folder_management)?;
+        to_ijson(&json!({
+            "format":1,
+            "workspaceId":folders.workspace_id,
+            "revision":folders.revision,
+            "folders":folders.folders,
+        }))
+    }
+
+    /// Folder edits are management operations: the endpoint operation record
+    /// is their durable carrier, so a retried rpc id resumes that record.
+    /// The admin gate serializes them with `workspace.policy.set`, the other
+    /// in-process writer of the same workspace document.
+    fn change_folders(
+        &self,
+        request: &EndpointHostCall,
+        input: FolderChangeRequest,
+        add: bool,
+    ) -> Result<IJsonValue, ProductionRouteFailure> {
+        let _gate = self
+            .mutation_gate
+            .lock()
+            .map_err(|_| internal("admin mutation lock poisoned"))?;
+        self.recover_pending_intents()?;
+        // Removal narrows every launch of the workspace, so like relocation
+        // it requires a quiescent workspace. Workers hold this lock shared.
+        let _quiescence = if add {
+            None
+        } else {
+            Some(
+                NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(
+                    &self.root,
+                    &input.workspace_id,
+                ))
+                .map_err(|error| match error {
+                    store::StoreError::Busy => failure(
+                        "workspace-busy",
+                        "Workspace has a running session",
+                        json!({"workspaceId":input.workspace_id}),
+                    ),
+                    other => internal_store(other),
+                })?,
+            )
+        };
+        let hash = management_request_hash(request)?;
+        let started_at = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        let management = self.management()?;
+        let (workspace, folders) = if add {
+            management.add_workspace_folder(
+                &request.rpc_id,
+                &hash,
+                &input.workspace_id,
+                &input.path,
+                &started_at,
+            )
+        } else {
+            management.remove_workspace_folder(
+                &request.rpc_id,
+                &hash,
+                &input.workspace_id,
+                &input.path,
+                &started_at,
+            )
+        }
+        .map_err(map_folder_management)?;
+        mark_management_handoff(request)?;
+        to_ijson(&json!({
+            "workspace":workspace,
+            "folders":{
+                "format":1,
+                "workspaceId":folders.workspace_id,
+                "revision":folders.revision,
+                "folders":folders.folders,
+            },
+        }))
+    }
+
+    fn management(&self) -> Result<endpoint::ManagementStore, ProductionRouteFailure> {
+        endpoint::ManagementStore::open(&self.root).map_err(|error| internal(error.to_string()))
+    }
+}
+
 struct AdminCapabilityRoutes {
     id: &'static str,
     methods: &'static [(&'static str, MethodClass)],
@@ -279,16 +381,16 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
     fn capabilities(&self) -> BTreeSet<String> {
         WORKSPACE_POLICY_METHODS
             .into_iter()
+            .chain(WORKSPACE_FOLDER_METHODS)
             .map(|(name, _)| name.to_owned())
             .collect()
     }
 
     fn extension_method_class(&self, method: &str) -> Option<MethodClass> {
-        Some(match method {
-            "workspace.policy.get" => MethodClass::ReadOnly,
-            "workspace.policy.set" => MethodClass::Mutation,
-            _ => return None,
-        })
+        WORKSPACE_POLICY_METHODS
+            .into_iter()
+            .chain(WORKSPACE_FOLDER_METHODS)
+            .find_map(|(name, class)| (name == method).then_some(class))
     }
 
     fn validate_extension_payload(
@@ -299,6 +401,10 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         match operation {
             "workspace.policy.get" => parse::<PolicyGetRequest>(payload).map(|_| ()),
             "workspace.policy.set" => parse::<PolicySetRequest>(payload).map(|_| ()),
+            "workspace.listFolders" => parse::<FoldersGetRequest>(payload).map(|_| ()),
+            "workspace.addFolder" | "workspace.removeFolder" => {
+                parse::<FolderChangeRequest>(payload).map(|_| ())
+            }
             _ => Err(failure(
                 "unsupported-capability",
                 "Client administration method is unavailable",
@@ -322,6 +428,12 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
                 | "workspace-not-found"
                 | "policy-invalid"
                 | "policy-escalation"
+                | "workspace-invalid-path"
+                | "workspace-ambiguous"
+                | "workspace-busy"
+                | "workspace-last-folder"
+                | "workspace-folder-in-use"
+                | "workspace-legacy-session"
         )
     }
 
@@ -334,6 +446,9 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         match request.operation.as_str() {
             "workspace.policy.get" => self.get_policy(parse(payload)?),
             "workspace.policy.set" => self.set_policy(request, parse(payload)?),
+            "workspace.listFolders" => self.list_folders(parse(payload)?),
+            "workspace.addFolder" => self.change_folders(request, parse(payload)?, true),
+            "workspace.removeFolder" => self.change_folders(request, parse(payload)?, false),
             _ => Err(failure(
                 "unsupported-capability",
                 "Client administration method is unavailable",
@@ -347,6 +462,17 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct PolicyGetRequest {
     workspace_id: String,
+}
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct FoldersGetRequest {
+    workspace_id: String,
+}
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct FolderChangeRequest {
+    workspace_id: String,
+    path: String,
 }
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -738,6 +864,89 @@ fn mark_handoff(request: &EndpointHostCall) -> Result<(), ProductionRouteFailure
             }),
         })
         .map_err(|error| internal(error.to_string()))
+}
+
+fn management_request_hash(request: &EndpointHostCall) -> Result<String, ProductionRouteFailure> {
+    let payload: Value = serde_json::from_slice(
+        &request
+            .payload
+            .canonical_bytes()
+            .map_err(|error| internal(error.to_string()))?,
+    )
+    .map_err(|error| internal(error.to_string()))?;
+    let bytes = serde_json_canonicalizer::to_vec(&json!({
+        "type":"client-request",
+        "rpcId":request.rpc_id,
+        "method":request.operation,
+        "payload":payload,
+    }))
+    .map_err(|error| internal(error.to_string()))?;
+    Ok(format!("{:x}", Sha256::digest(bytes)))
+}
+
+/// Same durable identity the base workspace mutations report: the endpoint
+/// management operation record keyed by rpc id.
+fn mark_management_handoff(request: &EndpointHostCall) -> Result<(), ProductionRouteFailure> {
+    request
+        .handoff
+        .mark_handed_off(DurableHandoffProof {
+            delivery: "management".to_owned(),
+            durable_identity: Some(RpcDurableIdentity {
+                kind: "management-operation".to_owned(),
+                id: request.rpc_id.clone(),
+                seq: None,
+            }),
+        })
+        .map_err(|error| internal(error.to_string()))
+}
+
+fn map_folder_management(error: endpoint::ManagementError) -> ProductionRouteFailure {
+    use endpoint::ManagementError as E;
+    match error {
+        E::WorkspaceNotFound(workspace_id) => failure(
+            "workspace-not-found",
+            "Workspace was not found",
+            json!({"workspaceId":workspace_id}),
+        ),
+        E::InvalidPath(path) => failure(
+            "workspace-invalid-path",
+            "Workspace path is invalid",
+            json!({"path":path}),
+        ),
+        E::WorkspaceAmbiguous(path) => failure(
+            "workspace-ambiguous",
+            "Path is already a workspace folder",
+            json!({"path":path}),
+        ),
+        E::LastFolder(workspace_id) => failure(
+            "workspace-last-folder",
+            "A workspace keeps at least one folder",
+            json!({"workspaceId":workspace_id}),
+        ),
+        E::FolderInUse {
+            workspace_id,
+            path,
+            session_ids,
+        } => failure(
+            "workspace-folder-in-use",
+            "Sessions are bound to this folder",
+            json!({"workspaceId":workspace_id,"path":path,"sessionIds":session_ids}),
+        ),
+        E::LegacySessions {
+            workspace_id,
+            session_ids,
+        } => failure(
+            "workspace-legacy-session",
+            "Workspace has sessions without a stable folder binding",
+            json!({"workspaceId":workspace_id,"sessionIds":session_ids}),
+        ),
+        E::IdempotencyConflict { rpc_id, operation } => failure(
+            "idempotency-conflict",
+            "rpcId was already used for another request",
+            json!({"rpcId":rpc_id,"operation":operation}),
+        ),
+        other => internal(other.to_string()),
+    }
 }
 
 #[cfg(test)]

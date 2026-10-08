@@ -26,6 +26,13 @@ workspace version in `Cargo.toml`.
   method and negative cases, error codes and readiness value cases.
 
 ### Added
+- `workspaceFolders.v1` client extension: `workspace.listFolders`,
+  `workspace.addFolder` and `workspace.removeFolder` edit a workspace's
+  ordered folder list through recoverable endpoint management operations.
+  Removal refuses the last folder, a folder any session is bound to, and a
+  running workspace; a second folder is refused while unbound legacy sessions
+  exist. `workspace.create` now rejects a path that is already another
+  workspace's folder. See [client extensions](spec/client-extensions.md#workspace-administration).
 - Linux tool sandbox. The `linux-landlock-seccomp` backend now applies its
   plan: Landlock confines the filesystem to the policy roots and seccomp
   refuses sockets under `deny` network, process creation without

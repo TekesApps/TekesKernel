@@ -42,7 +42,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/conformance/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 2 | 17 | `inventory.json` |
 | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 449 | `inventory.json` |
-| [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 16 | 296 | `inventory.json` |
+| [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 17 | 331 | `inventory.json` |
 | [crates/conformance/tests/slice1_gates.rs](../../tests/slice1_gates.rs) | 33 | 568 | `inventory.json` |
 | [crates/conformance/tests/slice2_gates.rs](../../tests/slice2_gates.rs) | 7 | 195 | `inventory.json` |
 | [crates/conformance/tests/slice3_gates.rs](../../tests/slice3_gates.rs) | 3 | 42 | `inventory.json` |

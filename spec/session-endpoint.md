@@ -1415,7 +1415,9 @@ for compatibility and launch, not the permanent identity of the thread.
 
 `workspace.create` canonicalizes an existing directory. Repeating a request
 for the same canonical path returns its existing workspace with
-`created:false`; otherwise it allocates a UUIDv7 workspace id, publishes the
+`created:false`; a path that is a later folder of another workspace
+([`workspaceFolders.v1`](client-extensions.md#workspace-administration)) is
+`workspace-invalid-path`; otherwise it allocates a UUIDv7 workspace id, publishes the
 workspace config, then metadata, and returns `created:true`. The created
 config carries a seeded `policy`: `allowed_tools` is every fixed tool except
 the role selectors (`plan`, `summary_artifact`, `verify`, `report`),

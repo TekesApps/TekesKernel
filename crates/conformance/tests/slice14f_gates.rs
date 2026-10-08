@@ -11,7 +11,9 @@ use endpoint::{
 use profile::{ConfigRepository, WorkspaceConfig, WorkspacePolicy};
 use schema::IJsonValue;
 use serde_json::{Value, json};
-use tekes_supervisor::client_admin::{ClientAdminRoutes, WORKSPACE_POLICY_METHODS};
+use tekes_supervisor::client_admin::{
+    ClientAdminRoutes, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
+};
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
     HOST_FILE_METHODS, INITIAL_PRESET_METHODS, MCP_METHODS, PLUGIN_METHODS, RECOVERY_METHODS,
@@ -263,6 +265,7 @@ fn production_group_constants() -> BTreeMap<String, BTreeMap<String, MethodClass
         ("schedule.v1", SCHEDULE_METHODS.as_slice()),
         ("threadSearch.v1", THREAD_SEARCH_METHODS.as_slice()),
         ("workspacePolicy.v1", WORKSPACE_POLICY_METHODS.as_slice()),
+        ("workspaceFolders.v1", WORKSPACE_FOLDER_METHODS.as_slice()),
         ("usage.v1", USAGE_METHODS.as_slice()),
     ]
     .into_iter()
@@ -300,7 +303,7 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
         .values()
         .flat_map(|methods| methods.keys().cloned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(expected_methods.len(), 60);
+    assert_eq!(expected_methods.len(), 63);
 
     let production = production_fixture(false);
     assert_eq!(production.host.extension_capabilities(), expected_methods);
@@ -309,8 +312,8 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
             .all(|name| !production.host.extension_capabilities().contains(*name))
     );
 
-    // The workspace policy group is a real production route owner, and
-    // composing it twice is a duplicate-ownership assembly failure.
+    // The workspace policy and folder groups are real production route
+    // owners, and composing one twice is a duplicate-ownership assembly failure.
     let admin_root = TempDir::new().expect("admin root");
     let agent = admin_root.path().join(".agent");
     fs::create_dir_all(&agent).expect("agent");
@@ -320,12 +323,13 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
     let admin =
         Arc::new(ClientAdminRoutes::new(admin_root.path(), process).expect("admin authority"));
     let routes = admin.routes();
-    assert_eq!(routes.len(), 1);
+    assert_eq!(routes.len(), 2);
     let composed = CompositeProductionEndpointRoutes::compose(routes.clone()).expect("compose");
     assert_eq!(
         composed.capabilities(),
         WORKSPACE_POLICY_METHODS
             .iter()
+            .chain(WORKSPACE_FOLDER_METHODS.iter())
             .map(|(name, _)| (*name).to_owned())
             .collect::<BTreeSet<_>>()
     );
@@ -346,7 +350,7 @@ async fn slice14f_gate_114_closed_dtos_authorities_and_idempotency() {
         .as_array()
         .expect("method cases")
         .clone();
-    assert_eq!(cases.len(), 60);
+    assert_eq!(cases.len(), 63);
     for (index, case) in cases.iter().enumerate() {
         let method = case["method"].as_str().expect("method");
         let payload = &case["request"];
@@ -477,7 +481,7 @@ async fn slice14f_gate_115_predecessor_disposition_and_no_special_cases() {
 #[tokio::test]
 async fn slice14f_gate_116_cross_capability_lifecycle() {
     let production = production_fixture(true);
-    assert_eq!(production.host.extension_capabilities().len(), 60);
+    assert_eq!(production.host.extension_capabilities().len(), 63);
 
     let package = write_plugin_package(production.root.path());
     let inspected = success_value(
@@ -641,5 +645,134 @@ async fn slice14f_gate_116_cross_capability_lifecycle() {
     assert_eq!(
         escalated.result.error.expect("policy error").code,
         "policy-escalation"
+    );
+}
+
+#[tokio::test]
+async fn workspace_folders_round_trip_through_the_production_host() {
+    let production = production_fixture(true);
+    let primary = fs::canonicalize(production.root.path().join("workspace"))
+        .expect("primary")
+        .to_string_lossy()
+        .into_owned();
+    let second = production.root.path().join("second");
+    fs::create_dir(&second).expect("second folder");
+    let second = fs::canonicalize(second)
+        .expect("canonical second")
+        .to_string_lossy()
+        .into_owned();
+
+    let listed = success_value(
+        &dispatch(
+            &production,
+            "folders-list",
+            "workspace.listFolders",
+            json!({"workspaceId":"workspace-1"}),
+        )
+        .await,
+    );
+    assert_eq!(
+        listed,
+        json!({"format":1,"workspaceId":"workspace-1","revision":1,
+            "folders":[{"folderId":"folder-0001","path":primary}]})
+    );
+
+    let add = json!({"workspaceId":"workspace-1","path":second});
+    let added = dispatch(
+        &production,
+        "folders-add",
+        "workspace.addFolder",
+        add.clone(),
+    )
+    .await;
+    let added_value = success_value(&added);
+    assert_eq!(added_value["workspace"]["path"], json!(primary));
+    assert_eq!(
+        added_value["folders"]["folders"],
+        json!([{"folderId":"folder-0001","path":primary},{"folderId":"folder-0002","path":second}])
+    );
+    // The transport replays an exact retry; a reused rpc id with another
+    // payload is an idempotency conflict, never a second mutation.
+    let replayed = dispatch(&production, "folders-add", "workspace.addFolder", add).await;
+    assert_eq!(added.result, replayed.result);
+    let conflict = dispatch(
+        &production,
+        "folders-add",
+        "workspace.addFolder",
+        json!({"workspaceId":"workspace-1","path":primary}),
+    )
+    .await;
+    assert_eq!(
+        conflict.result.error.expect("conflict").code,
+        "idempotency-conflict"
+    );
+    let duplicate = dispatch(
+        &production,
+        "folders-add-again",
+        "workspace.addFolder",
+        json!({"workspaceId":"workspace-1","path":second}),
+    )
+    .await;
+    assert_eq!(
+        duplicate.result.error.expect("duplicate").code,
+        "workspace-ambiguous"
+    );
+
+    // A live worker holds its workspace quiescence lock shared; removal
+    // narrows every later launch and therefore waits for quiescence.
+    let quiescence = {
+        use sha2::Digest;
+        let digest = sha2::Sha256::digest(b"workspace-1");
+        production
+            .root
+            .path()
+            .join(format!(".workspace-quiescence-{digest:x}.lock"))
+    };
+    let worker = store::NamedLock::shared(&quiescence).expect("worker quiescence lock");
+    let busy = dispatch(
+        &production,
+        "folders-remove-busy",
+        "workspace.removeFolder",
+        json!({"workspaceId":"workspace-1","path":second}),
+    )
+    .await;
+    assert_eq!(busy.result.error.expect("busy").code, "workspace-busy");
+    drop(worker);
+
+    let removed = success_value(
+        &dispatch(
+            &production,
+            "folders-remove",
+            "workspace.removeFolder",
+            json!({"workspaceId":"workspace-1","path":second}),
+        )
+        .await,
+    );
+    assert_eq!(
+        removed["folders"],
+        json!({"format":1,"workspaceId":"workspace-1","revision":3,
+            "folders":[{"folderId":"folder-0001","path":primary}]})
+    );
+    let last = dispatch(
+        &production,
+        "folders-remove-last",
+        "workspace.removeFolder",
+        json!({"workspaceId":"workspace-1","path":primary}),
+    )
+    .await;
+    assert_eq!(
+        last.result.error.expect("last folder").code,
+        "workspace-last-folder"
+    );
+    let missing = dispatch(
+        &production,
+        "folders-missing",
+        "workspace.listFolders",
+        json!({"workspaceId":"workspace-absent"}),
+    )
+    .await;
+    assert_eq!(
+        missing.result.error.expect("absent").code,
+        "workspace-not-found"
     );
 }

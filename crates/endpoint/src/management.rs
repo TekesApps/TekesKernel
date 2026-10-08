@@ -38,6 +38,23 @@ pub struct WorkspaceView {
     pub updated_at: String,
 }
 
+/// One authored workspace folder and its stable binding id.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct WorkspaceFolderView {
+    pub folder_id: String,
+    pub path: String,
+}
+
+/// The ordered folder list of one workspace at one config revision.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct WorkspaceFolders {
+    pub workspace_id: String,
+    pub revision: u64,
+    pub folders: Vec<WorkspaceFolderView>,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct WorkspaceList {
     pub items: Vec<WorkspaceView>,
@@ -80,6 +97,10 @@ struct WorkspaceIntent {
     previous_path: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     relocated_path: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    folder_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    folder_path: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -202,6 +223,8 @@ struct WorkspaceOperationWrite<'a> {
     started_at: &'a str,
     created: Option<bool>,
     relocation: Option<(&'a str, &'a str, &'a str)>,
+    /// `(folder id, folder path)` for `add-folder` and `remove-folder`.
+    folder: Option<(&'a str, &'a str)>,
 }
 
 pub struct SessionCreateOperation<'a> {
@@ -516,6 +539,7 @@ impl ManagementStore {
                 started_at,
                 created: missing.then_some(false),
                 relocation: None,
+                folder: None,
             })?;
             self.drive_workspace_operation(&record.0, record.1)?;
         }
@@ -1033,6 +1057,14 @@ impl ManagementStore {
             .find(|config| primary_path(config).ok() == Some(canonical_string.as_str()));
         let (config, created) = match existing {
             Some(config) => (config.clone(), false),
+            // A non-primary folder of another workspace would make cwd-only
+            // session selection ambiguous; it cannot also root a new workspace.
+            None if configs
+                .values()
+                .any(|config| config.folder_paths().contains(&canonical_string.as_str())) =>
+            {
+                return Err(ManagementError::InvalidPath(path.to_owned()));
+            }
             None => {
                 let title = canonical
                     .file_name()
@@ -1066,6 +1098,7 @@ impl ManagementStore {
             started_at,
             created: Some(created),
             relocation: None,
+            folder: None,
         })?;
         let response = self.drive_workspace_operation(&record.0, record.1)?;
         let workspace = response
@@ -1115,6 +1148,7 @@ impl ManagementStore {
             started_at,
             created: None,
             relocation: None,
+            folder: None,
         })?;
         let response = self.drive_workspace_operation(&record.0, record.1)?;
         serde_json::from_value(response.get("workspace").cloned().ok_or_else(|| {
@@ -1191,12 +1225,244 @@ impl ManagementStore {
             started_at,
             created: None,
             relocation: Some((&relocate_folder_id, previous_path, &canonical_string)),
+            folder: None,
         })?;
         let response = self.drive_workspace_operation(&record.0, record.1)?;
         serde_json::from_value(response.get("workspace").cloned().ok_or_else(|| {
             ManagementError::CorruptOperation("missing workspace response".to_owned())
         })?)
         .map_err(Into::into)
+    }
+
+    /// Returns the authored folder list of one workspace. A legacy `cwd`
+    /// workspace reports the same synthesized ids its sessions bind to.
+    pub fn workspace_folders(
+        &self,
+        workspace_id: &str,
+    ) -> Result<WorkspaceFolders, ManagementError> {
+        let config = self
+            .workspace_configs()?
+            .remove(workspace_id)
+            .ok_or_else(|| ManagementError::WorkspaceNotFound(workspace_id.to_owned()))?;
+        Ok(folders_view(&config))
+    }
+
+    /// Appends one existing directory to a workspace as a new stable folder
+    /// binding. Existing sessions keep their binding; a later worker launch
+    /// resolves the longer folder list. A seeded or authored policy gains the
+    /// folder as a writable root, matching `workspace.create`.
+    pub fn add_workspace_folder(
+        &self,
+        rpc_id: &str,
+        request_sha256: &str,
+        workspace_id: &str,
+        path: &str,
+        started_at: &str,
+    ) -> Result<(WorkspaceView, WorkspaceFolders), ManagementError> {
+        let _lock = NamedLock::exclusive(self.root.join("lock"))?;
+        if let Some(response) =
+            self.resume_folder_operation(rpc_id, request_sha256, "workspace.addFolder")?
+        {
+            return folder_response(response);
+        }
+        let canonical = canonical_workspace_path(path)?
+            .to_string_lossy()
+            .into_owned();
+        let configs = self.workspace_configs()?;
+        let current = configs
+            .get(workspace_id)
+            .ok_or_else(|| ManagementError::WorkspaceNotFound(workspace_id.to_owned()))?;
+        if configs
+            .values()
+            .any(|config| config.folder_paths().contains(&canonical.as_str()))
+        {
+            return Err(ManagementError::WorkspaceAmbiguous(canonical));
+        }
+        // A session created before stable bindings resolves only while its
+        // workspace has exactly one folder; a second folder would strand it.
+        let legacy = self
+            .workspace_session_bindings(workspace_id)?
+            .into_iter()
+            .filter(|(_, binding)| binding.is_none())
+            .map(|(session_id, _)| session_id)
+            .collect::<Vec<_>>();
+        if !legacy.is_empty() {
+            return Err(ManagementError::LegacySessions {
+                workspace_id: workspace_id.to_owned(),
+                session_ids: legacy,
+            });
+        }
+        let folder_id = next_folder_id(&materialized_folders(current))?;
+        let config = with_added_folder(current, &folder_id, &canonical);
+        self.drive_folder_operation(WorkspaceOperationWrite {
+            rpc_id,
+            request_sha256,
+            operation: "workspace.addFolder",
+            action: "add-folder",
+            config: &config,
+            started_at,
+            created: None,
+            relocation: None,
+            folder: Some((&folder_id, &canonical)),
+        })
+    }
+
+    /// Removes one authored folder. `path` is compared exactly with the
+    /// authored path, so a folder whose directory is gone can still be
+    /// removed. The last folder and a folder any active, archived or
+    /// in-flight session is bound to are refused. Writable roots at or below
+    /// the folder are dropped unless another remaining folder still owns them.
+    pub fn remove_workspace_folder(
+        &self,
+        rpc_id: &str,
+        request_sha256: &str,
+        workspace_id: &str,
+        path: &str,
+        started_at: &str,
+    ) -> Result<(WorkspaceView, WorkspaceFolders), ManagementError> {
+        let _lock = NamedLock::exclusive(self.root.join("lock"))?;
+        if let Some(response) =
+            self.resume_folder_operation(rpc_id, request_sha256, "workspace.removeFolder")?
+        {
+            return folder_response(response);
+        }
+        let configs = self.workspace_configs()?;
+        let current = configs
+            .get(workspace_id)
+            .ok_or_else(|| ManagementError::WorkspaceNotFound(workspace_id.to_owned()))?;
+        let folders = materialized_folders(current);
+        let folder_id = folders
+            .iter()
+            .find(|folder| folder.path == path)
+            .map(|folder| folder.id.clone())
+            .ok_or_else(|| ManagementError::InvalidPath(path.to_owned()))?;
+        if folders.len() == 1 {
+            return Err(ManagementError::LastFolder(workspace_id.to_owned()));
+        }
+        let bound = self
+            .workspace_session_bindings(workspace_id)?
+            .into_iter()
+            .filter(|(_, binding)| binding.as_deref() == Some(folder_id.as_str()))
+            .map(|(session_id, _)| session_id)
+            .collect::<Vec<_>>();
+        if !bound.is_empty() {
+            return Err(ManagementError::FolderInUse {
+                workspace_id: workspace_id.to_owned(),
+                path: path.to_owned(),
+                session_ids: bound,
+            });
+        }
+        let config = with_removed_folder(current, &folder_id, path).ok_or_else(|| {
+            ManagementError::CorruptOperation("located folder vanished".to_owned())
+        })?;
+        self.drive_folder_operation(WorkspaceOperationWrite {
+            rpc_id,
+            request_sha256,
+            operation: "workspace.removeFolder",
+            action: "remove-folder",
+            config: &config,
+            started_at,
+            created: None,
+            relocation: None,
+            folder: Some((&folder_id, path)),
+        })
+    }
+
+    /// An rpc id that already owns a record is an exact retry: it skips the
+    /// precondition checks, which the completed operation has since changed.
+    fn resume_folder_operation(
+        &self,
+        rpc_id: &str,
+        request_sha256: &str,
+        operation: &str,
+    ) -> Result<Option<Value>, ManagementError> {
+        let operation_path = self.operation_path(rpc_id);
+        if !operation_path.exists() {
+            return Ok(None);
+        }
+        let record = read_canonical::<OperationRecord>(&operation_path)?;
+        if record.rpc_id != rpc_id
+            || record.operation != operation
+            || record.request_sha256 != request_sha256
+        {
+            return Err(ManagementError::IdempotencyConflict {
+                rpc_id: rpc_id.to_owned(),
+                operation: operation.to_owned(),
+            });
+        }
+        self.drive_workspace_operation(&operation_path, record)
+            .map(Some)
+    }
+
+    fn drive_folder_operation(
+        &self,
+        write: WorkspaceOperationWrite<'_>,
+    ) -> Result<(WorkspaceView, WorkspaceFolders), ManagementError> {
+        let record = self.begin_workspace_operation(write)?;
+        folder_response(self.drive_workspace_operation(&record.0, record.1)?)
+    }
+
+    /// Every session of `workspace_id` with its stable folder binding:
+    /// active and archived folders plus session creates not yet complete.
+    fn workspace_session_bindings(
+        &self,
+        workspace_id: &str,
+    ) -> Result<Vec<(String, Option<String>)>, ManagementError> {
+        let mut sessions = Vec::new();
+        for area in ["threads", "archive"] {
+            let entries = match fs::read_dir(self.storage_root.join(area)) {
+                Ok(entries) => entries,
+                Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+                Err(error) => return Err(error.into()),
+            };
+            for entry in entries {
+                let entry = entry?;
+                let Some(session_id) = entry.file_name().to_str().map(str::to_owned) else {
+                    continue;
+                };
+                if !entry.file_type()?.is_dir() || crate::validate_session_id(&session_id).is_err()
+                {
+                    continue;
+                }
+                // Genesis is the first line; archived ledgers can be large.
+                let mut bytes = Vec::new();
+                match fs::File::open(entry.path().join("main.jsonl")) {
+                    Ok(file) => {
+                        std::io::BufRead::read_until(
+                            &mut std::io::BufReader::new(file),
+                            b'\n',
+                            &mut bytes,
+                        )?;
+                    }
+                    Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
+                    Err(error) => return Err(error.into()),
+                }
+                let projection = scan_valid_prefix(&bytes, 1).projection.ok_or_else(|| {
+                    ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
+                })?;
+                let genesis = projection.events.first().ok_or_else(|| {
+                    ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
+                })?;
+                if genesis.string_field("workspace") == Some(workspace_id) {
+                    let binding = genesis.string_field("folder_binding").map(str::to_owned);
+                    sessions.push((session_id, binding));
+                }
+            }
+        }
+        for path in self.operation_paths()? {
+            let record = read_canonical::<OperationRecord>(&path)?;
+            if record.operation != "session.create" || record.phase == OperationPhase::Complete {
+                continue;
+            }
+            let intent = session_create_intent(&record)?;
+            if intent.workspace_id == workspace_id {
+                let binding = (!intent.folder_binding.is_empty()).then_some(intent.folder_binding);
+                sessions.push((intent.session_id, binding));
+            }
+        }
+        sessions.sort();
+        sessions.dedup();
+        Ok(sessions)
     }
 
     pub fn archive_session(
@@ -1490,6 +1756,8 @@ impl ManagementStore {
                 relocate_folder_id: write.relocation.map(|value| value.0.to_owned()),
                 previous_path: write.relocation.map(|value| value.1.to_owned()),
                 relocated_path: write.relocation.map(|value| value.2.to_owned()),
+                folder_id: write.folder.map(|value| value.0.to_owned()),
+                folder_path: write.folder.map(|value| value.1.to_owned()),
             })?,
             response: None,
         };
@@ -1589,6 +1857,8 @@ impl ManagementStore {
                 // initial record temporarily stored the boolean in response.
                 let created = self.operation_created(&record, &intent)?;
                 json!({"workspace":workspace,"created":created})
+            } else if intent.folder_id.is_some() {
+                json!({"workspace":workspace,"folders":folders_view(&config)})
             } else {
                 json!({"workspace":workspace})
             };
@@ -1731,6 +2001,34 @@ impl ManagementStore {
                 }
                 current.revision += 1;
                 current
+            }
+        } else if intent.action == "add-folder" || intent.action == "remove-folder" {
+            let current = self
+                .workspace_configs()?
+                .remove(&intent.workspace_id)
+                .ok_or_else(|| {
+                    ManagementError::CorruptOperation(
+                        "folder recovery cannot find source workspace".to_owned(),
+                    )
+                })?;
+            if hex_digest(&canonical_line(&current)?) == intent.config_digest {
+                current
+            } else {
+                let (Some(folder_id), Some(folder_path)) = (&intent.folder_id, &intent.folder_path)
+                else {
+                    return Err(ManagementError::CorruptOperation(
+                        "folder intent lacks its folder".to_owned(),
+                    ));
+                };
+                if intent.action == "add-folder" {
+                    with_added_folder(&current, folder_id, folder_path)
+                } else {
+                    with_removed_folder(&current, folder_id, folder_path).ok_or_else(|| {
+                        ManagementError::CorruptOperation(
+                            "folder removal recovery source no longer matches intent".to_owned(),
+                        )
+                    })?
+                }
             }
         } else {
             return Err(ManagementError::CorruptOperation(
@@ -2528,6 +2826,118 @@ fn relocate_policy_roots(
     policy
 }
 
+/// A legacy `cwd` workspace becomes explicit folders whose ids equal the
+/// bindings `WorkspaceConfig::binding_for_path` already synthesizes for it.
+fn materialized_folders(config: &WorkspaceConfig) -> Vec<WorkspaceFolder> {
+    if config.folders.is_empty() {
+        config
+            .cwd
+            .iter()
+            .enumerate()
+            .map(|(index, path)| WorkspaceFolder {
+                id: format!("folder-{:04}", index + 1),
+                path: path.clone(),
+            })
+            .collect()
+    } else {
+        config.folders.clone()
+    }
+}
+
+fn next_folder_id(folders: &[WorkspaceFolder]) -> Result<String, ManagementError> {
+    let next = folders
+        .iter()
+        .filter_map(|folder| folder.id.strip_prefix("folder-")?.parse::<u64>().ok())
+        .max()
+        .unwrap_or(0)
+        .checked_add(1)
+        .ok_or_else(|| ManagementError::CorruptOperation("folder ids are exhausted".to_owned()))?;
+    Ok(format!("folder-{next:04}"))
+}
+
+fn with_added_folder(current: &WorkspaceConfig, folder_id: &str, path: &str) -> WorkspaceConfig {
+    let mut folders = materialized_folders(current);
+    folders.push(WorkspaceFolder {
+        id: folder_id.to_owned(),
+        path: path.to_owned(),
+    });
+    let policy = current.policy.clone().map(|mut policy| {
+        policy.writable_roots.push(path.to_owned());
+        policy.writable_roots.sort();
+        policy.writable_roots.dedup();
+        policy
+    });
+    WorkspaceConfig {
+        format: current.format,
+        revision: current.revision + 1,
+        id: current.id.clone(),
+        name: current.name.clone(),
+        cwd: Vec::new(),
+        folders,
+        policy,
+    }
+}
+
+/// Returns `None` when `(folder_id, path)` is not an authored folder.
+fn with_removed_folder(
+    current: &WorkspaceConfig,
+    folder_id: &str,
+    path: &str,
+) -> Option<WorkspaceConfig> {
+    let mut folders = materialized_folders(current);
+    let before = folders.len();
+    folders.retain(|folder| folder.id != folder_id || folder.path != path);
+    if folders.len() == before {
+        return None;
+    }
+    let removed = Path::new(path);
+    let policy = current.policy.clone().map(|mut policy| {
+        policy.writable_roots.retain(|root| {
+            let root = Path::new(root.as_str());
+            !root.starts_with(removed)
+                || folders
+                    .iter()
+                    .any(|folder| root.starts_with(Path::new(&folder.path)))
+        });
+        policy
+    });
+    Some(WorkspaceConfig {
+        format: current.format,
+        revision: current.revision + 1,
+        id: current.id.clone(),
+        name: current.name.clone(),
+        cwd: Vec::new(),
+        folders,
+        policy,
+    })
+}
+
+fn folders_view(config: &WorkspaceConfig) -> WorkspaceFolders {
+    WorkspaceFolders {
+        workspace_id: config.id.clone(),
+        revision: config.revision,
+        folders: materialized_folders(config)
+            .into_iter()
+            .map(|folder| WorkspaceFolderView {
+                folder_id: folder.id,
+                path: folder.path,
+            })
+            .collect(),
+    }
+}
+
+fn folder_response(response: Value) -> Result<(WorkspaceView, WorkspaceFolders), ManagementError> {
+    let field = |name: &str| {
+        response.get(name).cloned().ok_or_else(|| {
+            ManagementError::CorruptOperation(format!("folder operation response lacks {name}"))
+        })
+    };
+    Ok((
+        serde_json::from_value(field("workspace")?)?,
+        serde_json::from_value(field("folders")?)?,
+    ))
+}
+
 fn canonical_workspace_path(value: &str) -> Result<PathBuf, ManagementError> {
     let path = Path::new(value);
     if !path.is_absolute() {
@@ -2723,16 +3133,24 @@ fn intent_kind(record: &OperationRecord) -> Result<String, ManagementError> {
 fn workspace_intent(record: &OperationRecord) -> Result<WorkspaceIntent, ManagementError> {
     let bytes = record.intent.canonical_bytes()?;
     let intent: WorkspaceIntent = serde_json::from_slice(&bytes)?;
+    let relocation = [
+        &intent.relocate_folder_id,
+        &intent.previous_path,
+        &intent.relocated_path,
+    ];
+    let folder = [&intent.folder_id, &intent.folder_path];
     let relocation_is_exact = match intent.action.as_str() {
         "create" | "rename" => {
-            intent.relocate_folder_id.is_none()
-                && intent.previous_path.is_none()
-                && intent.relocated_path.is_none()
+            relocation.iter().all(|field| field.is_none())
+                && folder.iter().all(|field| field.is_none())
         }
         "relocate" => {
-            intent.relocate_folder_id.is_some()
-                && intent.previous_path.is_some()
-                && intent.relocated_path.is_some()
+            relocation.iter().all(|field| field.is_some())
+                && folder.iter().all(|field| field.is_none())
+        }
+        "add-folder" | "remove-folder" => {
+            relocation.iter().all(|field| field.is_none())
+                && folder.iter().all(|field| field.is_some())
         }
         _ => false,
     };
@@ -3182,6 +3600,19 @@ pub enum ManagementError {
     WorkspaceNotFound(String),
     #[error("workspace path matches more than one workspace: {0}")]
     WorkspaceAmbiguous(String),
+    #[error("workspace has only one folder: {0}")]
+    LastFolder(String),
+    #[error("workspace folder {path} is bound to sessions")]
+    FolderInUse {
+        workspace_id: String,
+        path: String,
+        session_ids: Vec<String>,
+    },
+    #[error("workspace {workspace_id} has sessions without a stable folder binding")]
+    LegacySessions {
+        workspace_id: String,
+        session_ids: Vec<String>,
+    },
     #[error("session create requires one unambiguous workspace")]
     InvalidCreateSelection,
     #[error("rpc id was reused for another management operation: {rpc_id} ({operation})")]
@@ -3241,12 +3672,13 @@ pub enum ManagementError {
 mod tests {
     use super::{
         ForkIntent, ManagementError, ManagementStore, OperationPhase, OperationRecord, VERSION,
-        WorkspaceOperationWrite, create_genesis, folder_binding_matches_snapshot,
-        publish_canonical, read_canonical, to_ijson,
+        WorkspaceOperationWrite, WorkspaceView, canonical_event_line, create_genesis,
+        folder_binding_matches_snapshot, publish_canonical, read_canonical, to_ijson,
     };
     use profile::{WorkspaceConfig, WorkspaceFolder};
     use serde_json::{Value, json};
     use std::fs;
+    use std::path::Path;
     use store::ThreadStore;
 
     #[test]
@@ -3397,6 +3829,7 @@ mod tests {
                 started_at: "2026-09-01T00:00:00.000Z",
                 created: Some(true),
                 relocation: None,
+                folder: None,
             })
             .expect("prepared operation");
         std::fs::remove_dir(&project).expect("remove project");
@@ -3600,6 +4033,295 @@ mod tests {
             policy.allowed_tools,
             tools::BuiltinManifest::compiled().interactive_names()
         );
+    }
+
+    fn folder_store(name: &str) -> (tempfile::TempDir, ManagementStore, WorkspaceView) {
+        let root = tempfile::tempdir().expect("root");
+        let project = root.path().join(name);
+        std::fs::create_dir(&project).expect("project");
+        let store = ManagementStore::open_at(root.path(), "2026-10-08T00:00:00.000Z")
+            .expect("management store");
+        let (view, _) = store
+            .create_workspace(
+                &format!("{name}-create"),
+                &"5".repeat(64),
+                &project.to_string_lossy(),
+                "2026-10-08T00:00:00.000Z",
+            )
+            .expect("workspace create");
+        (root, store, view)
+    }
+
+    fn sibling(root: &tempfile::TempDir, name: &str) -> String {
+        let path = root.path().join(name);
+        std::fs::create_dir_all(&path).expect("sibling");
+        path.canonicalize()
+            .expect("canonical")
+            .to_string_lossy()
+            .into_owned()
+    }
+
+    /// Publishes a minimal active session folder whose genesis names
+    /// `workspace_id` and, when given, a stable folder binding.
+    fn write_session(root: &Path, session_id: &str, workspace_id: &str, binding: Option<&str>) {
+        let origin = schema::OriginTuple {
+            principal: "test".to_owned(),
+            client: "session-endpoint".to_owned(),
+            target: session_id.to_owned(),
+            op: "session.create".to_owned(),
+            key: session_id.to_owned(),
+        };
+        let genesis = create_genesis(
+            session_id,
+            workspace_id,
+            binding.unwrap_or("folder-0001"),
+            &format!("sha256-{}", "a".repeat(64)),
+            &format!("sha256-{}", "b".repeat(64)),
+            None,
+            "2026-10-08T00:00:00.000Z",
+            &origin,
+        )
+        .expect("genesis");
+        let mut value: Value =
+            serde_json::from_slice(&genesis.canonical_bytes().expect("bytes")).expect("json");
+        if binding.is_none() {
+            value
+                .as_object_mut()
+                .expect("object")
+                .remove("folder_binding");
+        }
+        let event = schema::Event::from_value(
+            schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect("ijson"),
+        )
+        .expect("event");
+        let folder = root.join("threads").join(session_id);
+        std::fs::create_dir_all(&folder).expect("session folder");
+        std::fs::write(
+            folder.join("main.jsonl"),
+            canonical_event_line(&event).expect("line"),
+        )
+        .expect("ledger");
+    }
+
+    #[test]
+    fn folders_are_added_listed_and_removed_with_their_writable_roots() {
+        let (root, store, view) = folder_store("folders-primary");
+        let second = sibling(&root, "folders-second");
+        let (added, folders) = store
+            .add_workspace_folder(
+                "folders-add",
+                &"6".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:01.000Z",
+            )
+            .expect("add folder");
+        assert_eq!(added.path, view.path, "the primary folder is unchanged");
+        assert_eq!(folders.revision, 2);
+        assert_eq!(
+            folders
+                .folders
+                .iter()
+                .map(|folder| (folder.folder_id.as_str(), folder.path.as_str()))
+                .collect::<Vec<_>>(),
+            vec![
+                ("folder-0001", view.path.as_str()),
+                ("folder-0002", second.as_str())
+            ]
+        );
+        assert_eq!(
+            store.workspace_folders(&view.workspace_id).unwrap(),
+            folders
+        );
+        let config = store.workspace_configs().unwrap()[&view.workspace_id].clone();
+        let mut expected_roots = vec![view.path.clone(), second.clone()];
+        expected_roots.sort();
+        assert_eq!(config.policy.unwrap().writable_roots, expected_roots);
+
+        // An exact retry replays the completed record, although the path is
+        // now a folder and the precondition would fail on a fresh request.
+        let (_, replayed) = store
+            .add_workspace_folder(
+                "folders-add",
+                &"6".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:09.000Z",
+            )
+            .expect("exact retry");
+        assert_eq!(replayed, folders);
+        assert!(matches!(
+            store.add_workspace_folder(
+                "folders-add",
+                &"7".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:09.000Z",
+            ),
+            Err(ManagementError::IdempotencyConflict { .. })
+        ));
+        assert!(matches!(
+            store.add_workspace_folder(
+                "folders-add-again",
+                &"8".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:02.000Z",
+            ),
+            Err(ManagementError::WorkspaceAmbiguous(_))
+        ));
+        // A secondary folder cannot root a second workspace either.
+        assert!(matches!(
+            store.create_workspace(
+                "folders-create-secondary",
+                &"9".repeat(64),
+                &second,
+                "2026-10-08T00:00:02.000Z",
+            ),
+            Err(ManagementError::InvalidPath(_))
+        ));
+
+        // Removing the primary folder promotes the next one; its roots go.
+        let (removed, remaining) = store
+            .remove_workspace_folder(
+                "folders-remove",
+                &"a".repeat(64),
+                &view.workspace_id,
+                &view.path,
+                "2026-10-08T00:00:03.000Z",
+            )
+            .expect("remove folder");
+        assert_eq!(removed.path, second);
+        assert_eq!(remaining.revision, 3);
+        assert_eq!(remaining.folders.len(), 1);
+        assert_eq!(remaining.folders[0].folder_id, "folder-0002");
+        let config = store.workspace_configs().unwrap()[&view.workspace_id].clone();
+        assert_eq!(config.policy.unwrap().writable_roots, vec![second.clone()]);
+        assert!(matches!(
+            store.remove_workspace_folder(
+                "folders-remove-last",
+                &"b".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:04.000Z",
+            ),
+            Err(ManagementError::LastFolder(_))
+        ));
+
+        // A reopened store recovers nothing and keeps the metadata current.
+        drop(store);
+        let reopened =
+            ManagementStore::open_at(root.path(), "2026-10-08T00:01:00.000Z").expect("reopen");
+        assert_eq!(
+            reopened.workspace_folders(&view.workspace_id).unwrap(),
+            remaining
+        );
+    }
+
+    #[test]
+    fn a_folder_bound_to_a_session_is_not_removed() {
+        let (root, store, view) = folder_store("bound-primary");
+        let second = sibling(&root, "bound-second");
+        store
+            .add_workspace_folder(
+                "bound-add",
+                &"6".repeat(64),
+                &view.workspace_id,
+                &second,
+                "2026-10-08T00:00:01.000Z",
+            )
+            .expect("add folder");
+        let session = "018f0000-0000-7000-8000-0000000000b1";
+        write_session(
+            root.path(),
+            session,
+            &view.workspace_id,
+            Some("folder-0002"),
+        );
+        match store.remove_workspace_folder(
+            "bound-remove",
+            &"a".repeat(64),
+            &view.workspace_id,
+            &second,
+            "2026-10-08T00:00:02.000Z",
+        ) {
+            Err(ManagementError::FolderInUse { session_ids, .. }) => {
+                assert_eq!(session_ids, vec![session.to_owned()]);
+            }
+            other => panic!("expected folder-in-use, got {other:?}"),
+        }
+        assert!(
+            !store.operation_path("bound-remove").exists(),
+            "a refused removal authors no operation record"
+        );
+        assert_eq!(
+            store
+                .workspace_folders(&view.workspace_id)
+                .unwrap()
+                .folders
+                .len(),
+            2
+        );
+    }
+
+    #[test]
+    fn a_legacy_unbound_session_blocks_a_second_folder() {
+        let (root, store, view) = folder_store("legacy-primary");
+        let second = sibling(&root, "legacy-second");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        write_session(root.path(), session, &view.workspace_id, None);
+        match store.add_workspace_folder(
+            "legacy-add",
+            &"6".repeat(64),
+            &view.workspace_id,
+            &second,
+            "2026-10-08T00:00:01.000Z",
+        ) {
+            Err(ManagementError::LegacySessions { session_ids, .. }) => {
+                assert_eq!(session_ids, vec![session.to_owned()]);
+            }
+            other => panic!("expected legacy-session refusal, got {other:?}"),
+        }
+        assert_eq!(
+            store
+                .workspace_folders(&view.workspace_id)
+                .unwrap()
+                .folders
+                .len(),
+            1
+        );
+    }
+
+    #[test]
+    fn folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids() {
+        let legacy = WorkspaceConfig {
+            format: 1,
+            revision: 4,
+            id: "legacy".to_owned(),
+            name: "legacy".to_owned(),
+            cwd: vec!["/a".to_owned(), "/b".to_owned()],
+            folders: Vec::new(),
+            policy: None,
+        };
+        let added = super::with_added_folder(&legacy, "folder-0003", "/c");
+        assert!(added.cwd.is_empty());
+        assert_eq!(
+            added
+                .folders
+                .iter()
+                .map(|folder| (folder.id.as_str(), folder.path.as_str()))
+                .collect::<Vec<_>>(),
+            vec![
+                ("folder-0001", "/a"),
+                ("folder-0002", "/b"),
+                ("folder-0003", "/c")
+            ]
+        );
+        for path in ["/a", "/b"] {
+            assert_eq!(legacy.binding_for_path(path), added.binding_for_path(path));
+        }
+        assert_eq!(added.revision, 5);
+        assert!(super::with_removed_folder(&legacy, "folder-0001", "/b").is_none());
     }
 
     #[test]

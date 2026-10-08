@@ -62,8 +62,8 @@ pub use management::{
     ForkSessionOperation, LEGACY_ORIGIN_CLIENT, ManagementError, ManagementStore, ORIGIN_CLIENT,
     PendingQueueTransaction, QueueRecoveryDriver, QueueTransactionCompletion,
     QueueTransactionDecision, QueueTransactionOperation, QueueTransactionState,
-    SelectModelOperation, SelectedModel, SessionCreateOperation, WorkspaceList, WorkspaceView,
-    is_endpoint_origin_client,
+    SelectModelOperation, SelectedModel, SessionCreateOperation, WorkspaceFolderView,
+    WorkspaceFolders, WorkspaceList, WorkspaceView, is_endpoint_origin_client,
 };
 pub use mux::{
     ActionableRegistry, DEFAULT_JOURNAL_WINDOW_MESSAGES, JournalFollow,

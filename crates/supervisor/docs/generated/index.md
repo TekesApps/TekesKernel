@@ -53,7 +53,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/supervisor/examples/slice9_production_client_harness_server.rs](../../examples/slice9_production_client_harness_server.rs) | 18 | 117 | `inventory.json` |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 132 | [Symbols and calls](src--builtin.md) |
-| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 61 | 409 | [Symbols and calls](src--client_admin.md) |
+| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 70 | 481 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 136 | 1567 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 25 | 339 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
@@ -76,7 +76,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) | 3 | 106 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 7 | 62 | `inventory.json` |
 | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 28 | 278 | `inventory.json` |
-| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 305 | `inventory.json` |
+| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 306 | `inventory.json` |
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 117 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
@@ -117,6 +117,7 @@ flowchart LR
   m1 -->|"7"| m10
   m1 -->|"1"| m15
   m2 -->|"1"| m8
+  m2 -->|"1"| m15
   m3 -->|"1"| m8
   m3 -->|"1"| m14
   m3 -->|"2"| m17

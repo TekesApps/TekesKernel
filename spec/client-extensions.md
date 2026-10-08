@@ -39,8 +39,8 @@ models.list session.selectModel remote.mux
 ```
 
 The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`:
-a 17-method base and 19 capabilities with 69 extension methods. This file
-specifies ten capabilities directly; the nine native-client capabilities are
+a 17-method base and 19 capabilities with 63 extension methods. This file
+specifies eleven capabilities directly; the nine native-client capabilities are
 specified in Session Endpoint and listed under
 [Native-client capabilities](#native-client-capabilities).
 Capability ids and versions are Client metadata, not fields added to
@@ -273,6 +273,51 @@ locking/publication and triggers its privilege-reduction stop/respawn rule
 only when the replacement actually reduces a live run's effective authority.
 Errors are `workspace-not-found`,
 `stale-revision`, `policy-invalid`, and `policy-escalation`.
+
+`workspaceFolders.v1` edits the ordered `config` `Workspace.folders` list:
+
+```text
+workspace.listFolders   read      {workspaceId}
+workspace.addFolder     mutation  {workspaceId,path}
+workspace.removeFolder  mutation  {workspaceId,path}
+```
+
+`WorkspaceFolders = {format:1,workspaceId,revision,folders:[{folderId,path}]}`
+in authored order. List returns it. Both mutations return
+`{workspace:Workspace,folders:WorkspaceFolders}`, where `Workspace` is the
+[Session Endpoint](session-endpoint.md) workspace value whose `path` is the
+first folder. A legacy `cwd` workspace lists the `folder-NNNN` ids its
+sessions already bind to; the first edit publishes those same ids as
+`folders`.
+
+Add canonicalizes an existing directory, appends it with the `folder-NNNN` id one
+above the highest existing one and, when the workspace has a policy, adds it to
+`writable_roots` as `workspace.create` seeds its folder. The canonical path
+must not already be a folder of any workspace (`workspace-ambiguous`). A
+workspace that has an active, archived or in-flight session without a stable
+`folder_binding` refuses a second folder with `workspace-legacy-session`,
+because such a session resolves only while its workspace has one folder.
+
+Remove compares `path` exactly with an authored folder path, so a folder
+whose directory no longer exists can still be removed. It refuses the last
+folder (`workspace-last-folder`) and a folder that any active, archived or
+in-flight session is bound to (`workspace-folder-in-use`, details carry the
+sorted `sessionIds`). Like `workspace.relocate` it requires the workspace's
+quiescence lock and otherwise fails with `workspace-busy`. Writable roots at
+or below the removed folder are dropped unless a remaining folder contains
+them. Removing the first folder makes the next one the workspace `path`.
+
+Both mutations are endpoint management operations: the `(rpcId, canonical
+request digest)` operation record under `endpoint-management/` is prepared
+before config publication and is recovered like `workspace.relocate`. An
+exact retry resumes or replays that record without rechecking preconditions.
+They also hold the same in-process gate as `workspace.policy.set`. Existing
+sessions keep their `folder_binding`; the next worker launch of any session
+in the workspace resolves the edited folder list, while a running worker keeps
+its launch snapshot. Errors are `workspace-not-found`,
+`workspace-invalid-path`, `workspace-ambiguous`, `workspace-busy`,
+`workspace-last-folder`, `workspace-folder-in-use`, and
+`workspace-legacy-session`.
 
 ## Usage projection
 
