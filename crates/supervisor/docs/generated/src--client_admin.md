@@ -415,7 +415,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `change_folders` | `Some` | [245](../../src/client_admin.rs#L245) | external-constructor-callback-or-unresolved |
 | `change_folders` | `NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(                     &self.root,                     &input.workspace_id,                 ))                 .map_err` | [246](../../src/client_admin.rs#L246) | receiver-type-required |
 | `change_folders` | `NamedLock::try_exclusive` | [246](../../src/client_admin.rs#L246) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [246](../../src/client_admin.rs#L246) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L5069) |
+| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [246](../../src/client_admin.rs#L246) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L5056) |
 | `change_folders` | `failure` | [251](../../src/client_admin.rs#L251) | [tekes-supervisor::client_admin::failure](../../src/client_admin.rs#L500) |
 | `change_folders` | `internal_store` | [256](../../src/client_admin.rs#L256) | [tekes-supervisor::client_admin::internal_store](../../src/client_admin.rs#L849) |
 | `change_folders` | `management_request_hash` | [260](../../src/client_admin.rs#L260) | [tekes-supervisor::client_admin::management_request_hash](../../src/client_admin.rs#L869) |
@@ -489,7 +489,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `to_ijson` | `serde_json_canonicalizer::to_vec` | [496](../../src/client_admin.rs#L496) | external-constructor-callback-or-unresolved |
 | `to_ijson` | `internal` | [496](../../src/client_admin.rs#L496), [498](../../src/client_admin.rs#L498) | [tekes-supervisor::client_admin::internal](../../src/client_admin.rs#L507) |
 | `to_ijson` | `error.to_string` | [496](../../src/client_admin.rs#L496), [498](../../src/client_admin.rs#L498) | receiver-type-required |
-| `failure` | `ProductionRouteFailure::new` | [501](../../src/client_admin.rs#L501) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `failure` | `ProductionRouteFailure::new` | [501](../../src/client_admin.rs#L501) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `failure` | `to_ijson(&details).unwrap_or_else` | [504](../../src/client_admin.rs#L504) | receiver-type-required |
 | `failure` | `to_ijson` | [504](../../src/client_admin.rs#L504) | [tekes-supervisor::client_admin::to_ijson](../../src/client_admin.rs#L494) |
 | `failure` | `IJsonValue::parse_str("{}").expect` | [504](../../src/client_admin.rs#L504) | receiver-type-required |

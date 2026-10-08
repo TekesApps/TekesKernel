@@ -208,32 +208,18 @@ struct Definition {
     dialect: DialectId,
     family: &'static str,
     serializer_revision: &'static str,
+    credential_header: &'static str,
+    credential_prefix: &'static str,
 }
 
-/// Secret-free, executable proof-registry row exposed to management surfaces.
-/// Every field is copied from the independently reviewed proof oracle; callers
-/// must not infer route identity from an endpoint or display/model id.
+/// A dialect this kernel can serialize, exposed to launchers so they can map
+/// their own provider records onto the configuration schema.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct AdvertisedDialectProof {
-    pub proof_id: String,
-    pub protocol_family: String,
+pub struct SupportedDialect {
     pub dialect_id: String,
-    pub model_profile_id: String,
-    pub endpoint_owner: String,
-    pub gateway_translation: String,
-    pub endpoint: String,
-    pub exact_sku: String,
-    pub evidence_revision: String,
-    pub credential_header: String,
-    pub credential_prefix: String,
+    pub protocol_family: String,
 }
-
-const PROOF_ORACLE: &[u8] =
-    include_bytes!("../../../fixtures/provider-dialects/profiles.canonical.json");
-// Updated only with an independently reviewed canonical oracle change.
-const PROOF_ORACLE_SHA256: &str =
-    "2c42a8b0a07acb6915fb9c25a5fd113f81a78af01ece3c93d6684f9ea5a53912";
 
 const MODEL_CAPABILITY_CATALOG: &[u8] =
     include_bytes!("../../../fixtures/provider-dialects/model-capabilities.canonical.json");
@@ -344,73 +330,90 @@ struct ModelCapabilityCatalog {
 
 static MODEL_CAPABILITIES: OnceLock<Result<Vec<ModelCapabilityProfile>, String>> = OnceLock::new();
 
-struct ProofRegistry {
-    all: Vec<AdvertisedDialectProof>,
-    advertised: Vec<AdvertisedDialectProof>,
-}
-
-static PROOF_REGISTRY: OnceLock<Result<ProofRegistry, String>> = OnceLock::new();
-
 const DEFINITIONS: &[Definition] = &[
     Definition {
         dialect: DialectId::OpenaiResponsesV1,
         family: "responses",
         serializer_revision: "openai-responses-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::DeepseekResponsesV1,
         family: "responses",
         serializer_revision: "deepseek-responses-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::GenericChatV1,
         family: "chat_completions",
         serializer_revision: "generic-chat-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::OpenaiChatV1,
         family: "chat_completions",
         serializer_revision: "openai-chat-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::DeepseekChatV1,
         family: "chat_completions",
         serializer_revision: "deepseek-chat-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::KimiChatV1,
         family: "chat_completions",
         serializer_revision: "kimi-chat-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::GlmChatV1,
         family: "chat_completions",
         serializer_revision: "glm-chat-serializer-1",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::OllamaChatV1,
         family: "chat_completions",
         serializer_revision: "ollama-chat-serializer-2",
+        credential_header: "authorization",
+        credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::AnthropicMessagesV1,
         family: "anthropic_messages",
         serializer_revision: "anthropic-messages-serializer-2",
+        credential_header: "x-api-key",
+        credential_prefix: "",
     },
     Definition {
         dialect: DialectId::DeepseekAnthropicV1,
         family: "anthropic_messages",
         serializer_revision: "deepseek-anthropic-serializer-1",
+        credential_header: "x-api-key",
+        credential_prefix: "",
     },
     Definition {
         dialect: DialectId::GoogleGenerationV1,
         family: "google_generation",
         serializer_revision: "google-generation-serializer-1",
+        credential_header: "x-goog-api-key",
+        credential_prefix: "",
     },
     Definition {
         dialect: DialectId::GoogleInteractionsV1,
         family: "google_interactions",
         serializer_revision: "google-interactions-serializer-1",
+        credential_header: "x-goog-api-key",
+        credential_prefix: "",
     },
 ];
 
@@ -421,12 +424,6 @@ pub struct ResolvedDialectProfile {
     pub serializer_revision: &'static str,
     pub credential_header: String,
     pub credential_prefix: String,
-    /// True only when the exact target and configured endpoint match an advertised proof.
-    /// False still represents an executable, configured dialect route.
-    pub proof_verified: bool,
-    /// Canonical endpoint carried by an exact target proof, when one exists. Request preparation
-    /// may use its missing path prefix when the configured endpoint has the same origin.
-    pub proved_endpoint: Option<String>,
     reasoning_efforts: Vec<String>,
     default_reasoning_effort: Option<String>,
     native_deferred_tools: Option<NativeDeferredMode>,
@@ -499,10 +496,10 @@ pub enum DialectError {
     UnknownFamily(String),
     #[error("provider protocol family and dialect disagree")]
     FamilyMismatch,
-    #[error("provider route evidence does not match a proved profile")]
+    #[error("provider protocol family does not match the configured dialect")]
     RouteMismatch,
-    #[error("provider dialect proof is unavailable: {0}")]
-    UnprovedProfile(String),
+    #[error("model capability catalog is unavailable: {0}")]
+    CatalogUnavailable(String),
     #[error("provider control {0} is unsupported by the exact profile")]
     UnsupportedControl(String),
     #[error("provider epoch target does not match the selected exact profile")]
@@ -520,122 +517,6 @@ fn definition_for(dialect: DialectId) -> Result<&'static Definition, DialectErro
 
 fn target_matches_definition(target: &ProviderTarget, definition: &Definition) -> bool {
     target.protocol_family == definition.family
-}
-
-fn load_proof_registry() -> Result<ProofRegistry, String> {
-    let actual = format!("{:x}", Sha256::digest(PROOF_ORACLE));
-    if actual != PROOF_ORACLE_SHA256 {
-        return Err(format!(
-            "provider proof oracle digest mismatch: expected {PROOF_ORACLE_SHA256}, got {actual}"
-        ));
-    }
-    let root: Value = serde_json::from_slice(PROOF_ORACLE)
-        .map_err(|error| format!("provider proof oracle is not JSON: {error}"))?;
-    let required = root
-        .get("required_proof_arms")
-        .and_then(Value::as_array)
-        .ok_or("provider proof oracle lacks required_proof_arms")?;
-    let profiles = root
-        .get("profiles")
-        .and_then(Value::as_array)
-        .ok_or("provider proof oracle lacks profiles")?;
-    let mut all = Vec::new();
-    let mut advertised = Vec::new();
-    let mut proof_ids = BTreeSet::new();
-    for profile in profiles {
-        let is_advertised = profile.get("advertised").and_then(Value::as_bool) == Some(true);
-        if is_advertised {
-            for arm in required {
-                let name = arm
-                    .as_str()
-                    .ok_or("provider proof arm name is not a string")?;
-                if profile.get(name).is_none_or(Value::is_null) {
-                    return Err(format!("advertised provider proof lacks {name}"));
-                }
-            }
-        }
-        let target: ProviderTarget = serde_json::from_value(
-            profile
-                .get("target")
-                .cloned()
-                .ok_or("provider proof lacks target")?,
-        )
-        .map_err(|error| format!("provider proof target is invalid: {error}"))?;
-        let dialect = target
-            .dialect()
-            .map_err(|error| format!("provider proof dialect is invalid: {error}"))?;
-        let definition = definition_for(dialect).map_err(|error| error.to_string())?;
-        if !target_matches_definition(&target, definition) {
-            return Err(format!(
-                "provider proof target mismatch for {}",
-                dialect.as_str()
-            ));
-        }
-        let proof_id = profile
-            .get("proof_id")
-            .and_then(Value::as_str)
-            .ok_or("provider proof lacks proof_id")?;
-        if proof_id.is_empty() || !proof_ids.insert(proof_id.to_owned()) {
-            return Err(format!("duplicate or empty provider proof id {proof_id}"));
-        }
-        let endpoint = profile
-            .get("endpoint")
-            .and_then(Value::as_str)
-            .ok_or("provider proof lacks endpoint")?;
-        if endpoint.is_empty() {
-            return Err(format!("provider proof endpoint is empty for {proof_id}"));
-        }
-        let credential_header = profile
-            .get("credential_header")
-            .and_then(Value::as_str)
-            .ok_or("provider proof lacks credential_header")?;
-        let credential_prefix = profile
-            .get("credential_prefix")
-            .and_then(Value::as_str)
-            .ok_or("provider proof lacks credential_prefix")?;
-        if credential_header.is_empty() {
-            return Err(format!(
-                "provider proof credential header is empty for {proof_id}"
-            ));
-        }
-        if profile.get("serializer_revision").and_then(Value::as_str)
-            != Some(definition.serializer_revision)
-        {
-            return Err(format!(
-                "provider serializer revision mismatch for {}",
-                dialect.as_str()
-            ));
-        }
-        let expected_continuation = if dialect.server_managed() {
-            "server_managed"
-        } else {
-            "stateless_full_history"
-        };
-        if profile.get("continuation").and_then(Value::as_str) != Some(expected_continuation) {
-            return Err(format!(
-                "provider continuation policy mismatch for {}",
-                dialect.as_str()
-            ));
-        }
-        let proof = AdvertisedDialectProof {
-            proof_id: proof_id.to_owned(),
-            protocol_family: target.protocol_family,
-            dialect_id: target.dialect_id,
-            model_profile_id: target.model_profile_id,
-            endpoint_owner: target.route.endpoint_owner,
-            gateway_translation: target.route.gateway_translation,
-            endpoint: endpoint.to_owned(),
-            exact_sku: target.route.exact_sku,
-            evidence_revision: target.route.evidence_revision,
-            credential_header: credential_header.to_owned(),
-            credential_prefix: credential_prefix.to_owned(),
-        };
-        all.push(proof.clone());
-        if is_advertised {
-            advertised.push(proof);
-        }
-    }
-    Ok(ProofRegistry { all, advertised })
 }
 
 fn load_model_capabilities() -> Result<Vec<ModelCapabilityProfile>, String> {
@@ -733,7 +614,7 @@ fn model_capability_for(
     let catalog = MODEL_CAPABILITIES.get_or_init(load_model_capabilities);
     let catalog = catalog
         .as_ref()
-        .map_err(|error| DialectError::UnprovedProfile(error.clone()))?;
+        .map_err(|error| DialectError::CatalogUnavailable(error.clone()))?;
     if let Some(exact) = catalog.iter().find(|profile| {
         profile.dialect_id == target.dialect_id
             && profile.model_profile_id == target.model_profile_id
@@ -783,106 +664,28 @@ fn dialect_uniform_capability(
     })
 }
 
-fn proof_matches_target(proof: &AdvertisedDialectProof, target: &ProviderTarget) -> bool {
-    proof.protocol_family == target.protocol_family
-        && proof.dialect_id == target.dialect_id
-        && proof.model_profile_id == target.model_profile_id
-        && proof.endpoint_owner == target.route.endpoint_owner
-        && proof.gateway_translation == target.route.gateway_translation
-        && proof.exact_sku == target.route.exact_sku
-        && proof.evidence_revision == target.route.evidence_revision
+/// Every dialect this kernel can serialize, in stable definition order.
+#[must_use]
+pub fn supported_dialects() -> Vec<SupportedDialect> {
+    DEFINITIONS
+        .iter()
+        .map(|definition| SupportedDialect {
+            dialect_id: definition.dialect.as_str().to_owned(),
+            protocol_family: definition.family.to_owned(),
+        })
+        .collect()
 }
 
-fn endpoint_matches(pattern: &str, endpoint: &str) -> bool {
-    let pattern = pattern.trim_end_matches('/');
-    let endpoint = endpoint.trim_end_matches('/');
-    let pattern_parts = pattern.split('/').collect::<Vec<_>>();
-    let endpoint_parts = endpoint.split('/').collect::<Vec<_>>();
-    pattern_parts.len() == endpoint_parts.len()
-        && pattern_parts
-            .iter()
-            .zip(endpoint_parts)
-            .all(|(expected, actual)| {
-                if expected.starts_with('{') && expected.ends_with('}') {
-                    expected.len() > 2
-                        && !actual.is_empty()
-                        && actual != "."
-                        && actual != ".."
-                        && !actual.contains(['?', '#', '{', '}'])
-                } else {
-                    *expected == actual
-                }
-            })
-}
-
-fn proof_matches_endpoint(
-    proof: &AdvertisedDialectProof,
-    target: &ProviderTarget,
-    endpoint: &str,
-) -> bool {
-    proof_matches_target(proof, target) && endpoint_matches(&proof.endpoint, endpoint)
-}
-
-fn proof_matches_provider_route(proof: &AdvertisedDialectProof, provider: &Provider) -> bool {
-    proof.protocol_family == provider.adapter
-        && proof.dialect_id == provider.dialect
-        && proof.endpoint_owner == provider.endpoint_owner
-        && proof.gateway_translation == provider.gateway_translation
-        && proof.evidence_revision == provider.evidence_revision
-        && endpoint_matches(&proof.endpoint, &provider.endpoint)
-}
-
-pub fn validate_endpoint(target: &ProviderTarget, endpoint: &str) -> Result<(), DialectError> {
-    let registry = PROOF_REGISTRY.get_or_init(load_proof_registry);
-    match registry {
-        Ok(registry)
-            if registry
-                .all
-                .iter()
-                .any(|proof| proof_matches_endpoint(proof, target, endpoint)) =>
-        {
-            Ok(())
-        }
-        Ok(_) => Err(DialectError::RouteMismatch),
-        Err(error) => Err(DialectError::UnprovedProfile(error.clone())),
-    }
-}
-
-/// Validates a configured connection without selecting a model. Route identity
-/// and endpoint matching come only from the embedded proof catalog.
-pub fn configured_route_is_verified(provider: &Provider) -> Result<bool, DialectError> {
+/// Checks that a configured connection names a known dialect and its matching
+/// protocol family. Endpoint and route identity are taken as configured; a route
+/// the upstream does not accept fails at request time.
+pub fn validate_provider(provider: &Provider) -> Result<(), DialectError> {
     let dialect = DialectId::from_str(&provider.dialect)?;
     let definition = definition_for(dialect)?;
     if provider.adapter != definition.family {
         return Err(DialectError::RouteMismatch);
     }
-    let registry = PROOF_REGISTRY.get_or_init(load_proof_registry);
-    let registry = registry
-        .as_ref()
-        .map_err(|error| DialectError::UnprovedProfile(error.clone()))?;
-    if !registry
-        .advertised
-        .iter()
-        .any(|proof| proof.dialect_id == dialect.as_str())
-    {
-        return Err(DialectError::UnprovedProfile(dialect.as_str().to_owned()));
-    }
-    authentication_policy(registry, dialect)?;
-    Ok(registry
-        .advertised
-        .iter()
-        .any(|proof| proof_matches_provider_route(proof, provider)))
-}
-
-/// Returns the installed advertised proof registry in stable catalog order.
-/// Loading is fail-closed: an invalid embedded oracle never produces a partial
-/// catalog.
-pub fn advertised_dialect_proofs() -> Result<Vec<AdvertisedDialectProof>, DialectError> {
-    let registry = PROOF_REGISTRY.get_or_init(load_proof_registry);
-    let registry = registry
-        .as_ref()
-        .map_err(|error| DialectError::UnprovedProfile(error.clone()))?;
-    Ok(registry.advertised.clone())
+    Ok(())
 }
 
 pub fn resolve_profile(
@@ -905,7 +708,7 @@ pub fn resolve_profile(
             evidence_revision: provider.evidence_revision.clone(),
         },
     };
-    resolve_configured_target(target, dialect, definition, Some(&provider.endpoint))
+    resolve_configured_target(target, dialect, definition)
 }
 
 pub fn validate_target(target: &ProviderTarget) -> Result<ResolvedDialectProfile, DialectError> {
@@ -914,30 +717,16 @@ pub fn validate_target(target: &ProviderTarget) -> Result<ResolvedDialectProfile
     if !target_matches_definition(target, definition) {
         return Err(DialectError::RouteMismatch);
     }
-    resolve_configured_target(target.clone(), dialect, definition, None)
+    resolve_configured_target(target.clone(), dialect, definition)
 }
 
 fn resolve_configured_target(
     target: ProviderTarget,
     dialect: DialectId,
     definition: &'static Definition,
-    configured_endpoint: Option<&str>,
 ) -> Result<ResolvedDialectProfile, DialectError> {
-    let registry = PROOF_REGISTRY.get_or_init(load_proof_registry);
-    let registry = registry
-        .as_ref()
-        .map_err(|error| DialectError::UnprovedProfile(error.clone()))?;
-    let exact = registry
-        .advertised
-        .iter()
-        .find(|proof| proof_matches_target(proof, &target));
-    let (mut credential_header, mut credential_prefix) = match exact {
-        Some(proof) => (
-            proof.credential_header.clone(),
-            proof.credential_prefix.clone(),
-        ),
-        None => authentication_policy(registry, dialect)?,
-    };
+    let mut credential_header = definition.credential_header.to_owned();
+    let mut credential_prefix = definition.credential_prefix.to_owned();
     if dialect == DialectId::AnthropicMessagesV1
         && target.route.endpoint_owner == "cloudflare"
         && target.route.gateway_translation == "cloudflare-native-anthropic"
@@ -945,9 +734,6 @@ fn resolve_configured_target(
         credential_header = "cf-aig-authorization".to_owned();
         credential_prefix = "Bearer ".to_owned();
     }
-    let proof_verified = exact.is_some_and(|proof| {
-        configured_endpoint.is_none_or(|endpoint| endpoint_matches(&proof.endpoint, endpoint))
-    });
     let capability = model_capability_for(&target)?;
     let native_deferred_tools = capability
         .as_ref()
@@ -966,8 +752,6 @@ fn resolve_configured_target(
         serializer_revision: definition.serializer_revision,
         credential_header,
         credential_prefix,
-        proof_verified,
-        proved_endpoint: exact.map(|proof| proof.endpoint.clone()),
         reasoning_efforts: capability
             .as_ref()
             .map(|value| value.reasoning.levels.clone())
@@ -993,36 +777,6 @@ fn resolve_configured_target(
         pro_reasoning: capability.as_ref().is_some_and(|value| value.pro_reasoning),
         native_deferred_tools,
     })
-}
-
-/// Missing exact route evidence does not make a configured dialect unusable. Best-effort
-/// execution can reuse the dialect's authentication shape only when every embedded row agrees;
-/// an ambiguous authentication policy remains a real configuration failure.
-fn authentication_policy(
-    registry: &ProofRegistry,
-    dialect: DialectId,
-) -> Result<(String, String), DialectError> {
-    let policies = registry
-        .all
-        .iter()
-        .filter(|proof| proof.dialect_id == dialect.as_str())
-        .map(|proof| {
-            (
-                proof.credential_header.clone(),
-                proof.credential_prefix.clone(),
-            )
-        })
-        .collect::<BTreeSet<_>>();
-    if policies.len() == 1 {
-        return Ok(policies
-            .into_iter()
-            .next()
-            .expect("one authentication policy"));
-    }
-    Err(DialectError::UnprovedProfile(format!(
-        "dialect {} has no unambiguous authentication policy",
-        dialect.as_str()
-    )))
 }
 
 pub fn epoch_profile(
@@ -1079,8 +833,6 @@ pub fn validate_epoch_target(
 
 #[cfg(test)]
 mod tests {
-    use super::endpoint_matches;
-
     #[test]
     fn unlisted_sku_inherits_a_dialect_uniform_reasoning_capability() {
         let catalog = super::MODEL_CAPABILITIES
@@ -1104,30 +856,5 @@ mod tests {
         assert_eq!(responses.reasoning.levels, ["low", "high", "max"]);
         assert!(super::dialect_uniform_capability(catalog, "glm_chat_v1", "unlisted").is_none());
         assert!(super::dialect_uniform_capability(catalog, "no_such_dialect", "x").is_none());
-    }
-
-    #[test]
-    fn endpoint_patterns_match_opaque_configured_path_segments_only() {
-        let pattern = "https://gateway.example/v1/{tenant}/{route}";
-        assert!(endpoint_matches(
-            pattern,
-            "https://gateway.example/v1/tenant-42/primary"
-        ));
-        assert!(endpoint_matches(
-            pattern,
-            "https://gateway.example/v1/tenant-42/primary/"
-        ));
-        assert!(!endpoint_matches(
-            pattern,
-            "https://gateway.example/v1/tenant-42"
-        ));
-        assert!(!endpoint_matches(
-            pattern,
-            "https://other.example/v1/tenant-42/primary"
-        ));
-        assert!(!endpoint_matches(
-            pattern,
-            "https://gateway.example/v1/../primary"
-        ));
     }
 }

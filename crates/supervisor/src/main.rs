@@ -6,10 +6,7 @@ fn main() -> ExitCode {
     if env::args_os().len() == 2
         && env::args_os().nth(1).as_deref() == Some(std::ffi::OsStr::new("--models-available"))
     {
-        return match provider::advertised_dialect_proofs().and_then(|proofs| {
-            serde_json::to_string(&proofs)
-                .map_err(|_| provider::DialectError::UnprovedProfile("catalog".into()))
-        }) {
+        return match serde_json::to_string(&provider::supported_dialects()) {
             Ok(catalog) => {
                 println!("{catalog}");
                 ExitCode::SUCCESS

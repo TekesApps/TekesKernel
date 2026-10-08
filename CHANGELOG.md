@@ -6,6 +6,21 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Removed
+- The runtime provider route allow-list. The proof registry
+  (`fixtures/provider-dialects/profiles.canonical.json`) is no longer compiled
+  into the Kernel: a configured provider on a supported dialect runs with the
+  endpoint, gateway and model it is given, and an upstream that rejects the
+  route fails at request time. Credential headers come from the dialect, and
+  the configured endpoint is no longer completed from a proved URL. Readiness
+  drops `dialect-unproved` (an unknown dialect is `misconfigured`).
+  `--models-available` now prints `[{dialect_id, protocol_family}]` instead of
+  proof rows. Removed from the `provider` crate: `AdvertisedDialectProof`,
+  `advertised_dialect_proofs`, `configured_route_is_verified`,
+  `validate_endpoint`, and `ResolvedDialectProfile::{proof_verified,
+  proved_endpoint}`; added `supported_dialects` and `validate_provider`.
+  `scripts/add-provider-model-proof-alias.py` is removed.
+
 ## 0.3.0 — 2026-10-08
 
 ### Removed

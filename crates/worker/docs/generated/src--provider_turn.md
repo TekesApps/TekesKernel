@@ -53,8 +53,8 @@ flowchart TD
   n0["engine::context::plan_context_compaction"]
   n1["engine::context::plan_tool_result_trim"]
   n2["engine::dispatcher::side_effectful"]
-  n3["provider::dialect::epoch_profile"]
-  n4["provider::dialect::resolve_profile"]
+  n3["provider::dialect::resolve_profile"]
+  n4["provider::dialect::epoch_profile"]
   n5["provider::request::prepare_with_native_deferred_tools"]
   n6["session-controls::read_goal"]
   n7["store::asset::AssetStore::new"]
@@ -144,7 +144,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_provider_turn_inner` | `ledger         .path()         .parent()         .ok_or` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
 | `run_provider_turn_inner` | `ledger         .path()         .parent` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
 | `run_provider_turn_inner` | `ledger         .path` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
-| `run_provider_turn_inner` | `provider::resolve_profile` | [166](../../src/provider_turn.rs#L166) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L888) |
+| `run_provider_turn_inner` | `provider::resolve_profile` | [166](../../src/provider_turn.rs#L166) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L691) |
 | `run_provider_turn_inner` | `resolved_profile.native_deferred_tools` | [177](../../src/provider_turn.rs#L177) | receiver-type-required |
 | `run_provider_turn_inner` | `assemble_tool_backends` | [180](../../src/provider_turn.rs#L180) | external-constructor-callback-or-unresolved |
 | `run_provider_turn_inner` | `credential.as_ref` | [186](../../src/provider_turn.rs#L186), [435](../../src/provider_turn.rs#L435), [768](../../src/provider_turn.rs#L768), [1042](../../src/provider_turn.rs#L1042) | receiver-type-required |
@@ -197,7 +197,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_provider_turn_inner` | `profile.bindings.goal_id.as_deref` | [277](../../src/provider_turn.rs#L277) | receiver-type-required |
 | `run_provider_turn_inner` | `goal_store_location` | [278](../../src/provider_turn.rs#L278) | external-constructor-callback-or-unresolved |
 | `run_provider_turn_inner` | `session_controls::read_goal` | [279](../../src/provider_turn.rs#L279) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
-| `run_provider_turn_inner` | `provider::epoch_profile` | [300](../../src/provider_turn.rs#L300) | [provider::dialect::epoch_profile](../../../provider/src/dialect.rs#L1028) |
+| `run_provider_turn_inner` | `provider::epoch_profile` | [300](../../src/provider_turn.rs#L300) | [provider::dialect::epoch_profile](../../../provider/src/dialect.rs#L782) |
 | `run_provider_turn_inner` | `profile.config.session_settings.as_ref` | [303](../../src/provider_turn.rs#L303) | receiver-type-required |
 | `run_provider_turn_inner` | `(!reset_epoch)         .then(&#124;&#124; {             latest_compatible_epoch(                 ledger,                 dialect,                 &model.id,                 &profile_digest,                 &tools_digest,                 CONTEXT_RENDERER_VERSION,             )         })         .flatten` | [306](../../src/provider_turn.rs#L306) | receiver-type-required |
 | `run_provider_turn_inner` | `(!reset_epoch)         .then` | [306](../../src/provider_turn.rs#L306) | receiver-type-required |

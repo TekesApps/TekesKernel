@@ -7,9 +7,8 @@ use engine::{
 };
 use profile::{Model, Provider, SessionSettings};
 use provider::{
-    DialectId, PrepareInput, ProviderTarget, configured_route_is_verified, epoch_profile,
-    normalize_dialect_response, normalize_dialect_sse_stream, prepare, repair_tool_arguments,
-    resolve_profile, validate_target,
+    DialectId, PrepareInput, ProviderTarget, epoch_profile, normalize_dialect_response,
+    normalize_dialect_sse_stream, prepare, repair_tool_arguments, resolve_profile, validate_target,
 };
 use schema::IJsonValue;
 use serde_json::{Value, json};
@@ -152,7 +151,7 @@ fn compactor_tool_choice_preserves_reasoning_and_route_contract() {
 }
 
 #[test]
-fn legacy_cloudflare_routes_remain_executable_but_unverified() {
+fn configured_cloudflare_routes_resolve_with_their_dialect_credentials() {
     let cases = [
         (
             Provider {
@@ -204,9 +203,8 @@ fn legacy_cloudflare_routes_remain_executable_but_unverified() {
     ];
 
     for (provider, model, credential_header, credential_prefix) in cases {
-        assert!(!configured_route_is_verified(&provider).expect("configured dialect"));
-        let resolved = resolve_profile(&provider, &model).expect("legacy configured target");
-        assert!(!resolved.proof_verified);
+        provider::validate_provider(&provider).expect("configured dialect");
+        let resolved = resolve_profile(&provider, &model).expect("configured target");
         assert_eq!(resolved.credential_header, credential_header);
         assert_eq!(resolved.credential_prefix, credential_prefix);
     }
@@ -526,12 +524,7 @@ fn provider_dialect_gate_93_registry_closure() {
                 context_window_tokens: 100_000,
                 compact_trigger_tokens: 80_000,
             };
-            assert!(
-                !resolve_profile(&provider, &model)
-                    .expect("configured generic dialect")
-                    .proof_verified,
-                "test-only generic tuple must remain unverified"
-            );
+            resolve_profile(&provider, &model).expect("configured generic dialect");
         }
         let mut mismatch: ProviderTarget =
             serde_json::from_value(target.clone()).expect("fixture target");
@@ -568,11 +561,7 @@ fn provider_dialect_gate_93_registry_closure() {
         for mutate in mutations {
             let mut candidate = exact.clone();
             mutate(&mut candidate);
-            let resolved = validate_target(&candidate).expect("configured unverified target");
-            assert!(
-                !resolved.proof_verified,
-                "a tuple mutation must lose proof without losing dialect execution"
-            );
+            let resolved = validate_target(&candidate).expect("configured target");
             let epoch = epoch_profile(&resolved, "system", None).expect("unverified epoch");
             prepare(&PrepareInput {
                 attempt_id: "unverified".to_owned(),
@@ -1517,7 +1506,6 @@ fn provider_dialect_gate_96_session_controls_to_wire() {
             compact_trigger_tokens: 80_000,
         };
         let resolved = resolve_profile(&provider, &model).expect("configured target");
-        assert_eq!(resolved.proof_verified, fixture["advertised"] == true);
         let dialect = resolved.dialect;
         let requested = fixture["control"]["session"]["reasoning_effort"]
             .as_str()

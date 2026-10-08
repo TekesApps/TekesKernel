@@ -120,8 +120,8 @@ python3 scripts/test-builtin-launch.py
 
 To run it yourself, give `tekes-supervisor --built-in launch.json` a launch
 document with your provider routes and the environment variable that holds
-each key; `tekes-supervisor --models-available` lists the provider and model
-routes the build supports. The launch document, authentication token and
+each key; `tekes-supervisor --models-available` lists the provider dialects the
+build supports. The launch document, authentication token and
 readiness record are described in [Application-owned launch](docs/builtin-launch.md).
 
 ## Build and verify

@@ -163,7 +163,6 @@ fn prepare_inner(
     let resolved = validate_target(&input.target)
         .map_err(|error| PrepareError::InvalidTarget(error.to_string()))?;
     let dialect = resolved.dialect;
-    let base = request_base(configured_base, resolved.proved_endpoint.as_deref());
     let adapter = dialect.family();
     let model = resolved.wire_model();
     let profile = value(&input.epoch_profile);
@@ -386,7 +385,7 @@ fn prepare_inner(
             );
         }
     }
-    let url = format!("{base}{suffix}");
+    let url = format!("{configured_base}{suffix}");
     if thinking_binding {
         let beta = headers_without_secret
             .entry("anthropic-beta".to_owned())
@@ -420,36 +419,6 @@ fn prepare_inner(
         request_digest,
         query_key,
     })
-}
-
-/// Exact proof data may supply a protocol path prefix that an older configured endpoint omitted
-/// (for example an API version). It is safe to recover only that suffix on the same origin; proxy
-/// and router endpoints keep their user-configured base untouched.
-fn request_base(configured: &str, proved: Option<&str>) -> String {
-    let Some(proved) = proved.filter(|value| !value.contains(['{', '}'])) else {
-        return configured.to_owned();
-    };
-    let (Ok(configured_url), Ok(proved_url)) =
-        (reqwest::Url::parse(configured), reqwest::Url::parse(proved))
-    else {
-        return configured.to_owned();
-    };
-    if configured_url.scheme() != proved_url.scheme()
-        || configured_url.host_str() != proved_url.host_str()
-        || configured_url.port_or_known_default() != proved_url.port_or_known_default()
-    {
-        return configured.to_owned();
-    }
-    let configured_path = configured_url.path().trim_end_matches('/');
-    let proved_path = proved_url.path().trim_end_matches('/');
-    if configured_path.is_empty()
-        || configured_path == proved_path
-        || proved_path.starts_with(&format!("{configured_path}/"))
-    {
-        proved.trim_end_matches('/').to_owned()
-    } else {
-        configured.to_owned()
-    }
 }
 
 fn encode_request_body(dialect: DialectId, body: &Value) -> Result<Vec<u8>, PrepareError> {
@@ -1961,29 +1930,6 @@ mod file_degradation_tests {
                 .to_string()
                 .contains("rejects the requested file block"),
             "{error}"
-        );
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::request_base;
-
-    #[test]
-    fn exact_proof_can_supply_a_missing_path_prefix_on_the_same_origin() {
-        assert_eq!(
-            request_base(
-                "https://generativelanguage.googleapis.com",
-                Some("https://generativelanguage.googleapis.com/v1beta"),
-            ),
-            "https://generativelanguage.googleapis.com/v1beta"
-        );
-        assert_eq!(
-            request_base(
-                "https://proxy.example/custom",
-                Some("https://generativelanguage.googleapis.com/v1beta"),
-            ),
-            "https://proxy.example/custom"
         );
     }
 }

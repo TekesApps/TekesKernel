@@ -21,8 +21,10 @@ python3 scripts/test-builtin-client-contract.py
 `test-builtin-client-contract.py` also needs `swiftc` and a TekesClientKit
 checkout (`TEKES_CLIENT_KIT_ROOT`, default `../TekesClientKit`).
 
-`tekes-supervisor --models-available` returns the non-secret executable dialect
-proof catalog before startup, for application-side launch configuration.
+`tekes-supervisor --models-available` returns the dialects this build supports
+as `[{"dialect_id", "protocol_family"}]`. The kernel has no route allow-list:
+the launch document's provider routes are used as given, and a route the
+upstream rejects fails at request time.
 
 The launch document is non-secret JSON:
 

@@ -1366,7 +1366,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `failure` | `IJsonValue::parse` | [2968](../../src/client_extensions.rs#L2968) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `failure` | `serde_json::to_vec(&details).expect` | [2969](../../src/client_extensions.rs#L2969) | receiver-type-required |
 | `failure` | `serde_json::to_vec` | [2969](../../src/client_extensions.rs#L2969) | external-constructor-callback-or-unresolved |
-| `failure` | `ProductionRouteFailure::new` | [2972](../../src/client_extensions.rs#L2972) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `failure` | `ProductionRouteFailure::new` | [2972](../../src/client_extensions.rs#L2972) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `production_extensions` | `root.join` | [2989](../../src/client_extensions.rs#L2989) | receiver-type-required |
 | `production_extensions` | `fs::create_dir_all(&agent).expect` | [2990](../../src/client_extensions.rs#L2990) | receiver-type-required |
 | `production_extensions` | `fs::create_dir_all` | [2990](../../src/client_extensions.rs#L2990) | external-constructor-callback-or-unresolved |
@@ -1375,7 +1375,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `production_extensions` | `std::env::current_exe().expect` | [2993](../../src/client_extensions.rs#L2993) | receiver-type-required |
 | `production_extensions` | `std::env::current_exe` | [2993](../../src/client_extensions.rs#L2993) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `Arc::new` | [2998](../../src/client_extensions.rs#L2998), [3001](../../src/client_extensions.rs#L3001), [3004](../../src/client_extensions.rs#L3004) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `SessionInputAdmissionAuthority::new` | [2998](../../src/client_extensions.rs#L2998) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L265) |
+| `production_extensions` | `SessionInputAdmissionAuthority::new` | [2998](../../src/client_extensions.rs#L2998) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L264) |
 | `production_extensions` | `root.to_path_buf` | [2998](../../src/client_extensions.rs#L2998) | receiver-type-required |
 | `production_extensions` | `EndpointCommandInputAuthority::new` | [2999](../../src/client_extensions.rs#L2999) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `Arc::clone` | [3000](../../src/client_extensions.rs#L3000), [3010](../../src/client_extensions.rs#L3010) | external-constructor-callback-or-unresolved |
@@ -1598,7 +1598,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `skill_resources_never_cross_configured_workspace_catalogs` | `"2026-08-29T00:00:00.000Z".to_owned` | [3597](../../src/client_extensions.rs#L3597), [3609](../../src/client_extensions.rs#L3609) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `Arc::clone` | [3599](../../src/client_extensions.rs#L3599), [3608](../../src/client_extensions.rs#L3608), [3619](../../src/client_extensions.rs#L3619) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `EndpointCommandInputAuthority::new` | [3607](../../src/client_extensions.rs#L3607) | external-constructor-callback-or-unresolved |
-| `skill_resources_never_cross_configured_workspace_catalogs` | `SessionInputAdmissionAuthority::new` | [3610](../../src/client_extensions.rs#L3610) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L265) |
+| `skill_resources_never_cross_configured_workspace_catalogs` | `SessionInputAdmissionAuthority::new` | [3610](../../src/client_extensions.rs#L3610) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L264) |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `root.path().to_path_buf` | [3611](../../src/client_extensions.rs#L3611) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ProductionClientExtensions::open(             root.path(),             ResourceCatalog::default(),             catalogs,             commands,             Arc::clone(&process),         )         .expect` | [3614](../../src/client_extensions.rs#L3614) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ProductionClientExtensions::open` | [3614](../../src/client_extensions.rs#L3614) | external-constructor-callback-or-unresolved |
