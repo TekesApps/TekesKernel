@@ -25,7 +25,7 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tools::guidance::GENERAL_PROFILE](../../src/guidance.rs#L25) | `pub` | not a function |
 | [tools::guidance::IdentityProfile](../../src/guidance.rs#L31) | `pub` | not a function |
 | [tools::guidance::IdentityProfile::as_str](../../src/guidance.rs#L39) | `pub` | no resolved direct caller |
-| [tools::guidance::IdentityProfile::parse](../../src/guidance.rs#L47) | `pub` | [tekes-supervisor::endpoint_host::ProductionEndpointHost::create_session](../../../supervisor/src/endpoint_host.rs#L967) |
+| [tools::guidance::IdentityProfile::parse](../../src/guidance.rs#L47) | `pub` | [tekes-supervisor::endpoint_host::ProductionEndpointHost::create_session](../../../supervisor/src/endpoint_host.rs#L966) |
 | [tools::guidance::WORKING_DIRECTORY](../../src/guidance.rs#L57) | `pub` | not a function |
 | [tools::guidance::root_system_instructions](../../src/guidance.rs#L63) | `pub` | [tekes-worker::identity::tests::selection_is_durable_and_runtime_only](../../../worker/src/identity.rs#L275); [tekes-worker::provider_turn::run_provider_turn_inner](../../../worker/src/provider_turn.rs#L108) |
 | [tools::guidance::guidance_oracle_value](../../src/guidance.rs#L89) | `pub` | [tools::guidance::canonical_guidance_oracle_bytes](../../src/guidance.rs#L109) |

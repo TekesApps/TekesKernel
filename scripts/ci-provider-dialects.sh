@@ -20,4 +20,6 @@ cargo test -p tekes-worker --locked \
 cargo test -p tekes-worker --locked \
   provider_context_tests::deepseek_responses_ignores_family_continuation_and_replays_full_history -- --exact
 cargo test -p tekes-supervisor --locked --test secret_store \
-  provider_readiness_rejects_test_only_dialect_profile -- --exact
+  provider_readiness_accepts_a_configured_gateway_the_kernel_has_never_seen -- --exact
+cargo test -p tekes-supervisor --locked --test secret_store \
+  provider_readiness_rejects_an_unknown_dialect_as_misconfigured -- --exact

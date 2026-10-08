@@ -293,7 +293,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `commands_run_with_catalog` | `keyed.text.trim` | [231](../../src/resource_capability.rs#L231) | receiver-type-required |
 | `commands_run_with_catalog` | `request.attachments.is_empty` | [232](../../src/resource_capability.rs#L232), [251](../../src/resource_capability.rs#L251), [261](../../src/resource_capability.rs#L261) | receiver-type-required |
 | `commands_run_with_catalog` | `ResourceCapabilityError::Delivery` | [233](../../src/resource_capability.rs#L233), [252](../../src/resource_capability.rs#L252) | external-constructor-callback-or-unresolved |
-| `commands_run_with_catalog` | `ProductionRouteFailure::new` | [234](../../src/resource_capability.rs#L234), [253](../../src/resource_capability.rs#L253) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `commands_run_with_catalog` | `ProductionRouteFailure::new` | [234](../../src/resource_capability.rs#L234), [253](../../src/resource_capability.rs#L253) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `commands_run_with_catalog` | `empty_details` | [237](../../src/resource_capability.rs#L237), [256](../../src/resource_capability.rs#L256) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
 | `commands_run_with_catalog` | `self.input.compact` | [241](../../src/resource_capability.rs#L241) | receiver-type-required |
 | `commands_run_with_catalog` | `permission_verb_mode` | [242](../../src/resource_capability.rs#L242) | [tekes-supervisor::resource_capability::permission_verb_mode](../../src/resource_capability.rs#L95) |
@@ -315,7 +315,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_extension_payload` | `bad_request` | [310](../../src/resource_capability.rs#L310) | [tekes-supervisor::resource_capability::bad_request](../../src/resource_capability.rs#L672) |
 | `extension_failure_is_exact` | `base_failure_is_exact` | [320](../../src/resource_capability.rs#L320), [322](../../src/resource_capability.rs#L322) | [tekes-supervisor::resource_capability::base_failure_is_exact](../../src/resource_capability.rs#L651) |
 | `extension_failure_is_exact` | `resource_failure_is_exact` | [323](../../src/resource_capability.rs#L323) | [tekes-supervisor::resource_capability::resource_failure_is_exact](../../src/resource_capability.rs#L628) |
-| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1858) |
+| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1856) |
 | `execute` | `request.operation.as_str` | [333](../../src/resource_capability.rs#L333) | receiver-type-required |
 | `execute` | `encode_result` | [334](../../src/resource_capability.rs#L334), [335](../../src/resource_capability.rs#L335), [352](../../src/resource_capability.rs#L352) | [tekes-supervisor::resource_capability::encode_result](../../src/resource_capability.rs#L593) |
 | `execute` | `self.skills_list` | [334](../../src/resource_capability.rs#L334) | receiver-type-required |
@@ -356,7 +356,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `deliver` | `self.delivery                     .prompt(                         &input.session_id,                         &timestamp,                         &origin,                         &MaterializedPrompt {                             blocks,                             attachments: references,                             files: Vec::new(),                         },                         false,                     )                     .map_err` | [444](../../src/resource_capability.rs#L444) | receiver-type-required |
 | `deliver` | `self.delivery                     .prompt` | [444](../../src/resource_capability.rs#L444) | receiver-type-required |
 | `map_prompt_materialize_error` | `bad_request` | [470](../../src/resource_capability.rs#L470) | [tekes-supervisor::resource_capability::bad_request](../../src/resource_capability.rs#L672) |
-| `map_prompt_materialize_error` | `ProductionRouteFailure::new` | [471](../../src/resource_capability.rs#L471), [476](../../src/resource_capability.rs#L476), [481](../../src/resource_capability.rs#L481) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `map_prompt_materialize_error` | `ProductionRouteFailure::new` | [471](../../src/resource_capability.rs#L471), [476](../../src/resource_capability.rs#L476), [481](../../src/resource_capability.rs#L481) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `map_prompt_materialize_error` | `json_details` | [474](../../src/resource_capability.rs#L474), [479](../../src/resource_capability.rs#L479), [484](../../src/resource_capability.rs#L484) | [tekes-supervisor::resource_capability::json_details](../../src/resource_capability.rs#L667) |
 | `map_prompt_materialize_error` | `internal_failure` | [486](../../src/resource_capability.rs#L486) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
 | `submit` | `self.deliver` | [495](../../src/resource_capability.rs#L495) | receiver-type-required |
@@ -400,7 +400,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encode_result` | `serde_json::to_vec(value).map_err` | [594](../../src/resource_capability.rs#L594) | receiver-type-required |
 | `encode_result` | `serde_json::to_vec` | [594](../../src/resource_capability.rs#L594) | external-constructor-callback-or-unresolved |
 | `encode_result` | `internal_failure` | [594](../../src/resource_capability.rs#L594), [595](../../src/resource_capability.rs#L595) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
-| `map_resource_failure` | `ProductionRouteFailure::new` | [601](../../src/resource_capability.rs#L601), [604](../../src/resource_capability.rs#L604), [611](../../src/resource_capability.rs#L611), [622](../../src/resource_capability.rs#L622) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `map_resource_failure` | `ProductionRouteFailure::new` | [601](../../src/resource_capability.rs#L601), [604](../../src/resource_capability.rs#L604), [611](../../src/resource_capability.rs#L611), [622](../../src/resource_capability.rs#L622) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `map_resource_failure` | `empty_details` | [601](../../src/resource_capability.rs#L601), [607](../../src/resource_capability.rs#L607) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
 | `map_resource_failure` | `json_details` | [614](../../src/resource_capability.rs#L614) | [tekes-supervisor::resource_capability::json_details](../../src/resource_capability.rs#L667) |
 | `map_resource_failure` | `internal_failure` | [618](../../src/resource_capability.rs#L618) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
@@ -426,11 +426,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `json_details` | `IJsonValue::parse` | [668](../../src/resource_capability.rs#L668) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `json_details` | `serde_json::to_vec(value).expect` | [668](../../src/resource_capability.rs#L668) | receiver-type-required |
 | `json_details` | `serde_json::to_vec` | [668](../../src/resource_capability.rs#L668) | external-constructor-callback-or-unresolved |
-| `bad_request` | `ProductionRouteFailure::new` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `bad_request` | `ProductionRouteFailure::new` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `bad_request` | `empty_details` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
-| `internal_failure` | `ProductionRouteFailure::new` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `internal_failure` | `ProductionRouteFailure::new` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `internal_failure` | `empty_details` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
-| `unsupported` | `ProductionRouteFailure::new` | [681](../../src/resource_capability.rs#L681) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `unsupported` | `ProductionRouteFailure::new` | [681](../../src/resource_capability.rs#L681) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `unsupported` | `IJsonValue::parse(&serde_json::to_vec(&json!({"operation":operation})).expect("JSON"))             .expect` | [684](../../src/resource_capability.rs#L684) | receiver-type-required |
 | `unsupported` | `IJsonValue::parse` | [684](../../src/resource_capability.rs#L684) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `unsupported` | `serde_json::to_vec(&json!({"operation":operation})).expect` | [684](../../src/resource_capability.rs#L684) | receiver-type-required |

@@ -117,38 +117,50 @@ fn provider_readiness_distinguishes_store_unavailable() {
     );
 }
 
-#[test]
-fn provider_readiness_rejects_test_only_dialect_profile() {
+fn with_provider(fields: serde_json::Value) -> ConfigSnapshot {
     let mut value = serde_json::to_value(config()).expect("config JSON");
     let provider = value
         .pointer_mut("/providers/providers/0")
         .and_then(serde_json::Value::as_object_mut)
         .expect("provider object");
-    provider.insert("adapter".to_owned(), json!("chat_completions"));
-    provider.insert("dialect".to_owned(), json!("generic_chat_v1"));
-    provider.insert("endpoint_owner".to_owned(), json!("fixture"));
-    provider.insert("evidence_revision".to_owned(), json!("kernel-fixture-1"));
-    provider.insert("endpoint".to_owned(), json!("https://fixture.invalid/v1"));
-    provider.insert("credential_key".to_owned(), serde_json::Value::Null);
-    provider.insert(
-        "models".to_owned(),
-        json!([{
-            "id":"generic-chat-fixture-1",
-            "profile":"generic_chat_v1:generic-chat-fixture-1",
+    for (key, field) in fields.as_object().expect("fields") {
+        provider.insert(key.clone(), field.clone());
+    }
+    serde_json::from_value(value).expect("provider config")
+}
+
+#[test]
+fn provider_readiness_accepts_a_configured_gateway_the_kernel_has_never_seen() {
+    let config = with_provider(json!({
+        "dialect":"deepseek_responses_v1",
+        "endpoint_owner":"example",
+        "gateway_translation":"newapi-openai-responses",
+        "evidence_revision":"example-1",
+        "endpoint":"https://gateway.example/v1",
+        "credential_key":null,
+        "models":[{
+            "id":"private-alias",
+            "profile":"deepseek_responses_v1:private-alias",
             "enabled":true,
             "context_window_tokens":100,
             "compact_trigger_tokens":50
-        }]),
-    );
-    let config: ConfigSnapshot = serde_json::from_value(value).expect("generic config");
+        }]
+    }));
     let (_directory, host) = host(Arc::new(MemorySecretStore::new()));
-    let readiness = host
-        .readiness("session", &config)
-        .expect("typed dialect proof failure");
+    let readiness = host.readiness("session", &config).expect("readiness");
+    assert_eq!(readiness[0].status, RuntimeProviderStatus::Ready);
+    assert_eq!(readiness[0].models.len(), 1);
+}
+
+#[test]
+fn provider_readiness_rejects_an_unknown_dialect_as_misconfigured() {
+    let config = with_provider(json!({"dialect":"unknown_v1","credential_key":null}));
+    let (_directory, host) = host(Arc::new(MemorySecretStore::new()));
+    let readiness = host.readiness("session", &config).expect("readiness");
     assert_eq!(
         readiness[0].status,
         RuntimeProviderStatus::Failed {
-            failure: RuntimeProviderFailure::DialectUnproved
+            failure: RuntimeProviderFailure::Misconfigured
         }
     );
     assert!(readiness[0].models.is_empty());

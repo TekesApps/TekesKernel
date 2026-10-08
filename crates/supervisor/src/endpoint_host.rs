@@ -93,7 +93,6 @@ pub enum RuntimeProviderStatus {
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum RuntimeProviderFailure {
     Unavailable,
-    DialectUnproved,
     InvalidCredential,
     Network,
     Misconfigured,
@@ -1806,7 +1805,6 @@ fn model_is_configured(
 const fn runtime_failure_name(failure: RuntimeProviderFailure) -> &'static str {
     match failure {
         RuntimeProviderFailure::Unavailable => "unavailable",
-        RuntimeProviderFailure::DialectUnproved => "dialect-unproved",
         RuntimeProviderFailure::InvalidCredential => "invalid-credential",
         RuntimeProviderFailure::Network => "network",
         RuntimeProviderFailure::Misconfigured => "misconfigured",

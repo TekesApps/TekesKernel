@@ -27,56 +27,44 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [provider::dialect::ProviderTarget::dialect](../../src/dialect.rs#L188) | function_item | `pub` |  |
 | [provider::dialect::ProviderTarget::family](../../src/dialect.rs#L192) | function_item | `pub` |  |
 | [provider::dialect::Definition](../../src/dialect.rs#L207) | struct_item | `private` |  |
-| [provider::dialect::AdvertisedDialectProof](../../src/dialect.rs#L218) | struct_item | `pub` |  |
-| [provider::dialect::PROOF_ORACLE](../../src/dialect.rs#L232) | const_item | `private` |  |
-| [provider::dialect::PROOF_ORACLE_SHA256](../../src/dialect.rs#L235) | const_item | `private` |  |
-| [provider::dialect::MODEL_CAPABILITY_CATALOG](../../src/dialect.rs#L238) | const_item | `private` |  |
-| [provider::dialect::MODEL_CAPABILITY_CATALOG_SHA256](../../src/dialect.rs#L240) | const_item | `private` |  |
-| [provider::dialect::ModelReasoningCapability](../../src/dialect.rs#L245) | struct_item | `private` |  |
-| [provider::dialect::ThinkingWire](../../src/dialect.rs#L258) | enum_item | `pub` |  |
-| [provider::dialect::NativeDeferredMode](../../src/dialect.rs#L271) | enum_item | `pub` |  |
-| [provider::dialect::NativeDeferredMode::dialect](../../src/dialect.rs#L283) | function_item | `pub` |  |
-| [provider::dialect::NativeDeferredRoute](../../src/dialect.rs#L293) | struct_item | `private` |  |
-| [provider::dialect::NativeDeferredCapability](../../src/dialect.rs#L300) | struct_item | `private` |  |
-| [provider::dialect::ModelCapabilityProfile](../../src/dialect.rs#L307) | struct_item | `private` |  |
-| [provider::dialect::default_true](../../src/dialect.rs#L334) | function_item | `private` |  |
-| [provider::dialect::ModelCapabilityCatalog](../../src/dialect.rs#L340) | struct_item | `private` |  |
-| [provider::dialect::MODEL_CAPABILITIES](../../src/dialect.rs#L345) | static_item | `private` |  |
-| [provider::dialect::ProofRegistry](../../src/dialect.rs#L347) | struct_item | `private` |  |
-| [provider::dialect::PROOF_REGISTRY](../../src/dialect.rs#L352) | static_item | `private` |  |
-| [provider::dialect::DEFINITIONS](../../src/dialect.rs#L354) | const_item | `private` |  |
-| [provider::dialect::ResolvedDialectProfile](../../src/dialect.rs#L418) | struct_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::wire_model](../../src/dialect.rs#L442) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::pro_reasoning](../../src/dialect.rs#L448) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::native_deferred_tools](../../src/dialect.rs#L455) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::reasoning_efforts](../../src/dialect.rs#L460) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::default_reasoning_effort](../../src/dialect.rs#L465) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::thinking_wire](../../src/dialect.rs#L471) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::forced_tool_choice](../../src/dialect.rs#L477) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::refusal_fallback](../../src/dialect.rs#L483) | function_item | `pub` |  |
-| [provider::dialect::ResolvedDialectProfile::max_output_tokens](../../src/dialect.rs#L489) | function_item | `pub` |  |
-| [provider::dialect::DialectError](../../src/dialect.rs#L495) | enum_item | `pub` |  |
-| [provider::dialect::definition_for](../../src/dialect.rs#L514) | function_item | `private` |  |
-| [provider::dialect::target_matches_definition](../../src/dialect.rs#L521) | function_item | `private` |  |
-| [provider::dialect::load_proof_registry](../../src/dialect.rs#L525) | function_item | `private` |  |
-| [provider::dialect::load_model_capabilities](../../src/dialect.rs#L641) | function_item | `private` |  |
-| [provider::dialect::model_capability_for](../../src/dialect.rs#L730) | function_item | `private` |  |
-| [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L756) | function_item | `private` |  |
-| [provider::dialect::proof_matches_target](../../src/dialect.rs#L786) | function_item | `private` |  |
-| [provider::dialect::endpoint_matches](../../src/dialect.rs#L796) | function_item | `private` |  |
-| [provider::dialect::proof_matches_endpoint](../../src/dialect.rs#L818) | function_item | `private` |  |
-| [provider::dialect::proof_matches_provider_route](../../src/dialect.rs#L826) | function_item | `private` |  |
-| [provider::dialect::validate_endpoint](../../src/dialect.rs#L835) | function_item | `pub` |  |
-| [provider::dialect::configured_route_is_verified](../../src/dialect.rs#L853) | function_item | `pub` |  |
-| [provider::dialect::advertised_dialect_proofs](../../src/dialect.rs#L880) | function_item | `pub` |  |
-| [provider::dialect::resolve_profile](../../src/dialect.rs#L888) | function_item | `pub` |  |
-| [provider::dialect::validate_target](../../src/dialect.rs#L911) | function_item | `pub` |  |
-| [provider::dialect::resolve_configured_target](../../src/dialect.rs#L920) | function_item | `private` |  |
-| [provider::dialect::authentication_policy](../../src/dialect.rs#L1001) | function_item | `private` |  |
-| [provider::dialect::epoch_profile](../../src/dialect.rs#L1028) | function_item | `pub` |  |
-| [provider::dialect::validate_epoch_target](../../src/dialect.rs#L1059) | function_item | `pub` |  |
-| [provider::dialect::tests::unlisted_sku_inherits_a_dialect_uniform_reasoning_capability](../../src/dialect.rs#L1085) | function_item | `private` | test; #[cfg(test)] |
-| [provider::dialect::tests::endpoint_patterns_match_opaque_configured_path_segments_only](../../src/dialect.rs#L1110) | function_item | `private` | test; #[cfg(test)] |
+| [provider::dialect::SupportedDialect](../../src/dialect.rs#L219) | struct_item | `pub` |  |
+| [provider::dialect::MODEL_CAPABILITY_CATALOG](../../src/dialect.rs#L224) | const_item | `private` |  |
+| [provider::dialect::MODEL_CAPABILITY_CATALOG_SHA256](../../src/dialect.rs#L226) | const_item | `private` |  |
+| [provider::dialect::ModelReasoningCapability](../../src/dialect.rs#L231) | struct_item | `private` |  |
+| [provider::dialect::ThinkingWire](../../src/dialect.rs#L244) | enum_item | `pub` |  |
+| [provider::dialect::NativeDeferredMode](../../src/dialect.rs#L257) | enum_item | `pub` |  |
+| [provider::dialect::NativeDeferredMode::dialect](../../src/dialect.rs#L269) | function_item | `pub` |  |
+| [provider::dialect::NativeDeferredRoute](../../src/dialect.rs#L279) | struct_item | `private` |  |
+| [provider::dialect::NativeDeferredCapability](../../src/dialect.rs#L286) | struct_item | `private` |  |
+| [provider::dialect::ModelCapabilityProfile](../../src/dialect.rs#L293) | struct_item | `private` |  |
+| [provider::dialect::default_true](../../src/dialect.rs#L320) | function_item | `private` |  |
+| [provider::dialect::ModelCapabilityCatalog](../../src/dialect.rs#L326) | struct_item | `private` |  |
+| [provider::dialect::MODEL_CAPABILITIES](../../src/dialect.rs#L331) | static_item | `private` |  |
+| [provider::dialect::DEFINITIONS](../../src/dialect.rs#L333) | const_item | `private` |  |
+| [provider::dialect::ResolvedDialectProfile](../../src/dialect.rs#L421) | struct_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::wire_model](../../src/dialect.rs#L439) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::pro_reasoning](../../src/dialect.rs#L445) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::native_deferred_tools](../../src/dialect.rs#L452) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::reasoning_efforts](../../src/dialect.rs#L457) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::default_reasoning_effort](../../src/dialect.rs#L462) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::thinking_wire](../../src/dialect.rs#L468) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::forced_tool_choice](../../src/dialect.rs#L474) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::refusal_fallback](../../src/dialect.rs#L480) | function_item | `pub` |  |
+| [provider::dialect::ResolvedDialectProfile::max_output_tokens](../../src/dialect.rs#L486) | function_item | `pub` |  |
+| [provider::dialect::DialectError](../../src/dialect.rs#L492) | enum_item | `pub` |  |
+| [provider::dialect::definition_for](../../src/dialect.rs#L511) | function_item | `private` |  |
+| [provider::dialect::target_matches_definition](../../src/dialect.rs#L518) | function_item | `private` |  |
+| [provider::dialect::load_model_capabilities](../../src/dialect.rs#L522) | function_item | `private` |  |
+| [provider::dialect::model_capability_for](../../src/dialect.rs#L611) | function_item | `private` |  |
+| [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L637) | function_item | `private` |  |
+| [provider::dialect::supported_dialects](../../src/dialect.rs#L669) | function_item | `pub` |  |
+| [provider::dialect::validate_provider](../../src/dialect.rs#L682) | function_item | `pub` |  |
+| [provider::dialect::resolve_profile](../../src/dialect.rs#L691) | function_item | `pub` |  |
+| [provider::dialect::validate_target](../../src/dialect.rs#L714) | function_item | `pub` |  |
+| [provider::dialect::resolve_configured_target](../../src/dialect.rs#L723) | function_item | `private` |  |
+| [provider::dialect::epoch_profile](../../src/dialect.rs#L782) | function_item | `pub` |  |
+| [provider::dialect::validate_epoch_target](../../src/dialect.rs#L813) | function_item | `pub` |  |
+| [provider::dialect::tests::unlisted_sku_inherits_a_dialect_uniform_reasoning_capability](../../src/dialect.rs#L837) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -97,7 +85,6 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `Sha256` | `sha2::Sha256` | `private` |
 | `Error` | `thiserror::Error` | `private` |
 | `AdapterId` | `crate::AdapterId` | `private` |
-| `endpoint_matches` | `super::endpoint_matches` | `private` |
 
 ## Module declarations
 
@@ -138,68 +125,37 @@ flowchart TD
 
 </details>
 
-<details><summary>Functions 21–40: 15 direct edges</summary>
+<details><summary>Functions 21–37: 9 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["provider::dialect::authentication_policy"]
-  n1["provider::dialect::ResolvedDialectProfile::default_reasoning_effort"]
-  n2["provider::dialect::ResolvedDialectProfile::thinking_wire"]
-  n3["provider::dialect::ResolvedDialectProfile::forced_tool_choice"]
-  n4["provider::dialect::ResolvedDialectProfile::refusal_fallback"]
-  n5["provider::dialect::ResolvedDialectProfile::max_output_tokens"]
-  n6["provider::dialect::definition_for"]
-  n7["provider::dialect::target_matches_definition"]
-  n8["provider::dialect::load_proof_registry"]
-  n9["provider::dialect::load_model_capabilities"]
-  n10["provider::dialect::model_capability_for"]
-  n11["provider::dialect::dialect_uniform_capability"]
-  n12["provider::dialect::proof_matches_target"]
-  n13["provider::dialect::endpoint_matches"]
-  n14["provider::dialect::proof_matches_endpoint"]
-  n15["provider::dialect::proof_matches_provider_route"]
-  n16["provider::dialect::validate_endpoint"]
-  n17["provider::dialect::configured_route_is_verified"]
-  n18["provider::dialect::advertised_dialect_proofs"]
-  n19["provider::dialect::resolve_profile"]
-  n20["provider::dialect::validate_target"]
-  n21["provider::dialect::resolve_configured_target"]
-  n8 --> n6
-  n8 --> n7
-  n10 --> n11
-  n14 --> n12
-  n14 --> n13
-  n15 --> n13
-  n16 --> n14
-  n17 --> n0
-  n17 --> n6
-  n17 --> n15
-  n19 --> n6
-  n19 --> n21
-  n20 --> n6
-  n20 --> n7
-  n20 --> n21
-```
-
-</details>
-
-<details><summary>Functions 41–44: 5 direct edges</summary>
-
-```mermaid
-flowchart TD
-  n0["provider::dialect::authentication_policy"]
-  n1["provider::dialect::epoch_profile"]
-  n2["provider::dialect::validate_epoch_target"]
-  n3["provider::dialect::model_capability_for"]
-  n4["provider::dialect::proof_matches_target"]
-  n5["provider::dialect::endpoint_matches"]
-  n6["provider::dialect::resolve_configured_target"]
-  n7["schema::ijson::IJsonValue::parse"]
-  n1 --> n7
-  n6 --> n0
-  n6 --> n3
-  n6 --> n4
-  n6 --> n5
+  n0["provider::dialect::ResolvedDialectProfile::default_reasoning_effort"]
+  n1["provider::dialect::ResolvedDialectProfile::thinking_wire"]
+  n2["provider::dialect::ResolvedDialectProfile::forced_tool_choice"]
+  n3["provider::dialect::ResolvedDialectProfile::refusal_fallback"]
+  n4["provider::dialect::ResolvedDialectProfile::max_output_tokens"]
+  n5["provider::dialect::definition_for"]
+  n6["provider::dialect::target_matches_definition"]
+  n7["provider::dialect::load_model_capabilities"]
+  n8["provider::dialect::model_capability_for"]
+  n9["provider::dialect::dialect_uniform_capability"]
+  n10["provider::dialect::supported_dialects"]
+  n11["provider::dialect::validate_provider"]
+  n12["provider::dialect::resolve_profile"]
+  n13["provider::dialect::validate_target"]
+  n14["provider::dialect::resolve_configured_target"]
+  n15["provider::dialect::epoch_profile"]
+  n16["provider::dialect::validate_epoch_target"]
+  n17["schema::ijson::IJsonValue::parse"]
+  n8 --> n9
+  n11 --> n5
+  n12 --> n5
+  n12 --> n14
+  n13 --> n5
+  n13 --> n6
+  n13 --> n14
+  n14 --> n8
+  n15 --> n17
 ```
 
 </details>
@@ -224,279 +180,159 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `family` | `dialect.family` | [200](../../src/dialect.rs#L200) | receiver-type-required |
 | `family` | `Err` | [201](../../src/dialect.rs#L201) | external-constructor-callback-or-unresolved |
 | `family` | `Ok` | [203](../../src/dialect.rs#L203) | external-constructor-callback-or-unresolved |
-| `MODEL_CAPABILITIES` | `OnceLock::new` | [345](../../src/dialect.rs#L345) | external-constructor-callback-or-unresolved |
-| `PROOF_REGISTRY` | `OnceLock::new` | [352](../../src/dialect.rs#L352) | external-constructor-callback-or-unresolved |
-| `wire_model` | `self.wire_model             .as_deref()             .unwrap_or` | [443](../../src/dialect.rs#L443) | receiver-type-required |
-| `wire_model` | `self.wire_model             .as_deref` | [443](../../src/dialect.rs#L443) | receiver-type-required |
-| `default_reasoning_effort` | `self.default_reasoning_effort.as_deref` | [466](../../src/dialect.rs#L466) | receiver-type-required |
-| `definition_for` | `DEFINITIONS         .iter()         .find(&#124;definition&#124; definition.dialect == dialect)         .ok_or_else` | [515](../../src/dialect.rs#L515) | receiver-type-required |
-| `definition_for` | `DEFINITIONS         .iter()         .find` | [515](../../src/dialect.rs#L515) | receiver-type-required |
-| `definition_for` | `DEFINITIONS         .iter` | [515](../../src/dialect.rs#L515) | receiver-type-required |
-| `definition_for` | `DialectError::UnknownDialect` | [518](../../src/dialect.rs#L518) | external-constructor-callback-or-unresolved |
-| `definition_for` | `dialect.as_str().to_owned` | [518](../../src/dialect.rs#L518) | receiver-type-required |
-| `definition_for` | `dialect.as_str` | [518](../../src/dialect.rs#L518) | receiver-type-required |
-| `load_proof_registry` | `Err` | [528](../../src/dialect.rs#L528), [553](../../src/dialect.rs#L553), [569](../../src/dialect.rs#L569), [579](../../src/dialect.rs#L579), [586](../../src/dialect.rs#L586), [597](../../src/dialect.rs#L597), [604](../../src/dialect.rs#L604), [615](../../src/dialect.rs#L615) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `serde_json::from_slice(PROOF_ORACLE)         .map_err` | [532](../../src/dialect.rs#L532) | receiver-type-required |
-| `load_proof_registry` | `serde_json::from_slice` | [532](../../src/dialect.rs#L532) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `root         .get("required_proof_arms")         .and_then(Value::as_array)         .ok_or` | [534](../../src/dialect.rs#L534) | receiver-type-required |
-| `load_proof_registry` | `root         .get("required_proof_arms")         .and_then` | [534](../../src/dialect.rs#L534) | receiver-type-required |
-| `load_proof_registry` | `root         .get` | [534](../../src/dialect.rs#L534), [538](../../src/dialect.rs#L538) | receiver-type-required |
-| `load_proof_registry` | `root         .get("profiles")         .and_then(Value::as_array)         .ok_or` | [538](../../src/dialect.rs#L538) | receiver-type-required |
-| `load_proof_registry` | `root         .get("profiles")         .and_then` | [538](../../src/dialect.rs#L538) | receiver-type-required |
-| `load_proof_registry` | `Vec::new` | [542](../../src/dialect.rs#L542), [543](../../src/dialect.rs#L543) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `BTreeSet::new` | [544](../../src/dialect.rs#L544) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `profile.get("advertised").and_then` | [546](../../src/dialect.rs#L546) | receiver-type-required |
-| `load_proof_registry` | `profile.get` | [546](../../src/dialect.rs#L546), [552](../../src/dialect.rs#L552), [601](../../src/dialect.rs#L601), [614](../../src/dialect.rs#L614) | receiver-type-required |
-| `load_proof_registry` | `Some` | [546](../../src/dialect.rs#L546), [602](../../src/dialect.rs#L602), [614](../../src/dialect.rs#L614) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `arm                     .as_str()                     .ok_or` | [549](../../src/dialect.rs#L549) | receiver-type-required |
-| `load_proof_registry` | `arm                     .as_str` | [549](../../src/dialect.rs#L549) | receiver-type-required |
-| `load_proof_registry` | `profile.get(name).is_none_or` | [552](../../src/dialect.rs#L552) | receiver-type-required |
-| `load_proof_registry` | `serde_json::from_value(             profile                 .get("target")                 .cloned()                 .ok_or("provider proof lacks target")?,         )         .map_err` | [557](../../src/dialect.rs#L557) | receiver-type-required |
-| `load_proof_registry` | `serde_json::from_value` | [557](../../src/dialect.rs#L557) | external-constructor-callback-or-unresolved |
-| `load_proof_registry` | `profile                 .get("target")                 .cloned()                 .ok_or` | [558](../../src/dialect.rs#L558) | receiver-type-required |
-| `load_proof_registry` | `profile                 .get("target")                 .cloned` | [558](../../src/dialect.rs#L558) | receiver-type-required |
-| `load_proof_registry` | `profile                 .get` | [558](../../src/dialect.rs#L558) | receiver-type-required |
-| `load_proof_registry` | `target             .dialect()             .map_err` | [564](../../src/dialect.rs#L564) | receiver-type-required |
-| `load_proof_registry` | `target             .dialect` | [564](../../src/dialect.rs#L564) | receiver-type-required |
-| `load_proof_registry` | `definition_for(dialect).map_err` | [567](../../src/dialect.rs#L567) | receiver-type-required |
-| `load_proof_registry` | `definition_for` | [567](../../src/dialect.rs#L567) | [provider::dialect::definition_for](../../src/dialect.rs#L514) |
-| `load_proof_registry` | `error.to_string` | [567](../../src/dialect.rs#L567) | receiver-type-required |
-| `load_proof_registry` | `target_matches_definition` | [568](../../src/dialect.rs#L568) | [provider::dialect::target_matches_definition](../../src/dialect.rs#L521) |
-| `load_proof_registry` | `profile             .get("proof_id")             .and_then(Value::as_str)             .ok_or` | [574](../../src/dialect.rs#L574) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("proof_id")             .and_then` | [574](../../src/dialect.rs#L574) | receiver-type-required |
-| `load_proof_registry` | `profile             .get` | [574](../../src/dialect.rs#L574), [581](../../src/dialect.rs#L581), [588](../../src/dialect.rs#L588), [592](../../src/dialect.rs#L592) | receiver-type-required |
-| `load_proof_registry` | `proof_id.is_empty` | [578](../../src/dialect.rs#L578) | receiver-type-required |
-| `load_proof_registry` | `proof_ids.insert` | [578](../../src/dialect.rs#L578) | receiver-type-required |
-| `load_proof_registry` | `proof_id.to_owned` | [578](../../src/dialect.rs#L578), [621](../../src/dialect.rs#L621) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("endpoint")             .and_then(Value::as_str)             .ok_or` | [581](../../src/dialect.rs#L581) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("endpoint")             .and_then` | [581](../../src/dialect.rs#L581) | receiver-type-required |
-| `load_proof_registry` | `endpoint.is_empty` | [585](../../src/dialect.rs#L585) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("credential_header")             .and_then(Value::as_str)             .ok_or` | [588](../../src/dialect.rs#L588) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("credential_header")             .and_then` | [588](../../src/dialect.rs#L588) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("credential_prefix")             .and_then(Value::as_str)             .ok_or` | [592](../../src/dialect.rs#L592) | receiver-type-required |
-| `load_proof_registry` | `profile             .get("credential_prefix")             .and_then` | [592](../../src/dialect.rs#L592) | receiver-type-required |
-| `load_proof_registry` | `credential_header.is_empty` | [596](../../src/dialect.rs#L596) | receiver-type-required |
-| `load_proof_registry` | `profile.get("serializer_revision").and_then` | [601](../../src/dialect.rs#L601) | receiver-type-required |
-| `load_proof_registry` | `dialect.server_managed` | [609](../../src/dialect.rs#L609) | receiver-type-required |
-| `load_proof_registry` | `profile.get("continuation").and_then` | [614](../../src/dialect.rs#L614) | receiver-type-required |
-| `load_proof_registry` | `endpoint.to_owned` | [627](../../src/dialect.rs#L627) | receiver-type-required |
-| `load_proof_registry` | `credential_header.to_owned` | [630](../../src/dialect.rs#L630) | receiver-type-required |
-| `load_proof_registry` | `credential_prefix.to_owned` | [631](../../src/dialect.rs#L631) | receiver-type-required |
-| `load_proof_registry` | `all.push` | [633](../../src/dialect.rs#L633) | receiver-type-required |
-| `load_proof_registry` | `proof.clone` | [633](../../src/dialect.rs#L633) | receiver-type-required |
-| `load_proof_registry` | `advertised.push` | [635](../../src/dialect.rs#L635) | receiver-type-required |
-| `load_proof_registry` | `Ok` | [638](../../src/dialect.rs#L638) | external-constructor-callback-or-unresolved |
-| `load_model_capabilities` | `Err` | [644](../../src/dialect.rs#L644), [651](../../src/dialect.rs#L651), [664](../../src/dialect.rs#L664), [672](../../src/dialect.rs#L672), [680](../../src/dialect.rs#L680), [694](../../src/dialect.rs#L694), [700](../../src/dialect.rs#L700), [711](../../src/dialect.rs#L711), [721](../../src/dialect.rs#L721) | external-constructor-callback-or-unresolved |
-| `load_model_capabilities` | `serde_json::from_slice(MODEL_CAPABILITY_CATALOG)         .map_err` | [648](../../src/dialect.rs#L648) | receiver-type-required |
-| `load_model_capabilities` | `serde_json::from_slice` | [648](../../src/dialect.rs#L648) | external-constructor-callback-or-unresolved |
-| `load_model_capabilities` | `BTreeSet::new` | [656](../../src/dialect.rs#L656), [674](../../src/dialect.rs#L674) | external-constructor-callback-or-unresolved |
-| `load_model_capabilities` | `profile.dialect_id.as_str` | [659](../../src/dialect.rs#L659) | receiver-type-required |
-| `load_model_capabilities` | `profile.model_profile_id.as_str` | [660](../../src/dialect.rs#L660) | receiver-type-required |
-| `load_model_capabilities` | `profile.exact_sku.as_str` | [661](../../src/dialect.rs#L661) | receiver-type-required |
-| `load_model_capabilities` | `identities.insert` | [663](../../src/dialect.rs#L663) | receiver-type-required |
-| `load_model_capabilities` | `DialectId::from_str(&profile.dialect_id)             .map_err` | [669](../../src/dialect.rs#L669) | receiver-type-required |
-| `load_model_capabilities` | `DialectId::from_str` | [669](../../src/dialect.rs#L669), [686](../../src/dialect.rs#L686) | external-constructor-callback-or-unresolved |
-| `load_model_capabilities` | `profile.model_profile_id.is_empty` | [671](../../src/dialect.rs#L671) | receiver-type-required |
-| `load_model_capabilities` | `profile.exact_sku.is_empty` | [671](../../src/dialect.rs#L671) | receiver-type-required |
-| `load_model_capabilities` | `"model capability identity must be nonempty".to_owned` | [672](../../src/dialect.rs#L672) | receiver-type-required |
-| `load_model_capabilities` | `level.is_empty` | [676](../../src/dialect.rs#L676) | receiver-type-required |
-| `load_model_capabilities` | `level.as_bytes().iter().all` | [677](../../src/dialect.rs#L677) | receiver-type-required |
-| `load_model_capabilities` | `level.as_bytes().iter` | [677](../../src/dialect.rs#L677) | receiver-type-required |
-| `load_model_capabilities` | `level.as_bytes` | [677](../../src/dialect.rs#L677) | receiver-type-required |
-| `load_model_capabilities` | `levels.insert` | [678](../../src/dialect.rs#L678) | receiver-type-required |
-| `load_model_capabilities` | `level.as_str` | [678](../../src/dialect.rs#L678) | receiver-type-required |
-| `load_model_capabilities` | `DialectId::from_str(&profile.dialect_id).expect` | [686](../../src/dialect.rs#L686) | receiver-type-required |
-| `load_model_capabilities` | `profile             .wire_model             .as_ref()             .is_some_and` | [687](../../src/dialect.rs#L687) | receiver-type-required |
-| `load_model_capabilities` | `profile             .wire_model             .as_ref` | [687](../../src/dialect.rs#L687) | receiver-type-required |
-| `load_model_capabilities` | `model.is_empty` | [690](../../src/dialect.rs#L690) | receiver-type-required |
-| `load_model_capabilities` | `profile.wire_model.is_none` | [692](../../src/dialect.rs#L692) | receiver-type-required |
-| `load_model_capabilities` | `"invalid model wire variant capability".to_owned` | [694](../../src/dialect.rs#L694) | receiver-type-required |
-| `load_model_capabilities` | `dialect.family` | [696](../../src/dialect.rs#L696) | receiver-type-required |
-| `load_model_capabilities` | `profile.reasoning.levels.is_empty` | [697](../../src/dialect.rs#L697) | receiver-type-required |
-| `load_model_capabilities` | `profile.reasoning.thinking.is_none` | [698](../../src/dialect.rs#L698) | receiver-type-required |
-| `load_model_capabilities` | `profile             .reasoning             .default             .as_ref()             .is_some_and` | [705](../../src/dialect.rs#L705) | receiver-type-required |
-| `load_model_capabilities` | `profile             .reasoning             .default             .as_ref` | [705](../../src/dialect.rs#L705) | receiver-type-required |
-| `load_model_capabilities` | `levels.contains` | [709](../../src/dialect.rs#L709) | receiver-type-required |
-| `load_model_capabilities` | `value.as_str` | [709](../../src/dialect.rs#L709) | receiver-type-required |
-| `load_model_capabilities` | `profile             .evidence_url             .as_ref()             .is_some_and` | [716](../../src/dialect.rs#L716) | receiver-type-required |
-| `load_model_capabilities` | `profile             .evidence_url             .as_ref` | [716](../../src/dialect.rs#L716) | receiver-type-required |
-| `load_model_capabilities` | `url.starts_with` | [719](../../src/dialect.rs#L719) | receiver-type-required |
-| `load_model_capabilities` | `Ok` | [727](../../src/dialect.rs#L727) | external-constructor-callback-or-unresolved |
-| `model_capability_for` | `MODEL_CAPABILITIES.get_or_init` | [733](../../src/dialect.rs#L733) | receiver-type-required |
-| `model_capability_for` | `catalog         .as_ref()         .map_err` | [734](../../src/dialect.rs#L734) | receiver-type-required |
-| `model_capability_for` | `catalog         .as_ref` | [734](../../src/dialect.rs#L734) | receiver-type-required |
-| `model_capability_for` | `DialectError::UnprovedProfile` | [736](../../src/dialect.rs#L736) | external-constructor-callback-or-unresolved |
-| `model_capability_for` | `error.clone` | [736](../../src/dialect.rs#L736) | receiver-type-required |
-| `model_capability_for` | `catalog.iter().find` | [737](../../src/dialect.rs#L737) | receiver-type-required |
-| `model_capability_for` | `catalog.iter` | [737](../../src/dialect.rs#L737) | receiver-type-required |
-| `model_capability_for` | `Ok` | [742](../../src/dialect.rs#L742), [744](../../src/dialect.rs#L744) | external-constructor-callback-or-unresolved |
-| `model_capability_for` | `Some` | [742](../../src/dialect.rs#L742) | external-constructor-callback-or-unresolved |
-| `model_capability_for` | `exact.clone` | [742](../../src/dialect.rs#L742) | receiver-type-required |
-| `model_capability_for` | `dialect_uniform_capability` | [744](../../src/dialect.rs#L744) | [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L756) |
-| `dialect_uniform_capability` | `catalog         .iter()         .filter` | [761](../../src/dialect.rs#L761) | receiver-type-required |
-| `dialect_uniform_capability` | `catalog         .iter` | [761](../../src/dialect.rs#L761) | receiver-type-required |
-| `dialect_uniform_capability` | `family.next` | [764](../../src/dialect.rs#L764) | receiver-type-required |
-| `dialect_uniform_capability` | `family.any` | [765](../../src/dialect.rs#L765) | receiver-type-required |
-| `dialect_uniform_capability` | `Some` | [771](../../src/dialect.rs#L771) | external-constructor-callback-or-unresolved |
-| `dialect_uniform_capability` | `dialect_id.to_owned` | [772](../../src/dialect.rs#L772) | receiver-type-required |
-| `dialect_uniform_capability` | `exact_sku.to_owned` | [774](../../src/dialect.rs#L774) | receiver-type-required |
-| `dialect_uniform_capability` | `first.reasoning.clone` | [777](../../src/dialect.rs#L777) | receiver-type-required |
-| `endpoint_matches` | `pattern.trim_end_matches` | [797](../../src/dialect.rs#L797) | receiver-type-required |
-| `endpoint_matches` | `endpoint.trim_end_matches` | [798](../../src/dialect.rs#L798) | receiver-type-required |
-| `endpoint_matches` | `pattern.split('/').collect::<Vec<_>>` | [799](../../src/dialect.rs#L799) | receiver-type-required |
-| `endpoint_matches` | `pattern.split` | [799](../../src/dialect.rs#L799) | receiver-type-required |
-| `endpoint_matches` | `endpoint.split('/').collect::<Vec<_>>` | [800](../../src/dialect.rs#L800) | receiver-type-required |
-| `endpoint_matches` | `endpoint.split` | [800](../../src/dialect.rs#L800) | receiver-type-required |
-| `endpoint_matches` | `pattern_parts.len` | [801](../../src/dialect.rs#L801) | receiver-type-required |
-| `endpoint_matches` | `endpoint_parts.len` | [801](../../src/dialect.rs#L801) | receiver-type-required |
-| `endpoint_matches` | `pattern_parts             .iter()             .zip(endpoint_parts)             .all` | [802](../../src/dialect.rs#L802) | receiver-type-required |
-| `endpoint_matches` | `pattern_parts             .iter()             .zip` | [802](../../src/dialect.rs#L802) | receiver-type-required |
-| `endpoint_matches` | `pattern_parts             .iter` | [802](../../src/dialect.rs#L802) | receiver-type-required |
-| `endpoint_matches` | `expected.starts_with` | [806](../../src/dialect.rs#L806) | receiver-type-required |
-| `endpoint_matches` | `expected.ends_with` | [806](../../src/dialect.rs#L806) | receiver-type-required |
-| `endpoint_matches` | `expected.len` | [807](../../src/dialect.rs#L807) | receiver-type-required |
-| `endpoint_matches` | `actual.is_empty` | [808](../../src/dialect.rs#L808) | receiver-type-required |
-| `endpoint_matches` | `actual.contains` | [811](../../src/dialect.rs#L811) | receiver-type-required |
-| `proof_matches_endpoint` | `proof_matches_target` | [823](../../src/dialect.rs#L823) | [provider::dialect::proof_matches_target](../../src/dialect.rs#L786) |
-| `proof_matches_endpoint` | `endpoint_matches` | [823](../../src/dialect.rs#L823) | [provider::dialect::endpoint_matches](../../src/dialect.rs#L796) |
-| `proof_matches_provider_route` | `endpoint_matches` | [832](../../src/dialect.rs#L832) | [provider::dialect::endpoint_matches](../../src/dialect.rs#L796) |
-| `validate_endpoint` | `PROOF_REGISTRY.get_or_init` | [836](../../src/dialect.rs#L836) | receiver-type-required |
-| `validate_endpoint` | `registry                 .all                 .iter()                 .any` | [839](../../src/dialect.rs#L839) | receiver-type-required |
-| `validate_endpoint` | `registry                 .all                 .iter` | [839](../../src/dialect.rs#L839) | receiver-type-required |
-| `validate_endpoint` | `proof_matches_endpoint` | [842](../../src/dialect.rs#L842) | [provider::dialect::proof_matches_endpoint](../../src/dialect.rs#L818) |
-| `validate_endpoint` | `Ok` | [844](../../src/dialect.rs#L844) | external-constructor-callback-or-unresolved |
-| `validate_endpoint` | `Err` | [846](../../src/dialect.rs#L846), [847](../../src/dialect.rs#L847) | external-constructor-callback-or-unresolved |
-| `validate_endpoint` | `DialectError::UnprovedProfile` | [847](../../src/dialect.rs#L847) | external-constructor-callback-or-unresolved |
-| `validate_endpoint` | `error.clone` | [847](../../src/dialect.rs#L847) | receiver-type-required |
-| `configured_route_is_verified` | `DialectId::from_str` | [854](../../src/dialect.rs#L854) | external-constructor-callback-or-unresolved |
-| `configured_route_is_verified` | `definition_for` | [855](../../src/dialect.rs#L855) | [provider::dialect::definition_for](../../src/dialect.rs#L514) |
-| `configured_route_is_verified` | `Err` | [857](../../src/dialect.rs#L857), [868](../../src/dialect.rs#L868) | external-constructor-callback-or-unresolved |
-| `configured_route_is_verified` | `PROOF_REGISTRY.get_or_init` | [859](../../src/dialect.rs#L859) | receiver-type-required |
-| `configured_route_is_verified` | `registry         .as_ref()         .map_err` | [860](../../src/dialect.rs#L860) | receiver-type-required |
-| `configured_route_is_verified` | `registry         .as_ref` | [860](../../src/dialect.rs#L860) | receiver-type-required |
-| `configured_route_is_verified` | `DialectError::UnprovedProfile` | [862](../../src/dialect.rs#L862), [868](../../src/dialect.rs#L868) | external-constructor-callback-or-unresolved |
-| `configured_route_is_verified` | `error.clone` | [862](../../src/dialect.rs#L862) | receiver-type-required |
-| `configured_route_is_verified` | `registry         .advertised         .iter()         .any` | [863](../../src/dialect.rs#L863), [871](../../src/dialect.rs#L871) | receiver-type-required |
-| `configured_route_is_verified` | `registry         .advertised         .iter` | [863](../../src/dialect.rs#L863), [871](../../src/dialect.rs#L871) | receiver-type-required |
-| `configured_route_is_verified` | `dialect.as_str` | [866](../../src/dialect.rs#L866), [868](../../src/dialect.rs#L868) | receiver-type-required |
-| `configured_route_is_verified` | `dialect.as_str().to_owned` | [868](../../src/dialect.rs#L868) | receiver-type-required |
-| `configured_route_is_verified` | `authentication_policy` | [870](../../src/dialect.rs#L870) | [provider::dialect::authentication_policy](../../src/dialect.rs#L1001) |
-| `configured_route_is_verified` | `Ok` | [871](../../src/dialect.rs#L871) | external-constructor-callback-or-unresolved |
-| `configured_route_is_verified` | `proof_matches_provider_route` | [874](../../src/dialect.rs#L874) | [provider::dialect::proof_matches_provider_route](../../src/dialect.rs#L826) |
-| `advertised_dialect_proofs` | `PROOF_REGISTRY.get_or_init` | [881](../../src/dialect.rs#L881) | receiver-type-required |
-| `advertised_dialect_proofs` | `registry         .as_ref()         .map_err` | [882](../../src/dialect.rs#L882) | receiver-type-required |
-| `advertised_dialect_proofs` | `registry         .as_ref` | [882](../../src/dialect.rs#L882) | receiver-type-required |
-| `advertised_dialect_proofs` | `DialectError::UnprovedProfile` | [884](../../src/dialect.rs#L884) | external-constructor-callback-or-unresolved |
-| `advertised_dialect_proofs` | `error.clone` | [884](../../src/dialect.rs#L884) | receiver-type-required |
-| `advertised_dialect_proofs` | `Ok` | [885](../../src/dialect.rs#L885) | external-constructor-callback-or-unresolved |
-| `advertised_dialect_proofs` | `registry.advertised.clone` | [885](../../src/dialect.rs#L885) | receiver-type-required |
-| `resolve_profile` | `DialectId::from_str` | [892](../../src/dialect.rs#L892) | external-constructor-callback-or-unresolved |
-| `resolve_profile` | `definition_for` | [893](../../src/dialect.rs#L893) | [provider::dialect::definition_for](../../src/dialect.rs#L514) |
-| `resolve_profile` | `Err` | [895](../../src/dialect.rs#L895) | external-constructor-callback-or-unresolved |
-| `resolve_profile` | `provider.adapter.clone` | [898](../../src/dialect.rs#L898) | receiver-type-required |
-| `resolve_profile` | `provider.dialect.clone` | [899](../../src/dialect.rs#L899) | receiver-type-required |
-| `resolve_profile` | `model.profile.clone` | [900](../../src/dialect.rs#L900) | receiver-type-required |
-| `resolve_profile` | `provider.endpoint_owner.clone` | [902](../../src/dialect.rs#L902) | receiver-type-required |
-| `resolve_profile` | `provider.gateway_translation.clone` | [903](../../src/dialect.rs#L903) | receiver-type-required |
-| `resolve_profile` | `model.id.clone` | [904](../../src/dialect.rs#L904) | receiver-type-required |
-| `resolve_profile` | `provider.evidence_revision.clone` | [905](../../src/dialect.rs#L905) | receiver-type-required |
-| `resolve_profile` | `resolve_configured_target` | [908](../../src/dialect.rs#L908) | [provider::dialect::resolve_configured_target](../../src/dialect.rs#L920) |
-| `resolve_profile` | `Some` | [908](../../src/dialect.rs#L908) | external-constructor-callback-or-unresolved |
-| `validate_target` | `target.dialect` | [912](../../src/dialect.rs#L912) | receiver-type-required |
-| `validate_target` | `definition_for` | [913](../../src/dialect.rs#L913) | [provider::dialect::definition_for](../../src/dialect.rs#L514) |
-| `validate_target` | `target_matches_definition` | [914](../../src/dialect.rs#L914) | [provider::dialect::target_matches_definition](../../src/dialect.rs#L521) |
-| `validate_target` | `Err` | [915](../../src/dialect.rs#L915) | external-constructor-callback-or-unresolved |
-| `validate_target` | `resolve_configured_target` | [917](../../src/dialect.rs#L917) | [provider::dialect::resolve_configured_target](../../src/dialect.rs#L920) |
-| `validate_target` | `target.clone` | [917](../../src/dialect.rs#L917) | receiver-type-required |
-| `resolve_configured_target` | `PROOF_REGISTRY.get_or_init` | [926](../../src/dialect.rs#L926) | receiver-type-required |
-| `resolve_configured_target` | `registry         .as_ref()         .map_err` | [927](../../src/dialect.rs#L927) | receiver-type-required |
-| `resolve_configured_target` | `registry         .as_ref` | [927](../../src/dialect.rs#L927) | receiver-type-required |
-| `resolve_configured_target` | `DialectError::UnprovedProfile` | [929](../../src/dialect.rs#L929) | external-constructor-callback-or-unresolved |
-| `resolve_configured_target` | `error.clone` | [929](../../src/dialect.rs#L929) | receiver-type-required |
-| `resolve_configured_target` | `registry         .advertised         .iter()         .find` | [930](../../src/dialect.rs#L930) | receiver-type-required |
-| `resolve_configured_target` | `registry         .advertised         .iter` | [930](../../src/dialect.rs#L930) | receiver-type-required |
-| `resolve_configured_target` | `proof_matches_target` | [933](../../src/dialect.rs#L933) | [provider::dialect::proof_matches_target](../../src/dialect.rs#L786) |
-| `resolve_configured_target` | `proof.credential_header.clone` | [936](../../src/dialect.rs#L936) | receiver-type-required |
-| `resolve_configured_target` | `proof.credential_prefix.clone` | [937](../../src/dialect.rs#L937) | receiver-type-required |
-| `resolve_configured_target` | `authentication_policy` | [939](../../src/dialect.rs#L939) | [provider::dialect::authentication_policy](../../src/dialect.rs#L1001) |
-| `resolve_configured_target` | `"cf-aig-authorization".to_owned` | [945](../../src/dialect.rs#L945) | receiver-type-required |
-| `resolve_configured_target` | `"Bearer ".to_owned` | [946](../../src/dialect.rs#L946) | receiver-type-required |
-| `resolve_configured_target` | `exact.is_some_and` | [948](../../src/dialect.rs#L948) | receiver-type-required |
-| `resolve_configured_target` | `configured_endpoint.is_none_or` | [949](../../src/dialect.rs#L949) | receiver-type-required |
-| `resolve_configured_target` | `endpoint_matches` | [949](../../src/dialect.rs#L949) | [provider::dialect::endpoint_matches](../../src/dialect.rs#L796) |
-| `resolve_configured_target` | `model_capability_for` | [951](../../src/dialect.rs#L951) | [provider::dialect::model_capability_for](../../src/dialect.rs#L730) |
-| `resolve_configured_target` | `capability         .as_ref()         .and_then(&#124;value&#124; value.native_deferred_tools.as_ref())         .filter(&#124;native&#124; {             native.mode.dialect() == dialect                 && native.routes.iter().any(&#124;route&#124; {                     route.endpoint_owner == target.route.endpoint_owner                         && route.gateway_translation == target.route.gateway_translation                 })         })         .map` | [952](../../src/dialect.rs#L952) | receiver-type-required |
-| `resolve_configured_target` | `capability         .as_ref()         .and_then(&#124;value&#124; value.native_deferred_tools.as_ref())         .filter` | [952](../../src/dialect.rs#L952) | receiver-type-required |
-| `resolve_configured_target` | `capability         .as_ref()         .and_then` | [952](../../src/dialect.rs#L952) | receiver-type-required |
-| `resolve_configured_target` | `capability         .as_ref` | [952](../../src/dialect.rs#L952) | receiver-type-required |
-| `resolve_configured_target` | `value.native_deferred_tools.as_ref` | [954](../../src/dialect.rs#L954) | receiver-type-required |
-| `resolve_configured_target` | `native.mode.dialect` | [956](../../src/dialect.rs#L956) | receiver-type-required |
-| `resolve_configured_target` | `native.routes.iter().any` | [957](../../src/dialect.rs#L957) | receiver-type-required |
-| `resolve_configured_target` | `native.routes.iter` | [957](../../src/dialect.rs#L957) | receiver-type-required |
-| `resolve_configured_target` | `Ok` | [963](../../src/dialect.rs#L963) | external-constructor-callback-or-unresolved |
-| `resolve_configured_target` | `exact.map` | [970](../../src/dialect.rs#L970) | receiver-type-required |
-| `resolve_configured_target` | `proof.endpoint.clone` | [970](../../src/dialect.rs#L970) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref()             .map(&#124;value&#124; value.reasoning.levels.clone())             .unwrap_or_default` | [971](../../src/dialect.rs#L971) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref()             .map` | [971](../../src/dialect.rs#L971) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref` | [971](../../src/dialect.rs#L971), [975](../../src/dialect.rs#L975), [978](../../src/dialect.rs#L978), [981](../../src/dialect.rs#L981), [984](../../src/dialect.rs#L984), [987](../../src/dialect.rs#L987), [990](../../src/dialect.rs#L990) | receiver-type-required |
-| `resolve_configured_target` | `value.reasoning.levels.clone` | [973](../../src/dialect.rs#L973) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref()             .and_then` | [975](../../src/dialect.rs#L975), [978](../../src/dialect.rs#L978), [987](../../src/dialect.rs#L987), [990](../../src/dialect.rs#L990) | receiver-type-required |
-| `resolve_configured_target` | `value.reasoning.default.clone` | [977](../../src/dialect.rs#L977) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref()             .is_none_or` | [981](../../src/dialect.rs#L981) | receiver-type-required |
-| `resolve_configured_target` | `capability             .as_ref()             .is_some_and` | [984](../../src/dialect.rs#L984) | receiver-type-required |
-| `resolve_configured_target` | `value.wire_model.clone` | [992](../../src/dialect.rs#L992) | receiver-type-required |
-| `resolve_configured_target` | `capability.as_ref().is_some_and` | [993](../../src/dialect.rs#L993) | receiver-type-required |
-| `resolve_configured_target` | `capability.as_ref` | [993](../../src/dialect.rs#L993) | receiver-type-required |
-| `authentication_policy` | `registry         .all         .iter()         .filter(&#124;proof&#124; proof.dialect_id == dialect.as_str())         .map(&#124;proof&#124; {             (                 proof.credential_header.clone(),                 proof.credential_prefix.clone(),             )         })         .collect::<BTreeSet<_>>` | [1005](../../src/dialect.rs#L1005) | receiver-type-required |
-| `authentication_policy` | `registry         .all         .iter()         .filter(&#124;proof&#124; proof.dialect_id == dialect.as_str())         .map` | [1005](../../src/dialect.rs#L1005) | receiver-type-required |
-| `authentication_policy` | `registry         .all         .iter()         .filter` | [1005](../../src/dialect.rs#L1005) | receiver-type-required |
-| `authentication_policy` | `registry         .all         .iter` | [1005](../../src/dialect.rs#L1005) | receiver-type-required |
-| `authentication_policy` | `dialect.as_str` | [1008](../../src/dialect.rs#L1008) | receiver-type-required |
-| `authentication_policy` | `proof.credential_header.clone` | [1011](../../src/dialect.rs#L1011) | receiver-type-required |
-| `authentication_policy` | `proof.credential_prefix.clone` | [1012](../../src/dialect.rs#L1012) | receiver-type-required |
-| `authentication_policy` | `policies.len` | [1016](../../src/dialect.rs#L1016) | receiver-type-required |
-| `authentication_policy` | `Ok` | [1017](../../src/dialect.rs#L1017) | external-constructor-callback-or-unresolved |
-| `authentication_policy` | `policies             .into_iter()             .next()             .expect` | [1017](../../src/dialect.rs#L1017) | receiver-type-required |
-| `authentication_policy` | `policies             .into_iter()             .next` | [1017](../../src/dialect.rs#L1017) | receiver-type-required |
-| `authentication_policy` | `policies             .into_iter` | [1017](../../src/dialect.rs#L1017) | receiver-type-required |
-| `authentication_policy` | `Err` | [1022](../../src/dialect.rs#L1022) | external-constructor-callback-or-unresolved |
-| `authentication_policy` | `DialectError::UnprovedProfile` | [1022](../../src/dialect.rs#L1022) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `settings.and_then` | [1033](../../src/dialect.rs#L1033) | receiver-type-required |
-| `epoch_profile` | `settings.reasoning_effort.as_deref` | [1033](../../src/dialect.rs#L1033) | receiver-type-required |
-| `epoch_profile` | `requested.or_else` | [1034](../../src/dialect.rs#L1034) | receiver-type-required |
-| `epoch_profile` | `profile.default_reasoning_effort` | [1034](../../src/dialect.rs#L1034) | receiver-type-required |
-| `epoch_profile` | `effort.is_some_and` | [1035](../../src/dialect.rs#L1035) | receiver-type-required |
-| `epoch_profile` | `profile.reasoning_efforts().iter().any` | [1035](../../src/dialect.rs#L1035) | receiver-type-required |
-| `epoch_profile` | `profile.reasoning_efforts().iter` | [1035](../../src/dialect.rs#L1035) | receiver-type-required |
-| `epoch_profile` | `profile.reasoning_efforts` | [1035](../../src/dialect.rs#L1035) | receiver-type-required |
-| `epoch_profile` | `Err` | [1036](../../src/dialect.rs#L1036) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `DialectError::UnsupportedControl` | [1036](../../src/dialect.rs#L1036) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `"reasoning_effort".to_owned` | [1037](../../src/dialect.rs#L1037), [1043](../../src/dialect.rs#L1043) | receiver-type-required |
-| `epoch_profile` | `serde_json::Map::new` | [1040](../../src/dialect.rs#L1040) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `controls.insert` | [1042](../../src/dialect.rs#L1042) | receiver-type-required |
-| `epoch_profile` | `Value::String` | [1044](../../src/dialect.rs#L1044) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `value.to_owned` | [1044](../../src/dialect.rs#L1044) | receiver-type-required |
-| `epoch_profile` | `IJsonValue::parse(         &serde_json_canonicalizer::to_vec(&json!({             "controls": controls,             "serializer_revision": profile.serializer_revision,             "system": system,             "target": profile.target,         }))         .map_err(&#124;error&#124; DialectError::InvalidEpoch(error.to_string()))?,     )     .map_err` | [1047](../../src/dialect.rs#L1047) | receiver-type-required |
-| `epoch_profile` | `IJsonValue::parse` | [1047](../../src/dialect.rs#L1047) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `epoch_profile` | `serde_json_canonicalizer::to_vec(&json!({             "controls": controls,             "serializer_revision": profile.serializer_revision,             "system": system,             "target": profile.target,         }))         .map_err` | [1048](../../src/dialect.rs#L1048) | receiver-type-required |
-| `epoch_profile` | `serde_json_canonicalizer::to_vec` | [1048](../../src/dialect.rs#L1048) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `DialectError::InvalidEpoch` | [1054](../../src/dialect.rs#L1054), [1056](../../src/dialect.rs#L1056) | external-constructor-callback-or-unresolved |
-| `epoch_profile` | `error.to_string` | [1054](../../src/dialect.rs#L1054), [1056](../../src/dialect.rs#L1056) | receiver-type-required |
-| `validate_epoch_target` | `serde_json::to_value(epoch)         .map_err` | [1063](../../src/dialect.rs#L1063) | receiver-type-required |
-| `validate_epoch_target` | `serde_json::to_value` | [1063](../../src/dialect.rs#L1063), [1068](../../src/dialect.rs#L1068) | external-constructor-callback-or-unresolved |
-| `validate_epoch_target` | `DialectError::InvalidEpoch` | [1064](../../src/dialect.rs#L1064), [1069](../../src/dialect.rs#L1069) | external-constructor-callback-or-unresolved |
-| `validate_epoch_target` | `error.to_string` | [1064](../../src/dialect.rs#L1064), [1069](../../src/dialect.rs#L1069) | receiver-type-required |
-| `validate_epoch_target` | `value         .get("target")         .ok_or` | [1065](../../src/dialect.rs#L1065) | receiver-type-required |
-| `validate_epoch_target` | `value         .get` | [1065](../../src/dialect.rs#L1065) | receiver-type-required |
-| `validate_epoch_target` | `serde_json::to_value(&profile.target)         .map_err` | [1068](../../src/dialect.rs#L1068) | receiver-type-required |
-| `validate_epoch_target` | `Err` | [1071](../../src/dialect.rs#L1071), [1075](../../src/dialect.rs#L1075) | external-constructor-callback-or-unresolved |
-| `validate_epoch_target` | `value.get("serializer_revision").and_then` | [1073](../../src/dialect.rs#L1073) | receiver-type-required |
-| `validate_epoch_target` | `value.get` | [1073](../../src/dialect.rs#L1073) | receiver-type-required |
-| `validate_epoch_target` | `Some` | [1073](../../src/dialect.rs#L1073) | external-constructor-callback-or-unresolved |
-| `validate_epoch_target` | `Ok` | [1077](../../src/dialect.rs#L1077) | external-constructor-callback-or-unresolved |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init(super::load_model_capabilities)             .as_ref()             .expect` | [1086](../../src/dialect.rs#L1086) | receiver-type-required |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init(super::load_model_capabilities)             .as_ref` | [1086](../../src/dialect.rs#L1086) | receiver-type-required |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init` | [1086](../../src/dialect.rs#L1086) | receiver-type-required |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability(catalog, "deepseek_chat_v1", "deepseek-flash")                 .expect` | [1091](../../src/dialect.rs#L1091) | receiver-type-required |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability` | [1091](../../src/dialect.rs#L1091), [1102](../../src/dialect.rs#L1102) | [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L756) |
-| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability(catalog, "deepseek_responses_v1", "unlisted")                 .expect` | [1102](../../src/dialect.rs#L1102) | receiver-type-required |
+| `MODEL_CAPABILITIES` | `OnceLock::new` | [331](../../src/dialect.rs#L331) | external-constructor-callback-or-unresolved |
+| `wire_model` | `self.wire_model             .as_deref()             .unwrap_or` | [440](../../src/dialect.rs#L440) | receiver-type-required |
+| `wire_model` | `self.wire_model             .as_deref` | [440](../../src/dialect.rs#L440) | receiver-type-required |
+| `default_reasoning_effort` | `self.default_reasoning_effort.as_deref` | [463](../../src/dialect.rs#L463) | receiver-type-required |
+| `definition_for` | `DEFINITIONS         .iter()         .find(&#124;definition&#124; definition.dialect == dialect)         .ok_or_else` | [512](../../src/dialect.rs#L512) | receiver-type-required |
+| `definition_for` | `DEFINITIONS         .iter()         .find` | [512](../../src/dialect.rs#L512) | receiver-type-required |
+| `definition_for` | `DEFINITIONS         .iter` | [512](../../src/dialect.rs#L512) | receiver-type-required |
+| `definition_for` | `DialectError::UnknownDialect` | [515](../../src/dialect.rs#L515) | external-constructor-callback-or-unresolved |
+| `definition_for` | `dialect.as_str().to_owned` | [515](../../src/dialect.rs#L515) | receiver-type-required |
+| `definition_for` | `dialect.as_str` | [515](../../src/dialect.rs#L515) | receiver-type-required |
+| `load_model_capabilities` | `Err` | [525](../../src/dialect.rs#L525), [532](../../src/dialect.rs#L532), [545](../../src/dialect.rs#L545), [553](../../src/dialect.rs#L553), [561](../../src/dialect.rs#L561), [575](../../src/dialect.rs#L575), [581](../../src/dialect.rs#L581), [592](../../src/dialect.rs#L592), [602](../../src/dialect.rs#L602) | external-constructor-callback-or-unresolved |
+| `load_model_capabilities` | `serde_json::from_slice(MODEL_CAPABILITY_CATALOG)         .map_err` | [529](../../src/dialect.rs#L529) | receiver-type-required |
+| `load_model_capabilities` | `serde_json::from_slice` | [529](../../src/dialect.rs#L529) | external-constructor-callback-or-unresolved |
+| `load_model_capabilities` | `BTreeSet::new` | [537](../../src/dialect.rs#L537), [555](../../src/dialect.rs#L555) | external-constructor-callback-or-unresolved |
+| `load_model_capabilities` | `profile.dialect_id.as_str` | [540](../../src/dialect.rs#L540) | receiver-type-required |
+| `load_model_capabilities` | `profile.model_profile_id.as_str` | [541](../../src/dialect.rs#L541) | receiver-type-required |
+| `load_model_capabilities` | `profile.exact_sku.as_str` | [542](../../src/dialect.rs#L542) | receiver-type-required |
+| `load_model_capabilities` | `identities.insert` | [544](../../src/dialect.rs#L544) | receiver-type-required |
+| `load_model_capabilities` | `DialectId::from_str(&profile.dialect_id)             .map_err` | [550](../../src/dialect.rs#L550) | receiver-type-required |
+| `load_model_capabilities` | `DialectId::from_str` | [550](../../src/dialect.rs#L550), [567](../../src/dialect.rs#L567) | external-constructor-callback-or-unresolved |
+| `load_model_capabilities` | `profile.model_profile_id.is_empty` | [552](../../src/dialect.rs#L552) | receiver-type-required |
+| `load_model_capabilities` | `profile.exact_sku.is_empty` | [552](../../src/dialect.rs#L552) | receiver-type-required |
+| `load_model_capabilities` | `"model capability identity must be nonempty".to_owned` | [553](../../src/dialect.rs#L553) | receiver-type-required |
+| `load_model_capabilities` | `level.is_empty` | [557](../../src/dialect.rs#L557) | receiver-type-required |
+| `load_model_capabilities` | `level.as_bytes().iter().all` | [558](../../src/dialect.rs#L558) | receiver-type-required |
+| `load_model_capabilities` | `level.as_bytes().iter` | [558](../../src/dialect.rs#L558) | receiver-type-required |
+| `load_model_capabilities` | `level.as_bytes` | [558](../../src/dialect.rs#L558) | receiver-type-required |
+| `load_model_capabilities` | `levels.insert` | [559](../../src/dialect.rs#L559) | receiver-type-required |
+| `load_model_capabilities` | `level.as_str` | [559](../../src/dialect.rs#L559) | receiver-type-required |
+| `load_model_capabilities` | `DialectId::from_str(&profile.dialect_id).expect` | [567](../../src/dialect.rs#L567) | receiver-type-required |
+| `load_model_capabilities` | `profile             .wire_model             .as_ref()             .is_some_and` | [568](../../src/dialect.rs#L568) | receiver-type-required |
+| `load_model_capabilities` | `profile             .wire_model             .as_ref` | [568](../../src/dialect.rs#L568) | receiver-type-required |
+| `load_model_capabilities` | `model.is_empty` | [571](../../src/dialect.rs#L571) | receiver-type-required |
+| `load_model_capabilities` | `profile.wire_model.is_none` | [573](../../src/dialect.rs#L573) | receiver-type-required |
+| `load_model_capabilities` | `"invalid model wire variant capability".to_owned` | [575](../../src/dialect.rs#L575) | receiver-type-required |
+| `load_model_capabilities` | `dialect.family` | [577](../../src/dialect.rs#L577) | receiver-type-required |
+| `load_model_capabilities` | `profile.reasoning.levels.is_empty` | [578](../../src/dialect.rs#L578) | receiver-type-required |
+| `load_model_capabilities` | `profile.reasoning.thinking.is_none` | [579](../../src/dialect.rs#L579) | receiver-type-required |
+| `load_model_capabilities` | `profile             .reasoning             .default             .as_ref()             .is_some_and` | [586](../../src/dialect.rs#L586) | receiver-type-required |
+| `load_model_capabilities` | `profile             .reasoning             .default             .as_ref` | [586](../../src/dialect.rs#L586) | receiver-type-required |
+| `load_model_capabilities` | `levels.contains` | [590](../../src/dialect.rs#L590) | receiver-type-required |
+| `load_model_capabilities` | `value.as_str` | [590](../../src/dialect.rs#L590) | receiver-type-required |
+| `load_model_capabilities` | `profile             .evidence_url             .as_ref()             .is_some_and` | [597](../../src/dialect.rs#L597) | receiver-type-required |
+| `load_model_capabilities` | `profile             .evidence_url             .as_ref` | [597](../../src/dialect.rs#L597) | receiver-type-required |
+| `load_model_capabilities` | `url.starts_with` | [600](../../src/dialect.rs#L600) | receiver-type-required |
+| `load_model_capabilities` | `Ok` | [608](../../src/dialect.rs#L608) | external-constructor-callback-or-unresolved |
+| `model_capability_for` | `MODEL_CAPABILITIES.get_or_init` | [614](../../src/dialect.rs#L614) | receiver-type-required |
+| `model_capability_for` | `catalog         .as_ref()         .map_err` | [615](../../src/dialect.rs#L615) | receiver-type-required |
+| `model_capability_for` | `catalog         .as_ref` | [615](../../src/dialect.rs#L615) | receiver-type-required |
+| `model_capability_for` | `DialectError::CatalogUnavailable` | [617](../../src/dialect.rs#L617) | external-constructor-callback-or-unresolved |
+| `model_capability_for` | `error.clone` | [617](../../src/dialect.rs#L617) | receiver-type-required |
+| `model_capability_for` | `catalog.iter().find` | [618](../../src/dialect.rs#L618) | receiver-type-required |
+| `model_capability_for` | `catalog.iter` | [618](../../src/dialect.rs#L618) | receiver-type-required |
+| `model_capability_for` | `Ok` | [623](../../src/dialect.rs#L623), [625](../../src/dialect.rs#L625) | external-constructor-callback-or-unresolved |
+| `model_capability_for` | `Some` | [623](../../src/dialect.rs#L623) | external-constructor-callback-or-unresolved |
+| `model_capability_for` | `exact.clone` | [623](../../src/dialect.rs#L623) | receiver-type-required |
+| `model_capability_for` | `dialect_uniform_capability` | [625](../../src/dialect.rs#L625) | [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L637) |
+| `dialect_uniform_capability` | `catalog         .iter()         .filter` | [642](../../src/dialect.rs#L642) | receiver-type-required |
+| `dialect_uniform_capability` | `catalog         .iter` | [642](../../src/dialect.rs#L642) | receiver-type-required |
+| `dialect_uniform_capability` | `family.next` | [645](../../src/dialect.rs#L645) | receiver-type-required |
+| `dialect_uniform_capability` | `family.any` | [646](../../src/dialect.rs#L646) | receiver-type-required |
+| `dialect_uniform_capability` | `Some` | [652](../../src/dialect.rs#L652) | external-constructor-callback-or-unresolved |
+| `dialect_uniform_capability` | `dialect_id.to_owned` | [653](../../src/dialect.rs#L653) | receiver-type-required |
+| `dialect_uniform_capability` | `exact_sku.to_owned` | [655](../../src/dialect.rs#L655) | receiver-type-required |
+| `dialect_uniform_capability` | `first.reasoning.clone` | [658](../../src/dialect.rs#L658) | receiver-type-required |
+| `supported_dialects` | `DEFINITIONS         .iter()         .map(&#124;definition&#124; SupportedDialect {             dialect_id: definition.dialect.as_str().to_owned(),             protocol_family: definition.family.to_owned(),         })         .collect` | [670](../../src/dialect.rs#L670) | receiver-type-required |
+| `supported_dialects` | `DEFINITIONS         .iter()         .map` | [670](../../src/dialect.rs#L670) | receiver-type-required |
+| `supported_dialects` | `DEFINITIONS         .iter` | [670](../../src/dialect.rs#L670) | receiver-type-required |
+| `supported_dialects` | `definition.dialect.as_str().to_owned` | [673](../../src/dialect.rs#L673) | receiver-type-required |
+| `supported_dialects` | `definition.dialect.as_str` | [673](../../src/dialect.rs#L673) | receiver-type-required |
+| `supported_dialects` | `definition.family.to_owned` | [674](../../src/dialect.rs#L674) | receiver-type-required |
+| `validate_provider` | `DialectId::from_str` | [683](../../src/dialect.rs#L683) | external-constructor-callback-or-unresolved |
+| `validate_provider` | `definition_for` | [684](../../src/dialect.rs#L684) | [provider::dialect::definition_for](../../src/dialect.rs#L511) |
+| `validate_provider` | `Err` | [686](../../src/dialect.rs#L686) | external-constructor-callback-or-unresolved |
+| `validate_provider` | `Ok` | [688](../../src/dialect.rs#L688) | external-constructor-callback-or-unresolved |
+| `resolve_profile` | `DialectId::from_str` | [695](../../src/dialect.rs#L695) | external-constructor-callback-or-unresolved |
+| `resolve_profile` | `definition_for` | [696](../../src/dialect.rs#L696) | [provider::dialect::definition_for](../../src/dialect.rs#L511) |
+| `resolve_profile` | `Err` | [698](../../src/dialect.rs#L698) | external-constructor-callback-or-unresolved |
+| `resolve_profile` | `provider.adapter.clone` | [701](../../src/dialect.rs#L701) | receiver-type-required |
+| `resolve_profile` | `provider.dialect.clone` | [702](../../src/dialect.rs#L702) | receiver-type-required |
+| `resolve_profile` | `model.profile.clone` | [703](../../src/dialect.rs#L703) | receiver-type-required |
+| `resolve_profile` | `provider.endpoint_owner.clone` | [705](../../src/dialect.rs#L705) | receiver-type-required |
+| `resolve_profile` | `provider.gateway_translation.clone` | [706](../../src/dialect.rs#L706) | receiver-type-required |
+| `resolve_profile` | `model.id.clone` | [707](../../src/dialect.rs#L707) | receiver-type-required |
+| `resolve_profile` | `provider.evidence_revision.clone` | [708](../../src/dialect.rs#L708) | receiver-type-required |
+| `resolve_profile` | `resolve_configured_target` | [711](../../src/dialect.rs#L711) | [provider::dialect::resolve_configured_target](../../src/dialect.rs#L723) |
+| `validate_target` | `target.dialect` | [715](../../src/dialect.rs#L715) | receiver-type-required |
+| `validate_target` | `definition_for` | [716](../../src/dialect.rs#L716) | [provider::dialect::definition_for](../../src/dialect.rs#L511) |
+| `validate_target` | `target_matches_definition` | [717](../../src/dialect.rs#L717) | [provider::dialect::target_matches_definition](../../src/dialect.rs#L518) |
+| `validate_target` | `Err` | [718](../../src/dialect.rs#L718) | external-constructor-callback-or-unresolved |
+| `validate_target` | `resolve_configured_target` | [720](../../src/dialect.rs#L720) | [provider::dialect::resolve_configured_target](../../src/dialect.rs#L723) |
+| `validate_target` | `target.clone` | [720](../../src/dialect.rs#L720) | receiver-type-required |
+| `resolve_configured_target` | `definition.credential_header.to_owned` | [728](../../src/dialect.rs#L728) | receiver-type-required |
+| `resolve_configured_target` | `definition.credential_prefix.to_owned` | [729](../../src/dialect.rs#L729) | receiver-type-required |
+| `resolve_configured_target` | `"cf-aig-authorization".to_owned` | [734](../../src/dialect.rs#L734) | receiver-type-required |
+| `resolve_configured_target` | `"Bearer ".to_owned` | [735](../../src/dialect.rs#L735) | receiver-type-required |
+| `resolve_configured_target` | `model_capability_for` | [737](../../src/dialect.rs#L737) | [provider::dialect::model_capability_for](../../src/dialect.rs#L611) |
+| `resolve_configured_target` | `capability         .as_ref()         .and_then(&#124;value&#124; value.native_deferred_tools.as_ref())         .filter(&#124;native&#124; {             native.mode.dialect() == dialect                 && native.routes.iter().any(&#124;route&#124; {                     route.endpoint_owner == target.route.endpoint_owner                         && route.gateway_translation == target.route.gateway_translation                 })         })         .map` | [738](../../src/dialect.rs#L738) | receiver-type-required |
+| `resolve_configured_target` | `capability         .as_ref()         .and_then(&#124;value&#124; value.native_deferred_tools.as_ref())         .filter` | [738](../../src/dialect.rs#L738) | receiver-type-required |
+| `resolve_configured_target` | `capability         .as_ref()         .and_then` | [738](../../src/dialect.rs#L738) | receiver-type-required |
+| `resolve_configured_target` | `capability         .as_ref` | [738](../../src/dialect.rs#L738) | receiver-type-required |
+| `resolve_configured_target` | `value.native_deferred_tools.as_ref` | [740](../../src/dialect.rs#L740) | receiver-type-required |
+| `resolve_configured_target` | `native.mode.dialect` | [742](../../src/dialect.rs#L742) | receiver-type-required |
+| `resolve_configured_target` | `native.routes.iter().any` | [743](../../src/dialect.rs#L743) | receiver-type-required |
+| `resolve_configured_target` | `native.routes.iter` | [743](../../src/dialect.rs#L743) | receiver-type-required |
+| `resolve_configured_target` | `Ok` | [749](../../src/dialect.rs#L749) | external-constructor-callback-or-unresolved |
+| `resolve_configured_target` | `capability             .as_ref()             .map(&#124;value&#124; value.reasoning.levels.clone())             .unwrap_or_default` | [755](../../src/dialect.rs#L755) | receiver-type-required |
+| `resolve_configured_target` | `capability             .as_ref()             .map` | [755](../../src/dialect.rs#L755) | receiver-type-required |
+| `resolve_configured_target` | `capability             .as_ref` | [755](../../src/dialect.rs#L755), [759](../../src/dialect.rs#L759), [762](../../src/dialect.rs#L762), [765](../../src/dialect.rs#L765), [768](../../src/dialect.rs#L768), [771](../../src/dialect.rs#L771), [774](../../src/dialect.rs#L774) | receiver-type-required |
+| `resolve_configured_target` | `value.reasoning.levels.clone` | [757](../../src/dialect.rs#L757) | receiver-type-required |
+| `resolve_configured_target` | `capability             .as_ref()             .and_then` | [759](../../src/dialect.rs#L759), [762](../../src/dialect.rs#L762), [771](../../src/dialect.rs#L771), [774](../../src/dialect.rs#L774) | receiver-type-required |
+| `resolve_configured_target` | `value.reasoning.default.clone` | [761](../../src/dialect.rs#L761) | receiver-type-required |
+| `resolve_configured_target` | `capability             .as_ref()             .is_none_or` | [765](../../src/dialect.rs#L765) | receiver-type-required |
+| `resolve_configured_target` | `capability             .as_ref()             .is_some_and` | [768](../../src/dialect.rs#L768) | receiver-type-required |
+| `resolve_configured_target` | `value.wire_model.clone` | [776](../../src/dialect.rs#L776) | receiver-type-required |
+| `resolve_configured_target` | `capability.as_ref().is_some_and` | [777](../../src/dialect.rs#L777) | receiver-type-required |
+| `resolve_configured_target` | `capability.as_ref` | [777](../../src/dialect.rs#L777) | receiver-type-required |
+| `epoch_profile` | `settings.and_then` | [787](../../src/dialect.rs#L787) | receiver-type-required |
+| `epoch_profile` | `settings.reasoning_effort.as_deref` | [787](../../src/dialect.rs#L787) | receiver-type-required |
+| `epoch_profile` | `requested.or_else` | [788](../../src/dialect.rs#L788) | receiver-type-required |
+| `epoch_profile` | `profile.default_reasoning_effort` | [788](../../src/dialect.rs#L788) | receiver-type-required |
+| `epoch_profile` | `effort.is_some_and` | [789](../../src/dialect.rs#L789) | receiver-type-required |
+| `epoch_profile` | `profile.reasoning_efforts().iter().any` | [789](../../src/dialect.rs#L789) | receiver-type-required |
+| `epoch_profile` | `profile.reasoning_efforts().iter` | [789](../../src/dialect.rs#L789) | receiver-type-required |
+| `epoch_profile` | `profile.reasoning_efforts` | [789](../../src/dialect.rs#L789) | receiver-type-required |
+| `epoch_profile` | `Err` | [790](../../src/dialect.rs#L790) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `DialectError::UnsupportedControl` | [790](../../src/dialect.rs#L790) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `"reasoning_effort".to_owned` | [791](../../src/dialect.rs#L791), [797](../../src/dialect.rs#L797) | receiver-type-required |
+| `epoch_profile` | `serde_json::Map::new` | [794](../../src/dialect.rs#L794) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `controls.insert` | [796](../../src/dialect.rs#L796) | receiver-type-required |
+| `epoch_profile` | `Value::String` | [798](../../src/dialect.rs#L798) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `value.to_owned` | [798](../../src/dialect.rs#L798) | receiver-type-required |
+| `epoch_profile` | `IJsonValue::parse(         &serde_json_canonicalizer::to_vec(&json!({             "controls": controls,             "serializer_revision": profile.serializer_revision,             "system": system,             "target": profile.target,         }))         .map_err(&#124;error&#124; DialectError::InvalidEpoch(error.to_string()))?,     )     .map_err` | [801](../../src/dialect.rs#L801) | receiver-type-required |
+| `epoch_profile` | `IJsonValue::parse` | [801](../../src/dialect.rs#L801) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `epoch_profile` | `serde_json_canonicalizer::to_vec(&json!({             "controls": controls,             "serializer_revision": profile.serializer_revision,             "system": system,             "target": profile.target,         }))         .map_err` | [802](../../src/dialect.rs#L802) | receiver-type-required |
+| `epoch_profile` | `serde_json_canonicalizer::to_vec` | [802](../../src/dialect.rs#L802) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `DialectError::InvalidEpoch` | [808](../../src/dialect.rs#L808), [810](../../src/dialect.rs#L810) | external-constructor-callback-or-unresolved |
+| `epoch_profile` | `error.to_string` | [808](../../src/dialect.rs#L808), [810](../../src/dialect.rs#L810) | receiver-type-required |
+| `validate_epoch_target` | `serde_json::to_value(epoch)         .map_err` | [817](../../src/dialect.rs#L817) | receiver-type-required |
+| `validate_epoch_target` | `serde_json::to_value` | [817](../../src/dialect.rs#L817), [822](../../src/dialect.rs#L822) | external-constructor-callback-or-unresolved |
+| `validate_epoch_target` | `DialectError::InvalidEpoch` | [818](../../src/dialect.rs#L818), [823](../../src/dialect.rs#L823) | external-constructor-callback-or-unresolved |
+| `validate_epoch_target` | `error.to_string` | [818](../../src/dialect.rs#L818), [823](../../src/dialect.rs#L823) | receiver-type-required |
+| `validate_epoch_target` | `value         .get("target")         .ok_or` | [819](../../src/dialect.rs#L819) | receiver-type-required |
+| `validate_epoch_target` | `value         .get` | [819](../../src/dialect.rs#L819) | receiver-type-required |
+| `validate_epoch_target` | `serde_json::to_value(&profile.target)         .map_err` | [822](../../src/dialect.rs#L822) | receiver-type-required |
+| `validate_epoch_target` | `Err` | [825](../../src/dialect.rs#L825), [829](../../src/dialect.rs#L829) | external-constructor-callback-or-unresolved |
+| `validate_epoch_target` | `value.get("serializer_revision").and_then` | [827](../../src/dialect.rs#L827) | receiver-type-required |
+| `validate_epoch_target` | `value.get` | [827](../../src/dialect.rs#L827) | receiver-type-required |
+| `validate_epoch_target` | `Some` | [827](../../src/dialect.rs#L827) | external-constructor-callback-or-unresolved |
+| `validate_epoch_target` | `Ok` | [831](../../src/dialect.rs#L831) | external-constructor-callback-or-unresolved |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init(super::load_model_capabilities)             .as_ref()             .expect` | [838](../../src/dialect.rs#L838) | receiver-type-required |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init(super::load_model_capabilities)             .as_ref` | [838](../../src/dialect.rs#L838) | receiver-type-required |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::MODEL_CAPABILITIES             .get_or_init` | [838](../../src/dialect.rs#L838) | receiver-type-required |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability(catalog, "deepseek_chat_v1", "deepseek-flash")                 .expect` | [843](../../src/dialect.rs#L843) | receiver-type-required |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability` | [843](../../src/dialect.rs#L843), [854](../../src/dialect.rs#L854) | [provider::dialect::dialect_uniform_capability](../../src/dialect.rs#L637) |
+| `unlisted_sku_inherits_a_dialect_uniform_reasoning_capability` | `super::dialect_uniform_capability(catalog, "deepseek_responses_v1", "unlisted")                 .expect` | [854](../../src/dialect.rs#L854) | receiver-type-required |

@@ -4726,31 +4726,18 @@ impl ProviderReadinessAuthority for ProductionProcessHost {
             .providers
             .iter()
             .map(|configured| {
-                let route_readiness = provider::configured_route_is_verified(configured);
-                let mut dialect_unproved = matches!(
-                    &route_readiness,
-                    Err(provider::DialectError::UnknownDialect(_))
-                        | Err(provider::DialectError::UnprovedProfile(_))
-                );
-                let route_misconfigured = route_readiness.is_err() && !dialect_unproved;
+                let route_misconfigured = provider::validate_provider(configured).is_err();
                 let resolved_models = configured
                     .models
                     .iter()
                     .filter(|model| model.enabled)
-                    .filter_map(|model| match provider::resolve_profile(configured, model) {
-                        Ok(profile) => Some((model, profile)),
-                        Err(provider::DialectError::UnprovedProfile(_)) => {
-                            dialect_unproved = true;
-                            None
-                        }
-                        Err(_) => None,
+                    .filter_map(|model| {
+                        provider::resolve_profile(configured, model)
+                            .ok()
+                            .map(|profile| (model, profile))
                     })
                     .collect::<Vec<_>>();
-                let status = if dialect_unproved {
-                    RuntimeProviderStatus::Failed {
-                        failure: RuntimeProviderFailure::DialectUnproved,
-                    }
-                } else if route_misconfigured
+                let status = if route_misconfigured
                     || provider::endpoint_origin(&configured.endpoint).is_err()
                     || resolved_models.is_empty()
                 {

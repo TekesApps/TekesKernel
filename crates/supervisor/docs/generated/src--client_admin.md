@@ -407,7 +407,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `to_ijson` | `serde_json_canonicalizer::to_vec` | [370](../../src/client_admin.rs#L370) | external-constructor-callback-or-unresolved |
 | `to_ijson` | `internal` | [370](../../src/client_admin.rs#L370), [372](../../src/client_admin.rs#L372) | [tekes-supervisor::client_admin::internal](../../src/client_admin.rs#L381) |
 | `to_ijson` | `error.to_string` | [370](../../src/client_admin.rs#L370), [372](../../src/client_admin.rs#L372) | receiver-type-required |
-| `failure` | `ProductionRouteFailure::new` | [375](../../src/client_admin.rs#L375) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L492) |
+| `failure` | `ProductionRouteFailure::new` | [375](../../src/client_admin.rs#L375) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L491) |
 | `failure` | `to_ijson(&details).unwrap_or_else` | [378](../../src/client_admin.rs#L378) | receiver-type-required |
 | `failure` | `to_ijson` | [378](../../src/client_admin.rs#L378) | [tekes-supervisor::client_admin::to_ijson](../../src/client_admin.rs#L368) |
 | `failure` | `IJsonValue::parse_str("{}").expect` | [378](../../src/client_admin.rs#L378) | receiver-type-required |

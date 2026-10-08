@@ -1876,7 +1876,7 @@ closed snapshot for the selected session:
 ```text
 {provider:str,status:"ready"|"failed",
  models:[{id:str,efforts:[str],default_effort?:str}],
- failure?:"unavailable"|"dialect-unproved"|"invalid-credential"|"network"|"misconfigured"}
+ failure?:"unavailable"|"invalid-credential"|"network"|"misconfigured"}
 ```
 
 Provider ids follow config authored order; every enabled configured model is

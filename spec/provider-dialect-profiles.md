@@ -31,8 +31,26 @@ All six scalar strings are non-empty, byte-exact identifiers. `direct` means
 the endpoint owner implements the dialect; every translating gateway has a
 distinct non-empty stable id. Endpoint hostname, URL suffix, provider display
 name and model-name prefix do not infer any field. Configuration selects the
-entire target, and a model catalog entry is runnable only when its target is an
-exact registry match whose complete proof set is green.
+entire target and the endpoint, and the kernel runs exactly what is configured.
+
+## Configured routes
+
+The kernel has no runtime route allow-list. A configured provider is runnable
+when its `dialect` is one this build serializes and its `adapter` is that
+dialect's protocol family; `endpoint_owner`, `gateway_translation`,
+`evidence_revision`, model SKU and endpoint are taken as configured. The
+credential header and prefix come from the dialect (`cloudflare` /
+`cloudflare-native-anthropic` uses `cf-aig-authorization: Bearer`). The
+configured endpoint is used as the request base unchanged. A route the upstream
+does not accept fails at request time with the provider's error; an unknown
+dialect or a family/dialect disagreement is `misconfigured` readiness.
+
+`tekes-supervisor --models-available` lists the dialects this build supports
+as `[{dialect_id, protocol_family}]`.
+
+The registry below is the conformance corpus that pins each dialect's exact
+serializer and decoder behavior. It is test data, not compiled into the
+runtime, and it neither admits nor rejects a configured route.
 
 The tuple is part of the immutable epoch profile. Changing any tuple field,
 control, serializer revision, tool-schema projection, cache policy or provider
@@ -105,8 +123,7 @@ ProfileProofV1 {
 code. It is either an exact normalized base URL or a URL whose whole path
 segments are named placeholders such as `{tenant}`; placeholders match one
 non-empty, non-dot segment and never match scheme, host, query, or fragment.
-`request_url` is the exact URL used by that row's request-digest oracle. A
-configured endpoint must match the same row as the complete target tuple.
+`request_url` is the exact URL used by that row's request-digest oracle.
 `credential_header` and `credential_prefix` describe how the separately leased
 credential is attached after digesting; the runtime does not infer either from
 the provider, router, model, protocol family, or endpoint hostname.
@@ -136,10 +153,7 @@ ordinary and tool terminals, recovery, structured negative/mismatch cases,
 the declared input/tool/schema/cache/repair capability surface, and
 control-to-epoch-to-wire. The production registry, projector, decoder and
 recovery decision function must consume those artifacts; the mere presence of
-a same-named JSON member is not proof. Missing, stale or failing proof means unavailable. A configured
-but unproved target may be listed only in administrative diagnostics as
-`unavailable {reason:"dialect_unproved"}` and is absent from session model
-catalogs. An opt-in live smoke is supplemental and runs only after hermetic
+a same-named JSON member is not proof. An opt-in live smoke is supplemental and runs only after hermetic
 proof; live success cannot replace a missing fixture.
 
 The initial registry's product-input control surface is deliberately exact,
@@ -178,8 +192,7 @@ manufacture an otherwise unreachable epoch control and call it product proof.
 ## Initial closed dialect registry
 
 The initial closure has twelve distinct testable dialect profiles. Eleven are
-advertised exact tuples. `generic_chat_v1` is a test-only conservative codec
-fixture and is never returned by production readiness or a model catalog. The
+advertised exact tuples. `generic_chat_v1` is a conservative codec fixture. The
 exact fixture SKU is a conformance identity, not a wildcard declaration:
 
 | dialect id | family | endpoint owner | exact fixture SKU | continuation |
@@ -197,9 +210,8 @@ exact fixture SKU is a conformance identity, not a wildcard declaration:
 | `google_generation_v1` | google generation | `google` | `gemini-2.5-flash` | stateless full history |
 | `google_interactions_v1` | google interactions | `google` | `gemini-2.5-flash` | server-managed |
 
-No row authorizes a different SKU or gateway. Adding one requires a separate
-profile or evidence that explicitly aliases the exact new tuple to an existing
-proof set; aliases are registry rows and are never runtime heuristics.
+Rows pin serializer behavior; they do not enumerate the SKUs or gateways a
+deployment may configure.
 
 ## DeepSeek Responses
 
@@ -353,11 +365,6 @@ Each reviewed row carries the official documentation URL used for its current ca
 when one is available. Updating provider behavior therefore requires one explicit catalog edit and
 the corresponding proof/test refresh, not a new client-side inference.
 
-The canonical registry bytes are compiled into the production Provider crate
-and pinned by SHA-256. Runtime advertisement verifies that digest, the row's
-`proof_id`, complete proof-arm inventory, and exact target tuple. An oracle
-digest mismatch or an `advertised:false` row is `dialect_unproved`, not a
-successful readiness result.
 
 `invalid.canonical.json` is the rejection corpus, while
 `forward-compatible*.canonical.json` proves open provider vocabulary and exact
@@ -370,8 +377,7 @@ generate or update the oracle.
 The hermetic gates are:
 
 1. **DialectRegistryClosure** — fourteen exact rows, thirteen advertised tuples, no
-   duplicate identity, no advertised row without all proof arms, and the
-   test-only generic row rejected by production readiness;
+   duplicate identity, and no advertised row without all proof arms;
 2. **ExactDialectBytes** — first/multi-turn and tool/schema request bytes, every
    declared SSE variant, forward-compatible unknown variants, terminals and
    normalized/native replay bytes match through the production projector and
@@ -382,5 +388,4 @@ The hermetic gates are:
    request bytes and both digests exactly.
 
 An optional exact-route live smoke names the full target tuple and evidence
-revision in its result. It cannot run before gates 1–4 and cannot make an
-unproved tuple advertisable.
+revision in its result. It cannot run before gates 1–4.

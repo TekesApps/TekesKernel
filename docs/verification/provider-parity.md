@@ -125,11 +125,9 @@ proof-bound and copied into the immutable epoch profile, so a projector change
 cannot silently reuse an older epoch merely because the provider/model route
 and current request bytes happen to remain equal.
 
-The model catalog advertises only capabilities proven by the selected tuple.
-An unproved route may remain configurable for development but is unavailable
-to ordinary session routing. Production readiness consumes the pinned proof
-oracle and rejects an absent, stale, digest-mismatched, or
-`advertised:false` row as `dialect_unproved`.
+Production readiness does not consult the proof registry: a configured route
+on a supported dialect runs as configured, and an upstream that rejects it
+fails at request time. The registry pins serializer and decoder bytes in tests.
 
 The first closed registry does not collapse optional controls into the family
 codec. V1 has a product author path only for `reasoning_effort`; sampling,

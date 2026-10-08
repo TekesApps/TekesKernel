@@ -41,7 +41,6 @@ provided, and report "not qualified" otherwise.
 | Script | Purpose |
 |---|---|
 | `update-fixture-manifest.py` | Regenerate `fixtures/manifest.json` from the files on disk. |
-| `add-provider-model-proof-alias.py` | Derive one exact model proof row from a reviewed route proof. |
 | `replay-legacy-sqlite.py` | Validate a copy of a predecessor TekesAppServer SQLite database and export transcripts for `crates/endpoint/tests/legacy_replay.rs`. Only useful with such a database. |
 | `diff-attempt-requests.py`, `audit-request-segments.py` | Inspect recorded provider request bodies. |
 

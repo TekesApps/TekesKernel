@@ -29,10 +29,9 @@ pub use credential::{
     encode_credential_frame, serve_credential_channel, start_credential_channel,
 };
 pub use dialect::{
-    AdvertisedDialectProof, DialectError, DialectId, NativeDeferredMode, ProviderTarget,
-    ResolvedDialectProfile, RouteEvidence, ThinkingWire, advertised_dialect_proofs,
-    configured_route_is_verified, epoch_profile, resolve_profile, validate_endpoint,
-    validate_epoch_target, validate_target,
+    DialectError, DialectId, NativeDeferredMode, ProviderTarget, ResolvedDialectProfile,
+    RouteEvidence, SupportedDialect, ThinkingWire, epoch_profile, resolve_profile,
+    supported_dialects, validate_epoch_target, validate_provider, validate_target,
 };
 pub use http::{HttpRuntime, HttpRuntimeError, HttpStatusClass, classify_status};
 pub use normalize::{
