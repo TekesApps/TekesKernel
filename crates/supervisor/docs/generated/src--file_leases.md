@@ -85,7 +85,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `TTL` | `Duration::from_secs` | [11](../../src/file_leases.rs#L11) | external-constructor-callback-or-unresolved |
 | `open` | `Ok` | [30](../../src/file_leases.rs#L30) | external-constructor-callback-or-unresolved |
 | `open` | `endpoint::ManagementStore::open(root).map_err` | [31](../../src/file_leases.rs#L31) | receiver-type-required |
-| `open` | `endpoint::ManagementStore::open` | [31](../../src/file_leases.rs#L31) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L316) |
+| `open` | `endpoint::ManagementStore::open` | [31](../../src/file_leases.rs#L31) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L339) |
 | `open` | `error.to_string` | [31](../../src/file_leases.rs#L31) | receiver-type-required |
 | `open` | `endpoint::AttachmentAuthority::open` | [32](../../src/file_leases.rs#L32) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
 | `open` | `FileLeases::default` | [33](../../src/file_leases.rs#L33) | external-constructor-callback-or-unresolved |

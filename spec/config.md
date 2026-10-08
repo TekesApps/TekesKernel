@@ -16,7 +16,8 @@ threads/<session-uuid>/session-settings.json
 ```
 
 `<workspace-id>` is 1–128 ASCII characters from `[A-Za-z0-9._-]`; it cannot
-start with `.`. The workspace file's `id` MUST equal its parent directory
+start with `.`. Endpoint clients edit `folders` only through
+[`workspaceFolders.v1`](client-extensions.md#workspace-administration). The workspace file's `id` MUST equal its parent directory
 name. The sibling `state/` and `skills/` directories are
 private workspace-scoped data, not additional workspace identity records.
 Secrets never occur in these files: `credential_key` values are identifiers

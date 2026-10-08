@@ -113,6 +113,8 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SelectModelOperation` | `management::SelectModelOperation` | `pub` |
 | `SelectedModel` | `management::SelectedModel` | `pub` |
 | `SessionCreateOperation` | `management::SessionCreateOperation` | `pub` |
+| `WorkspaceFolderView` | `management::WorkspaceFolderView` | `pub` |
+| `WorkspaceFolders` | `management::WorkspaceFolders` | `pub` |
 | `WorkspaceList` | `management::WorkspaceList` | `pub` |
 | `WorkspaceView` | `management::WorkspaceView` | `pub` |
 | `is_endpoint_origin_client` | `management::is_endpoint_origin_client` | `pub` |

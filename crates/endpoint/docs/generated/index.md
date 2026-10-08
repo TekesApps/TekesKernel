@@ -45,7 +45,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/idempotency.rs](../../src/idempotency.rs) | 35 | 418 | [Symbols and calls](src--idempotency.md) |
 | [crates/endpoint/src/journal.rs](../../src/journal.rs) | 33 | 343 | [Symbols and calls](src--journal.md) |
 | [crates/endpoint/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
-| [crates/endpoint/src/management.rs](../../src/management.rs) | 140 | 1913 | [Symbols and calls](src--management.md) |
+| [crates/endpoint/src/management.rs](../../src/management.rs) | 161 | 2247 | [Symbols and calls](src--management.md) |
 | [crates/endpoint/src/mux.rs](../../src/mux.rs) | 50 | 170 | [Symbols and calls](src--mux.md) |
 | [crates/endpoint/src/projection.rs](../../src/projection.rs) | 42 | 744 | [Symbols and calls](src--projection.md) |
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
@@ -97,7 +97,7 @@ flowchart LR
   m6 -->|"3"| m13
   m8 -->|"1"| m7
   m8 -->|"2"| m14
-  m8 -->|"13"| m17
+  m8 -->|"14"| m17
   m9 -->|"1"| m3
   m9 -->|"2"| m17
   m10 -->|"1"| m15

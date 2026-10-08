@@ -985,7 +985,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `host_files` | `native                     .list_sessions` | [1695](../../src/client_extensions.rs#L1695) | receiver-type-required |
 | `host_files` | `HashSet::new` | [1696](../../src/client_extensions.rs#L1696) | external-constructor-callback-or-unresolved |
 | `host_files` | `endpoint::ManagementStore::open(&self.root)                     .map_err` | [1698](../../src/client_extensions.rs#L1698) | receiver-type-required |
-| `host_files` | `endpoint::ManagementStore::open` | [1698](../../src/client_extensions.rs#L1698) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L316) |
+| `host_files` | `endpoint::ManagementStore::open` | [1698](../../src/client_extensions.rs#L1698) | [endpoint::management::ManagementStore::open](../../../endpoint/src/management.rs#L339) |
 | `host_files` | `items                     .iter()                     .find(&#124;item&#124; item.session_id == requesting)                     .map(&#124;item&#124; item.workspace_id.clone())                     .ok_or_else` | [1700](../../src/client_extensions.rs#L1700) | receiver-type-required |
 | `host_files` | `items                     .iter()                     .find(&#124;item&#124; item.session_id == requesting)                     .map` | [1700](../../src/client_extensions.rs#L1700) | receiver-type-required |
 | `host_files` | `items                     .iter()                     .find` | [1700](../../src/client_extensions.rs#L1700) | receiver-type-required |
