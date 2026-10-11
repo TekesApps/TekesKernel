@@ -2,7 +2,7 @@
 """Public-tunnel live gates against the official TypeScript MCP SDK.
 
 Starts scripts/mcp-official-sdk/server.mjs (official @modelcontextprotocol/sdk
-1.30.0 servers: tasks lifecycle and forced-SSE conformance), exposes it through an
+1.31.0 servers: tasks lifecycle and forced-SSE conformance), exposes it through an
 ngrok HTTPS tunnel (the user's own ngrok agent configuration; the auth token never
 leaves ngrok's files), proves the public URL answers from the internet, then runs
 the Kernel gates in crates/mcp/tests/live_official_sdk_tunnel.rs with
