@@ -101,7 +101,7 @@ app.post('/conformance/notify', (_req, res) => {
   }
   res.status(204).end();
 });
-app.get('/healthz', (_req, res) => res.json({ ok: true, sdk: '1.30.0' }));
+app.get('/healthz', (_req, res) => res.json({ ok: true, sdk: '1.31.0' }));
 
 const http = createServer(app);
 http.listen(port, '127.0.0.1', () => {
