@@ -1240,23 +1240,15 @@ fn host_failure(shared: &Shared, failure: HostFailure) -> (Response, &'static st
             ),
             "overloaded",
         ),
-        // The typed codes of the stream path (O-final m7): a client can tell "256 sessions are
-        // pinned" and "this thread is quarantined" from "the Kernel is not ready".
-        HostFailure::ActiveSessionLimit { limit } => (
-            carrier_error_with_details(
-                StatusCode::CONFLICT,
-                "active-session-limit",
-                "Active session limit reached",
-                &format!("{{\"limit\":{limit}}}"),
-            ),
-            "active-session-limit",
-        ),
-        HostFailure::Quarantined(_) => (
-            carrier_error_with_details(
+        // A thread that cannot be opened (quarantined, or 256 sessions pinned) is a server
+        // failure of this request, not an unready Kernel: 500 `internal-error`, empty details.
+        // The typed forms (`active-session-limit {limit}`, `internal {reason:"quarantined"}`)
+        // stay on the streams (O-final m7, D1).
+        HostFailure::ActiveSessionLimit { .. } | HostFailure::Quarantined(_) => (
+            carrier_error(
                 StatusCode::INTERNAL_SERVER_ERROR,
                 "internal-error",
-                "Session is quarantined",
-                r#"{"reason":"quarantined"}"#,
+                "Internal error",
             ),
             "internal-error",
         ),
@@ -1385,16 +1377,6 @@ fn carrier_error_code(status: StatusCode) -> &'static str {
 }
 
 fn carrier_error(status: StatusCode, code: &'static str, message: &'static str) -> Response {
-    carrier_error_with_details(status, code, message, "{}")
-}
-
-/// A carrier error whose `details` is a small closed JSON object (`details` must be valid JSON).
-fn carrier_error_with_details(
-    status: StatusCode,
-    code: &'static str,
-    message: &'static str,
-    details: &str,
-) -> Response {
     #[derive(Serialize)]
     struct ErrorBody<'a> {
         error: ErrorValue<'a>,
@@ -1402,14 +1384,16 @@ fn carrier_error_with_details(
     #[derive(Serialize)]
     struct ErrorValue<'a> {
         code: &'a str,
-        details: serde_json::Value,
+        details: EmptyDetails,
         message: &'a str,
     }
+    #[derive(Serialize)]
+    struct EmptyDetails {}
 
     let bytes = serde_json_canonicalizer::to_vec(&ErrorBody {
         error: ErrorValue {
             code,
-            details: serde_json::from_str(details).expect("closed carrier details are JSON"),
+            details: EmptyDetails {},
             message,
         },
     })

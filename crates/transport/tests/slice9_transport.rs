@@ -1277,11 +1277,11 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
     task.abort();
 }
 
-/// O-final m7: the typed failures of a thread-bound route keep their codes on HTTP (they were
-/// folded into the 503 `not-ready` of an unready Kernel): the session limit is a 409 with the
-/// limit, a quarantined thread a 500 `internal-error` naming the quarantine.
+/// O-final m7 / D1: a thread that cannot be opened (the session limit, a quarantine) is a 500
+/// `internal-error` with empty details on HTTP, not the 503 `not-ready` of an unready Kernel.
+/// The typed forms stay on the streams; the quarantine reason stays off the HTTP wire.
 #[tokio::test]
-async fn typed_host_failures_keep_their_codes_on_http() {
+async fn thread_open_failures_are_a_500_internal_error_on_http() {
     let body = serde_json::to_vec(&json!({
         "type": "client-request", "rpcId": "typed-1",
         "method": "session.prompt", "payload": {"sessionId": "50aa8d4e-9305-49d1-837e-16d2e67f31b0", "content": []}
@@ -1298,10 +1298,10 @@ async fn typed_host_failures_keep_their_codes_on_http() {
     .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
     .await
     .expect("limit response");
-    assert_eq!(limit.status(), StatusCode::CONFLICT);
+    assert_eq!(limit.status(), StatusCode::INTERNAL_SERVER_ERROR);
     let value = response_json(limit).await;
-    assert_eq!(value["error"]["code"], "active-session-limit");
-    assert_eq!(value["error"]["details"]["limit"], 256);
+    assert_eq!(value["error"]["code"], "internal-error");
+    assert_eq!(value["error"]["details"], json!({}));
 
     let quarantined = TransportServer::new(
         Arc::new(
@@ -1318,7 +1318,7 @@ async fn typed_host_failures_keep_their_codes_on_http() {
     assert_eq!(quarantined.status(), StatusCode::INTERNAL_SERVER_ERROR);
     let value = response_json(quarantined).await;
     assert_eq!(value["error"]["code"], "internal-error");
-    assert_eq!(value["error"]["details"]["reason"], "quarantined");
+    assert_eq!(value["error"]["details"], json!({}));
     assert!(
         !value.to_string().contains("bad record"),
         "the quarantine reason stays out of the wire"

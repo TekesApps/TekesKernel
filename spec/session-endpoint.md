@@ -842,13 +842,9 @@ RFC 8785 JSON with no trailing newline. The closed `(status, C, M)` table is:
 | 429 | `overloaded` | `Endpoint admission limit reached` |
 | 503 | `not-ready` | `Endpoint is not ready` |
 | 503 | `server-draining` | `Endpoint is draining` |
-| 409 | `active-session-limit` | `Active session limit reached` (details `{limit}`) |
-| 500 | `internal-error` | `Session is quarantined` (details `{reason:"quarantined"}`) |
 
 The `server-draining` row applies after drain begins; otherwise 503 uses
-`not-ready`. The last two rows are the same typed failures a stream open reports
-(§All-session stream lifecycle, §Thread cards and lazy verification) on an
-HTTP route that needs a thread; every other row carries empty details. Required response headers are `content-type:
+`not-ready`. Required response headers are `content-type:
 application/json` and decimal `content-length`; header order and HTTP library
 framing are not application authority.
 

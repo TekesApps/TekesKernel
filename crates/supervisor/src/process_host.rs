@@ -1726,6 +1726,24 @@ impl ProductionProcessHost {
             .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(streams);
     }
 
+    /// Derives the requests of one child line and announces what changed (a child's append, or
+    /// its exit). Failure only logs: the next recompute of the baseline reads the line again.
+    fn reconcile_child_line(&self, session_id: &str, ledger: &Path) {
+        let streams = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone();
+        let (Some(streams), Some(line)) =
+            (streams, ledger.file_name().and_then(|name| name.to_str()))
+        else {
+            return;
+        };
+        if let Err(error) = streams.reconcile_actionables(session_id, Some(line)) {
+            eprintln!("process-host-publish-child-actionables-failed: {error}");
+        }
+    }
+
     /// Announces a worker start or exit so inventory `running` follows the
     /// process table instead of freezing at the stream baseline (audit I5).
     /// Failure is logged only: the next inventory baseline recomputes the flag.
@@ -2014,7 +2032,20 @@ impl ProductionProcessHost {
             }
         }
         let folder = self.root.join("threads").join(session_id);
-        let report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+        let mut report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+        // Damage is believed only when a second look agrees with the first (the rule of
+        // `damage_confirmed`): one unlocked read can straddle another process's repair and an
+        // append and show a record that never existed (O-final n3).
+        if let Some(first) = report.corrupt.first().cloned() {
+            std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
+            let again = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+            let truncated = report.truncated_bytes + again.truncated_bytes;
+            if again.corrupt.first() != Some(&first) {
+                // Not confirmed: the second look is the truth now.
+                report = again;
+            }
+            report.truncated_bytes = truncated;
+        }
         if let Some((file, reason)) = report.corrupt.first() {
             let reason = format!("{file}: {reason}");
             eprintln!("process-host-hydrate-quarantined: session={session_id} {reason}");
@@ -4729,22 +4760,7 @@ fn worker_reader(
             Ok(WorkerMessage::Appended(_)) => {
                 if process_key != session_id {
                     if let Some(owner) = owner.upgrade() {
-                        let streams = owner
-                            .streams
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner)
-                            .clone();
-                        if let Some(streams) = streams {
-                            if let Some(line) = ledger.file_name().and_then(|name| name.to_str()) {
-                                if let Err(error) =
-                                    streams.reconcile_actionables(&session_id, Some(line))
-                                {
-                                    eprintln!(
-                                        "process-host-publish-child-actionables-failed: {error}"
-                                    );
-                                }
-                            }
-                        }
+                        owner.reconcile_child_line(&session_id, &ledger);
                     }
                 }
                 if process_key == session_id {
@@ -4886,6 +4902,11 @@ fn worker_reader(
         drop(workers);
         owner.workers_changed.notify_all();
         owner.publish_session_status(&session_id);
+        // A child worker that died between a durable append and its `Appended` message left a
+        // request nobody announced: look at its line once more (O-final n1).
+        if process_key != session_id {
+            owner.reconcile_child_line(&session_id, &ledger);
+        }
         owner.start_pending_workers();
         if !owner.draining.load(Ordering::Acquire) {
             let failure = if exited_cleanly {
@@ -11122,6 +11143,30 @@ mod tests {
         assert!(
             streams.actionable_ids_for_test().is_empty(),
             "an answered hold leaves the baseline"
+        );
+        host.shutdown();
+    }
+
+    /// O-final n1: a child worker that dies between a durable append and its `Appended` message
+    /// leaves a request no doorbell announced; the exit path looks at its line once more.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_child_exit_announces_a_hold_no_doorbell_announced() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000d2";
+        let child = "018f0000-0000-7000-8000-0000000000d3";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        append_test_events(&child_path, vec![child_request_event()]);
+        assert!(
+            streams.actionable_ids_for_test().is_empty(),
+            "nothing announced it: the verified view is exact and no message arrived"
+        );
+        host.reconcile_child_line(session, &child_path);
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)]
         );
         host.shutdown();
     }
