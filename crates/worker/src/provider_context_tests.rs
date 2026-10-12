@@ -2420,6 +2420,33 @@ fn production_task_creates_launches_waits_and_pairs_child_once() {
         ["assistant", "tool"],
         "child_result is the sole provider-visible result for a spawned call"
     );
+    // Nothing may sit between the call and its output: the item right after the
+    // assistant's call is that call's own result (F146-D1).
+    let rendered = context
+        .items
+        .iter()
+        .map(|item| serde_json::to_value(item).expect("rendered item"))
+        .collect::<Vec<_>>();
+    let carries_call = |item: &Value| {
+        item.get("content")
+            .and_then(Value::as_array)
+            .is_some_and(|content| {
+                content
+                    .iter()
+                    .any(|block| block.get("call_id").and_then(Value::as_str) == Some("call-task"))
+            })
+    };
+    let call_position = rendered
+        .iter()
+        .position(|item| carries_call(item) && item["role"] == "assistant")
+        .expect("assistant call item");
+    let next = rendered
+        .get(call_position + 1)
+        .expect("an item follows the call");
+    assert!(
+        carries_call(next) && next["role"] == "tool",
+        "the item right after the call must be that call's output: {next}"
+    );
     assert!(String::from_utf8(output).unwrap().contains("launch_child"));
 
     let consumer = provider::ToolCall {
@@ -7405,5 +7432,482 @@ fn remote_task_continuation_parks_when_polls_slow_and_resumes_when_due() {
             .lifecycle
             .continuation_wait_until
             .is_none()
+    );
+}
+
+/// The DeepSeek Responses pairing rule observed in production: a
+/// `function_call` must be answered by its own `function_call_output` before
+/// any message item, and an output needs a preceding call. Reasoning items and
+/// sibling calls of one batch may sit between a call and its output.
+fn deepseek_pairing_violation(input: &[Value]) -> Result<(), String> {
+    let mut pending: Vec<String> = Vec::new();
+    for item in input {
+        match item.get("type").and_then(Value::as_str) {
+            Some("function_call") => {
+                pending.push(item["call_id"].as_str().unwrap_or_default().to_owned());
+            }
+            Some("function_call_output") => {
+                let id = item["call_id"].as_str().unwrap_or_default();
+                let Some(position) = pending.iter().position(|call| call == id) else {
+                    return Err(format!(
+                        "http_400 invalid_request_error: No tool call found for tool output {id}"
+                    ));
+                };
+                pending.remove(position);
+            }
+            Some("reasoning") => {}
+            _ => {
+                if let Some(call) = pending.first() {
+                    return Err(format!(
+                        "http_400 invalid_request_error: No tool output found for tool call {call}"
+                    ));
+                }
+            }
+        }
+    }
+    match pending.first() {
+        Some(call) => Err(format!(
+            "http_400 invalid_request_error: No tool output found for tool call {call}"
+        )),
+        None => Ok(()),
+    }
+}
+
+#[test]
+fn deepseek_pairing_rule_rejects_a_message_between_call_and_output() {
+    let call = json!({"type":"function_call","call_id":"c1","name":"subagent","arguments":"{}"});
+    let output = json!({"type":"function_call_output","call_id":"c1","output":"ok"});
+    let message = json!({"type":"message","role":"user","content":[]});
+    assert!(deepseek_pairing_violation(&[message.clone(), call.clone(), output.clone()]).is_ok());
+    assert!(
+        deepseek_pairing_violation(&[call.clone(), message.clone(), output.clone()])
+            .unwrap_err()
+            .contains("No tool output found for tool call c1")
+    );
+    assert!(
+        deepseek_pairing_violation(std::slice::from_ref(&call))
+            .unwrap_err()
+            .contains("No tool output found")
+    );
+    assert!(
+        deepseek_pairing_violation(&[output])
+            .unwrap_err()
+            .contains("No tool call found")
+    );
+}
+
+/// The next DeepSeek Responses request body's `input`, built from the ledger
+/// exactly as the worker builds it for the following provider attempt.
+fn deepseek_next_request_input(ledger: &LockedLedger) -> (Vec<Value>, Vec<u64>) {
+    let context = project_provider_context(ledger, "e1", DialectId::DeepseekResponsesV1, 2)
+        .expect("parent projection after the child completed");
+    let admits = context.admits.clone();
+    let provider_config = Provider {
+        id: "deepseek".to_owned(),
+        name: Some("DeepSeek".to_owned()),
+        adapter: "responses".to_owned(),
+        dialect: "deepseek_responses_v1".to_owned(),
+        endpoint_owner: "deepseek".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision:
+            "deepseek-direct-responses-v4-flash-2026-07-31+function-json-schema-strict-v1"
+                .to_owned(),
+        endpoint: "https://api.deepseek.com".to_owned(),
+        credential_key: None,
+        models: Vec::new(),
+    };
+    let model = Model {
+        id: "deepseek-v4-flash".to_owned(),
+        profile: "deepseek_responses_v1:deepseek-v4-flash".to_owned(),
+        enabled: true,
+        context_window_tokens: 100_000,
+        compact_trigger_tokens: 90_000,
+    };
+    let resolved =
+        provider::resolve_profile(&provider_config, &model).expect("proved DeepSeek profile");
+    let epoch = provider::epoch_profile(&resolved, "system", None).expect("DeepSeek epoch profile");
+    let prepared = prepare(&PrepareInput {
+        attempt_id: "after-child".to_owned(),
+        target: resolved.target,
+        endpoint: provider_config.endpoint,
+        epoch_profile: epoch,
+        continuation_id: context.continuation_id,
+        rendered_items: context.items,
+        tool_catalog: ijson(json!([])).expect("empty tool catalog"),
+        stream: true,
+    })
+    .expect("DeepSeek next request");
+    let body: Value = serde_json::from_slice(&prepared.body).expect("request JSON");
+    (
+        body["input"].as_array().expect("input array").clone(),
+        admits,
+    )
+}
+
+/// The call's own output must be the very next input item after the call.
+fn assert_output_follows_call_directly(input: &[Value], call_id: &str) {
+    let position = input
+        .iter()
+        .position(|item| {
+            item.get("type").and_then(Value::as_str) == Some("function_call")
+                && item.get("call_id").and_then(Value::as_str) == Some(call_id)
+        })
+        .unwrap_or_else(|| panic!("request lacks function_call {call_id}: {input:?}"));
+    let next = input
+        .get(position + 1)
+        .unwrap_or_else(|| panic!("function_call {call_id} has no following item"));
+    assert_eq!(
+        next.get("type").and_then(Value::as_str),
+        Some("function_call_output"),
+        "the item right after the call must be its output: {next}"
+    );
+    assert_eq!(
+        next.get("call_id").and_then(Value::as_str),
+        Some(call_id),
+        "the output right after the call must answer that call: {next}"
+    );
+}
+
+/// A parent ledger where the model called `tool` on DeepSeek Responses and the
+/// call was approved; the response is sealed with the provider's
+/// `function_call` item, as in a real thread.
+fn deepseek_spawn_call_ledger(
+    call: &provider::ToolCall,
+) -> (tempfile::TempDir, LockedLedger, Options) {
+    let (directory, mut ledger) = context_ledger("deepseek_responses_v1", false);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "spawn-attempt");
+    append_test_call(
+        &mut ledger,
+        "spawn-attempt",
+        &call.call_id,
+        &call.name,
+        call.arguments.clone(),
+    );
+    let fragment = json!([{
+        "arguments": serde_json::to_string(&call.arguments).unwrap(),
+        "call_id": call.call_id, "id":"fc-1", "name":call.name,
+        "status":"completed", "type":"function_call"
+    }]);
+    let output = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"output",
+        "ts":"2026-08-27T09:00:03.000Z","attempt":"spawn-attempt","content":[],
+        "final_answer":false,
+        "sealed":{"version":1,"adapter":"deepseek_responses_v1",
+            "fragments":serde_json::to_string(&fragment).unwrap()},
+        "usage":{"availability":"unavailable"}
+    }))
+    .expect("output");
+    ledger
+        .append_contract(output, BarrierContext::default())
+        .expect("output barrier");
+    (directory, ledger, options)
+}
+
+/// Runs the production spawn transaction for an approved `call` against a fake
+/// child that reports and settles; returns the child ledger file name.
+fn run_spawned_child_to_completion(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    directory: &std::path::Path,
+    call: &provider::ToolCall,
+) -> String {
+    let profile = tool_profile(directory, &[call.name.as_str()]);
+    let approval = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"approval_request",
+        "ts":options.timestamp,"call":call.call_id,"scope":"destructive",
+        "question":{"tool":call.name}
+    }))
+    .expect("approval request");
+    ledger
+        .append_contract(approval, BarrierContext::default())
+        .expect("approval request barrier");
+    let answer = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"approval_response",
+        "ts":options.timestamp,"call":call.call_id,"grant":true,
+        "origin_key":"approve-spawn","origin_tuple":{
+            "principal":"p","client":"cli","target":"t",
+            "op":"answer","key":"approve-spawn"
+        }
+    }))
+    .expect("approval response");
+    ledger
+        .append_contract(answer, BarrierContext::default())
+        .expect("approval response barrier");
+
+    // tool_execution_started, then state{delegation}, then spawn.
+    let spawn_seq = ledger.next_seq() + 2;
+    let (child, spawn_id) = child_identity(
+        "018f0000-0000-7000-8000-000000000003",
+        &call.call_id,
+        spawn_seq,
+    );
+    let request = ToolControl::new(
+        "018f0000-0000-7000-8000-000000000003",
+        "018f0000-0000-7000-8000-000000000003",
+        2,
+        call.call_id.clone(),
+        call.name.clone(),
+        IJsonValue::parse(&serde_json::to_vec(&call.arguments).unwrap()).unwrap(),
+    )
+    .expect("tool control request");
+    let control = ToolControlResult::success(
+        request.request_id,
+        call.call_id.clone(),
+        IJsonValue::parse(
+            &serde_json::to_vec(&json!({"child":child,"spawn_id":spawn_id})).unwrap(),
+        )
+        .unwrap(),
+    );
+    let launch = LaunchResult {
+        child: child.clone(),
+        spawn_id: spawn_id.clone(),
+        ok: true,
+        error: None,
+    };
+    let mut replies = [
+        Ok(
+            String::from_utf8(worker_control::encode_tool_control_result(&control).unwrap())
+                .unwrap(),
+        ),
+        Ok(String::from_utf8(encode_line("launch_result", &launch).unwrap()).unwrap()),
+    ]
+    .into_iter();
+
+    let folder = ledger.path().parent().unwrap().to_path_buf();
+    let child_file = folder.join(format!("{child}.jsonl"));
+    let child_writer = std::thread::spawn(move || {
+        for _ in 0..400 {
+            if child_file.exists() {
+                let mut child_ledger = match LockedLedger::open(&child_file, 1) {
+                    Ok(ledger) => ledger,
+                    Err(StoreError::Busy) => {
+                        std::thread::sleep(Duration::from_millis(5));
+                        continue;
+                    }
+                    Err(error) => panic!("child open failed: {error}"),
+                };
+                let system = AssetStore::new(child_file.parent().unwrap().join("assets"))
+                    .unwrap()
+                    .publish(b"{}")
+                    .unwrap();
+                for value in [
+                    json!({"v":1,"seq":2,"turn":1,"kind":"turn_open","ts":"2026-08-27T09:00:04.000Z","trigger":"genesis"}),
+                    json!({"v":1,"seq":3,"kind":"epoch","ts":"2026-08-27T09:00:04.000Z","id":"child-epoch","reason":"initial","adapter":"anthropic_messages_v1","model":"m","system":{"asset":system.asset,"digest":"d"},"tools":{"asset":"sha256-td","digest":"td"},"renderer":1}),
+                    json!({"v":1,"seq":4,"turn":1,"kind":"attempt","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096},"ts":"2026-08-27T09:00:04.000Z","attempt":"child-attempt","epoch":"child-epoch","wire_digest":"w","admits":[]}),
+                    json!({"v":1,"seq":5,"turn":1,"kind":"tool_call","ts":"2026-08-27T09:00:04.000Z","attempt":"child-attempt","call":"report-call","name":"report","args":{"result":"user said yes"},"source":"provider"}),
+                    json!({"v":1,"seq":6,"turn":1,"kind":"output","ts":"2026-08-27T09:00:04.000Z","attempt":"child-attempt","content":[],"sealed":{"version":1,"adapter":"anthropic_messages_v1","fragments":"[]"},"usage":{"availability":"unavailable"}}),
+                    json!({"v":1,"seq":7,"turn":1,"kind":"tool_result","ts":"2026-08-27T09:00:04.000Z","call":"report-call","outcome":"ok","content":[{"type":"text","text":"delivered"}]}),
+                    json!({"v":1,"seq":8,"turn":1,"kind":"settle","ts":"2026-08-27T09:00:04.000Z","outcome":"completed"}),
+                ] {
+                    child_ledger
+                        .append_contract(make_event(value).unwrap(), BarrierContext::default())
+                        .unwrap();
+                }
+                return;
+            }
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        panic!("child genesis was never published");
+    });
+
+    let cancellation = RuntimeCancellation::default();
+    let mut stdout = Vec::new();
+    assert!(
+        !execute_provider_tool_calls(
+            ledger,
+            ToolCallBatch {
+                options,
+                profile: &profile,
+                selected: Selected { version: 2 },
+                attempt: "spawn-attempt",
+                turn: 2,
+                calls: std::slice::from_ref(call),
+                cancellation: &cancellation,
+            },
+            None,
+            &mut replies,
+            &mut stdout,
+        )
+        .expect("spawn transaction")
+    );
+    child_writer.join().unwrap();
+    format!("{child}.jsonl")
+}
+
+/// F146-D1: after a spawned child completes, the parent's next DeepSeek request
+/// must keep the call and its output adjacent, and the child must still receive
+/// its assignment from the seed.
+fn assert_spawned_child_completion_keeps_next_request_paired(call: provider::ToolCall) {
+    let (directory, mut ledger, options) = deepseek_spawn_call_ledger(&call);
+    let child_file =
+        run_spawned_child_to_completion(&mut ledger, &options, directory.path(), &call);
+
+    // The writer still records the delegation between the call and child_result.
+    let kinds = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| event.seq() > 11)
+        .map(|event| match event.string_field("subkind") {
+            Some(sub) => format!("{}:{sub}", event.kind().as_str()),
+            None => event.kind().as_str().to_owned(),
+        })
+        .collect::<Vec<_>>();
+    assert_eq!(
+        kinds,
+        [
+            "attempt",
+            "tool_call",
+            "output",
+            "approval_request",
+            "approval_response",
+            "tool_execution_started",
+            "state:delegation",
+            "spawn",
+            "child_result",
+            "tool_execution_started",
+            "tool_result"
+        ]
+    );
+
+    let (input, admits) = deepseek_next_request_input(&ledger);
+    let child_result_seq = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .find(|event| *event.kind() == EventKind::ChildResult)
+        .map(Event::seq)
+        .expect("child_result");
+    deepseek_pairing_violation(&input).expect("every call must be paired with its output");
+    assert_output_follows_call_directly(&input, &call.call_id);
+    assert_eq!(
+        admits,
+        [child_result_seq],
+        "only the child_result is a pending host fact; the delegation record is not"
+    );
+
+    // The assignment reaches the child through its seed snapshot.
+    let child_ledger = LockedLedger::open(ledger.path().parent().unwrap().join(child_file), 1)
+        .expect("child ledger");
+    let seed = seed_provider_items(&child_ledger).expect("child seed");
+    assert_eq!(seed.len(), 1);
+    let assignment = serde_json::to_value(&seed[0]).unwrap();
+    assert_eq!(assignment["role"], "user");
+    assert!(
+        assignment["content"][0]["text"]
+            .as_str()
+            .unwrap()
+            .contains("You are the worker assigned")
+    );
+    let delegation: Value =
+        serde_json::from_str(assignment["content"][1]["text"].as_str().unwrap()).unwrap();
+    assert_eq!(delegation["delegation"], call.name);
+    assert_eq!(delegation["arguments"], call.arguments);
+}
+
+#[test]
+fn subagent_completion_keeps_the_next_deepseek_request_paired() {
+    assert_spawned_child_completion_keeps_next_request_paired(provider::ToolCall {
+        call_id: "call_00_D1SUB".to_owned(),
+        name: "subagent".to_owned(),
+        arguments: json!({
+            "brief":"ask the user one question and report the answer",
+            "report_back_session_id":"018f0000-0000-7000-8000-000000000003"
+        }),
+    });
+}
+
+#[test]
+fn task_completion_keeps_the_next_deepseek_request_paired() {
+    assert_spawned_child_completion_keeps_next_request_paired(provider::ToolCall {
+        call_id: "call_00_D1TASK".to_owned(),
+        name: "task".to_owned(),
+        arguments: json!({
+            "task_name":"audit","goal":"find defects",
+            "instructions":"inspect inputs","input_sources":[],
+            "output":{"mode":"inline","format":"text","name":"result","path":"","contract":"findings"}
+        }),
+    });
+}
+
+/// A thread stuck by F146-D1 holds `state{delegation}` between the spawning
+/// call and its `child_result` in the durable ledger. The ledger is not
+/// rewritten; the projection is, so the next request heals.
+#[test]
+fn ledger_stuck_with_delegation_between_call_and_child_result_projects_paired() {
+    let call = provider::ToolCall {
+        call_id: "call_00_STUCK".to_owned(),
+        name: "subagent".to_owned(),
+        arguments: json!({
+            "brief":"ask the user one question and report the answer",
+            "report_back_session_id":"018f0000-0000-7000-8000-000000000003"
+        }),
+    };
+    let (_directory, mut ledger, options) = deepseek_spawn_call_ledger(&call);
+    let append = |ledger: &mut LockedLedger, value: Value| {
+        ledger
+            .append_contract(make_event(value).expect("event"), BarrierContext::default())
+            .expect("append");
+    };
+    let started = |ledger: &LockedLedger| {
+        json!({"v":1,"seq":ledger.next_seq(),"turn":2,"kind":"tool_execution_started",
+            "ts":options.timestamp,"call":call.call_id})
+    };
+    let value = started(&ledger);
+    append(&mut ledger, value);
+    let delegation_seq = ledger.next_seq();
+    append(
+        &mut ledger,
+        json!({"v":1,"seq":delegation_seq,"turn":2,"kind":"state","ts":options.timestamp,
+            "subkind":"delegation","payload":{"call":call.call_id,"name":call.name,
+                "invocation":call.arguments,"resolved_inputs":[]}}),
+    );
+    let spawn_seq = ledger.next_seq();
+    append(
+        &mut ledger,
+        json!({"v":1,"seq":spawn_seq,"turn":2,"kind":"spawn","ts":options.timestamp,
+            "child":"stuck-child.jsonl","call":call.call_id,"spawn_id":"spawn-stuck",
+            "resume":{"bounded":3},"seed":{"kinds":["state"]}}),
+    );
+    let child_result_seq = ledger.next_seq();
+    append(
+        &mut ledger,
+        json!({"v":1,"seq":child_result_seq,"turn":2,"kind":"child_result",
+            "ts":options.timestamp,"call":call.call_id,"child":"stuck-child.jsonl",
+            "spawn_id":"spawn-stuck","outcome":"completed","summary":"user said yes"}),
+    );
+    let value = started(&ledger);
+    append(&mut ledger, value);
+    let result_seq = ledger.next_seq();
+    append(
+        &mut ledger,
+        json!({"v":1,"seq":result_seq,"turn":2,"kind":"tool_result","ts":options.timestamp,
+            "call":call.call_id,"outcome":"ok","content":[{"type":"text","text":"spawned"}]}),
+    );
+
+    let output_seq = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .find(|event| *event.kind() == EventKind::Output && event.turn() == Some(2))
+        .map(Event::seq)
+        .expect("sealed output");
+    assert!(
+        output_seq < delegation_seq && delegation_seq < child_result_seq,
+        "fixture is the broken shape: delegation between the call and its child_result"
+    );
+    let (input, admits) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("stuck ledger renders a paired request");
+    assert_output_follows_call_directly(&input, &call.call_id);
+    assert_eq!(admits, [child_result_seq]);
+    assert!(
+        !input
+            .iter()
+            .any(|item| item.to_string().contains("delegation")),
+        "the parent request must not carry the child's assignment record: {input:?}"
     );
 }

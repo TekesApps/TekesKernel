@@ -6,6 +6,23 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Proposed version: 0.4.1 (patch; no ledger or wire format change).
+
+### Fixed
+- **A completed `subagent`/`task` child no longer breaks the parent's next provider request.**
+  The parent's durable `state{subkind:"delegation"}` record is model-visible by default and is
+  written between the spawning `tool_call` and its `child_result`, so the provider-context
+  projection rendered it as a user message between the call and its output. DeepSeek rejects
+  that with `http_400 invalid_request_error: No tool output found for tool call <id>`, and the
+  thread then failed every turn because each attempt re-rendered the same history. The
+  projection now skips `delegation` state rows when it builds the parent's provider context.
+  The child still receives its assignment from its seed snapshot (`seed_provider_items`), the
+  ledger format and writer are unchanged, and threads already stuck on this shape recover on
+  their next request because the context is rebuilt from the ledger. Present since 0.3.0.
+  Tests: a fake DeepSeek pairing rule over the real spawn transaction for both `subagent` and
+  `task`, a ledger already in the broken state, and an adjacency assertion in
+  `production_task_creates_launches_waits_and_pairs_child_once`.
+
 ## 0.4.0 — 2026-10-12
 
 ### Changed
