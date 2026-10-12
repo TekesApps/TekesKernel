@@ -2376,8 +2376,8 @@ mod tests {
                 "2026-10-04T00:00:00.000Z",
             );
             let cleaned = cleaner.join().unwrap();
-            assert!(forked.is_ok(), "fork must not fail: {forked:?}");
-            assert!(cleaned.is_ok(), "cleanup must not fail: {cleaned:?}");
+            assert!(forked.is_ok(), "fork must not fail");
+            assert!(cleaned.is_ok(), "cleanup must not fail");
             assert!(!tombstone.exists());
         }
     }
