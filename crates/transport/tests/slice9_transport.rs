@@ -1277,61 +1277,43 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
     task.abort();
 }
 
-/// O-final m7 / D1: a thread that cannot be opened (the session limit, a quarantine) is a 500
-/// `internal-error` with empty details on HTTP, not the 503 `not-ready` of an unready Kernel.
-/// The typed forms stay on the streams; the quarantine reason stays off the HTTP wire.
+/// O-final m7 / D1: on HTTP a thread that cannot be opened (the session limit, a quarantine) is
+/// answered like any other host failure, with the 503 `not-ready` of the closed carrier table;
+/// the typed forms exist on the streams only, and no host detail reaches the HTTP wire.
 #[tokio::test]
-async fn thread_open_failures_are_a_500_internal_error_on_http() {
+async fn thread_open_failures_are_the_closed_tables_503_on_http() {
     let body = serde_json::to_vec(&json!({
         "type": "client-request", "rpcId": "typed-1",
         "method": "session.prompt", "payload": {"sessionId": "50aa8d4e-9305-49d1-837e-16d2e67f31b0", "content": []}
     }))
     .expect("request");
-    let limit = TransportServer::new(
-        Arc::new(
-            MockHost::new(true).failing_unary(|| HostFailure::ActiveSessionLimit { limit: 256 }),
+    type Failure = (fn() -> HostFailure, &'static str);
+    let failures: [Failure; 3] = [
+        (|| HostFailure::ActiveSessionLimit { limit: 256 }, "limit"),
+        (
+            || HostFailure::Quarantined("main.jsonl: bad record".to_owned()),
+            "quarantine",
         ),
-        config(),
-    )
-    .expect("server")
-    .router()
-    .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
-    .await
-    .expect("limit response");
-    assert_eq!(limit.status(), StatusCode::INTERNAL_SERVER_ERROR);
-    let value = response_json(limit).await;
-    assert_eq!(value["error"]["code"], "internal-error");
-    assert_eq!(value["error"]["details"], json!({}));
-
-    let quarantined = TransportServer::new(
-        Arc::new(
-            MockHost::new(true)
-                .failing_unary(|| HostFailure::Quarantined("main.jsonl: bad record".to_owned())),
-        ),
-        config(),
-    )
-    .expect("server")
-    .router()
-    .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
-    .await
-    .expect("quarantine response");
-    assert_eq!(quarantined.status(), StatusCode::INTERNAL_SERVER_ERROR);
-    let value = response_json(quarantined).await;
-    assert_eq!(value["error"]["code"], "internal-error");
-    assert_eq!(value["error"]["details"], json!({}));
-    assert!(
-        !value.to_string().contains("bad record"),
-        "the quarantine reason stays out of the wire"
-    );
-
-    let internal = TransportServer::new(
-        Arc::new(MockHost::new(true).failing_unary(|| HostFailure::Internal("boom".to_owned()))),
-        config(),
-    )
-    .expect("server")
-    .router()
-    .oneshot(request(Method::POST, "/api/session.prompt", body))
-    .await
-    .expect("internal response");
-    assert_eq!(internal.status(), StatusCode::SERVICE_UNAVAILABLE);
+        (|| HostFailure::Internal("boom".to_owned()), "internal"),
+    ];
+    for (failure, name) in failures {
+        let response = TransportServer::new(
+            Arc::new(MockHost::new(true).failing_unary(failure)),
+            config(),
+        )
+        .expect("server")
+        .router()
+        .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
+        .await
+        .expect("response");
+        assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE, "{name}");
+        let value = response_json(response).await;
+        assert_eq!(value["error"]["code"], "not-ready", "{name}");
+        assert_eq!(value["error"]["details"], json!({}), "{name}");
+        let text = value.to_string();
+        assert!(
+            !text.contains("bad record") && !text.contains("256") && !text.contains("boom"),
+            "{name}: {text}"
+        );
+    }
 }

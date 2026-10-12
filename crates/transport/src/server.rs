@@ -1240,21 +1240,13 @@ fn host_failure(shared: &Shared, failure: HostFailure) -> (Response, &'static st
             ),
             "overloaded",
         ),
-        // A thread that cannot be opened (quarantined, or 256 sessions pinned) is a server
-        // failure of this request, not an unready Kernel: 500 `internal-error`, empty details.
-        // The typed forms (`active-session-limit {limit}`, `internal {reason:"quarantined"}`)
-        // stay on the streams (O-final m7, D1).
-        HostFailure::ActiveSessionLimit { .. } | HostFailure::Quarantined(_) => (
-            carrier_error(
-                StatusCode::INTERNAL_SERVER_ERROR,
-                "internal-error",
-                "Internal error",
-            ),
-            "internal-error",
-        ),
-        HostFailure::NotReady | HostFailure::Protocol(_) | HostFailure::Internal(_) => {
-            (unavailable(shared), unavailable_code(shared))
-        }
+        // Every other host failure, a quarantined thread and the session limit included, is
+        // the 503 of the closed carrier table; the typed forms exist on the streams only.
+        HostFailure::NotReady
+        | HostFailure::Protocol(_)
+        | HostFailure::Internal(_)
+        | HostFailure::ActiveSessionLimit { .. }
+        | HostFailure::Quarantined(_) => (unavailable(shared), unavailable_code(shared)),
     }
 }
 

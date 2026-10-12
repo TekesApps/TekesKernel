@@ -57,8 +57,6 @@ and a new stream-open error; the ledger, journal and wire formats are otherwise 
   `internal / stream-open-failed {"reason":"quarantined"}`, and it is never rewritten.
 - `active-session-limit {limit:256}` as a stream error (`conflict`) when 256 pinned sessions
   already hold the live-event registrations.
-  On HTTP routes both that failure and a quarantined thread answer `500 internal-error` with
-  empty details instead of a misleading 503 `not-ready` (no new error code or table row).
 - Diagnostics: `TEKES_KERNEL_BOOT_TRACE=1` (phase times and ledger/journal work counters on
   stderr), `TEKES_KERNEL_BOOT_PROGRESS=1` (opt-in `{"type":"boot"}` records before `ready`),
   `TEKES_KERNEL_LIST_COLD_WAIT_MS` (baseline verification budget, default 2000),
