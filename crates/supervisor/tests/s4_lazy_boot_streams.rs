@@ -778,28 +778,40 @@ fn the_control_baseline_omits_a_never_projected_thread_without_folding_it() {
     host.shutdown();
 }
 
-/// S4d (N1): the journal snapshot carries the thread's current context projections, so a client
-/// that rebaselines on it does not keep a stale usage.
-#[test]
-fn the_journal_snapshot_carries_the_context_projection() {
-    let _serial = SERIAL
-        .lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner);
-    let root = tempfile::tempdir().expect("root");
-    write_workspace(root.path());
-    let session = blank_id(800);
-    write_session_at(root.path(), &session, false);
-    let assembly = assembly(root.path());
-    let host = process_host(root.path());
-    host.attach_streams(assembly.streams().clone());
-    assembly.finish_recovery().expect("ready");
+/// ClientKit's rules for a journal snapshot (`SessionJournalSnapshot.validate()`, SessionJournalV3.swift),
+/// applied to a real `open_mux_journal` snapshot: no entry lies beyond the frozen cut, and the
+/// projections are not newer than the cut (`projectionBeyondFrozenCut`).
+fn assert_client_accepts(snapshot: &endpoint::SessionJournalSnapshot, what: &str) {
+    let through = snapshot.through_sequence;
+    for entry in &snapshot.entries {
+        assert!(
+            i64::try_from(entry.event.seq).expect("seq fits") <= through,
+            "{what}: entry seq {} is beyond throughSequence {through}",
+            entry.event.seq
+        );
+    }
+    let projections: serde_json::Value =
+        serde_json::from_slice(&snapshot.projections.canonical_bytes().expect("bytes"))
+            .expect("projections JSON");
+    let as_of = projections["asOfSeq"].as_i64().expect("asOfSeq");
+    assert!(
+        as_of <= through,
+        "{what}: projections.asOfSeq {as_of} is beyond throughSequence {through}"
+    );
+}
+
+fn open_snapshot(
+    assembly: &ProductionCarrierAssembly,
+    stream: u64,
+    session: &str,
+) -> endpoint::SessionJournalSnapshot {
     let mut journal = block_on_ready(assembly.host().open_mux_stream(
-        4,
+        stream,
         SessionStreamTarget::SessionJournal {
             address: SessionAddress {
-                session_id: session.clone(),
+                session_id: session.to_owned(),
             },
-            max_messages: 10,
+            max_messages: 50,
         },
     ))
     .expect("journal stream");
@@ -809,27 +821,96 @@ fn the_journal_snapshot_carries_the_context_projection() {
     else {
         panic!("expected a journal snapshot")
     };
-    let projections: serde_json::Value =
-        serde_json::from_slice(&snapshot.projections.canonical_bytes().expect("bytes"))
-            .expect("projections JSON");
-    let values = &projections["values"];
-    assert!(values["contextUsage"].is_object(), "{projections}");
-    assert!(values["contextDetails"].is_object(), "{projections}");
-    // it is the projection the reconcile persisted
-    let saved: serde_json::Value = serde_json::from_slice(
-        &std::fs::read(
-            root.path()
-                .join("threads")
-                .join(&session)
-                .join("context-usage.projection.json"),
-        )
-        .expect("persisted projection"),
-    )
-    .expect("saved JSON");
-    assert_eq!(values["contextUsage"], saved["value"]["contextUsage"]);
+    snapshot
+}
+
+/// S4d N1 / S4e B1: the journal snapshot carries the thread's current context projection, and it
+/// satisfies the client's frozen-cut rule -- for a thread with journal entries and for an empty
+/// one, on the first open and on a reopen after the projection moved.
+#[test]
+fn the_journal_snapshot_carries_the_context_projection_within_the_cut() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (blank, held) = (blank_id(800), blank_id(801));
+    write_session_at(root.path(), &blank, false);
+    write_session_at(root.path(), &held, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    for (n, session) in [&blank, &held].into_iter().enumerate() {
+        for round in 0..2 {
+            let snapshot = open_snapshot(&assembly, 10 + 2 * n as u64 + round, session);
+            assert_client_accepts(&snapshot, session);
+            let projections: serde_json::Value =
+                serde_json::from_slice(&snapshot.projections.canonical_bytes().expect("bytes"))
+                    .expect("projections JSON");
+            let values = &projections["values"];
+            assert!(values["contextUsage"].is_object(), "{projections}");
+            assert!(values["contextDetails"].is_object(), "{projections}");
+            // the values are the persisted ones
+            let saved: serde_json::Value = serde_json::from_slice(
+                &std::fs::read(
+                    root.path()
+                        .join("threads")
+                        .join(session)
+                        .join("context-usage.projection.json"),
+                )
+                .expect("persisted projection"),
+            )
+            .expect("saved JSON");
+            assert_eq!(values["contextUsage"], saved["value"]["contextUsage"]);
+            println!(
+                "{session} round {round}: throughSequence={} projections.asOfSeq={} persistedSequence={} entries={}",
+                snapshot.through_sequence,
+                projections["asOfSeq"],
+                saved["sequence"],
+                snapshot.entries.len()
+            );
+        }
+    }
     assert!(
-        projections["asOfSeq"].as_i64().expect("asOfSeq") >= snapshot.through_sequence,
-        "the projection is not older than the snapshot's cut"
+        !open_snapshot(&assembly, 40, &held).entries.is_empty(),
+        "the held thread has journal entries, so the entry rule is exercised"
+    );
+    host.shutdown();
+}
+
+/// E836 C3: a thread whose workspace no longer exists is not hidden from the sidebar behind
+/// the Kernel's back: the inventory baseline fails (as it always did) instead of silently
+/// dropping the row.
+#[test]
+fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (fine, orphan) = (blank_id(900), blank_id(901));
+    write_session_at(root.path(), &fine, false);
+    write_session_at(root.path(), &orphan, false);
+    let ledger = root.path().join("threads").join(&orphan).join("main.jsonl");
+    let text = std::fs::read_to_string(&ledger).expect("ledger");
+    std::fs::write(
+        &ledger,
+        text.replacen(r#""workspace":"ws""#, r#""workspace":"gone""#, 1),
+    )
+    .expect("orphan ledger");
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let opened = block_on_ready(
+        assembly
+            .host()
+            .open_mux_stream(1, SessionStreamTarget::SessionInventory),
+    );
+    assert!(
+        opened.is_err(),
+        "the orphan row is an error, not a silent omission"
     );
     host.shutdown();
 }

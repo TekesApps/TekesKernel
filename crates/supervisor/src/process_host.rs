@@ -450,6 +450,8 @@ pub struct ProductionProcessHost {
     #[cfg(test)]
     card_builds: AtomicU64,
     #[cfg(test)]
+    verify_order: Mutex<Vec<String>>,
+    #[cfg(test)]
     list_wait_override: Mutex<Option<Duration>>,
     file_observations: crate::file_observation::SessionFileObservations,
     pending_workers: Mutex<BTreeMap<String, PendingWorker>>,
@@ -846,6 +848,8 @@ impl ProductionProcessHost {
             hydrate_runs: AtomicU64::new(0),
             #[cfg(test)]
             card_builds: AtomicU64::new(0),
+            #[cfg(test)]
+            verify_order: Mutex::new(Vec::new()),
             #[cfg(test)]
             list_wait_override: Mutex::new(None),
             file_observations: crate::file_observation::SessionFileObservations::default(),
@@ -5393,10 +5397,21 @@ impl ProductionProcessHost {
                 (Arc::clone(&host), Arc::clone(&queue), Arc::clone(&finished));
             std::thread::spawn(move || {
                 loop {
-                    let next = queue
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .pop_front();
+                    let next = {
+                        let mut queue = queue
+                            .lock()
+                            .unwrap_or_else(std::sync::PoisonError::into_inner);
+                        let next = queue.pop_front();
+                        // Recorded under the queue lock, so the record is the pop order.
+                        #[cfg(test)]
+                        if let Some(id) = &next {
+                            host.verify_order
+                                .lock()
+                                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                .push(id.clone());
+                        }
+                        next
+                    };
                     let Some(id) = next else {
                         return;
                     };
@@ -10610,6 +10625,49 @@ mod tests {
             .expect("the open verifies it now");
         assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), after_list + 1);
         assert!(!host.recently_failed(broken), "success clears the backoff");
+        host.shutdown();
+    }
+
+    /// E835 N2: the List verifies the newest ledgers first, so the rows at the top of a sidebar
+    /// resolve first.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_list_verifies_the_newest_ledgers_first() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = [
+            "018f0000-0000-7000-8000-0000000000e1",
+            "018f0000-0000-7000-8000-0000000000e2",
+            "018f0000-0000-7000-8000-0000000000e3",
+            "018f0000-0000-7000-8000-0000000000e4",
+        ];
+        // modification times opposite to the id order, so id order cannot pass by accident
+        let base = std::time::SystemTime::now() - Duration::from_secs(10_000);
+        for (n, id) in ids.iter().enumerate() {
+            let folder = held_thread_on_disk(root.path(), id);
+            let file = fs::OpenOptions::new()
+                .write(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            file.set_modified(base + Duration::from_secs(1_000 * (ids.len() - n) as u64))
+                .expect("mtime");
+        }
+        let (host, _streams) = open_host(root.path());
+        host.catalog.ensure_loaded();
+        assert_eq!(
+            host.catalog.unverified(),
+            ids.iter().map(ToString::to_string).collect::<Vec<_>>(),
+            "e1 is the newest"
+        );
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        assert_eq!(
+            *host
+                .verify_order
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner),
+            ids.iter().map(ToString::to_string).collect::<Vec<_>>(),
+            "the queue is consumed newest first"
+        );
         host.shutdown();
     }
 

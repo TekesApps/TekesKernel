@@ -1447,18 +1447,8 @@ impl ProductionCarrierStreams {
             .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .filter_map(|session| {
-                let id = session.session_id.clone();
-                match inventory_row(session, &paths, &lineage) {
-                    Ok(row) => Some(row),
-                    // A session whose workspace has no usable path fails its own row only.
-                    Err(error) => {
-                        eprintln!("carrier-inventory-row-skipped: session={id} error={error}");
-                        None
-                    }
-                }
-            })
-            .collect::<Vec<_>>();
+            .map(|session| inventory_row(session, &paths, &lineage))
+            .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
         sessions.sort_by(|left, right| {
             right
                 .updated_at
@@ -1812,7 +1802,7 @@ impl ProductionCarrierStreams {
     /// The projections a journal snapshot carries: the thread's current context usage and
     /// details (from the control cache the reconcile just refreshed, else the persisted file), so
     /// a client that rebaselines on the snapshot shows the usage after a config change instead of
-    /// the value it had before. `asOfSeq` never falls behind the snapshot's cut.
+    /// the value it had before. `asOfSeq` never exceeds the snapshot's cut (the client rejects a projection beyond its frozen cut).
     fn snapshot_projections(
         &self,
         session_id: &str,
@@ -1835,7 +1825,16 @@ impl ProductionCarrierStreams {
         let mut values = json!({});
         if let Some(item) = item {
             let known: Value = serde_json::from_slice(&item.projections.canonical_bytes()?)?;
-            as_of = as_of.max(known["asOfSeq"].as_i64().unwrap_or(-1));
+            // The client rejects a snapshot whose projections are newer than its frozen cut
+            // (`projectionBeyondFrozenCut`: asOfSeq > throughSequence). The reconcile that just
+            // ran publishes the projection at journal tail + 1, so the sequence is clamped to the
+            // cut. The values are the current ones; a later projection frame carries a sequence
+            // beyond the cut and is applied (the same value is idempotent), and a frame at or
+            // below the clamped sequence is ignored.
+            as_of = known["asOfSeq"]
+                .as_i64()
+                .unwrap_or(-1)
+                .min(through_sequence);
             if known["values"].is_object() {
                 values = known["values"].clone();
             }
