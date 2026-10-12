@@ -168,7 +168,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_state` | `serde_json::to_vec` | [240](../../src/validation_writer.rs#L240) | external-constructor-callback-or-unresolved |
 | `append_state` | `invalid` | [240](../../src/validation_writer.rs#L240) | [engine::validation_writer::invalid](../../src/validation_writer.rs#L14) |
 | `append_state` | `error.to_string` | [240](../../src/validation_writer.rs#L240) | receiver-type-required |
-| `append_state` | `Event::from_value` | [241](../../src/validation_writer.rs#L241) | [schema::event::Event::from_value](../../../schema/src/event.rs#L178) |
+| `append_state` | `Event::from_value` | [241](../../src/validation_writer.rs#L241) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
 | `append_state` | `IJsonValue::parse` | [241](../../src/validation_writer.rs#L241) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `append_state` | `ledger.append` | [242](../../src/validation_writer.rs#L242) | receiver-type-required |
 | `materialize_validation_settlement` | `ledger         .projection()         .ok_or_else` | [253](../../src/validation_writer.rs#L253) | receiver-type-required |
@@ -217,5 +217,5 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `materialize_validation_settlement` | `serde_json::to_vec(&value).map_err` | [347](../../src/validation_writer.rs#L347) | receiver-type-required |
 | `materialize_validation_settlement` | `serde_json::to_vec` | [347](../../src/validation_writer.rs#L347) | external-constructor-callback-or-unresolved |
 | `materialize_validation_settlement` | `ledger.append` | [348](../../src/validation_writer.rs#L348) | receiver-type-required |
-| `materialize_validation_settlement` | `Event::from_value` | [348](../../src/validation_writer.rs#L348) | [schema::event::Event::from_value](../../../schema/src/event.rs#L178) |
+| `materialize_validation_settlement` | `Event::from_value` | [348](../../src/validation_writer.rs#L348) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
 | `materialize_validation_settlement` | `IJsonValue::parse` | [348](../../src/validation_writer.rs#L348) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |

@@ -31,7 +31,7 @@ fn production_routes_invoke_real_helper_and_enforce_workspace_authority() {
     );
     let storage = tempfile::tempdir().unwrap();
     let project = tempfile::tempdir().unwrap();
-    let management = ManagementStore::open(storage.path()).unwrap();
+    let management = ManagementStore::open_light(storage.path()).unwrap();
     let (workspace, _) = management
         .create_workspace(
             "create",

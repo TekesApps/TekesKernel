@@ -182,7 +182,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `push` | `event.seq` | [174](../../src/fold.rs#L174) | receiver-type-required |
 | `push` | `self.events.len` | [175](../../src/fold.rs#L175) | receiver-type-required |
 | `push` | `Err` | [177](../../src/fold.rs#L177), [183](../../src/fold.rs#L183), [186](../../src/fold.rs#L186) | external-constructor-callback-or-unresolved |
-| `push` | `SchemaError::event` | [177](../../src/fold.rs#L177), [183](../../src/fold.rs#L183), [186](../../src/fold.rs#L186) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `push` | `SchemaError::event` | [177](../../src/fold.rs#L177), [183](../../src/fold.rs#L183), [186](../../src/fold.rs#L186) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `push` | `Some` | [178](../../src/fold.rs#L178), [183](../../src/fold.rs#L183), [187](../../src/fold.rs#L187) | external-constructor-callback-or-unresolved |
 | `push` | `self.apply_reader_gate` | [192](../../src/fold.rs#L192) | [schema::fold::LedgerValidator::apply_reader_gate](../../src/fold.rs#L367) |
 | `push` | `self.validate_backward_references` | [193](../../src/fold.rs#L193) | [schema::fold::LedgerValidator::validate_backward_references](../../src/fold.rs#L390) |
@@ -291,9 +291,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_backward_references` | `event.seq` | [391](../../src/fold.rs#L391) | receiver-type-required |
 | `validate_backward_references` | `event.object` | [392](../../src/fold.rs#L392) | receiver-type-required |
 | `validate_backward_references` | `object.contains_key` | [394](../../src/fold.rs#L394) | receiver-type-required |
-| `validate_backward_references` | `ranges` | [395](../../src/fold.rs#L395), [408](../../src/fold.rs#L408), [441](../../src/fold.rs#L441) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `validate_backward_references` | `ranges` | [395](../../src/fold.rs#L395), [408](../../src/fold.rs#L408), [441](../../src/fold.rs#L441) | [schema::event::ranges](../../src/event.rs#L1436) |
 | `validate_backward_references` | `Err` | [397](../../src/fold.rs#L397), [410](../../src/fold.rs#L410), [421](../../src/fold.rs#L421), [435](../../src/fold.rs#L435), [443](../../src/fold.rs#L443), [456](../../src/fold.rs#L456), [469](../../src/fold.rs#L469) | external-constructor-callback-or-unresolved |
-| `validate_backward_references` | `SchemaError::constraint` | [397](../../src/fold.rs#L397), [410](../../src/fold.rs#L410), [421](../../src/fold.rs#L421), [435](../../src/fold.rs#L435), [443](../../src/fold.rs#L443), [456](../../src/fold.rs#L456), [469](../../src/fold.rs#L469) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `validate_backward_references` | `SchemaError::constraint` | [397](../../src/fold.rs#L397), [410](../../src/fold.rs#L410), [421](../../src/fold.rs#L421), [435](../../src/fold.rs#L435), [443](../../src/fold.rs#L443), [456](../../src/fold.rs#L456), [469](../../src/fold.rs#L469) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `validate_backward_references` | `event.kind` | [406](../../src/fold.rs#L406) | receiver-type-required |
 | `validate_backward_references` | `value_u64` | [419](../../src/fold.rs#L419) | [schema::fold::value_u64](../../src/fold.rs#L1106) |
 | `validate_backward_references` | `value_str` | [429](../../src/fold.rs#L429) | [schema::fold::value_str](../../src/fold.rs#L1095) |
@@ -313,7 +313,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_turn_allocation` | `Ok` | [485](../../src/fold.rs#L485), [507](../../src/fold.rs#L507), [523](../../src/fold.rs#L523) | external-constructor-callback-or-unresolved |
 | `validate_turn_allocation` | `self.latest_turn.map_or` | [488](../../src/fold.rs#L488) | receiver-type-required |
 | `validate_turn_allocation` | `Err` | [490](../../src/fold.rs#L490), [498](../../src/fold.rs#L498), [510](../../src/fold.rs#L510), [517](../../src/fold.rs#L517) | external-constructor-callback-or-unresolved |
-| `validate_turn_allocation` | `SchemaError::constraint` | [490](../../src/fold.rs#L490), [498](../../src/fold.rs#L498), [510](../../src/fold.rs#L510), [517](../../src/fold.rs#L517) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `validate_turn_allocation` | `SchemaError::constraint` | [490](../../src/fold.rs#L490), [498](../../src/fold.rs#L498), [510](../../src/fold.rs#L510), [517](../../src/fold.rs#L517) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `validate_turn_allocation` | `self.settled_turns.contains` | [497](../../src/fold.rs#L497), [516](../../src/fold.rs#L516) | receiver-type-required |
 | `validate_turn_allocation` | `self.validate_turn_trigger` | [505](../../src/fold.rs#L505) | [schema::fold::LedgerValidator::validate_turn_trigger](../../src/fold.rs#L526) |
 | `validate_turn_allocation` | `Some` | [506](../../src/fold.rs#L506), [509](../../src/fold.rs#L509) | external-constructor-callback-or-unresolved |
@@ -326,7 +326,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_turn_trigger` | `trigger.as_str` | [531](../../src/fold.rs#L531) | receiver-type-required |
 | `validate_turn_trigger` | `Some` | [531](../../src/fold.rs#L531) | external-constructor-callback-or-unresolved |
 | `validate_turn_trigger` | `Err` | [533](../../src/fold.rs#L533), [555](../../src/fold.rs#L555), [572](../../src/fold.rs#L572), [584](../../src/fold.rs#L584), [591](../../src/fold.rs#L591), [607](../../src/fold.rs#L607), [616](../../src/fold.rs#L616) | external-constructor-callback-or-unresolved |
-| `validate_turn_trigger` | `SchemaError::constraint` | [533](../../src/fold.rs#L533), [555](../../src/fold.rs#L555), [572](../../src/fold.rs#L572), [584](../../src/fold.rs#L584), [591](../../src/fold.rs#L591), [600](../../src/fold.rs#L600), [607](../../src/fold.rs#L607), [616](../../src/fold.rs#L616) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `validate_turn_trigger` | `SchemaError::constraint` | [533](../../src/fold.rs#L533), [555](../../src/fold.rs#L555), [572](../../src/fold.rs#L572), [584](../../src/fold.rs#L584), [591](../../src/fold.rs#L591), [600](../../src/fold.rs#L600), [607](../../src/fold.rs#L607), [616](../../src/fold.rs#L616) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `validate_turn_trigger` | `Ok` | [539](../../src/fold.rs#L539), [561](../../src/fold.rs#L561), [629](../../src/fold.rs#L629) | external-constructor-callback-or-unresolved |
 | `validate_turn_trigger` | `trigger.get("goal").is_some` | [541](../../src/fold.rs#L541) | receiver-type-required |
 | `validate_turn_trigger` | `trigger.get` | [541](../../src/fold.rs#L541) | receiver-type-required |
@@ -369,7 +369,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_kind_relations` | `self.epochs.insert(id, seq).is_some` | [655](../../src/fold.rs#L655) | receiver-type-required |
 | `validate_kind_relations` | `self.epochs.insert` | [655](../../src/fold.rs#L655) | receiver-type-required |
 | `validate_kind_relations` | `Err` | [656](../../src/fold.rs#L656), [670](../../src/fold.rs#L670), [685](../../src/fold.rs#L685), [700](../../src/fold.rs#L700), [712](../../src/fold.rs#L712), [718](../../src/fold.rs#L718), [729](../../src/fold.rs#L729), [747](../../src/fold.rs#L747), [757](../../src/fold.rs#L757), [772](../../src/fold.rs#L772), [783](../../src/fold.rs#L783), [789](../../src/fold.rs#L789), [836](../../src/fold.rs#L836), [849](../../src/fold.rs#L849), [861](../../src/fold.rs#L861), [890](../../src/fold.rs#L890) | external-constructor-callback-or-unresolved |
-| `validate_kind_relations` | `SchemaError::constraint` | [656](../../src/fold.rs#L656), [668](../../src/fold.rs#L668), [670](../../src/fold.rs#L670), [683](../../src/fold.rs#L683), [685](../../src/fold.rs#L685), [698](../../src/fold.rs#L698), [700](../../src/fold.rs#L700), [712](../../src/fold.rs#L712), [718](../../src/fold.rs#L718), [729](../../src/fold.rs#L729), [747](../../src/fold.rs#L747), [757](../../src/fold.rs#L757), [772](../../src/fold.rs#L772), [783](../../src/fold.rs#L783), [789](../../src/fold.rs#L789), [836](../../src/fold.rs#L836), [846](../../src/fold.rs#L846), [849](../../src/fold.rs#L849), [861](../../src/fold.rs#L861), [890](../../src/fold.rs#L890) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `validate_kind_relations` | `SchemaError::constraint` | [656](../../src/fold.rs#L656), [668](../../src/fold.rs#L668), [670](../../src/fold.rs#L670), [683](../../src/fold.rs#L683), [685](../../src/fold.rs#L685), [698](../../src/fold.rs#L698), [700](../../src/fold.rs#L700), [712](../../src/fold.rs#L712), [718](../../src/fold.rs#L718), [729](../../src/fold.rs#L729), [747](../../src/fold.rs#L747), [757](../../src/fold.rs#L757), [772](../../src/fold.rs#L772), [783](../../src/fold.rs#L783), [789](../../src/fold.rs#L789), [836](../../src/fold.rs#L836), [846](../../src/fold.rs#L846), [849](../../src/fold.rs#L849), [861](../../src/fold.rs#L861), [890](../../src/fold.rs#L890) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `validate_kind_relations` | `self.open_attempt` | [661](../../src/fold.rs#L661) | [schema::fold::LedgerValidator::open_attempt](../../src/fold.rs#L908) |
 | `validate_kind_relations` | `self                     .attempts                     .get_mut(id)                     .ok_or_else` | [665](../../src/fold.rs#L665), [680](../../src/fold.rs#L680) | receiver-type-required |
 | `validate_kind_relations` | `self                     .attempts                     .get_mut` | [665](../../src/fold.rs#L665), [680](../../src/fold.rs#L680) | receiver-type-required |
@@ -399,7 +399,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_kind_relations` | `object                         .contains_key("supersedes")                         .then(&#124;&#124; ranges(object, "supersedes", seq))                         .transpose` | [764](../../src/fold.rs#L764) | receiver-type-required |
 | `validate_kind_relations` | `object                         .contains_key("supersedes")                         .then` | [764](../../src/fold.rs#L764) | receiver-type-required |
 | `validate_kind_relations` | `object                         .contains_key` | [764](../../src/fold.rs#L764) | receiver-type-required |
-| `validate_kind_relations` | `ranges` | [766](../../src/fold.rs#L766) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `validate_kind_relations` | `ranges` | [766](../../src/fold.rs#L766) | [schema::event::ranges](../../src/event.rs#L1436) |
 | `validate_kind_relations` | `self.spawns.insert(call, seq).is_some` | [782](../../src/fold.rs#L782) | receiver-type-required |
 | `validate_kind_relations` | `self.spawns.insert` | [782](../../src/fold.rs#L782) | receiver-type-required |
 | `validate_kind_relations` | `self.spawns.contains_key` | [788](../../src/fold.rs#L788) | receiver-type-required |
@@ -438,10 +438,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_attempt` | `value_str` | [911](../../src/fold.rs#L911) | [schema::fold::value_str](../../src/fold.rs#L1095) |
 | `open_attempt` | `self.attempts.contains_key` | [912](../../src/fold.rs#L912) | receiver-type-required |
 | `open_attempt` | `Err` | [913](../../src/fold.rs#L913), [929](../../src/fold.rs#L929), [946](../../src/fold.rs#L946) | external-constructor-callback-or-unresolved |
-| `open_attempt` | `SchemaError::constraint` | [913](../../src/fold.rs#L913), [919](../../src/fold.rs#L919), [922](../../src/fold.rs#L922), [929](../../src/fold.rs#L929), [946](../../src/fold.rs#L946) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `open_attempt` | `SchemaError::constraint` | [913](../../src/fold.rs#L913), [919](../../src/fold.rs#L919), [922](../../src/fold.rs#L922), [929](../../src/fold.rs#L929), [946](../../src/fold.rs#L946) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `open_attempt` | `event.turn().expect` | [915](../../src/fold.rs#L915) | receiver-type-required |
 | `open_attempt` | `event.turn` | [915](../../src/fold.rs#L915) | receiver-type-required |
-| `open_attempt` | `ranges` | [916](../../src/fold.rs#L916) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `open_attempt` | `ranges` | [916](../../src/fold.rs#L916) | [schema::event::ranges](../../src/event.rs#L1436) |
 | `open_attempt` | `usize::try_from(admitted_seq - 1).map_err` | [918](../../src/fold.rs#L918) | receiver-type-required |
 | `open_attempt` | `usize::try_from` | [918](../../src/fold.rs#L918) | external-constructor-callback-or-unresolved |
 | `open_attempt` | `self.events.get(admitted_index).ok_or_else` | [921](../../src/fold.rs#L921) | receiver-type-required |
@@ -469,7 +469,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `finish_attempt` | `event.object` | [978](../../src/fold.rs#L978) | receiver-type-required |
 | `finish_attempt` | `self             .attempts             .get_mut(id)             .ok_or_else` | [979](../../src/fold.rs#L979) | receiver-type-required |
 | `finish_attempt` | `self             .attempts             .get_mut` | [979](../../src/fold.rs#L979) | receiver-type-required |
-| `finish_attempt` | `SchemaError::constraint` | [982](../../src/fold.rs#L982), [986](../../src/fold.rs#L986) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `finish_attempt` | `SchemaError::constraint` | [982](../../src/fold.rs#L982), [986](../../src/fold.rs#L986) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `finish_attempt` | `event.turn().expect` | [983](../../src/fold.rs#L983) | receiver-type-required |
 | `finish_attempt` | `event.turn` | [983](../../src/fold.rs#L983) | receiver-type-required |
 | `finish_attempt` | `Err` | [986](../../src/fold.rs#L986) | external-constructor-callback-or-unresolved |
@@ -478,17 +478,17 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_supersedes` | `event.object` | [998](../../src/fold.rs#L998) | receiver-type-required |
 | `apply_supersedes` | `object.get` | [999](../../src/fold.rs#L999) | receiver-type-required |
 | `apply_supersedes` | `Ok` | [1000](../../src/fold.rs#L1000), [1025](../../src/fold.rs#L1025) | external-constructor-callback-or-unresolved |
-| `apply_supersedes` | `ranges` | [1002](../../src/fold.rs#L1002) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `apply_supersedes` | `ranges` | [1002](../../src/fold.rs#L1002) | [schema::event::ranges](../../src/event.rs#L1436) |
 | `apply_supersedes` | `self.inputs.get_mut(&target).ok_or_else` | [1005](../../src/fold.rs#L1005) | receiver-type-required |
 | `apply_supersedes` | `self.inputs.get_mut` | [1005](../../src/fold.rs#L1005), [1020](../../src/fold.rs#L1020) | receiver-type-required |
-| `apply_supersedes` | `SchemaError::constraint` | [1006](../../src/fold.rs#L1006), [1013](../../src/fold.rs#L1013) | [schema::SchemaError::constraint](../../src/lib.rs#L35) |
+| `apply_supersedes` | `SchemaError::constraint` | [1006](../../src/fold.rs#L1006), [1013](../../src/fold.rs#L1013) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
 | `apply_supersedes` | `Err` | [1013](../../src/fold.rs#L1013) | external-constructor-callback-or-unresolved |
 | `record_origin` | `event.origin_key` | [1029](../../src/fold.rs#L1029) | receiver-type-required |
 | `record_origin` | `Ok` | [1030](../../src/fold.rs#L1030), [1042](../../src/fold.rs#L1042) | external-constructor-callback-or-unresolved |
 | `record_origin` | `event.origin_tuple` | [1032](../../src/fold.rs#L1032) | receiver-type-required |
 | `record_origin` | `self.origin_tuples.get` | [1033](../../src/fold.rs#L1033) | receiver-type-required |
 | `record_origin` | `Err` | [1034](../../src/fold.rs#L1034) | external-constructor-callback-or-unresolved |
-| `record_origin` | `SchemaError::event` | [1034](../../src/fold.rs#L1034) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `record_origin` | `SchemaError::event` | [1034](../../src/fold.rs#L1034) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `record_origin` | `Some` | [1035](../../src/fold.rs#L1035) | external-constructor-callback-or-unresolved |
 | `record_origin` | `event.seq` | [1035](../../src/fold.rs#L1035), [1039](../../src/fold.rs#L1039), [1041](../../src/fold.rs#L1041) | receiver-type-required |
 | `record_origin` | `self.origin_tuples.insert` | [1039](../../src/fold.rs#L1039) | receiver-type-required |
@@ -501,7 +501,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `has_open_hold` | `self.tool_results.contains_key` | [1048](../../src/fold.rs#L1048) | receiver-type-required |
 | `validate_ledger` | `bytes.is_empty` | [1055](../../src/fold.rs#L1055) | receiver-type-required |
 | `validate_ledger` | `Err` | [1056](../../src/fold.rs#L1056), [1059](../../src/fold.rs#L1059) | external-constructor-callback-or-unresolved |
-| `validate_ledger` | `SchemaError::event` | [1056](../../src/fold.rs#L1056), [1059](../../src/fold.rs#L1059) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `validate_ledger` | `SchemaError::event` | [1056](../../src/fold.rs#L1056), [1059](../../src/fold.rs#L1059) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_ledger` | `bytes.ends_with` | [1058](../../src/fold.rs#L1058) | receiver-type-required |
 | `validate_ledger` | `LedgerValidator::new` | [1064](../../src/fold.rs#L1064) | [schema::fold::LedgerValidator::new](../../src/fold.rs#L146) |
 | `validate_ledger` | `bytes         .split(&#124;byte&#124; *byte == b'\n')         .take_while` | [1065](../../src/fold.rs#L1065) | receiver-type-required |
@@ -512,7 +512,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_ledger` | `validator.finish` | [1071](../../src/fold.rs#L1071) | receiver-type-required |
 | `trigger_inputs` | `object         .get("trigger")         .ok_or_else` | [1075](../../src/fold.rs#L1075) | receiver-type-required |
 | `trigger_inputs` | `object         .get` | [1075](../../src/fold.rs#L1075) | receiver-type-required |
-| `trigger_inputs` | `SchemaError::event` | [1077](../../src/fold.rs#L1077), [1083](../../src/fold.rs#L1083), [1089](../../src/fold.rs#L1089) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `trigger_inputs` | `SchemaError::event` | [1077](../../src/fold.rs#L1077), [1083](../../src/fold.rs#L1083), [1089](../../src/fold.rs#L1089) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `trigger_inputs` | `Some` | [1077](../../src/fold.rs#L1077), [1078](../../src/fold.rs#L1078), [1083](../../src/fold.rs#L1083), [1089](../../src/fold.rs#L1089) | external-constructor-callback-or-unresolved |
 | `trigger_inputs` | `trigger.as_str` | [1078](../../src/fold.rs#L1078) | receiver-type-required |
 | `trigger_inputs` | `trigger.get("goal").is_some` | [1078](../../src/fold.rs#L1078) | receiver-type-required |
@@ -530,21 +530,21 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `value_str` | `object         .get(field)         .and_then(Value::as_str)         .ok_or_else` | [1100](../../src/fold.rs#L1100) | receiver-type-required |
 | `value_str` | `object         .get(field)         .and_then` | [1100](../../src/fold.rs#L1100) | receiver-type-required |
 | `value_str` | `object         .get` | [1100](../../src/fold.rs#L1100) | receiver-type-required |
-| `value_str` | `SchemaError::event` | [1103](../../src/fold.rs#L1103) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `value_str` | `SchemaError::event` | [1103](../../src/fold.rs#L1103) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `value_str` | `Some` | [1103](../../src/fold.rs#L1103) | external-constructor-callback-or-unresolved |
 | `value_u64` | `object         .get(field)         .and_then(Value::as_u64)         .ok_or_else` | [1107](../../src/fold.rs#L1107) | receiver-type-required |
 | `value_u64` | `object         .get(field)         .and_then` | [1107](../../src/fold.rs#L1107) | receiver-type-required |
 | `value_u64` | `object         .get` | [1107](../../src/fold.rs#L1107) | receiver-type-required |
-| `value_u64` | `SchemaError::event` | [1110](../../src/fold.rs#L1110) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `value_u64` | `SchemaError::event` | [1110](../../src/fold.rs#L1110) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `value_u64` | `Some` | [1110](../../src/fold.rs#L1110) | external-constructor-callback-or-unresolved |
 | `value_array` | `object         .get(field)         .and_then(Value::as_array)         .map(Vec::as_slice)         .ok_or_else` | [1118](../../src/fold.rs#L1118) | receiver-type-required |
 | `value_array` | `object         .get(field)         .and_then(Value::as_array)         .map` | [1118](../../src/fold.rs#L1118) | receiver-type-required |
 | `value_array` | `object         .get(field)         .and_then` | [1118](../../src/fold.rs#L1118) | receiver-type-required |
 | `value_array` | `object         .get` | [1118](../../src/fold.rs#L1118) | receiver-type-required |
-| `value_array` | `SchemaError::event` | [1122](../../src/fold.rs#L1122) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `value_array` | `SchemaError::event` | [1122](../../src/fold.rs#L1122) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `value_array` | `Some` | [1122](../../src/fold.rs#L1122) | external-constructor-callback-or-unresolved |
 | `parse_resume` | `value.ok_or_else` | [1126](../../src/fold.rs#L1126) | receiver-type-required |
-| `parse_resume` | `SchemaError::event` | [1126](../../src/fold.rs#L1126), [1134](../../src/fold.rs#L1134) | [schema::SchemaError::event](../../src/lib.rs#L28) |
+| `parse_resume` | `SchemaError::event` | [1126](../../src/fold.rs#L1126), [1134](../../src/fold.rs#L1134) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `parse_resume` | `Some` | [1126](../../src/fold.rs#L1126), [1127](../../src/fold.rs#L1127), [1134](../../src/fold.rs#L1134) | external-constructor-callback-or-unresolved |
 | `parse_resume` | `value.as_str` | [1127](../../src/fold.rs#L1127) | receiver-type-required |
 | `parse_resume` | `Ok` | [1128](../../src/fold.rs#L1128), [1135](../../src/fold.rs#L1135) | external-constructor-callback-or-unresolved |

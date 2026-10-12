@@ -638,6 +638,19 @@ impl EndpointSubscriptionHub {
         view: Option<SessionToolEventView>,
     ) -> Result<usize, HubError> {
         event.validate()?;
+        // Nothing to deliver and nobody to deliver to: a subscriber that registers later takes
+        // its baseline from the journal, which already holds this durable event. Skipping the
+        // proof and the envelope build here keeps replaying a long, already-journaled ledger
+        // (boot repair, journal reopen) from costing a canonical serialisation per row.
+        if !self.has_subscribers(session_id)? {
+            // O(1) durability guard that survives the early-out: the event must lie within
+            // the journal tail. Byte-for-byte equality (`DurableMismatch`) is only proved on
+            // the subscriber path below; nobody can observe a mismatch without subscribers.
+            return match journal.last_seq()? {
+                Some(last) if last >= event.seq => Ok(0),
+                _ => Err(HubError::NotDurable(event.seq)),
+            };
+        }
         let durable = journal
             .event(event.seq)?
             .ok_or(HubError::NotDurable(event.seq))?;
@@ -653,6 +666,14 @@ impl EndpointSubscriptionHub {
             }
             .into_envelope(rpc_id)?,
         )
+    }
+
+    /// True when at least one subscription (open or closing) is registered for the session.
+    fn has_subscribers(&self, session_id: &str) -> Result<bool, HubError> {
+        let sessions = self.sessions.lock().map_err(|_| HubError::Poisoned)?;
+        Ok(sessions
+            .get(session_id)
+            .is_some_and(|subscribers| subscribers.iter().any(|weak| weak.strong_count() > 0)))
     }
 
     pub fn publish_frame(

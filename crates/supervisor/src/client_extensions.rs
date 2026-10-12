@@ -1693,9 +1693,9 @@ impl ProductionClientExtensions {
                 let native = endpoint::NativeEndpoint::open(&self.root)
                     .map_err(|error| internal(error.to_string()))?;
                 let items = native
-                    .list_sessions(&HashSet::new())
+                    .list_sessions_cached(&HashSet::new())
                     .map_err(|error| internal(error.to_string()))?;
-                let management = endpoint::ManagementStore::open(&self.root)
+                let management = endpoint::ManagementStore::open_light(&self.root)
                     .map_err(|error| internal(error.to_string()))?;
                 let workspace = items
                     .iter()
@@ -1708,14 +1708,13 @@ impl ProductionClientExtensions {
                             serde_json::json!({"sessionId":requesting}),
                         )
                     })?;
+                let paths = management.workspace_paths().unwrap_or_default();
                 let candidates = items
                     .iter()
                     .map(|item| host_files::SessionCandidate {
                         session_id: item.session_id.clone(),
                         title: item.title.clone(),
-                        cwd: management
-                            .workspace_path(&item.workspace_id)
-                            .unwrap_or_default(),
+                        cwd: paths.get(&item.workspace_id).cloned().unwrap_or_default(),
                         workspace_id: item.workspace_id.clone(),
                         created_at_ms: item.updated_at as f64,
                         archived: item.archived,
@@ -2525,10 +2524,17 @@ impl ProductionClientExtensions {
             )
         })?;
         let scan = store::scan_valid_prefix(&bytes, 1);
-        if scan.needs_repair() {
+        // A torn tail (a partial append, not yet repaired) is ignored: the valid prefix is the
+        // ledger. A complete line that does not validate is damage, and the source is corrupt.
+        let valid_len = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+        if scan.needs_repair()
+            && bytes
+                .get(valid_len..)
+                .is_some_and(|tail| tail.contains(&b'\n'))
+        {
             return Err(failure(
                 "source-corrupt",
-                "Usage source has an invalid tail",
+                "Usage source has an invalid record",
                 serde_json::json!({}),
             ));
         }

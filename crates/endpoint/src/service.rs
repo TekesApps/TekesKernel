@@ -96,7 +96,7 @@ const DEFAULT_PERMISSION_MODE: &str = "workspace-write";
 
 /// The mode a session folder declares, or the default when the record is
 /// absent or malformed (the worker applies the same fallback).
-fn permission_mode_of(folder: &Path) -> String {
+pub fn permission_mode_of(folder: &Path) -> String {
     let Ok(bytes) = fs::read(folder.join(PERMISSION_MODE_FILE)) else {
         return DEFAULT_PERMISSION_MODE.to_owned();
     };
@@ -110,6 +110,124 @@ fn permission_mode_of(folder: &Path) -> String {
             )
         })
         .unwrap_or_else(|| DEFAULT_PERMISSION_MODE.to_owned())
+}
+
+/// The row of a thread whose card classifies Fresh; `None` for any other state.
+fn card_item(
+    folder: &Path,
+    session_id: &str,
+    archived: bool,
+    running: bool,
+) -> Option<SessionInventoryItem> {
+    let card = store::card::read_card(folder)?;
+    let classified = store::card::classify(folder, &card).ok()?;
+    if classified.freshness() != store::card::Freshness::Fresh {
+        return None;
+    }
+    let main = card.lines.first()?;
+    if main.file != "main.jsonl" {
+        return None;
+    }
+    Some(SessionInventoryItem {
+        session_id: session_id.to_owned(),
+        workspace_id: card.summary.workspace.clone(),
+        title: card.summary.title.clone(),
+        updated_at: card.summary.updated_ms,
+        archived,
+        running,
+        blank: card.summary.blank,
+        as_of_seq: main.last_seq,
+        lifecycle: main.facts.clone(),
+        permission_mode: permission_mode_of(folder),
+        identity_profile: card.summary.identity_profile.clone(),
+        ephemeral: card.summary.ephemeral,
+    })
+}
+
+/// The `updatedAt` of a thread: the timestamp of its last record, in epoch milliseconds.
+pub fn card_updated_ms(projection: &schema::LedgerProjection) -> Result<u64, NativeEndpointError> {
+    Ok(projection
+        .events
+        .last()
+        .and_then(|event| event.string_field("ts"))
+        .ok_or(NativeEndpointError::InventoryTimestamp)
+        .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
+        as u64)
+}
+
+/// The timestamp (epoch milliseconds) of the last complete record of a ledger file, read from
+/// its last 64 KiB only. A placeholder List row uses it for `updatedAt`, the same value a
+/// verified row has, so the row does not move when its upsert arrives (O-final m6). `None` when
+/// the tail window holds no complete record with a valid `ts`.
+#[must_use]
+pub fn last_record_updated_ms(path: &Path) -> Option<u64> {
+    use std::io::{Read, Seek, SeekFrom};
+    const WINDOW: u64 = 64 * 1024;
+    let mut file = fs::File::open(path).ok()?;
+    let length = file.metadata().ok()?.len();
+    let start = length.saturating_sub(WINDOW);
+    file.seek(SeekFrom::Start(start)).ok()?;
+    let mut bytes = Vec::new();
+    file.take(WINDOW).read_to_end(&mut bytes).ok()?;
+    // complete records end at the last LF; the one before the final LF is the last record
+    let end = bytes.iter().rposition(|byte| *byte == b'\n')?;
+    let line_start = bytes[..end]
+        .iter()
+        .rposition(|byte| *byte == b'\n')
+        .map(|index| index + 1)
+        .or((start == 0).then_some(0))?;
+    let record: Value = serde_json::from_slice(&bytes[line_start..end]).ok()?;
+    let millis = timestamp_millis(record.get("ts")?.as_str()?).ok()?;
+    Some(millis as u64)
+}
+
+/// The List-row facts of a thread, derived from its folded ledger. `list_sessions` and the
+/// thread card both use this single derivation so a card can never disagree with a scan.
+pub fn card_summary(
+    projection: &schema::LedgerProjection,
+) -> Result<store::card::CardSummary, NativeEndpointError> {
+    let genesis = projection.events.first().ok_or_else(|| {
+        NativeEndpointError::Store(store::StoreError::Corruption(
+            "ledger has no genesis".to_owned(),
+        ))
+    })?;
+    let title = projection
+        .events
+        .iter()
+        .rev()
+        .find_map(|event| event.string_field("title"))
+        .map(str::to_owned);
+    let updated_ms = card_updated_ms(projection)?;
+    let identity_profile = match genesis.string_field("identity_profile") {
+        None => Some("coding".to_owned()),
+        Some("coding" | "general") => genesis.string_field("identity_profile").map(str::to_owned),
+        _ => projection.events.iter().find_map(|event| {
+            if event.kind() != &EventKind::State
+                || event.string_field("subkind") != Some("identity.selected")
+            {
+                return None;
+            }
+            serde_json::to_value(event.raw())
+                .ok()?
+                .get("payload")?
+                .get("profile")?
+                .as_str()
+                .map(str::to_owned)
+        }),
+    };
+    Ok(store::card::CardSummary {
+        workspace: genesis
+            .string_field("workspace")
+            .ok_or(NativeEndpointError::InventoryWorkspace)?
+            .to_owned(),
+        folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
+        created: genesis.string_field("ts").unwrap_or_default().to_owned(),
+        updated_ms,
+        title,
+        identity_profile,
+        ephemeral: genesis.is_ephemeral_genesis(),
+        blank: projection.lifecycle.latest_turn.is_none(),
+    })
 }
 
 pub struct NativeEndpoint {
@@ -151,9 +269,29 @@ impl NativeEndpoint {
         .collect()
     }
 
+    /// The List by scanning every ledger: the oracle the card-derived rows are tested against,
+    /// and the fallback when a thread has no trusted card.
     pub fn list_sessions(
         &self,
         running: &HashSet<String>,
+    ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
+        self.list_sessions_with(running, false)
+    }
+
+    /// The List preferring thread cards: a thread whose card classifies Fresh is described by
+    /// the card (no ledger is decoded); any other thread is scanned exactly as `list_sessions`
+    /// does. Rows are identical either way.
+    pub fn list_sessions_cached(
+        &self,
+        running: &HashSet<String>,
+    ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
+        self.list_sessions_with(running, true)
+    }
+
+    fn list_sessions_with(
+        &self,
+        running: &HashSet<String>,
+        prefer_cards: bool,
     ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
         let mut items = Vec::new();
         for (area, archived) in [("threads", false), ("archive", true)] {
@@ -164,6 +302,16 @@ impl NativeEndpoint {
                 }
                 let session_id = entry.file_name().to_string_lossy().into_owned();
                 validate_session_id(&session_id)?;
+                let is_running = !archived
+                    && (running.contains(&session_id)
+                        || self.store.session_has_live_line_holder(&session_id)?);
+                if prefer_cards {
+                    if let Some(item) = card_item(&entry.path(), &session_id, archived, is_running)
+                    {
+                        items.push(item);
+                        continue;
+                    }
+                }
                 let bytes = fs::read(entry.path().join("main.jsonl"))?;
                 let scan = scan_valid_prefix(&bytes, 1);
                 let projection = scan.projection.ok_or_else(|| {
@@ -171,57 +319,23 @@ impl NativeEndpoint {
                         "session {session_id} has no valid genesis prefix"
                     )))
                 })?;
-                let genesis = projection.events.first().ok_or_else(|| {
-                    NativeEndpointError::Store(store::StoreError::Corruption(format!(
-                        "session {session_id} has no genesis"
-                    )))
+                let summary = card_summary(&projection).map_err(|error| match error {
+                    NativeEndpointError::Store(store::StoreError::Corruption(_)) => {
+                        NativeEndpointError::Store(store::StoreError::Corruption(format!(
+                            "session {session_id} has no genesis"
+                        )))
+                    }
+                    other => other,
                 })?;
-                let title = projection
-                    .events
-                    .iter()
-                    .rev()
-                    .find_map(|event| event.string_field("title"))
-                    .map(str::to_owned);
-                let updated_at = projection
-                    .events
-                    .last()
-                    .and_then(|event| event.string_field("ts"))
-                    .ok_or(NativeEndpointError::InventoryTimestamp)
-                    .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
-                    as u64;
-                let is_running = !archived
-                    && (running.contains(&session_id)
-                        || self.store.session_has_live_line_holder(&session_id)?);
                 items.push(SessionInventoryItem {
                     permission_mode: permission_mode_of(&entry.path()),
-                    identity_profile: match genesis.string_field("identity_profile") {
-                        None => Some("coding".to_owned()),
-                        Some("coding" | "general") => {
-                            genesis.string_field("identity_profile").map(str::to_owned)
-                        }
-                        _ => projection.events.iter().find_map(|event| {
-                            if event.kind() != &EventKind::State
-                                || event.string_field("subkind") != Some("identity.selected")
-                            {
-                                return None;
-                            }
-                            serde_json::to_value(event.raw())
-                                .ok()?
-                                .get("payload")?
-                                .get("profile")?
-                                .as_str()
-                                .map(str::to_owned)
-                        }),
-                    },
-                    ephemeral: genesis.is_ephemeral_genesis(),
-                    workspace_id: genesis
-                        .string_field("workspace")
-                        .ok_or(NativeEndpointError::InventoryWorkspace)?
-                        .to_owned(),
-                    title,
-                    updated_at,
+                    identity_profile: summary.identity_profile,
+                    ephemeral: summary.ephemeral,
+                    workspace_id: summary.workspace,
+                    title: summary.title,
+                    updated_at: summary.updated_ms,
                     running: is_running,
-                    blank: projection.lifecycle.latest_turn.is_none(),
+                    blank: summary.blank,
                     as_of_seq: projection.last_seq,
                     lifecycle: projection.lifecycle,
                     session_id,
@@ -305,17 +419,13 @@ impl NativeEndpoint {
     ) -> Result<profile::ConfigSnapshot, NativeEndpointError> {
         validate_session_id(session_id)?;
         let folder = self.active_folder(session_id)?;
-        let bytes = fs::read(folder.join("main.jsonl"))?;
-        let scan = scan_valid_prefix(&bytes, 1);
-        let projection = scan.projection.ok_or_else(|| {
+        // Only the genesis is needed (workspace and folder binding); do not decode the ledger.
+        let genesis = store::read_genesis(folder.join("main.jsonl"))?.ok_or_else(|| {
             NativeEndpointError::Store(store::StoreError::Corruption(
                 "session ledger has no valid genesis prefix".to_owned(),
             ))
         })?;
-        let genesis = projection
-            .events
-            .first()
-            .ok_or(NativeEndpointError::InventoryWorkspace)?;
+        let genesis = &genesis;
         let workspace = genesis
             .string_field("workspace")
             .ok_or(NativeEndpointError::InventoryWorkspace)?;
@@ -365,6 +475,17 @@ impl NativeEndpoint {
         session_id: &str,
         entries: &mut [crate::SessionHistoryEntry],
     ) {
+        // Only a user message without its own submission snapshot needs the ledger. A page
+        // with none (every message the current Kernel wrote, or a page of assistant events)
+        // does not decode the thread at all.
+        let needs_history = entries.iter().any(|entry| {
+            entry.event.event_type == "user/message"
+                && serde_json::to_value(&entry.event.data)
+                    .is_ok_and(|data| data.get("submission").is_none())
+        });
+        if !needs_history {
+            return;
+        }
         let Ok(folder) = self.active_folder(session_id) else {
             return;
         };

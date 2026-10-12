@@ -527,6 +527,11 @@ fn production_create_history_then_stream_append_is_durable_and_live() {
         endpoint::StreamChannel::Mux,
     ))
     .expect("production mux");
+    // A mux generation starts empty; the session registers when it is attached.
+    assembly
+        .streams()
+        .attach_session(SESSION)
+        .expect("attach the session");
     let baseline = block_on_ready(mux.recv())
         .expect("baseline item")
         .expect("baseline frame");
@@ -932,6 +937,7 @@ fn carrier_stream_hooks_attach_detach_and_emit_inventory_invalidations() {
         endpoint::StreamChannel::Mux,
     ))
     .expect("mux");
+    streams.attach_session(SESSION).expect("attach the session");
     let baseline = block_on_ready(mux.recv())
         .expect("baseline item")
         .expect("baseline frame");
@@ -1067,16 +1073,20 @@ fn session_status_frames_refresh_inventory_running_from_the_process_table() {
 }
 
 fn write_held_session(root: &std::path::Path) {
+    write_session_at(root, SESSION, true);
+}
+
+fn write_session_at(root: &std::path::Path, session: &str, held: bool) {
     store::ThreadStore::open(root).expect("store layout");
-    let folder = root.join("threads").join(SESSION);
+    let folder = root.join("threads").join(session);
     std::fs::create_dir(&folder).expect("session folder");
     std::fs::create_dir(folder.join("assets")).expect("assets");
     let lines = [
         format!(
-            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{SESSION}"}},"resume":"never","seq":1,"thread":"{SESSION}","ts":"{TIMESTAMP}","v":1,"workspace":"ws"}}"#
+            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{session}"}},"resume":"never","seq":1,"thread":"{session}","ts":"{TIMESTAMP}","v":1,"workspace":"ws"}}"#
         ),
         format!(
-            r#"{{"content":[{{"text":"start","type":"text"}}],"kind":"input","origin_key":"i1","origin_tuple":{{"client":"cli","key":"i1","op":"submit","principal":"p","target":"{SESSION}"}},"seq":2,"ts":"{TIMESTAMP}","v":1}}"#
+            r#"{{"content":[{{"text":"start","type":"text"}}],"kind":"input","origin_key":"i1","origin_tuple":{{"client":"cli","key":"i1","op":"submit","principal":"p","target":"{session}"}},"seq":2,"ts":"{TIMESTAMP}","v":1}}"#
         ),
         format!(
             r#"{{"binary":"tekes-worker-1","config_digest":"cfg","instruction_digest":"ins","kind":"run_start","mode":"ordinary","policy":"default","recovery_ordinal":0,"run":"r1","seq":3,"ts":"{TIMESTAMP}","v":1}}"#
@@ -1100,7 +1110,8 @@ fn write_held_session(root: &std::path::Path) {
             r#"{{"call":"ask1","kind":"approval_request","scope":"answer","seq":9,"ts":"{TIMESTAMP}","turn":1,"v":1}}"#
         ),
     ];
-    std::fs::write(folder.join("main.jsonl"), lines.join("\n") + "\n").expect("ledger");
+    let keep = if held { lines.len() } else { 2 };
+    std::fs::write(folder.join("main.jsonl"), lines[..keep].join("\n") + "\n").expect("ledger");
 }
 
 fn block_on_ready<F: Future>(future: F) -> F::Output {

@@ -217,8 +217,38 @@ fn revalidate_inode(file: &File, path: &Path) -> Result<(), StoreError> {
     Ok(())
 }
 
+/// Roots that passed the probe in this process. The probe creates, full-syncs and removes a
+/// file; `ThreadStore::open` runs it, and request paths open stores constantly, so a root that
+/// passed once is not probed again while the process lives (the filesystem under a running
+/// Kernel's root does not change kind).
+fn probed_roots() -> &'static std::sync::Mutex<std::collections::HashSet<std::path::PathBuf>> {
+    static PROBED: std::sync::OnceLock<
+        std::sync::Mutex<std::collections::HashSet<std::path::PathBuf>>,
+    > = std::sync::OnceLock::new();
+    PROBED.get_or_init(Default::default)
+}
+
 pub fn probe_local_filesystem(root: impl AsRef<Path>) -> Result<(), StoreError> {
     let root = root.as_ref();
+    if probed_roots()
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .contains(root)
+        && root.is_dir()
+    {
+        return Ok(());
+    }
+    let outcome = probe_local_filesystem_uncached(root);
+    if outcome.is_ok() {
+        probed_roots()
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .insert(root.to_path_buf());
+    }
+    outcome
+}
+
+fn probe_local_filesystem_uncached(root: &Path) -> Result<(), StoreError> {
     if root
         .to_string_lossy()
         .contains("/Library/Mobile Documents/")

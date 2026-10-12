@@ -47,9 +47,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [endpoint::hub::EndpointSubscriptionHub::subscribe_all](../../src/hub.rs#L515) | function_item | `pub` |  |
 | [endpoint::hub::EndpointSubscriptionHub::subscribe_all_with_replay](../../src/hub.rs#L537) | function_item | `pub` |  |
 | [endpoint::hub::EndpointSubscriptionHub::publish_event](../../src/hub.rs#L632) | function_item | `pub` |  |
-| [endpoint::hub::EndpointSubscriptionHub::publish_frame](../../src/hub.rs#L658) | function_item | `pub` |  |
-| [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L676) | function_item | `private` |  |
-| [endpoint::hub::HubError](../../src/hub.rs#L710) | enum_item | `pub` |  |
+| [endpoint::hub::EndpointSubscriptionHub::has_subscribers](../../src/hub.rs#L672) | function_item | `private` |  |
+| [endpoint::hub::EndpointSubscriptionHub::publish_frame](../../src/hub.rs#L679) | function_item | `pub` |  |
+| [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L697) | function_item | `private` |  |
+| [endpoint::hub::HubError](../../src/hub.rs#L731) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -124,7 +125,7 @@ flowchart TD
 
 </details>
 
-<details><summary>Functions 21–28: 7 direct edges</summary>
+<details><summary>Functions 21–29: 8 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -134,16 +135,18 @@ flowchart TD
   n3["endpoint::hub::EndpointSubscriptionHub::subscribe_all"]
   n4["endpoint::hub::EndpointSubscriptionHub::subscribe_all_with_replay"]
   n5["endpoint::hub::EndpointSubscriptionHub::publish_event"]
-  n6["endpoint::hub::EndpointSubscriptionHub::publish_frame"]
-  n7["endpoint::hub::EndpointSubscriptionHub::publish"]
-  n8["endpoint::types::validate_session_id"]
+  n6["endpoint::hub::EndpointSubscriptionHub::has_subscribers"]
+  n7["endpoint::hub::EndpointSubscriptionHub::publish_frame"]
+  n8["endpoint::hub::EndpointSubscriptionHub::publish"]
+  n9["endpoint::types::validate_session_id"]
   n1 --> n2
-  n2 --> n8
+  n2 --> n9
   n3 --> n4
-  n4 --> n8
-  n5 --> n7
-  n6 --> n7
+  n4 --> n9
+  n5 --> n6
+  n5 --> n8
   n7 --> n8
+  n8 --> n9
 ```
 
 </details>
@@ -315,36 +318,47 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `subscribe_all_with_replay` | `Arc::downgrade` | [614](../../src/hub.rs#L614) | external-constructor-callback-or-unresolved |
 | `subscribe_all_with_replay` | `result.insert` | [615](../../src/hub.rs#L615) | receiver-type-required |
 | `publish_event` | `event.validate` | [640](../../src/hub.rs#L640) | receiver-type-required |
-| `publish_event` | `journal             .event(event.seq)?             .ok_or` | [641](../../src/hub.rs#L641) | receiver-type-required |
-| `publish_event` | `journal             .event` | [641](../../src/hub.rs#L641) | receiver-type-required |
-| `publish_event` | `HubError::NotDurable` | [643](../../src/hub.rs#L643) | external-constructor-callback-or-unresolved |
-| `publish_event` | `durable.canonical_bytes` | [644](../../src/hub.rs#L644) | receiver-type-required |
-| `publish_event` | `event.canonical_bytes` | [644](../../src/hub.rs#L644) | receiver-type-required |
-| `publish_event` | `Err` | [645](../../src/hub.rs#L645) | external-constructor-callback-or-unresolved |
-| `publish_event` | `HubError::DurableMismatch` | [645](../../src/hub.rs#L645) | external-constructor-callback-or-unresolved |
-| `publish_event` | `self.publish` | [647](../../src/hub.rs#L647) | [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L676) |
-| `publish_event` | `MuxFrame::Event {                 session_id: session_id.to_owned(),                 event,                 view,             }             .into_envelope` | [649](../../src/hub.rs#L649) | receiver-type-required |
-| `publish_event` | `session_id.to_owned` | [650](../../src/hub.rs#L650) | receiver-type-required |
-| `publish_frame` | `Err` | [665](../../src/hub.rs#L665), [671](../../src/hub.rs#L671) | external-constructor-callback-or-unresolved |
-| `publish_frame` | `frame             .session_id()             .is_some_and` | [667](../../src/hub.rs#L667) | receiver-type-required |
-| `publish_frame` | `frame             .session_id` | [667](../../src/hub.rs#L667) | receiver-type-required |
-| `publish_frame` | `self.publish` | [673](../../src/hub.rs#L673) | [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L676) |
-| `publish_frame` | `frame.into_envelope` | [673](../../src/hub.rs#L673) | receiver-type-required |
-| `publish` | `validate_session_id` | [677](../../src/hub.rs#L677) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `publish` | `serde_json::from_slice` | [678](../../src/hub.rs#L678) | external-constructor-callback-or-unresolved |
-| `publish` | `frame.payload.canonical_bytes` | [678](../../src/hub.rs#L678) | receiver-type-required |
-| `publish` | `payload.event_seq` | [679](../../src/hub.rs#L679) | receiver-type-required |
-| `publish` | `self.sessions.lock().map_err` | [680](../../src/hub.rs#L680) | receiver-type-required |
-| `publish` | `self.sessions.lock` | [680](../../src/hub.rs#L680) | receiver-type-required |
-| `publish` | `sessions.entry(session_id.to_owned()).or_default` | [681](../../src/hub.rs#L681) | receiver-type-required |
-| `publish` | `sessions.entry` | [681](../../src/hub.rs#L681) | receiver-type-required |
-| `publish` | `session_id.to_owned` | [681](../../src/hub.rs#L681) | receiver-type-required |
-| `publish` | `subscribers.retain` | [683](../../src/hub.rs#L683) | receiver-type-required |
-| `publish` | `weak.upgrade` | [684](../../src/hub.rs#L684) | receiver-type-required |
-| `publish` | `state.lock` | [687](../../src/hub.rs#L687) | receiver-type-required |
-| `publish` | `state                     .enqueue_event(seq, frame.clone())                     .is_ok_and` | [694](../../src/hub.rs#L694) | receiver-type-required |
-| `publish` | `state                     .enqueue_event` | [694](../../src/hub.rs#L694) | receiver-type-required |
-| `publish` | `frame.clone` | [695](../../src/hub.rs#L695), [700](../../src/hub.rs#L700) | receiver-type-required |
-| `publish` | `state.enqueue(frame.clone()).is_ok` | [700](../../src/hub.rs#L700) | receiver-type-required |
-| `publish` | `state.enqueue` | [700](../../src/hub.rs#L700) | receiver-type-required |
-| `publish` | `Ok` | [705](../../src/hub.rs#L705) | external-constructor-callback-or-unresolved |
+| `publish_event` | `self.has_subscribers` | [645](../../src/hub.rs#L645) | [endpoint::hub::EndpointSubscriptionHub::has_subscribers](../../src/hub.rs#L672) |
+| `publish_event` | `journal.last_seq` | [649](../../src/hub.rs#L649) | receiver-type-required |
+| `publish_event` | `Ok` | [650](../../src/hub.rs#L650) | external-constructor-callback-or-unresolved |
+| `publish_event` | `Err` | [651](../../src/hub.rs#L651), [658](../../src/hub.rs#L658) | external-constructor-callback-or-unresolved |
+| `publish_event` | `HubError::NotDurable` | [651](../../src/hub.rs#L651), [656](../../src/hub.rs#L656) | external-constructor-callback-or-unresolved |
+| `publish_event` | `journal             .event(event.seq)?             .ok_or` | [654](../../src/hub.rs#L654) | receiver-type-required |
+| `publish_event` | `journal             .event` | [654](../../src/hub.rs#L654) | receiver-type-required |
+| `publish_event` | `durable.canonical_bytes` | [657](../../src/hub.rs#L657) | receiver-type-required |
+| `publish_event` | `event.canonical_bytes` | [657](../../src/hub.rs#L657) | receiver-type-required |
+| `publish_event` | `HubError::DurableMismatch` | [658](../../src/hub.rs#L658) | external-constructor-callback-or-unresolved |
+| `publish_event` | `self.publish` | [660](../../src/hub.rs#L660) | [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L697) |
+| `publish_event` | `MuxFrame::Event {                 session_id: session_id.to_owned(),                 event,                 view,             }             .into_envelope` | [662](../../src/hub.rs#L662) | receiver-type-required |
+| `publish_event` | `session_id.to_owned` | [663](../../src/hub.rs#L663) | receiver-type-required |
+| `has_subscribers` | `self.sessions.lock().map_err` | [673](../../src/hub.rs#L673) | receiver-type-required |
+| `has_subscribers` | `self.sessions.lock` | [673](../../src/hub.rs#L673) | receiver-type-required |
+| `has_subscribers` | `Ok` | [674](../../src/hub.rs#L674) | external-constructor-callback-or-unresolved |
+| `has_subscribers` | `sessions             .get(session_id)             .is_some_and` | [674](../../src/hub.rs#L674) | receiver-type-required |
+| `has_subscribers` | `sessions             .get` | [674](../../src/hub.rs#L674) | receiver-type-required |
+| `has_subscribers` | `subscribers.iter().any` | [676](../../src/hub.rs#L676) | receiver-type-required |
+| `has_subscribers` | `subscribers.iter` | [676](../../src/hub.rs#L676) | receiver-type-required |
+| `has_subscribers` | `weak.strong_count` | [676](../../src/hub.rs#L676) | receiver-type-required |
+| `publish_frame` | `Err` | [686](../../src/hub.rs#L686), [692](../../src/hub.rs#L692) | external-constructor-callback-or-unresolved |
+| `publish_frame` | `frame             .session_id()             .is_some_and` | [688](../../src/hub.rs#L688) | receiver-type-required |
+| `publish_frame` | `frame             .session_id` | [688](../../src/hub.rs#L688) | receiver-type-required |
+| `publish_frame` | `self.publish` | [694](../../src/hub.rs#L694) | [endpoint::hub::EndpointSubscriptionHub::publish](../../src/hub.rs#L697) |
+| `publish_frame` | `frame.into_envelope` | [694](../../src/hub.rs#L694) | receiver-type-required |
+| `publish` | `validate_session_id` | [698](../../src/hub.rs#L698) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `publish` | `serde_json::from_slice` | [699](../../src/hub.rs#L699) | external-constructor-callback-or-unresolved |
+| `publish` | `frame.payload.canonical_bytes` | [699](../../src/hub.rs#L699) | receiver-type-required |
+| `publish` | `payload.event_seq` | [700](../../src/hub.rs#L700) | receiver-type-required |
+| `publish` | `self.sessions.lock().map_err` | [701](../../src/hub.rs#L701) | receiver-type-required |
+| `publish` | `self.sessions.lock` | [701](../../src/hub.rs#L701) | receiver-type-required |
+| `publish` | `sessions.entry(session_id.to_owned()).or_default` | [702](../../src/hub.rs#L702) | receiver-type-required |
+| `publish` | `sessions.entry` | [702](../../src/hub.rs#L702) | receiver-type-required |
+| `publish` | `session_id.to_owned` | [702](../../src/hub.rs#L702) | receiver-type-required |
+| `publish` | `subscribers.retain` | [704](../../src/hub.rs#L704) | receiver-type-required |
+| `publish` | `weak.upgrade` | [705](../../src/hub.rs#L705) | receiver-type-required |
+| `publish` | `state.lock` | [708](../../src/hub.rs#L708) | receiver-type-required |
+| `publish` | `state                     .enqueue_event(seq, frame.clone())                     .is_ok_and` | [715](../../src/hub.rs#L715) | receiver-type-required |
+| `publish` | `state                     .enqueue_event` | [715](../../src/hub.rs#L715) | receiver-type-required |
+| `publish` | `frame.clone` | [716](../../src/hub.rs#L716), [721](../../src/hub.rs#L721) | receiver-type-required |
+| `publish` | `state.enqueue(frame.clone()).is_ok` | [721](../../src/hub.rs#L721) | receiver-type-required |
+| `publish` | `state.enqueue` | [721](../../src/hub.rs#L721) | receiver-type-required |
+| `publish` | `Ok` | [726](../../src/hub.rs#L726) | external-constructor-callback-or-unresolved |

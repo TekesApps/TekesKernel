@@ -10,14 +10,14 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex, TryLockError, Weak};
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, UNIX_EPOCH};
 
 use chrono::{DateTime, Utc};
 use endpoint::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, AcceptedStreamFrame,
     EndpointJournal, ManagementStore, MaterializedPrompt, MutationReceipt, NativeEndpoint,
-    Projector, SESSION_NOTICE_OPERATION, SessionCreateOperation, SessionNotice,
-    SessionNoticeSeverity,
+    Projector, SESSION_NOTICE_OPERATION, SessionCreateOperation, SessionInventoryItem,
+    SessionNotice, SessionNoticeSeverity,
 };
 use engine::{
     AdmissionLease, AdmissionPool, EnsureAction, LockFacts, TailState, classify, ensure_action_at,
@@ -26,7 +26,7 @@ use plugins::{MacOsNativeHelperVerifier, PluginStore};
 use profile::{ConfigRepository, ConfigSnapshot, DynamicToolCatalog};
 use schema::{Block, Event, EventKind, IJsonValue, OriginTuple};
 use sha2::{Digest, Sha256};
-use store::{AssetStore, LockedLedger, scan_valid_prefix};
+use store::{AssetStore, LockedLedger, ThreadStore, scan_valid_prefix};
 use worker_control::{
     ApprovalResponse, Frame, FrameChannel, Input, LaunchChild, LaunchResult, Lease, Meta, Receipt,
     Reject, Stop, WorkerMessage, decode_hello, decode_worker, encode_line,
@@ -38,7 +38,8 @@ use worker_control::{
 
 use crate::dynamic_bindings::resolve_worker_launch_bindings;
 use crate::endpoint_carrier::{
-    LiveRespondAuthority, ProductionCarrierStreams, SupervisorSessionAuthority,
+    HoldCatalog, HoldRef, LiveRespondAuthority, ProductionCarrierError, ProductionCarrierStreams,
+    SessionGateError, SupervisorSessionAuthority, VerifiedHolds,
 };
 use crate::endpoint_host::ProductionRouteFailure;
 use crate::endpoint_host::{
@@ -62,6 +63,8 @@ const DELIVERY_TIMEOUT: Duration = Duration::from_secs(30);
 const MCP_ONLY_APP_SANDBOX_MARKER: &str = ".mcp-only-app-sandbox";
 const WORKER_HANDSHAKE_TIMEOUT: Duration = Duration::from_secs(10);
 const WORKER_HELLO_MAX_BYTES: usize = 4_096;
+/// Seconds between two retries of pending management operations.
+const MANAGEMENT_RECOVERY_SECONDS: u64 = 30;
 const PERIODIC_SWEEP_INTERVAL: Duration = Duration::from_secs(1);
 
 /// What the sweep can tell about a ledger from its metadata alone: the bytes are the same while
@@ -419,6 +422,8 @@ struct ProcessToolRuntime {
 
 pub struct ProductionProcessHost {
     root: PathBuf,
+    /// Writes `thread-card.json` off the doorbell path (G-BOOT-1 S2).
+    card_writer: crate::thread_card::CardWriter,
     repository: ConfigRepository,
     endpoint: NativeEndpoint,
     worker_binary: PathBuf,
@@ -429,7 +434,27 @@ pub struct ProductionProcessHost {
     plugin_store: Option<Arc<Mutex<PluginStore<MacOsNativeHelperVerifier>>>>,
     schedule: schedule::ScheduleAuthority,
     workers: Mutex<HashMap<String, Arc<WorkerHandle>>>,
-    deferred_recovery: Mutex<HashSet<String>>,
+    /// Pre-existing sessions the client has released with `sessions.recover` (DESIGN §6). A
+    /// session is deferred iff it is neither admitted (created/forked/unarchived by this
+    /// process, `store::folder_events`) nor in this set.
+    released: Mutex<HashSet<String>>,
+    catalog: Arc<crate::catalog::Catalog>,
+    /// Opened once: `ThreadStore::open` probes the filesystem (a full sync), which a per-row
+    /// `running` check must not repeat.
+    threads: ThreadStore,
+    /// Per-thread single-flight gates of the hydrator.
+    hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
+    hydrate_failures: Mutex<HashMap<String, Instant>>,
+    /// Stale ephemeral threads the last cleanup found busy; the 30 s tick retries while non-zero.
+    stale_ephemeral_busy: std::sync::atomic::AtomicUsize,
+    #[cfg(test)]
+    hydrate_runs: AtomicU64,
+    #[cfg(test)]
+    card_builds: AtomicU64,
+    #[cfg(test)]
+    verify_order: Mutex<Vec<String>>,
+    #[cfg(test)]
+    list_wait_override: Mutex<Option<Duration>>,
     file_observations: crate::file_observation::SessionFileObservations,
     pending_workers: Mutex<BTreeMap<String, PendingWorker>>,
     workers_changed: Condvar,
@@ -801,7 +826,10 @@ impl ProductionProcessHost {
         )
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         let mcp_runtime = Arc::new(mcp_runtime);
+        let root_for_catalog = root.clone();
+        let threads_store = ThreadStore::open(&root_for_catalog).map_err(DaemonError::store)?;
         let host = Arc::new_cyclic(|weak| Self {
+            card_writer: crate::thread_card::CardWriter::spawn_from_env(),
             repository,
             endpoint,
             root,
@@ -813,7 +841,20 @@ impl ProductionProcessHost {
             plugin_store,
             schedule,
             workers: Mutex::new(HashMap::new()),
-            deferred_recovery: Mutex::new(HashSet::new()),
+            released: Mutex::new(HashSet::new()),
+            catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
+            threads: threads_store,
+            hydrating: Mutex::new(HashMap::new()),
+            hydrate_failures: Mutex::new(HashMap::new()),
+            stale_ephemeral_busy: std::sync::atomic::AtomicUsize::new(0),
+            #[cfg(test)]
+            hydrate_runs: AtomicU64::new(0),
+            #[cfg(test)]
+            card_builds: AtomicU64::new(0),
+            #[cfg(test)]
+            verify_order: Mutex::new(Vec::new()),
+            #[cfg(test)]
+            list_wait_override: Mutex::new(None),
             file_observations: crate::file_observation::SessionFileObservations::default(),
             pending_workers: Mutex::new(BTreeMap::new()),
             workers_changed: Condvar::new(),
@@ -840,6 +881,19 @@ impl ProductionProcessHost {
             #[cfg(test)]
             automatic_title_test_redirect: Mutex::new(None),
         });
+        // Folder membership changes (store::folder_events) invalidate what this host remembers
+        // about a session: its catalog entry, projection cache, release and published actionables.
+        let events_host = Arc::downgrade(&host);
+        let events_root = store::folder_events::canonical_root(&host.root);
+        store::folder_events::subscribe(Arc::new(move |event| {
+            let Some(host) = events_host.upgrade() else {
+                return false;
+            };
+            if event.root() == events_root {
+                host.on_folder_event(event);
+            }
+            true
+        }));
         let refresh_host = Arc::downgrade(&host);
         std::thread::spawn(move || {
             while let Some(host) = refresh_host.upgrade() {
@@ -1372,7 +1426,7 @@ impl ProductionProcessHost {
                 output
             },
         );
-        let management = ManagementStore::open_at(&self.root, &timestamp)
+        let management = ManagementStore::open_light_at(&self.root, &timestamp)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let session_id = management
             .create_session(SessionCreateOperation {
@@ -1493,12 +1547,202 @@ impl ProductionProcessHost {
         Ok(())
     }
 
+    /// Starts the work that touches threads, after the ready line (ADDENDUM-01 §1.4). One
+    /// background thread, in order: load the catalog, clean stale ephemeral threads and
+    /// tombstones, start the schedule timer (its startup pass reads the sessions it launched),
+    /// then build the missing cards. A request that needs the List or one thread does not wait for
+    /// this thread: it loads/verifies what it needs itself (single flight).
+    pub fn run_post_ready(self: &Arc<Self>) {
+        let host = Arc::downgrade(self);
+        let spawned = std::thread::Builder::new()
+            .name("post-ready".to_owned())
+            .spawn(move || {
+                if let Some(host) = host.upgrade() {
+                    host.post_ready_tasks();
+                }
+            });
+        if let Err(error) = spawned {
+            eprintln!("process-host-post-ready-failed: {error}");
+        }
+    }
+
+    fn post_ready_tasks(self: &Arc<Self>) {
+        self.catalog.ensure_loaded();
+        crate::boot_trace::phase("catalog_loaded");
+        if self.draining.load(Ordering::Acquire) {
+            return;
+        }
+        self.cleanup_stale_ephemeral();
+        if self.draining.load(Ordering::Acquire) {
+            return;
+        }
+        if let Err(error) = self.start_schedule_timer() {
+            eprintln!("process-host-schedule-start-failed: {error}");
+        }
+        crate::boot_trace::phase("post_ready_timers");
+        self.run_upgrade_pass();
+    }
+
+    /// Removes ephemeral scratch threads and `discard-*` tombstones left by a previous process
+    /// (ADDENDUM-02 S4, -03 C7). Threads this process owns (admitted, or with a live worker) are
+    /// never touched; the store re-checks under the catalog lock. Until removed, such a thread is
+    /// hidden from the List (`is_stale_ephemeral`).
+    fn cleanup_stale_ephemeral(&self) {
+        let Ok(threads) = store::ThreadStore::open(&self.root) else {
+            return;
+        };
+        let live = self.live_sessions_for_cleanup();
+        let report = threads.cleanup_stale_ephemeral(&|id| {
+            store::folder_events::is_admitted(&self.root, id) || live.contains(id)
+        });
+        match report {
+            Ok(report) => {
+                self.stale_ephemeral_busy
+                    .store(report.busy.len(), Ordering::Release);
+                if !report.removed.is_empty() || !report.busy.is_empty() || report.tombstones > 0 {
+                    eprintln!(
+                        "process-host-ephemeral-cleanup: removed={} busy={} tombstones={}",
+                        report.removed.len(),
+                        report.busy.len(),
+                        report.tombstones
+                    );
+                }
+            }
+            Err(error) => eprintln!("process-host-ephemeral-cleanup-failed: {error}"),
+        }
+    }
+
+    fn live_sessions_for_cleanup(&self) -> HashSet<String> {
+        self.workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .iter()
+            .filter(|(_, worker)| worker.alive.load(Ordering::Acquire))
+            .map(|(key, _)| key.split(':').next().unwrap_or(key).to_owned())
+            .collect()
+    }
+
+    /// The lazy upgrade of a root without (fresh) cards (DESIGN §9): fold each unverified thread
+    /// once, newest first, at a low duty cycle. It never delays readiness or a List request,
+    /// which verify what they need themselves.
+    fn run_upgrade_pass(&self) {
+        let work = self.catalog.unverified();
+        if work.is_empty() {
+            return;
+        }
+        let started = Instant::now();
+        let total = work.len();
+        let mut built = 0_usize;
+        let mut last_report = Instant::now();
+        for session in work {
+            if self.draining.load(Ordering::Acquire) {
+                return;
+            }
+            if self.recently_failed(&session) {
+                continue;
+            }
+            let began = Instant::now();
+            match self.hydrate(&session) {
+                Ok(()) => built += 1,
+                Err(error) => {
+                    eprintln!("process-host-upgrade-skipped: session={session} error={error}");
+                }
+            }
+            if last_report.elapsed() >= Duration::from_millis(250) {
+                eprintln!(
+                    "catalog-upgrade: built={built} total={total} elapsed_ms={}",
+                    started.elapsed().as_millis()
+                );
+                last_report = Instant::now();
+            }
+            // Duty cycle: rest as long as the fold took (bounded), so a workload that started
+            // meanwhile is not starved.
+            std::thread::sleep(began.elapsed().min(Duration::from_millis(200)));
+        }
+        eprintln!(
+            "catalog-upgrade: done built={built} total={total} elapsed_ms={}",
+            started.elapsed().as_millis()
+        );
+    }
+
+    /// Test helper: what `sessions.recover` does to the deferral set, without the verification.
+    #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    pub(crate) fn release_for_test(&self, session_id: &str) {
+        self.released
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .insert(session_id.to_owned());
+    }
+
+    /// A previous process's ephemeral scratch thread that cleanup has not removed yet.
+    pub(crate) fn is_stale_ephemeral(&self, session_id: &str, ephemeral: bool) -> bool {
+        ephemeral && !store::folder_events::is_admitted(&self.root, session_id)
+    }
+
+    fn on_folder_event(&self, event: &store::folder_events::FolderEvent) {
+        use store::folder_events::FolderEvent;
+        let id = event.id();
+        self.catalog.forget(id);
+        // A folder that arrives in `threads/` (create, fork, redact destination, unarchive)
+        // enters the catalog now: the List and the sweep must see it without anybody having to
+        // ask for it first (E832 M1). Nothing is read here -- this runs under the store's
+        // locks (E833 F6): the first `get` reads its card, and a thread without one is Cold and
+        // verified by the next List or open.
+        if matches!(
+            event,
+            FolderEvent::Published { .. }
+                | FolderEvent::Moved {
+                    to: store::folder_events::Area::Threads,
+                    ..
+                }
+        ) {
+            self.catalog.note_present(id);
+        }
+        self.projection_cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(id);
+        if let Some(streams) = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone()
+        {
+            streams.forget_session(id);
+        }
+        if matches!(event, FolderEvent::Removed { .. }) {
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .remove(id);
+        }
+    }
+
     pub fn attach_streams(&self, streams: ProductionCarrierStreams) {
         streams.attach_session_authority(self.self_weak.clone());
         *self
             .streams
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(streams);
+    }
+
+    /// Derives the requests of one child line and announces what changed (a child's append, or
+    /// its exit). Failure only logs: the next recompute of the baseline reads the line again.
+    fn reconcile_child_line(&self, session_id: &str, ledger: &Path) {
+        let streams = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone();
+        let (Some(streams), Some(line)) =
+            (streams, ledger.file_name().and_then(|name| name.to_str()))
+        else {
+            return;
+        };
+        if let Err(error) = streams.reconcile_actionables(session_id, Some(line)) {
+            eprintln!("process-host-publish-child-actionables-failed: {error}");
+        }
     }
 
     /// Announces a worker start or exit so inventory `running` follows the
@@ -1544,6 +1788,40 @@ impl ProductionProcessHost {
                 }
             }
         });
+        // The management recovery retry has its own thread: a pending queue transaction can
+        // start a worker (a handshake of up to 10 s) and must never delay the sweep.
+        let recovery_host = Arc::downgrade(self);
+        std::thread::spawn(move || {
+            let mut validated = endpoint::CompleteOperations::default();
+            loop {
+                for _ in 0..MANAGEMENT_RECOVERY_SECONDS {
+                    std::thread::sleep(Duration::from_secs(1));
+                    match recovery_host.upgrade() {
+                        Some(host) if !host.draining.load(Ordering::Acquire) => {}
+                        _ => return,
+                    }
+                }
+                let Some(host) = recovery_host.upgrade() else {
+                    return;
+                };
+                host.recover_pending_management(&mut validated);
+                // A stale scratch thread that was busy at post-ready cleanup (a lock holder, a
+                // live rewrite) is tried again here (O-final m4).
+                if host.stale_ephemeral_busy.load(Ordering::Acquire) > 0 {
+                    host.cleanup_stale_ephemeral();
+                }
+            }
+        });
+    }
+
+    /// The 30 s retry of pending management operations (create/fork/archive/queue/workspace
+    /// records a failure left unfinished). Failure only logs: the next tick retries.
+    fn recover_pending_management(&self, validated: &mut endpoint::CompleteOperations) {
+        if let Err(error) =
+            crate::endpoint_host::recover_pending_management(&self.root, self, validated)
+        {
+            eprintln!("process-host-management-recovery-failed: {error}");
+        }
     }
 
     pub fn refresh_live_credentials(&self) -> Result<(), DaemonError> {
@@ -1615,6 +1893,9 @@ impl ProductionProcessHost {
         Ok(())
     }
 
+    /// One synchronous sweep tick (single-flight with the periodic thread). The Kernel no longer
+    /// calls this at boot -- readiness does not wait for any thread -- but tests and tools use
+    /// it to run the sweep deterministically.
     pub fn boot_sweep(&self) -> Result<(), DaemonError> {
         let _sweep = self
             .sweep_lock
@@ -1623,23 +1904,18 @@ impl ProductionProcessHost {
         self.sweep_once()
     }
 
-    /// Built-in launch repairs projections immediately, but existing sessions
-    /// only resume after the client has installed control/actionable baselines.
-    pub fn defer_existing_session_recovery(&self) -> Result<(), DaemonError> {
-        let sessions = fs::read_dir(self.root.join("threads")).map_err(DaemonError::io)?;
-        let mut deferred = self
-            .deferred_recovery
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        for session in sessions {
-            let session = session.map_err(DaemonError::io)?;
-            if session.file_type().map_err(DaemonError::io)?.is_dir() {
-                deferred.insert(session.file_name().to_string_lossy().into_owned());
-            }
-        }
-        Ok(())
+    /// Starts recording which sessions this process creates, forks or unarchives. Called once,
+    /// immediately before readiness: folders published earlier (recovery of pending
+    /// operations) are pre-existing sessions and stay deferred.
+    pub fn arm_admission(&self) {
+        store::folder_events::arm_admission(&self.root);
     }
 
+    /// The client releases pre-existing sessions after it installed its control and actionable
+    /// baselines (spec/session-endpoint.md, `sessions.recover`). For each id: bring the thread's
+    /// view to a verified state (repair a torn tail, project the journal), un-defer it, and give
+    /// it its share of a sweep -- which is where an interrupted turn gets its reconcile-only
+    /// worker. Other sessions are not touched.
     pub fn recover_client_sessions(&self, sessions: &[String]) -> Result<(), DaemonError> {
         for session in sessions {
             if session.is_empty()
@@ -1656,16 +1932,159 @@ impl ProductionProcessHost {
                 return Err(DaemonError::invalid_config("recovery session not found"));
             }
         }
-        {
-            let mut deferred = self
-                .deferred_recovery
+        for session in sessions {
+            if let Err(error) = self.ensure_verified(session) {
+                // A quarantined or unreadable thread is not recovered; the others still are.
+                eprintln!("process-host-recover-skipped: session={session} error={error}");
+                continue;
+            }
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .insert(session.clone());
+            let _sweep = self
+                .sweep_lock
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
-            for session in sessions {
-                deferred.remove(session);
+            if let Err(error) = self.sweep_session(session) {
+                eprintln!("process-host-sweep-session-failed: session={session} error={error}");
             }
         }
-        self.boot_sweep()
+        Ok(())
+    }
+
+    /// Brings one thread to a verified state: `Fresh` in the catalog. A view that a fold has
+    /// produced is trusted; otherwise the thread's tails are repaired when no one holds them
+    /// and the thread is folded and projected once (`publish_appended`, which also refreshes
+    /// the catalog and hands the card to its writer). Returns an error for a quarantined
+    /// thread. Cost: one decode of this thread, never of any other.
+    pub(crate) fn ensure_verified(&self, session_id: &str) -> Result<(), DaemonError> {
+        let Some(entry) = self.catalog.get(session_id) else {
+            return Err(DaemonError::invalid_config("session not found"));
+        };
+        match entry.trust {
+            crate::catalog::Trust::Fresh => return Ok(()),
+            crate::catalog::Trust::Corrupt(reason) => {
+                return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+            }
+            crate::catalog::Trust::Ahead | crate::catalog::Trust::Cold => {}
+        }
+        self.hydrate(session_id)
+    }
+
+    /// The hydrator's unit of work (single flight per thread).
+    pub(crate) fn hydrate(&self, session_id: &str) -> Result<(), DaemonError> {
+        self.hydrate_with(session_id, None)
+    }
+
+    /// `after_fold` is a test seam called after the thread's ledger is folded and before the
+    /// journal work, i.e. outside every global lock.
+    pub(crate) fn hydrate_with(
+        &self,
+        session_id: &str,
+        after_fold: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
+        let outcome = self.hydrate_unrecorded(session_id, after_fold);
+        let mut failures = self
+            .hydrate_failures
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if outcome.is_ok() {
+            failures.remove(session_id);
+        } else {
+            failures.insert(session_id.to_owned(), Instant::now());
+        }
+        outcome
+    }
+
+    /// A thread whose verification failed a moment ago is not retried by every List: it keeps
+    /// its placeholder row and is tried again after `HYDRATE_RETRY`.
+    fn recently_failed(&self, session_id: &str) -> bool {
+        self.hydrate_failures
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(session_id)
+            .is_some_and(|at| at.elapsed() < HYDRATE_RETRY)
+    }
+
+    fn hydrate_unrecorded(
+        &self,
+        session_id: &str,
+        after_fold: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
+        let gate = {
+            let mut gates = self
+                .hydrating
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            Arc::clone(gates.entry(session_id.to_owned()).or_default())
+        };
+        let _single_flight = gate
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        // Another caller may have finished while we waited.
+        if let Some(entry) = self.catalog.get(session_id) {
+            match entry.trust {
+                crate::catalog::Trust::Fresh => return Ok(()),
+                crate::catalog::Trust::Corrupt(reason) => {
+                    return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+                }
+                _ => {}
+            }
+        }
+        let folder = self.root.join("threads").join(session_id);
+        let mut report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+        // Damage is believed only when a second look agrees with the first (the rule of
+        // `damage_confirmed`): one unlocked read can straddle another process's repair and an
+        // append and show a record that never existed (O-final n3).
+        if let Some(first) = report.corrupt.first().cloned() {
+            std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
+            let again = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+            let truncated = report.truncated_bytes + again.truncated_bytes;
+            if again.corrupt.first() != Some(&first) {
+                // Not confirmed: the second look is the truth now.
+                report = again;
+            }
+            report.truncated_bytes = truncated;
+        }
+        if let Some((file, reason)) = report.corrupt.first() {
+            let reason = format!("{file}: {reason}");
+            eprintln!("process-host-hydrate-quarantined: session={session_id} {reason}");
+            self.catalog.mark_corrupt(session_id, &reason);
+            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        }
+        if report.truncated_bytes > 0 {
+            eprintln!(
+                "process-host-hydrate-repair: session={session_id} discarded_partial_bytes={}",
+                report.truncated_bytes
+            );
+            // The repair fsynced the ledger: it counts against the same limiter the card writer
+            // uses, and never waits (hydration may be serving a List or a thread open).
+            self.card_writer.governor().charge(1);
+        }
+        // A crashed process can leave its temporary card file behind (never read, never named
+        // like a thread file); a dead pid's file is removed here, once per hydration.
+        let stale = store::card::remove_stale_card_temps(&folder);
+        if stale > 0 {
+            eprintln!("process-host-hydrate-card-temps: session={session_id} removed={stale}");
+        }
+        self.card_writer.reset_window(session_id);
+        #[cfg(test)]
+        self.hydrate_runs.fetch_add(1, Ordering::Relaxed);
+        self.publish_appended_with(session_id, after_fold)?;
+        // The main ledger is sound; every child ledger must be too (E833 F5).
+        if let Some(reason) = child_ledger_damage(&folder) {
+            eprintln!("process-host-quarantined: session={session_id} {reason}");
+            self.catalog.mark_corrupt(session_id, &reason);
+            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        }
+        // The entry's child lines are exact as of this verification (O-final B1): the main
+        // fold above carried none forward.
+        self.catalog.set_children(
+            session_id,
+            crate::thread_card::fold_child_views(session_id, &folder),
+        );
+        Ok(())
     }
 
     /// Audit invariant I3: the endpoint journal catches up with the semantic
@@ -1797,95 +2216,141 @@ impl ProductionProcessHost {
     }
 
     fn sweep_once(&self) -> Result<(), DaemonError> {
-        let mut sessions = fs::read_dir(self.root.join("threads"))
+        for session_id in self.sweep_ids() {
+            let started = Instant::now();
+            if let Err(error) = self.sweep_session(&session_id) {
+                eprintln!("process-host-sweep-session-failed: session={session_id} error={error}");
+            }
+            // Opt-in (`TEKES_KERNEL_BOOT_TRACE=1`): the sweep runs every second, so only a
+            // session that took noticeable time is reported.
+            if crate::boot_trace::per_item_enabled() && started.elapsed().as_millis() >= 100 {
+                crate::boot_trace::detail(
+                    "sweep_session",
+                    &format!("session={session_id} ms={}", started.elapsed().as_millis()),
+                );
+            }
+        }
+        Ok(())
+    }
+
+    /// The sessions a tick considers. Before the catalog has loaded (the first moments after
+    /// `ready`) that is only what this process created or released -- no directory is read.
+    fn sweep_ids(&self) -> Vec<String> {
+        let mut ids = if self.catalog.is_loaded() {
+            self.catalog
+                .entries_now()
+                .into_iter()
+                .map(|(id, _)| id)
+                .collect::<Vec<_>>()
+        } else {
+            Vec::new()
+        };
+        // Threads this process created or unarchived are always swept, whatever the catalog
+        // has seen so far.
+        ids.extend(store::folder_events::admitted_ids(&self.root));
+        ids.extend(
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .iter()
+                .cloned(),
+        );
+        ids.sort();
+        ids.dedup();
+        ids
+    }
+
+    /// True for a session that existed before this process and the client has not released with
+    /// `sessions.recover`: its workers may not be started by a sweep (DESIGN §6). No thread is
+    /// enumerated to decide this: a session is deferred unless this process created, forked or
+    /// unarchived it (`store::folder_events` admission) or the client released it.
+    fn is_deferred(&self, session_id: &str) -> bool {
+        !store::folder_events::is_admitted(&self.root, session_id)
+            && !self
+                .released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .contains(session_id)
+    }
+
+    /// One session's share of a sweep tick. A deferred session only gets durable-stop
+    /// propagation, and only when its verified view says a stop is active; everything else about
+    /// it waits for `sessions.recover` (projection repair is the hydrator's job).
+    fn sweep_session(&self, session_id: &str) -> Result<(), DaemonError> {
+        let Some(entry) = self.catalog.get(session_id) else {
+            return Ok(());
+        };
+        if matches!(entry.trust, crate::catalog::Trust::Corrupt(_)) {
+            return Ok(());
+        }
+        let deferred = self.is_deferred(session_id);
+        if deferred
+            && !entry
+                .view
+                .as_ref()
+                .is_some_and(|view| view.stop_active() || !view.children_exact)
+        {
+            return Ok(());
+        }
+        let session_dir = self.root.join("threads").join(session_id);
+        let mut ledgers = fs::read_dir(&session_dir)
             .map_err(DaemonError::io)?
             .collect::<Result<Vec<_>, _>>()
             .map_err(DaemonError::io)?;
-        sessions.sort_by_key(fs::DirEntry::file_name);
-        for session in sessions {
-            let session_result = (|| -> Result<(), DaemonError> {
-                if !session.file_type().map_err(DaemonError::io)?.is_dir() {
-                    return Ok(());
-                }
-                let session_id = session.file_name().to_string_lossy().into_owned();
-                let mut ledgers = fs::read_dir(session.path())
-                    .map_err(DaemonError::io)?
-                    .collect::<Result<Vec<_>, _>>()
-                    .map_err(DaemonError::io)?;
-                ledgers.retain(|entry| {
-                    entry.file_type().is_ok_and(|kind| kind.is_file())
-                        && entry.path().extension().and_then(|value| value.to_str())
-                            == Some("jsonl")
-                        && entry
-                            .file_name()
-                            .to_str()
-                            .is_some_and(|name| name != endpoint::JOURNAL_FILE)
-                });
-                ledgers.sort_by_key(|entry| {
-                    (
-                        entry.file_name() != std::ffi::OsStr::new("main.jsonl"),
-                        entry.file_name(),
-                    )
-                });
-                self.propagate_durable_stops_before_sweep(&session_id, &ledgers)?;
-                for ledger in ledgers {
-                    let path = ledger.path();
-                    let scan = self.sweep_ledger_scan(&path)?;
-                    let ledger_last_seq = scan.last_seq;
-                    let facts = &scan.lifecycle;
-                    let key = if ledger.file_name() == std::ffi::OsStr::new("main.jsonl") {
-                        session_id.clone()
-                    } else {
-                        format!("{session_id}:{}", scan.line)
-                    };
-                    let owned_live = self
-                        .workers
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .get(&key)
-                        .is_some_and(|worker| worker.alive.load(Ordering::Acquire));
-                    if key == session_id && !owned_live {
-                        self.repair_main_projection(&session_id, ledger_last_seq);
-                    }
-                    let lock_facts = if owned_live || probe_line_lock(&path)? == LineLockState::Busy
-                    {
-                        LockFacts::OTHER
-                    } else {
-                        LockFacts::FREE
-                    };
-                    let state = classify(facts, lock_facts);
-                    if ensure_action_at(state, facts, Some(&now_rfc3339())) == EnsureAction::None
-                        && !(key == session_id && goal_continuation_due(&path)?)
-                    {
-                        continue;
-                    }
-                    if !self.restart_is_due(&key) {
-                        continue;
-                    }
-                    if self
-                        .deferred_recovery
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .contains(&session_id)
-                    {
-                        continue;
-                    }
-                    self.refresh_limits(&path)?;
-                    if let Err(error) = self.schedule_worker_at(&key, &session_id, path) {
-                        self.note_restart_failure(
-                            &key,
-                            &session_id,
-                            error.bootstrap_code().as_bytes(),
-                        );
-                    }
-                }
-                Ok(())
-            })();
-            if let Err(error) = session_result {
-                eprintln!(
-                    "process-host-sweep-session-failed: session={} error={error}",
-                    session.file_name().to_string_lossy()
-                );
+        ledgers.retain(|entry| {
+            entry.file_type().is_ok_and(|kind| kind.is_file())
+                && entry.path().extension().and_then(|value| value.to_str()) == Some("jsonl")
+                && entry
+                    .file_name()
+                    .to_str()
+                    .is_some_and(|name| name != endpoint::JOURNAL_FILE)
+        });
+        ledgers.sort_by_key(|entry| {
+            (
+                entry.file_name() != std::ffi::OsStr::new("main.jsonl"),
+                entry.file_name(),
+            )
+        });
+        self.propagate_durable_stops_before_sweep(session_id, &ledgers)?;
+        if deferred {
+            return Ok(());
+        }
+        for ledger in ledgers {
+            let path = ledger.path();
+            let scan = self.sweep_ledger_scan(&path)?;
+            let ledger_last_seq = scan.last_seq;
+            let facts = &scan.lifecycle;
+            let key = if ledger.file_name() == std::ffi::OsStr::new("main.jsonl") {
+                session_id.to_owned()
+            } else {
+                format!("{session_id}:{}", scan.line)
+            };
+            let owned_live = self
+                .workers
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .get(&key)
+                .is_some_and(|worker| worker.alive.load(Ordering::Acquire));
+            if key == session_id && !owned_live {
+                self.repair_main_projection(session_id, ledger_last_seq);
+            }
+            let lock_facts = if owned_live || probe_line_lock(&path)? == LineLockState::Busy {
+                LockFacts::OTHER
+            } else {
+                LockFacts::FREE
+            };
+            let state = classify(facts, lock_facts);
+            if ensure_action_at(state, facts, Some(&now_rfc3339())) == EnsureAction::None
+                && !(key == session_id && goal_continuation_due(&path)?)
+            {
+                continue;
+            }
+            if !self.restart_is_due(&key) {
+                continue;
+            }
+            self.refresh_limits(&path)?;
+            if let Err(error) = self.schedule_worker_at(&key, session_id, path) {
+                self.note_restart_failure(&key, session_id, error.bootstrap_code().as_bytes());
             }
         }
         Ok(())
@@ -1930,6 +2395,13 @@ impl ProductionProcessHost {
     }
 
     pub fn shutdown(&self) {
+        self.shutdown_with(None, &HashSet::new());
+    }
+
+    /// `after_workers_stopped` runs between stopping the workers and flushing the cards (a test
+    /// seam: it stands for the last append a killed worker had already made durable);
+    /// `also_live` names sessions to treat as live at quit (a test has no real workers).
+    fn shutdown_with(&self, after_workers_stopped: Option<&dyn Fn()>, also_live: &HashSet<String>) {
         self.draining.store(true, Ordering::Release);
         self.pending_workers
             .lock()
@@ -1937,6 +2409,8 @@ impl ProductionProcessHost {
             .clear();
         self.admission_changed.notify_all();
         self.workers_changed.notify_all();
+        let mut live_before = self.live_sessions_for_cleanup();
+        live_before.extend(also_live.iter().cloned());
         let workers = self
             .workers
             .lock()
@@ -1953,6 +2427,17 @@ impl ProductionProcessHost {
             let _ = child.wait();
             worker.alive.store(false, Ordering::Release);
         }
+        // Workers first, then the cards (E831 ruling): a thread that was live at quit gets a
+        // final fold of its now-stable ledger, so its card is not left Ahead. The flush is bounded
+        // by the writer's shutdown budget, which is the most quit can be delayed.
+        if let Some(after_workers_stopped) = after_workers_stopped {
+            after_workers_stopped();
+        }
+        for session in live_before {
+            let folder = self.root.join("threads").join(&session);
+            self.card_writer.mark_dirty(&session, folder, None);
+        }
+        self.card_writer.shutdown();
     }
 
     fn ensure_running(&self, session_id: &str) -> Result<Arc<WorkerHandle>, DaemonError> {
@@ -2348,6 +2833,11 @@ impl ProductionProcessHost {
         ledger: PathBuf,
         startup: Option<&QueueTransaction>,
     ) -> Result<ScheduledWorker, DaemonError> {
+        // A thread is verified (a torn tail repaired, its view folded) before its first worker
+        // of this process starts; the lazy boot no longer does that for every thread.
+        if self.live_worker(process_key).is_none() {
+            ProductionProcessHost::ensure_verified(self, session_id)?;
+        }
         self.refresh_limits(&ledger)?;
         let mut workers = self
             .workers
@@ -3161,14 +3651,9 @@ impl ProductionProcessHost {
             .join("threads")
             .join(&proof.session)
             .join(&proof.child_file);
-        let bytes = fs::read(&ledger).map_err(DaemonError::io)?;
-        let projection = scan_valid_prefix(&bytes, 1)
-            .projection
+        let genesis = store::read_genesis(&ledger)
+            .map_err(DaemonError::store)?
             .ok_or_else(|| DaemonError::corrupt("child ledger has no projection"))?;
-        let genesis = projection
-            .events
-            .first()
-            .ok_or_else(|| DaemonError::corrupt("child ledger has no genesis"))?;
         if genesis.string_field("thread") != Some(proof.child_line.as_str()) {
             return Err(DaemonError::corrupt(
                 "child proof line does not match child genesis",
@@ -3178,10 +3663,16 @@ impl ProductionProcessHost {
     }
 
     fn publish_appended(&self, session_id: &str) -> Result<(), DaemonError> {
-        let _projection_guard = self
-            .projection_lock
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        self.publish_appended_with(session_id, None)
+    }
+
+    /// `after_decode` is a test seam called between the ledger decode and the journal
+    /// reconcile; it lets a test grow the ledger exactly where a concurrent respond would.
+    fn publish_appended_with(
+        &self,
+        session_id: &str,
+        after_decode: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
         let streams = self
             .streams
             .lock()
@@ -3189,21 +3680,97 @@ impl ProductionProcessHost {
             .clone();
         let folder = self.root.join("threads").join(session_id);
         let ledger_path = folder.join("main.jsonl");
-        let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+        // Phase 1, no lock: read and fold the ledger and build the card. This is the part that
+        // grows with the thread, so concurrent folds of different threads (a cold List, the
+        // upgrade pass) run in parallel and never hold up a live session's doorbell (E832 M2).
+        let mut bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+        let mut scan = scan_valid_prefix(&bytes, 1);
+        // A complete line that does not validate (or a ledger with no valid genesis) is damage a
+        // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
+        // after the valid prefix -- is a partial append and only needs repair. The decision needs
+        // two agreeing reads: one unlocked read can straddle another process's repair or append
+        // and show a record that never existed (O-final m3).
+        if let Some(offset) = ledger_damage(&bytes) {
+            if damage_confirmed(&ledger_path, offset) {
+                let reason = format!("main.jsonl: no valid record at byte {offset}");
+                eprintln!("process-host-quarantined: session={session_id} {reason}");
+                self.catalog.mark_corrupt(session_id, &reason);
+                return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+            }
+            // Not confirmed: the second read is the truth now.
+            bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+            scan = scan_valid_prefix(&bytes, 1);
+        }
         let kernel_file_len = bytes.len() as u64;
-        let projection = scan_valid_prefix(&bytes, 1)
+        let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+        // The shared-decode fast paths below are only taken for a clean read (no torn tail,
+        // which the separate-read paths reject with "requires tail recovery") and only while
+        // the ledger has not grown since this decode; otherwise the previous behaviour applies.
+        let clean_read = !scan.needs_repair();
+        let projection = scan
             .projection
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
+        let due = self.card_writer.is_due(session_id);
+        // Between card writes the catalog entry is advanced from the fold without rebuilding
+        // the card view (K6); the writer re-folds the thread when its window expires.
+        let advanced_light =
+            clean_read && !due && self.catalog.refresh_light(session_id, &projection);
+        #[cfg(test)]
+        if clean_read && !advanced_light {
+            self.card_builds.fetch_add(1, Ordering::Relaxed);
+        }
+        let prepared = if clean_read && !advanced_light {
+            crate::thread_card::prepare(
+                session_id,
+                folder.clone(),
+                bytes,
+                valid_bytes,
+                &projection,
+                None,
+            )
+        } else {
+            None
+        };
+        if let Some(after_decode) = after_decode {
+            after_decode();
+        }
+        // Phase 2, under the projection lock: the journal, the published frames, the
+        // actionables and the card hand-off. A fold that finished after a newer one (two
+        // callers raced) only re-describes older bytes: the journal reconcile appends nothing,
+        // the actionables guard (K9) refuses it, and the catalog refuses an older view.
+        let _projection_guard = self
+            .projection_lock
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         let journal = EndpointJournal::open(&folder)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let mut projector = Projector::default();
         let appended = projector
             .reconcile(&projection.events, &journal)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        // The ledger may grow while the journal is reconciled (a respond appends its
+        // `approval_response` and reconciles the actionables itself, outside `projection_lock`).
+        // The shared projection is only trusted while the file still has the length it was
+        // decoded at; otherwise the decode-per-call path runs, exactly as before this change.
+        let ledger_unchanged = |len: u64| {
+            clean_read && fs::metadata(&ledger_path).is_ok_and(|metadata| metadata.len() == len)
+        };
         if let Some(streams) = &streams {
-            streams
-                .reconcile_actionables(session_id, None)
-                .map_err(DaemonError::from)?;
+            let reconciled = if ledger_unchanged(kernel_file_len) {
+                streams.reconcile_actionables_main(session_id, &projection)
+            } else {
+                streams.reconcile_actionables(session_id, None)
+            };
+            match reconciled {
+                Ok(()) => {}
+                // 256 pinned sessions hold the live registrations: the request frame cannot be
+                // announced, but the durable journal events below must still be (a client that
+                // misses them rebaselines; O-final m10).
+                Err(error @ ProductionCarrierError::ActiveSessionLimit(_)) => {
+                    eprintln!("process-host-actionables-limit: session={session_id} {error}");
+                }
+                Err(error) => return Err(DaemonError::from(error)),
+            }
         }
         for event in appended {
             if let Some(streams) = &streams {
@@ -3213,7 +3780,12 @@ impl ProductionProcessHost {
             }
         }
         if let Some(streams) = &streams {
-            match streams.refresh_context_projection(session_id) {
+            let refreshed = if ledger_unchanged(kernel_file_len) {
+                streams.refresh_context_projection_shared(session_id, &projection, &journal)
+            } else {
+                streams.refresh_context_projection(session_id)
+            };
+            match refreshed {
                 Ok(()) => {
                     self.context_projection_retries
                         .lock()
@@ -3231,22 +3803,61 @@ impl ProductionProcessHost {
                 }
             }
         }
+        // The fold above is the verification a card and the catalog view need. The view is
+        // refreshed on every clean fold (cheap: no ledger bytes); the card is only handed to the
+        // writer when it is due for this thread (K6), otherwise the thread is marked dirty and
+        // the writer re-folds it itself when its window expires. A torn tail is repaired first
+        // and described by the next fold. The journal block is taken after the reconcile.
+        if advanced_light {
+            self.card_writer.mark_dirty(
+                session_id,
+                folder.clone(),
+                crate::thread_card::journal_input(&journal),
+            );
+        } else if clean_read {
+            let journal_snapshot = crate::thread_card::journal_input(&journal);
+            match prepared {
+                Some(card) => {
+                    let card = card.with_journal(journal_snapshot);
+                    if self.catalog.set_fresh_main(session_id, card.view()) {
+                        if due {
+                            self.card_writer.submit(card);
+                        } else {
+                            self.card_writer.mark_dirty(
+                                session_id,
+                                folder.clone(),
+                                journal_snapshot,
+                            );
+                        }
+                    }
+                }
+                None if !due => {
+                    self.card_writer
+                        .mark_dirty(session_id, folder.clone(), journal_snapshot);
+                }
+                None => {}
+            }
+        }
         let mut projection_cache = self
             .projection_cache
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let next_frames = projection_cache
-            .remove(session_id)
-            .map(|previous| previous.next_frames)
-            .unwrap_or_default();
-        projection_cache.insert(
-            session_id.to_owned(),
-            SessionProjectionCache {
-                kernel_file_len,
-                projector,
-                next_frames,
-            },
-        );
+        match projection_cache.remove(session_id) {
+            // A caller that folded a newer ledger finished first: keep its cache.
+            Some(previous) if previous.kernel_file_len > kernel_file_len => {
+                projection_cache.insert(session_id.to_owned(), previous);
+            }
+            previous => {
+                projection_cache.insert(
+                    session_id.to_owned(),
+                    SessionProjectionCache {
+                        kernel_file_len,
+                        projector,
+                        next_frames: previous.map(|cache| cache.next_frames).unwrap_or_default(),
+                    },
+                );
+            }
+        }
         drop(projection_cache);
         Ok(())
     }
@@ -4150,22 +4761,7 @@ fn worker_reader(
             Ok(WorkerMessage::Appended(_)) => {
                 if process_key != session_id {
                     if let Some(owner) = owner.upgrade() {
-                        let streams = owner
-                            .streams
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner)
-                            .clone();
-                        if let Some(streams) = streams {
-                            if let Some(line) = ledger.file_name().and_then(|name| name.to_str()) {
-                                if let Err(error) =
-                                    streams.reconcile_actionables(&session_id, Some(line))
-                                {
-                                    eprintln!(
-                                        "process-host-publish-child-actionables-failed: {error}"
-                                    );
-                                }
-                            }
-                        }
+                        owner.reconcile_child_line(&session_id, &ledger);
                     }
                 }
                 if process_key == session_id {
@@ -4307,6 +4903,11 @@ fn worker_reader(
         drop(workers);
         owner.workers_changed.notify_all();
         owner.publish_session_status(&session_id);
+        // A child worker that died between a durable append and its `Appended` message left a
+        // request nobody announced: look at its line once more (O-final n1).
+        if process_key != session_id {
+            owner.reconcile_child_line(&session_id, &ledger);
+        }
         owner.start_pending_workers();
         if !owner.draining.load(Ordering::Acquire) {
             let failure = if exited_cleanly {
@@ -4665,7 +5266,431 @@ fn child_exited_within(child: &Mutex<Child>, timeout: Duration) -> bool {
     }
 }
 
+/// Facts that classify as `settled`: used for the placeholder row of a thread whose verification
+/// has not finished inside the List's wait budget. It is never `interrupted` or
+/// `recovery_needed`: a wrong-but-neutral tail is corrected by the upsert that follows.
+fn neutral_lifecycle() -> schema::LifecycleFacts {
+    schema::LifecycleFacts {
+        latest_turn: None,
+        terminal_tail: true,
+        stop_active: false,
+        stop_closure_point: None,
+        open_hold: false,
+        answered_hold: false,
+        runnable_inputs: Vec::new(),
+        turn_open_inputs: Vec::new(),
+        live_inputs: Vec::new(),
+        unstarted: false,
+        unresolved_work: false,
+        resume_policy: schema::ResumePolicy::Never,
+        recovery_ordinal: 0,
+        continuation_wait_until: None,
+        admission_wait_until: None,
+    }
+}
+
+/// Pause between the two reads that must agree before damage is believed.
+const DAMAGE_CONFIRM_PAUSE: Duration = Duration::from_millis(25);
+
+/// Whether the bytes of a ledger file show damage no repair can fix: no valid genesis, or a
+/// complete (LF-terminated) record after the valid prefix that does not validate. Returns the
+/// offset of the first invalid byte.
+fn ledger_damage(bytes: &[u8]) -> Option<u64> {
+    let scan = scan_valid_prefix(bytes, 1);
+    let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+    (scan.projection.is_none()
+        || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n'))))
+    .then(|| scan.first_invalid_offset.unwrap_or(scan.valid_bytes))
+}
+
+/// Believes damage only when two reads taken a moment apart show the same damage at the same
+/// offset. One unlocked `fs::read` can straddle a repair or an append by another process and
+/// show a record that never existed; a quarantine is sticky for the life of the process, so it
+/// must not rest on one read (O-final m3).
+fn damage_confirmed(path: &Path, first: u64) -> bool {
+    std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
+    fs::read(path).ok().and_then(|bytes| ledger_damage(&bytes)) == Some(first)
+}
+
+/// A complete but invalid record, or no valid genesis, in a child line ledger (`<uuid>.jsonl`):
+/// damage no repair can fix. A torn tail is only a partial append and is not damage. An empty
+/// child file is not judged here: `repair_thread_tails` already reports it as damage before this
+/// runs, and no live path produces one (a child's genesis is published by rename).
+fn child_ledger_damage(folder: &Path) -> Option<String> {
+    let entries = fs::read_dir(folder).ok()?;
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if name == "main.jsonl"
+            || !store::card::valid_line_name(&name)
+            || !entry.file_type().is_ok_and(|kind| kind.is_file())
+        {
+            continue;
+        }
+        let Ok(bytes) = fs::read(entry.path()) else {
+            continue;
+        };
+        if bytes.is_empty() {
+            continue;
+        }
+        if let Some(offset) = ledger_damage(&bytes) {
+            if damage_confirmed(&entry.path(), offset) {
+                return Some(format!("{name}: no valid record at byte {offset}"));
+            }
+        }
+    }
+    None
+}
+
+/// A ledger that holds its genesis and nothing else: a thread nobody has spoken in yet.
+fn is_single_line_ledger(path: &Path) -> bool {
+    let Ok(file) = fs::File::open(path) else {
+        return false;
+    };
+    let mut reader = BufReader::new(file);
+    let mut first = Vec::new();
+    if reader.read_until(b'\n', &mut first).is_err() || first.last() != Some(&b'\n') {
+        return false;
+    }
+    reader.fill_buf().is_ok_and(<[u8]>::is_empty)
+}
+
+/// How long a thread that failed verification is left alone before the next attempt.
+const HYDRATE_RETRY: Duration = Duration::from_secs(30);
+
+const DEFAULT_LIST_WAIT: Duration = Duration::from_millis(2_000);
+
+impl ProductionProcessHost {
+    fn list_wait(&self) -> Duration {
+        #[cfg(test)]
+        if let Some(wait) = *self
+            .list_wait_override
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+        {
+            return wait;
+        }
+        std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")
+            .ok()
+            .and_then(|value| value.parse::<u64>().ok())
+            .map_or(DEFAULT_LIST_WAIT, Duration::from_millis)
+    }
+
+    fn is_running(&self, session_id: &str, live: &HashSet<String>) -> bool {
+        live.contains(session_id)
+            || self
+                .threads
+                .session_has_live_line_holder(session_id)
+                .unwrap_or(false)
+    }
+
+    /// The List row of one catalog entry. `None` hides it (a previous process's ephemeral
+    /// scratch thread) or means the folder is unreadable.
+    fn catalog_item(
+        &self,
+        session_id: &str,
+        entry: &crate::catalog::Entry,
+        live: &HashSet<String>,
+    ) -> Option<SessionInventoryItem> {
+        let folder = self.root.join("threads").join(session_id);
+        let running = self.is_running(session_id, live);
+        if let Some(view) = entry
+            .view
+            .as_ref()
+            .filter(|_| !matches!(entry.trust, crate::catalog::Trust::Cold))
+        {
+            let main = view.main()?;
+            if self.is_stale_ephemeral(session_id, view.summary.ephemeral) {
+                return None;
+            }
+            return Some(SessionInventoryItem {
+                session_id: session_id.to_owned(),
+                workspace_id: view.summary.workspace.clone(),
+                title: view.summary.title.clone(),
+                updated_at: view.summary.updated_ms,
+                archived: false,
+                running,
+                blank: view.summary.blank,
+                as_of_seq: main.last_seq,
+                lifecycle: main.facts.clone(),
+                permission_mode: endpoint::permission_mode_of(&folder),
+                identity_profile: view.summary.identity_profile.clone(),
+                ephemeral: view.summary.ephemeral,
+            });
+        }
+        // Placeholder: a Cold or quarantined thread. Identity, workspace and recency come from
+        // the genesis line and the file time; no title, neutral tail.
+        let genesis = store::read_genesis(folder.join("main.jsonl")).ok()??;
+        let ephemeral = genesis.is_ephemeral_genesis();
+        if self.is_stale_ephemeral(session_id, ephemeral) {
+            return None;
+        }
+        // The last record's timestamp (what a verified row shows), else the file time.
+        let updated_at = endpoint::last_record_updated_ms(&folder.join("main.jsonl"))
+            .unwrap_or_else(|| {
+                fs::metadata(folder.join("main.jsonl"))
+                    .and_then(|metadata| metadata.modified())
+                    .ok()
+                    .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
+                    .map_or(0, |duration| {
+                        u64::try_from(duration.as_millis()).unwrap_or(0)
+                    })
+            });
+        Some(SessionInventoryItem {
+            session_id: session_id.to_owned(),
+            workspace_id: genesis.string_field("workspace")?.to_owned(),
+            title: None,
+            updated_at,
+            archived: false,
+            running,
+            blank: is_single_line_ledger(&folder.join("main.jsonl")),
+            as_of_seq: 0,
+            lifecycle: neutral_lifecycle(),
+            permission_mode: endpoint::permission_mode_of(&folder),
+            identity_profile: match genesis.string_field("identity_profile") {
+                None => Some("coding".to_owned()),
+                Some(profile @ ("coding" | "general")) => Some(profile.to_owned()),
+                _ => None,
+            },
+            ephemeral,
+        })
+    }
+
+    /// Verifies the not-yet-verified threads in parallel and waits for them at most `budget`
+    /// (R2): the List ships whatever finished; the rest keep verifying in the background and
+    /// announce themselves with a status frame, which turns into an inventory upsert.
+    fn verify_within(&self, ids: Vec<String>, budget: Duration) {
+        if ids.is_empty() {
+            return;
+        }
+        let Some(host) = self.self_weak.upgrade() else {
+            return;
+        };
+        let total = ids.len();
+        let queue = Arc::new(Mutex::new(ids.into_iter().collect::<VecDeque<_>>()));
+        let finished = Arc::new((Mutex::new(0_usize), Condvar::new()));
+        let workers = std::thread::available_parallelism()
+            .map_or(2, std::num::NonZeroUsize::get)
+            .min(8)
+            .min(total);
+        for _ in 0..workers {
+            let (host, queue, finished) =
+                (Arc::clone(&host), Arc::clone(&queue), Arc::clone(&finished));
+            std::thread::spawn(move || {
+                loop {
+                    let next = {
+                        let mut queue = queue
+                            .lock()
+                            .unwrap_or_else(std::sync::PoisonError::into_inner);
+                        let next = queue.pop_front();
+                        // Recorded under the queue lock, so the record is the pop order.
+                        #[cfg(test)]
+                        if let Some(id) = &next {
+                            host.verify_order
+                                .lock()
+                                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                .push(id.clone());
+                        }
+                        next
+                    };
+                    let Some(id) = next else {
+                        return;
+                    };
+                    if let Err(error) = host.hydrate(&id) {
+                        eprintln!("process-host-list-verify-skipped: session={id} error={error}");
+                    }
+                    host.publish_session_status(&id);
+                    let (count, changed) = &*finished;
+                    *count
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner) += 1;
+                    changed.notify_all();
+                }
+            });
+        }
+        let (count, changed) = &*finished;
+        let deadline = Instant::now() + budget;
+        let mut done = count
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        while *done < total {
+            let Some(remaining) = deadline.checked_duration_since(Instant::now()) else {
+                break;
+            };
+            done = changed
+                .wait_timeout(done, remaining)
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .0;
+        }
+    }
+
+    fn build_inventory(
+        &self,
+        include_archived: bool,
+        wait: Duration,
+    ) -> Result<Vec<SessionInventoryItem>, DaemonError> {
+        let live = self.live_sessions();
+        self.catalog.ensure_loaded();
+        for id in store::folder_events::admitted_ids(&self.root) {
+            let _ = self.catalog.get(&id);
+        }
+        // Newest ledger first, so the rows at the top of a sidebar resolve first.
+        let unverified = self
+            .catalog
+            .unverified()
+            .into_iter()
+            .filter(|id| !self.recently_failed(id))
+            .collect::<Vec<_>>();
+        self.verify_within(unverified, wait);
+        let mut items = self
+            .catalog
+            .entries_now()
+            .into_iter()
+            .filter_map(|(id, entry)| self.catalog_item(&id, &entry, &live))
+            .collect::<Vec<_>>();
+        if include_archived {
+            for entry in fs::read_dir(self.root.join("archive")).map_err(DaemonError::io)? {
+                let entry = entry.map_err(DaemonError::io)?;
+                let id = entry.file_name().to_string_lossy().into_owned();
+                if entry.file_type().map_err(DaemonError::io)?.is_dir()
+                    && endpoint::validate_session_id(&id).is_ok()
+                {
+                    items.push(SessionInventoryItem {
+                        session_id: id,
+                        workspace_id: String::new(),
+                        title: None,
+                        updated_at: 0,
+                        archived: true,
+                        running: false,
+                        blank: false,
+                        as_of_seq: 0,
+                        lifecycle: neutral_lifecycle(),
+                        permission_mode: String::new(),
+                        identity_profile: None,
+                        ephemeral: false,
+                    });
+                }
+            }
+        }
+        items.sort_by(|left, right| left.session_id.as_bytes().cmp(right.session_id.as_bytes()));
+        Ok(items)
+    }
+}
+
 impl SupervisorSessionAuthority for ProductionProcessHost {
+    fn inventory_items(
+        &self,
+        include_archived: bool,
+    ) -> Option<Result<Vec<SessionInventoryItem>, String>> {
+        Some(
+            self.build_inventory(include_archived, self.list_wait())
+                .map_err(|error| error.to_string()),
+        )
+    }
+
+    fn ensure_verified(&self, session_id: &str) -> Result<(), SessionGateError> {
+        // A thread with a live worker is already verified by that worker's lock holder.
+        if self.live_worker(session_id).is_some() {
+            return Ok(());
+        }
+        ProductionProcessHost::ensure_verified(self, session_id).map_err(|error| {
+            let message = error.to_string();
+            if message.contains("quarantined") {
+                SessionGateError::Quarantined(message)
+            } else {
+                SessionGateError::Failed(message)
+            }
+        })
+    }
+
+    fn has_catalog(&self) -> bool {
+        true
+    }
+
+    fn hold_catalog(&self) -> Option<HoldCatalog> {
+        use crate::catalog::Trust;
+        self.catalog.ensure_loaded();
+        let mut result = HoldCatalog::default();
+        for (session, entry) in self.catalog.entries_now() {
+            let holds = entry
+                .view
+                .as_ref()
+                .map(|view| {
+                    view.lines
+                        .iter()
+                        .flat_map(|line| {
+                            line.holds.iter().map(|hold| HoldRef {
+                                line: (line.file != "main.jsonl").then(|| line.file.clone()),
+                                hold_seq: hold.hold_seq,
+                                kind: if hold.kind == "question" {
+                                    endpoint::RequestFrameType::Question
+                                } else {
+                                    endpoint::RequestFrameType::Approval
+                                },
+                                resolved: hold.resolved.is_some(),
+                            })
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default();
+            match entry.trust {
+                Trust::Fresh => {
+                    if entry.view.as_ref().is_some_and(|view| !view.children_exact) {
+                        result.children_unverified.push(session.clone());
+                    }
+                    result.verified.push(VerifiedHolds {
+                        session,
+                        holds,
+                        quarantined: false,
+                    });
+                }
+                Trust::Corrupt(_) => result.verified.push(VerifiedHolds {
+                    session,
+                    holds,
+                    quarantined: true,
+                }),
+                Trust::Ahead => {
+                    result.verified.push(VerifiedHolds {
+                        session: session.clone(),
+                        holds,
+                        quarantined: false,
+                    });
+                    result.unverified.push(session);
+                }
+                Trust::Cold => result.unverified.push(session),
+            }
+        }
+        Some(result)
+    }
+
+    fn inventory_item(
+        &self,
+        session_id: &str,
+    ) -> Option<Result<Option<SessionInventoryItem>, String>> {
+        let live = self.live_sessions();
+        let mut entry = self.catalog.get(session_id);
+        // The single-row path serves one thread, so it verifies that thread instead of listing
+        // a placeholder for it (a brand-new session would otherwise show `blank:false` for its
+        // whole first turn, E832 M4). A thread that cannot be verified keeps its placeholder or
+        // quarantined row.
+        if entry.as_ref().is_some_and(|entry| {
+            matches!(
+                entry.trust,
+                crate::catalog::Trust::Cold | crate::catalog::Trust::Ahead
+            )
+        }) && self.live_worker(session_id).is_none()
+        {
+            if let Err(error) = self.hydrate(session_id) {
+                eprintln!(
+                    "process-host-inventory-verify-skipped: session={session_id} error={error}"
+                );
+            }
+            entry = self.catalog.get(session_id);
+        }
+        Some(Ok(entry.and_then(|entry| {
+            self.catalog_item(session_id, &entry, &live)
+        })))
+    }
+
     fn live_sessions(&self) -> HashSet<String> {
         self.workers
             .lock()
@@ -5106,14 +6131,11 @@ fn scoped_client_file_path(
 }
 
 fn session_workspace_binding(ledger: &Path) -> Result<(String, Option<String>), DaemonError> {
-    let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-    let projection = scan_valid_prefix(&bytes, 1)
-        .projection
+    // The genesis line is the only input: do not decode the whole ledger per lookup.
+    let genesis = store::read_genesis(ledger)
+        .map_err(DaemonError::store)?
         .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?;
-    let genesis = projection
-        .events
-        .first()
-        .ok_or_else(|| DaemonError::corrupt("worker ledger has no genesis"))?;
+    let genesis = &genesis;
     let workspace_id = genesis
         .string_field("workspace")
         .map(str::to_owned)
@@ -6317,11 +7339,14 @@ mod tests {
             endpoint::StreamChannel::Mux,
         ))
         .expect("mux stream");
+        host.attach_streams(streams.clone());
+        // A new mux generation starts empty; the session registers when it is attached (the
+        // same call a first publication makes lazily) and its baseline follows.
+        streams.attach_session(SESSION).expect("attach the session");
         let baseline = block_on_ready(mux.recv())
             .expect("baseline item")
             .expect("baseline frame");
         assert_eq!(baseline.method, "session/subscribed");
-        host.attach_streams(streams);
 
         // The worker has already appended its terminal while these earlier
         // pipe frames are still unread. Frame cache refresh must not publish it.
@@ -6437,7 +7462,7 @@ mod tests {
 
     #[cfg(target_os = "macos")]
     #[test]
-    fn boot_sweep_repairs_a_terminal_main_tail_missing_from_the_endpoint_journal() {
+    fn opening_a_thread_repairs_a_terminal_main_tail_missing_from_the_endpoint_journal() {
         const SESSION: &str = "018f0000-0000-7000-8000-000000000003";
         let root = tempfile::tempdir().expect("process host root");
         let folder = root.path().join("threads").join(SESSION);
@@ -6471,7 +7496,10 @@ mod tests {
         .expect("stream frame");
         fs::write(folder.join("main.jsonl"), source).expect("terminal semantic tail");
 
-        host.boot_sweep().expect("boot projection recovery");
+        // Lazy boot: opening the thread (`reconcile_projection`, which every journal open runs
+        // first) -- not a boot sweep -- brings its journal up to its ledger.
+        SupervisorSessionAuthority::reconcile_projection(&*host, SESSION)
+            .expect("open-time projection recovery");
 
         let endpoint = EndpointJournal::open(&folder).expect("endpoint journal");
         let event_types = endpoint
@@ -6578,6 +7606,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(SESSION);
         let streams = ProductionCarrierStreams::new(root.path());
         host.attach_streams(streams.clone());
         host.publish_appended(SESSION)
@@ -6783,6 +7812,7 @@ mod tests {
         let host =
             ProductionProcessHost::open(root.path(), &bin, "test", root.path().join(".agent"))
                 .expect("process host");
+        host.release_for_test(SESSION);
         let streams = ProductionCarrierStreams::new(root.path());
         host.attach_streams(streams.clone());
         let mut inventory = streams
@@ -6886,6 +7916,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(SESSION);
         host.publish_appended(SESSION)
             .expect("project the active prefix");
         fs::write(folder.join("main.jsonl"), source).expect("terminal semantic tail");
@@ -7277,8 +8308,7 @@ mod tests {
         append_test_input(&folder.join("main.jsonl"), session);
 
         if defer_recovery {
-            host.defer_existing_session_recovery()
-                .expect("defer startup work");
+            // Pre-existing sessions are deferred without any enumeration.
             host.boot_sweep().expect("repair startup state");
             assert!(host.periodic_sweep_once().expect("deferred periodic sweep"));
             assert!(
@@ -7308,6 +8338,12 @@ mod tests {
                 "repeat recovery must retain the live worker"
             );
         } else {
+            // Both sessions are released (as `sessions.recover` would): the corrupt one must
+            // not stop the runnable one from being recovered.
+            host.released
+                .lock()
+                .unwrap()
+                .extend([corrupt.to_owned(), session.to_owned()]);
             assert!(host.periodic_sweep_once().expect("isolated sweep"));
         }
 
@@ -7411,6 +8447,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(session);
 
         assert!(host.periodic_sweep_once().expect("busy sweep"));
         assert!(
@@ -8105,6 +9142,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(session);
         host.boot_sweep().expect("boot sweep");
 
         for ledger in [&main, &child_ledger, &grandchild_ledger] {
@@ -8484,7 +9522,7 @@ mod tests {
         );
     }
 
-    #[cfg(target_os = "macos")]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
         bytes.push(b'\n');
@@ -8695,7 +9733,9 @@ mod tests {
             for subkind in ["validation.candidate", "validation.decision"] {
                 assert_eq!(
                     records.iter().filter(|e| e["subkind"] == subkind).count(),
-                    if needs_validator && subkind == "validation.decision" {
+                    if boundary == "output" {
+                        0
+                    } else if needs_validator && subkind == "validation.decision" {
                         2
                     } else {
                         1
@@ -8739,6 +9779,1099 @@ mod tests {
                 );
             }
         }
+    }
+
+    const HELD_TS: &str = "2026-08-26T09:00:00.000Z";
+
+    /// A main ledger parked on an unanswered `ask_user` hold (call `ask1`, seq 9).
+    fn held_ledger_lines(thread: &str) -> Vec<String> {
+        vec![
+            format!(
+                r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{thread}"}},"resume":"never","seq":1,"thread":"{thread}","ts":"{HELD_TS}","v":1,"workspace":"ws"}}"#
+            ),
+            format!(
+                r#"{{"content":[{{"text":"start","type":"text"}}],"kind":"input","origin_key":"i1","origin_tuple":{{"client":"cli","key":"i1","op":"submit","principal":"p","target":"{thread}"}},"seq":2,"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"binary":"tekes-worker-1","config_digest":"cfg","instruction_digest":"ins","kind":"run_start","mode":"ordinary","policy":"default","recovery_ordinal":0,"run":"r1","seq":3,"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"kind":"turn_open","seq":4,"trigger":{{"inputs":[2]}},"ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+            format!(
+                r#"{{"adapter":"fake","id":"e1","kind":"epoch","model":"fake","reason":"initial","renderer":1,"seq":5,"system":{{"asset":"sha256-aa","digest":"d1"}},"tools":{{"asset":"sha256-td","digest":"td"}},"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"admits":[{{"from":2,"to":2}}],"attempt":"a1","epoch":"e1","kind":"attempt","request":{{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096}},"seq":6,"ts":"{HELD_TS}","turn":1,"v":1,"wire_digest":"wd"}}"#
+            ),
+            format!(
+                r#"{{"attempt":"a1","content":[{{"args":{{"question":"continue?"}},"call":"ask1","name":"ask_user","type":"tool-call"}}],"kind":"output","sealed":{{"adapter":"fake","fragments":"ask","version":1}},"seq":7,"ts":"{HELD_TS}","turn":1,"usage":{{"availability":"reported","input_tokens":"5","output_tokens":"1"}},"v":1}}"#
+            ),
+            format!(
+                r#"{{"args":{{"question":"continue?"}},"attempt":"a1","call":"ask1","kind":"tool_call","name":"ask_user","seq":8,"source":"provider","ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+            format!(
+                r#"{{"call":"ask1","kind":"approval_request","scope":"answer","seq":9,"ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+        ]
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    fn held_response_line(thread: &str) -> String {
+        format!(
+            r#"{{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"r1","origin_tuple":{{"client":"cli","key":"r1","op":"approve","principal":"p","target":"{thread}"}},"seq":10,"ts":"{HELD_TS}","turn":1,"v":1}}"#
+        )
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    fn held_host(
+        root: &Path,
+        session: &str,
+        extra: &str,
+    ) -> (
+        Arc<ProductionProcessHost>,
+        ProductionCarrierStreams,
+        PathBuf,
+    ) {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        fs::write(
+            &ledger,
+            held_ledger_lines(session).join("\n") + "\n" + extra,
+        )
+        .expect("held ledger");
+        let host = ProductionProcessHost::open(
+            root,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.join("missing-agent-home"),
+        )
+        .expect("process host");
+        let streams = ProductionCarrierStreams::new(root);
+        host.attach_streams(streams.clone());
+        (host, streams, ledger)
+    }
+
+    /// `publish_appended` leaves a card the reader trusts: it classifies Fresh, its summary
+    /// equals the scan-derived inventory row, and its holds follow the ledger (unresolved, then
+    /// resolved after the response is appended and the thread is projected again).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a4";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("publish");
+        host.card_writer.shutdown();
+        let folder = root.path().join("threads").join(session);
+        let card = store::card::read_card(&folder).expect("card written");
+        let classified = store::card::classify(&folder, &card).expect("classify");
+        assert_eq!(classified.freshness(), store::card::Freshness::Fresh);
+        assert_eq!(classified.journal, store::card::JournalVerdict::Fresh);
+        assert_eq!(card.lines[0].holds.len(), 1);
+        assert!(card.lines[0].holds[0].resolved.is_none());
+        assert_eq!(card.lines[0].last_seq, 9);
+        // The List row derived from the card equals the row a full scan produces.
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan")
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("row");
+        assert_eq!(card.summary.workspace, scanned.workspace_id);
+        assert_eq!(card.summary.title, scanned.title);
+        assert_eq!(card.summary.updated_ms, scanned.updated_at);
+        assert_eq!(card.summary.blank, scanned.blank);
+        assert_eq!(card.summary.ephemeral, scanned.ephemeral);
+        assert_eq!(card.summary.identity_profile, scanned.identity_profile);
+        assert_eq!(card.lines[0].facts, scanned.lifecycle);
+        assert_eq!(card.lines[0].last_seq, scanned.as_of_seq);
+
+        // A later append makes the card Ahead (never wrong), and a new projection re-writes it
+        // with the hold resolved.
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        let classified = store::card::classify(&folder, &card).expect("classify");
+        assert_eq!(classified.freshness(), store::card::Freshness::Ahead);
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn card_writer_coalesces_and_flushes_at_shutdown() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a5";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("first publish");
+        // Appends while the debounce window is open are coalesced into one final write.
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session).expect("second publish");
+        host.shutdown();
+        let folder = root.path().join("threads").join(session);
+        let card = store::card::read_card(&folder).expect("card");
+        assert_eq!(
+            card.lines[0].last_seq, 10,
+            "the flush wrote the newest state"
+        );
+        assert!(card.lines[0].holds[0].resolved.is_some());
+        assert_eq!(
+            store::card::classify(&folder, &card)
+                .expect("classify")
+                .freshness(),
+            store::card::Freshness::Fresh
+        );
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_fast_path_publishes_the_pending_hold_from_one_decode() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a1";
+        let (host, streams, _) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("publish");
+        assert_eq!(
+            streams.published_pending_for_test(session, None).len(),
+            1,
+            "the unanswered hold is pending"
+        );
+        host.shutdown();
+    }
+
+    /// A respond appends `approval_response` and reconciles the actionables while
+    /// `publish_appended` is between its ledger decode and its actionables diff. The stale
+    /// decode must not re-publish the resolved hold (the regression `reconcile_after_response`
+    /// exists to prevent).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_with_a_grown_ledger_does_not_resurrect_a_resolved_hold() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a2";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        // Baseline: hold published as pending.
+        host.publish_appended(session).expect("first publish");
+        assert_eq!(streams.published_pending_for_test(session, None).len(), 1);
+        let respond = || {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("ledger append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("append approval_response");
+            drop(file);
+            streams
+                .reconcile_actionables(session, None)
+                .expect("reconcile after response");
+        };
+        host.publish_appended_with(session, Some(&respond))
+            .expect("publish with a concurrent respond");
+        assert!(
+            streams.published_pending_for_test(session, None).is_empty(),
+            "a resolved hold must stay resolved after a stale decode"
+        );
+        host.shutdown();
+    }
+
+    /// A torn tail keeps the pre-existing behaviour: the separate-read paths reject it
+    /// ("requires tail recovery") and the call reports the error after the journal reconcile.
+    /// E831 E1: after a discard, a thread created with the same id starts at a small ledger
+    /// `last_seq`; the monotonic guard must not freeze its actionable set at the old value.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_reused_session_id_does_not_inherit_the_old_actionable_high_water_mark() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a7";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        // Ephemeral genesis so the thread can be discarded.
+        let text = fs::read_to_string(&ledger).expect("ledger");
+        // canonical key order: "config" < "ephemeral" < "format"
+        let ephemeral = text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1);
+        assert_ne!(text, ephemeral);
+        fs::write(&ledger, &ephemeral).expect("ephemeral ledger");
+        // old life: the hold is answered, the published set is empty at last_seq 10
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session).expect("old life");
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        // discard (announces Removed), then the id is reused by a thread whose ledger is
+        // shorter (last_seq 9) and has its hold pending
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .discard_ephemeral(session)
+            .expect("discard");
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("new folder");
+        fs::write(
+            folder.join("main.jsonl"),
+            held_ledger_lines(session).join("\n") + "\n",
+        )
+        .expect("new ledger");
+        host.publish_appended(session).expect("new life");
+        assert_eq!(
+            streams.published_pending_for_test(session, None).len(),
+            1,
+            "the reused id's pending hold is published, not refused as 'older'"
+        );
+        host.shutdown();
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    fn held_thread_on_disk(root: &Path, session: &str) -> PathBuf {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        fs::write(
+            folder.join("main.jsonl"),
+            held_ledger_lines(session).join("\n") + "\n",
+        )
+        .expect("ledger");
+        folder
+    }
+
+    /// T3: the List built from the catalog (cards after verification) is the List a full scan
+    /// produces, for every field the row carries; a thread whose verification has not finished
+    /// inside the wait budget is listed with a neutral placeholder and becomes the real row
+    /// afterwards.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = (0..14)
+            .map(|n| format!("018f0000-0000-7000-8000-0000000000b{n:x}"))
+            .collect::<Vec<_>>();
+        for (n, id) in ids.iter().enumerate() {
+            match n % 7 {
+                // a pending approval hold
+                0 | 1 => {
+                    held_thread_on_disk(root.path(), id);
+                }
+                // genesis only: a blank thread
+                2 | 3 => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                }
+                // genesis and a submitted input
+                4 => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                    append_test_input(&folder.join("main.jsonl"), id);
+                }
+                // an ephemeral scratch thread this process may list
+                5 => {
+                    let folder = held_thread_on_disk(root.path(), id);
+                    let text = fs::read_to_string(folder.join("main.jsonl")).expect("ledger");
+                    fs::write(
+                        folder.join("main.jsonl"),
+                        text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+                    )
+                    .expect("ephemeral");
+                }
+                // a durable stop
+                _ => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                    append_test_input(&folder.join("main.jsonl"), id);
+                    append_test_stop(&folder.join("main.jsonl"), id, 1, 3);
+                }
+            }
+        }
+        // one archived thread: the catalog lists its id only
+        let archived = "018f0000-0000-7000-8000-0000000000ba";
+        let archived_folder = held_thread_on_disk(root.path(), archived);
+        fs::create_dir_all(root.path().join("archive")).expect("archive");
+        store::move_thread_folder(
+            &archived_folder,
+            &root.path().join("archive").join(archived),
+        )
+        .expect("archive move");
+        let (host, _streams) = open_host(root.path());
+        // This process may list the ephemeral thread it owns.
+        host.arm_admission();
+        store::folder_events::arm_admission(root.path());
+        // Nothing is verified yet: a zero budget lists placeholders (neutral tail, no title)
+        // without failing.
+        let early = host
+            .build_inventory(false, Duration::ZERO)
+            .expect("early list");
+        assert!(early.iter().all(|item| item.workspace_id == "ws"));
+        // Verification proceeds in the background; a patient list is the scan list.
+        let patient = host
+            .build_inventory(true, Duration::from_secs(120))
+            .expect("patient list");
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan");
+        let active = |items: &[SessionInventoryItem]| {
+            items
+                .iter()
+                .filter(|item| !item.archived)
+                .cloned()
+                .collect::<Vec<_>>()
+        };
+        let (left, right) = (active(&patient), active(&scanned));
+        // A previous process's ephemeral scratch threads are hidden until cleanup removes them.
+        assert_eq!(right.iter().filter(|item| item.ephemeral).count(), 2);
+        let right = right
+            .into_iter()
+            .filter(|item| !item.ephemeral)
+            .collect::<Vec<_>>();
+        let names = |rows: &[SessionInventoryItem]| {
+            rows.iter()
+                .map(|row| row.session_id.clone())
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(names(&left), names(&right));
+        for (left, right) in left.iter().zip(&right) {
+            assert_eq!(left, right, "row {}", left.session_id);
+        }
+        let archived_ids = patient
+            .iter()
+            .filter(|item| item.archived)
+            .map(|item| item.session_id.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(archived_ids, [archived]);
+        // The single-row path agrees with the list.
+        let one = host
+            .inventory_item(&ids[1])
+            .expect("catalog backed")
+            .expect("ok")
+            .expect("row");
+        assert_eq!(one, left[1]);
+        // At least one row of each lifecycle shape was compared.
+        assert!(left.iter().any(|item| item.blank));
+        assert!(left.iter().any(|item| !item.blank));
+        assert!(
+            left.iter()
+                .any(|item| item.lifecycle.stop_active || item.lifecycle.open_hold)
+        );
+        host.shutdown();
+    }
+
+    /// T6b/T6d: a session that existed before this process is deferred; one this process
+    /// created is not; an archived thread unarchived through the store chokepoint is admitted,
+    /// and nothing else is.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn only_threads_this_process_published_or_unarchived_are_admitted() {
+        let root = tempfile::tempdir().expect("root");
+        let old = "018f0000-0000-7000-8000-0000000000c1";
+        let archived = "018f0000-0000-7000-8000-0000000000c2";
+        held_thread_on_disk(root.path(), old);
+        let archived_folder = held_thread_on_disk(root.path(), archived);
+        fs::create_dir_all(root.path().join("archive")).expect("archive");
+        let in_archive = root.path().join("archive").join(archived);
+        store::move_thread_folder(&archived_folder, &in_archive).expect("archive move");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.arm_admission();
+        assert!(host.is_deferred(old), "a pre-existing thread is deferred");
+        assert!(host.is_deferred(archived));
+        store::move_thread_folder(&in_archive, &root.path().join("threads").join(archived))
+            .expect("unarchive move");
+        assert!(!host.is_deferred(archived), "unarchive admits");
+        assert!(host.is_deferred(old), "the other thread stays deferred");
+        host.release_for_test(old);
+        assert!(!host.is_deferred(old), "a released thread is not deferred");
+        host.shutdown();
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    fn open_host(root: &Path) -> (Arc<ProductionProcessHost>, ProductionCarrierStreams) {
+        fs::create_dir_all(root.join("workspaces/ws")).expect("workspaces");
+        write_canonical_test_json(
+            &root.join("workspaces/ws/workspace.json"),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[root.join("workspace").to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let host = ProductionProcessHost::open(
+            root,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.join("missing-agent-home"),
+        )
+        .expect("process host");
+        let streams = ProductionCarrierStreams::new(root);
+        host.attach_streams(streams.clone());
+        (host, streams)
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    fn poll_until_ready<F: Future>(future: F) -> F::Output {
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
+        let mut future = std::pin::pin!(future);
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            if let Poll::Ready(value) = future.as_mut().poll(&mut context) {
+                return value;
+            }
+            assert!(Instant::now() < deadline, "future stayed pending");
+            std::thread::sleep(Duration::from_millis(10));
+        }
+    }
+
+    /// E832 M1/M4: a thread created after the catalog loaded is in the List, in the sweep set
+    /// and in a second client's inventory baseline at once, and its single-row inventory entry
+    /// is the verified blank row, not a placeholder.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank() {
+        let root = tempfile::tempdir().expect("root");
+        let old = "018f0000-0000-7000-8000-0000000000d1";
+        let fresh = "018f0000-0000-7000-8000-0000000000d2";
+        held_thread_on_disk(root.path(), old);
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        host.catalog.ensure_loaded();
+        assert_eq!(host.catalog.entries_now().len(), 1);
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(fresh)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(fresh, genesis)
+            .expect("create after load");
+        // nobody asked for it: it is in the catalog, the sweep and the List already
+        assert!(host.catalog.entries_now().iter().any(|(id, _)| id == fresh));
+        assert!(host.sweep_ids().iter().any(|id| id == fresh));
+        assert!(!host.is_deferred(fresh));
+        let list = host
+            .build_inventory(false, Duration::from_secs(60))
+            .expect("list");
+        let row = list
+            .iter()
+            .find(|item| item.session_id == fresh)
+            .expect("new session listed");
+        assert!(row.blank);
+        // the single-row path (host/session-added) serves the verified row
+        let one = host
+            .inventory_item(fresh)
+            .expect("catalog backed")
+            .expect("ok")
+            .expect("row");
+        assert!(one.blank);
+        assert_eq!(one.workspace_id, "ws");
+        // a second client's inventory baseline lists both
+        let mut inventory = streams
+            .open_mux(7, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("inventory stream");
+        let endpoint::SessionSyncFrame::InventoryBaseline { items, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("baseline item")
+                .expect("baseline frame")
+        else {
+            panic!("expected an inventory baseline")
+        };
+        assert_eq!(items.len(), 2);
+        host.shutdown();
+    }
+
+    /// E832 M2: hydrations of different threads fold concurrently (they all reach the point
+    /// after the fold before any proceeds), and a doorbell for another thread completes while a
+    /// cold hydration is held outside the lock.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn hydrations_run_in_parallel_and_never_hold_up_a_doorbell() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = (0..8)
+            .map(|n| format!("018f0000-0000-7000-8000-0000000000f{n}"))
+            .collect::<Vec<_>>();
+        for id in &ids {
+            held_thread_on_disk(root.path(), id);
+        }
+        let (host, _streams) = open_host(root.path());
+        let arrived = std::sync::atomic::AtomicUsize::new(0);
+        std::thread::scope(|scope| {
+            for id in &ids {
+                let (host, arrived) = (&host, &arrived);
+                scope.spawn(move || {
+                    let rendezvous = || {
+                        arrived.fetch_add(1, Ordering::SeqCst);
+                        let deadline = Instant::now() + Duration::from_secs(30);
+                        while arrived.load(Ordering::SeqCst) < 8 {
+                            assert!(
+                                Instant::now() < deadline,
+                                "hydrations were serialised: only {} reached the fold",
+                                arrived.load(Ordering::SeqCst)
+                            );
+                            std::thread::sleep(Duration::from_millis(5));
+                        }
+                    };
+                    host.hydrate_with(id, Some(&rendezvous)).expect("hydrate");
+                });
+            }
+        });
+        for id in &ids {
+            assert_eq!(
+                host.catalog.get(id).expect("entry").trust,
+                crate::catalog::Trust::Fresh
+            );
+        }
+        // a doorbell is not queued behind a cold hydration
+        let cold = "018f0000-0000-7000-8000-0000000000fa";
+        let live = "018f0000-0000-7000-8000-0000000000fb";
+        held_thread_on_disk(root.path(), cold);
+        held_thread_on_disk(root.path(), live);
+        let release = std::sync::atomic::AtomicBool::new(false);
+        let holding = std::sync::atomic::AtomicBool::new(false);
+        std::thread::scope(|scope| {
+            let (host_ref, release, holding) = (&host, &release, &holding);
+            let slow = scope.spawn(move || {
+                let hold = || {
+                    holding.store(true, Ordering::SeqCst);
+                    let deadline = Instant::now() + Duration::from_secs(30);
+                    while !release.load(Ordering::SeqCst) {
+                        assert!(Instant::now() < deadline, "hydration never released");
+                        std::thread::sleep(Duration::from_millis(5));
+                    }
+                };
+                host_ref
+                    .hydrate_with(cold, Some(&hold))
+                    .expect("slow hydrate");
+            });
+            let deadline = Instant::now() + Duration::from_secs(30);
+            while !holding.load(Ordering::SeqCst) {
+                assert!(Instant::now() < deadline, "cold hydration never started");
+                std::thread::sleep(Duration::from_millis(5));
+            }
+            host.publish_appended(live)
+                .expect("a doorbell completes while a cold hydration is in flight");
+            release.store(true, Ordering::SeqCst);
+            slow.join().expect("slow hydrate thread");
+        });
+        host.shutdown();
+    }
+
+    /// E832 M3: a complete but invalid line reaches Corrupt through hydrate, is listed as a
+    /// quarantined row, answers with a quarantine error and is not re-hydrated by every List.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_complete_invalid_line_quarantines_and_is_not_rehydrated() {
+        let root = tempfile::tempdir().expect("root");
+        let good = "018f0000-0000-7000-8000-0000000000c9";
+        let bad = "018f0000-0000-7000-8000-0000000000c8";
+        held_thread_on_disk(root.path(), good);
+        let folder = held_thread_on_disk(root.path(), bad);
+        {
+            let mut ledger = fs::OpenOptions::new()
+                .append(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            // complete (LF-terminated) but not a valid record, followed by a valid-looking one
+            ledger
+                .write_all(b"{\"not\":\"an event\"}\n")
+                .expect("invalid line");
+        }
+        let (host, _streams) = open_host(root.path());
+        let error = host.hydrate(bad).expect_err("quarantined");
+        assert!(error.to_string().contains("quarantined"), "{error}");
+        assert!(matches!(
+            host.catalog.get(bad).expect("entry").trust,
+            crate::catalog::Trust::Corrupt(_)
+        ));
+        let runs = host.hydrate_runs.load(Ordering::Relaxed);
+        for _ in 0..3 {
+            let list = host
+                .build_inventory(false, Duration::from_secs(60))
+                .expect("list");
+            assert_eq!(list.len(), 2, "the quarantined row stays in the List");
+        }
+        // only the healthy thread was hydrated by the Lists
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), runs + 1);
+        // the gate says so, with the quarantine marker the wire error is built from
+        let gate = host.ensure_verified(bad).expect_err("gate refuses");
+        assert!(gate.to_string().contains("quarantined"), "{gate}");
+        host.shutdown();
+    }
+
+    /// A placeholder row is replaced by the real row when verification finishes: the
+    /// inventory stream announces it as an upsert.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_placeholder_row_is_followed_by_the_real_row_as_an_upsert() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c7";
+        held_thread_on_disk(root.path(), session);
+        let (host, streams) = open_host(root.path());
+        *host
+            .list_wait_override
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(Duration::ZERO);
+        let mut inventory = streams
+            .open_mux(3, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("inventory stream");
+        let endpoint::SessionSyncFrame::InventoryBaseline { items, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("baseline item")
+                .expect("baseline frame")
+        else {
+            panic!("expected an inventory baseline")
+        };
+        assert_eq!(items.len(), 1);
+        let placeholder = &items[0];
+        assert_eq!(placeholder.tail, "settled");
+        assert!(
+            placeholder.projections.is_none(),
+            "a placeholder has no title"
+        );
+        // verification finishes in the background and the stream upserts the real row
+        let endpoint::SessionSyncFrame::InventoryUpsert { session: real, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("upsert item")
+                .expect("upsert frame")
+        else {
+            panic!("expected an inventory upsert")
+        };
+        assert_eq!(real.session_id, session);
+        // the held ask_user call makes the real tail differ from the neutral placeholder
+        assert_ne!(real.tail, placeholder.tail);
+        // the placeholder carries the ledger's own last-record time, so the real row does not
+        // move in the list when it replaces it (O-final m6)
+        assert_eq!(real.updated_at, placeholder.updated_at);
+        host.shutdown();
+    }
+
+    /// The client unarchive path (`ManagementStore::unarchive_session` ->
+    /// `drive_folder_move`) admits the thread and brings it back into the catalog.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_client_unarchive_admits_the_thread_and_lists_it_again() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c6";
+        held_thread_on_disk(root.path(), session);
+        let (host, _streams) = open_host(root.path());
+        host.arm_admission();
+        host.catalog.ensure_loaded();
+        assert!(host.is_deferred(session));
+        let management = endpoint::ManagementStore::open_light(root.path()).expect("management");
+        let sha = "a".repeat(64);
+        management
+            .archive_session("rpc-archive-1", &sha, session, "2026-10-12T00:00:00.000Z")
+            .expect("archive");
+        assert!(host.catalog.get(session).is_none());
+        management
+            .unarchive_session("rpc-unarchive-1", &sha, session, "2026-10-12T00:00:00.000Z")
+            .expect("unarchive");
+        assert!(!host.is_deferred(session), "the client unarchive admits");
+        assert!(
+            host.catalog
+                .entries_now()
+                .iter()
+                .any(|(id, _)| id == session)
+        );
+        host.shutdown();
+    }
+
+    /// E831 shutdown order: workers are stopped first, then the cards of the threads that were
+    /// live are re-folded and flushed, so what a killed worker had made durable is in the card.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn shutdown_stops_workers_before_it_flushes_the_cards_of_live_threads() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c5";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("first fold");
+        let folder = root.path().join("threads").join(session);
+        let append_last_words = || {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("the killed worker's last durable append");
+        };
+        host.shutdown_with(
+            Some(&append_last_words),
+            &HashSet::from([session.to_owned()]),
+        );
+        let card = store::card::read_card(&folder).expect("card");
+        assert_eq!(
+            card.lines[0].last_seq, 10,
+            "the card describes the final ledger"
+        );
+        assert_eq!(
+            store::card::classify(&folder, &card)
+                .expect("classify")
+                .freshness(),
+            store::card::Freshness::Fresh
+        );
+    }
+
+    /// E833 F1: between card writes a fold advances the catalog entry without rebuilding the
+    /// card view; a record that can change the title or the holds still rebuilds it.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_fold_between_card_writes_does_not_rebuild_the_card_view() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c4";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("folder");
+        write_test_genesis(&folder.join("main.jsonl"), session);
+        let (host, _streams) = open_host(root.path());
+        host.publish_appended(session).expect("first fold");
+        assert_eq!(host.card_builds.load(Ordering::Relaxed), 1);
+        assert!(!host.card_writer.is_due(session), "the window is open");
+        // a plain input: advanced in place
+        append_test_input(&folder.join("main.jsonl"), session);
+        host.publish_appended(session).expect("second fold");
+        assert_eq!(
+            host.card_builds.load(Ordering::Relaxed),
+            1,
+            "no view was built for the second fold"
+        );
+        let entry = host.catalog.get(session).expect("entry");
+        let main = entry
+            .view
+            .as_ref()
+            .and_then(|view| view.main())
+            .expect("main");
+        assert_eq!(main.last_seq, 2, "the entry follows the ledger");
+        // the advanced row equals the scan row
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan")
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("row");
+        let live = HashSet::new();
+        let row = host.catalog_item(session, &entry, &live).expect("row");
+        assert_eq!(row, scanned);
+        // a record that can change the holds forces a full view
+        {
+            let mut ledger = fs::OpenOptions::new()
+                .append(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            ledger
+                .write_all(
+                    (r#"{"kind":"meta","seq":3,"title":"A title","ts":"2026-08-28T00:00:02.000Z","v":1}"#.to_owned()
+                        + "\n")
+                        .as_bytes(),
+                )
+                .expect("title record");
+        }
+        host.publish_appended(session).expect("third fold");
+        assert_eq!(host.card_builds.load(Ordering::Relaxed), 2);
+        let entry = host.catalog.get(session).expect("entry");
+        assert_eq!(
+            entry.view.as_ref().expect("view").summary.title.as_deref(),
+            Some("A title")
+        );
+        host.shutdown();
+    }
+
+    /// E833 F5: a complete invalid line in a child ledger quarantines the thread too.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_complete_invalid_line_in_a_child_ledger_quarantines_the_thread() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c3";
+        let folder = held_thread_on_disk(root.path(), session);
+        fs::write(
+            folder.join("018f0000-0000-7000-8000-0000000000c0.jsonl"),
+            b"{\"not\":\"a record\"}\n",
+        )
+        .expect("child ledger");
+        let (host, _streams) = open_host(root.path());
+        let error = host.hydrate(session).expect_err("quarantined");
+        assert!(error.to_string().contains("quarantined"), "{error}");
+        assert!(matches!(
+            host.catalog.get(session).expect("entry").trust,
+            crate::catalog::Trust::Corrupt(_)
+        ));
+        host.shutdown();
+    }
+
+    /// E833 F6: the folder-event observer reads nothing (it runs under the store's locks); the
+    /// card is read by the first `get`.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_published_folder_enters_the_catalog_unread() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c2";
+        let (host, _streams) = open_host(root.path());
+        host.arm_admission();
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create");
+        let listed = host.catalog.entries_now();
+        let entry = &listed
+            .iter()
+            .find(|(id, _)| id == session)
+            .expect("listed")
+            .1;
+        assert!(entry.unread, "not read under the store lock");
+        let resolved = host.catalog.get(session).expect("entry");
+        assert!(!resolved.unread);
+        host.shutdown();
+    }
+
+    /// The 30 s management recovery tick runs the recovering open on an idle root without error
+    /// and without touching any thread (all thread folders are unreadable).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_management_recovery_tick_runs_on_an_idle_root_and_reads_no_thread() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        let folder = held_thread_on_disk(root.path(), session);
+        let (host, _streams) = open_host(root.path());
+        // The first recovering open may reconcile workspace metadata (named exception X1).
+        let mut validated = endpoint::CompleteOperations::default();
+        crate::endpoint_host::recover_pending_management(root.path(), &*host, &mut validated)
+            .expect("first");
+        fs::set_permissions(&folder, fs::Permissions::from_mode(0o000)).expect("lock");
+        let outcome =
+            crate::endpoint_host::recover_pending_management(root.path(), &*host, &mut validated);
+        fs::set_permissions(&folder, fs::Permissions::from_mode(0o700)).expect("unlock");
+        outcome.expect("recovery tick");
+        host.shutdown();
+    }
+
+    /// A thread that cannot be verified (here: its journal path is a directory) keeps its
+    /// placeholder row and is not retried by every List.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_thread_that_fails_verification_is_not_retried_by_every_list() {
+        let root = tempfile::tempdir().expect("root");
+        let broken = "018f0000-0000-7000-8000-0000000000b8";
+        let folder = held_thread_on_disk(root.path(), broken);
+        fs::create_dir(folder.join("endpoint.jsonl")).expect("journal path is a directory");
+        let (host, _streams) = open_host(root.path());
+        let first = host
+            .build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        assert_eq!(first.len(), 1, "the unverifiable thread keeps a row");
+        let runs = host.hydrate_runs.load(Ordering::Relaxed);
+        assert!(runs >= 1);
+        assert_eq!(
+            host.catalog.get(broken).expect("entry").trust,
+            crate::catalog::Trust::Cold,
+            "it could not be verified"
+        );
+        for _ in 0..3 {
+            host.build_inventory(false, Duration::from_secs(30))
+                .expect("list again");
+        }
+        assert_eq!(
+            host.hydrate_runs.load(Ordering::Relaxed),
+            runs,
+            "no new attempt inside the retry window"
+        );
+        host.shutdown();
+    }
+
+    /// The 30 s verification backoff is for Lists only: an open, a respond or a spawn that
+    /// needs the thread tries it again at once.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn opening_a_thread_bypasses_the_list_backoff() {
+        let root = tempfile::tempdir().expect("root");
+        let broken = "018f0000-0000-7000-8000-0000000000b7";
+        let folder = held_thread_on_disk(root.path(), broken);
+        fs::create_dir(folder.join("endpoint.jsonl")).expect("journal path is a directory");
+        let (host, _streams) = open_host(root.path());
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        let after_list = host.hydrate_runs.load(Ordering::Relaxed);
+        assert!(host.recently_failed(broken));
+        // fix the thread; a List still leaves it alone, an open verifies it
+        fs::remove_dir(folder.join("endpoint.jsonl")).expect("repair");
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list again");
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), after_list);
+        host.ensure_verified(broken)
+            .expect("the open verifies it now");
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), after_list + 1);
+        assert!(!host.recently_failed(broken), "success clears the backoff");
+        host.shutdown();
+    }
+
+    /// E835 N2: the List verifies the newest ledgers first, so the rows at the top of a sidebar
+    /// resolve first.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_list_verifies_the_newest_ledgers_first() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = [
+            "018f0000-0000-7000-8000-0000000000e1",
+            "018f0000-0000-7000-8000-0000000000e2",
+            "018f0000-0000-7000-8000-0000000000e3",
+            "018f0000-0000-7000-8000-0000000000e4",
+        ];
+        // the catalog iterates ids in ascending order, so the newest ledger is the highest id:
+        // only a real sort by modification time produces the expected order
+        let base = std::time::SystemTime::now() - Duration::from_secs(10_000);
+        for (n, id) in ids.iter().enumerate() {
+            let folder = held_thread_on_disk(root.path(), id);
+            let file = fs::OpenOptions::new()
+                .write(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            file.set_modified(base + Duration::from_secs(1_000 * (n as u64 + 1)))
+                .expect("mtime");
+        }
+        let (host, _streams) = open_host(root.path());
+        host.catalog.ensure_loaded();
+        let newest_first = ids
+            .iter()
+            .rev()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
+        assert_eq!(host.catalog.unverified(), newest_first, "e4 is the newest");
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        assert_eq!(
+            *host
+                .verify_order
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner),
+            newest_first,
+            "the queue is consumed newest first"
+        );
+        host.shutdown();
+    }
+
+    /// P-3 tripwire (in process): with every thread and archive folder unreadable (mode 000),
+    /// the ready preparation -- storage preflight, host open, admission, the first periodic
+    /// sweep tick's id selection -- succeeds, so nothing on the readiness path reads a thread.
+    /// (The out-of-process variant with `sandbox-exec` runs against the real binary.)
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_ready_path_does_not_read_any_thread_or_archive_folder() {
+        use std::os::unix::fs::PermissionsExt;
+        let root_dir = tempfile::tempdir().expect("root");
+        let root_path = fs::canonicalize(root_dir.path()).expect("canonical root");
+        let mut locked = Vec::new();
+        for (index, area) in ["threads", "archive"].into_iter().enumerate() {
+            for n in 0..4 {
+                let id = format!("018f0000-0000-7000-8000-00000000d{index}{n:02}");
+                let folder = root_path.join(area).join(&id);
+                fs::create_dir_all(folder.join("assets")).expect("folder");
+                fs::write(
+                    folder.join("main.jsonl"),
+                    held_ledger_lines(&id).join("\n") + "\n",
+                )
+                .expect("ledger");
+                locked.push(folder);
+            }
+        }
+        struct Restore(Vec<PathBuf>);
+        impl Drop for Restore {
+            fn drop(&mut self) {
+                for folder in &self.0 {
+                    let _ = fs::set_permissions(folder, fs::Permissions::from_mode(0o700));
+                }
+            }
+        }
+        let _restore = Restore(locked.clone());
+        for folder in &locked {
+            fs::set_permissions(folder, fs::Permissions::from_mode(0o000)).expect("lock");
+        }
+        for area in ["", "threads", "archive"] {
+            fs::set_permissions(root_path.join(area), fs::Permissions::from_mode(0o700))
+                .expect("area mode");
+        }
+        crate::host_runtime::prepare_storage(&root_path.join("threads"))
+            .expect("storage preflight");
+        let host = ProductionProcessHost::open(
+            &root_path,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root_path.join("missing-agent-home"),
+        )
+        .expect("process host opens without reading threads");
+        host.arm_admission();
+        assert!(
+            host.sweep_ids().is_empty(),
+            "nothing admitted, nothing swept"
+        );
+        host.shutdown();
+    }
+
+    /// K9: a projection decoded before a newer publication cannot undo it, even when it
+    /// reaches the diff after the newer one (the residual S1-a window).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_stale_projection_cannot_overwrite_a_newer_published_actionable_set() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a6";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        let stale = scan_valid_prefix(&fs::read(&ledger).expect("ledger"), 1)
+            .projection
+            .expect("stale projection");
+        assert_eq!(stale.last_seq, 9);
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session)
+            .expect("publish the resolved state");
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        // The stale decode arrives late: it must be refused, not re-publish the hold.
+        streams
+            .reconcile_actionables_main(session, &stale)
+            .expect("stale reconcile is a no-op");
+        assert!(
+            streams.published_pending_for_test(session, None).is_empty(),
+            "a shorter projection must not resurrect a resolved hold"
+        );
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_with_a_torn_tail_keeps_the_previous_error_path() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a3";
+        let (host, streams, _) = held_host(root.path(), session, r#"{"torn":"#);
+        let error = host
+            .publish_appended(session)
+            .expect_err("torn tail is rejected by the actionables read");
+        assert!(
+            error.to_string().contains("tail recovery"),
+            "unexpected error: {error}"
+        );
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        host.shutdown();
     }
 
     fn write_test_genesis(path: &Path, thread: &str) {
@@ -8896,6 +11029,277 @@ mod tests {
         }
         schema::validate_ledger(&bytes, 1).expect("test ledger validates");
         fs::write(path, bytes).expect("test ledger");
+    }
+
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    const CHILD_TS: &str = "2026-08-28T00:00:00.000Z";
+
+    /// main: genesis, input, run_start, turn_open, spawn(child) at seq 5; child: a tool call
+    /// (seq 6) and, when `held`, a pending approval request (seq 7).
+    #[cfg(target_os = "macos")]
+    fn write_thread_with_child(root: &Path, session: &str, child: &str, held: bool) -> PathBuf {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        write_test_spawn_line(
+            &folder.join("main.jsonl"),
+            session,
+            child,
+            "main.jsonl",
+            None,
+            5,
+            "spawn-1",
+        );
+        let mut events = vec![
+            json!({"v":1,"seq":1,"kind":"genesis","ts":CHILD_TS,"format":1,"min_reader":1,"min_writer":1,
+                "thread":child,"workspace":"ws","origin_key":"create-child",
+                "origin_tuple":{"principal":"p","client":"cli","target":child,"op":"create","key":"create-child"},
+                "resume":"never","config":{"digest":"cfg"},
+                "parent":{"file":"main.jsonl","seq":5,"spawn_id":"spawn-1"},
+                "seed":{"source":"parent","kinds":[],
+                    "snapshot":{"asset":format!("sha256-{}", "0".repeat(64)),"digest":"0".repeat(64)}}}),
+            json!({"v":1,"seq":2,"kind":"turn_open","ts":CHILD_TS,"turn":1,"trigger":"genesis"}),
+            json!({"v":1,"seq":3,"kind":"epoch","ts":CHILD_TS,"adapter":"fake","id":"e1","model":"fake","reason":"initial",
+                "renderer":1,"system":{"asset":"sha256-aa","digest":"d1"},"tools":{"asset":"sha256-td","digest":"td"}}),
+            json!({"v":1,"seq":4,"kind":"attempt","ts":CHILD_TS,"admits":[],"attempt":"a1","epoch":"e1",
+                "request":{"asset":format!("sha256-{}", "ab".repeat(32)),"bytes":4096},"turn":1,"wire_digest":"wd"}),
+            json!({"v":1,"seq":5,"kind":"output","ts":CHILD_TS,"attempt":"a1",
+                "content":[{"args":{"cmd":"ls"},"call":"c1","name":"shell","type":"tool-call"}],
+                "sealed":{"adapter":"fake","fragments":"x","version":1},"turn":1,
+                "usage":{"availability":"reported","input_tokens":"5","output_tokens":"1"}}),
+            json!({"v":1,"seq":6,"kind":"tool_call","ts":CHILD_TS,"args":{"cmd":"ls"},"attempt":"a1","call":"c1",
+                "name":"shell","source":"provider","turn":1}),
+        ];
+        if held {
+            events.push(child_request_event());
+        }
+        let path = folder.join(format!("{child}.jsonl"));
+        write_test_events(&path, events);
+        path
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_request_event() -> Value {
+        json!({"v":1,"seq":7,"kind":"approval_request","ts":CHILD_TS,"call":"c1","scope":"exec","turn":1})
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_response_event(child: &str) -> Value {
+        json!({"v":1,"seq":8,"kind":"approval_response","ts":CHILD_TS,"call":"c1","grant":true,"turn":1,
+            "origin_key":"r1","origin_tuple":{"principal":"p","client":"cli","target":child,"op":"approve","key":"r1"}})
+    }
+
+    #[cfg(target_os = "macos")]
+    fn append_test_events(path: &Path, events: Vec<Value>) {
+        let mut bytes = fs::read(path).expect("ledger");
+        for value in events {
+            let event = schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))
+                .expect("event shape");
+            bytes.extend_from_slice(&event.canonical_bytes().expect("canonical event"));
+            bytes.push(b'\n');
+        }
+        schema::validate_ledger(&bytes, 1).expect("grown ledger validates");
+        fs::write(path, bytes).expect("grown ledger");
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_rpc_id(session: &str, child: &str) -> String {
+        endpoint::derive_line_request_rpc_id(
+            session,
+            Some(&format!("{child}.jsonl")),
+            endpoint::RequestFrameType::Approval,
+            7,
+        )
+    }
+
+    /// O-final B1, live path: a thread verified in this process folded its child lines once;
+    /// a hold a child worker raises afterwards is announced through the published set, and the
+    /// actionables baseline lists it without any ledger being re-read for the card. Answering
+    /// it removes it again.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        let child = "018f0000-0000-7000-8000-0000000000c2";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        let view = host
+            .catalog
+            .get(session)
+            .and_then(|entry| entry.view)
+            .expect("verified view");
+        assert!(view.children_exact, "verification folds the child lines");
+        assert_eq!(view.lines.len(), 2, "main and its child");
+        assert!(streams.actionable_ids_for_test().is_empty());
+
+        append_test_events(&child_path, vec![child_request_event()]);
+        let line = format!("{child}.jsonl");
+        streams
+            .reconcile_actionables(session, Some(&line))
+            .expect("the child worker's hold is announced");
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)]
+        );
+
+        append_test_events(&child_path, vec![child_response_event(child)]);
+        streams
+            .reconcile_actionables(session, Some(&line))
+            .expect("the answer is announced");
+        assert!(
+            streams.actionable_ids_for_test().is_empty(),
+            "an answered hold leaves the baseline"
+        );
+        host.shutdown();
+    }
+
+    /// O-final n1: a child worker that dies between a durable append and its `Appended` message
+    /// leaves a request no doorbell announced; the exit path looks at its line once more.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_child_exit_announces_a_hold_no_doorbell_announced() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000d2";
+        let child = "018f0000-0000-7000-8000-0000000000d3";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        append_test_events(&child_path, vec![child_request_event()]);
+        assert!(
+            streams.actionable_ids_for_test().is_empty(),
+            "nothing announced it: the verified view is exact and no message arrived"
+        );
+        host.reconcile_child_line(session, &child_path);
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)]
+        );
+        host.shutdown();
+    }
+
+    /// O-final B1: the doorbell fold of the main ledger carries the previous child views forward
+    /// and says so (`children_exact` false); the catalog then asks for the child files to be
+    /// prefiltered, and a hold that arrived in the meantime is found.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c3";
+        let child = "018f0000-0000-7000-8000-0000000000c4";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        assert!(
+            host.catalog
+                .get(session)
+                .unwrap()
+                .view
+                .unwrap()
+                .children_exact
+        );
+        assert!(
+            SupervisorSessionAuthority::hold_catalog(&*host)
+                .expect("catalog")
+                .children_unverified
+                .is_empty()
+        );
+
+        append_test_events(&child_path, vec![child_request_event()]);
+        host.publish_appended(session).expect("doorbell");
+        assert!(
+            !host
+                .catalog
+                .get(session)
+                .unwrap()
+                .view
+                .unwrap()
+                .children_exact
+        );
+        assert_eq!(
+            SupervisorSessionAuthority::hold_catalog(&*host)
+                .expect("catalog")
+                .children_unverified,
+            vec![session.to_owned()]
+        );
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)],
+            "the child file's bytes hold a request, so the thread is a candidate"
+        );
+        host.shutdown();
+    }
+
+    /// O-final m4: a scratch thread that was busy at the post-ready cleanup (a lock holder) is
+    /// remembered, and the next cleanup (the recovery tick runs it while any are left) removes it
+    /// once the holder is gone.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_busy_stale_scratch_thread_is_removed_by_the_retry() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c6";
+        let folder = held_thread_on_disk(root.path(), session);
+        let ledger = folder.join("main.jsonl");
+        let text = fs::read_to_string(&ledger).expect("ledger");
+        fs::write(
+            &ledger,
+            text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+        )
+        .expect("ephemeral ledger");
+        let (host, _streams) = open_host(root.path());
+        let holder = store::LockedLedger::open(ledger.clone(), 1).expect("a lock holder");
+        host.cleanup_stale_ephemeral();
+        assert_eq!(host.stale_ephemeral_busy.load(Ordering::Acquire), 1);
+        assert!(folder.exists(), "a busy scratch thread is left alone");
+        drop(holder);
+        host.cleanup_stale_ephemeral();
+        assert_eq!(host.stale_ephemeral_busy.load(Ordering::Acquire), 0);
+        assert!(!folder.exists(), "the retry removed it");
+        host.shutdown();
+    }
+
+    /// O-final m9: verifying a thread removes the temporary card file a crashed process left.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn hydration_removes_a_dead_processs_card_temporary() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000d1";
+        let folder = held_thread_on_disk(root.path(), session);
+        let mut gone = std::process::Command::new("true").spawn().expect("spawn");
+        let dead = gone.id();
+        gone.wait().expect("wait");
+        let stale = folder.join(format!(".thread-card.json.{dead}.1.tmp"));
+        fs::write(&stale, b"half a card").expect("stale temporary");
+        let (host, _streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        assert!(!stale.exists(), "the dead process's temporary is gone");
+        host.shutdown();
+    }
+
+    /// O-final m3: damage is believed only when a second read agrees. A first read that showed
+    /// damage the file does not have (a straddled repair or append) quarantines nothing.
+    #[test]
+    fn damage_needs_two_agreeing_reads() {
+        let dir = tempfile::tempdir().expect("dir");
+        let path = dir.path().join("main.jsonl");
+        let good = format!(
+            "{}\n",
+            held_ledger_lines("018f0000-0000-7000-8000-0000000000c5")[0]
+        );
+        fs::write(&path, &good).expect("good ledger");
+        assert!(ledger_damage(good.as_bytes()).is_none());
+        assert!(
+            !damage_confirmed(&path, 17),
+            "a damaged first read of a sound file is not confirmed"
+        );
+        let damaged = format!("{good}{{\"not\":\"a record\"}}\n");
+        fs::write(&path, &damaged).expect("damaged ledger");
+        let offset = ledger_damage(damaged.as_bytes()).expect("complete invalid record");
+        assert!(damage_confirmed(&path, offset), "real damage is confirmed");
+        assert!(
+            !damage_confirmed(&path, offset + 1),
+            "a different offset is a different (transient) picture"
+        );
     }
 
     #[test]

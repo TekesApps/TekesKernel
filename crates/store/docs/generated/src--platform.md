@@ -37,11 +37,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::platform::open_exclusive_create](../../src/platform.rs#L170) | function_item | `pub(crate)` |  |
 | [store::platform::lock_operation](../../src/platform.rs#L183) | function_item | `private` |  |
 | [store::platform::revalidate_inode](../../src/platform.rs#L211) | function_item | `private` |  |
-| [store::platform::probe_local_filesystem](../../src/platform.rs#L220) | function_item | `pub` |  |
-| [store::platform::reject_known_remote_filesystem](../../src/platform.rs#L266) | function_item | `private` | #[cfg(target_os = "macos")] |
-| [store::platform::reject_known_remote_filesystem](../../src/platform.rs#L292) | function_item | `private` | #[cfg(not(target_os = "macos"))] |
-| [store::platform::unlock](../../src/platform.rs#L297) | function_item | `pub(crate)` |  |
-| [store::platform::probe_tests::concurrent_open_probes_do_not_remove_each_others_files](../../src/platform.rs#L315) | function_item | `private` | test; #[cfg(test)] |
+| [store::platform::probed_roots](../../src/platform.rs#L224) | function_item | `private` |  |
+| [store::platform::probed_roots::PROBED](../../src/platform.rs#L225) | static_item | `private` |  |
+| [store::platform::probe_local_filesystem](../../src/platform.rs#L231) | function_item | `pub` |  |
+| [store::platform::probe_local_filesystem_uncached](../../src/platform.rs#L251) | function_item | `private` |  |
+| [store::platform::reject_known_remote_filesystem](../../src/platform.rs#L296) | function_item | `private` | #[cfg(target_os = "macos")] |
+| [store::platform::reject_known_remote_filesystem](../../src/platform.rs#L322) | function_item | `private` | #[cfg(not(target_os = "macos"))] |
+| [store::platform::unlock](../../src/platform.rs#L327) | function_item | `pub(crate)` |  |
+| [store::platform::probe_tests::concurrent_open_probes_do_not_remove_each_others_files](../../src/platform.rs#L345) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -89,8 +92,8 @@ flowchart TD
   n11["store::platform::lock_operation"]
   n12["store::platform::revalidate_inode"]
   n13["store::platform::SystemSync::full_sync"]
-  n14["store::platform::unlock"]
-  n15["store::platform::FullSync::full_sync"]
+  n14["store::platform::FullSync::full_sync"]
+  n15["store::platform::unlock"]
   n16["store::platform::DirectoryLock::shared"]
   n17["store::platform::DirectoryLock::exclusive"]
   n18["store::platform::DirectoryLock::try_exclusive"]
@@ -101,14 +104,14 @@ flowchart TD
   n1 --> n2
   n2 --> n11
   n2 --> n12
-  n4 --> n14
+  n4 --> n15
   n5 --> n10
-  n7 --> n14
-  n8 --> n14
+  n7 --> n15
+  n8 --> n15
   n9 --> n11
   n10 --> n11
   n10 --> n12
-  n13 --> n15
+  n13 --> n14
   n16 --> n19
   n17 --> n19
   n18 --> n19
@@ -119,19 +122,23 @@ flowchart TD
 
 </details>
 
-<details><summary>Functions 21–25: 2 direct edges</summary>
+<details><summary>Functions 21–27: 4 direct edges</summary>
 
 ```mermaid
 flowchart TD
   n0["store::platform::try_lock_exclusive"]
   n1["store::platform::revalidate_inode"]
-  n2["store::platform::probe_local_filesystem"]
-  n3["store::platform::reject_known_remote_filesystem"]
-  n4["store::platform::reject_known_remote_filesystem"]
-  n5["store::platform::unlock"]
+  n2["store::platform::probed_roots"]
+  n3["store::platform::probe_local_filesystem"]
+  n4["store::platform::probe_local_filesystem_uncached"]
+  n5["store::platform::reject_known_remote_filesystem"]
   n6["store::platform::FullSync::full_sync"]
-  n2 --> n0
-  n2 --> n6
+  n7["store::platform::reject_known_remote_filesystem"]
+  n8["store::platform::unlock"]
+  n3 --> n2
+  n3 --> n4
+  n4 --> n0
+  n4 --> n6
 ```
 
 </details>
@@ -175,13 +182,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `acquire` | `lock_operation` | [124](../../src/platform.rs#L124) | [store::platform::lock_operation](../../src/platform.rs#L183) |
 | `acquire` | `revalidate_inode` | [125](../../src/platform.rs#L125) | [store::platform::revalidate_inode](../../src/platform.rs#L211) |
 | `acquire` | `Ok` | [126](../../src/platform.rs#L126) | external-constructor-callback-or-unresolved |
-| `drop` | `unlock` | [137](../../src/platform.rs#L137) | [store::platform::unlock](../../src/platform.rs#L297) |
+| `drop` | `unlock` | [137](../../src/platform.rs#L137) | [store::platform::unlock](../../src/platform.rs#L327) |
 | `acquire` | `root.as_ref().join` | [143](../../src/platform.rs#L143) | receiver-type-required |
 | `acquire` | `root.as_ref` | [143](../../src/platform.rs#L143) | receiver-type-required |
 | `acquire` | `open_exclusive_create` | [144](../../src/platform.rs#L144) | [store::platform::open_exclusive_create](../../src/platform.rs#L170) |
 | `acquire` | `Ok` | [145](../../src/platform.rs#L145) | external-constructor-callback-or-unresolved |
-| `drop` | `unlock` | [156](../../src/platform.rs#L156) | [store::platform::unlock](../../src/platform.rs#L297) |
-| `drop` | `unlock` | [162](../../src/platform.rs#L162) | [store::platform::unlock](../../src/platform.rs#L297) |
+| `drop` | `unlock` | [156](../../src/platform.rs#L156) | [store::platform::unlock](../../src/platform.rs#L327) |
+| `drop` | `unlock` | [162](../../src/platform.rs#L162) | [store::platform::unlock](../../src/platform.rs#L327) |
 | `try_lock_exclusive` | `lock_operation` | [167](../../src/platform.rs#L167) | [store::platform::lock_operation](../../src/platform.rs#L183) |
 | `open_exclusive_create` | `OpenOptions::new()         .read(true)         .write(true)         .create(true)         .mode(0o600)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [171](../../src/platform.rs#L171) | receiver-type-required |
 | `open_exclusive_create` | `OpenOptions::new()         .read(true)         .write(true)         .create(true)         .mode(0o600)         .custom_flags` | [171](../../src/platform.rs#L171) | receiver-type-required |
@@ -209,65 +216,79 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `revalidate_inode` | `pathname.ino` | [214](../../src/platform.rs#L214) | receiver-type-required |
 | `revalidate_inode` | `Err` | [215](../../src/platform.rs#L215) | external-constructor-callback-or-unresolved |
 | `revalidate_inode` | `Ok` | [217](../../src/platform.rs#L217) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `root.as_ref` | [221](../../src/platform.rs#L221) | receiver-type-required |
-| `probe_local_filesystem` | `root         .to_string_lossy()         .contains` | [222](../../src/platform.rs#L222) | receiver-type-required |
-| `probe_local_filesystem` | `root         .to_string_lossy` | [222](../../src/platform.rs#L222) | receiver-type-required |
-| `probe_local_filesystem` | `Err` | [226](../../src/platform.rs#L226), [255](../../src/platform.rs#L255) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `StoreError::UnsupportedFilesystem` | [226](../../src/platform.rs#L226), [255](../../src/platform.rs#L255) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `"iCloud-synchronized storage is not supported".to_owned` | [227](../../src/platform.rs#L227) | receiver-type-required |
-| `probe_local_filesystem` | `std::fs::create_dir_all` | [230](../../src/platform.rs#L230) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `reject_known_remote_filesystem` | [231](../../src/platform.rs#L231) | ambiguous-cfg-or-overload |
-| `probe_local_filesystem` | `root.join` | [232](../../src/platform.rs#L232) | receiver-type-required |
-| `probe_local_filesystem` | `(&#124;&#124; {         let mut first = OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open(&path)?;         use std::io::Write as _;         first.write_all(b"probe\n")?;         FullSync::full_sync(&first)?;         try_lock_exclusive(&first)?;         let second = OpenOptions::new()             .read(true)             .append(true)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open(&path)?;         if !matches!(try_lock_exclusive(&second), Err(StoreError::Busy)) {             return Err(StoreError::UnsupportedFilesystem(                 "flock contention probe did not report busy".to_owned(),             ));         }         Ok(())     })` | [237](../../src/platform.rs#L237) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open` | [238](../../src/platform.rs#L238) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags` | [238](../../src/platform.rs#L238) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode` | [238](../../src/platform.rs#L238) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .create_new` | [238](../../src/platform.rs#L238) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append` | [238](../../src/platform.rs#L238), [249](../../src/platform.rs#L249) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read` | [238](../../src/platform.rs#L238), [249](../../src/platform.rs#L249) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new` | [238](../../src/platform.rs#L238), [249](../../src/platform.rs#L249) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `first.write_all` | [246](../../src/platform.rs#L246) | receiver-type-required |
-| `probe_local_filesystem` | `FullSync::full_sync` | [247](../../src/platform.rs#L247) | [store::platform::FullSync::full_sync](../../src/platform.rs#L31) |
-| `probe_local_filesystem` | `try_lock_exclusive` | [248](../../src/platform.rs#L248) | [store::platform::try_lock_exclusive](../../src/platform.rs#L166) |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open` | [249](../../src/platform.rs#L249) | receiver-type-required |
-| `probe_local_filesystem` | `OpenOptions::new()             .read(true)             .append(true)             .custom_flags` | [249](../../src/platform.rs#L249) | receiver-type-required |
-| `probe_local_filesystem` | `"flock contention probe did not report busy".to_owned` | [256](../../src/platform.rs#L256) | receiver-type-required |
-| `probe_local_filesystem` | `Ok` | [259](../../src/platform.rs#L259) | external-constructor-callback-or-unresolved |
-| `probe_local_filesystem` | `std::fs::remove_file` | [261](../../src/platform.rs#L261) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `CString::new(root.as_os_str().as_bytes())         .map_err` | [267](../../src/platform.rs#L267) | receiver-type-required |
-| `reject_known_remote_filesystem` | `CString::new` | [267](../../src/platform.rs#L267) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `root.as_os_str().as_bytes` | [267](../../src/platform.rs#L267) | receiver-type-required |
-| `reject_known_remote_filesystem` | `root.as_os_str` | [267](../../src/platform.rs#L267) | receiver-type-required |
-| `reject_known_remote_filesystem` | `StoreError::UnsupportedFilesystem` | [268](../../src/platform.rs#L268), [284](../../src/platform.rs#L284) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `"storage path contains NUL".to_owned` | [268](../../src/platform.rs#L268) | receiver-type-required |
-| `reject_known_remote_filesystem` | `std::mem::zeroed::<libc::statfs>` | [271](../../src/platform.rs#L271) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `libc::statfs` | [273](../../src/platform.rs#L273) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `path.as_ptr` | [273](../../src/platform.rs#L273) | receiver-type-required |
-| `reject_known_remote_filesystem` | `Err` | [274](../../src/platform.rs#L274), [284](../../src/platform.rs#L284) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `StoreError::Io` | [274](../../src/platform.rs#L274) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `io::Error::last_os_error` | [274](../../src/platform.rs#L274) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map(&#124;value&#124; *value as u8)         .take_while(&#124;value&#124; *value != 0)         .collect::<Vec<_>>` | [276](../../src/platform.rs#L276) | receiver-type-required |
-| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map(&#124;value&#124; *value as u8)         .take_while` | [276](../../src/platform.rs#L276) | receiver-type-required |
-| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map` | [276](../../src/platform.rs#L276) | receiver-type-required |
-| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter` | [276](../../src/platform.rs#L276) | receiver-type-required |
-| `reject_known_remote_filesystem` | `String::from_utf8_lossy(&bytes).to_ascii_lowercase` | [282](../../src/platform.rs#L282) | receiver-type-required |
-| `reject_known_remote_filesystem` | `String::from_utf8_lossy` | [282](../../src/platform.rs#L282) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `Ok` | [288](../../src/platform.rs#L288) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `CString::new` | [293](../../src/platform.rs#L293) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `Vec::<u8>::new` | [293](../../src/platform.rs#L293) | external-constructor-callback-or-unresolved |
-| `reject_known_remote_filesystem` | `Ok` | [294](../../src/platform.rs#L294) | external-constructor-callback-or-unresolved |
-| `unlock` | `libc::flock` | [301](../../src/platform.rs#L301) | external-constructor-callback-or-unresolved |
-| `unlock` | `file.as_raw_fd` | [301](../../src/platform.rs#L301) | receiver-type-required |
-| `unlock` | `Ok` | [303](../../src/platform.rs#L303) | external-constructor-callback-or-unresolved |
-| `unlock` | `io::Error::last_os_error` | [305](../../src/platform.rs#L305) | external-constructor-callback-or-unresolved |
-| `unlock` | `error.kind` | [306](../../src/platform.rs#L306) | receiver-type-required |
-| `unlock` | `Err` | [307](../../src/platform.rs#L307) | external-constructor-callback-or-unresolved |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `tempfile::tempdir().expect` | [316](../../src/platform.rs#L316) | receiver-type-required |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `tempfile::tempdir` | [316](../../src/platform.rs#L316) | external-constructor-callback-or-unresolved |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `std::sync::Barrier::new` | [317](../../src/platform.rs#L317) | external-constructor-callback-or-unresolved |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `std::thread::scope` | [318](../../src/platform.rs#L318) | external-constructor-callback-or-unresolved |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `root.path` | [320](../../src/platform.rs#L320) | receiver-type-required |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `scope.spawn` | [322](../../src/platform.rs#L322) | receiver-type-required |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `barrier.wait` | [323](../../src/platform.rs#L323) | receiver-type-required |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `super::probe_local_filesystem(root).expect` | [324](../../src/platform.rs#L324) | receiver-type-required |
-| `concurrent_open_probes_do_not_remove_each_others_files` | `super::probe_local_filesystem` | [324](../../src/platform.rs#L324) | [store::platform::probe_local_filesystem](../../src/platform.rs#L220) |
+| `probed_roots` | `PROBED.get_or_init` | [228](../../src/platform.rs#L228) | receiver-type-required |
+| `PROBED` | `std::sync::OnceLock::new` | [227](../../src/platform.rs#L227) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem` | `root.as_ref` | [232](../../src/platform.rs#L232) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .contains` | [233](../../src/platform.rs#L233) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()         .lock()         .unwrap_or_else` | [233](../../src/platform.rs#L233) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()         .lock` | [233](../../src/platform.rs#L233) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots` | [233](../../src/platform.rs#L233), [243](../../src/platform.rs#L243) | [store::platform::probed_roots](../../src/platform.rs#L224) |
+| `probe_local_filesystem` | `root.is_dir` | [237](../../src/platform.rs#L237) | receiver-type-required |
+| `probe_local_filesystem` | `Ok` | [239](../../src/platform.rs#L239) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem` | `probe_local_filesystem_uncached` | [241](../../src/platform.rs#L241) | [store::platform::probe_local_filesystem_uncached](../../src/platform.rs#L251) |
+| `probe_local_filesystem` | `outcome.is_ok` | [242](../../src/platform.rs#L242) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .insert` | [243](../../src/platform.rs#L243) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()             .lock()             .unwrap_or_else` | [243](../../src/platform.rs#L243) | receiver-type-required |
+| `probe_local_filesystem` | `probed_roots()             .lock` | [243](../../src/platform.rs#L243) | receiver-type-required |
+| `probe_local_filesystem` | `root.to_path_buf` | [246](../../src/platform.rs#L246) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `root         .to_string_lossy()         .contains` | [252](../../src/platform.rs#L252) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `root         .to_string_lossy` | [252](../../src/platform.rs#L252) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `Err` | [256](../../src/platform.rs#L256), [285](../../src/platform.rs#L285) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `StoreError::UnsupportedFilesystem` | [256](../../src/platform.rs#L256), [285](../../src/platform.rs#L285) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `"iCloud-synchronized storage is not supported".to_owned` | [257](../../src/platform.rs#L257) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `std::fs::create_dir_all` | [260](../../src/platform.rs#L260) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `reject_known_remote_filesystem` | [261](../../src/platform.rs#L261) | ambiguous-cfg-or-overload |
+| `probe_local_filesystem_uncached` | `root.join` | [262](../../src/platform.rs#L262) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `(&#124;&#124; {         let mut first = OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open(&path)?;         use std::io::Write as _;         first.write_all(b"probe\n")?;         FullSync::full_sync(&first)?;         try_lock_exclusive(&first)?;         let second = OpenOptions::new()             .read(true)             .append(true)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open(&path)?;         if !matches!(try_lock_exclusive(&second), Err(StoreError::Busy)) {             return Err(StoreError::UnsupportedFilesystem(                 "flock contention probe did not report busy".to_owned(),             ));         }         Ok(())     })` | [267](../../src/platform.rs#L267) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open` | [268](../../src/platform.rs#L268) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode(0o600)             .custom_flags` | [268](../../src/platform.rs#L268) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .create_new(true)             .mode` | [268](../../src/platform.rs#L268) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .create_new` | [268](../../src/platform.rs#L268) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append` | [268](../../src/platform.rs#L268), [279](../../src/platform.rs#L279) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read` | [268](../../src/platform.rs#L268), [279](../../src/platform.rs#L279) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new` | [268](../../src/platform.rs#L268), [279](../../src/platform.rs#L279) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `first.write_all` | [276](../../src/platform.rs#L276) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `FullSync::full_sync` | [277](../../src/platform.rs#L277) | [store::platform::FullSync::full_sync](../../src/platform.rs#L31) |
+| `probe_local_filesystem_uncached` | `try_lock_exclusive` | [278](../../src/platform.rs#L278) | [store::platform::try_lock_exclusive](../../src/platform.rs#L166) |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)             .open` | [279](../../src/platform.rs#L279) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `OpenOptions::new()             .read(true)             .append(true)             .custom_flags` | [279](../../src/platform.rs#L279) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `"flock contention probe did not report busy".to_owned` | [286](../../src/platform.rs#L286) | receiver-type-required |
+| `probe_local_filesystem_uncached` | `Ok` | [289](../../src/platform.rs#L289) | external-constructor-callback-or-unresolved |
+| `probe_local_filesystem_uncached` | `std::fs::remove_file` | [291](../../src/platform.rs#L291) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `CString::new(root.as_os_str().as_bytes())         .map_err` | [297](../../src/platform.rs#L297) | receiver-type-required |
+| `reject_known_remote_filesystem` | `CString::new` | [297](../../src/platform.rs#L297) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `root.as_os_str().as_bytes` | [297](../../src/platform.rs#L297) | receiver-type-required |
+| `reject_known_remote_filesystem` | `root.as_os_str` | [297](../../src/platform.rs#L297) | receiver-type-required |
+| `reject_known_remote_filesystem` | `StoreError::UnsupportedFilesystem` | [298](../../src/platform.rs#L298), [314](../../src/platform.rs#L314) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `"storage path contains NUL".to_owned` | [298](../../src/platform.rs#L298) | receiver-type-required |
+| `reject_known_remote_filesystem` | `std::mem::zeroed::<libc::statfs>` | [301](../../src/platform.rs#L301) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `libc::statfs` | [303](../../src/platform.rs#L303) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `path.as_ptr` | [303](../../src/platform.rs#L303) | receiver-type-required |
+| `reject_known_remote_filesystem` | `Err` | [304](../../src/platform.rs#L304), [314](../../src/platform.rs#L314) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `StoreError::Io` | [304](../../src/platform.rs#L304) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `io::Error::last_os_error` | [304](../../src/platform.rs#L304) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map(&#124;value&#124; *value as u8)         .take_while(&#124;value&#124; *value != 0)         .collect::<Vec<_>>` | [306](../../src/platform.rs#L306) | receiver-type-required |
+| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map(&#124;value&#124; *value as u8)         .take_while` | [306](../../src/platform.rs#L306) | receiver-type-required |
+| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter()         .map` | [306](../../src/platform.rs#L306) | receiver-type-required |
+| `reject_known_remote_filesystem` | `stat         .f_fstypename         .iter` | [306](../../src/platform.rs#L306) | receiver-type-required |
+| `reject_known_remote_filesystem` | `String::from_utf8_lossy(&bytes).to_ascii_lowercase` | [312](../../src/platform.rs#L312) | receiver-type-required |
+| `reject_known_remote_filesystem` | `String::from_utf8_lossy` | [312](../../src/platform.rs#L312) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `Ok` | [318](../../src/platform.rs#L318) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `CString::new` | [323](../../src/platform.rs#L323) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `Vec::<u8>::new` | [323](../../src/platform.rs#L323) | external-constructor-callback-or-unresolved |
+| `reject_known_remote_filesystem` | `Ok` | [324](../../src/platform.rs#L324) | external-constructor-callback-or-unresolved |
+| `unlock` | `libc::flock` | [331](../../src/platform.rs#L331) | external-constructor-callback-or-unresolved |
+| `unlock` | `file.as_raw_fd` | [331](../../src/platform.rs#L331) | receiver-type-required |
+| `unlock` | `Ok` | [333](../../src/platform.rs#L333) | external-constructor-callback-or-unresolved |
+| `unlock` | `io::Error::last_os_error` | [335](../../src/platform.rs#L335) | external-constructor-callback-or-unresolved |
+| `unlock` | `error.kind` | [336](../../src/platform.rs#L336) | receiver-type-required |
+| `unlock` | `Err` | [337](../../src/platform.rs#L337) | external-constructor-callback-or-unresolved |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `tempfile::tempdir().expect` | [346](../../src/platform.rs#L346) | receiver-type-required |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `tempfile::tempdir` | [346](../../src/platform.rs#L346) | external-constructor-callback-or-unresolved |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `std::sync::Barrier::new` | [347](../../src/platform.rs#L347) | external-constructor-callback-or-unresolved |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `std::thread::scope` | [348](../../src/platform.rs#L348) | external-constructor-callback-or-unresolved |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `root.path` | [350](../../src/platform.rs#L350) | receiver-type-required |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `scope.spawn` | [352](../../src/platform.rs#L352) | receiver-type-required |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `barrier.wait` | [353](../../src/platform.rs#L353) | receiver-type-required |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `super::probe_local_filesystem(root).expect` | [354](../../src/platform.rs#L354) | receiver-type-required |
+| `concurrent_open_probes_do_not_remove_each_others_files` | `super::probe_local_filesystem` | [354](../../src/platform.rs#L354) | [store::platform::probe_local_filesystem](../../src/platform.rs#L231) |

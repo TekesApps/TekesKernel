@@ -173,6 +173,7 @@ struct MockHost {
     state: Arc<Mutex<MockState>>,
     registered: BTreeSet<String>,
     block_unary: bool,
+    unary_failure: Option<fn() -> HostFailure>,
     fail_stream: bool,
     terminal_stream: Option<StreamErrorCode>,
     repeat_baseline: bool,
@@ -215,6 +216,7 @@ impl MockHost {
                 .map(ToString::to_string)
                 .collect(),
             block_unary: false,
+            unary_failure: None,
             fail_stream: false,
             terminal_stream: None,
             repeat_baseline: false,
@@ -224,6 +226,11 @@ impl MockHost {
 
     fn without_route(mut self, route: &str) -> Self {
         self.registered.remove(route);
+        self
+    }
+
+    fn failing_unary(mut self, failure: fn() -> HostFailure) -> Self {
+        self.unary_failure = Some(failure);
         self
     }
 
@@ -281,7 +288,11 @@ impl EndpointCarrierHost for MockHost {
     ) -> CarrierHostFuture<'_, Result<ServerResponse, HostFailure>> {
         let state = Arc::clone(&self.state);
         let block_unary = self.block_unary;
+        let unary_failure = self.unary_failure;
         Box::pin(async move {
+            if let Some(failure) = unary_failure {
+                return Err(failure());
+            }
             if block_unary {
                 state.lock().expect("state").calls += 1;
                 return pending::<Result<ServerResponse, HostFailure>>().await;
@@ -1264,4 +1275,45 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
     };
     assert_eq!(u16::from(close.code), 1002);
     task.abort();
+}
+
+/// O-final m7 / D1: on HTTP a thread that cannot be opened (the session limit, a quarantine) is
+/// answered like any other host failure, with the 503 `not-ready` of the closed carrier table;
+/// the typed forms exist on the streams only, and no host detail reaches the HTTP wire.
+#[tokio::test]
+async fn thread_open_failures_are_the_closed_tables_503_on_http() {
+    let body = serde_json::to_vec(&json!({
+        "type": "client-request", "rpcId": "typed-1",
+        "method": "session.prompt", "payload": {"sessionId": "50aa8d4e-9305-49d1-837e-16d2e67f31b0", "content": []}
+    }))
+    .expect("request");
+    type Failure = (fn() -> HostFailure, &'static str);
+    let failures: [Failure; 3] = [
+        (|| HostFailure::ActiveSessionLimit { limit: 256 }, "limit"),
+        (
+            || HostFailure::Quarantined("main.jsonl: bad record".to_owned()),
+            "quarantine",
+        ),
+        (|| HostFailure::Internal("boom".to_owned()), "internal"),
+    ];
+    for (failure, name) in failures {
+        let response = TransportServer::new(
+            Arc::new(MockHost::new(true).failing_unary(failure)),
+            config(),
+        )
+        .expect("server")
+        .router()
+        .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
+        .await
+        .expect("response");
+        assert_eq!(response.status(), StatusCode::SERVICE_UNAVAILABLE, "{name}");
+        let value = response_json(response).await;
+        assert_eq!(value["error"]["code"], "not-ready", "{name}");
+        assert_eq!(value["error"]["details"], json!({}), "{name}");
+        let text = value.to_string();
+        assert!(
+            !text.contains("bad record") && !text.contains("256") && !text.contains("boom"),
+            "{name}: {text}"
+        );
+    }
 }

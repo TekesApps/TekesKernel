@@ -8,10 +8,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [schema::SchemaError](../../src/lib.rs#L16) | enum_item | `pub` |  |
-| [schema::SchemaError::event](../../src/lib.rs#L28) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::constraint](../../src/lib.rs#L35) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::rule](../../src/lib.rs#L44) | function_item | `pub` |  |
+| [schema::SchemaError](../../src/lib.rs#L17) | enum_item | `pub` |  |
+| [schema::SchemaError::event](../../src/lib.rs#L29) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::constraint](../../src/lib.rs#L36) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::rule](../../src/lib.rs#L45) | function_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -39,6 +39,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `schema::event` | `private` |  |
 | `schema::fold` | `private` |  |
 | `schema::ijson` | `private` |  |
+| `schema::metrics` | `pub` |  |
 | `schema::types` | `private` |  |
 
 ## Function call graphs
@@ -62,6 +63,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `event` | `message.into` | [31](../../src/lib.rs#L31) | receiver-type-required |
-| `constraint` | `message.into` | [39](../../src/lib.rs#L39) | receiver-type-required |
-| `rule` | `Some` | [46](../../src/lib.rs#L46) | external-constructor-callback-or-unresolved |
+| `event` | `message.into` | [32](../../src/lib.rs#L32) | receiver-type-required |
+| `constraint` | `message.into` | [40](../../src/lib.rs#L40) | receiver-type-required |
+| `rule` | `Some` | [47](../../src/lib.rs#L47) | external-constructor-callback-or-unresolved |

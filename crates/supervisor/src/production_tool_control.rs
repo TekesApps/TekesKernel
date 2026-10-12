@@ -557,10 +557,12 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                     continue;
                 }
                 let session = entry.file_name().to_string_lossy().into_owned();
-                let projection = read_projection(&entry.path().join("main.jsonl"))?;
-                if genesis_workspace(&projection)? != workspace {
+                // Threads of other workspaces are told apart by their genesis line; only the
+                // matching ones are decoded for their title and tail.
+                if folder_workspace(&entry.path())? != workspace {
                     continue;
                 }
+                let projection = read_projection(&entry.path().join("main.jsonl"))?;
                 let genesis = projection.events.first().expect("projection has genesis");
                 let title = projection
                     .events
@@ -1160,9 +1162,7 @@ fn workspace_sessions(
         for entry in fs::read_dir(root.join(area)).map_err(map_io)? {
             let entry = entry.map_err(map_io)?;
             if entry.file_type().map_err(map_io)?.is_dir()
-                && read_projection(&entry.path().join("main.jsonl"))
-                    .and_then(|projection| Ok(genesis_workspace(&projection)?.to_owned()))
-                    .is_ok_and(|candidate| candidate == workspace)
+                && folder_workspace(&entry.path()).is_ok_and(|candidate| candidate == workspace)
             {
                 sessions.push(entry.file_name().to_string_lossy().into_owned());
             }
@@ -1178,8 +1178,7 @@ fn require_session_in_workspace(
     workspace: &str,
 ) -> Result<(), SupervisorOperationError> {
     let (folder, _) = session_folder(root, session)?;
-    let projection = read_projection(&folder.join("main.jsonl"))?;
-    if genesis_workspace(&projection)? != workspace {
+    if folder_workspace(&folder)? != workspace {
         return Err(SupervisorOperationError::NotFound(
             "thread not found in this workspace".into(),
         ));
@@ -1198,8 +1197,7 @@ fn require_active_session_in_workspace(
             "active thread not found in this workspace".into(),
         ));
     }
-    let projection = read_projection(&folder.join("main.jsonl"))?;
-    if genesis_workspace(&projection)? != workspace {
+    if folder_workspace(&folder)? != workspace {
         return Err(SupervisorOperationError::NotFound(
             "active thread not found in this workspace".into(),
         ));
@@ -1230,6 +1228,23 @@ fn read_projection(path: &Path) -> Result<schema::LedgerProjection, SupervisorOp
             path.display()
         ))
     })
+}
+
+/// The workspace a thread folder belongs to, from its genesis line only (the first line of
+/// `main.jsonl`): a membership check must not decode the whole ledger.
+fn folder_workspace(folder: &Path) -> Result<String, SupervisorOperationError> {
+    let genesis = store::read_genesis(folder.join("main.jsonl"))
+        .map_err(map_store)?
+        .ok_or_else(|| {
+            SupervisorOperationError::Corruption(format!(
+                "{} has no valid genesis",
+                folder.display()
+            ))
+        })?;
+    genesis
+        .string_field("workspace")
+        .map(str::to_owned)
+        .ok_or_else(|| SupervisorOperationError::Corruption("genesis workspace missing".into()))
 }
 
 fn genesis_workspace(

@@ -6,7 +6,65 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Proposed version: 0.4.0 (a new thread-folder file, a changed stream-attachment contract
+and a new stream-open error; the ledger, journal and wire formats are otherwise unchanged).
+
+### Changed
+- **Lazy boot.** `ready` no longer reads any thread. The boot-time sweep that decoded every
+  ledger and journal, repaired every tail, removed ephemeral threads and validated the
+  endpoint journals is gone from the readiness path; on a 60-thread, 25 MB root `ready`
+  drops from 7 s to about 1 s (Release) and from 47 s to about 4 s (Debug) and no longer
+  grows with the number of threads (measured flat to 600). The 256-active-session check no
+  longer runs at open: a root with more than 256 active folders boots, and every baseline
+  lists all of them. A thread is verified (a torn tail repaired when no line lock is held,
+  its ledger folded once, its journal projected) when something needs it: a baseline waits
+  at most two seconds and lists the rest as placeholder rows followed by inventory upserts;
+  opening a `session-journal` stream, answering a request and spawning a worker verify their
+  thread first. Ephemeral-thread and tombstone cleanup, the schedule timer and a background
+  card/upgrade pass run after `ready`. Sessions that existed before the process started stay
+  deferred (no worker is started for them) until `sessions.recover`; a thread created, forked
+  or unarchived by this process is admitted at once.
+- **Inventory, workspace, control and actionables baselines** come from thread cards,
+  persisted context projections and the request holds on the cards instead of folding ledgers.
+- **All-session streams attach lazily.** A new `events.mux` generation attaches no session.
+  A session is attached when it is created, forked or unarchived, or the first time a frame is
+  published for it; `session/subscribed` is emitted at that attachment. Idle sessions are
+  released least-recently-touched first beyond 256 attachments. Clients using only the
+  `session-journal`, `session-control`, `actionables`, `session-inventory` and `workspace`
+  streams are unaffected.
+- Responding to a request finds it through an index (cards, then a byte prefilter of threads
+  without a card and of the archive) and reads one thread. The actionables baseline lists pending
+  requests of child lines too (verification folds the child lines; a doorbell fold marks them
+  unverified and their bytes are prefiltered; live child requests come from the published set). Respond, actionables and
+  registration reads use the valid prefix of a ledger instead of failing on a torn tail.
+- A journal snapshot carries the thread's current `contextUsage`/`contextDetails` values, with
+  `projections.asOfSeq` clamped to the snapshot's `throughSequence` (a label, not the context
+  projection clock; ClientKit rejects a projection beyond the cut). The current value is not
+  re-sent as a frame, and a client that already holds a higher sequence for the projection (from
+  its control baseline) keeps its own value, so a reopened thread is not guaranteed to show a usage
+  that changed while it was idle (no worse than before; it never shows a wrong value).
+- `thread.search` skips a quarantined thread instead of failing the query; `usage` tolerates a
+  torn tail; workspace-membership checks read the genesis line only; the management recovery
+  retry runs every 30 s on its own thread and takes the management lock per record.
+
+### Added
+- `thread-card.json` in each active thread folder: a derived, content-checked summary of the
+  verified ledger prefix (see `spec/session-endpoint.md` §Thread cards and lazy verification).
+  Never authority; deleting every card is safe and an older Kernel ignores them. Written
+  atomically by a paced background writer (8 fsyncs/s by default, `TEKES_KERNEL_CARD_MAX_PER_SEC`).
+- Quarantine: a ledger with no valid genesis or a complete invalid record in the main or any
+  child line keeps its inventory row; opening it fails with stream error
+  `internal / stream-open-failed {"reason":"quarantined"}`, and it is never rewritten.
+- `active-session-limit {limit:256}` as a stream error (`conflict`) when 256 pinned sessions
+  already hold the live-event registrations.
+- Diagnostics: `TEKES_KERNEL_BOOT_TRACE=1` (phase times and ledger/journal work counters on
+  stderr), `TEKES_KERNEL_BOOT_PROGRESS=1` (opt-in `{"type":"boot"}` records before `ready`),
+  `TEKES_KERNEL_LIST_COLD_WAIT_MS` (baseline verification budget, default 2000),
+  `TEKES_KERNEL_CARD_DEBOUNCE_MS`, `TEKES_KERNEL_CARD_MAX_PER_SEC`.
+
 ### Removed
+- `ManagementStore::open` / `open_at` from the public API (use `open_light` for requests and
+  `open_at_with_queue_driver` for the recovering open at boot).
 - The runtime provider route allow-list. The proof registry
   (`fixtures/provider-dialects/profiles.canonical.json`) is no longer compiled
   into the Kernel: a configured provider on a supported dialect runs with the
@@ -89,7 +147,6 @@ workspace version in `Cargo.toml`.
 - Optional native context composition projections use the actual prepared request,
   safe tool inventories and independent byte bounds. Usage/details share a clock;
   model changes and compaction invalidate stale request readings.
-
 
 ### Changed
 - `tekes-selector stage` of a different build under an already published

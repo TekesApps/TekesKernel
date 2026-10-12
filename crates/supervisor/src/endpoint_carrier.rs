@@ -17,13 +17,13 @@ use endpoint::{
     ComposedEndpointCarrierHost, EndpointCarrierHost, EndpointFrameQueue, EndpointHost,
     EndpointHostCall, EndpointHostFuture, EndpointJournal, EndpointStream, EndpointStreamReceiver,
     EndpointSubscriptionHub, HostFailure, HostFrame, HostFrameKind, HostReadiness,
-    JournalRespondHandler, LocatedRespond, MuxHostDescription, MuxReplayRegistration,
-    PendingRequest, RequestFrameType, RequestState, RespondAuthorReceipt, RespondAuthority,
-    RespondAuthorization, RespondDelivery, RespondPrepareContext, RpcRegistry, ServerRequest,
-    SessionActionable, SessionActionableKind, SessionAddress, SessionControlItem,
-    SessionJournalPage, SessionJournalSnapshot, SessionMuxClientFrame, SessionStream,
-    SessionStreamReceiver, SessionStreamTarget, SessionSummary, SessionSyncFrame, StreamChannel,
-    StreamErrorCode, StreamFailure, WorkspaceBaseline, WorkspaceSummary,
+    JournalRespondHandler, LocatedRespond, MuxHostDescription, PendingRequest, RequestFrameType,
+    RequestState, RespondAuthorReceipt, RespondAuthority, RespondAuthorization, RespondDelivery,
+    RespondPrepareContext, RpcRegistry, ServerRequest, SessionActionable, SessionActionableKind,
+    SessionAddress, SessionControlItem, SessionJournalPage, SessionJournalSnapshot,
+    SessionMuxClientFrame, SessionStream, SessionStreamReceiver, SessionStreamTarget,
+    SessionSummary, SessionSyncFrame, StreamChannel, StreamErrorCode, StreamFailure,
+    WorkspaceBaseline, WorkspaceSummary,
 };
 use engine::{LockFacts, classify};
 use schema::{Event, EventKind, IJsonValue, OriginTuple};
@@ -34,6 +34,9 @@ use transport::{TransportConfig, TransportConfigError, TransportServer};
 use worker_control::{ApprovalResponse, Receipt};
 
 use crate::endpoint_host::{ProductionEndpointHost, ProductionRouteFailure, SessionAdmissionGates};
+use crate::request_index::{
+    RequestIndex, children_may_hold_requests, ledger_signature, may_hold_requests,
+};
 
 const HOST_STREAM_MAX_FRAMES: usize = 4_096;
 const HOST_STREAM_MAX_BYTES: usize = 4 * 1024 * 1024;
@@ -58,6 +61,81 @@ pub trait SupervisorSessionAuthority: Send + Sync {
     /// while a live worker owns the main line: its doorbell orders projection
     /// against the frames still queued in its control pipe.
     fn reconcile_projection(&self, session_id: &str) -> Result<(), String>;
+
+    /// The List without decoding any ledger: catalog rows (waiting a bounded time for threads
+    /// that still need verifying), plus archived ids when asked. `None` means this authority
+    /// has no catalog and the caller falls back to scanning the ledgers.
+    fn inventory_items(
+        &self,
+        _include_archived: bool,
+    ) -> Option<Result<Vec<endpoint::SessionInventoryItem>, String>> {
+        None
+    }
+
+    /// One thread's row for a targeted inventory upsert (`Some(None)`: no such active thread).
+    fn inventory_item(
+        &self,
+        _session_id: &str,
+    ) -> Option<Result<Option<endpoint::SessionInventoryItem>, String>> {
+        None
+    }
+
+    /// Brings one thread to a verified state before an operation reads it (repair of an
+    /// unheld torn tail, one fold). A quarantined thread fails with `Quarantined`.
+    fn ensure_verified(&self, _session_id: &str) -> Result<(), SessionGateError> {
+        Ok(())
+    }
+
+    /// True when this authority keeps a catalog of thread cards, so the control baseline may
+    /// trust a thread's persisted projection instead of re-folding its ledger.
+    fn has_catalog(&self) -> bool {
+        false
+    }
+
+    /// The request holds the catalog knows from thread cards, without reading any ledger.
+    /// `None`: no catalog; callers treat every thread as unverified.
+    fn hold_catalog(&self) -> Option<HoldCatalog> {
+        None
+    }
+}
+
+/// Why a thread could not be opened for an operation.
+#[derive(Debug, Eq, PartialEq)]
+pub enum SessionGateError {
+    /// The thread failed verification (a complete-invalid record) and is quarantined.
+    Quarantined(String),
+    /// Verification could not run; the caller proceeds and meets the natural error, if any.
+    Failed(String),
+}
+
+/// One request hold as a card records it.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct HoldRef {
+    pub line: Option<String>,
+    pub hold_seq: u64,
+    pub kind: RequestFrameType,
+    pub resolved: bool,
+}
+
+/// A thread whose holds a card (or the last verification) describes.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct VerifiedHolds {
+    pub session: String,
+    pub holds: Vec<HoldRef>,
+    /// Quarantined: its holds still index (so a respond gets the typed error) but it is not
+    /// part of any baseline.
+    pub quarantined: bool,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct HoldCatalog {
+    pub verified: Vec<VerifiedHolds>,
+    /// Threads whose ledgers may hold requests the cards do not describe (no trusted card, or a
+    /// card describing only a prefix): they are prefiltered by bytes.
+    pub unverified: Vec<String>,
+    /// Threads whose main line is folded but whose child lines are not (a doorbell fold carries
+    /// the previous child views forward): only their child files need the byte prefilter.
+    pub children_unverified: Vec<String>,
 }
 
 /// Process-table authority for the live-worker half of `respond`. `None`
@@ -152,8 +230,59 @@ impl ProductionRespondAuthority {
         }
     }
 
+    /// The request `rpc_id` names, found through the request index (ADDENDUM-02 M2): a hit
+    /// reads one thread; a miss consults the cards of every thread, then prefilters the
+    /// threads without a trusted card and the archive by bytes. No other thread is decoded and
+    /// no damaged thread can fail the lookup of an unrelated request.
     fn locate_once(&self, rpc_id: &str) -> Result<Option<LocatedRespond>, HostFailure> {
-        let mut found = None;
+        let Some(streams) = self.streams.as_ref() else {
+            return self.locate_by_scan(rpc_id);
+        };
+        if let Some(found) = self.locate_indexed(streams, rpc_id)? {
+            return Ok(Some(found));
+        }
+        if streams.requests().is_known_missing(rpc_id) {
+            return Ok(None);
+        }
+        streams.index_catalog_holds();
+        if let Some(found) = self.locate_indexed(streams, rpc_id)? {
+            return Ok(Some(found));
+        }
+        streams.index_unverified_and_archived(rpc_id);
+        if let Some(found) = self.locate_indexed(streams, rpc_id)? {
+            return Ok(Some(found));
+        }
+        streams.requests().note_missing(rpc_id);
+        Ok(None)
+    }
+
+    fn locate_indexed(
+        &self,
+        streams: &ProductionCarrierStreams,
+        rpc_id: &str,
+    ) -> Result<Option<LocatedRespond>, HostFailure> {
+        let Some(hit) = streams.requests().lookup(rpc_id) else {
+            return Ok(None);
+        };
+        if !hit.archived {
+            streams.verify_session(&hit.session)?;
+        }
+        let area = if hit.archived { "archive" } else { "threads" };
+        let folder = self.root.join(area).join(&hit.session);
+        let located = if folder.is_dir() {
+            self.locate_in_folder(&folder, &hit.session, hit.archived, rpc_id)?
+        } else {
+            None
+        };
+        if located.is_none() {
+            streams.requests().remove(rpc_id);
+        }
+        Ok(located)
+    }
+
+    /// Without a carrier (unit-test seams): the scan of every thread, one damaged thread
+    /// skipped rather than failing the lookup.
+    fn locate_by_scan(&self, rpc_id: &str) -> Result<Option<LocatedRespond>, HostFailure> {
         for (area, archived) in [("threads", false), ("archive", true)] {
             let mut folders = fs::read_dir(self.root.join(area))
                 .map_err(internal)?
@@ -164,50 +293,63 @@ impl ProductionRespondAuthority {
                 if !entry.file_type().map_err(internal)?.is_dir() {
                     continue;
                 }
-                let folder = entry.path();
                 let session = entry.file_name().to_string_lossy().into_owned();
                 if endpoint::validate_session_id(&session).is_err() {
                     continue;
                 }
-                let Some(state) = session_requests(&folder, &session)?
-                    .into_iter()
-                    .find(|state| state.request.rpc_id == rpc_id)
-                else {
-                    continue;
-                };
-                if found.is_some() {
-                    return Err(HostFailure::Internal(
-                        "respond rpcId is present in multiple sessions".to_owned(),
-                    ));
+                match self.locate_in_folder(&entry.path(), &session, archived, rpc_id) {
+                    Ok(Some(found)) => return Ok(Some(found)),
+                    Ok(None) => {}
+                    Err(error) => {
+                        eprintln!("respond-locate-skipped-thread: session={session} error={error}")
+                    }
                 }
-                let (projection, ancestor_stopped) = actionable_projection(
-                    &folder,
-                    &state.request.session_id,
-                    state.request.source_line.as_deref(),
-                )?;
-                let held_call = validate_request_binding(
-                    &projection.events,
-                    state.request.causal_kernel_seq,
-                    state.request.frame_type,
-                    &state.request.envelope.payload,
-                )?;
-                let admission = self
-                    .admission
-                    .gate(&state.request.session_id)
-                    .map_err(route_failure)?;
-                found = Some(LocatedRespond {
-                    thread_folder: folder,
-                    state,
-                    context: RespondPrepareContext {
-                        archived,
-                        stop_active: projection.lifecycle.stop_active || ancestor_stopped,
-                        held_call,
-                    },
-                    admission,
-                });
             }
         }
-        Ok(found)
+        Ok(None)
+    }
+
+    /// The located request inside one thread folder. The valid prefix of each line decides;
+    /// the append that follows repairs the tail under the line's lock.
+    fn locate_in_folder(
+        &self,
+        folder: &Path,
+        session: &str,
+        archived: bool,
+        rpc_id: &str,
+    ) -> Result<Option<LocatedRespond>, HostFailure> {
+        let Some(state) = session_requests_mode(folder, session, true)?
+            .into_iter()
+            .find(|state| state.request.rpc_id == rpc_id)
+        else {
+            return Ok(None);
+        };
+        let (projection, ancestor_stopped) = actionable_projection_mode(
+            folder,
+            &state.request.session_id,
+            state.request.source_line.as_deref(),
+            true,
+        )?;
+        let held_call = validate_request_binding(
+            &projection.events,
+            state.request.causal_kernel_seq,
+            state.request.frame_type,
+            &state.request.envelope.payload,
+        )?;
+        let admission = self
+            .admission
+            .gate(&state.request.session_id)
+            .map_err(route_failure)?;
+        Ok(Some(LocatedRespond {
+            thread_folder: folder.to_path_buf(),
+            state,
+            context: RespondPrepareContext {
+                archived,
+                stop_active: projection.lifecycle.stop_active || ancestor_stopped,
+                held_call,
+            },
+            admission,
+        }))
     }
 
     fn worker_message(&self, authorization: &RespondAuthorization) -> ApprovalResponse {
@@ -334,13 +476,17 @@ impl RespondAuthority for ProductionRespondAuthority {
         // private worker key from the durable journal, never client payload.
         if !authorization.session_id.contains(':') {
             let folder = self.root.join("threads").join(&authorization.session_id);
-            let state = session_requests(&folder, &authorization.session_id)?
+            let state = session_requests_mode(&folder, &authorization.session_id, true)?
                 .into_iter()
                 .find(|state| state.request.rpc_id == authorization.rpc_id);
             if let Some(state) = state {
                 if let Some(line) = state.request.source_line.as_deref() {
-                    let (projection, ancestor_stopped) =
-                        actionable_projection(&folder, &authorization.session_id, Some(line))?;
+                    let (projection, ancestor_stopped) = actionable_projection_mode(
+                        &folder,
+                        &authorization.session_id,
+                        Some(line),
+                        true,
+                    )?;
                     if ancestor_stopped || projection.lifecycle.stop_active {
                         return Err(internal("stop became active before child respond"));
                     }
@@ -396,10 +542,50 @@ struct CarrierStreamsInner {
     /// Pending request ids last published per (session, line): the trigger
     /// for subscribers to re-diff their actionable baseline.
     published_actionables: Mutex<PublishedActionables>,
+    /// `rpc_id -> thread` for every request hold seen (ADDENDUM-02 M2).
+    requests: RequestIndex,
+    /// Which sessions are registered on the live mux generations and when each was last
+    /// touched; sessions with an open journal stream hold a lease (ADDENDUM-02 D5).
+    attachments: Mutex<Attachments>,
+}
+
+#[derive(Default)]
+struct Attachments {
+    tick: u64,
+    touched: HashMap<String, u64>,
+    journal_leases: HashMap<String, usize>,
+    /// (session, line) pairs with an unresolved request: kept in step with
+    /// `published_actionables` so the registration logic never takes that lock.
+    pending_lines: HashSet<(String, Option<String>)>,
+}
+
+/// An open journal stream pins its session on the mux while it lives.
+pub(crate) struct JournalLease {
+    streams: ProductionCarrierStreams,
+    session: String,
+}
+
+impl Drop for JournalLease {
+    fn drop(&mut self) {
+        let mut attachments = self
+            .streams
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if let Some(count) = attachments.journal_leases.get_mut(&self.session) {
+            *count = count.saturating_sub(1);
+            if *count == 0 {
+                attachments.journal_leases.remove(&self.session);
+            }
+        }
+    }
 }
 
 /// Pending request ids keyed by (session, line).
-type PublishedActionables = HashMap<(String, Option<String>), BTreeSet<String>>;
+/// The ledger `last_seq` of the projection that produced each published set, with the set. A
+/// diff from an older projection is refused (a stale decode must not undo a newer publication).
+type PublishedActionables = HashMap<(String, Option<String>), (u64, BTreeSet<String>)>;
 
 #[derive(Default)]
 struct StreamGenerations {
@@ -427,9 +613,9 @@ impl ProductionCarrierStreams {
                 continue;
             }
             let source = (line != "main.jsonl").then_some(line.as_str());
-            let (projection, _) =
-                actionable_projection(&folder, session, source).map_err(internal_carrier)?;
-            self.reconcile_actionables(session, source)?;
+            let (projection, _) = actionable_projection_mode(&folder, session, source, true)
+                .map_err(internal_carrier)?;
+            self.reconcile_actionables_from(session, source, &projection)?;
             for spawn in projection
                 .events
                 .iter()
@@ -463,8 +649,44 @@ impl ProductionCarrierStreams {
         let folder = self.inner.root.join("threads").join(session_id);
         let (projection, _) =
             actionable_projection(&folder, session_id, source_line).map_err(internal_carrier)?;
+        self.reconcile_actionables_from(session_id, source_line, &projection)
+    }
+
+    /// `reconcile_actionables` for the main line using a projection the caller has already
+    /// decoded from a clean (no torn tail) read. It performs the same identity check
+    /// `actionable_projection` applies to the main line and skips the second decode of the ledger.
+    pub(crate) fn reconcile_actionables_main(
+        &self,
+        session_id: &str,
+        projection: &schema::LedgerProjection,
+    ) -> Result<(), ProductionCarrierError> {
+        let genesis = projection
+            .events
+            .first()
+            .ok_or_else(|| internal_carrier("missing genesis"))?;
+        if genesis.string_field("thread") != Some(session_id) {
+            return Err(internal_carrier("actionable ledger identity mismatch"));
+        }
+        self.reconcile_actionables_from(session_id, None, projection)
+    }
+
+    fn reconcile_actionables_from(
+        &self,
+        session_id: &str,
+        source_line: Option<&str>,
+        projection: &schema::LedgerProjection,
+    ) -> Result<(), ProductionCarrierError> {
         let requests =
-            line_requests(session_id, source_line, &projection).map_err(internal_carrier)?;
+            line_requests(session_id, source_line, projection).map_err(internal_carrier)?;
+        for (state, _) in &requests {
+            self.inner.requests.insert(
+                session_id,
+                source_line,
+                state.request.frame_type,
+                state.request.causal_kernel_seq,
+                false,
+            );
+        }
         let pending = requests
             .iter()
             .filter(|(state, _)| state.resolution.is_none())
@@ -476,19 +698,99 @@ impl ProductionCarrierStreams {
             .published_actionables
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let previous = published.get(&key).cloned().unwrap_or_default();
+        let (published_through, previous) = published.get(&key).cloned().unwrap_or_default();
+        if projection.last_seq < published_through {
+            // A concurrent respond already published from a newer ledger (S1-a / K9): this
+            // projection is stale and must not re-publish what the newer one resolved.
+            return Ok(());
+        }
         if previous != pending {
             // Any request/resolution change causes v3 to diff its baseline.
             // Repeated Appended notifications remain silent.
-            for (state, frame) in requests {
-                let id = &state.request.rpc_id;
-                if pending.contains(id) != previous.contains(id) {
-                    self.publish_session_frame(session_id, frame)?;
-                }
+            self.note_pending_line(&key, !pending.is_empty());
+            let changed = requests
+                .into_iter()
+                .filter(|(state, _)| {
+                    let id = &state.request.rpc_id;
+                    pending.contains(id) != previous.contains(id)
+                })
+                .map(|(_, frame)| frame)
+                .collect::<Vec<_>>();
+            published.insert(key, (projection.last_seq, pending));
+            // Published after the lock is released: a first publication for a session attaches
+            // it (a journal parse and a fold), which must not hold up every other session's
+            // reconcile (O-final m5). The set above already carries the newer sequence, and
+            // subscribers diff a full recompute, so the order of two concurrent publications
+            // does not matter.
+            drop(published);
+            for frame in changed {
+                self.publish_session_frame(session_id, frame)?;
             }
-            published.insert(key, pending);
+        } else if projection.last_seq > published_through {
+            published.insert(key, (projection.last_seq, pending));
         }
         Ok(())
+    }
+
+    fn note_pending_line(&self, key: &(String, Option<String>), pending: bool) {
+        let mut attachments = self
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if pending {
+            attachments.pending_lines.insert(key.clone());
+        } else {
+            attachments.pending_lines.remove(key);
+        }
+    }
+
+    /// Drops everything remembered about one session's actionables (every line). Called when a
+    /// session folder is published or removed: an id can be reused (discard, then a fork with a
+    /// client-chosen UUID), and the new thread's ledger starts at a small `last_seq`, which the
+    /// monotonic guard of `reconcile_actionables_from` would otherwise refuse forever (E831 E1).
+    pub(crate) fn forget_session(&self, session_id: &str) {
+        self.inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .pending_lines
+            .retain(|(session, _)| session != session_id);
+        self.inner
+            .published_actionables
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .retain(|(session, _), _| session != session_id);
+        self.inner.requests.forget_session(session_id);
+    }
+
+    /// Test observer: the ids an actionables stream would open with.
+    #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    pub(crate) fn actionable_ids_for_test(&self) -> Vec<String> {
+        match self.actionables_baseline(1) {
+            Ok(SessionSyncFrame::ActionableBaseline { items, .. }) => {
+                items.into_iter().map(|item| item.id).collect()
+            }
+            other => panic!("actionables baseline failed: {other:?}"),
+        }
+    }
+
+    /// Test observer: the request ids currently published as pending for one ledger line.
+    #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
+    pub(crate) fn published_pending_for_test(
+        &self,
+        session_id: &str,
+        source_line: Option<&str>,
+    ) -> BTreeSet<String> {
+        self.inner
+            .published_actionables
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(&(session_id.to_owned(), source_line.map(str::to_owned)))
+            .map(|(_, pending)| pending.clone())
+            .unwrap_or_default()
     }
 
     #[must_use]
@@ -525,6 +827,8 @@ impl ProductionCarrierStreams {
                 session_authority: Mutex::new(None),
                 next_rpc: AtomicU64::new(1),
                 published_actionables: Mutex::new(HashMap::new()),
+                requests: RequestIndex::default(),
+                attachments: Mutex::new(Attachments::default()),
             }),
         }
     }
@@ -574,26 +878,13 @@ impl ProductionCarrierStreams {
     }
 
     pub fn attach_session(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
-        let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
-        generations
-            .mux
-            .retain(|generation| generation.lease.strong_count() != 0);
-        let session = load_mux_session(&self.inner.root, session_id)?;
-        for generation in &generations.mux {
-            if generation.handle.contains(session_id)? {
-                continue;
-            }
-            generation.handle.attach_with_replay(
-                &self.inner.hub,
-                session_id,
-                &session.endpoint,
-                &self.next_rpc_id("subscribed"),
-                &session.unresolved,
-            )?;
-        }
-        drop(generations);
-        let projection = semantic_projection(&self.inner.root.join("threads").join(session_id))
-            .map_err(internal_carrier)?;
+        self.attach_everywhere(session_id)?;
+        let projection = semantic_line_projection_mode(
+            &self.inner.root.join("threads").join(session_id),
+            "main.jsonl",
+            true,
+        )
+        .map_err(internal_carrier)?;
         self.publish_host_frame(HostFrame::new(
             HostFrameKind::SessionAdded,
             IJsonValue::parse(&serde_json::to_vec(&json!({
@@ -603,6 +894,179 @@ impl ProductionCarrierStreams {
             }))?)?,
         )?)?;
         Ok(())
+    }
+
+    /// Registers a session on every live mux generation that lacks it (lazy registration, D5).
+    /// A generation starts empty; a session is registered the first time something is published
+    /// for it, or when it is created, unarchived or opened. Beyond 256 registered sessions the
+    /// least recently touched idle one (no live worker, no pending request, no open journal
+    /// stream) is released first; if none is idle the registration is refused with
+    /// `ActiveSessionLimit`.
+    pub(crate) fn attach_everywhere(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
+        self.attach_everywhere_with(session_id, None)
+    }
+
+    /// `after_load` is a test seam run between loading the session and taking the lock.
+    pub(crate) fn attach_everywhere_with(
+        &self,
+        session_id: &str,
+        after_load: Option<&dyn Fn()>,
+    ) -> Result<(), ProductionCarrierError> {
+        if !self.lacks_registration(session_id)? {
+            self.touch(session_id);
+            return Ok(());
+        }
+        // The journal parse and the fold of the session's requests happen before the global
+        // generations lock is taken (E834 R1): one cold first touch never holds up another
+        // session's frames or another first touch.
+        let session = load_mux_session(&self.inner.root, session_id)?;
+        if let Some(after_load) = after_load {
+            after_load();
+        }
+        let mut pinned = None;
+        loop {
+            let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
+            generations
+                .mux
+                .retain(|generation| generation.lease.strong_count() != 0);
+            let mut missing = Vec::new();
+            for (index, generation) in generations.mux.iter().enumerate() {
+                if !generation.handle.contains(session_id)? {
+                    missing.push(index);
+                }
+            }
+            if missing.is_empty() {
+                // Registered by a concurrent first touch while this one was loading.
+                drop(generations);
+                self.touch(session_id);
+                return Ok(());
+            }
+            let mut attached = BTreeSet::new();
+            for generation in &generations.mux {
+                for baseline in generation.handle.baselines()? {
+                    attached.insert(baseline.session_id);
+                }
+            }
+            if !attached.contains(session_id) && attached.len() >= endpoint::MAX_MUX_SESSIONS {
+                let Some(pinned_now) = pinned.as_ref() else {
+                    // Needs the process table: drop the generations lock first and retry.
+                    drop(generations);
+                    pinned = Some(self.pinned_sessions());
+                    continue;
+                };
+                let pinned_now: &HashSet<String> = pinned_now;
+                if !pinned_now.contains(session_id)
+                    && pinned_now.len() >= endpoint::MAX_MUX_SESSIONS
+                {
+                    return Err(ProductionCarrierError::ActiveSessionLimit(
+                        endpoint::MAX_MUX_SESSIONS,
+                    ));
+                }
+                let victim = {
+                    let attachments = self.inner.attachments.lock().map_err(|_| poisoned())?;
+                    attached
+                        .iter()
+                        .filter(|candidate| !pinned_now.contains(*candidate))
+                        .min_by_key(|candidate| {
+                            attachments.touched.get(*candidate).copied().unwrap_or(0)
+                        })
+                        .cloned()
+                };
+                let Some(victim) = victim else {
+                    return Err(ProductionCarrierError::ActiveSessionLimit(
+                        endpoint::MAX_MUX_SESSIONS,
+                    ));
+                };
+                for generation in &generations.mux {
+                    generation.handle.detach_for_archive(&victim)?;
+                }
+                self.inner
+                    .attachments
+                    .lock()
+                    .map_err(|_| poisoned())?
+                    .touched
+                    .remove(&victim);
+            }
+            for index in missing {
+                generations.mux[index].handle.attach_with_replay(
+                    &self.inner.hub,
+                    session_id,
+                    &session.endpoint,
+                    &self.next_rpc_id("subscribed"),
+                    &session.unresolved,
+                )?;
+            }
+            drop(generations);
+            self.touch(session_id);
+            return Ok(());
+        }
+    }
+
+    /// True when some live generation does not hold the session yet.
+    fn lacks_registration(&self, session_id: &str) -> Result<bool, ProductionCarrierError> {
+        let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
+        generations
+            .mux
+            .retain(|generation| generation.lease.strong_count() != 0);
+        for generation in &generations.mux {
+            if !generation.handle.contains(session_id)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
+    }
+
+    fn touch(&self, session_id: &str) {
+        let mut attachments = self
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        attachments.tick += 1;
+        let tick = attachments.tick;
+        attachments.touched.insert(session_id.to_owned(), tick);
+    }
+
+    /// Sessions that may not be released from the mux: a live worker, a pending request, or an
+    /// open journal stream.
+    fn pinned_sessions(&self) -> HashSet<String> {
+        let mut pinned = self.live_sessions();
+        let attachments = self
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        pinned.extend(attachments.pending_lines.iter().map(|(s, _)| s.clone()));
+        pinned.extend(
+            attachments
+                .journal_leases
+                .iter()
+                .filter(|(_, count)| **count > 0)
+                .map(|(session, _)| session.clone()),
+        );
+        pinned
+    }
+
+    /// Reserves a journal-stream slot for a session; refused when 256 sessions are pinned.
+    fn claim_journal(&self, session_id: &str) -> Result<JournalLease, ProductionCarrierError> {
+        let pinned = self.pinned_sessions();
+        if !pinned.contains(session_id) && pinned.len() >= endpoint::MAX_MUX_SESSIONS {
+            return Err(ProductionCarrierError::ActiveSessionLimit(
+                endpoint::MAX_MUX_SESSIONS,
+            ));
+        }
+        *self
+            .inner
+            .attachments
+            .lock()
+            .map_err(|_| poisoned())?
+            .journal_leases
+            .entry(session_id.to_owned())
+            .or_default() += 1;
+        Ok(JournalLease {
+            streams: self.clone(),
+            session: session_id.to_owned(),
+        })
     }
 
     pub fn detach_for_archive(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
@@ -663,10 +1127,25 @@ impl ProductionCarrierStreams {
         frame: endpoint::MuxFrame,
     ) -> Result<usize, ProductionCarrierError> {
         self.update_control_cache(&frame)?;
+        self.attach_for_publish(session_id)?;
         Ok(self
             .inner
             .hub
             .publish_frame(session_id, self.next_rpc_id("mux"), frame)?)
+    }
+
+    /// Registers the session on the live generations before something is published for it.
+    /// A refused registration (more than 256 pinned sessions) is an error; anything else
+    /// (the folder vanished, an unreadable journal) only costs the generations this frame.
+    fn attach_for_publish(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
+        match self.attach_everywhere(session_id) {
+            Err(error @ ProductionCarrierError::ActiveSessionLimit(_)) => Err(error),
+            Err(error) => {
+                eprintln!("carrier-lazy-attach-failed: session={session_id} error={error}");
+                Ok(())
+            }
+            Ok(()) => Ok(()),
+        }
     }
 
     fn update_control_cache(
@@ -759,30 +1238,16 @@ impl ProductionCarrierStreams {
         Ok(())
     }
 
+    /// A new all-session generation starts empty. Sessions register on it the first time
+    /// something is published for them (`attach_everywhere`), so opening the control or
+    /// actionables stream reads no thread.
     fn open_legacy_mux(&self) -> Result<EndpointStreamReceiver, ProductionCarrierError> {
         let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
         generations
             .mux
             .retain(|generation| generation.lease.strong_count() != 0);
-        let sessions = load_active_mux_sessions(&self.inner.root)?;
-        let rpc_ids = sessions
-            .iter()
-            .map(|_| self.next_rpc_id("subscribed"))
-            .collect::<Vec<_>>();
-        let registrations = sessions
-            .iter()
-            .zip(&rpc_ids)
-            .map(|(session, rpc_id)| MuxReplayRegistration {
-                registration: endpoint::MuxRegistration {
-                    session_id: &session.session_id,
-                    journal: &session.endpoint,
-                    subscribed_rpc_id: rpc_id,
-                },
-                unresolved: &session.unresolved,
-            })
-            .collect::<Vec<_>>();
         let (handle, receiver) =
-            AllSessionMux::open_with_replay(&self.inner.hub, &registrations)?.into_stream();
+            AllSessionMux::open_with_replay(&self.inner.hub, &[])?.into_stream();
         let lease = Arc::new(());
         generations.mux.push(TrackedMux {
             handle: handle.clone(),
@@ -819,14 +1284,45 @@ impl ProductionCarrierStreams {
         format!("carrier-{kind}-{ordinal}")
     }
 
+    /// A config change can change every thread's context window. Threads with a live worker or
+    /// a mux registration (someone is looking at them) are refreshed now; the rest follow on a
+    /// background thread so the mutation never waits on O(volume) ledger reads. A thread's
+    /// projection is also recomputed whenever it is next touched.
     pub(crate) fn refresh_all_context_projections(&self) -> Result<(), ProductionCarrierError> {
-        for session in load_active_mux_sessions(&self.inner.root)? {
-            if let Err(error) = self.refresh_context_projection(&session.session_id) {
-                eprintln!(
-                    "carrier-context-projection-failed: session={} error={error}",
-                    session.session_id
-                );
+        let ids = active_session_ids(&self.inner.root)?;
+        // Sessions someone is looking at or that are busy: a live worker, a pending request,
+        // an open journal stream (a lease), or a registration on a mux generation.
+        let pinned = self.pinned_sessions();
+        let attached = {
+            let generations = self.inner.generations.lock().map_err(|_| poisoned())?;
+            let mut attached = HashSet::new();
+            for generation in &generations.mux {
+                for baseline in generation.handle.baselines()? {
+                    attached.insert(baseline.session_id);
+                }
             }
+            attached
+        };
+        let (now, later): (Vec<_>, Vec<_>) = ids
+            .into_iter()
+            .partition(|id| pinned.contains(id) || attached.contains(id));
+        for session in now {
+            if let Err(error) = self.refresh_context_projection(&session) {
+                eprintln!("carrier-context-projection-failed: session={session} error={error}");
+            }
+        }
+        if !later.is_empty() {
+            let streams = self.clone();
+            std::thread::spawn(move || {
+                for session in later {
+                    if let Err(error) = streams.refresh_context_projection(&session) {
+                        eprintln!(
+                            "carrier-context-projection-failed: session={session} error={error}"
+                        );
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(5));
+                }
+            });
         }
         Ok(())
     }
@@ -843,10 +1339,40 @@ impl ProductionCarrierStreams {
             .map_err(|_| poisoned())?;
         let folder = self.inner.root.join("threads").join(session_id);
         let ledger = semantic_projection(&folder).map_err(internal_carrier)?;
+        let journal = EndpointJournal::open(&folder)?;
+        self.refresh_context_projection_locked(session_id, &folder, &ledger, &journal)
+    }
+
+    /// `refresh_context_projection` for a caller that has just decoded the ledger (clean read)
+    /// and holds the open journal, so the refresh neither decodes the ledger nor parses the
+    /// journal a second time. The caller must have verified the ledger did not grow since its
+    /// decode (`publish_appended` compares the file length); otherwise it uses the full path.
+    pub(crate) fn refresh_context_projection_shared(
+        &self,
+        session_id: &str,
+        ledger: &schema::LedgerProjection,
+        journal: &EndpointJournal,
+    ) -> Result<(), ProductionCarrierError> {
+        endpoint::validate_session_id(session_id).map_err(internal_carrier)?;
+        let _guard = self
+            .inner
+            .context_projection_lock
+            .lock()
+            .map_err(|_| poisoned())?;
+        let folder = self.inner.root.join("threads").join(session_id);
+        self.refresh_context_projection_locked(session_id, &folder, ledger, journal)
+    }
+
+    fn refresh_context_projection_locked(
+        &self,
+        session_id: &str,
+        folder: &Path,
+        ledger: &schema::LedgerProjection,
+        journal: &EndpointJournal,
+    ) -> Result<(), ProductionCarrierError> {
         let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
         let config = endpoint.session_config_snapshot(session_id).ok();
-        let value = crate::context_usage::sample(&folder, &ledger.events, config.as_ref());
-        let journal = EndpointJournal::open(&folder)?;
+        let value = crate::context_usage::sample(folder, &ledger.events, config.as_ref());
         let journal_sequence = journal.last_seq()?.map_or(0, |seq| seq.saturating_add(1));
         let control_sequence = self
             .inner
@@ -860,7 +1386,7 @@ impl ProductionCarrierStreams {
             .and_then(|value| value["asOfSeq"].as_u64())
             .unwrap_or(0);
         let (seq, changed) = crate::context_usage::publish(
-            &folder,
+            folder,
             value.clone(),
             journal_sequence.max(control_sequence),
         )
@@ -880,6 +1406,10 @@ impl ProductionCarrierStreams {
         // and reconnect cannot observe a new total with an older manifest in the cache.
         self.update_control_frames(&frames)?;
         if changed {
+            // Delivered to whoever is registered for the session (its open journal stream,
+            // a generation it was attached to). A refresh never registers an idle session
+            // just to announce a usage change (E834 R2): a baseline reads the persisted
+            // projection, and the session registers itself when it is next touched.
             for frame in frames {
                 self.inner
                     .hub
@@ -889,13 +1419,31 @@ impl ProductionCarrierStreams {
         Ok(())
     }
 
+    /// The rows the List is built from: the supervisor's catalog when it has one (no ledger is
+    /// decoded), otherwise a scan of every ledger.
+    fn session_items(
+        &self,
+        include_archived: bool,
+    ) -> Result<Vec<endpoint::SessionInventoryItem>, ProductionCarrierError> {
+        if let Some(authority) = self.session_authority() {
+            if let Some(items) = authority.inventory_items(include_archived) {
+                return items.map_err(ProductionCarrierError::Lifecycle);
+            }
+        }
+        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
+        Ok(endpoint
+            .list_sessions(&self.live_sessions())?
+            .into_iter()
+            .filter(|session| include_archived || !session.archived)
+            .collect())
+    }
+
     fn workspace_baseline(
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
-        let sessions = endpoint.list_sessions(&self.live_sessions())?;
-        let management = endpoint::ManagementStore::open(&self.inner.root)?;
+        let sessions = self.session_items(true)?;
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let list = management.list_workspaces(&sessions)?;
         Ok(SessionSyncFrame::WorkspaceBaseline {
             generation,
@@ -921,46 +1469,14 @@ impl ProductionCarrierStreams {
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
-        let management = endpoint::ManagementStore::open(&self.inner.root)?;
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let mut sessions = endpoint
-            .list_sessions(&self.live_sessions())?
+        let paths = management.workspace_paths()?;
+        let mut sessions = self
+            .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .map(|session| {
-                let projections = session.title.map(|title| {
-                    IJsonValue::parse(
-                        &serde_json::to_vec(&json!({
-                            "asOfSeq":session.as_of_seq,
-                            "values":{"sessionTitle":{"title":title}},
-                        }))
-                        .expect("session summary projection serializes"),
-                    )
-                    .expect("session summary projection is I-JSON")
-                });
-                let lock = if session.running {
-                    LockFacts::OTHER
-                } else {
-                    LockFacts::FREE
-                };
-                let tail = classify(&session.lifecycle, lock);
-                let fork = lineage.get(&session.session_id);
-                Ok(SessionSummary {
-                    cwd: management.workspace_path(&session.workspace_id)?,
-                    parent_session_id: fork.map(|fork| fork.source.clone()),
-                    origin: fork.map(|_| "fork".to_owned()),
-                    ephemeral: session.ephemeral,
-                    session_id: session.session_id,
-                    updated_at: session.updated_at,
-                    running: session.running,
-                    tail: tail.as_str().to_owned(),
-                    blank: session.blank,
-                    projections,
-                    permission_mode: Some(session.permission_mode),
-                    identity_profile: session.identity_profile,
-                })
-            })
+            .map(|session| inventory_row(session, &paths, &lineage))
             .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
         sessions.sort_by(|left, right| {
             right
@@ -974,16 +1490,68 @@ impl ProductionCarrierStreams {
         })
     }
 
+    /// The inventory row of one session for a targeted upsert. `Ok(None)`: no such active
+    /// session. Falls back to a full relist when the authority has no per-session source.
+    fn inventory_row(
+        &self,
+        session_id: &str,
+    ) -> Result<Option<Option<SessionSummary>>, ProductionCarrierError> {
+        let Some(authority) = self.session_authority() else {
+            return Ok(None);
+        };
+        let Some(item) = authority.inventory_item(session_id) else {
+            return Ok(None);
+        };
+        let Some(item) = item.map_err(ProductionCarrierError::Lifecycle)? else {
+            return Ok(Some(None));
+        };
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
+        let lineage = management.completed_fork_lineage()?;
+        let paths = management.workspace_paths()?;
+        Ok(Some(Some(inventory_row(item, &paths, &lineage)?)))
+    }
+
     fn control_baseline(
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        for session in load_active_mux_sessions(&self.inner.root)? {
-            if let Err(error) = self.refresh_context_projection(&session.session_id) {
-                eprintln!(
-                    "carrier-context-projection-failed: session={} error={error}",
-                    session.session_id
-                );
+        // A thread's context projection is its persisted `context-usage.projection.json`
+        // (published atomically whenever the thread was projected), so the baseline reads small
+        // files, not ledgers. Only a thread that was never projected (no cache entry, no file)
+        // is folded here, once; every later baseline finds its file.
+        let trust_files = self
+            .session_authority()
+            .is_some_and(|authority| authority.has_catalog());
+        let mut unprojected = Vec::new();
+        {
+            let mut controls = self.inner.controls.lock().map_err(|_| poisoned())?;
+            for session in active_session_ids(&self.inner.root)? {
+                if controls.contains_key(&session) && trust_files {
+                    continue;
+                }
+                if !trust_files {
+                    // No catalog (a bare carrier): fold every thread, as the baseline always did.
+                    unprojected.push(session);
+                    continue;
+                }
+                let folder = self.inner.root.join("threads").join(&session);
+                match crate::context_usage::saved_control_item(&folder, &session) {
+                    Some(item) => {
+                        controls.insert(session, item);
+                    }
+                    None => unprojected.push(session),
+                }
+            }
+        }
+        // With a catalog the baseline never folds a ledger: a thread that was never projected
+        // (no cache entry, no file) is simply absent -- its context is unknown until it is next
+        // touched or the upgrade pass projects it, which writes the file the next baseline
+        // reads. Without a catalog (a bare carrier) every such thread is folded, as it always was.
+        if !trust_files {
+            for session in unprojected {
+                if let Err(error) = self.refresh_context_projection(&session) {
+                    eprintln!("carrier-context-projection-failed: session={session} error={error}");
+                }
             }
         }
         let items = self
@@ -1001,15 +1569,63 @@ impl ProductionCarrierStreams {
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
+        // Candidates without reading any ledger: threads whose card shows an unresolved hold,
+        // plus (for threads without a trusted card) those whose bytes may hold a request.
+        let mut candidates = BTreeSet::new();
+        match self.session_authority().and_then(|a| a.hold_catalog()) {
+            Some(catalog) => {
+                for verified in catalog.verified {
+                    self.index_holds(&verified.session, &verified.holds);
+                    if !verified.quarantined && verified.holds.iter().any(|hold| !hold.resolved) {
+                        candidates.insert(verified.session);
+                    }
+                }
+                for session in catalog.unverified {
+                    let folder = self.inner.root.join("threads").join(&session);
+                    if may_hold_requests(&folder) {
+                        candidates.insert(session);
+                    }
+                }
+                for session in catalog.children_unverified {
+                    let folder = self.inner.root.join("threads").join(&session);
+                    if children_may_hold_requests(&folder) {
+                        candidates.insert(session);
+                    }
+                }
+            }
+            None => {
+                for session in active_session_ids(&self.inner.root)? {
+                    let folder = self.inner.root.join("threads").join(&session);
+                    if may_hold_requests(&folder) {
+                        candidates.insert(session);
+                    }
+                }
+            }
+        }
+        // Requests published in this process are known without reading anything: a child
+        // worker's hold is in the published set the moment it is announced.
+        candidates.extend(self.sessions_with_published_requests());
         let mut items = Vec::new();
-        for session in load_active_mux_sessions(&self.inner.root)? {
-            self.recover_actionables(&session.session_id)?;
-            for request in pending_session_requests(
-                &self.inner.root.join("threads").join(&session.session_id),
-                &session.session_id,
-            )
-            .map_err(internal_carrier)?
-            {
+        for session in candidates {
+            // One damaged thread never fails the baseline of the others.
+            let folder = self.inner.root.join("threads").join(&session);
+            let requests = self
+                .recover_actionables(&session)
+                .map_err(|error| error.to_string())
+                .and_then(|()| {
+                    pending_session_requests_mode(&folder, &session, true)
+                        .map_err(|error| error.to_string())
+                });
+            let requests = match requests {
+                Ok(requests) => requests,
+                Err(error) => {
+                    eprintln!(
+                        "carrier-actionables-skipped-thread: session={session} error={error}"
+                    );
+                    continue;
+                }
+            };
+            for request in requests {
                 let kind = match request.frame_type {
                     RequestFrameType::Approval => SessionActionableKind::Approval,
                     RequestFrameType::Question => SessionActionableKind::Question,
@@ -1029,12 +1645,180 @@ impl ProductionCarrierStreams {
         Ok(SessionSyncFrame::ActionableBaseline { generation, items })
     }
 
+    fn index_holds(&self, session: &str, holds: &[HoldRef]) {
+        for hold in holds {
+            self.inner.requests.insert(
+                session,
+                hold.line.as_deref(),
+                hold.kind,
+                hold.hold_seq,
+                false,
+            );
+        }
+    }
+
+    /// Sessions that have an unresolved request on any line, from the set published in this
+    /// process (kept in step by `reconcile_actionables_from`).
+    fn sessions_with_published_requests(&self) -> Vec<String> {
+        let attachments = self
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let mut sessions = attachments
+            .pending_lines
+            .iter()
+            .map(|(session, _)| session.clone())
+            .collect::<Vec<_>>();
+        sessions.sort();
+        sessions.dedup();
+        sessions
+    }
+
+    pub(crate) fn requests(&self) -> &RequestIndex {
+        &self.inner.requests
+    }
+
+    /// Indexes every hold the cards describe (resolved ones too: a retried respond finds its
+    /// request). Reads no ledger.
+    pub(crate) fn index_catalog_holds(&self) {
+        if let Some(catalog) = self.session_authority().and_then(|a| a.hold_catalog()) {
+            for verified in catalog.verified {
+                self.index_holds(&verified.session, &verified.holds);
+            }
+        }
+    }
+
+    /// The miss path of a respond lookup (ADDENDUM-03 C2): fold, tolerantly, only the threads
+    /// without a trusted card whose bytes may hold a request, then the archive. One damaged
+    /// thread is skipped (and logged), never an error for the lookup.
+    pub(crate) fn index_unverified_and_archived(&self, rpc_id: &str) {
+        let (unverified, children_unverified) =
+            match self.session_authority().and_then(|a| a.hold_catalog()) {
+                Some(catalog) => (catalog.unverified, catalog.children_unverified),
+                None => (
+                    active_session_ids(&self.inner.root).unwrap_or_default(),
+                    Vec::new(),
+                ),
+            };
+        for session in unverified {
+            let folder = self.inner.root.join("threads").join(&session);
+            self.examine(&session, &folder, false, false);
+            if self.inner.requests.lookup(rpc_id).is_some() {
+                return;
+            }
+        }
+        for session in children_unverified {
+            let folder = self.inner.root.join("threads").join(&session);
+            self.examine(&session, &folder, false, true);
+            if self.inner.requests.lookup(rpc_id).is_some() {
+                return;
+            }
+        }
+        let Ok(entries) = fs::read_dir(self.inner.root.join("archive")) else {
+            return;
+        };
+        let mut archived = entries
+            .flatten()
+            .filter(|entry| entry.file_type().is_ok_and(|kind| kind.is_dir()))
+            .map(|entry| entry.file_name().to_string_lossy().into_owned())
+            .filter(|name| endpoint::validate_session_id(name).is_ok())
+            .collect::<Vec<_>>();
+        archived.sort();
+        for session in archived {
+            let folder = self.inner.root.join("archive").join(&session);
+            self.examine(&session, &folder, true, false);
+            if self.inner.requests.lookup(rpc_id).is_some() {
+                return;
+            }
+        }
+    }
+
+    /// Prefilters one card-less folder by bytes and, only if it may hold a request, folds and
+    /// indexes it. A folder whose ledger bytes are unchanged since it was last examined is not
+    /// touched again (ADDENDUM-03 C2 archive memo, applied to unverified threads too).
+    fn examine(&self, session: &str, folder: &Path, archived: bool, children_only: bool) {
+        let Some(signature) = ledger_signature(folder) else {
+            return;
+        };
+        // A children-only look is a different question from a whole-thread one: its memo key
+        // is distinct so the one cannot answer the other.
+        let key = if children_only {
+            format!("{session}#children")
+        } else {
+            session.to_owned()
+        };
+        if self.inner.requests.examined(&key, signature) {
+            return;
+        }
+        let may_hold = if children_only {
+            children_may_hold_requests(folder)
+        } else {
+            may_hold_requests(folder)
+        };
+        if may_hold {
+            self.fold_into_index(session, archived);
+        }
+        self.inner.requests.note_examined(&key, signature);
+    }
+
+    /// Folds one thread's valid prefix and indexes its holds. True when it has any.
+    fn fold_into_index(&self, session: &str, archived: bool) -> bool {
+        let area = if archived { "archive" } else { "threads" };
+        let folder = self.inner.root.join(area).join(session);
+        match session_requests_mode(&folder, session, true) {
+            Ok(states) => {
+                for state in &states {
+                    self.inner.requests.insert(
+                        session,
+                        state.request.source_line.as_deref(),
+                        state.request.frame_type,
+                        state.request.causal_kernel_seq,
+                        archived,
+                    );
+                }
+                !states.is_empty()
+            }
+            Err(error) => {
+                eprintln!("respond-locate-skipped-thread: session={session} error={error}");
+                false
+            }
+        }
+    }
+
+    /// Brings one thread to a verified state before an operation reads it.
+    pub(crate) fn verify_session_carrier(
+        &self,
+        session_id: &str,
+    ) -> Result<(), ProductionCarrierError> {
+        let Some(authority) = self.session_authority() else {
+            return Ok(());
+        };
+        match authority.ensure_verified(session_id) {
+            Ok(()) => Ok(()),
+            Err(SessionGateError::Quarantined(reason)) => {
+                Err(ProductionCarrierError::Quarantined(reason))
+            }
+            Err(SessionGateError::Failed(reason)) => {
+                eprintln!("carrier-verify-failed: session={session_id} error={reason}");
+                Ok(())
+            }
+        }
+    }
+
+    pub(crate) fn verify_session(&self, session_id: &str) -> Result<(), HostFailure> {
+        self.verify_session_carrier(session_id)
+            .map_err(carrier_failure)
+    }
+
     fn open_mux_journal(
         &self,
         generation: u64,
         address: SessionAddress,
         max_messages: usize,
     ) -> Result<SessionStreamReceiver, ProductionCarrierError> {
+        let lease = self.claim_journal(&address.session_id)?;
+        self.verify_session_carrier(&address.session_id)?;
         // A stale journal (projection failed after settle, or a supervisor locked
         // append with no worker) must not become the snapshot a client folds
         // from. Failure only logs: the periodic sweep repairs within one tick.
@@ -1070,12 +1854,10 @@ impl ProductionCarrierStreams {
                 .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
         endpoint::NativeEndpoint::open(&self.inner.root)?
             .hydrate_historical_submissions(&address.session_id, &mut page.events);
-        let projections = IJsonValue::parse(&serde_json::to_vec(&json!({
-            "asOfSeq":through_sequence,
-            "values":{},
-        }))?)?;
+        let projections = self.snapshot_projections(&address.session_id, through_sequence)?;
         let (_, source) = mux.into_stream();
         Ok(Box::new(ProductionStream {
+            _lease: Some(lease),
             owner: self.clone(),
             generation,
             kind: ProductionStreamKind::Journal(address.clone()),
@@ -1094,6 +1876,52 @@ impl ProductionCarrierStreams {
             .collect(),
             source: Some(source),
         }))
+    }
+
+    /// The projections a journal snapshot carries: the thread's current context usage and
+    /// details (from the control cache the reconcile just refreshed, else the persisted file), so
+    /// a client that rebaselines on the snapshot shows the usage after a config change instead of
+    /// the value it had before. `asOfSeq` never exceeds the snapshot's cut (the client rejects a projection beyond its frozen cut).
+    fn snapshot_projections(
+        &self,
+        session_id: &str,
+        through_sequence: i64,
+    ) -> Result<IJsonValue, ProductionCarrierError> {
+        let cached = self
+            .inner
+            .controls
+            .lock()
+            .map_err(|_| poisoned())?
+            .get(session_id)
+            .cloned();
+        let item = cached.or_else(|| {
+            crate::context_usage::saved_control_item(
+                &self.inner.root.join("threads").join(session_id),
+                session_id,
+            )
+        });
+        let mut as_of = through_sequence;
+        let mut values = json!({});
+        if let Some(item) = item {
+            let known: Value = serde_json::from_slice(&item.projections.canonical_bytes()?)?;
+            // The client rejects a snapshot whose projections are newer than its frozen cut
+            // (`projectionBeyondFrozenCut`: asOfSeq > throughSequence). The reconcile that just
+            // ran publishes the projection at journal tail + 1, so the sequence is clamped to the
+            // cut. The values are the current ones; a later projection frame carries a sequence
+            // beyond the cut and is applied (the same value is idempotent), and a frame at or
+            // below the clamped sequence is ignored.
+            as_of = known["asOfSeq"]
+                .as_i64()
+                .unwrap_or(-1)
+                .min(through_sequence);
+            if known["values"].is_object() {
+                values = known["values"].clone();
+            }
+        }
+        Ok(IJsonValue::parse(&serde_json::to_vec(&json!({
+            "asOfSeq": as_of,
+            "values": values,
+        }))?)?)
     }
 
     pub(crate) fn open_mux(
@@ -1127,6 +1955,7 @@ impl ProductionCarrierStreams {
                     archived: baseline.archived_session_ids.clone(),
                 };
                 Ok(Box::new(ProductionStream {
+                    _lease: None,
                     owner: self.clone(),
                     generation,
                     kind,
@@ -1140,6 +1969,7 @@ impl ProductionCarrierStreams {
                     unreachable!()
                 };
                 Ok(Box::new(ProductionStream {
+                    _lease: None,
                     owner: self.clone(),
                     generation,
                     kind: ProductionStreamKind::Inventory {
@@ -1154,6 +1984,7 @@ impl ProductionCarrierStreams {
                 }))
             }
             SessionStreamTarget::SessionControl => Ok(Box::new(ProductionStream {
+                _lease: None,
                 owner: self.clone(),
                 generation,
                 kind: ProductionStreamKind::Control,
@@ -1166,6 +1997,7 @@ impl ProductionCarrierStreams {
                     unreachable!()
                 };
                 Ok(Box::new(ProductionStream {
+                    _lease: None,
                     owner: self.clone(),
                     generation,
                     kind: ProductionStreamKind::Actionables {
@@ -1234,6 +2066,8 @@ enum ProductionStreamKind {
 }
 
 struct ProductionStream {
+    /// Held while a journal stream is open: pins the session on the mux.
+    _lease: Option<JournalLease>,
     owner: ProductionCarrierStreams,
     generation: u64,
     kind: ProductionStreamKind,
@@ -1328,16 +2162,53 @@ impl ProductionStream {
                         | "host/agent-error"
                         | "host/workspace-changed"
                 ) {
-                    let SessionSyncFrame::InventoryBaseline {
-                        items: next_items, ..
-                    } = self.owner.inventory_baseline(self.generation)?
-                    else {
-                        unreachable!()
+                    // A status/added/removed frame names one session: recompute only that row
+                    // (O(1) catalog work). Anything else relists from the catalog.
+                    let named = matches!(
+                        kind,
+                        "host/session-added" | "host/session-status" | "host/session-removed"
+                    )
+                    .then(|| {
+                        value
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .map(str::to_owned)
+                    })
+                    .flatten();
+                    let targeted = match &named {
+                        Some(id) if kind == "host/session-removed" => {
+                            let mut next = items.clone();
+                            next.remove(id);
+                            Some(next)
+                        }
+                        Some(id) => self.owner.inventory_row(id)?.map(|row| {
+                            let mut next = items.clone();
+                            match row {
+                                Some(row) => {
+                                    next.insert(id.clone(), row);
+                                }
+                                None => {
+                                    next.remove(id);
+                                }
+                            }
+                            next
+                        }),
+                        None => None,
                     };
-                    let next_items = next_items
-                        .into_iter()
-                        .map(|item| (item.session_id.clone(), item))
-                        .collect::<BTreeMap<_, _>>();
+                    let next_items = if let Some(next) = targeted {
+                        next
+                    } else {
+                        let SessionSyncFrame::InventoryBaseline {
+                            items: next_items, ..
+                        } = self.owner.inventory_baseline(self.generation)?
+                        else {
+                            unreachable!()
+                        };
+                        next_items
+                            .into_iter()
+                            .map(|item| (item.session_id.clone(), item))
+                            .collect::<BTreeMap<_, _>>()
+                    };
                     let mut deltas = VecDeque::new();
                     for id in items.keys().filter(|id| !next_items.contains_key(*id)) {
                         deltas.push_back(SessionSyncFrame::InventoryRemove {
@@ -1504,8 +2375,8 @@ impl CarrierStreamHandler for ProductionCarrierStreams {
         channel: StreamChannel,
     ) -> CarrierHostFuture<'_, Result<EndpointStreamReceiver, HostFailure>> {
         Box::pin(std::future::ready(match channel {
-            StreamChannel::Mux => self.open_legacy_mux().map_err(internal),
-            StreamChannel::Host => self.open_host().map_err(internal),
+            StreamChannel::Mux => self.open_legacy_mux().map_err(carrier_failure),
+            StreamChannel::Host => self.open_host().map_err(carrier_failure),
         }))
     }
 
@@ -1549,7 +2420,7 @@ impl CarrierStreamHandler for ProductionCarrierStreams {
         target: SessionStreamTarget,
     ) -> CarrierHostFuture<'_, Result<SessionStreamReceiver, HostFailure>> {
         Box::pin(std::future::ready(
-            self.open_mux(generation, target).map_err(internal),
+            self.open_mux(generation, target).map_err(carrier_failure),
         ))
     }
 
@@ -1558,7 +2429,7 @@ impl CarrierStreamHandler for ProductionCarrierStreams {
         request: SessionMuxClientFrame,
     ) -> CarrierHostFuture<'_, Result<SessionJournalPage, HostFailure>> {
         Box::pin(std::future::ready(
-            self.mux_journal_page(request).map_err(internal),
+            self.mux_journal_page(request).map_err(carrier_failure),
         ))
     }
 }
@@ -1747,17 +2618,16 @@ impl ProductionCarrierAssembly {
         self.server
     }
 
-    /// Called only after supervisor boot recovery and capability assembly are
-    /// complete. Re-reading the full active inventory proves mux capacity and
-    /// every durable journal can be opened before the listener reports ready.
-    pub fn finish_recovery(&self) -> Result<(), ProductionCarrierError> {
-        let sessions = load_active_mux_sessions(&self.streams.inner.root)?;
-        if sessions.len() > endpoint::MAX_MUX_SESSIONS {
-            return Err(ProductionCarrierError::Lifecycle(
-                "active session inventory exceeds mux capacity".to_owned(),
-            ));
-        }
+    /// Marks the host ready once capability assembly is complete. It reads no thread: the
+    /// catalog, the capacity accounting and every journal are handled after readiness (a
+    /// request that needs a thread opens that thread; a List request awaits the catalog load).
+    pub fn mark_ready(&self) {
         self.host.set_readiness(HostReadiness::Ready);
+    }
+
+    /// Compatibility name for `mark_ready` (tests and tools written before lazy boot).
+    pub fn finish_recovery(&self) -> Result<(), ProductionCarrierError> {
+        self.mark_ready();
         Ok(())
     }
 
@@ -1768,24 +2638,22 @@ impl ProductionCarrierAssembly {
 }
 
 struct MuxSession {
-    session_id: String,
     endpoint: EndpointJournal,
     unresolved: Vec<ServerRequest>,
 }
 
-fn load_active_mux_sessions(root: &Path) -> Result<Vec<MuxSession>, ProductionCarrierError> {
-    let mut session_ids = fs::read_dir(root.join("threads"))?.collect::<Result<Vec<_>, _>>()?;
-    session_ids.sort_by_key(std::fs::DirEntry::file_name);
-    let mut sessions = Vec::new();
-    for entry in session_ids {
-        if entry.file_type()?.is_dir() {
-            sessions.push(load_mux_session(
-                root,
-                &entry.file_name().to_string_lossy(),
-            )?);
+/// The ids of the active threads (directory names only; nothing is read).
+fn active_session_ids(root: &Path) -> Result<Vec<String>, ProductionCarrierError> {
+    let mut ids = Vec::new();
+    for entry in fs::read_dir(root.join("threads"))? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if entry.file_type()?.is_dir() && endpoint::validate_session_id(&name).is_ok() {
+            ids.push(name);
         }
     }
-    Ok(sessions)
+    ids.sort();
+    Ok(ids)
 }
 
 fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, ProductionCarrierError> {
@@ -1793,15 +2661,57 @@ fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, Product
         .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
     let folder = root.join("threads").join(session_id);
     let endpoint = EndpointJournal::open(&folder)?;
-    let unresolved = pending_session_requests(&folder, session_id)
+    let unresolved = pending_session_requests_mode(&folder, session_id, true)
         .map_err(internal_carrier)?
         .into_iter()
         .map(|request| request.envelope)
         .collect();
     Ok(MuxSession {
-        session_id: session_id.to_owned(),
         endpoint,
         unresolved,
+    })
+}
+
+fn inventory_row(
+    session: endpoint::SessionInventoryItem,
+    workspace_paths: &std::collections::BTreeMap<String, String>,
+    lineage: &std::collections::BTreeMap<String, endpoint::ForkLineage>,
+) -> Result<SessionSummary, endpoint::ManagementError> {
+    let projections = session.title.map(|title| {
+        IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "asOfSeq":session.as_of_seq,
+                "values":{"sessionTitle":{"title":title}},
+            }))
+            .expect("session summary projection serializes"),
+        )
+        .expect("session summary projection is I-JSON")
+    });
+    let lock = if session.running {
+        LockFacts::OTHER
+    } else {
+        LockFacts::FREE
+    };
+    let tail = classify(&session.lifecycle, lock);
+    let fork = lineage.get(&session.session_id);
+    Ok(SessionSummary {
+        cwd: workspace_paths
+            .get(&session.workspace_id)
+            .cloned()
+            .ok_or_else(|| {
+                endpoint::ManagementError::WorkspaceNotFound(session.workspace_id.clone())
+            })?,
+        parent_session_id: fork.map(|fork| fork.source.clone()),
+        origin: fork.map(|_| "fork".to_owned()),
+        ephemeral: session.ephemeral,
+        session_id: session.session_id,
+        updated_at: session.updated_at,
+        running: session.running,
+        tail: tail.as_str().to_owned(),
+        blank: session.blank,
+        projections,
+        permission_mode: Some(session.permission_mode),
+        identity_profile: session.identity_profile,
     })
 }
 
@@ -1812,6 +2722,18 @@ fn semantic_projection(folder: &Path) -> Result<schema::LedgerProjection, HostFa
 fn semantic_line_projection(
     folder: &Path,
     line: &str,
+) -> Result<schema::LedgerProjection, HostFailure> {
+    semantic_line_projection_mode(folder, line, false)
+}
+
+/// How a ledger line is read: strict refuses an unrepaired tail (callers that need the whole
+/// ledger), tolerant uses the valid prefix and ignores the rest (the reader rule of the spec:
+/// respond lookup and actionable baselines never fail because a worker is mid-append or an
+/// unrelated tail has not been repaired yet).
+fn semantic_line_projection_mode(
+    folder: &Path,
+    line: &str,
+    tolerant: bool,
 ) -> Result<schema::LedgerProjection, HostFailure> {
     if line != "main.jsonl" {
         let id = line
@@ -1829,7 +2751,7 @@ fn semantic_line_projection(
     }
     let bytes = fs::read(path).map_err(internal)?;
     let scan = scan_valid_prefix(&bytes, 1);
-    if scan.needs_repair() {
+    if scan.needs_repair() && !tolerant {
         return Err(HostFailure::Internal(
             "respond semantic ledger requires tail recovery".to_owned(),
         ));
@@ -1841,7 +2763,7 @@ fn semantic_line_projection(
 /// The answerable requests of one ledger line: every `approval_request` hold
 /// with its public requested frame and, when the line already carries it, the
 /// ledger resolution (`approval_response`, or the aborting `tool_result`).
-fn line_requests(
+pub(crate) fn line_requests(
     session_id: &str,
     source_line: Option<&str>,
     projection: &schema::LedgerProjection,
@@ -1944,7 +2866,11 @@ fn line_requests(
 /// Every request of a session: its main line plus every spawned child line
 /// that exists. Child ancestry is validated where a request is exposed or
 /// answered (`actionable_projection`), not here.
-fn session_requests(folder: &Path, session: &str) -> Result<Vec<RequestState>, HostFailure> {
+fn session_requests_mode(
+    folder: &Path,
+    session: &str,
+    tolerant: bool,
+) -> Result<Vec<RequestState>, HostFailure> {
     let mut states = Vec::new();
     let mut pending = vec!["main.jsonl".to_owned()];
     let mut visited = HashSet::new();
@@ -1953,7 +2879,7 @@ fn session_requests(folder: &Path, session: &str) -> Result<Vec<RequestState>, H
             continue;
         }
         let source = (line != "main.jsonl").then_some(line.as_str());
-        let projection = semantic_line_projection(folder, &line)?;
+        let projection = semantic_line_projection_mode(folder, &line, tolerant)?;
         states.extend(
             line_requests(session, source, &projection)?
                 .into_iter()
@@ -1981,11 +2907,12 @@ fn session_requests(folder: &Path, session: &str) -> Result<Vec<RequestState>, H
 }
 
 /// The session's unresolved requests in causal order.
-fn pending_session_requests(
+fn pending_session_requests_mode(
     folder: &Path,
     session: &str,
+    tolerant: bool,
 ) -> Result<Vec<PendingRequest>, HostFailure> {
-    Ok(session_requests(folder, session)?
+    Ok(session_requests_mode(folder, session, tolerant)?
         .into_iter()
         .filter(|state| state.resolution.is_none())
         .map(|state| state.request)
@@ -1999,8 +2926,17 @@ fn actionable_projection(
     session: &str,
     source_line: Option<&str>,
 ) -> Result<(schema::LedgerProjection, bool), HostFailure> {
+    actionable_projection_mode(folder, session, source_line, false)
+}
+
+fn actionable_projection_mode(
+    folder: &Path,
+    session: &str,
+    source_line: Option<&str>,
+    tolerant: bool,
+) -> Result<(schema::LedgerProjection, bool), HostFailure> {
     let line = source_line.unwrap_or("main.jsonl");
-    let projection = semantic_line_projection(folder, line)?;
+    let projection = semantic_line_projection_mode(folder, line, tolerant)?;
     let mut current = projection.clone();
     let mut current_line = line.to_owned();
     let mut visited = HashSet::new();
@@ -2037,7 +2973,7 @@ fn actionable_projection(
         let spawn_id = parent["spawn_id"]
             .as_str()
             .ok_or_else(|| internal("child lacks spawn identity"))?;
-        let parent_projection = semantic_line_projection(folder, parent_line)?;
+        let parent_projection = semantic_line_projection_mode(folder, parent_line, tolerant)?;
         let spawn = parent_projection
             .events
             .iter()
@@ -2171,6 +3107,17 @@ fn internal(error: impl std::fmt::Display) -> HostFailure {
     HostFailure::Internal(error.to_string())
 }
 
+/// The typed host failure of a stream open or page read.
+fn carrier_failure(error: ProductionCarrierError) -> HostFailure {
+    match error {
+        ProductionCarrierError::ActiveSessionLimit(limit) => {
+            HostFailure::ActiveSessionLimit { limit }
+        }
+        ProductionCarrierError::Quarantined(reason) => HostFailure::Quarantined(reason),
+        other => internal(other),
+    }
+}
+
 fn internal_carrier(error: impl std::fmt::Display) -> ProductionCarrierError {
     ProductionCarrierError::Lifecycle(error.to_string())
 }
@@ -2240,6 +3187,10 @@ pub enum ProductionCarrierError {
     Json(#[from] serde_json::Error),
     #[error("carrier schema failed: {0}")]
     Schema(#[from] schema::SchemaError),
+    #[error("active session limit reached ({0})")]
+    ActiveSessionLimit(usize),
+    #[error("session is quarantined: {0}")]
+    Quarantined(String),
 }
 
 #[cfg(test)]
@@ -2294,5 +3245,162 @@ mod question_cancellation_tests {
             requests[0].0.resolution,
             Some((8, endpoint::ResolutionOutcome::Answered))
         );
+    }
+}
+
+#[cfg(test)]
+mod lazy_registration_tests {
+    use super::*;
+    use std::sync::atomic::AtomicBool;
+
+    const TS: &str = "2026-10-12T00:00:00.000Z";
+
+    fn blank_thread(root: &Path, session: &str) {
+        let genesis = format!(
+            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{session}"}},"resume":"never","seq":1,"thread":"{session}","ts":"{TS}","v":1,"workspace":"ws"}}"#
+        );
+        ThreadStore::open(root).expect("store");
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("folder");
+        fs::write(folder.join("main.jsonl"), genesis + "\n").expect("ledger");
+    }
+
+    fn id(n: usize) -> String {
+        format!("018f0000-0000-7000-8000-{n:012}")
+    }
+
+    fn registered(streams: &ProductionCarrierStreams, handle_count: usize) -> usize {
+        let generations = streams.inner.generations.lock().expect("generations");
+        assert_eq!(generations.mux.len(), handle_count);
+        let mut all = BTreeSet::new();
+        for generation in &generations.mux {
+            for baseline in generation.handle.baselines().expect("baselines") {
+                all.insert(baseline.session_id);
+            }
+        }
+        all.len()
+    }
+
+    /// E834 R1: the load of a first touch happens outside the generations lock. Two first
+    /// touches both reach the point after their load before either registers (they load in
+    /// parallel), and a frame for an already registered session is published while a third
+    /// first touch is still loading.
+    #[test]
+    fn first_touches_load_in_parallel_and_do_not_hold_up_live_frames() {
+        let root = tempfile::tempdir().expect("root");
+        let (a, b, c, live) = (id(1), id(2), id(3), id(4));
+        for session in [&a, &b, &c, &live] {
+            blank_thread(root.path(), session);
+        }
+        let streams = ProductionCarrierStreams::new(root.path());
+        let _mux = streams.open_legacy_mux().expect("mux");
+        streams
+            .attach_everywhere(&live)
+            .expect("registered session");
+
+        let arrived = std::sync::atomic::AtomicUsize::new(0);
+        std::thread::scope(|scope| {
+            for session in [&a, &b] {
+                let (streams, arrived) = (&streams, &arrived);
+                scope.spawn(move || {
+                    let rendezvous = || {
+                        arrived.fetch_add(1, Ordering::SeqCst);
+                        let deadline =
+                            std::time::Instant::now() + std::time::Duration::from_secs(20);
+                        while arrived.load(Ordering::SeqCst) < 2 {
+                            assert!(
+                                std::time::Instant::now() < deadline,
+                                "first touches were serialised"
+                            );
+                            std::thread::sleep(std::time::Duration::from_millis(5));
+                        }
+                    };
+                    streams
+                        .attach_everywhere_with(session, Some(&rendezvous))
+                        .expect("attach");
+                });
+            }
+        });
+        assert_eq!(registered(&streams, 1), 3);
+
+        // a cold first touch that is held after its load does not block a live frame
+        let release = AtomicBool::new(false);
+        let holding = AtomicBool::new(false);
+        std::thread::scope(|scope| {
+            let (streams_ref, release, holding, c_ref) = (&streams, &release, &holding, &c);
+            let slow = scope.spawn(move || {
+                let hold = || {
+                    holding.store(true, Ordering::SeqCst);
+                    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+                    while !release.load(Ordering::SeqCst) {
+                        assert!(std::time::Instant::now() < deadline, "never released");
+                        std::thread::sleep(std::time::Duration::from_millis(5));
+                    }
+                };
+                streams_ref
+                    .attach_everywhere_with(c_ref, Some(&hold))
+                    .expect("slow attach");
+            });
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+            while !holding.load(Ordering::SeqCst) {
+                assert!(
+                    std::time::Instant::now() < deadline,
+                    "slow touch never loaded"
+                );
+                std::thread::sleep(std::time::Duration::from_millis(5));
+            }
+            streams
+                .publish_session_frame(
+                    &live,
+                    endpoint::MuxFrame::Queue {
+                        session_id: live.clone(),
+                        items: Vec::new(),
+                    },
+                )
+                .expect("a live session's frame is published while a first touch loads");
+            release.store(true, Ordering::SeqCst);
+            slow.join().expect("slow thread");
+        });
+        assert_eq!(registered(&streams, 1), 4);
+    }
+
+    /// E834 R2: refreshing every thread's usage after a config change refreshes the thread with
+    /// an open journal stream at once, and registers no idle session on any generation.
+    #[test]
+    fn a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session() {
+        let root = tempfile::tempdir().expect("root");
+        let sessions = (10..70).map(id).collect::<Vec<_>>();
+        for session in &sessions {
+            blank_thread(root.path(), session);
+        }
+        let streams = ProductionCarrierStreams::new(root.path());
+        let _mux = streams.open_legacy_mux().expect("mux");
+        let open = &sessions[7];
+        let _lease = streams.claim_journal(open).expect("journal lease");
+        let projection = |session: &str| {
+            root.path()
+                .join("threads")
+                .join(session)
+                .join("context-usage.projection.json")
+        };
+        assert!(!projection(open).exists());
+        streams
+            .refresh_all_context_projections()
+            .expect("refresh all");
+        assert!(
+            projection(open).exists(),
+            "the thread with an open journal stream is refreshed before the call returns"
+        );
+        assert_eq!(registered(&streams, 1), 0, "no idle session was registered");
+        // the idle ones follow in the background, still without registering
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+        while !sessions.iter().all(|session| projection(session).exists()) {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "background refresh stalled"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        assert_eq!(registered(&streams, 1), 0);
     }
 }

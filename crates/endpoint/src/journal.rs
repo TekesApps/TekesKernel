@@ -118,6 +118,17 @@ fn retire_legacy_journal(folder: &Path, journal: &Path) -> Result<(), JournalErr
     Ok(())
 }
 
+/// See `EndpointJournal::tail_summary`.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct JournalTail {
+    /// File length the cache describes: `rows`/`last_seq`/`last_kernel_seq` are exactly the
+    /// content of the first `len` bytes (one snapshot).
+    pub len: u64,
+    pub rows: u64,
+    pub last_seq: Option<u64>,
+    pub last_kernel_seq: u64,
+}
+
 pub struct EndpointJournal {
     path: PathBuf,
     lock_path: PathBuf,
@@ -228,7 +239,29 @@ impl EndpointJournal {
     }
 
     pub fn last_seq(&self) -> Result<Option<u64>, JournalError> {
-        Ok(self.records()?.last().map(|record| record.event.seq))
+        Ok(self.tail_summary()?.last_seq)
+    }
+
+    /// Row count, last endpoint seq and last causal Kernel seq, read from the cache without
+    /// cloning the journal (`records()` clones every row).
+    pub fn tail_summary(&self) -> Result<JournalTail, JournalError> {
+        let _lock = NamedLock::shared(&self.lock_path)?;
+        let mut cache = self
+            .cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        self.refresh_cache_unlocked(&mut cache)?;
+        let snapshot = cache.as_ref().expect("cache was refreshed");
+        let records = &snapshot.records;
+        let last = records.last();
+        Ok(JournalTail {
+            len: snapshot.file_len,
+            rows: records.len() as u64,
+            last_seq: last.map(|record| record.event.seq),
+            last_kernel_seq: last
+                .and_then(|record| record.kernel_seqs.last().copied())
+                .unwrap_or(0),
+        })
     }
 
     /// Resolves a public endpoint sequence to the durable Kernel prefix it
@@ -390,16 +423,19 @@ impl EndpointJournal {
     fn repair_tail(&self) -> Result<(), JournalError> {
         let _lock = NamedLock::exclusive(&self.lock_path)?;
         let bytes = fs::read(&self.path)?;
-        let (_, valid_len) = parse_records(&bytes, true)?;
+        let (records, valid_len) = parse_records(&bytes, true)?;
         if valid_len != bytes.len() {
             let file = OpenOptions::new().write(true).open(&self.path)?;
             file.set_len(valid_len as u64)?;
             FullSync::full_sync(&file)?;
         }
+        // The pass above already validated every record under the exclusive lock; keep its
+        // result instead of discarding it and parsing the same bytes again on first use.
+        let cache = JournalCache::new(valid_len as u64, records)?;
         *self
             .cache
             .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(cache);
         Ok(())
     }
 
@@ -425,6 +461,7 @@ fn parse_records(
     bytes: &[u8],
     allow_partial_tail: bool,
 ) -> Result<(Vec<JournalRecord>, usize), JournalError> {
+    schema::metrics::note_journal_parse(bytes.len());
     let mut records = Vec::new();
     let mut offset = 0;
     let mut identities = HashSet::new();
@@ -589,5 +626,75 @@ mod tests {
             journal.kernel_anchor_for_endpoint_seq(2),
             Err(JournalError::EndpointSeqNotFound(2))
         ));
+    }
+}
+
+#[cfg(test)]
+mod repair_cache_tests {
+    use super::*;
+
+    #[test]
+    fn open_keeps_the_validated_records_so_the_first_use_does_not_parse_again() {
+        let folder = tempfile::tempdir().unwrap();
+        {
+            let journal = EndpointJournal::open(folder.path()).unwrap();
+            for index in 0..3_u64 {
+                journal
+                    .append_kernel(
+                        vec![index + 1],
+                        format!("slot-{index}"),
+                        SessionEvent {
+                            event_type: "turn/start".to_owned(),
+                            seq: 0,
+                            time: 1.0,
+                            data: schema::IJsonValue::parse_str(r#"{"turn":0}"#).unwrap(),
+                            ignorable: None,
+                            source_event_seqs: None,
+                            surface_op: None,
+                        },
+                    )
+                    .unwrap();
+            }
+        }
+        // A torn final line is repaired and the repaired content is what the cache serves.
+        let path = folder.path().join(JOURNAL_FILE);
+        let mut bytes = std::fs::read(&path).unwrap();
+        bytes.extend_from_slice(b"{\"torn\":");
+        std::fs::write(&path, bytes).unwrap();
+        let journal = EndpointJournal::open(folder.path()).unwrap();
+        assert_eq!(journal.records().unwrap().len(), 3);
+        assert_eq!(journal.last_seq().unwrap(), Some(2));
+        assert!(std::fs::read(&path).unwrap().ends_with(b"\n"));
+    }
+
+    /// K7: `tail_summary` reports the length together with the rows it describes, so a card's
+    /// journal block never mixes a row count from one moment with a length from another.
+    #[test]
+    fn tail_summary_length_and_rows_come_from_one_snapshot() {
+        let folder = tempfile::tempdir().unwrap();
+        let journal = EndpointJournal::open(folder.path()).unwrap();
+        let path = folder.path().join(JOURNAL_FILE);
+        for index in 0..4_u64 {
+            journal
+                .append_kernel(
+                    vec![index + 1],
+                    format!("slot-{index}"),
+                    SessionEvent {
+                        event_type: "turn/start".to_owned(),
+                        seq: 0,
+                        time: 1.0,
+                        data: schema::IJsonValue::parse_str(r#"{"turn":0}"#).unwrap(),
+                        ignorable: None,
+                        source_event_seqs: None,
+                        surface_op: None,
+                    },
+                )
+                .unwrap();
+            let tail = journal.tail_summary().unwrap();
+            assert_eq!(tail.rows, index + 1);
+            assert_eq!(tail.last_seq, Some(index));
+            assert_eq!(tail.last_kernel_seq, index + 1);
+            assert_eq!(tail.len, std::fs::metadata(&path).unwrap().len());
+        }
     }
 }

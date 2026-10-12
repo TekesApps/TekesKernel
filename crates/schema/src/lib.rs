@@ -3,6 +3,7 @@
 mod event;
 mod fold;
 mod ijson;
+pub mod metrics;
 mod types;
 
 pub use event::{Event, EventKind, Visibility};

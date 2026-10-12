@@ -1,9 +1,9 @@
 //! Additive Host workspace routes. Workspace roots and mutation grants are server-owned.
 use crate::endpoint_host::{ProductionEndpointRoutes, ProductionRouteFailure};
-use endpoint::{EndpointHostCall, ManagementStore, MethodClass, NativeEndpoint};
+use endpoint::{EndpointHostCall, ManagementStore, MethodClass};
 use schema::IJsonValue;
 use serde_json::{Value, json};
-use std::collections::{BTreeSet, HashSet};
+use std::collections::BTreeSet;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 
@@ -37,7 +37,6 @@ pub struct WorkspaceRoutes {
     root: PathBuf,
     executable: PathBuf,
     management: ManagementStore,
-    endpoint: NativeEndpoint,
 }
 impl WorkspaceRoutes {
     pub fn open(root: &Path, executable: PathBuf) -> Result<Self, ProductionRouteFailure> {
@@ -47,9 +46,8 @@ impl WorkspaceRoutes {
         Ok(Self {
             root: root.to_owned(),
             executable,
-            management: ManagementStore::open(root)
+            management: ManagementStore::open_light(root)
                 .map_err(|e| failure("internal", e.to_string()))?,
-            endpoint: NativeEndpoint::open(root).map_err(|e| failure("internal", e.to_string()))?,
         })
     }
     fn authority(&self) -> Result<Value, ProductionRouteFailure> {
@@ -249,14 +247,18 @@ impl ProductionEndpointRoutes for WorkspaceRoutes {
         );
         if name == "turnChanges" {
             let session = payload["sessionId"].as_str().unwrap();
-            let sessions = self
-                .endpoint
-                .list_sessions(&HashSet::new())
-                .map_err(|e| failure("internal", e.to_string()))?;
-            if !sessions
-                .iter()
-                .any(|s| s.session_id == session && s.workspace_id == workspace_id)
-            {
+            // The session's own genesis line names its workspace: no inventory scan.
+            let belongs = ["threads", "archive"]
+                .into_iter()
+                .map(|area| self.root.join(area).join(session))
+                .find(|folder| folder.is_dir())
+                .and_then(|folder| {
+                    store::read_genesis(folder.join("main.jsonl"))
+                        .ok()
+                        .flatten()
+                })
+                .is_some_and(|genesis| genesis.string_field("workspace") == Some(workspace_id));
+            if !belongs {
                 return Err(failure(
                     "session-outside-workspace",
                     "Session does not belong to workspace",

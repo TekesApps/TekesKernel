@@ -12,7 +12,7 @@ use schema::{IJsonValue, OriginTuple, ResumePolicy};
 use serde_json::Value;
 use sha2::Digest;
 use tekes_supervisor::endpoint_host::{
-    EndpointAssemblyError, EndpointRouteClass, ProductionEndpointAssembly, ProductionEndpointHost,
+    EndpointRouteClass, ProductionEndpointAssembly, ProductionEndpointHost,
     ProductionEndpointRoutes, ProductionRouteFailure, ProviderReadinessAuthority,
     QueueTransactionAuthority, RuntimeProviderFailure, RuntimeProviderReadiness,
     RuntimeProviderStatus, SessionDeliveryAuthority, TEKES_UNARY_ROUTES,
@@ -32,21 +32,26 @@ fn block_on_ready<F: Future>(future: F) -> F::Output {
     }
 }
 
+/// D5 (ADDENDUM-03 C5): opening the endpoint, recovery and readiness never fail on the number of
+/// session folders; the 256 cap is enforced where a slot is reserved (create, fork, unarchive) and
+/// at live-event attach.
 #[test]
-fn readiness_rejects_more_than_256_active_session_folders() {
+fn opening_a_root_with_more_than_256_session_folders_is_not_an_error() {
     let root = tempfile::tempdir().expect("root");
     let threads = root.path().join("threads");
     std::fs::create_dir_all(&threads).unwrap();
     for index in 0..257_u16 {
         std::fs::create_dir(threads.join(format!("018f0000-0000-7000-8000-{index:012x}"))).unwrap();
     }
-    let opened = ProductionEndpointAssembly::open(root.path(), description());
-    assert!(matches!(
-        opened,
-        Err(EndpointAssemblyError::Management(
-            endpoint::ManagementError::ActiveSessionLimit
-        ))
-    ));
+    ProductionEndpointAssembly::open(root.path(), description())
+        .expect("257 session folders must not fail the endpoint assembly");
+    endpoint::ManagementStore::open_at_with_queue_driver(
+        root.path(),
+        "2026-10-12T00:00:00.000Z",
+        None,
+    )
+    .expect("the recovering open does not fail on the count either");
+    endpoint::ManagementStore::open_light(root.path()).expect("nor does the per-request open");
 }
 
 struct LockedLedgerDelivery {
@@ -629,7 +634,7 @@ fn workspace_mutations_are_journaled_and_exact_retry_is_stable() {
         .expect("native endpoint")
         .list_sessions(&HashSet::new())
         .expect("session snapshot");
-    let workspaces = endpoint::ManagementStore::open(root.path())
+    let workspaces = endpoint::ManagementStore::open_light(root.path())
         .expect("management")
         .list_workspaces(&sessions)
         .expect("workspace snapshot");
@@ -1133,7 +1138,8 @@ fn queue_management_gate_recovers_before_readiness_and_exact_retry_does_not_rede
         key: "rpc-queue-recovery/retract".to_owned(),
     };
     let action = IJsonValue::parse_str(r#"{"kind":"remove"}"#).unwrap();
-    let management = ManagementStore::open_at(root.path(), TIMESTAMP).expect("management");
+    let management = ManagementStore::open_at_with_queue_driver(root.path(), TIMESTAMP, None)
+        .expect("management");
     let state = management
         .prepare_queue_transaction(QueueTransactionOperation {
             rpc_id: "rpc-queue-recovery",
@@ -1426,7 +1432,7 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
             .unwrap()
             .ephemeral
     );
-    let lineage = ManagementStore::open(root.path())
+    let lineage = ManagementStore::open_light(root.path())
         .expect("management")
         .completed_fork_lineage()
         .expect("lineage");

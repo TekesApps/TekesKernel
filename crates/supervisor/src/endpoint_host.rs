@@ -188,6 +188,28 @@ pub trait QueueTransactionAuthority: Send + Sync {
     ) -> Result<worker_control::QueueTransactionResult, ProductionRouteFailure>;
 }
 
+/// Re-runs the recovery of pending management operations (the recovering open of the
+/// management store, with the queue driver). Per-request opens do not recover, so something has
+/// to retry an operation a runtime failure left pending or one preserved for an unavailable
+/// workspace; the process host calls this every 30 s after readiness from its own thread.
+/// `validated` remembers the records already known complete, so an idle root costs a directory
+/// listing and a `stat` per record, not a decode of each.
+pub(crate) fn recover_pending_management(
+    root: &Path,
+    authority: &dyn QueueTransactionAuthority,
+    validated: &mut endpoint::CompleteOperations,
+) -> Result<(), ManagementError> {
+    let started_at = crate::host_runtime::system_timestamp()
+        .map_err(|error| ManagementError::QueueRecoveryFailed(error.to_string()))?;
+    ManagementStore::open_recovering_again(
+        root,
+        &started_at,
+        Some(&QueueRecoveryAdapter { authority }),
+        validated,
+    )
+    .map(|_| ())
+}
+
 struct QueueRecoveryAdapter<'a> {
     authority: &'a dyn QueueTransactionAuthority,
 }

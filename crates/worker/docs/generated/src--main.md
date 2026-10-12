@@ -364,7 +364,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `options         .ledger         .parent()         .ok_or` | [243](../../src/main.rs#L243) | receiver-type-required |
 | `run` | `options         .ledger         .parent` | [243](../../src/main.rs#L243) | receiver-type-required |
 | `run` | `DirectoryLock::shared` | [247](../../src/main.rs#L247) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
-| `run` | `LockedLedger::open` | [248](../../src/main.rs#L248) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L153) |
+| `run` | `LockedLedger::open` | [248](../../src/main.rs#L248) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
 | `run` | `Err` | [251](../../src/main.rs#L251), [294](../../src/main.rs#L294), [372](../../src/main.rs#L372) | external-constructor-callback-or-unresolved |
 | `run` | `error.into` | [251](../../src/main.rs#L251) | receiver-type-required |
 | `run` | `runtime_profile.as_mut` | [253](../../src/main.rs#L253) | receiver-type-required |

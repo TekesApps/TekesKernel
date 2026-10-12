@@ -28,7 +28,8 @@ pub struct WorkspaceFileTransfer {
 impl WorkspaceFileTransfer {
     pub fn open(root: &std::path::Path) -> Result<Self, String> {
         Ok(Self {
-            management: endpoint::ManagementStore::open(root).map_err(|error| error.to_string())?,
+            management: endpoint::ManagementStore::open_light(root)
+                .map_err(|error| error.to_string())?,
             attachments: endpoint::AttachmentAuthority::open(root),
             leases: FileLeases::default(),
         })

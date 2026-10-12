@@ -5,6 +5,7 @@ use std::path::{Path, PathBuf};
 
 use schema::{Event, EventKind, OriginTuple};
 
+use crate::folder_events::{Area, FolderEvent, RemoveReason};
 use crate::platform::{DirectoryLock, NamedLock, open_exclusive_create};
 use crate::{AssetStore, BarrierContext, LockedLedger, StoreError, probe_local_filesystem};
 
@@ -77,6 +78,9 @@ impl ThreadStore {
             let entry = entry?;
             if !entry.file_type()?.is_file()
                 || entry.path().extension().and_then(|value| value.to_str()) != Some("jsonl")
+                // The endpoint journal is a projection with its own lock (`endpoint.lock`); no
+                // worker holds a line lock on it, and a List probes every thread.
+                || !crate::card::valid_line_name(&entry.file_name().to_string_lossy())
             {
                 continue;
             }
@@ -160,6 +164,10 @@ impl ThreadStore {
             fs::rename(&stage, &destination)?;
             File::open(self.root.join(".create-staging"))?.sync_all()?;
             File::open(self.root.join("threads"))?.sync_all()?;
+            crate::folder_events::emit(FolderEvent::Published {
+                root: self.root.clone(),
+                id: existing.clone(),
+            });
             return Ok(CreateOutcome {
                 thread_id: existing,
                 created: false,
@@ -192,6 +200,10 @@ impl ThreadStore {
         File::open(&stage)?.sync_all()?;
         fs::rename(&stage, &destination)?;
         File::open(self.root.join("threads"))?.sync_all()?;
+        crate::folder_events::emit(FolderEvent::Published {
+            root: self.root.clone(),
+            id: thread_id.to_owned(),
+        });
         Ok(CreateOutcome {
             thread_id: thread_id.to_owned(),
             created: true,
@@ -277,19 +289,14 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        let mut bytes = Vec::new();
         let path = folder.join(line_file);
         if !fs::symlink_metadata(&path)?.file_type().is_file() {
             return Err(StoreError::Corruption(
                 "ledger is not a regular file".into(),
             ));
         }
-        fs::OpenOptions::new()
-            .read(true)
-            .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
-            .open(path)?
-            .read_to_end(&mut bytes)?;
-        let scan = crate::scan_valid_prefix(&bytes, 1);
+        // Boot no longer repairs every tail: repair this line's partial tail if nobody holds it.
+        let (_, scan) = crate::read_ledger_repaired(&path)?;
         if scan.needs_repair() {
             return Err(StoreError::Corruption(
                 "ledger requires tail recovery".into(),
@@ -483,10 +490,7 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        fs::rename(&source, self.root.join(destination_area).join(thread_id))?;
-        File::open(self.root.join(source_area))?.sync_all()?;
-        File::open(self.root.join(destination_area))?.sync_all()?;
-        Ok(())
+        move_thread_folder(&source, &self.root.join(destination_area).join(thread_id))
     }
 
     pub fn unarchive(&self, thread_id: &str) -> Result<(), StoreError> {
@@ -510,63 +514,37 @@ impl ThreadStore {
     /// delete) so a crash never leaves a half-deleted active folder; startup
     /// GC finishes an orphaned tombstone.
     pub fn discard_ephemeral(&self, thread_id: &str) -> Result<(), StoreError> {
-        let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
-        if self.source_has_live_rewrite(thread_id)? {
-            return Err(StoreError::RewriteInProgress);
-        }
-        let source = self.root.join("threads").join(thread_id);
-        if !source.is_dir() {
-            return Err(StoreError::NotFound);
-        }
-        let lock = DirectoryLock::try_exclusive(&source)?;
-        if !folder_is_ephemeral(&source)? {
-            return Err(StoreError::NotEphemeral);
-        }
-        if self.session_has_live_line_holder(thread_id)? {
-            return Err(StoreError::Busy);
-        }
-        let tombstone = self.retire_ephemeral_folder(thread_id, &source)?;
-        // The lifecycle lock is an open descriptor on the folder; release it
-        // before the tree is deleted.
-        drop(lock);
+        // The catalog lock covers the rename only; the deletion of the (possibly large)
+        // tombstone runs after it is released, so create, archive and search never wait on it.
+        let tombstone = {
+            let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
+            if self.source_has_live_rewrite(thread_id)? {
+                return Err(StoreError::RewriteInProgress);
+            }
+            let source = self.root.join("threads").join(thread_id);
+            if !source.is_dir() {
+                return Err(StoreError::NotFound);
+            }
+            let lock = DirectoryLock::try_exclusive(&source)?;
+            if !folder_is_ephemeral(&source)? {
+                return Err(StoreError::NotEphemeral);
+            }
+            if self.session_has_live_line_holder(thread_id)? {
+                return Err(StoreError::Busy);
+            }
+            let tombstone = self.retire_ephemeral_folder(thread_id, &source)?;
+            // The lifecycle lock is an open descriptor on the folder; release it
+            // before the tree is deleted.
+            drop(lock);
+            tombstone
+        };
         Self::remove_tombstone(self.root(), &tombstone)
     }
 
-    /// Startup sweep: every active folder whose genesis is ephemeral is
-    /// removed. Nothing can hold a line lock before the daemon publishes its
-    /// endpoint, so the folders are deleted without a holder probe. Returns
-    /// the removed ids; an orphaned discard tombstone is deleted too.
+    /// Removes every ephemeral folder (no exclusions). Offline tools and tests only: the Kernel
+    /// uses `cleanup_stale_ephemeral` after readiness. Returns the removed ids.
     pub fn sweep_ephemeral(&self) -> Result<Vec<String>, StoreError> {
-        let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
-        let mut removed = Vec::new();
-        let mut entries =
-            fs::read_dir(self.root.join("threads"))?.collect::<Result<Vec<_>, _>>()?;
-        entries.sort_by_key(fs::DirEntry::file_name);
-        for entry in entries {
-            if !entry.file_type()?.is_dir() {
-                continue;
-            }
-            let thread_id = entry.file_name().to_string_lossy().into_owned();
-            if self.source_has_live_rewrite(&thread_id)? || !folder_is_ephemeral(&entry.path())? {
-                continue;
-            }
-            let tombstone = self.retire_ephemeral_folder(&thread_id, &entry.path())?;
-            Self::remove_tombstone(self.root(), &tombstone)?;
-            removed.push(thread_id);
-        }
-        for entry in fs::read_dir(self.root.join(".rewrite-trash"))? {
-            let entry = entry?;
-            if entry.file_type()?.is_dir()
-                && entry
-                    .file_name()
-                    .to_string_lossy()
-                    .starts_with(DISCARD_TOMBSTONE_PREFIX)
-            {
-                fs::remove_dir_all(entry.path())?;
-                File::open(self.root.join(".rewrite-trash"))?.sync_all()?;
-            }
-        }
-        Ok(removed)
+        Ok(self.cleanup_stale_ephemeral(&|_| false)?.removed)
     }
 
     fn retire_ephemeral_folder(
@@ -578,19 +556,133 @@ impl ThreadStore {
             .root
             .join(".rewrite-trash")
             .join(format!("{DISCARD_TOMBSTONE_PREFIX}{thread_id}"));
-        if tombstone.exists() {
-            fs::remove_dir_all(&tombstone)?;
-        }
-        fs::rename(source, &tombstone)?;
-        File::open(self.root.join("threads"))?.sync_all()?;
-        File::open(self.root.join(".rewrite-trash"))?.sync_all()?;
+        park_stale_tombstone(&self.root, thread_id)?;
+        self.retire_to(thread_id, source, &tombstone)?;
         Ok(tombstone)
     }
 
+    /// Renames `threads/<id>` to `tombstone` (inside `.rewrite-trash`), makes it durable and
+    /// announces the removal. The caller holds `.thread-catalog.lock`.
+    fn retire_to(
+        &self,
+        thread_id: &str,
+        source: &Path,
+        tombstone: &Path,
+    ) -> Result<(), StoreError> {
+        fs::rename(source, tombstone)?;
+        File::open(self.root.join("threads"))?.sync_all()?;
+        File::open(self.root.join(".rewrite-trash"))?.sync_all()?;
+        crate::folder_events::emit(FolderEvent::Removed {
+            root: self.root.clone(),
+            id: thread_id.to_owned(),
+            reason: RemoveReason::Discarded,
+        });
+        Ok(())
+    }
+
     fn remove_tombstone(root: &Path, tombstone: &Path) -> Result<(), StoreError> {
-        fs::remove_dir_all(tombstone)?;
+        remove_tree_if_present(tombstone)?;
         File::open(root.join(".rewrite-trash"))?.sync_all()?;
         Ok(())
+    }
+
+    /// Post-ready cleanup of ephemeral scratch threads left by a previous process
+    /// (ADDENDUM-02 S4, ADDENDUM-03 C7, E831 E3). `excluded` names threads this process owns
+    /// (admitted) and is consulted again under the catalog lock. The scan is unlocked; the
+    /// catalog lock is held only around the eligibility re-check and the rename of one
+    /// candidate to a private tombstone name, and the deletion runs outside every lock, so
+    /// create, archive and search are never blocked for the duration of a delete.
+    pub fn cleanup_stale_ephemeral(
+        &self,
+        excluded: &dyn Fn(&str) -> bool,
+    ) -> Result<CleanupReport, StoreError> {
+        let mut report = CleanupReport::default();
+        let swept = self.cleanup_ephemeral_threads(excluded, &mut report);
+        // Leftover tombstones are cleaned whatever happened to the ephemeral threads.
+        let tombstones = self.cleanup_discard_tombstones();
+        swept?;
+        report.tombstones = tombstones?;
+        Ok(report)
+    }
+
+    fn cleanup_ephemeral_threads(
+        &self,
+        excluded: &dyn Fn(&str) -> bool,
+        report: &mut CleanupReport,
+    ) -> Result<(), StoreError> {
+        let mut entries =
+            fs::read_dir(self.root.join("threads"))?.collect::<Result<Vec<_>, _>>()?;
+        entries.sort_by_key(fs::DirEntry::file_name);
+        for entry in entries {
+            if !entry.file_type()?.is_dir() {
+                continue;
+            }
+            let thread_id = entry.file_name().to_string_lossy().into_owned();
+            if excluded(&thread_id) {
+                continue;
+            }
+            // Unlocked pre-check: only an ephemeral genesis is a candidate.
+            if !folder_is_ephemeral(&entry.path()).unwrap_or(false) {
+                continue;
+            }
+            let private = {
+                let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
+                let source = self.root.join("threads").join(&thread_id);
+                if excluded(&thread_id)
+                    || !source.is_dir()
+                    || self.source_has_live_rewrite(&thread_id)?
+                    || self.destination_has_live_rewrite(&thread_id)?
+                {
+                    continue;
+                }
+                let Ok(lifecycle) = DirectoryLock::try_exclusive(&source) else {
+                    report.busy.push(thread_id);
+                    continue;
+                };
+                if self
+                    .session_has_live_line_holder(&thread_id)
+                    .unwrap_or(true)
+                {
+                    report.busy.push(thread_id);
+                    continue;
+                }
+                let private = self.root.join(".rewrite-trash").join(format!(
+                    "{DISCARD_TOMBSTONE_PREFIX}{thread_id}.deleting-{}-{}",
+                    std::process::id(),
+                    TOMBSTONE_ORDINAL.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+                ));
+                self.retire_to(&thread_id, &source, &private)?;
+                drop(lifecycle);
+                private
+            };
+            Self::remove_tombstone(self.root(), &private)?;
+            // No event here: the thread left `threads/` with the `Discarded` event at the rename,
+            // and a late event would un-admit and forget a thread re-created under the same id
+            // while this tree was still being deleted (O-final m1).
+            report.removed.push(thread_id);
+        }
+        Ok(())
+    }
+
+    /// Deletes leftover `discard-*` tombstones (a crash between retire and delete, or a
+    /// previous cleanup's private name). A tombstone that disappears underneath is success.
+    pub fn cleanup_discard_tombstones(&self) -> Result<u32, StoreError> {
+        let mut removed = 0;
+        for entry in fs::read_dir(self.root.join(".rewrite-trash"))? {
+            let entry = entry?;
+            if entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with(DISCARD_TOMBSTONE_PREFIX)
+            {
+                remove_tree_if_present(&entry.path())?;
+                removed += 1;
+            }
+        }
+        if removed > 0 {
+            File::open(self.root.join(".rewrite-trash"))?.sync_all()?;
+        }
+        Ok(removed)
     }
 
     fn find_by_origin(&self, origin: &OriginTuple) -> Result<Option<String>, StoreError> {
@@ -600,10 +692,10 @@ impl ThreadStore {
                 if !entry.file_type()?.is_dir() {
                     continue;
                 }
-                let bytes = fs::read(entry.path().join("main.jsonl"))?;
-                let Some(line) = bytes.split(|byte| *byte == b'\n').next() else {
-                    continue;
-                };
+                // Only the first line (the genesis) is needed. Reading the whole ledger of every
+                // thread on every create made session creation O(total ledger bytes).
+                let bytes = read_first_line(&entry.path().join("main.jsonl"))?;
+                let line = bytes.as_slice();
                 if line.is_empty() {
                     continue;
                 }
@@ -807,16 +899,148 @@ fn validate_line_ancestry(
 }
 
 const DISCARD_TOMBSTONE_PREFIX: &str = "discard-";
+static TOMBSTONE_ORDINAL: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+/// What `cleanup_stale_ephemeral` did.
+#[derive(Debug, Default, Eq, PartialEq)]
+pub struct CleanupReport {
+    pub removed: Vec<String>,
+    /// Ephemeral folders skipped because a lock or worker still holds them (retried next tick).
+    pub busy: Vec<String>,
+    /// Leftover `discard-*` tombstones deleted.
+    pub tombstones: u32,
+}
+
+/// How long a deleter waits for another deleter that is still removing the same tree.
+const TREE_REMOVAL_WAIT: std::time::Duration = std::time::Duration::from_secs(10);
+
+/// `remove_dir_all` where a path that vanishes underneath (another deleter, E831 E3) is success.
+/// A tree another deleter is still removing (so `ENOTEMPTY` races) is waited for, bounded.
+pub(crate) fn remove_tree_if_present(path: &Path) -> Result<(), StoreError> {
+    let deadline = std::time::Instant::now() + TREE_REMOVAL_WAIT;
+    loop {
+        match fs::remove_dir_all(path) {
+            Ok(()) => return Ok(()),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound || !path.exists() => {
+                return Ok(());
+            }
+            // Only the races of a concurrent deleter are waited for: the directory refills or
+            // empties underneath us (`ENOTEMPTY`, `ENOENT`). Anything else is a real failure.
+            Err(error)
+                if error.raw_os_error() == Some(libc::ENOTEMPTY)
+                    && std::time::Instant::now() < deadline =>
+            {
+                std::thread::sleep(std::time::Duration::from_millis(20));
+            }
+            Err(error) => return Err(error.into()),
+        }
+    }
+}
+
+/// A stale `discard-<id>` tombstone must not make the id unusable, and deleting it must not
+/// happen under the catalog and rewrite locks (a large tombstone would block create, archive
+/// and search for the whole delete, E832 E3). Under the caller's locks it is only renamed to a
+/// private name that no longer ends with the id; the deletion is handed to a background thread
+/// (and, if the process dies first, to the post-ready tombstone cleanup, which removes every
+/// `discard-*`).
+pub(crate) fn park_stale_tombstone(root: &Path, thread_id: &str) -> Result<(), StoreError> {
+    let trash = root.join(".rewrite-trash");
+    let stale = trash.join(format!("{DISCARD_TOMBSTONE_PREFIX}{thread_id}"));
+    if fs::symlink_metadata(&stale).is_err() {
+        return Ok(());
+    }
+    let private = trash.join(format!(
+        "{DISCARD_TOMBSTONE_PREFIX}{thread_id}.deleting-{}-{}",
+        std::process::id(),
+        TOMBSTONE_ORDINAL.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+    ));
+    match fs::rename(&stale, &private) {
+        Ok(()) => {}
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(error) => return Err(error.into()),
+    }
+    let trash_dir = trash.clone();
+    let spawned = std::thread::Builder::new()
+        .name("tombstone-delete".to_owned())
+        .spawn(move || {
+            if remove_tree_if_present(&private).is_ok() {
+                if let Ok(directory) = File::open(&trash_dir) {
+                    let _ = directory.sync_all();
+                }
+            }
+        });
+    // If no thread could be started the private tombstone stays for the cleanup.
+    drop(spawned);
+    Ok(())
+}
+
+/// The only function that moves a thread folder between `threads/` and `archive/`
+/// (ADDENDUM-03 C1): rename, make both parents durable, announce `Moved`. Callers hold the
+/// locks their protocol requires (`.thread-catalog.lock`, the folder lifecycle lock).
+pub fn move_thread_folder(source: &Path, destination: &Path) -> Result<(), StoreError> {
+    fn area(directory: &Path) -> Result<Area, StoreError> {
+        match directory.file_name().and_then(|name| name.to_str()) {
+            Some("threads") => Ok(Area::Threads),
+            Some("archive") => Ok(Area::Archive),
+            _ => Err(StoreError::Corruption(format!(
+                "thread folder move names an unknown area: {}",
+                directory.display()
+            ))),
+        }
+    }
+    let corrupt = |what: &str| StoreError::Corruption(format!("thread folder move: {what}"));
+    let from_parent = source
+        .parent()
+        .ok_or_else(|| corrupt("source has no parent"))?;
+    let to_parent = destination
+        .parent()
+        .ok_or_else(|| corrupt("destination has no parent"))?;
+    let root = from_parent
+        .parent()
+        .ok_or_else(|| corrupt("source has no storage root"))?;
+    if to_parent.parent() != Some(root) {
+        return Err(corrupt("source and destination are under different roots"));
+    }
+    let id = source
+        .file_name()
+        .and_then(|name| name.to_str())
+        .ok_or_else(|| corrupt("source has no name"))?;
+    if destination.file_name().and_then(|name| name.to_str()) != Some(id) {
+        return Err(corrupt("destination renames the thread"));
+    }
+    let (from, to) = (area(from_parent)?, area(to_parent)?);
+    fs::rename(source, destination)?;
+    File::open(from_parent)?.sync_all()?;
+    File::open(to_parent)?.sync_all()?;
+    crate::folder_events::emit(FolderEvent::Moved {
+        root: root.to_path_buf(),
+        id: id.to_owned(),
+        from,
+        to,
+    });
+    Ok(())
+}
+
+/// The bytes before the first LF (or the whole file when it has none), read incrementally. A
+/// file without any LF is bounded by the same cap as `read_genesis` so a corrupt ledger cannot
+/// be pulled into memory by an origin lookup.
+fn read_first_line(path: &Path) -> Result<Vec<u8>, StoreError> {
+    use std::io::{BufRead, Read};
+    let file = File::open(path)?;
+    let mut reader = std::io::BufReader::new(file.take(16 * 1024 * 1024));
+    let mut line = Vec::new();
+    reader.read_until(b'\n', &mut line)?;
+    if line.last() == Some(&b'\n') {
+        line.pop();
+    }
+    Ok(line)
+}
 
 /// Reads the genesis line only; a folder without a decodable genesis is not
 /// ephemeral (the semantic sweep reports corruption separately).
 fn folder_is_ephemeral(folder: &Path) -> Result<bool, StoreError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = crate::scan_valid_prefix(&bytes, 1);
-    Ok(scan
-        .projection
+    Ok(crate::read_genesis(folder.join("main.jsonl"))?
         .as_ref()
-        .and_then(|projection| projection.events.first())
         .is_some_and(Event::is_ephemeral_genesis))
 }
 

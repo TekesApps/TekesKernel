@@ -414,6 +414,13 @@ pub enum HostFailure {
     Protocol(String),
     #[error("endpoint host failed: {0}")]
     Internal(String),
+    /// More than `limit` sessions are attached at once and none can be released
+    /// (`active-session-limit {limit}`).
+    #[error("active session limit reached ({limit})")]
+    ActiveSessionLimit { limit: usize },
+    /// The thread failed verification and is quarantined (`internal {reason:"quarantined"}`).
+    #[error("session is quarantined: {0}")]
+    Quarantined(String),
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

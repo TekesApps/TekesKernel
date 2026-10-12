@@ -73,6 +73,39 @@ pub fn scan_valid_prefix(bytes: &[u8], reader_version: u64) -> TailScan {
     }
 }
 
+/// Largest first line `read_genesis` accepts. A genesis is small (its seed snapshot lives in
+/// content-addressed assets); the bound keeps a corrupt, newline-free file from being read whole.
+const MAX_GENESIS_LINE_BYTES: u64 = 16 * 1024 * 1024;
+
+/// The genesis event of a ledger, reading only its first line.
+///
+/// Equivalent to `scan_valid_prefix(whole file).projection.events.first()` for the genesis:
+/// the first LF-terminated line must decode canonically and be accepted as seq 1 by the ledger
+/// fold. Anything else (empty file, no LF, invalid genesis) is `Ok(None)`. Unlike the scan it
+/// neither reads nor validates later lines, so it costs the same for a 1 MB and a 1 GB ledger.
+pub fn read_genesis(path: impl AsRef<Path>) -> Result<Option<Event>, StoreError> {
+    use std::io::BufRead;
+    let file = File::open(path.as_ref())?;
+    let mut reader = std::io::BufReader::new(file.take(MAX_GENESIS_LINE_BYTES));
+    let mut line = Vec::new();
+    reader.read_until(b'\n', &mut line)?;
+    if line.last() != Some(&b'\n') {
+        return Ok(None);
+    }
+    line.pop();
+    if line.is_empty() {
+        return Ok(None);
+    }
+    let Ok(event) = Event::decode_canonical(&line) else {
+        return Ok(None);
+    };
+    let mut validator = LedgerValidator::new(1);
+    if validator.push(event.clone()).is_err() {
+        return Ok(None);
+    }
+    Ok(Some(event))
+}
+
 /// Decodes the complete canonical lines before the first structural failure.
 fn frame_events(bytes: &[u8]) -> Vec<Event> {
     let mut events = Vec::new();
@@ -510,5 +543,253 @@ mod version_gate_tests {
         drop(ledger);
         let reopened = LockedLedger::open(&path, 1).unwrap();
         assert_eq!(reopened.next_seq(), 4);
+    }
+}
+
+#[cfg(test)]
+mod read_genesis_tests {
+    use super::*;
+    use serde_json::Value;
+
+    fn event(mut value: Value, seq: u64) -> Event {
+        value["v"] = json!(1);
+        value["seq"] = json!(seq);
+        value["ts"] = json!("2026-09-04T00:00:00.000Z");
+        Event::decode_canonical(&serde_json_canonicalizer::to_vec(&value).unwrap()).unwrap()
+    }
+
+    fn genesis() -> Event {
+        event(
+            json!({"kind":"genesis","format":1,"min_reader":1,"min_writer":1,
+            "thread":"018f0000-0000-7000-8000-000000000003","workspace":"ws","resume":"never",
+            "ephemeral":true,"config":{"digest":"cfg"},"origin_key":"create",
+            "origin_tuple":{"principal":"p","client":"c","target":"018f0000-0000-7000-8000-000000000003","op":"create","key":"create"}}),
+            1,
+        )
+    }
+
+    fn line(event: &Event) -> Vec<u8> {
+        let mut bytes = event.canonical_bytes().unwrap();
+        bytes.push(b'\n');
+        bytes
+    }
+
+    fn first_event_by_scan(bytes: &[u8]) -> Option<Event> {
+        scan_valid_prefix(bytes, 1)
+            .projection
+            .and_then(|projection| projection.events.first().cloned())
+    }
+
+    #[test]
+    fn matches_the_full_scan_for_every_shape_of_file() {
+        let good = line(&genesis());
+        let meta = line(&event(json!({"kind":"meta","title":"t"}), 2));
+        let mut cases: Vec<Vec<u8>> = vec![
+            Vec::new(),
+            b"\n".to_vec(),
+            good.clone(),
+            [good.clone(), meta.clone()].concat(),
+            // later corruption must not change the genesis answer
+            [good.clone(), b"{not json}\n".to_vec()].concat(),
+            [good.clone(), b"torn tail without lf".to_vec()].concat(),
+            // genesis without its LF is not part of the valid prefix
+            good[..good.len() - 1].to_vec(),
+            // a non-genesis first event is rejected by the fold
+            meta.clone(),
+            // non-canonical first line
+            b"{ \"v\": 1 }\n".to_vec(),
+        ];
+        cases.push([meta.clone(), good.clone()].concat());
+        for (index, bytes) in cases.iter().enumerate() {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("main.jsonl");
+            std::fs::write(&path, bytes).unwrap();
+            let fast = read_genesis(&path).unwrap();
+            let slow = first_event_by_scan(bytes);
+            assert_eq!(
+                fast.map(|e| e.canonical_bytes().unwrap()),
+                slow.map(|e| e.canonical_bytes().unwrap()),
+                "case {index}"
+            );
+        }
+    }
+
+    #[test]
+    fn missing_file_is_an_io_error_and_reads_only_the_first_line() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(matches!(
+            read_genesis(dir.path().join("absent.jsonl")),
+            Err(StoreError::Io(_))
+        ));
+        // 3 MiB of trailing bytes after the genesis line.
+        let path = dir.path().join("main.jsonl");
+        let mut bytes = line(&genesis());
+        bytes.extend(std::iter::repeat_n(b'x', 3 << 20));
+        std::fs::write(&path, &bytes).unwrap();
+        // (The process-wide decode counters are shared with parallel tests, so the
+        // "only one line decoded" property is asserted by the boot-level counter test.)
+        let genesis = read_genesis(&path).unwrap().unwrap();
+        assert!(genesis.is_ephemeral_genesis());
+    }
+}
+
+/// What `repair_thread_tails` found in one thread folder.
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct TailRepair {
+    /// Bytes of partial (unterminated) tail removed across all lines.
+    pub truncated_bytes: u64,
+    /// Lines whose flock is held; they were not touched (a live holder repairs on its next write).
+    pub busy: Vec<String>,
+    /// `(file, reason)` for lines that cannot be repaired: no valid genesis, or a complete
+    /// invalid record (corruption, never silently discarded).
+    pub corrupt: Vec<(String, String)>,
+}
+
+/// Repairs the torn tail of one ledger file when nobody holds its lock, like `LockedLedger::open`
+/// does under the lock, but refusing to discard a *complete* invalid record. Returns the scan of
+/// the (possibly repaired) bytes; a still-torn result means the line was busy.
+pub fn read_ledger_repaired(path: impl AsRef<Path>) -> Result<(Vec<u8>, TailScan), StoreError> {
+    let path = path.as_ref();
+    let bytes = std::fs::read(path)?;
+    let scan = scan_valid_prefix(&bytes, 1);
+    if !scan.needs_repair() || scan.projection.is_none() {
+        return Ok((bytes, scan));
+    }
+    let suffix = &bytes[usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX)..];
+    if suffix.contains(&b'\n') {
+        return Ok((bytes, scan));
+    }
+    match LockedLedger::open(path, 1) {
+        Ok(locked) => drop(locked),
+        Err(StoreError::Busy) => return Ok((bytes, scan)),
+        Err(error) => return Err(error),
+    }
+    let bytes = std::fs::read(path)?;
+    let scan = scan_valid_prefix(&bytes, 1);
+    Ok((bytes, scan))
+}
+
+/// Brings every `*.jsonl` ledger of a thread folder to a clean tail when its lock is free. A file
+/// that ends with LF is assumed clean (one `pread`); anything else is scanned. Used before
+/// operations that read a whole thread (worker launch, archive, fork, usage) now that boot no
+/// longer repairs every tail.
+pub fn repair_thread_tails(folder: &Path) -> Result<TailRepair, StoreError> {
+    use std::os::unix::fs::FileExt;
+    let mut report = TailRepair::default();
+    for entry in std::fs::read_dir(folder)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if !crate::card::valid_line_name(&name) || !entry.file_type()?.is_file() {
+            continue;
+        }
+        let file = File::open(entry.path())?;
+        let len = file.metadata()?.len();
+        if len == 0 {
+            report.corrupt.push((name, "ledger is empty".to_owned()));
+            continue;
+        }
+        let mut last = [0_u8; 1];
+        file.read_exact_at(&mut last, len - 1)?;
+        if last[0] == b'\n' {
+            continue;
+        }
+        let (bytes, scan) = read_ledger_repaired(entry.path())?;
+        if scan.projection.is_none() {
+            report
+                .corrupt
+                .push((name, "no valid genesis prefix".to_owned()));
+        } else if scan.needs_repair() {
+            let suffix = &bytes[usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX)..];
+            if suffix.contains(&b'\n') {
+                report
+                    .corrupt
+                    .push((name, "complete invalid record".to_owned()));
+            } else {
+                report.busy.push(name);
+            }
+        } else {
+            report.truncated_bytes += len.saturating_sub(bytes.len() as u64);
+        }
+    }
+    Ok(report)
+}
+
+#[cfg(test)]
+mod repair_tests {
+    use super::*;
+    use serde_json::{Value, json};
+
+    fn event(mut value: Value, seq: u64) -> Event {
+        value["v"] = json!(1);
+        value["seq"] = json!(seq);
+        value["ts"] = json!("2026-09-04T00:00:00.000Z");
+        Event::decode_canonical(&serde_json_canonicalizer::to_vec(&value).unwrap()).unwrap()
+    }
+
+    fn ledger(events: u64) -> Vec<u8> {
+        let mut bytes = Vec::new();
+        let genesis = event(
+            json!({"kind":"genesis","format":1,"min_reader":1,"min_writer":1,
+            "thread":"018f0000-0000-7000-8000-000000000003","workspace":"ws","resume":"never",
+            "config":{"digest":"cfg"},"origin_key":"c",
+            "origin_tuple":{"principal":"p","client":"c","target":"018f0000-0000-7000-8000-000000000003","op":"create","key":"c"}}),
+            1,
+        );
+        bytes.extend(genesis.canonical_bytes().unwrap());
+        bytes.push(b'\n');
+        for seq in 2..=events {
+            bytes.extend(
+                event(json!({"kind":"meta","title":"t"}), seq)
+                    .canonical_bytes()
+                    .unwrap(),
+            );
+            bytes.push(b'\n');
+        }
+        bytes
+    }
+
+    #[test]
+    fn partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left() {
+        let dir = tempfile::tempdir().unwrap();
+        let folder = dir.path();
+        let good = ledger(4);
+        // main: partial tail -> repaired
+        let mut torn = good.clone();
+        torn.extend_from_slice(b"{\"partial\":");
+        std::fs::write(folder.join("main.jsonl"), &torn).unwrap();
+        // child a: complete invalid record after the valid prefix -> corrupt, untouched
+        let mut invalid = good.clone();
+        invalid.extend_from_slice(b"not json at all\nmore");
+        let child_a = "018f0000-0000-7000-8000-00000000000a.jsonl";
+        std::fs::write(folder.join(child_a), &invalid).unwrap();
+        // child b: partial tail but locked by a live holder -> busy, untouched
+        let child_b = "018f0000-0000-7000-8000-00000000000b.jsonl";
+        std::fs::write(folder.join(child_b), &torn).unwrap();
+        let holder = LockedLedger::open(folder.join(child_b), 1).unwrap();
+        // the holder repaired it on open; recreate the torn tail behind its back
+        std::fs::write(folder.join(child_b), &torn).unwrap();
+        // child c: clean -> not touched
+        std::fs::write(
+            folder.join("018f0000-0000-7000-8000-00000000000c.jsonl"),
+            &good,
+        )
+        .unwrap();
+
+        let report = repair_thread_tails(folder).unwrap();
+        assert_eq!(std::fs::read(folder.join("main.jsonl")).unwrap(), good);
+        assert_eq!(report.truncated_bytes, (torn.len() - good.len()) as u64);
+        assert_eq!(report.corrupt.len(), 1);
+        assert_eq!(report.corrupt[0].0, child_a);
+        assert_eq!(std::fs::read(folder.join(child_a)).unwrap(), invalid);
+        assert_eq!(report.busy, vec![child_b.to_owned()]);
+        assert_eq!(std::fs::read(folder.join(child_b)).unwrap(), torn);
+        drop(holder);
+        // the read helper repairs a free partial tail and leaves a complete-invalid one alone
+        let (bytes, scan) = read_ledger_repaired(folder.join(child_b)).unwrap();
+        assert_eq!(bytes, good);
+        assert!(!scan.needs_repair());
+        let (bytes, scan) = read_ledger_repaired(folder.join(child_a)).unwrap();
+        assert_eq!(bytes, invalid);
+        assert!(scan.needs_repair());
     }
 }

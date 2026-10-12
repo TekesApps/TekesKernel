@@ -30,6 +30,7 @@ pub struct BuiltInLaunch {
 }
 
 pub async fn run(path: PathBuf) -> Result<()> {
+    crate::boot_trace::start();
     let launch: BuiltInLaunch = serde_json::from_slice(&std::fs::read(path)?)?;
     if launch.format != 1
         || !launch.root.is_absolute()
@@ -80,7 +81,9 @@ pub async fn run(path: PathBuf) -> Result<()> {
         .custom_flags(libc::O_NOFOLLOW)
         .open(storage.join(".root-lock"))?;
     let _lock = host_runtime::ProductionRootLock::acquire(&storage)?;
+    crate::boot_trace::phase("root_lock");
     host_runtime::preflight_storage(&storage)?;
+    crate::boot_trace::phase("preflight_storage");
     let repository = profile::ConfigRepository::open(&launch.root)?;
     let current = repository.providers()?;
     let mut providers = launch.providers;
@@ -117,6 +120,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
             repository.publish_settings(revision, &settings)?;
         }
     }
+    crate::boot_trace::phase("config");
     let user_agent_dir = std::env::var_os("HOME")
         .map(PathBuf::from)
         .ok_or_else(|| io::Error::other("HOME is required for shared user skills"))?
@@ -130,7 +134,9 @@ pub async fn run(path: PathBuf) -> Result<()> {
         secrets,
         None,
     )?;
+    crate::boot_trace::phase("process_host");
     process.preflight_mandatory_authorities()?;
+    crate::boot_trace::phase("preflight_authorities");
     let unary = host_runtime::assemble_application_endpoint_host(
         &launch.root,
         endpoint::SessionHostDescription {
@@ -149,6 +155,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
         &user_agent_dir,
         Arc::clone(&process),
     )?;
+    crate::boot_trace::phase("endpoint_host");
     let listener = tokio::net::TcpListener::bind(launch.listen).await?;
     let address = listener.local_addr()?;
     let web_listener = match launch.web_listen {
@@ -159,12 +166,14 @@ pub async fn run(path: PathBuf) -> Result<()> {
     let assembly =
         ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?
             .with_file_changes(process.clone());
+    crate::boot_trace::phase("carrier_assembled");
     process.attach_streams(assembly.streams().clone());
-    process.defer_existing_session_recovery()?;
-    process.boot_sweep()?;
-    assembly.finish_recovery()?;
+    // Readiness reads no thread (ADDENDUM-01 R1): sessions created, forked or unarchived from
+    // here on are admitted; every other session is deferred until `sessions.recover`.
+    process.arm_admission();
+    assembly.mark_ready();
     process.start_periodic_sweep();
-    process.start_schedule_timer()?;
+    crate::boot_trace::phase("ready_marked");
     host_runtime::install_termination_handler()?;
     let server = assembly.into_server();
     let handle = server.handle();
@@ -182,8 +191,11 @@ pub async fn run(path: PathBuf) -> Result<()> {
     if let Some((_, _, bound)) = &web {
         ready["webUrl"] = format!("http://{bound}/").into();
     }
+    crate::boot_trace::phase("ready");
     println!("{ready}");
     io::stdout().flush()?;
+    // Everything that touches threads starts only now, in the background.
+    process.run_post_ready();
     let serve = server.serve(listener);
     tokio::pin!(serve);
     let web_serve = async move {

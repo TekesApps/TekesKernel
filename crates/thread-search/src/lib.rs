@@ -307,6 +307,31 @@ fn rank(entry: IndexEntry, query: &str) -> Option<SearchResult> {
     })
 }
 
+/// Sessions skipped because their ledger is quarantined (a complete invalid line, no valid
+/// genesis, a folder/genesis identity mismatch): counted, and logged once per session per
+/// process. A damaged thread is excluded from search, never a failure of the query.
+static SKIPPED_SESSIONS: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
+/// How many sessions `thread.search` has skipped as quarantined (every occurrence counts).
+#[must_use]
+pub fn skipped_sessions() -> u64 {
+    SKIPPED_SESSIONS.load(std::sync::atomic::Ordering::Relaxed)
+}
+
+fn note_skipped(session_id: &str, reason: &str) {
+    static LOGGED: std::sync::OnceLock<std::sync::Mutex<HashSet<String>>> =
+        std::sync::OnceLock::new();
+    SKIPPED_SESSIONS.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+    let first = LOGGED
+        .get_or_init(Default::default)
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .insert(session_id.to_owned());
+    if first {
+        eprintln!("search-skip session={session_id} reason={reason}");
+    }
+}
+
 fn scan_sources(root: &Path) -> Result<Vec<IndexEntry>, SearchError> {
     let mut entries = Vec::new();
     let mut identities = HashSet::new();
@@ -324,80 +349,91 @@ fn scan_sources(root: &Path) -> Result<Vec<IndexEntry>, SearchError> {
                     "session {session_id} exists in active and archive catalogs"
                 )));
             }
-            let bytes = fs::read(folder.path().join("main.jsonl"))?;
-            let scan = scan_valid_prefix(&bytes, 1);
-            let valid_len = usize::try_from(scan.valid_bytes)
-                .map_err(|_| SearchError::SourceCorrupt("valid prefix is too large".to_owned()))?;
-            if bytes
-                .get(valid_len..)
-                .is_some_and(|tail| tail.contains(&b'\n'))
-            {
-                return Err(SearchError::SourceCorrupt(format!(
-                    "session {session_id} has an invalid complete ledger line"
-                )));
+            match scan_session(&folder.path(), session_id.clone(), archived) {
+                Ok(entry) => entries.push(entry),
+                Err(SearchError::SourceCorrupt(reason)) => note_skipped(&session_id, &reason),
+                Err(SearchError::Io(error)) if error.kind() == std::io::ErrorKind::NotFound => {
+                    note_skipped(&session_id, "ledger is missing");
+                }
+                Err(error) => return Err(error),
             }
-            let projection = scan.projection.ok_or_else(|| {
-                SearchError::SourceCorrupt(format!(
-                    "session {session_id} has no valid genesis prefix"
-                ))
-            })?;
-            let genesis = projection.events.first().ok_or_else(|| {
-                SearchError::SourceCorrupt(format!("session {session_id} has no genesis"))
-            })?;
-            if !matches!(genesis.kind(), EventKind::Genesis)
-                || genesis.string_field("thread") != Some(session_id.as_str())
-            {
-                return Err(SearchError::SourceCorrupt(format!(
-                    "session {session_id} folder/genesis identity mismatch"
-                )));
-            }
-            let workspace_id = genesis
-                .string_field("workspace")
-                .ok_or_else(|| {
-                    SearchError::SourceCorrupt(format!(
-                        "session {session_id} genesis lacks workspace"
-                    ))
-                })?
-                .to_owned();
-            if !valid_workspace_id(&workspace_id) {
-                return Err(SearchError::SourceCorrupt(format!(
-                    "session {session_id} has an invalid workspace identity"
-                )));
-            }
-            let superseded = superseded_sequences(&projection.events)?;
-            let title = projection
-                .events
-                .iter()
-                .rev()
-                .find(|event| {
-                    matches!(event.kind(), EventKind::Meta)
-                        && event.string_field("title").is_some()
-                        && !superseded.contains(&event.seq())
-                })
-                .and_then(|event| event.string_field("title"))
-                .map(str::to_owned);
-            let updated_at = projection
-                .events
-                .last()
-                .and_then(|event| event.string_field("ts"))
-                .ok_or_else(|| {
-                    SearchError::SourceCorrupt(format!("session {session_id} tail lacks timestamp"))
-                })?
-                .to_owned();
-            entries.push(IndexEntry {
-                session_id,
-                workspace_id,
-                normalized_title: title.as_deref().map(normalize),
-                title,
-                updated_at,
-                archived,
-                as_of_seq: projection.last_seq,
-                folder: folder.path(),
-            });
         }
     }
     entries.sort_by(|left, right| left.session_id.as_bytes().cmp(right.session_id.as_bytes()));
     Ok(entries)
+}
+
+fn scan_session(
+    folder: &Path,
+    session_id: String,
+    archived: bool,
+) -> Result<IndexEntry, SearchError> {
+    let bytes = fs::read(folder.join("main.jsonl"))?;
+    let scan = scan_valid_prefix(&bytes, 1);
+    let valid_len = usize::try_from(scan.valid_bytes)
+        .map_err(|_| SearchError::SourceCorrupt("valid prefix is too large".to_owned()))?;
+    if bytes
+        .get(valid_len..)
+        .is_some_and(|tail| tail.contains(&b'\n'))
+    {
+        return Err(SearchError::SourceCorrupt(format!(
+            "session {session_id} has an invalid complete ledger line"
+        )));
+    }
+    let projection = scan.projection.ok_or_else(|| {
+        SearchError::SourceCorrupt(format!("session {session_id} has no valid genesis prefix"))
+    })?;
+    let genesis = projection.events.first().ok_or_else(|| {
+        SearchError::SourceCorrupt(format!("session {session_id} has no genesis"))
+    })?;
+    if !matches!(genesis.kind(), EventKind::Genesis)
+        || genesis.string_field("thread") != Some(session_id.as_str())
+    {
+        return Err(SearchError::SourceCorrupt(format!(
+            "session {session_id} folder/genesis identity mismatch"
+        )));
+    }
+    let workspace_id = genesis
+        .string_field("workspace")
+        .ok_or_else(|| {
+            SearchError::SourceCorrupt(format!("session {session_id} genesis lacks workspace"))
+        })?
+        .to_owned();
+    if !valid_workspace_id(&workspace_id) {
+        return Err(SearchError::SourceCorrupt(format!(
+            "session {session_id} has an invalid workspace identity"
+        )));
+    }
+    let superseded = superseded_sequences(&projection.events)?;
+    let title = projection
+        .events
+        .iter()
+        .rev()
+        .find(|event| {
+            matches!(event.kind(), EventKind::Meta)
+                && event.string_field("title").is_some()
+                && !superseded.contains(&event.seq())
+        })
+        .and_then(|event| event.string_field("title"))
+        .map(str::to_owned);
+    let updated_at = projection
+        .events
+        .last()
+        .and_then(|event| event.string_field("ts"))
+        .ok_or_else(|| {
+            SearchError::SourceCorrupt(format!("session {session_id} tail lacks timestamp"))
+        })?
+        .to_owned();
+    Ok(IndexEntry {
+        session_id,
+        workspace_id,
+        normalized_title: title.as_deref().map(normalize),
+        title,
+        updated_at,
+        archived,
+        as_of_seq: projection.last_seq,
+        folder: folder.to_path_buf(),
+    })
 }
 
 fn superseded_sequences(events: &[schema::Event]) -> Result<BTreeSet<u64>, SearchError> {
