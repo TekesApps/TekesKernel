@@ -23,6 +23,24 @@ Proposed version: 0.4.1 (patch; no ledger or wire format change).
   `task`, a ledger already in the broken state, and an adjacency assertion in
   `production_task_creates_launches_waits_and_pairs_child_once`.
 
+### Behaviour note
+- The parent model no longer sees the host-resolved inputs (`resolved_inputs`) or any
+  hook-rewritten effective invocation of a spawned `subagent`/`task` call, because the
+  delegation record is no longer rendered in the parent's context. It keeps its own call
+  arguments and the `child_result`. The child still receives its assignment, including the
+  resolved inputs and the effective invocation, from its seed snapshot.
+
+### Known issues
+- If the user steers a queued message (the composer's Steer, or auto-steer) while a `subagent`
+  or `task` runs, that turn can fail with the same `No tool output found for tool call <id>`
+  400, because the steer input is rendered between the spawning call and its `child_result`.
+  The thread recovers on the next turn, but the steer text is dropped from the model's context.
+  This predates 0.4.1 (a separate cause from the delegation record) and is tracked for 0.4.2.
+- The worker test `permission_mode_file_change_applies_to_the_next_tool_batch` depends on how the
+  test binary is built: it fails under `cargo test -p tekes-worker` ("fixed tool is not
+  available in this launch profile: shell"), also on v0.4.0, and passes in the
+  `cargo test --workspace` run.
+
 ## 0.4.0 — 2026-10-12
 
 ### Changed
