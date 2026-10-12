@@ -6,7 +6,7 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-Proposed version: 0.4.1 (patch; no ledger or wire format change).
+## 0.4.1 — 2026-10-13
 
 ### Fixed
 - **A completed `subagent`/`task` child no longer breaks the parent's next provider request.**
