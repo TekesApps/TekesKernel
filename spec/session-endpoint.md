@@ -130,7 +130,11 @@ Opening `session-journal` is follow-first:
    empty journal).
 3. Read a message-aligned latest window frozen at that cut.
 4. Emit `snapshot` containing `sessionId`, `generation`, `throughSequence`,
-   `windowLimit`, `entries`, `hasMoreBefore`, and projections.
+   `windowLimit`, `entries`, `hasMoreBefore`, and projections. The snapshot
+   `projections` carry the thread's current `contextUsage` and `contextDetails`
+   values; their `asOfSeq` is never greater than `throughSequence` (a client
+   rejects a projection beyond the frozen cut). A projection frame published
+   after the cut has a sequence beyond it and is applied normally.
 5. Emit later durable `event` frames strictly from `throughSequence + 1`.
    Provider output may additionally arrive as unsequenced `transient`
    frames after the baseline; these are process-local presentation data and do
@@ -563,6 +567,43 @@ Expanding a workspace yields stable ids, name/title, `updatedAt`, archived,
 running/parked metadata, and projections sufficient for selection. Transcript
 history is loaded only after session selection.
 
+### Thread cards and lazy verification
+
+Each active thread folder may hold `thread-card.json`, a derived summary of the
+thread's verified ledger prefix: the inventory row facts (workspace, title,
+`updatedAt`, `blank`, identity profile, ephemeral flag), the lifecycle facts of
+every ledger line and its request holds (resolved or not), and the identity of
+the bytes it describes (length, first and last record hashes, sampled windows;
+never an inode or a modification time) and of the endpoint journal at card
+time. The card is canonical JSON with a body hash and is published atomically.
+It is never authority: a card that is missing, damaged, older or newer than the
+ledger is ignored or treated as describing a prefix, deleting every card is
+always safe, and an older Kernel ignores the file. A card is *Fresh* when its
+identity matches the ledger exactly, *Ahead* when the ledger has grown past it,
+and *Cold* otherwise (no card, damaged, or not matching).
+
+The inventory, workspace, control and actionables baselines are built from
+cards, persisted context projections and the request holds of cards, not from
+folding ledgers. A thread that is not Fresh is verified (folded once, a torn
+tail repaired when no line lock is held, its journal projected) on demand: a
+baseline waits at most two seconds for the verifications it needs and lists
+the rest as placeholder rows (genesis workspace, ephemeral flag and identity
+profile, no title, `blank` from the genesis, `updatedAt` from the file time,
+tail `settled`), each followed by an inventory upsert when its verification
+finishes. A thread that fails verification is left alone for 30 seconds by
+baselines; an open, a respond or a worker spawn verifies it at once. Opening a
+`session-journal` stream, answering a request and spawning a worker verify
+their thread first.
+
+A ledger with no valid genesis, or with a complete (LF-terminated) record that
+does not validate, in the main or any child line is *quarantined*: its
+inventory row stays, but opening its journal fails with a stream error
+`internal / stream-open-failed` whose details are `{"reason":"quarantined"}`,
+a respond or worker spawn for it fails, it is excluded from `thread.search`,
+and its ledger is never rewritten. A torn tail (no complete record after the
+valid prefix) is not damage: the valid prefix is the ledger and the next
+locked append repairs the tail.
+
 `session.models` is session-scoped and independently ready. Catalog failure is
 a typed failure/failure entry and cannot erase or downgrade transcript
 readiness. The endpoint advertises only provider/model/control capabilities it
@@ -658,8 +699,12 @@ a remotely reachable listener.
 - Typed response to a server request: `POST /api/respond`.
 - Liveness: `GET /health/live` returns no inventory or readiness claim.
 - Readiness: `GET /health/ready` succeeds only after storage preflight,
-  supervisor ownership, config load, endpoint-journal validation, and protocol
-  registration complete.
+  supervisor ownership, config load, pending operation recovery and protocol
+  registration complete. Readiness does not read any thread: no ledger or
+  endpoint journal is validated before it (§Thread cards and lazy
+  verification). The named exceptions are the work of a pending durable
+  record: an incomplete management operation, a pending rewrite, or a
+  workspace metadata mismatch, which may read the threads that record names.
 
 Health routes are the only unauthenticated paths and expose no inventory.
 Every `/api/*` HTTP request and WebSocket upgrade requires
@@ -1341,6 +1386,7 @@ defined above is the sole exception. Every later phase is published only
 probing the exact target bytes/identity recorded at `prepared`, then advancing
 without repeating a non-idempotent effect. On boot, readiness stays false
 while records not at `complete` are resumed under the management lock.
+After readiness the same recovery is retried every 30 seconds, taking the management lock per record (not for the pass) so a stuck record never blocks baselines.
 Recovery never rolls a committed semantic/config/folder effect backward.
 Unknown fields/version, a phase inconsistent with durable state, or two
 records claiming the same rpcId fail-stop.
@@ -1469,18 +1515,16 @@ tool cwd use that selected path;
 instruction capture still freezes all folders. Recovery rejects a snapshot
 whose selected path no longer corresponds to the recorded stable binding.
 
-The endpoint has a fixed maximum of 256 active native sessions. Session create
-and unarchive reserve one slot under the management lock before folder
-publication; when no slot exists they return `active-session-limit {limit:256}`
-without changing durable state. Archive releases its slot only after the
-archive rename and inventory phase are durable. This matches the transport's
-256-subscription-per-socket bound and makes all-session mux registration
-atomic: the endpoint never truncates or silently omits an active session.
-Boot, manual folder restore, and operation recovery apply the same cap before
-readiness: discovering more than 256 active folders keeps readiness false with
-`active-session-limit {limit:256}`. No mux upgrade or partial attachment is
-permitted until an operator archives/removes enough folders through an offline
-repair path.
+The endpoint has a fixed maximum of 256 active native sessions for creation.
+Session create, fork and unarchive reserve one slot under the management lock
+before folder publication; when no slot exists they return
+`active-session-limit {limit:256}` without changing durable state. Archive
+releases its slot only after the archive rename and inventory phase are
+durable. Boot, manual folder restore, operation recovery and every inventory
+baseline never fail on the number of active folders: inventory, workspace,
+control and actionables baselines include every active session at any count.
+Only slot reservation (create, fork, unarchive) and live-event registration
+(§All-session stream lifecycle) are bounded by 256.
 
 `session.fork.atSeq` is an **endpoint seq**, not a Kernel seq. When absent it
 means the last complete endpoint projection group when no turn is open, and
@@ -1908,14 +1952,23 @@ content digest exists globally.
 
 ### All-session stream lifecycle
 
-Opening `events.mux` atomically attaches all currently active endpoint
-sessions in ascending sessionId order. Each attachment emits
-`session/subscribed` before any later event and replays unresolved approval or
-question requests with their stable rpcIds. A newly created or unarchived
-session is attached and subscribed before its first session frame. Archive
-removes the attachment after all earlier durable frames; no later session
-frame may follow for that generation. A subsequent unarchive is a fresh
-attachment, not continuation of the retired Client projection.
+Opening `events.mux` attaches no session: a generation starts empty, so opening
+it reads no thread. A session is attached to every open generation that lacks
+it (1) when it is created, forked or unarchived, and (2) the first time a
+control, queue, jobs, projection, approval or question frame is published for
+it; registration always precedes the publication that triggered it. Each
+attachment emits `session/subscribed` (its baseline cut is the endpoint journal
+tail at registration) before any later frame of that session and then replays
+the session's unresolved approval or question requests with their stable
+rpcIds. Durable `session/event` frames are not an attachment trigger: a
+Client that needs a session's transcript opens `session-journal` for it, which
+has its own atomic baseline. Archive removes the attachment after all earlier
+durable frames; no later session frame may follow for that generation. A
+subsequent unarchive is a fresh attachment, not continuation of the retired
+Client projection. A session with no live worker, no pending request and no
+open `session-journal` stream may be released from a generation to make room
+(least recently touched first) and is attached again, with a fresh
+`session/subscribed`, the next time something is published for it.
 
 `session/projection` is a non-seq push frame, but its required payload `seq` is
 the durable endpoint seq of the causal row from which that value was derived
@@ -1925,9 +1978,13 @@ named row is durable. Reconnect may replay the latest value after
 `session/subscribed`; equal `(name,seq,value)` is idempotent and a lower seq is
 ignored. A value ahead of subscribed `lastSeq` is a protocol error/live-gap.
 
-Because active session publication is capped at 256, one mux connection always
-has capacity for the complete active set. Failure to reserve the complete set
-before the snapshot rejects the upgrade; partial attachment is forbidden.
+At most 256 sessions are attached at once per generation. Attaching a session
+when 256 others are pinned (a live worker, a pending request or an open
+`session-journal` stream) fails with `active-session-limit {limit:256}`: as a
+stream error `conflict / active-session-limit` on the `session-journal` open,
+and as an internal error on a frame publication. The endpoint never truncates
+or silently omits a session from inventory; only live-event registration is
+bounded.
 
 `events.host` reports inventory invalidation. Creation/unarchive emits
 `host/session-added`; archive emits `host/session-removed` and

@@ -46,27 +46,11 @@ struct LiveKernelTransportClientTests {
       maxMessages: 50)
     #expect(history.events.isEmpty)
 
+    // An all-session stream starts empty: it attaches a session when the session is created or
+    // unarchived while the stream is open, or the first time a frame is published for it. This
+    // stream was opened after the session was created and the session is untouched, so the
+    // prompt below is the first publication and attaches it.
     var mux = endpoint.muxFrames().makeAsyncIterator()
-    let subscribedEnvelope = try #require(try await mux.next())
-    #expect(subscribedEnvelope.method == "session/subscribed")
-    let subscribed: SessionSubscribedFrame = try subscribedEnvelope.decodedPayload()
-    #expect(subscribed.sessionId == session.sessionId)
-    #expect(subscribed.lastSeq == -1)
-
-    let registrationBarrier = try #require(try await mux.next())
-    #expect(registrationBarrier.method == "session/queue")
-    let eventEnvelope = try #require(try await mux.next())
-    #expect(eventEnvelope.method == "session/event")
-    let live: SessionEventFrame = try eventEnvelope.decodedPayload()
-    #expect(live.sessionId == session.sessionId)
-    #expect(live.event.seq == 0)
-
-    let historyAfterLive = try await endpoint.history(
-      sessionId: session.sessionId,
-      beforeSeq: nil,
-      maxMessages: 50)
-    #expect(historyAfterLive.events.map(\.event.seq) == [0])
-
     let prompt = try await endpoint.prompt(
       rpcId: "live-client-prompt",
       sessionId: session.sessionId,
@@ -74,6 +58,11 @@ struct LiveKernelTransportClientTests {
       content: [.object(["type": .string("text"), "text": .string("hello")])],
       clientTimeZone: "Asia/Shanghai")
     #expect(prompt.rpcId == "live-client-prompt")
+
+    let subscribedEnvelope = try #require(try await mux.next())
+    #expect(subscribedEnvelope.method == "session/subscribed")
+    let subscribed: SessionSubscribedFrame = try subscribedEnvelope.decodedPayload()
+    #expect(subscribed.sessionId == session.sessionId)
 
     let renamed = try await endpoint.renameSession(
       sessionId: session.sessionId,
