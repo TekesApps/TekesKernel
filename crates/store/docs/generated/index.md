@@ -25,12 +25,16 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/store/src/asset.rs](../../src/asset.rs) | 13 | 100 | [Symbols and calls](src--asset.md) |
 | [crates/store/src/atomic.rs](../../src/atomic.rs) | 4 | 29 | [Symbols and calls](src--atomic.md) |
-| [crates/store/src/folder.rs](../../src/folder.rs) | 35 | 633 | [Symbols and calls](src--folder.md) |
+| [crates/store/src/card/tests.rs](../../src/card/tests.rs) | 20 | 252 | [Symbols and calls](src--card--tests.md) |
+| [crates/store/src/card.rs](../../src/card.rs) | 49 | 275 | [Symbols and calls](src--card.md) |
+| [crates/store/src/folder.rs](../../src/folder.rs) | 47 | 739 | [Symbols and calls](src--folder.md) |
+| [crates/store/src/folder_events/tests.rs](../../src/folder_events/tests.rs) | 12 | 163 | [Symbols and calls](src--folder_events--tests.md) |
+| [crates/store/src/folder_events.rs](../../src/folder_events.rs) | 19 | 73 | [Symbols and calls](src--folder_events.md) |
 | [crates/store/src/lib.rs](../../src/lib.rs) | 3 | 7 | [Symbols and calls](src--lib.md) |
 | [crates/store/src/management_root.rs](../../src/management_root.rs) | 9 | 50 | [Symbols and calls](src--management_root.md) |
-| [crates/store/src/platform.rs](../../src/platform.rs) | 34 | 137 | [Symbols and calls](src--platform.md) |
-| [crates/store/src/rewrite.rs](../../src/rewrite.rs) | 87 | 1692 | [Symbols and calls](src--rewrite.md) |
-| [crates/store/src/tail.rs](../../src/tail.rs) | 27 | 187 | [Symbols and calls](src--tail.md) |
+| [crates/store/src/platform.rs](../../src/platform.rs) | 37 | 152 | [Symbols and calls](src--platform.md) |
+| [crates/store/src/rewrite.rs](../../src/rewrite.rs) | 91 | 1797 | [Symbols and calls](src--rewrite.md) |
+| [crates/store/src/tail.rs](../../src/tail.rs) | 41 | 349 | [Symbols and calls](src--tail.md) |
 
 ## Cross-file direct calls
 
@@ -40,20 +44,28 @@ Source files stand in for out-of-line modules; see declarations for inline modul
 flowchart LR
   m0["asset.rs"]
   m1["atomic.rs"]
-  m2["folder.rs"]
-  m3["lib.rs"]
-  m4["management_root.rs"]
-  m5["platform.rs"]
-  m6["rewrite.rs"]
-  m7["tail.rs"]
-  m2 -->|"1"| m0
-  m2 -->|"13"| m5
-  m2 -->|"9"| m7
-  m6 -->|"3"| m0
-  m6 -->|"1"| m1
-  m6 -->|"1"| m4
-  m6 -->|"11"| m5
-  m6 -->|"2"| m7
-  m7 -->|"1"| m3
-  m7 -->|"2"| m5
+  m2["card.rs"]
+  m3["folder.rs"]
+  m4["folder_events.rs"]
+  m5["lib.rs"]
+  m6["management_root.rs"]
+  m7["platform.rs"]
+  m8["rewrite.rs"]
+  m9["tail.rs"]
+  m2 -->|"1"| m7
+  m3 -->|"1"| m0
+  m3 -->|"1"| m2
+  m3 -->|"5"| m4
+  m3 -->|"14"| m7
+  m3 -->|"9"| m9
+  m8 -->|"3"| m0
+  m8 -->|"1"| m1
+  m8 -->|"1"| m3
+  m8 -->|"2"| m4
+  m8 -->|"1"| m6
+  m8 -->|"11"| m7
+  m8 -->|"2"| m9
+  m9 -->|"1"| m2
+  m9 -->|"1"| m5
+  m9 -->|"2"| m7
 ```

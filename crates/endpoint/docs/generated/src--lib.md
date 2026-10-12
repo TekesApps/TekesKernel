@@ -98,7 +98,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `JOURNAL_FILE` | `journal::JOURNAL_FILE` | `pub` |
 | `JournalError` | `journal::JournalError` | `pub` |
 | `JournalRecord` | `journal::JournalRecord` | `pub` |
+| `JournalTail` | `journal::JournalTail` | `pub` |
 | `LOCK_FILE` | `journal::LOCK_FILE` | `pub` |
+| `CompleteOperations` | `management::CompleteOperations` | `pub` |
+| `ForkLineage` | `management::ForkLineage` | `pub` |
 | `ForkSessionOperation` | `management::ForkSessionOperation` | `pub` |
 | `LEGACY_ORIGIN_CLIENT` | `management::LEGACY_ORIGIN_CLIENT` | `pub` |
 | `ManagementError` | `management::ManagementError` | `pub` |
@@ -186,6 +189,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SessionNotice` | `service::SessionNotice` | `pub` |
 | `SessionNoticeSeverity` | `service::SessionNoticeSeverity` | `pub` |
 | `UnarchiveResult` | `service::UnarchiveResult` | `pub` |
+| `card_summary` | `service::card_summary` | `pub` |
+| `card_updated_ms` | `service::card_updated_ms` | `pub` |
+| `permission_mode_of` | `service::permission_mode_of` | `pub` |
 | `StitchDecision` | `stitch::StitchDecision` | `pub` |
 | `StitchError` | `stitch::StitchError` | `pub` |
 | `stitch_window` | `stitch::stitch_window` | `pub` |

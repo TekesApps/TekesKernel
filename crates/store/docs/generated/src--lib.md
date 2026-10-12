@@ -8,9 +8,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [store::BarrierContext](../../src/lib.rs#L32) | struct_item | `pub` |  |
-| [store::requires_barrier](../../src/lib.rs#L37) | function_item | `pub` |  |
-| [store::StoreError](../../src/lib.rs#L72) | enum_item | `pub` |  |
+| [store::BarrierContext](../../src/lib.rs#L40) | struct_item | `pub` |  |
+| [store::requires_barrier](../../src/lib.rs#L45) | function_item | `pub` |  |
+| [store::StoreError](../../src/lib.rs#L80) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -20,9 +20,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `AssetStore` | `asset::AssetStore` | `pub` |
 | `AtomicPublisher` | `atomic::AtomicPublisher` | `pub` |
 | `AppendOutcome` | `folder::AppendOutcome` | `pub` |
+| `CleanupReport` | `folder::CleanupReport` | `pub` |
 | `ConditionalAppendOutcome` | `folder::ConditionalAppendOutcome` | `pub` |
 | `CreateOutcome` | `folder::CreateOutcome` | `pub` |
 | `ThreadStore` | `folder::ThreadStore` | `pub` |
+| `move_thread_folder` | `folder::move_thread_folder` | `pub` |
 | `ENDPOINT_MANAGEMENT_DIR` | `management_root::ENDPOINT_MANAGEMENT_DIR` | `pub` |
 | `SESSION_SETTINGS_FILE` | `management_root::SESSION_SETTINGS_FILE` | `pub` |
 | `endpoint_management_root` | `management_root::endpoint_management_root` | `pub` |
@@ -44,7 +46,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `RewritePhase` | `rewrite::RewritePhase` | `pub` |
 | `RewriteProgress` | `rewrite::RewriteProgress` | `pub` |
 | `LockedLedger` | `tail::LockedLedger` | `pub` |
+| `TailRepair` | `tail::TailRepair` | `pub` |
 | `TailScan` | `tail::TailScan` | `pub` |
+| `read_genesis` | `tail::read_genesis` | `pub` |
+| `read_ledger_repaired` | `tail::read_ledger_repaired` | `pub` |
+| `repair_thread_tails` | `tail::repair_thread_tails` | `pub` |
 | `scan_valid_prefix` | `tail::scan_valid_prefix` | `pub` |
 | `io` | `std::io` | `private` |
 | `Error` | `thiserror::Error` | `private` |
@@ -55,7 +61,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 |---|---|---|
 | `store::asset` | `private` |  |
 | `store::atomic` | `private` |  |
+| `store::card` | `pub` |  |
 | `store::folder` | `private` |  |
+| `store::folder_events` | `pub` |  |
 | `store::management_root` | `private` |  |
 | `store::platform` | `private` |  |
 | `store::rewrite` | `private` |  |
@@ -80,7 +88,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `requires_barrier` | `event.kind` | [40](../../src/lib.rs#L40) | receiver-type-required |
-| `requires_barrier` | `event.has_field` | [56](../../src/lib.rs#L56), [58](../../src/lib.rs#L58) | receiver-type-required |
-| `requires_barrier` | `event.origin_key().is_some` | [57](../../src/lib.rs#L57), [58](../../src/lib.rs#L58) | receiver-type-required |
-| `requires_barrier` | `event.origin_key` | [57](../../src/lib.rs#L57), [58](../../src/lib.rs#L58) | receiver-type-required |
+| `requires_barrier` | `event.kind` | [48](../../src/lib.rs#L48) | receiver-type-required |
+| `requires_barrier` | `event.has_field` | [64](../../src/lib.rs#L64), [66](../../src/lib.rs#L66) | receiver-type-required |
+| `requires_barrier` | `event.origin_key().is_some` | [65](../../src/lib.rs#L65), [66](../../src/lib.rs#L66) | receiver-type-required |
+| `requires_barrier` | `event.origin_key` | [65](../../src/lib.rs#L65), [66](../../src/lib.rs#L66) | receiver-type-required |

@@ -63,18 +63,18 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [endpoint::host::EndpointCarrierHost::journal_page](../../src/host.rs#L385) | function_item | `private` |  |
 | [endpoint::host::EndpointCarrierHost::mux_respond_actionable](../../src/host.rs#L394) | function_item | `private` |  |
 | [endpoint::host::HostFailure](../../src/host.rs#L406) | enum_item | `pub` |  |
-| [endpoint::host::SessionHostDescription](../../src/host.rs#L421) | struct_item | `pub` |  |
-| [endpoint::host::EndpointDispatcher](../../src/host.rs#L437) | struct_item | `pub` |  |
-| [endpoint::host::EndpointDispatcher::new](../../src/host.rs#L444) | function_item | `pub` |  |
-| [endpoint::host::EndpointDispatcher::dispatch](../../src/host.rs#L451) | function_item | `pub` |  |
-| [endpoint::host::EndpointDispatcher::dispatch_with_handoff](../../src/host.rs#L460) | function_item | `pub` |  |
-| [endpoint::host::EndpointDispatcher::registry](../../src/host.rs#L583) | function_item | `pub` |  |
-| [endpoint::host::InFlightGuard](../../src/host.rs#L588) | struct_item | `private` |  |
-| [endpoint::host::InFlightGuard::drop](../../src/host.rs#L594) | function_item | `private` |  |
-| [endpoint::host::response](../../src/host.rs#L601) | function_item | `private` |  |
-| [endpoint::host::typed_error](../../src/host.rs#L609) | function_item | `private` |  |
-| [endpoint::host::json_string](../../src/host.rs#L625) | function_item | `private` |  |
-| [endpoint::host::EndpointDispatchError](../../src/host.rs#L630) | enum_item | `pub` |  |
+| [endpoint::host::SessionHostDescription](../../src/host.rs#L428) | struct_item | `pub` |  |
+| [endpoint::host::EndpointDispatcher](../../src/host.rs#L444) | struct_item | `pub` |  |
+| [endpoint::host::EndpointDispatcher::new](../../src/host.rs#L451) | function_item | `pub` |  |
+| [endpoint::host::EndpointDispatcher::dispatch](../../src/host.rs#L458) | function_item | `pub` |  |
+| [endpoint::host::EndpointDispatcher::dispatch_with_handoff](../../src/host.rs#L467) | function_item | `pub` |  |
+| [endpoint::host::EndpointDispatcher::registry](../../src/host.rs#L590) | function_item | `pub` |  |
+| [endpoint::host::InFlightGuard](../../src/host.rs#L595) | struct_item | `private` |  |
+| [endpoint::host::InFlightGuard::drop](../../src/host.rs#L601) | function_item | `private` |  |
+| [endpoint::host::response](../../src/host.rs#L608) | function_item | `private` |  |
+| [endpoint::host::typed_error](../../src/host.rs#L616) | function_item | `private` |  |
+| [endpoint::host::json_string](../../src/host.rs#L632) | function_item | `private` |  |
+| [endpoint::host::EndpointDispatchError](../../src/host.rs#L637) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -229,44 +229,44 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `mux_respond_actionable` | `Err` | [399](../../src/host.rs#L399) | external-constructor-callback-or-unresolved |
 | `mux_respond_actionable` | `HostFailure::Protocol` | [399](../../src/host.rs#L399) | external-constructor-callback-or-unresolved |
 | `mux_respond_actionable` | `"Session Endpoint V3 actionable response is unavailable".to_owned` | [400](../../src/host.rs#L400) | receiver-type-required |
-| `new` | `Mutex::new` | [447](../../src/host.rs#L447) | external-constructor-callback-or-unresolved |
-| `new` | `HashSet::new` | [447](../../src/host.rs#L447) | external-constructor-callback-or-unresolved |
-| `dispatch` | `self.dispatch_with_handoff` | [456](../../src/host.rs#L456) | [endpoint::host::EndpointDispatcher::dispatch_with_handoff](../../src/host.rs#L460) |
-| `dispatch` | `DurableHandoffSignal::new` | [456](../../src/host.rs#L456) | [endpoint::host::DurableHandoffSignal::new](../../src/host.rs#L202) |
-| `dispatch_with_handoff` | `request.rpc_id.clone` | [466](../../src/host.rs#L466) | receiver-type-required |
-| `dispatch_with_handoff` | `Err` | [468](../../src/host.rs#L468), [527](../../src/host.rs#L527), [573](../../src/host.rs#L573) | external-constructor-callback-or-unresolved |
-| `dispatch_with_handoff` | `EndpointDispatchError::Request` | [468](../../src/host.rs#L468) | external-constructor-callback-or-unresolved |
-| `dispatch_with_handoff` | `host.capabilities().contains` | [470](../../src/host.rs#L470) | receiver-type-required |
-| `dispatch_with_handoff` | `host.capabilities` | [470](../../src/host.rs#L470) | receiver-type-required |
-| `dispatch_with_handoff` | `typed_error` | [471](../../src/host.rs#L471), [487](../../src/host.rs#L487), [516](../../src/host.rs#L516), [545](../../src/host.rs#L545) | [endpoint::host::typed_error](../../src/host.rs#L609) |
-| `dispatch_with_handoff` | `Ok` | [476](../../src/host.rs#L476), [485](../../src/host.rs#L485), [508](../../src/host.rs#L508), [514](../../src/host.rs#L514), [534](../../src/host.rs#L534), [543](../../src/host.rs#L543), [579](../../src/host.rs#L579) | external-constructor-callback-or-unresolved |
-| `dispatch_with_handoff` | `response` | [476](../../src/host.rs#L476), [485](../../src/host.rs#L485), [508](../../src/host.rs#L508), [514](../../src/host.rs#L514), [534](../../src/host.rs#L534), [543](../../src/host.rs#L543), [579](../../src/host.rs#L579) | [endpoint::host::response](../../src/host.rs#L601) |
-| `dispatch_with_handoff` | `host.method_class` | [478](../../src/host.rs#L478) | receiver-type-required |
-| `dispatch_with_handoff` | `self                     .in_flight                     .lock()                     .map_err` | [480](../../src/host.rs#L480) | receiver-type-required |
-| `dispatch_with_handoff` | `self                     .in_flight                     .lock` | [480](../../src/host.rs#L480) | receiver-type-required |
-| `dispatch_with_handoff` | `in_flight.insert` | [484](../../src/host.rs#L484), [542](../../src/host.rs#L542) | receiver-type-required |
-| `dispatch_with_handoff` | `rpc_id.clone` | [484](../../src/host.rs#L484), [497](../../src/host.rs#L497), [515](../../src/host.rs#L515), [542](../../src/host.rs#L542), [555](../../src/host.rs#L555) | receiver-type-required |
-| `dispatch_with_handoff` | `"{}".to_owned` | [490](../../src/host.rs#L490), [548](../../src/host.rs#L548) | receiver-type-required |
-| `dispatch_with_handoff` | `host                 .call` | [499](../../src/host.rs#L499) | receiver-type-required |
-| `dispatch_with_handoff` | `self.registry.begin` | [510](../../src/host.rs#L510) | receiver-type-required |
-| `dispatch_with_handoff` | `request.method.clone` | [513](../../src/host.rs#L513) | receiver-type-required |
-| `dispatch_with_handoff` | `error.into` | [527](../../src/host.rs#L527) | receiver-type-required |
-| `dispatch_with_handoff` | `handoff.mark_durable` | [533](../../src/host.rs#L533), [578](../../src/host.rs#L578) | receiver-type-required |
-| `dispatch_with_handoff` | `self                 .in_flight                 .lock()                 .map_err` | [538](../../src/host.rs#L538) | receiver-type-required |
-| `dispatch_with_handoff` | `self                 .in_flight                 .lock` | [538](../../src/host.rs#L538) | receiver-type-required |
-| `dispatch_with_handoff` | `host             .call` | [558](../../src/host.rs#L558) | receiver-type-required |
-| `dispatch_with_handoff` | `handoff.clone` | [564](../../src/host.rs#L564) | receiver-type-required |
-| `dispatch_with_handoff` | `handoff.proof` | [567](../../src/host.rs#L567) | receiver-type-required |
-| `dispatch_with_handoff` | `self.registry                     .mark_handed_off` | [569](../../src/host.rs#L569) | receiver-type-required |
-| `dispatch_with_handoff` | `handoff.is_durable` | [572](../../src/host.rs#L572) | receiver-type-required |
-| `dispatch_with_handoff` | `self.registry.complete` | [577](../../src/host.rs#L577) | receiver-type-required |
-| `drop` | `self.set.lock` | [595](../../src/host.rs#L595) | receiver-type-required |
-| `drop` | `set.remove` | [596](../../src/host.rs#L596) | receiver-type-required |
-| `response` | `"server-response".to_owned` | [603](../../src/host.rs#L603) | receiver-type-required |
-| `typed_error` | `Ok` | [614](../../src/host.rs#L614) | external-constructor-callback-or-unresolved |
-| `typed_error` | `Some` | [617](../../src/host.rs#L617) | external-constructor-callback-or-unresolved |
-| `typed_error` | `code.to_owned` | [618](../../src/host.rs#L618) | receiver-type-required |
-| `typed_error` | `message.to_owned` | [619](../../src/host.rs#L619) | receiver-type-required |
-| `typed_error` | `IJsonValue::parse_str` | [620](../../src/host.rs#L620) | [schema::ijson::IJsonValue::parse_str](../../../schema/src/ijson.rs#L23) |
-| `json_string` | `serde_json::to_string(value).expect` | [626](../../src/host.rs#L626) | receiver-type-required |
-| `json_string` | `serde_json::to_string` | [626](../../src/host.rs#L626) | external-constructor-callback-or-unresolved |
+| `new` | `Mutex::new` | [454](../../src/host.rs#L454) | external-constructor-callback-or-unresolved |
+| `new` | `HashSet::new` | [454](../../src/host.rs#L454) | external-constructor-callback-or-unresolved |
+| `dispatch` | `self.dispatch_with_handoff` | [463](../../src/host.rs#L463) | [endpoint::host::EndpointDispatcher::dispatch_with_handoff](../../src/host.rs#L467) |
+| `dispatch` | `DurableHandoffSignal::new` | [463](../../src/host.rs#L463) | [endpoint::host::DurableHandoffSignal::new](../../src/host.rs#L202) |
+| `dispatch_with_handoff` | `request.rpc_id.clone` | [473](../../src/host.rs#L473) | receiver-type-required |
+| `dispatch_with_handoff` | `Err` | [475](../../src/host.rs#L475), [534](../../src/host.rs#L534), [580](../../src/host.rs#L580) | external-constructor-callback-or-unresolved |
+| `dispatch_with_handoff` | `EndpointDispatchError::Request` | [475](../../src/host.rs#L475) | external-constructor-callback-or-unresolved |
+| `dispatch_with_handoff` | `host.capabilities().contains` | [477](../../src/host.rs#L477) | receiver-type-required |
+| `dispatch_with_handoff` | `host.capabilities` | [477](../../src/host.rs#L477) | receiver-type-required |
+| `dispatch_with_handoff` | `typed_error` | [478](../../src/host.rs#L478), [494](../../src/host.rs#L494), [523](../../src/host.rs#L523), [552](../../src/host.rs#L552) | [endpoint::host::typed_error](../../src/host.rs#L616) |
+| `dispatch_with_handoff` | `Ok` | [483](../../src/host.rs#L483), [492](../../src/host.rs#L492), [515](../../src/host.rs#L515), [521](../../src/host.rs#L521), [541](../../src/host.rs#L541), [550](../../src/host.rs#L550), [586](../../src/host.rs#L586) | external-constructor-callback-or-unresolved |
+| `dispatch_with_handoff` | `response` | [483](../../src/host.rs#L483), [492](../../src/host.rs#L492), [515](../../src/host.rs#L515), [521](../../src/host.rs#L521), [541](../../src/host.rs#L541), [550](../../src/host.rs#L550), [586](../../src/host.rs#L586) | [endpoint::host::response](../../src/host.rs#L608) |
+| `dispatch_with_handoff` | `host.method_class` | [485](../../src/host.rs#L485) | receiver-type-required |
+| `dispatch_with_handoff` | `self                     .in_flight                     .lock()                     .map_err` | [487](../../src/host.rs#L487) | receiver-type-required |
+| `dispatch_with_handoff` | `self                     .in_flight                     .lock` | [487](../../src/host.rs#L487) | receiver-type-required |
+| `dispatch_with_handoff` | `in_flight.insert` | [491](../../src/host.rs#L491), [549](../../src/host.rs#L549) | receiver-type-required |
+| `dispatch_with_handoff` | `rpc_id.clone` | [491](../../src/host.rs#L491), [504](../../src/host.rs#L504), [522](../../src/host.rs#L522), [549](../../src/host.rs#L549), [562](../../src/host.rs#L562) | receiver-type-required |
+| `dispatch_with_handoff` | `"{}".to_owned` | [497](../../src/host.rs#L497), [555](../../src/host.rs#L555) | receiver-type-required |
+| `dispatch_with_handoff` | `host                 .call` | [506](../../src/host.rs#L506) | receiver-type-required |
+| `dispatch_with_handoff` | `self.registry.begin` | [517](../../src/host.rs#L517) | receiver-type-required |
+| `dispatch_with_handoff` | `request.method.clone` | [520](../../src/host.rs#L520) | receiver-type-required |
+| `dispatch_with_handoff` | `error.into` | [534](../../src/host.rs#L534) | receiver-type-required |
+| `dispatch_with_handoff` | `handoff.mark_durable` | [540](../../src/host.rs#L540), [585](../../src/host.rs#L585) | receiver-type-required |
+| `dispatch_with_handoff` | `self                 .in_flight                 .lock()                 .map_err` | [545](../../src/host.rs#L545) | receiver-type-required |
+| `dispatch_with_handoff` | `self                 .in_flight                 .lock` | [545](../../src/host.rs#L545) | receiver-type-required |
+| `dispatch_with_handoff` | `host             .call` | [565](../../src/host.rs#L565) | receiver-type-required |
+| `dispatch_with_handoff` | `handoff.clone` | [571](../../src/host.rs#L571) | receiver-type-required |
+| `dispatch_with_handoff` | `handoff.proof` | [574](../../src/host.rs#L574) | receiver-type-required |
+| `dispatch_with_handoff` | `self.registry                     .mark_handed_off` | [576](../../src/host.rs#L576) | receiver-type-required |
+| `dispatch_with_handoff` | `handoff.is_durable` | [579](../../src/host.rs#L579) | receiver-type-required |
+| `dispatch_with_handoff` | `self.registry.complete` | [584](../../src/host.rs#L584) | receiver-type-required |
+| `drop` | `self.set.lock` | [602](../../src/host.rs#L602) | receiver-type-required |
+| `drop` | `set.remove` | [603](../../src/host.rs#L603) | receiver-type-required |
+| `response` | `"server-response".to_owned` | [610](../../src/host.rs#L610) | receiver-type-required |
+| `typed_error` | `Ok` | [621](../../src/host.rs#L621) | external-constructor-callback-or-unresolved |
+| `typed_error` | `Some` | [624](../../src/host.rs#L624) | external-constructor-callback-or-unresolved |
+| `typed_error` | `code.to_owned` | [625](../../src/host.rs#L625) | receiver-type-required |
+| `typed_error` | `message.to_owned` | [626](../../src/host.rs#L626) | receiver-type-required |
+| `typed_error` | `IJsonValue::parse_str` | [627](../../src/host.rs#L627) | [schema::ijson::IJsonValue::parse_str](../../../schema/src/ijson.rs#L23) |
+| `json_string` | `serde_json::to_string(value).expect` | [633](../../src/host.rs#L633) | receiver-type-required |
+| `json_string` | `serde_json::to_string` | [633](../../src/host.rs#L633) | external-constructor-callback-or-unresolved |

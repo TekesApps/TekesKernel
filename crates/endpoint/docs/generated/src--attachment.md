@@ -374,7 +374,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_authorized_file` | `attachment_id             .strip_prefix` | [440](../../src/attachment.rs#L440) | receiver-type-required |
 | `read_authorized_file` | `valid_lower_sha256` | [442](../../src/attachment.rs#L442) | [endpoint::attachment::valid_lower_sha256](../../src/attachment.rs#L1142) |
 | `read_authorized_file` | `AttachmentReadError::Attachment` | [443](../../src/attachment.rs#L443), [476](../../src/attachment.rs#L476), [483](../../src/attachment.rs#L483), [489](../../src/attachment.rs#L489), [494](../../src/attachment.rs#L494), [496](../../src/attachment.rs#L496), [498](../../src/attachment.rs#L498) | external-constructor-callback-or-unresolved |
-| `read_authorized_file` | `EndpointJournal::open` | [448](../../src/attachment.rs#L448) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L154) |
+| `read_authorized_file` | `EndpointJournal::open` | [448](../../src/attachment.rs#L448) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
 | `read_authorized_file` | `fs::read(folder.join("main.jsonl")).map_err` | [449](../../src/attachment.rs#L449) | receiver-type-required |
 | `read_authorized_file` | `fs::read` | [449](../../src/attachment.rs#L449) | external-constructor-callback-or-unresolved |
 | `read_authorized_file` | `folder.join` | [449](../../src/attachment.rs#L449), [481](../../src/attachment.rs#L481), [493](../../src/attachment.rs#L493) | receiver-type-required |
@@ -411,7 +411,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_authorized` | `attachment_id             .strip_prefix` | [522](../../src/attachment.rs#L522) | receiver-type-required |
 | `read_authorized` | `valid_lower_sha256` | [524](../../src/attachment.rs#L524) | [endpoint::attachment::valid_lower_sha256](../../src/attachment.rs#L1142) |
 | `read_authorized` | `AttachmentReadError::Attachment` | [525](../../src/attachment.rs#L525), [555](../../src/attachment.rs#L555), [562](../../src/attachment.rs#L562), [567](../../src/attachment.rs#L567), [572](../../src/attachment.rs#L572), [574](../../src/attachment.rs#L574), [579](../../src/attachment.rs#L579), [583](../../src/attachment.rs#L583), [587](../../src/attachment.rs#L587), [592](../../src/attachment.rs#L592), [596](../../src/attachment.rs#L596) | external-constructor-callback-or-unresolved |
-| `read_authorized` | `EndpointJournal::open` | [532](../../src/attachment.rs#L532) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L154) |
+| `read_authorized` | `EndpointJournal::open` | [532](../../src/attachment.rs#L532) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
 | `read_authorized` | `fs::read(folder.join("main.jsonl")).map_err` | [533](../../src/attachment.rs#L533) | receiver-type-required |
 | `read_authorized` | `fs::read` | [533](../../src/attachment.rs#L533) | external-constructor-callback-or-unresolved |
 | `read_authorized` | `folder.join` | [533](../../src/attachment.rs#L533), [560](../../src/attachment.rs#L560), [571](../../src/attachment.rs#L571) | receiver-type-required |
