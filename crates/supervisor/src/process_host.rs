@@ -9521,7 +9521,6 @@ mod tests {
         );
     }
 
-    #[cfg(target_os = "macos")]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
         bytes.push(b'\n');
