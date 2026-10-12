@@ -6,8 +6,7 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-Proposed version: 0.4.0 (a new thread-folder file, a changed stream-attachment contract
-and a new stream-open error; the ledger, journal and wire formats are otherwise unchanged).
+## 0.4.0 — 2026-10-12
 
 ### Changed
 - **Lazy boot.** `ready` no longer reads any thread. The boot-time sweep that decoded every
