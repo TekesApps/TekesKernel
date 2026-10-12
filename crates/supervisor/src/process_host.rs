@@ -5438,17 +5438,11 @@ impl ProductionProcessHost {
         for id in store::folder_events::admitted_ids(&self.root) {
             let _ = self.catalog.get(&id);
         }
+        // Newest ledger first, so the rows at the top of a sidebar resolve first.
         let unverified = self
             .catalog
-            .entries_now()
+            .unverified()
             .into_iter()
-            .filter(|(_, entry)| {
-                matches!(
-                    entry.trust,
-                    crate::catalog::Trust::Cold | crate::catalog::Trust::Ahead
-                )
-            })
-            .map(|(id, _)| id)
             .filter(|id| !self.recently_failed(id))
             .collect::<Vec<_>>();
         self.verify_within(unverified, wait);
@@ -9639,7 +9633,9 @@ mod tests {
             for subkind in ["validation.candidate", "validation.decision"] {
                 assert_eq!(
                     records.iter().filter(|e| e["subkind"] == subkind).count(),
-                    if needs_validator && subkind == "validation.decision" {
+                    if boundary == "output" {
+                        0
+                    } else if needs_validator && subkind == "validation.decision" {
                         2
                     } else {
                         1
@@ -10588,6 +10584,32 @@ mod tests {
             runs,
             "no new attempt inside the retry window"
         );
+        host.shutdown();
+    }
+
+    /// The 30 s verification backoff is for Lists only: an open, a respond or a spawn that
+    /// needs the thread tries it again at once.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn opening_a_thread_bypasses_the_list_backoff() {
+        let root = tempfile::tempdir().expect("root");
+        let broken = "018f0000-0000-7000-8000-0000000000b7";
+        let folder = held_thread_on_disk(root.path(), broken);
+        fs::create_dir(folder.join("endpoint.jsonl")).expect("journal path is a directory");
+        let (host, _streams) = open_host(root.path());
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        let after_list = host.hydrate_runs.load(Ordering::Relaxed);
+        assert!(host.recently_failed(broken));
+        // fix the thread; a List still leaves it alone, an open verifies it
+        fs::remove_dir(folder.join("endpoint.jsonl")).expect("repair");
+        host.build_inventory(false, Duration::from_secs(30))
+            .expect("list again");
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), after_list);
+        host.ensure_verified(broken)
+            .expect("the open verifies it now");
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), after_list + 1);
+        assert!(!host.recently_failed(broken), "success clears the backoff");
         host.shutdown();
     }
 

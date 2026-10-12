@@ -714,3 +714,122 @@ fn a_journal_stream_on_a_quarantined_thread_reports_the_quarantine() {
     assert!(rows.iter().any(|row| row.session_id == damaged));
     host.shutdown();
 }
+
+/// S4d: with a catalog the control baseline omits a thread that was never projected (it does not
+/// fold it), and decodes no ledger for the others.
+#[test]
+fn the_control_baseline_omits_a_never_projected_thread_without_folding_it() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let sessions = (700..705).map(blank_id).collect::<Vec<_>>();
+    for session in &sessions {
+        write_session_at(root.path(), session, false);
+    }
+    {
+        let assembly = assembly(root.path());
+        let host = process_host(root.path());
+        host.attach_streams(assembly.streams().clone());
+        let rows = SupervisorSessionAuthority::inventory_items(&*host, false)
+            .expect("catalog backed")
+            .expect("list");
+        assert_eq!(rows.len(), 5);
+        host.shutdown();
+    }
+    let never = &sessions[2];
+    std::fs::remove_file(
+        root.path()
+            .join("threads")
+            .join(never)
+            .join("context-usage.projection.json"),
+    )
+    .expect("projection file");
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let before = schema::metrics::snapshot();
+    let mut control = block_on_ready(
+        assembly
+            .host()
+            .open_mux_stream(2, SessionStreamTarget::SessionControl),
+    )
+    .expect("control stream");
+    let SessionSyncFrame::ControlBaseline { items, .. } = block_on_ready(control.recv())
+        .expect("item")
+        .expect("frame")
+    else {
+        panic!("expected a control baseline")
+    };
+    assert_eq!(items.len(), 4);
+    assert!(items.iter().all(|item| &item.session_id != never));
+    assert_eq!(decodes_since(before), 0, "no ledger was folded");
+    assert!(
+        !root
+            .path()
+            .join("threads")
+            .join(never)
+            .join("context-usage.projection.json")
+            .exists(),
+        "and nothing was written for it"
+    );
+    host.shutdown();
+}
+
+/// S4d (N1): the journal snapshot carries the thread's current context projections, so a client
+/// that rebaselines on it does not keep a stale usage.
+#[test]
+fn the_journal_snapshot_carries_the_context_projection() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let session = blank_id(800);
+    write_session_at(root.path(), &session, false);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let mut journal = block_on_ready(assembly.host().open_mux_stream(
+        4,
+        SessionStreamTarget::SessionJournal {
+            address: SessionAddress {
+                session_id: session.clone(),
+            },
+            max_messages: 10,
+        },
+    ))
+    .expect("journal stream");
+    let SessionSyncFrame::JournalSnapshot { snapshot, .. } = block_on_ready(journal.recv())
+        .expect("item")
+        .expect("frame")
+    else {
+        panic!("expected a journal snapshot")
+    };
+    let projections: serde_json::Value =
+        serde_json::from_slice(&snapshot.projections.canonical_bytes().expect("bytes"))
+            .expect("projections JSON");
+    let values = &projections["values"];
+    assert!(values["contextUsage"].is_object(), "{projections}");
+    assert!(values["contextDetails"].is_object(), "{projections}");
+    // it is the projection the reconcile persisted
+    let saved: serde_json::Value = serde_json::from_slice(
+        &std::fs::read(
+            root.path()
+                .join("threads")
+                .join(&session)
+                .join("context-usage.projection.json"),
+        )
+        .expect("persisted projection"),
+    )
+    .expect("saved JSON");
+    assert_eq!(values["contextUsage"], saved["value"]["contextUsage"]);
+    assert!(
+        projections["asOfSeq"].as_i64().expect("asOfSeq") >= snapshot.through_sequence,
+        "the projection is not older than the snapshot's cut"
+    );
+    host.shutdown();
+}

@@ -454,6 +454,14 @@ impl ManagementStore {
     fn heal_workspace_metadata_locked(&self, started_at: &str) -> Result<(), ManagementError> {
         let _config = NamedLock::shared(self.storage_root.join("config/.lock"))?;
         for config in self.workspace_configs()?.into_values() {
+            // A workspace with no folder cannot have metadata; it fails only its own rows.
+            let Ok(primary) = primary_path(&config).map(str::to_owned) else {
+                eprintln!(
+                    "management-workspace-skipped: id={} cwd is empty",
+                    config.id
+                );
+                continue;
+            };
             let existing = self.read_metadata_optional(&config.id)?;
             if existing
                 .as_ref()
@@ -464,7 +472,7 @@ impl ManagementStore {
             let metadata = WorkspaceMetadata {
                 v: VERSION,
                 workspace_id: config.id.clone(),
-                path: primary_path(&config)?.to_owned(),
+                path: primary,
                 created_at: existing
                     .map_or_else(|| started_at.to_owned(), |metadata| metadata.created_at),
                 metadata_updated_at: started_at.to_owned(),
@@ -492,14 +500,25 @@ impl ManagementStore {
         self.recover_skipping(queue_driver, None)
     }
 
+    #[allow(unused_assignments)]
     fn recover_skipping(
         &self,
         queue_driver: Option<&dyn QueueRecoveryDriver>,
         mut validated: Option<&mut CompleteOperations>,
     ) -> Result<(), ManagementError> {
-        let _lock = NamedLock::exclusive(self.root.join("lock"))?;
-        self.remove_recordless_payloads()?;
-        for path in self.operation_paths()? {
+        // The management lock is taken per record (and released around the queue driver, which
+        // can start a worker for several seconds), never for the whole pass: a stuck record
+        // cannot hold up baselines and requests that need the lock.
+        let paths = {
+            let _lock = NamedLock::exclusive(self.root.join("lock"))?;
+            self.remove_recordless_payloads()?;
+            self.operation_paths()?
+        };
+        for path in paths {
+            let mut lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
+            if !path.exists() {
+                continue;
+            }
             let identity = file_identity(&path);
             if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref()) {
                 if known.0.contains(&(path.clone(), *identity)) {
@@ -582,7 +601,15 @@ impl ManagementStore {
                     let driver = queue_driver.ok_or_else(|| {
                         ManagementError::QueueRecoveryRequired(pending.session_id.clone())
                     })?;
+                    // The driver may start a worker (a handshake of up to 10 s): do not hold
+                    // the management lock meanwhile, and re-check the record after it.
+                    drop(lock.take());
                     let decision = driver.execute(&pending)?;
+                    lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
+                    let current = read_canonical::<OperationRecord>(&path)?;
+                    if current.phase == OperationPhase::Complete {
+                        continue;
+                    }
                     self.drive_queue_completion(&path, record, decision)
                         .map(|_| ())
                 }
@@ -618,7 +645,9 @@ impl ManagementStore {
             if config.policy.is_some() {
                 continue;
             }
-            let folder = primary_path(&config)?.to_owned();
+            let Ok(folder) = primary_path(&config).map(str::to_owned) else {
+                continue;
+            };
             self.config.publish_workspace_policy(
                 &config.id,
                 config.revision,
@@ -631,6 +660,9 @@ impl ManagementStore {
     fn reconcile_workspace_metadata(&self, started_at: &str) -> Result<(), ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         for config in self.workspace_configs()?.into_values() {
+            if primary_path(&config).is_err() {
+                continue;
+            }
             let metadata = self.read_metadata_optional(&config.id)?;
             let matches = metadata
                 .as_ref()
@@ -668,7 +700,14 @@ impl ManagementStore {
         sessions: &[SessionInventoryItem],
     ) -> Result<WorkspaceList, ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
-        let configs = self.workspace_configs()?;
+        let mut configs = self.workspace_configs()?;
+        configs.retain(|id, config| {
+            let usable = primary_path(config).is_ok();
+            if !usable {
+                eprintln!("management-workspace-skipped: id={id} cwd is empty");
+            }
+            usable
+        });
         let mut active = BTreeMap::<String, Vec<&SessionInventoryItem>>::new();
         let mut archived_session_ids = Vec::new();
         for session in sessions {
@@ -694,7 +733,9 @@ impl ManagementStore {
             configs
         } else {
             self.heal_workspace_metadata_locked(&current_timestamp()?)?;
-            self.workspace_configs()?
+            let mut healed = self.workspace_configs()?;
+            healed.retain(|_, config| primary_path(config).is_ok());
+            healed
         };
         let mut items = Vec::with_capacity(configs.len());
         for config in configs.values() {
@@ -718,10 +759,12 @@ impl ManagementStore {
     /// every workspace configuration each time.
     pub fn workspace_paths(&self) -> Result<BTreeMap<String, String>, ManagementError> {
         let _lock = NamedLock::shared(self.root.join("lock"))?;
-        self.workspace_configs()?
+        // A workspace without a folder has no path: its sessions' rows fail, nobody else's.
+        Ok(self
+            .workspace_configs()?
             .into_iter()
-            .map(|(id, config)| Ok((id, primary_path(&config)?.to_owned())))
-            .collect()
+            .filter_map(|(id, config)| primary_path(&config).ok().map(|path| (id, path.to_owned())))
+            .collect())
     }
 
     pub fn workspace_path(&self, workspace_id: &str) -> Result<String, ManagementError> {

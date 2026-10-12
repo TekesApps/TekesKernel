@@ -1447,8 +1447,18 @@ impl ProductionCarrierStreams {
             .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .map(|session| inventory_row(session, &paths, &lineage))
-            .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
+            .filter_map(|session| {
+                let id = session.session_id.clone();
+                match inventory_row(session, &paths, &lineage) {
+                    Ok(row) => Some(row),
+                    // A session whose workspace has no usable path fails its own row only.
+                    Err(error) => {
+                        eprintln!("carrier-inventory-row-skipped: session={id} error={error}");
+                        None
+                    }
+                }
+            })
+            .collect::<Vec<_>>();
         sessions.sort_by(|left, right| {
             right
                 .updated_at
@@ -1775,10 +1785,7 @@ impl ProductionCarrierStreams {
                 .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
         endpoint::NativeEndpoint::open(&self.inner.root)?
             .hydrate_historical_submissions(&address.session_id, &mut page.events);
-        let projections = IJsonValue::parse(&serde_json::to_vec(&json!({
-            "asOfSeq":through_sequence,
-            "values":{},
-        }))?)?;
+        let projections = self.snapshot_projections(&address.session_id, through_sequence)?;
         let (_, source) = mux.into_stream();
         Ok(Box::new(ProductionStream {
             _lease: Some(lease),
@@ -1800,6 +1807,43 @@ impl ProductionCarrierStreams {
             .collect(),
             source: Some(source),
         }))
+    }
+
+    /// The projections a journal snapshot carries: the thread's current context usage and
+    /// details (from the control cache the reconcile just refreshed, else the persisted file), so
+    /// a client that rebaselines on the snapshot shows the usage after a config change instead of
+    /// the value it had before. `asOfSeq` never falls behind the snapshot's cut.
+    fn snapshot_projections(
+        &self,
+        session_id: &str,
+        through_sequence: i64,
+    ) -> Result<IJsonValue, ProductionCarrierError> {
+        let cached = self
+            .inner
+            .controls
+            .lock()
+            .map_err(|_| poisoned())?
+            .get(session_id)
+            .cloned();
+        let item = cached.or_else(|| {
+            crate::context_usage::saved_control_item(
+                &self.inner.root.join("threads").join(session_id),
+                session_id,
+            )
+        });
+        let mut as_of = through_sequence;
+        let mut values = json!({});
+        if let Some(item) = item {
+            let known: Value = serde_json::from_slice(&item.projections.canonical_bytes()?)?;
+            as_of = as_of.max(known["asOfSeq"].as_i64().unwrap_or(-1));
+            if known["values"].is_object() {
+                values = known["values"].clone();
+            }
+        }
+        Ok(IJsonValue::parse(&serde_json::to_vec(&json!({
+            "asOfSeq": as_of,
+            "values": values,
+        }))?)?)
     }
 
     pub(crate) fn open_mux(
