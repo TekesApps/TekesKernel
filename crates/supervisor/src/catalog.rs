@@ -60,6 +60,9 @@ impl EntryView {
 pub(crate) struct Entry {
     pub trust: Trust,
     pub view: Option<Arc<EntryView>>,
+    /// The folder is known to exist but its card has not been read yet (it arrived through a
+    /// folder event, which must not do I/O under the store's locks). `Catalog::get` reads it.
+    pub unread: bool,
 }
 
 impl Entry {
@@ -67,6 +70,15 @@ impl Entry {
         Self {
             trust: Trust::Cold,
             view: None,
+            unread: false,
+        }
+    }
+
+    fn unread() -> Self {
+        Self {
+            trust: Trust::Cold,
+            view: None,
+            unread: true,
         }
     }
 }
@@ -119,6 +131,7 @@ impl Catalog {
         Some(Entry {
             trust,
             view: Some(Arc::new(view_of_card(&card))),
+            unread: false,
         })
     }
 
@@ -130,6 +143,7 @@ impl Catalog {
             .read()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .get(id)
+            .filter(|entry| !entry.unread)
         {
             return Some(entry.clone());
         }
@@ -138,7 +152,24 @@ impl Catalog {
             .entries
             .write()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        Some(entries.entry(id.to_owned()).or_insert(entry).clone())
+        match entries.get(id) {
+            // Someone resolved it meanwhile.
+            Some(existing) if !existing.unread => Some(existing.clone()),
+            _ => {
+                entries.insert(id.to_owned(), entry.clone());
+                Some(entry)
+            }
+        }
+    }
+
+    /// A folder arrived in `threads/` (a folder event): remember that it exists without reading
+    /// anything. The card is read by the first `get`, outside the store's locks. A folder that
+    /// was seen before is replaced (an id can be reused by a different thread).
+    pub(crate) fn note_present(&self, id: &str) {
+        self.entries
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .insert(id.to_owned(), Entry::unread());
     }
 
     /// Loads every thread once (single flight). A concurrent caller waits for the loader.
@@ -251,8 +282,63 @@ impl Catalog {
             Entry {
                 trust: Trust::Fresh,
                 view: Some(Arc::new(view)),
+                unread: false,
             },
         );
+        true
+    }
+
+    /// Brings a Fresh entry up to a newer fold without rebuilding its card view (the cost the
+    /// doorbell path must not pay on every fold, K6): the lifecycle facts, `last_seq`, `updatedAt`
+    /// and `blank` come straight from the fold; the title, identity profile and request holds
+    /// are carried over because none of the records added since can have changed them.
+    /// Returns false when the entry cannot be advanced that way (no Fresh view yet, or a new
+    /// record may change a carried-over field); the caller then builds the full view.
+    pub(crate) fn refresh_light(&self, id: &str, projection: &schema::LedgerProjection) -> bool {
+        let mut entries = self
+            .entries
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let Some(entry) = entries.get_mut(id) else {
+            return false;
+        };
+        let (Trust::Fresh, Some(view)) = (&entry.trust, &entry.view) else {
+            return false;
+        };
+        let Some(main) = view.main() else {
+            return false;
+        };
+        if projection.last_seq < main.last_seq {
+            // A fold older than the recorded one: nothing to add, and nothing to rebuild.
+            return true;
+        }
+        let first_new = usize::try_from(main.last_seq).unwrap_or(usize::MAX);
+        let Some(new_events) = projection.events.get(first_new..) else {
+            return false;
+        };
+        if new_events.iter().any(|event| {
+            event.string_field("title").is_some()
+                || matches!(
+                    event.kind(),
+                    schema::EventKind::State
+                        | schema::EventKind::ApprovalRequest
+                        | schema::EventKind::ApprovalResponse
+                        | schema::EventKind::ToolResult
+                )
+        }) {
+            return false;
+        }
+        let Ok(updated_ms) = endpoint::card_updated_ms(projection) else {
+            return false;
+        };
+        let mut next = (**view).clone();
+        next.summary.updated_ms = updated_ms;
+        next.summary.blank = projection.lifecycle.latest_turn.is_none();
+        if let Some(line) = next.lines.first_mut() {
+            line.last_seq = projection.last_seq;
+            line.facts = projection.lifecycle.clone();
+        }
+        entry.view = Some(Arc::new(next));
         true
     }
 
@@ -267,6 +353,7 @@ impl Catalog {
             Entry {
                 trust: Trust::Corrupt(reason.to_owned()),
                 view,
+                unread: false,
             },
         );
     }

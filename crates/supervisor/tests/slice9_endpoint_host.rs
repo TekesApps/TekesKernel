@@ -45,8 +45,12 @@ fn opening_a_root_with_more_than_256_session_folders_is_not_an_error() {
     }
     ProductionEndpointAssembly::open(root.path(), description())
         .expect("257 session folders must not fail the endpoint assembly");
-    endpoint::ManagementStore::open_at(root.path(), "2026-10-12T00:00:00.000Z")
-        .expect("the recovering open does not fail on the count either");
+    endpoint::ManagementStore::open_at_with_queue_driver(
+        root.path(),
+        "2026-10-12T00:00:00.000Z",
+        None,
+    )
+    .expect("the recovering open does not fail on the count either");
     endpoint::ManagementStore::open_light(root.path()).expect("nor does the per-request open");
 }
 
@@ -630,7 +634,7 @@ fn workspace_mutations_are_journaled_and_exact_retry_is_stable() {
         .expect("native endpoint")
         .list_sessions(&HashSet::new())
         .expect("session snapshot");
-    let workspaces = endpoint::ManagementStore::open(root.path())
+    let workspaces = endpoint::ManagementStore::open_light(root.path())
         .expect("management")
         .list_workspaces(&sessions)
         .expect("workspace snapshot");
@@ -1134,7 +1138,8 @@ fn queue_management_gate_recovers_before_readiness_and_exact_retry_does_not_rede
         key: "rpc-queue-recovery/retract".to_owned(),
     };
     let action = IJsonValue::parse_str(r#"{"kind":"remove"}"#).unwrap();
-    let management = ManagementStore::open_at(root.path(), TIMESTAMP).expect("management");
+    let management = ManagementStore::open_at_with_queue_driver(root.path(), TIMESTAMP, None)
+        .expect("management");
     let state = management
         .prepare_queue_transaction(QueueTransactionOperation {
             rpc_id: "rpc-queue-recovery",
@@ -1427,7 +1432,7 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
             .unwrap()
             .ephemeral
     );
-    let lineage = ManagementStore::open(root.path())
+    let lineage = ManagementStore::open_light(root.path())
         .expect("management")
         .completed_fork_lineage()
         .expect("lineage");

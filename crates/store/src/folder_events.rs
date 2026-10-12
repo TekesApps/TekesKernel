@@ -69,7 +69,22 @@ impl FolderEvent {
 /// same root under a different spelling must still see the same admission set.
 #[must_use]
 pub fn canonical_root(root: &Path) -> PathBuf {
-    std::fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf())
+    // Resolved once per spelling: `is_admitted` runs per session per sweep tick, and a storage
+    // root does not move while the process runs.
+    static MEMO: OnceLock<Mutex<HashMap<PathBuf, PathBuf>>> = OnceLock::new();
+    let memo = MEMO.get_or_init(Mutex::default);
+    if let Some(known) = memo
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .get(root)
+    {
+        return known.clone();
+    }
+    let resolved = std::fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf());
+    memo.lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner)
+        .insert(root.to_path_buf(), resolved.clone());
+    resolved
 }
 
 impl FolderEvent {

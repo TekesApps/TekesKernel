@@ -38,7 +38,8 @@ use worker_control::{
 
 use crate::dynamic_bindings::resolve_worker_launch_bindings;
 use crate::endpoint_carrier::{
-    LiveRespondAuthority, ProductionCarrierStreams, SupervisorSessionAuthority,
+    HoldCatalog, HoldRef, LiveRespondAuthority, ProductionCarrierStreams, SessionGateError,
+    SupervisorSessionAuthority, VerifiedHolds,
 };
 use crate::endpoint_host::ProductionRouteFailure;
 use crate::endpoint_host::{
@@ -62,6 +63,8 @@ const DELIVERY_TIMEOUT: Duration = Duration::from_secs(30);
 const MCP_ONLY_APP_SANDBOX_MARKER: &str = ".mcp-only-app-sandbox";
 const WORKER_HANDSHAKE_TIMEOUT: Duration = Duration::from_secs(10);
 const WORKER_HELLO_MAX_BYTES: usize = 4_096;
+/// Sweep ticks between two retries of pending management operations (30 s at a 1 s tick).
+const MANAGEMENT_RECOVERY_TICKS: u64 = 30;
 const PERIODIC_SWEEP_INTERVAL: Duration = Duration::from_secs(1);
 
 /// What the sweep can tell about a ledger from its metadata alone: the bytes are the same while
@@ -440,6 +443,8 @@ pub struct ProductionProcessHost {
     hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
     #[cfg(test)]
     hydrate_runs: AtomicU64,
+    #[cfg(test)]
+    card_builds: AtomicU64,
     #[cfg(test)]
     list_wait_override: Mutex<Option<Duration>>,
     file_observations: crate::file_observation::SessionFileObservations,
@@ -832,6 +837,8 @@ impl ProductionProcessHost {
             hydrating: Mutex::new(HashMap::new()),
             #[cfg(test)]
             hydrate_runs: AtomicU64::new(0),
+            #[cfg(test)]
+            card_builds: AtomicU64::new(0),
             #[cfg(test)]
             list_wait_override: Mutex::new(None),
             file_observations: crate::file_observation::SessionFileObservations::default(),
@@ -1659,8 +1666,9 @@ impl ProductionProcessHost {
         self.catalog.forget(id);
         // A folder that arrives in `threads/` (create, fork, redact destination, unarchive)
         // enters the catalog now: the List and the sweep must see it without anybody having to
-        // ask for it first (E832 M1). Its card, if it has one, is read; otherwise it is Cold and
-        // the next List or open verifies it.
+        // ask for it first (E832 M1). Nothing is read here -- this runs under the store's
+        // locks (E833 F6): the first `get` reads its card, and a thread without one is Cold and
+        // verified by the next List or open.
         if matches!(
             event,
             FolderEvent::Published { .. }
@@ -1669,7 +1677,7 @@ impl ProductionProcessHost {
                     ..
                 }
         ) {
-            let _ = self.catalog.get(id);
+            self.catalog.note_present(id);
         }
         self.projection_cache
             .lock()
@@ -1729,6 +1737,7 @@ impl ProductionProcessHost {
         }
         let sweep_host = Arc::downgrade(self);
         std::thread::spawn(move || {
+            let mut ticks = 0_u64;
             loop {
                 std::thread::sleep(PERIODIC_SWEEP_INTERVAL);
                 let Some(host) = sweep_host.upgrade() else {
@@ -1740,8 +1749,20 @@ impl ProductionProcessHost {
                 if let Err(error) = host.periodic_sweep_once() {
                     eprintln!("process-host-periodic-sweep-failed: {error}");
                 }
+                ticks += 1;
+                if ticks % MANAGEMENT_RECOVERY_TICKS == 0 {
+                    host.recover_pending_management();
+                }
             }
         });
+    }
+
+    /// The 30 s retry of pending management operations (create/fork/archive/queue/workspace
+    /// records a failure left unfinished). Failure only logs: the next tick retries.
+    fn recover_pending_management(&self) {
+        if let Err(error) = crate::endpoint_host::recover_pending_management(&self.root, self) {
+            eprintln!("process-host-management-recovery-failed: {error}");
+        }
     }
 
     pub fn refresh_live_credentials(&self) -> Result<(), DaemonError> {
@@ -1945,6 +1966,12 @@ impl ProductionProcessHost {
         #[cfg(test)]
         self.hydrate_runs.fetch_add(1, Ordering::Relaxed);
         self.publish_appended_with(session_id, after_fold)?;
+        // The main ledger is sound; every child ledger must be too (E833 F5).
+        if let Some(reason) = child_ledger_damage(&folder) {
+            eprintln!("process-host-quarantined: session={session_id} {reason}");
+            self.catalog.mark_corrupt(session_id, &reason);
+            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        }
         Ok(())
     }
 
@@ -2689,6 +2716,11 @@ impl ProductionProcessHost {
         ledger: PathBuf,
         startup: Option<&QueueTransaction>,
     ) -> Result<ScheduledWorker, DaemonError> {
+        // A thread is verified (a torn tail repaired, its view folded) before its first worker
+        // of this process starts; the lazy boot no longer does that for every thread.
+        if self.live_worker(process_key).is_none() {
+            ProductionProcessHost::ensure_verified(self, session_id)?;
+        }
         self.refresh_limits(&ledger)?;
         let mut workers = self
             .workers
@@ -3560,7 +3592,15 @@ impl ProductionProcessHost {
             .projection
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
         let due = self.card_writer.is_due(session_id);
-        let prepared = if clean_read {
+        // Between card writes the catalog entry is advanced from the fold without rebuilding
+        // the card view (K6); the writer re-folds the thread when its window expires.
+        let advanced_light =
+            clean_read && !due && self.catalog.refresh_light(session_id, &projection);
+        #[cfg(test)]
+        if clean_read && !advanced_light {
+            self.card_builds.fetch_add(1, Ordering::Relaxed);
+        }
+        let prepared = if clean_read && !advanced_light {
             crate::thread_card::prepare(
                 session_id,
                 folder.clone(),
@@ -3643,7 +3683,13 @@ impl ProductionProcessHost {
         // writer when it is due for this thread (K6), otherwise the thread is marked dirty and
         // the writer re-folds it itself when its window expires. A torn tail is repaired first
         // and described by the next fold. The journal block is taken after the reconcile.
-        if clean_read {
+        if advanced_light {
+            self.card_writer.mark_dirty(
+                session_id,
+                folder.clone(),
+                crate::thread_card::journal_input(&journal),
+            );
+        } else if clean_read {
             let journal_snapshot = crate::thread_card::journal_input(&journal);
             match prepared {
                 Some(card) => {
@@ -5128,6 +5174,39 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
     }
 }
 
+/// A complete but invalid record, or no valid genesis, in a child line ledger (`<uuid>.jsonl`):
+/// damage no repair can fix. A torn tail is only a partial append and is not damage.
+fn child_ledger_damage(folder: &Path) -> Option<String> {
+    let entries = fs::read_dir(folder).ok()?;
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        if name == "main.jsonl"
+            || !store::card::valid_line_name(&name)
+            || !entry.file_type().is_ok_and(|kind| kind.is_file())
+        {
+            continue;
+        }
+        let Ok(bytes) = fs::read(entry.path()) else {
+            continue;
+        };
+        if bytes.is_empty() {
+            // A child ledger being created.
+            continue;
+        }
+        let scan = scan_valid_prefix(&bytes, 1);
+        let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+        if scan.projection.is_none()
+            || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n')))
+        {
+            return Some(format!(
+                "{name}: no valid record at byte {}",
+                scan.first_invalid_offset.unwrap_or(scan.valid_bytes)
+            ));
+        }
+    }
+    None
+}
+
 /// A ledger that holds its genesis and nothing else: a thread nobody has spoken in yet.
 fn is_single_line_ledger(path: &Path) -> bool {
     let Ok(file) = fs::File::open(path) else {
@@ -5358,6 +5437,76 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
             self.build_inventory(include_archived, self.list_wait())
                 .map_err(|error| error.to_string()),
         )
+    }
+
+    fn ensure_verified(&self, session_id: &str) -> Result<(), SessionGateError> {
+        // A thread with a live worker is already verified by that worker's lock holder.
+        if self.live_worker(session_id).is_some() {
+            return Ok(());
+        }
+        ProductionProcessHost::ensure_verified(self, session_id).map_err(|error| {
+            let message = error.to_string();
+            if message.contains("quarantined") {
+                SessionGateError::Quarantined(message)
+            } else {
+                SessionGateError::Failed(message)
+            }
+        })
+    }
+
+    fn has_catalog(&self) -> bool {
+        true
+    }
+
+    fn hold_catalog(&self) -> Option<HoldCatalog> {
+        use crate::catalog::Trust;
+        self.catalog.ensure_loaded();
+        let mut result = HoldCatalog::default();
+        for (session, entry) in self.catalog.entries_now() {
+            let holds = entry
+                .view
+                .as_ref()
+                .map(|view| {
+                    view.lines
+                        .iter()
+                        .flat_map(|line| {
+                            line.holds.iter().map(|hold| HoldRef {
+                                line: (line.file != "main.jsonl").then(|| line.file.clone()),
+                                hold_seq: hold.hold_seq,
+                                kind: if hold.kind == "question" {
+                                    endpoint::RequestFrameType::Question
+                                } else {
+                                    endpoint::RequestFrameType::Approval
+                                },
+                                resolved: hold.resolved.is_some(),
+                            })
+                        })
+                        .collect::<Vec<_>>()
+                })
+                .unwrap_or_default();
+            match entry.trust {
+                Trust::Fresh => result.verified.push(VerifiedHolds {
+                    session,
+                    holds,
+                    quarantined: false,
+                }),
+                Trust::Corrupt(_) => result.verified.push(VerifiedHolds {
+                    session,
+                    holds,
+                    quarantined: true,
+                }),
+                Trust::Ahead => {
+                    result.verified.push(VerifiedHolds {
+                        session: session.clone(),
+                        holds,
+                        quarantined: false,
+                    });
+                    result.unverified.push(session);
+                }
+                Trust::Cold => result.unverified.push(session),
+            }
+        }
+        Some(result)
     }
 
     fn inventory_item(
@@ -7037,11 +7186,14 @@ mod tests {
             endpoint::StreamChannel::Mux,
         ))
         .expect("mux stream");
+        host.attach_streams(streams.clone());
+        // A new mux generation starts empty; the session registers when it is attached (the
+        // same call a first publication makes lazily) and its baseline follows.
+        streams.attach_session(SESSION).expect("attach the session");
         let baseline = block_on_ready(mux.recv())
             .expect("baseline item")
             .expect("baseline frame");
         assert_eq!(baseline.method, "session/subscribed");
-        host.attach_streams(streams);
 
         // The worker has already appended its terminal while these earlier
         // pipe frames are still unread. Frame cache refresh must not publish it.
@@ -10210,6 +10362,138 @@ mod tests {
                 .freshness(),
             store::card::Freshness::Fresh
         );
+    }
+
+    /// E833 F1: between card writes a fold advances the catalog entry without rebuilding the
+    /// card view; a record that can change the title or the holds still rebuilds it.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_fold_between_card_writes_does_not_rebuild_the_card_view() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c4";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("folder");
+        write_test_genesis(&folder.join("main.jsonl"), session);
+        let (host, _streams) = open_host(root.path());
+        host.publish_appended(session).expect("first fold");
+        assert_eq!(host.card_builds.load(Ordering::Relaxed), 1);
+        assert!(!host.card_writer.is_due(session), "the window is open");
+        // a plain input: advanced in place
+        append_test_input(&folder.join("main.jsonl"), session);
+        host.publish_appended(session).expect("second fold");
+        assert_eq!(
+            host.card_builds.load(Ordering::Relaxed),
+            1,
+            "no view was built for the second fold"
+        );
+        let entry = host.catalog.get(session).expect("entry");
+        let main = entry
+            .view
+            .as_ref()
+            .and_then(|view| view.main())
+            .expect("main");
+        assert_eq!(main.last_seq, 2, "the entry follows the ledger");
+        // the advanced row equals the scan row
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan")
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("row");
+        let live = HashSet::new();
+        let row = host.catalog_item(session, &entry, &live).expect("row");
+        assert_eq!(row, scanned);
+        // a record that can change the holds forces a full view
+        {
+            let mut ledger = fs::OpenOptions::new()
+                .append(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            ledger
+                .write_all(
+                    (r#"{"kind":"meta","seq":3,"title":"A title","ts":"2026-08-28T00:00:02.000Z","v":1}"#.to_owned()
+                        + "\n")
+                        .as_bytes(),
+                )
+                .expect("title record");
+        }
+        host.publish_appended(session).expect("third fold");
+        assert_eq!(host.card_builds.load(Ordering::Relaxed), 2);
+        let entry = host.catalog.get(session).expect("entry");
+        assert_eq!(
+            entry.view.as_ref().expect("view").summary.title.as_deref(),
+            Some("A title")
+        );
+        host.shutdown();
+    }
+
+    /// E833 F5: a complete invalid line in a child ledger quarantines the thread too.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_complete_invalid_line_in_a_child_ledger_quarantines_the_thread() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c3";
+        let folder = held_thread_on_disk(root.path(), session);
+        fs::write(
+            folder.join("018f0000-0000-7000-8000-0000000000c0.jsonl"),
+            b"{\"not\":\"a record\"}\n",
+        )
+        .expect("child ledger");
+        let (host, _streams) = open_host(root.path());
+        let error = host.hydrate(session).expect_err("quarantined");
+        assert!(error.to_string().contains("quarantined"), "{error}");
+        assert!(matches!(
+            host.catalog.get(session).expect("entry").trust,
+            crate::catalog::Trust::Corrupt(_)
+        ));
+        host.shutdown();
+    }
+
+    /// E833 F6: the folder-event observer reads nothing (it runs under the store's locks); the
+    /// card is read by the first `get`.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_published_folder_enters_the_catalog_unread() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c2";
+        let (host, _streams) = open_host(root.path());
+        host.arm_admission();
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create");
+        let listed = host.catalog.entries_now();
+        let entry = &listed
+            .iter()
+            .find(|(id, _)| id == session)
+            .expect("listed")
+            .1;
+        assert!(entry.unread, "not read under the store lock");
+        let resolved = host.catalog.get(session).expect("entry");
+        assert!(!resolved.unread);
+        host.shutdown();
+    }
+
+    /// The 30 s management recovery tick runs the recovering open on an idle root without error
+    /// and without touching any thread (all thread folders are unreadable).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_management_recovery_tick_runs_on_an_idle_root_and_reads_no_thread() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        let folder = held_thread_on_disk(root.path(), session);
+        let (host, _streams) = open_host(root.path());
+        // The first recovering open may reconcile workspace metadata (named exception X1).
+        crate::endpoint_host::recover_pending_management(root.path(), &*host).expect("first");
+        fs::set_permissions(&folder, fs::Permissions::from_mode(0o000)).expect("lock");
+        let outcome = crate::endpoint_host::recover_pending_management(root.path(), &*host);
+        fs::set_permissions(&folder, fs::Permissions::from_mode(0o700)).expect("unlock");
+        outcome.expect("recovery tick");
+        host.shutdown();
     }
 
     /// P-3 tripwire (in process): with every thread and archive folder unreadable (mode 000),

@@ -239,3 +239,52 @@ fn one_governor_counts_fsyncs_for_the_writer_and_the_hydrator() {
     unlimited.charge(1_000);
     assert!(unlimited.delay().is_zero());
 }
+
+/// Measurement (not an assertion): the cost of the fold against the cost of building the card
+/// view from it, on a real root. `TEKES_BENCH_ROOT=<root> cargo test -p tekes-supervisor --release
+/// -- --ignored --nocapture card_view_cost`.
+#[test]
+#[ignore = "benchmark; needs TEKES_BENCH_ROOT"]
+fn card_view_cost_against_fold_cost() {
+    let Ok(root) = std::env::var("TEKES_BENCH_ROOT") else {
+        return;
+    };
+    let mut scan_total = std::time::Duration::ZERO;
+    let mut prepare_total = std::time::Duration::ZERO;
+    let mut events_total = 0_usize;
+    let mut worst = (std::time::Duration::ZERO, 0_usize, String::new());
+    for entry in std::fs::read_dir(std::path::Path::new(&root).join("threads"))
+        .unwrap()
+        .flatten()
+    {
+        let folder = entry.path();
+        let Ok(bytes) = std::fs::read(folder.join("main.jsonl")) else {
+            continue;
+        };
+        let started = Instant::now();
+        let scan = store::scan_valid_prefix(&bytes, 1);
+        let scan_time = started.elapsed();
+        let valid = usize::try_from(scan.valid_bytes).unwrap();
+        let Some(projection) = scan.projection else {
+            continue;
+        };
+        let session = entry.file_name().to_string_lossy().into_owned();
+        let started = Instant::now();
+        let card = prepare(&session, folder.clone(), bytes, valid, &projection, None);
+        let prepare_time = started.elapsed();
+        assert!(card.is_some());
+        scan_total += scan_time;
+        prepare_total += prepare_time;
+        events_total += projection.events.len();
+        if prepare_time > worst.0 {
+            worst = (prepare_time, projection.events.len(), session);
+        }
+    }
+    eprintln!(
+        "card-view-cost: events={events_total} scan_ms={:.1} prepare_ms={:.1} worst_prepare_ms={:.2} (events={})",
+        scan_total.as_secs_f64() * 1000.0,
+        prepare_total.as_secs_f64() * 1000.0,
+        worst.0.as_secs_f64() * 1000.0,
+        worst.1
+    );
+}

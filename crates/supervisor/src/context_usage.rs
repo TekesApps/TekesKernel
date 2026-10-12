@@ -66,6 +66,37 @@ pub(crate) fn publish(
     Ok((sequence, true))
 }
 
+/// The control item of a thread from its persisted projection, without reading its ledger.
+/// `None` when the thread has never been projected (or the file is unusable).
+pub(crate) fn saved_control_item(
+    folder: &Path,
+    session_id: &str,
+) -> Option<endpoint::SessionControlItem> {
+    let saved: SavedProjection =
+        serde_json::from_slice(&fs::read(folder.join("context-usage.projection.json")).ok()?)
+            .ok()?;
+    if saved.format != 1 || saved.sequence > MAX_SAFE {
+        return None;
+    }
+    let projections = schema::IJsonValue::parse(
+        &serde_json::to_vec(&json!({
+            "asOfSeq": saved.sequence,
+            "values": {
+                "contextDetails": saved.value.get("contextDetails")?,
+                "contextUsage": saved.value.get("contextUsage")?,
+            },
+        }))
+        .ok()?,
+    )
+    .ok()?;
+    Some(endpoint::SessionControlItem {
+        session_id: session_id.to_owned(),
+        queue: Vec::new(),
+        jobs: Vec::new(),
+        projections,
+    })
+}
+
 pub(crate) fn derive(
     folder: &Path,
     events: &[Event],

@@ -594,6 +594,19 @@ impl ThreadStore {
         excluded: &dyn Fn(&str) -> bool,
     ) -> Result<CleanupReport, StoreError> {
         let mut report = CleanupReport::default();
+        let swept = self.cleanup_ephemeral_threads(excluded, &mut report);
+        // Leftover tombstones are cleaned whatever happened to the ephemeral threads.
+        let tombstones = self.cleanup_discard_tombstones();
+        swept?;
+        report.tombstones = tombstones?;
+        Ok(report)
+    }
+
+    fn cleanup_ephemeral_threads(
+        &self,
+        excluded: &dyn Fn(&str) -> bool,
+        report: &mut CleanupReport,
+    ) -> Result<(), StoreError> {
         let mut entries =
             fs::read_dir(self.root.join("threads"))?.collect::<Result<Vec<_>, _>>()?;
         entries.sort_by_key(fs::DirEntry::file_name);
@@ -647,8 +660,7 @@ impl ThreadStore {
             });
             report.removed.push(thread_id);
         }
-        report.tombstones = self.cleanup_discard_tombstones()?;
-        Ok(report)
+        Ok(())
     }
 
     /// Deletes leftover `discard-*` tombstones (a crash between retire and delete, or a
@@ -911,12 +923,15 @@ pub(crate) fn remove_tree_if_present(path: &Path) -> Result<(), StoreError> {
             Err(error) if error.kind() == std::io::ErrorKind::NotFound || !path.exists() => {
                 return Ok(());
             }
-            Err(error) => {
-                if std::time::Instant::now() >= deadline {
-                    return Err(error.into());
-                }
+            // Only the races of a concurrent deleter are waited for: the directory refills or
+            // empties underneath us (`ENOTEMPTY`, `ENOENT`). Anything else is a real failure.
+            Err(error)
+                if error.raw_os_error() == Some(libc::ENOTEMPTY)
+                    && std::time::Instant::now() < deadline =>
+            {
                 std::thread::sleep(std::time::Duration::from_millis(20));
             }
+            Err(error) => return Err(error.into()),
         }
     }
 }

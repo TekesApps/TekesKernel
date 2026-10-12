@@ -155,3 +155,44 @@ fn admission_is_keyed_by_the_canonical_root() {
     assert!(is_admitted(&alias, C));
     assert!(is_admitted(&dotted, C));
 }
+
+/// E833 F4: tombstones are cleaned even when the ephemeral scan fails.
+#[test]
+fn tombstones_are_cleaned_even_when_the_ephemeral_scan_fails() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path().to_path_buf();
+    let store = ThreadStore::open(&root).unwrap();
+    let tombstone = root.join(".rewrite-trash").join(format!("discard-{A}"));
+    fs::create_dir_all(tombstone.join("assets")).unwrap();
+    fs::write(tombstone.join("main.jsonl"), b"old").unwrap();
+    fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o000)).unwrap();
+    let outcome = store.cleanup_stale_ephemeral(&|_| false);
+    fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o700)).unwrap();
+    assert!(
+        outcome.is_err(),
+        "the unreadable threads directory is an error"
+    );
+    assert!(!tombstone.exists(), "the tombstone was still removed");
+}
+
+/// E833 F3: only the races of a concurrent deleter are waited for; a real failure returns at
+/// once instead of after the 10 s bound.
+#[test]
+fn a_real_removal_failure_is_not_waited_for() {
+    use std::os::unix::fs::PermissionsExt;
+    let dir = tempfile::tempdir().unwrap();
+    let tree = dir.path().join("tree");
+    let locked = tree.join("locked");
+    fs::create_dir_all(locked.join("inner")).unwrap();
+    fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap();
+    let started = std::time::Instant::now();
+    let outcome = crate::folder::remove_tree_if_present(&tree);
+    fs::set_permissions(&locked, fs::Permissions::from_mode(0o700)).unwrap();
+    assert!(outcome.is_err(), "an unremovable tree is an error");
+    assert!(
+        started.elapsed() < std::time::Duration::from_secs(2),
+        "took {:?}",
+        started.elapsed()
+    );
+}

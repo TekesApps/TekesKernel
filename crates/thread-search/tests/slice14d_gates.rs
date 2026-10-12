@@ -393,10 +393,18 @@ fn slice14d_gate_108_fail_closed_and_semantic_non_mutation() {
         .write_all(b"{\"complete\":false}\n")
         .expect("append corrupt complete line");
     let corrupt_source = fs::read(&ledger).expect("corrupt source bytes");
-    assert!(matches!(
-        authority.search(&request("ws-main", "kernel", 5, ArchiveVisibility::Active)),
-        Err(SearchError::SourceCorrupt(_))
-    ));
+    // A quarantined thread is excluded from search, not a failure of the query (C6).
+    let skipped_before = thread_search::skipped_sessions();
+    let page = authority
+        .search(&request("ws-main", "kernel", 5, ArchiveVisibility::Active))
+        .expect("search excludes the quarantined thread");
+    let rendered = serde_json::to_string(&page.results).expect("results JSON");
+    assert!(
+        !rendered.contains(A),
+        "the quarantined thread is not a result"
+    );
+    assert!(rendered.contains(B), "healthy threads still match");
+    assert!(thread_search::skipped_sessions() > skipped_before);
     assert_eq!(
         fs::read(ledger).expect("source after rejection"),
         corrupt_source

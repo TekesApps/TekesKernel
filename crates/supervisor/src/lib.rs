@@ -17,6 +17,7 @@ pub mod mcp_continuation;
 pub mod mcp_runtime;
 pub mod process_host;
 pub mod production_tool_control;
+mod request_index;
 pub mod resource_capability;
 mod thread_card;
 pub mod tool_control;

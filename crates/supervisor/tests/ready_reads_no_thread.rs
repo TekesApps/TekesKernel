@@ -5,6 +5,15 @@
 //! `list` on both directories (mode stays 0700, which the install check requires) plus mode 000
 //! on every thread folder. The first post-ready read of the directory fails with EACCES: that
 //! line in the log is the positive control that the denial was in force.
+//!
+//! What this proves (E833): readiness does not *depend on* reading any thread. It does not prove
+//! that no read was attempted: a pre-ready read whose error was swallowed would not show. The
+//! boot trace therefore also has to report zero ledger decodes and journal parses at the ready
+//! phase, and the first refusal has to come after the ready phase marker. The named exceptions
+//! (pending operation recovery, X1-X4) have their own tests and are not part of this proof.
+//!
+//! Cleanup: if the test process is killed (SIGKILL) the ACL stays on the temporary directories;
+//! `chmod -N <dir>/root/threads <dir>/root/archive` removes it, then `chmod 700` the folders.
 #![cfg(target_os = "macos")]
 
 use std::fs;
@@ -107,6 +116,7 @@ fn ready_without_reading_threads(threads: usize, archived: usize) {
         .arg(&launch)
         .env_clear()
         .env("PATH", "/usr/bin:/bin")
+        .env("TEKES_KERNEL_BOOT_TRACE", "1")
         .env("HOME", &base)
         .env("TMPDIR", &base)
         .env("TEKES_KERNEL_ENDPOINT_TOKEN", "a".repeat(64))
@@ -159,6 +169,22 @@ fn ready_without_reading_threads(threads: usize, archived: usize) {
         "the ACL denial was never exercised; stderr: {log}"
     );
     assert!(!log.contains("panicked"), "supervisor panicked: {log}");
+    let ready_phase = log
+        .find("boot-trace: phase=ready ")
+        .unwrap_or_else(|| panic!("no ready phase marker in the trace: {log}"));
+    let ready_line = &log[ready_phase
+        ..log[ready_phase..]
+            .find('\n')
+            .map_or(log.len(), |end| ready_phase + end)];
+    assert!(
+        ready_line.contains("ledger_decodes=0") && ready_line.contains("journal_parses=0"),
+        "work done before ready: {ready_line}"
+    );
+    let first_refusal = log.find("Permission denied").expect("checked above");
+    assert!(
+        first_refusal > ready_phase,
+        "a thread path was refused before the ready phase: {log}"
+    );
     eprintln!("ready after {elapsed:?} with {threads} threads / {archived} archived");
     drop(_restore);
     let _ = fs::remove_dir_all(&base);

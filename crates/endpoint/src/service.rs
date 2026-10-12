@@ -112,6 +112,49 @@ pub fn permission_mode_of(folder: &Path) -> String {
         .unwrap_or_else(|| DEFAULT_PERMISSION_MODE.to_owned())
 }
 
+/// The row of a thread whose card classifies Fresh; `None` for any other state.
+fn card_item(
+    folder: &Path,
+    session_id: &str,
+    archived: bool,
+    running: bool,
+) -> Option<SessionInventoryItem> {
+    let card = store::card::read_card(folder)?;
+    let classified = store::card::classify(folder, &card).ok()?;
+    if classified.freshness() != store::card::Freshness::Fresh {
+        return None;
+    }
+    let main = card.lines.first()?;
+    if main.file != "main.jsonl" {
+        return None;
+    }
+    Some(SessionInventoryItem {
+        session_id: session_id.to_owned(),
+        workspace_id: card.summary.workspace.clone(),
+        title: card.summary.title.clone(),
+        updated_at: card.summary.updated_ms,
+        archived,
+        running,
+        blank: card.summary.blank,
+        as_of_seq: main.last_seq,
+        lifecycle: main.facts.clone(),
+        permission_mode: permission_mode_of(folder),
+        identity_profile: card.summary.identity_profile.clone(),
+        ephemeral: card.summary.ephemeral,
+    })
+}
+
+/// The `updatedAt` of a thread: the timestamp of its last record, in epoch milliseconds.
+pub fn card_updated_ms(projection: &schema::LedgerProjection) -> Result<u64, NativeEndpointError> {
+    Ok(projection
+        .events
+        .last()
+        .and_then(|event| event.string_field("ts"))
+        .ok_or(NativeEndpointError::InventoryTimestamp)
+        .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
+        as u64)
+}
+
 /// The List-row facts of a thread, derived from its folded ledger. `list_sessions` and the
 /// thread card both use this single derivation so a card can never disagree with a scan.
 pub fn card_summary(
@@ -128,13 +171,7 @@ pub fn card_summary(
         .rev()
         .find_map(|event| event.string_field("title"))
         .map(str::to_owned);
-    let updated_ms = projection
-        .events
-        .last()
-        .and_then(|event| event.string_field("ts"))
-        .ok_or(NativeEndpointError::InventoryTimestamp)
-        .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
-        as u64;
+    let updated_ms = card_updated_ms(projection)?;
     let identity_profile = match genesis.string_field("identity_profile") {
         None => Some("coding".to_owned()),
         Some("coding" | "general") => genesis.string_field("identity_profile").map(str::to_owned),
@@ -206,9 +243,29 @@ impl NativeEndpoint {
         .collect()
     }
 
+    /// The List by scanning every ledger: the oracle the card-derived rows are tested against,
+    /// and the fallback when a thread has no trusted card.
     pub fn list_sessions(
         &self,
         running: &HashSet<String>,
+    ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
+        self.list_sessions_with(running, false)
+    }
+
+    /// The List preferring thread cards: a thread whose card classifies Fresh is described by
+    /// the card (no ledger is decoded); any other thread is scanned exactly as `list_sessions`
+    /// does. Rows are identical either way.
+    pub fn list_sessions_cached(
+        &self,
+        running: &HashSet<String>,
+    ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
+        self.list_sessions_with(running, true)
+    }
+
+    fn list_sessions_with(
+        &self,
+        running: &HashSet<String>,
+        prefer_cards: bool,
     ) -> Result<Vec<SessionInventoryItem>, NativeEndpointError> {
         let mut items = Vec::new();
         for (area, archived) in [("threads", false), ("archive", true)] {
@@ -219,6 +276,16 @@ impl NativeEndpoint {
                 }
                 let session_id = entry.file_name().to_string_lossy().into_owned();
                 validate_session_id(&session_id)?;
+                let is_running = !archived
+                    && (running.contains(&session_id)
+                        || self.store.session_has_live_line_holder(&session_id)?);
+                if prefer_cards {
+                    if let Some(item) = card_item(&entry.path(), &session_id, archived, is_running)
+                    {
+                        items.push(item);
+                        continue;
+                    }
+                }
                 let bytes = fs::read(entry.path().join("main.jsonl"))?;
                 let scan = scan_valid_prefix(&bytes, 1);
                 let projection = scan.projection.ok_or_else(|| {
@@ -234,9 +301,6 @@ impl NativeEndpoint {
                     }
                     other => other,
                 })?;
-                let is_running = !archived
-                    && (running.contains(&session_id)
-                        || self.store.session_has_live_line_holder(&session_id)?);
                 items.push(SessionInventoryItem {
                     permission_mode: permission_mode_of(&entry.path()),
                     identity_profile: summary.identity_profile,
@@ -385,6 +449,17 @@ impl NativeEndpoint {
         session_id: &str,
         entries: &mut [crate::SessionHistoryEntry],
     ) {
+        // Only a user message without its own submission snapshot needs the ledger. A page
+        // with none (every message the current Kernel wrote, or a page of assistant events)
+        // does not decode the thread at all.
+        let needs_history = entries.iter().any(|entry| {
+            entry.event.event_type == "user/message"
+                && serde_json::to_value(&entry.event.data)
+                    .is_ok_and(|data| data.get("submission").is_none())
+        });
+        if !needs_history {
+            return;
+        }
         let Ok(folder) = self.active_folder(session_id) else {
             return;
         };

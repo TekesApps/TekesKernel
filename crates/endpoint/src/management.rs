@@ -336,11 +336,11 @@ pub struct ManagementStore {
 }
 
 impl ManagementStore {
-    pub fn open(storage_root: impl AsRef<Path>) -> Result<Self, ManagementError> {
-        Self::open_at(storage_root, &current_timestamp()?)
-    }
-
-    pub fn open_at(
+    /// Recovering open for this crate's tests. Production code has exactly two ways in:
+    /// `open_at_with_queue_driver` (boot, which recovers pending operations) and `open_light`
+    /// (every other caller), so a per-request open can never silently turn into the heavy one.
+    #[cfg(test)]
+    pub(crate) fn open_at(
         storage_root: impl AsRef<Path>,
         import_started_at: &str,
     ) -> Result<Self, ManagementError> {

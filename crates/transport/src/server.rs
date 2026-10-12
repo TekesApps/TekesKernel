@@ -902,13 +902,34 @@ async fn remote_mux_loop(
                         ).await;
                         let Ok(Ok(mut receiver)) = opened else {
                             let _ = generation.close(&stream_id);
-                            let _ = send_mux_error(
+                            let (category, code, message, details) = match opened {
+                                Ok(Err(HostFailure::ActiveSessionLimit { limit })) => (
+                                    SessionErrorCategory::Conflict,
+                                    "active-session-limit",
+                                    "Active session limit reached",
+                                    format!("{{\"limit\":{limit}}}"),
+                                ),
+                                Ok(Err(HostFailure::Quarantined(_))) => (
+                                    SessionErrorCategory::Internal,
+                                    "stream-open-failed",
+                                    "Unable to open semantic stream",
+                                    r#"{"reason":"quarantined"}"#.to_owned(),
+                                ),
+                                _ => (
+                                    SessionErrorCategory::Internal,
+                                    "stream-open-failed",
+                                    "Unable to open semantic stream",
+                                    "{}".to_owned(),
+                                ),
+                            };
+                            let _ = send_mux_error_with_details(
                                 &mut socket,
                                 None,
                                 Some(stream_id),
-                                SessionErrorCategory::Internal,
-                                "stream-open-failed",
-                                "Unable to open semantic stream",
+                                category,
+                                code,
+                                message,
+                                &details,
                             ).await;
                             continue;
                         };
@@ -1053,6 +1074,18 @@ async fn send_mux_error(
     code: &str,
     message: &str,
 ) -> Result<(), ()> {
+    send_mux_error_with_details(socket, request_id, stream_id, category, code, message, "{}").await
+}
+
+async fn send_mux_error_with_details(
+    socket: &mut WebSocket,
+    request_id: Option<String>,
+    stream_id: Option<String>,
+    category: SessionErrorCategory,
+    code: &str,
+    message: &str,
+    details: &str,
+) -> Result<(), ()> {
     send_mux(
         socket,
         &SessionMuxServerFrame::Error {
@@ -1062,7 +1095,7 @@ async fn send_mux_error(
                 category,
                 code: code.to_owned(),
                 message: message.to_owned(),
-                details: IJsonValue::parse_str("{}").map_err(|_| ())?,
+                details: IJsonValue::parse_str(details).map_err(|_| ())?,
                 retryability: None,
             },
         },
@@ -1207,9 +1240,11 @@ fn host_failure(shared: &Shared, failure: HostFailure) -> (Response, &'static st
             ),
             "overloaded",
         ),
-        HostFailure::NotReady | HostFailure::Protocol(_) | HostFailure::Internal(_) => {
-            (unavailable(shared), unavailable_code(shared))
-        }
+        HostFailure::NotReady
+        | HostFailure::Protocol(_)
+        | HostFailure::Internal(_)
+        | HostFailure::ActiveSessionLimit { .. }
+        | HostFailure::Quarantined(_) => (unavailable(shared), unavailable_code(shared)),
     }
 }
 
