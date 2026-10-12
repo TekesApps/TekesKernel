@@ -2,6 +2,7 @@
 
 mod asset;
 mod atomic;
+pub mod card;
 mod folder;
 mod management_root;
 mod platform;

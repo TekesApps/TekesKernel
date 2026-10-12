@@ -112,6 +112,61 @@ fn permission_mode_of(folder: &Path) -> String {
         .unwrap_or_else(|| DEFAULT_PERMISSION_MODE.to_owned())
 }
 
+/// The List-row facts of a thread, derived from its folded ledger. `list_sessions` and the
+/// thread card both use this single derivation so a card can never disagree with a scan.
+pub fn card_summary(
+    projection: &schema::LedgerProjection,
+) -> Result<store::card::CardSummary, NativeEndpointError> {
+    let genesis = projection.events.first().ok_or_else(|| {
+        NativeEndpointError::Store(store::StoreError::Corruption(
+            "ledger has no genesis".to_owned(),
+        ))
+    })?;
+    let title = projection
+        .events
+        .iter()
+        .rev()
+        .find_map(|event| event.string_field("title"))
+        .map(str::to_owned);
+    let updated_ms = projection
+        .events
+        .last()
+        .and_then(|event| event.string_field("ts"))
+        .ok_or(NativeEndpointError::InventoryTimestamp)
+        .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
+        as u64;
+    let identity_profile = match genesis.string_field("identity_profile") {
+        None => Some("coding".to_owned()),
+        Some("coding" | "general") => genesis.string_field("identity_profile").map(str::to_owned),
+        _ => projection.events.iter().find_map(|event| {
+            if event.kind() != &EventKind::State
+                || event.string_field("subkind") != Some("identity.selected")
+            {
+                return None;
+            }
+            serde_json::to_value(event.raw())
+                .ok()?
+                .get("payload")?
+                .get("profile")?
+                .as_str()
+                .map(str::to_owned)
+        }),
+    };
+    Ok(store::card::CardSummary {
+        workspace: genesis
+            .string_field("workspace")
+            .ok_or(NativeEndpointError::InventoryWorkspace)?
+            .to_owned(),
+        folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
+        created: genesis.string_field("ts").unwrap_or_default().to_owned(),
+        updated_ms,
+        title,
+        identity_profile,
+        ephemeral: genesis.is_ephemeral_genesis(),
+        blank: projection.lifecycle.latest_turn.is_none(),
+    })
+}
+
 pub struct NativeEndpoint {
     store: ThreadStore,
 }
@@ -171,57 +226,26 @@ impl NativeEndpoint {
                         "session {session_id} has no valid genesis prefix"
                     )))
                 })?;
-                let genesis = projection.events.first().ok_or_else(|| {
-                    NativeEndpointError::Store(store::StoreError::Corruption(format!(
-                        "session {session_id} has no genesis"
-                    )))
+                let summary = card_summary(&projection).map_err(|error| match error {
+                    NativeEndpointError::Store(store::StoreError::Corruption(_)) => {
+                        NativeEndpointError::Store(store::StoreError::Corruption(format!(
+                            "session {session_id} has no genesis"
+                        )))
+                    }
+                    other => other,
                 })?;
-                let title = projection
-                    .events
-                    .iter()
-                    .rev()
-                    .find_map(|event| event.string_field("title"))
-                    .map(str::to_owned);
-                let updated_at = projection
-                    .events
-                    .last()
-                    .and_then(|event| event.string_field("ts"))
-                    .ok_or(NativeEndpointError::InventoryTimestamp)
-                    .and_then(|value| timestamp_millis(value).map_err(NativeEndpointError::from))?
-                    as u64;
                 let is_running = !archived
                     && (running.contains(&session_id)
                         || self.store.session_has_live_line_holder(&session_id)?);
                 items.push(SessionInventoryItem {
                     permission_mode: permission_mode_of(&entry.path()),
-                    identity_profile: match genesis.string_field("identity_profile") {
-                        None => Some("coding".to_owned()),
-                        Some("coding" | "general") => {
-                            genesis.string_field("identity_profile").map(str::to_owned)
-                        }
-                        _ => projection.events.iter().find_map(|event| {
-                            if event.kind() != &EventKind::State
-                                || event.string_field("subkind") != Some("identity.selected")
-                            {
-                                return None;
-                            }
-                            serde_json::to_value(event.raw())
-                                .ok()?
-                                .get("payload")?
-                                .get("profile")?
-                                .as_str()
-                                .map(str::to_owned)
-                        }),
-                    },
-                    ephemeral: genesis.is_ephemeral_genesis(),
-                    workspace_id: genesis
-                        .string_field("workspace")
-                        .ok_or(NativeEndpointError::InventoryWorkspace)?
-                        .to_owned(),
-                    title,
-                    updated_at,
+                    identity_profile: summary.identity_profile,
+                    ephemeral: summary.ephemeral,
+                    workspace_id: summary.workspace,
+                    title: summary.title,
+                    updated_at: summary.updated_ms,
                     running: is_running,
-                    blank: projection.lifecycle.latest_turn.is_none(),
+                    blank: summary.blank,
                     as_of_seq: projection.last_seq,
                     lifecycle: projection.lifecycle,
                     session_id,

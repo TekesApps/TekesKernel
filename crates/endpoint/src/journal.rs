@@ -118,6 +118,14 @@ fn retire_legacy_journal(folder: &Path, journal: &Path) -> Result<(), JournalErr
     Ok(())
 }
 
+/// See `EndpointJournal::tail_summary`.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct JournalTail {
+    pub rows: u64,
+    pub last_seq: Option<u64>,
+    pub last_kernel_seq: u64,
+}
+
 pub struct EndpointJournal {
     path: PathBuf,
     lock_path: PathBuf,
@@ -228,7 +236,27 @@ impl EndpointJournal {
     }
 
     pub fn last_seq(&self) -> Result<Option<u64>, JournalError> {
-        Ok(self.records()?.last().map(|record| record.event.seq))
+        Ok(self.tail_summary()?.last_seq)
+    }
+
+    /// Row count, last endpoint seq and last causal Kernel seq, read from the cache without
+    /// cloning the journal (`records()` clones every row).
+    pub fn tail_summary(&self) -> Result<JournalTail, JournalError> {
+        let _lock = NamedLock::shared(&self.lock_path)?;
+        let mut cache = self
+            .cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        self.refresh_cache_unlocked(&mut cache)?;
+        let records = &cache.as_ref().expect("cache was refreshed").records;
+        let last = records.last();
+        Ok(JournalTail {
+            rows: records.len() as u64,
+            last_seq: last.map(|record| record.event.seq),
+            last_kernel_seq: last
+                .and_then(|record| record.kernel_seqs.last().copied())
+                .unwrap_or(0),
+        })
     }
 
     /// Resolves a public endpoint sequence to the durable Kernel prefix it

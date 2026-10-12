@@ -34,7 +34,7 @@ struct ContinuationFold {
     poll_after: Option<String>,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct LifecycleFacts {
     pub latest_turn: Option<u64>,
     pub terminal_tail: bool,

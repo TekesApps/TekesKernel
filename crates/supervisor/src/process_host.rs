@@ -419,6 +419,8 @@ struct ProcessToolRuntime {
 
 pub struct ProductionProcessHost {
     root: PathBuf,
+    /// Writes `thread-card.json` off the doorbell path (G-BOOT-1 S2).
+    card_writer: crate::thread_card::CardWriter,
     repository: ConfigRepository,
     endpoint: NativeEndpoint,
     worker_binary: PathBuf,
@@ -802,6 +804,7 @@ impl ProductionProcessHost {
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         let mcp_runtime = Arc::new(mcp_runtime);
         let host = Arc::new_cyclic(|weak| Self {
+            card_writer: crate::thread_card::CardWriter::spawn_from_env(),
             repository,
             endpoint,
             root,
@@ -1945,6 +1948,7 @@ impl ProductionProcessHost {
 
     pub fn shutdown(&self) {
         self.draining.store(true, Ordering::Release);
+        self.card_writer.shutdown();
         self.pending_workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -3211,6 +3215,7 @@ impl ProductionProcessHost {
         let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
         let kernel_file_len = bytes.len() as u64;
         let scan = scan_valid_prefix(&bytes, 1);
+        let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
         // The shared-decode fast paths below are only taken for a clean read (no torn tail,
         // which the separate-read paths reject with "requires tail recovery") and only while
         // the ledger has not grown since this decode; otherwise the previous behaviour applies.
@@ -3274,6 +3279,20 @@ impl ProductionProcessHost {
                         "process-host-context-projection-failed: session={session_id} error={error}"
                     );
                 }
+            }
+        }
+        // The fold above is the verification a card needs; hand it to the card writer (no
+        // extra decode). Only clean reads are described: a torn tail is repaired first.
+        if clean_read {
+            if let Some(card) = crate::thread_card::prepare(
+                session_id,
+                folder.clone(),
+                bytes,
+                valid_bytes,
+                &projection,
+                &journal,
+            ) {
+                self.card_writer.submit(card);
             }
         }
         let mut projection_cache = self
@@ -8851,6 +8870,90 @@ mod tests {
         let streams = ProductionCarrierStreams::new(root);
         host.attach_streams(streams.clone());
         (host, streams, ledger)
+    }
+
+    /// `publish_appended` leaves a card the reader trusts: it classifies Fresh, its summary
+    /// equals the scan-derived inventory row, and its holds follow the ledger (unresolved, then
+    /// resolved after the response is appended and the thread is projected again).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a4";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("publish");
+        host.card_writer.shutdown();
+        let folder = root.path().join("threads").join(session);
+        let card = store::card::read_card(&folder).expect("card written");
+        let classified = store::card::classify(&folder, &card).expect("classify");
+        assert_eq!(classified.freshness(), store::card::Freshness::Fresh);
+        assert_eq!(classified.journal, store::card::JournalVerdict::Fresh);
+        assert_eq!(card.lines[0].holds.len(), 1);
+        assert!(card.lines[0].holds[0].resolved.is_none());
+        assert_eq!(card.lines[0].last_seq, 9);
+        // The List row derived from the card equals the row a full scan produces.
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan")
+            .into_iter()
+            .find(|item| item.session_id == session)
+            .expect("row");
+        assert_eq!(card.summary.workspace, scanned.workspace_id);
+        assert_eq!(card.summary.title, scanned.title);
+        assert_eq!(card.summary.updated_ms, scanned.updated_at);
+        assert_eq!(card.summary.blank, scanned.blank);
+        assert_eq!(card.summary.ephemeral, scanned.ephemeral);
+        assert_eq!(card.summary.identity_profile, scanned.identity_profile);
+        assert_eq!(card.lines[0].facts, scanned.lifecycle);
+        assert_eq!(card.lines[0].last_seq, scanned.as_of_seq);
+
+        // A later append makes the card Ahead (never wrong), and a new projection re-writes it
+        // with the hold resolved.
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        let classified = store::card::classify(&folder, &card).expect("classify");
+        assert_eq!(classified.freshness(), store::card::Freshness::Ahead);
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn card_writer_coalesces_and_flushes_at_shutdown() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a5";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("first publish");
+        // Appends while the debounce window is open are coalesced into one final write.
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session).expect("second publish");
+        host.shutdown();
+        let folder = root.path().join("threads").join(session);
+        let card = store::card::read_card(&folder).expect("card");
+        assert_eq!(
+            card.lines[0].last_seq, 10,
+            "the flush wrote the newest state"
+        );
+        assert!(card.lines[0].holds[0].resolved.is_some());
+        assert_eq!(
+            store::card::classify(&folder, &card)
+                .expect("classify")
+                .freshness(),
+            store::card::Freshness::Fresh
+        );
     }
 
     #[cfg(target_os = "macos")]

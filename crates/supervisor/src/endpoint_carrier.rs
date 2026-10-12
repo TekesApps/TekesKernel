@@ -1914,7 +1914,7 @@ fn semantic_line_projection(
 /// The answerable requests of one ledger line: every `approval_request` hold
 /// with its public requested frame and, when the line already carries it, the
 /// ledger resolution (`approval_response`, or the aborting `tool_result`).
-fn line_requests(
+pub(crate) fn line_requests(
     session_id: &str,
     source_line: Option<&str>,
     projection: &schema::LedgerProjection,

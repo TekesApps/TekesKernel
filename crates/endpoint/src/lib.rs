@@ -57,7 +57,9 @@ pub use hub::{
 pub use idempotency::{
     RpcBegin, RpcClaim, RpcDurableIdentity, RpcLookup, RpcRegistry, RpcRegistryError,
 };
-pub use journal::{EndpointJournal, JOURNAL_FILE, JournalError, JournalRecord, LOCK_FILE};
+pub use journal::{
+    EndpointJournal, JOURNAL_FILE, JournalError, JournalRecord, JournalTail, LOCK_FILE,
+};
 pub use management::{
     ForkSessionOperation, LEGACY_ORIGIN_CLIENT, ManagementError, ManagementStore, ORIGIN_CLIENT,
     PendingQueueTransaction, QueueRecoveryDriver, QueueTransactionCompletion,
@@ -92,7 +94,7 @@ pub use rpc::{
 pub use service::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, ArchiveResult,
     MutationReceipt, NativeEndpoint, NativeEndpointError, SESSION_NOTICE_OPERATION,
-    SessionInventoryItem, SessionNotice, SessionNoticeSeverity, UnarchiveResult,
+    SessionInventoryItem, SessionNotice, SessionNoticeSeverity, UnarchiveResult, card_summary,
 };
 pub use stitch::{StitchDecision, StitchError, stitch_window};
 pub use stream_queue::{EndpointFrameQueue, FrameQueueError};
