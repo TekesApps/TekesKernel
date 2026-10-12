@@ -444,6 +444,7 @@ pub struct ProductionProcessHost {
     threads: ThreadStore,
     /// Per-thread single-flight gates of the hydrator.
     hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
+    hydrate_failures: Mutex<HashMap<String, Instant>>,
     #[cfg(test)]
     hydrate_runs: AtomicU64,
     #[cfg(test)]
@@ -840,6 +841,7 @@ impl ProductionProcessHost {
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
             threads: threads_store,
             hydrating: Mutex::new(HashMap::new()),
+            hydrate_failures: Mutex::new(HashMap::new()),
             #[cfg(test)]
             hydrate_runs: AtomicU64::new(0),
             #[cfg(test)]
@@ -1627,6 +1629,9 @@ impl ProductionProcessHost {
             if self.draining.load(Ordering::Acquire) {
                 return;
             }
+            if self.recently_failed(&session) {
+                continue;
+            }
             let began = Instant::now();
             match self.hydrate(&session) {
                 Ok(()) => built += 1,
@@ -1942,6 +1947,34 @@ impl ProductionProcessHost {
     /// `after_fold` is a test seam called after the thread's ledger is folded and before the
     /// journal work, i.e. outside every global lock.
     pub(crate) fn hydrate_with(
+        &self,
+        session_id: &str,
+        after_fold: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
+        let outcome = self.hydrate_unrecorded(session_id, after_fold);
+        let mut failures = self
+            .hydrate_failures
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if outcome.is_ok() {
+            failures.remove(session_id);
+        } else {
+            failures.insert(session_id.to_owned(), Instant::now());
+        }
+        outcome
+    }
+
+    /// A thread whose verification failed a moment ago is not retried by every List: it keeps
+    /// its placeholder row and is tried again after `HYDRATE_RETRY`.
+    fn recently_failed(&self, session_id: &str) -> bool {
+        self.hydrate_failures
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(session_id)
+            .is_some_and(|at| at.elapsed() < HYDRATE_RETRY)
+    }
+
+    fn hydrate_unrecorded(
         &self,
         session_id: &str,
         after_fold: Option<&dyn Fn()>,
@@ -5241,6 +5274,9 @@ fn is_single_line_ledger(path: &Path) -> bool {
     reader.fill_buf().is_ok_and(<[u8]>::is_empty)
 }
 
+/// How long a thread that failed verification is left alone before the next attempt.
+const HYDRATE_RETRY: Duration = Duration::from_secs(30);
+
 const DEFAULT_LIST_WAIT: Duration = Duration::from_millis(2_000);
 
 impl ProductionProcessHost {
@@ -5413,6 +5449,7 @@ impl ProductionProcessHost {
                 )
             })
             .map(|(id, _)| id)
+            .filter(|id| !self.recently_failed(id))
             .collect::<Vec<_>>();
         self.verify_within(unverified, wait);
         let mut items = self
@@ -10518,6 +10555,39 @@ mod tests {
             crate::endpoint_host::recover_pending_management(root.path(), &*host, &mut validated);
         fs::set_permissions(&folder, fs::Permissions::from_mode(0o700)).expect("unlock");
         outcome.expect("recovery tick");
+        host.shutdown();
+    }
+
+    /// A thread that cannot be verified (here: its journal path is a directory) keeps its
+    /// placeholder row and is not retried by every List.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_thread_that_fails_verification_is_not_retried_by_every_list() {
+        let root = tempfile::tempdir().expect("root");
+        let broken = "018f0000-0000-7000-8000-0000000000b8";
+        let folder = held_thread_on_disk(root.path(), broken);
+        fs::create_dir(folder.join("endpoint.jsonl")).expect("journal path is a directory");
+        let (host, _streams) = open_host(root.path());
+        let first = host
+            .build_inventory(false, Duration::from_secs(30))
+            .expect("list");
+        assert_eq!(first.len(), 1, "the unverifiable thread keeps a row");
+        let runs = host.hydrate_runs.load(Ordering::Relaxed);
+        assert!(runs >= 1);
+        assert_eq!(
+            host.catalog.get(broken).expect("entry").trust,
+            crate::catalog::Trust::Cold,
+            "it could not be verified"
+        );
+        for _ in 0..3 {
+            host.build_inventory(false, Duration::from_secs(30))
+                .expect("list again");
+        }
+        assert_eq!(
+            host.hydrate_runs.load(Ordering::Relaxed),
+            runs,
+            "no new attempt inside the retry window"
+        );
         host.shutdown();
     }
 

@@ -78,6 +78,9 @@ impl ThreadStore {
             let entry = entry?;
             if !entry.file_type()?.is_file()
                 || entry.path().extension().and_then(|value| value.to_str()) != Some("jsonl")
+                // The endpoint journal is a projection with its own lock (`endpoint.lock`); no
+                // worker holds a line lock on it, and a List probes every thread.
+                || !crate::card::valid_line_name(&entry.file_name().to_string_lossy())
             {
                 continue;
             }

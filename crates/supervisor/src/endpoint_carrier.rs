@@ -1514,9 +1514,15 @@ impl ProductionCarrierStreams {
                 }
             }
         }
-        for session in unprojected {
-            if let Err(error) = self.refresh_context_projection(&session) {
-                eprintln!("carrier-context-projection-failed: session={session} error={error}");
+        // With a catalog the baseline never folds a ledger: a thread that was never projected
+        // (no cache entry, no file) is simply absent -- its context is unknown until it is next
+        // touched or the upgrade pass projects it, which writes the file the next baseline
+        // reads. Without a catalog (a bare carrier) every such thread is folded, as it always was.
+        if !trust_files {
+            for session in unprojected {
+                if let Err(error) = self.refresh_context_projection(&session) {
+                    eprintln!("carrier-context-projection-failed: session={session} error={error}");
+                }
             }
         }
         let items = self
