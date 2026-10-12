@@ -766,6 +766,7 @@ impl ProductionCarrierStreams {
 
     /// Test observer: the ids an actionables stream would open with.
     #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     pub(crate) fn actionable_ids_for_test(&self) -> Vec<String> {
         match self.actionables_baseline(1) {
             Ok(SessionSyncFrame::ActionableBaseline { items, .. }) => {
@@ -777,6 +778,7 @@ impl ProductionCarrierStreams {
 
     /// Test observer: the request ids currently published as pending for one ledger line.
     #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     pub(crate) fn published_pending_for_test(
         &self,
         session_id: &str,

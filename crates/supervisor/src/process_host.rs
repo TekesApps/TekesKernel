@@ -1667,6 +1667,7 @@ impl ProductionProcessHost {
 
     /// Test helper: what `sessions.recover` does to the deferral set, without the verification.
     #[cfg(test)]
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     pub(crate) fn release_for_test(&self, session_id: &str) {
         self.released
             .lock()
@@ -9521,6 +9522,7 @@ mod tests {
         );
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
         bytes.push(b'\n');
@@ -9814,12 +9816,14 @@ mod tests {
         ]
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn held_response_line(thread: &str) -> String {
         format!(
             r#"{{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"r1","origin_tuple":{{"client":"cli","key":"r1","op":"approve","principal":"p","target":"{thread}"}},"seq":10,"ts":"{HELD_TS}","turn":1,"v":1}}"#
         )
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn held_host(
         root: &Path,
         session: &str,
@@ -10031,6 +10035,7 @@ mod tests {
         host.shutdown();
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn held_thread_on_disk(root: &Path, session: &str) -> PathBuf {
         let folder = root.join("threads").join(session);
         fs::create_dir_all(folder.join("assets")).expect("thread folder");
@@ -10198,6 +10203,7 @@ mod tests {
         host.shutdown();
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn open_host(root: &Path) -> (Arc<ProductionProcessHost>, ProductionCarrierStreams) {
         fs::create_dir_all(root.join("workspaces/ws")).expect("workspaces");
         write_canonical_test_json(
@@ -10220,6 +10226,7 @@ mod tests {
         (host, streams)
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn poll_until_ready<F: Future>(future: F) -> F::Output {
         let waker = Waker::noop();
         let mut context = Context::from_waker(waker);
@@ -11024,6 +11031,7 @@ mod tests {
         fs::write(path, bytes).expect("test ledger");
     }
 
+    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     const CHILD_TS: &str = "2026-08-28T00:00:00.000Z";
 
     /// main: genesis, input, run_start, turn_open, spawn(child) at seq 5; child: a tool call
