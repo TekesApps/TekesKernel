@@ -80,11 +80,17 @@ pub fn canonical_root(root: &Path) -> PathBuf {
     {
         return known.clone();
     }
-    let resolved = std::fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf());
-    memo.lock()
-        .unwrap_or_else(std::sync::PoisonError::into_inner)
-        .insert(root.to_path_buf(), resolved.clone());
-    resolved
+    match std::fs::canonicalize(root) {
+        Ok(resolved) => {
+            memo.lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .insert(root.to_path_buf(), resolved.clone());
+            resolved
+        }
+        // A root that cannot be resolved yet (it does not exist) keeps its spelling and is
+        // looked up again next time: a failure is never remembered.
+        Err(_) => root.to_path_buf(),
+    }
 }
 
 impl FolderEvent {

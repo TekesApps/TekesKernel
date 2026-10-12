@@ -1708,14 +1708,13 @@ impl ProductionClientExtensions {
                             serde_json::json!({"sessionId":requesting}),
                         )
                     })?;
+                let paths = management.workspace_paths().unwrap_or_default();
                 let candidates = items
                     .iter()
                     .map(|item| host_files::SessionCandidate {
                         session_id: item.session_id.clone(),
                         title: item.title.clone(),
-                        cwd: management
-                            .workspace_path(&item.workspace_id)
-                            .unwrap_or_default(),
+                        cwd: paths.get(&item.workspace_id).cloned().unwrap_or_default(),
                         workspace_id: item.workspace_id.clone(),
                         created_at_ms: item.updated_at as f64,
                         archived: item.archived,

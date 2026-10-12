@@ -328,6 +328,18 @@ pub struct SelectedModel {
     pub reasoning_effort: Option<String>,
 }
 
+/// Operation records a recovering open already validated as complete, with the identity of the
+/// file validated. The periodic recovery skips them while the file is unchanged.
+#[derive(Debug, Default)]
+pub struct CompleteOperations(
+    std::collections::HashSet<(PathBuf, (u64, Option<std::time::SystemTime>))>,
+);
+
+fn file_identity(path: &Path) -> Option<(u64, Option<std::time::SystemTime>)> {
+    let metadata = fs::metadata(path).ok()?;
+    Some((metadata.len(), metadata.modified().ok()))
+}
+
 /// Endpoint-scoped durable workspace/config authority.
 pub struct ManagementStore {
     storage_root: PathBuf,
@@ -352,6 +364,32 @@ impl ManagementStore {
         import_started_at: &str,
         queue_driver: Option<&dyn QueueRecoveryDriver>,
     ) -> Result<Self, ManagementError> {
+        Self::open_recovering(storage_root, import_started_at, queue_driver, None)
+    }
+
+    /// The recovering open for the periodic retry: operation records already validated as
+    /// complete (same path, length and modification time) are not read again, so an idle root
+    /// costs a directory listing and a `stat` per record rather than a decode of each.
+    pub fn open_recovering_again(
+        storage_root: impl AsRef<Path>,
+        import_started_at: &str,
+        queue_driver: Option<&dyn QueueRecoveryDriver>,
+        validated: &mut CompleteOperations,
+    ) -> Result<Self, ManagementError> {
+        Self::open_recovering(
+            storage_root,
+            import_started_at,
+            queue_driver,
+            Some(validated),
+        )
+    }
+
+    fn open_recovering(
+        storage_root: impl AsRef<Path>,
+        import_started_at: &str,
+        queue_driver: Option<&dyn QueueRecoveryDriver>,
+        validated: Option<&mut CompleteOperations>,
+    ) -> Result<Self, ManagementError> {
         let storage_root = storage_root.as_ref().to_path_buf();
         ThreadStore::open(&storage_root)?;
         let root = store::endpoint_management_root(&storage_root)?;
@@ -366,7 +404,7 @@ impl ManagementStore {
             storage_root,
             root,
         };
-        store.recover_with_queue_driver(queue_driver)?;
+        store.recover_skipping(queue_driver, validated)?;
         store.seed_missing_workspace_policies()?;
         store.reconcile_workspace_metadata(import_started_at)?;
         // The 256 active-session cap is enforced where a slot is reserved (create, fork,
@@ -451,12 +489,29 @@ impl ManagementStore {
         &self,
         queue_driver: Option<&dyn QueueRecoveryDriver>,
     ) -> Result<(), ManagementError> {
+        self.recover_skipping(queue_driver, None)
+    }
+
+    fn recover_skipping(
+        &self,
+        queue_driver: Option<&dyn QueueRecoveryDriver>,
+        mut validated: Option<&mut CompleteOperations>,
+    ) -> Result<(), ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         self.remove_recordless_payloads()?;
         for path in self.operation_paths()? {
+            let identity = file_identity(&path);
+            if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref()) {
+                if known.0.contains(&(path.clone(), *identity)) {
+                    continue;
+                }
+            }
             let record = read_canonical::<OperationRecord>(&path)?;
             let kind = intent_kind(&record)?;
             if record.phase == OperationPhase::Complete {
+                if let (Some(known), Some(identity)) = (validated.as_deref_mut(), identity) {
+                    known.0.insert((path.clone(), identity));
+                }
                 match kind.as_str() {
                     "workspace" => {
                         workspace_intent(&record)?;
@@ -656,6 +711,17 @@ impl ManagementStore {
             items,
             archived_session_ids,
         })
+    }
+
+    /// Every workspace's primary path, read once. A caller that needs the path of many sessions
+    /// (an inventory baseline) uses this instead of `workspace_path` per session, which reads
+    /// every workspace configuration each time.
+    pub fn workspace_paths(&self) -> Result<BTreeMap<String, String>, ManagementError> {
+        let _lock = NamedLock::shared(self.root.join("lock"))?;
+        self.workspace_configs()?
+            .into_iter()
+            .map(|(id, config)| Ok((id, primary_path(&config)?.to_owned())))
+            .collect()
     }
 
     pub fn workspace_path(&self, workspace_id: &str) -> Result<String, ManagementError> {

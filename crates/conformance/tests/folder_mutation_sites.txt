@@ -7,7 +7,7 @@ crates/endpoint/src/idempotency.rs|repair_all|remove_file|1|rpc
 crates/endpoint/src/idempotency.rs|repair_all|rename|1|rpc
 crates/endpoint/src/journal.rs|retire_legacy_journal|remove_file|1|journal
 crates/endpoint/src/journal.rs|retire_outdated_journal|remove_file|2|journal
-crates/endpoint/src/management.rs|open_at_with_queue_driver|create_dir_all|2|layout
+crates/endpoint/src/management.rs|open_recovering|create_dir_all|2|layout
 crates/endpoint/src/management.rs|open_light_at|create_dir_all|2|layout
 crates/endpoint/src/management.rs|remove_recordless_payload|remove_dir_all|1|staging
 crates/endpoint/src/management.rs|remove_recordless_payloads|remove_dir_all|1|staging
@@ -62,8 +62,8 @@ crates/store/src/folder.rs|remove_tree_if_present|remove_dir_all|1|tombstone-del
 crates/store/src/folder.rs|retire_to|rename|1|retire
 crates/store/src/management_root.rs|retire_legacy_name|remove_dir|1|layout
 crates/store/src/management_root.rs|retire_legacy_name|rename|2|layout
-crates/store/src/platform.rs|probe_local_filesystem|create_dir_all|1|layout
-crates/store/src/platform.rs|probe_local_filesystem|remove_file|1|layout
+crates/store/src/platform.rs|probe_local_filesystem_uncached|create_dir_all|1|layout
+crates/store/src/platform.rs|probe_local_filesystem_uncached|remove_file|1|layout
 crates/store/src/rewrite.rs|advance_rewrite|remove_dir_all|1|tombstone-delete
 crates/store/src/rewrite.rs|advance_rewrite|rename|2|publish
 crates/store/src/rewrite.rs|begin_rewrite|create_dir|1|staging

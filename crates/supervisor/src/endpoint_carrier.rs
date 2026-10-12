@@ -874,6 +874,26 @@ impl ProductionCarrierStreams {
     /// stream) is released first; if none is idle the registration is refused with
     /// `ActiveSessionLimit`.
     pub(crate) fn attach_everywhere(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
+        self.attach_everywhere_with(session_id, None)
+    }
+
+    /// `after_load` is a test seam run between loading the session and taking the lock.
+    pub(crate) fn attach_everywhere_with(
+        &self,
+        session_id: &str,
+        after_load: Option<&dyn Fn()>,
+    ) -> Result<(), ProductionCarrierError> {
+        if !self.lacks_registration(session_id)? {
+            self.touch(session_id);
+            return Ok(());
+        }
+        // The journal parse and the fold of the session's requests happen before the global
+        // generations lock is taken (E834 R1): one cold first touch never holds up another
+        // session's frames or another first touch.
+        let session = load_mux_session(&self.inner.root, session_id)?;
+        if let Some(after_load) = after_load {
+            after_load();
+        }
         let mut pinned = None;
         loop {
             let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
@@ -887,6 +907,7 @@ impl ProductionCarrierStreams {
                 }
             }
             if missing.is_empty() {
+                // Registered by a concurrent first touch while this one was loading.
                 drop(generations);
                 self.touch(session_id);
                 return Ok(());
@@ -937,7 +958,6 @@ impl ProductionCarrierStreams {
                     .touched
                     .remove(&victim);
             }
-            let session = load_mux_session(&self.inner.root, session_id)?;
             for index in missing {
                 generations.mux[index].handle.attach_with_replay(
                     &self.inner.hub,
@@ -951,6 +971,20 @@ impl ProductionCarrierStreams {
             self.touch(session_id);
             return Ok(());
         }
+    }
+
+    /// True when some live generation does not hold the session yet.
+    fn lacks_registration(&self, session_id: &str) -> Result<bool, ProductionCarrierError> {
+        let mut generations = self.inner.generations.lock().map_err(|_| poisoned())?;
+        generations
+            .mux
+            .retain(|generation| generation.lease.strong_count() != 0);
+        for generation in &generations.mux {
+            if !generation.handle.contains(session_id)? {
+                return Ok(true);
+            }
+        }
+        Ok(false)
     }
 
     fn touch(&self, session_id: &str) {
@@ -1227,7 +1261,9 @@ impl ProductionCarrierStreams {
     /// projection is also recomputed whenever it is next touched.
     pub(crate) fn refresh_all_context_projections(&self) -> Result<(), ProductionCarrierError> {
         let ids = active_session_ids(&self.inner.root)?;
-        let live = self.live_sessions();
+        // Sessions someone is looking at or that are busy: a live worker, a pending request,
+        // an open journal stream (a lease), or a registration on a mux generation.
+        let pinned = self.pinned_sessions();
         let attached = {
             let generations = self.inner.generations.lock().map_err(|_| poisoned())?;
             let mut attached = HashSet::new();
@@ -1240,7 +1276,7 @@ impl ProductionCarrierStreams {
         };
         let (now, later): (Vec<_>, Vec<_>) = ids
             .into_iter()
-            .partition(|id| live.contains(id) || attached.contains(id));
+            .partition(|id| pinned.contains(id) || attached.contains(id));
         for session in now {
             if let Err(error) = self.refresh_context_projection(&session) {
                 eprintln!("carrier-context-projection-failed: session={session} error={error}");
@@ -1341,7 +1377,10 @@ impl ProductionCarrierStreams {
         // and reconnect cannot observe a new total with an older manifest in the cache.
         self.update_control_frames(&frames)?;
         if changed {
-            self.attach_for_publish(session_id)?;
+            // Delivered to whoever is registered for the session (its open journal stream,
+            // a generation it was attached to). A refresh never registers an idle session
+            // just to announce a usage change (E834 R2): a baseline reads the persisted
+            // projection, and the session registers itself when it is next touched.
             for frame in frames {
                 self.inner
                     .hub
@@ -1403,11 +1442,12 @@ impl ProductionCarrierStreams {
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
         let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
+        let paths = management.workspace_paths()?;
         let mut sessions = self
             .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .map(|session| inventory_row(session, &management, &lineage))
+            .map(|session| inventory_row(session, &paths, &lineage))
             .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
         sessions.sort_by(|left, right| {
             right
@@ -1438,7 +1478,8 @@ impl ProductionCarrierStreams {
         };
         let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        Ok(Some(Some(inventory_row(item, &management, &lineage)?)))
+        let paths = management.workspace_paths()?;
+        Ok(Some(Some(inventory_row(item, &paths, &lineage)?)))
     }
 
     fn control_baseline(
@@ -2505,7 +2546,7 @@ fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, Product
 
 fn inventory_row(
     session: endpoint::SessionInventoryItem,
-    management: &endpoint::ManagementStore,
+    workspace_paths: &std::collections::BTreeMap<String, String>,
     lineage: &std::collections::BTreeMap<String, endpoint::ForkLineage>,
 ) -> Result<SessionSummary, endpoint::ManagementError> {
     let projections = session.title.map(|title| {
@@ -2526,7 +2567,12 @@ fn inventory_row(
     let tail = classify(&session.lifecycle, lock);
     let fork = lineage.get(&session.session_id);
     Ok(SessionSummary {
-        cwd: management.workspace_path(&session.workspace_id)?,
+        cwd: workspace_paths
+            .get(&session.workspace_id)
+            .cloned()
+            .ok_or_else(|| {
+                endpoint::ManagementError::WorkspaceNotFound(session.workspace_id.clone())
+            })?,
         parent_session_id: fork.map(|fork| fork.source.clone()),
         origin: fork.map(|_| "fork".to_owned()),
         ephemeral: session.ephemeral,
@@ -3071,5 +3117,162 @@ mod question_cancellation_tests {
             requests[0].0.resolution,
             Some((8, endpoint::ResolutionOutcome::Answered))
         );
+    }
+}
+
+#[cfg(test)]
+mod lazy_registration_tests {
+    use super::*;
+    use std::sync::atomic::AtomicBool;
+
+    const TS: &str = "2026-10-12T00:00:00.000Z";
+
+    fn blank_thread(root: &Path, session: &str) {
+        let genesis = format!(
+            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{session}"}},"resume":"never","seq":1,"thread":"{session}","ts":"{TS}","v":1,"workspace":"ws"}}"#
+        );
+        ThreadStore::open(root).expect("store");
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("folder");
+        fs::write(folder.join("main.jsonl"), genesis + "\n").expect("ledger");
+    }
+
+    fn id(n: usize) -> String {
+        format!("018f0000-0000-7000-8000-{n:012}")
+    }
+
+    fn registered(streams: &ProductionCarrierStreams, handle_count: usize) -> usize {
+        let generations = streams.inner.generations.lock().expect("generations");
+        assert_eq!(generations.mux.len(), handle_count);
+        let mut all = BTreeSet::new();
+        for generation in &generations.mux {
+            for baseline in generation.handle.baselines().expect("baselines") {
+                all.insert(baseline.session_id);
+            }
+        }
+        all.len()
+    }
+
+    /// E834 R1: the load of a first touch happens outside the generations lock. Two first
+    /// touches both reach the point after their load before either registers (they load in
+    /// parallel), and a frame for an already registered session is published while a third
+    /// first touch is still loading.
+    #[test]
+    fn first_touches_load_in_parallel_and_do_not_hold_up_live_frames() {
+        let root = tempfile::tempdir().expect("root");
+        let (a, b, c, live) = (id(1), id(2), id(3), id(4));
+        for session in [&a, &b, &c, &live] {
+            blank_thread(root.path(), session);
+        }
+        let streams = ProductionCarrierStreams::new(root.path());
+        let _mux = streams.open_legacy_mux().expect("mux");
+        streams
+            .attach_everywhere(&live)
+            .expect("registered session");
+
+        let arrived = std::sync::atomic::AtomicUsize::new(0);
+        std::thread::scope(|scope| {
+            for session in [&a, &b] {
+                let (streams, arrived) = (&streams, &arrived);
+                scope.spawn(move || {
+                    let rendezvous = || {
+                        arrived.fetch_add(1, Ordering::SeqCst);
+                        let deadline =
+                            std::time::Instant::now() + std::time::Duration::from_secs(20);
+                        while arrived.load(Ordering::SeqCst) < 2 {
+                            assert!(
+                                std::time::Instant::now() < deadline,
+                                "first touches were serialised"
+                            );
+                            std::thread::sleep(std::time::Duration::from_millis(5));
+                        }
+                    };
+                    streams
+                        .attach_everywhere_with(session, Some(&rendezvous))
+                        .expect("attach");
+                });
+            }
+        });
+        assert_eq!(registered(&streams, 1), 3);
+
+        // a cold first touch that is held after its load does not block a live frame
+        let release = AtomicBool::new(false);
+        let holding = AtomicBool::new(false);
+        std::thread::scope(|scope| {
+            let (streams_ref, release, holding, c_ref) = (&streams, &release, &holding, &c);
+            let slow = scope.spawn(move || {
+                let hold = || {
+                    holding.store(true, Ordering::SeqCst);
+                    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+                    while !release.load(Ordering::SeqCst) {
+                        assert!(std::time::Instant::now() < deadline, "never released");
+                        std::thread::sleep(std::time::Duration::from_millis(5));
+                    }
+                };
+                streams_ref
+                    .attach_everywhere_with(c_ref, Some(&hold))
+                    .expect("slow attach");
+            });
+            let deadline = std::time::Instant::now() + std::time::Duration::from_secs(20);
+            while !holding.load(Ordering::SeqCst) {
+                assert!(
+                    std::time::Instant::now() < deadline,
+                    "slow touch never loaded"
+                );
+                std::thread::sleep(std::time::Duration::from_millis(5));
+            }
+            streams
+                .publish_session_frame(
+                    &live,
+                    endpoint::MuxFrame::Queue {
+                        session_id: live.clone(),
+                        items: Vec::new(),
+                    },
+                )
+                .expect("a live session's frame is published while a first touch loads");
+            release.store(true, Ordering::SeqCst);
+            slow.join().expect("slow thread");
+        });
+        assert_eq!(registered(&streams, 1), 4);
+    }
+
+    /// E834 R2: refreshing every thread's usage after a config change refreshes the thread with
+    /// an open journal stream at once, and registers no idle session on any generation.
+    #[test]
+    fn a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session() {
+        let root = tempfile::tempdir().expect("root");
+        let sessions = (10..70).map(id).collect::<Vec<_>>();
+        for session in &sessions {
+            blank_thread(root.path(), session);
+        }
+        let streams = ProductionCarrierStreams::new(root.path());
+        let _mux = streams.open_legacy_mux().expect("mux");
+        let open = &sessions[7];
+        let _lease = streams.claim_journal(open).expect("journal lease");
+        let projection = |session: &str| {
+            root.path()
+                .join("threads")
+                .join(session)
+                .join("context-usage.projection.json")
+        };
+        assert!(!projection(open).exists());
+        streams
+            .refresh_all_context_projections()
+            .expect("refresh all");
+        assert!(
+            projection(open).exists(),
+            "the thread with an open journal stream is refreshed before the call returns"
+        );
+        assert_eq!(registered(&streams, 1), 0, "no idle session was registered");
+        // the idle ones follow in the background, still without registering
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(60);
+        while !sessions.iter().all(|session| projection(session).exists()) {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "background refresh stalled"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        assert_eq!(registered(&streams, 1), 0);
     }
 }

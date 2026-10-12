@@ -63,8 +63,8 @@ const DELIVERY_TIMEOUT: Duration = Duration::from_secs(30);
 const MCP_ONLY_APP_SANDBOX_MARKER: &str = ".mcp-only-app-sandbox";
 const WORKER_HANDSHAKE_TIMEOUT: Duration = Duration::from_secs(10);
 const WORKER_HELLO_MAX_BYTES: usize = 4_096;
-/// Sweep ticks between two retries of pending management operations (30 s at a 1 s tick).
-const MANAGEMENT_RECOVERY_TICKS: u64 = 30;
+/// Seconds between two retries of pending management operations.
+const MANAGEMENT_RECOVERY_SECONDS: u64 = 30;
 const PERIODIC_SWEEP_INTERVAL: Duration = Duration::from_secs(1);
 
 /// What the sweep can tell about a ledger from its metadata alone: the bytes are the same while
@@ -439,6 +439,9 @@ pub struct ProductionProcessHost {
     /// process, `store::folder_events`) nor in this set.
     released: Mutex<HashSet<String>>,
     catalog: Arc<crate::catalog::Catalog>,
+    /// Opened once: `ThreadStore::open` probes the filesystem (a full sync), which a per-row
+    /// `running` check must not repeat.
+    threads: ThreadStore,
     /// Per-thread single-flight gates of the hydrator.
     hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
     #[cfg(test)]
@@ -819,6 +822,7 @@ impl ProductionProcessHost {
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         let mcp_runtime = Arc::new(mcp_runtime);
         let root_for_catalog = root.clone();
+        let threads_store = ThreadStore::open(&root_for_catalog).map_err(DaemonError::store)?;
         let host = Arc::new_cyclic(|weak| Self {
             card_writer: crate::thread_card::CardWriter::spawn_from_env(),
             repository,
@@ -834,6 +838,7 @@ impl ProductionProcessHost {
             workers: Mutex::new(HashMap::new()),
             released: Mutex::new(HashSet::new()),
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
+            threads: threads_store,
             hydrating: Mutex::new(HashMap::new()),
             #[cfg(test)]
             hydrate_runs: AtomicU64::new(0),
@@ -1737,7 +1742,6 @@ impl ProductionProcessHost {
         }
         let sweep_host = Arc::downgrade(self);
         std::thread::spawn(move || {
-            let mut ticks = 0_u64;
             loop {
                 std::thread::sleep(PERIODIC_SWEEP_INTERVAL);
                 let Some(host) = sweep_host.upgrade() else {
@@ -1749,18 +1753,35 @@ impl ProductionProcessHost {
                 if let Err(error) = host.periodic_sweep_once() {
                     eprintln!("process-host-periodic-sweep-failed: {error}");
                 }
-                ticks += 1;
-                if ticks % MANAGEMENT_RECOVERY_TICKS == 0 {
-                    host.recover_pending_management();
+            }
+        });
+        // The management recovery retry has its own thread: a pending queue transaction can
+        // start a worker (a handshake of up to 10 s) and must never delay the sweep.
+        let recovery_host = Arc::downgrade(self);
+        std::thread::spawn(move || {
+            let mut validated = endpoint::CompleteOperations::default();
+            loop {
+                for _ in 0..MANAGEMENT_RECOVERY_SECONDS {
+                    std::thread::sleep(Duration::from_secs(1));
+                    match recovery_host.upgrade() {
+                        Some(host) if !host.draining.load(Ordering::Acquire) => {}
+                        _ => return,
+                    }
                 }
+                let Some(host) = recovery_host.upgrade() else {
+                    return;
+                };
+                host.recover_pending_management(&mut validated);
             }
         });
     }
 
     /// The 30 s retry of pending management operations (create/fork/archive/queue/workspace
     /// records a failure left unfinished). Failure only logs: the next tick retries.
-    fn recover_pending_management(&self) {
-        if let Err(error) = crate::endpoint_host::recover_pending_management(&self.root, self) {
+    fn recover_pending_management(&self, validated: &mut endpoint::CompleteOperations) {
+        if let Err(error) =
+            crate::endpoint_host::recover_pending_management(&self.root, self, validated)
+        {
             eprintln!("process-host-management-recovery-failed: {error}");
         }
     }
@@ -5240,8 +5261,9 @@ impl ProductionProcessHost {
 
     fn is_running(&self, session_id: &str, live: &HashSet<String>) -> bool {
         live.contains(session_id)
-            || ThreadStore::open(&self.root)
-                .and_then(|threads| threads.session_has_live_line_holder(session_id))
+            || self
+                .threads
+                .session_has_live_line_holder(session_id)
                 .unwrap_or(false)
     }
 
@@ -10488,9 +10510,12 @@ mod tests {
         let folder = held_thread_on_disk(root.path(), session);
         let (host, _streams) = open_host(root.path());
         // The first recovering open may reconcile workspace metadata (named exception X1).
-        crate::endpoint_host::recover_pending_management(root.path(), &*host).expect("first");
+        let mut validated = endpoint::CompleteOperations::default();
+        crate::endpoint_host::recover_pending_management(root.path(), &*host, &mut validated)
+            .expect("first");
         fs::set_permissions(&folder, fs::Permissions::from_mode(0o000)).expect("lock");
-        let outcome = crate::endpoint_host::recover_pending_management(root.path(), &*host);
+        let outcome =
+            crate::endpoint_host::recover_pending_management(root.path(), &*host, &mut validated);
         fs::set_permissions(&folder, fs::Permissions::from_mode(0o700)).expect("unlock");
         outcome.expect("recovery tick");
         host.shutdown();
