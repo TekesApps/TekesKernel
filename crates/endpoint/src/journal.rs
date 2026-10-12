@@ -425,6 +425,7 @@ fn parse_records(
     bytes: &[u8],
     allow_partial_tail: bool,
 ) -> Result<(Vec<JournalRecord>, usize), JournalError> {
+    schema::metrics::note_journal_parse(bytes.len());
     let mut records = Vec::new();
     let mut offset = 0;
     let mut identities = HashSet::new();

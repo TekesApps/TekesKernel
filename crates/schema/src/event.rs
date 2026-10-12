@@ -166,6 +166,7 @@ impl Event {
     }
 
     pub fn decode_canonical(bytes: &[u8]) -> Result<Self, SchemaError> {
+        crate::metrics::note_ledger_decode(bytes.len());
         let event = Self::decode(bytes)?;
         if event.canonical_bytes()? != bytes {
             return Err(SchemaError::Canonical(

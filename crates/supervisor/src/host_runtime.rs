@@ -223,10 +223,13 @@ pub fn prepare_storage(storage_root: &Path) -> Result<ThreadStore, DaemonError> 
         .recover_rewrites_for_startup()
         .map_err(DaemonError::store)?;
     store.gc_rewrite_debris().map_err(DaemonError::store)?;
+    crate::boot_trace::phase("rewrite_recovery");
     // Scratch ledgers (`session.fork{ephemeral}`) do not survive a restart:
     // nothing holds a line lock yet, so every one of them is deleted here.
     store.sweep_ephemeral().map_err(DaemonError::store)?;
+    crate::boot_trace::phase("sweep_ephemeral");
     sweep_semantic_ledgers(root)?;
+    crate::boot_trace::phase("sweep_semantic_ledgers");
     profile::ConfigRepository::open(root)
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
     Ok(store)

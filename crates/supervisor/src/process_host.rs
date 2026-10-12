@@ -1803,6 +1803,7 @@ impl ProductionProcessHost {
             .map_err(DaemonError::io)?;
         sessions.sort_by_key(fs::DirEntry::file_name);
         for session in sessions {
+            let session_started = Instant::now();
             let session_result = (|| -> Result<(), DaemonError> {
                 if !session.file_type().map_err(DaemonError::io)?.is_dir() {
                     return Ok(());
@@ -1885,6 +1886,19 @@ impl ProductionProcessHost {
                 eprintln!(
                     "process-host-sweep-session-failed: session={} error={error}",
                     session.file_name().to_string_lossy()
+                );
+            }
+            // Opt-in (`TEKES_KERNEL_BOOT_TRACE=1`): the sweep runs every second, so only a
+            // session that took noticeable time is reported.
+            if crate::boot_trace::per_item_enabled() && session_started.elapsed().as_millis() >= 100
+            {
+                crate::boot_trace::detail(
+                    "sweep_session",
+                    &format!(
+                        "session={} ms={}",
+                        session.file_name().to_string_lossy(),
+                        session_started.elapsed().as_millis()
+                    ),
                 );
             }
         }

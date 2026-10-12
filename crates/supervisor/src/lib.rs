@@ -1,5 +1,6 @@
 //! Supervisor-owned worker launch boundary.
 
+pub mod boot_trace;
 pub mod builtin;
 pub mod client_admin;
 pub mod client_extensions;
