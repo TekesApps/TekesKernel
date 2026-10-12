@@ -445,3 +445,73 @@ fn classify_every_card_of_a_real_root() {
     println!("fresh={fresh} ahead={ahead} cold={cold} missing={missing}");
     assert_eq!(ahead + cold + missing, 0);
 }
+
+#[test]
+fn a_file_that_shrinks_during_classification_is_stale_not_an_io_error() {
+    // verify_prefix against a descriptor whose file was truncated after the length check:
+    // simulate by truncating through a second handle between metadata and pread via a card
+    // whose claimed prefix is longer than the (shrunk) file.
+    let (_root, folder) = thread_with(&["a", "b", "c"]);
+    write_for(&folder);
+    let card = read_card(&folder).unwrap();
+    let ledger = folder.join("main.jsonl");
+    let original = std::fs::read(&ledger).unwrap();
+    let file = open_nofollow(&ledger).unwrap();
+    std::fs::write(&ledger, &original[..40]).unwrap();
+    let first = &card.lines[0];
+    // The descriptor still sees the truncated file: every read past EOF is UnexpectedEof.
+    let verdict = verify_prefix(
+        &file,
+        first.valid_bytes,
+        first.genesis_len,
+        &first.genesis_sha256,
+        first.tail_len,
+        &first.tail_sha256,
+        &first.samples,
+    )
+    .expect("a shrink is a verdict, not an error");
+    assert_eq!(verdict, LineVerdict::Stale);
+    // The race window itself (length check passed, file shrank before the read) is the
+    // `pread_if_present` contract: EOF is `None`, which every caller maps to Stale/Skipped.
+    let short = std::fs::File::open(&ledger).unwrap();
+    assert!(pread_if_present(&short, 0, 40).unwrap().is_some());
+    assert!(pread_if_present(&short, 0, 41).unwrap().is_none());
+    assert!(pread_if_present(&short, 100, 1).unwrap().is_none());
+}
+
+#[test]
+fn card_line_names_are_plain_jsonl_names() {
+    for good in ["main.jsonl", "018f0000-0000-7000-8000-000000000004.jsonl"] {
+        assert!(valid_line_name(good), "{good}");
+    }
+    for bad in [
+        "",
+        ".jsonl",
+        "endpoint.jsonl",
+        "../main.jsonl",
+        "a/b.jsonl",
+        "..",
+        ".hidden.jsonl",
+        "main.json",
+        "main.jsonl\0",
+        "a\\b.jsonl",
+        "main.JSONL",
+    ] {
+        assert!(!valid_line_name(bad), "{bad:?}");
+    }
+    // A hand-edited card that names a path is not a card, and a writer refuses such a name.
+    let (_root, folder) = thread_with(&["a"]);
+    write_for(&folder);
+    let mut card = read_card(&folder).unwrap();
+    card.lines[0].file = "../escape.jsonl".into();
+    assert!(ThreadCard::decode(&card.encode().unwrap()).is_none());
+    let bytes = std::fs::read(folder.join("main.jsonl")).unwrap();
+    let scan = scan_valid_prefix(&bytes, 1);
+    let projection = scan.projection.unwrap();
+    let mut input = input_for(&bytes, &projection);
+    input.lines[0].file = "../escape.jsonl";
+    assert_eq!(
+        write_card(&folder, &input).unwrap(),
+        WriteOutcome::Skipped(SkipReason::InvalidName)
+    );
+}

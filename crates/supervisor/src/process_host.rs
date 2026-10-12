@@ -3281,18 +3281,26 @@ impl ProductionProcessHost {
                 }
             }
         }
-        // The fold above is the verification a card needs; hand it to the card writer (no
-        // extra decode). Only clean reads are described: a torn tail is repaired first.
+        // The fold above is the verification a card needs. Preparing a card is only worth its
+        // cost when the writer is due for this thread (K6): inside the debounce window the
+        // thread is marked dirty and the writer re-folds it itself when the window expires, so
+        // a burst of doorbells costs one map lookup each. Only clean reads are described.
         if clean_read {
-            if let Some(card) = crate::thread_card::prepare(
-                session_id,
-                folder.clone(),
-                bytes,
-                valid_bytes,
-                &projection,
-                &journal,
-            ) {
-                self.card_writer.submit(card);
+            let journal_snapshot = crate::thread_card::journal_input(&journal);
+            if self.card_writer.is_due(session_id) {
+                if let Some(card) = crate::thread_card::prepare(
+                    session_id,
+                    folder.clone(),
+                    bytes,
+                    valid_bytes,
+                    &projection,
+                    journal_snapshot,
+                ) {
+                    self.card_writer.submit(card);
+                }
+            } else {
+                self.card_writer
+                    .mark_dirty(session_id, folder.clone(), journal_snapshot);
             }
         }
         let mut projection_cache = self
@@ -9007,6 +9015,40 @@ mod tests {
 
     /// A torn tail keeps the pre-existing behaviour: the separate-read paths reject it
     /// ("requires tail recovery") and the call reports the error after the journal reconcile.
+    /// K9: a projection decoded before a newer publication cannot undo it, even when it
+    /// reaches the diff after the newer one (the residual S1-a window).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_stale_projection_cannot_overwrite_a_newer_published_actionable_set() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a6";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        let stale = scan_valid_prefix(&fs::read(&ledger).expect("ledger"), 1)
+            .projection
+            .expect("stale projection");
+        assert_eq!(stale.last_seq, 9);
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session)
+            .expect("publish the resolved state");
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        // The stale decode arrives late: it must be refused, not re-publish the hold.
+        streams
+            .reconcile_actionables_main(session, &stale)
+            .expect("stale reconcile is a no-op");
+        assert!(
+            streams.published_pending_for_test(session, None).is_empty(),
+            "a shorter projection must not resurrect a resolved hold"
+        );
+        host.shutdown();
+    }
+
     #[cfg(target_os = "macos")]
     #[test]
     fn publish_appended_with_a_torn_tail_keeps_the_previous_error_path() {

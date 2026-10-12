@@ -121,6 +121,9 @@ fn retire_legacy_journal(folder: &Path, journal: &Path) -> Result<(), JournalErr
 /// See `EndpointJournal::tail_summary`.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct JournalTail {
+    /// File length the cache describes: `rows`/`last_seq`/`last_kernel_seq` are exactly the
+    /// content of the first `len` bytes (one snapshot).
+    pub len: u64,
     pub rows: u64,
     pub last_seq: Option<u64>,
     pub last_kernel_seq: u64,
@@ -248,9 +251,11 @@ impl EndpointJournal {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         self.refresh_cache_unlocked(&mut cache)?;
-        let records = &cache.as_ref().expect("cache was refreshed").records;
+        let snapshot = cache.as_ref().expect("cache was refreshed");
+        let records = &snapshot.records;
         let last = records.last();
         Ok(JournalTail {
+            len: snapshot.file_len,
             rows: records.len() as u64,
             last_seq: last.map(|record| record.event.seq),
             last_kernel_seq: last
@@ -660,5 +665,36 @@ mod repair_cache_tests {
         assert_eq!(journal.records().unwrap().len(), 3);
         assert_eq!(journal.last_seq().unwrap(), Some(2));
         assert!(std::fs::read(&path).unwrap().ends_with(b"\n"));
+    }
+
+    /// K7: `tail_summary` reports the length together with the rows it describes, so a card's
+    /// journal block never mixes a row count from one moment with a length from another.
+    #[test]
+    fn tail_summary_length_and_rows_come_from_one_snapshot() {
+        let folder = tempfile::tempdir().unwrap();
+        let journal = EndpointJournal::open(folder.path()).unwrap();
+        let path = folder.path().join(JOURNAL_FILE);
+        for index in 0..4_u64 {
+            journal
+                .append_kernel(
+                    vec![index + 1],
+                    format!("slot-{index}"),
+                    SessionEvent {
+                        event_type: "turn/start".to_owned(),
+                        seq: 0,
+                        time: 1.0,
+                        data: schema::IJsonValue::parse_str(r#"{"turn":0}"#).unwrap(),
+                        ignorable: None,
+                        source_event_seqs: None,
+                        surface_op: None,
+                    },
+                )
+                .unwrap();
+            let tail = journal.tail_summary().unwrap();
+            assert_eq!(tail.rows, index + 1);
+            assert_eq!(tail.last_seq, Some(index));
+            assert_eq!(tail.last_kernel_seq, index + 1);
+            assert_eq!(tail.len, std::fs::metadata(&path).unwrap().len());
+        }
     }
 }

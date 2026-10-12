@@ -399,7 +399,9 @@ struct CarrierStreamsInner {
 }
 
 /// Pending request ids keyed by (session, line).
-type PublishedActionables = HashMap<(String, Option<String>), BTreeSet<String>>;
+/// The ledger `last_seq` of the projection that produced each published set, with the set. A
+/// diff from an older projection is refused (a stale decode must not undo a newer publication).
+type PublishedActionables = HashMap<(String, Option<String>), (u64, BTreeSet<String>)>;
 
 #[derive(Default)]
 struct StreamGenerations {
@@ -503,7 +505,12 @@ impl ProductionCarrierStreams {
             .published_actionables
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let previous = published.get(&key).cloned().unwrap_or_default();
+        let (published_through, previous) = published.get(&key).cloned().unwrap_or_default();
+        if projection.last_seq < published_through {
+            // A concurrent respond already published from a newer ledger (S1-a / K9): this
+            // projection is stale and must not re-publish what the newer one resolved.
+            return Ok(());
+        }
         if previous != pending {
             // Any request/resolution change causes v3 to diff its baseline.
             // Repeated Appended notifications remain silent.
@@ -513,7 +520,9 @@ impl ProductionCarrierStreams {
                     self.publish_session_frame(session_id, frame)?;
                 }
             }
-            published.insert(key, pending);
+            published.insert(key, (projection.last_seq, pending));
+        } else if projection.last_seq > published_through {
+            published.insert(key, (projection.last_seq, pending));
         }
         Ok(())
     }
@@ -530,7 +539,7 @@ impl ProductionCarrierStreams {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .get(&(session_id.to_owned(), source_line.map(str::to_owned)))
-            .cloned()
+            .map(|(_, pending)| pending.clone())
             .unwrap_or_default()
     }
 

@@ -157,7 +157,10 @@ impl ThreadCard {
             return None;
         }
         let card: Self = serde_json::from_slice(line).ok()?;
-        if card.v != CARD_VERSION || card.body_digest().ok()? != card.body_sha256 {
+        if card.v != CARD_VERSION
+            || card.body_digest().ok()? != card.body_sha256
+            || !card.lines.iter().all(|line| valid_line_name(&line.file))
+        {
             return None;
         }
         Some(card)
@@ -231,6 +234,27 @@ fn pread(file: &File, off: u64, len: u64) -> io::Result<Vec<u8>> {
     let mut buffer = vec![0_u8; usize::try_from(len).map_err(io::Error::other)?];
     file.read_exact_at(&mut buffer, off)?;
     Ok(buffer)
+}
+
+/// `pread` where a file that shrank under us (EOF before `len` bytes) is `None`, not an error:
+/// a shrink race is a content mismatch (Stale), never an I/O failure of the classifier.
+fn pread_if_present(file: &File, off: u64, len: u64) -> io::Result<Option<Vec<u8>>> {
+    match pread(file, off, len) {
+        Ok(bytes) => Ok(Some(bytes)),
+        Err(error) if error.kind() == io::ErrorKind::UnexpectedEof => Ok(None),
+        Err(error) => Err(error),
+    }
+}
+
+/// A ledger line name as the card may list it: a plain `*.jsonl` file name in the thread
+/// folder (no separator, no `.`/`..`, no dot-prefix, no NUL), never the endpoint journal.
+#[must_use]
+pub fn valid_line_name(name: &str) -> bool {
+    name.len() > ".jsonl".len()
+        && name.ends_with(".jsonl")
+        && !name.starts_with('.')
+        && !name.contains(['/', '\\', '\0'])
+        && name != JOURNAL_FILE
 }
 
 /// Identity fields computed from the exact bytes of a verified prefix (ends with LF).
@@ -333,16 +357,22 @@ fn verify_prefix(
     {
         return Ok(LineVerdict::Stale);
     }
-    if sha256_hex(&pread(file, 0, genesis_len)?) != genesis_sha
-        || sha256_hex(&pread(file, valid_bytes - tail_len, tail_len)?) != tail_sha
-    {
+    let Some(genesis) = pread_if_present(file, 0, genesis_len)? else {
+        return Ok(LineVerdict::Stale);
+    };
+    let Some(tail) = pread_if_present(file, valid_bytes - tail_len, tail_len)? else {
+        return Ok(LineVerdict::Stale);
+    };
+    if sha256_hex(&genesis) != genesis_sha || sha256_hex(&tail) != tail_sha {
         return Ok(LineVerdict::Stale);
     }
     for sample in samples {
-        if sample.off.saturating_add(sample.len) > valid_bytes
-            || sha256_hex(&pread(file, sample.off, sample.len)?) != sample.sha256
-        {
+        if sample.off.saturating_add(sample.len) > valid_bytes {
             return Ok(LineVerdict::Stale);
+        }
+        match pread_if_present(file, sample.off, sample.len)? {
+            Some(window) if sha256_hex(&window) == sample.sha256 => {}
+            _ => return Ok(LineVerdict::Stale),
         }
     }
     Ok(if len == valid_bytes {
@@ -361,7 +391,7 @@ pub fn classify(folder: &Path, card: &ThreadCard) -> io::Result<Classified> {
         .is_some_and(|name| name == card.thread);
     let mut lines = Vec::with_capacity(card.lines.len());
     for line in &card.lines {
-        let verdict = if !belongs || line.file.contains('/') || line.file == JOURNAL_FILE {
+        let verdict = if !belongs || !valid_line_name(&line.file) {
             LineVerdict::Stale
         } else {
             match open_nofollow(&folder.join(&line.file)) {
@@ -384,8 +414,7 @@ pub fn classify(folder: &Path, card: &ThreadCard) -> io::Result<Classified> {
     for entry in std::fs::read_dir(folder)? {
         let entry = entry?;
         let name = entry.file_name().to_string_lossy().into_owned();
-        if name.ends_with(".jsonl")
-            && name != JOURNAL_FILE
+        if valid_line_name(&name)
             && entry.file_type()?.is_file()
             && !card.lines.iter().any(|line| line.file == name)
         {
@@ -454,6 +483,7 @@ pub struct LineInput<'a> {
 
 /// Journal shape at card time, supplied by the journal's owner; its identity hashes are taken
 /// from the file here.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct JournalInput {
     pub len: u64,
     pub rows: u64,
@@ -483,6 +513,8 @@ pub enum SkipReason {
     FolderGone,
     FileGone,
     FileChanged,
+    /// A line name that is not a plain `*.jsonl` file name.
+    InvalidName,
 }
 
 fn errno_is_gone(error: &io::Error) -> bool {
@@ -553,6 +585,9 @@ pub fn write_card(folder: &Path, input: &CardInput<'_>) -> Result<WriteOutcome, 
     };
     let mut lines = Vec::with_capacity(input.lines.len());
     for line in &input.lines {
+        if !valid_line_name(line.file) {
+            return Ok(WriteOutcome::Skipped(SkipReason::InvalidName));
+        }
         let Some(identity) = Identity::of(line.verified_prefix) else {
             return Ok(WriteOutcome::Skipped(SkipReason::FileChanged));
         };
@@ -605,16 +640,25 @@ pub fn write_card(folder: &Path, input: &CardInput<'_>) -> Result<WriteOutcome, 
                     return Ok(WriteOutcome::Skipped(SkipReason::FileChanged));
                 }
                 let head_len = SAMPLE_LEN.min(journal.len);
-                let tail = journal_tail_len(&file, journal.len)?;
+                let Some(tail) = journal_tail_len(&file, journal.len)? else {
+                    return Ok(WriteOutcome::Skipped(SkipReason::FileChanged));
+                };
+                let (Some(head), Some(last), Some(samples)) = (
+                    pread_if_present(&file, 0, head_len)?,
+                    pread_if_present(&file, journal.len - tail, tail)?,
+                    journal_samples(&file, journal.len)?,
+                ) else {
+                    return Ok(WriteOutcome::Skipped(SkipReason::FileChanged));
+                };
                 Some(JournalCard {
                     len: journal.len,
                     rows: journal.rows,
                     last_endpoint_seq: journal.last_endpoint_seq,
                     last_kernel_seq: journal.last_kernel_seq,
-                    head_sha256: sha256_hex(&pread(&file, 0, head_len)?),
-                    tail_sha256: sha256_hex(&pread(&file, journal.len - tail, tail)?),
+                    head_sha256: sha256_hex(&head),
+                    tail_sha256: sha256_hex(&last),
                     tail_len: tail,
-                    samples: journal_samples(&file, journal.len)?,
+                    samples,
                 })
             }
             Err(error) if errno_is_gone(&error) && journal.len == 0 => None,
@@ -666,30 +710,34 @@ pub fn write_card(folder: &Path, input: &CardInput<'_>) -> Result<WriteOutcome, 
 
 /// Journal rows are canonical lines; the final row's length is found by scanning back from
 /// `len` for the previous LF within a bounded window.
-fn journal_tail_len(file: &File, len: u64) -> io::Result<u64> {
+fn journal_tail_len(file: &File, len: u64) -> io::Result<Option<u64>> {
     if len == 0 {
-        return Ok(0);
+        return Ok(Some(0));
     }
     let window = len.min(1 << 20);
-    let bytes = pread(file, len - window, window)?;
+    let Some(bytes) = pread_if_present(file, len - window, window)? else {
+        return Ok(None);
+    };
     let body = bytes.strip_suffix(b"\n").unwrap_or(&bytes);
-    Ok(match body.iter().rposition(|b| *b == b'\n') {
+    Ok(Some(match body.iter().rposition(|b| *b == b'\n') {
         Some(position) => (bytes.len() - (position + 1)) as u64,
         None => window,
-    })
+    }))
 }
 
-fn journal_samples(file: &File, len: u64) -> io::Result<Vec<Sample>> {
-    sample_offsets(len)
-        .into_iter()
-        .map(|(off, width)| {
-            Ok(Sample {
-                off,
-                len: width,
-                sha256: sha256_hex(&pread(file, off, width)?),
-            })
-        })
-        .collect()
+fn journal_samples(file: &File, len: u64) -> io::Result<Option<Vec<Sample>>> {
+    let mut samples = Vec::new();
+    for (off, width) in sample_offsets(len) {
+        let Some(window) = pread_if_present(file, off, width)? else {
+            return Ok(None);
+        };
+        samples.push(Sample {
+            off,
+            len: width,
+            sha256: sha256_hex(&window),
+        });
+    }
+    Ok(Some(samples))
 }
 
 #[cfg(test)]
