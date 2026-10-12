@@ -10640,7 +10640,8 @@ mod tests {
             "018f0000-0000-7000-8000-0000000000e3",
             "018f0000-0000-7000-8000-0000000000e4",
         ];
-        // modification times opposite to the id order, so id order cannot pass by accident
+        // the catalog iterates ids in ascending order, so the newest ledger is the highest id:
+        // only a real sort by modification time produces the expected order
         let base = std::time::SystemTime::now() - Duration::from_secs(10_000);
         for (n, id) in ids.iter().enumerate() {
             let folder = held_thread_on_disk(root.path(), id);
@@ -10648,16 +10649,17 @@ mod tests {
                 .write(true)
                 .open(folder.join("main.jsonl"))
                 .expect("ledger");
-            file.set_modified(base + Duration::from_secs(1_000 * (ids.len() - n) as u64))
+            file.set_modified(base + Duration::from_secs(1_000 * (n as u64 + 1)))
                 .expect("mtime");
         }
         let (host, _streams) = open_host(root.path());
         host.catalog.ensure_loaded();
-        assert_eq!(
-            host.catalog.unverified(),
-            ids.iter().map(ToString::to_string).collect::<Vec<_>>(),
-            "e1 is the newest"
-        );
+        let newest_first = ids
+            .iter()
+            .rev()
+            .map(ToString::to_string)
+            .collect::<Vec<_>>();
+        assert_eq!(host.catalog.unverified(), newest_first, "e4 is the newest");
         host.build_inventory(false, Duration::from_secs(30))
             .expect("list");
         assert_eq!(
@@ -10665,7 +10667,7 @@ mod tests {
                 .verify_order
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner),
-            ids.iter().map(ToString::to_string).collect::<Vec<_>>(),
+            newest_first,
             "the queue is consumed newest first"
         );
         host.shutdown();

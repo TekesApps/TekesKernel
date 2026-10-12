@@ -908,9 +908,14 @@ fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing(
             .host()
             .open_mux_stream(1, SessionStreamTarget::SessionInventory),
     );
-    assert!(
-        opened.is_err(),
-        "the orphan row is an error, not a silent omission"
-    );
+    // the error names the missing workspace (`ManagementError::WorkspaceNotFound("gone")`)
+    match opened {
+        Err(HostFailure::Internal(message)) => assert!(
+            message.contains("gone") && message.contains("workspace was not found"),
+            "the error names the missing workspace: {message}"
+        ),
+        Err(other) => panic!("expected an internal failure naming the workspace, got {other:?}"),
+        Ok(_) => panic!("the orphan row must be an error, not a silent omission"),
+    }
     host.shutdown();
 }

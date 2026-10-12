@@ -132,9 +132,15 @@ Opening `session-journal` is follow-first:
 4. Emit `snapshot` containing `sessionId`, `generation`, `throughSequence`,
    `windowLimit`, `entries`, `hasMoreBefore`, and projections. The snapshot
    `projections` carry the thread's current `contextUsage` and `contextDetails`
-   values; their `asOfSeq` is never greater than `throughSequence` (a client
-   rejects a projection beyond the frozen cut). A projection frame published
-   after the cut has a sequence beyond it and is applied normally.
+   values with an `asOfSeq` that is a label clamped to `throughSequence` (a
+   client rejects a projection beyond the frozen cut); it is not the context
+   projection clock described in §Native context presentation, which can be ahead of the
+   cut. The current value is not re-sent as a frame. A client that already holds
+   a higher sequence for that projection (for example from its control
+   baseline) keeps its own value and ignores the snapshot's; the snapshot value is
+   therefore not a guarantee that a reopened thread shows a usage that changed
+   while it was idle. A projection frame published after the cut has a sequence
+   beyond it and is applied normally.
 5. Emit later durable `event` frames strictly from `throughSequence + 1`.
    Provider output may additionally arrive as unsequenced `transient`
    frames after the baseline; these are process-local presentation data and do
@@ -853,12 +859,13 @@ receipt and later history reconciliation remain separate results.
 ### Stream handoff and backpressure
 
 The accepted Client sends no application subscribe message. Opening
-`/api/events.mux` registers one connection-level subscriber for the sessions
-attached to that endpoint. For each attached session, registration occurs
-before the server snapshots the durable endpoint-journal tail; the server then
-sends `session/subscribed` and drains frames buffered after that snapshot in
-strict seq order. A later attached session begins with its own
-`session/subscribed`. `/api/events.host` likewise sends server frames only.
+`/api/events.mux` registers one connection-level subscriber that starts with no
+session attached (§All-session stream lifecycle). Each session is attached when
+it is created, forked or unarchived or when a frame is first published for it;
+for each attached session, registration occurs before the server snapshots the
+durable endpoint-journal tail, and the server then sends `session/subscribed`
+and drains frames buffered after that snapshot in strict seq order. Every
+attached session begins with its own `session/subscribed`. `/api/events.host` likewise sends server frames only.
 In every `server-request` stream envelope, `method` equals the payload's
 required `type` (`session/subscribed`, `session/event`, `host/session-status`,
 `stream/error`, and so on); `events.mux` and `events.host` are registration
@@ -1955,8 +1962,8 @@ content digest exists globally.
 Opening `events.mux` attaches no session: a generation starts empty, so opening
 it reads no thread. A session is attached to every open generation that lacks
 it (1) when it is created, forked or unarchived, and (2) the first time a
-control, queue, jobs, projection, approval or question frame is published for
-it; registration always precedes the publication that triggered it. Each
+control, queue, jobs, projection, transient, approval or question frame is
+published for it; registration always precedes the publication that triggered it. Each
 attachment emits `session/subscribed` (its baseline cut is the endpoint journal
 tail at registration) before any later frame of that session and then replays
 the session's unresolved approval or question requests with their stable

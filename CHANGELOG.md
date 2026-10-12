@@ -35,8 +35,12 @@ and a new stream-open error; the ledger, journal and wire formats are otherwise 
 - Responding to a request finds it through an index (cards, then a byte prefilter of threads
   without a card and of the archive) and reads one thread. Respond, actionables and
   registration reads use the valid prefix of a ledger instead of failing on a torn tail.
-- A journal snapshot carries the thread's current `contextUsage`/`contextDetails`
-  (`projections.asOfSeq` never beyond the snapshot's `throughSequence`).
+- A journal snapshot carries the thread's current `contextUsage`/`contextDetails` values, with
+  `projections.asOfSeq` clamped to the snapshot's `throughSequence` (a label, not the context
+  projection clock; ClientKit rejects a projection beyond the cut). The current value is not
+  re-sent as a frame, and a client that already holds a higher sequence for the projection (from
+  its control baseline) keeps its own value, so a reopened thread is not guaranteed to show a usage
+  that changed while it was idle (no worse than before; it never shows a wrong value).
 - `thread.search` skips a quarantined thread instead of failing the query; `usage` tolerates a
   torn tail; workspace-membership checks read the genesis line only; the management recovery
   retry runs every 30 s on its own thread and takes the management lock per record.
