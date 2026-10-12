@@ -342,6 +342,50 @@ fn prepare_fixture(
     })
 }
 
+#[test]
+fn deepseek_responses_preserves_images_when_replaying_an_annotation_followup() {
+    let fixture = corpus();
+    let profile = fixture["profiles"]
+        .as_array()
+        .expect("profiles")
+        .iter()
+        .find(|profile| profile["target"]["dialect_id"] == "deepseek_responses_v1")
+        .expect("DeepSeek Responses profile");
+    let image = block_item(
+        json!({"data":"iVBORw0KGgo=","mime":"image/png","type":"file"}),
+        "user",
+    );
+    let annotation = "<user_annotations>\n[1] From your own earlier reply:\nred\nReply to [1]: confirm\n</user_annotations>";
+    for followup in [false, true] {
+        let mut items = vec![image.clone()];
+        if followup {
+            items.push(text("user", annotation));
+        }
+        let prepared = prepare_fixture(
+            profile,
+            serde_json::from_value(profile["target"].clone()).expect("target"),
+            ijson(&profile["control"]["epoch_profile"]),
+            items,
+            ijson(&json!([])),
+        )
+        .expect("DeepSeek accepts both a new image and history containing it");
+        let body: Value = serde_json::from_slice(&prepared.body).expect("request JSON");
+        assert_eq!(
+            body["input"][0]["content"][0],
+            json!({"type":"input_image","image_url":"data:image/png;base64,iVBORw0KGgo="})
+        );
+        if followup {
+            assert_eq!(body["input"][1]["content"][0]["text"], annotation);
+        }
+        assert!(body.get("previous_response_id").is_none());
+        assert!(
+            !DialectId::DeepseekResponsesV1
+                .input_blocks()
+                .contains(&"file")
+        );
+    }
+}
+
 /// Exercise the native continuation shape here. Stateless Interactions
 /// recovery has separate coverage for its quoted tool-history fallback.
 fn prepare_fixture_as_sent(
@@ -870,20 +914,6 @@ fn provider_dialect_gate_93_invalid_oracle_executes() {
                         ijson(&json!([])),
                     )
                     .contains("unsupported controls")
-                );
-            }
-            "deepseek-responses-image" => {
-                let target = serde_json::from_value(deepseek["target"].clone()).expect("target");
-                assert!(
-                    prepare_error(
-                        deepseek,
-                        target,
-                        endpoint(deepseek),
-                        &deepseek["control"]["epoch_profile"],
-                        vec![block_item(mutation["block"].clone(), "user")],
-                        ijson(&json!([])),
-                    )
-                    .contains("rejects")
                 );
             }
             "sealed-carrier-cross-dialect" => {
