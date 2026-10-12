@@ -594,12 +594,20 @@ folding ledgers. A thread that is not Fresh is verified (folded once, a torn
 tail repaired when no line lock is held, its journal projected) on demand: a
 baseline waits at most two seconds for the verifications it needs and lists
 the rest as placeholder rows (genesis workspace, ephemeral flag and identity
-profile, no title, `blank` from the genesis, `updatedAt` from the file time,
-tail `settled`), each followed by an inventory upsert when its verification
+profile, no title, `blank` from the genesis, `updatedAt` from the time of the
+ledger's last record (the file time when that cannot be read), tail `settled`), each followed by an inventory upsert when its verification
 finishes. A thread that fails verification is left alone for 30 seconds by
 baselines; an open, a respond or a worker spawn verifies it at once. Opening a
 `session-journal` stream, answering a request and spawning a worker verify
 their thread first.
+
+The actionables baseline lists every unanswered approval or question on every
+line of every thread, as a full scan of all lines does. Verification folds the
+child lines together with the main line. After a doorbell fold of the main
+ledger the child views are no longer known to be exact, and the child files are
+prefiltered by bytes for a request until the thread is verified again; a
+request a child worker raises is known from the set published in this process
+without reading anything.
 
 A ledger with no valid genesis, or with a complete (LF-terminated) record that
 does not validate, in the main or any child line is *quarantined*: its
@@ -834,9 +842,13 @@ RFC 8785 JSON with no trailing newline. The closed `(status, C, M)` table is:
 | 429 | `overloaded` | `Endpoint admission limit reached` |
 | 503 | `not-ready` | `Endpoint is not ready` |
 | 503 | `server-draining` | `Endpoint is draining` |
+| 409 | `active-session-limit` | `Active session limit reached` (details `{limit}`) |
+| 500 | `internal-error` | `Session is quarantined` (details `{reason:"quarantined"}`) |
 
 The `server-draining` row applies after drain begins; otherwise 503 uses
-`not-ready`. Required response headers are `content-type:
+`not-ready`. The last two rows are the same typed failures a stream open reports
+(§All-session stream lifecycle, §Thread cards and lazy verification) on an
+HTTP route that needs a thread; every other row carries empty details. Required response headers are `content-type:
 application/json` and decimal `content-length`; header order and HTTP library
 framing are not application authority.
 

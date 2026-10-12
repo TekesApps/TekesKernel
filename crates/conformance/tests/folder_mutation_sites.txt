@@ -48,6 +48,7 @@ crates/store/src/asset.rs|rename_exclusive|renameatx_np|1|asset
 crates/store/src/atomic.rs|replace_with_sync|create_dir_all|1|atomic-replace
 crates/store/src/atomic.rs|replace_with_sync|remove_file|1|atomic-replace
 crates/store/src/atomic.rs|replace_with_sync|rename|1|atomic-replace
+crates/store/src/card.rs|remove_stale_card_temps|remove_file|1|card
 crates/store/src/card.rs|renameat|renameat|1|card
 crates/store/src/card.rs|unlinkat|unlinkat|1|card
 crates/store/src/card.rs|write_card|renameat|1|card

@@ -38,8 +38,8 @@ use worker_control::{
 
 use crate::dynamic_bindings::resolve_worker_launch_bindings;
 use crate::endpoint_carrier::{
-    HoldCatalog, HoldRef, LiveRespondAuthority, ProductionCarrierStreams, SessionGateError,
-    SupervisorSessionAuthority, VerifiedHolds,
+    HoldCatalog, HoldRef, LiveRespondAuthority, ProductionCarrierError, ProductionCarrierStreams,
+    SessionGateError, SupervisorSessionAuthority, VerifiedHolds,
 };
 use crate::endpoint_host::ProductionRouteFailure;
 use crate::endpoint_host::{
@@ -445,6 +445,8 @@ pub struct ProductionProcessHost {
     /// Per-thread single-flight gates of the hydrator.
     hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
     hydrate_failures: Mutex<HashMap<String, Instant>>,
+    /// Stale ephemeral threads the last cleanup found busy; the 30 s tick retries while non-zero.
+    stale_ephemeral_busy: std::sync::atomic::AtomicUsize,
     #[cfg(test)]
     hydrate_runs: AtomicU64,
     #[cfg(test)]
@@ -844,6 +846,7 @@ impl ProductionProcessHost {
             threads: threads_store,
             hydrating: Mutex::new(HashMap::new()),
             hydrate_failures: Mutex::new(HashMap::new()),
+            stale_ephemeral_busy: std::sync::atomic::AtomicUsize::new(0),
             #[cfg(test)]
             hydrate_runs: AtomicU64::new(0),
             #[cfg(test)]
@@ -1594,6 +1597,8 @@ impl ProductionProcessHost {
         });
         match report {
             Ok(report) => {
+                self.stale_ephemeral_busy
+                    .store(report.busy.len(), Ordering::Release);
                 if !report.removed.is_empty() || !report.busy.is_empty() || report.tombstones > 0 {
                     eprintln!(
                         "process-host-ephemeral-cleanup: removed={} busy={} tombstones={}",
@@ -1781,6 +1786,11 @@ impl ProductionProcessHost {
                     return;
                 };
                 host.recover_pending_management(&mut validated);
+                // A stale scratch thread that was busy at post-ready cleanup (a lock holder, a
+                // live rewrite) is tried again here (O-final m4).
+                if host.stale_ephemeral_busy.load(Ordering::Acquire) > 0 {
+                    host.cleanup_stale_ephemeral();
+                }
             }
         });
     }
@@ -2020,6 +2030,12 @@ impl ProductionProcessHost {
             // uses, and never waits (hydration may be serving a List or a thread open).
             self.card_writer.governor().charge(1);
         }
+        // A crashed process can leave its temporary card file behind (never read, never named
+        // like a thread file); a dead pid's file is removed here, once per hydration.
+        let stale = store::card::remove_stale_card_temps(&folder);
+        if stale > 0 {
+            eprintln!("process-host-hydrate-card-temps: session={session_id} removed={stale}");
+        }
         self.card_writer.reset_window(session_id);
         #[cfg(test)]
         self.hydrate_runs.fetch_add(1, Ordering::Relaxed);
@@ -2030,6 +2046,12 @@ impl ProductionProcessHost {
             self.catalog.mark_corrupt(session_id, &reason);
             return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
         }
+        // The entry's child lines are exact as of this verification (O-final B1): the main
+        // fold above carried none forward.
+        self.catalog.set_children(
+            session_id,
+            crate::thread_card::fold_child_views(session_id, &folder),
+        );
         Ok(())
     }
 
@@ -2230,7 +2252,12 @@ impl ProductionProcessHost {
             return Ok(());
         }
         let deferred = self.is_deferred(session_id);
-        if deferred && !entry.view.as_ref().is_some_and(|view| view.stop_active()) {
+        if deferred
+            && !entry
+                .view
+                .as_ref()
+                .is_some_and(|view| view.stop_active() || !view.children_exact)
+        {
             return Ok(());
         }
         let session_dir = self.root.join("threads").join(session_id);
@@ -3624,24 +3651,26 @@ impl ProductionProcessHost {
         // Phase 1, no lock: read and fold the ledger and build the card. This is the part that
         // grows with the thread, so concurrent folds of different threads (a cold List, the
         // upgrade pass) run in parallel and never hold up a live session's doorbell (E832 M2).
-        let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-        let kernel_file_len = bytes.len() as u64;
-        let scan = scan_valid_prefix(&bytes, 1);
-        let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+        let mut bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+        let mut scan = scan_valid_prefix(&bytes, 1);
         // A complete line that does not validate (or a ledger with no valid genesis) is damage a
         // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
-        // after the valid prefix -- is a partial append and only needs repair.
-        if scan.projection.is_none()
-            || (scan.needs_repair() && bytes[valid_bytes.min(bytes.len())..].contains(&b'\n'))
-        {
-            let reason = format!(
-                "main.jsonl: no valid record at byte {}",
-                scan.first_invalid_offset.unwrap_or(scan.valid_bytes)
-            );
-            eprintln!("process-host-quarantined: session={session_id} {reason}");
-            self.catalog.mark_corrupt(session_id, &reason);
-            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        // after the valid prefix -- is a partial append and only needs repair. The decision needs
+        // two agreeing reads: one unlocked read can straddle another process's repair or append
+        // and show a record that never existed (O-final m3).
+        if let Some(offset) = ledger_damage(&bytes) {
+            if damage_confirmed(&ledger_path, offset) {
+                let reason = format!("main.jsonl: no valid record at byte {offset}");
+                eprintln!("process-host-quarantined: session={session_id} {reason}");
+                self.catalog.mark_corrupt(session_id, &reason);
+                return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+            }
+            // Not confirmed: the second read is the truth now.
+            bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+            scan = scan_valid_prefix(&bytes, 1);
         }
+        let kernel_file_len = bytes.len() as u64;
+        let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
         // The shared-decode fast paths below are only taken for a clean read (no torn tail,
         // which the separate-read paths reject with "requires tail recovery") and only while
         // the ledger has not grown since this decode; otherwise the previous behaviour applies.
@@ -3695,14 +3724,20 @@ impl ProductionProcessHost {
             clean_read && fs::metadata(&ledger_path).is_ok_and(|metadata| metadata.len() == len)
         };
         if let Some(streams) = &streams {
-            if ledger_unchanged(kernel_file_len) {
-                streams
-                    .reconcile_actionables_main(session_id, &projection)
-                    .map_err(DaemonError::from)?;
+            let reconciled = if ledger_unchanged(kernel_file_len) {
+                streams.reconcile_actionables_main(session_id, &projection)
             } else {
-                streams
-                    .reconcile_actionables(session_id, None)
-                    .map_err(DaemonError::from)?;
+                streams.reconcile_actionables(session_id, None)
+            };
+            match reconciled {
+                Ok(()) => {}
+                // 256 pinned sessions hold the live registrations: the request frame cannot be
+                // announced, but the durable journal events below must still be (a client that
+                // misses them rebaselines; O-final m10).
+                Err(error @ ProductionCarrierError::ActiveSessionLimit(_)) => {
+                    eprintln!("process-host-actionables-limit: session={session_id} {error}");
+                }
+                Err(error) => return Err(DaemonError::from(error)),
             }
         }
         for event in appended {
@@ -5232,8 +5267,33 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
     }
 }
 
+/// Pause between the two reads that must agree before damage is believed.
+const DAMAGE_CONFIRM_PAUSE: Duration = Duration::from_millis(25);
+
+/// Whether the bytes of a ledger file show damage no repair can fix: no valid genesis, or a
+/// complete (LF-terminated) record after the valid prefix that does not validate. Returns the
+/// offset of the first invalid byte.
+fn ledger_damage(bytes: &[u8]) -> Option<u64> {
+    let scan = scan_valid_prefix(bytes, 1);
+    let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+    (scan.projection.is_none()
+        || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n'))))
+    .then(|| scan.first_invalid_offset.unwrap_or(scan.valid_bytes))
+}
+
+/// Believes damage only when two reads taken a moment apart show the same damage at the same
+/// offset. One unlocked `fs::read` can straddle a repair or an append by another process and
+/// show a record that never existed; a quarantine is sticky for the life of the process, so it
+/// must not rest on one read (O-final m3).
+fn damage_confirmed(path: &Path, first: u64) -> bool {
+    std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
+    fs::read(path).ok().and_then(|bytes| ledger_damage(&bytes)) == Some(first)
+}
+
 /// A complete but invalid record, or no valid genesis, in a child line ledger (`<uuid>.jsonl`):
-/// damage no repair can fix. A torn tail is only a partial append and is not damage.
+/// damage no repair can fix. A torn tail is only a partial append and is not damage. An empty
+/// child file is not judged here: `repair_thread_tails` already reports it as damage before this
+/// runs, and no live path produces one (a child's genesis is published by rename).
 fn child_ledger_damage(folder: &Path) -> Option<String> {
     let entries = fs::read_dir(folder).ok()?;
     for entry in entries.flatten() {
@@ -5248,18 +5308,12 @@ fn child_ledger_damage(folder: &Path) -> Option<String> {
             continue;
         };
         if bytes.is_empty() {
-            // A child ledger being created.
             continue;
         }
-        let scan = scan_valid_prefix(&bytes, 1);
-        let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
-        if scan.projection.is_none()
-            || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n')))
-        {
-            return Some(format!(
-                "{name}: no valid record at byte {}",
-                scan.first_invalid_offset.unwrap_or(scan.valid_bytes)
-            ));
+        if let Some(offset) = ledger_damage(&bytes) {
+            if damage_confirmed(&entry.path(), offset) {
+                return Some(format!("{name}: no valid record at byte {offset}"));
+            }
         }
     }
     None
@@ -5348,12 +5402,16 @@ impl ProductionProcessHost {
         if self.is_stale_ephemeral(session_id, ephemeral) {
             return None;
         }
-        let updated_at = fs::metadata(folder.join("main.jsonl"))
-            .and_then(|metadata| metadata.modified())
-            .ok()
-            .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
-            .map_or(0, |duration| {
-                u64::try_from(duration.as_millis()).unwrap_or(0)
+        // The last record's timestamp (what a verified row shows), else the file time.
+        let updated_at = endpoint::last_record_updated_ms(&folder.join("main.jsonl"))
+            .unwrap_or_else(|| {
+                fs::metadata(folder.join("main.jsonl"))
+                    .and_then(|metadata| metadata.modified())
+                    .ok()
+                    .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
+                    .map_or(0, |duration| {
+                        u64::try_from(duration.as_millis()).unwrap_or(0)
+                    })
             });
         Some(SessionInventoryItem {
             session_id: session_id.to_owned(),
@@ -5553,11 +5611,16 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
                 })
                 .unwrap_or_default();
             match entry.trust {
-                Trust::Fresh => result.verified.push(VerifiedHolds {
-                    session,
-                    holds,
-                    quarantined: false,
-                }),
+                Trust::Fresh => {
+                    if entry.view.as_ref().is_some_and(|view| !view.children_exact) {
+                        result.children_unverified.push(session.clone());
+                    }
+                    result.verified.push(VerifiedHolds {
+                        session,
+                        holds,
+                        quarantined: false,
+                    });
+                }
                 Trust::Corrupt(_) => result.verified.push(VerifiedHolds {
                     session,
                     holds,
@@ -10365,6 +10428,9 @@ mod tests {
         assert_eq!(real.session_id, session);
         // the held ask_user call makes the real tail differ from the neutral placeholder
         assert_ne!(real.tail, placeholder.tail);
+        // the placeholder carries the ledger's own last-record time, so the real row does not
+        // move in the list when it replaces it (O-final m6)
+        assert_eq!(real.updated_at, placeholder.updated_at);
         host.shutdown();
     }
 
@@ -10936,6 +11002,252 @@ mod tests {
         }
         schema::validate_ledger(&bytes, 1).expect("test ledger validates");
         fs::write(path, bytes).expect("test ledger");
+    }
+
+    const CHILD_TS: &str = "2026-08-28T00:00:00.000Z";
+
+    /// main: genesis, input, run_start, turn_open, spawn(child) at seq 5; child: a tool call
+    /// (seq 6) and, when `held`, a pending approval request (seq 7).
+    #[cfg(target_os = "macos")]
+    fn write_thread_with_child(root: &Path, session: &str, child: &str, held: bool) -> PathBuf {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        write_test_spawn_line(
+            &folder.join("main.jsonl"),
+            session,
+            child,
+            "main.jsonl",
+            None,
+            5,
+            "spawn-1",
+        );
+        let mut events = vec![
+            json!({"v":1,"seq":1,"kind":"genesis","ts":CHILD_TS,"format":1,"min_reader":1,"min_writer":1,
+                "thread":child,"workspace":"ws","origin_key":"create-child",
+                "origin_tuple":{"principal":"p","client":"cli","target":child,"op":"create","key":"create-child"},
+                "resume":"never","config":{"digest":"cfg"},
+                "parent":{"file":"main.jsonl","seq":5,"spawn_id":"spawn-1"},
+                "seed":{"source":"parent","kinds":[],
+                    "snapshot":{"asset":format!("sha256-{}", "0".repeat(64)),"digest":"0".repeat(64)}}}),
+            json!({"v":1,"seq":2,"kind":"turn_open","ts":CHILD_TS,"turn":1,"trigger":"genesis"}),
+            json!({"v":1,"seq":3,"kind":"epoch","ts":CHILD_TS,"adapter":"fake","id":"e1","model":"fake","reason":"initial",
+                "renderer":1,"system":{"asset":"sha256-aa","digest":"d1"},"tools":{"asset":"sha256-td","digest":"td"}}),
+            json!({"v":1,"seq":4,"kind":"attempt","ts":CHILD_TS,"admits":[],"attempt":"a1","epoch":"e1",
+                "request":{"asset":format!("sha256-{}", "ab".repeat(32)),"bytes":4096},"turn":1,"wire_digest":"wd"}),
+            json!({"v":1,"seq":5,"kind":"output","ts":CHILD_TS,"attempt":"a1",
+                "content":[{"args":{"cmd":"ls"},"call":"c1","name":"shell","type":"tool-call"}],
+                "sealed":{"adapter":"fake","fragments":"x","version":1},"turn":1,
+                "usage":{"availability":"reported","input_tokens":"5","output_tokens":"1"}}),
+            json!({"v":1,"seq":6,"kind":"tool_call","ts":CHILD_TS,"args":{"cmd":"ls"},"attempt":"a1","call":"c1",
+                "name":"shell","source":"provider","turn":1}),
+        ];
+        if held {
+            events.push(child_request_event());
+        }
+        let path = folder.join(format!("{child}.jsonl"));
+        write_test_events(&path, events);
+        path
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_request_event() -> Value {
+        json!({"v":1,"seq":7,"kind":"approval_request","ts":CHILD_TS,"call":"c1","scope":"exec","turn":1})
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_response_event(child: &str) -> Value {
+        json!({"v":1,"seq":8,"kind":"approval_response","ts":CHILD_TS,"call":"c1","grant":true,"turn":1,
+            "origin_key":"r1","origin_tuple":{"principal":"p","client":"cli","target":child,"op":"approve","key":"r1"}})
+    }
+
+    #[cfg(target_os = "macos")]
+    fn append_test_events(path: &Path, events: Vec<Value>) {
+        let mut bytes = fs::read(path).expect("ledger");
+        for value in events {
+            let event = schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))
+                .expect("event shape");
+            bytes.extend_from_slice(&event.canonical_bytes().expect("canonical event"));
+            bytes.push(b'\n');
+        }
+        schema::validate_ledger(&bytes, 1).expect("grown ledger validates");
+        fs::write(path, bytes).expect("grown ledger");
+    }
+
+    #[cfg(target_os = "macos")]
+    fn child_rpc_id(session: &str, child: &str) -> String {
+        endpoint::derive_line_request_rpc_id(
+            session,
+            Some(&format!("{child}.jsonl")),
+            endpoint::RequestFrameType::Approval,
+            7,
+        )
+    }
+
+    /// O-final B1, live path: a thread verified in this process folded its child lines once;
+    /// a hold a child worker raises afterwards is announced through the published set, and the
+    /// actionables baseline lists it without any ledger being re-read for the card. Answering
+    /// it removes it again.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        let child = "018f0000-0000-7000-8000-0000000000c2";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        let view = host
+            .catalog
+            .get(session)
+            .and_then(|entry| entry.view)
+            .expect("verified view");
+        assert!(view.children_exact, "verification folds the child lines");
+        assert_eq!(view.lines.len(), 2, "main and its child");
+        assert!(streams.actionable_ids_for_test().is_empty());
+
+        append_test_events(&child_path, vec![child_request_event()]);
+        let line = format!("{child}.jsonl");
+        streams
+            .reconcile_actionables(session, Some(&line))
+            .expect("the child worker's hold is announced");
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)]
+        );
+
+        append_test_events(&child_path, vec![child_response_event(child)]);
+        streams
+            .reconcile_actionables(session, Some(&line))
+            .expect("the answer is announced");
+        assert!(
+            streams.actionable_ids_for_test().is_empty(),
+            "an answered hold leaves the baseline"
+        );
+        host.shutdown();
+    }
+
+    /// O-final B1: the doorbell fold of the main ledger carries the previous child views forward
+    /// and says so (`children_exact` false); the catalog then asks for the child files to be
+    /// prefiltered, and a hold that arrived in the meantime is found.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c3";
+        let child = "018f0000-0000-7000-8000-0000000000c4";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        assert!(
+            host.catalog
+                .get(session)
+                .unwrap()
+                .view
+                .unwrap()
+                .children_exact
+        );
+        assert!(
+            SupervisorSessionAuthority::hold_catalog(&*host)
+                .expect("catalog")
+                .children_unverified
+                .is_empty()
+        );
+
+        append_test_events(&child_path, vec![child_request_event()]);
+        host.publish_appended(session).expect("doorbell");
+        assert!(
+            !host
+                .catalog
+                .get(session)
+                .unwrap()
+                .view
+                .unwrap()
+                .children_exact
+        );
+        assert_eq!(
+            SupervisorSessionAuthority::hold_catalog(&*host)
+                .expect("catalog")
+                .children_unverified,
+            vec![session.to_owned()]
+        );
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)],
+            "the child file's bytes hold a request, so the thread is a candidate"
+        );
+        host.shutdown();
+    }
+
+    /// O-final m4: a scratch thread that was busy at the post-ready cleanup (a lock holder) is
+    /// remembered, and the next cleanup (the recovery tick runs it while any are left) removes it
+    /// once the holder is gone.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_busy_stale_scratch_thread_is_removed_by_the_retry() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c6";
+        let folder = held_thread_on_disk(root.path(), session);
+        let ledger = folder.join("main.jsonl");
+        let text = fs::read_to_string(&ledger).expect("ledger");
+        fs::write(
+            &ledger,
+            text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+        )
+        .expect("ephemeral ledger");
+        let (host, _streams) = open_host(root.path());
+        let holder = store::LockedLedger::open(ledger.clone(), 1).expect("a lock holder");
+        host.cleanup_stale_ephemeral();
+        assert_eq!(host.stale_ephemeral_busy.load(Ordering::Acquire), 1);
+        assert!(folder.exists(), "a busy scratch thread is left alone");
+        drop(holder);
+        host.cleanup_stale_ephemeral();
+        assert_eq!(host.stale_ephemeral_busy.load(Ordering::Acquire), 0);
+        assert!(!folder.exists(), "the retry removed it");
+        host.shutdown();
+    }
+
+    /// O-final m9: verifying a thread removes the temporary card file a crashed process left.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn hydration_removes_a_dead_processs_card_temporary() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000d1";
+        let folder = held_thread_on_disk(root.path(), session);
+        let mut gone = std::process::Command::new("true").spawn().expect("spawn");
+        let dead = gone.id();
+        gone.wait().expect("wait");
+        let stale = folder.join(format!(".thread-card.json.{dead}.1.tmp"));
+        fs::write(&stale, b"half a card").expect("stale temporary");
+        let (host, _streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        assert!(!stale.exists(), "the dead process's temporary is gone");
+        host.shutdown();
+    }
+
+    /// O-final m3: damage is believed only when a second read agrees. A first read that showed
+    /// damage the file does not have (a straddled repair or append) quarantines nothing.
+    #[test]
+    fn damage_needs_two_agreeing_reads() {
+        let dir = tempfile::tempdir().expect("dir");
+        let path = dir.path().join("main.jsonl");
+        let good = format!(
+            "{}\n",
+            held_ledger_lines("018f0000-0000-7000-8000-0000000000c5")[0]
+        );
+        fs::write(&path, &good).expect("good ledger");
+        assert!(ledger_damage(good.as_bytes()).is_none());
+        assert!(
+            !damage_confirmed(&path, 17),
+            "a damaged first read of a sound file is not confirmed"
+        );
+        let damaged = format!("{good}{{\"not\":\"a record\"}}\n");
+        fs::write(&path, &damaged).expect("damaged ledger");
+        let offset = ledger_damage(damaged.as_bytes()).expect("complete invalid record");
+        assert!(damage_confirmed(&path, offset), "real damage is confirmed");
+        assert!(
+            !damage_confirmed(&path, offset + 1),
+            "a different offset is a different (transient) picture"
+        );
     }
 
     #[test]

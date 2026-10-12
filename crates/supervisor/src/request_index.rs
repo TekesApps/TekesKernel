@@ -98,6 +98,7 @@ impl RequestIndex {
             state.by_rpc.remove(&rpc_id);
         }
         state.examined.remove(session);
+        state.examined.remove(&format!("{session}#children"));
     }
 
     pub(crate) fn is_known_missing(&self, rpc_id: &str) -> bool {
@@ -168,18 +169,31 @@ pub(crate) fn ledger_signature(folder: &Path) -> Option<u64> {
     Some(signature)
 }
 
+/// `may_hold_requests` restricted to the child line files (everything but `main.jsonl`): for a
+/// thread whose main line is folded and whose child lines are not.
+pub(crate) fn children_may_hold_requests(folder: &Path) -> bool {
+    scan_for_requests(folder, true)
+}
+
 /// M3: true when any ledger line file of the thread may hold an `approval_request`. A necessary
 /// condition only (the valid prefix of a folded ledger decides): no false negatives, because
 /// every such event is a canonical JSON line containing the exact pattern. An unreadable file
 /// counts as a possible hit so the caller's fold reports it per thread.
 pub(crate) fn may_hold_requests(folder: &Path) -> bool {
+    scan_for_requests(folder, false)
+}
+
+fn scan_for_requests(folder: &Path, children_only: bool) -> bool {
     let Ok(entries) = fs::read_dir(folder) else {
         return true;
     };
     for entry in entries.flatten() {
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if !name.ends_with(".jsonl") || name == endpoint::JOURNAL_FILE {
+        if !name.ends_with(".jsonl")
+            || name == endpoint::JOURNAL_FILE
+            || (children_only && name == "main.jsonl")
+        {
             continue;
         }
         match fs::read(entry.path()) {

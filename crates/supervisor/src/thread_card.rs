@@ -42,24 +42,29 @@ pub(crate) struct PreparedCard {
     journal: Option<JournalInput>,
 }
 
+impl PreparedLine {
+    fn view(&self) -> crate::catalog::LineView {
+        crate::catalog::LineView {
+            file: self.file.clone(),
+            last_seq: self.last_seq,
+            line: self.line.clone(),
+            parent_file: self.parent_file.clone(),
+            facts: self.facts.clone(),
+            holds: self.holds.clone(),
+        }
+    }
+}
+
 impl PreparedCard {
-    /// The catalog view of this fold (no ledger bytes).
+    /// The catalog view of this fold (no ledger bytes). A doorbell-path card holds only the
+    /// main line, so the view's child lines are not folded here: `children_exact` is false
+    /// until something folds them (`fold_child_views`).
     pub(crate) fn view(&self) -> crate::catalog::EntryView {
         crate::catalog::EntryView {
             summary: self.summary.clone(),
-            lines: self
-                .lines
-                .iter()
-                .map(|line| crate::catalog::LineView {
-                    file: line.file.clone(),
-                    last_seq: line.last_seq,
-                    line: line.line.clone(),
-                    parent_file: line.parent_file.clone(),
-                    facts: line.facts.clone(),
-                    holds: line.holds.clone(),
-                })
-                .collect(),
+            lines: self.lines.iter().map(PreparedLine::view).collect(),
             journal: self.journal,
+            children_exact: self.lines.len() > 1,
         }
     }
 
@@ -169,8 +174,27 @@ pub(crate) fn prepare(
 /// Reads and folds every child ledger of the thread folder (writer thread only). A child that
 /// cannot be described is left out; the reader then treats the thread as Ahead for that line.
 fn complete_children(card: &mut PreparedCard) {
-    let Ok(entries) = std::fs::read_dir(&card.folder) else {
-        return;
+    let children = fold_children(&card.session, &card.folder);
+    card.lines.extend(children);
+}
+
+/// The catalog views of every child line of a thread, folded from the files as they are now.
+/// Used by verification (not the doorbell path) so a catalog entry's child lines are exact at
+/// that moment (E-final B1).
+pub(crate) fn fold_child_views(
+    session: &str,
+    folder: &std::path::Path,
+) -> Vec<crate::catalog::LineView> {
+    fold_children(session, folder)
+        .iter()
+        .map(PreparedLine::view)
+        .collect()
+}
+
+fn fold_children(session: &str, folder: &std::path::Path) -> Vec<PreparedLine> {
+    let mut lines = Vec::new();
+    let Ok(entries) = std::fs::read_dir(folder) else {
+        return lines;
     };
     let mut children = entries
         .flatten()
@@ -184,7 +208,7 @@ fn complete_children(card: &mut PreparedCard) {
         .collect::<Vec<_>>();
     children.sort();
     for name in children {
-        let Ok(mut prefix) = std::fs::read(card.folder.join(&name)) else {
+        let Ok(mut prefix) = std::fs::read(folder.join(&name)) else {
             continue;
         };
         let scan = store::scan_valid_prefix(&prefix, 1);
@@ -206,12 +230,12 @@ fn complete_children(card: &mut PreparedCard) {
         });
         let (Some(line), Some(holds)) = (
             genesis.string_field("thread").map(str::to_owned),
-            holds_of(&card.session, Some(&name), &child),
+            holds_of(session, Some(&name), &child),
         ) else {
             continue;
         };
         prefix.truncate(valid);
-        card.lines.push(PreparedLine {
+        lines.push(PreparedLine {
             file: name,
             prefix,
             last_seq: child.last_seq,
@@ -221,6 +245,7 @@ fn complete_children(card: &mut PreparedCard) {
             holds,
         });
     }
+    lines
 }
 
 /// Re-folds the main ledger on the writer thread for a thread that was marked dirty while its

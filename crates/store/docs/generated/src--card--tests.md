@@ -28,6 +28,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::card::tests::classify_every_card_of_a_real_root](../../src/card/tests.rs#L426) | function_item | `private` | test;  |
 | [store::card::tests::a_file_that_shrinks_during_classification_is_stale_not_an_io_error](../../src/card/tests.rs#L450) | function_item | `private` | test;  |
 | [store::card::tests::card_line_names_are_plain_jsonl_names](../../src/card/tests.rs#L483) | function_item | `private` | test;  |
+| [store::card::tests::stale_card_temporaries_of_dead_processes_are_removed](../../src/card/tests.rs#L522) | function_item | `private` | test;  |
 
 ## Imports / reexports
 
@@ -280,3 +281,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `card_line_names_are_plain_jsonl_names` | `scan_valid_prefix` | [509](../../src/card/tests.rs#L509) | [store::tail::scan_valid_prefix](../../src/tail.rs#L37) |
 | `card_line_names_are_plain_jsonl_names` | `scan.projection.unwrap` | [510](../../src/card/tests.rs#L510) | receiver-type-required |
 | `card_line_names_are_plain_jsonl_names` | `input_for` | [511](../../src/card/tests.rs#L511) | [store::card::tests::input_for](../../src/card/tests.rs#L92) |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `thread_with` | [523](../../src/card/tests.rs#L523) | [store::card::tests::thread_with](../../src/card/tests.rs#L49) |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::process::Command::new("true").spawn().unwrap` | [524](../../src/card/tests.rs#L524) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::process::Command::new("true").spawn` | [524](../../src/card/tests.rs#L524) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::process::Command::new` | [524](../../src/card/tests.rs#L524) | external-constructor-callback-or-unresolved |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `child.id` | [525](../../src/card/tests.rs#L525) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `child.wait().unwrap` | [526](../../src/card/tests.rs#L526) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `child.wait` | [526](../../src/card/tests.rs#L526) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::os::unix::process::parent_id` | [527](../../src/card/tests.rs#L527) | external-constructor-callback-or-unresolved |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::process::id` | [528](../../src/card/tests.rs#L528) | external-constructor-callback-or-unresolved |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `"main.jsonl.tmp".to_owned` | [533](../../src/card/tests.rs#L533) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::fs::write(folder.join(name), b"x").unwrap` | [535](../../src/card/tests.rs#L535) | receiver-type-required |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `std::fs::write` | [535](../../src/card/tests.rs#L535) | external-constructor-callback-or-unresolved |
+| `stale_card_temporaries_of_dead_processes_are_removed` | `folder.join` | [535](../../src/card/tests.rs#L535) | receiver-type-required |

@@ -44,6 +44,10 @@ pub(crate) struct EntryView {
     /// Main line first, then children by name.
     pub lines: Vec<LineView>,
     pub journal: Option<JournalInput>,
+    /// The child-line views were folded from the child files when this entry was verified (or
+    /// come from a Fresh card, which lists every child). A doorbell fold of the main ledger
+    /// carries the previous child views forward and clears this: a child may have changed since.
+    pub children_exact: bool,
 }
 
 impl EntryView {
@@ -156,6 +160,13 @@ impl Catalog {
             // Someone resolved it meanwhile.
             Some(existing) if !existing.unread => Some(existing.clone()),
             _ => {
+                // The card was read without a lock: the folder may have been archived or removed
+                // since, and its folder event may already have run. Insert only if it is still
+                // here (the event and this check both take the write lock; O-final m2).
+                if !self.folder(id).is_dir() {
+                    entries.remove(id);
+                    return None;
+                }
                 entries.insert(id.to_owned(), entry.clone());
                 Some(entry)
             }
@@ -275,6 +286,8 @@ impl Catalog {
                 }
                 view.lines
                     .extend(previous_view.lines.iter().skip(1).cloned());
+                // The previous child views are carried, not refolded: they may be stale.
+                view.children_exact = false;
             }
         }
         entries.insert(
@@ -332,12 +345,34 @@ impl Catalog {
             return false;
         };
         let mut next = (**view).clone();
+        next.children_exact = false;
         next.summary.updated_ms = updated_ms;
         next.summary.blank = projection.lifecycle.latest_turn.is_none();
         if let Some(line) = next.lines.first_mut() {
             line.last_seq = projection.last_seq;
             line.facts = projection.lifecycle.clone();
         }
+        entry.view = Some(Arc::new(next));
+        true
+    }
+
+    /// Records the child lines folded from the files (verification). Returns false when the
+    /// entry is not a Fresh view any more.
+    pub(crate) fn set_children(&self, id: &str, children: Vec<LineView>) -> bool {
+        let mut entries = self
+            .entries
+            .write()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let Some(entry) = entries.get_mut(id) else {
+            return false;
+        };
+        let (Trust::Fresh, Some(view)) = (&entry.trust, &entry.view) else {
+            return false;
+        };
+        let mut next = (**view).clone();
+        next.lines.truncate(1);
+        next.lines.extend(children);
+        next.children_exact = true;
         entry.view = Some(Arc::new(next));
         true
     }
@@ -387,6 +422,7 @@ impl Catalog {
 
 fn view_of_card(card: &store::card::ThreadCard) -> EntryView {
     EntryView {
+        children_exact: true,
         summary: card.summary.clone(),
         lines: card
             .lines

@@ -28,9 +28,9 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/transport/src/access.rs](../../src/access.rs) | 7 | 4 | [Symbols and calls](src--access.md) |
 | [crates/transport/src/auth.rs](../../src/auth.rs) | 7 | 19 | [Symbols and calls](src--auth.md) |
 | [crates/transport/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
-| [crates/transport/src/server.rs](../../src/server.rs) | 91 | 492 | [Symbols and calls](src--server.md) |
+| [crates/transport/src/server.rs](../../src/server.rs) | 91 | 497 | [Symbols and calls](src--server.md) |
 | [crates/transport/src/web.rs](../../src/web.rs) | 15 | 61 | [Symbols and calls](src--web.md) |
-| [crates/transport/tests/slice9_transport.rs](../../tests/slice9_transport.rs) | 49 | 648 | `inventory.json` |
+| [crates/transport/tests/slice9_transport.rs](../../tests/slice9_transport.rs) | 51 | 691 | `inventory.json` |
 
 ## Cross-file direct calls
 

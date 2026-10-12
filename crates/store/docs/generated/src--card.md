@@ -55,8 +55,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::card::renameat](../../src/card.rs#L551) | function_item | `private` |  |
 | [store::card::unlinkat](../../src/card.rs#L564) | function_item | `private` |  |
 | [store::card::write_card](../../src/card.rs#L578) | function_item | `pub` |  |
-| [store::card::journal_tail_len](../../src/card.rs#L713) | function_item | `private` |  |
-| [store::card::journal_samples](../../src/card.rs#L728) | function_item | `private` |  |
+| [store::card::remove_stale_card_temps](../../src/card.rs#L714) | function_item | `pub` |  |
+| [store::card::journal_tail_len](../../src/card.rs#L750) | function_item | `private` |  |
+| [store::card::journal_samples](../../src/card.rs#L765) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -132,7 +133,7 @@ flowchart TD
 
 </details>
 
-<details><summary>Functions 21–25: 16 direct edges</summary>
+<details><summary>Functions 21–26: 16 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -147,9 +148,10 @@ flowchart TD
   n8["store::card::renameat"]
   n9["store::card::unlinkat"]
   n10["store::card::write_card"]
-  n11["store::card::journal_tail_len"]
-  n12["store::card::journal_samples"]
-  n13["store::platform::FullSync::full_sync"]
+  n11["store::card::remove_stale_card_temps"]
+  n12["store::card::journal_tail_len"]
+  n13["store::card::journal_samples"]
+  n14["store::platform::FullSync::full_sync"]
   n10 --> n0
   n10 --> n2
   n10 --> n3
@@ -159,13 +161,13 @@ flowchart TD
   n10 --> n7
   n10 --> n8
   n10 --> n9
-  n10 --> n11
   n10 --> n12
   n10 --> n13
-  n11 --> n2
-  n12 --> n0
-  n12 --> n1
+  n10 --> n14
   n12 --> n2
+  n13 --> n0
+  n13 --> n1
+  n13 --> n2
 ```
 
 </details>
@@ -351,9 +353,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_card` | `file.metadata()?.len` | [639](../../src/card.rs#L639) | receiver-type-required |
 | `write_card` | `file.metadata` | [639](../../src/card.rs#L639) | receiver-type-required |
 | `write_card` | `SAMPLE_LEN.min` | [642](../../src/card.rs#L642) | receiver-type-required |
-| `write_card` | `journal_tail_len` | [643](../../src/card.rs#L643) | [store::card::journal_tail_len](../../src/card.rs#L713) |
+| `write_card` | `journal_tail_len` | [643](../../src/card.rs#L643) | [store::card::journal_tail_len](../../src/card.rs#L750) |
 | `write_card` | `pread_if_present` | [647](../../src/card.rs#L647), [648](../../src/card.rs#L648) | [store::card::pread_if_present](../../src/card.rs#L241) |
-| `write_card` | `journal_samples` | [649](../../src/card.rs#L649) | [store::card::journal_samples](../../src/card.rs#L728) |
+| `write_card` | `journal_samples` | [649](../../src/card.rs#L649) | [store::card::journal_samples](../../src/card.rs#L765) |
 | `write_card` | `Some` | [653](../../src/card.rs#L653) | external-constructor-callback-or-unresolved |
 | `write_card` | `sha256_hex` | [658](../../src/card.rs#L658), [659](../../src/card.rs#L659) | [store::card::sha256_hex](../../src/card.rs#L195) |
 | `write_card` | `input.kernel.to_owned` | [673](../../src/card.rs#L673) | receiver-type-required |
@@ -367,19 +369,42 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_card` | `drop` | [695](../../src/card.rs#L695) | external-constructor-callback-or-unresolved |
 | `write_card` | `renameat` | [696](../../src/card.rs#L696) | [store::card::renameat](../../src/card.rs#L551) |
 | `write_card` | `unlinkat` | [701](../../src/card.rs#L701) | [store::card::unlinkat](../../src/card.rs#L564) |
-| `journal_tail_len` | `Ok` | [715](../../src/card.rs#L715), [719](../../src/card.rs#L719), [722](../../src/card.rs#L722) | external-constructor-callback-or-unresolved |
-| `journal_tail_len` | `Some` | [715](../../src/card.rs#L715), [722](../../src/card.rs#L722) | external-constructor-callback-or-unresolved |
-| `journal_tail_len` | `len.min` | [717](../../src/card.rs#L717) | receiver-type-required |
-| `journal_tail_len` | `pread_if_present` | [718](../../src/card.rs#L718) | [store::card::pread_if_present](../../src/card.rs#L241) |
-| `journal_tail_len` | `bytes.strip_suffix(b"\n").unwrap_or` | [721](../../src/card.rs#L721) | receiver-type-required |
-| `journal_tail_len` | `bytes.strip_suffix` | [721](../../src/card.rs#L721) | receiver-type-required |
-| `journal_tail_len` | `body.iter().rposition` | [722](../../src/card.rs#L722) | receiver-type-required |
-| `journal_tail_len` | `body.iter` | [722](../../src/card.rs#L722) | receiver-type-required |
-| `journal_tail_len` | `bytes.len` | [723](../../src/card.rs#L723) | receiver-type-required |
-| `journal_samples` | `Vec::new` | [729](../../src/card.rs#L729) | external-constructor-callback-or-unresolved |
-| `journal_samples` | `sample_offsets` | [730](../../src/card.rs#L730) | [store::card::sample_offsets](../../src/card.rs#L200) |
-| `journal_samples` | `pread_if_present` | [731](../../src/card.rs#L731) | [store::card::pread_if_present](../../src/card.rs#L241) |
-| `journal_samples` | `Ok` | [732](../../src/card.rs#L732), [740](../../src/card.rs#L740) | external-constructor-callback-or-unresolved |
-| `journal_samples` | `samples.push` | [734](../../src/card.rs#L734) | receiver-type-required |
-| `journal_samples` | `sha256_hex` | [737](../../src/card.rs#L737) | [store::card::sha256_hex](../../src/card.rs#L195) |
-| `journal_samples` | `Some` | [740](../../src/card.rs#L740) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `std::fs::read_dir` | [716](../../src/card.rs#L716) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `entries.flatten` | [720](../../src/card.rs#L720) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name().to_string_lossy().into_owned` | [721](../../src/card.rs#L721) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name().to_string_lossy` | [721](../../src/card.rs#L721) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name` | [721](../../src/card.rs#L721) | receiver-type-required |
+| `remove_stale_card_temps` | `name             .strip_prefix(&prefix)             .and_then` | [722](../../src/card.rs#L722) | receiver-type-required |
+| `remove_stale_card_temps` | `name             .strip_prefix` | [722](../../src/card.rs#L722) | receiver-type-required |
+| `remove_stale_card_temps` | `rest.strip_suffix` | [724](../../src/card.rs#L724) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split('.')             .next()             .and_then` | [728](../../src/card.rs#L728) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split('.')             .next` | [728](../../src/card.rs#L728) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split` | [728](../../src/card.rs#L728) | receiver-type-required |
+| `remove_stale_card_temps` | `pid.parse::<i32>().ok` | [731](../../src/card.rs#L731) | receiver-type-required |
+| `remove_stale_card_temps` | `pid.parse::<i32>` | [731](../../src/card.rs#L731) | receiver-type-required |
+| `remove_stale_card_temps` | `u32::try_from(pid).is_ok_and` | [735](../../src/card.rs#L735) | receiver-type-required |
+| `remove_stale_card_temps` | `u32::try_from` | [735](../../src/card.rs#L735) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `std::process::id` | [735](../../src/card.rs#L735) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `libc::kill` | [739](../../src/card.rs#L739) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `io::Error::last_os_error().raw_os_error` | [740](../../src/card.rs#L740) | receiver-type-required |
+| `remove_stale_card_temps` | `io::Error::last_os_error` | [740](../../src/card.rs#L740) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `Some` | [740](../../src/card.rs#L740) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `std::fs::remove_file(entry.path()).is_ok` | [741](../../src/card.rs#L741) | receiver-type-required |
+| `remove_stale_card_temps` | `std::fs::remove_file` | [741](../../src/card.rs#L741) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `entry.path` | [741](../../src/card.rs#L741) | receiver-type-required |
+| `journal_tail_len` | `Ok` | [752](../../src/card.rs#L752), [756](../../src/card.rs#L756), [759](../../src/card.rs#L759) | external-constructor-callback-or-unresolved |
+| `journal_tail_len` | `Some` | [752](../../src/card.rs#L752), [759](../../src/card.rs#L759) | external-constructor-callback-or-unresolved |
+| `journal_tail_len` | `len.min` | [754](../../src/card.rs#L754) | receiver-type-required |
+| `journal_tail_len` | `pread_if_present` | [755](../../src/card.rs#L755) | [store::card::pread_if_present](../../src/card.rs#L241) |
+| `journal_tail_len` | `bytes.strip_suffix(b"\n").unwrap_or` | [758](../../src/card.rs#L758) | receiver-type-required |
+| `journal_tail_len` | `bytes.strip_suffix` | [758](../../src/card.rs#L758) | receiver-type-required |
+| `journal_tail_len` | `body.iter().rposition` | [759](../../src/card.rs#L759) | receiver-type-required |
+| `journal_tail_len` | `body.iter` | [759](../../src/card.rs#L759) | receiver-type-required |
+| `journal_tail_len` | `bytes.len` | [760](../../src/card.rs#L760) | receiver-type-required |
+| `journal_samples` | `Vec::new` | [766](../../src/card.rs#L766) | external-constructor-callback-or-unresolved |
+| `journal_samples` | `sample_offsets` | [767](../../src/card.rs#L767) | [store::card::sample_offsets](../../src/card.rs#L200) |
+| `journal_samples` | `pread_if_present` | [768](../../src/card.rs#L768) | [store::card::pread_if_present](../../src/card.rs#L241) |
+| `journal_samples` | `Ok` | [769](../../src/card.rs#L769), [777](../../src/card.rs#L777) | external-constructor-callback-or-unresolved |
+| `journal_samples` | `samples.push` | [771](../../src/card.rs#L771) | receiver-type-required |
+| `journal_samples` | `sha256_hex` | [774](../../src/card.rs#L774) | [store::card::sha256_hex](../../src/card.rs#L195) |
+| `journal_samples` | `Some` | [777](../../src/card.rs#L777) | external-constructor-callback-or-unresolved |

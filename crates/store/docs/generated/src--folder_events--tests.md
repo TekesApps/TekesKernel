@@ -16,10 +16,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::folder_events::tests::every_membership_change_is_announced_and_admission_follows_it](../../src/folder_events/tests.rs#L35) | function_item | `private` | test;  |
 | [store::folder_events::tests::the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root](../../src/folder_events/tests.rs#L85) | function_item | `private` | test;  |
 | [store::folder_events::tests::cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones](../../src/folder_events/tests.rs#L100) | function_item | `private` | test;  |
-| [store::folder_events::tests::leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors](../../src/folder_events/tests.rs#L126) | function_item | `private` | test;  |
-| [store::folder_events::tests::admission_is_keyed_by_the_canonical_root](../../src/folder_events/tests.rs#L145) | function_item | `private` | test;  |
-| [store::folder_events::tests::tombstones_are_cleaned_even_when_the_ephemeral_scan_fails](../../src/folder_events/tests.rs#L161) | function_item | `private` | test;  |
-| [store::folder_events::tests::a_real_removal_failure_is_not_waited_for](../../src/folder_events/tests.rs#L182) | function_item | `private` | test;  |
+| [store::folder_events::tests::deleting_a_swept_threads_tombstone_announces_nothing_more](../../src/folder_events/tests.rs#L130) | function_item | `private` | test;  |
+| [store::folder_events::tests::leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors](../../src/folder_events/tests.rs#L151) | function_item | `private` | test;  |
+| [store::folder_events::tests::admission_is_keyed_by_the_canonical_root](../../src/folder_events/tests.rs#L170) | function_item | `private` | test;  |
+| [store::folder_events::tests::tombstones_are_cleaned_even_when_the_ephemeral_scan_fails](../../src/folder_events/tests.rs#L186) | function_item | `private` | test;  |
+| [store::folder_events::tests::a_real_removal_failure_is_not_waited_for](../../src/folder_events/tests.rs#L207) | function_item | `private` | test;  |
 
 ## Imports / reexports
 
@@ -75,7 +76,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.unarchive(A).unwrap` | [53](../../src/folder_events/tests.rs#L53) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.unarchive` | [53](../../src/folder_events/tests.rs#L53) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder(&root.join("threads").join(B), &root.join("archive").join(B)).unwrap` | [57](../../src/folder_events/tests.rs#L57) | receiver-type-required |
-| `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | [store::folder::move_thread_folder](../../src/folder.rs#L982) |
+| `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | [store::folder::move_thread_folder](../../src/folder.rs#L980) |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join("threads").join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join("archive").join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
@@ -115,65 +116,78 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `fs::read_dir(root.join(".rewrite-trash")).unwrap().count` | [121](../../src/folder_events/tests.rs#L121) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `fs::read_dir(root.join(".rewrite-trash")).unwrap` | [121](../../src/folder_events/tests.rs#L121) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `fs::read_dir` | [121](../../src/folder_events/tests.rs#L121) | external-constructor-callback-or-unresolved |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `tempfile::tempdir().unwrap` | [127](../../src/folder_events/tests.rs#L127) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `tempfile::tempdir` | [127](../../src/folder_events/tests.rs#L127) | external-constructor-callback-or-unresolved |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `dir.path` | [128](../../src/folder_events/tests.rs#L128) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open(root).unwrap` | [129](../../src/folder_events/tests.rs#L129) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open` | [129](../../src/folder_events/tests.rs#L129) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `root.join` | [130](../../src/folder_events/tests.rs#L130) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{A}/assets"))).unwrap` | [131](../../src/folder_events/tests.rs#L131) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all` | [131](../../src/folder_events/tests.rs#L131), [133](../../src/folder_events/tests.rs#L133), [134](../../src/folder_events/tests.rs#L134) | external-constructor-callback-or-unresolved |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `trash.join` | [131](../../src/folder_events/tests.rs#L131), [132](../../src/folder_events/tests.rs#L132), [133](../../src/folder_events/tests.rs#L133), [134](../../src/folder_events/tests.rs#L134), [139](../../src/folder_events/tests.rs#L139) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::write(trash.join(format!("discard-{A}/main.jsonl")), b"x").unwrap` | [132](../../src/folder_events/tests.rs#L132) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::write` | [132](../../src/folder_events/tests.rs#L132) | external-constructor-callback-or-unresolved |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{B}.deleting-1-1"))).unwrap` | [133](../../src/folder_events/tests.rs#L133) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join("redact-op-keepme")).unwrap` | [134](../../src/folder_events/tests.rs#L134) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present(&trash.join("nope")).unwrap` | [139](../../src/folder_events/tests.rs#L139) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present` | [139](../../src/folder_events/tests.rs#L139) | [store::folder::remove_tree_if_present](../../src/folder.rs#L921) |
-| `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir().unwrap` | [146](../../src/folder_events/tests.rs#L146) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir` | [146](../../src/folder_events/tests.rs#L146) | external-constructor-callback-or-unresolved |
-| `admission_is_keyed_by_the_canonical_root` | `fs::canonicalize(dir.path()).unwrap` | [147](../../src/folder_events/tests.rs#L147) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `fs::canonicalize` | [147](../../src/folder_events/tests.rs#L147) | external-constructor-callback-or-unresolved |
-| `admission_is_keyed_by_the_canonical_root` | `dir.path` | [147](../../src/folder_events/tests.rs#L147) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `real.join` | [148](../../src/folder_events/tests.rs#L148), [150](../../src/folder_events/tests.rs#L150) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `std::os::unix::fs::symlink(&real, &alias).unwrap` | [149](../../src/folder_events/tests.rs#L149) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `std::os::unix::fs::symlink` | [149](../../src/folder_events/tests.rs#L149) | external-constructor-callback-or-unresolved |
-| `admission_is_keyed_by_the_canonical_root` | `real.join("threads").join` | [150](../../src/folder_events/tests.rs#L150) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `arm_admission` | [151](../../src/folder_events/tests.rs#L151) | external-constructor-callback-or-unresolved |
-| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open(&alias).unwrap` | [152](../../src/folder_events/tests.rs#L152) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open` | [152](../../src/folder_events/tests.rs#L152) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
-| `admission_is_keyed_by_the_canonical_root` | `store.create_thread(C, genesis(C, false)).unwrap` | [153](../../src/folder_events/tests.rs#L153) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `store.create_thread` | [153](../../src/folder_events/tests.rs#L153) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `genesis` | [153](../../src/folder_events/tests.rs#L153) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tempfile::tempdir().unwrap` | [163](../../src/folder_events/tests.rs#L163) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tempfile::tempdir` | [163](../../src/folder_events/tests.rs#L163) | external-constructor-callback-or-unresolved |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path().to_path_buf` | [164](../../src/folder_events/tests.rs#L164) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path` | [164](../../src/folder_events/tests.rs#L164) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open(&root).unwrap` | [165](../../src/folder_events/tests.rs#L165) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open` | [165](../../src/folder_events/tests.rs#L165) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join(".rewrite-trash").join` | [166](../../src/folder_events/tests.rs#L166) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join` | [166](../../src/folder_events/tests.rs#L166), [169](../../src/folder_events/tests.rs#L169), [171](../../src/folder_events/tests.rs#L171) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::create_dir_all(tombstone.join("assets")).unwrap` | [167](../../src/folder_events/tests.rs#L167) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::create_dir_all` | [167](../../src/folder_events/tests.rs#L167) | external-constructor-callback-or-unresolved |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tombstone.join` | [167](../../src/folder_events/tests.rs#L167), [168](../../src/folder_events/tests.rs#L168) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::write(tombstone.join("main.jsonl"), b"old").unwrap` | [168](../../src/folder_events/tests.rs#L168) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::write` | [168](../../src/folder_events/tests.rs#L168) | external-constructor-callback-or-unresolved |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o000)).unwrap` | [169](../../src/folder_events/tests.rs#L169) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions` | [169](../../src/folder_events/tests.rs#L169), [171](../../src/folder_events/tests.rs#L171) | external-constructor-callback-or-unresolved |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::Permissions::from_mode` | [169](../../src/folder_events/tests.rs#L169), [171](../../src/folder_events/tests.rs#L171) | external-constructor-callback-or-unresolved |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `store.cleanup_stale_ephemeral` | [170](../../src/folder_events/tests.rs#L170) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o700)).unwrap` | [171](../../src/folder_events/tests.rs#L171) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `tempfile::tempdir().unwrap` | [184](../../src/folder_events/tests.rs#L184) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `tempfile::tempdir` | [184](../../src/folder_events/tests.rs#L184) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `dir.path().join` | [185](../../src/folder_events/tests.rs#L185) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `dir.path` | [185](../../src/folder_events/tests.rs#L185) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `tree.join` | [186](../../src/folder_events/tests.rs#L186) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `fs::create_dir_all(locked.join("inner")).unwrap` | [187](../../src/folder_events/tests.rs#L187) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `fs::create_dir_all` | [187](../../src/folder_events/tests.rs#L187) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `locked.join` | [187](../../src/folder_events/tests.rs#L187) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap` | [188](../../src/folder_events/tests.rs#L188) | receiver-type-required |
-| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions` | [188](../../src/folder_events/tests.rs#L188), [191](../../src/folder_events/tests.rs#L191) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `fs::Permissions::from_mode` | [188](../../src/folder_events/tests.rs#L188), [191](../../src/folder_events/tests.rs#L191) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `std::time::Instant::now` | [189](../../src/folder_events/tests.rs#L189) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `crate::folder::remove_tree_if_present` | [190](../../src/folder_events/tests.rs#L190) | [store::folder::remove_tree_if_present](../../src/folder.rs#L921) |
-| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions(&locked, fs::Permissions::from_mode(0o700)).unwrap` | [191](../../src/folder_events/tests.rs#L191) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `tempfile::tempdir().unwrap` | [131](../../src/folder_events/tests.rs#L131) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `tempfile::tempdir` | [131](../../src/folder_events/tests.rs#L131) | external-constructor-callback-or-unresolved |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `dir.path().to_path_buf` | [132](../../src/folder_events/tests.rs#L132) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `dir.path` | [132](../../src/folder_events/tests.rs#L132) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `ThreadStore::open(&root).unwrap` | [133](../../src/folder_events/tests.rs#L133) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `ThreadStore::open` | [133](../../src/folder_events/tests.rs#L133) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.create_thread(C, genesis(C, true)).unwrap` | [134](../../src/folder_events/tests.rs#L134), [141](../../src/folder_events/tests.rs#L141) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.create_thread` | [134](../../src/folder_events/tests.rs#L134), [141](../../src/folder_events/tests.rs#L141) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `genesis` | [134](../../src/folder_events/tests.rs#L134), [141](../../src/folder_events/tests.rs#L141) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `arm_admission` | [135](../../src/folder_events/tests.rs#L135) | external-constructor-callback-or-unresolved |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `record_events` | [136](../../src/folder_events/tests.rs#L136) | external-constructor-callback-or-unresolved |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.cleanup_stale_ephemeral(&&#124;_&#124; false).unwrap` | [137](../../src/folder_events/tests.rs#L137) | receiver-type-required |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.cleanup_stale_ephemeral` | [137](../../src/folder_events/tests.rs#L137) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `tempfile::tempdir().unwrap` | [152](../../src/folder_events/tests.rs#L152) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `tempfile::tempdir` | [152](../../src/folder_events/tests.rs#L152) | external-constructor-callback-or-unresolved |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `dir.path` | [153](../../src/folder_events/tests.rs#L153) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open(root).unwrap` | [154](../../src/folder_events/tests.rs#L154) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open` | [154](../../src/folder_events/tests.rs#L154) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `root.join` | [155](../../src/folder_events/tests.rs#L155) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{A}/assets"))).unwrap` | [156](../../src/folder_events/tests.rs#L156) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all` | [156](../../src/folder_events/tests.rs#L156), [158](../../src/folder_events/tests.rs#L158), [159](../../src/folder_events/tests.rs#L159) | external-constructor-callback-or-unresolved |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `trash.join` | [156](../../src/folder_events/tests.rs#L156), [157](../../src/folder_events/tests.rs#L157), [158](../../src/folder_events/tests.rs#L158), [159](../../src/folder_events/tests.rs#L159), [164](../../src/folder_events/tests.rs#L164) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::write(trash.join(format!("discard-{A}/main.jsonl")), b"x").unwrap` | [157](../../src/folder_events/tests.rs#L157) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::write` | [157](../../src/folder_events/tests.rs#L157) | external-constructor-callback-or-unresolved |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{B}.deleting-1-1"))).unwrap` | [158](../../src/folder_events/tests.rs#L158) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join("redact-op-keepme")).unwrap` | [159](../../src/folder_events/tests.rs#L159) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present(&trash.join("nope")).unwrap` | [164](../../src/folder_events/tests.rs#L164) | receiver-type-required |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present` | [164](../../src/folder_events/tests.rs#L164) | [store::folder::remove_tree_if_present](../../src/folder.rs#L919) |
+| `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir().unwrap` | [171](../../src/folder_events/tests.rs#L171) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir` | [171](../../src/folder_events/tests.rs#L171) | external-constructor-callback-or-unresolved |
+| `admission_is_keyed_by_the_canonical_root` | `fs::canonicalize(dir.path()).unwrap` | [172](../../src/folder_events/tests.rs#L172) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `fs::canonicalize` | [172](../../src/folder_events/tests.rs#L172) | external-constructor-callback-or-unresolved |
+| `admission_is_keyed_by_the_canonical_root` | `dir.path` | [172](../../src/folder_events/tests.rs#L172) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `real.join` | [173](../../src/folder_events/tests.rs#L173), [175](../../src/folder_events/tests.rs#L175) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `std::os::unix::fs::symlink(&real, &alias).unwrap` | [174](../../src/folder_events/tests.rs#L174) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `std::os::unix::fs::symlink` | [174](../../src/folder_events/tests.rs#L174) | external-constructor-callback-or-unresolved |
+| `admission_is_keyed_by_the_canonical_root` | `real.join("threads").join` | [175](../../src/folder_events/tests.rs#L175) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `arm_admission` | [176](../../src/folder_events/tests.rs#L176) | external-constructor-callback-or-unresolved |
+| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open(&alias).unwrap` | [177](../../src/folder_events/tests.rs#L177) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open` | [177](../../src/folder_events/tests.rs#L177) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `admission_is_keyed_by_the_canonical_root` | `store.create_thread(C, genesis(C, false)).unwrap` | [178](../../src/folder_events/tests.rs#L178) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `store.create_thread` | [178](../../src/folder_events/tests.rs#L178) | receiver-type-required |
+| `admission_is_keyed_by_the_canonical_root` | `genesis` | [178](../../src/folder_events/tests.rs#L178) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tempfile::tempdir().unwrap` | [188](../../src/folder_events/tests.rs#L188) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tempfile::tempdir` | [188](../../src/folder_events/tests.rs#L188) | external-constructor-callback-or-unresolved |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path().to_path_buf` | [189](../../src/folder_events/tests.rs#L189) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path` | [189](../../src/folder_events/tests.rs#L189) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open(&root).unwrap` | [190](../../src/folder_events/tests.rs#L190) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open` | [190](../../src/folder_events/tests.rs#L190) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join(".rewrite-trash").join` | [191](../../src/folder_events/tests.rs#L191) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join` | [191](../../src/folder_events/tests.rs#L191), [194](../../src/folder_events/tests.rs#L194), [196](../../src/folder_events/tests.rs#L196) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::create_dir_all(tombstone.join("assets")).unwrap` | [192](../../src/folder_events/tests.rs#L192) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::create_dir_all` | [192](../../src/folder_events/tests.rs#L192) | external-constructor-callback-or-unresolved |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `tombstone.join` | [192](../../src/folder_events/tests.rs#L192), [193](../../src/folder_events/tests.rs#L193) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::write(tombstone.join("main.jsonl"), b"old").unwrap` | [193](../../src/folder_events/tests.rs#L193) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::write` | [193](../../src/folder_events/tests.rs#L193) | external-constructor-callback-or-unresolved |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o000)).unwrap` | [194](../../src/folder_events/tests.rs#L194) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions` | [194](../../src/folder_events/tests.rs#L194), [196](../../src/folder_events/tests.rs#L196) | external-constructor-callback-or-unresolved |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::Permissions::from_mode` | [194](../../src/folder_events/tests.rs#L194), [196](../../src/folder_events/tests.rs#L196) | external-constructor-callback-or-unresolved |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `store.cleanup_stale_ephemeral` | [195](../../src/folder_events/tests.rs#L195) | receiver-type-required |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::set_permissions(root.join("threads"), fs::Permissions::from_mode(0o700)).unwrap` | [196](../../src/folder_events/tests.rs#L196) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `tempfile::tempdir().unwrap` | [209](../../src/folder_events/tests.rs#L209) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `tempfile::tempdir` | [209](../../src/folder_events/tests.rs#L209) | external-constructor-callback-or-unresolved |
+| `a_real_removal_failure_is_not_waited_for` | `dir.path().join` | [210](../../src/folder_events/tests.rs#L210) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `dir.path` | [210](../../src/folder_events/tests.rs#L210) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `tree.join` | [211](../../src/folder_events/tests.rs#L211) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `fs::create_dir_all(locked.join("inner")).unwrap` | [212](../../src/folder_events/tests.rs#L212) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `fs::create_dir_all` | [212](../../src/folder_events/tests.rs#L212) | external-constructor-callback-or-unresolved |
+| `a_real_removal_failure_is_not_waited_for` | `locked.join` | [212](../../src/folder_events/tests.rs#L212) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions(&locked, fs::Permissions::from_mode(0o000)).unwrap` | [213](../../src/folder_events/tests.rs#L213) | receiver-type-required |
+| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions` | [213](../../src/folder_events/tests.rs#L213), [216](../../src/folder_events/tests.rs#L216) | external-constructor-callback-or-unresolved |
+| `a_real_removal_failure_is_not_waited_for` | `fs::Permissions::from_mode` | [213](../../src/folder_events/tests.rs#L213), [216](../../src/folder_events/tests.rs#L216) | external-constructor-callback-or-unresolved |
+| `a_real_removal_failure_is_not_waited_for` | `std::time::Instant::now` | [214](../../src/folder_events/tests.rs#L214) | external-constructor-callback-or-unresolved |
+| `a_real_removal_failure_is_not_waited_for` | `crate::folder::remove_tree_if_present` | [215](../../src/folder_events/tests.rs#L215) | [store::folder::remove_tree_if_present](../../src/folder.rs#L919) |
+| `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions(&locked, fs::Permissions::from_mode(0o700)).unwrap` | [216](../../src/folder_events/tests.rs#L216) | receiver-type-required |

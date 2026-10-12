@@ -978,7 +978,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `host_files` | `host_files::file_references(&roots, text("query")).map_err` | [1681](../../src/client_extensions.rs#L1681) | receiver-type-required |
 | `host_files` | `host_files::file_references` | [1681](../../src/client_extensions.rs#L1681) | [host-files::file_references](../../../host-files/src/lib.rs#L321) |
 | `host_files` | `endpoint::NativeEndpoint::open(&self.root)                     .map_err` | [1693](../../src/client_extensions.rs#L1693) | receiver-type-required |
-| `host_files` | `endpoint::NativeEndpoint::open` | [1693](../../src/client_extensions.rs#L1693) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L222) |
+| `host_files` | `endpoint::NativeEndpoint::open` | [1693](../../src/client_extensions.rs#L1693) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
 | `host_files` | `internal` | [1694](../../src/client_extensions.rs#L1694), [1697](../../src/client_extensions.rs#L1697), [1699](../../src/client_extensions.rs#L1699) | external-constructor-callback-or-unresolved |
 | `host_files` | `error.to_string` | [1694](../../src/client_extensions.rs#L1694), [1697](../../src/client_extensions.rs#L1697), [1699](../../src/client_extensions.rs#L1699) | receiver-type-required |
 | `host_files` | `native                     .list_sessions_cached(&HashSet::new())                     .map_err` | [1695](../../src/client_extensions.rs#L1695) | receiver-type-required |

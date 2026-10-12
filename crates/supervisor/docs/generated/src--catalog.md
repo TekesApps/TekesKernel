@@ -11,27 +11,28 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::catalog::Trust](../../src/catalog.rs#L20) | enum_item | `pub(crate)` |  |
 | [tekes-supervisor::catalog::LineView](../../src/catalog.rs#L30) | struct_item | `pub(crate)` |  |
 | [tekes-supervisor::catalog::EntryView](../../src/catalog.rs#L42) | struct_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::EntryView::main](../../src/catalog.rs#L50) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::EntryView::stop_active](../../src/catalog.rs#L54) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Entry](../../src/catalog.rs#L60) | struct_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Entry::cold](../../src/catalog.rs#L69) | function_item | `private` |  |
-| [tekes-supervisor::catalog::Entry::unread](../../src/catalog.rs#L77) | function_item | `private` |  |
-| [tekes-supervisor::catalog::Load](../../src/catalog.rs#L87) | enum_item | `private` |  |
-| [tekes-supervisor::catalog::Catalog](../../src/catalog.rs#L93) | struct_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::new](../../src/catalog.rs#L101) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L110) | function_item | `private` |  |
-| [tekes-supervisor::catalog::Catalog::read_entry](../../src/catalog.rs#L115) | function_item | `private` |  |
-| [tekes-supervisor::catalog::Catalog::get](../../src/catalog.rs#L140) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::note_present](../../src/catalog.rs#L168) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::ensure_loaded](../../src/catalog.rs#L176) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::is_loaded](../../src/catalog.rs#L238) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::entries_now](../../src/catalog.rs#L247) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::set_fresh_main](../../src/catalog.rs#L261) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::refresh_light](../../src/catalog.rs#L297) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::mark_corrupt](../../src/catalog.rs#L345) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::forget](../../src/catalog.rs#L362) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::Catalog::unverified](../../src/catalog.rs#L370) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::catalog::view_of_card](../../src/catalog.rs#L388) | function_item | `private` |  |
+| [tekes-supervisor::catalog::EntryView::main](../../src/catalog.rs#L54) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::EntryView::stop_active](../../src/catalog.rs#L58) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Entry](../../src/catalog.rs#L64) | struct_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Entry::cold](../../src/catalog.rs#L73) | function_item | `private` |  |
+| [tekes-supervisor::catalog::Entry::unread](../../src/catalog.rs#L81) | function_item | `private` |  |
+| [tekes-supervisor::catalog::Load](../../src/catalog.rs#L91) | enum_item | `private` |  |
+| [tekes-supervisor::catalog::Catalog](../../src/catalog.rs#L97) | struct_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::new](../../src/catalog.rs#L105) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L114) | function_item | `private` |  |
+| [tekes-supervisor::catalog::Catalog::read_entry](../../src/catalog.rs#L119) | function_item | `private` |  |
+| [tekes-supervisor::catalog::Catalog::get](../../src/catalog.rs#L144) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::note_present](../../src/catalog.rs#L179) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::ensure_loaded](../../src/catalog.rs#L187) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::is_loaded](../../src/catalog.rs#L249) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::entries_now](../../src/catalog.rs#L258) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::set_fresh_main](../../src/catalog.rs#L272) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::refresh_light](../../src/catalog.rs#L310) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::set_children](../../src/catalog.rs#L361) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::mark_corrupt](../../src/catalog.rs#L380) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::forget](../../src/catalog.rs#L397) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::Catalog::unverified](../../src/catalog.rs#L405) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::catalog::view_of_card](../../src/catalog.rs#L423) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -59,7 +60,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–18: 13 direct edges</summary>
+<details><summary>Functions 1–19: 14 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -78,27 +79,29 @@ flowchart TD
   n12["tekes-supervisor::catalog::Catalog::entries_now"]
   n13["tekes-supervisor::catalog::Catalog::set_fresh_main"]
   n14["tekes-supervisor::catalog::Catalog::refresh_light"]
-  n15["tekes-supervisor::catalog::Catalog::mark_corrupt"]
-  n16["tekes-supervisor::catalog::Catalog::forget"]
-  n17["tekes-supervisor::catalog::Catalog::unverified"]
-  n18["tekes-supervisor::catalog::view_of_card"]
-  n19["tekes-supervisor::catalog::EntryView::main"]
-  n20["tekes-supervisor::catalog::EntryView::stop_active"]
-  n21["tekes-supervisor::catalog::Entry::cold"]
-  n22["tekes-supervisor::catalog::Entry::unread"]
+  n15["tekes-supervisor::catalog::Catalog::set_children"]
+  n16["tekes-supervisor::catalog::Catalog::mark_corrupt"]
+  n17["tekes-supervisor::catalog::Catalog::forget"]
+  n18["tekes-supervisor::catalog::Catalog::unverified"]
+  n19["tekes-supervisor::catalog::view_of_card"]
+  n20["tekes-supervisor::catalog::EntryView::main"]
+  n21["tekes-supervisor::catalog::EntryView::stop_active"]
+  n22["tekes-supervisor::catalog::Entry::cold"]
+  n23["tekes-supervisor::catalog::Entry::unread"]
   n7 --> n2
   n7 --> n3
   n7 --> n6
-  n7 --> n18
-  n7 --> n21
+  n7 --> n19
+  n7 --> n22
+  n8 --> n6
   n8 --> n7
-  n9 --> n22
+  n9 --> n23
   n10 --> n1
   n10 --> n4
   n10 --> n8
   n14 --> n0
-  n17 --> n6
-  n17 --> n12
+  n18 --> n6
+  n18 --> n12
 ```
 
 </details>
@@ -109,147 +112,158 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `main` | `self.lines.first` | [51](../../src/catalog.rs#L51) | receiver-type-required |
-| `stop_active` | `self.lines.iter().any` | [55](../../src/catalog.rs#L55) | receiver-type-required |
-| `stop_active` | `self.lines.iter` | [55](../../src/catalog.rs#L55) | receiver-type-required |
-| `new` | `root.to_path_buf` | [103](../../src/catalog.rs#L103) | receiver-type-required |
-| `new` | `RwLock::new` | [104](../../src/catalog.rs#L104) | external-constructor-callback-or-unresolved |
-| `new` | `BTreeMap::new` | [104](../../src/catalog.rs#L104) | external-constructor-callback-or-unresolved |
-| `new` | `Mutex::new` | [105](../../src/catalog.rs#L105) | external-constructor-callback-or-unresolved |
-| `new` | `Condvar::new` | [106](../../src/catalog.rs#L106) | external-constructor-callback-or-unresolved |
-| `folder` | `self.root.join("threads").join` | [111](../../src/catalog.rs#L111) | receiver-type-required |
-| `folder` | `self.root.join` | [111](../../src/catalog.rs#L111) | receiver-type-required |
-| `read_entry` | `self.folder` | [116](../../src/catalog.rs#L116) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L110) |
-| `read_entry` | `folder.is_dir` | [117](../../src/catalog.rs#L117) | receiver-type-required |
-| `read_entry` | `store::card::read_card` | [120](../../src/catalog.rs#L120) | [store::card::read_card](../../../store/src/card.rs#L172) |
-| `read_entry` | `Some` | [121](../../src/catalog.rs#L121), [124](../../src/catalog.rs#L124), [129](../../src/catalog.rs#L129), [131](../../src/catalog.rs#L131), [133](../../src/catalog.rs#L133) | external-constructor-callback-or-unresolved |
-| `read_entry` | `Entry::cold` | [121](../../src/catalog.rs#L121), [124](../../src/catalog.rs#L124), [129](../../src/catalog.rs#L129) | [tekes-supervisor::catalog::Entry::cold](../../src/catalog.rs#L69) |
-| `read_entry` | `store::card::classify` | [123](../../src/catalog.rs#L123) | [store::card::classify](../../../store/src/card.rs#L387) |
-| `read_entry` | `classified.freshness` | [126](../../src/catalog.rs#L126) | receiver-type-required |
-| `read_entry` | `Arc::new` | [133](../../src/catalog.rs#L133) | external-constructor-callback-or-unresolved |
-| `read_entry` | `view_of_card` | [133](../../src/catalog.rs#L133) | [tekes-supervisor::catalog::view_of_card](../../src/catalog.rs#L388) |
-| `get` | `self             .entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get(id)             .filter` | [141](../../src/catalog.rs#L141) | receiver-type-required |
-| `get` | `self             .entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get` | [141](../../src/catalog.rs#L141) | receiver-type-required |
-| `get` | `self             .entries             .read()             .unwrap_or_else` | [141](../../src/catalog.rs#L141) | receiver-type-required |
-| `get` | `self             .entries             .read` | [141](../../src/catalog.rs#L141) | receiver-type-required |
-| `get` | `Some` | [148](../../src/catalog.rs#L148), [157](../../src/catalog.rs#L157), [160](../../src/catalog.rs#L160) | external-constructor-callback-or-unresolved |
-| `get` | `entry.clone` | [148](../../src/catalog.rs#L148), [159](../../src/catalog.rs#L159) | receiver-type-required |
-| `get` | `self.read_entry` | [150](../../src/catalog.rs#L150) | [tekes-supervisor::catalog::Catalog::read_entry](../../src/catalog.rs#L115) |
-| `get` | `self             .entries             .write()             .unwrap_or_else` | [151](../../src/catalog.rs#L151) | receiver-type-required |
-| `get` | `self             .entries             .write` | [151](../../src/catalog.rs#L151) | receiver-type-required |
-| `get` | `entries.get` | [155](../../src/catalog.rs#L155) | receiver-type-required |
-| `get` | `existing.clone` | [157](../../src/catalog.rs#L157) | receiver-type-required |
-| `get` | `entries.insert` | [159](../../src/catalog.rs#L159) | receiver-type-required |
-| `get` | `id.to_owned` | [159](../../src/catalog.rs#L159) | receiver-type-required |
-| `note_present` | `self.entries             .write()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .insert` | [169](../../src/catalog.rs#L169) | receiver-type-required |
-| `note_present` | `self.entries             .write()             .unwrap_or_else` | [169](../../src/catalog.rs#L169) | receiver-type-required |
-| `note_present` | `self.entries             .write` | [169](../../src/catalog.rs#L169) | receiver-type-required |
-| `note_present` | `id.to_owned` | [172](../../src/catalog.rs#L172) | receiver-type-required |
-| `note_present` | `Entry::unread` | [172](../../src/catalog.rs#L172) | [tekes-supervisor::catalog::Entry::unread](../../src/catalog.rs#L77) |
-| `ensure_loaded` | `self             .load             .lock()             .unwrap_or_else` | [177](../../src/catalog.rs#L177), [231](../../src/catalog.rs#L231) | receiver-type-required |
-| `ensure_loaded` | `self             .load             .lock` | [177](../../src/catalog.rs#L177), [231](../../src/catalog.rs#L231) | receiver-type-required |
-| `ensure_loaded` | `self                         .loaded                         .wait(state)                         .unwrap_or_else` | [185](../../src/catalog.rs#L185) | receiver-type-required |
-| `ensure_loaded` | `self                         .loaded                         .wait` | [185](../../src/catalog.rs#L185) | receiver-type-required |
-| `ensure_loaded` | `drop` | [196](../../src/catalog.rs#L196) | external-constructor-callback-or-unresolved |
-| `ensure_loaded` | `std::time::Instant::now` | [197](../../src/catalog.rs#L197) | external-constructor-callback-or-unresolved |
-| `ensure_loaded` | `Vec::new` | [198](../../src/catalog.rs#L198) | external-constructor-callback-or-unresolved |
-| `ensure_loaded` | `std::fs::read_dir` | [199](../../src/catalog.rs#L199) | external-constructor-callback-or-unresolved |
-| `ensure_loaded` | `self.root.join` | [199](../../src/catalog.rs#L199) | receiver-type-required |
-| `ensure_loaded` | `entries.flatten` | [200](../../src/catalog.rs#L200) | receiver-type-required |
-| `ensure_loaded` | `entry.file_name().to_string_lossy().into_owned` | [201](../../src/catalog.rs#L201) | receiver-type-required |
-| `ensure_loaded` | `entry.file_name().to_string_lossy` | [201](../../src/catalog.rs#L201) | receiver-type-required |
-| `ensure_loaded` | `entry.file_name` | [201](../../src/catalog.rs#L201) | receiver-type-required |
-| `ensure_loaded` | `endpoint::validate_session_id(&name).is_ok` | [202](../../src/catalog.rs#L202) | receiver-type-required |
-| `ensure_loaded` | `endpoint::validate_session_id` | [202](../../src/catalog.rs#L202) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `ensure_loaded` | `entry.file_type().is_ok_and` | [203](../../src/catalog.rs#L203) | receiver-type-required |
-| `ensure_loaded` | `entry.file_type` | [203](../../src/catalog.rs#L203) | receiver-type-required |
-| `ensure_loaded` | `kind.is_dir` | [203](../../src/catalog.rs#L203) | receiver-type-required |
-| `ensure_loaded` | `ids.push` | [205](../../src/catalog.rs#L205) | receiver-type-required |
-| `ensure_loaded` | `ids.sort` | [209](../../src/catalog.rs#L209) | receiver-type-required |
-| `ensure_loaded` | `self.get` | [211](../../src/catalog.rs#L211) | [tekes-supervisor::catalog::Catalog::get](../../src/catalog.rs#L140) |
-| `ensure_loaded` | `crate::boot_trace::per_item_enabled` | [213](../../src/catalog.rs#L213) | [tekes-supervisor::boot_trace::per_item_enabled](../../src/boot_trace.rs#L93) |
-| `ensure_loaded` | `self                 .entries                 .read()                 .unwrap_or_else` | [214](../../src/catalog.rs#L214) | receiver-type-required |
-| `ensure_loaded` | `self                 .entries                 .read` | [214](../../src/catalog.rs#L214) | receiver-type-required |
-| `ensure_loaded` | `entries.values().filter(&#124;entry&#124; trust(&entry.trust)).count` | [219](../../src/catalog.rs#L219) | receiver-type-required |
-| `ensure_loaded` | `entries.values().filter` | [219](../../src/catalog.rs#L219) | receiver-type-required |
-| `ensure_loaded` | `entries.values` | [219](../../src/catalog.rs#L219) | receiver-type-required |
-| `ensure_loaded` | `trust` | [219](../../src/catalog.rs#L219) | external-constructor-callback-or-unresolved |
-| `ensure_loaded` | `self.loaded.notify_all` | [235](../../src/catalog.rs#L235) | receiver-type-required |
-| `is_loaded` | `self             .load             .lock()             .unwrap_or_else` | [239](../../src/catalog.rs#L239) | receiver-type-required |
-| `is_loaded` | `self             .load             .lock` | [239](../../src/catalog.rs#L239) | receiver-type-required |
-| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .map(&#124;(id, entry)&#124; (id.clone(), entry.clone()))             .collect` | [248](../../src/catalog.rs#L248) | receiver-type-required |
-| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .map` | [248](../../src/catalog.rs#L248) | receiver-type-required |
-| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter` | [248](../../src/catalog.rs#L248) | receiver-type-required |
-| `entries_now` | `self.entries             .read()             .unwrap_or_else` | [248](../../src/catalog.rs#L248) | receiver-type-required |
-| `entries_now` | `self.entries             .read` | [248](../../src/catalog.rs#L248) | receiver-type-required |
-| `entries_now` | `id.clone` | [252](../../src/catalog.rs#L252) | receiver-type-required |
-| `entries_now` | `entry.clone` | [252](../../src/catalog.rs#L252) | receiver-type-required |
-| `set_fresh_main` | `self             .entries             .write()             .unwrap_or_else` | [262](../../src/catalog.rs#L262) | receiver-type-required |
-| `set_fresh_main` | `self             .entries             .write` | [262](../../src/catalog.rs#L262) | receiver-type-required |
-| `set_fresh_main` | `entries.get` | [266](../../src/catalog.rs#L266) | receiver-type-required |
-| `set_fresh_main` | `previous_view.main().map_or` | [271](../../src/catalog.rs#L271) | receiver-type-required |
-| `set_fresh_main` | `previous_view.main` | [271](../../src/catalog.rs#L271) | receiver-type-required |
-| `set_fresh_main` | `view.main().map_or` | [272](../../src/catalog.rs#L272) | receiver-type-required |
-| `set_fresh_main` | `view.main` | [272](../../src/catalog.rs#L272) | receiver-type-required |
-| `set_fresh_main` | `view.lines                     .extend` | [276](../../src/catalog.rs#L276) | receiver-type-required |
-| `set_fresh_main` | `previous_view.lines.iter().skip(1).cloned` | [277](../../src/catalog.rs#L277) | receiver-type-required |
-| `set_fresh_main` | `previous_view.lines.iter().skip` | [277](../../src/catalog.rs#L277) | receiver-type-required |
-| `set_fresh_main` | `previous_view.lines.iter` | [277](../../src/catalog.rs#L277) | receiver-type-required |
-| `set_fresh_main` | `entries.insert` | [280](../../src/catalog.rs#L280) | receiver-type-required |
-| `set_fresh_main` | `id.to_owned` | [281](../../src/catalog.rs#L281) | receiver-type-required |
-| `set_fresh_main` | `Some` | [284](../../src/catalog.rs#L284) | external-constructor-callback-or-unresolved |
-| `set_fresh_main` | `Arc::new` | [284](../../src/catalog.rs#L284) | external-constructor-callback-or-unresolved |
-| `refresh_light` | `self             .entries             .write()             .unwrap_or_else` | [298](../../src/catalog.rs#L298) | receiver-type-required |
-| `refresh_light` | `self             .entries             .write` | [298](../../src/catalog.rs#L298) | receiver-type-required |
-| `refresh_light` | `entries.get_mut` | [302](../../src/catalog.rs#L302) | receiver-type-required |
-| `refresh_light` | `view.main` | [308](../../src/catalog.rs#L308) | receiver-type-required |
-| `refresh_light` | `usize::try_from(main.last_seq).unwrap_or` | [315](../../src/catalog.rs#L315) | receiver-type-required |
-| `refresh_light` | `usize::try_from` | [315](../../src/catalog.rs#L315) | external-constructor-callback-or-unresolved |
-| `refresh_light` | `projection.events.get` | [316](../../src/catalog.rs#L316) | receiver-type-required |
-| `refresh_light` | `new_events.iter().any` | [319](../../src/catalog.rs#L319) | receiver-type-required |
-| `refresh_light` | `new_events.iter` | [319](../../src/catalog.rs#L319) | receiver-type-required |
-| `refresh_light` | `event.string_field("title").is_some` | [320](../../src/catalog.rs#L320) | receiver-type-required |
-| `refresh_light` | `event.string_field` | [320](../../src/catalog.rs#L320) | receiver-type-required |
-| `refresh_light` | `endpoint::card_updated_ms` | [331](../../src/catalog.rs#L331) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L148) |
-| `refresh_light` | `(**view).clone` | [334](../../src/catalog.rs#L334) | receiver-type-required |
-| `refresh_light` | `projection.lifecycle.latest_turn.is_none` | [336](../../src/catalog.rs#L336) | receiver-type-required |
-| `refresh_light` | `next.lines.first_mut` | [337](../../src/catalog.rs#L337) | receiver-type-required |
-| `refresh_light` | `projection.lifecycle.clone` | [339](../../src/catalog.rs#L339) | receiver-type-required |
-| `refresh_light` | `Some` | [341](../../src/catalog.rs#L341) | external-constructor-callback-or-unresolved |
-| `refresh_light` | `Arc::new` | [341](../../src/catalog.rs#L341) | external-constructor-callback-or-unresolved |
-| `mark_corrupt` | `self             .entries             .write()             .unwrap_or_else` | [346](../../src/catalog.rs#L346) | receiver-type-required |
-| `mark_corrupt` | `self             .entries             .write` | [346](../../src/catalog.rs#L346) | receiver-type-required |
-| `mark_corrupt` | `entries.get(id).and_then` | [350](../../src/catalog.rs#L350) | receiver-type-required |
-| `mark_corrupt` | `entries.get` | [350](../../src/catalog.rs#L350) | receiver-type-required |
-| `mark_corrupt` | `entry.view.clone` | [350](../../src/catalog.rs#L350) | receiver-type-required |
-| `mark_corrupt` | `entries.insert` | [351](../../src/catalog.rs#L351) | receiver-type-required |
-| `mark_corrupt` | `id.to_owned` | [352](../../src/catalog.rs#L352) | receiver-type-required |
-| `mark_corrupt` | `Trust::Corrupt` | [354](../../src/catalog.rs#L354) | external-constructor-callback-or-unresolved |
-| `mark_corrupt` | `reason.to_owned` | [354](../../src/catalog.rs#L354) | receiver-type-required |
-| `forget` | `self.entries             .write()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .remove` | [363](../../src/catalog.rs#L363) | receiver-type-required |
-| `forget` | `self.entries             .write()             .unwrap_or_else` | [363](../../src/catalog.rs#L363) | receiver-type-required |
-| `forget` | `self.entries             .write` | [363](../../src/catalog.rs#L363) | receiver-type-required |
-| `unverified` | `self             .entries_now()             .into_iter()             .filter(&#124;(_, entry)&#124; matches!(entry.trust, Trust::Cold &#124; Trust::Ahead))             .map(&#124;(id, _)&#124; id)             .collect::<Vec<_>>` | [371](../../src/catalog.rs#L371) | receiver-type-required |
-| `unverified` | `self             .entries_now()             .into_iter()             .filter(&#124;(_, entry)&#124; matches!(entry.trust, Trust::Cold &#124; Trust::Ahead))             .map` | [371](../../src/catalog.rs#L371) | receiver-type-required |
-| `unverified` | `self             .entries_now()             .into_iter()             .filter` | [371](../../src/catalog.rs#L371) | receiver-type-required |
-| `unverified` | `self             .entries_now()             .into_iter` | [371](../../src/catalog.rs#L371) | receiver-type-required |
-| `unverified` | `self             .entries_now` | [371](../../src/catalog.rs#L371) | [tekes-supervisor::catalog::Catalog::entries_now](../../src/catalog.rs#L247) |
-| `unverified` | `ids.sort_by_key` | [377](../../src/catalog.rs#L377) | receiver-type-required |
-| `unverified` | `std::cmp::Reverse` | [378](../../src/catalog.rs#L378) | external-constructor-callback-or-unresolved |
-| `unverified` | `std::fs::metadata(self.folder(id).join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok` | [379](../../src/catalog.rs#L379) | receiver-type-required |
-| `unverified` | `std::fs::metadata(self.folder(id).join("main.jsonl"))                     .and_then` | [379](../../src/catalog.rs#L379) | receiver-type-required |
-| `unverified` | `std::fs::metadata` | [379](../../src/catalog.rs#L379) | external-constructor-callback-or-unresolved |
-| `unverified` | `self.folder(id).join` | [379](../../src/catalog.rs#L379) | receiver-type-required |
-| `unverified` | `self.folder` | [379](../../src/catalog.rs#L379) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L110) |
-| `unverified` | `metadata.modified` | [380](../../src/catalog.rs#L380) | receiver-type-required |
-| `view_of_card` | `card.summary.clone` | [390](../../src/catalog.rs#L390) | receiver-type-required |
-| `view_of_card` | `card             .lines             .iter()             .map(&#124;line&#124; LineView {                 file: line.file.clone(),                 last_seq: line.last_seq,                 line: line.line.clone(),                 parent_file: line.parent_file.clone(),                 facts: line.facts.clone(),                 holds: line.holds.clone(),             })             .collect` | [391](../../src/catalog.rs#L391) | receiver-type-required |
-| `view_of_card` | `card             .lines             .iter()             .map` | [391](../../src/catalog.rs#L391) | receiver-type-required |
-| `view_of_card` | `card             .lines             .iter` | [391](../../src/catalog.rs#L391) | receiver-type-required |
-| `view_of_card` | `line.file.clone` | [395](../../src/catalog.rs#L395) | receiver-type-required |
-| `view_of_card` | `line.line.clone` | [397](../../src/catalog.rs#L397) | receiver-type-required |
-| `view_of_card` | `line.parent_file.clone` | [398](../../src/catalog.rs#L398) | receiver-type-required |
-| `view_of_card` | `line.facts.clone` | [399](../../src/catalog.rs#L399) | receiver-type-required |
-| `view_of_card` | `line.holds.clone` | [400](../../src/catalog.rs#L400) | receiver-type-required |
-| `view_of_card` | `card.journal.as_ref().map` | [403](../../src/catalog.rs#L403) | receiver-type-required |
-| `view_of_card` | `card.journal.as_ref` | [403](../../src/catalog.rs#L403) | receiver-type-required |
+| `main` | `self.lines.first` | [55](../../src/catalog.rs#L55) | receiver-type-required |
+| `stop_active` | `self.lines.iter().any` | [59](../../src/catalog.rs#L59) | receiver-type-required |
+| `stop_active` | `self.lines.iter` | [59](../../src/catalog.rs#L59) | receiver-type-required |
+| `new` | `root.to_path_buf` | [107](../../src/catalog.rs#L107) | receiver-type-required |
+| `new` | `RwLock::new` | [108](../../src/catalog.rs#L108) | external-constructor-callback-or-unresolved |
+| `new` | `BTreeMap::new` | [108](../../src/catalog.rs#L108) | external-constructor-callback-or-unresolved |
+| `new` | `Mutex::new` | [109](../../src/catalog.rs#L109) | external-constructor-callback-or-unresolved |
+| `new` | `Condvar::new` | [110](../../src/catalog.rs#L110) | external-constructor-callback-or-unresolved |
+| `folder` | `self.root.join("threads").join` | [115](../../src/catalog.rs#L115) | receiver-type-required |
+| `folder` | `self.root.join` | [115](../../src/catalog.rs#L115) | receiver-type-required |
+| `read_entry` | `self.folder` | [120](../../src/catalog.rs#L120) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L114) |
+| `read_entry` | `folder.is_dir` | [121](../../src/catalog.rs#L121) | receiver-type-required |
+| `read_entry` | `store::card::read_card` | [124](../../src/catalog.rs#L124) | [store::card::read_card](../../../store/src/card.rs#L172) |
+| `read_entry` | `Some` | [125](../../src/catalog.rs#L125), [128](../../src/catalog.rs#L128), [133](../../src/catalog.rs#L133), [135](../../src/catalog.rs#L135), [137](../../src/catalog.rs#L137) | external-constructor-callback-or-unresolved |
+| `read_entry` | `Entry::cold` | [125](../../src/catalog.rs#L125), [128](../../src/catalog.rs#L128), [133](../../src/catalog.rs#L133) | [tekes-supervisor::catalog::Entry::cold](../../src/catalog.rs#L73) |
+| `read_entry` | `store::card::classify` | [127](../../src/catalog.rs#L127) | [store::card::classify](../../../store/src/card.rs#L387) |
+| `read_entry` | `classified.freshness` | [130](../../src/catalog.rs#L130) | receiver-type-required |
+| `read_entry` | `Arc::new` | [137](../../src/catalog.rs#L137) | external-constructor-callback-or-unresolved |
+| `read_entry` | `view_of_card` | [137](../../src/catalog.rs#L137) | [tekes-supervisor::catalog::view_of_card](../../src/catalog.rs#L423) |
+| `get` | `self             .entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get(id)             .filter` | [145](../../src/catalog.rs#L145) | receiver-type-required |
+| `get` | `self             .entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get` | [145](../../src/catalog.rs#L145) | receiver-type-required |
+| `get` | `self             .entries             .read()             .unwrap_or_else` | [145](../../src/catalog.rs#L145) | receiver-type-required |
+| `get` | `self             .entries             .read` | [145](../../src/catalog.rs#L145) | receiver-type-required |
+| `get` | `Some` | [152](../../src/catalog.rs#L152), [161](../../src/catalog.rs#L161), [171](../../src/catalog.rs#L171) | external-constructor-callback-or-unresolved |
+| `get` | `entry.clone` | [152](../../src/catalog.rs#L152), [170](../../src/catalog.rs#L170) | receiver-type-required |
+| `get` | `self.read_entry` | [154](../../src/catalog.rs#L154) | [tekes-supervisor::catalog::Catalog::read_entry](../../src/catalog.rs#L119) |
+| `get` | `self             .entries             .write()             .unwrap_or_else` | [155](../../src/catalog.rs#L155) | receiver-type-required |
+| `get` | `self             .entries             .write` | [155](../../src/catalog.rs#L155) | receiver-type-required |
+| `get` | `entries.get` | [159](../../src/catalog.rs#L159) | receiver-type-required |
+| `get` | `existing.clone` | [161](../../src/catalog.rs#L161) | receiver-type-required |
+| `get` | `self.folder(id).is_dir` | [166](../../src/catalog.rs#L166) | receiver-type-required |
+| `get` | `self.folder` | [166](../../src/catalog.rs#L166) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L114) |
+| `get` | `entries.remove` | [167](../../src/catalog.rs#L167) | receiver-type-required |
+| `get` | `entries.insert` | [170](../../src/catalog.rs#L170) | receiver-type-required |
+| `get` | `id.to_owned` | [170](../../src/catalog.rs#L170) | receiver-type-required |
+| `note_present` | `self.entries             .write()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .insert` | [180](../../src/catalog.rs#L180) | receiver-type-required |
+| `note_present` | `self.entries             .write()             .unwrap_or_else` | [180](../../src/catalog.rs#L180) | receiver-type-required |
+| `note_present` | `self.entries             .write` | [180](../../src/catalog.rs#L180) | receiver-type-required |
+| `note_present` | `id.to_owned` | [183](../../src/catalog.rs#L183) | receiver-type-required |
+| `note_present` | `Entry::unread` | [183](../../src/catalog.rs#L183) | [tekes-supervisor::catalog::Entry::unread](../../src/catalog.rs#L81) |
+| `ensure_loaded` | `self             .load             .lock()             .unwrap_or_else` | [188](../../src/catalog.rs#L188), [242](../../src/catalog.rs#L242) | receiver-type-required |
+| `ensure_loaded` | `self             .load             .lock` | [188](../../src/catalog.rs#L188), [242](../../src/catalog.rs#L242) | receiver-type-required |
+| `ensure_loaded` | `self                         .loaded                         .wait(state)                         .unwrap_or_else` | [196](../../src/catalog.rs#L196) | receiver-type-required |
+| `ensure_loaded` | `self                         .loaded                         .wait` | [196](../../src/catalog.rs#L196) | receiver-type-required |
+| `ensure_loaded` | `drop` | [207](../../src/catalog.rs#L207) | external-constructor-callback-or-unresolved |
+| `ensure_loaded` | `std::time::Instant::now` | [208](../../src/catalog.rs#L208) | external-constructor-callback-or-unresolved |
+| `ensure_loaded` | `Vec::new` | [209](../../src/catalog.rs#L209) | external-constructor-callback-or-unresolved |
+| `ensure_loaded` | `std::fs::read_dir` | [210](../../src/catalog.rs#L210) | external-constructor-callback-or-unresolved |
+| `ensure_loaded` | `self.root.join` | [210](../../src/catalog.rs#L210) | receiver-type-required |
+| `ensure_loaded` | `entries.flatten` | [211](../../src/catalog.rs#L211) | receiver-type-required |
+| `ensure_loaded` | `entry.file_name().to_string_lossy().into_owned` | [212](../../src/catalog.rs#L212) | receiver-type-required |
+| `ensure_loaded` | `entry.file_name().to_string_lossy` | [212](../../src/catalog.rs#L212) | receiver-type-required |
+| `ensure_loaded` | `entry.file_name` | [212](../../src/catalog.rs#L212) | receiver-type-required |
+| `ensure_loaded` | `endpoint::validate_session_id(&name).is_ok` | [213](../../src/catalog.rs#L213) | receiver-type-required |
+| `ensure_loaded` | `endpoint::validate_session_id` | [213](../../src/catalog.rs#L213) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `ensure_loaded` | `entry.file_type().is_ok_and` | [214](../../src/catalog.rs#L214) | receiver-type-required |
+| `ensure_loaded` | `entry.file_type` | [214](../../src/catalog.rs#L214) | receiver-type-required |
+| `ensure_loaded` | `kind.is_dir` | [214](../../src/catalog.rs#L214) | receiver-type-required |
+| `ensure_loaded` | `ids.push` | [216](../../src/catalog.rs#L216) | receiver-type-required |
+| `ensure_loaded` | `ids.sort` | [220](../../src/catalog.rs#L220) | receiver-type-required |
+| `ensure_loaded` | `self.get` | [222](../../src/catalog.rs#L222) | [tekes-supervisor::catalog::Catalog::get](../../src/catalog.rs#L144) |
+| `ensure_loaded` | `crate::boot_trace::per_item_enabled` | [224](../../src/catalog.rs#L224) | [tekes-supervisor::boot_trace::per_item_enabled](../../src/boot_trace.rs#L93) |
+| `ensure_loaded` | `self                 .entries                 .read()                 .unwrap_or_else` | [225](../../src/catalog.rs#L225) | receiver-type-required |
+| `ensure_loaded` | `self                 .entries                 .read` | [225](../../src/catalog.rs#L225) | receiver-type-required |
+| `ensure_loaded` | `entries.values().filter(&#124;entry&#124; trust(&entry.trust)).count` | [230](../../src/catalog.rs#L230) | receiver-type-required |
+| `ensure_loaded` | `entries.values().filter` | [230](../../src/catalog.rs#L230) | receiver-type-required |
+| `ensure_loaded` | `entries.values` | [230](../../src/catalog.rs#L230) | receiver-type-required |
+| `ensure_loaded` | `trust` | [230](../../src/catalog.rs#L230) | external-constructor-callback-or-unresolved |
+| `ensure_loaded` | `self.loaded.notify_all` | [246](../../src/catalog.rs#L246) | receiver-type-required |
+| `is_loaded` | `self             .load             .lock()             .unwrap_or_else` | [250](../../src/catalog.rs#L250) | receiver-type-required |
+| `is_loaded` | `self             .load             .lock` | [250](../../src/catalog.rs#L250) | receiver-type-required |
+| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .map(&#124;(id, entry)&#124; (id.clone(), entry.clone()))             .collect` | [259](../../src/catalog.rs#L259) | receiver-type-required |
+| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .map` | [259](../../src/catalog.rs#L259) | receiver-type-required |
+| `entries_now` | `self.entries             .read()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter` | [259](../../src/catalog.rs#L259) | receiver-type-required |
+| `entries_now` | `self.entries             .read()             .unwrap_or_else` | [259](../../src/catalog.rs#L259) | receiver-type-required |
+| `entries_now` | `self.entries             .read` | [259](../../src/catalog.rs#L259) | receiver-type-required |
+| `entries_now` | `id.clone` | [263](../../src/catalog.rs#L263) | receiver-type-required |
+| `entries_now` | `entry.clone` | [263](../../src/catalog.rs#L263) | receiver-type-required |
+| `set_fresh_main` | `self             .entries             .write()             .unwrap_or_else` | [273](../../src/catalog.rs#L273) | receiver-type-required |
+| `set_fresh_main` | `self             .entries             .write` | [273](../../src/catalog.rs#L273) | receiver-type-required |
+| `set_fresh_main` | `entries.get` | [277](../../src/catalog.rs#L277) | receiver-type-required |
+| `set_fresh_main` | `previous_view.main().map_or` | [282](../../src/catalog.rs#L282) | receiver-type-required |
+| `set_fresh_main` | `previous_view.main` | [282](../../src/catalog.rs#L282) | receiver-type-required |
+| `set_fresh_main` | `view.main().map_or` | [283](../../src/catalog.rs#L283) | receiver-type-required |
+| `set_fresh_main` | `view.main` | [283](../../src/catalog.rs#L283) | receiver-type-required |
+| `set_fresh_main` | `view.lines                     .extend` | [287](../../src/catalog.rs#L287) | receiver-type-required |
+| `set_fresh_main` | `previous_view.lines.iter().skip(1).cloned` | [288](../../src/catalog.rs#L288) | receiver-type-required |
+| `set_fresh_main` | `previous_view.lines.iter().skip` | [288](../../src/catalog.rs#L288) | receiver-type-required |
+| `set_fresh_main` | `previous_view.lines.iter` | [288](../../src/catalog.rs#L288) | receiver-type-required |
+| `set_fresh_main` | `entries.insert` | [293](../../src/catalog.rs#L293) | receiver-type-required |
+| `set_fresh_main` | `id.to_owned` | [294](../../src/catalog.rs#L294) | receiver-type-required |
+| `set_fresh_main` | `Some` | [297](../../src/catalog.rs#L297) | external-constructor-callback-or-unresolved |
+| `set_fresh_main` | `Arc::new` | [297](../../src/catalog.rs#L297) | external-constructor-callback-or-unresolved |
+| `refresh_light` | `self             .entries             .write()             .unwrap_or_else` | [311](../../src/catalog.rs#L311) | receiver-type-required |
+| `refresh_light` | `self             .entries             .write` | [311](../../src/catalog.rs#L311) | receiver-type-required |
+| `refresh_light` | `entries.get_mut` | [315](../../src/catalog.rs#L315) | receiver-type-required |
+| `refresh_light` | `view.main` | [321](../../src/catalog.rs#L321) | receiver-type-required |
+| `refresh_light` | `usize::try_from(main.last_seq).unwrap_or` | [328](../../src/catalog.rs#L328) | receiver-type-required |
+| `refresh_light` | `usize::try_from` | [328](../../src/catalog.rs#L328) | external-constructor-callback-or-unresolved |
+| `refresh_light` | `projection.events.get` | [329](../../src/catalog.rs#L329) | receiver-type-required |
+| `refresh_light` | `new_events.iter().any` | [332](../../src/catalog.rs#L332) | receiver-type-required |
+| `refresh_light` | `new_events.iter` | [332](../../src/catalog.rs#L332) | receiver-type-required |
+| `refresh_light` | `event.string_field("title").is_some` | [333](../../src/catalog.rs#L333) | receiver-type-required |
+| `refresh_light` | `event.string_field` | [333](../../src/catalog.rs#L333) | receiver-type-required |
+| `refresh_light` | `endpoint::card_updated_ms` | [344](../../src/catalog.rs#L344) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L148) |
+| `refresh_light` | `(**view).clone` | [347](../../src/catalog.rs#L347) | receiver-type-required |
+| `refresh_light` | `projection.lifecycle.latest_turn.is_none` | [350](../../src/catalog.rs#L350) | receiver-type-required |
+| `refresh_light` | `next.lines.first_mut` | [351](../../src/catalog.rs#L351) | receiver-type-required |
+| `refresh_light` | `projection.lifecycle.clone` | [353](../../src/catalog.rs#L353) | receiver-type-required |
+| `refresh_light` | `Some` | [355](../../src/catalog.rs#L355) | external-constructor-callback-or-unresolved |
+| `refresh_light` | `Arc::new` | [355](../../src/catalog.rs#L355) | external-constructor-callback-or-unresolved |
+| `set_children` | `self             .entries             .write()             .unwrap_or_else` | [362](../../src/catalog.rs#L362) | receiver-type-required |
+| `set_children` | `self             .entries             .write` | [362](../../src/catalog.rs#L362) | receiver-type-required |
+| `set_children` | `entries.get_mut` | [366](../../src/catalog.rs#L366) | receiver-type-required |
+| `set_children` | `(**view).clone` | [372](../../src/catalog.rs#L372) | receiver-type-required |
+| `set_children` | `next.lines.truncate` | [373](../../src/catalog.rs#L373) | receiver-type-required |
+| `set_children` | `next.lines.extend` | [374](../../src/catalog.rs#L374) | receiver-type-required |
+| `set_children` | `Some` | [376](../../src/catalog.rs#L376) | external-constructor-callback-or-unresolved |
+| `set_children` | `Arc::new` | [376](../../src/catalog.rs#L376) | external-constructor-callback-or-unresolved |
+| `mark_corrupt` | `self             .entries             .write()             .unwrap_or_else` | [381](../../src/catalog.rs#L381) | receiver-type-required |
+| `mark_corrupt` | `self             .entries             .write` | [381](../../src/catalog.rs#L381) | receiver-type-required |
+| `mark_corrupt` | `entries.get(id).and_then` | [385](../../src/catalog.rs#L385) | receiver-type-required |
+| `mark_corrupt` | `entries.get` | [385](../../src/catalog.rs#L385) | receiver-type-required |
+| `mark_corrupt` | `entry.view.clone` | [385](../../src/catalog.rs#L385) | receiver-type-required |
+| `mark_corrupt` | `entries.insert` | [386](../../src/catalog.rs#L386) | receiver-type-required |
+| `mark_corrupt` | `id.to_owned` | [387](../../src/catalog.rs#L387) | receiver-type-required |
+| `mark_corrupt` | `Trust::Corrupt` | [389](../../src/catalog.rs#L389) | external-constructor-callback-or-unresolved |
+| `mark_corrupt` | `reason.to_owned` | [389](../../src/catalog.rs#L389) | receiver-type-required |
+| `forget` | `self.entries             .write()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .remove` | [398](../../src/catalog.rs#L398) | receiver-type-required |
+| `forget` | `self.entries             .write()             .unwrap_or_else` | [398](../../src/catalog.rs#L398) | receiver-type-required |
+| `forget` | `self.entries             .write` | [398](../../src/catalog.rs#L398) | receiver-type-required |
+| `unverified` | `self             .entries_now()             .into_iter()             .filter(&#124;(_, entry)&#124; matches!(entry.trust, Trust::Cold &#124; Trust::Ahead))             .map(&#124;(id, _)&#124; id)             .collect::<Vec<_>>` | [406](../../src/catalog.rs#L406) | receiver-type-required |
+| `unverified` | `self             .entries_now()             .into_iter()             .filter(&#124;(_, entry)&#124; matches!(entry.trust, Trust::Cold &#124; Trust::Ahead))             .map` | [406](../../src/catalog.rs#L406) | receiver-type-required |
+| `unverified` | `self             .entries_now()             .into_iter()             .filter` | [406](../../src/catalog.rs#L406) | receiver-type-required |
+| `unverified` | `self             .entries_now()             .into_iter` | [406](../../src/catalog.rs#L406) | receiver-type-required |
+| `unverified` | `self             .entries_now` | [406](../../src/catalog.rs#L406) | [tekes-supervisor::catalog::Catalog::entries_now](../../src/catalog.rs#L258) |
+| `unverified` | `ids.sort_by_key` | [412](../../src/catalog.rs#L412) | receiver-type-required |
+| `unverified` | `std::cmp::Reverse` | [413](../../src/catalog.rs#L413) | external-constructor-callback-or-unresolved |
+| `unverified` | `std::fs::metadata(self.folder(id).join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok` | [414](../../src/catalog.rs#L414) | receiver-type-required |
+| `unverified` | `std::fs::metadata(self.folder(id).join("main.jsonl"))                     .and_then` | [414](../../src/catalog.rs#L414) | receiver-type-required |
+| `unverified` | `std::fs::metadata` | [414](../../src/catalog.rs#L414) | external-constructor-callback-or-unresolved |
+| `unverified` | `self.folder(id).join` | [414](../../src/catalog.rs#L414) | receiver-type-required |
+| `unverified` | `self.folder` | [414](../../src/catalog.rs#L414) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L114) |
+| `unverified` | `metadata.modified` | [415](../../src/catalog.rs#L415) | receiver-type-required |
+| `view_of_card` | `card.summary.clone` | [426](../../src/catalog.rs#L426) | receiver-type-required |
+| `view_of_card` | `card             .lines             .iter()             .map(&#124;line&#124; LineView {                 file: line.file.clone(),                 last_seq: line.last_seq,                 line: line.line.clone(),                 parent_file: line.parent_file.clone(),                 facts: line.facts.clone(),                 holds: line.holds.clone(),             })             .collect` | [427](../../src/catalog.rs#L427) | receiver-type-required |
+| `view_of_card` | `card             .lines             .iter()             .map` | [427](../../src/catalog.rs#L427) | receiver-type-required |
+| `view_of_card` | `card             .lines             .iter` | [427](../../src/catalog.rs#L427) | receiver-type-required |
+| `view_of_card` | `line.file.clone` | [431](../../src/catalog.rs#L431) | receiver-type-required |
+| `view_of_card` | `line.line.clone` | [433](../../src/catalog.rs#L433) | receiver-type-required |
+| `view_of_card` | `line.parent_file.clone` | [434](../../src/catalog.rs#L434) | receiver-type-required |
+| `view_of_card` | `line.facts.clone` | [435](../../src/catalog.rs#L435) | receiver-type-required |
+| `view_of_card` | `line.holds.clone` | [436](../../src/catalog.rs#L436) | receiver-type-required |
+| `view_of_card` | `card.journal.as_ref().map` | [439](../../src/catalog.rs#L439) | receiver-type-required |
+| `view_of_card` | `card.journal.as_ref` | [439](../../src/catalog.rs#L439) | receiver-type-required |

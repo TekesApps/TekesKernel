@@ -10,23 +10,23 @@ Visibility is the declaration spelling; trait members and reexports require thei
 |---|---|---|---|
 | [store::folder_events::Area](../../src/folder_events.rs#L14) | enum_item | `pub` |  |
 | [store::folder_events::RemoveReason](../../src/folder_events.rs#L20) | enum_item | `pub` |  |
-| [store::folder_events::FolderEvent](../../src/folder_events.rs#L30) | enum_item | `pub` |  |
-| [store::folder_events::FolderEvent::root](../../src/folder_events.rs#L51) | function_item | `pub` |  |
-| [store::folder_events::FolderEvent::id](../../src/folder_events.rs#L60) | function_item | `pub` |  |
-| [store::folder_events::canonical_root](../../src/folder_events.rs#L71) | function_item | `pub` |  |
-| [store::folder_events::canonical_root::MEMO](../../src/folder_events.rs#L74) | static_item | `private` |  |
-| [store::folder_events::FolderEvent::with_root](../../src/folder_events.rs#L97) | function_item | `private` |  |
-| [store::folder_events::Observer](../../src/folder_events.rs#L116) | type_item | `pub` |  |
-| [store::folder_events::Registry](../../src/folder_events.rs#L119) | struct_item | `private` |  |
-| [store::folder_events::registry](../../src/folder_events.rs#L125) | function_item | `private` |  |
-| [store::folder_events::registry::REGISTRY](../../src/folder_events.rs#L126) | static_item | `private` |  |
-| [store::folder_events::lock](../../src/folder_events.rs#L130) | function_item | `private` |  |
-| [store::folder_events::subscribe](../../src/folder_events.rs#L137) | function_item | `pub` |  |
-| [store::folder_events::arm_admission](../../src/folder_events.rs#L143) | function_item | `pub` |  |
-| [store::folder_events::is_admitted](../../src/folder_events.rs#L150) | function_item | `pub` |  |
-| [store::folder_events::admitted_ids](../../src/folder_events.rs#L160) | function_item | `pub` |  |
-| [store::folder_events::emit](../../src/folder_events.rs#L169) | function_item | `pub(crate)` |  |
-| [store::folder_events::record_events](../../src/folder_events.rs#L213) | function_item | `pub` |  |
+| [store::folder_events::FolderEvent](../../src/folder_events.rs#L28) | enum_item | `pub` |  |
+| [store::folder_events::FolderEvent::root](../../src/folder_events.rs#L49) | function_item | `pub` |  |
+| [store::folder_events::FolderEvent::id](../../src/folder_events.rs#L58) | function_item | `pub` |  |
+| [store::folder_events::canonical_root](../../src/folder_events.rs#L69) | function_item | `pub` |  |
+| [store::folder_events::canonical_root::MEMO](../../src/folder_events.rs#L72) | static_item | `private` |  |
+| [store::folder_events::FolderEvent::with_root](../../src/folder_events.rs#L95) | function_item | `private` |  |
+| [store::folder_events::Observer](../../src/folder_events.rs#L114) | type_item | `pub` |  |
+| [store::folder_events::Registry](../../src/folder_events.rs#L117) | struct_item | `private` |  |
+| [store::folder_events::registry](../../src/folder_events.rs#L123) | function_item | `private` |  |
+| [store::folder_events::registry::REGISTRY](../../src/folder_events.rs#L124) | static_item | `private` |  |
+| [store::folder_events::lock](../../src/folder_events.rs#L128) | function_item | `private` |  |
+| [store::folder_events::subscribe](../../src/folder_events.rs#L135) | function_item | `pub` |  |
+| [store::folder_events::arm_admission](../../src/folder_events.rs#L141) | function_item | `pub` |  |
+| [store::folder_events::is_admitted](../../src/folder_events.rs#L148) | function_item | `pub` |  |
+| [store::folder_events::admitted_ids](../../src/folder_events.rs#L158) | function_item | `pub` |  |
+| [store::folder_events::emit](../../src/folder_events.rs#L167) | function_item | `pub(crate)` |  |
+| [store::folder_events::record_events](../../src/folder_events.rs#L211) | function_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -88,72 +88,72 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `canonical_root` | `MEMO.get_or_init` | [75](../../src/folder_events.rs#L75) | receiver-type-required |
-| `canonical_root` | `memo         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .get` | [76](../../src/folder_events.rs#L76) | receiver-type-required |
-| `canonical_root` | `memo         .lock()         .unwrap_or_else` | [76](../../src/folder_events.rs#L76) | receiver-type-required |
-| `canonical_root` | `memo         .lock` | [76](../../src/folder_events.rs#L76) | receiver-type-required |
-| `canonical_root` | `known.clone` | [81](../../src/folder_events.rs#L81) | receiver-type-required |
-| `canonical_root` | `std::fs::canonicalize` | [83](../../src/folder_events.rs#L83) | external-constructor-callback-or-unresolved |
-| `canonical_root` | `memo.lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .insert` | [85](../../src/folder_events.rs#L85) | receiver-type-required |
-| `canonical_root` | `memo.lock()                 .unwrap_or_else` | [85](../../src/folder_events.rs#L85) | receiver-type-required |
-| `canonical_root` | `memo.lock` | [85](../../src/folder_events.rs#L85) | receiver-type-required |
-| `canonical_root` | `root.to_path_buf` | [87](../../src/folder_events.rs#L87), [92](../../src/folder_events.rs#L92) | receiver-type-required |
-| `canonical_root` | `resolved.clone` | [87](../../src/folder_events.rs#L87) | receiver-type-required |
-| `MEMO` | `OnceLock::new` | [74](../../src/folder_events.rs#L74) | external-constructor-callback-or-unresolved |
-| `registry` | `REGISTRY.get_or_init` | [127](../../src/folder_events.rs#L127) | receiver-type-required |
-| `registry` | `Mutex::new` | [127](../../src/folder_events.rs#L127) | external-constructor-callback-or-unresolved |
-| `registry` | `Registry::default` | [127](../../src/folder_events.rs#L127) | external-constructor-callback-or-unresolved |
-| `REGISTRY` | `OnceLock::new` | [126](../../src/folder_events.rs#L126) | external-constructor-callback-or-unresolved |
-| `lock` | `registry()         .lock()         .unwrap_or_else` | [131](../../src/folder_events.rs#L131) | receiver-type-required |
-| `lock` | `registry()         .lock` | [131](../../src/folder_events.rs#L131) | receiver-type-required |
-| `lock` | `registry` | [131](../../src/folder_events.rs#L131) | [store::folder_events::registry](../../src/folder_events.rs#L125) |
-| `subscribe` | `lock().observers.push` | [138](../../src/folder_events.rs#L138) | receiver-type-required |
-| `subscribe` | `lock` | [138](../../src/folder_events.rs#L138) | [store::folder_events::lock](../../src/folder_events.rs#L130) |
-| `arm_admission` | `lock().admission.entry(canonical_root(root)).or_default` | [144](../../src/folder_events.rs#L144) | receiver-type-required |
-| `arm_admission` | `lock().admission.entry` | [144](../../src/folder_events.rs#L144) | receiver-type-required |
-| `arm_admission` | `lock` | [144](../../src/folder_events.rs#L144) | [store::folder_events::lock](../../src/folder_events.rs#L130) |
-| `arm_admission` | `canonical_root` | [144](../../src/folder_events.rs#L144) | [store::folder_events::canonical_root](../../src/folder_events.rs#L71) |
-| `is_admitted` | `canonical_root` | [151](../../src/folder_events.rs#L151) | [store::folder_events::canonical_root](../../src/folder_events.rs#L71) |
-| `is_admitted` | `lock()         .admission         .get(&root)         .is_some_and` | [152](../../src/folder_events.rs#L152) | receiver-type-required |
-| `is_admitted` | `lock()         .admission         .get` | [152](../../src/folder_events.rs#L152) | receiver-type-required |
-| `is_admitted` | `lock` | [152](../../src/folder_events.rs#L152) | [store::folder_events::lock](../../src/folder_events.rs#L130) |
-| `is_admitted` | `admitted.contains` | [155](../../src/folder_events.rs#L155) | receiver-type-required |
-| `admitted_ids` | `canonical_root` | [161](../../src/folder_events.rs#L161) | [store::folder_events::canonical_root](../../src/folder_events.rs#L71) |
-| `admitted_ids` | `lock()         .admission         .get(&root)         .map(&#124;admitted&#124; admitted.iter().cloned().collect())         .unwrap_or_default` | [162](../../src/folder_events.rs#L162) | receiver-type-required |
-| `admitted_ids` | `lock()         .admission         .get(&root)         .map` | [162](../../src/folder_events.rs#L162) | receiver-type-required |
-| `admitted_ids` | `lock()         .admission         .get` | [162](../../src/folder_events.rs#L162) | receiver-type-required |
-| `admitted_ids` | `lock` | [162](../../src/folder_events.rs#L162) | [store::folder_events::lock](../../src/folder_events.rs#L130) |
-| `admitted_ids` | `admitted.iter().cloned().collect` | [165](../../src/folder_events.rs#L165) | receiver-type-required |
-| `admitted_ids` | `admitted.iter().cloned` | [165](../../src/folder_events.rs#L165) | receiver-type-required |
-| `admitted_ids` | `admitted.iter` | [165](../../src/folder_events.rs#L165) | receiver-type-required |
-| `emit` | `canonical_root` | [171](../../src/folder_events.rs#L171) | [store::folder_events::canonical_root](../../src/folder_events.rs#L71) |
-| `emit` | `event.root` | [171](../../src/folder_events.rs#L171), [176](../../src/folder_events.rs#L176) | receiver-type-required |
-| `emit` | `event.with_root` | [172](../../src/folder_events.rs#L172) | receiver-type-required |
-| `emit` | `lock` | [175](../../src/folder_events.rs#L175), [205](../../src/folder_events.rs#L205) | [store::folder_events::lock](../../src/folder_events.rs#L130) |
-| `emit` | `registry.admission.get_mut` | [176](../../src/folder_events.rs#L176) | receiver-type-required |
-| `emit` | `admitted.insert` | [184](../../src/folder_events.rs#L184) | receiver-type-required |
-| `emit` | `id.clone` | [184](../../src/folder_events.rs#L184) | receiver-type-required |
-| `emit` | `admitted.remove` | [189](../../src/folder_events.rs#L189) | receiver-type-required |
-| `emit` | `registry.observers.clone` | [196](../../src/folder_events.rs#L196) | receiver-type-required |
-| `emit` | `observers         .iter()         .filter(&#124;observer&#124; !observer(&event))         .cloned()         .collect::<Vec<_>>` | [199](../../src/folder_events.rs#L199) | receiver-type-required |
-| `emit` | `observers         .iter()         .filter(&#124;observer&#124; !observer(&event))         .cloned` | [199](../../src/folder_events.rs#L199) | receiver-type-required |
-| `emit` | `observers         .iter()         .filter` | [199](../../src/folder_events.rs#L199) | receiver-type-required |
-| `emit` | `observers         .iter` | [199](../../src/folder_events.rs#L199) | receiver-type-required |
-| `emit` | `observer` | [201](../../src/folder_events.rs#L201) | external-constructor-callback-or-unresolved |
-| `emit` | `gone.is_empty` | [204](../../src/folder_events.rs#L204) | receiver-type-required |
-| `emit` | `lock()             .observers             .retain` | [205](../../src/folder_events.rs#L205) | receiver-type-required |
-| `emit` | `gone.iter().any` | [207](../../src/folder_events.rs#L207) | receiver-type-required |
-| `emit` | `gone.iter` | [207](../../src/folder_events.rs#L207) | receiver-type-required |
-| `emit` | `Arc::ptr_eq` | [207](../../src/folder_events.rs#L207) | external-constructor-callback-or-unresolved |
-| `record_events` | `Arc::new` | [214](../../src/folder_events.rs#L214), [217](../../src/folder_events.rs#L217) | external-constructor-callback-or-unresolved |
-| `record_events` | `Mutex::new` | [214](../../src/folder_events.rs#L214) | external-constructor-callback-or-unresolved |
-| `record_events` | `Vec::new` | [214](../../src/folder_events.rs#L214) | external-constructor-callback-or-unresolved |
-| `record_events` | `Arc::clone` | [215](../../src/folder_events.rs#L215) | external-constructor-callback-or-unresolved |
-| `record_events` | `canonical_root` | [216](../../src/folder_events.rs#L216) | [store::folder_events::canonical_root](../../src/folder_events.rs#L71) |
-| `record_events` | `subscribe` | [217](../../src/folder_events.rs#L217) | [store::folder_events::subscribe](../../src/folder_events.rs#L137) |
-| `record_events` | `event.root` | [218](../../src/folder_events.rs#L218) | receiver-type-required |
-| `record_events` | `sink.lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .push` | [219](../../src/folder_events.rs#L219) | receiver-type-required |
-| `record_events` | `sink.lock()                 .unwrap_or_else` | [219](../../src/folder_events.rs#L219) | receiver-type-required |
-| `record_events` | `sink.lock` | [219](../../src/folder_events.rs#L219) | receiver-type-required |
-| `record_events` | `event.clone` | [221](../../src/folder_events.rs#L221) | receiver-type-required |
-| `record_events` | `Arc::strong_count` | [223](../../src/folder_events.rs#L223) | external-constructor-callback-or-unresolved |
+| `canonical_root` | `MEMO.get_or_init` | [73](../../src/folder_events.rs#L73) | receiver-type-required |
+| `canonical_root` | `memo         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .get` | [74](../../src/folder_events.rs#L74) | receiver-type-required |
+| `canonical_root` | `memo         .lock()         .unwrap_or_else` | [74](../../src/folder_events.rs#L74) | receiver-type-required |
+| `canonical_root` | `memo         .lock` | [74](../../src/folder_events.rs#L74) | receiver-type-required |
+| `canonical_root` | `known.clone` | [79](../../src/folder_events.rs#L79) | receiver-type-required |
+| `canonical_root` | `std::fs::canonicalize` | [81](../../src/folder_events.rs#L81) | external-constructor-callback-or-unresolved |
+| `canonical_root` | `memo.lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .insert` | [83](../../src/folder_events.rs#L83) | receiver-type-required |
+| `canonical_root` | `memo.lock()                 .unwrap_or_else` | [83](../../src/folder_events.rs#L83) | receiver-type-required |
+| `canonical_root` | `memo.lock` | [83](../../src/folder_events.rs#L83) | receiver-type-required |
+| `canonical_root` | `root.to_path_buf` | [85](../../src/folder_events.rs#L85), [90](../../src/folder_events.rs#L90) | receiver-type-required |
+| `canonical_root` | `resolved.clone` | [85](../../src/folder_events.rs#L85) | receiver-type-required |
+| `MEMO` | `OnceLock::new` | [72](../../src/folder_events.rs#L72) | external-constructor-callback-or-unresolved |
+| `registry` | `REGISTRY.get_or_init` | [125](../../src/folder_events.rs#L125) | receiver-type-required |
+| `registry` | `Mutex::new` | [125](../../src/folder_events.rs#L125) | external-constructor-callback-or-unresolved |
+| `registry` | `Registry::default` | [125](../../src/folder_events.rs#L125) | external-constructor-callback-or-unresolved |
+| `REGISTRY` | `OnceLock::new` | [124](../../src/folder_events.rs#L124) | external-constructor-callback-or-unresolved |
+| `lock` | `registry()         .lock()         .unwrap_or_else` | [129](../../src/folder_events.rs#L129) | receiver-type-required |
+| `lock` | `registry()         .lock` | [129](../../src/folder_events.rs#L129) | receiver-type-required |
+| `lock` | `registry` | [129](../../src/folder_events.rs#L129) | [store::folder_events::registry](../../src/folder_events.rs#L123) |
+| `subscribe` | `lock().observers.push` | [136](../../src/folder_events.rs#L136) | receiver-type-required |
+| `subscribe` | `lock` | [136](../../src/folder_events.rs#L136) | [store::folder_events::lock](../../src/folder_events.rs#L128) |
+| `arm_admission` | `lock().admission.entry(canonical_root(root)).or_default` | [142](../../src/folder_events.rs#L142) | receiver-type-required |
+| `arm_admission` | `lock().admission.entry` | [142](../../src/folder_events.rs#L142) | receiver-type-required |
+| `arm_admission` | `lock` | [142](../../src/folder_events.rs#L142) | [store::folder_events::lock](../../src/folder_events.rs#L128) |
+| `arm_admission` | `canonical_root` | [142](../../src/folder_events.rs#L142) | [store::folder_events::canonical_root](../../src/folder_events.rs#L69) |
+| `is_admitted` | `canonical_root` | [149](../../src/folder_events.rs#L149) | [store::folder_events::canonical_root](../../src/folder_events.rs#L69) |
+| `is_admitted` | `lock()         .admission         .get(&root)         .is_some_and` | [150](../../src/folder_events.rs#L150) | receiver-type-required |
+| `is_admitted` | `lock()         .admission         .get` | [150](../../src/folder_events.rs#L150) | receiver-type-required |
+| `is_admitted` | `lock` | [150](../../src/folder_events.rs#L150) | [store::folder_events::lock](../../src/folder_events.rs#L128) |
+| `is_admitted` | `admitted.contains` | [153](../../src/folder_events.rs#L153) | receiver-type-required |
+| `admitted_ids` | `canonical_root` | [159](../../src/folder_events.rs#L159) | [store::folder_events::canonical_root](../../src/folder_events.rs#L69) |
+| `admitted_ids` | `lock()         .admission         .get(&root)         .map(&#124;admitted&#124; admitted.iter().cloned().collect())         .unwrap_or_default` | [160](../../src/folder_events.rs#L160) | receiver-type-required |
+| `admitted_ids` | `lock()         .admission         .get(&root)         .map` | [160](../../src/folder_events.rs#L160) | receiver-type-required |
+| `admitted_ids` | `lock()         .admission         .get` | [160](../../src/folder_events.rs#L160) | receiver-type-required |
+| `admitted_ids` | `lock` | [160](../../src/folder_events.rs#L160) | [store::folder_events::lock](../../src/folder_events.rs#L128) |
+| `admitted_ids` | `admitted.iter().cloned().collect` | [163](../../src/folder_events.rs#L163) | receiver-type-required |
+| `admitted_ids` | `admitted.iter().cloned` | [163](../../src/folder_events.rs#L163) | receiver-type-required |
+| `admitted_ids` | `admitted.iter` | [163](../../src/folder_events.rs#L163) | receiver-type-required |
+| `emit` | `canonical_root` | [169](../../src/folder_events.rs#L169) | [store::folder_events::canonical_root](../../src/folder_events.rs#L69) |
+| `emit` | `event.root` | [169](../../src/folder_events.rs#L169), [174](../../src/folder_events.rs#L174) | receiver-type-required |
+| `emit` | `event.with_root` | [170](../../src/folder_events.rs#L170) | receiver-type-required |
+| `emit` | `lock` | [173](../../src/folder_events.rs#L173), [203](../../src/folder_events.rs#L203) | [store::folder_events::lock](../../src/folder_events.rs#L128) |
+| `emit` | `registry.admission.get_mut` | [174](../../src/folder_events.rs#L174) | receiver-type-required |
+| `emit` | `admitted.insert` | [182](../../src/folder_events.rs#L182) | receiver-type-required |
+| `emit` | `id.clone` | [182](../../src/folder_events.rs#L182) | receiver-type-required |
+| `emit` | `admitted.remove` | [187](../../src/folder_events.rs#L187) | receiver-type-required |
+| `emit` | `registry.observers.clone` | [194](../../src/folder_events.rs#L194) | receiver-type-required |
+| `emit` | `observers         .iter()         .filter(&#124;observer&#124; !observer(&event))         .cloned()         .collect::<Vec<_>>` | [197](../../src/folder_events.rs#L197) | receiver-type-required |
+| `emit` | `observers         .iter()         .filter(&#124;observer&#124; !observer(&event))         .cloned` | [197](../../src/folder_events.rs#L197) | receiver-type-required |
+| `emit` | `observers         .iter()         .filter` | [197](../../src/folder_events.rs#L197) | receiver-type-required |
+| `emit` | `observers         .iter` | [197](../../src/folder_events.rs#L197) | receiver-type-required |
+| `emit` | `observer` | [199](../../src/folder_events.rs#L199) | external-constructor-callback-or-unresolved |
+| `emit` | `gone.is_empty` | [202](../../src/folder_events.rs#L202) | receiver-type-required |
+| `emit` | `lock()             .observers             .retain` | [203](../../src/folder_events.rs#L203) | receiver-type-required |
+| `emit` | `gone.iter().any` | [205](../../src/folder_events.rs#L205) | receiver-type-required |
+| `emit` | `gone.iter` | [205](../../src/folder_events.rs#L205) | receiver-type-required |
+| `emit` | `Arc::ptr_eq` | [205](../../src/folder_events.rs#L205) | external-constructor-callback-or-unresolved |
+| `record_events` | `Arc::new` | [212](../../src/folder_events.rs#L212), [215](../../src/folder_events.rs#L215) | external-constructor-callback-or-unresolved |
+| `record_events` | `Mutex::new` | [212](../../src/folder_events.rs#L212) | external-constructor-callback-or-unresolved |
+| `record_events` | `Vec::new` | [212](../../src/folder_events.rs#L212) | external-constructor-callback-or-unresolved |
+| `record_events` | `Arc::clone` | [213](../../src/folder_events.rs#L213) | external-constructor-callback-or-unresolved |
+| `record_events` | `canonical_root` | [214](../../src/folder_events.rs#L214) | [store::folder_events::canonical_root](../../src/folder_events.rs#L69) |
+| `record_events` | `subscribe` | [215](../../src/folder_events.rs#L215) | [store::folder_events::subscribe](../../src/folder_events.rs#L135) |
+| `record_events` | `event.root` | [216](../../src/folder_events.rs#L216) | receiver-type-required |
+| `record_events` | `sink.lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .push` | [217](../../src/folder_events.rs#L217) | receiver-type-required |
+| `record_events` | `sink.lock()                 .unwrap_or_else` | [217](../../src/folder_events.rs#L217) | receiver-type-required |
+| `record_events` | `sink.lock` | [217](../../src/folder_events.rs#L217) | receiver-type-required |
+| `record_events` | `event.clone` | [219](../../src/folder_events.rs#L219) | receiver-type-required |
+| `record_events` | `Arc::strong_count` | [221](../../src/folder_events.rs#L221) | external-constructor-callback-or-unresolved |

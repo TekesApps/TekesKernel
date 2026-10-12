@@ -51,7 +51,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
 | [crates/endpoint/src/respond.rs](../../src/respond.rs) | 17 | 133 | [Symbols and calls](src--respond.md) |
 | [crates/endpoint/src/rpc.rs](../../src/rpc.rs) | 25 | 72 | [Symbols and calls](src--rpc.md) |
-| [crates/endpoint/src/service.rs](../../src/service.rs) | 59 | 412 | [Symbols and calls](src--service.md) |
+| [crates/endpoint/src/service.rs](../../src/service.rs) | 61 | 439 | [Symbols and calls](src--service.md) |
 | [crates/endpoint/src/session_event_registry_generated.rs](../../src/session_event_registry_generated.rs) | 8 | 7 | [Symbols and calls](src--session_event_registry_generated.md) |
 | [crates/endpoint/src/stitch.rs](../../src/stitch.rs) | 4 | 36 | [Symbols and calls](src--stitch.md) |
 | [crates/endpoint/src/stream_queue.rs](../../src/stream_queue.rs) | 11 | 57 | [Symbols and calls](src--stream_queue.md) |
@@ -104,7 +104,7 @@ flowchart LR
   m11 -->|"2"| m17
   m14 -->|"1"| m3
   m14 -->|"1"| m7
-  m14 -->|"1"| m10
+  m14 -->|"2"| m10
   m14 -->|"11"| m17
   m16 -->|"2"| m4
   m17 -->|"2"| m15

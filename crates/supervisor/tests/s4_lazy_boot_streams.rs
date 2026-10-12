@@ -919,3 +919,377 @@ fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing(
     }
     host.shutdown();
 }
+
+// ---------------------------------------------------------------------------------------------
+// O-final B1: a pending approval or question in a CHILD line of a thread is in the actionables
+// baseline however the thread came to be known (v0.3.0 scanned every line of every thread).
+
+fn canonical_lines(events: Vec<serde_json::Value>) -> Vec<u8> {
+    let mut bytes = Vec::new();
+    for value in events {
+        let event =
+            schema::Event::decode(&serde_json::to_vec(&value).expect("json")).expect("event");
+        bytes.extend_from_slice(&event.canonical_bytes().expect("canonical"));
+        bytes.push(b'\n');
+    }
+    schema::validate_ledger(&bytes, 1).expect("ledger validates");
+    bytes
+}
+
+/// main: genesis, input, run_start, turn_open, spawn(child). child: a tool call, and (when
+/// `held`) a pending approval request at seq 7.
+fn write_session_with_child(root: &std::path::Path, session: &str, child: &str, held: bool) {
+    use serde_json::json;
+    store::ThreadStore::open(root).expect("store layout");
+    let folder = root.join("threads").join(session);
+    std::fs::create_dir_all(folder.join("assets")).expect("folder");
+    let main = canonical_lines(vec![
+        json!({"v":1,"seq":1,"kind":"genesis","ts":TIMESTAMP,"format":1,"min_reader":1,"min_writer":1,
+            "thread":session,"workspace":"ws","origin_key":"create",
+            "origin_tuple":{"principal":"p","client":"cli","target":session,"op":"create","key":"create"},
+            "resume":"never","config":{"digest":"cfg"}}),
+        json!({"v":1,"seq":2,"kind":"input","ts":TIMESTAMP,"content":[{"type":"text","text":"spawn"}],
+            "origin_key":"i1","origin_tuple":{"principal":"p","client":"cli","target":session,"op":"submit","key":"i1"}}),
+        json!({"v":1,"seq":3,"kind":"run_start","ts":TIMESTAMP,"run":"r1","mode":"ordinary","recovery_ordinal":0,
+            "binary":"tekes-worker-1","config_digest":"cfg","instruction_digest":"ins","policy":"default"}),
+        json!({"v":1,"seq":4,"kind":"turn_open","ts":TIMESTAMP,"turn":1,"trigger":{"inputs":[2]}}),
+        json!({"v":1,"seq":5,"kind":"spawn","ts":TIMESTAMP,"turn":1,"child":format!("{child}.jsonl"),
+            "call":"call-spawn","spawn_id":"spawn-1","resume":"never","seed":{"kinds":[]}}),
+    ]);
+    std::fs::write(folder.join("main.jsonl"), main).expect("main");
+    let mut events = vec![
+        json!({"v":1,"seq":1,"kind":"genesis","ts":TIMESTAMP,"format":1,"min_reader":1,"min_writer":1,
+            "thread":child,"workspace":"ws","origin_key":"create-child",
+            "origin_tuple":{"principal":"p","client":"cli","target":child,"op":"create","key":"create-child"},
+            "resume":"never","config":{"digest":"cfg"},
+            "parent":{"file":"main.jsonl","seq":5,"spawn_id":"spawn-1"},
+            "seed":{"source":"parent","kinds":[],
+                "snapshot":{"asset":format!("sha256-{}", "0".repeat(64)),"digest":"0".repeat(64)}}}),
+        json!({"v":1,"seq":2,"kind":"turn_open","ts":TIMESTAMP,"turn":1,"trigger":"genesis"}),
+        json!({"v":1,"seq":3,"kind":"epoch","ts":TIMESTAMP,"adapter":"fake","id":"e1","model":"fake","reason":"initial",
+            "renderer":1,"system":{"asset":"sha256-aa","digest":"d1"},"tools":{"asset":"sha256-td","digest":"td"}}),
+        json!({"v":1,"seq":4,"kind":"attempt","ts":TIMESTAMP,"admits":[],"attempt":"a1","epoch":"e1",
+            "request":{"asset":format!("sha256-{}", "ab".repeat(32)),"bytes":4096},"turn":1,"wire_digest":"wd"}),
+        json!({"v":1,"seq":5,"kind":"output","ts":TIMESTAMP,"attempt":"a1",
+            "content":[{"args":{"cmd":"ls"},"call":"c1","name":"shell","type":"tool-call"}],
+            "sealed":{"adapter":"fake","fragments":"x","version":1},"turn":1,
+            "usage":{"availability":"reported","input_tokens":"5","output_tokens":"1"}}),
+        json!({"v":1,"seq":6,"kind":"tool_call","ts":TIMESTAMP,"args":{"cmd":"ls"},"attempt":"a1","call":"c1",
+            "name":"shell","source":"provider","turn":1}),
+    ];
+    if held {
+        events.push(child_approval_request());
+    }
+    std::fs::write(
+        folder.join(format!("{child}.jsonl")),
+        canonical_lines(events),
+    )
+    .expect("child");
+}
+
+fn child_approval_request() -> serde_json::Value {
+    serde_json::json!({"v":1,"seq":7,"kind":"approval_request","ts":TIMESTAMP,"call":"c1","scope":"exec","turn":1})
+}
+
+fn child_approval_response(child: &str) -> serde_json::Value {
+    serde_json::json!({"v":1,"seq":8,"kind":"approval_response","ts":TIMESTAMP,"call":"c1","grant":true,"turn":1,
+        "origin_key":"r1","origin_tuple":{"principal":"p","client":"cli","target":child,"op":"approve","key":"r1"}})
+}
+
+/// Appends events to the child ledger the way a worker would (canonical lines, one append).
+fn append_child_events(
+    root: &std::path::Path,
+    session: &str,
+    child: &str,
+    events: Vec<serde_json::Value>,
+) {
+    use std::io::Write;
+    let path = root
+        .join("threads")
+        .join(session)
+        .join(format!("{child}.jsonl"));
+    let mut bytes = std::fs::read(&path).expect("child ledger");
+    for value in events {
+        let event =
+            schema::Event::decode(&serde_json::to_vec(&value).expect("json")).expect("event");
+        bytes.extend_from_slice(&event.canonical_bytes().expect("canonical"));
+        bytes.push(b'\n');
+    }
+    schema::validate_ledger(&bytes, 1).expect("grown child ledger validates");
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true)
+        .open(&path)
+        .expect("open child");
+    file.write_all(&bytes).expect("write child");
+}
+
+fn actionable_ids(assembly: &ProductionCarrierAssembly, generation: u64) -> Vec<String> {
+    let mut stream = block_on_ready(
+        assembly
+            .host()
+            .open_mux_stream(generation, SessionStreamTarget::Actionables),
+    )
+    .expect("actionables stream");
+    let SessionSyncFrame::ActionableBaseline { items, .. } =
+        block_on_ready(stream.recv()).expect("item").expect("frame")
+    else {
+        panic!("expected an actionable baseline")
+    };
+    items.into_iter().map(|item| item.id).collect()
+}
+
+fn kernel_host(
+    root: &std::path::Path,
+    assembly: &ProductionCarrierAssembly,
+) -> Arc<tekes_supervisor::process_host::ProductionProcessHost> {
+    let host = process_host(root);
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    host
+}
+
+fn child_rpc(session: &str, child: &str) -> String {
+    endpoint::derive_line_request_rpc_id(
+        session,
+        Some(&format!("{child}.jsonl")),
+        endpoint::RequestFrameType::Approval,
+        7,
+    )
+}
+
+fn child_allow(rpc_id: &str, session: &str, child: &str) -> ClientResponse {
+    ClientResponse {
+        envelope_type: "client-response".to_owned(),
+        rpc_id: rpc_id.to_owned(),
+        result: ClientResponseResult {
+            ok: true,
+            value: Some(
+                IJsonValue::parse_str(&format!(
+                    r#"{{"approvalId":"approval:{child}.jsonl:c1","outcome":"allowed-once","sessionId":"{session}"}}"#
+                ))
+                .expect("respond value"),
+            ),
+            error: None,
+        },
+    }
+}
+
+/// The oracle: a carrier without a catalog scans every line like v0.3.0 did.
+fn oracle_ids(root: &std::path::Path) -> Vec<String> {
+    actionable_ids(&assembly(root), 1)
+}
+
+/// B1 (a): a thread verified in this process (the first List) still shows the hold of its child
+/// line. Before S4f the verified view carried only the main line and the baseline never looked.
+#[test]
+fn a_child_line_hold_is_in_the_baseline_of_a_thread_verified_in_this_process() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (session, child) = (blank_id(700), blank_id(701));
+    write_session_with_child(root.path(), &session, &child, true);
+    let oracle = oracle_ids(root.path());
+    assert_eq!(
+        oracle,
+        vec![child_rpc(&session, &child)],
+        "the oracle sees it"
+    );
+
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let rows = SupervisorSessionAuthority::inventory_items(&*host, false)
+        .expect("catalog backed")
+        .expect("list");
+    assert_eq!(rows.len(), 1, "the thread is listed (and so verified)");
+    assert_eq!(actionable_ids(&assembly, 2), oracle);
+    host.shutdown();
+}
+
+/// B1 (b): the hold appears in the child line after the thread was verified, and the main
+/// line's doorbell fold (which carries the child views forward) has run since.
+#[test]
+fn a_child_hold_appended_after_verification_is_in_the_baseline() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (session, child) = (blank_id(702), blank_id(703));
+    write_session_with_child(root.path(), &session, &child, false);
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let rows = SupervisorSessionAuthority::inventory_items(&*host, false)
+        .expect("catalog backed")
+        .expect("list");
+    assert_eq!(rows.len(), 1);
+    assert!(
+        actionable_ids(&assembly, 2).is_empty(),
+        "nothing is held yet"
+    );
+
+    append_child_events(
+        root.path(),
+        &session,
+        &child,
+        vec![child_approval_request()],
+    );
+    // the doorbell of the thread's main line (a child worker's append rings it)
+    SupervisorSessionAuthority::reconcile_projection(&*host, &session).expect("doorbell");
+    assert_eq!(
+        actionable_ids(&assembly, 3),
+        oracle_ids(root.path()),
+        "the baseline equals a full scan"
+    );
+    assert_eq!(
+        actionable_ids(&assembly, 4),
+        vec![child_rpc(&session, &child)]
+    );
+    host.shutdown();
+}
+
+/// B1 (c): a hold that was resolved in the child line is gone from the baseline when the
+/// resolution happened between two lives (the card the first life wrote still describes the
+/// hold as pending).
+#[test]
+fn a_resolved_child_hold_leaves_the_baseline() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (session, child) = (blank_id(704), blank_id(705));
+    write_session_with_child(root.path(), &session, &child, true);
+    {
+        let assembly = assembly(root.path());
+        let host = kernel_host(root.path(), &assembly);
+        let _ = SupervisorSessionAuthority::inventory_items(&*host, false).expect("list");
+        assert_eq!(
+            actionable_ids(&assembly, 2),
+            vec![child_rpc(&session, &child)]
+        );
+        host.shutdown();
+    }
+    append_child_events(
+        root.path(),
+        &session,
+        &child,
+        vec![child_approval_response(&child)],
+    );
+    assert!(oracle_ids(root.path()).is_empty());
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    assert!(
+        actionable_ids(&assembly, 2).is_empty(),
+        "the second life must not announce a hold the child line already answered"
+    );
+    host.shutdown();
+}
+
+/// B1 (d): after a restart a card that lists the child line makes the child hold a candidate.
+#[test]
+fn a_child_hold_is_in_the_baseline_after_a_restart_with_a_card() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (session, child) = (blank_id(710), blank_id(711));
+    write_session_with_child(root.path(), &session, &child, true);
+    {
+        let assembly = assembly(root.path());
+        let host = kernel_host(root.path(), &assembly);
+        let _ = SupervisorSessionAuthority::inventory_items(&*host, false).expect("list");
+        host.shutdown();
+    }
+    let card = std::fs::read_to_string(
+        root.path()
+            .join("threads")
+            .join(&session)
+            .join("thread-card.json"),
+    )
+    .expect("the first life flushed a card");
+    assert!(
+        card.contains(&format!("{child}.jsonl")),
+        "the card lists the child line"
+    );
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    assert_eq!(
+        actionable_ids(&assembly, 5),
+        vec![child_rpc(&session, &child)]
+    );
+    host.shutdown();
+}
+
+/// B1 (e): answering the child hold works on a thread verified in this process, like a bare
+/// carrier answers it.
+#[test]
+fn a_child_hold_can_be_answered_after_in_process_verification() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let (session, child) = (blank_id(720), blank_id(721));
+    let rpc = child_rpc(&session, &child);
+    let oracle_root = tempfile::tempdir().expect("root");
+    write_workspace(oracle_root.path());
+    write_session_with_child(oracle_root.path(), &session, &child, true);
+    let bare = assembly(oracle_root.path());
+    let oracle = block_on_ready(
+        bare.host()
+            .respond(child_allow(&rpc, &session, &child), call_context()),
+    );
+
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    write_session_with_child(root.path(), &session, &child, true);
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let _ = SupervisorSessionAuthority::inventory_items(&*host, false).expect("list");
+    let kernel = block_on_ready(
+        assembly
+            .host()
+            .respond(child_allow(&rpc, &session, &child), call_context()),
+    );
+    assert_eq!(
+        kernel.as_ref().map(|_| ()).map_err(ToString::to_string),
+        oracle.as_ref().map(|_| ()).map_err(ToString::to_string),
+        "the Kernel answers like a bare carrier"
+    );
+    host.shutdown();
+}
+
+/// O-final m10: with 256 sessions pinned, the doorbell of a 257th thread that holds a request
+/// still succeeds (its durable events are broadcast); only the request frame cannot be announced.
+#[test]
+fn a_doorbell_over_the_session_limit_is_not_an_error() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let sessions = (100..357).map(blank_id).collect::<Vec<_>>();
+    for (index, session) in sessions.iter().enumerate() {
+        write_session_at(root.path(), session, index == 256);
+    }
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let streams = assembly.streams().clone();
+    let live = Arc::new(LiveSessions::default());
+    let authority: Arc<dyn SupervisorSessionAuthority> = live.clone();
+    streams.attach_session_authority(Arc::downgrade(&authority));
+    let _mux = block_on_ready(endpoint::CarrierStreamHandler::open_stream(
+        &streams,
+        endpoint::StreamChannel::Mux,
+    ))
+    .expect("mux");
+    for session in &sessions[..256] {
+        live.0.lock().expect("live").insert(session.clone());
+        streams.attach_session(session).expect("attach");
+    }
+    SupervisorSessionAuthority::reconcile_projection(&*host, &sessions[256])
+        .expect("the limit does not fail the doorbell");
+    host.shutdown();
+}

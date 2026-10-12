@@ -173,6 +173,7 @@ struct MockHost {
     state: Arc<Mutex<MockState>>,
     registered: BTreeSet<String>,
     block_unary: bool,
+    unary_failure: Option<fn() -> HostFailure>,
     fail_stream: bool,
     terminal_stream: Option<StreamErrorCode>,
     repeat_baseline: bool,
@@ -215,6 +216,7 @@ impl MockHost {
                 .map(ToString::to_string)
                 .collect(),
             block_unary: false,
+            unary_failure: None,
             fail_stream: false,
             terminal_stream: None,
             repeat_baseline: false,
@@ -224,6 +226,11 @@ impl MockHost {
 
     fn without_route(mut self, route: &str) -> Self {
         self.registered.remove(route);
+        self
+    }
+
+    fn failing_unary(mut self, failure: fn() -> HostFailure) -> Self {
+        self.unary_failure = Some(failure);
         self
     }
 
@@ -281,7 +288,11 @@ impl EndpointCarrierHost for MockHost {
     ) -> CarrierHostFuture<'_, Result<ServerResponse, HostFailure>> {
         let state = Arc::clone(&self.state);
         let block_unary = self.block_unary;
+        let unary_failure = self.unary_failure;
         Box::pin(async move {
+            if let Some(failure) = unary_failure {
+                return Err(failure());
+            }
             if block_unary {
                 state.lock().expect("state").calls += 1;
                 return pending::<Result<ServerResponse, HostFailure>>().await;
@@ -1264,4 +1275,63 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
     };
     assert_eq!(u16::from(close.code), 1002);
     task.abort();
+}
+
+/// O-final m7: the typed failures of a thread-bound route keep their codes on HTTP (they were
+/// folded into the 503 `not-ready` of an unready Kernel): the session limit is a 409 with the
+/// limit, a quarantined thread a 500 `internal-error` naming the quarantine.
+#[tokio::test]
+async fn typed_host_failures_keep_their_codes_on_http() {
+    let body = serde_json::to_vec(&json!({
+        "type": "client-request", "rpcId": "typed-1",
+        "method": "session.prompt", "payload": {"sessionId": "50aa8d4e-9305-49d1-837e-16d2e67f31b0", "content": []}
+    }))
+    .expect("request");
+    let limit = TransportServer::new(
+        Arc::new(
+            MockHost::new(true).failing_unary(|| HostFailure::ActiveSessionLimit { limit: 256 }),
+        ),
+        config(),
+    )
+    .expect("server")
+    .router()
+    .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
+    .await
+    .expect("limit response");
+    assert_eq!(limit.status(), StatusCode::CONFLICT);
+    let value = response_json(limit).await;
+    assert_eq!(value["error"]["code"], "active-session-limit");
+    assert_eq!(value["error"]["details"]["limit"], 256);
+
+    let quarantined = TransportServer::new(
+        Arc::new(
+            MockHost::new(true)
+                .failing_unary(|| HostFailure::Quarantined("main.jsonl: bad record".to_owned())),
+        ),
+        config(),
+    )
+    .expect("server")
+    .router()
+    .oneshot(request(Method::POST, "/api/session.prompt", body.clone()))
+    .await
+    .expect("quarantine response");
+    assert_eq!(quarantined.status(), StatusCode::INTERNAL_SERVER_ERROR);
+    let value = response_json(quarantined).await;
+    assert_eq!(value["error"]["code"], "internal-error");
+    assert_eq!(value["error"]["details"]["reason"], "quarantined");
+    assert!(
+        !value.to_string().contains("bad record"),
+        "the quarantine reason stays out of the wire"
+    );
+
+    let internal = TransportServer::new(
+        Arc::new(MockHost::new(true).failing_unary(|| HostFailure::Internal("boom".to_owned()))),
+        config(),
+    )
+    .expect("server")
+    .router()
+    .oneshot(request(Method::POST, "/api/session.prompt", body))
+    .await
+    .expect("internal response");
+    assert_eq!(internal.status(), StatusCode::SERVICE_UNAVAILABLE);
 }

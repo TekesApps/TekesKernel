@@ -515,3 +515,29 @@ fn card_line_names_are_plain_jsonl_names() {
         WriteOutcome::Skipped(SkipReason::InvalidName)
     );
 }
+
+/// O-final m9: a crashed process's temporary card file is removed; a live process's, ours and
+/// anything that is not a card temporary are left alone.
+#[test]
+fn stale_card_temporaries_of_dead_processes_are_removed() {
+    let (_root, folder) = thread_with(&["a"]);
+    let mut child = std::process::Command::new("true").spawn().unwrap();
+    let dead = child.id();
+    child.wait().unwrap();
+    let live_parent = std::os::unix::process::parent_id();
+    let ours = std::process::id();
+    let stale = format!(".{CARD_FILE}.{dead}.3.tmp");
+    let live = format!(".{CARD_FILE}.{live_parent}.1.tmp");
+    let own = format!(".{CARD_FILE}.{ours}.9.tmp");
+    let unrelated = format!(".{CARD_FILE}.notapid.1.tmp");
+    let other = "main.jsonl.tmp".to_owned();
+    for name in [&stale, &live, &own, &unrelated, &other] {
+        std::fs::write(folder.join(name), b"x").unwrap();
+    }
+    assert_eq!(remove_stale_card_temps(&folder), 1);
+    assert!(!folder.join(&stale).exists());
+    for kept in [&live, &own, &unrelated, &other] {
+        assert!(folder.join(kept).exists(), "{kept} must stay");
+    }
+    assert_eq!(remove_stale_card_temps(&folder), 0);
+}

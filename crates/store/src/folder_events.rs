@@ -22,8 +22,6 @@ pub enum RemoveReason {
     Discarded,
     /// A redact retired its source thread.
     RedactRetired,
-    /// A retired folder's tombstone was deleted (informational: it had already left the catalog).
-    TombstoneDeleted,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

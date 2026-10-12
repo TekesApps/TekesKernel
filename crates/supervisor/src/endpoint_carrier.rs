@@ -34,7 +34,9 @@ use transport::{TransportConfig, TransportConfigError, TransportServer};
 use worker_control::{ApprovalResponse, Receipt};
 
 use crate::endpoint_host::{ProductionEndpointHost, ProductionRouteFailure, SessionAdmissionGates};
-use crate::request_index::{RequestIndex, ledger_signature, may_hold_requests};
+use crate::request_index::{
+    RequestIndex, children_may_hold_requests, ledger_signature, may_hold_requests,
+};
 
 const HOST_STREAM_MAX_FRAMES: usize = 4_096;
 const HOST_STREAM_MAX_BYTES: usize = 4 * 1024 * 1024;
@@ -131,6 +133,9 @@ pub struct HoldCatalog {
     /// Threads whose ledgers may hold requests the cards do not describe (no trusted card, or a
     /// card describing only a prefix): they are prefiltered by bytes.
     pub unverified: Vec<String>,
+    /// Threads whose main line is folded but whose child lines are not (a doorbell fold carries
+    /// the previous child views forward): only their child files need the byte prefilter.
+    pub children_unverified: Vec<String>,
 }
 
 /// Process-table authority for the live-worker half of `respond`. `None`
@@ -703,13 +708,24 @@ impl ProductionCarrierStreams {
             // Any request/resolution change causes v3 to diff its baseline.
             // Repeated Appended notifications remain silent.
             self.note_pending_line(&key, !pending.is_empty());
-            for (state, frame) in requests {
-                let id = &state.request.rpc_id;
-                if pending.contains(id) != previous.contains(id) {
-                    self.publish_session_frame(session_id, frame)?;
-                }
-            }
+            let changed = requests
+                .into_iter()
+                .filter(|(state, _)| {
+                    let id = &state.request.rpc_id;
+                    pending.contains(id) != previous.contains(id)
+                })
+                .map(|(_, frame)| frame)
+                .collect::<Vec<_>>();
             published.insert(key, (projection.last_seq, pending));
+            // Published after the lock is released: a first publication for a session attaches
+            // it (a journal parse and a fold), which must not hold up every other session's
+            // reconcile (O-final m5). The set above already carries the newer sequence, and
+            // subscribers diff a full recompute, so the order of two concurrent publications
+            // does not matter.
+            drop(published);
+            for frame in changed {
+                self.publish_session_frame(session_id, frame)?;
+            }
         } else if projection.last_seq > published_through {
             published.insert(key, (projection.last_seq, pending));
         }
@@ -746,6 +762,17 @@ impl ProductionCarrierStreams {
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .retain(|(session, _), _| session != session_id);
         self.inner.requests.forget_session(session_id);
+    }
+
+    /// Test observer: the ids an actionables stream would open with.
+    #[cfg(test)]
+    pub(crate) fn actionable_ids_for_test(&self) -> Vec<String> {
+        match self.actionables_baseline(1) {
+            Ok(SessionSyncFrame::ActionableBaseline { items, .. }) => {
+                items.into_iter().map(|item| item.id).collect()
+            }
+            other => panic!("actionables baseline failed: {other:?}"),
+        }
     }
 
     /// Test observer: the request ids currently published as pending for one ledger line.
@@ -1557,6 +1584,12 @@ impl ProductionCarrierStreams {
                         candidates.insert(session);
                     }
                 }
+                for session in catalog.children_unverified {
+                    let folder = self.inner.root.join("threads").join(&session);
+                    if children_may_hold_requests(&folder) {
+                        candidates.insert(session);
+                    }
+                }
             }
             None => {
                 for session in active_session_ids(&self.inner.root)? {
@@ -1567,6 +1600,9 @@ impl ProductionCarrierStreams {
                 }
             }
         }
+        // Requests published in this process are known without reading anything: a child
+        // worker's hold is in the published set the moment it is announced.
+        candidates.extend(self.sessions_with_published_requests());
         let mut items = Vec::new();
         for session in candidates {
             // One damaged thread never fails the baseline of the others.
@@ -1619,6 +1655,24 @@ impl ProductionCarrierStreams {
         }
     }
 
+    /// Sessions that have an unresolved request on any line, from the set published in this
+    /// process (kept in step by `reconcile_actionables_from`).
+    fn sessions_with_published_requests(&self) -> Vec<String> {
+        let attachments = self
+            .inner
+            .attachments
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let mut sessions = attachments
+            .pending_lines
+            .iter()
+            .map(|(session, _)| session.clone())
+            .collect::<Vec<_>>();
+        sessions.sort();
+        sessions.dedup();
+        sessions
+    }
+
     pub(crate) fn requests(&self) -> &RequestIndex {
         &self.inner.requests
     }
@@ -1637,13 +1691,24 @@ impl ProductionCarrierStreams {
     /// without a trusted card whose bytes may hold a request, then the archive. One damaged
     /// thread is skipped (and logged), never an error for the lookup.
     pub(crate) fn index_unverified_and_archived(&self, rpc_id: &str) {
-        let unverified = match self.session_authority().and_then(|a| a.hold_catalog()) {
-            Some(catalog) => catalog.unverified,
-            None => active_session_ids(&self.inner.root).unwrap_or_default(),
-        };
+        let (unverified, children_unverified) =
+            match self.session_authority().and_then(|a| a.hold_catalog()) {
+                Some(catalog) => (catalog.unverified, catalog.children_unverified),
+                None => (
+                    active_session_ids(&self.inner.root).unwrap_or_default(),
+                    Vec::new(),
+                ),
+            };
         for session in unverified {
             let folder = self.inner.root.join("threads").join(&session);
-            self.examine(&session, &folder, false);
+            self.examine(&session, &folder, false, false);
+            if self.inner.requests.lookup(rpc_id).is_some() {
+                return;
+            }
+        }
+        for session in children_unverified {
+            let folder = self.inner.root.join("threads").join(&session);
+            self.examine(&session, &folder, false, true);
             if self.inner.requests.lookup(rpc_id).is_some() {
                 return;
             }
@@ -1660,7 +1725,7 @@ impl ProductionCarrierStreams {
         archived.sort();
         for session in archived {
             let folder = self.inner.root.join("archive").join(&session);
-            self.examine(&session, &folder, true);
+            self.examine(&session, &folder, true, false);
             if self.inner.requests.lookup(rpc_id).is_some() {
                 return;
             }
@@ -1670,17 +1735,29 @@ impl ProductionCarrierStreams {
     /// Prefilters one card-less folder by bytes and, only if it may hold a request, folds and
     /// indexes it. A folder whose ledger bytes are unchanged since it was last examined is not
     /// touched again (ADDENDUM-03 C2 archive memo, applied to unverified threads too).
-    fn examine(&self, session: &str, folder: &Path, archived: bool) {
+    fn examine(&self, session: &str, folder: &Path, archived: bool, children_only: bool) {
         let Some(signature) = ledger_signature(folder) else {
             return;
         };
-        if self.inner.requests.examined(session, signature) {
+        // A children-only look is a different question from a whole-thread one: its memo key
+        // is distinct so the one cannot answer the other.
+        let key = if children_only {
+            format!("{session}#children")
+        } else {
+            session.to_owned()
+        };
+        if self.inner.requests.examined(&key, signature) {
             return;
         }
-        if may_hold_requests(folder) {
+        let may_hold = if children_only {
+            children_may_hold_requests(folder)
+        } else {
+            may_hold_requests(folder)
+        };
+        if may_hold {
             self.fold_into_index(session, archived);
         }
-        self.inner.requests.note_examined(session, signature);
+        self.inner.requests.note_examined(&key, signature);
     }
 
     /// Folds one thread's valid prefix and indexes its holds. True when it has any.

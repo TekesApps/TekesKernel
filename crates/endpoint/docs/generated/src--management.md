@@ -1287,7 +1287,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fork_session` | `active_session_count` | [1009](../../src/management.rs#L1009) | [endpoint::management::active_session_count](../../src/management.rs#L3745) |
 | `fork_session` | `active_session_folder` | [1012](../../src/management.rs#L1012) | [endpoint::management::active_session_folder](../../src/management.rs#L3679) |
 | `fork_session` | `crate::NativeEndpoint::open(&self.storage_root)?             .reconcile_projection` | [1013](../../src/management.rs#L1013) | receiver-type-required |
-| `fork_session` | `crate::NativeEndpoint::open` | [1013](../../src/management.rs#L1013) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L222) |
+| `fork_session` | `crate::NativeEndpoint::open` | [1013](../../src/management.rs#L1013) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L248) |
 | `fork_session` | `crate::EndpointJournal::open` | [1015](../../src/management.rs#L1015) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
 | `fork_session` | `journal.last_settled_endpoint_seq()?.ok_or_else` | [1021](../../src/management.rs#L1021) | receiver-type-required |
 | `fork_session` | `journal.last_settled_endpoint_seq` | [1021](../../src/management.rs#L1021) | receiver-type-required |
@@ -1783,7 +1783,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_workspace_operation` | `self.metadata_path` | [2026](../../src/management.rs#L2026) | [endpoint::management::ManagementStore::metadata_path](../../src/management.rs#L2698) |
 | `drive_workspace_operation` | `self.read_metadata` | [2031](../../src/management.rs#L2031) | [endpoint::management::ManagementStore::read_metadata](../../src/management.rs#L2704) |
 | `drive_workspace_operation` | `crate::NativeEndpoint::open(&self.storage_root)?                 .list_sessions` | [2032](../../src/management.rs#L2032) | receiver-type-required |
-| `drive_workspace_operation` | `crate::NativeEndpoint::open` | [2032](../../src/management.rs#L2032) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L222) |
+| `drive_workspace_operation` | `crate::NativeEndpoint::open` | [2032](../../src/management.rs#L2032) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L248) |
 | `drive_workspace_operation` | `std::collections::HashSet::new` | [2033](../../src/management.rs#L2033) | external-constructor-callback-or-unresolved |
 | `drive_workspace_operation` | `sessions                 .iter()                 .filter(&#124;session&#124; !session.archived && session.workspace_id == config.id)                 .collect::<Vec<_>>` | [2034](../../src/management.rs#L2034) | receiver-type-required |
 | `drive_workspace_operation` | `sessions                 .iter()                 .filter` | [2034](../../src/management.rs#L2034) | receiver-type-required |
@@ -2034,7 +2034,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_folder_move` | `verify_folder_reservation` | [2615](../../src/management.rs#L2615), [2626](../../src/management.rs#L2626) | [endpoint::management::verify_folder_reservation](../../src/management.rs#L3720) |
 | `drive_folder_move` | `destination.exists` | [2616](../../src/management.rs#L2616) | receiver-type-required |
 | `drive_folder_move` | `"folder move destination already exists".to_owned` | [2618](../../src/management.rs#L2618) | receiver-type-required |
-| `drive_folder_move` | `store::move_thread_folder` | [2623](../../src/management.rs#L2623) | [store::folder::move_thread_folder](../../../store/src/folder.rs#L982) |
+| `drive_folder_move` | `store::move_thread_folder` | [2623](../../src/management.rs#L2623) | [store::folder::move_thread_folder](../../../store/src/folder.rs#L980) |
 | `drive_folder_move` | `drop` | [2624](../../src/management.rs#L2624) | external-constructor-callback-or-unresolved |
 | `drive_folder_move` | `destination.is_dir` | [2625](../../src/management.rs#L2625) | receiver-type-required |
 | `drive_folder_move` | `"folder move lost both source and destination".to_owned` | [2629](../../src/management.rs#L2629) | receiver-type-required |

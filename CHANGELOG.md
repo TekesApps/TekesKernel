@@ -33,7 +33,9 @@ and a new stream-open error; the ledger, journal and wire formats are otherwise 
   `session-journal`, `session-control`, `actionables`, `session-inventory` and `workspace`
   streams are unaffected.
 - Responding to a request finds it through an index (cards, then a byte prefilter of threads
-  without a card and of the archive) and reads one thread. Respond, actionables and
+  without a card and of the archive) and reads one thread. The actionables baseline lists pending
+  requests of child lines too (verification folds the child lines; a doorbell fold marks them
+  unverified and their bytes are prefiltered; live child requests come from the published set). Respond, actionables and
   registration reads use the valid prefix of a ledger instead of failing on a torn tail.
 - A journal snapshot carries the thread's current `contextUsage`/`contextDetails` values, with
   `projections.asOfSeq` clamped to the snapshot's `throughSequence` (a label, not the context
@@ -55,6 +57,9 @@ and a new stream-open error; the ledger, journal and wire formats are otherwise 
   `internal / stream-open-failed {"reason":"quarantined"}`, and it is never rewritten.
 - `active-session-limit {limit:256}` as a stream error (`conflict`) when 256 pinned sessions
   already hold the live-event registrations.
+  On HTTP routes the same failure is `409 active-session-limit` (details `{limit}`) and a
+  quarantined thread is `500 internal-error` (details `{reason:"quarantined"}`) instead of a 503
+  `not-ready`.
 - Diagnostics: `TEKES_KERNEL_BOOT_TRACE=1` (phase times and ledger/journal work counters on
   stderr), `TEKES_KERNEL_BOOT_PROGRESS=1` (opt-in `{"type":"boot"}` records before `ready`),
   `TEKES_KERNEL_LIST_COLD_WAIT_MS` (baseline verification budget, default 2000),

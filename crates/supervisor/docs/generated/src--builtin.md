@@ -159,7 +159,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::env::var_os("HOME")         .map` | [124](../../src/builtin.rs#L124) | receiver-type-required |
 | `run` | `std::env::var_os` | [124](../../src/builtin.rs#L124) | external-constructor-callback-or-unresolved |
 | `run` | `option_env!("TEKES_SELECTED_BUILD").unwrap_or` | [128](../../src/builtin.rs#L128) | receiver-type-required |
-| `run` | `ProductionProcessHost::open_with_secret_authorities` | [129](../../src/builtin.rs#L129) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L800) |
+| `run` | `ProductionProcessHost::open_with_secret_authorities` | [129](../../src/builtin.rs#L129) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L802) |
 | `run` | `process.preflight_mandatory_authorities` | [138](../../src/builtin.rs#L138) | receiver-type-required |
 | `run` | `host_runtime::assemble_application_endpoint_host` | [140](../../src/builtin.rs#L140) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
 | `run` | `build.into` | [143](../../src/builtin.rs#L143) | receiver-type-required |
@@ -173,7 +173,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `transport::TransportConfig::loopback` | [165](../../src/builtin.rs#L165) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
 | `run` | `transport::BearerToken::new` | [165](../../src/builtin.rs#L165) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
 | `run` | `ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?             .with_file_changes` | [167](../../src/builtin.rs#L167) | receiver-type-required |
-| `run` | `ProductionCarrierAssembly::assemble` | [167](../../src/builtin.rs#L167) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2483) |
+| `run` | `ProductionCarrierAssembly::assemble` | [167](../../src/builtin.rs#L167) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2560) |
 | `run` | `process.clone` | [167](../../src/builtin.rs#L167), [168](../../src/builtin.rs#L168) | receiver-type-required |
 | `run` | `process.attach_streams` | [170](../../src/builtin.rs#L170) | receiver-type-required |
 | `run` | `assembly.streams().clone` | [170](../../src/builtin.rs#L170) | receiver-type-required |

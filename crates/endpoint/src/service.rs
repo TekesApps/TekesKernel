@@ -155,6 +155,32 @@ pub fn card_updated_ms(projection: &schema::LedgerProjection) -> Result<u64, Nat
         as u64)
 }
 
+/// The timestamp (epoch milliseconds) of the last complete record of a ledger file, read from
+/// its last 64 KiB only. A placeholder List row uses it for `updatedAt`, the same value a
+/// verified row has, so the row does not move when its upsert arrives (O-final m6). `None` when
+/// the tail window holds no complete record with a valid `ts`.
+#[must_use]
+pub fn last_record_updated_ms(path: &Path) -> Option<u64> {
+    use std::io::{Read, Seek, SeekFrom};
+    const WINDOW: u64 = 64 * 1024;
+    let mut file = fs::File::open(path).ok()?;
+    let length = file.metadata().ok()?.len();
+    let start = length.saturating_sub(WINDOW);
+    file.seek(SeekFrom::Start(start)).ok()?;
+    let mut bytes = Vec::new();
+    file.take(WINDOW).read_to_end(&mut bytes).ok()?;
+    // complete records end at the last LF; the one before the final LF is the last record
+    let end = bytes.iter().rposition(|byte| *byte == b'\n')?;
+    let line_start = bytes[..end]
+        .iter()
+        .rposition(|byte| *byte == b'\n')
+        .map(|index| index + 1)
+        .or((start == 0).then_some(0))?;
+    let record: Value = serde_json::from_slice(&bytes[line_start..end]).ok()?;
+    let millis = timestamp_millis(record.get("ts")?.as_str()?).ok()?;
+    Some(millis as u64)
+}
+
 /// The List-row facts of a thread, derived from its folded ledger. `list_sessions` and the
 /// thread card both use this single derivation so a card can never disagree with a scan.
 pub fn card_summary(

@@ -903,7 +903,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_route_ownership` | `queue_recovery                 .as_ref` | [727](../../src/endpoint_host.rs#L727) | receiver-type-required |
 | `open_with_route_ownership` | `Ok` | [733](../../src/endpoint_host.rs#L733) | external-constructor-callback-or-unresolved |
 | `open_with_route_ownership` | `root.to_path_buf` | [734](../../src/endpoint_host.rs#L734), [750](../../src/endpoint_host.rs#L750) | receiver-type-required |
-| `open_with_route_ownership` | `NativeEndpoint::open` | [735](../../src/endpoint_host.rs#L735) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L222) |
+| `open_with_route_ownership` | `NativeEndpoint::open` | [735](../../src/endpoint_host.rs#L735) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
 | `open_with_route_ownership` | `AttachmentAuthority::open` | [736](../../src/endpoint_host.rs#L736) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
 | `open_with_route_ownership` | `input_admission.unwrap_or_else` | [749](../../src/endpoint_host.rs#L749) | receiver-type-required |
 | `open_with_route_ownership` | `Arc::new` | [750](../../src/endpoint_host.rs#L750) | external-constructor-callback-or-unresolved |
@@ -983,7 +983,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `required_string` | [915](../../src/endpoint_host.rs#L915), [916](../../src/endpoint_host.rs#L916), [917](../../src/endpoint_host.rs#L917) | [tekes-supervisor::endpoint_host::required_string](../../src/endpoint_host.rs#L2128) |
 | `relocate_workspace` | `store::NamedLock::try_exclusive(             crate::process_host::workspace_quiescence_lock_path(&self.storage_root, workspace_id),         )         .map_err` | [920](../../src/endpoint_host.rs#L920) | receiver-type-required |
 | `relocate_workspace` | `store::NamedLock::try_exclusive` | [920](../../src/endpoint_host.rs#L920) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [921](../../src/endpoint_host.rs#L921) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L5996) |
+| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [921](../../src/endpoint_host.rs#L921) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6059) |
 | `relocate_workspace` | `EndpointRpcFailure::new` | [924](../../src/endpoint_host.rs#L924) | [tekes-supervisor::endpoint_host::EndpointRpcFailure::new](../../src/endpoint_host.rs#L2692) |
 | `relocate_workspace` | `internal_failure` | [929](../../src/endpoint_host.rs#L929) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2112) |
 | `relocate_workspace` | `(self.clock)().map_err` | [931](../../src/endpoint_host.rs#L931) | receiver-type-required |

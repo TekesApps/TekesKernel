@@ -122,6 +122,31 @@ fn cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones() {
     assert_eq!(leftovers, 0, "the private tombstone is deleted");
 }
 
+/// O-final m1: the sweep announces the stale ephemeral thread once, when it leaves `threads/`
+/// (`Discarded`). Deleting its tombstone afterwards announces nothing: a late event would
+/// un-admit and forget a thread re-created under the same id while the tree was still being
+/// deleted.
+#[test]
+fn deleting_a_swept_threads_tombstone_announces_nothing_more() {
+    let dir = tempfile::tempdir().unwrap();
+    let root = dir.path().to_path_buf();
+    let store = ThreadStore::open(&root).unwrap();
+    store.create_thread(C, genesis(C, true)).unwrap();
+    arm_admission(&root);
+    let seen = record_events(&root);
+    let report = store.cleanup_stale_ephemeral(&|_| false).unwrap();
+    assert_eq!(report.removed, vec![C.to_owned()]);
+    assert_eq!(kinds(&seen), vec![format!("removed:{C}:Discarded")]);
+    // the id is re-created; nothing the sweep does afterwards may forget it
+    store.create_thread(C, genesis(C, true)).unwrap();
+    assert!(is_admitted(&root, C));
+    assert_eq!(store.cleanup_discard_tombstones().unwrap(), 0);
+    assert!(
+        is_admitted(&root, C),
+        "no late event un-admits the new thread"
+    );
+}
+
 #[test]
 fn leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors() {
     let dir = tempfile::tempdir().unwrap();

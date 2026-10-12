@@ -25,10 +25,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/store/src/asset.rs](../../src/asset.rs) | 13 | 100 | [Symbols and calls](src--asset.md) |
 | [crates/store/src/atomic.rs](../../src/atomic.rs) | 4 | 29 | [Symbols and calls](src--atomic.md) |
-| [crates/store/src/card/tests.rs](../../src/card/tests.rs) | 20 | 252 | [Symbols and calls](src--card--tests.md) |
-| [crates/store/src/card.rs](../../src/card.rs) | 49 | 275 | [Symbols and calls](src--card.md) |
-| [crates/store/src/folder.rs](../../src/folder.rs) | 47 | 739 | [Symbols and calls](src--folder.md) |
-| [crates/store/src/folder_events/tests.rs](../../src/folder_events/tests.rs) | 12 | 163 | [Symbols and calls](src--folder_events--tests.md) |
+| [crates/store/src/card/tests.rs](../../src/card/tests.rs) | 21 | 265 | [Symbols and calls](src--card--tests.md) |
+| [crates/store/src/card.rs](../../src/card.rs) | 50 | 298 | [Symbols and calls](src--card.md) |
+| [crates/store/src/folder.rs](../../src/folder.rs) | 47 | 736 | [Symbols and calls](src--folder.md) |
+| [crates/store/src/folder_events/tests.rs](../../src/folder_events/tests.rs) | 13 | 179 | [Symbols and calls](src--folder_events--tests.md) |
 | [crates/store/src/folder_events.rs](../../src/folder_events.rs) | 19 | 73 | [Symbols and calls](src--folder_events.md) |
 | [crates/store/src/lib.rs](../../src/lib.rs) | 3 | 7 | [Symbols and calls](src--lib.md) |
 | [crates/store/src/management_root.rs](../../src/management_root.rs) | 9 | 50 | [Symbols and calls](src--management_root.md) |
@@ -55,7 +55,7 @@ flowchart LR
   m2 -->|"1"| m7
   m3 -->|"1"| m0
   m3 -->|"1"| m2
-  m3 -->|"5"| m4
+  m3 -->|"4"| m4
   m3 -->|"14"| m7
   m3 -->|"9"| m9
   m8 -->|"3"| m0

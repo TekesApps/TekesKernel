@@ -95,7 +95,7 @@ pub use service::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, ArchiveResult,
     MutationReceipt, NativeEndpoint, NativeEndpointError, SESSION_NOTICE_OPERATION,
     SessionInventoryItem, SessionNotice, SessionNoticeSeverity, UnarchiveResult, card_summary,
-    card_updated_ms, permission_mode_of,
+    card_updated_ms, last_record_updated_ms, permission_mode_of,
 };
 pub use stitch::{StitchDecision, StitchError, stitch_window};
 pub use stream_queue::{EndpointFrameQueue, FrameQueueError};

@@ -656,11 +656,9 @@ impl ThreadStore {
                 private
             };
             Self::remove_tombstone(self.root(), &private)?;
-            crate::folder_events::emit(FolderEvent::Removed {
-                root: self.root.clone(),
-                id: thread_id.clone(),
-                reason: RemoveReason::TombstoneDeleted,
-            });
+            // No event here: the thread left `threads/` with the `Discarded` event at the rename,
+            // and a late event would un-admit and forget a thread re-created under the same id
+            // while this tree was still being deleted (O-final m1).
             report.removed.push(thread_id);
         }
         Ok(())

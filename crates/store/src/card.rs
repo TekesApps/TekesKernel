@@ -708,6 +708,43 @@ pub fn write_card(folder: &Path, input: &CardInput<'_>) -> Result<WriteOutcome, 
     }
 }
 
+/// Removes the temporary card files (`.thread-card.json.<pid>.<n>.tmp`) a crashed process left
+/// in a thread folder: those of a pid other than ours that is no longer running. Returns how
+/// many were removed. A live writer's temp file (any live pid) is never touched.
+pub fn remove_stale_card_temps(folder: &Path) -> usize {
+    let prefix = format!(".{CARD_FILE}.");
+    let Ok(entries) = std::fs::read_dir(folder) else {
+        return 0;
+    };
+    let mut removed = 0;
+    for entry in entries.flatten() {
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Some(rest) = name
+            .strip_prefix(&prefix)
+            .and_then(|rest| rest.strip_suffix(".tmp"))
+        else {
+            continue;
+        };
+        let Some(pid) = rest
+            .split('.')
+            .next()
+            .and_then(|pid| pid.parse::<i32>().ok())
+        else {
+            continue;
+        };
+        if pid <= 0 || u32::try_from(pid).is_ok_and(|pid| pid == std::process::id()) {
+            continue;
+        }
+        // SAFETY: signal 0 only probes for the process; no signal is sent.
+        let alive = unsafe { libc::kill(pid, 0) } == 0
+            || io::Error::last_os_error().raw_os_error() == Some(libc::EPERM);
+        if !alive && std::fs::remove_file(entry.path()).is_ok() {
+            removed += 1;
+        }
+    }
+    removed
+}
+
 /// Journal rows are canonical lines; the final row's length is found by scanning back from
 /// `len` for the previous LF within a bounded window.
 fn journal_tail_len(file: &File, len: u64) -> io::Result<Option<u64>> {
