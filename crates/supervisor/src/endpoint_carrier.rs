@@ -518,6 +518,22 @@ impl ProductionCarrierStreams {
         Ok(())
     }
 
+    /// Test observer: the request ids currently published as pending for one ledger line.
+    #[cfg(test)]
+    pub(crate) fn published_pending_for_test(
+        &self,
+        session_id: &str,
+        source_line: Option<&str>,
+    ) -> BTreeSet<String> {
+        self.inner
+            .published_actionables
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(&(session_id.to_owned(), source_line.map(str::to_owned)))
+            .cloned()
+            .unwrap_or_default()
+    }
+
     #[must_use]
     pub fn new(root: impl AsRef<Path>) -> Self {
         Self::with_description(

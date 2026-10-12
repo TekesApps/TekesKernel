@@ -643,7 +643,13 @@ impl EndpointSubscriptionHub {
         // proof and the envelope build here keeps replaying a long, already-journaled ledger
         // (boot repair, journal reopen) from costing a canonical serialisation per row.
         if !self.has_subscribers(session_id)? {
-            return Ok(0);
+            // O(1) durability guard that survives the early-out: the event must lie within
+            // the journal tail. Byte-for-byte equality (`DurableMismatch`) is only proved on
+            // the subscriber path below; nobody can observe a mismatch without subscribers.
+            return match journal.last_seq()? {
+                Some(last) if last >= event.seq => Ok(0),
+                _ => Err(HubError::NotDurable(event.seq)),
+            };
         }
         let durable = journal
             .event(event.seq)?

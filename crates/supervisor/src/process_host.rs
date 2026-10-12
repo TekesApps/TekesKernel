@@ -3187,6 +3187,16 @@ impl ProductionProcessHost {
     }
 
     fn publish_appended(&self, session_id: &str) -> Result<(), DaemonError> {
+        self.publish_appended_with(session_id, None)
+    }
+
+    /// `after_decode` is a test seam called between the ledger decode and the journal
+    /// reconcile; it lets a test grow the ledger exactly where a concurrent respond would.
+    fn publish_appended_with(
+        &self,
+        session_id: &str,
+        after_decode: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
         let _projection_guard = self
             .projection_lock
             .lock()
@@ -3208,14 +3218,24 @@ impl ProductionProcessHost {
         let projection = scan
             .projection
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
+        if let Some(after_decode) = after_decode {
+            after_decode();
+        }
         let journal = EndpointJournal::open(&folder)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let mut projector = Projector::default();
         let appended = projector
             .reconcile(&projection.events, &journal)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        // The ledger may grow while the journal is reconciled (a respond appends its
+        // `approval_response` and reconciles the actionables itself, outside `projection_lock`).
+        // The shared projection is only trusted while the file still has the length it was
+        // decoded at; otherwise the decode-per-call path runs, exactly as before this change.
+        let ledger_unchanged = |len: u64| {
+            clean_read && fs::metadata(&ledger_path).is_ok_and(|metadata| metadata.len() == len)
+        };
         if let Some(streams) = &streams {
-            if clean_read {
+            if ledger_unchanged(kernel_file_len) {
                 streams
                     .reconcile_actionables_main(session_id, &projection)
                     .map_err(DaemonError::from)?;
@@ -3233,10 +3253,7 @@ impl ProductionProcessHost {
             }
         }
         if let Some(streams) = &streams {
-            let unchanged = clean_read
-                && fs::metadata(&ledger_path)
-                    .is_ok_and(|metadata| metadata.len() == kernel_file_len);
-            let refreshed = if unchanged {
+            let refreshed = if ledger_unchanged(kernel_file_len) {
                 streams.refresh_context_projection_shared(session_id, &projection, &journal)
             } else {
                 streams.refresh_context_projection(session_id)
@@ -8764,6 +8781,144 @@ mod tests {
                 );
             }
         }
+    }
+
+    const HELD_TS: &str = "2026-08-26T09:00:00.000Z";
+
+    /// A main ledger parked on an unanswered `ask_user` hold (call `ask1`, seq 9).
+    fn held_ledger_lines(thread: &str) -> Vec<String> {
+        vec![
+            format!(
+                r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{thread}"}},"resume":"never","seq":1,"thread":"{thread}","ts":"{HELD_TS}","v":1,"workspace":"ws"}}"#
+            ),
+            format!(
+                r#"{{"content":[{{"text":"start","type":"text"}}],"kind":"input","origin_key":"i1","origin_tuple":{{"client":"cli","key":"i1","op":"submit","principal":"p","target":"{thread}"}},"seq":2,"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"binary":"tekes-worker-1","config_digest":"cfg","instruction_digest":"ins","kind":"run_start","mode":"ordinary","policy":"default","recovery_ordinal":0,"run":"r1","seq":3,"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"kind":"turn_open","seq":4,"trigger":{{"inputs":[2]}},"ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+            format!(
+                r#"{{"adapter":"fake","id":"e1","kind":"epoch","model":"fake","reason":"initial","renderer":1,"seq":5,"system":{{"asset":"sha256-aa","digest":"d1"}},"tools":{{"asset":"sha256-td","digest":"td"}},"ts":"{HELD_TS}","v":1}}"#
+            ),
+            format!(
+                r#"{{"admits":[{{"from":2,"to":2}}],"attempt":"a1","epoch":"e1","kind":"attempt","request":{{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096}},"seq":6,"ts":"{HELD_TS}","turn":1,"v":1,"wire_digest":"wd"}}"#
+            ),
+            format!(
+                r#"{{"attempt":"a1","content":[{{"args":{{"question":"continue?"}},"call":"ask1","name":"ask_user","type":"tool-call"}}],"kind":"output","sealed":{{"adapter":"fake","fragments":"ask","version":1}},"seq":7,"ts":"{HELD_TS}","turn":1,"usage":{{"availability":"reported","input_tokens":"5","output_tokens":"1"}},"v":1}}"#
+            ),
+            format!(
+                r#"{{"args":{{"question":"continue?"}},"attempt":"a1","call":"ask1","kind":"tool_call","name":"ask_user","seq":8,"source":"provider","ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+            format!(
+                r#"{{"call":"ask1","kind":"approval_request","scope":"answer","seq":9,"ts":"{HELD_TS}","turn":1,"v":1}}"#
+            ),
+        ]
+    }
+
+    fn held_response_line(thread: &str) -> String {
+        format!(
+            r#"{{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"r1","origin_tuple":{{"client":"cli","key":"r1","op":"approve","principal":"p","target":"{thread}"}},"seq":10,"ts":"{HELD_TS}","turn":1,"v":1}}"#
+        )
+    }
+
+    fn held_host(
+        root: &Path,
+        session: &str,
+        extra: &str,
+    ) -> (
+        Arc<ProductionProcessHost>,
+        ProductionCarrierStreams,
+        PathBuf,
+    ) {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        fs::write(
+            &ledger,
+            held_ledger_lines(session).join("\n") + "\n" + extra,
+        )
+        .expect("held ledger");
+        let host = ProductionProcessHost::open(
+            root,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.join("missing-agent-home"),
+        )
+        .expect("process host");
+        let streams = ProductionCarrierStreams::new(root);
+        host.attach_streams(streams.clone());
+        (host, streams, ledger)
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_fast_path_publishes_the_pending_hold_from_one_decode() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a1";
+        let (host, streams, _) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("publish");
+        assert_eq!(
+            streams.published_pending_for_test(session, None).len(),
+            1,
+            "the unanswered hold is pending"
+        );
+        host.shutdown();
+    }
+
+    /// A respond appends `approval_response` and reconciles the actionables while
+    /// `publish_appended` is between its ledger decode and its actionables diff. The stale
+    /// decode must not re-publish the resolved hold (the regression `reconcile_after_response`
+    /// exists to prevent).
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_with_a_grown_ledger_does_not_resurrect_a_resolved_hold() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a2";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        // Baseline: hold published as pending.
+        host.publish_appended(session).expect("first publish");
+        assert_eq!(streams.published_pending_for_test(session, None).len(), 1);
+        let respond = || {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("ledger append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("append approval_response");
+            drop(file);
+            streams
+                .reconcile_actionables(session, None)
+                .expect("reconcile after response");
+        };
+        host.publish_appended_with(session, Some(&respond))
+            .expect("publish with a concurrent respond");
+        assert!(
+            streams.published_pending_for_test(session, None).is_empty(),
+            "a resolved hold must stay resolved after a stale decode"
+        );
+        host.shutdown();
+    }
+
+    /// A torn tail keeps the pre-existing behaviour: the separate-read paths reject it
+    /// ("requires tail recovery") and the call reports the error after the journal reconcile.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn publish_appended_with_a_torn_tail_keeps_the_previous_error_path() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a3";
+        let (host, streams, _) = held_host(root.path(), session, r#"{"torn":"#);
+        let error = host
+            .publish_appended(session)
+            .expect_err("torn tail is rejected by the actionables read");
+        assert!(
+            error.to_string().contains("tail recovery"),
+            "unexpected error: {error}"
+        );
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        host.shutdown();
     }
 
     fn write_test_genesis(path: &Path, thread: &str) {

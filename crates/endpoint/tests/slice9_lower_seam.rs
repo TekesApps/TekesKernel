@@ -525,3 +525,23 @@ fn publishing_with_no_subscriber_delivers_nothing_and_a_later_subscriber_still_s
             .is_err()
     );
 }
+
+#[test]
+fn publishing_without_subscribers_still_refuses_an_event_beyond_the_journal_tail() {
+    let folder = tempfile::tempdir().expect("thread folder");
+    let journal = EndpointJournal::open(folder.path()).expect("journal");
+    let hub = EndpointSubscriptionHub::default();
+    // Empty journal: nothing is durable yet.
+    assert!(matches!(
+        hub.publish_event(SESSION, &journal, "none", event(1.0), None),
+        Err(endpoint::HubError::NotDurable(99))
+    ));
+    journal
+        .append_kernel(vec![1], "turn-start", event(1.0))
+        .expect("durable event");
+    // seq 99 is past the tail (last_seq is 0).
+    assert!(matches!(
+        hub.publish_event(SESSION, &journal, "beyond", event(2.0), None),
+        Err(endpoint::HubError::NotDurable(99))
+    ));
+}
