@@ -3175,14 +3175,9 @@ impl ProductionProcessHost {
             .join("threads")
             .join(&proof.session)
             .join(&proof.child_file);
-        let bytes = fs::read(&ledger).map_err(DaemonError::io)?;
-        let projection = scan_valid_prefix(&bytes, 1)
-            .projection
+        let genesis = store::read_genesis(&ledger)
+            .map_err(DaemonError::store)?
             .ok_or_else(|| DaemonError::corrupt("child ledger has no projection"))?;
-        let genesis = projection
-            .events
-            .first()
-            .ok_or_else(|| DaemonError::corrupt("child ledger has no genesis"))?;
         if genesis.string_field("thread") != Some(proof.child_line.as_str()) {
             return Err(DaemonError::corrupt(
                 "child proof line does not match child genesis",
@@ -3205,7 +3200,12 @@ impl ProductionProcessHost {
         let ledger_path = folder.join("main.jsonl");
         let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
         let kernel_file_len = bytes.len() as u64;
-        let projection = scan_valid_prefix(&bytes, 1)
+        let scan = scan_valid_prefix(&bytes, 1);
+        // The shared-decode fast paths below are only taken for a clean read (no torn tail,
+        // which the separate-read paths reject with "requires tail recovery") and only while
+        // the ledger has not grown since this decode; otherwise the previous behaviour applies.
+        let clean_read = !scan.needs_repair();
+        let projection = scan
             .projection
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
         let journal = EndpointJournal::open(&folder)
@@ -3215,9 +3215,15 @@ impl ProductionProcessHost {
             .reconcile(&projection.events, &journal)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         if let Some(streams) = &streams {
-            streams
-                .reconcile_actionables(session_id, None)
-                .map_err(DaemonError::from)?;
+            if clean_read {
+                streams
+                    .reconcile_actionables_main(session_id, &projection)
+                    .map_err(DaemonError::from)?;
+            } else {
+                streams
+                    .reconcile_actionables(session_id, None)
+                    .map_err(DaemonError::from)?;
+            }
         }
         for event in appended {
             if let Some(streams) = &streams {
@@ -3227,7 +3233,15 @@ impl ProductionProcessHost {
             }
         }
         if let Some(streams) = &streams {
-            match streams.refresh_context_projection(session_id) {
+            let unchanged = clean_read
+                && fs::metadata(&ledger_path)
+                    .is_ok_and(|metadata| metadata.len() == kernel_file_len);
+            let refreshed = if unchanged {
+                streams.refresh_context_projection_shared(session_id, &projection, &journal)
+            } else {
+                streams.refresh_context_projection(session_id)
+            };
+            match refreshed {
                 Ok(()) => {
                     self.context_projection_retries
                         .lock()
@@ -5120,14 +5134,11 @@ fn scoped_client_file_path(
 }
 
 fn session_workspace_binding(ledger: &Path) -> Result<(String, Option<String>), DaemonError> {
-    let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-    let projection = scan_valid_prefix(&bytes, 1)
-        .projection
+    // The genesis line is the only input: do not decode the whole ledger per lookup.
+    let genesis = store::read_genesis(ledger)
+        .map_err(DaemonError::store)?
         .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?;
-    let genesis = projection
-        .events
-        .first()
-        .ok_or_else(|| DaemonError::corrupt("worker ledger has no genesis"))?;
+    let genesis = &genesis;
     let workspace_id = genesis
         .string_field("workspace")
         .map(str::to_owned)

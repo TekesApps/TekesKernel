@@ -499,3 +499,29 @@ fn mux_dto_preserves_the_authority_envelope_shape() {
     assert_eq!(host.method, "host/session-status");
     assert!(HostFrame::new(HostFrameKind::SessionAdded, host.payload,).is_err());
 }
+
+#[test]
+fn publishing_with_no_subscriber_delivers_nothing_and_a_later_subscriber_still_sees_it() {
+    let folder = tempfile::tempdir().expect("thread folder");
+    let journal = EndpointJournal::open(folder.path()).expect("journal");
+    let durable = journal
+        .append_kernel(vec![1], "turn-start", event(1.0))
+        .expect("durable event");
+    let hub = EndpointSubscriptionHub::default();
+    // Replaying an already journaled event (boot repair) with nobody listening is a no-op.
+    assert_eq!(
+        hub.publish_event(SESSION, &journal, "replay-1", durable, None)
+            .expect("publish without subscriber"),
+        0
+    );
+    // The journal, not the hub, is the source of truth for a subscriber that arrives later.
+    let subscription = hub
+        .subscribe(SESSION, &journal, "late")
+        .expect("late subscribe");
+    assert_eq!(subscription.baseline().last_seq, 0);
+    // With a subscriber the durability proof is enforced again.
+    assert!(
+        hub.publish_event(SESSION, &journal, "undurable", event(3.0), None)
+            .is_err()
+    );
+}

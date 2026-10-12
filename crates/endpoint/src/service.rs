@@ -305,17 +305,13 @@ impl NativeEndpoint {
     ) -> Result<profile::ConfigSnapshot, NativeEndpointError> {
         validate_session_id(session_id)?;
         let folder = self.active_folder(session_id)?;
-        let bytes = fs::read(folder.join("main.jsonl"))?;
-        let scan = scan_valid_prefix(&bytes, 1);
-        let projection = scan.projection.ok_or_else(|| {
+        // Only the genesis is needed (workspace and folder binding); do not decode the ledger.
+        let genesis = store::read_genesis(folder.join("main.jsonl"))?.ok_or_else(|| {
             NativeEndpointError::Store(store::StoreError::Corruption(
                 "session ledger has no valid genesis prefix".to_owned(),
             ))
         })?;
-        let genesis = projection
-            .events
-            .first()
-            .ok_or(NativeEndpointError::InventoryWorkspace)?;
+        let genesis = &genesis;
         let workspace = genesis
             .string_field("workspace")
             .ok_or(NativeEndpointError::InventoryWorkspace)?;

@@ -22,7 +22,7 @@ pub use rewrite::{
     ForkGenesisBinding, RedactionInventory, RewriteEventRef, RewriteFileMap, RewriteKind,
     RewriteOperation, RewritePhase, RewriteProgress,
 };
-pub use tail::{LockedLedger, TailScan, scan_valid_prefix};
+pub use tail::{LockedLedger, TailScan, read_genesis, scan_valid_prefix};
 
 use std::io;
 

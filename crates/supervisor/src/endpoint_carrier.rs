@@ -463,8 +463,35 @@ impl ProductionCarrierStreams {
         let folder = self.inner.root.join("threads").join(session_id);
         let (projection, _) =
             actionable_projection(&folder, session_id, source_line).map_err(internal_carrier)?;
+        self.reconcile_actionables_from(session_id, source_line, &projection)
+    }
+
+    /// `reconcile_actionables` for the main line using a projection the caller has already
+    /// decoded from a clean (no torn tail) read. It performs the same identity check
+    /// `actionable_projection` applies to the main line and skips the second decode of the ledger.
+    pub(crate) fn reconcile_actionables_main(
+        &self,
+        session_id: &str,
+        projection: &schema::LedgerProjection,
+    ) -> Result<(), ProductionCarrierError> {
+        let genesis = projection
+            .events
+            .first()
+            .ok_or_else(|| internal_carrier("missing genesis"))?;
+        if genesis.string_field("thread") != Some(session_id) {
+            return Err(internal_carrier("actionable ledger identity mismatch"));
+        }
+        self.reconcile_actionables_from(session_id, None, projection)
+    }
+
+    fn reconcile_actionables_from(
+        &self,
+        session_id: &str,
+        source_line: Option<&str>,
+        projection: &schema::LedgerProjection,
+    ) -> Result<(), ProductionCarrierError> {
         let requests =
-            line_requests(session_id, source_line, &projection).map_err(internal_carrier)?;
+            line_requests(session_id, source_line, projection).map_err(internal_carrier)?;
         let pending = requests
             .iter()
             .filter(|(state, _)| state.resolution.is_none())
@@ -843,10 +870,40 @@ impl ProductionCarrierStreams {
             .map_err(|_| poisoned())?;
         let folder = self.inner.root.join("threads").join(session_id);
         let ledger = semantic_projection(&folder).map_err(internal_carrier)?;
+        let journal = EndpointJournal::open(&folder)?;
+        self.refresh_context_projection_locked(session_id, &folder, &ledger, &journal)
+    }
+
+    /// `refresh_context_projection` for a caller that has just decoded the ledger (clean read)
+    /// and holds the open journal, so the refresh neither decodes the ledger nor parses the
+    /// journal a second time. The caller must have verified the ledger did not grow since its
+    /// decode (`publish_appended` compares the file length); otherwise it uses the full path.
+    pub(crate) fn refresh_context_projection_shared(
+        &self,
+        session_id: &str,
+        ledger: &schema::LedgerProjection,
+        journal: &EndpointJournal,
+    ) -> Result<(), ProductionCarrierError> {
+        endpoint::validate_session_id(session_id).map_err(internal_carrier)?;
+        let _guard = self
+            .inner
+            .context_projection_lock
+            .lock()
+            .map_err(|_| poisoned())?;
+        let folder = self.inner.root.join("threads").join(session_id);
+        self.refresh_context_projection_locked(session_id, &folder, ledger, journal)
+    }
+
+    fn refresh_context_projection_locked(
+        &self,
+        session_id: &str,
+        folder: &Path,
+        ledger: &schema::LedgerProjection,
+        journal: &EndpointJournal,
+    ) -> Result<(), ProductionCarrierError> {
         let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
         let config = endpoint.session_config_snapshot(session_id).ok();
-        let value = crate::context_usage::sample(&folder, &ledger.events, config.as_ref());
-        let journal = EndpointJournal::open(&folder)?;
+        let value = crate::context_usage::sample(folder, &ledger.events, config.as_ref());
         let journal_sequence = journal.last_seq()?.map_or(0, |seq| seq.saturating_add(1));
         let control_sequence = self
             .inner
@@ -860,7 +917,7 @@ impl ProductionCarrierStreams {
             .and_then(|value| value["asOfSeq"].as_u64())
             .unwrap_or(0);
         let (seq, changed) = crate::context_usage::publish(
-            &folder,
+            folder,
             value.clone(),
             journal_sequence.max(control_sequence),
         )

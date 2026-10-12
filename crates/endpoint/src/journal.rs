@@ -390,16 +390,19 @@ impl EndpointJournal {
     fn repair_tail(&self) -> Result<(), JournalError> {
         let _lock = NamedLock::exclusive(&self.lock_path)?;
         let bytes = fs::read(&self.path)?;
-        let (_, valid_len) = parse_records(&bytes, true)?;
+        let (records, valid_len) = parse_records(&bytes, true)?;
         if valid_len != bytes.len() {
             let file = OpenOptions::new().write(true).open(&self.path)?;
             file.set_len(valid_len as u64)?;
             FullSync::full_sync(&file)?;
         }
+        // The pass above already validated every record under the exclusive lock; keep its
+        // result instead of discarding it and parsing the same bytes again on first use.
+        let cache = JournalCache::new(valid_len as u64, records)?;
         *self
             .cache
             .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(cache);
         Ok(())
     }
 
@@ -590,5 +593,44 @@ mod tests {
             journal.kernel_anchor_for_endpoint_seq(2),
             Err(JournalError::EndpointSeqNotFound(2))
         ));
+    }
+}
+
+#[cfg(test)]
+mod repair_cache_tests {
+    use super::*;
+
+    #[test]
+    fn open_keeps_the_validated_records_so_the_first_use_does_not_parse_again() {
+        let folder = tempfile::tempdir().unwrap();
+        {
+            let journal = EndpointJournal::open(folder.path()).unwrap();
+            for index in 0..3_u64 {
+                journal
+                    .append_kernel(
+                        vec![index + 1],
+                        format!("slot-{index}"),
+                        SessionEvent {
+                            event_type: "turn/start".to_owned(),
+                            seq: 0,
+                            time: 1.0,
+                            data: schema::IJsonValue::parse_str(r#"{"turn":0}"#).unwrap(),
+                            ignorable: None,
+                            source_event_seqs: None,
+                            surface_op: None,
+                        },
+                    )
+                    .unwrap();
+            }
+        }
+        // A torn final line is repaired and the repaired content is what the cache serves.
+        let path = folder.path().join(JOURNAL_FILE);
+        let mut bytes = std::fs::read(&path).unwrap();
+        bytes.extend_from_slice(b"{\"torn\":");
+        std::fs::write(&path, bytes).unwrap();
+        let journal = EndpointJournal::open(folder.path()).unwrap();
+        assert_eq!(journal.records().unwrap().len(), 3);
+        assert_eq!(journal.last_seq().unwrap(), Some(2));
+        assert!(std::fs::read(&path).unwrap().ends_with(b"\n"));
     }
 }

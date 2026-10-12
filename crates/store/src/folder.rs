@@ -600,10 +600,10 @@ impl ThreadStore {
                 if !entry.file_type()?.is_dir() {
                     continue;
                 }
-                let bytes = fs::read(entry.path().join("main.jsonl"))?;
-                let Some(line) = bytes.split(|byte| *byte == b'\n').next() else {
-                    continue;
-                };
+                // Only the first line (the genesis) is needed. Reading the whole ledger of every
+                // thread on every create made session creation O(total ledger bytes).
+                let bytes = read_first_line(&entry.path().join("main.jsonl"))?;
+                let line = bytes.as_slice();
                 if line.is_empty() {
                     continue;
                 }
@@ -808,15 +808,26 @@ fn validate_line_ancestry(
 
 const DISCARD_TOMBSTONE_PREFIX: &str = "discard-";
 
+/// The bytes before the first LF (or the whole file when it has none), read incrementally. A
+/// file without any LF is bounded by the same cap as `read_genesis` so a corrupt ledger cannot
+/// be pulled into memory by an origin lookup.
+fn read_first_line(path: &Path) -> Result<Vec<u8>, StoreError> {
+    use std::io::{BufRead, Read};
+    let file = File::open(path)?;
+    let mut reader = std::io::BufReader::new(file.take(16 * 1024 * 1024));
+    let mut line = Vec::new();
+    reader.read_until(b'\n', &mut line)?;
+    if line.last() == Some(&b'\n') {
+        line.pop();
+    }
+    Ok(line)
+}
+
 /// Reads the genesis line only; a folder without a decodable genesis is not
 /// ephemeral (the semantic sweep reports corruption separately).
 fn folder_is_ephemeral(folder: &Path) -> Result<bool, StoreError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = crate::scan_valid_prefix(&bytes, 1);
-    Ok(scan
-        .projection
+    Ok(crate::read_genesis(folder.join("main.jsonl"))?
         .as_ref()
-        .and_then(|projection| projection.events.first())
         .is_some_and(Event::is_ephemeral_genesis))
 }
 

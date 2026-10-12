@@ -3175,12 +3175,8 @@ fn discard_intent(record: &OperationRecord) -> Result<DiscardIntent, ManagementE
 }
 
 fn folder_is_ephemeral(folder: &Path) -> Result<bool, ManagementError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = scan_valid_prefix(&bytes, 1);
-    Ok(scan
-        .projection
+    Ok(store::read_genesis(folder.join("main.jsonl"))?
         .as_ref()
-        .and_then(|projection| projection.events.first())
         .is_some_and(schema::Event::is_ephemeral_genesis))
 }
 
@@ -3560,14 +3556,11 @@ fn verify_folder_reservation(
 }
 
 fn folder_workspace(folder: &Path) -> Result<String, ManagementError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let projection = scan_valid_prefix(&bytes, 1).projection.ok_or_else(|| {
+    let genesis = store::read_genesis(folder.join("main.jsonl"))?.ok_or_else(|| {
         ManagementError::CorruptOperation("folder ledger lacks genesis".to_owned())
     })?;
-    projection
-        .events
-        .first()
-        .and_then(|event| event.string_field("workspace"))
+    genesis
+        .string_field("workspace")
         .map(str::to_owned)
         .ok_or_else(|| {
             ManagementError::CorruptOperation("folder genesis lacks workspace".to_owned())

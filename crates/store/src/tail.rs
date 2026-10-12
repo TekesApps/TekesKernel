@@ -73,6 +73,39 @@ pub fn scan_valid_prefix(bytes: &[u8], reader_version: u64) -> TailScan {
     }
 }
 
+/// Largest first line `read_genesis` accepts. A genesis is small (its seed snapshot lives in
+/// content-addressed assets); the bound keeps a corrupt, newline-free file from being read whole.
+const MAX_GENESIS_LINE_BYTES: u64 = 16 * 1024 * 1024;
+
+/// The genesis event of a ledger, reading only its first line.
+///
+/// Equivalent to `scan_valid_prefix(whole file).projection.events.first()` for the genesis:
+/// the first LF-terminated line must decode canonically and be accepted as seq 1 by the ledger
+/// fold. Anything else (empty file, no LF, invalid genesis) is `Ok(None)`. Unlike the scan it
+/// neither reads nor validates later lines, so it costs the same for a 1 MB and a 1 GB ledger.
+pub fn read_genesis(path: impl AsRef<Path>) -> Result<Option<Event>, StoreError> {
+    use std::io::BufRead;
+    let file = File::open(path.as_ref())?;
+    let mut reader = std::io::BufReader::new(file.take(MAX_GENESIS_LINE_BYTES));
+    let mut line = Vec::new();
+    reader.read_until(b'\n', &mut line)?;
+    if line.last() != Some(&b'\n') {
+        return Ok(None);
+    }
+    line.pop();
+    if line.is_empty() {
+        return Ok(None);
+    }
+    let Ok(event) = Event::decode_canonical(&line) else {
+        return Ok(None);
+    };
+    let mut validator = LedgerValidator::new(1);
+    if validator.push(event.clone()).is_err() {
+        return Ok(None);
+    }
+    Ok(Some(event))
+}
+
 /// Decodes the complete canonical lines before the first structural failure.
 fn frame_events(bytes: &[u8]) -> Vec<Event> {
     let mut events = Vec::new();
@@ -510,5 +543,92 @@ mod version_gate_tests {
         drop(ledger);
         let reopened = LockedLedger::open(&path, 1).unwrap();
         assert_eq!(reopened.next_seq(), 4);
+    }
+}
+
+#[cfg(test)]
+mod read_genesis_tests {
+    use super::*;
+    use serde_json::Value;
+
+    fn event(mut value: Value, seq: u64) -> Event {
+        value["v"] = json!(1);
+        value["seq"] = json!(seq);
+        value["ts"] = json!("2026-09-04T00:00:00.000Z");
+        Event::decode_canonical(&serde_json_canonicalizer::to_vec(&value).unwrap()).unwrap()
+    }
+
+    fn genesis() -> Event {
+        event(
+            json!({"kind":"genesis","format":1,"min_reader":1,"min_writer":1,
+            "thread":"018f0000-0000-7000-8000-000000000003","workspace":"ws","resume":"never",
+            "ephemeral":true,"config":{"digest":"cfg"},"origin_key":"create",
+            "origin_tuple":{"principal":"p","client":"c","target":"018f0000-0000-7000-8000-000000000003","op":"create","key":"create"}}),
+            1,
+        )
+    }
+
+    fn line(event: &Event) -> Vec<u8> {
+        let mut bytes = event.canonical_bytes().unwrap();
+        bytes.push(b'\n');
+        bytes
+    }
+
+    fn first_event_by_scan(bytes: &[u8]) -> Option<Event> {
+        scan_valid_prefix(bytes, 1)
+            .projection
+            .and_then(|projection| projection.events.first().cloned())
+    }
+
+    #[test]
+    fn matches_the_full_scan_for_every_shape_of_file() {
+        let good = line(&genesis());
+        let meta = line(&event(json!({"kind":"meta","title":"t"}), 2));
+        let mut cases: Vec<Vec<u8>> = vec![
+            Vec::new(),
+            b"\n".to_vec(),
+            good.clone(),
+            [good.clone(), meta.clone()].concat(),
+            // later corruption must not change the genesis answer
+            [good.clone(), b"{not json}\n".to_vec()].concat(),
+            [good.clone(), b"torn tail without lf".to_vec()].concat(),
+            // genesis without its LF is not part of the valid prefix
+            good[..good.len() - 1].to_vec(),
+            // a non-genesis first event is rejected by the fold
+            meta.clone(),
+            // non-canonical first line
+            b"{ \"v\": 1 }\n".to_vec(),
+        ];
+        cases.push([meta.clone(), good.clone()].concat());
+        for (index, bytes) in cases.iter().enumerate() {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("main.jsonl");
+            std::fs::write(&path, bytes).unwrap();
+            let fast = read_genesis(&path).unwrap();
+            let slow = first_event_by_scan(bytes);
+            assert_eq!(
+                fast.map(|e| e.canonical_bytes().unwrap()),
+                slow.map(|e| e.canonical_bytes().unwrap()),
+                "case {index}"
+            );
+        }
+    }
+
+    #[test]
+    fn missing_file_is_an_io_error_and_reads_only_the_first_line() {
+        let dir = tempfile::tempdir().unwrap();
+        assert!(matches!(
+            read_genesis(dir.path().join("absent.jsonl")),
+            Err(StoreError::Io(_))
+        ));
+        // 3 MiB of trailing bytes after the genesis line.
+        let path = dir.path().join("main.jsonl");
+        let mut bytes = line(&genesis());
+        bytes.extend(std::iter::repeat_n(b'x', 3 << 20));
+        std::fs::write(&path, &bytes).unwrap();
+        // (The process-wide decode counters are shared with parallel tests, so the
+        // "only one line decoded" property is asserted by the boot-level counter test.)
+        let genesis = read_genesis(&path).unwrap().unwrap();
+        assert!(genesis.is_ephemeral_genesis());
     }
 }
