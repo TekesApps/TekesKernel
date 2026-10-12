@@ -378,6 +378,17 @@ pub(crate) fn project_provider_context_mode(
             // sole provider-visible result for that call.
             continue;
         }
+        if event.kind() == &EventKind::State && event.string_field("subkind") == Some("delegation")
+        {
+            // The delegation record is the child's assignment: the child reads
+            // it from its seed snapshot (`seed_provider_items`). In the parent
+            // it sits between the assistant's spawning call and that call's
+            // child_result, so rendering it would put a user message between
+            // the call and its output, which providers reject ("No tool output
+            // found for tool call"). The ledger is unchanged, so a thread
+            // already stuck on this shape recovers when the context is rebuilt.
+            continue;
+        }
         let host_born = matches!(
             event.kind(),
             EventKind::Input | EventKind::ToolResult | EventKind::ChildResult | EventKind::State

@@ -6,6 +6,41 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Proposed version: 0.4.1 (patch; no ledger or wire format change).
+
+### Fixed
+- **A completed `subagent`/`task` child no longer breaks the parent's next provider request.**
+  The parent's durable `state{subkind:"delegation"}` record is model-visible by default and is
+  written between the spawning `tool_call` and its `child_result`, so the provider-context
+  projection rendered it as a user message between the call and its output. DeepSeek rejects
+  that with `http_400 invalid_request_error: No tool output found for tool call <id>`, and the
+  thread then failed every turn because each attempt re-rendered the same history. The
+  projection now skips `delegation` state rows when it builds the parent's provider context.
+  The child still receives its assignment from its seed snapshot (`seed_provider_items`), the
+  ledger format and writer are unchanged, and threads already stuck on this shape recover on
+  their next request because the context is rebuilt from the ledger. Present since 0.3.0.
+  Tests: a fake DeepSeek pairing rule over the real spawn transaction for both `subagent` and
+  `task`, a ledger already in the broken state, and an adjacency assertion in
+  `production_task_creates_launches_waits_and_pairs_child_once`.
+
+### Behaviour note
+- The parent model no longer sees the host-resolved inputs (`resolved_inputs`) or any
+  hook-rewritten effective invocation of a spawned `subagent`/`task` call, because the
+  delegation record is no longer rendered in the parent's context. It keeps its own call
+  arguments and the `child_result`. The child still receives its assignment, including the
+  resolved inputs and the effective invocation, from its seed snapshot.
+
+### Known issues
+- If the user steers a queued message (the composer's Steer, or auto-steer) while a `subagent`
+  or `task` runs, that turn can fail with the same `No tool output found for tool call <id>`
+  400, because the steer input is rendered between the spawning call and its `child_result`.
+  The thread recovers on the next turn, but the steer text is dropped from the model's context.
+  This predates 0.4.1 (a separate cause from the delegation record) and is tracked for 0.4.2.
+- The worker test `permission_mode_file_change_applies_to_the_next_tool_batch` depends on how the
+  test binary is built: it fails under `cargo test -p tekes-worker` ("fixed tool is not
+  available in this launch profile: shell"), also on v0.4.0, and passes in the
+  `cargo test --workspace` run.
+
 ## 0.4.0 — 2026-10-12
 
 ### Changed
