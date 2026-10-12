@@ -224,18 +224,26 @@ impl Catalog {
 
     /// Records a fold of the main ledger. Child-line views are kept from the previous entry
     /// (they are folded by the card writer, not on the doorbell path); a corrupt entry stays
-    /// corrupt until `forget` (a quarantined thread is not revived by a doorbell).
-    pub(crate) fn set_fresh_main(&self, id: &str, mut view: EntryView) {
+    /// corrupt until `forget` (a quarantined thread is not revived by a doorbell). A fold older
+    /// than the one already recorded (two folds raced and the older finished last) is refused.
+    /// Returns whether the view was recorded.
+    pub(crate) fn set_fresh_main(&self, id: &str, mut view: EntryView) -> bool {
         let mut entries = self
             .entries
             .write()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         if let Some(previous) = entries.get(id) {
             if matches!(previous.trust, Trust::Corrupt(_)) {
-                return;
+                return false;
             }
-            if let Some(previous) = &previous.view {
-                view.lines.extend(previous.lines.iter().skip(1).cloned());
+            if let Some(previous_view) = &previous.view {
+                let recorded = previous_view.main().map_or(0, |main| main.last_seq);
+                let incoming = view.main().map_or(0, |main| main.last_seq);
+                if previous.trust == Trust::Fresh && recorded > incoming {
+                    return false;
+                }
+                view.lines
+                    .extend(previous_view.lines.iter().skip(1).cloned());
             }
         }
         entries.insert(
@@ -245,6 +253,7 @@ impl Catalog {
                 view: Some(Arc::new(view)),
             },
         );
+        true
     }
 
     pub(crate) fn mark_corrupt(&self, id: &str, reason: &str) {

@@ -244,14 +244,10 @@ impl ThreadStore {
             }
         }
         // A crash between retiring an ephemeral thread and deleting its tombstone leaves
-        // `discard-<id>`. That folder is dead data, not live rewrite state: finish its deletion
-        // here (a concurrent deleter making it vanish is success) instead of refusing the id.
-        crate::folder::remove_tree_if_present(
-            &self
-                .root()
-                .join(".rewrite-trash")
-                .join(format!("discard-{destination}")),
-        )?;
+        // `discard-<id>`. That folder is dead data, not live rewrite state: move it out of the
+        // way (a rename under these locks) and let a background thread delete it, instead of
+        // refusing the id or deleting a large tree while holding the namespace locks.
+        crate::folder::park_stale_tombstone(self.root(), destination)?;
         if fs::read_dir(self.root().join(".rewrite-trash"))?.any(|entry| {
             entry.is_ok_and(|entry| entry.file_name().to_string_lossy().ends_with(destination))
         }) {
@@ -2384,6 +2380,71 @@ mod tests {
             assert!(cleaned.is_ok(), "cleanup must not fail: {cleaned:?}");
             assert!(!tombstone.exists());
         }
+    }
+
+    /// E832 E3: a large stale tombstone is renamed out of the way under the locks (the fork
+    /// is not delayed by its size) and deleted by a background thread; two deleters of one
+    /// big tree both succeed.
+    #[test]
+    fn a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed() {
+        let directory = tempfile::tempdir().unwrap();
+        let store = ThreadStore::open(directory.path()).unwrap();
+        let source_id = "018f0000-0000-7000-8000-000000000003";
+        baseline_source(&store, source_id);
+        let destination = "018f0000-0000-7000-8000-0000000001f1";
+        let trash = store.root().join(".rewrite-trash");
+        let tombstone = trash.join(format!("discard-{destination}"));
+        for dir in 0..200 {
+            let folder = tombstone.join(format!("assets/{dir}"));
+            fs::create_dir_all(&folder).unwrap();
+            for file in 0..20 {
+                fs::write(folder.join(format!("blob-{file}")), b"x").unwrap();
+            }
+        }
+        store
+            .begin_fork(
+                "fork-big",
+                source_id,
+                destination,
+                "2026-10-04T00:00:00.000Z",
+            )
+            .unwrap();
+        assert!(
+            !tombstone.exists(),
+            "the id is free as soon as the fork begins"
+        );
+        // the background deletion finishes
+        let deadline = std::time::Instant::now() + std::time::Duration::from_secs(30);
+        while fs::read_dir(&trash).unwrap().any(|entry| {
+            entry
+                .unwrap()
+                .file_name()
+                .to_string_lossy()
+                .starts_with("discard-")
+        }) {
+            assert!(
+                std::time::Instant::now() < deadline,
+                "tombstone never deleted"
+            );
+            std::thread::sleep(std::time::Duration::from_millis(20));
+        }
+        // two deleters of one tree
+        let shared = directory.path().join("big-tree");
+        for dir in 0..200 {
+            let folder = shared.join(format!("d{dir}"));
+            fs::create_dir_all(&folder).unwrap();
+            for file in 0..20 {
+                fs::write(folder.join(format!("f{file}")), b"x").unwrap();
+            }
+        }
+        let first = {
+            let shared = shared.clone();
+            std::thread::spawn(move || crate::folder::remove_tree_if_present(&shared))
+        };
+        let second = crate::folder::remove_tree_if_present(&shared);
+        assert!(second.is_ok(), "{second:?}");
+        assert!(first.join().unwrap().is_ok());
+        assert!(!shared.exists());
     }
 
     #[test]

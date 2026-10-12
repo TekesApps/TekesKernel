@@ -63,6 +63,12 @@ impl PreparedCard {
         }
     }
 
+    /// Adds the journal block once the journal has been reconciled with the folded ledger.
+    pub(crate) fn with_journal(mut self, journal: Option<JournalInput>) -> Self {
+        self.journal = journal;
+        self
+    }
+
     fn fingerprint(&self) -> (u64, u64, u64) {
         let main = self.lines.first();
         (

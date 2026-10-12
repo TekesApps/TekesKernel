@@ -57,7 +57,8 @@ crates/store/src/folder.rs|create_thread_with_assets|rename|2|publish
 crates/store/src/folder.rs|move_thread_folder|rename|1|publish
 crates/store/src/folder.rs|open|create_dir_all|1|layout
 crates/store/src/folder.rs|remove_incomplete_create_stages|remove_dir_all|1|staging
-crates/store/src/folder.rs|remove_tree_if_present|remove_dir_all|2|tombstone-delete
+crates/store/src/folder.rs|park_stale_tombstone|rename|1|tombstone-delete
+crates/store/src/folder.rs|remove_tree_if_present|remove_dir_all|1|tombstone-delete
 crates/store/src/folder.rs|retire_to|rename|1|retire
 crates/store/src/management_root.rs|retire_legacy_name|remove_dir|1|layout
 crates/store/src/management_root.rs|retire_legacy_name|rename|2|layout

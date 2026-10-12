@@ -511,25 +511,30 @@ impl ThreadStore {
     /// delete) so a crash never leaves a half-deleted active folder; startup
     /// GC finishes an orphaned tombstone.
     pub fn discard_ephemeral(&self, thread_id: &str) -> Result<(), StoreError> {
-        let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
-        if self.source_has_live_rewrite(thread_id)? {
-            return Err(StoreError::RewriteInProgress);
-        }
-        let source = self.root.join("threads").join(thread_id);
-        if !source.is_dir() {
-            return Err(StoreError::NotFound);
-        }
-        let lock = DirectoryLock::try_exclusive(&source)?;
-        if !folder_is_ephemeral(&source)? {
-            return Err(StoreError::NotEphemeral);
-        }
-        if self.session_has_live_line_holder(thread_id)? {
-            return Err(StoreError::Busy);
-        }
-        let tombstone = self.retire_ephemeral_folder(thread_id, &source)?;
-        // The lifecycle lock is an open descriptor on the folder; release it
-        // before the tree is deleted.
-        drop(lock);
+        // The catalog lock covers the rename only; the deletion of the (possibly large)
+        // tombstone runs after it is released, so create, archive and search never wait on it.
+        let tombstone = {
+            let _catalog = NamedLock::exclusive(self.root.join(".thread-catalog.lock"))?;
+            if self.source_has_live_rewrite(thread_id)? {
+                return Err(StoreError::RewriteInProgress);
+            }
+            let source = self.root.join("threads").join(thread_id);
+            if !source.is_dir() {
+                return Err(StoreError::NotFound);
+            }
+            let lock = DirectoryLock::try_exclusive(&source)?;
+            if !folder_is_ephemeral(&source)? {
+                return Err(StoreError::NotEphemeral);
+            }
+            if self.session_has_live_line_holder(thread_id)? {
+                return Err(StoreError::Busy);
+            }
+            let tombstone = self.retire_ephemeral_folder(thread_id, &source)?;
+            // The lifecycle lock is an open descriptor on the folder; release it
+            // before the tree is deleted.
+            drop(lock);
+            tombstone
+        };
         Self::remove_tombstone(self.root(), &tombstone)
     }
 
@@ -548,7 +553,7 @@ impl ThreadStore {
             .root
             .join(".rewrite-trash")
             .join(format!("{DISCARD_TOMBSTONE_PREFIX}{thread_id}"));
-        remove_tree_if_present(&tombstone)?;
+        park_stale_tombstone(&self.root, thread_id)?;
         self.retire_to(thread_id, source, &tombstone)?;
         Ok(tombstone)
     }
@@ -893,22 +898,64 @@ pub struct CleanupReport {
     pub tombstones: u32,
 }
 
+/// How long a deleter waits for another deleter that is still removing the same tree.
+const TREE_REMOVAL_WAIT: std::time::Duration = std::time::Duration::from_secs(10);
+
 /// `remove_dir_all` where a path that vanishes underneath (another deleter, E831 E3) is success.
+/// A tree another deleter is still removing (so `ENOTEMPTY` races) is waited for, bounded.
 pub(crate) fn remove_tree_if_present(path: &Path) -> Result<(), StoreError> {
-    for _ in 0..3 {
+    let deadline = std::time::Instant::now() + TREE_REMOVAL_WAIT;
+    loop {
         match fs::remove_dir_all(path) {
             Ok(()) => return Ok(()),
-            Err(_) if !path.exists() => return Ok(()),
-            Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
-            Err(_) => {}
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound || !path.exists() => {
+                return Ok(());
+            }
+            Err(error) => {
+                if std::time::Instant::now() >= deadline {
+                    return Err(error.into());
+                }
+                std::thread::sleep(std::time::Duration::from_millis(20));
+            }
         }
     }
-    match fs::remove_dir_all(path) {
-        Err(error) if error.kind() != std::io::ErrorKind::NotFound && path.exists() => {
-            Err(error.into())
-        }
-        _ => Ok(()),
+}
+
+/// A stale `discard-<id>` tombstone must not make the id unusable, and deleting it must not
+/// happen under the catalog and rewrite locks (a large tombstone would block create, archive
+/// and search for the whole delete, E832 E3). Under the caller's locks it is only renamed to a
+/// private name that no longer ends with the id; the deletion is handed to a background thread
+/// (and, if the process dies first, to the post-ready tombstone cleanup, which removes every
+/// `discard-*`).
+pub(crate) fn park_stale_tombstone(root: &Path, thread_id: &str) -> Result<(), StoreError> {
+    let trash = root.join(".rewrite-trash");
+    let stale = trash.join(format!("{DISCARD_TOMBSTONE_PREFIX}{thread_id}"));
+    if fs::symlink_metadata(&stale).is_err() {
+        return Ok(());
     }
+    let private = trash.join(format!(
+        "{DISCARD_TOMBSTONE_PREFIX}{thread_id}.deleting-{}-{}",
+        std::process::id(),
+        TOMBSTONE_ORDINAL.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
+    ));
+    match fs::rename(&stale, &private) {
+        Ok(()) => {}
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(()),
+        Err(error) => return Err(error.into()),
+    }
+    let trash_dir = trash.clone();
+    let spawned = std::thread::Builder::new()
+        .name("tombstone-delete".to_owned())
+        .spawn(move || {
+            if remove_tree_if_present(&private).is_ok() {
+                if let Ok(directory) = File::open(&trash_dir) {
+                    let _ = directory.sync_all();
+                }
+            }
+        });
+    // If no thread could be started the private tombstone stays for the cleanup.
+    drop(spawned);
+    Ok(())
 }
 
 /// The only function that moves a thread folder between `threads/` and `archive/`

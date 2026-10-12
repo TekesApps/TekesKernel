@@ -438,6 +438,10 @@ pub struct ProductionProcessHost {
     catalog: Arc<crate::catalog::Catalog>,
     /// Per-thread single-flight gates of the hydrator.
     hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
+    #[cfg(test)]
+    hydrate_runs: AtomicU64,
+    #[cfg(test)]
+    list_wait_override: Mutex<Option<Duration>>,
     file_observations: crate::file_observation::SessionFileObservations,
     pending_workers: Mutex<BTreeMap<String, PendingWorker>>,
     workers_changed: Condvar,
@@ -826,6 +830,10 @@ impl ProductionProcessHost {
             released: Mutex::new(HashSet::new()),
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
             hydrating: Mutex::new(HashMap::new()),
+            #[cfg(test)]
+            hydrate_runs: AtomicU64::new(0),
+            #[cfg(test)]
+            list_wait_override: Mutex::new(None),
             file_observations: crate::file_observation::SessionFileObservations::default(),
             pending_workers: Mutex::new(BTreeMap::new()),
             workers_changed: Condvar::new(),
@@ -855,7 +863,7 @@ impl ProductionProcessHost {
         // Folder membership changes (store::folder_events) invalidate what this host remembers
         // about a session: its catalog entry, projection cache, release and published actionables.
         let events_host = Arc::downgrade(&host);
-        let events_root = host.root.clone();
+        let events_root = store::folder_events::canonical_root(&host.root);
         store::folder_events::subscribe(Arc::new(move |event| {
             let Some(host) = events_host.upgrade() else {
                 return false;
@@ -1649,6 +1657,20 @@ impl ProductionProcessHost {
         use store::folder_events::FolderEvent;
         let id = event.id();
         self.catalog.forget(id);
+        // A folder that arrives in `threads/` (create, fork, redact destination, unarchive)
+        // enters the catalog now: the List and the sweep must see it without anybody having to
+        // ask for it first (E832 M1). Its card, if it has one, is read; otherwise it is Cold and
+        // the next List or open verifies it.
+        if matches!(
+            event,
+            FolderEvent::Published { .. }
+                | FolderEvent::Moved {
+                    to: store::folder_events::Area::Threads,
+                    ..
+                }
+        ) {
+            let _ = self.catalog.get(id);
+        }
         self.projection_cache
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -1872,6 +1894,16 @@ impl ProductionProcessHost {
 
     /// The hydrator's unit of work (single flight per thread).
     pub(crate) fn hydrate(&self, session_id: &str) -> Result<(), DaemonError> {
+        self.hydrate_with(session_id, None)
+    }
+
+    /// `after_fold` is a test seam called after the thread's ledger is folded and before the
+    /// journal work, i.e. outside every global lock.
+    pub(crate) fn hydrate_with(
+        &self,
+        session_id: &str,
+        after_fold: Option<&dyn Fn()>,
+    ) -> Result<(), DaemonError> {
         let gate = {
             let mut gates = self
                 .hydrating
@@ -1910,7 +1942,9 @@ impl ProductionProcessHost {
             self.card_writer.governor().charge(1);
         }
         self.card_writer.reset_window(session_id);
-        self.publish_appended(session_id)?;
+        #[cfg(test)]
+        self.hydrate_runs.fetch_add(1, Ordering::Relaxed);
+        self.publish_appended_with(session_id, after_fold)?;
         Ok(())
     }
 
@@ -2070,8 +2104,11 @@ impl ProductionProcessHost {
                 .map(|(id, _)| id)
                 .collect::<Vec<_>>()
         } else {
-            store::folder_events::admitted_ids(&self.root)
+            Vec::new()
         };
+        // Threads this process created or unarchived are always swept, whatever the catalog
+        // has seen so far.
+        ids.extend(store::folder_events::admitted_ids(&self.root));
         ids.extend(
             self.released
                 .lock()
@@ -2214,6 +2251,13 @@ impl ProductionProcessHost {
     }
 
     pub fn shutdown(&self) {
+        self.shutdown_with(None, &HashSet::new());
+    }
+
+    /// `after_workers_stopped` runs between stopping the workers and flushing the cards (a test
+    /// seam: it stands for the last append a killed worker had already made durable);
+    /// `also_live` names sessions to treat as live at quit (a test has no real workers).
+    fn shutdown_with(&self, after_workers_stopped: Option<&dyn Fn()>, also_live: &HashSet<String>) {
         self.draining.store(true, Ordering::Release);
         self.pending_workers
             .lock()
@@ -2221,7 +2265,8 @@ impl ProductionProcessHost {
             .clear();
         self.admission_changed.notify_all();
         self.workers_changed.notify_all();
-        let live_before = self.live_sessions_for_cleanup();
+        let mut live_before = self.live_sessions_for_cleanup();
+        live_before.extend(also_live.iter().cloned());
         let workers = self
             .workers
             .lock()
@@ -2241,10 +2286,12 @@ impl ProductionProcessHost {
         // Workers first, then the cards (E831 ruling): a thread that was live at quit gets a
         // final fold of its now-stable ledger, so its card is not left Ahead. The flush is bounded
         // by the writer's shutdown budget, which is the most quit can be delayed.
+        if let Some(after_workers_stopped) = after_workers_stopped {
+            after_workers_stopped();
+        }
         for session in live_before {
-            if let Some(folder) = Some(self.root.join("threads").join(&session)) {
-                self.card_writer.mark_dirty(&session, folder, None);
-            }
+            let folder = self.root.join("threads").join(&session);
+            self.card_writer.mark_dirty(&session, folder, None);
         }
         self.card_writer.shutdown();
     }
@@ -3477,10 +3524,6 @@ impl ProductionProcessHost {
         session_id: &str,
         after_decode: Option<&dyn Fn()>,
     ) -> Result<(), DaemonError> {
-        let _projection_guard = self
-            .projection_lock
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
         let streams = self
             .streams
             .lock()
@@ -3488,10 +3531,27 @@ impl ProductionProcessHost {
             .clone();
         let folder = self.root.join("threads").join(session_id);
         let ledger_path = folder.join("main.jsonl");
+        // Phase 1, no lock: read and fold the ledger and build the card. This is the part that
+        // grows with the thread, so concurrent folds of different threads (a cold List, the
+        // upgrade pass) run in parallel and never hold up a live session's doorbell (E832 M2).
         let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
         let kernel_file_len = bytes.len() as u64;
         let scan = scan_valid_prefix(&bytes, 1);
         let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
+        // A complete line that does not validate (or a ledger with no valid genesis) is damage a
+        // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
+        // after the valid prefix -- is a partial append and only needs repair.
+        if scan.projection.is_none()
+            || (scan.needs_repair() && bytes[valid_bytes.min(bytes.len())..].contains(&b'\n'))
+        {
+            let reason = format!(
+                "main.jsonl: no valid record at byte {}",
+                scan.first_invalid_offset.unwrap_or(scan.valid_bytes)
+            );
+            eprintln!("process-host-quarantined: session={session_id} {reason}");
+            self.catalog.mark_corrupt(session_id, &reason);
+            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        }
         // The shared-decode fast paths below are only taken for a clean read (no torn tail,
         // which the separate-read paths reject with "requires tail recovery") and only while
         // the ledger has not grown since this decode; otherwise the previous behaviour applies.
@@ -3499,9 +3559,30 @@ impl ProductionProcessHost {
         let projection = scan
             .projection
             .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
+        let due = self.card_writer.is_due(session_id);
+        let prepared = if clean_read {
+            crate::thread_card::prepare(
+                session_id,
+                folder.clone(),
+                bytes,
+                valid_bytes,
+                &projection,
+                None,
+            )
+        } else {
+            None
+        };
         if let Some(after_decode) = after_decode {
             after_decode();
         }
+        // Phase 2, under the projection lock: the journal, the published frames, the
+        // actionables and the card hand-off. A fold that finished after a newer one (two
+        // callers raced) only re-describes older bytes: the journal reconcile appends nothing,
+        // the actionables guard (K9) refuses it, and the catalog refuses an older view.
+        let _projection_guard = self
+            .projection_lock
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         let journal = EndpointJournal::open(&folder)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let mut projector = Projector::default();
@@ -3558,28 +3639,25 @@ impl ProductionProcessHost {
             }
         }
         // The fold above is the verification a card and the catalog view need. The view is
-        // refreshed on every clean fold (cheap: no ledger bytes); the card is only prepared for
-        // the writer when it is due for this thread (K6), otherwise the thread is marked dirty
-        // and the writer re-folds it itself when its window expires. A torn tail is repaired
-        // first and described by the next fold.
+        // refreshed on every clean fold (cheap: no ledger bytes); the card is only handed to the
+        // writer when it is due for this thread (K6), otherwise the thread is marked dirty and
+        // the writer re-folds it itself when its window expires. A torn tail is repaired first
+        // and described by the next fold. The journal block is taken after the reconcile.
         if clean_read {
             let journal_snapshot = crate::thread_card::journal_input(&journal);
-            let due = self.card_writer.is_due(session_id);
-            match crate::thread_card::prepare(
-                session_id,
-                folder.clone(),
-                bytes,
-                valid_bytes,
-                &projection,
-                journal_snapshot,
-            ) {
+            match prepared {
                 Some(card) => {
-                    self.catalog.set_fresh_main(session_id, card.view());
-                    if due {
-                        self.card_writer.submit(card);
-                    } else {
-                        self.card_writer
-                            .mark_dirty(session_id, folder.clone(), journal_snapshot);
+                    let card = card.with_journal(journal_snapshot);
+                    if self.catalog.set_fresh_main(session_id, card.view()) {
+                        if due {
+                            self.card_writer.submit(card);
+                        } else {
+                            self.card_writer.mark_dirty(
+                                session_id,
+                                folder.clone(),
+                                journal_snapshot,
+                            );
+                        }
                     }
                 }
                 None if !due => {
@@ -3593,18 +3671,22 @@ impl ProductionProcessHost {
             .projection_cache
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let next_frames = projection_cache
-            .remove(session_id)
-            .map(|previous| previous.next_frames)
-            .unwrap_or_default();
-        projection_cache.insert(
-            session_id.to_owned(),
-            SessionProjectionCache {
-                kernel_file_len,
-                projector,
-                next_frames,
-            },
-        );
+        match projection_cache.remove(session_id) {
+            // A caller that folded a newer ledger finished first: keep its cache.
+            Some(previous) if previous.kernel_file_len > kernel_file_len => {
+                projection_cache.insert(session_id.to_owned(), previous);
+            }
+            previous => {
+                projection_cache.insert(
+                    session_id.to_owned(),
+                    SessionProjectionCache {
+                        kernel_file_len,
+                        projector,
+                        next_frames: previous.map(|cache| cache.next_frames).unwrap_or_default(),
+                    },
+                );
+            }
+        }
         drop(projection_cache);
         Ok(())
     }
@@ -5046,10 +5128,31 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
     }
 }
 
+/// A ledger that holds its genesis and nothing else: a thread nobody has spoken in yet.
+fn is_single_line_ledger(path: &Path) -> bool {
+    let Ok(file) = fs::File::open(path) else {
+        return false;
+    };
+    let mut reader = BufReader::new(file);
+    let mut first = Vec::new();
+    if reader.read_until(b'\n', &mut first).is_err() || first.last() != Some(&b'\n') {
+        return false;
+    }
+    reader.fill_buf().is_ok_and(<[u8]>::is_empty)
+}
+
 const DEFAULT_LIST_WAIT: Duration = Duration::from_millis(2_000);
 
 impl ProductionProcessHost {
-    fn list_wait() -> Duration {
+    fn list_wait(&self) -> Duration {
+        #[cfg(test)]
+        if let Some(wait) = *self
+            .list_wait_override
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+        {
+            return wait;
+        }
         std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")
             .ok()
             .and_then(|value| value.parse::<u64>().ok())
@@ -5118,7 +5221,7 @@ impl ProductionProcessHost {
             updated_at,
             archived: false,
             running,
-            blank: false,
+            blank: is_single_line_ledger(&folder.join("main.jsonl")),
             as_of_seq: 0,
             lifecycle: neutral_lifecycle(),
             permission_mode: endpoint::permission_mode_of(&folder),
@@ -5195,6 +5298,9 @@ impl ProductionProcessHost {
     ) -> Result<Vec<SessionInventoryItem>, DaemonError> {
         let live = self.live_sessions();
         self.catalog.ensure_loaded();
+        for id in store::folder_events::admitted_ids(&self.root) {
+            let _ = self.catalog.get(&id);
+        }
         let unverified = self
             .catalog
             .entries_now()
@@ -5249,7 +5355,7 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
         include_archived: bool,
     ) -> Option<Result<Vec<SessionInventoryItem>, String>> {
         Some(
-            self.build_inventory(include_archived, Self::list_wait())
+            self.build_inventory(include_archived, self.list_wait())
                 .map_err(|error| error.to_string()),
         )
     }
@@ -5259,7 +5365,26 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
         session_id: &str,
     ) -> Option<Result<Option<SessionInventoryItem>, String>> {
         let live = self.live_sessions();
-        Some(Ok(self.catalog.get(session_id).and_then(|entry| {
+        let mut entry = self.catalog.get(session_id);
+        // The single-row path serves one thread, so it verifies that thread instead of listing
+        // a placeholder for it (a brand-new session would otherwise show `blank:false` for its
+        // whole first turn, E832 M4). A thread that cannot be verified keeps its placeholder or
+        // quarantined row.
+        if entry.as_ref().is_some_and(|entry| {
+            matches!(
+                entry.trust,
+                crate::catalog::Trust::Cold | crate::catalog::Trust::Ahead
+            )
+        }) && self.live_worker(session_id).is_none()
+        {
+            if let Err(error) = self.hydrate(session_id) {
+                eprintln!(
+                    "process-host-inventory-verify-skipped: session={session_id} error={error}"
+                );
+            }
+            entry = self.catalog.get(session_id);
+        }
+        Some(Ok(entry.and_then(|entry| {
             self.catalog_item(session_id, &entry, &live)
         })))
     }
@@ -9620,48 +9745,118 @@ mod tests {
     #[test]
     fn the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder() {
         let root = tempfile::tempdir().expect("root");
-        let ids = [
-            "018f0000-0000-7000-8000-0000000000b1",
-            "018f0000-0000-7000-8000-0000000000b2",
-            "018f0000-0000-7000-8000-0000000000b3",
-        ];
-        for id in ids {
-            held_thread_on_disk(root.path(), id);
+        let ids = (0..14)
+            .map(|n| format!("018f0000-0000-7000-8000-0000000000b{n:x}"))
+            .collect::<Vec<_>>();
+        for (n, id) in ids.iter().enumerate() {
+            match n % 7 {
+                // a pending approval hold
+                0 | 1 => {
+                    held_thread_on_disk(root.path(), id);
+                }
+                // genesis only: a blank thread
+                2 | 3 => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                }
+                // genesis and a submitted input
+                4 => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                    append_test_input(&folder.join("main.jsonl"), id);
+                }
+                // an ephemeral scratch thread this process may list
+                5 => {
+                    let folder = held_thread_on_disk(root.path(), id);
+                    let text = fs::read_to_string(folder.join("main.jsonl")).expect("ledger");
+                    fs::write(
+                        folder.join("main.jsonl"),
+                        text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+                    )
+                    .expect("ephemeral");
+                }
+                // a durable stop
+                _ => {
+                    let folder = root.path().join("threads").join(id);
+                    fs::create_dir_all(folder.join("assets")).expect("folder");
+                    write_test_genesis(&folder.join("main.jsonl"), id);
+                    append_test_input(&folder.join("main.jsonl"), id);
+                    append_test_stop(&folder.join("main.jsonl"), id, 1, 3);
+                }
+            }
         }
-        let host = ProductionProcessHost::open(
-            root.path(),
-            std::env::current_exe().expect("test executable"),
-            "test-build",
-            root.path().join("missing-agent-home"),
+        // one archived thread: the catalog lists its id only
+        let archived = "018f0000-0000-7000-8000-0000000000ba";
+        let archived_folder = held_thread_on_disk(root.path(), archived);
+        fs::create_dir_all(root.path().join("archive")).expect("archive");
+        store::move_thread_folder(
+            &archived_folder,
+            &root.path().join("archive").join(archived),
         )
-        .expect("process host");
-        host.attach_streams(ProductionCarrierStreams::new(root.path()));
+        .expect("archive move");
+        let (host, _streams) = open_host(root.path());
+        // This process may list the ephemeral thread it owns.
+        host.arm_admission();
+        store::folder_events::arm_admission(root.path());
         // Nothing is verified yet: a zero budget lists placeholders (neutral tail, no title)
         // without failing.
         let early = host
             .build_inventory(false, Duration::ZERO)
             .expect("early list");
-        assert_eq!(early.len(), 3);
         assert!(early.iter().all(|item| item.workspace_id == "ws"));
         // Verification proceeds in the background; a patient list is the scan list.
         let patient = host
-            .build_inventory(false, Duration::from_secs(60))
+            .build_inventory(true, Duration::from_secs(120))
             .expect("patient list");
         let scanned = NativeEndpoint::open(root.path())
             .expect("endpoint")
             .list_sessions(&HashSet::new())
             .expect("scan");
-        assert_eq!(patient.len(), scanned.len());
-        for (left, right) in patient.iter().zip(&scanned) {
+        let active = |items: &[SessionInventoryItem]| {
+            items
+                .iter()
+                .filter(|item| !item.archived)
+                .cloned()
+                .collect::<Vec<_>>()
+        };
+        let (left, right) = (active(&patient), active(&scanned));
+        // A previous process's ephemeral scratch threads are hidden until cleanup removes them.
+        assert_eq!(right.iter().filter(|item| item.ephemeral).count(), 2);
+        let right = right
+            .into_iter()
+            .filter(|item| !item.ephemeral)
+            .collect::<Vec<_>>();
+        let names = |rows: &[SessionInventoryItem]| {
+            rows.iter()
+                .map(|row| row.session_id.clone())
+                .collect::<Vec<_>>()
+        };
+        assert_eq!(names(&left), names(&right));
+        for (left, right) in left.iter().zip(&right) {
             assert_eq!(left, right, "row {}", left.session_id);
         }
+        let archived_ids = patient
+            .iter()
+            .filter(|item| item.archived)
+            .map(|item| item.session_id.as_str())
+            .collect::<Vec<_>>();
+        assert_eq!(archived_ids, [archived]);
         // The single-row path agrees with the list.
         let one = host
-            .inventory_item(ids[1])
+            .inventory_item(&ids[1])
             .expect("catalog backed")
             .expect("ok")
             .expect("row");
-        assert_eq!(one, patient[1]);
+        assert_eq!(one, left[1]);
+        // At least one row of each lifecycle shape was compared.
+        assert!(left.iter().any(|item| item.blank));
+        assert!(left.iter().any(|item| !item.blank));
+        assert!(
+            left.iter()
+                .any(|item| item.lifecycle.stop_active || item.lifecycle.open_hold)
+        );
         host.shutdown();
     }
 
@@ -9696,6 +9891,325 @@ mod tests {
         host.release_for_test(old);
         assert!(!host.is_deferred(old), "a released thread is not deferred");
         host.shutdown();
+    }
+
+    fn open_host(root: &Path) -> (Arc<ProductionProcessHost>, ProductionCarrierStreams) {
+        fs::create_dir_all(root.join("workspaces/ws")).expect("workspaces");
+        write_canonical_test_json(
+            &root.join("workspaces/ws/workspace.json"),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[root.join("workspace").to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let host = ProductionProcessHost::open(
+            root,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.join("missing-agent-home"),
+        )
+        .expect("process host");
+        let streams = ProductionCarrierStreams::new(root);
+        host.attach_streams(streams.clone());
+        (host, streams)
+    }
+
+    fn poll_until_ready<F: Future>(future: F) -> F::Output {
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
+        let mut future = std::pin::pin!(future);
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            if let Poll::Ready(value) = future.as_mut().poll(&mut context) {
+                return value;
+            }
+            assert!(Instant::now() < deadline, "future stayed pending");
+            std::thread::sleep(Duration::from_millis(10));
+        }
+    }
+
+    /// E832 M1/M4: a thread created after the catalog loaded is in the List, in the sweep set
+    /// and in a second client's inventory baseline at once, and its single-row inventory entry
+    /// is the verified blank row, not a placeholder.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank() {
+        let root = tempfile::tempdir().expect("root");
+        let old = "018f0000-0000-7000-8000-0000000000d1";
+        let fresh = "018f0000-0000-7000-8000-0000000000d2";
+        held_thread_on_disk(root.path(), old);
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        host.catalog.ensure_loaded();
+        assert_eq!(host.catalog.entries_now().len(), 1);
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(fresh)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(fresh, genesis)
+            .expect("create after load");
+        // nobody asked for it: it is in the catalog, the sweep and the List already
+        assert!(host.catalog.entries_now().iter().any(|(id, _)| id == fresh));
+        assert!(host.sweep_ids().iter().any(|id| id == fresh));
+        assert!(!host.is_deferred(fresh));
+        let list = host
+            .build_inventory(false, Duration::from_secs(60))
+            .expect("list");
+        let row = list
+            .iter()
+            .find(|item| item.session_id == fresh)
+            .expect("new session listed");
+        assert!(row.blank);
+        // the single-row path (host/session-added) serves the verified row
+        let one = host
+            .inventory_item(fresh)
+            .expect("catalog backed")
+            .expect("ok")
+            .expect("row");
+        assert!(one.blank);
+        assert_eq!(one.workspace_id, "ws");
+        // a second client's inventory baseline lists both
+        let mut inventory = streams
+            .open_mux(7, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("inventory stream");
+        let endpoint::SessionSyncFrame::InventoryBaseline { items, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("baseline item")
+                .expect("baseline frame")
+        else {
+            panic!("expected an inventory baseline")
+        };
+        assert_eq!(items.len(), 2);
+        host.shutdown();
+    }
+
+    /// E832 M2: hydrations of different threads fold concurrently (they all reach the point
+    /// after the fold before any proceeds), and a doorbell for another thread completes while a
+    /// cold hydration is held outside the lock.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn hydrations_run_in_parallel_and_never_hold_up_a_doorbell() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = (0..8)
+            .map(|n| format!("018f0000-0000-7000-8000-0000000000f{n}"))
+            .collect::<Vec<_>>();
+        for id in &ids {
+            held_thread_on_disk(root.path(), id);
+        }
+        let (host, _streams) = open_host(root.path());
+        let arrived = std::sync::atomic::AtomicUsize::new(0);
+        std::thread::scope(|scope| {
+            for id in &ids {
+                let (host, arrived) = (&host, &arrived);
+                scope.spawn(move || {
+                    let rendezvous = || {
+                        arrived.fetch_add(1, Ordering::SeqCst);
+                        let deadline = Instant::now() + Duration::from_secs(30);
+                        while arrived.load(Ordering::SeqCst) < 8 {
+                            assert!(
+                                Instant::now() < deadline,
+                                "hydrations were serialised: only {} reached the fold",
+                                arrived.load(Ordering::SeqCst)
+                            );
+                            std::thread::sleep(Duration::from_millis(5));
+                        }
+                    };
+                    host.hydrate_with(id, Some(&rendezvous)).expect("hydrate");
+                });
+            }
+        });
+        for id in &ids {
+            assert_eq!(
+                host.catalog.get(id).expect("entry").trust,
+                crate::catalog::Trust::Fresh
+            );
+        }
+        // a doorbell is not queued behind a cold hydration
+        let cold = "018f0000-0000-7000-8000-0000000000fa";
+        let live = "018f0000-0000-7000-8000-0000000000fb";
+        held_thread_on_disk(root.path(), cold);
+        held_thread_on_disk(root.path(), live);
+        let release = std::sync::atomic::AtomicBool::new(false);
+        let holding = std::sync::atomic::AtomicBool::new(false);
+        std::thread::scope(|scope| {
+            let (host_ref, release, holding) = (&host, &release, &holding);
+            let slow = scope.spawn(move || {
+                let hold = || {
+                    holding.store(true, Ordering::SeqCst);
+                    let deadline = Instant::now() + Duration::from_secs(30);
+                    while !release.load(Ordering::SeqCst) {
+                        assert!(Instant::now() < deadline, "hydration never released");
+                        std::thread::sleep(Duration::from_millis(5));
+                    }
+                };
+                host_ref
+                    .hydrate_with(cold, Some(&hold))
+                    .expect("slow hydrate");
+            });
+            let deadline = Instant::now() + Duration::from_secs(30);
+            while !holding.load(Ordering::SeqCst) {
+                assert!(Instant::now() < deadline, "cold hydration never started");
+                std::thread::sleep(Duration::from_millis(5));
+            }
+            host.publish_appended(live)
+                .expect("a doorbell completes while a cold hydration is in flight");
+            release.store(true, Ordering::SeqCst);
+            slow.join().expect("slow hydrate thread");
+        });
+        host.shutdown();
+    }
+
+    /// E832 M3: a complete but invalid line reaches Corrupt through hydrate, is listed as a
+    /// quarantined row, answers with a quarantine error and is not re-hydrated by every List.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_complete_invalid_line_quarantines_and_is_not_rehydrated() {
+        let root = tempfile::tempdir().expect("root");
+        let good = "018f0000-0000-7000-8000-0000000000c9";
+        let bad = "018f0000-0000-7000-8000-0000000000c8";
+        held_thread_on_disk(root.path(), good);
+        let folder = held_thread_on_disk(root.path(), bad);
+        {
+            let mut ledger = fs::OpenOptions::new()
+                .append(true)
+                .open(folder.join("main.jsonl"))
+                .expect("ledger");
+            // complete (LF-terminated) but not a valid record, followed by a valid-looking one
+            ledger
+                .write_all(b"{\"not\":\"an event\"}\n")
+                .expect("invalid line");
+        }
+        let (host, _streams) = open_host(root.path());
+        let error = host.hydrate(bad).expect_err("quarantined");
+        assert!(error.to_string().contains("quarantined"), "{error}");
+        assert!(matches!(
+            host.catalog.get(bad).expect("entry").trust,
+            crate::catalog::Trust::Corrupt(_)
+        ));
+        let runs = host.hydrate_runs.load(Ordering::Relaxed);
+        for _ in 0..3 {
+            let list = host
+                .build_inventory(false, Duration::from_secs(60))
+                .expect("list");
+            assert_eq!(list.len(), 2, "the quarantined row stays in the List");
+        }
+        // only the healthy thread was hydrated by the Lists
+        assert_eq!(host.hydrate_runs.load(Ordering::Relaxed), runs + 1);
+        // the gate says so, with the quarantine marker the wire error is built from
+        let gate = host.ensure_verified(bad).expect_err("gate refuses");
+        assert!(gate.to_string().contains("quarantined"), "{gate}");
+        host.shutdown();
+    }
+
+    /// A placeholder row is replaced by the real row when verification finishes: the
+    /// inventory stream announces it as an upsert.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_placeholder_row_is_followed_by_the_real_row_as_an_upsert() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c7";
+        held_thread_on_disk(root.path(), session);
+        let (host, streams) = open_host(root.path());
+        *host
+            .list_wait_override
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(Duration::ZERO);
+        let mut inventory = streams
+            .open_mux(3, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("inventory stream");
+        let endpoint::SessionSyncFrame::InventoryBaseline { items, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("baseline item")
+                .expect("baseline frame")
+        else {
+            panic!("expected an inventory baseline")
+        };
+        assert_eq!(items.len(), 1);
+        let placeholder = &items[0];
+        assert_eq!(placeholder.tail, "settled");
+        assert!(
+            placeholder.projections.is_none(),
+            "a placeholder has no title"
+        );
+        // verification finishes in the background and the stream upserts the real row
+        let endpoint::SessionSyncFrame::InventoryUpsert { session: real, .. } =
+            poll_until_ready(inventory.recv())
+                .expect("upsert item")
+                .expect("upsert frame")
+        else {
+            panic!("expected an inventory upsert")
+        };
+        assert_eq!(real.session_id, session);
+        // the held ask_user call makes the real tail differ from the neutral placeholder
+        assert_ne!(real.tail, placeholder.tail);
+        host.shutdown();
+    }
+
+    /// The client unarchive path (`ManagementStore::unarchive_session` ->
+    /// `drive_folder_move`) admits the thread and brings it back into the catalog.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_client_unarchive_admits_the_thread_and_lists_it_again() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c6";
+        held_thread_on_disk(root.path(), session);
+        let (host, _streams) = open_host(root.path());
+        host.arm_admission();
+        host.catalog.ensure_loaded();
+        assert!(host.is_deferred(session));
+        let management = endpoint::ManagementStore::open_light(root.path()).expect("management");
+        let sha = "a".repeat(64);
+        management
+            .archive_session("rpc-archive-1", &sha, session, "2026-10-12T00:00:00.000Z")
+            .expect("archive");
+        assert!(host.catalog.get(session).is_none());
+        management
+            .unarchive_session("rpc-unarchive-1", &sha, session, "2026-10-12T00:00:00.000Z")
+            .expect("unarchive");
+        assert!(!host.is_deferred(session), "the client unarchive admits");
+        assert!(
+            host.catalog
+                .entries_now()
+                .iter()
+                .any(|(id, _)| id == session)
+        );
+        host.shutdown();
+    }
+
+    /// E831 shutdown order: workers are stopped first, then the cards of the threads that were
+    /// live are re-folded and flushed, so what a killed worker had made durable is in the card.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn shutdown_stops_workers_before_it_flushes_the_cards_of_live_threads() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c5";
+        let (host, _streams, ledger) = held_host(root.path(), session, "");
+        host.publish_appended(session).expect("first fold");
+        let folder = root.path().join("threads").join(session);
+        let append_last_words = || {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("the killed worker's last durable append");
+        };
+        host.shutdown_with(
+            Some(&append_last_words),
+            &HashSet::from([session.to_owned()]),
+        );
+        let card = store::card::read_card(&folder).expect("card");
+        assert_eq!(
+            card.lines[0].last_seq, 10,
+            "the card describes the final ledger"
+        );
+        assert_eq!(
+            store::card::classify(&folder, &card)
+                .expect("classify")
+                .freshness(),
+            store::card::Freshness::Fresh
+        );
     }
 
     /// P-3 tripwire (in process): with every thread and archive folder unreadable (mode 000),

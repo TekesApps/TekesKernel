@@ -138,3 +138,20 @@ fn leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors() {
     // a path that is already gone is success
     crate::folder::remove_tree_if_present(&trash.join("nope")).unwrap();
 }
+
+/// E832 hardening: events and admission are keyed by the canonical root, so a store opened
+/// through a symlink (or `..`) and a host armed with the real path agree.
+#[test]
+fn admission_is_keyed_by_the_canonical_root() {
+    let dir = tempfile::tempdir().unwrap();
+    let real = fs::canonicalize(dir.path()).unwrap();
+    let alias = real.join("alias");
+    std::os::unix::fs::symlink(&real, &alias).unwrap();
+    let dotted = real.join("threads").join("..");
+    arm_admission(&real);
+    let store = ThreadStore::open(&alias).unwrap();
+    store.create_thread(C, genesis(C, false)).unwrap();
+    assert!(is_admitted(&real, C));
+    assert!(is_admitted(&alias, C));
+    assert!(is_admitted(&dotted, C));
+}

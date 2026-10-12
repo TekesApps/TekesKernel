@@ -64,6 +64,33 @@ impl FolderEvent {
     }
 }
 
+/// The spelling of a storage root events are keyed by: the canonical path (symlinks and `..`
+/// resolved), or the path as given when it cannot be resolved. Every component that opens the
+/// same root under a different spelling must still see the same admission set.
+#[must_use]
+pub fn canonical_root(root: &Path) -> PathBuf {
+    std::fs::canonicalize(root).unwrap_or_else(|_| root.to_path_buf())
+}
+
+impl FolderEvent {
+    fn with_root(self, new_root: PathBuf) -> Self {
+        match self {
+            Self::Published { id, .. } => Self::Published { root: new_root, id },
+            Self::Moved { id, from, to, .. } => Self::Moved {
+                root: new_root,
+                id,
+                from,
+                to,
+            },
+            Self::Removed { id, reason, .. } => Self::Removed {
+                root: new_root,
+                id,
+                reason,
+            },
+        }
+    }
+}
+
 /// An observer returns `false` to unsubscribe (typically because its owner was dropped).
 pub type Observer = Arc<dyn Fn(&FolderEvent) -> bool + Send + Sync>;
 
@@ -93,30 +120,36 @@ pub fn subscribe(observer: Observer) {
 /// Starts recording admissions for `root`. Folders published before this call (startup recovery
 /// of pending operations) are deliberately **not** admitted: they are pre-existing sessions.
 pub fn arm_admission(root: &Path) {
-    lock().admission.entry(root.to_path_buf()).or_default();
+    lock().admission.entry(canonical_root(root)).or_default();
 }
 
 /// True for an id published, moved into `threads/`, or created by this process since
 /// `arm_admission(root)`.
 #[must_use]
 pub fn is_admitted(root: &Path, id: &str) -> bool {
+    let root = canonical_root(root);
     lock()
         .admission
-        .get(root)
+        .get(&root)
         .is_some_and(|admitted| admitted.contains(id))
 }
 
 /// The ids admitted for `root` since `arm_admission`.
 #[must_use]
 pub fn admitted_ids(root: &Path) -> Vec<String> {
+    let root = canonical_root(root);
     lock()
         .admission
-        .get(root)
+        .get(&root)
         .map(|admitted| admitted.iter().cloned().collect())
         .unwrap_or_default()
 }
 
 pub(crate) fn emit(event: FolderEvent) {
+    let event = {
+        let root = canonical_root(event.root());
+        event.with_root(root)
+    };
     let observers = {
         let mut registry = lock();
         if let Some(admitted) = registry.admission.get_mut(event.root()) {
@@ -159,7 +192,7 @@ pub(crate) fn emit(event: FolderEvent) {
 pub fn record_events(root: &Path) -> Arc<Mutex<Vec<FolderEvent>>> {
     let seen = Arc::new(Mutex::new(Vec::new()));
     let sink = Arc::clone(&seen);
-    let root = root.to_path_buf();
+    let root = canonical_root(root);
     subscribe(Arc::new(move |event| {
         if event.root() == root {
             sink.lock()
