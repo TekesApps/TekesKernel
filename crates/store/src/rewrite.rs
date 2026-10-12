@@ -243,6 +243,15 @@ impl ThreadStore {
                 return Err(StoreError::RewriteDestinationExists);
             }
         }
+        // A crash between retiring an ephemeral thread and deleting its tombstone leaves
+        // `discard-<id>`. That folder is dead data, not live rewrite state: finish its deletion
+        // here (a concurrent deleter making it vanish is success) instead of refusing the id.
+        crate::folder::remove_tree_if_present(
+            &self
+                .root()
+                .join(".rewrite-trash")
+                .join(format!("discard-{destination}")),
+        )?;
         if fs::read_dir(self.root().join(".rewrite-trash"))?.any(|entry| {
             entry.is_ok_and(|entry| entry.file_name().to_string_lossy().ends_with(destination))
         }) {
@@ -341,6 +350,10 @@ impl ThreadStore {
                     (true, false) => {
                         fs::rename(&payload, &destination)?;
                         File::open(self.root().join("threads"))?.sync_all()?;
+                        crate::folder_events::emit(crate::folder_events::FolderEvent::Published {
+                            root: self.root().to_path_buf(),
+                            id: operation.dest.clone(),
+                        });
                     }
                     (false, true) => {}
                     _ => {
@@ -369,6 +382,11 @@ impl ThreadStore {
                         fs::rename(&source, &tombstone)?;
                         File::open(self.root().join("threads"))?.sync_all()?;
                         File::open(self.root().join(".rewrite-trash"))?.sync_all()?;
+                        crate::folder_events::emit(crate::folder_events::FolderEvent::Removed {
+                            root: self.root().to_path_buf(),
+                            id: operation.source.clone(),
+                            reason: crate::folder_events::RemoveReason::RedactRetired,
+                        });
                     }
                     (false, true) => {}
                     _ => {
@@ -2283,6 +2301,88 @@ mod tests {
             target: target.to_owned(),
             op: op.to_owned(),
             key: key.to_owned(),
+        }
+    }
+
+    fn baseline_source(store: &ThreadStore, source_id: &str) {
+        let source = store.root().join("threads").join(source_id);
+        fs::create_dir(&source).unwrap();
+        let baseline = include_bytes!("../../../fixtures/invalid/_valid-baseline.jsonl");
+        fs::write(source.join("main.jsonl"), baseline).unwrap();
+    }
+
+    /// K1/K5/E3: a fork publication is announced (and admitted), a stale `discard-<dest>`
+    /// tombstone no longer blocks the destination id, a redact tombstone still does, and a
+    /// concurrent tombstone cleanup cannot make the fork fail.
+    #[test]
+    fn fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id() {
+        let directory = tempfile::tempdir().unwrap();
+        let store = ThreadStore::open(directory.path()).unwrap();
+        let root = directory.path().to_path_buf();
+        let source_id = "018f0000-0000-7000-8000-000000000003";
+        baseline_source(&store, source_id);
+        crate::folder_events::arm_admission(&root);
+        let seen = crate::folder_events::record_events(&root);
+        let trash = store.root().join(".rewrite-trash");
+
+        // a redact tombstone for the destination id still reserves it
+        let reserved = "018f0000-0000-7000-8000-0000000000e1";
+        fs::create_dir_all(trash.join(format!("redact-op-{reserved}"))).unwrap();
+        assert!(matches!(
+            store.begin_fork("fork-0", source_id, reserved, "2026-10-04T00:00:00.000Z"),
+            Err(StoreError::RewriteDestinationExists)
+        ));
+
+        // a stale discard tombstone does not
+        let reused = "018f0000-0000-7000-8000-0000000000e2";
+        fs::create_dir_all(trash.join(format!("discard-{reused}/assets"))).unwrap();
+        fs::write(trash.join(format!("discard-{reused}/main.jsonl")), b"old").unwrap();
+        store
+            .begin_fork("fork-1", source_id, reused, "2026-10-04T00:00:00.000Z")
+            .unwrap();
+        assert!(!trash.join(format!("discard-{reused}")).exists());
+        store.recover_rewrites().unwrap();
+        assert!(store.root().join("threads").join(reused).is_dir());
+        assert!(crate::folder_events::is_admitted(&root, reused));
+        assert!(
+            seen.lock().unwrap().iter().any(|event| matches!(
+                event,
+                crate::folder_events::FolderEvent::Published { id, .. } if id == reused
+            )),
+            "the fork destination is announced"
+        );
+    }
+
+    #[test]
+    fn concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id() {
+        let source_id = "018f0000-0000-7000-8000-000000000003";
+        for round in 0..12_u32 {
+            let directory = tempfile::tempdir().unwrap();
+            let store = std::sync::Arc::new(ThreadStore::open(directory.path()).unwrap());
+            baseline_source(&store, source_id);
+            let destination = format!("018f0000-0000-7000-8000-0000000001{round:02x}");
+            let tombstone = store
+                .root()
+                .join(".rewrite-trash")
+                .join(format!("discard-{destination}"));
+            for file in 0..50 {
+                fs::create_dir_all(tombstone.join(format!("assets/{file}"))).unwrap();
+                fs::write(tombstone.join(format!("assets/{file}/blob")), b"x").unwrap();
+            }
+            let cleaner = {
+                let store = std::sync::Arc::clone(&store);
+                std::thread::spawn(move || store.cleanup_discard_tombstones())
+            };
+            let forked = store.begin_fork(
+                &format!("fork-{round}"),
+                source_id,
+                &destination,
+                "2026-10-04T00:00:00.000Z",
+            );
+            let cleaned = cleaner.join().unwrap();
+            assert!(forked.is_ok(), "fork must not fail: {forked:?}");
+            assert!(cleaned.is_ok(), "cleanup must not fail: {cleaned:?}");
+            assert!(!tombstone.exists());
         }
     }
 

@@ -12,7 +12,7 @@ use schema::{IJsonValue, OriginTuple, ResumePolicy};
 use serde_json::Value;
 use sha2::Digest;
 use tekes_supervisor::endpoint_host::{
-    EndpointAssemblyError, EndpointRouteClass, ProductionEndpointAssembly, ProductionEndpointHost,
+    EndpointRouteClass, ProductionEndpointAssembly, ProductionEndpointHost,
     ProductionEndpointRoutes, ProductionRouteFailure, ProviderReadinessAuthority,
     QueueTransactionAuthority, RuntimeProviderFailure, RuntimeProviderReadiness,
     RuntimeProviderStatus, SessionDeliveryAuthority, TEKES_UNARY_ROUTES,
@@ -32,21 +32,22 @@ fn block_on_ready<F: Future>(future: F) -> F::Output {
     }
 }
 
+/// D5 (ADDENDUM-03 C5): opening the endpoint, recovery and readiness never fail on the number of
+/// session folders; the 256 cap is enforced where a slot is reserved (create, fork, unarchive) and
+/// at live-event attach.
 #[test]
-fn readiness_rejects_more_than_256_active_session_folders() {
+fn opening_a_root_with_more_than_256_session_folders_is_not_an_error() {
     let root = tempfile::tempdir().expect("root");
     let threads = root.path().join("threads");
     std::fs::create_dir_all(&threads).unwrap();
     for index in 0..257_u16 {
         std::fs::create_dir(threads.join(format!("018f0000-0000-7000-8000-{index:012x}"))).unwrap();
     }
-    let opened = ProductionEndpointAssembly::open(root.path(), description());
-    assert!(matches!(
-        opened,
-        Err(EndpointAssemblyError::Management(
-            endpoint::ManagementError::ActiveSessionLimit
-        ))
-    ));
+    ProductionEndpointAssembly::open(root.path(), description())
+        .expect("257 session folders must not fail the endpoint assembly");
+    endpoint::ManagementStore::open_at(root.path(), "2026-10-12T00:00:00.000Z")
+        .expect("the recovering open does not fail on the count either");
+    endpoint::ManagementStore::open_light(root.path()).expect("nor does the per-request open");
 }
 
 struct LockedLedgerDelivery {

@@ -1695,7 +1695,7 @@ impl ProductionClientExtensions {
                 let items = native
                     .list_sessions(&HashSet::new())
                     .map_err(|error| internal(error.to_string()))?;
-                let management = endpoint::ManagementStore::open(&self.root)
+                let management = endpoint::ManagementStore::open_light(&self.root)
                     .map_err(|error| internal(error.to_string()))?;
                 let workspace = items
                     .iter()

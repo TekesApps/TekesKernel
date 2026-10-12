@@ -96,7 +96,7 @@ const DEFAULT_PERMISSION_MODE: &str = "workspace-write";
 
 /// The mode a session folder declares, or the default when the record is
 /// absent or malformed (the worker applies the same fallback).
-fn permission_mode_of(folder: &Path) -> String {
+pub fn permission_mode_of(folder: &Path) -> String {
     let Ok(bytes) = fs::read(folder.join(PERMISSION_MODE_FILE)) else {
         return DEFAULT_PERMISSION_MODE.to_owned();
     };

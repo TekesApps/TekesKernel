@@ -58,6 +58,24 @@ pub trait SupervisorSessionAuthority: Send + Sync {
     /// while a live worker owns the main line: its doorbell orders projection
     /// against the frames still queued in its control pipe.
     fn reconcile_projection(&self, session_id: &str) -> Result<(), String>;
+
+    /// The List without decoding any ledger: catalog rows (waiting a bounded time for threads
+    /// that still need verifying), plus archived ids when asked. `None` means this authority
+    /// has no catalog and the caller falls back to scanning the ledgers.
+    fn inventory_items(
+        &self,
+        _include_archived: bool,
+    ) -> Option<Result<Vec<endpoint::SessionInventoryItem>, String>> {
+        None
+    }
+
+    /// One thread's row for a targeted inventory upsert (`Some(None)`: no such active thread).
+    fn inventory_item(
+        &self,
+        _session_id: &str,
+    ) -> Option<Result<Option<endpoint::SessionInventoryItem>, String>> {
+        None
+    }
 }
 
 /// Process-table authority for the live-worker half of `respond`. `None`
@@ -527,6 +545,18 @@ impl ProductionCarrierStreams {
         Ok(())
     }
 
+    /// Drops everything remembered about one session's actionables (every line). Called when a
+    /// session folder is published or removed: an id can be reused (discard, then a fork with a
+    /// client-chosen UUID), and the new thread's ledger starts at a small `last_seq`, which the
+    /// monotonic guard of `reconcile_actionables_from` would otherwise refuse forever (E831 E1).
+    pub(crate) fn forget_session(&self, session_id: &str) {
+        self.inner
+            .published_actionables
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .retain(|(session, _), _| session != session_id);
+    }
+
     /// Test observer: the request ids currently published as pending for one ledger line.
     #[cfg(test)]
     pub(crate) fn published_pending_for_test(
@@ -971,13 +1001,31 @@ impl ProductionCarrierStreams {
         Ok(())
     }
 
+    /// The rows the List is built from: the supervisor's catalog when it has one (no ledger is
+    /// decoded), otherwise a scan of every ledger.
+    fn session_items(
+        &self,
+        include_archived: bool,
+    ) -> Result<Vec<endpoint::SessionInventoryItem>, ProductionCarrierError> {
+        if let Some(authority) = self.session_authority() {
+            if let Some(items) = authority.inventory_items(include_archived) {
+                return items.map_err(ProductionCarrierError::Lifecycle);
+            }
+        }
+        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
+        Ok(endpoint
+            .list_sessions(&self.live_sessions())?
+            .into_iter()
+            .filter(|session| include_archived || !session.archived)
+            .collect())
+    }
+
     fn workspace_baseline(
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
-        let sessions = endpoint.list_sessions(&self.live_sessions())?;
-        let management = endpoint::ManagementStore::open(&self.inner.root)?;
+        let sessions = self.session_items(true)?;
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let list = management.list_workspaces(&sessions)?;
         Ok(SessionSyncFrame::WorkspaceBaseline {
             generation,
@@ -1003,46 +1051,13 @@ impl ProductionCarrierStreams {
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
-        let management = endpoint::ManagementStore::open(&self.inner.root)?;
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let mut sessions = endpoint
-            .list_sessions(&self.live_sessions())?
+        let mut sessions = self
+            .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .map(|session| {
-                let projections = session.title.map(|title| {
-                    IJsonValue::parse(
-                        &serde_json::to_vec(&json!({
-                            "asOfSeq":session.as_of_seq,
-                            "values":{"sessionTitle":{"title":title}},
-                        }))
-                        .expect("session summary projection serializes"),
-                    )
-                    .expect("session summary projection is I-JSON")
-                });
-                let lock = if session.running {
-                    LockFacts::OTHER
-                } else {
-                    LockFacts::FREE
-                };
-                let tail = classify(&session.lifecycle, lock);
-                let fork = lineage.get(&session.session_id);
-                Ok(SessionSummary {
-                    cwd: management.workspace_path(&session.workspace_id)?,
-                    parent_session_id: fork.map(|fork| fork.source.clone()),
-                    origin: fork.map(|_| "fork".to_owned()),
-                    ephemeral: session.ephemeral,
-                    session_id: session.session_id,
-                    updated_at: session.updated_at,
-                    running: session.running,
-                    tail: tail.as_str().to_owned(),
-                    blank: session.blank,
-                    projections,
-                    permission_mode: Some(session.permission_mode),
-                    identity_profile: session.identity_profile,
-                })
-            })
+            .map(|session| inventory_row(session, &management, &lineage))
             .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
         sessions.sort_by(|left, right| {
             right
@@ -1054,6 +1069,26 @@ impl ProductionCarrierStreams {
             generation,
             items: sessions,
         })
+    }
+
+    /// The inventory row of one session for a targeted upsert. `Ok(None)`: no such active
+    /// session. Falls back to a full relist when the authority has no per-session source.
+    fn inventory_row(
+        &self,
+        session_id: &str,
+    ) -> Result<Option<Option<SessionSummary>>, ProductionCarrierError> {
+        let Some(authority) = self.session_authority() else {
+            return Ok(None);
+        };
+        let Some(item) = authority.inventory_item(session_id) else {
+            return Ok(None);
+        };
+        let Some(item) = item.map_err(ProductionCarrierError::Lifecycle)? else {
+            return Ok(Some(None));
+        };
+        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
+        let lineage = management.completed_fork_lineage()?;
+        Ok(Some(Some(inventory_row(item, &management, &lineage)?)))
     }
 
     fn control_baseline(
@@ -1410,16 +1445,53 @@ impl ProductionStream {
                         | "host/agent-error"
                         | "host/workspace-changed"
                 ) {
-                    let SessionSyncFrame::InventoryBaseline {
-                        items: next_items, ..
-                    } = self.owner.inventory_baseline(self.generation)?
-                    else {
-                        unreachable!()
+                    // A status/added/removed frame names one session: recompute only that row
+                    // (O(1) catalog work). Anything else relists from the catalog.
+                    let named = matches!(
+                        kind,
+                        "host/session-added" | "host/session-status" | "host/session-removed"
+                    )
+                    .then(|| {
+                        value
+                            .get("sessionId")
+                            .and_then(Value::as_str)
+                            .map(str::to_owned)
+                    })
+                    .flatten();
+                    let targeted = match &named {
+                        Some(id) if kind == "host/session-removed" => {
+                            let mut next = items.clone();
+                            next.remove(id);
+                            Some(next)
+                        }
+                        Some(id) => self.owner.inventory_row(id)?.map(|row| {
+                            let mut next = items.clone();
+                            match row {
+                                Some(row) => {
+                                    next.insert(id.clone(), row);
+                                }
+                                None => {
+                                    next.remove(id);
+                                }
+                            }
+                            next
+                        }),
+                        None => None,
                     };
-                    let next_items = next_items
-                        .into_iter()
-                        .map(|item| (item.session_id.clone(), item))
-                        .collect::<BTreeMap<_, _>>();
+                    let next_items = if let Some(next) = targeted {
+                        next
+                    } else {
+                        let SessionSyncFrame::InventoryBaseline {
+                            items: next_items, ..
+                        } = self.owner.inventory_baseline(self.generation)?
+                        else {
+                            unreachable!()
+                        };
+                        next_items
+                            .into_iter()
+                            .map(|item| (item.session_id.clone(), item))
+                            .collect::<BTreeMap<_, _>>()
+                    };
                     let mut deltas = VecDeque::new();
                     for id in items.keys().filter(|id| !next_items.contains_key(*id)) {
                         deltas.push_back(SessionSyncFrame::InventoryRemove {
@@ -1829,17 +1901,16 @@ impl ProductionCarrierAssembly {
         self.server
     }
 
-    /// Called only after supervisor boot recovery and capability assembly are
-    /// complete. Re-reading the full active inventory proves mux capacity and
-    /// every durable journal can be opened before the listener reports ready.
-    pub fn finish_recovery(&self) -> Result<(), ProductionCarrierError> {
-        let sessions = load_active_mux_sessions(&self.streams.inner.root)?;
-        if sessions.len() > endpoint::MAX_MUX_SESSIONS {
-            return Err(ProductionCarrierError::Lifecycle(
-                "active session inventory exceeds mux capacity".to_owned(),
-            ));
-        }
+    /// Marks the host ready once capability assembly is complete. It reads no thread: the
+    /// catalog, the capacity accounting and every journal are handled after readiness (a
+    /// request that needs a thread opens that thread; a List request awaits the catalog load).
+    pub fn mark_ready(&self) {
         self.host.set_readiness(HostReadiness::Ready);
+    }
+
+    /// Compatibility name for `mark_ready` (tests and tools written before lazy boot).
+    pub fn finish_recovery(&self) -> Result<(), ProductionCarrierError> {
+        self.mark_ready();
         Ok(())
     }
 
@@ -1884,6 +1955,44 @@ fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, Product
         session_id: session_id.to_owned(),
         endpoint,
         unresolved,
+    })
+}
+
+fn inventory_row(
+    session: endpoint::SessionInventoryItem,
+    management: &endpoint::ManagementStore,
+    lineage: &std::collections::BTreeMap<String, endpoint::ForkLineage>,
+) -> Result<SessionSummary, endpoint::ManagementError> {
+    let projections = session.title.map(|title| {
+        IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "asOfSeq":session.as_of_seq,
+                "values":{"sessionTitle":{"title":title}},
+            }))
+            .expect("session summary projection serializes"),
+        )
+        .expect("session summary projection is I-JSON")
+    });
+    let lock = if session.running {
+        LockFacts::OTHER
+    } else {
+        LockFacts::FREE
+    };
+    let tail = classify(&session.lifecycle, lock);
+    let fork = lineage.get(&session.session_id);
+    Ok(SessionSummary {
+        cwd: management.workspace_path(&session.workspace_id)?,
+        parent_session_id: fork.map(|fork| fork.source.clone()),
+        origin: fork.map(|_| "fork".to_owned()),
+        ephemeral: session.ephemeral,
+        session_id: session.session_id,
+        updated_at: session.updated_at,
+        running: session.running,
+        tail: tail.as_str().to_owned(),
+        blank: session.blank,
+        projections,
+        permission_mode: Some(session.permission_mode),
+        identity_profile: session.identity_profile,
     })
 }
 

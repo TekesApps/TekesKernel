@@ -168,14 +168,12 @@ pub async fn run(path: PathBuf) -> Result<()> {
             .with_file_changes(process.clone());
     crate::boot_trace::phase("carrier_assembled");
     process.attach_streams(assembly.streams().clone());
-    process.defer_existing_session_recovery()?;
-    process.boot_sweep()?;
-    crate::boot_trace::phase("boot_sweep");
-    assembly.finish_recovery()?;
-    crate::boot_trace::phase("finish_recovery");
+    // Readiness reads no thread (ADDENDUM-01 R1): sessions created, forked or unarchived from
+    // here on are admitted; every other session is deferred until `sessions.recover`.
+    process.arm_admission();
+    assembly.mark_ready();
     process.start_periodic_sweep();
-    process.start_schedule_timer()?;
-    crate::boot_trace::phase("timers_started");
+    crate::boot_trace::phase("ready_marked");
     host_runtime::install_termination_handler()?;
     let server = assembly.into_server();
     let handle = server.handle();
@@ -196,6 +194,8 @@ pub async fn run(path: PathBuf) -> Result<()> {
     crate::boot_trace::phase("ready");
     println!("{ready}");
     io::stdout().flush()?;
+    // Everything that touches threads starts only now, in the background.
+    process.run_post_ready();
     let serve = server.serve(listener);
     tokio::pin!(serve);
     let web_serve = async move {

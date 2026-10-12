@@ -61,8 +61,8 @@ pub use journal::{
     EndpointJournal, JOURNAL_FILE, JournalError, JournalRecord, JournalTail, LOCK_FILE,
 };
 pub use management::{
-    ForkSessionOperation, LEGACY_ORIGIN_CLIENT, ManagementError, ManagementStore, ORIGIN_CLIENT,
-    PendingQueueTransaction, QueueRecoveryDriver, QueueTransactionCompletion,
+    ForkLineage, ForkSessionOperation, LEGACY_ORIGIN_CLIENT, ManagementError, ManagementStore,
+    ORIGIN_CLIENT, PendingQueueTransaction, QueueRecoveryDriver, QueueTransactionCompletion,
     QueueTransactionDecision, QueueTransactionOperation, QueueTransactionState,
     SelectModelOperation, SelectedModel, SessionCreateOperation, WorkspaceFolderView,
     WorkspaceFolders, WorkspaceList, WorkspaceView, is_endpoint_origin_client,
@@ -95,6 +95,7 @@ pub use service::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, ArchiveResult,
     MutationReceipt, NativeEndpoint, NativeEndpointError, SESSION_NOTICE_OPERATION,
     SessionInventoryItem, SessionNotice, SessionNoticeSeverity, UnarchiveResult, card_summary,
+    permission_mode_of,
 };
 pub use stitch::{StitchDecision, StitchError, stitch_window};
 pub use stream_queue::{EndpointFrameQueue, FrameQueueError};

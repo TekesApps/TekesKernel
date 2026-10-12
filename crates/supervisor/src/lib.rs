@@ -2,6 +2,7 @@
 
 pub mod boot_trace;
 pub mod builtin;
+mod catalog;
 pub mod client_admin;
 pub mod client_extensions;
 mod context_usage;

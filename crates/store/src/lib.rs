@@ -4,6 +4,7 @@ mod asset;
 mod atomic;
 pub mod card;
 mod folder;
+pub mod folder_events;
 mod management_root;
 mod platform;
 mod rewrite;
@@ -11,7 +12,10 @@ mod tail;
 
 pub use asset::{AssetRef, AssetStore};
 pub use atomic::AtomicPublisher;
-pub use folder::{AppendOutcome, ConditionalAppendOutcome, CreateOutcome, ThreadStore};
+pub use folder::{
+    AppendOutcome, CleanupReport, ConditionalAppendOutcome, CreateOutcome, ThreadStore,
+    move_thread_folder,
+};
 pub use management_root::{
     ENDPOINT_MANAGEMENT_DIR, SESSION_SETTINGS_FILE, endpoint_management_root, retire_legacy_name,
     session_settings_path,
@@ -23,7 +27,10 @@ pub use rewrite::{
     ForkGenesisBinding, RedactionInventory, RewriteEventRef, RewriteFileMap, RewriteKind,
     RewriteOperation, RewritePhase, RewriteProgress,
 };
-pub use tail::{LockedLedger, TailScan, read_genesis, scan_valid_prefix};
+pub use tail::{
+    LockedLedger, TailRepair, TailScan, read_genesis, read_ledger_repaired, repair_thread_tails,
+    scan_valid_prefix,
+};
 
 use std::io;
 

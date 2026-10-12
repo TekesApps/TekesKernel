@@ -10,14 +10,14 @@ use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex, TryLockError, Weak};
-use std::time::{Duration, Instant};
+use std::time::{Duration, Instant, UNIX_EPOCH};
 
 use chrono::{DateTime, Utc};
 use endpoint::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, AcceptedStreamFrame,
     EndpointJournal, ManagementStore, MaterializedPrompt, MutationReceipt, NativeEndpoint,
-    Projector, SESSION_NOTICE_OPERATION, SessionCreateOperation, SessionNotice,
-    SessionNoticeSeverity,
+    Projector, SESSION_NOTICE_OPERATION, SessionCreateOperation, SessionInventoryItem,
+    SessionNotice, SessionNoticeSeverity,
 };
 use engine::{
     AdmissionLease, AdmissionPool, EnsureAction, LockFacts, TailState, classify, ensure_action_at,
@@ -26,7 +26,7 @@ use plugins::{MacOsNativeHelperVerifier, PluginStore};
 use profile::{ConfigRepository, ConfigSnapshot, DynamicToolCatalog};
 use schema::{Block, Event, EventKind, IJsonValue, OriginTuple};
 use sha2::{Digest, Sha256};
-use store::{AssetStore, LockedLedger, scan_valid_prefix};
+use store::{AssetStore, LockedLedger, ThreadStore, scan_valid_prefix};
 use worker_control::{
     ApprovalResponse, Frame, FrameChannel, Input, LaunchChild, LaunchResult, Lease, Meta, Receipt,
     Reject, Stop, WorkerMessage, decode_hello, decode_worker, encode_line,
@@ -431,7 +431,13 @@ pub struct ProductionProcessHost {
     plugin_store: Option<Arc<Mutex<PluginStore<MacOsNativeHelperVerifier>>>>,
     schedule: schedule::ScheduleAuthority,
     workers: Mutex<HashMap<String, Arc<WorkerHandle>>>,
-    deferred_recovery: Mutex<HashSet<String>>,
+    /// Pre-existing sessions the client has released with `sessions.recover` (DESIGN §6). A
+    /// session is deferred iff it is neither admitted (created/forked/unarchived by this
+    /// process, `store::folder_events`) nor in this set.
+    released: Mutex<HashSet<String>>,
+    catalog: Arc<crate::catalog::Catalog>,
+    /// Per-thread single-flight gates of the hydrator.
+    hydrating: Mutex<HashMap<String, Arc<Mutex<()>>>>,
     file_observations: crate::file_observation::SessionFileObservations,
     pending_workers: Mutex<BTreeMap<String, PendingWorker>>,
     workers_changed: Condvar,
@@ -803,6 +809,7 @@ impl ProductionProcessHost {
         )
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         let mcp_runtime = Arc::new(mcp_runtime);
+        let root_for_catalog = root.clone();
         let host = Arc::new_cyclic(|weak| Self {
             card_writer: crate::thread_card::CardWriter::spawn_from_env(),
             repository,
@@ -816,7 +823,9 @@ impl ProductionProcessHost {
             plugin_store,
             schedule,
             workers: Mutex::new(HashMap::new()),
-            deferred_recovery: Mutex::new(HashSet::new()),
+            released: Mutex::new(HashSet::new()),
+            catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
+            hydrating: Mutex::new(HashMap::new()),
             file_observations: crate::file_observation::SessionFileObservations::default(),
             pending_workers: Mutex::new(BTreeMap::new()),
             workers_changed: Condvar::new(),
@@ -843,6 +852,19 @@ impl ProductionProcessHost {
             #[cfg(test)]
             automatic_title_test_redirect: Mutex::new(None),
         });
+        // Folder membership changes (store::folder_events) invalidate what this host remembers
+        // about a session: its catalog entry, projection cache, release and published actionables.
+        let events_host = Arc::downgrade(&host);
+        let events_root = host.root.clone();
+        store::folder_events::subscribe(Arc::new(move |event| {
+            let Some(host) = events_host.upgrade() else {
+                return false;
+            };
+            if event.root() == events_root {
+                host.on_folder_event(event);
+            }
+            true
+        }));
         let refresh_host = Arc::downgrade(&host);
         std::thread::spawn(move || {
             while let Some(host) = refresh_host.upgrade() {
@@ -1375,7 +1397,7 @@ impl ProductionProcessHost {
                 output
             },
         );
-        let management = ManagementStore::open_at(&self.root, &timestamp)
+        let management = ManagementStore::open_light_at(&self.root, &timestamp)
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let session_id = management
             .create_session(SessionCreateOperation {
@@ -1494,6 +1516,157 @@ impl ProductionProcessHost {
             }
         }
         Ok(())
+    }
+
+    /// Starts the work that touches threads, after the ready line (ADDENDUM-01 §1.4). One
+    /// background thread, in order: load the catalog, clean stale ephemeral threads and
+    /// tombstones, start the schedule timer (its startup pass reads the sessions it launched),
+    /// then build the missing cards. A request that needs the List or one thread does not wait for
+    /// this thread: it loads/verifies what it needs itself (single flight).
+    pub fn run_post_ready(self: &Arc<Self>) {
+        let host = Arc::downgrade(self);
+        let spawned = std::thread::Builder::new()
+            .name("post-ready".to_owned())
+            .spawn(move || {
+                if let Some(host) = host.upgrade() {
+                    host.post_ready_tasks();
+                }
+            });
+        if let Err(error) = spawned {
+            eprintln!("process-host-post-ready-failed: {error}");
+        }
+    }
+
+    fn post_ready_tasks(self: &Arc<Self>) {
+        self.catalog.ensure_loaded();
+        crate::boot_trace::phase("catalog_loaded");
+        if self.draining.load(Ordering::Acquire) {
+            return;
+        }
+        self.cleanup_stale_ephemeral();
+        if self.draining.load(Ordering::Acquire) {
+            return;
+        }
+        if let Err(error) = self.start_schedule_timer() {
+            eprintln!("process-host-schedule-start-failed: {error}");
+        }
+        crate::boot_trace::phase("post_ready_timers");
+        self.run_upgrade_pass();
+    }
+
+    /// Removes ephemeral scratch threads and `discard-*` tombstones left by a previous process
+    /// (ADDENDUM-02 S4, -03 C7). Threads this process owns (admitted, or with a live worker) are
+    /// never touched; the store re-checks under the catalog lock. Until removed, such a thread is
+    /// hidden from the List (`is_stale_ephemeral`).
+    fn cleanup_stale_ephemeral(&self) {
+        let Ok(threads) = store::ThreadStore::open(&self.root) else {
+            return;
+        };
+        let live = self.live_sessions_for_cleanup();
+        let report = threads.cleanup_stale_ephemeral(&|id| {
+            store::folder_events::is_admitted(&self.root, id) || live.contains(id)
+        });
+        match report {
+            Ok(report) => {
+                if !report.removed.is_empty() || !report.busy.is_empty() || report.tombstones > 0 {
+                    eprintln!(
+                        "process-host-ephemeral-cleanup: removed={} busy={} tombstones={}",
+                        report.removed.len(),
+                        report.busy.len(),
+                        report.tombstones
+                    );
+                }
+            }
+            Err(error) => eprintln!("process-host-ephemeral-cleanup-failed: {error}"),
+        }
+    }
+
+    fn live_sessions_for_cleanup(&self) -> HashSet<String> {
+        self.workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .iter()
+            .filter(|(_, worker)| worker.alive.load(Ordering::Acquire))
+            .map(|(key, _)| key.split(':').next().unwrap_or(key).to_owned())
+            .collect()
+    }
+
+    /// The lazy upgrade of a root without (fresh) cards (DESIGN §9): fold each unverified thread
+    /// once, newest first, at a low duty cycle. It never delays readiness or a List request,
+    /// which verify what they need themselves.
+    fn run_upgrade_pass(&self) {
+        let work = self.catalog.unverified();
+        if work.is_empty() {
+            return;
+        }
+        let started = Instant::now();
+        let total = work.len();
+        let mut built = 0_usize;
+        let mut last_report = Instant::now();
+        for session in work {
+            if self.draining.load(Ordering::Acquire) {
+                return;
+            }
+            let began = Instant::now();
+            match self.hydrate(&session) {
+                Ok(()) => built += 1,
+                Err(error) => {
+                    eprintln!("process-host-upgrade-skipped: session={session} error={error}");
+                }
+            }
+            if last_report.elapsed() >= Duration::from_millis(250) {
+                eprintln!(
+                    "catalog-upgrade: built={built} total={total} elapsed_ms={}",
+                    started.elapsed().as_millis()
+                );
+                last_report = Instant::now();
+            }
+            // Duty cycle: rest as long as the fold took (bounded), so a workload that started
+            // meanwhile is not starved.
+            std::thread::sleep(began.elapsed().min(Duration::from_millis(200)));
+        }
+        eprintln!(
+            "catalog-upgrade: done built={built} total={total} elapsed_ms={}",
+            started.elapsed().as_millis()
+        );
+    }
+
+    /// Test helper: what `sessions.recover` does to the deferral set, without the verification.
+    #[cfg(test)]
+    pub(crate) fn release_for_test(&self, session_id: &str) {
+        self.released
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .insert(session_id.to_owned());
+    }
+
+    /// A previous process's ephemeral scratch thread that cleanup has not removed yet.
+    pub(crate) fn is_stale_ephemeral(&self, session_id: &str, ephemeral: bool) -> bool {
+        ephemeral && !store::folder_events::is_admitted(&self.root, session_id)
+    }
+
+    fn on_folder_event(&self, event: &store::folder_events::FolderEvent) {
+        use store::folder_events::FolderEvent;
+        let id = event.id();
+        self.catalog.forget(id);
+        self.projection_cache
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(id);
+        if let Some(streams) = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone()
+        {
+            streams.forget_session(id);
+        }
+        if matches!(event, FolderEvent::Removed { .. }) {
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .remove(id);
+        }
     }
 
     pub fn attach_streams(&self, streams: ProductionCarrierStreams) {
@@ -1618,6 +1791,9 @@ impl ProductionProcessHost {
         Ok(())
     }
 
+    /// One synchronous sweep tick (single-flight with the periodic thread). The Kernel no longer
+    /// calls this at boot -- readiness does not wait for any thread -- but tests and tools use
+    /// it to run the sweep deterministically.
     pub fn boot_sweep(&self) -> Result<(), DaemonError> {
         let _sweep = self
             .sweep_lock
@@ -1626,23 +1802,18 @@ impl ProductionProcessHost {
         self.sweep_once()
     }
 
-    /// Built-in launch repairs projections immediately, but existing sessions
-    /// only resume after the client has installed control/actionable baselines.
-    pub fn defer_existing_session_recovery(&self) -> Result<(), DaemonError> {
-        let sessions = fs::read_dir(self.root.join("threads")).map_err(DaemonError::io)?;
-        let mut deferred = self
-            .deferred_recovery
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner);
-        for session in sessions {
-            let session = session.map_err(DaemonError::io)?;
-            if session.file_type().map_err(DaemonError::io)?.is_dir() {
-                deferred.insert(session.file_name().to_string_lossy().into_owned());
-            }
-        }
-        Ok(())
+    /// Starts recording which sessions this process creates, forks or unarchives. Called once,
+    /// immediately before readiness: folders published earlier (recovery of pending
+    /// operations) are pre-existing sessions and stay deferred.
+    pub fn arm_admission(&self) {
+        store::folder_events::arm_admission(&self.root);
     }
 
+    /// The client releases pre-existing sessions after it installed its control and actionable
+    /// baselines (spec/session-endpoint.md, `sessions.recover`). For each id: bring the thread's
+    /// view to a verified state (repair a torn tail, project the journal), un-defer it, and give
+    /// it its share of a sweep -- which is where an interrupted turn gets its reconcile-only
+    /// worker. Other sessions are not touched.
     pub fn recover_client_sessions(&self, sessions: &[String]) -> Result<(), DaemonError> {
         for session in sessions {
             if session.is_empty()
@@ -1659,16 +1830,88 @@ impl ProductionProcessHost {
                 return Err(DaemonError::invalid_config("recovery session not found"));
             }
         }
-        {
-            let mut deferred = self
-                .deferred_recovery
+        for session in sessions {
+            if let Err(error) = self.ensure_verified(session) {
+                // A quarantined or unreadable thread is not recovered; the others still are.
+                eprintln!("process-host-recover-skipped: session={session} error={error}");
+                continue;
+            }
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .insert(session.clone());
+            let _sweep = self
+                .sweep_lock
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
-            for session in sessions {
-                deferred.remove(session);
+            if let Err(error) = self.sweep_session(session) {
+                eprintln!("process-host-sweep-session-failed: session={session} error={error}");
             }
         }
-        self.boot_sweep()
+        Ok(())
+    }
+
+    /// Brings one thread to a verified state: `Fresh` in the catalog. A view that a fold has
+    /// produced is trusted; otherwise the thread's tails are repaired when no one holds them
+    /// and the thread is folded and projected once (`publish_appended`, which also refreshes
+    /// the catalog and hands the card to its writer). Returns an error for a quarantined
+    /// thread. Cost: one decode of this thread, never of any other.
+    pub(crate) fn ensure_verified(&self, session_id: &str) -> Result<(), DaemonError> {
+        let Some(entry) = self.catalog.get(session_id) else {
+            return Err(DaemonError::invalid_config("session not found"));
+        };
+        match entry.trust {
+            crate::catalog::Trust::Fresh => return Ok(()),
+            crate::catalog::Trust::Corrupt(reason) => {
+                return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+            }
+            crate::catalog::Trust::Ahead | crate::catalog::Trust::Cold => {}
+        }
+        self.hydrate(session_id)
+    }
+
+    /// The hydrator's unit of work (single flight per thread).
+    pub(crate) fn hydrate(&self, session_id: &str) -> Result<(), DaemonError> {
+        let gate = {
+            let mut gates = self
+                .hydrating
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            Arc::clone(gates.entry(session_id.to_owned()).or_default())
+        };
+        let _single_flight = gate
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        // Another caller may have finished while we waited.
+        if let Some(entry) = self.catalog.get(session_id) {
+            match entry.trust {
+                crate::catalog::Trust::Fresh => return Ok(()),
+                crate::catalog::Trust::Corrupt(reason) => {
+                    return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+                }
+                _ => {}
+            }
+        }
+        let folder = self.root.join("threads").join(session_id);
+        let report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+        if let Some((file, reason)) = report.corrupt.first() {
+            let reason = format!("{file}: {reason}");
+            eprintln!("process-host-hydrate-quarantined: session={session_id} {reason}");
+            self.catalog.mark_corrupt(session_id, &reason);
+            return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        }
+        if report.truncated_bytes > 0 {
+            eprintln!(
+                "process-host-hydrate-repair: session={session_id} discarded_partial_bytes={}",
+                report.truncated_bytes
+            );
+            // The repair fsynced the ledger: it counts against the same limiter the card writer
+            // uses, and never waits (hydration may be serving a List or a thread open).
+            self.card_writer.governor().charge(1);
+        }
+        self.card_writer.reset_window(session_id);
+        self.publish_appended(session_id)?;
+        Ok(())
     }
 
     /// Audit invariant I3: the endpoint journal catches up with the semantic
@@ -1800,109 +2043,133 @@ impl ProductionProcessHost {
     }
 
     fn sweep_once(&self) -> Result<(), DaemonError> {
-        let mut sessions = fs::read_dir(self.root.join("threads"))
-            .map_err(DaemonError::io)?
-            .collect::<Result<Vec<_>, _>>()
-            .map_err(DaemonError::io)?;
-        sessions.sort_by_key(fs::DirEntry::file_name);
-        for session in sessions {
-            let session_started = Instant::now();
-            let session_result = (|| -> Result<(), DaemonError> {
-                if !session.file_type().map_err(DaemonError::io)?.is_dir() {
-                    return Ok(());
-                }
-                let session_id = session.file_name().to_string_lossy().into_owned();
-                let mut ledgers = fs::read_dir(session.path())
-                    .map_err(DaemonError::io)?
-                    .collect::<Result<Vec<_>, _>>()
-                    .map_err(DaemonError::io)?;
-                ledgers.retain(|entry| {
-                    entry.file_type().is_ok_and(|kind| kind.is_file())
-                        && entry.path().extension().and_then(|value| value.to_str())
-                            == Some("jsonl")
-                        && entry
-                            .file_name()
-                            .to_str()
-                            .is_some_and(|name| name != endpoint::JOURNAL_FILE)
-                });
-                ledgers.sort_by_key(|entry| {
-                    (
-                        entry.file_name() != std::ffi::OsStr::new("main.jsonl"),
-                        entry.file_name(),
-                    )
-                });
-                self.propagate_durable_stops_before_sweep(&session_id, &ledgers)?;
-                for ledger in ledgers {
-                    let path = ledger.path();
-                    let scan = self.sweep_ledger_scan(&path)?;
-                    let ledger_last_seq = scan.last_seq;
-                    let facts = &scan.lifecycle;
-                    let key = if ledger.file_name() == std::ffi::OsStr::new("main.jsonl") {
-                        session_id.clone()
-                    } else {
-                        format!("{session_id}:{}", scan.line)
-                    };
-                    let owned_live = self
-                        .workers
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .get(&key)
-                        .is_some_and(|worker| worker.alive.load(Ordering::Acquire));
-                    if key == session_id && !owned_live {
-                        self.repair_main_projection(&session_id, ledger_last_seq);
-                    }
-                    let lock_facts = if owned_live || probe_line_lock(&path)? == LineLockState::Busy
-                    {
-                        LockFacts::OTHER
-                    } else {
-                        LockFacts::FREE
-                    };
-                    let state = classify(facts, lock_facts);
-                    if ensure_action_at(state, facts, Some(&now_rfc3339())) == EnsureAction::None
-                        && !(key == session_id && goal_continuation_due(&path)?)
-                    {
-                        continue;
-                    }
-                    if !self.restart_is_due(&key) {
-                        continue;
-                    }
-                    if self
-                        .deferred_recovery
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .contains(&session_id)
-                    {
-                        continue;
-                    }
-                    self.refresh_limits(&path)?;
-                    if let Err(error) = self.schedule_worker_at(&key, &session_id, path) {
-                        self.note_restart_failure(
-                            &key,
-                            &session_id,
-                            error.bootstrap_code().as_bytes(),
-                        );
-                    }
-                }
-                Ok(())
-            })();
-            if let Err(error) = session_result {
-                eprintln!(
-                    "process-host-sweep-session-failed: session={} error={error}",
-                    session.file_name().to_string_lossy()
-                );
+        for session_id in self.sweep_ids() {
+            let started = Instant::now();
+            if let Err(error) = self.sweep_session(&session_id) {
+                eprintln!("process-host-sweep-session-failed: session={session_id} error={error}");
             }
             // Opt-in (`TEKES_KERNEL_BOOT_TRACE=1`): the sweep runs every second, so only a
             // session that took noticeable time is reported.
-            if crate::boot_trace::per_item_enabled() && session_started.elapsed().as_millis() >= 100
-            {
+            if crate::boot_trace::per_item_enabled() && started.elapsed().as_millis() >= 100 {
                 crate::boot_trace::detail(
                     "sweep_session",
-                    &format!(
-                        "session={} ms={}",
-                        session.file_name().to_string_lossy(),
-                        session_started.elapsed().as_millis()
-                    ),
+                    &format!("session={session_id} ms={}", started.elapsed().as_millis()),
                 );
+            }
+        }
+        Ok(())
+    }
+
+    /// The sessions a tick considers. Before the catalog has loaded (the first moments after
+    /// `ready`) that is only what this process created or released -- no directory is read.
+    fn sweep_ids(&self) -> Vec<String> {
+        let mut ids = if self.catalog.is_loaded() {
+            self.catalog
+                .entries_now()
+                .into_iter()
+                .map(|(id, _)| id)
+                .collect::<Vec<_>>()
+        } else {
+            store::folder_events::admitted_ids(&self.root)
+        };
+        ids.extend(
+            self.released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .iter()
+                .cloned(),
+        );
+        ids.sort();
+        ids.dedup();
+        ids
+    }
+
+    /// True for a session that existed before this process and the client has not released with
+    /// `sessions.recover`: its workers may not be started by a sweep (DESIGN §6). No thread is
+    /// enumerated to decide this: a session is deferred unless this process created, forked or
+    /// unarchived it (`store::folder_events` admission) or the client released it.
+    fn is_deferred(&self, session_id: &str) -> bool {
+        !store::folder_events::is_admitted(&self.root, session_id)
+            && !self
+                .released
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .contains(session_id)
+    }
+
+    /// One session's share of a sweep tick. A deferred session only gets durable-stop
+    /// propagation, and only when its verified view says a stop is active; everything else about
+    /// it waits for `sessions.recover` (projection repair is the hydrator's job).
+    fn sweep_session(&self, session_id: &str) -> Result<(), DaemonError> {
+        let Some(entry) = self.catalog.get(session_id) else {
+            return Ok(());
+        };
+        if matches!(entry.trust, crate::catalog::Trust::Corrupt(_)) {
+            return Ok(());
+        }
+        let deferred = self.is_deferred(session_id);
+        if deferred && !entry.view.as_ref().is_some_and(|view| view.stop_active()) {
+            return Ok(());
+        }
+        let session_dir = self.root.join("threads").join(session_id);
+        let mut ledgers = fs::read_dir(&session_dir)
+            .map_err(DaemonError::io)?
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(DaemonError::io)?;
+        ledgers.retain(|entry| {
+            entry.file_type().is_ok_and(|kind| kind.is_file())
+                && entry.path().extension().and_then(|value| value.to_str()) == Some("jsonl")
+                && entry
+                    .file_name()
+                    .to_str()
+                    .is_some_and(|name| name != endpoint::JOURNAL_FILE)
+        });
+        ledgers.sort_by_key(|entry| {
+            (
+                entry.file_name() != std::ffi::OsStr::new("main.jsonl"),
+                entry.file_name(),
+            )
+        });
+        self.propagate_durable_stops_before_sweep(session_id, &ledgers)?;
+        if deferred {
+            return Ok(());
+        }
+        for ledger in ledgers {
+            let path = ledger.path();
+            let scan = self.sweep_ledger_scan(&path)?;
+            let ledger_last_seq = scan.last_seq;
+            let facts = &scan.lifecycle;
+            let key = if ledger.file_name() == std::ffi::OsStr::new("main.jsonl") {
+                session_id.to_owned()
+            } else {
+                format!("{session_id}:{}", scan.line)
+            };
+            let owned_live = self
+                .workers
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .get(&key)
+                .is_some_and(|worker| worker.alive.load(Ordering::Acquire));
+            if key == session_id && !owned_live {
+                self.repair_main_projection(session_id, ledger_last_seq);
+            }
+            let lock_facts = if owned_live || probe_line_lock(&path)? == LineLockState::Busy {
+                LockFacts::OTHER
+            } else {
+                LockFacts::FREE
+            };
+            let state = classify(facts, lock_facts);
+            if ensure_action_at(state, facts, Some(&now_rfc3339())) == EnsureAction::None
+                && !(key == session_id && goal_continuation_due(&path)?)
+            {
+                continue;
+            }
+            if !self.restart_is_due(&key) {
+                continue;
+            }
+            self.refresh_limits(&path)?;
+            if let Err(error) = self.schedule_worker_at(&key, session_id, path) {
+                self.note_restart_failure(&key, session_id, error.bootstrap_code().as_bytes());
             }
         }
         Ok(())
@@ -1948,13 +2215,13 @@ impl ProductionProcessHost {
 
     pub fn shutdown(&self) {
         self.draining.store(true, Ordering::Release);
-        self.card_writer.shutdown();
         self.pending_workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .clear();
         self.admission_changed.notify_all();
         self.workers_changed.notify_all();
+        let live_before = self.live_sessions_for_cleanup();
         let workers = self
             .workers
             .lock()
@@ -1971,6 +2238,15 @@ impl ProductionProcessHost {
             let _ = child.wait();
             worker.alive.store(false, Ordering::Release);
         }
+        // Workers first, then the cards (E831 ruling): a thread that was live at quit gets a
+        // final fold of its now-stable ledger, so its card is not left Ahead. The flush is bounded
+        // by the writer's shutdown budget, which is the most quit can be delayed.
+        for session in live_before {
+            if let Some(folder) = Some(self.root.join("threads").join(&session)) {
+                self.card_writer.mark_dirty(&session, folder, None);
+            }
+        }
+        self.card_writer.shutdown();
     }
 
     fn ensure_running(&self, session_id: &str) -> Result<Arc<WorkerHandle>, DaemonError> {
@@ -3281,26 +3557,36 @@ impl ProductionProcessHost {
                 }
             }
         }
-        // The fold above is the verification a card needs. Preparing a card is only worth its
-        // cost when the writer is due for this thread (K6): inside the debounce window the
-        // thread is marked dirty and the writer re-folds it itself when the window expires, so
-        // a burst of doorbells costs one map lookup each. Only clean reads are described.
+        // The fold above is the verification a card and the catalog view need. The view is
+        // refreshed on every clean fold (cheap: no ledger bytes); the card is only prepared for
+        // the writer when it is due for this thread (K6), otherwise the thread is marked dirty
+        // and the writer re-folds it itself when its window expires. A torn tail is repaired
+        // first and described by the next fold.
         if clean_read {
             let journal_snapshot = crate::thread_card::journal_input(&journal);
-            if self.card_writer.is_due(session_id) {
-                if let Some(card) = crate::thread_card::prepare(
-                    session_id,
-                    folder.clone(),
-                    bytes,
-                    valid_bytes,
-                    &projection,
-                    journal_snapshot,
-                ) {
-                    self.card_writer.submit(card);
+            let due = self.card_writer.is_due(session_id);
+            match crate::thread_card::prepare(
+                session_id,
+                folder.clone(),
+                bytes,
+                valid_bytes,
+                &projection,
+                journal_snapshot,
+            ) {
+                Some(card) => {
+                    self.catalog.set_fresh_main(session_id, card.view());
+                    if due {
+                        self.card_writer.submit(card);
+                    } else {
+                        self.card_writer
+                            .mark_dirty(session_id, folder.clone(), journal_snapshot);
+                    }
                 }
-            } else {
-                self.card_writer
-                    .mark_dirty(session_id, folder.clone(), journal_snapshot);
+                None if !due => {
+                    self.card_writer
+                        .mark_dirty(session_id, folder.clone(), journal_snapshot);
+                }
+                None => {}
             }
         }
         let mut projection_cache = self
@@ -4737,7 +5023,247 @@ fn child_exited_within(child: &Mutex<Child>, timeout: Duration) -> bool {
     }
 }
 
+/// Facts that classify as `settled`: used for the placeholder row of a thread whose verification
+/// has not finished inside the List's wait budget. It is never `interrupted` or
+/// `recovery_needed`: a wrong-but-neutral tail is corrected by the upsert that follows.
+fn neutral_lifecycle() -> schema::LifecycleFacts {
+    schema::LifecycleFacts {
+        latest_turn: None,
+        terminal_tail: true,
+        stop_active: false,
+        stop_closure_point: None,
+        open_hold: false,
+        answered_hold: false,
+        runnable_inputs: Vec::new(),
+        turn_open_inputs: Vec::new(),
+        live_inputs: Vec::new(),
+        unstarted: false,
+        unresolved_work: false,
+        resume_policy: schema::ResumePolicy::Never,
+        recovery_ordinal: 0,
+        continuation_wait_until: None,
+        admission_wait_until: None,
+    }
+}
+
+const DEFAULT_LIST_WAIT: Duration = Duration::from_millis(2_000);
+
+impl ProductionProcessHost {
+    fn list_wait() -> Duration {
+        std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")
+            .ok()
+            .and_then(|value| value.parse::<u64>().ok())
+            .map_or(DEFAULT_LIST_WAIT, Duration::from_millis)
+    }
+
+    fn is_running(&self, session_id: &str, live: &HashSet<String>) -> bool {
+        live.contains(session_id)
+            || ThreadStore::open(&self.root)
+                .and_then(|threads| threads.session_has_live_line_holder(session_id))
+                .unwrap_or(false)
+    }
+
+    /// The List row of one catalog entry. `None` hides it (a previous process's ephemeral
+    /// scratch thread) or means the folder is unreadable.
+    fn catalog_item(
+        &self,
+        session_id: &str,
+        entry: &crate::catalog::Entry,
+        live: &HashSet<String>,
+    ) -> Option<SessionInventoryItem> {
+        let folder = self.root.join("threads").join(session_id);
+        let running = self.is_running(session_id, live);
+        if let Some(view) = entry
+            .view
+            .as_ref()
+            .filter(|_| !matches!(entry.trust, crate::catalog::Trust::Cold))
+        {
+            let main = view.main()?;
+            if self.is_stale_ephemeral(session_id, view.summary.ephemeral) {
+                return None;
+            }
+            return Some(SessionInventoryItem {
+                session_id: session_id.to_owned(),
+                workspace_id: view.summary.workspace.clone(),
+                title: view.summary.title.clone(),
+                updated_at: view.summary.updated_ms,
+                archived: false,
+                running,
+                blank: view.summary.blank,
+                as_of_seq: main.last_seq,
+                lifecycle: main.facts.clone(),
+                permission_mode: endpoint::permission_mode_of(&folder),
+                identity_profile: view.summary.identity_profile.clone(),
+                ephemeral: view.summary.ephemeral,
+            });
+        }
+        // Placeholder: a Cold or quarantined thread. Identity, workspace and recency come from
+        // the genesis line and the file time; no title, neutral tail.
+        let genesis = store::read_genesis(folder.join("main.jsonl")).ok()??;
+        let ephemeral = genesis.is_ephemeral_genesis();
+        if self.is_stale_ephemeral(session_id, ephemeral) {
+            return None;
+        }
+        let updated_at = fs::metadata(folder.join("main.jsonl"))
+            .and_then(|metadata| metadata.modified())
+            .ok()
+            .and_then(|time| time.duration_since(UNIX_EPOCH).ok())
+            .map_or(0, |duration| {
+                u64::try_from(duration.as_millis()).unwrap_or(0)
+            });
+        Some(SessionInventoryItem {
+            session_id: session_id.to_owned(),
+            workspace_id: genesis.string_field("workspace")?.to_owned(),
+            title: None,
+            updated_at,
+            archived: false,
+            running,
+            blank: false,
+            as_of_seq: 0,
+            lifecycle: neutral_lifecycle(),
+            permission_mode: endpoint::permission_mode_of(&folder),
+            identity_profile: match genesis.string_field("identity_profile") {
+                None => Some("coding".to_owned()),
+                Some(profile @ ("coding" | "general")) => Some(profile.to_owned()),
+                _ => None,
+            },
+            ephemeral,
+        })
+    }
+
+    /// Verifies the not-yet-verified threads in parallel and waits for them at most `budget`
+    /// (R2): the List ships whatever finished; the rest keep verifying in the background and
+    /// announce themselves with a status frame, which turns into an inventory upsert.
+    fn verify_within(&self, ids: Vec<String>, budget: Duration) {
+        if ids.is_empty() {
+            return;
+        }
+        let Some(host) = self.self_weak.upgrade() else {
+            return;
+        };
+        let total = ids.len();
+        let queue = Arc::new(Mutex::new(ids.into_iter().collect::<VecDeque<_>>()));
+        let finished = Arc::new((Mutex::new(0_usize), Condvar::new()));
+        let workers = std::thread::available_parallelism()
+            .map_or(2, std::num::NonZeroUsize::get)
+            .min(8)
+            .min(total);
+        for _ in 0..workers {
+            let (host, queue, finished) =
+                (Arc::clone(&host), Arc::clone(&queue), Arc::clone(&finished));
+            std::thread::spawn(move || {
+                loop {
+                    let next = queue
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner)
+                        .pop_front();
+                    let Some(id) = next else {
+                        return;
+                    };
+                    if let Err(error) = host.hydrate(&id) {
+                        eprintln!("process-host-list-verify-skipped: session={id} error={error}");
+                    }
+                    host.publish_session_status(&id);
+                    let (count, changed) = &*finished;
+                    *count
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner) += 1;
+                    changed.notify_all();
+                }
+            });
+        }
+        let (count, changed) = &*finished;
+        let deadline = Instant::now() + budget;
+        let mut done = count
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        while *done < total {
+            let Some(remaining) = deadline.checked_duration_since(Instant::now()) else {
+                break;
+            };
+            done = changed
+                .wait_timeout(done, remaining)
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .0;
+        }
+    }
+
+    fn build_inventory(
+        &self,
+        include_archived: bool,
+        wait: Duration,
+    ) -> Result<Vec<SessionInventoryItem>, DaemonError> {
+        let live = self.live_sessions();
+        self.catalog.ensure_loaded();
+        let unverified = self
+            .catalog
+            .entries_now()
+            .into_iter()
+            .filter(|(_, entry)| {
+                matches!(
+                    entry.trust,
+                    crate::catalog::Trust::Cold | crate::catalog::Trust::Ahead
+                )
+            })
+            .map(|(id, _)| id)
+            .collect::<Vec<_>>();
+        self.verify_within(unverified, wait);
+        let mut items = self
+            .catalog
+            .entries_now()
+            .into_iter()
+            .filter_map(|(id, entry)| self.catalog_item(&id, &entry, &live))
+            .collect::<Vec<_>>();
+        if include_archived {
+            for entry in fs::read_dir(self.root.join("archive")).map_err(DaemonError::io)? {
+                let entry = entry.map_err(DaemonError::io)?;
+                let id = entry.file_name().to_string_lossy().into_owned();
+                if entry.file_type().map_err(DaemonError::io)?.is_dir()
+                    && endpoint::validate_session_id(&id).is_ok()
+                {
+                    items.push(SessionInventoryItem {
+                        session_id: id,
+                        workspace_id: String::new(),
+                        title: None,
+                        updated_at: 0,
+                        archived: true,
+                        running: false,
+                        blank: false,
+                        as_of_seq: 0,
+                        lifecycle: neutral_lifecycle(),
+                        permission_mode: String::new(),
+                        identity_profile: None,
+                        ephemeral: false,
+                    });
+                }
+            }
+        }
+        items.sort_by(|left, right| left.session_id.as_bytes().cmp(right.session_id.as_bytes()));
+        Ok(items)
+    }
+}
+
 impl SupervisorSessionAuthority for ProductionProcessHost {
+    fn inventory_items(
+        &self,
+        include_archived: bool,
+    ) -> Option<Result<Vec<SessionInventoryItem>, String>> {
+        Some(
+            self.build_inventory(include_archived, Self::list_wait())
+                .map_err(|error| error.to_string()),
+        )
+    }
+
+    fn inventory_item(
+        &self,
+        session_id: &str,
+    ) -> Option<Result<Option<SessionInventoryItem>, String>> {
+        let live = self.live_sessions();
+        Some(Ok(self.catalog.get(session_id).and_then(|entry| {
+            self.catalog_item(session_id, &entry, &live)
+        })))
+    }
+
     fn live_sessions(&self) -> HashSet<String> {
         self.workers
             .lock()
@@ -6506,7 +7032,7 @@ mod tests {
 
     #[cfg(target_os = "macos")]
     #[test]
-    fn boot_sweep_repairs_a_terminal_main_tail_missing_from_the_endpoint_journal() {
+    fn opening_a_thread_repairs_a_terminal_main_tail_missing_from_the_endpoint_journal() {
         const SESSION: &str = "018f0000-0000-7000-8000-000000000003";
         let root = tempfile::tempdir().expect("process host root");
         let folder = root.path().join("threads").join(SESSION);
@@ -6540,7 +7066,10 @@ mod tests {
         .expect("stream frame");
         fs::write(folder.join("main.jsonl"), source).expect("terminal semantic tail");
 
-        host.boot_sweep().expect("boot projection recovery");
+        // Lazy boot: opening the thread (`reconcile_projection`, which every journal open runs
+        // first) -- not a boot sweep -- brings its journal up to its ledger.
+        SupervisorSessionAuthority::reconcile_projection(&*host, SESSION)
+            .expect("open-time projection recovery");
 
         let endpoint = EndpointJournal::open(&folder).expect("endpoint journal");
         let event_types = endpoint
@@ -6647,6 +7176,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(SESSION);
         let streams = ProductionCarrierStreams::new(root.path());
         host.attach_streams(streams.clone());
         host.publish_appended(SESSION)
@@ -6852,6 +7382,7 @@ mod tests {
         let host =
             ProductionProcessHost::open(root.path(), &bin, "test", root.path().join(".agent"))
                 .expect("process host");
+        host.release_for_test(SESSION);
         let streams = ProductionCarrierStreams::new(root.path());
         host.attach_streams(streams.clone());
         let mut inventory = streams
@@ -6955,6 +7486,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(SESSION);
         host.publish_appended(SESSION)
             .expect("project the active prefix");
         fs::write(folder.join("main.jsonl"), source).expect("terminal semantic tail");
@@ -7346,8 +7878,7 @@ mod tests {
         append_test_input(&folder.join("main.jsonl"), session);
 
         if defer_recovery {
-            host.defer_existing_session_recovery()
-                .expect("defer startup work");
+            // Pre-existing sessions are deferred without any enumeration.
             host.boot_sweep().expect("repair startup state");
             assert!(host.periodic_sweep_once().expect("deferred periodic sweep"));
             assert!(
@@ -7377,6 +7908,12 @@ mod tests {
                 "repeat recovery must retain the live worker"
             );
         } else {
+            // Both sessions are released (as `sessions.recover` would): the corrupt one must
+            // not stop the runnable one from being recovered.
+            host.released
+                .lock()
+                .unwrap()
+                .extend([corrupt.to_owned(), session.to_owned()]);
             assert!(host.periodic_sweep_once().expect("isolated sweep"));
         }
 
@@ -7480,6 +8017,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(session);
 
         assert!(host.periodic_sweep_once().expect("busy sweep"));
         assert!(
@@ -8174,6 +8712,7 @@ mod tests {
             root.path().join("missing-agent-home"),
         )
         .expect("process host");
+        host.release_for_test(session);
         host.boot_sweep().expect("boot sweep");
 
         for ledger in [&main, &child_ledger, &grandchild_ledger] {
@@ -9015,6 +9554,207 @@ mod tests {
 
     /// A torn tail keeps the pre-existing behaviour: the separate-read paths reject it
     /// ("requires tail recovery") and the call reports the error after the journal reconcile.
+    /// E831 E1: after a discard, a thread created with the same id starts at a small ledger
+    /// `last_seq`; the monotonic guard must not freeze its actionable set at the old value.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_reused_session_id_does_not_inherit_the_old_actionable_high_water_mark() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000a7";
+        let (host, streams, ledger) = held_host(root.path(), session, "");
+        // Ephemeral genesis so the thread can be discarded.
+        let text = fs::read_to_string(&ledger).expect("ledger");
+        // canonical key order: "config" < "ephemeral" < "format"
+        let ephemeral = text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1);
+        assert_ne!(text, ephemeral);
+        fs::write(&ledger, &ephemeral).expect("ephemeral ledger");
+        // old life: the hold is answered, the published set is empty at last_seq 10
+        {
+            let mut file = fs::OpenOptions::new()
+                .append(true)
+                .open(&ledger)
+                .expect("append");
+            file.write_all((held_response_line(session) + "\n").as_bytes())
+                .expect("approval_response");
+        }
+        host.publish_appended(session).expect("old life");
+        assert!(streams.published_pending_for_test(session, None).is_empty());
+        // discard (announces Removed), then the id is reused by a thread whose ledger is
+        // shorter (last_seq 9) and has its hold pending
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .discard_ephemeral(session)
+            .expect("discard");
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("new folder");
+        fs::write(
+            folder.join("main.jsonl"),
+            held_ledger_lines(session).join("\n") + "\n",
+        )
+        .expect("new ledger");
+        host.publish_appended(session).expect("new life");
+        assert_eq!(
+            streams.published_pending_for_test(session, None).len(),
+            1,
+            "the reused id's pending hold is published, not refused as 'older'"
+        );
+        host.shutdown();
+    }
+
+    fn held_thread_on_disk(root: &Path, session: &str) -> PathBuf {
+        let folder = root.join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        fs::write(
+            folder.join("main.jsonl"),
+            held_ledger_lines(session).join("\n") + "\n",
+        )
+        .expect("ledger");
+        folder
+    }
+
+    /// T3: the List built from the catalog (cards after verification) is the List a full scan
+    /// produces, for every field the row carries; a thread whose verification has not finished
+    /// inside the wait budget is listed with a neutral placeholder and becomes the real row
+    /// afterwards.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder() {
+        let root = tempfile::tempdir().expect("root");
+        let ids = [
+            "018f0000-0000-7000-8000-0000000000b1",
+            "018f0000-0000-7000-8000-0000000000b2",
+            "018f0000-0000-7000-8000-0000000000b3",
+        ];
+        for id in ids {
+            held_thread_on_disk(root.path(), id);
+        }
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.attach_streams(ProductionCarrierStreams::new(root.path()));
+        // Nothing is verified yet: a zero budget lists placeholders (neutral tail, no title)
+        // without failing.
+        let early = host
+            .build_inventory(false, Duration::ZERO)
+            .expect("early list");
+        assert_eq!(early.len(), 3);
+        assert!(early.iter().all(|item| item.workspace_id == "ws"));
+        // Verification proceeds in the background; a patient list is the scan list.
+        let patient = host
+            .build_inventory(false, Duration::from_secs(60))
+            .expect("patient list");
+        let scanned = NativeEndpoint::open(root.path())
+            .expect("endpoint")
+            .list_sessions(&HashSet::new())
+            .expect("scan");
+        assert_eq!(patient.len(), scanned.len());
+        for (left, right) in patient.iter().zip(&scanned) {
+            assert_eq!(left, right, "row {}", left.session_id);
+        }
+        // The single-row path agrees with the list.
+        let one = host
+            .inventory_item(ids[1])
+            .expect("catalog backed")
+            .expect("ok")
+            .expect("row");
+        assert_eq!(one, patient[1]);
+        host.shutdown();
+    }
+
+    /// T6b/T6d: a session that existed before this process is deferred; one this process
+    /// created is not; an archived thread unarchived through the store chokepoint is admitted,
+    /// and nothing else is.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn only_threads_this_process_published_or_unarchived_are_admitted() {
+        let root = tempfile::tempdir().expect("root");
+        let old = "018f0000-0000-7000-8000-0000000000c1";
+        let archived = "018f0000-0000-7000-8000-0000000000c2";
+        held_thread_on_disk(root.path(), old);
+        let archived_folder = held_thread_on_disk(root.path(), archived);
+        fs::create_dir_all(root.path().join("archive")).expect("archive");
+        let in_archive = root.path().join("archive").join(archived);
+        store::move_thread_folder(&archived_folder, &in_archive).expect("archive move");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        host.arm_admission();
+        assert!(host.is_deferred(old), "a pre-existing thread is deferred");
+        assert!(host.is_deferred(archived));
+        store::move_thread_folder(&in_archive, &root.path().join("threads").join(archived))
+            .expect("unarchive move");
+        assert!(!host.is_deferred(archived), "unarchive admits");
+        assert!(host.is_deferred(old), "the other thread stays deferred");
+        host.release_for_test(old);
+        assert!(!host.is_deferred(old), "a released thread is not deferred");
+        host.shutdown();
+    }
+
+    /// P-3 tripwire (in process): with every thread and archive folder unreadable (mode 000),
+    /// the ready preparation -- storage preflight, host open, admission, the first periodic
+    /// sweep tick's id selection -- succeeds, so nothing on the readiness path reads a thread.
+    /// (The out-of-process variant with `sandbox-exec` runs against the real binary.)
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn the_ready_path_does_not_read_any_thread_or_archive_folder() {
+        use std::os::unix::fs::PermissionsExt;
+        let root_dir = tempfile::tempdir().expect("root");
+        let root_path = fs::canonicalize(root_dir.path()).expect("canonical root");
+        let mut locked = Vec::new();
+        for (index, area) in ["threads", "archive"].into_iter().enumerate() {
+            for n in 0..4 {
+                let id = format!("018f0000-0000-7000-8000-00000000d{index}{n:02}");
+                let folder = root_path.join(area).join(&id);
+                fs::create_dir_all(folder.join("assets")).expect("folder");
+                fs::write(
+                    folder.join("main.jsonl"),
+                    held_ledger_lines(&id).join("\n") + "\n",
+                )
+                .expect("ledger");
+                locked.push(folder);
+            }
+        }
+        struct Restore(Vec<PathBuf>);
+        impl Drop for Restore {
+            fn drop(&mut self) {
+                for folder in &self.0 {
+                    let _ = fs::set_permissions(folder, fs::Permissions::from_mode(0o700));
+                }
+            }
+        }
+        let _restore = Restore(locked.clone());
+        for folder in &locked {
+            fs::set_permissions(folder, fs::Permissions::from_mode(0o000)).expect("lock");
+        }
+        for area in ["", "threads", "archive"] {
+            fs::set_permissions(root_path.join(area), fs::Permissions::from_mode(0o700))
+                .expect("area mode");
+        }
+        crate::host_runtime::prepare_storage(&root_path.join("threads"))
+            .expect("storage preflight");
+        let host = ProductionProcessHost::open(
+            &root_path,
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root_path.join("missing-agent-home"),
+        )
+        .expect("process host opens without reading threads");
+        host.arm_admission();
+        assert!(
+            host.sweep_ids().is_empty(),
+            "nothing admitted, nothing swept"
+        );
+        host.shutdown();
+    }
+
     /// K9: a projection decoded before a newer publication cannot undo it, even when it
     /// reaches the diff after the newer one (the residual S1-a window).
     #[cfg(target_os = "macos")]

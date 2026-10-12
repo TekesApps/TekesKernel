@@ -43,6 +43,26 @@ pub(crate) struct PreparedCard {
 }
 
 impl PreparedCard {
+    /// The catalog view of this fold (no ledger bytes).
+    pub(crate) fn view(&self) -> crate::catalog::EntryView {
+        crate::catalog::EntryView {
+            summary: self.summary.clone(),
+            lines: self
+                .lines
+                .iter()
+                .map(|line| crate::catalog::LineView {
+                    file: line.file.clone(),
+                    last_seq: line.last_seq,
+                    line: line.line.clone(),
+                    parent_file: line.parent_file.clone(),
+                    facts: line.facts.clone(),
+                    holds: line.holds.clone(),
+                })
+                .collect(),
+            journal: self.journal,
+        }
+    }
+
     fn fingerprint(&self) -> (u64, u64, u64) {
         let main = self.lines.first();
         (
@@ -248,6 +268,46 @@ fn write(prepared: &PreparedCard) -> WriteOutcome {
     }
 }
 
+/// The one limiter for everything that fsyncs on behalf of cards (E831 E4): the card writer
+/// charges one unit per ledger `F_FULLFSYNC` it performs, the hydrator charges the tail repairs
+/// it performs. It only ever delays the *writer thread* (`delay`); callers on request paths
+/// (readiness, the first List, a thread open) only `charge` and never wait.
+pub(crate) struct SyncGovernor {
+    gap: Duration,
+    next_allowed: Mutex<Instant>,
+}
+
+impl SyncGovernor {
+    pub(crate) fn new(max_syncs_per_sec: u32) -> Self {
+        Self {
+            gap: if max_syncs_per_sec == 0 {
+                Duration::ZERO
+            } else {
+                Duration::from_secs(1) / max_syncs_per_sec
+            },
+            next_allowed: Mutex::new(Instant::now()),
+        }
+    }
+
+    /// Records `syncs` fsyncs just performed.
+    pub(crate) fn charge(&self, syncs: u32) {
+        let mut next = self
+            .next_allowed
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let base = (*next).max(Instant::now());
+        *next = base + self.gap * syncs;
+    }
+
+    /// How long the writer thread must wait before its next fsync-bearing write.
+    pub(crate) fn delay(&self) -> Duration {
+        self.next_allowed
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .saturating_duration_since(Instant::now())
+    }
+}
+
 enum Message {
     Card(Box<PreparedCard>),
     /// A doorbell arrived inside the debounce window; the writer re-folds when it is due.
@@ -259,11 +319,18 @@ enum Message {
     Shutdown(Instant),
 }
 
+/// How many times a re-fold that found a torn tail (a worker mid-append) is retried.
+const REFOLD_RETRIES: u8 = 5;
+const REFOLD_RETRY_DELAY: Duration = Duration::from_millis(200);
+
 enum Pending {
     Card(Box<PreparedCard>),
     Dirty {
         folder: PathBuf,
         journal: Option<JournalInput>,
+        /// Re-fold attempts already spent on a torn read, and the earliest next attempt.
+        attempts: u8,
+        not_before: Option<Instant>,
     },
 }
 
@@ -312,6 +379,7 @@ struct CardStats {
 /// `F_FULLFSYNC` of the card protocol never competes with workers for the device. The doorbell
 /// path only asks `is_due` (one lock, one map lookup); the shutdown flush has a time budget.
 pub(crate) struct CardWriter {
+    governor: Arc<SyncGovernor>,
     sender: Mutex<Option<Sender<Message>>>,
     handle: Mutex<Option<JoinHandle<()>>>,
     done: Mutex<Option<mpsc::Receiver<()>>>,
@@ -322,23 +390,43 @@ pub(crate) struct CardWriter {
 
 impl CardWriter {
     pub(crate) fn spawn(tuning: Tuning) -> Self {
-        Self::spawn_with(tuning, Arc::new(write))
+        Self::spawn_with(
+            tuning,
+            Arc::new(SyncGovernor::new(tuning.max_per_sec)),
+            Arc::new(write),
+        )
     }
 
     pub(crate) fn spawn_from_env() -> Self {
         Self::spawn(Tuning::from_env())
     }
 
-    fn spawn_with(tuning: Tuning, write_card: WriteFn) -> Self {
+    /// The limiter shared with the hydrator.
+    pub(crate) fn governor(&self) -> Arc<SyncGovernor> {
+        Arc::clone(&self.governor)
+    }
+
+    fn spawn_with(tuning: Tuning, governor: Arc<SyncGovernor>, write_card: WriteFn) -> Self {
         let (sender, receiver) = mpsc::channel::<Message>();
         let (done_sender, done) = mpsc::sync_channel::<()>(1);
         let stats = Arc::new(CardStats::default());
         let thread_stats = Arc::clone(&stats);
+        let thread_governor = Arc::clone(&governor);
         let handle = std::thread::Builder::new()
             .name("thread-card-writer".to_owned())
-            .spawn(move || run(&receiver, tuning, &write_card, &thread_stats, &done_sender))
+            .spawn(move || {
+                run(
+                    &receiver,
+                    tuning,
+                    &thread_governor,
+                    &write_card,
+                    &thread_stats,
+                    &done_sender,
+                );
+            })
             .ok();
         Self {
+            governor,
             sender: Mutex::new(Some(sender)),
             handle: Mutex::new(handle),
             done: Mutex::new(Some(done)),
@@ -364,6 +452,15 @@ impl CardWriter {
                 true
             }
         }
+    }
+
+    /// Opens a new debounce window for a thread (the hydrator uses it so the card it is about to
+    /// produce is written promptly instead of waiting out a window).
+    pub(crate) fn reset_window(&self, session: &str) {
+        self.claimed
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(session);
     }
 
     pub(crate) fn submit(&self, card: PreparedCard) {
@@ -461,7 +558,15 @@ fn absorb(
             folder,
             journal,
         } => {
-            pending.insert(session, Pending::Dirty { folder, journal });
+            pending.insert(
+                session,
+                Pending::Dirty {
+                    folder,
+                    journal,
+                    attempts: 0,
+                    not_before: None,
+                },
+            );
         }
         Message::Shutdown(by) => *deadline = Some(by),
     }
@@ -474,18 +579,13 @@ fn is_idle(pending: &HashMap<String, Pending>, deadline: Option<Instant>) -> boo
 fn run(
     receiver: &mpsc::Receiver<Message>,
     tuning: Tuning,
+    governor: &SyncGovernor,
     write_card: &WriteFn,
     stats: &CardStats,
     done: &SyncSender<()>,
 ) {
-    let min_gap = if tuning.max_per_sec == 0 {
-        Duration::ZERO
-    } else {
-        Duration::from_secs(1) / tuning.max_per_sec
-    };
     let mut pending: HashMap<String, Pending> = HashMap::new();
     let mut last_written: HashMap<String, (Instant, (u64, u64, u64))> = HashMap::new();
-    let mut next_allowed = Instant::now();
     let mut deadline: Option<Instant> = None;
     loop {
         let message = if pending.is_empty() && deadline.is_none() {
@@ -515,20 +615,25 @@ fn run(
             break;
         }
         let mut due = pending
-            .keys()
-            .filter(|session| {
-                closing
-                    || last_written
-                        .get(*session)
-                        .is_none_or(|(at, _)| at.elapsed() >= tuning.debounce)
+            .iter()
+            .filter(|(session, job)| {
+                let retry_ready = match job {
+                    Pending::Dirty {
+                        not_before: Some(at),
+                        ..
+                    } => closing || now >= *at,
+                    _ => true,
+                };
+                retry_ready
+                    && (closing
+                        || last_written
+                            .get(*session)
+                            .is_none_or(|(at, _)| at.elapsed() >= tuning.debounce))
             })
-            .cloned()
+            .map(|(session, _)| session.clone())
             .collect::<Vec<_>>();
         due.sort();
         for session in due {
-            if !closing && Instant::now() < next_allowed {
-                break;
-            }
             // A long run of writes must still notice a shutdown request promptly.
             while let Ok(message) = receiver.try_recv() {
                 absorb(message, &mut pending, &mut deadline);
@@ -537,12 +642,39 @@ fn run(
             if closing && deadline.is_some_and(|by| Instant::now() >= by) {
                 break;
             }
+            // The shared limiter paces fsync-bearing writes; a shutdown flush runs at device
+            // speed up to its budget.
+            if !closing && !governor.delay().is_zero() {
+                break;
+            }
             let Some(job) = pending.remove(&session) else {
                 continue;
             };
             let card = match job {
                 Pending::Card(card) => Some(*card),
-                Pending::Dirty { folder, journal } => refold(&session, folder, journal),
+                Pending::Dirty {
+                    folder,
+                    journal,
+                    attempts,
+                    ..
+                } => {
+                    let folded = refold(&session, folder.clone(), journal);
+                    if folded.is_none() {
+                        // A torn read (a worker mid-append) must not lose the final state:
+                        // retry a bounded number of times instead of dropping the dirty mark.
+                        if attempts < REFOLD_RETRIES {
+                            pending.entry(session.clone()).or_insert(Pending::Dirty {
+                                folder,
+                                journal,
+                                attempts: attempts + 1,
+                                not_before: Some(Instant::now() + REFOLD_RETRY_DELAY),
+                            });
+                        } else {
+                            stats.skipped.fetch_add(1, Ordering::Relaxed);
+                        }
+                    }
+                    folded
+                }
             };
             let Some(mut card) = card else {
                 continue;
@@ -555,7 +687,9 @@ fn run(
                 continue;
             }
             complete_children(&mut card);
+            let syncs = u32::try_from(card.lines.len()).unwrap_or(u32::MAX);
             let outcome = write_card(&card);
+            governor.charge(syncs);
             let counter = if outcome == WriteOutcome::Written {
                 &stats.written
             } else {
@@ -565,7 +699,6 @@ fn run(
             if outcome == WriteOutcome::Written {
                 last_written.insert(session, (Instant::now(), fingerprint));
             }
-            next_allowed = Instant::now() + min_gap;
         }
         if closing && pending.is_empty() {
             break;

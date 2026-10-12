@@ -22,5 +22,8 @@ tokio.workspace = true
 transport = { path = "../transport" }
 worker-control = { path = "../worker-control" }
 
+[dev-dependencies]
+syn = { version = "2", default-features = false, features = ["full", "parsing", "visit", "derive", "printing", "proc-macro", "clone-impls"] }
+
 [lints]
 workspace = true

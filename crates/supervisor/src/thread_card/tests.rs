@@ -53,7 +53,11 @@ fn tuning(debounce_ms: u64, max_per_sec: u32, budget_ms: u64) -> Tuning {
 
 #[test]
 fn is_due_claims_one_window_per_thread() {
-    let writer = CardWriter::spawn_with(tuning(150, 0, 500), Arc::new(|_| WriteOutcome::Written));
+    let writer = CardWriter::spawn_with(
+        tuning(150, 0, 500),
+        Arc::new(SyncGovernor::new(0)),
+        Arc::new(|_| WriteOutcome::Written),
+    );
     assert!(writer.is_due("a"));
     assert!(!writer.is_due("a"), "inside the window nothing is prepared");
     assert!(writer.is_due("b"), "windows are per thread");
@@ -103,6 +107,7 @@ fn writes_are_paced_to_the_global_cap() {
     // 20 per second => at least 50 ms between writes (the debounce is irrelevant: distinct threads)
     let writer = CardWriter::spawn_with(
         tuning(0, 20, 2_000),
+        Arc::new(SyncGovernor::new(20)),
         Arc::new(move |_| {
             seen.lock().unwrap().push(Instant::now());
             WriteOutcome::Written
@@ -136,6 +141,7 @@ fn shutdown_flush_is_bounded_by_its_budget_even_with_a_slow_disk() {
     let counter = Arc::clone(&written);
     let writer = CardWriter::spawn_with(
         tuning(0, 0, 300),
+        Arc::new(SyncGovernor::new(0)),
         Arc::new(move |_| {
             std::thread::sleep(Duration::from_millis(120));
             counter.fetch_add(1, Ordering::Relaxed);
@@ -183,4 +189,53 @@ fn children_are_folded_on_the_writer_thread_not_by_prepare() {
         "the writer thread added the child line"
     );
     assert_eq!(card.lines[1].file, format!("{child}.jsonl"));
+}
+
+/// E831 E4: a re-fold that finds a torn tail (a worker mid-append) is retried, not dropped.
+#[test]
+fn a_torn_refold_is_retried_until_the_tail_is_whole() {
+    let (_root, folder) = folder_with(3);
+    let ledger = folder.join("main.jsonl");
+    let whole = std::fs::read(&ledger).unwrap();
+    let mut torn = whole.clone();
+    torn.extend_from_slice(b"{\"kind\":\"meta\",\"seq\":4,\"ti");
+    std::fs::write(&ledger, &torn).unwrap();
+    let writer = CardWriter::spawn(tuning(0, 0, 2_000));
+    writer.mark_dirty(SESSION, folder.clone(), None);
+    std::thread::sleep(Duration::from_millis(350));
+    assert_eq!(writer.counts().0, 0, "nothing is written from a torn read");
+    // the worker finishes its append
+    let mut done = whole;
+    done.extend_from_slice(
+        br#"{"kind":"meta","seq":4,"title":"t4","ts":"2026-08-26T09:00:00.000Z","v":1}"#,
+    );
+    done.push(b'\n');
+    std::fs::write(&ledger, &done).unwrap();
+    let started = Instant::now();
+    while writer.counts().0 == 0 && started.elapsed() < Duration::from_secs(3) {
+        std::thread::sleep(Duration::from_millis(20));
+    }
+    writer.shutdown();
+    let card = store::card::read_card(&folder).expect("the retry produced the final card");
+    assert_eq!(card.lines[0].last_seq, 4);
+}
+
+/// The hydrator's repairs and the card writer draw on one limiter, counted in fsyncs.
+#[test]
+fn one_governor_counts_fsyncs_for_the_writer_and_the_hydrator() {
+    let governor = SyncGovernor::new(10); // 100 ms per fsync
+    assert!(governor.delay().is_zero());
+    governor.charge(1); // a hydrator tail repair
+    let after_repair = governor.delay();
+    assert!(after_repair > Duration::from_millis(50) && after_repair <= Duration::from_millis(100));
+    governor.charge(3); // a card with three ledger lines
+    assert!(governor.delay() > Duration::from_millis(350));
+    // charging never blocks the caller
+    let started = Instant::now();
+    governor.charge(5);
+    assert!(started.elapsed() < Duration::from_millis(20));
+    // unlimited governor never delays
+    let unlimited = SyncGovernor::new(0);
+    unlimited.charge(1_000);
+    assert!(unlimited.delay().is_zero());
 }

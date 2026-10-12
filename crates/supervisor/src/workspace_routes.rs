@@ -47,7 +47,7 @@ impl WorkspaceRoutes {
         Ok(Self {
             root: root.to_owned(),
             executable,
-            management: ManagementStore::open(root)
+            management: ManagementStore::open_light(root)
                 .map_err(|e| failure("internal", e.to_string()))?,
             endpoint: NativeEndpoint::open(root).map_err(|e| failure("internal", e.to_string()))?,
         })

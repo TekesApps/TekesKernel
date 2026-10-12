@@ -369,10 +369,72 @@ impl ManagementStore {
         store.recover_with_queue_driver(queue_driver)?;
         store.seed_missing_workspace_policies()?;
         store.reconcile_workspace_metadata(import_started_at)?;
-        if active_session_count(&store.storage_root)? > 256 {
-            return Err(ManagementError::ActiveSessionLimit);
-        }
+        // The 256 active-session cap is enforced where a slot is reserved (create, fork,
+        // unarchive) and at live-event attach; opening the store, recovery and the List never
+        // fail on the number of sessions (D5, ADDENDUM-03 C5).
         Ok(store)
+    }
+
+    /// The per-request constructor (ADDENDUM-03 C3, -04 K2). It performs **no** operation
+    /// recovery and no policy seeding (those run in the recovering constructor at boot and on the
+    /// background tick), but keeps the cheap workspace-metadata heal: metadata is a digest of the
+    /// whole workspace config, so any config writer (policy set, relocate, folders, rename)
+    /// invalidates it, and the next reader must not fail until some later tick. The heal reads only
+    /// workspace config and metadata files, never a thread file.
+    pub fn open_light(storage_root: impl AsRef<Path>) -> Result<Self, ManagementError> {
+        Self::open_light_at(storage_root, &current_timestamp()?)
+    }
+
+    pub fn open_light_at(
+        storage_root: impl AsRef<Path>,
+        started_at: &str,
+    ) -> Result<Self, ManagementError> {
+        let storage_root = storage_root.as_ref().to_path_buf();
+        let root = store::endpoint_management_root(&storage_root)?;
+        fs::create_dir_all(root.join("workspaces"))?;
+        fs::create_dir_all(root.join("operations"))?;
+        fs::OpenOptions::new()
+            .create(true)
+            .append(true)
+            .open(root.join("lock"))?;
+        let store = Self {
+            config: ConfigRepository::open(&storage_root)?,
+            storage_root,
+            root,
+        };
+        let _lock = NamedLock::exclusive(store.root.join("lock"))?;
+        store.heal_workspace_metadata_locked(started_at)?;
+        drop(_lock);
+        Ok(store)
+    }
+
+    /// Publishes corrected endpoint metadata for every workspace whose metadata is missing or
+    /// does not match its config, without an operation record and without the Inventory phase
+    /// (which reads threads). The caller holds the management `lock`; `config/.lock` is taken
+    /// here in the same order `drive_workspace_operation` uses (management, then config), so a
+    /// config writer cannot publish between the read of the config and the write of its metadata.
+    fn heal_workspace_metadata_locked(&self, started_at: &str) -> Result<(), ManagementError> {
+        let _config = NamedLock::shared(self.storage_root.join("config/.lock"))?;
+        for config in self.workspace_configs()?.into_values() {
+            let existing = self.read_metadata_optional(&config.id)?;
+            if existing
+                .as_ref()
+                .is_some_and(|metadata| verify_metadata(&config, metadata).is_ok())
+            {
+                continue;
+            }
+            let metadata = WorkspaceMetadata {
+                v: VERSION,
+                workspace_id: config.id.clone(),
+                path: primary_path(&config)?.to_owned(),
+                created_at: existing
+                    .map_or_else(|| started_at.to_owned(), |metadata| metadata.created_at),
+                metadata_updated_at: started_at.to_owned(),
+                config_digest: hex_digest(&canonical_line(&config)?),
+            };
+            publish_canonical(&self.metadata_path(&config.id), &metadata)?;
+        }
+        Ok(())
     }
 
     #[must_use]
@@ -566,6 +628,19 @@ impl ManagementStore {
         }
         archived_session_ids.sort();
 
+        // A config writer may have published between `open_light`'s heal and this read; heal
+        // once under the lock we already hold and re-read (E831 E2).
+        let configs = if configs.values().all(|config| {
+            self.read_metadata_optional(&config.id)
+                .ok()
+                .flatten()
+                .is_some_and(|metadata| verify_metadata(config, &metadata).is_ok())
+        }) {
+            configs
+        } else {
+            self.heal_workspace_metadata_locked(&current_timestamp()?)?;
+            self.workspace_configs()?
+        };
         let mut items = Vec::with_capacity(configs.len());
         for config in configs.values() {
             let metadata = self.read_metadata(&config.id)?;
@@ -2434,17 +2509,9 @@ impl ManagementStore {
                         "folder move destination already exists".to_owned(),
                     ));
                 }
-                fs::rename(source, destination)?;
-                File::open(source.parent().ok_or_else(|| {
-                    ManagementError::CorruptOperation("folder move source has no parent".to_owned())
-                })?)?
-                .sync_all()?;
-                File::open(destination.parent().ok_or_else(|| {
-                    ManagementError::CorruptOperation(
-                        "folder move destination has no parent".to_owned(),
-                    )
-                })?)?
-                .sync_all()?;
+                // The only function allowed to move a thread folder between areas: it renames,
+                // makes both parents durable and announces `Moved` (ADDENDUM-03 C1).
+                store::move_thread_folder(source, destination)?;
                 drop(lifecycle);
             } else if destination.is_dir() {
                 verify_folder_reservation(destination, &intent)?;
@@ -3512,8 +3579,8 @@ fn active_session_folder(root: &Path, session_id: &str) -> Result<PathBuf, Manag
 }
 
 fn valid_folder_projection(folder: &Path) -> Result<schema::LedgerProjection, ManagementError> {
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    // Boot no longer repairs every tail: bring this thread's tail clean when nobody holds it.
+    let (_, scan) = store::read_ledger_repaired(folder.join("main.jsonl"))?;
     if scan.valid_bytes != scan.file_bytes {
         return Err(ManagementError::CorruptOperation(
             "session ledger has a torn or invalid tail".to_owned(),
@@ -3526,8 +3593,7 @@ fn valid_folder_projection(folder: &Path) -> Result<schema::LedgerProjection, Ma
 
 fn folder_reservation(folder: &Path) -> Result<(String, String), ManagementError> {
     let metadata = fs::metadata(folder)?;
-    let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let (bytes, scan) = store::read_ledger_repaired(folder.join("main.jsonl"))?;
     if scan.valid_bytes != scan.file_bytes || scan.projection.is_none() {
         return Err(ManagementError::CorruptOperation(
             "folder move source has no complete valid ledger prefix".to_owned(),
@@ -3665,10 +3731,12 @@ pub enum ManagementError {
 mod tests {
     use super::{
         ForkIntent, ManagementError, ManagementStore, OperationPhase, OperationRecord, VERSION,
-        WorkspaceOperationWrite, WorkspaceView, canonical_event_line, create_genesis,
-        folder_binding_matches_snapshot, publish_canonical, read_canonical, to_ijson,
+        WorkspaceMetadata, WorkspaceOperationWrite, WorkspaceView, canonical_event_line,
+        create_genesis, default_workspace_policy, folder_binding_matches_snapshot,
+        publish_canonical, read_canonical, to_ijson,
     };
-    use profile::{WorkspaceConfig, WorkspaceFolder};
+    use crate::SessionInventoryItem;
+    use profile::{ConfigRepository, WorkspaceConfig, WorkspaceFolder};
     use serde_json::{Value, json};
     use std::fs;
     use std::path::Path;
@@ -3791,6 +3859,98 @@ mod tests {
         );
         assert_eq!(fs::read(folder.join("main.jsonl")).unwrap(), ledger);
         assert!(!root.path().join("threads").join(dest).exists());
+    }
+
+    /// E831 E2 / K2: a config writer that does not touch the endpoint metadata (policy set,
+    /// rename, any direct publication) must not make the next baseline fail. `open_light`
+    /// heals the metadata from config alone and never reads a thread file.
+    #[test]
+    fn open_light_heals_metadata_after_any_config_writer_without_reading_threads() {
+        use std::os::unix::fs::PermissionsExt;
+        let root = tempfile::tempdir().expect("root");
+        let project = root.path().join("project");
+        std::fs::create_dir(&project).expect("project");
+        let config = WorkspaceConfig {
+            format: 1,
+            revision: 1,
+            id: "ws-light".to_owned(),
+            name: "Light".to_owned(),
+            cwd: Vec::new(),
+            folders: vec![WorkspaceFolder {
+                id: "folder-0001".to_owned(),
+                path: project.to_string_lossy().into_owned(),
+            }],
+            policy: None,
+        };
+        let repository = ConfigRepository::open(root.path()).expect("config");
+        repository.publish_workspace(0, &config).expect("workspace");
+        // boot: the recovering open creates the metadata (synthetic operation)
+        let recovering = ManagementStore::open_at(root.path(), "2026-10-12T00:00:00.000Z")
+            .expect("recovering open");
+        let sessions: Vec<SessionInventoryItem> = Vec::new();
+        recovering
+            .list_workspaces(&sessions)
+            .expect("baseline after boot");
+
+        // thread folders that must never be read by the light path
+        let trap = root
+            .path()
+            .join("threads/018f0000-0000-7000-8000-0000000000f1");
+        std::fs::create_dir_all(&trap).expect("trap");
+        std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o000)).expect("chmod");
+
+        // 1. policy set (bumps the config revision, never touches the metadata)
+        let current = repository.workspace("ws-light").expect("current");
+        repository
+            .publish_workspace_policy(
+                "ws-light",
+                current.revision,
+                default_workspace_policy(project.to_str().unwrap()),
+            )
+            .expect("policy set");
+        let light = ManagementStore::open_light(root.path()).expect("light open");
+        let listed = light
+            .list_workspaces(&sessions)
+            .expect("baseline right after policy.set");
+        assert_eq!(listed.items.len(), 1);
+
+        // 2. another writer: rename (revision bump, different digest)
+        let mut renamed = repository.workspace("ws-light").expect("current");
+        renamed.name = "Renamed".to_owned();
+        renamed.revision += 1;
+        repository
+            .publish_workspace(renamed.revision - 1, &renamed)
+            .expect("rename");
+        let listed = ManagementStore::open_light(root.path())
+            .expect("light open")
+            .list_workspaces(&sessions)
+            .expect("baseline right after rename");
+        assert_eq!(listed.items[0].title, "Renamed");
+
+        // 3. a writer that lands after the light open: list_workspaces itself retries once
+        let mut third = repository.workspace("ws-light").expect("current");
+        third.name = "Third".to_owned();
+        third.revision += 1;
+        let stale_view = ManagementStore::open_light(root.path()).expect("light open");
+        repository
+            .publish_workspace(third.revision - 1, &third)
+            .expect("third writer");
+        let listed = stale_view
+            .list_workspaces(&sessions)
+            .expect("list_workspaces heals once and succeeds");
+        assert_eq!(listed.items[0].title, "Third");
+
+        // 4. missing metadata is rebuilt; created_at survives when the file existed
+        let metadata_path = light.metadata_path("ws-light");
+        let before: WorkspaceMetadata = read_canonical(&metadata_path).expect("metadata");
+        std::fs::remove_file(&metadata_path).expect("remove metadata");
+        let healed = ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")
+            .expect("light open")
+            .read_metadata("ws-light")
+            .expect("rebuilt");
+        assert_eq!(healed.created_at, "2026-10-12T05:00:00.000Z");
+        assert_eq!(healed.path, before.path);
+        std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o700)).expect("restore");
     }
 
     #[test]

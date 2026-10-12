@@ -234,6 +234,7 @@ dependencies = [
  "serde_json_canonicalizer",
  "sha2",
  "store",
+ "syn 2.0.119",
  "tekes-supervisor",
  "tempfile",
  "test-support",

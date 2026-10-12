@@ -17,7 +17,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use endpoint::SessionHostDescription;
 use profile::{ConfigRepository, InstructionResolver, ResourceCatalog};
-use store::{LockedLedger, StoreError, ThreadStore, scan_valid_prefix};
+use store::{StoreError, ThreadStore};
 use thiserror::Error;
 
 use crate::client_admin::ClientAdminRoutes;
@@ -224,20 +224,18 @@ pub fn prepare_storage(storage_root: &Path) -> Result<ThreadStore, DaemonError> 
         .map_err(DaemonError::store)?;
     store.gc_rewrite_debris().map_err(DaemonError::store)?;
     crate::boot_trace::phase("rewrite_recovery");
-    // Scratch ledgers (`session.fork{ephemeral}`) do not survive a restart:
-    // nothing holds a line lock yet, so every one of them is deleted here.
-    store.sweep_ephemeral().map_err(DaemonError::store)?;
-    crate::boot_trace::phase("sweep_ephemeral");
-    sweep_semantic_ledgers(root)?;
-    crate::boot_trace::phase("sweep_semantic_ledgers");
+    // Nothing here reads a thread: ephemeral cleanup, the directory-entry check and ledger
+    // verification/repair run after readiness (`ProductionProcessHost::run_post_ready`,
+    // DESIGN §5/§8, ADDENDUM-01 §1.4). Pending rewrite operations above are the one named
+    // exception (X2).
     profile::ConfigRepository::open(root)
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
     Ok(store)
 }
 
 /// Runs the storage preflight without keeping the store open: the same
-/// no-symlink ownership checks, local-filesystem probe, recovery and semantic
-/// sweep as startup. It does not acquire the root lock.
+/// no-symlink ownership checks, local-filesystem probe and rewrite recovery as
+/// startup. It does not acquire the root lock.
 pub fn preflight_storage(storage_root: &Path) -> Result<(), DaemonError> {
     prepare_storage(storage_root).map(|_| ())
 }
@@ -305,63 +303,6 @@ fn is_icloud_mobile_documents_path(path: &Path) -> bool {
         prior_was_library = component == OsStr::new("Library");
     }
     false
-}
-
-fn sweep_semantic_ledgers(root: &Path) -> Result<(), DaemonError> {
-    for collection in ["threads", "archive"] {
-        let mut folders = fs::read_dir(root.join(collection))
-            .map_err(DaemonError::io)?
-            .collect::<Result<Vec<_>, _>>()
-            .map_err(DaemonError::io)?;
-        folders.sort_by_key(fs::DirEntry::file_name);
-        for folder in folders {
-            if !folder.file_type().map_err(DaemonError::io)?.is_dir() {
-                if collection == "threads" && folder.file_name() == OsStr::new(".root-lock") {
-                    continue;
-                }
-                return Err(DaemonError::corrupt(format!(
-                    "{} contains a non-directory entry",
-                    root.join(collection).display()
-                )));
-            }
-            let mut ledgers = fs::read_dir(folder.path())
-                .map_err(DaemonError::io)?
-                .collect::<Result<Vec<_>, _>>()
-                .map_err(DaemonError::io)?;
-            ledgers.sort_by_key(fs::DirEntry::file_name);
-            for ledger in ledgers {
-                let path = ledger.path();
-                if !ledger.file_type().map_err(DaemonError::io)?.is_file()
-                    || path.extension() != Some(OsStr::new("jsonl"))
-                    || matches!(
-                        path.file_name().and_then(OsStr::to_str),
-                        Some("endpoint.jsonl")
-                    )
-                {
-                    continue;
-                }
-                let bytes = fs::read(&path).map_err(DaemonError::io)?;
-                let scan = scan_valid_prefix(&bytes, 1);
-                if scan.projection.is_none() {
-                    return Err(DaemonError::corrupt(format!(
-                        "{} has no valid semantic prefix",
-                        path.display()
-                    )));
-                }
-                if scan.needs_repair() {
-                    let suffix = &bytes[scan.valid_bytes as usize..];
-                    if suffix.contains(&b'\n') {
-                        return Err(DaemonError::corrupt(format!(
-                            "{} has a complete invalid record",
-                            path.display()
-                        )));
-                    }
-                    drop(LockedLedger::open(&path, 1).map_err(DaemonError::store)?);
-                }
-            }
-        }
-    }
-    Ok(())
 }
 
 /// Builds the unary host for application-owned launch. Resource methods are

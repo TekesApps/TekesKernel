@@ -291,7 +291,8 @@ impl ClientAdminRoutes {
     }
 
     fn management(&self) -> Result<endpoint::ManagementStore, ProductionRouteFailure> {
-        endpoint::ManagementStore::open(&self.root).map_err(|error| internal(error.to_string()))
+        endpoint::ManagementStore::open_light(&self.root)
+            .map_err(|error| internal(error.to_string()))
     }
 }
 
