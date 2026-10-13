@@ -2033,21 +2033,24 @@ impl ProductionProcessHost {
             }
         }
         let folder = self.root.join("threads").join(session_id);
-        let mut report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
-        // Damage is believed only when a second look agrees with the first (the rule of
-        // `damage_confirmed`): one unlocked read can straddle another process's repair and an
-        // append and show a record that never existed (O-final n3).
-        if let Some(first) = report.corrupt.first().cloned() {
-            std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
-            let again = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
-            let truncated = report.truncated_bytes + again.truncated_bytes;
-            if again.corrupt.first() != Some(&first) {
-                // Not confirmed: the second look is the truth now.
-                report = again;
-            }
-            report.truncated_bytes = truncated;
-        }
-        if let Some((file, reason)) = report.corrupt.first() {
+        let report = store::repair_thread_tails(&folder).map_err(DaemonError::store)?;
+        // Damage is decided on a read taken under the line's lock (`damage_under_lock`): the
+        // unlocked scan above can straddle another process's repair and an append and show a
+        // record that never existed (O-final n3). A line a live holder owns defers the decision.
+        let damaged = report
+            .corrupt
+            .iter()
+            .find(|(file, _)| match damage_under_lock(&folder.join(file)) {
+                DamageVerdict::Damaged(_) => true,
+                DamageVerdict::Sound => false,
+                DamageVerdict::Deferred => {
+                    eprintln!(
+                        "process-host-damage-deferred: session={session_id} {file}: line lock is held"
+                    );
+                    false
+                }
+            });
+        if let Some((file, reason)) = damaged {
             let reason = format!("{file}: {reason}");
             eprintln!("process-host-hydrate-quarantined: session={session_id} {reason}");
             self.catalog.mark_corrupt(session_id, &reason);
@@ -3687,19 +3690,24 @@ impl ProductionProcessHost {
         let mut scan = scan_valid_prefix(&bytes, 1);
         // A complete line that does not validate (or a ledger with no valid genesis) is damage a
         // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
-        // after the valid prefix -- is a partial append and only needs repair. The decision needs
-        // two agreeing reads: one unlocked read can straddle another process's repair or append
-        // and show a record that never existed (O-final m3).
-        if let Some(offset) = ledger_damage(&bytes) {
-            if damage_confirmed(&ledger_path, offset) {
-                let reason = format!("main.jsonl: no valid record at byte {offset}");
-                eprintln!("process-host-quarantined: session={session_id} {reason}");
-                self.catalog.mark_corrupt(session_id, &reason);
-                return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+        // after the valid prefix -- is a partial append and only needs repair. The decision is
+        // taken on a read under the line's lock: one unlocked read can straddle another process's
+        // repair or append and show a record that never existed (O-final m3); while a live holder
+        // owns the line the decision is deferred.
+        if ledger_damage(&bytes).is_some() {
+            match damage_under_lock(&ledger_path) {
+                DamageVerdict::Damaged(offset) => {
+                    let reason = format!("main.jsonl: no valid record at byte {offset}");
+                    eprintln!("process-host-quarantined: session={session_id} {reason}");
+                    self.catalog.mark_corrupt(session_id, &reason);
+                    return Err(DaemonError::corrupt(format!("quarantined: {reason}")));
+                }
+                DamageVerdict::Sound | DamageVerdict::Deferred => {
+                    // Not damage (now): the new read is the truth.
+                    bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+                    scan = scan_valid_prefix(&bytes, 1);
+                }
             }
-            // Not confirmed: the second read is the truth now.
-            bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-            scan = scan_valid_prefix(&bytes, 1);
         }
         let kernel_file_len = bytes.len() as u64;
         let valid_bytes = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
@@ -5337,9 +5345,6 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
     }
 }
 
-/// Pause between the two reads that must agree before damage is believed.
-const DAMAGE_CONFIRM_PAUSE: Duration = Duration::from_millis(25);
-
 /// Whether the bytes of a ledger file show damage no repair can fix: no valid genesis, or a
 /// complete (LF-terminated) record after the valid prefix that does not validate. Returns the
 /// offset of the first invalid byte.
@@ -5351,13 +5356,54 @@ fn ledger_damage(bytes: &[u8]) -> Option<u64> {
     .then(|| scan.first_invalid_offset.unwrap_or(scan.valid_bytes))
 }
 
-/// Believes damage only when two reads taken a moment apart show the same damage at the same
-/// offset. One unlocked `fs::read` can straddle a repair or an append by another process and
-/// show a record that never existed; a quarantine is sticky for the life of the process, so it
-/// must not rest on one read (O-final m3).
-fn damage_confirmed(path: &Path, first: u64) -> bool {
-    std::thread::sleep(DAMAGE_CONFIRM_PAUSE);
-    fs::read(path).ok().and_then(|bytes| ledger_damage(&bytes)) == Some(first)
+/// The decision about a ledger an unlocked read showed damaged.
+#[derive(Debug, PartialEq, Eq)]
+enum DamageVerdict {
+    /// Damage at this byte offset, read while holding the line's exclusive lock.
+    Damaged(u64),
+    /// The read under the lock shows no damage: the first picture was transient.
+    Sound,
+    /// A live holder owns the line (or the file cannot be examined): nothing is decided now.
+    Deferred,
+}
+
+/// Decides whether a ledger is damaged on a read taken under its exclusive lock, never blocking.
+/// Repairs and appends happen only under that lock, so a read under it cannot straddle them; a
+/// quarantine is sticky for the life of the process, so it must not rest on an unlocked read
+/// (O-final m3, n3). When the lock is busy a live holder owns the line and the decision is
+/// deferred to a later doorbell or sweep. Holding the lock briefly can make a starting worker's
+/// non-blocking acquire fail with `Busy`, exactly as `probe_line_lock` and `read_ledger_repaired`
+/// already accept.
+fn damage_under_lock(path: &Path) -> DamageVerdict {
+    let Ok(file) = fs::OpenOptions::new()
+        .read(true)
+        .append(true)
+        .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
+        .open(path)
+    else {
+        return DamageVerdict::Deferred;
+    };
+    loop {
+        // SAFETY: file owns a live descriptor and flock retains no pointers.
+        if unsafe { libc::flock(file.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) } == 0 {
+            break;
+        }
+        if std::io::Error::last_os_error().kind() != std::io::ErrorKind::Interrupted {
+            return DamageVerdict::Deferred;
+        }
+    }
+    // The lock is held until `file` drops, after the read. It must be the lock of the file the
+    // path names now (the ledger is never replaced under a holder).
+    let (Ok(descriptor), Ok(pathname)) = (file.metadata(), fs::metadata(path)) else {
+        return DamageVerdict::Deferred;
+    };
+    if descriptor.dev() != pathname.dev() || descriptor.ino() != pathname.ino() {
+        return DamageVerdict::Deferred;
+    }
+    match fs::read(path) {
+        Ok(bytes) => ledger_damage(&bytes).map_or(DamageVerdict::Sound, DamageVerdict::Damaged),
+        Err(_) => DamageVerdict::Deferred,
+    }
 }
 
 /// A complete but invalid record, or no valid genesis, in a child line ledger (`<uuid>.jsonl`):
@@ -5380,8 +5426,8 @@ fn child_ledger_damage(folder: &Path) -> Option<String> {
         if bytes.is_empty() {
             continue;
         }
-        if let Some(offset) = ledger_damage(&bytes) {
-            if damage_confirmed(&entry.path(), offset) {
+        if ledger_damage(&bytes).is_some() {
+            if let DamageVerdict::Damaged(offset) = damage_under_lock(&entry.path()) {
                 return Some(format!("{name}: no valid record at byte {offset}"));
             }
         }
@@ -10473,6 +10519,54 @@ mod tests {
         host.shutdown();
     }
 
+    /// O-final m3: a complete invalid line in a ledger a live holder owns is not decided on an
+    /// unlocked read; the thread is quarantined only once the lock is free and the read under it
+    /// shows the damage.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn damage_in_a_held_ledger_is_deferred_until_the_lock_is_free() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c6";
+        let folder = held_thread_on_disk(root.path(), session);
+        fs::OpenOptions::new()
+            .append(true)
+            .open(folder.join("main.jsonl"))
+            .expect("ledger")
+            .write_all(b"{\"not\":\"an event\"}\n")
+            .expect("invalid line");
+        let (host, _streams) = open_host(root.path());
+        let holder = fs::OpenOptions::new()
+            .read(true)
+            .append(true)
+            .open(folder.join("main.jsonl"))
+            .expect("holder");
+        hold_line_lock(&holder);
+        let _ = host.hydrate(session);
+        assert!(
+            !matches!(
+                host.catalog.get(session).map(|entry| entry.trust),
+                Some(crate::catalog::Trust::Corrupt(_))
+            ),
+            "a line a live holder owns is not quarantined from an unlocked read"
+        );
+        drop(holder);
+        host.shutdown();
+        // The lock is free: the read under it decides. (A descriptor another test's fork holds
+        // for an instant can still defer once, so a fresh host asks again.)
+        let mut quarantined = false;
+        for _ in 0..50 {
+            let (host, _streams) = open_host(root.path());
+            let outcome = host.hydrate(session);
+            host.shutdown();
+            if outcome.is_err_and(|error| error.to_string().contains("quarantined")) {
+                quarantined = true;
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        assert!(quarantined, "quarantined once the lock is free");
+    }
+
     /// A placeholder row is replaced by the real row when verification finishes: the
     /// inventory stream announces it as an upsert.
     #[cfg(target_os = "macos")]
@@ -11335,10 +11429,36 @@ mod tests {
         host.shutdown();
     }
 
-    /// O-final m3: damage is believed only when a second read agrees. A first read that showed
-    /// damage the file does not have (a straddled repair or append) quarantines nothing.
+    /// Takes the exclusive line lock for the test. A descriptor of an earlier lock can be
+    /// inherited for an instant by a child another test forks, which keeps the lock busy until
+    /// the child's exec, so a busy lock is retried.
+    fn hold_line_lock(holder: &fs::File) {
+        for _ in 0..200 {
+            // SAFETY: holder owns a live descriptor and flock retains no pointers.
+            if unsafe { libc::flock(holder.as_raw_fd(), libc::LOCK_EX | libc::LOCK_NB) } == 0 {
+                return;
+            }
+            std::thread::sleep(Duration::from_millis(10));
+        }
+        panic!("the line lock stayed busy");
+    }
+
+    /// O-final m3: damage is decided on a read under the line's lock. A first picture of damage
+    /// that the file does not have quarantines nothing, and a line a live holder owns is deferred.
     #[test]
-    fn damage_needs_two_agreeing_reads() {
+    fn damage_is_decided_under_the_line_lock() {
+        // A descriptor of this test can be inherited for an instant by a child another test
+        // forks, which keeps the lock busy until the child's exec; such a Deferred is retried.
+        let settled = |path: &Path| {
+            for _ in 0..200 {
+                let verdict = damage_under_lock(path);
+                if verdict != DamageVerdict::Deferred {
+                    return verdict;
+                }
+                std::thread::sleep(Duration::from_millis(10));
+            }
+            DamageVerdict::Deferred
+        };
         let dir = tempfile::tempdir().expect("dir");
         let path = dir.path().join("main.jsonl");
         let good = format!(
@@ -11347,17 +11467,36 @@ mod tests {
         );
         fs::write(&path, &good).expect("good ledger");
         assert!(ledger_damage(good.as_bytes()).is_none());
-        assert!(
-            !damage_confirmed(&path, 17),
-            "a damaged first read of a sound file is not confirmed"
+        assert_eq!(
+            settled(&path),
+            DamageVerdict::Sound,
+            "a sound file under its lock is not damaged, whatever an earlier read showed"
         );
         let damaged = format!("{good}{{\"not\":\"a record\"}}\n");
         fs::write(&path, &damaged).expect("damaged ledger");
         let offset = ledger_damage(damaged.as_bytes()).expect("complete invalid record");
-        assert!(damage_confirmed(&path, offset), "real damage is confirmed");
-        assert!(
-            !damage_confirmed(&path, offset + 1),
-            "a different offset is a different (transient) picture"
+        assert_eq!(
+            settled(&path),
+            DamageVerdict::Damaged(offset),
+            "real damage is read under the lock"
+        );
+        // A live holder owns the line: no decision, and the holder is not disturbed.
+        let holder = fs::OpenOptions::new()
+            .read(true)
+            .append(true)
+            .open(&path)
+            .expect("holder");
+        hold_line_lock(&holder);
+        assert_eq!(damage_under_lock(&path), DamageVerdict::Deferred);
+        drop(holder);
+        assert_eq!(
+            settled(&path),
+            DamageVerdict::Damaged(offset),
+            "the lock is free again, so the decision is made"
+        );
+        assert_eq!(
+            damage_under_lock(&dir.path().join("absent.jsonl")),
+            DamageVerdict::Deferred
         );
     }
 
