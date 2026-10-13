@@ -6,7 +6,7 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-Proposed as 0.4.2 (not versioned yet: the release commit bumps the workspace version).
+## 0.4.2 — 2026-10-13
 
 ### Fixed
 - **Steering while a `subagent` or `task` runs no longer fails the turn (F146-D2).** A steer is
