@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 
 use profile::{
     DynamicTool, DynamicToolCatalog, DynamicToolEffect, DynamicToolSource, DynamicToolSourceKind,
-    ExternalEffectBinding, ExternalEffectProtocol, SchemaRefusal,
+    ExternalEffectBinding, ExternalEffectProtocol, SchemaRefusal, is_dynamic_tool_name,
 };
 use schema::IJsonValue;
 use serde::Deserialize;
@@ -60,8 +60,11 @@ pub mod refusal_code {
 pub struct McpToolRefusal {
     /// The tool name as the server listed it (bounded).
     pub tool: String,
-    /// The projected `mcp__<server>__<tool>` name; absent only when the tool
-    /// name is empty and cannot be projected.
+    /// The projected `mcp__<server>__<tool>` name, at most 128 bytes. Absent
+    /// when the tool cannot be projected to a name the launch binding accepts
+    /// (empty, longer than 128 bytes after escaping, ASCII control): such a
+    /// name could never be an executable tool, so a policy naming it is an
+    /// unknown tool, not an unavailable one.
     pub name: Option<String>,
     pub code: &'static str,
     /// JSON pointer of the refused schema node (`/parameters/...`).
@@ -227,7 +230,7 @@ fn project_tool(
     let external_effect = external_effect_binding(tool, tools).map_err(|error| {
         Box::new(McpToolRefusal {
             tool: bounded(&tool.name, MAX_TOOL_REFUSAL_NAME_BYTES),
-            name: Some(name.clone()),
+            name: launch_name(Some(name.clone())),
             code: refusal_code::EXTERNAL_EFFECT_REFUSED,
             pointer: None,
             keyword: None,
@@ -249,7 +252,7 @@ fn project_tool(
         let parts = SchemaRefusal::from_error(&error);
         Box::new(McpToolRefusal {
             tool: bounded(&tool.name, MAX_TOOL_REFUSAL_NAME_BYTES),
-            name: Some(name),
+            name: launch_name(Some(name)),
             code: refusal_code::SCHEMA_REFUSED,
             pointer: parts
                 .pointer
@@ -262,6 +265,11 @@ fn project_tool(
     })?;
     dynamic.external_effect = external_effect;
     Ok(dynamic)
+}
+
+/// A projected name worth reporting: only one the launch rule accepts.
+fn launch_name(name: Option<String>) -> Option<String> {
+    name.filter(|name| is_dynamic_tool_name(name))
 }
 
 /// Truncates at a character boundary to at most `limit` bytes.

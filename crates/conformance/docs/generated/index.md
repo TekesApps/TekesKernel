@@ -46,7 +46,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/conformance/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/conformance/tests/fixture_privacy.rs](../../tests/fixture_privacy.rs) | 7 | 55 | `inventory.json` |
 | [crates/conformance/tests/folder_mutation_sites.rs](../../tests/folder_mutation_sites.rs) | 20 | 172 | `inventory.json` |
-| [crates/conformance/tests/per_tool_projection.rs](../../tests/per_tool_projection.rs) | 16 | 153 | `inventory.json` |
+| [crates/conformance/tests/per_tool_projection.rs](../../tests/per_tool_projection.rs) | 21 | 186 | `inventory.json` |
 | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 2 | 17 | `inventory.json` |
 | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 449 | `inventory.json` |
 | [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 17 | 331 | `inventory.json` |

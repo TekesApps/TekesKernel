@@ -2394,3 +2394,31 @@ fn partial_projection_refuses_an_effectful_tool_whose_reconcile_tool_was_refused
         ]
     );
 }
+
+/// A reported projected name is always a valid launch tool name: a name the
+/// launch binding would reject (overlong after escaping) is not reported, so a
+/// policy naming it can never be excused.
+#[test]
+fn refusal_names_are_reported_only_when_the_launch_binding_accepts_them() {
+    let overlong = per_tool_fixture(&"x".repeat(130), PER_TOOL_BAD_SCHEMA);
+    let escaping = per_tool_fixture(&"/".repeat(50), PER_TOOL_BAD_SCHEMA);
+    let ordinary = per_tool_fixture("beta", PER_TOOL_BAD_SCHEMA);
+    let partial =
+        project_catalog_partial("probe", &[overlong, escaping, ordinary], false).expect("partial");
+    assert_eq!(partial.refused.len(), 3);
+    assert_eq!(partial.refused[0].name, None, "130 bytes plus prefix");
+    assert_eq!(
+        partial.refused[1].name, None,
+        "50 slashes escape to 150 bytes"
+    );
+    assert_eq!(partial.refused[2].name.as_deref(), Some("mcp__probe__beta"));
+    for refusal in &partial.refused {
+        assert!(
+            refusal
+                .name
+                .as_deref()
+                .is_none_or(profile::is_dynamic_tool_name)
+        );
+        assert!(refusal.tool.len() <= 256);
+    }
+}

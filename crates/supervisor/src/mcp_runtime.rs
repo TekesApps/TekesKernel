@@ -59,17 +59,19 @@ pub struct McpWorkspaceBinding {
 
 impl McpWorkspaceBinding {
     /// The refused tools whose projected name the policy allows, in listing
-    /// order.
+    /// order. A name that is also an executable catalog entry is never
+    /// unavailable (two distinct server/tool pairs can escape to one name, and
+    /// the healthy one runs), so such a refusal is left out here: `set` and the
+    /// launch binding then agree.
     #[must_use]
     pub fn refused_allowed_tools(&self, allowed_tools: &[String]) -> Vec<McpRefusedTool> {
         self.tool_refusals
             .iter()
             .filter(|refused| {
-                refused
-                    .refusal
-                    .name
-                    .as_ref()
-                    .is_some_and(|name| allowed_tools.contains(name))
+                refused.refusal.name.as_ref().is_some_and(|name| {
+                    allowed_tools.contains(name)
+                        && !self.catalog.tools.iter().any(|tool| tool.name == *name)
+                })
             })
             .cloned()
             .collect()
@@ -3879,6 +3881,46 @@ done
         let again = runtime.prepare_workspace("ws").expect("cache hit");
         assert_eq!(again.tool_refusals, binding.tool_refusals);
         assert_eq!(again.catalog.tools, binding.catalog.tools);
+    }
+
+    /// Two distinct server/tool pairs can escape to one projected name. The
+    /// healthy one is executable, so the refused one is never "unavailable":
+    /// the policy view leaves it out and the launch binding stays valid.
+    #[test]
+    fn a_refused_tool_sharing_a_healthy_tools_projected_name_is_not_unavailable() {
+        let root = tempfile::tempdir().unwrap();
+        let one = root.path().join("one-server");
+        let two = root.path().join("two-server");
+        write_stdio_catalog_server(
+            &one,
+            r#"[{"name":"b__c","description":"Bad","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{"o":{"type":"object","maxProperties":2,"properties":{}}},"required":[],"additionalProperties":false}}]"#,
+        );
+        write_stdio_catalog_server(
+            &two,
+            r#"[{"name":"c","description":"Good","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{},"required":[],"additionalProperties":false}}]"#,
+        );
+        let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
+        for (name, script) in [("a", &one), ("a__b", &two)] {
+            runtime
+                .mutate(
+                    &format!("save-{name}"),
+                    &McpManagementMutation::Save {
+                        server: stdio_user_server(name, script),
+                        credential_fields: BTreeMap::new(),
+                    },
+                )
+                .unwrap();
+        }
+        let binding = runtime.prepare_workspace("ws").unwrap();
+        assert_eq!(binding.tool_refusals.len(), 1);
+        assert_eq!(
+            binding.tool_refusals[0].refusal.name.as_deref(),
+            Some("mcp__a__b__c")
+        );
+        assert_eq!(binding.catalog.tools[0].name, "mcp__a__b__c");
+        let allowed = vec!["mcp__a__b__c".to_owned()];
+        assert!(binding.refused_allowed_tools(&allowed).is_empty());
+        assert!(binding.refused_allowed_tool_names(&allowed).is_empty());
     }
 
     /// Diagnostics are bounded: only the first `MAX_REPORTED_TOOL_REFUSALS`

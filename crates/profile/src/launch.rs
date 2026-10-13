@@ -218,6 +218,16 @@ impl LaunchBindings {
                 "goal_id must be absent rather than null",
             );
         }
+        if raw
+            .get("unavailable_tools")
+            .and_then(Value::as_array)
+            .is_some_and(Vec::is_empty)
+        {
+            return invalid(
+                Path::new("<launch-bindings>"),
+                "unavailable_tools must be absent rather than empty",
+            );
+        }
         value.validate_against(config)?;
         Ok(value)
     }
@@ -800,11 +810,19 @@ fn validate_sha256(value: &str, label: &str, path: &Path) -> Result<(), ProfileE
     }
 }
 
-fn validate_tool_name(value: &str, path: &Path) -> Result<(), ProfileError> {
-    if !value.is_empty()
+/// The launch rule for a tool name: nonempty, at most 128 bytes, no ASCII
+/// control character. A host that reports a name next to a refusal (or lists it
+/// in `unavailable_tools`) must apply the same rule, or a launch binding that
+/// carries the name is rejected as a whole.
+#[must_use]
+pub fn is_dynamic_tool_name(value: &str) -> bool {
+    !value.is_empty()
         && value.len() <= 128
         && !value.chars().any(|character| character.is_ascii_control())
-    {
+}
+
+fn validate_tool_name(value: &str, path: &Path) -> Result<(), ProfileError> {
+    if is_dynamic_tool_name(value) {
         Ok(())
     } else {
         invalid(

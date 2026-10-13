@@ -558,3 +558,42 @@ fn unavailable_tools_excuse_only_allowed_unbound_names_and_keep_empty_bytes() {
             .contains("unavailable_tools")
     );
 }
+
+/// Like `goal_id: null`, an explicit empty `unavailable_tools` is a second byte
+/// form (and digest) of the same value; the host never emits it, so decode
+/// refuses it.
+#[test]
+fn explicit_empty_unavailable_tools_is_rejected_like_a_null_goal() {
+    let directory = tempfile::tempdir().expect("workspace");
+    let config = config(directory.path(), vec!["camera.snap".to_owned()]);
+    let tool = dynamic_tool(
+        "camera.snap",
+        DynamicToolSourceKind::Plugin,
+        "com.tekes.camera",
+        false,
+    );
+    let bindings = LaunchBindings::bind(
+        &config,
+        None,
+        DynamicToolCatalog::resolve(vec![tool]).expect("catalog"),
+    )
+    .expect("bindings");
+    let mut value: serde_json::Value =
+        serde_json::from_slice(&bindings.canonical_bytes().expect("bytes")).expect("json");
+    value["unavailable_tools"] = json!([]);
+    let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical");
+    bytes.push(b'\n');
+    let error = LaunchBindings::decode(&bytes, &config).expect_err("explicit empty list");
+    assert!(error.to_string().contains("unavailable_tools"), "{error}");
+    // The omitted form still decodes.
+    LaunchBindings::decode(&bindings.canonical_bytes().unwrap(), &config).expect("omitted");
+}
+
+#[test]
+fn launch_tool_name_rule_matches_the_binding_validation() {
+    assert!(profile::is_dynamic_tool_name("mcp__probe__alpha"));
+    assert!(profile::is_dynamic_tool_name(&"x".repeat(128)));
+    assert!(!profile::is_dynamic_tool_name(&"x".repeat(129)));
+    assert!(!profile::is_dynamic_tool_name(""));
+    assert!(!profile::is_dynamic_tool_name("a\nb"));
+}

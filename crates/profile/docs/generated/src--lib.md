@@ -52,6 +52,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `LaunchBindings` | `launch::LaunchBindings` | `pub` |
 | `MAX_UNAVAILABLE_TOOLS` | `launch::MAX_UNAVAILABLE_TOOLS` | `pub` |
 | `SchemaRefusal` | `launch::SchemaRefusal` | `pub` |
+| `is_dynamic_tool_name` | `launch::is_dynamic_tool_name` | `pub` |
 | `CommandCatalogEntry` | `resources::CommandCatalogEntry` | `pub` |
 | `CommandExpansion` | `resources::CommandExpansion` | `pub` |
 | `CommandSummary` | `resources::CommandSummary` | `pub` |

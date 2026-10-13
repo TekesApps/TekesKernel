@@ -27,7 +27,9 @@ LaunchBindings = {
 `unavailable_tools` lists workspace-policy `allowed_tools` names the host
 refused to project for this launch (an MCP tool refused alone on a healthy
 server, [mcp-runtime](mcp-runtime.md) §Catalogs). It is absent when empty, so a
-launch without refusals keeps its bytes. The list is strictly sorted, at most
+launch without refusals keeps its bytes. An explicit empty array is rejected on decode
+(it would be a second byte form of the omitted field), as `goal_id: null` is. The
+list is strictly sorted, at most
 1024 names, each a valid tool name; every entry must be allowed by the policy
 and must not be in the effective catalog (fixed or dynamic). Every
 `allowed_tools` name of the ConfigSnapshot must be a fixed tool, an entry of

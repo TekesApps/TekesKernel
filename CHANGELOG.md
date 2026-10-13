@@ -31,6 +31,15 @@ Additive wire changes only (see "Wire" below); no existing field changes meaning
     callable. An unknown name, an unavailable server and every ceiling are
     refused as before. The worker launch honours the same rule through the
     launch binding's optional `unavailable_tools`.
+  - A refusal reports a projected `name` only when it is a valid launch tool name
+    (at most 128 bytes, no ASCII control). A refused tool whose projected name is
+    longer is an unknown tool at `workspace.policy.set` (`tool-not-installed`), and
+    a refusal whose projected name is also an executable tool's (server `a` tool
+    `b__c` against server `a__b` tool `c`) is not reported as unavailable. A policy
+    that `set` accepts therefore always yields a valid launch binding, `tools/list`
+    and worker launch.
+  - The `mcp_tool` notice names at most eight skipped tools, those the workspace
+    policy names first, and counts the rest.
   - A route reconnect re-projects the catalog per tool, so a sibling that stays
     refused is not reported as drift of an effectful route.
 - `workspace.policy.set` failures say what failed. `policy-escalation` stays the
@@ -56,6 +65,12 @@ Additive wire changes only (see "Wire" below); no existing field changes meaning
   `LaunchBindings::bind_with_unavailable`, `SchemaRefusal`.
 
 ### Known behavior changes
+- Host and worker must come from the same release. An older worker refuses a
+  launch whose bindings carry `unavailable_tools` (it rejects unknown fields);
+  that only happens when a launch has refused tools, which 0.4.5 would have
+  answered by dropping the whole server.
+- An explicit empty `unavailable_tools` in launch bindings is rejected on decode
+  (the host never emits it).
 - A server whose only defect is a refused tool is now `ready` with zero or more
   tools instead of `refresh-failed`/`projection-failed`, and a policy naming
   only its refused tools is accepted instead of failing the whole policy.

@@ -240,7 +240,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_worker_inner` | `Vec::new` | [335](../../src/lib.rs#L335) | external-constructor-callback-or-unresolved |
 | `launch_worker_inner` | `store::AssetStore::new` | [339](../../src/lib.rs#L339) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
 | `launch_worker_inner` | `launch_bindings.publish` | [340](../../src/lib.rs#L340) | receiver-type-required |
-| `launch_worker_inner` | `LaunchBindings::decode_verified` | [343](../../src/lib.rs#L343) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L225) |
+| `launch_worker_inner` | `LaunchBindings::decode_verified` | [343](../../src/lib.rs#L343) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
 | `launch_worker_inner` | `open_snapshot` | [345](../../src/lib.rs#L345), [346](../../src/lib.rs#L346), [347](../../src/lib.rs#L347) | [tekes-supervisor::open_snapshot](../../src/lib.rs#L489) |
 | `launch_worker_inner` | `config_file.as_raw_fd` | [349](../../src/lib.rs#L349) | receiver-type-required |
 | `launch_worker_inner` | `instruction_file.as_raw_fd` | [350](../../src/lib.rs#L350) | receiver-type-required |

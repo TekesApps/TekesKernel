@@ -188,7 +188,10 @@ catalog-projection failure. Isolation has two grains:
   tool of it projects and routes normally. A refused tool has no route, is not
   in the catalog and cannot be called. Each refusal is a bounded structured
   diagnostic: `server`, `tool` (as listed, at most 256 bytes), `name` (the
-  projected name, absent only for an empty tool name), `code`
+  projected name; at most 128 bytes, and absent when the projected name is not a
+  valid launch tool name — empty, longer than 128 bytes after escaping, or
+  carrying an ASCII control — because such a name can never be executable, so a
+  policy naming it is an unknown tool), `code`
   (`schema-refused`, `external-effect-refused`, `dependency-refused`),
   `pointer` (JSON pointer of the refused schema node, when the cause is a
   schema node), `keyword` (the offending keyword, when the cause names one)
@@ -197,7 +200,8 @@ catalog-projection failure. Isolation has two grains:
   `mcp-tool-projection-refused: server=… tool=… code=… pointer=… keyword=…
   reason=…` (values quoted; at most 32 lines per server, then an `omitted=N`
   line), reported once per worker launch in an `mcp_tool` notice per server
-  naming each skipped tool and its reason, and listed by `mcp.list` as
+  naming at most eight skipped tools (those the workspace policy names first)
+  with their reasons and counting the rest, and listed by `mcp.list` as
   `readiness:{state:"ready",refusedToolCount,refusedTools:[…]}` (at most 32
   entries, additive; absent when nothing was refused).
 
@@ -215,7 +219,9 @@ tool refused by the per-tool grain: such a name is accepted, reported
 (see [client-extensions](client-extensions.md) §Workspace administration),
 recorded in the launch binding's `unavailable_tools` and is simply not
 available to the run. A name the policy gives that no catalog has and no
-refusal accounts for is still an unknown tool. A degraded binding (any
+refusal accounts for is still an unknown tool. A refusal never excuses a name
+that is also an executable catalog entry (two server/tool pairs can escape to
+one projected name; the healthy one runs, and the name is not unavailable). A degraded binding (any
 per-server failure) is retried on the next preparation demand rather than
 cached as ready; per-tool refusals are part of the cached binding and are
 re-evaluated when the catalog generation or configuration changes. A route

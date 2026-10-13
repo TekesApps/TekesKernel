@@ -2587,6 +2587,7 @@ impl ProductionProcessHost {
                     mcp.registry_failure.as_deref(),
                     &mcp.failures,
                     &mcp.tool_refusals,
+                    &config.workspace.policy.allowed_tools,
                 );
                 let unavailable =
                     mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
@@ -4503,10 +4504,14 @@ impl ProductionProcessHost {
 /// The notices a degraded MCP launch owes the session: one for an unreadable
 /// registry (no registry-configured server joined the catalog) and one per
 /// server that could not be prepared. Nothing when the catalog is complete.
+/// Most refused tools one `mcp_tool` notice names.
+const MAX_NOTICE_TOOLS: usize = 8;
+
 fn mcp_launch_notices(
     registry_failure: Option<&str>,
     failures: &[crate::mcp_runtime::McpServerFailure],
     tool_refusals: &[crate::mcp_runtime::McpRefusedTool],
+    allowed_tools: &[String],
 ) -> Vec<SessionNotice> {
     let mut notices = Vec::new();
     if let Some(message) = registry_failure {
@@ -4531,7 +4536,8 @@ fn mcp_launch_notices(
     }
     // One notice per healthy server that skipped tools: the server stays
     // available, the notice names each skipped tool, where in its schema and
-    // why (bounded; the rest is counted).
+    // why. At most `MAX_NOTICE_TOOLS` are listed, those the workspace policy
+    // names first; the rest is counted.
     let mut servers = BTreeMap::<&mcp::McpServerReference, Vec<&mcp::McpToolRefusal>>::new();
     for refused in tool_refusals {
         servers
@@ -4539,10 +4545,16 @@ fn mcp_launch_notices(
             .or_default()
             .push(&refused.refusal);
     }
-    for (server, refusals) in servers {
+    for (server, mut refusals) in servers {
+        refusals.sort_by_key(|refusal| {
+            !refusal
+                .name
+                .as_ref()
+                .is_some_and(|name| allowed_tools.contains(name))
+        });
         let listed = refusals
             .iter()
-            .take(crate::mcp_runtime::MAX_REPORTED_TOOL_REFUSALS)
+            .take(MAX_NOTICE_TOOLS)
             .map(|refusal| {
                 let location = refusal
                     .pointer
@@ -4553,9 +4565,7 @@ fn mcp_launch_notices(
             })
             .collect::<Vec<_>>()
             .join("; ");
-        let omitted = refusals
-            .len()
-            .saturating_sub(crate::mcp_runtime::MAX_REPORTED_TOOL_REFUSALS);
+        let omitted = refusals.len().saturating_sub(MAX_NOTICE_TOOLS);
         let tail = if omitted == 0 {
             String::new()
         } else {
@@ -7217,6 +7227,7 @@ mod tests {
                 },
             ],
             &[],
+            &[],
         );
         assert_eq!(notices.len(), 2);
         assert_eq!(notices[0].classification, "mcp_server");
@@ -7248,23 +7259,177 @@ mod tests {
                 reason: "uses unsupported keyword \"maxProperties\"".to_owned(),
             },
         };
-        let one = mcp_launch_notices(None, &[], &[refusal(0)]);
+        let one = mcp_launch_notices(None, &[], &[refusal(0)], &[]);
         assert_eq!(one.len(), 1);
         assert_eq!(one[0].classification, "mcp_tool");
         assert_eq!(
             one[0].message,
             "MCP server probe is available but 1 of its tools were skipped for this run: tool0 at /parameters/properties/operand: uses unsupported keyword \"maxProperties\""
         );
-        let many = (0..crate::mcp_runtime::MAX_REPORTED_TOOL_REFUSALS + 3)
-            .map(refusal)
-            .collect::<Vec<_>>();
-        let notices = mcp_launch_notices(None, &[], &many);
+        let many = (0..MAX_NOTICE_TOOLS + 3).map(refusal).collect::<Vec<_>>();
+        // The policy names the last tool: it is listed first, not cut.
+        let last = format!("mcp__probe__tool{}", MAX_NOTICE_TOOLS + 2);
+        let notices = mcp_launch_notices(None, &[], &many, std::slice::from_ref(&last));
         assert_eq!(notices.len(), 1, "one notice per server, not per tool");
-        assert!(notices[0].message.ends_with("; and 3 more"));
-        assert!(notices[0].message.contains(&format!(
-            "{} of its tools",
-            crate::mcp_runtime::MAX_REPORTED_TOOL_REFUSALS + 3
-        )));
+        let message = &notices[0].message;
+        assert!(message.ends_with("; and 3 more"), "{message}");
+        assert!(
+            message.contains(&format!("{} of its tools", MAX_NOTICE_TOOLS + 3)),
+            "{message}"
+        );
+        assert!(message.contains(&format!("tool{} at", MAX_NOTICE_TOOLS + 2)));
+        assert!(!message.contains("tool7 at"), "{message}");
+        assert_eq!(message.matches(" at /parameters").count(), MAX_NOTICE_TOOLS);
+    }
+
+    fn write_catalog_server(script: &Path, tools_json: &str) {
+        fs::write(
+            script,
+            format!(
+                "#!/bin/sh\nwhile IFS= read -r line; do\ncase \"$line\" in\n*'\"method\":\"initialize\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{{\"protocolVersion\":\"{}\",\"capabilities\":{{\"tools\":{{}}}},\"serverInfo\":{{\"name\":\"catalog\",\"version\":\"1\"}}}}}}' ;;\n*'\"method\":\"tools/list\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{{\"tools\":{tools_json}}}}}' ;;\nesac\ndone\n",
+                mcp::LEGACY_PROTOCOL_VERSION
+            ),
+        )
+        .expect("catalog server");
+        fs::set_permissions(script, fs::Permissions::from_mode(0o755)).expect("script mode");
+    }
+
+    /// Runs one real worker launch (the worker itself exits at once) under
+    /// `allowed_tools` and returns the stranded-input notice message. A launch
+    /// whose bindings were refused says so; one that reached the worker does not.
+    #[cfg(target_os = "macos")]
+    fn launch_notice_for_policy(servers: &[(&str, String)], allowed_tools: &[&str]) -> String {
+        let root = tempfile::tempdir().expect("process host root");
+        let workspace = root.path().join("workspace");
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspace config");
+        write_canonical_test_json(
+            &root.path().join("workspaces/ws/workspace.json"),
+            json!({"format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":allowed_tools,"network":false,"writable_roots":[]}}),
+        );
+        let session = "018f0000-0000-7000-8000-000000000121";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+        let worker = root.path().join("failing-worker");
+        fs::write(&worker, b"#!/bin/sh\nexit 1\n").expect("failing worker");
+        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            worker,
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        for (name, tools_json) in servers {
+            let script = root.path().join(format!("{name}-server"));
+            write_catalog_server(&script, tools_json);
+            host.mcp_runtime
+                .mutate(
+                    &format!("save-{name}"),
+                    &mcp::McpManagementMutation::Save {
+                        server: mcp::McpServerConfig {
+                            reference: mcp::McpServerReference {
+                                workspace_id: "ws".to_owned(),
+                                scope: mcp::McpScope::User,
+                                name: (*name).to_owned(),
+                            },
+                            transport: mcp::McpTransportConfig::Stdio {
+                                command: vec![script.to_string_lossy().into_owned()],
+                                cwd: None,
+                                environment: BTreeMap::new(),
+                            },
+                            enabled: true,
+                            always_on: false,
+                            protocol_mode: mcp::ProtocolMode::Legacy,
+                            owner: None,
+                            plugin_component: None,
+                            project_trusted: true,
+                        },
+                        credential_fields: BTreeMap::new(),
+                    },
+                )
+                .expect("save server");
+        }
+        let origin = OriginTuple {
+            principal: "test".to_owned(),
+            client: "test".to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-launch-probe".to_owned(),
+        };
+        let prompt = MaterializedPrompt {
+            blocks: vec![Block::Text {
+                text: "launch probe".to_owned(),
+            }],
+            attachments: Vec::new(),
+            files: Vec::new(),
+        };
+        host.locked_prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, false)
+            .expect("durable prompt");
+        let notices = session_notices(&fs::read(&ledger).expect("ledger"));
+        let launch = notices
+            .iter()
+            .find(|notice| notice["classification"] == "worker_launch")
+            .unwrap_or_else(|| panic!("no worker_launch notice: {notices:?}"));
+        launch["message"].as_str().unwrap_or_default().to_owned()
+    }
+
+    /// set-accepted implies launch-accepted: every policy below is one
+    /// `validate_workspace_policy_candidate` accepts, and the real launch gets
+    /// past the bindings (it then fails only because the stub worker exits). The
+    /// control shows the probe can tell a refused binding from a started worker.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_policy_set_accepts_never_breaks_the_launch_binding() {
+        let bad = |name: &str| {
+            format!(
+                r#"{{"name":"{name}","description":"Bad","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{"o":{{"type":"object","maxProperties":2,"properties":{{}}}}}},"required":[],"additionalProperties":false}}}}"#
+            )
+        };
+        let good = |name: &str| {
+            format!(
+                r#"{{"name":"{name}","description":"Good","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{}},"required":[],"additionalProperties":false}}}}"#
+            )
+        };
+        let binding_refused =
+            |message: &str| message.contains("launch bindings could not be derived");
+        // Control: an unknown name is refused at launch, as at set.
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{}]", good("alpha")))],
+            &["mcp__probe__nope"],
+        );
+        assert!(binding_refused(&message), "{message}");
+        // An ordinary refused tool.
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{},{}]", good("alpha"), bad("beta")))],
+            &["mcp__probe__alpha", "mcp__probe__beta"],
+        );
+        assert!(!binding_refused(&message), "{message}");
+        // A refused tool whose projected name collides with a healthy tool's.
+        let message = launch_notice_for_policy(
+            &[
+                ("a", format!("[{}]", bad("b__c"))),
+                ("a__b", format!("[{}]", good("c"))),
+            ],
+            &["mcp__a__b__c"],
+        );
+        assert!(!binding_refused(&message), "{message}");
+        // A refused tool whose projected name is too long for a launch name
+        // does not disturb the other tools' launch (a policy cannot name it:
+        // `set` refuses it as unknown).
+        let long = "x".repeat(130);
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{},{}]", good("alpha"), bad(&long)))],
+            &["mcp__probe__alpha"],
+        );
+        assert!(!binding_refused(&message), "{message}");
     }
 
     #[test]

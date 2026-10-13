@@ -356,3 +356,147 @@ async fn a_policy_beyond_a_ceiling_keeps_the_escalation_code_and_label() {
         "{details}"
     );
 }
+
+fn tool_json(name: &str, refused: bool) -> String {
+    let parameters = if refused {
+        r#"{"type":"object","properties":{"o":{"type":"object","maxProperties":2,"properties":{}}},"required":[],"additionalProperties":false}"#
+    } else {
+        r#"{"type":"object","properties":{},"required":[],"additionalProperties":false}"#
+    };
+    format!(
+        r#"{{"name":"{name}","description":"Fixture","annotations":{{"readOnlyHint":true}},"inputSchema":{parameters}}}"#
+    )
+}
+
+/// A refused tool whose projected name is longer than a launch tool name (128
+/// bytes) can never be an executable or an "unavailable" tool: a policy naming
+/// it is an unknown tool, so `set` refuses it and the workspace keeps working.
+/// (Before, `set` accepted it and every `tools/list` and launch then failed.)
+#[tokio::test]
+async fn a_refused_tool_with_an_overlong_projected_name_is_unknown_not_unavailable() {
+    let fixture = fixture();
+    let long = "x".repeat(120);
+    let script = fixture.script(
+        "probe-server",
+        &catalog_server(&format!("[{GOOD_TOOL},{}]", tool_json(&long, true))),
+    );
+    fixture.save_server("probe", &script).await;
+    let long_name = format!("mcp__probe__{long}");
+    let (_, request) = fixture
+        .policy(1, &["mcp__probe__alpha", long_name.as_str()])
+        .await;
+    let (code, _, details) = fixture.refused("workspace.policy.set", request).await;
+    assert_eq!(code, "policy-escalation");
+    assert_eq!(details["cause"], "tool-not-installed");
+
+    // The refusal is still reported by the server status, with a bounded diagnostic.
+    let servers = fixture
+        .ok("mcp.list", json!({"workspaceId":"workspace-1"}))
+        .await;
+    let refused = &servers["servers"][0]["readiness"]["refusedTools"][0];
+    assert_eq!(refused["code"], "schema-refused", "{servers}");
+    assert!(refused.get("name").is_none(), "{refused}");
+    assert!(
+        refused["tool"]
+            .as_str()
+            .is_some_and(|tool| tool.len() <= 256)
+    );
+
+    let (_, request) = fixture.policy(1, &["mcp__probe__alpha"]).await;
+    fixture.ok("workspace.policy.set", request).await;
+    let listed = fixture
+        .ok("tools/list", json!({"workspaceId":"workspace-1"}))
+        .await;
+    assert_eq!(tool_names(&listed), vec!["mcp__probe__alpha".to_owned()]);
+}
+
+/// `a`/`b__c` and `a__b`/`c` escape to the same projected name. The healthy
+/// one runs; the refused one is not "unavailable" because the name is
+/// executable. `set` and `tools/list` agree.
+#[tokio::test]
+async fn a_refused_tool_sharing_its_projected_name_with_a_healthy_tool_is_not_unavailable() {
+    let fixture = fixture();
+    let one = fixture.script(
+        "one-server",
+        &catalog_server(&format!("[{}]", tool_json("b__c", true))),
+    );
+    let two = fixture.script(
+        "two-server",
+        &catalog_server(&format!("[{}]", tool_json("c", false))),
+    );
+    fixture.save_server("a", &one).await;
+    fixture.save_server("a__b", &two).await;
+    let (_, request) = fixture.policy(1, &["mcp__a__b__c"]).await;
+    let set = fixture.ok("workspace.policy.set", request).await;
+    assert!(set.get("unavailableTools").is_none(), "{set}");
+    let listed = fixture
+        .ok("tools/list", json!({"workspaceId":"workspace-1"}))
+        .await;
+    assert_eq!(tool_names(&listed), vec!["mcp__a__b__c".to_owned()]);
+}
+
+/// Whatever `workspace.policy.set` accepts, the workspace's catalog still
+/// lists: a policy never turns acceptance into a dead workspace.
+#[tokio::test]
+async fn every_policy_set_accepts_leaves_tools_list_working() {
+    let long = "x".repeat(120);
+    let long_name = format!("mcp__probe__{long}");
+    type Scenario = (Vec<(&'static str, Vec<String>)>, Vec<String>);
+    let scenarios: Vec<Scenario> = vec![
+        (
+            vec![(
+                "probe",
+                vec![tool_json("alpha", false), tool_json("beta", true)],
+            )],
+            vec!["mcp__probe__alpha".into(), "mcp__probe__beta".into()],
+        ),
+        (
+            vec![(
+                "probe",
+                vec![tool_json("alpha", false), tool_json(&long, true)],
+            )],
+            vec!["mcp__probe__alpha".into(), long_name.clone()],
+        ),
+        (
+            vec![
+                ("a", vec![tool_json("b__c", true)]),
+                ("a__b", vec![tool_json("c", false)]),
+            ],
+            vec!["mcp__a__b__c".into()],
+        ),
+        (
+            vec![("probe", vec![tool_json("alpha", false)])],
+            vec!["mcp__probe__alpha".into(), "mcp__probe__gamma".into()],
+        ),
+        (
+            vec![("probe", vec![tool_json("beta", true)])],
+            vec!["mcp__probe__beta".into(), "read".into()],
+        ),
+    ];
+    let mut accepted = 0;
+    for (servers, tools) in scenarios {
+        let fixture = fixture();
+        for (name, listed) in &servers {
+            let script = fixture.script(
+                &format!("{name}-server"),
+                &catalog_server(&format!("[{}]", listed.join(","))),
+            );
+            fixture.save_server(name, &script).await;
+        }
+        let names = tools.iter().map(String::as_str).collect::<Vec<_>>();
+        let (_, request) = fixture.policy(1, &names).await;
+        let response = fixture.call("workspace.policy.set", request).await;
+        if response.result.ok {
+            accepted += 1;
+            let listed = fixture
+                .call("tools/list", json!({"workspaceId":"workspace-1"}))
+                .await;
+            assert!(
+                listed.result.ok,
+                "set accepted {tools:?} but tools/list failed: {:?}",
+                listed.result.error
+            );
+        }
+    }
+    assert_eq!(accepted, 3, "the accepting scenarios changed");
+}

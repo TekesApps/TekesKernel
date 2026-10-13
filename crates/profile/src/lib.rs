@@ -18,7 +18,7 @@ pub use instruction::{
 pub use launch::{
     DynamicTool, DynamicToolCatalog, DynamicToolEffect, DynamicToolSource, DynamicToolSourceKind,
     ExternalEffectBinding, ExternalEffectProtocol, LaunchBindings, MAX_UNAVAILABLE_TOOLS,
-    SchemaRefusal,
+    SchemaRefusal, is_dynamic_tool_name,
 };
 pub use resources::{
     CommandCatalogEntry, CommandExpansion, CommandSummary, ResourceCatalog, ResourceError,

@@ -298,7 +298,9 @@ run, and the result reports it. The result is
 unavailable for this reason, `unavailableTools` (at most 32 entries
 `{server,tool,name,code,reason,pointer?,keyword?}`, the diagnostic of
 mcp-runtime) and, when more exist, `unavailableToolCount`. Only an exact
-projected name of a refused tool is excused; the check for unknown names, for an
+projected name of a refused tool is excused, and only when that name is a valid
+launch tool name (at most 128 bytes) and not also an executable catalog entry; a
+refused tool with an overlong projected name is an unknown tool (`tool-not-installed`); the check for unknown names, for an
 unavailable server and for every ceiling is unchanged.
 
 `workspaceFolders.v1` edits the ordered `config` `Workspace.folders` list:
