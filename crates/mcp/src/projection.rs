@@ -195,7 +195,7 @@ fn project_tool(
     let refuse_schema = |reason: String| {
         Box::new(McpToolRefusal {
             tool: bounded(&tool.name, MAX_TOOL_REFUSAL_NAME_BYTES),
-            name: project_name(server, &tool.name).ok(),
+            name: launch_name(project_name(server, &tool.name).ok()),
             code: refusal_code::SCHEMA_REFUSED,
             pointer: None,
             keyword: None,

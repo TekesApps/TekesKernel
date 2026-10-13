@@ -69,7 +69,10 @@ impl McpWorkspaceBinding {
             .iter()
             .filter(|refused| {
                 refused.refusal.name.as_ref().is_some_and(|name| {
-                    allowed_tools.contains(name)
+                    // The launch-name rule is applied here as well, so it holds
+                    // for any producer of a refusal, not only the projection.
+                    profile::is_dynamic_tool_name(name)
+                        && allowed_tools.contains(name)
                         && !self.catalog.tools.iter().any(|tool| tool.name == *name)
                 })
             })

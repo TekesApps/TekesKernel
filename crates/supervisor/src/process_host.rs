@@ -7282,6 +7282,7 @@ mod tests {
         assert_eq!(message.matches(" at /parameters").count(), MAX_NOTICE_TOOLS);
     }
 
+    #[cfg(target_os = "macos")]
     fn write_catalog_server(script: &Path, tools_json: &str) {
         fs::write(
             script,

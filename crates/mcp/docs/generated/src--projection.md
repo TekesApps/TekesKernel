@@ -164,6 +164,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_catalog_partial` | `Ok` | [186](../../src/projection.rs#L186) | external-constructor-callback-or-unresolved |
 | `project_tool` | `Box::new` | [196](../../src/projection.rs#L196), [231](../../src/projection.rs#L231), [253](../../src/projection.rs#L253) | external-constructor-callback-or-unresolved |
 | `project_tool` | `bounded` | [197](../../src/projection.rs#L197), [202](../../src/projection.rs#L202), [232](../../src/projection.rs#L232), [237](../../src/projection.rs#L237), [254](../../src/projection.rs#L254), [259](../../src/projection.rs#L259), [262](../../src/projection.rs#L262), [263](../../src/projection.rs#L263) | [mcp::projection::bounded](../../src/projection.rs#L276) |
+| `project_tool` | `launch_name` | [198](../../src/projection.rs#L198), [233](../../src/projection.rs#L233), [255](../../src/projection.rs#L255) | [mcp::projection::launch_name](../../src/projection.rs#L271) |
 | `project_tool` | `project_name(server, &tool.name).ok` | [198](../../src/projection.rs#L198) | receiver-type-required |
 | `project_tool` | `project_name` | [198](../../src/projection.rs#L198), [206](../../src/projection.rs#L206) | [mcp::projection::project_name](../../src/projection.rs#L14) |
 | `project_tool` | `project_name(server, &tool.name).map_err` | [206](../../src/projection.rs#L206) | receiver-type-required |
@@ -183,7 +184,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_tool` | `IJsonValue::parse` | [221](../../src/projection.rs#L221) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `project_tool` | `external_effect_binding(tool, tools).map_err` | [230](../../src/projection.rs#L230) | receiver-type-required |
 | `project_tool` | `external_effect_binding` | [230](../../src/projection.rs#L230) | [mcp::projection::external_effect_binding](../../src/projection.rs#L297) |
-| `project_tool` | `launch_name` | [233](../../src/projection.rs#L233), [255](../../src/projection.rs#L255) | [mcp::projection::launch_name](../../src/projection.rs#L271) |
 | `project_tool` | `Some` | [233](../../src/projection.rs#L233), [255](../../src/projection.rs#L255) | external-constructor-callback-or-unresolved |
 | `project_tool` | `name.clone` | [233](../../src/projection.rs#L233), [241](../../src/projection.rs#L241) | receiver-type-required |
 | `project_tool` | `DynamicTool::declared(         name.clone(),         DynamicToolSource {             kind: DynamicToolSourceKind::Mcp,             id: server.to_owned(),         },         effect,         always_on,         Vec::new(),         schema,     )     .map_err` | [240](../../src/projection.rs#L240) | receiver-type-required |

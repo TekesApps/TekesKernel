@@ -39,7 +39,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/mcp/src/management.rs](../../src/management.rs) | 66 | 493 | [Symbols and calls](src--management.md) |
 | [crates/mcp/src/parameter_headers.rs](../../src/parameter_headers.rs) | 11 | 109 | [Symbols and calls](src--parameter_headers.md) |
 | [crates/mcp/src/pool.rs](../../src/pool.rs) | 19 | 134 | [Symbols and calls](src--pool.md) |
-| [crates/mcp/src/projection.rs](../../src/projection.rs) | 20 | 183 | [Symbols and calls](src--projection.md) |
+| [crates/mcp/src/projection.rs](../../src/projection.rs) | 20 | 184 | [Symbols and calls](src--projection.md) |
 | [crates/mcp/src/recovery.rs](../../src/recovery.rs) | 3 | 0 | [Symbols and calls](src--recovery.md) |
 | [crates/mcp/src/subscription.rs](../../src/subscription.rs) | 7 | 48 | [Symbols and calls](src--subscription.md) |
 | [crates/mcp/src/transport.rs](../../src/transport.rs) | 77 | 815 | [Symbols and calls](src--transport.md) |
