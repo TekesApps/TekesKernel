@@ -6,6 +6,8 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.4.4 — 2026-10-13
+
 ### Fixed
 - Linux Landlock sandbox launches now require ABI 3 so truncation cannot modify
   files outside writable roots. Network-denied tools cannot redirect Unix
