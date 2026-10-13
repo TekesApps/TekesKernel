@@ -37,43 +37,43 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tools::linux_sandbox::SECCOMP_RET_ALLOW](../../src/linux_sandbox.rs#L367) | const_item | `private` |  |
 | [tools::linux_sandbox::BPF_LD_W_ABS](../../src/linux_sandbox.rs#L369) | const_item | `private` |  |
 | [tools::linux_sandbox::BPF_JMP_JEQ_K](../../src/linux_sandbox.rs#L370) | const_item | `private` |  |
-| [tools::linux_sandbox::BPF_JMP_JGE_K](../../src/linux_sandbox.rs#L371) | const_item | `private` |  |
-| [tools::linux_sandbox::BPF_JMP_JSET_K](../../src/linux_sandbox.rs#L372) | const_item | `private` |  |
-| [tools::linux_sandbox::BPF_RET_K](../../src/linux_sandbox.rs#L373) | const_item | `private` |  |
-| [tools::linux_sandbox::DATA_NR](../../src/linux_sandbox.rs#L375) | const_item | `private` |  |
-| [tools::linux_sandbox::DATA_ARCH](../../src/linux_sandbox.rs#L376) | const_item | `private` |  |
-| [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L378) | function_item | `private` |  |
-| [tools::linux_sandbox::CLONE_THREAD](../../src/linux_sandbox.rs#L382) | const_item | `private` |  |
-| [tools::linux_sandbox::CLONE_NAMESPACES](../../src/linux_sandbox.rs#L383) | const_item | `private` |  |
-| [tools::linux_sandbox::TIOCSTI](../../src/linux_sandbox.rs#L391) | const_item | `private` |  |
-| [tools::linux_sandbox::TIOCLINUX](../../src/linux_sandbox.rs#L392) | const_item | `private` |  |
-| [tools::linux_sandbox::SYS_FCHMODAT2](../../src/linux_sandbox.rs#L395) | const_item | `private` |  |
-| [tools::linux_sandbox::SYS_SETXATTRAT](../../src/linux_sandbox.rs#L396) | const_item | `private` |  |
-| [tools::linux_sandbox::SYS_REMOVEXATTRAT](../../src/linux_sandbox.rs#L397) | const_item | `private` |  |
-| [tools::linux_sandbox::DENIED](../../src/linux_sandbox.rs#L402) | const_item | `private` |  |
-| [tools::linux_sandbox::Program](../../src/linux_sandbox.rs#L464) | struct_item | `private` |  |
-| [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L471) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L475) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::deny](../../src/linux_sandbox.rs#L479) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::deny_if_any](../../src/linux_sandbox.rs#L486) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::deny_unless_any](../../src/linux_sandbox.rs#L495) | function_item | `private` |  |
-| [tools::linux_sandbox::Program::deny_if_equal](../../src/linux_sandbox.rs#L504) | function_item | `private` |  |
-| [tools::linux_sandbox::seccomp_filter](../../src/linux_sandbox.rs#L513) | function_item | `private` |  |
-| [tools::linux_sandbox::seccomp_filter::X32_SYSCALL_BIT](../../src/linux_sandbox.rs#L521) | const_item | `private` |  |
-| [tools::linux_sandbox::tests::landlock_abis_without_truncation_control_are_rejected](../../src/linux_sandbox.rs#L574) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::Fixture](../../src/linux_sandbox.rs#L585) | struct_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::fixture](../../src/linux_sandbox.rs#L591) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::policy](../../src/linux_sandbox.rs#L607) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L619) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L629) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::stderr](../../src/linux_sandbox.rs#L633) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::filesystem_access_is_limited_to_policy_roots](../../src/linux_sandbox.rs#L638) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::read_roots_are_not_writable](../../src/linux_sandbox.rs#L673) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::denied_network_refuses_sockets_and_all_permits_them](../../src/linux_sandbox.rs#L686) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::loopback_only_network_is_refused](../../src/linux_sandbox.rs#L714) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::without_process_permission_only_the_requested_program_runs](../../src/linux_sandbox.rs#L728) | function_item | `private` | test; #[cfg(test)] |
-| [tools::linux_sandbox::tests::namespaces_and_outside_processes_are_out_of_reach](../../src/linux_sandbox.rs#L742) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::BPF_JMP_JGE_K](../../src/linux_sandbox.rs#L372) | const_item | `private` | #[cfg(target_arch = "x86_64")] |
+| [tools::linux_sandbox::BPF_JMP_JSET_K](../../src/linux_sandbox.rs#L373) | const_item | `private` |  |
+| [tools::linux_sandbox::BPF_RET_K](../../src/linux_sandbox.rs#L374) | const_item | `private` |  |
+| [tools::linux_sandbox::DATA_NR](../../src/linux_sandbox.rs#L376) | const_item | `private` |  |
+| [tools::linux_sandbox::DATA_ARCH](../../src/linux_sandbox.rs#L377) | const_item | `private` |  |
+| [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L379) | function_item | `private` |  |
+| [tools::linux_sandbox::CLONE_THREAD](../../src/linux_sandbox.rs#L383) | const_item | `private` |  |
+| [tools::linux_sandbox::CLONE_NAMESPACES](../../src/linux_sandbox.rs#L384) | const_item | `private` |  |
+| [tools::linux_sandbox::TIOCSTI](../../src/linux_sandbox.rs#L392) | const_item | `private` |  |
+| [tools::linux_sandbox::TIOCLINUX](../../src/linux_sandbox.rs#L393) | const_item | `private` |  |
+| [tools::linux_sandbox::SYS_FCHMODAT2](../../src/linux_sandbox.rs#L396) | const_item | `private` |  |
+| [tools::linux_sandbox::SYS_SETXATTRAT](../../src/linux_sandbox.rs#L397) | const_item | `private` |  |
+| [tools::linux_sandbox::SYS_REMOVEXATTRAT](../../src/linux_sandbox.rs#L398) | const_item | `private` |  |
+| [tools::linux_sandbox::DENIED](../../src/linux_sandbox.rs#L403) | const_item | `private` |  |
+| [tools::linux_sandbox::Program](../../src/linux_sandbox.rs#L465) | struct_item | `private` |  |
+| [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L472) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L476) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::deny](../../src/linux_sandbox.rs#L480) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::deny_if_any](../../src/linux_sandbox.rs#L487) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::deny_unless_any](../../src/linux_sandbox.rs#L496) | function_item | `private` |  |
+| [tools::linux_sandbox::Program::deny_if_equal](../../src/linux_sandbox.rs#L505) | function_item | `private` |  |
+| [tools::linux_sandbox::seccomp_filter](../../src/linux_sandbox.rs#L514) | function_item | `private` |  |
+| [tools::linux_sandbox::seccomp_filter::X32_SYSCALL_BIT](../../src/linux_sandbox.rs#L522) | const_item | `private` |  |
+| [tools::linux_sandbox::tests::landlock_abis_without_truncation_control_are_rejected](../../src/linux_sandbox.rs#L575) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::Fixture](../../src/linux_sandbox.rs#L586) | struct_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::fixture](../../src/linux_sandbox.rs#L592) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::policy](../../src/linux_sandbox.rs#L608) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L620) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L630) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::stderr](../../src/linux_sandbox.rs#L634) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::filesystem_access_is_limited_to_policy_roots](../../src/linux_sandbox.rs#L639) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::read_roots_are_not_writable](../../src/linux_sandbox.rs#L674) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::denied_network_refuses_sockets_and_all_permits_them](../../src/linux_sandbox.rs#L687) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::loopback_only_network_is_refused](../../src/linux_sandbox.rs#L715) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::without_process_permission_only_the_requested_program_runs](../../src/linux_sandbox.rs#L729) | function_item | `private` | test; #[cfg(test)] |
+| [tools::linux_sandbox::tests::namespaces_and_outside_processes_are_out_of_reach](../../src/linux_sandbox.rs#L743) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -188,7 +188,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `confine` | `supported_abi().map_err` | [136](../../src/linux_sandbox.rs#L136) | receiver-type-required |
 | `confine` | `supported_abi` | [136](../../src/linux_sandbox.rs#L136) | [tools::linux_sandbox::supported_abi](../../src/linux_sandbox.rs#L79) |
 | `confine` | `landlock_ruleset` | [137](../../src/linux_sandbox.rs#L137) | [tools::linux_sandbox::landlock_ruleset](../../src/linux_sandbox.rs#L170) |
-| `confine` | `seccomp_filter` | [138](../../src/linux_sandbox.rs#L138) | [tools::linux_sandbox::seccomp_filter](../../src/linux_sandbox.rs#L513) |
+| `confine` | `seccomp_filter` | [138](../../src/linux_sandbox.rs#L138) | [tools::linux_sandbox::seccomp_filter](../../src/linux_sandbox.rs#L514) |
 | `confine` | `command.pre_exec` | [144](../../src/linux_sandbox.rs#L144) | receiver-type-required |
 | `confine` | `libc::prctl` | [145](../../src/linux_sandbox.rs#L145) | external-constructor-callback-or-unresolved |
 | `confine` | `io::Error::last_os_error` | [146](../../src/linux_sandbox.rs#L146), [149](../../src/linux_sandbox.rs#L149), [162](../../src/linux_sandbox.rs#L162) | external-constructor-callback-or-unresolved |
@@ -263,85 +263,85 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `elf_interpreter` | `bytes.strip_suffix` | [354](../../src/linux_sandbox.rs#L354) | receiver-type-required |
 | `elf_interpreter` | `PathBuf::from` | [355](../../src/linux_sandbox.rs#L355) | external-constructor-callback-or-unresolved |
 | `elf_interpreter` | `std::ffi::OsStr::from_bytes` | [355](../../src/linux_sandbox.rs#L355) | external-constructor-callback-or-unresolved |
-| `push` | `self.0.push` | [468](../../src/linux_sandbox.rs#L468) | receiver-type-required |
-| `load` | `self.push` | [472](../../src/linux_sandbox.rs#L472) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `ret` | `self.push` | [476](../../src/linux_sandbox.rs#L476) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `deny` | `self.load` | [480](../../src/linux_sandbox.rs#L480) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L471) |
-| `deny` | `self.push` | [481](../../src/linux_sandbox.rs#L481) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `deny` | `self.ret` | [482](../../src/linux_sandbox.rs#L482) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L475) |
-| `deny_if_any` | `self.load` | [487](../../src/linux_sandbox.rs#L487), [489](../../src/linux_sandbox.rs#L489) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L471) |
-| `deny_if_any` | `self.push` | [488](../../src/linux_sandbox.rs#L488), [490](../../src/linux_sandbox.rs#L490) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `deny_if_any` | `data_arg` | [489](../../src/linux_sandbox.rs#L489) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L378) |
-| `deny_if_any` | `self.ret` | [491](../../src/linux_sandbox.rs#L491) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L475) |
-| `deny_unless_any` | `self.load` | [496](../../src/linux_sandbox.rs#L496), [498](../../src/linux_sandbox.rs#L498) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L471) |
-| `deny_unless_any` | `self.push` | [497](../../src/linux_sandbox.rs#L497), [499](../../src/linux_sandbox.rs#L499) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `deny_unless_any` | `data_arg` | [498](../../src/linux_sandbox.rs#L498) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L378) |
-| `deny_unless_any` | `self.ret` | [500](../../src/linux_sandbox.rs#L500) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L475) |
-| `deny_if_equal` | `self.load` | [505](../../src/linux_sandbox.rs#L505), [507](../../src/linux_sandbox.rs#L507) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L471) |
-| `deny_if_equal` | `self.push` | [506](../../src/linux_sandbox.rs#L506), [508](../../src/linux_sandbox.rs#L508) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L467) |
-| `deny_if_equal` | `data_arg` | [507](../../src/linux_sandbox.rs#L507) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L378) |
-| `deny_if_equal` | `self.ret` | [509](../../src/linux_sandbox.rs#L509) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L475) |
-| `seccomp_filter` | `Program::default` | [514](../../src/linux_sandbox.rs#L514) | external-constructor-callback-or-unresolved |
-| `seccomp_filter` | `program.load` | [516](../../src/linux_sandbox.rs#L516), [522](../../src/linux_sandbox.rs#L522) | receiver-type-required |
-| `seccomp_filter` | `program.push` | [517](../../src/linux_sandbox.rs#L517), [523](../../src/linux_sandbox.rs#L523) | receiver-type-required |
-| `seccomp_filter` | `program.ret` | [518](../../src/linux_sandbox.rs#L518), [524](../../src/linux_sandbox.rs#L524), [556](../../src/linux_sandbox.rs#L556) | receiver-type-required |
-| `seccomp_filter` | `program.deny` | [527](../../src/linux_sandbox.rs#L527), [545](../../src/linux_sandbox.rs#L545), [552](../../src/linux_sandbox.rs#L552), [553](../../src/linux_sandbox.rs#L553) | receiver-type-required |
-| `seccomp_filter` | `program.deny_if_any` | [529](../../src/linux_sandbox.rs#L529) | receiver-type-required |
-| `seccomp_filter` | `program.deny_if_equal` | [530](../../src/linux_sandbox.rs#L530), [531](../../src/linux_sandbox.rs#L531) | receiver-type-required |
-| `seccomp_filter` | `program.deny_unless_any` | [549](../../src/linux_sandbox.rs#L549) | receiver-type-required |
-| `seccomp_filter` | `program.0.len` | [557](../../src/linux_sandbox.rs#L557) | receiver-type-required |
-| `seccomp_filter` | `usize::from` | [557](../../src/linux_sandbox.rs#L557) | external-constructor-callback-or-unresolved |
-| `seccomp_filter` | `Err` | [558](../../src/linux_sandbox.rs#L558) | external-constructor-callback-or-unresolved |
-| `seccomp_filter` | `SandboxError::Encoding` | [558](../../src/linux_sandbox.rs#L558) | external-constructor-callback-or-unresolved |
-| `seccomp_filter` | `"seccomp filter too long".to_owned` | [558](../../src/linux_sandbox.rs#L558) | receiver-type-required |
-| `seccomp_filter` | `Ok` | [560](../../src/linux_sandbox.rs#L560) | external-constructor-callback-or-unresolved |
-| `seccomp_filter` | `program.0.into_boxed_slice` | [560](../../src/linux_sandbox.rs#L560) | receiver-type-required |
-| `landlock_abis_without_truncation_control_are_rejected` | `super::require_safe_abi(abi).unwrap_err` | [576](../../src/linux_sandbox.rs#L576) | receiver-type-required |
-| `landlock_abis_without_truncation_control_are_rejected` | `super::require_safe_abi` | [576](../../src/linux_sandbox.rs#L576) | [tools::linux_sandbox::require_safe_abi](../../src/linux_sandbox.rs#L111) |
-| `fixture` | `tempfile::tempdir().unwrap` | [592](../../src/linux_sandbox.rs#L592) | receiver-type-required |
-| `fixture` | `tempfile::tempdir` | [592](../../src/linux_sandbox.rs#L592) | external-constructor-callback-or-unresolved |
-| `fixture` | `fs::canonicalize(root.path()).unwrap` | [593](../../src/linux_sandbox.rs#L593) | receiver-type-required |
-| `fixture` | `fs::canonicalize` | [593](../../src/linux_sandbox.rs#L593) | external-constructor-callback-or-unresolved |
-| `fixture` | `root.path` | [593](../../src/linux_sandbox.rs#L593) | receiver-type-required |
-| `fixture` | `base.join` | [594](../../src/linux_sandbox.rs#L594), [595](../../src/linux_sandbox.rs#L595) | receiver-type-required |
-| `fixture` | `fs::create_dir(&inside).unwrap` | [596](../../src/linux_sandbox.rs#L596) | receiver-type-required |
-| `fixture` | `fs::create_dir` | [596](../../src/linux_sandbox.rs#L596), [597](../../src/linux_sandbox.rs#L597) | external-constructor-callback-or-unresolved |
-| `fixture` | `fs::create_dir(&outside).unwrap` | [597](../../src/linux_sandbox.rs#L597) | receiver-type-required |
-| `fixture` | `fs::write(inside.join("visible.txt"), b"visible").unwrap` | [598](../../src/linux_sandbox.rs#L598) | receiver-type-required |
-| `fixture` | `fs::write` | [598](../../src/linux_sandbox.rs#L598), [599](../../src/linux_sandbox.rs#L599) | external-constructor-callback-or-unresolved |
-| `fixture` | `inside.join` | [598](../../src/linux_sandbox.rs#L598) | receiver-type-required |
-| `fixture` | `fs::write(outside.join("secret.txt"), b"secret").unwrap` | [599](../../src/linux_sandbox.rs#L599) | receiver-type-required |
-| `fixture` | `outside.join` | [599](../../src/linux_sandbox.rs#L599) | receiver-type-required |
-| `policy` | `fixture.inside.to_string_lossy().into_owned` | [608](../../src/linux_sandbox.rs#L608) | receiver-type-required |
-| `policy` | `fixture.inside.to_string_lossy` | [608](../../src/linux_sandbox.rs#L608) | receiver-type-required |
-| `run` | `probe_backend` | [620](../../src/linux_sandbox.rs#L620) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L238) |
-| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output()             .unwrap` | [622](../../src/linux_sandbox.rs#L622) | receiver-type-required |
-| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output` | [622](../../src/linux_sandbox.rs#L622) | receiver-type-required |
-| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args` | [622](../../src/linux_sandbox.rs#L622) | receiver-type-required |
-| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap` | [622](../../src/linux_sandbox.rs#L622) | receiver-type-required |
-| `run` | `sandbox_command` | [622](../../src/linux_sandbox.rs#L622) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L245) |
-| `run` | `Path::new` | [622](../../src/linux_sandbox.rs#L622) | external-constructor-callback-or-unresolved |
-| `sh` | `run` | [630](../../src/linux_sandbox.rs#L630) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L619) |
-| `stderr` | `String::from_utf8_lossy(&output.stderr).into_owned` | [634](../../src/linux_sandbox.rs#L634) | receiver-type-required |
-| `stderr` | `String::from_utf8_lossy` | [634](../../src/linux_sandbox.rs#L634) | external-constructor-callback-or-unresolved |
-| `filesystem_access_is_limited_to_policy_roots` | `fixture` | [639](../../src/linux_sandbox.rs#L639) | external-constructor-callback-or-unresolved |
-| `filesystem_access_is_limited_to_policy_roots` | `policy` | [640](../../src/linux_sandbox.rs#L640) | external-constructor-callback-or-unresolved |
-| `filesystem_access_is_limited_to_policy_roots` | `fixture.inside.display` | [641](../../src/linux_sandbox.rs#L641) | receiver-type-required |
-| `filesystem_access_is_limited_to_policy_roots` | `fixture.outside.display` | [642](../../src/linux_sandbox.rs#L642) | receiver-type-required |
-| `filesystem_access_is_limited_to_policy_roots` | `sh` | [644](../../src/linux_sandbox.rs#L644), [648](../../src/linux_sandbox.rs#L648), [659](../../src/linux_sandbox.rs#L659), [663](../../src/linux_sandbox.rs#L663), [667](../../src/linux_sandbox.rs#L667) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L629) |
-| `read_roots_are_not_writable` | `fixture` | [674](../../src/linux_sandbox.rs#L674) | external-constructor-callback-or-unresolved |
-| `read_roots_are_not_writable` | `policy` | [675](../../src/linux_sandbox.rs#L675) | external-constructor-callback-or-unresolved |
-| `read_roots_are_not_writable` | `policy.write_roots.clear` | [676](../../src/linux_sandbox.rs#L676) | receiver-type-required |
-| `read_roots_are_not_writable` | `sh` | [677](../../src/linux_sandbox.rs#L677) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L629) |
-| `denied_network_refuses_sockets_and_all_permits_them` | `fixture` | [687](../../src/linux_sandbox.rs#L687) | external-constructor-callback-or-unresolved |
-| `denied_network_refuses_sockets_and_all_permits_them` | `run` | [689](../../src/linux_sandbox.rs#L689), [701](../../src/linux_sandbox.rs#L701) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L619) |
-| `denied_network_refuses_sockets_and_all_permits_them` | `policy` | [690](../../src/linux_sandbox.rs#L690), [702](../../src/linux_sandbox.rs#L702) | [tools::linux_sandbox::tests::policy](../../src/linux_sandbox.rs#L607) |
-| `loopback_only_network_is_refused` | `fixture` | [715](../../src/linux_sandbox.rs#L715) | external-constructor-callback-or-unresolved |
-| `loopback_only_network_is_refused` | `probe_backend` | [716](../../src/linux_sandbox.rs#L716) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L238) |
-| `without_process_permission_only_the_requested_program_runs` | `fixture` | [729](../../src/linux_sandbox.rs#L729) | external-constructor-callback-or-unresolved |
-| `without_process_permission_only_the_requested_program_runs` | `policy` | [730](../../src/linux_sandbox.rs#L730) | external-constructor-callback-or-unresolved |
-| `without_process_permission_only_the_requested_program_runs` | `sh` | [731](../../src/linux_sandbox.rs#L731), [735](../../src/linux_sandbox.rs#L735), [737](../../src/linux_sandbox.rs#L737) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L629) |
-| `namespaces_and_outside_processes_are_out_of_reach` | `fixture` | [743](../../src/linux_sandbox.rs#L743) | external-constructor-callback-or-unresolved |
-| `namespaces_and_outside_processes_are_out_of_reach` | `policy` | [744](../../src/linux_sandbox.rs#L744) | external-constructor-callback-or-unresolved |
-| `namespaces_and_outside_processes_are_out_of_reach` | `run` | [745](../../src/linux_sandbox.rs#L745) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L619) |
-| `namespaces_and_outside_processes_are_out_of_reach` | `sh` | [748](../../src/linux_sandbox.rs#L748), [750](../../src/linux_sandbox.rs#L750) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L629) |
+| `push` | `self.0.push` | [469](../../src/linux_sandbox.rs#L469) | receiver-type-required |
+| `load` | `self.push` | [473](../../src/linux_sandbox.rs#L473) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `ret` | `self.push` | [477](../../src/linux_sandbox.rs#L477) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `deny` | `self.load` | [481](../../src/linux_sandbox.rs#L481) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L472) |
+| `deny` | `self.push` | [482](../../src/linux_sandbox.rs#L482) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `deny` | `self.ret` | [483](../../src/linux_sandbox.rs#L483) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L476) |
+| `deny_if_any` | `self.load` | [488](../../src/linux_sandbox.rs#L488), [490](../../src/linux_sandbox.rs#L490) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L472) |
+| `deny_if_any` | `self.push` | [489](../../src/linux_sandbox.rs#L489), [491](../../src/linux_sandbox.rs#L491) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `deny_if_any` | `data_arg` | [490](../../src/linux_sandbox.rs#L490) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L379) |
+| `deny_if_any` | `self.ret` | [492](../../src/linux_sandbox.rs#L492) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L476) |
+| `deny_unless_any` | `self.load` | [497](../../src/linux_sandbox.rs#L497), [499](../../src/linux_sandbox.rs#L499) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L472) |
+| `deny_unless_any` | `self.push` | [498](../../src/linux_sandbox.rs#L498), [500](../../src/linux_sandbox.rs#L500) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `deny_unless_any` | `data_arg` | [499](../../src/linux_sandbox.rs#L499) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L379) |
+| `deny_unless_any` | `self.ret` | [501](../../src/linux_sandbox.rs#L501) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L476) |
+| `deny_if_equal` | `self.load` | [506](../../src/linux_sandbox.rs#L506), [508](../../src/linux_sandbox.rs#L508) | [tools::linux_sandbox::Program::load](../../src/linux_sandbox.rs#L472) |
+| `deny_if_equal` | `self.push` | [507](../../src/linux_sandbox.rs#L507), [509](../../src/linux_sandbox.rs#L509) | [tools::linux_sandbox::Program::push](../../src/linux_sandbox.rs#L468) |
+| `deny_if_equal` | `data_arg` | [508](../../src/linux_sandbox.rs#L508) | [tools::linux_sandbox::data_arg](../../src/linux_sandbox.rs#L379) |
+| `deny_if_equal` | `self.ret` | [510](../../src/linux_sandbox.rs#L510) | [tools::linux_sandbox::Program::ret](../../src/linux_sandbox.rs#L476) |
+| `seccomp_filter` | `Program::default` | [515](../../src/linux_sandbox.rs#L515) | external-constructor-callback-or-unresolved |
+| `seccomp_filter` | `program.load` | [517](../../src/linux_sandbox.rs#L517), [523](../../src/linux_sandbox.rs#L523) | receiver-type-required |
+| `seccomp_filter` | `program.push` | [518](../../src/linux_sandbox.rs#L518), [524](../../src/linux_sandbox.rs#L524) | receiver-type-required |
+| `seccomp_filter` | `program.ret` | [519](../../src/linux_sandbox.rs#L519), [525](../../src/linux_sandbox.rs#L525), [557](../../src/linux_sandbox.rs#L557) | receiver-type-required |
+| `seccomp_filter` | `program.deny` | [528](../../src/linux_sandbox.rs#L528), [546](../../src/linux_sandbox.rs#L546), [553](../../src/linux_sandbox.rs#L553), [554](../../src/linux_sandbox.rs#L554) | receiver-type-required |
+| `seccomp_filter` | `program.deny_if_any` | [530](../../src/linux_sandbox.rs#L530) | receiver-type-required |
+| `seccomp_filter` | `program.deny_if_equal` | [531](../../src/linux_sandbox.rs#L531), [532](../../src/linux_sandbox.rs#L532) | receiver-type-required |
+| `seccomp_filter` | `program.deny_unless_any` | [550](../../src/linux_sandbox.rs#L550) | receiver-type-required |
+| `seccomp_filter` | `program.0.len` | [558](../../src/linux_sandbox.rs#L558) | receiver-type-required |
+| `seccomp_filter` | `usize::from` | [558](../../src/linux_sandbox.rs#L558) | external-constructor-callback-or-unresolved |
+| `seccomp_filter` | `Err` | [559](../../src/linux_sandbox.rs#L559) | external-constructor-callback-or-unresolved |
+| `seccomp_filter` | `SandboxError::Encoding` | [559](../../src/linux_sandbox.rs#L559) | external-constructor-callback-or-unresolved |
+| `seccomp_filter` | `"seccomp filter too long".to_owned` | [559](../../src/linux_sandbox.rs#L559) | receiver-type-required |
+| `seccomp_filter` | `Ok` | [561](../../src/linux_sandbox.rs#L561) | external-constructor-callback-or-unresolved |
+| `seccomp_filter` | `program.0.into_boxed_slice` | [561](../../src/linux_sandbox.rs#L561) | receiver-type-required |
+| `landlock_abis_without_truncation_control_are_rejected` | `super::require_safe_abi(abi).unwrap_err` | [577](../../src/linux_sandbox.rs#L577) | receiver-type-required |
+| `landlock_abis_without_truncation_control_are_rejected` | `super::require_safe_abi` | [577](../../src/linux_sandbox.rs#L577) | [tools::linux_sandbox::require_safe_abi](../../src/linux_sandbox.rs#L111) |
+| `fixture` | `tempfile::tempdir().unwrap` | [593](../../src/linux_sandbox.rs#L593) | receiver-type-required |
+| `fixture` | `tempfile::tempdir` | [593](../../src/linux_sandbox.rs#L593) | external-constructor-callback-or-unresolved |
+| `fixture` | `fs::canonicalize(root.path()).unwrap` | [594](../../src/linux_sandbox.rs#L594) | receiver-type-required |
+| `fixture` | `fs::canonicalize` | [594](../../src/linux_sandbox.rs#L594) | external-constructor-callback-or-unresolved |
+| `fixture` | `root.path` | [594](../../src/linux_sandbox.rs#L594) | receiver-type-required |
+| `fixture` | `base.join` | [595](../../src/linux_sandbox.rs#L595), [596](../../src/linux_sandbox.rs#L596) | receiver-type-required |
+| `fixture` | `fs::create_dir(&inside).unwrap` | [597](../../src/linux_sandbox.rs#L597) | receiver-type-required |
+| `fixture` | `fs::create_dir` | [597](../../src/linux_sandbox.rs#L597), [598](../../src/linux_sandbox.rs#L598) | external-constructor-callback-or-unresolved |
+| `fixture` | `fs::create_dir(&outside).unwrap` | [598](../../src/linux_sandbox.rs#L598) | receiver-type-required |
+| `fixture` | `fs::write(inside.join("visible.txt"), b"visible").unwrap` | [599](../../src/linux_sandbox.rs#L599) | receiver-type-required |
+| `fixture` | `fs::write` | [599](../../src/linux_sandbox.rs#L599), [600](../../src/linux_sandbox.rs#L600) | external-constructor-callback-or-unresolved |
+| `fixture` | `inside.join` | [599](../../src/linux_sandbox.rs#L599) | receiver-type-required |
+| `fixture` | `fs::write(outside.join("secret.txt"), b"secret").unwrap` | [600](../../src/linux_sandbox.rs#L600) | receiver-type-required |
+| `fixture` | `outside.join` | [600](../../src/linux_sandbox.rs#L600) | receiver-type-required |
+| `policy` | `fixture.inside.to_string_lossy().into_owned` | [609](../../src/linux_sandbox.rs#L609) | receiver-type-required |
+| `policy` | `fixture.inside.to_string_lossy` | [609](../../src/linux_sandbox.rs#L609) | receiver-type-required |
+| `run` | `probe_backend` | [621](../../src/linux_sandbox.rs#L621) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L238) |
+| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output()             .unwrap` | [623](../../src/linux_sandbox.rs#L623) | receiver-type-required |
+| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output` | [623](../../src/linux_sandbox.rs#L623) | receiver-type-required |
+| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args` | [623](../../src/linux_sandbox.rs#L623) | receiver-type-required |
+| `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap` | [623](../../src/linux_sandbox.rs#L623) | receiver-type-required |
+| `run` | `sandbox_command` | [623](../../src/linux_sandbox.rs#L623) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L245) |
+| `run` | `Path::new` | [623](../../src/linux_sandbox.rs#L623) | external-constructor-callback-or-unresolved |
+| `sh` | `run` | [631](../../src/linux_sandbox.rs#L631) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L620) |
+| `stderr` | `String::from_utf8_lossy(&output.stderr).into_owned` | [635](../../src/linux_sandbox.rs#L635) | receiver-type-required |
+| `stderr` | `String::from_utf8_lossy` | [635](../../src/linux_sandbox.rs#L635) | external-constructor-callback-or-unresolved |
+| `filesystem_access_is_limited_to_policy_roots` | `fixture` | [640](../../src/linux_sandbox.rs#L640) | external-constructor-callback-or-unresolved |
+| `filesystem_access_is_limited_to_policy_roots` | `policy` | [641](../../src/linux_sandbox.rs#L641) | external-constructor-callback-or-unresolved |
+| `filesystem_access_is_limited_to_policy_roots` | `fixture.inside.display` | [642](../../src/linux_sandbox.rs#L642) | receiver-type-required |
+| `filesystem_access_is_limited_to_policy_roots` | `fixture.outside.display` | [643](../../src/linux_sandbox.rs#L643) | receiver-type-required |
+| `filesystem_access_is_limited_to_policy_roots` | `sh` | [645](../../src/linux_sandbox.rs#L645), [649](../../src/linux_sandbox.rs#L649), [660](../../src/linux_sandbox.rs#L660), [664](../../src/linux_sandbox.rs#L664), [668](../../src/linux_sandbox.rs#L668) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L630) |
+| `read_roots_are_not_writable` | `fixture` | [675](../../src/linux_sandbox.rs#L675) | external-constructor-callback-or-unresolved |
+| `read_roots_are_not_writable` | `policy` | [676](../../src/linux_sandbox.rs#L676) | external-constructor-callback-or-unresolved |
+| `read_roots_are_not_writable` | `policy.write_roots.clear` | [677](../../src/linux_sandbox.rs#L677) | receiver-type-required |
+| `read_roots_are_not_writable` | `sh` | [678](../../src/linux_sandbox.rs#L678) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L630) |
+| `denied_network_refuses_sockets_and_all_permits_them` | `fixture` | [688](../../src/linux_sandbox.rs#L688) | external-constructor-callback-or-unresolved |
+| `denied_network_refuses_sockets_and_all_permits_them` | `run` | [690](../../src/linux_sandbox.rs#L690), [702](../../src/linux_sandbox.rs#L702) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L620) |
+| `denied_network_refuses_sockets_and_all_permits_them` | `policy` | [691](../../src/linux_sandbox.rs#L691), [703](../../src/linux_sandbox.rs#L703) | [tools::linux_sandbox::tests::policy](../../src/linux_sandbox.rs#L608) |
+| `loopback_only_network_is_refused` | `fixture` | [716](../../src/linux_sandbox.rs#L716) | external-constructor-callback-or-unresolved |
+| `loopback_only_network_is_refused` | `probe_backend` | [717](../../src/linux_sandbox.rs#L717) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L238) |
+| `without_process_permission_only_the_requested_program_runs` | `fixture` | [730](../../src/linux_sandbox.rs#L730) | external-constructor-callback-or-unresolved |
+| `without_process_permission_only_the_requested_program_runs` | `policy` | [731](../../src/linux_sandbox.rs#L731) | external-constructor-callback-or-unresolved |
+| `without_process_permission_only_the_requested_program_runs` | `sh` | [732](../../src/linux_sandbox.rs#L732), [736](../../src/linux_sandbox.rs#L736), [738](../../src/linux_sandbox.rs#L738) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L630) |
+| `namespaces_and_outside_processes_are_out_of_reach` | `fixture` | [744](../../src/linux_sandbox.rs#L744) | external-constructor-callback-or-unresolved |
+| `namespaces_and_outside_processes_are_out_of_reach` | `policy` | [745](../../src/linux_sandbox.rs#L745) | external-constructor-callback-or-unresolved |
+| `namespaces_and_outside_processes_are_out_of_reach` | `run` | [746](../../src/linux_sandbox.rs#L746) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L620) |
+| `namespaces_and_outside_processes_are_out_of_reach` | `sh` | [749](../../src/linux_sandbox.rs#L749), [751](../../src/linux_sandbox.rs#L751) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L630) |
