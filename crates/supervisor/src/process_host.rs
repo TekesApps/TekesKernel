@@ -5124,6 +5124,7 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
         origin: &OriginTuple,
     ) -> Result<MutationReceipt, ProductionRouteFailure> {
         self.reset_restart_backoff(session_id);
+        let started = Instant::now();
         if let Some(worker) = self.live_worker(session_id) {
             worker.tool_cancellation.cancel();
             if let Some(authority) = worker.dynamic_authority.as_ref() {
@@ -5131,32 +5132,57 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
             }
             let delivery = origin.key.clone();
             let generation = next_stop_generation(&self.root, session_id)?;
-            worker
-                .write(
-                    &encode_line(
-                        "stop",
-                        &Stop {
-                            delivery: delivery.clone(),
-                            origin: origin.clone(),
-                            generation,
-                        },
-                    )
-                    .map_err(internal)?,
-                )
-                .map_err(internal)?;
-            let receipt = worker.receipt(&delivery)?;
-            let ledger = self
-                .root
-                .join("threads")
-                .join(session_id)
-                .join("main.jsonl");
-            self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())
-                .map_err(internal)?;
-            terminate_worker(&worker);
-            return Ok(MutationReceipt {
-                seq: receipt.seq,
-                deduplicated: receipt.deduplicated,
-            });
+            let stop = encode_line(
+                "stop",
+                &Stop {
+                    delivery: delivery.clone(),
+                    origin: origin.clone(),
+                    generation,
+                },
+            )
+            .map_err(internal)?;
+            let delivered = worker
+                .write(&stop)
+                .map_err(|error| ("stop-write", internal(error)))
+                .and_then(|()| {
+                    worker
+                        .receipt(&delivery)
+                        .map_err(|error| ("receipt", error))
+                });
+            match delivered {
+                Ok(receipt) => {
+                    let ledger = self
+                        .root
+                        .join("threads")
+                        .join(session_id)
+                        .join("main.jsonl");
+                    self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())
+                        .map_err(|error| {
+                            cancel_stage_failure("cascade", started, internal(error))
+                        })?;
+                    terminate_worker(&worker);
+                    return Ok(MutationReceipt {
+                        seq: receipt.seq,
+                        deduplicated: receipt.deduplicated,
+                    });
+                }
+                Err((stage, error)) => {
+                    // A worker exits when its turn ends, so a stop can find a
+                    // closed pipe after the turn already settled. As for
+                    // prompt, compact and respond, a closed pipe alone does
+                    // not relinquish ledger ownership; once the process has
+                    // exited, the locked author keys the stop by the same
+                    // origin and returns the durable receipt.
+                    if !child_exited_within(&worker.child, Duration::from_secs(1)) {
+                        return Err(cancel_stage_failure(stage, started, error));
+                    }
+                    worker.alive.store(false, Ordering::Release);
+                    eprintln!(
+                        "session-cancel-worker-exited: stage={stage} elapsed_ms={} fallback=locked-author",
+                        started.elapsed().as_millis()
+                    );
+                }
+            }
         }
         let receipt = self
             .endpoint
@@ -5245,6 +5271,28 @@ impl LiveRespondAuthority for ProductionProcessHost {
             self.schedule_main(session_id).map(|_| ()).map_err(internal)
         }
     }
+}
+
+/// Names the cancel stage and the time spent in it on a failure that the
+/// endpoint folds into `internal`, so `endpoint-route-error-folded` shows where
+/// a stop failed. Typed (exact) failures keep their payload.
+fn cancel_stage_failure(
+    stage: &str,
+    started: Instant,
+    error: ProductionRouteFailure,
+) -> ProductionRouteFailure {
+    if error.code != "internal" {
+        return error;
+    }
+    ProductionRouteFailure::new(
+        error.code,
+        format!(
+            "session.cancel stage={stage} elapsed_ms={}: {}",
+            started.elapsed().as_millis(),
+            error.message
+        ),
+        error.details,
+    )
 }
 
 fn child_exited_within(child: &Mutex<Child>, timeout: Duration) -> bool {
