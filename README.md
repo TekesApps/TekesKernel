@@ -10,9 +10,15 @@ over the Session Endpoint (HTTP plus one WebSocket stream).
 but APIs and on-disk layouts can still change between releases.
 
 **Platforms.** macOS on Apple silicon is the primary platform, and some
-recovery tests run only there. Linux on x86_64 and aarch64 builds and passes
-the same tests in CI and confines tools with its own sandbox (Landlock plus
-seccomp, which needs a kernel with Landlock enabled). On both, the host
+recovery tests run only there. Linux on x86_64 and aarch64 has native CI
+builds and runtime tests, and confines tools with Landlock ABI 3 or later
+plus seccomp filters. The Linux backend rejects loopback-only network
+policies and filesystem metadata changes (`chmod`, `chown`, timestamps and
+extended attributes), including inside writable roots. With network denied,
+local socketpair read/write remains available for subprocess communication;
+`connect`, `bind`, `sendto`, `sendmsg` and `sendmmsg` are denied. See
+[tool permissions](docs/runtime/tool-permissions.md#sandboxing) for the
+runtime limits. On both platforms, the host
 application starts the Kernel; see [Application-owned launch](docs/builtin-launch.md).
 Windows is not supported.
 

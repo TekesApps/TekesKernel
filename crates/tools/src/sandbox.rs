@@ -9,6 +9,9 @@ use serde_json::json;
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
+// Earlier ABIs cannot deny truncate(2), including on files outside write roots.
+pub(crate) const LINUX_LANDLOCK_ABI_MIN: u32 = 3;
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NetworkPolicy {
@@ -194,7 +197,7 @@ pub fn compile_linux_plan(policy: &SandboxPolicy) -> Result<Vec<u8>, SandboxErro
     let mut plan = json!({
         "allow_process": policy.allow_process,
         "backend": "linux-landlock-seccomp",
-        "landlock_abi_min": 1,
+        "landlock_abi_min": LINUX_LANDLOCK_ABI_MIN,
         "network": policy.network,
         "read_roots": policy.read_roots,
         "seccomp_classes": if policy.allow_process {

@@ -540,11 +540,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sandboxed` | `Ok` | [738](../../src/helper.rs#L738) | external-constructor-callback-or-unresolved |
 | `sandboxed` | `executable.into` | [739](../../src/helper.rs#L739) | receiver-type-required |
 | `approved_unsandboxed` | `policy_digest(policy).map_err` | [754](../../src/helper.rs#L754) | receiver-type-required |
-| `approved_unsandboxed` | `policy_digest` | [754](../../src/helper.rs#L754) | [tools::sandbox::policy_digest](../../src/sandbox.rs#L110) |
+| `approved_unsandboxed` | `policy_digest` | [754](../../src/helper.rs#L754) | [tools::sandbox::policy_digest](../../src/sandbox.rs#L113) |
 | `approved_unsandboxed` | `HelperError::new` | [755](../../src/helper.rs#L755), [758](../../src/helper.rs#L758) | [tools::helper::HelperError::new](../../src/helper.rs#L239) |
 | `approved_unsandboxed` | `error.to_string` | [755](../../src/helper.rs#L755), [758](../../src/helper.rs#L758) | receiver-type-required |
 | `approved_unsandboxed` | `validate_unsandboxed_approval(approval, run, call, &digest)             .map_err` | [757](../../src/helper.rs#L757) | receiver-type-required |
-| `approved_unsandboxed` | `validate_unsandboxed_approval` | [757](../../src/helper.rs#L757) | [tools::sandbox::validate_unsandboxed_approval](../../src/sandbox.rs#L218) |
+| `approved_unsandboxed` | `validate_unsandboxed_approval` | [757](../../src/helper.rs#L757) | [tools::sandbox::validate_unsandboxed_approval](../../src/sandbox.rs#L221) |
 | `approved_unsandboxed` | `Ok` | [759](../../src/helper.rs#L759) | external-constructor-callback-or-unresolved |
 | `approved_unsandboxed` | `executable.into` | [760](../../src/helper.rs#L760) | receiver-type-required |
 | `execute` | `self.execute_cancellable(             request,             Some(Duration::from_millis(HELPER_PROCESS_TIMEOUT_MS)),             &#124;&#124; false,         )         .map_err` | [768](../../src/helper.rs#L768) | receiver-type-required |
@@ -560,7 +560,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_cancellable` | `encode_helper_line` | [800](../../src/helper.rs#L800), [808](../../src/helper.rs#L808) | [tools::helper::encode_helper_line](../../src/helper.rs#L305) |
 | `execute_cancellable` | `HELPER_PROTOCOL.to_owned` | [803](../../src/helper.rs#L803) | receiver-type-required |
 | `execute_cancellable` | `sandbox_command(policy, probe, &self.executable).map_err` | [811](../../src/helper.rs#L811) | receiver-type-required |
-| `execute_cancellable` | `sandbox_command` | [811](../../src/helper.rs#L811) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L242) |
+| `execute_cancellable` | `sandbox_command` | [811](../../src/helper.rs#L811) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L245) |
 | `execute_cancellable` | `error.to_string` | [812](../../src/helper.rs#L812) | receiver-type-required |
 | `execute_cancellable` | `Command::new` | [815](../../src/helper.rs#L815) | external-constructor-callback-or-unresolved |
 | `execute_cancellable` | `command                 .arg("--root")                 .arg` | [818](../../src/helper.rs#L818) | receiver-type-required |

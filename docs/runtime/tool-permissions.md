@@ -37,6 +37,28 @@ O_CLOEXEC/clean env are complementary *resource* caps, not reachability
 bounds. Running a command unsandboxed is an approval-gate escalation
 recorded as an event, never a standing configuration.
 
+The Linux backend supports native x86_64 and aarch64 with Landlock ABI 3 or
+later and seccomp filters. ABI 3 is required because earlier ABIs cannot
+confine file truncation. An unavailable kernel feature refuses execution.
+Run `scripts/ci-linux-sandbox.sh` to verify actual confinement on a Linux
+host; CI runs the same gate on both architectures.
+
+Linux policies have these explicit limits:
+
+- `network=loopback` is refused because the backend cannot enforce a
+  loopback-only destination policy.
+- Filesystem metadata mutation (`chmod`, `chown`, `utime` and their variants,
+  and setting/removing extended attributes) is denied globally by seccomp.
+  Landlock does not confine those operations, so even files inside writable
+  roots cannot have their mode, owner, timestamps or extended attributes
+  changed by these syscalls. Creating and writing files still updates their
+  ordinary filesystem timestamps.
+- `network=deny` blocks socket creation plus `connect`, `bind`, `sendto`,
+  `sendmsg` and `sendmmsg`, including address-based operations on inherited
+  sockets. Local `socketpair` creation and read/write remain available for
+  subprocess communication. This does not revoke read/write authority on an
+  already-connected socket deliberately inherited by the caller.
+
 Rules: exec spawns **argv-direct, no shell interpretation** — only the shell
 tool itself runs `sh -c`. In-process tools cannot be individually profiled
 (same process); their containment is code-enforced path policy, and the

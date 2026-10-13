@@ -29,6 +29,26 @@ one area. `ci-slice12.sh` and `ci-slice14a.sh` also run real-reference
 qualification when `TEKES_COMPUTER_USE_ARCHIVE` or signed executables are
 provided, and report "not qualified" otherwise.
 
+`ci-linux-sandbox.sh` runs the Linux Landlock/seccomp backend tests, public
+helper/job runtime tests and helper/probe/approval gates on a native Linux
+x86_64 or aarch64 host. It requires Landlock ABI 3 or later and working
+seccomp filters, fails if a test suite is absent, and never skips an
+unavailable sandbox. ABI 3 is required to confine file truncation. The tests
+exercise confined processes and filesystem/network denials without provider
+credentials or external network access. GitHub's Linux jobs run this script on native
+`ubuntu-24.04` (x86_64) and `ubuntu-24.04-arm` (aarch64) runners before the
+complete workspace suite. It is also the focused command for another Linux
+test host:
+
+```bash
+scripts/ci-linux-sandbox.sh
+```
+
+The script prints the kernel and, when readable, the enabled LSMs for failure
+diagnosis. An unreadable `/sys/kernel/security/lsm` alone does not indicate
+missing support; the actual sandbox probe decides. No root access,
+namespaces, bubblewrap installation, or host configuration change is needed.
+
 ## Tests that need a build or macOS tooling
 
 | Script | Needs |

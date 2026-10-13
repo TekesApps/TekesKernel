@@ -6,6 +6,16 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Fixed
+- Linux sandbox launches now require Landlock ABI 3 so truncation cannot modify
+  files outside writable roots. Network-denied tools cannot redirect Unix
+  socketpairs to outside endpoints, and seccomp refuses metadata mutations
+  that Landlock does not mediate (also within writable roots).
+
+### Added
+- Native x86_64 and aarch64 Linux sandbox CI gates, including public job-launcher
+  tests for filesystem and network isolation, descendants, and failed launches.
+
 ## 0.4.2 — 2026-10-13
 
 ### Fixed

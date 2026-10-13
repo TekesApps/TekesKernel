@@ -31,8 +31,16 @@ jobs:
         run: scripts/ci.sh
 
   linux:
-    name: Linux
-    runs-on: ubuntu-24.04
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Linux
+            runner: ubuntu-24.04
+          - name: Linux aarch64
+            runner: ubuntu-24.04-arm
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v5
@@ -41,5 +49,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
+      - name: Linux sandbox runtime
+        run: scripts/ci-linux-sandbox.sh
       - name: Build and test
         run: cargo test --workspace --locked --no-fail-fast

@@ -66,7 +66,9 @@ compilation without a working kernel backend is not success. The launcher
 prepares a Landlock ruleset and a seccomp filter in the parent and applies
 both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
 
-- **Landlock** handles every filesystem right the running ABI defines up to
+- **Landlock** requires ABI 3 or later: ABI 1/2 cannot prevent truncating
+  files outside the write roots and are rejected as `unsupported`. It
+  handles every filesystem right the running ABI defines up to
   `TRUNCATE` (ABI 3). Read roots and the fixed system runtime roots (`/usr`,
   `/bin`, `/sbin`, `/lib*`, `/etc`, `/proc`, `/run/systemd/resolve`,
   `/sys/devices/system/cpu`, `/sys/fs/cgroup`) get read access; write roots
@@ -81,13 +83,23 @@ both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
   namespace-creating `clone` flags, the kernel keyring, `bpf`,
   `perf_event_open`, `userfaultfd`, `io_uring` (whose operations bypass socket
   rules) and the `TIOCSTI`/`TIOCLINUX` terminal-injection ioctls. `clone3`
-  returns `ENOSYS` so libc falls back to the inspectable `clone`.
-- **Network** `deny` refuses `socket()` for every domain (`socketpair` stays
-  available); `all` adds no socket rule. `loopback` cannot be enforced by
+  returns `ENOSYS` so libc falls back to the inspectable `clone`. Because
+  Landlock does not mediate file metadata mutations, seccomp also refuses
+  the chmod, chown, set/remove-xattr and utime syscall families, including
+  their fd and `*at` variants. These operations are refused even inside
+  writable roots; file creation modes and ordinary content writes remain
+  available.
+- **Network** `deny` refuses `socket()` for every domain, plus `connect`,
+  `bind`, `sendto`, `sendmsg` and `sendmmsg`. `socketpair` read/write IPC
+  stays available, but cannot be redirected to an outside Unix socket.
+  `all` adds no socket rule. `loopback` cannot be enforced by
   Landlock or seccomp and is refused at launch.
 - **Process** creation without `allow_process` refuses `fork`, `vfork` and
   `clone` without `CLONE_THREAD`, so only threads of the requested program
-  run.
+  run. This does not provide complete process isolation: on kernels
+  without signal scoping the sandbox can signal same-UID processes, and
+  the allowed ELF loader can replace the current process with another
+  readable executable. Production shell/job policies allow processes.
 
 The launcher supports x86_64 and aarch64; other architectures probe as
 `unsupported`. Filesystem Unix sockets are not mediated by either half, so
@@ -127,7 +139,7 @@ side-effect-capable tools still probe their backend and fail closed as above.
 
 macOS uses Seatbelt (`sandbox-exec` or equivalent libsandbox entry point) and
 the profile applies before the requested executable starts. Linux uses
-Landlock (ABI 1 or later) plus seccomp and fails closed when either required
+Landlock (ABI 3 or later) plus seccomp and fails closed when either required
 half is absent: the probe reports `missing`, and a launch whose ruleset or
 filter cannot be applied fails to spawn.
 Mobile has no exec backend. Sandboxing is inherited by the full child tree;

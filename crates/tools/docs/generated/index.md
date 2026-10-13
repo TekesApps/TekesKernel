@@ -9,6 +9,7 @@
 | `tools` | lib | [crates/tools/src/lib.rs](../../src/lib.rs) |
 | `tekes-helper` | bin | [crates/tools/src/bin/tekes-helper.rs](../../src/bin/tekes-helper.rs) |
 | `lifecycle_hooks` | test | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) |
+| `linux_sandbox_runtime` | test | [crates/tools/tests/linux_sandbox_runtime.rs](../../tests/linux_sandbox_runtime.rs) |
 | `slice14e_web` | test | [crates/tools/tests/slice14e_web.rs](../../tests/slice14e_web.rs) |
 | `slice4_gates` | test | [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) |
 | `slice8_runtime_backends` | test | [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) |
@@ -40,12 +41,13 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/hook.rs](../../src/hook.rs) | 25 | 154 | [Symbols and calls](src--hook.md) |
 | [crates/tools/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
-| [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 61 | 234 | [Symbols and calls](src--linux_sandbox.md) |
+| [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 66 | 240 | [Symbols and calls](src--linux_sandbox.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
 | [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 114 | 1114 | [Symbols and calls](src--runtime_backends.md) |
-| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 23 | 164 | [Symbols and calls](src--sandbox.md) |
+| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 24 | 164 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |
+| [crates/tools/tests/linux_sandbox_runtime.rs](../../tests/linux_sandbox_runtime.rs) | 21 | 266 | `inventory.json` |
 | [crates/tools/tests/slice14e_web.rs](../../tests/slice14e_web.rs) | 5 | 86 | `inventory.json` |
 | [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 31 | 532 | `inventory.json` |
 | [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) | 21 | 258 | `inventory.json` |
