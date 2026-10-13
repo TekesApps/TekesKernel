@@ -6,6 +6,39 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Proposed release: 0.4.5 (patch). No wire-format change.
+
+### Fixed
+- A root could become unbootable: the endpoint exited with status 74 before
+  ready, on every launch, with "workspace publication does not match prepared
+  revision". The 30 s management-recovery tick staged a synthetic
+  `workspace.rename` to repair workspace metadata; a `workspace.policy.set`
+  published between that snapshot and its Carriers check, leaving the record
+  stuck in `carriers`. `workspace.policy.set` racing `workspace.relocate`
+  corrupted the same way. Present since 0.2.0.
+  - The tick now heals workspace metadata in place under the management lock and
+    stages no operation.
+  - `workspace.policy.set` (and the replay of a journaled policy intent) publish
+    under the management lock, held only around the publication. Lock order is
+    management, then `config/.lock`.
+  - A workspace operation that can never complete (`CorruptOperation`) is moved,
+    with its payload, to `endpoint-management/quarantine/<digest>/` (`record.json`,
+    `payload-root/`, `reason.txt`) and logged as `management-operation-quarantined`;
+    recovery and boot continue. A record written by another record version (for
+    example a newer Kernel's after a downgrade) is logged and left in place.
+  - One failing record no longer stops recovery of the remaining records; the
+    first failure is still returned afterwards.
+
+### Known behavior changes
+- `workspace.policy.set` can now wait behind a running workspace operation
+  (create, rename, relocate, folder edit) for the management lock. If that
+  operation changed the workspace meanwhile, the call fails as `stale-revision`.
+- A root that is already stuck boots on its first 0.4.5 launch: the stuck record
+  moves to `endpoint-management/quarantine/<digest>/` with its payload and
+  reason, and boot continues. The interrupted operation (a synthetic rename) is
+  not replayed; the workspace metadata is healed instead. No manual repair is
+  needed.
+
 ## 0.4.4 — 2026-10-13
 
 ### Fixed

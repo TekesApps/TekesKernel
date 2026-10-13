@@ -172,6 +172,13 @@ revalidated. A mutation supplies `expected_revision`. Under the exclusive
 lock, it either fails `stale_revision {expected, actual}` without writing or
 publishes exactly `actual + 1`.
 
+A writer of a workspace document that does not run inside an endpoint
+management operation (`workspace.policy.set`) additionally holds the endpoint
+management lock around its publication. Lock order is management, then
+`config/.lock`. A management operation stages a workspace snapshot and publishes
+it under the management lock, so an unserialized publication in between would
+leave that operation unable to complete.
+
 Publication is same-directory temporary file → checked full write →
 `F_FULLFSYNC` on Darwin → atomic replace rename → parent-directory sync.
 Success is returned only after the directory sync. A crash exposes either the
