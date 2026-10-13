@@ -1190,6 +1190,60 @@ fn actionable_ids(assembly: &ProductionCarrierAssembly, generation: u64) -> Vec<
     items.into_iter().map(|item| item.id).collect()
 }
 
+/// O-final n4: a request frame that could not be announced at the 256-session limit is
+/// announced by the next reconcile once a slot is free. The published set must not record the
+/// request before the frame is out, or the retry sees "nothing changed" and the frame is lost.
+#[test]
+fn a_request_frame_refused_at_the_session_limit_is_announced_by_the_next_reconcile() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let sessions = (100..357).map(blank_id).collect::<Vec<_>>();
+    for (index, session) in sessions.iter().enumerate() {
+        write_session_at(root.path(), session, index == 256);
+    }
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let streams = assembly.streams().clone();
+    let live = Arc::new(LiveSessions::default());
+    let authority: Arc<dyn SupervisorSessionAuthority> = live.clone();
+    streams.attach_session_authority(Arc::downgrade(&authority));
+    let mut mux = block_on_ready(endpoint::CarrierStreamHandler::open_stream(
+        &streams,
+        endpoint::StreamChannel::Mux,
+    ))
+    .expect("mux");
+    for session in &sessions[..256] {
+        live.0.lock().expect("live").insert(session.clone());
+        streams.attach_session(session).expect("attach");
+    }
+    // At the limit: the doorbell succeeds, the request frame cannot be announced.
+    SupervisorSessionAuthority::reconcile_projection(&*host, &sessions[256])
+        .expect("the limit does not fail the doorbell");
+    while poll_once(mux.recv()).is_some() {}
+    // A slot frees up; the next reconcile of the same unchanged ledger announces the frame.
+    live.0.lock().expect("live").remove(&sessions[0]);
+    SupervisorSessionAuthority::reconcile_projection(&*host, &sessions[256])
+        .expect("the retry succeeds");
+    let mut announced = Vec::new();
+    while let Some(Some(Ok(frame))) = poll_once(mux.recv()) {
+        announced.push((
+            frame.method.clone(),
+            String::from_utf8_lossy(&frame.payload.canonical_bytes().expect("payload"))
+                .into_owned(),
+        ));
+    }
+    assert!(
+        announced
+            .iter()
+            .any(|(method, params)| method.contains("approval") && params.contains(&sessions[256])),
+        "the held request of the 257th session is announced after the retry"
+    );
+    host.shutdown();
+}
+
 fn kernel_host(
     root: &std::path::Path,
     assembly: &ProductionCarrierAssembly,

@@ -723,7 +723,8 @@ impl ProductionCarrierStreams {
                 })
                 .map(|(_, frame)| frame)
                 .collect::<Vec<_>>();
-            published.insert(key, (projection.last_seq, pending));
+            let recorded = (projection.last_seq, pending);
+            published.insert(key.clone(), recorded.clone());
             // Published after the lock is released: a first publication for a session attaches
             // it (a journal parse and a fold), which must not hold up every other session's
             // reconcile (O-final m5). The set above already carries the newer sequence, and
@@ -731,7 +732,20 @@ impl ProductionCarrierStreams {
             // does not matter.
             drop(published);
             for frame in changed {
-                self.publish_session_frame(session_id, frame)?;
+                if let Err(error) = self.publish_session_frame(session_id, frame) {
+                    // The frame did not go out (at the 256-session limit): forget the change so
+                    // the next reconcile announces it, unless a newer reconcile has superseded
+                    // this record meanwhile (O-final n4).
+                    let mut published = self
+                        .inner
+                        .published_actionables
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
+                    if published.get(&key) == Some(&recorded) {
+                        published.insert(key, (published_through, previous));
+                    }
+                    return Err(error);
+                }
             }
         } else if projection.last_seq > published_through {
             published.insert(key, (projection.last_seq, pending));
