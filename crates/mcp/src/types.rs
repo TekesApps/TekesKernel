@@ -308,13 +308,21 @@ pub struct McpCapabilities {
     pub resources_subscribe: bool,
 }
 
+/// Extension identifier of the MCP tasks extension (SEP-2663).
+pub const TASKS_EXTENSION: &str = "io.modelcontextprotocol/tasks";
+
 impl McpCapabilities {
+    /// Task methods are enabled by the legacy top-level `tasks` capability
+    /// (SEP-1686) or by an object-valued tasks extension (SEP-2663).
     pub fn supports_tasks(&self) -> bool {
-        self.tasks
-            || self
-                .extensions
-                .get("io.modelcontextprotocol/tasks")
-                .is_some_and(serde_json::Value::is_object)
+        self.tasks || self.supports_task_extension()
+    }
+
+    /// The server advertises the tasks extension as an object.
+    pub fn supports_task_extension(&self) -> bool {
+        self.extensions
+            .get(TASKS_EXTENSION)
+            .is_some_and(serde_json::Value::is_object)
     }
 }
 
