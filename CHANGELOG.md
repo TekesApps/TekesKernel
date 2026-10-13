@@ -6,7 +6,9 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-Proposed release: 0.4.5 (patch). No wire-format change.
+## 0.4.5 — 2026-10-13
+
+No wire-format change.
 
 ### Fixed
 - A root could become unbootable: the endpoint exited with status 74 before
