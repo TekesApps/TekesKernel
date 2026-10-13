@@ -307,9 +307,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `check_namespace` | `Ok` | [306](../../src/settings.rs#L306) | external-constructor-callback-or-unresolved |
 | `check_revision` | `payload.get("expectedRevision").and_then` | [310](../../src/settings.rs#L310) | receiver-type-required |
 | `check_revision` | `payload.get` | [310](../../src/settings.rs#L310) | receiver-type-required |
-| `check_revision` | `Err` | [312](../../src/settings.rs#L312) | external-constructor-callback-or-unresolved |
-| `check_revision` | `Failure::new("stale-revision", "settings revision is stale")                 .with_details` | [312](../../src/settings.rs#L312) | receiver-type-required |
-| `check_revision` | `Failure::new` | [312](../../src/settings.rs#L312) | [user-documents::Failure::new](../../src/lib.rs#L41) |
+| `check_revision` | `Err` | [313](../../src/settings.rs#L313) | external-constructor-callback-or-unresolved |
+| `check_revision` | `Failure::new("stale-revision", "settings revision is stale")             .with_details` | [313](../../src/settings.rs#L313) | receiver-type-required |
+| `check_revision` | `Failure::new` | [313](../../src/settings.rs#L313) | [user-documents::Failure::new](../../src/lib.rs#L41) |
 | `check_revision` | `Ok` | [316](../../src/settings.rs#L316) | external-constructor-callback-or-unresolved |
 | `field_of` | `path.as_array().map(Vec::as_slice).unwrap_or_default` | [320](../../src/settings.rs#L320) | receiver-type-required |
 | `field_of` | `path.as_array().map` | [320](../../src/settings.rs#L320) | receiver-type-required |

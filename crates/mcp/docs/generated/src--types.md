@@ -33,26 +33,28 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [mcp::types::validate_http_url](../../src/types.rs#L274) | function_item | `private` |  |
 | [mcp::types::valid_icon_size](../../src/types.rs#L285) | function_item | `private` |  |
 | [mcp::types::McpCapabilities](../../src/types.rs#L298) | struct_item | `pub` |  |
-| [mcp::types::McpCapabilities::supports_tasks](../../src/types.rs#L312) | function_item | `pub` |  |
-| [mcp::types::McpCapabilities::serialize](../../src/types.rs#L322) | function_item | `private` |  |
-| [mcp::types::McpCapabilities::deserialize](../../src/types.rs#L377) | function_item | `private` |  |
-| [mcp::types::McpCapabilities::deserialize::WireCapabilities](../../src/types.rs#L383) | struct_item | `private` |  |
-| [mcp::types::McpToolAnnotations](../../src/types.rs#L429) | struct_item | `pub` |  |
-| [mcp::types::McpTaskSupport](../../src/types.rs#L439) | enum_item | `pub` |  |
-| [mcp::types::McpToolExecution](../../src/types.rs#L447) | struct_item | `pub` |  |
-| [mcp::types::McpTool](../../src/types.rs#L453) | struct_item | `pub` |  |
-| [mcp::types::McpTool::requires_task](../../src/types.rs#L471) | function_item | `pub` |  |
-| [mcp::types::McpTool::deserialize](../../src/types.rs#L479) | function_item | `private` |  |
-| [mcp::types::McpTool::deserialize::WireTool](../../src/types.rs#L482) | struct_item | `private` |  |
-| [mcp::types::McpTool::deserialize::WireExecution](../../src/types.rs#L503) | struct_item | `private` |  |
-| [mcp::types::McpToolCallContext](../../src/types.rs#L525) | struct_item | `pub` |  |
-| [mcp::types::McpPrompt](../../src/types.rs#L531) | struct_item | `pub` |  |
-| [mcp::types::McpResource](../../src/types.rs#L539) | struct_item | `pub` |  |
-| [mcp::types::McpTask](../../src/types.rs#L548) | struct_item | `pub` |  |
-| [mcp::types::McpTask::validate_result](../../src/types.rs#L556) | function_item | `pub` |  |
-| [mcp::types::McpToolContinuation](../../src/types.rs#L625) | struct_item | `pub` |  |
-| [mcp::types::McpContent](../../src/types.rs#L635) | enum_item | `pub` |  |
-| [mcp::types::McpError](../../src/types.rs#L654) | enum_item | `pub` |  |
+| [mcp::types::TASKS_EXTENSION](../../src/types.rs#L312) | const_item | `pub` |  |
+| [mcp::types::McpCapabilities::supports_tasks](../../src/types.rs#L317) | function_item | `pub` |  |
+| [mcp::types::McpCapabilities::supports_task_extension](../../src/types.rs#L322) | function_item | `pub` |  |
+| [mcp::types::McpCapabilities::serialize](../../src/types.rs#L330) | function_item | `private` |  |
+| [mcp::types::McpCapabilities::deserialize](../../src/types.rs#L385) | function_item | `private` |  |
+| [mcp::types::McpCapabilities::deserialize::WireCapabilities](../../src/types.rs#L391) | struct_item | `private` |  |
+| [mcp::types::McpToolAnnotations](../../src/types.rs#L437) | struct_item | `pub` |  |
+| [mcp::types::McpTaskSupport](../../src/types.rs#L447) | enum_item | `pub` |  |
+| [mcp::types::McpToolExecution](../../src/types.rs#L455) | struct_item | `pub` |  |
+| [mcp::types::McpTool](../../src/types.rs#L461) | struct_item | `pub` |  |
+| [mcp::types::McpTool::requires_task](../../src/types.rs#L479) | function_item | `pub` |  |
+| [mcp::types::McpTool::deserialize](../../src/types.rs#L487) | function_item | `private` |  |
+| [mcp::types::McpTool::deserialize::WireTool](../../src/types.rs#L490) | struct_item | `private` |  |
+| [mcp::types::McpTool::deserialize::WireExecution](../../src/types.rs#L511) | struct_item | `private` |  |
+| [mcp::types::McpToolCallContext](../../src/types.rs#L533) | struct_item | `pub` |  |
+| [mcp::types::McpPrompt](../../src/types.rs#L539) | struct_item | `pub` |  |
+| [mcp::types::McpResource](../../src/types.rs#L547) | struct_item | `pub` |  |
+| [mcp::types::McpTask](../../src/types.rs#L556) | struct_item | `pub` |  |
+| [mcp::types::McpTask::validate_result](../../src/types.rs#L564) | function_item | `pub` |  |
+| [mcp::types::McpToolContinuation](../../src/types.rs#L633) | struct_item | `pub` |  |
+| [mcp::types::McpContent](../../src/types.rs#L643) | enum_item | `pub` |  |
+| [mcp::types::McpError](../../src/types.rs#L662) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -79,7 +81,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–19: 4 direct edges</summary>
+<details><summary>Functions 1–20: 5 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -94,18 +96,20 @@ flowchart TD
   n8["mcp::types::validate_http_url"]
   n9["mcp::types::valid_icon_size"]
   n10["mcp::types::McpCapabilities::supports_tasks"]
-  n11["mcp::types::McpCapabilities::serialize"]
-  n12["mcp::types::McpCapabilities::deserialize"]
-  n13["mcp::types::McpTool::requires_task"]
-  n14["mcp::types::McpTool::deserialize"]
-  n15["mcp::types::McpTask::validate_result"]
-  n16["mcp::types::JsonRpcRequest::call"]
-  n17["mcp::types::JsonRpcRequest::notification"]
-  n18["mcp::types::JsonRpcRequest::canonical_line"]
+  n11["mcp::types::McpCapabilities::supports_task_extension"]
+  n12["mcp::types::McpCapabilities::serialize"]
+  n13["mcp::types::McpCapabilities::deserialize"]
+  n14["mcp::types::McpTool::requires_task"]
+  n15["mcp::types::McpTool::deserialize"]
+  n16["mcp::types::McpTask::validate_result"]
+  n17["mcp::types::JsonRpcRequest::call"]
+  n18["mcp::types::JsonRpcRequest::notification"]
+  n19["mcp::types::JsonRpcRequest::canonical_line"]
   n3 --> n7
   n3 --> n8
   n5 --> n9
   n6 --> n4
+  n10 --> n11
 ```
 
 </details>
@@ -163,8 +167,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `deserialize` | `Ok` | [215](../../src/types.rs#L215) | external-constructor-callback-or-unresolved |
 | `deserialize` | `RawMcpIcon::deserialize` | [231](../../src/types.rs#L231) | external-constructor-callback-or-unresolved |
 | `deserialize` | `raw.src.len` | [232](../../src/types.rs#L232) | receiver-type-required |
-| `deserialize` | `Err` | [233](../../src/types.rs#L233), [237](../../src/types.rs#L237), [243](../../src/types.rs#L243), [250](../../src/types.rs#L250), [255](../../src/types.rs#L255) | external-constructor-callback-or-unresolved |
-| `deserialize` | `serde::de::Error::custom` | [233](../../src/types.rs#L233), [237](../../src/types.rs#L237), [243](../../src/types.rs#L243), [250](../../src/types.rs#L250), [255](../../src/types.rs#L255) | external-constructor-callback-or-unresolved |
+| `deserialize` | `Err` | [233](../../src/types.rs#L233), [237](../../src/types.rs#L237), [243](../../src/types.rs#L243), [250](../../src/types.rs#L250), [256](../../src/types.rs#L256) | external-constructor-callback-or-unresolved |
+| `deserialize` | `serde::de::Error::custom` | [233](../../src/types.rs#L233), [237](../../src/types.rs#L237), [243](../../src/types.rs#L243), [250](../../src/types.rs#L250), [256](../../src/types.rs#L256) | external-constructor-callback-or-unresolved |
 | `deserialize` | `url::Url::parse(&raw.src).map_err` | [235](../../src/types.rs#L235) | receiver-type-required |
 | `deserialize` | `url::Url::parse` | [235](../../src/types.rs#L235) | external-constructor-callback-or-unresolved |
 | `deserialize` | `mime_type.split_once` | [242](../../src/types.rs#L242) | receiver-type-required |
@@ -196,75 +200,76 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `valid_icon_size` | `[width, height]         .iter` | [292](../../src/types.rs#L292) | receiver-type-required |
 | `valid_icon_size` | `dimension.parse::<u32>().is_ok_and` | [294](../../src/types.rs#L294) | receiver-type-required |
 | `valid_icon_size` | `dimension.parse::<u32>` | [294](../../src/types.rs#L294) | receiver-type-required |
-| `supports_tasks` | `self                 .extensions                 .get("io.modelcontextprotocol/tasks")                 .is_some_and` | [314](../../src/types.rs#L314) | receiver-type-required |
-| `supports_tasks` | `self                 .extensions                 .get` | [314](../../src/types.rs#L314) | receiver-type-required |
-| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter()         .filter(&#124;enabled&#124; *enabled)         .count` | [326](../../src/types.rs#L326) | receiver-type-required |
-| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter()         .filter` | [326](../../src/types.rs#L326) | receiver-type-required |
-| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter` | [326](../../src/types.rs#L326) | receiver-type-required |
-| `serialize` | `serializer.serialize_map` | [337](../../src/types.rs#L337) | receiver-type-required |
-| `serialize` | `Some` | [337](../../src/types.rs#L337) | external-constructor-callback-or-unresolved |
-| `serialize` | `usize::from` | [337](../../src/types.rs#L337) | external-constructor-callback-or-unresolved |
-| `serialize` | `self.extensions.is_empty` | [337](../../src/types.rs#L337), [369](../../src/types.rs#L369) | receiver-type-required |
-| `serialize` | `BTreeMap::<String, IJsonValue>::new` | [338](../../src/types.rs#L338) | external-constructor-callback-or-unresolved |
-| `serialize` | `BTreeMap::new` | [340](../../src/types.rs#L340), [347](../../src/types.rs#L347), [354](../../src/types.rs#L354) | external-constructor-callback-or-unresolved |
-| `serialize` | `detail.insert` | [342](../../src/types.rs#L342), [349](../../src/types.rs#L349), [356](../../src/types.rs#L356), [359](../../src/types.rs#L359) | receiver-type-required |
-| `serialize` | `map.serialize_entry` | [344](../../src/types.rs#L344), [351](../../src/types.rs#L351), [361](../../src/types.rs#L361), [364](../../src/types.rs#L364), [367](../../src/types.rs#L367), [370](../../src/types.rs#L370) | receiver-type-required |
-| `serialize` | `map.end` | [372](../../src/types.rs#L372) | receiver-type-required |
-| `deserialize` | `WireCapabilities::deserialize` | [401](../../src/types.rs#L401) | external-constructor-callback-or-unresolved |
-| `deserialize` | `object.as_ref().and_then` | [404](../../src/types.rs#L404) | receiver-type-required |
-| `deserialize` | `object.as_ref` | [404](../../src/types.rs#L404) | receiver-type-required |
-| `deserialize` | `object.get` | [404](../../src/types.rs#L404) | receiver-type-required |
-| `deserialize` | `Ok` | [405](../../src/types.rs#L405), [413](../../src/types.rs#L413) | external-constructor-callback-or-unresolved |
-| `deserialize` | `serde_json::from_value::<bool>(                         serde_json::to_value(value).map_err(serde::de::Error::custom)?,                     )                     .map_err` | [406](../../src/types.rs#L406) | receiver-type-required |
-| `deserialize` | `serde_json::from_value::<bool>` | [406](../../src/types.rs#L406) | external-constructor-callback-or-unresolved |
-| `deserialize` | `serde_json::to_value(value).map_err` | [407](../../src/types.rs#L407) | receiver-type-required |
-| `deserialize` | `serde_json::to_value` | [407](../../src/types.rs#L407) | external-constructor-callback-or-unresolved |
-| `deserialize` | `wire.tools.is_some` | [414](../../src/types.rs#L414) | receiver-type-required |
-| `deserialize` | `wire.prompts.is_some` | [415](../../src/types.rs#L415) | receiver-type-required |
-| `deserialize` | `wire.resources.is_some` | [416](../../src/types.rs#L416) | receiver-type-required |
-| `deserialize` | `wire.tasks.is_some` | [417](../../src/types.rs#L417) | receiver-type-required |
-| `deserialize` | `wire.subscriptions.is_some` | [418](../../src/types.rs#L418) | receiver-type-required |
-| `deserialize` | `flag` | [420](../../src/types.rs#L420), [421](../../src/types.rs#L421), [422](../../src/types.rs#L422), [423](../../src/types.rs#L423) | external-constructor-callback-or-unresolved |
-| `requires_task` | `self.execution             .as_ref()             .is_some_and` | [472](../../src/types.rs#L472) | receiver-type-required |
-| `requires_task` | `self.execution             .as_ref` | [472](../../src/types.rs#L472) | receiver-type-required |
-| `deserialize` | `WireTool::deserialize` | [507](../../src/types.rs#L507) | external-constructor-callback-or-unresolved |
-| `deserialize` | `Ok` | [508](../../src/types.rs#L508) | external-constructor-callback-or-unresolved |
-| `deserialize` | `wire                 .execution                 .and_then(&#124;execution&#124; execution.task_support)                 .map` | [514](../../src/types.rs#L514) | receiver-type-required |
-| `deserialize` | `wire                 .execution                 .and_then` | [514](../../src/types.rs#L514) | receiver-type-required |
-| `validate_result` | `serde_json::to_value(value).map_err` | [558](../../src/types.rs#L558) | receiver-type-required |
-| `validate_result` | `serde_json::to_value` | [558](../../src/types.rs#L558) | external-constructor-callback-or-unresolved |
-| `validate_result` | `McpError::Protocol` | [558](../../src/types.rs#L558), [559](../../src/types.rs#L559) | external-constructor-callback-or-unresolved |
-| `validate_result` | `error.to_string` | [558](../../src/types.rs#L558) | receiver-type-required |
-| `validate_result` | `"invalid MCP task state, identity or result".into` | [559](../../src/types.rs#L559) | receiver-type-required |
-| `validate_result` | `value["taskId"]             .as_str()             .filter(&#124;id&#124; !id.is_empty() && *id == expected_id)             .ok_or_else` | [560](../../src/types.rs#L560) | receiver-type-required |
-| `validate_result` | `value["taskId"]             .as_str()             .filter` | [560](../../src/types.rs#L560) | receiver-type-required |
-| `validate_result` | `value["taskId"]             .as_str` | [560](../../src/types.rs#L560) | receiver-type-required |
-| `validate_result` | `id.is_empty` | [562](../../src/types.rs#L562) | receiver-type-required |
-| `validate_result` | `value["status"]             .as_str()             .filter(&#124;status&#124; {                 matches!(                     *status,                     "working" &#124; "input_required" &#124; "completed" &#124; "cancelled" &#124; "failed"                 )             })             .ok_or_else` | [564](../../src/types.rs#L564) | receiver-type-required |
-| `validate_result` | `value["status"]             .as_str()             .filter` | [564](../../src/types.rs#L564) | receiver-type-required |
-| `validate_result` | `value["status"]             .as_str` | [564](../../src/types.rs#L564) | receiver-type-required |
-| `validate_result` | `value[field].as_str().ok_or_else` | [574](../../src/types.rs#L574) | receiver-type-required |
-| `validate_result` | `value[field].as_str` | [574](../../src/types.rs#L574) | receiver-type-required |
-| `validate_result` | `chrono::DateTime::parse_from_rfc3339(timestamp).map_err` | [575](../../src/types.rs#L575) | receiver-type-required |
-| `validate_result` | `chrono::DateTime::parse_from_rfc3339` | [575](../../src/types.rs#L575) | external-constructor-callback-or-unresolved |
-| `validate_result` | `invalid` | [575](../../src/types.rs#L575), [583](../../src/types.rs#L583), [591](../../src/types.rs#L591), [598](../../src/types.rs#L598), [601](../../src/types.rs#L601), [604](../../src/types.rs#L604), [611](../../src/types.rs#L611), [614](../../src/types.rs#L614) | external-constructor-callback-or-unresolved |
-| `validate_result` | `value.get` | [578](../../src/types.rs#L578), [600](../../src/types.rs#L600), [613](../../src/types.rs#L613) | receiver-type-required |
-| `validate_result` | `number.is_null` | [579](../../src/types.rs#L579) | receiver-type-required |
-| `validate_result` | `number.as_u64().is_none` | [582](../../src/types.rs#L582) | receiver-type-required |
-| `validate_result` | `number.as_u64` | [582](../../src/types.rs#L582) | receiver-type-required |
-| `validate_result` | `Err` | [583](../../src/types.rs#L583), [591](../../src/types.rs#L591), [598](../../src/types.rs#L598), [601](../../src/types.rs#L601), [604](../../src/types.rs#L604), [611](../../src/types.rs#L611), [614](../../src/types.rs#L614) | external-constructor-callback-or-unresolved |
-| `validate_result` | `value             .get("statusMessage")             .is_some_and` | [587](../../src/types.rs#L587) | receiver-type-required |
-| `validate_result` | `value             .get` | [587](../../src/types.rs#L587) | receiver-type-required |
-| `validate_result` | `message.is_string` | [589](../../src/types.rs#L589) | receiver-type-required |
-| `validate_result` | `value["inputRequests"]                 .as_object()                 .is_none_or` | [594](../../src/types.rs#L594) | receiver-type-required |
-| `validate_result` | `value["inputRequests"]                 .as_object` | [594](../../src/types.rs#L594) | receiver-type-required |
-| `validate_result` | `requests.is_empty` | [596](../../src/types.rs#L596) | receiver-type-required |
-| `validate_result` | `value.get("inputRequests").is_some` | [600](../../src/types.rs#L600) | receiver-type-required |
-| `validate_result` | `value["result"].is_object` | [603](../../src/types.rs#L603) | receiver-type-required |
-| `validate_result` | `value["result"]                 .get("isError")                 .is_some_and` | [607](../../src/types.rs#L607) | receiver-type-required |
-| `validate_result` | `value["result"]                 .get` | [607](../../src/types.rs#L607) | receiver-type-required |
-| `validate_result` | `flag.is_boolean` | [609](../../src/types.rs#L609) | receiver-type-required |
-| `validate_result` | `value.get("error").is_none_or` | [613](../../src/types.rs#L613) | receiver-type-required |
-| `validate_result` | `Ok` | [616](../../src/types.rs#L616) | external-constructor-callback-or-unresolved |
-| `validate_result` | `id.into` | [617](../../src/types.rs#L617) | receiver-type-required |
-| `validate_result` | `status.into` | [618](../../src/types.rs#L618) | receiver-type-required |
+| `supports_tasks` | `self.supports_task_extension` | [318](../../src/types.rs#L318) | [mcp::types::McpCapabilities::supports_task_extension](../../src/types.rs#L322) |
+| `supports_task_extension` | `self.extensions             .get(TASKS_EXTENSION)             .is_some_and` | [323](../../src/types.rs#L323) | receiver-type-required |
+| `supports_task_extension` | `self.extensions             .get` | [323](../../src/types.rs#L323) | receiver-type-required |
+| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter()         .filter(&#124;enabled&#124; *enabled)         .count` | [334](../../src/types.rs#L334) | receiver-type-required |
+| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter()         .filter` | [334](../../src/types.rs#L334) | receiver-type-required |
+| `serialize` | `[             self.tools,             self.prompts,             self.resources,             self.tasks,             self.subscriptions,         ]         .into_iter` | [334](../../src/types.rs#L334) | receiver-type-required |
+| `serialize` | `serializer.serialize_map` | [345](../../src/types.rs#L345) | receiver-type-required |
+| `serialize` | `Some` | [345](../../src/types.rs#L345) | external-constructor-callback-or-unresolved |
+| `serialize` | `usize::from` | [345](../../src/types.rs#L345) | external-constructor-callback-or-unresolved |
+| `serialize` | `self.extensions.is_empty` | [345](../../src/types.rs#L345), [377](../../src/types.rs#L377) | receiver-type-required |
+| `serialize` | `BTreeMap::<String, IJsonValue>::new` | [346](../../src/types.rs#L346) | external-constructor-callback-or-unresolved |
+| `serialize` | `BTreeMap::new` | [348](../../src/types.rs#L348), [355](../../src/types.rs#L355), [362](../../src/types.rs#L362) | external-constructor-callback-or-unresolved |
+| `serialize` | `detail.insert` | [350](../../src/types.rs#L350), [357](../../src/types.rs#L357), [364](../../src/types.rs#L364), [367](../../src/types.rs#L367) | receiver-type-required |
+| `serialize` | `map.serialize_entry` | [352](../../src/types.rs#L352), [359](../../src/types.rs#L359), [369](../../src/types.rs#L369), [372](../../src/types.rs#L372), [375](../../src/types.rs#L375), [378](../../src/types.rs#L378) | receiver-type-required |
+| `serialize` | `map.end` | [380](../../src/types.rs#L380) | receiver-type-required |
+| `deserialize` | `WireCapabilities::deserialize` | [409](../../src/types.rs#L409) | external-constructor-callback-or-unresolved |
+| `deserialize` | `object.as_ref().and_then` | [412](../../src/types.rs#L412) | receiver-type-required |
+| `deserialize` | `object.as_ref` | [412](../../src/types.rs#L412) | receiver-type-required |
+| `deserialize` | `object.get` | [412](../../src/types.rs#L412) | receiver-type-required |
+| `deserialize` | `Ok` | [413](../../src/types.rs#L413), [421](../../src/types.rs#L421) | external-constructor-callback-or-unresolved |
+| `deserialize` | `serde_json::from_value::<bool>(                         serde_json::to_value(value).map_err(serde::de::Error::custom)?,                     )                     .map_err` | [414](../../src/types.rs#L414) | receiver-type-required |
+| `deserialize` | `serde_json::from_value::<bool>` | [414](../../src/types.rs#L414) | external-constructor-callback-or-unresolved |
+| `deserialize` | `serde_json::to_value(value).map_err` | [415](../../src/types.rs#L415) | receiver-type-required |
+| `deserialize` | `serde_json::to_value` | [415](../../src/types.rs#L415) | external-constructor-callback-or-unresolved |
+| `deserialize` | `wire.tools.is_some` | [422](../../src/types.rs#L422) | receiver-type-required |
+| `deserialize` | `wire.prompts.is_some` | [423](../../src/types.rs#L423) | receiver-type-required |
+| `deserialize` | `wire.resources.is_some` | [424](../../src/types.rs#L424) | receiver-type-required |
+| `deserialize` | `wire.tasks.is_some` | [425](../../src/types.rs#L425) | receiver-type-required |
+| `deserialize` | `wire.subscriptions.is_some` | [426](../../src/types.rs#L426) | receiver-type-required |
+| `deserialize` | `flag` | [428](../../src/types.rs#L428), [429](../../src/types.rs#L429), [430](../../src/types.rs#L430), [431](../../src/types.rs#L431) | external-constructor-callback-or-unresolved |
+| `requires_task` | `self.execution             .as_ref()             .is_some_and` | [480](../../src/types.rs#L480) | receiver-type-required |
+| `requires_task` | `self.execution             .as_ref` | [480](../../src/types.rs#L480) | receiver-type-required |
+| `deserialize` | `WireTool::deserialize` | [515](../../src/types.rs#L515) | external-constructor-callback-or-unresolved |
+| `deserialize` | `Ok` | [516](../../src/types.rs#L516) | external-constructor-callback-or-unresolved |
+| `deserialize` | `wire                 .execution                 .and_then(&#124;execution&#124; execution.task_support)                 .map` | [522](../../src/types.rs#L522) | receiver-type-required |
+| `deserialize` | `wire                 .execution                 .and_then` | [522](../../src/types.rs#L522) | receiver-type-required |
+| `validate_result` | `serde_json::to_value(value).map_err` | [566](../../src/types.rs#L566) | receiver-type-required |
+| `validate_result` | `serde_json::to_value` | [566](../../src/types.rs#L566) | external-constructor-callback-or-unresolved |
+| `validate_result` | `McpError::Protocol` | [566](../../src/types.rs#L566), [567](../../src/types.rs#L567) | external-constructor-callback-or-unresolved |
+| `validate_result` | `error.to_string` | [566](../../src/types.rs#L566) | receiver-type-required |
+| `validate_result` | `"invalid MCP task state, identity or result".into` | [567](../../src/types.rs#L567) | receiver-type-required |
+| `validate_result` | `value["taskId"]             .as_str()             .filter(&#124;id&#124; !id.is_empty() && *id == expected_id)             .ok_or_else` | [568](../../src/types.rs#L568) | receiver-type-required |
+| `validate_result` | `value["taskId"]             .as_str()             .filter` | [568](../../src/types.rs#L568) | receiver-type-required |
+| `validate_result` | `value["taskId"]             .as_str` | [568](../../src/types.rs#L568) | receiver-type-required |
+| `validate_result` | `id.is_empty` | [570](../../src/types.rs#L570) | receiver-type-required |
+| `validate_result` | `value["status"]             .as_str()             .filter(&#124;status&#124; {                 matches!(                     *status,                     "working" &#124; "input_required" &#124; "completed" &#124; "cancelled" &#124; "failed"                 )             })             .ok_or_else` | [572](../../src/types.rs#L572) | receiver-type-required |
+| `validate_result` | `value["status"]             .as_str()             .filter` | [572](../../src/types.rs#L572) | receiver-type-required |
+| `validate_result` | `value["status"]             .as_str` | [572](../../src/types.rs#L572) | receiver-type-required |
+| `validate_result` | `value[field].as_str().ok_or_else` | [582](../../src/types.rs#L582) | receiver-type-required |
+| `validate_result` | `value[field].as_str` | [582](../../src/types.rs#L582) | receiver-type-required |
+| `validate_result` | `chrono::DateTime::parse_from_rfc3339(timestamp).map_err` | [583](../../src/types.rs#L583) | receiver-type-required |
+| `validate_result` | `chrono::DateTime::parse_from_rfc3339` | [583](../../src/types.rs#L583) | external-constructor-callback-or-unresolved |
+| `validate_result` | `invalid` | [583](../../src/types.rs#L583), [591](../../src/types.rs#L591), [599](../../src/types.rs#L599), [606](../../src/types.rs#L606), [609](../../src/types.rs#L609), [612](../../src/types.rs#L612), [619](../../src/types.rs#L619), [622](../../src/types.rs#L622) | external-constructor-callback-or-unresolved |
+| `validate_result` | `value.get` | [586](../../src/types.rs#L586), [608](../../src/types.rs#L608), [621](../../src/types.rs#L621) | receiver-type-required |
+| `validate_result` | `number.is_null` | [587](../../src/types.rs#L587) | receiver-type-required |
+| `validate_result` | `number.as_u64().is_none` | [590](../../src/types.rs#L590) | receiver-type-required |
+| `validate_result` | `number.as_u64` | [590](../../src/types.rs#L590) | receiver-type-required |
+| `validate_result` | `Err` | [591](../../src/types.rs#L591), [599](../../src/types.rs#L599), [606](../../src/types.rs#L606), [609](../../src/types.rs#L609), [612](../../src/types.rs#L612), [619](../../src/types.rs#L619), [622](../../src/types.rs#L622) | external-constructor-callback-or-unresolved |
+| `validate_result` | `value             .get("statusMessage")             .is_some_and` | [595](../../src/types.rs#L595) | receiver-type-required |
+| `validate_result` | `value             .get` | [595](../../src/types.rs#L595) | receiver-type-required |
+| `validate_result` | `message.is_string` | [597](../../src/types.rs#L597) | receiver-type-required |
+| `validate_result` | `value["inputRequests"]                 .as_object()                 .is_none_or` | [602](../../src/types.rs#L602) | receiver-type-required |
+| `validate_result` | `value["inputRequests"]                 .as_object` | [602](../../src/types.rs#L602) | receiver-type-required |
+| `validate_result` | `requests.is_empty` | [604](../../src/types.rs#L604) | receiver-type-required |
+| `validate_result` | `value.get("inputRequests").is_some` | [608](../../src/types.rs#L608) | receiver-type-required |
+| `validate_result` | `value["result"].is_object` | [611](../../src/types.rs#L611) | receiver-type-required |
+| `validate_result` | `value["result"]                 .get("isError")                 .is_some_and` | [615](../../src/types.rs#L615) | receiver-type-required |
+| `validate_result` | `value["result"]                 .get` | [615](../../src/types.rs#L615) | receiver-type-required |
+| `validate_result` | `flag.is_boolean` | [617](../../src/types.rs#L617) | receiver-type-required |
+| `validate_result` | `value.get("error").is_none_or` | [621](../../src/types.rs#L621) | receiver-type-required |
+| `validate_result` | `Ok` | [624](../../src/types.rs#L624) | external-constructor-callback-or-unresolved |
+| `validate_result` | `id.into` | [625](../../src/types.rs#L625) | receiver-type-required |
+| `validate_result` | `status.into` | [626](../../src/types.rs#L626) | receiver-type-required |

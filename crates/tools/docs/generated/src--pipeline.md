@@ -46,12 +46,12 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tools::pipeline::split_scanned_result](../../src/pipeline.rs#L972) | function_item | `private` |  |
 | [tools::pipeline::output_blocks](../../src/pipeline.rs#L990) | function_item | `private` |  |
 | [tools::pipeline::offer_content_names](../../src/pipeline.rs#L1008) | function_item | `private` |  |
-| [tools::pipeline::redact_value](../../src/pipeline.rs#L1031) | function_item | `private` |  |
-| [tools::pipeline::hook_failure_meta](../../src/pipeline.rs#L1070) | function_item | `private` |  |
-| [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1076) | function_item | `private` |  |
-| [tools::pipeline::record_pre_mutation](../../src/pipeline.rs#L1086) | function_item | `private` |  |
-| [tools::pipeline::record_post_hook](../../src/pipeline.rs#L1096) | function_item | `private` |  |
-| [tools::pipeline::secret_token_boundary_tests::artifact_task_paths_survive_scanning_without_weakening_key_redaction](../../src/pipeline.rs#L1120) | function_item | `private` | test; #[cfg(test)] |
+| [tools::pipeline::redact_value](../../src/pipeline.rs#L1034) | function_item | `private` |  |
+| [tools::pipeline::hook_failure_meta](../../src/pipeline.rs#L1073) | function_item | `private` |  |
+| [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1079) | function_item | `private` |  |
+| [tools::pipeline::record_pre_mutation](../../src/pipeline.rs#L1089) | function_item | `private` |  |
+| [tools::pipeline::record_post_hook](../../src/pipeline.rs#L1099) | function_item | `private` |  |
+| [tools::pipeline::secret_token_boundary_tests::artifact_task_paths_survive_scanning_without_weakening_key_redaction](../../src/pipeline.rs#L1123) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -198,7 +198,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `scan` | `SecretScan::Withheld` | [115](../../src/pipeline.rs#L115) | external-constructor-callback-or-unresolved |
 | `scan` | `serde_json::to_value(value).expect` | [117](../../src/pipeline.rs#L117) | receiver-type-required |
 | `scan` | `serde_json::to_value` | [117](../../src/pipeline.rs#L117) | external-constructor-callback-or-unresolved |
-| `scan` | `redact_value` | [118](../../src/pipeline.rs#L118) | [tools::pipeline::redact_value](../../src/pipeline.rs#L1031) |
+| `scan` | `redact_value` | [118](../../src/pipeline.rs#L118) | [tools::pipeline::redact_value](../../src/pipeline.rs#L1034) |
 | `scan` | `serde_json::to_vec(&value).expect` | [119](../../src/pipeline.rs#L119) | receiver-type-required |
 | `scan` | `serde_json::to_vec` | [119](../../src/pipeline.rs#L119) | external-constructor-callback-or-unresolved |
 | `scan` | `IJsonValue::parse(&encoded).expect` | [120](../../src/pipeline.rs#L120) | receiver-type-required |
@@ -326,13 +326,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_terminal_with_gate_and_resume` | `execution.name.clone` | [437](../../src/pipeline.rs#L437) | receiver-type-required |
 | `execute_terminal_with_gate_and_resume` | `invocation.clone` | [438](../../src/pipeline.rs#L438) | receiver-type-required |
 | `execute_terminal_with_gate_and_resume` | `ProcessHook::run` | [441](../../src/pipeline.rs#L441) | [tools::hook::ProcessHook::run](../../src/hook.rs#L270) |
-| `execute_terminal_with_gate_and_resume` | `record_pre_mutation` | [459](../../src/pipeline.rs#L459) | [tools::pipeline::record_pre_mutation](../../src/pipeline.rs#L1086) |
+| `execute_terminal_with_gate_and_resume` | `record_pre_mutation` | [459](../../src/pipeline.rs#L459) | [tools::pipeline::record_pre_mutation](../../src/pipeline.rs#L1089) |
 | `execute_terminal_with_gate_and_resume` | `reason.as_deref` | [459](../../src/pipeline.rs#L459) | receiver-type-required |
 | `execute_terminal_with_gate_and_resume` | `self.append_approval` | [462](../../src/pipeline.rs#L462), [496](../../src/pipeline.rs#L496) | [tools::pipeline::ToolPipeline::append_approval](../../src/pipeline.rs#L861) |
 | `execute_terminal_with_gate_and_resume` | `Err` | [466](../../src/pipeline.rs#L466) | external-constructor-callback-or-unresolved |
-| `execute_terminal_with_gate_and_resume` | `hook_failure_meta` | [473](../../src/pipeline.rs#L473) | [tools::pipeline::hook_failure_meta](../../src/pipeline.rs#L1070) |
+| `execute_terminal_with_gate_and_resume` | `hook_failure_meta` | [473](../../src/pipeline.rs#L473) | [tools::pipeline::hook_failure_meta](../../src/pipeline.rs#L1073) |
 | `execute_terminal_with_gate_and_resume` | `error.to_string` | [473](../../src/pipeline.rs#L473), [478](../../src/pipeline.rs#L478) | receiver-type-required |
-| `execute_terminal_with_gate_and_resume` | `record_hook_failure` | [478](../../src/pipeline.rs#L478) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1076) |
+| `execute_terminal_with_gate_and_resume` | `record_hook_failure` | [478](../../src/pipeline.rs#L478) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1079) |
 | `execute_terminal_with_gate_and_resume` | `self.append_effective_execution` | [485](../../src/pipeline.rs#L485) | [tools::pipeline::ToolPipeline::append_effective_execution](../../src/pipeline.rs#L839) |
 | `execute_terminal_with_gate_and_resume` | `gate` | [488](../../src/pipeline.rs#L488) | external-constructor-callback-or-unresolved |
 | `complete_terminal` | `Value::String` | [515](../../src/pipeline.rs#L515), [522](../../src/pipeline.rs#L522), [616](../../src/pipeline.rs#L616) | external-constructor-callback-or-unresolved |
@@ -357,10 +357,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `complete_terminal` | `Value::Object` | [570](../../src/pipeline.rs#L570) | external-constructor-callback-or-unresolved |
 | `complete_terminal` | `metadata.clone` | [570](../../src/pipeline.rs#L570) | receiver-type-required |
 | `complete_terminal` | `ProcessHook::run` | [574](../../src/pipeline.rs#L574) | [tools::hook::ProcessHook::run](../../src/hook.rs#L270) |
-| `complete_terminal` | `record_post_hook` | [577](../../src/pipeline.rs#L577), [583](../../src/pipeline.rs#L583) | [tools::pipeline::record_post_hook](../../src/pipeline.rs#L1096) |
+| `complete_terminal` | `record_post_hook` | [577](../../src/pipeline.rs#L577), [583](../../src/pipeline.rs#L583) | [tools::pipeline::record_post_hook](../../src/pipeline.rs#L1099) |
 | `complete_terminal` | `annotations.as_ref` | [577](../../src/pipeline.rs#L577), [587](../../src/pipeline.rs#L587) | receiver-type-required |
 | `complete_terminal` | `Err` | [592](../../src/pipeline.rs#L592) | external-constructor-callback-or-unresolved |
-| `complete_terminal` | `record_hook_failure` | [595](../../src/pipeline.rs#L595), [599](../../src/pipeline.rs#L599) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1076) |
+| `complete_terminal` | `record_hook_failure` | [595](../../src/pipeline.rs#L595), [599](../../src/pipeline.rs#L599) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1079) |
 | `complete_terminal` | `error.to_string` | [595](../../src/pipeline.rs#L595), [599](../../src/pipeline.rs#L599) | receiver-type-required |
 | `complete_terminal` | `self.scanner.scan` | [609](../../src/pipeline.rs#L609) | receiver-type-required |
 | `complete_terminal` | `split_scanned_result` | [611](../../src/pipeline.rs#L611), [613](../../src/pipeline.rs#L613) | [tools::pipeline::split_scanned_result](../../src/pipeline.rs#L972) |
@@ -527,45 +527,45 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `offer_content_names` | `items                         .iter` | [1023](../../src/pipeline.rs#L1023) | receiver-type-required |
 | `offer_content_names` | `item.get("name").and_then` | [1025](../../src/pipeline.rs#L1025) | receiver-type-required |
 | `offer_content_names` | `item.get` | [1025](../../src/pipeline.rs#L1025) | receiver-type-required |
-| `redact_value` | `text[cursor..].find` | [1037](../../src/pipeline.rs#L1037) | receiver-type-required |
-| `redact_value` | `text[..index]                             .chars()                             .next_back()                             .is_some_and` | [1042](../../src/pipeline.rs#L1042) | receiver-type-required |
-| `redact_value` | `text[..index]                             .chars()                             .next_back` | [1042](../../src/pipeline.rs#L1042) | receiver-type-required |
-| `redact_value` | `text[..index]                             .chars` | [1042](../../src/pipeline.rs#L1042) | receiver-type-required |
-| `redact_value` | `c.is_alphanumeric` | [1045](../../src/pipeline.rs#L1045) | receiver-type-required |
-| `redact_value` | `marker.len` | [1047](../../src/pipeline.rs#L1047) | receiver-type-required |
-| `redact_value` | `text[index..]                         .find(char::is_whitespace)                         .map_or` | [1050](../../src/pipeline.rs#L1050) | receiver-type-required |
-| `redact_value` | `text[index..]                         .find` | [1050](../../src/pipeline.rs#L1050) | receiver-type-required |
-| `redact_value` | `text.len` | [1052](../../src/pipeline.rs#L1052) | receiver-type-required |
-| `redact_value` | `text.replace_range` | [1053](../../src/pipeline.rs#L1053) | receiver-type-required |
-| `redact_value` | `"[REDACTED]".len` | [1054](../../src/pipeline.rs#L1054) | receiver-type-required |
-| `redact_value` | `values             .iter_mut()             .fold` | [1060](../../src/pipeline.rs#L1060) | receiver-type-required |
-| `redact_value` | `values             .iter_mut` | [1060](../../src/pipeline.rs#L1060) | receiver-type-required |
-| `redact_value` | `redact_value` | [1062](../../src/pipeline.rs#L1062), [1065](../../src/pipeline.rs#L1065) | [tools::pipeline::redact_value](../../src/pipeline.rs#L1031) |
-| `redact_value` | `values             .values_mut()             .fold` | [1063](../../src/pipeline.rs#L1063) | receiver-type-required |
-| `redact_value` | `values             .values_mut` | [1063](../../src/pipeline.rs#L1063) | receiver-type-required |
-| `hook_failure_meta` | `Map::new` | [1071](../../src/pipeline.rs#L1071) | external-constructor-callback-or-unresolved |
-| `hook_failure_meta` | `record_hook_failure` | [1072](../../src/pipeline.rs#L1072) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1076) |
-| `record_hook_failure` | `metadata         .entry("hook_failures".to_owned())         .or_insert_with` | [1077](../../src/pipeline.rs#L1077) | receiver-type-required |
-| `record_hook_failure` | `metadata         .entry` | [1077](../../src/pipeline.rs#L1077) | receiver-type-required |
-| `record_hook_failure` | `"hook_failures".to_owned` | [1078](../../src/pipeline.rs#L1078) | receiver-type-required |
-| `record_hook_failure` | `Value::Array` | [1079](../../src/pipeline.rs#L1079) | external-constructor-callback-or-unresolved |
-| `record_hook_failure` | `Vec::new` | [1079](../../src/pipeline.rs#L1079) | external-constructor-callback-or-unresolved |
-| `record_hook_failure` | `entry         .as_array_mut()         .expect("hook_failures is always an array")         .push` | [1080](../../src/pipeline.rs#L1080) | receiver-type-required |
-| `record_hook_failure` | `entry         .as_array_mut()         .expect` | [1080](../../src/pipeline.rs#L1080) | receiver-type-required |
-| `record_hook_failure` | `entry         .as_array_mut` | [1080](../../src/pipeline.rs#L1080) | receiver-type-required |
-| `record_pre_mutation` | `metadata         .entry("pre_hook_mutations".to_owned())         .or_insert_with` | [1087](../../src/pipeline.rs#L1087) | receiver-type-required |
-| `record_pre_mutation` | `metadata         .entry` | [1087](../../src/pipeline.rs#L1087) | receiver-type-required |
-| `record_pre_mutation` | `"pre_hook_mutations".to_owned` | [1088](../../src/pipeline.rs#L1088) | receiver-type-required |
-| `record_pre_mutation` | `Value::Array` | [1089](../../src/pipeline.rs#L1089) | external-constructor-callback-or-unresolved |
-| `record_pre_mutation` | `Vec::new` | [1089](../../src/pipeline.rs#L1089) | external-constructor-callback-or-unresolved |
-| `record_pre_mutation` | `entry         .as_array_mut()         .expect("pre_hook_mutations is always an array")         .push` | [1090](../../src/pipeline.rs#L1090) | receiver-type-required |
-| `record_pre_mutation` | `entry         .as_array_mut()         .expect` | [1090](../../src/pipeline.rs#L1090) | receiver-type-required |
-| `record_pre_mutation` | `entry         .as_array_mut` | [1090](../../src/pipeline.rs#L1090) | receiver-type-required |
-| `record_post_hook` | `metadata         .entry("post_hooks".to_owned())         .or_insert_with` | [1102](../../src/pipeline.rs#L1102) | receiver-type-required |
-| `record_post_hook` | `metadata         .entry` | [1102](../../src/pipeline.rs#L1102) | receiver-type-required |
-| `record_post_hook` | `"post_hooks".to_owned` | [1103](../../src/pipeline.rs#L1103) | receiver-type-required |
-| `record_post_hook` | `Value::Array` | [1104](../../src/pipeline.rs#L1104) | external-constructor-callback-or-unresolved |
-| `record_post_hook` | `Vec::new` | [1104](../../src/pipeline.rs#L1104) | external-constructor-callback-or-unresolved |
-| `record_post_hook` | `entry         .as_array_mut()         .expect("post_hooks is always an array")         .push` | [1105](../../src/pipeline.rs#L1105) | receiver-type-required |
-| `record_post_hook` | `entry         .as_array_mut()         .expect` | [1105](../../src/pipeline.rs#L1105) | receiver-type-required |
-| `record_post_hook` | `entry         .as_array_mut` | [1105](../../src/pipeline.rs#L1105) | receiver-type-required |
+| `redact_value` | `text[cursor..].find` | [1040](../../src/pipeline.rs#L1040) | receiver-type-required |
+| `redact_value` | `text[..index]                             .chars()                             .next_back()                             .is_some_and` | [1045](../../src/pipeline.rs#L1045) | receiver-type-required |
+| `redact_value` | `text[..index]                             .chars()                             .next_back` | [1045](../../src/pipeline.rs#L1045) | receiver-type-required |
+| `redact_value` | `text[..index]                             .chars` | [1045](../../src/pipeline.rs#L1045) | receiver-type-required |
+| `redact_value` | `c.is_alphanumeric` | [1048](../../src/pipeline.rs#L1048) | receiver-type-required |
+| `redact_value` | `marker.len` | [1050](../../src/pipeline.rs#L1050) | receiver-type-required |
+| `redact_value` | `text[index..]                         .find(char::is_whitespace)                         .map_or` | [1053](../../src/pipeline.rs#L1053) | receiver-type-required |
+| `redact_value` | `text[index..]                         .find` | [1053](../../src/pipeline.rs#L1053) | receiver-type-required |
+| `redact_value` | `text.len` | [1055](../../src/pipeline.rs#L1055) | receiver-type-required |
+| `redact_value` | `text.replace_range` | [1056](../../src/pipeline.rs#L1056) | receiver-type-required |
+| `redact_value` | `"[REDACTED]".len` | [1057](../../src/pipeline.rs#L1057) | receiver-type-required |
+| `redact_value` | `values             .iter_mut()             .fold` | [1063](../../src/pipeline.rs#L1063) | receiver-type-required |
+| `redact_value` | `values             .iter_mut` | [1063](../../src/pipeline.rs#L1063) | receiver-type-required |
+| `redact_value` | `redact_value` | [1065](../../src/pipeline.rs#L1065), [1068](../../src/pipeline.rs#L1068) | [tools::pipeline::redact_value](../../src/pipeline.rs#L1034) |
+| `redact_value` | `values             .values_mut()             .fold` | [1066](../../src/pipeline.rs#L1066) | receiver-type-required |
+| `redact_value` | `values             .values_mut` | [1066](../../src/pipeline.rs#L1066) | receiver-type-required |
+| `hook_failure_meta` | `Map::new` | [1074](../../src/pipeline.rs#L1074) | external-constructor-callback-or-unresolved |
+| `hook_failure_meta` | `record_hook_failure` | [1075](../../src/pipeline.rs#L1075) | [tools::pipeline::record_hook_failure](../../src/pipeline.rs#L1079) |
+| `record_hook_failure` | `metadata         .entry("hook_failures".to_owned())         .or_insert_with` | [1080](../../src/pipeline.rs#L1080) | receiver-type-required |
+| `record_hook_failure` | `metadata         .entry` | [1080](../../src/pipeline.rs#L1080) | receiver-type-required |
+| `record_hook_failure` | `"hook_failures".to_owned` | [1081](../../src/pipeline.rs#L1081) | receiver-type-required |
+| `record_hook_failure` | `Value::Array` | [1082](../../src/pipeline.rs#L1082) | external-constructor-callback-or-unresolved |
+| `record_hook_failure` | `Vec::new` | [1082](../../src/pipeline.rs#L1082) | external-constructor-callback-or-unresolved |
+| `record_hook_failure` | `entry         .as_array_mut()         .expect("hook_failures is always an array")         .push` | [1083](../../src/pipeline.rs#L1083) | receiver-type-required |
+| `record_hook_failure` | `entry         .as_array_mut()         .expect` | [1083](../../src/pipeline.rs#L1083) | receiver-type-required |
+| `record_hook_failure` | `entry         .as_array_mut` | [1083](../../src/pipeline.rs#L1083) | receiver-type-required |
+| `record_pre_mutation` | `metadata         .entry("pre_hook_mutations".to_owned())         .or_insert_with` | [1090](../../src/pipeline.rs#L1090) | receiver-type-required |
+| `record_pre_mutation` | `metadata         .entry` | [1090](../../src/pipeline.rs#L1090) | receiver-type-required |
+| `record_pre_mutation` | `"pre_hook_mutations".to_owned` | [1091](../../src/pipeline.rs#L1091) | receiver-type-required |
+| `record_pre_mutation` | `Value::Array` | [1092](../../src/pipeline.rs#L1092) | external-constructor-callback-or-unresolved |
+| `record_pre_mutation` | `Vec::new` | [1092](../../src/pipeline.rs#L1092) | external-constructor-callback-or-unresolved |
+| `record_pre_mutation` | `entry         .as_array_mut()         .expect("pre_hook_mutations is always an array")         .push` | [1093](../../src/pipeline.rs#L1093) | receiver-type-required |
+| `record_pre_mutation` | `entry         .as_array_mut()         .expect` | [1093](../../src/pipeline.rs#L1093) | receiver-type-required |
+| `record_pre_mutation` | `entry         .as_array_mut` | [1093](../../src/pipeline.rs#L1093) | receiver-type-required |
+| `record_post_hook` | `metadata         .entry("post_hooks".to_owned())         .or_insert_with` | [1105](../../src/pipeline.rs#L1105) | receiver-type-required |
+| `record_post_hook` | `metadata         .entry` | [1105](../../src/pipeline.rs#L1105) | receiver-type-required |
+| `record_post_hook` | `"post_hooks".to_owned` | [1106](../../src/pipeline.rs#L1106) | receiver-type-required |
+| `record_post_hook` | `Value::Array` | [1107](../../src/pipeline.rs#L1107) | external-constructor-callback-or-unresolved |
+| `record_post_hook` | `Vec::new` | [1107](../../src/pipeline.rs#L1107) | external-constructor-callback-or-unresolved |
+| `record_post_hook` | `entry         .as_array_mut()         .expect("post_hooks is always an array")         .push` | [1108](../../src/pipeline.rs#L1108) | receiver-type-required |
+| `record_post_hook` | `entry         .as_array_mut()         .expect` | [1108](../../src/pipeline.rs#L1108) | receiver-type-required |
+| `record_post_hook` | `entry         .as_array_mut` | [1108](../../src/pipeline.rs#L1108) | receiver-type-required |

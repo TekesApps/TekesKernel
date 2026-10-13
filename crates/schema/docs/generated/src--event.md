@@ -52,46 +52,46 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [schema::event::validate_usage](../../src/event.rs#L751) | function_item | `private` |  |
 | [schema::event::validate_error](../../src/event.rs#L775) | function_item | `private` |  |
 | [schema::event::validate_settle](../../src/event.rs#L820) | function_item | `private` |  |
-| [schema::event::validate_checkpoint](../../src/event.rs#L900) | function_item | `private` |  |
-| [schema::event::validate_compact](../../src/event.rs#L906) | function_item | `private` |  |
-| [schema::event::validate_meta](../../src/event.rs#L928) | function_item | `private` |  |
-| [schema::event::validate_session_notice](../../src/event.rs#L970) | function_item | `private` |  |
-| [schema::event::validate_blocks](../../src/event.rs#L989) | function_item | `private` |  |
-| [schema::event::validate_blocks_or_spill](../../src/event.rs#L1056) | function_item | `private` |  |
-| [schema::event::validate_string_or_spill](../../src/event.rs#L1068) | function_item | `private` |  |
-| [schema::event::validate_json_or_spill](../../src/event.rs#L1082) | function_item | `private` |  |
-| [schema::event::validate_inline_size](../../src/event.rs#L1090) | function_item | `private` |  |
-| [schema::event::is_spill](../../src/event.rs#L1102) | function_item | `private` |  |
-| [schema::event::validate_spill](../../src/event.rs#L1108) | function_item | `private` |  |
-| [schema::event::validate_resume](../../src/event.rs#L1125) | function_item | `private` |  |
-| [schema::event::validate_origin_equality](../../src/event.rs#L1139) | function_item | `private` |  |
-| [schema::event::validate_origin_tuple](../../src/event.rs#L1161) | function_item | `private` |  |
-| [schema::event::validate_timestamp](../../src/event.rs#L1173) | function_item | `private` |  |
-| [schema::event::parse_decimal](../../src/event.rs#L1205) | function_item | `private` |  |
-| [schema::event::days_in_month](../../src/event.rs#L1212) | function_item | `private` |  |
-| [schema::event::is_leap_year](../../src/event.rs#L1222) | function_item | `private` |  |
-| [schema::event::divisible_by](../../src/event.rs#L1226) | function_item | `private` |  |
-| [schema::event::required](../../src/event.rs#L1230) | function_item | `private` |  |
-| [schema::event::required_str](../../src/event.rs#L1243) | function_item | `private` |  |
-| [schema::event::required_id](../../src/event.rs#L1255) | function_item | `private` |  |
-| [schema::event::optional_str](../../src/event.rs#L1270) | function_item | `private` |  |
-| [schema::event::required_u64](../../src/event.rs#L1285) | function_item | `private` |  |
-| [schema::event::optional_u64](../../src/event.rs#L1301) | function_item | `private` |  |
-| [schema::event::required_bool](../../src/event.rs#L1322) | function_item | `private` |  |
-| [schema::event::optional_bool](../../src/event.rs#L1329) | function_item | `private` |  |
-| [schema::event::required_object](../../src/event.rs#L1344) | function_item | `private` |  |
-| [schema::event::optional_object](../../src/event.rs#L1354) | function_item | `private` |  |
-| [schema::event::required_array](../../src/event.rs#L1369) | function_item | `private` |  |
-| [schema::event::optional_array](../../src/event.rs#L1380) | function_item | `private` |  |
-| [schema::event::required_enum](../../src/event.rs#L1396) | function_item | `private` |  |
-| [schema::event::optional_json_value](../../src/event.rs#L1412) | function_item | `private` |  |
-| [schema::event::optional_visibility](../../src/event.rs#L1420) | function_item | `private` |  |
-| [schema::event::ranges](../../src/event.rs#L1436) | function_item | `pub(crate)` |  |
-| [schema::event::validate_ranges_optional](../../src/event.rs#L1461) | function_item | `private` |  |
-| [schema::event::validate_ranges_required_from_envelope](../../src/event.rs#L1472) | function_item | `private` |  |
-| [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1480) | function_item | `private` |  |
-| [schema::event::validate_u64_array](../../src/event.rs#L1488) | function_item | `private` |  |
-| [schema::event::validate_strictly_increasing_u64](../../src/event.rs#L1504) | function_item | `private` |  |
+| [schema::event::validate_checkpoint](../../src/event.rs#L899) | function_item | `private` |  |
+| [schema::event::validate_compact](../../src/event.rs#L905) | function_item | `private` |  |
+| [schema::event::validate_meta](../../src/event.rs#L927) | function_item | `private` |  |
+| [schema::event::validate_session_notice](../../src/event.rs#L969) | function_item | `private` |  |
+| [schema::event::validate_blocks](../../src/event.rs#L988) | function_item | `private` |  |
+| [schema::event::validate_blocks_or_spill](../../src/event.rs#L1055) | function_item | `private` |  |
+| [schema::event::validate_string_or_spill](../../src/event.rs#L1067) | function_item | `private` |  |
+| [schema::event::validate_json_or_spill](../../src/event.rs#L1081) | function_item | `private` |  |
+| [schema::event::validate_inline_size](../../src/event.rs#L1089) | function_item | `private` |  |
+| [schema::event::is_spill](../../src/event.rs#L1101) | function_item | `private` |  |
+| [schema::event::validate_spill](../../src/event.rs#L1107) | function_item | `private` |  |
+| [schema::event::validate_resume](../../src/event.rs#L1124) | function_item | `private` |  |
+| [schema::event::validate_origin_equality](../../src/event.rs#L1138) | function_item | `private` |  |
+| [schema::event::validate_origin_tuple](../../src/event.rs#L1160) | function_item | `private` |  |
+| [schema::event::validate_timestamp](../../src/event.rs#L1172) | function_item | `private` |  |
+| [schema::event::parse_decimal](../../src/event.rs#L1204) | function_item | `private` |  |
+| [schema::event::days_in_month](../../src/event.rs#L1211) | function_item | `private` |  |
+| [schema::event::is_leap_year](../../src/event.rs#L1221) | function_item | `private` |  |
+| [schema::event::divisible_by](../../src/event.rs#L1225) | function_item | `private` |  |
+| [schema::event::required](../../src/event.rs#L1229) | function_item | `private` |  |
+| [schema::event::required_str](../../src/event.rs#L1242) | function_item | `private` |  |
+| [schema::event::required_id](../../src/event.rs#L1254) | function_item | `private` |  |
+| [schema::event::optional_str](../../src/event.rs#L1269) | function_item | `private` |  |
+| [schema::event::required_u64](../../src/event.rs#L1284) | function_item | `private` |  |
+| [schema::event::optional_u64](../../src/event.rs#L1300) | function_item | `private` |  |
+| [schema::event::required_bool](../../src/event.rs#L1321) | function_item | `private` |  |
+| [schema::event::optional_bool](../../src/event.rs#L1328) | function_item | `private` |  |
+| [schema::event::required_object](../../src/event.rs#L1343) | function_item | `private` |  |
+| [schema::event::optional_object](../../src/event.rs#L1353) | function_item | `private` |  |
+| [schema::event::required_array](../../src/event.rs#L1368) | function_item | `private` |  |
+| [schema::event::optional_array](../../src/event.rs#L1379) | function_item | `private` |  |
+| [schema::event::required_enum](../../src/event.rs#L1395) | function_item | `private` |  |
+| [schema::event::optional_json_value](../../src/event.rs#L1411) | function_item | `private` |  |
+| [schema::event::optional_visibility](../../src/event.rs#L1419) | function_item | `private` |  |
+| [schema::event::ranges](../../src/event.rs#L1435) | function_item | `pub(crate)` |  |
+| [schema::event::validate_ranges_optional](../../src/event.rs#L1460) | function_item | `private` |  |
+| [schema::event::validate_ranges_required_from_envelope](../../src/event.rs#L1471) | function_item | `private` |  |
+| [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1479) | function_item | `private` |  |
+| [schema::event::validate_u64_array](../../src/event.rs#L1487) | function_item | `private` |  |
+| [schema::event::validate_strictly_increasing_u64](../../src/event.rs#L1503) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -550,24 +550,24 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `from_value` | `raw             .value()             .as_object` | [180](../../src/event.rs#L180) | receiver-type-required |
 | `from_value` | `raw             .value` | [180](../../src/event.rs#L180) | receiver-type-required |
 | `from_value` | `SchemaError::event` | [183](../../src/event.rs#L183), [187](../../src/event.rs#L187), [191](../../src/event.rs#L191), [198](../../src/event.rs#L198), [204](../../src/event.rs#L204) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `from_value` | `required_u64` | [184](../../src/event.rs#L184), [185](../../src/event.rs#L185) | [schema::event::required_u64](../../src/event.rs#L1285) |
+| `from_value` | `required_u64` | [184](../../src/event.rs#L184), [185](../../src/event.rs#L185) | [schema::event::required_u64](../../src/event.rs#L1284) |
 | `from_value` | `Some` | [185](../../src/event.rs#L185), [187](../../src/event.rs#L187), [189](../../src/event.rs#L189), [191](../../src/event.rs#L191), [194](../../src/event.rs#L194), [199](../../src/event.rs#L199), [205](../../src/event.rs#L205) | external-constructor-callback-or-unresolved |
 | `from_value` | `Err` | [187](../../src/event.rs#L187), [191](../../src/event.rs#L191), [198](../../src/event.rs#L198), [204](../../src/event.rs#L204) | external-constructor-callback-or-unresolved |
-| `from_value` | `required_str` | [189](../../src/event.rs#L189), [194](../../src/event.rs#L194) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `from_value` | `required_str` | [189](../../src/event.rs#L189), [194](../../src/event.rs#L194) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `from_value` | `kind_text.is_empty` | [190](../../src/event.rs#L190) | receiver-type-required |
 | `from_value` | `EventKind::parse` | [193](../../src/event.rs#L193) | [schema::event::EventKind::parse](../../src/event.rs#L44) |
-| `from_value` | `validate_timestamp` | [194](../../src/event.rs#L194) | [schema::event::validate_timestamp](../../src/event.rs#L1173) |
-| `from_value` | `optional_u64` | [195](../../src/event.rs#L195), [211](../../src/event.rs#L211) | [schema::event::optional_u64](../../src/event.rs#L1301) |
+| `from_value` | `validate_timestamp` | [194](../../src/event.rs#L194) | [schema::event::validate_timestamp](../../src/event.rs#L1172) |
+| `from_value` | `optional_u64` | [195](../../src/event.rs#L195), [211](../../src/event.rs#L211) | [schema::event::optional_u64](../../src/event.rs#L1300) |
 | `from_value` | `kind.is_turn_bound` | [196](../../src/event.rs#L196) | receiver-type-required |
 | `from_value` | `turn.is_none` | [197](../../src/event.rs#L197) | receiver-type-required |
 | `from_value` | `turn.is_some` | [203](../../src/event.rs#L203) | receiver-type-required |
-| `from_value` | `optional_visibility` | [212](../../src/event.rs#L212) | [schema::event::optional_visibility](../../src/event.rs#L1420) |
-| `from_value` | `optional_bool` | [213](../../src/event.rs#L213) | [schema::event::optional_bool](../../src/event.rs#L1329) |
-| `from_value` | `validate_ranges_optional` | [214](../../src/event.rs#L214) | [schema::event::validate_ranges_optional](../../src/event.rs#L1461) |
+| `from_value` | `optional_visibility` | [212](../../src/event.rs#L212) | [schema::event::optional_visibility](../../src/event.rs#L1419) |
+| `from_value` | `optional_bool` | [213](../../src/event.rs#L213) | [schema::event::optional_bool](../../src/event.rs#L1328) |
+| `from_value` | `validate_ranges_optional` | [214](../../src/event.rs#L214) | [schema::event::validate_ranges_optional](../../src/event.rs#L1460) |
 | `from_value` | `optional_str(object, "origin_key", seq)?.map` | [215](../../src/event.rs#L215) | receiver-type-required |
-| `from_value` | `optional_str` | [215](../../src/event.rs#L215) | [schema::event::optional_str](../../src/event.rs#L1270) |
+| `from_value` | `optional_str` | [215](../../src/event.rs#L215) | [schema::event::optional_str](../../src/event.rs#L1269) |
 | `from_value` | `validate_payload` | [216](../../src/event.rs#L216) | [schema::event::validate_payload](../../src/event.rs#L354) |
-| `from_value` | `validate_origin_equality` | [217](../../src/event.rs#L217) | [schema::event::validate_origin_equality](../../src/event.rs#L1139) |
+| `from_value` | `validate_origin_equality` | [217](../../src/event.rs#L217) | [schema::event::validate_origin_equality](../../src/event.rs#L1138) |
 | `from_value` | `origin_key.as_deref` | [217](../../src/event.rs#L217) | receiver-type-required |
 | `from_value` | `Ok` | [218](../../src/event.rs#L218) | external-constructor-callback-or-unresolved |
 | `origin_key` | `self.origin_key.as_deref` | [251](../../src/event.rs#L251) | receiver-type-required |
@@ -599,7 +599,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `supersedes` | `Ok` | [336](../../src/event.rs#L336) | external-constructor-callback-or-unresolved |
 | `supersedes` | `Vec::new` | [336](../../src/event.rs#L336) | external-constructor-callback-or-unresolved |
 | `supersedes` | `ranges(self.object(), "supersedes", self.seq).map` | [338](../../src/event.rs#L338) | receiver-type-required |
-| `supersedes` | `ranges` | [338](../../src/event.rs#L338) | [schema::event::ranges](../../src/event.rs#L1436) |
+| `supersedes` | `ranges` | [338](../../src/event.rs#L338) | [schema::event::ranges](../../src/event.rs#L1435) |
 | `supersedes` | `values                 .into_iter()                 .map(&#124;(from, to)&#124; SeqRange { from, to })                 .collect` | [339](../../src/event.rs#L339) | receiver-type-required |
 | `supersedes` | `values                 .into_iter()                 .map` | [339](../../src/event.rs#L339) | receiver-type-required |
 | `supersedes` | `values                 .into_iter` | [339](../../src/event.rs#L339) | receiver-type-required |
@@ -607,33 +607,33 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `object` | `self.raw             .value()             .as_object` | [347](../../src/event.rs#L347) | receiver-type-required |
 | `object` | `self.raw             .value` | [347](../../src/event.rs#L347) | receiver-type-required |
 | `validate_payload` | `validate_genesis` | [360](../../src/event.rs#L360) | [schema::event::validate_genesis](../../src/event.rs#L452) |
-| `validate_payload` | `required_id` | [362](../../src/event.rs#L362), [391](../../src/event.rs#L391), [395](../../src/event.rs#L395), [397](../../src/event.rs#L397), [402](../../src/event.rs#L402), [408](../../src/event.rs#L408), [417](../../src/event.rs#L417) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_payload` | `required_enum` | [363](../../src/event.rs#L363) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_payload` | `required_u64` | [364](../../src/event.rs#L364), [424](../../src/event.rs#L424) | [schema::event::required_u64](../../src/event.rs#L1285) |
+| `validate_payload` | `required_id` | [362](../../src/event.rs#L362), [391](../../src/event.rs#L391), [395](../../src/event.rs#L395), [397](../../src/event.rs#L397), [402](../../src/event.rs#L402), [408](../../src/event.rs#L408), [417](../../src/event.rs#L417) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_payload` | `required_enum` | [363](../../src/event.rs#L363) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_payload` | `required_u64` | [364](../../src/event.rs#L364), [424](../../src/event.rs#L424) | [schema::event::required_u64](../../src/event.rs#L1284) |
 | `validate_payload` | `Some` | [364](../../src/event.rs#L364), [365](../../src/event.rs#L365), [366](../../src/event.rs#L366), [367](../../src/event.rs#L367), [371](../../src/event.rs#L371), [383](../../src/event.rs#L383), [403](../../src/event.rs#L403), [424](../../src/event.rs#L424), [429](../../src/event.rs#L429) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `required_str` | [365](../../src/event.rs#L365), [366](../../src/event.rs#L366), [367](../../src/event.rs#L367), [371](../../src/event.rs#L371), [403](../../src/event.rs#L403), [429](../../src/event.rs#L429) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_payload` | `optional_str` | [368](../../src/event.rs#L368), [410](../../src/event.rs#L410) | [schema::event::optional_str](../../src/event.rs#L1270) |
+| `validate_payload` | `required_str` | [365](../../src/event.rs#L365), [366](../../src/event.rs#L366), [367](../../src/event.rs#L367), [371](../../src/event.rs#L371), [403](../../src/event.rs#L403), [429](../../src/event.rs#L429) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_payload` | `optional_str` | [368](../../src/event.rs#L368), [410](../../src/event.rs#L410) | [schema::event::optional_str](../../src/event.rs#L1269) |
 | `validate_payload` | `validate_lower_sha256` | [369](../../src/event.rs#L369) | [schema::event::validate_lower_sha256](../../src/event.rs#L437) |
 | `validate_payload` | `Ok` | [372](../../src/event.rs#L372), [387](../../src/event.rs#L387), [405](../../src/event.rs#L405), [431](../../src/event.rs#L431), [433](../../src/event.rs#L433) | external-constructor-callback-or-unresolved |
 | `validate_payload` | `validate_epoch` | [374](../../src/event.rs#L374) | [schema::event::validate_epoch](../../src/event.rs#L518) |
 | `validate_payload` | `validate_input` | [375](../../src/event.rs#L375) | [schema::event::validate_input](../../src/event.rs#L548) |
 | `validate_payload` | `validate_turn_open` | [376](../../src/event.rs#L376) | [schema::event::validate_turn_open](../../src/event.rs#L571) |
 | `validate_payload` | `required_object(object, "origin_tuple", seq)                 .and_then` | [378](../../src/event.rs#L378) | receiver-type-required |
-| `validate_payload` | `required_object` | [378](../../src/event.rs#L378), [412](../../src/event.rs#L412), [425](../../src/event.rs#L425) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_payload` | `validate_origin_tuple` | [379](../../src/event.rs#L379), [412](../../src/event.rs#L412), [425](../../src/event.rs#L425) | [schema::event::validate_origin_tuple](../../src/event.rs#L1161) |
-| `validate_payload` | `validate_ranges_required_from_envelope` | [380](../../src/event.rs#L380) | [schema::event::validate_ranges_required_from_envelope](../../src/event.rs#L1472) |
+| `validate_payload` | `required_object` | [378](../../src/event.rs#L378), [412](../../src/event.rs#L412), [425](../../src/event.rs#L425) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_payload` | `validate_origin_tuple` | [379](../../src/event.rs#L379), [412](../../src/event.rs#L412), [425](../../src/event.rs#L425) | [schema::event::validate_origin_tuple](../../src/event.rs#L1160) |
+| `validate_payload` | `validate_ranges_required_from_envelope` | [380](../../src/event.rs#L380) | [schema::event::validate_ranges_required_from_envelope](../../src/event.rs#L1471) |
 | `validate_payload` | `ranges.is_empty` | [381](../../src/event.rs#L381) | receiver-type-required |
 | `validate_payload` | `Err` | [382](../../src/event.rs#L382) | external-constructor-callback-or-unresolved |
 | `validate_payload` | `SchemaError::event` | [382](../../src/event.rs#L382) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_payload` | `validate_output` | [389](../../src/event.rs#L389) | [schema::event::validate_output](../../src/event.rs#L598) |
-| `validate_payload` | `validate_string_or_spill` | [392](../../src/event.rs#L392) | [schema::event::validate_string_or_spill](../../src/event.rs#L1068) |
-| `validate_payload` | `required` | [392](../../src/event.rs#L392), [398](../../src/event.rs#L398), [430](../../src/event.rs#L430) | [schema::event::required](../../src/event.rs#L1230) |
+| `validate_payload` | `validate_string_or_spill` | [392](../../src/event.rs#L392) | [schema::event::validate_string_or_spill](../../src/event.rs#L1067) |
+| `validate_payload` | `required` | [392](../../src/event.rs#L392), [398](../../src/event.rs#L398), [430](../../src/event.rs#L430) | [schema::event::required](../../src/event.rs#L1229) |
 | `validate_payload` | `validate_tool_call` | [394](../../src/event.rs#L394) | [schema::event::validate_tool_call](../../src/event.rs#L613) |
 | `validate_payload` | `required_id(object, "call", seq).map` | [395](../../src/event.rs#L395) | receiver-type-required |
-| `validate_payload` | `validate_json_or_spill` | [398](../../src/event.rs#L398) | [schema::event::validate_json_or_spill](../../src/event.rs#L1082) |
+| `validate_payload` | `validate_json_or_spill` | [398](../../src/event.rs#L398) | [schema::event::validate_json_or_spill](../../src/event.rs#L1081) |
 | `validate_payload` | `validate_tool_result` | [400](../../src/event.rs#L400) | [schema::event::validate_tool_result](../../src/event.rs#L626) |
-| `validate_payload` | `optional_json_value` | [404](../../src/event.rs#L404), [411](../../src/event.rs#L411) | [schema::event::optional_json_value](../../src/event.rs#L1412) |
-| `validate_payload` | `required_bool` | [409](../../src/event.rs#L409) | [schema::event::required_bool](../../src/event.rs#L1322) |
+| `validate_payload` | `optional_json_value` | [404](../../src/event.rs#L404), [411](../../src/event.rs#L411) | [schema::event::optional_json_value](../../src/event.rs#L1411) |
+| `validate_payload` | `required_bool` | [409](../../src/event.rs#L409) | [schema::event::required_bool](../../src/event.rs#L1321) |
 | `validate_payload` | `validate_spawn` | [414](../../src/event.rs#L414) | [schema::event::validate_spawn](../../src/event.rs#L649) |
 | `validate_payload` | `validate_child_result` | [415](../../src/event.rs#L415) | [schema::event::validate_child_result](../../src/event.rs#L666) |
 | `validate_payload` | `validate_attempt` | [416](../../src/event.rs#L416) | [schema::event::validate_attempt](../../src/event.rs#L689) |
@@ -641,9 +641,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_payload` | `validate_attempt_recovery` | [418](../../src/event.rs#L418) | [schema::event::validate_attempt_recovery](../../src/event.rs#L714) |
 | `validate_payload` | `validate_error` | [419](../../src/event.rs#L419) | [schema::event::validate_error](../../src/event.rs#L775) |
 | `validate_payload` | `validate_settle` | [420](../../src/event.rs#L420) | [schema::event::validate_settle](../../src/event.rs#L820) |
-| `validate_payload` | `validate_checkpoint` | [421](../../src/event.rs#L421) | [schema::event::validate_checkpoint](../../src/event.rs#L900) |
-| `validate_payload` | `validate_compact` | [422](../../src/event.rs#L422) | [schema::event::validate_compact](../../src/event.rs#L906) |
-| `validate_payload` | `validate_meta` | [427](../../src/event.rs#L427) | [schema::event::validate_meta](../../src/event.rs#L928) |
+| `validate_payload` | `validate_checkpoint` | [421](../../src/event.rs#L421) | [schema::event::validate_checkpoint](../../src/event.rs#L899) |
+| `validate_payload` | `validate_compact` | [422](../../src/event.rs#L422) | [schema::event::validate_compact](../../src/event.rs#L905) |
+| `validate_payload` | `validate_meta` | [427](../../src/event.rs#L427) | [schema::event::validate_meta](../../src/event.rs#L927) |
 | `validate_lower_sha256` | `value.len` | [438](../../src/event.rs#L438) | receiver-type-required |
 | `validate_lower_sha256` | `value             .bytes()             .all` | [439](../../src/event.rs#L439) | receiver-type-required |
 | `validate_lower_sha256` | `value             .bytes` | [439](../../src/event.rs#L439) | receiver-type-required |
@@ -653,145 +653,145 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_lower_sha256` | `Err` | [445](../../src/event.rs#L445) | external-constructor-callback-or-unresolved |
 | `validate_lower_sha256` | `SchemaError::event` | [445](../../src/event.rs#L445) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_lower_sha256` | `Some` | [446](../../src/event.rs#L446) | external-constructor-callback-or-unresolved |
-| `validate_genesis` | `Err` | [454](../../src/event.rs#L454), [463](../../src/event.rs#L463), [474](../../src/event.rs#L474), [499](../../src/event.rs#L499) | external-constructor-callback-or-unresolved |
-| `validate_genesis` | `SchemaError::event` | [454](../../src/event.rs#L454), [461](../../src/event.rs#L461), [463](../../src/event.rs#L463), [474](../../src/event.rs#L474), [497](../../src/event.rs#L497), [499](../../src/event.rs#L499) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_genesis` | `Some` | [454](../../src/event.rs#L454), [456](../../src/event.rs#L456), [457](../../src/event.rs#L457), [458](../../src/event.rs#L458), [459](../../src/event.rs#L459), [461](../../src/event.rs#L461), [464](../../src/event.rs#L464), [468](../../src/event.rs#L468), [474](../../src/event.rs#L474), [481](../../src/event.rs#L481), [485](../../src/event.rs#L485), [486](../../src/event.rs#L486), [490](../../src/event.rs#L490), [497](../../src/event.rs#L497), [500](../../src/event.rs#L500), [504](../../src/event.rs#L504), [507](../../src/event.rs#L507), [508](../../src/event.rs#L508), [511](../../src/event.rs#L511), [513](../../src/event.rs#L513) | external-constructor-callback-or-unresolved |
-| `validate_genesis` | `required_u64` | [456](../../src/event.rs#L456), [457](../../src/event.rs#L457), [458](../../src/event.rs#L458), [486](../../src/event.rs#L486) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_genesis` | `required_str` | [459](../../src/event.rs#L459), [468](../../src/event.rs#L468), [481](../../src/event.rs#L481), [485](../../src/event.rs#L485), [490](../../src/event.rs#L490), [507](../../src/event.rs#L507), [508](../../src/event.rs#L508), [511](../../src/event.rs#L511), [513](../../src/event.rs#L513) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_genesis` | `Err` | [454](../../src/event.rs#L454), [463](../../src/event.rs#L463), [475](../../src/event.rs#L475), [499](../../src/event.rs#L499) | external-constructor-callback-or-unresolved |
+| `validate_genesis` | `SchemaError::event` | [454](../../src/event.rs#L454), [461](../../src/event.rs#L461), [463](../../src/event.rs#L463), [475](../../src/event.rs#L475), [497](../../src/event.rs#L497), [499](../../src/event.rs#L499) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_genesis` | `Some` | [454](../../src/event.rs#L454), [456](../../src/event.rs#L456), [457](../../src/event.rs#L457), [458](../../src/event.rs#L458), [459](../../src/event.rs#L459), [461](../../src/event.rs#L461), [464](../../src/event.rs#L464), [468](../../src/event.rs#L468), [475](../../src/event.rs#L475), [481](../../src/event.rs#L481), [485](../../src/event.rs#L485), [486](../../src/event.rs#L486), [490](../../src/event.rs#L490), [497](../../src/event.rs#L497), [500](../../src/event.rs#L500), [504](../../src/event.rs#L504), [507](../../src/event.rs#L507), [508](../../src/event.rs#L508), [511](../../src/event.rs#L511), [513](../../src/event.rs#L513) | external-constructor-callback-or-unresolved |
+| `validate_genesis` | `required_u64` | [456](../../src/event.rs#L456), [457](../../src/event.rs#L457), [458](../../src/event.rs#L458), [486](../../src/event.rs#L486) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_genesis` | `required_str` | [459](../../src/event.rs#L459), [468](../../src/event.rs#L468), [481](../../src/event.rs#L481), [485](../../src/event.rs#L485), [490](../../src/event.rs#L490), [507](../../src/event.rs#L507), [508](../../src/event.rs#L508), [511](../../src/event.rs#L511), [513](../../src/event.rs#L513) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_genesis` | `Uuid::parse_str(thread)         .map_err` | [460](../../src/event.rs#L460) | receiver-type-required |
 | `validate_genesis` | `Uuid::parse_str` | [460](../../src/event.rs#L460) | external-constructor-callback-or-unresolved |
 | `validate_genesis` | `parsed.hyphenated().to_string` | [462](../../src/event.rs#L462) | receiver-type-required |
 | `validate_genesis` | `parsed.hyphenated` | [462](../../src/event.rs#L462) | receiver-type-required |
 | `validate_genesis` | `thread.to_ascii_lowercase` | [462](../../src/event.rs#L462) | receiver-type-required |
 | `validate_genesis` | `object.contains_key` | [469](../../src/event.rs#L469) | receiver-type-required |
-| `validate_genesis` | `required_id` | [470](../../src/event.rs#L470), [487](../../src/event.rs#L487) | [schema::event::required_id](../../src/event.rs#L1255) |
+| `validate_genesis` | `required_id` | [470](../../src/event.rs#L470), [487](../../src/event.rs#L487) | [schema::event::required_id](../../src/event.rs#L1254) |
 | `validate_genesis` | `object.get` | [472](../../src/event.rs#L472) | receiver-type-required |
-| `validate_genesis` | `optional_bool` | [480](../../src/event.rs#L480) | [schema::event::optional_bool](../../src/event.rs#L1329) |
-| `validate_genesis` | `validate_origin_tuple` | [482](../../src/event.rs#L482) | [schema::event::validate_origin_tuple](../../src/event.rs#L1161) |
-| `validate_genesis` | `required_object` | [482](../../src/event.rs#L482), [506](../../src/event.rs#L506), [510](../../src/event.rs#L510) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_genesis` | `validate_resume` | [483](../../src/event.rs#L483) | [schema::event::validate_resume](../../src/event.rs#L1125) |
-| `validate_genesis` | `required` | [483](../../src/event.rs#L483) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_genesis` | `optional_object` | [484](../../src/event.rs#L484), [489](../../src/event.rs#L489), [512](../../src/event.rs#L512) | [schema::event::optional_object](../../src/event.rs#L1354) |
-| `validate_genesis` | `required_array` | [491](../../src/event.rs#L491) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_genesis` | `optional_bool` | [480](../../src/event.rs#L480) | [schema::event::optional_bool](../../src/event.rs#L1328) |
+| `validate_genesis` | `validate_origin_tuple` | [482](../../src/event.rs#L482) | [schema::event::validate_origin_tuple](../../src/event.rs#L1160) |
+| `validate_genesis` | `required_object` | [482](../../src/event.rs#L482), [506](../../src/event.rs#L506), [510](../../src/event.rs#L510) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_genesis` | `validate_resume` | [483](../../src/event.rs#L483) | [schema::event::validate_resume](../../src/event.rs#L1124) |
+| `validate_genesis` | `required` | [483](../../src/event.rs#L483) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_genesis` | `optional_object` | [484](../../src/event.rs#L484), [489](../../src/event.rs#L489), [512](../../src/event.rs#L512) | [schema::event::optional_object](../../src/event.rs#L1353) |
+| `validate_genesis` | `required_array` | [491](../../src/event.rs#L491) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_genesis` | `BTreeSet::new` | [493](../../src/event.rs#L493) | external-constructor-callback-or-unresolved |
 | `validate_genesis` | `value                 .as_str()                 .ok_or_else` | [495](../../src/event.rs#L495) | receiver-type-required |
 | `validate_genesis` | `value                 .as_str` | [495](../../src/event.rs#L495) | receiver-type-required |
 | `validate_genesis` | `previous.is_some_and` | [498](../../src/event.rs#L498) | receiver-type-required |
 | `validate_genesis` | `seen.insert` | [498](../../src/event.rs#L498) | receiver-type-required |
 | `validate_genesis` | `Ok` | [515](../../src/event.rs#L515) | external-constructor-callback-or-unresolved |
-| `validate_epoch` | `required_id` | [519](../../src/event.rs#L519) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_epoch` | `required_str` | [520](../../src/event.rs#L520), [521](../../src/event.rs#L521), [522](../../src/event.rs#L522), [524](../../src/event.rs#L524), [525](../../src/event.rs#L525), [530](../../src/event.rs#L530), [531](../../src/event.rs#L531) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_epoch` | `required_id` | [519](../../src/event.rs#L519) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_epoch` | `required_str` | [520](../../src/event.rs#L520), [521](../../src/event.rs#L521), [522](../../src/event.rs#L522), [524](../../src/event.rs#L524), [525](../../src/event.rs#L525), [530](../../src/event.rs#L530), [531](../../src/event.rs#L531) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_epoch` | `Some` | [520](../../src/event.rs#L520), [521](../../src/event.rs#L521), [522](../../src/event.rs#L522), [524](../../src/event.rs#L524), [525](../../src/event.rs#L525), [530](../../src/event.rs#L530), [531](../../src/event.rs#L531), [532](../../src/event.rs#L532) | external-constructor-callback-or-unresolved |
-| `validate_epoch` | `required_object` | [523](../../src/event.rs#L523), [529](../../src/event.rs#L529) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_epoch` | `required_u64` | [532](../../src/event.rs#L532) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_epoch` | `optional_object` | [533](../../src/event.rs#L533) | [schema::event::optional_object](../../src/event.rs#L1354) |
-| `validate_epoch` | `validate_u64_array` | [534](../../src/event.rs#L534), [539](../../src/event.rs#L539) | [schema::event::validate_u64_array](../../src/event.rs#L1488) |
-| `validate_epoch` | `required_array` | [535](../../src/event.rs#L535), [540](../../src/event.rs#L540) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_epoch` | `required_object` | [523](../../src/event.rs#L523), [529](../../src/event.rs#L529) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_epoch` | `required_u64` | [532](../../src/event.rs#L532) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_epoch` | `optional_object` | [533](../../src/event.rs#L533) | [schema::event::optional_object](../../src/event.rs#L1353) |
+| `validate_epoch` | `validate_u64_array` | [534](../../src/event.rs#L534), [539](../../src/event.rs#L539) | [schema::event::validate_u64_array](../../src/event.rs#L1487) |
+| `validate_epoch` | `required_array` | [535](../../src/event.rs#L535), [540](../../src/event.rs#L540) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_epoch` | `Ok` | [545](../../src/event.rs#L545) | external-constructor-callback-or-unresolved |
-| `validate_input` | `required_array` | [549](../../src/event.rs#L549) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_input` | `required_array` | [549](../../src/event.rs#L549) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_input` | `content.is_empty` | [550](../../src/event.rs#L550) | receiver-type-required |
 | `validate_input` | `Err` | [551](../../src/event.rs#L551), [565](../../src/event.rs#L565) | external-constructor-callback-or-unresolved |
 | `validate_input` | `SchemaError::event` | [551](../../src/event.rs#L551), [565](../../src/event.rs#L565) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_input` | `Some` | [552](../../src/event.rs#L552), [563](../../src/event.rs#L563), [565](../../src/event.rs#L565) | external-constructor-callback-or-unresolved |
-| `validate_input` | `validate_blocks` | [556](../../src/event.rs#L556) | [schema::event::validate_blocks](../../src/event.rs#L989) |
-| `validate_input` | `optional_bool` | [557](../../src/event.rs#L557) | [schema::event::optional_bool](../../src/event.rs#L1329) |
-| `validate_input` | `validate_origin_tuple` | [558](../../src/event.rs#L558) | [schema::event::validate_origin_tuple](../../src/event.rs#L1161) |
-| `validate_input` | `required_object` | [558](../../src/event.rs#L558) | [schema::event::required_object](../../src/event.rs#L1344) |
+| `validate_input` | `validate_blocks` | [556](../../src/event.rs#L556) | [schema::event::validate_blocks](../../src/event.rs#L988) |
+| `validate_input` | `optional_bool` | [557](../../src/event.rs#L557) | [schema::event::optional_bool](../../src/event.rs#L1328) |
+| `validate_input` | `validate_origin_tuple` | [558](../../src/event.rs#L558) | [schema::event::validate_origin_tuple](../../src/event.rs#L1160) |
+| `validate_input` | `required_object` | [558](../../src/event.rs#L558) | [schema::event::required_object](../../src/event.rs#L1343) |
 | `validate_input` | `object.get` | [559](../../src/event.rs#L559) | receiver-type-required |
-| `validate_input` | `required_str` | [563](../../src/event.rs#L563) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_input` | `required_str` | [563](../../src/event.rs#L563) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_input` | `Ok` | [568](../../src/event.rs#L568) | external-constructor-callback-or-unresolved |
-| `validate_turn_open` | `required` | [572](../../src/event.rs#L572) | [schema::event::required](../../src/event.rs#L1230) |
+| `validate_turn_open` | `required` | [572](../../src/event.rs#L572) | [schema::event::required](../../src/event.rs#L1229) |
 | `validate_turn_open` | `Ok` | [573](../../src/event.rs#L573), [583](../../src/event.rs#L583) | external-constructor-callback-or-unresolved |
 | `validate_turn_open` | `value.contains_key` | [575](../../src/event.rs#L575) | receiver-type-required |
 | `validate_turn_open` | `value.len` | [576](../../src/event.rs#L576) | receiver-type-required |
 | `validate_turn_open` | `Err` | [577](../../src/event.rs#L577), [587](../../src/event.rs#L587), [594](../../src/event.rs#L594) | external-constructor-callback-or-unresolved |
 | `validate_turn_open` | `SchemaError::event` | [577](../../src/event.rs#L577), [587](../../src/event.rs#L587), [594](../../src/event.rs#L594) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_turn_open` | `Some` | [578](../../src/event.rs#L578), [588](../../src/event.rs#L588), [594](../../src/event.rs#L594) | external-constructor-callback-or-unresolved |
-| `validate_turn_open` | `required_id` | [582](../../src/event.rs#L582) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_turn_open` | `required_array` | [585](../../src/event.rs#L585) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_turn_open` | `required_id` | [582](../../src/event.rs#L582) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_turn_open` | `required_array` | [585](../../src/event.rs#L585) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_turn_open` | `inputs.is_empty` | [586](../../src/event.rs#L586) | receiver-type-required |
-| `validate_turn_open` | `validate_strictly_increasing_u64` | [592](../../src/event.rs#L592) | [schema::event::validate_strictly_increasing_u64](../../src/event.rs#L1504) |
-| `validate_output` | `required_id` | [599](../../src/event.rs#L599), [608](../../src/event.rs#L608) | [schema::event::required_id](../../src/event.rs#L1255) |
+| `validate_turn_open` | `validate_strictly_increasing_u64` | [592](../../src/event.rs#L592) | [schema::event::validate_strictly_increasing_u64](../../src/event.rs#L1503) |
+| `validate_output` | `required_id` | [599](../../src/event.rs#L599), [608](../../src/event.rs#L608) | [schema::event::required_id](../../src/event.rs#L1254) |
 | `validate_output` | `validate_usage` | [600](../../src/event.rs#L600) | [schema::event::validate_usage](../../src/event.rs#L751) |
-| `validate_output` | `required_object` | [600](../../src/event.rs#L600), [603](../../src/event.rs#L603) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_output` | `optional_bool` | [601](../../src/event.rs#L601) | [schema::event::optional_bool](../../src/event.rs#L1329) |
-| `validate_output` | `validate_blocks` | [602](../../src/event.rs#L602) | [schema::event::validate_blocks](../../src/event.rs#L989) |
-| `validate_output` | `required_array` | [602](../../src/event.rs#L602) | [schema::event::required_array](../../src/event.rs#L1369) |
-| `validate_output` | `required_u64` | [604](../../src/event.rs#L604) | [schema::event::required_u64](../../src/event.rs#L1285) |
+| `validate_output` | `required_object` | [600](../../src/event.rs#L600), [603](../../src/event.rs#L603) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_output` | `optional_bool` | [601](../../src/event.rs#L601) | [schema::event::optional_bool](../../src/event.rs#L1328) |
+| `validate_output` | `validate_blocks` | [602](../../src/event.rs#L602) | [schema::event::validate_blocks](../../src/event.rs#L988) |
+| `validate_output` | `required_array` | [602](../../src/event.rs#L602) | [schema::event::required_array](../../src/event.rs#L1368) |
+| `validate_output` | `required_u64` | [604](../../src/event.rs#L604) | [schema::event::required_u64](../../src/event.rs#L1284) |
 | `validate_output` | `Some` | [604](../../src/event.rs#L604), [605](../../src/event.rs#L605) | external-constructor-callback-or-unresolved |
-| `validate_output` | `required_str` | [605](../../src/event.rs#L605) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_output` | `validate_string_or_spill` | [606](../../src/event.rs#L606) | [schema::event::validate_string_or_spill](../../src/event.rs#L1068) |
-| `validate_output` | `required` | [606](../../src/event.rs#L606) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_output` | `optional_object` | [607](../../src/event.rs#L607) | [schema::event::optional_object](../../src/event.rs#L1354) |
+| `validate_output` | `required_str` | [605](../../src/event.rs#L605) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_output` | `validate_string_or_spill` | [606](../../src/event.rs#L606) | [schema::event::validate_string_or_spill](../../src/event.rs#L1067) |
+| `validate_output` | `required` | [606](../../src/event.rs#L606) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_output` | `optional_object` | [607](../../src/event.rs#L607) | [schema::event::optional_object](../../src/event.rs#L1353) |
 | `validate_output` | `Ok` | [610](../../src/event.rs#L610) | external-constructor-callback-or-unresolved |
-| `validate_tool_call` | `optional_bool` | [614](../../src/event.rs#L614) | [schema::event::optional_bool](../../src/event.rs#L1329) |
+| `validate_tool_call` | `optional_bool` | [614](../../src/event.rs#L614) | [schema::event::optional_bool](../../src/event.rs#L1328) |
 | `validate_tool_call` | `object.contains_key` | [615](../../src/event.rs#L615) | receiver-type-required |
-| `validate_tool_call` | `required_id` | [616](../../src/event.rs#L616), [618](../../src/event.rs#L618), [622](../../src/event.rs#L622) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_tool_call` | `required_str` | [619](../../src/event.rs#L619) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_tool_call` | `required_id` | [616](../../src/event.rs#L616), [618](../../src/event.rs#L618), [622](../../src/event.rs#L622) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_tool_call` | `required_str` | [619](../../src/event.rs#L619) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_tool_call` | `Some` | [619](../../src/event.rs#L619) | external-constructor-callback-or-unresolved |
-| `validate_tool_call` | `validate_json_or_spill` | [620](../../src/event.rs#L620) | [schema::event::validate_json_or_spill](../../src/event.rs#L1082) |
-| `validate_tool_call` | `required` | [620](../../src/event.rs#L620) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_tool_call` | `required_enum` | [621](../../src/event.rs#L621) | [schema::event::required_enum](../../src/event.rs#L1396) |
+| `validate_tool_call` | `validate_json_or_spill` | [620](../../src/event.rs#L620) | [schema::event::validate_json_or_spill](../../src/event.rs#L1081) |
+| `validate_tool_call` | `required` | [620](../../src/event.rs#L620) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_tool_call` | `required_enum` | [621](../../src/event.rs#L621) | [schema::event::required_enum](../../src/event.rs#L1395) |
 | `validate_tool_call` | `Ok` | [623](../../src/event.rs#L623) | external-constructor-callback-or-unresolved |
-| `validate_tool_result` | `required_id` | [627](../../src/event.rs#L627) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_tool_result` | `required` | [628](../../src/event.rs#L628) | [schema::event::required](../../src/event.rs#L1230) |
+| `validate_tool_result` | `required_id` | [627](../../src/event.rs#L627) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_tool_result` | `required` | [628](../../src/event.rs#L628) | [schema::event::required](../../src/event.rs#L1229) |
 | `validate_tool_result` | `value.len` | [631](../../src/event.rs#L631), [634](../../src/event.rs#L634), [637](../../src/event.rs#L637) | receiver-type-required |
 | `validate_tool_result` | `value.contains_key` | [631](../../src/event.rs#L631), [634](../../src/event.rs#L634), [637](../../src/event.rs#L637) | receiver-type-required |
-| `validate_tool_result` | `required_enum` | [632](../../src/event.rs#L632), [638](../../src/event.rs#L638) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_tool_result` | `required_str` | [635](../../src/event.rs#L635) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_tool_result` | `required_enum` | [632](../../src/event.rs#L632), [638](../../src/event.rs#L638) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_tool_result` | `required_str` | [635](../../src/event.rs#L635) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_tool_result` | `Some` | [635](../../src/event.rs#L635), [640](../../src/event.rs#L640) | external-constructor-callback-or-unresolved |
 | `validate_tool_result` | `Err` | [640](../../src/event.rs#L640) | external-constructor-callback-or-unresolved |
 | `validate_tool_result` | `SchemaError::event` | [640](../../src/event.rs#L640) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_tool_result` | `object.get` | [642](../../src/event.rs#L642) | receiver-type-required |
-| `validate_tool_result` | `validate_blocks_or_spill` | [643](../../src/event.rs#L643) | [schema::event::validate_blocks_or_spill](../../src/event.rs#L1056) |
-| `validate_tool_result` | `optional_json_value` | [645](../../src/event.rs#L645) | [schema::event::optional_json_value](../../src/event.rs#L1412) |
+| `validate_tool_result` | `validate_blocks_or_spill` | [643](../../src/event.rs#L643) | [schema::event::validate_blocks_or_spill](../../src/event.rs#L1055) |
+| `validate_tool_result` | `optional_json_value` | [645](../../src/event.rs#L645) | [schema::event::optional_json_value](../../src/event.rs#L1411) |
 | `validate_tool_result` | `Ok` | [646](../../src/event.rs#L646) | external-constructor-callback-or-unresolved |
-| `validate_spawn` | `required_str` | [650](../../src/event.rs#L650) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_spawn` | `required_str` | [650](../../src/event.rs#L650) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_spawn` | `Some` | [650](../../src/event.rs#L650), [658](../../src/event.rs#L658) | external-constructor-callback-or-unresolved |
-| `validate_spawn` | `required_id` | [651](../../src/event.rs#L651), [652](../../src/event.rs#L652) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_spawn` | `validate_resume` | [653](../../src/event.rs#L653) | [schema::event::validate_resume](../../src/event.rs#L1125) |
-| `validate_spawn` | `required` | [653](../../src/event.rs#L653) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_spawn` | `required_object` | [654](../../src/event.rs#L654) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_spawn` | `required_array` | [655](../../src/event.rs#L655) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_spawn` | `required_id` | [651](../../src/event.rs#L651), [652](../../src/event.rs#L652) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_spawn` | `validate_resume` | [653](../../src/event.rs#L653) | [schema::event::validate_resume](../../src/event.rs#L1124) |
+| `validate_spawn` | `required` | [653](../../src/event.rs#L653) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_spawn` | `required_object` | [654](../../src/event.rs#L654) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_spawn` | `required_array` | [655](../../src/event.rs#L655) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_spawn` | `kind.as_str().is_none` | [656](../../src/event.rs#L656) | receiver-type-required |
 | `validate_spawn` | `kind.as_str` | [656](../../src/event.rs#L656) | receiver-type-required |
 | `validate_spawn` | `Err` | [657](../../src/event.rs#L657) | external-constructor-callback-or-unresolved |
 | `validate_spawn` | `SchemaError::event` | [657](../../src/event.rs#L657) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_spawn` | `Ok` | [663](../../src/event.rs#L663) | external-constructor-callback-or-unresolved |
-| `validate_child_result` | `required_str` | [667](../../src/event.rs#L667), [682](../../src/event.rs#L682), [683](../../src/event.rs#L683) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_child_result` | `required_str` | [667](../../src/event.rs#L667), [682](../../src/event.rs#L682), [683](../../src/event.rs#L683) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_child_result` | `Some` | [667](../../src/event.rs#L667), [680](../../src/event.rs#L680), [682](../../src/event.rs#L682), [683](../../src/event.rs#L683) | external-constructor-callback-or-unresolved |
-| `validate_child_result` | `required_id` | [668](../../src/event.rs#L668), [669](../../src/event.rs#L669) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_child_result` | `required_enum` | [670](../../src/event.rs#L670) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_child_result` | `optional_str` | [676](../../src/event.rs#L676) | [schema::event::optional_str](../../src/event.rs#L1270) |
-| `validate_child_result` | `optional_array` | [677](../../src/event.rs#L677) | [schema::event::optional_array](../../src/event.rs#L1380) |
+| `validate_child_result` | `required_id` | [668](../../src/event.rs#L668), [669](../../src/event.rs#L669) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_child_result` | `required_enum` | [670](../../src/event.rs#L670) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_child_result` | `optional_str` | [676](../../src/event.rs#L676) | [schema::event::optional_str](../../src/event.rs#L1269) |
+| `validate_child_result` | `optional_array` | [677](../../src/event.rs#L677) | [schema::event::optional_array](../../src/event.rs#L1379) |
 | `validate_child_result` | `artifact.as_object().ok_or_else` | [679](../../src/event.rs#L679) | receiver-type-required |
 | `validate_child_result` | `artifact.as_object` | [679](../../src/event.rs#L679) | receiver-type-required |
 | `validate_child_result` | `SchemaError::event` | [680](../../src/event.rs#L680) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_child_result` | `Ok` | [686](../../src/event.rs#L686) | external-constructor-callback-or-unresolved |
-| `validate_attempt` | `required_id` | [690](../../src/event.rs#L690), [691](../../src/event.rs#L691) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_attempt` | `required_str` | [692](../../src/event.rs#L692), [703](../../src/event.rs#L703) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_attempt` | `required_id` | [690](../../src/event.rs#L690), [691](../../src/event.rs#L691) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_attempt` | `required_str` | [692](../../src/event.rs#L692), [703](../../src/event.rs#L703) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_attempt` | `Some` | [692](../../src/event.rs#L692), [699](../../src/event.rs#L699), [703](../../src/event.rs#L703), [704](../../src/event.rs#L704), [706](../../src/event.rs#L706) | external-constructor-callback-or-unresolved |
-| `validate_attempt` | `required_object` | [696](../../src/event.rs#L696) | [schema::event::required_object](../../src/event.rs#L1344) |
+| `validate_attempt` | `required_object` | [696](../../src/event.rs#L696) | [schema::event::required_object](../../src/event.rs#L1343) |
 | `validate_attempt` | `request.len` | [697](../../src/event.rs#L697) | receiver-type-required |
 | `validate_attempt` | `Err` | [698](../../src/event.rs#L698), [705](../../src/event.rs#L705) | external-constructor-callback-or-unresolved |
 | `validate_attempt` | `SchemaError::event` | [698](../../src/event.rs#L698), [705](../../src/event.rs#L705) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_attempt` | `required_u64` | [704](../../src/event.rs#L704) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_attempt` | `validate_ranges_required_from_payload` | [710](../../src/event.rs#L710) | [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1480) |
+| `validate_attempt` | `required_u64` | [704](../../src/event.rs#L704) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_attempt` | `validate_ranges_required_from_payload` | [710](../../src/event.rs#L710) | [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1479) |
 | `validate_attempt` | `Ok` | [711](../../src/event.rs#L711) | external-constructor-callback-or-unresolved |
-| `validate_attempt_recovery` | `required_id` | [715](../../src/event.rs#L715) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_attempt_recovery` | `required_enum` | [716](../../src/event.rs#L716) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_attempt_recovery` | `required_array` | [729](../../src/event.rs#L729) | [schema::event::required_array](../../src/event.rs#L1369) |
+| `validate_attempt_recovery` | `required_id` | [715](../../src/event.rs#L715) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_attempt_recovery` | `required_enum` | [716](../../src/event.rs#L716) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_attempt_recovery` | `required_array` | [729](../../src/event.rs#L729) | [schema::event::required_array](../../src/event.rs#L1368) |
 | `validate_attempt_recovery` | `call.as_str().is_none` | [731](../../src/event.rs#L731) | receiver-type-required |
 | `validate_attempt_recovery` | `call.as_str` | [731](../../src/event.rs#L731) | receiver-type-required |
 | `validate_attempt_recovery` | `Err` | [732](../../src/event.rs#L732), [741](../../src/event.rs#L741) | external-constructor-callback-or-unresolved |
 | `validate_attempt_recovery` | `SchemaError::event` | [732](../../src/event.rs#L732), [741](../../src/event.rs#L741) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_attempt_recovery` | `Some` | [733](../../src/event.rs#L733), [739](../../src/event.rs#L739), [742](../../src/event.rs#L742) | external-constructor-callback-or-unresolved |
-| `validate_attempt_recovery` | `required_object` | [738](../../src/event.rs#L738) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_attempt_recovery` | `required_str` | [739](../../src/event.rs#L739) | [schema::event::required_str](../../src/event.rs#L1243) |
+| `validate_attempt_recovery` | `required_object` | [738](../../src/event.rs#L738) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_attempt_recovery` | `required_str` | [739](../../src/event.rs#L739) | [schema::event::required_str](../../src/event.rs#L1242) |
 | `validate_attempt_recovery` | `object.contains_key` | [740](../../src/event.rs#L740) | receiver-type-required |
 | `validate_attempt_recovery` | `Ok` | [746](../../src/event.rs#L746) | external-constructor-callback-or-unresolved |
-| `validate_usage` | `required_enum` | [752](../../src/event.rs#L752) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_usage` | `optional_str` | [764](../../src/event.rs#L764) | [schema::event::optional_str](../../src/event.rs#L1270) |
+| `validate_usage` | `required_enum` | [752](../../src/event.rs#L752) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_usage` | `optional_str` | [764](../../src/event.rs#L764) | [schema::event::optional_str](../../src/event.rs#L1269) |
 | `validate_usage` | `figures.into_iter().any` | [766](../../src/event.rs#L766) | receiver-type-required |
 | `validate_usage` | `figures.into_iter` | [766](../../src/event.rs#L766) | receiver-type-required |
 | `validate_usage` | `object.contains_key` | [766](../../src/event.rs#L766) | receiver-type-required |
@@ -799,312 +799,312 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_usage` | `SchemaError::event` | [767](../../src/event.rs#L767) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_usage` | `Some` | [768](../../src/event.rs#L768) | external-constructor-callback-or-unresolved |
 | `validate_usage` | `Ok` | [772](../../src/event.rs#L772) | external-constructor-callback-or-unresolved |
-| `validate_error` | `required_bool` | [776](../../src/event.rs#L776) | [schema::event::required_bool](../../src/event.rs#L1322) |
-| `validate_error` | `required_enum` | [777](../../src/event.rs#L777) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_error` | `optional_str` | [790](../../src/event.rs#L790), [799](../../src/event.rs#L799) | [schema::event::optional_str](../../src/event.rs#L1270) |
+| `validate_error` | `required_bool` | [776](../../src/event.rs#L776) | [schema::event::required_bool](../../src/event.rs#L1321) |
+| `validate_error` | `required_enum` | [777](../../src/event.rs#L777) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_error` | `optional_str` | [790](../../src/event.rs#L790), [799](../../src/event.rs#L799) | [schema::event::optional_str](../../src/event.rs#L1269) |
 | `validate_error` | `object.contains_key` | [791](../../src/event.rs#L791), [793](../../src/event.rs#L793), [804](../../src/event.rs#L804) | receiver-type-required |
 | `validate_error` | `validate_usage` | [792](../../src/event.rs#L792) | [schema::event::validate_usage](../../src/event.rs#L751) |
-| `validate_error` | `required_object` | [792](../../src/event.rs#L792) | [schema::event::required_object](../../src/event.rs#L1344) |
+| `validate_error` | `required_object` | [792](../../src/event.rs#L792) | [schema::event::required_object](../../src/event.rs#L1343) |
 | `validate_error` | `Err` | [794](../../src/event.rs#L794), [808](../../src/event.rs#L808) | external-constructor-callback-or-unresolved |
 | `validate_error` | `SchemaError::event` | [794](../../src/event.rs#L794), [808](../../src/event.rs#L808) | [schema::SchemaError::event](../../src/lib.rs#L29) |
 | `validate_error` | `Some` | [795](../../src/event.rs#L795), [805](../../src/event.rs#L805), [806](../../src/event.rs#L806), [809](../../src/event.rs#L809), [813](../../src/event.rs#L813), [814](../../src/event.rs#L814) | external-constructor-callback-or-unresolved |
-| `validate_error` | `optional_object` | [803](../../src/event.rs#L803) | [schema::event::optional_object](../../src/event.rs#L1354) |
+| `validate_error` | `optional_object` | [803](../../src/event.rs#L803) | [schema::event::optional_object](../../src/event.rs#L1353) |
 | `validate_error` | `object.get` | [805](../../src/event.rs#L805), [806](../../src/event.rs#L806) | receiver-type-required |
 | `validate_error` | `Value::Bool` | [805](../../src/event.rs#L805) | external-constructor-callback-or-unresolved |
 | `validate_error` | `object.get("classification").and_then` | [806](../../src/event.rs#L806) | receiver-type-required |
-| `validate_error` | `required_u64` | [813](../../src/event.rs#L813) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_error` | `required_str` | [814](../../src/event.rs#L814) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_error` | `validate_string_or_spill` | [815](../../src/event.rs#L815) | [schema::event::validate_string_or_spill](../../src/event.rs#L1068) |
-| `validate_error` | `required` | [815](../../src/event.rs#L815) | [schema::event::required](../../src/event.rs#L1230) |
+| `validate_error` | `required_u64` | [813](../../src/event.rs#L813) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_error` | `required_str` | [814](../../src/event.rs#L814) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_error` | `validate_string_or_spill` | [815](../../src/event.rs#L815) | [schema::event::validate_string_or_spill](../../src/event.rs#L1067) |
+| `validate_error` | `required` | [815](../../src/event.rs#L815) | [schema::event::required](../../src/event.rs#L1229) |
 | `validate_error` | `Ok` | [817](../../src/event.rs#L817) | external-constructor-callback-or-unresolved |
-| `validate_settle` | `optional_u64` | [821](../../src/event.rs#L821) | [schema::event::optional_u64](../../src/event.rs#L1301) |
-| `validate_settle` | `object.get("outcome").and_then` | [822](../../src/event.rs#L822), [834](../../src/event.rs#L834) | receiver-type-required |
-| `validate_settle` | `object.get` | [822](../../src/event.rs#L822), [834](../../src/event.rs#L834) | receiver-type-required |
-| `validate_settle` | `Some` | [822](../../src/event.rs#L822), [828](../../src/event.rs#L828), [834](../../src/event.rs#L834), [836](../../src/event.rs#L836), [846](../../src/event.rs#L846), [847](../../src/event.rs#L847), [848](../../src/event.rs#L848), [851](../../src/event.rs#L851), [865](../../src/event.rs#L865), [879](../../src/event.rs#L879), [892](../../src/event.rs#L892) | external-constructor-callback-or-unresolved |
-| `validate_settle` | `object.contains_key` | [823](../../src/event.rs#L823), [863](../../src/event.rs#L863), [877](../../src/event.rs#L877), [891](../../src/event.rs#L891) | receiver-type-required |
-| `validate_settle` | `Err` | [827](../../src/event.rs#L827), [835](../../src/event.rs#L835), [850](../../src/event.rs#L850), [864](../../src/event.rs#L864), [878](../../src/event.rs#L878), [892](../../src/event.rs#L892) | external-constructor-callback-or-unresolved |
-| `validate_settle` | `SchemaError::event` | [827](../../src/event.rs#L827), [835](../../src/event.rs#L835), [850](../../src/event.rs#L850), [864](../../src/event.rs#L864), [878](../../src/event.rs#L878), [892](../../src/event.rs#L892) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_settle` | `optional_object` | [833](../../src/event.rs#L833) | [schema::event::optional_object](../../src/event.rs#L1354) |
-| `validate_settle` | `required_enum` | [840](../../src/event.rs#L840), [856](../../src/event.rs#L856), [871](../../src/event.rs#L871), [885](../../src/event.rs#L885) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_settle` | `required_u64` | [846](../../src/event.rs#L846), [847](../../src/event.rs#L847), [848](../../src/event.rs#L848) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_settle` | `Ok` | [897](../../src/event.rs#L897) | external-constructor-callback-or-unresolved |
-| `validate_checkpoint` | `required_u64` | [901](../../src/event.rs#L901) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_checkpoint` | `Some` | [901](../../src/event.rs#L901) | external-constructor-callback-or-unresolved |
-| `validate_checkpoint` | `validate_string_or_spill` | [902](../../src/event.rs#L902) | [schema::event::validate_string_or_spill](../../src/event.rs#L1068) |
-| `validate_checkpoint` | `required` | [902](../../src/event.rs#L902) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_checkpoint` | `Ok` | [903](../../src/event.rs#L903) | external-constructor-callback-or-unresolved |
-| `validate_compact` | `validate_ranges_required_from_payload` | [907](../../src/event.rs#L907), [916](../../src/event.rs#L916) | [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1480) |
-| `validate_compact` | `validate_string_or_spill` | [908](../../src/event.rs#L908) | [schema::event::validate_string_or_spill](../../src/event.rs#L1068) |
-| `validate_compact` | `required` | [908](../../src/event.rs#L908) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_compact` | `optional_object` | [909](../../src/event.rs#L909), [912](../../src/event.rs#L912) | [schema::event::optional_object](../../src/event.rs#L1354) |
-| `validate_compact` | `validate_origin_tuple` | [910](../../src/event.rs#L910) | [schema::event::validate_origin_tuple](../../src/event.rs#L1161) |
-| `validate_compact` | `required_object` | [915](../../src/event.rs#L915) | [schema::event::required_object](../../src/event.rs#L1344) |
-| `validate_compact` | `required_str(bundle, "sha256", Some(seq))?.is_empty` | [917](../../src/event.rs#L917) | receiver-type-required |
-| `validate_compact` | `required_str` | [917](../../src/event.rs#L917) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_compact` | `Some` | [917](../../src/event.rs#L917), [919](../../src/event.rs#L919) | external-constructor-callback-or-unresolved |
-| `validate_compact` | `Err` | [918](../../src/event.rs#L918) | external-constructor-callback-or-unresolved |
-| `validate_compact` | `SchemaError::event` | [918](../../src/event.rs#L918) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_compact` | `required_bool` | [923](../../src/event.rs#L923) | [schema::event::required_bool](../../src/event.rs#L1322) |
-| `validate_compact` | `Ok` | [925](../../src/event.rs#L925) | external-constructor-callback-or-unresolved |
-| `validate_meta` | `optional_str` | [929](../../src/event.rs#L929) | [schema::event::optional_str](../../src/event.rs#L1270) |
-| `validate_meta` | `optional_array` | [930](../../src/event.rs#L930) | [schema::event::optional_array](../../src/event.rs#L1380) |
-| `validate_meta` | `label.as_str().is_none` | [932](../../src/event.rs#L932) | receiver-type-required |
-| `validate_meta` | `label.as_str` | [932](../../src/event.rs#L932) | receiver-type-required |
-| `validate_meta` | `Err` | [933](../../src/event.rs#L933), [945](../../src/event.rs#L945), [960](../../src/event.rs#L960) | external-constructor-callback-or-unresolved |
-| `validate_meta` | `SchemaError::event` | [933](../../src/event.rs#L933), [945](../../src/event.rs#L945), [960](../../src/event.rs#L960) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_meta` | `Some` | [933](../../src/event.rs#L933), [939](../../src/event.rs#L939), [940](../../src/event.rs#L940), [946](../../src/event.rs#L946), [960](../../src/event.rs#L960) | external-constructor-callback-or-unresolved |
-| `validate_meta` | `optional_u64` | [937](../../src/event.rs#L937) | [schema::event::optional_u64](../../src/event.rs#L1301) |
-| `validate_meta` | `optional_object` | [938](../../src/event.rs#L938), [942](../../src/event.rs#L942), [951](../../src/event.rs#L951) | [schema::event::optional_object](../../src/event.rs#L1354) |
-| `validate_meta` | `required_u64` | [939](../../src/event.rs#L939), [940](../../src/event.rs#L940) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_meta` | `validate_origin_tuple` | [943](../../src/event.rs#L943) | [schema::event::validate_origin_tuple](../../src/event.rs#L1161) |
-| `validate_meta` | `object.contains_key` | [944](../../src/event.rs#L944) | receiver-type-required |
-| `validate_meta` | `validate_session_notice` | [952](../../src/event.rs#L952) | [schema::event::validate_session_notice](../../src/event.rs#L970) |
-| `validate_meta` | `object.keys().any` | [954](../../src/event.rs#L954) | receiver-type-required |
-| `validate_meta` | `object.keys` | [954](../../src/event.rs#L954) | receiver-type-required |
-| `validate_meta` | `Ok` | [962](../../src/event.rs#L962) | external-constructor-callback-or-unresolved |
-| `validate_session_notice` | `required_str` | [971](../../src/event.rs#L971), [979](../../src/event.rs#L979) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_session_notice` | `Some` | [971](../../src/event.rs#L971), [974](../../src/event.rs#L974), [979](../../src/event.rs#L979), [981](../../src/event.rs#L981) | external-constructor-callback-or-unresolved |
-| `validate_session_notice` | `Err` | [973](../../src/event.rs#L973), [980](../../src/event.rs#L980) | external-constructor-callback-or-unresolved |
-| `validate_session_notice` | `SchemaError::event` | [973](../../src/event.rs#L973), [980](../../src/event.rs#L980) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_session_notice` | `required_str(notice, field, Some(seq))?.is_empty` | [979](../../src/event.rs#L979) | receiver-type-required |
-| `validate_session_notice` | `Ok` | [986](../../src/event.rs#L986) | external-constructor-callback-or-unresolved |
-| `validate_blocks` | `value             .as_object()             .ok_or_else` | [991](../../src/event.rs#L991) | receiver-type-required |
-| `validate_blocks` | `value             .as_object` | [991](../../src/event.rs#L991) | receiver-type-required |
-| `validate_blocks` | `SchemaError::event` | [993](../../src/event.rs#L993), [1015](../../src/event.rs#L1015), [1031](../../src/event.rs#L1031), [1037](../../src/event.rs#L1037) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_blocks` | `Some` | [993](../../src/event.rs#L993), [1008](../../src/event.rs#L1008), [1011](../../src/event.rs#L1011), [1012](../../src/event.rs#L1012), [1016](../../src/event.rs#L1016), [1023](../../src/event.rs#L1023), [1024](../../src/event.rs#L1024), [1025](../../src/event.rs#L1025), [1032](../../src/event.rs#L1032), [1036](../../src/event.rs#L1036), [1037](../../src/event.rs#L1037), [1042](../../src/event.rs#L1042) | external-constructor-callback-or-unresolved |
-| `validate_blocks` | `required_enum` | [994](../../src/event.rs#L994) | [schema::event::required_enum](../../src/event.rs#L1396) |
-| `validate_blocks` | `required_str` | [1008](../../src/event.rs#L1008), [1011](../../src/event.rs#L1011), [1012](../../src/event.rs#L1012), [1023](../../src/event.rs#L1023), [1024](../../src/event.rs#L1024), [1025](../../src/event.rs#L1025), [1042](../../src/event.rs#L1042) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_blocks` | `optional_str` | [1013](../../src/event.rs#L1013) | [schema::event::optional_str](../../src/event.rs#L1270) |
-| `validate_blocks` | `name.is_empty` | [1014](../../src/event.rs#L1014), [1026](../../src/event.rs#L1026) | receiver-type-required |
-| `validate_blocks` | `name.len` | [1014](../../src/event.rs#L1014), [1027](../../src/event.rs#L1027) | receiver-type-required |
-| `validate_blocks` | `name.chars().any` | [1014](../../src/event.rs#L1014), [1028](../../src/event.rs#L1028) | receiver-type-required |
-| `validate_blocks` | `name.chars` | [1014](../../src/event.rs#L1014), [1028](../../src/event.rs#L1028) | receiver-type-required |
-| `validate_blocks` | `Err` | [1015](../../src/event.rs#L1015), [1031](../../src/event.rs#L1031), [1037](../../src/event.rs#L1037) | external-constructor-callback-or-unresolved |
-| `validate_blocks` | `name.contains` | [1029](../../src/event.rs#L1029) | receiver-type-required |
-| `validate_blocks` | `required_u64` | [1036](../../src/event.rs#L1036) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_blocks` | `required_id` | [1041](../../src/event.rs#L1041), [1046](../../src/event.rs#L1046) | [schema::event::required_id](../../src/event.rs#L1255) |
-| `validate_blocks` | `required` | [1043](../../src/event.rs#L1043) | [schema::event::required](../../src/event.rs#L1230) |
-| `validate_blocks` | `validate_blocks` | [1047](../../src/event.rs#L1047) | [schema::event::validate_blocks](../../src/event.rs#L989) |
-| `validate_blocks` | `required_array` | [1047](../../src/event.rs#L1047) | [schema::event::required_array](../../src/event.rs#L1369) |
-| `validate_blocks` | `optional_bool` | [1048](../../src/event.rs#L1048) | [schema::event::optional_bool](../../src/event.rs#L1329) |
-| `validate_blocks` | `Ok` | [1053](../../src/event.rs#L1053) | external-constructor-callback-or-unresolved |
-| `validate_blocks_or_spill` | `is_spill` | [1057](../../src/event.rs#L1057) | [schema::event::is_spill](../../src/event.rs#L1102) |
-| `validate_blocks_or_spill` | `validate_spill` | [1058](../../src/event.rs#L1058) | [schema::event::validate_spill](../../src/event.rs#L1108) |
-| `validate_blocks_or_spill` | `value             .as_array()             .ok_or_else` | [1060](../../src/event.rs#L1060) | receiver-type-required |
-| `validate_blocks_or_spill` | `value             .as_array` | [1060](../../src/event.rs#L1060) | receiver-type-required |
-| `validate_blocks_or_spill` | `SchemaError::event` | [1062](../../src/event.rs#L1062) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_blocks_or_spill` | `Some` | [1062](../../src/event.rs#L1062) | external-constructor-callback-or-unresolved |
-| `validate_blocks_or_spill` | `validate_inline_size` | [1063](../../src/event.rs#L1063) | [schema::event::validate_inline_size](../../src/event.rs#L1090) |
-| `validate_blocks_or_spill` | `validate_blocks` | [1064](../../src/event.rs#L1064) | [schema::event::validate_blocks](../../src/event.rs#L989) |
-| `validate_string_or_spill` | `is_spill` | [1069](../../src/event.rs#L1069) | [schema::event::is_spill](../../src/event.rs#L1102) |
-| `validate_string_or_spill` | `validate_spill` | [1070](../../src/event.rs#L1070) | [schema::event::validate_spill](../../src/event.rs#L1108) |
-| `validate_string_or_spill` | `value.as_str().is_none` | [1072](../../src/event.rs#L1072) | receiver-type-required |
-| `validate_string_or_spill` | `value.as_str` | [1072](../../src/event.rs#L1072) | receiver-type-required |
-| `validate_string_or_spill` | `Err` | [1073](../../src/event.rs#L1073) | external-constructor-callback-or-unresolved |
-| `validate_string_or_spill` | `SchemaError::event` | [1073](../../src/event.rs#L1073) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_string_or_spill` | `Some` | [1074](../../src/event.rs#L1074) | external-constructor-callback-or-unresolved |
-| `validate_string_or_spill` | `validate_inline_size` | [1078](../../src/event.rs#L1078) | [schema::event::validate_inline_size](../../src/event.rs#L1090) |
-| `validate_json_or_spill` | `is_spill` | [1083](../../src/event.rs#L1083) | [schema::event::is_spill](../../src/event.rs#L1102) |
-| `validate_json_or_spill` | `validate_spill` | [1084](../../src/event.rs#L1084) | [schema::event::validate_spill](../../src/event.rs#L1108) |
-| `validate_json_or_spill` | `validate_inline_size` | [1086](../../src/event.rs#L1086) | [schema::event::validate_inline_size](../../src/event.rs#L1090) |
-| `validate_inline_size` | `serde_json_canonicalizer::to_vec(value)         .map_err` | [1091](../../src/event.rs#L1091) | receiver-type-required |
-| `validate_inline_size` | `serde_json_canonicalizer::to_vec` | [1091](../../src/event.rs#L1091) | external-constructor-callback-or-unresolved |
-| `validate_inline_size` | `SchemaError::event` | [1092](../../src/event.rs#L1092), [1094](../../src/event.rs#L1094) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_inline_size` | `Some` | [1092](../../src/event.rs#L1092), [1095](../../src/event.rs#L1095) | external-constructor-callback-or-unresolved |
-| `validate_inline_size` | `error.to_string` | [1092](../../src/event.rs#L1092) | receiver-type-required |
-| `validate_inline_size` | `bytes.len` | [1093](../../src/event.rs#L1093) | receiver-type-required |
-| `validate_inline_size` | `Err` | [1094](../../src/event.rs#L1094) | external-constructor-callback-or-unresolved |
-| `validate_inline_size` | `Ok` | [1099](../../src/event.rs#L1099) | external-constructor-callback-or-unresolved |
-| `is_spill` | `value         .as_object()         .is_some_and` | [1103](../../src/event.rs#L1103) | receiver-type-required |
-| `is_spill` | `value         .as_object` | [1103](../../src/event.rs#L1103) | receiver-type-required |
-| `is_spill` | `object.len` | [1105](../../src/event.rs#L1105) | receiver-type-required |
-| `is_spill` | `object.contains_key` | [1105](../../src/event.rs#L1105) | receiver-type-required |
-| `validate_spill` | `value         .as_object()         .and_then(&#124;object&#124; object.get("$spill"))         .and_then(Value::as_object)         .ok_or_else` | [1109](../../src/event.rs#L1109) | receiver-type-required |
-| `validate_spill` | `value         .as_object()         .and_then(&#124;object&#124; object.get("$spill"))         .and_then` | [1109](../../src/event.rs#L1109) | receiver-type-required |
-| `validate_spill` | `value         .as_object()         .and_then` | [1109](../../src/event.rs#L1109) | receiver-type-required |
-| `validate_spill` | `value         .as_object` | [1109](../../src/event.rs#L1109) | receiver-type-required |
-| `validate_spill` | `object.get` | [1111](../../src/event.rs#L1111) | receiver-type-required |
-| `validate_spill` | `SchemaError::event` | [1113](../../src/event.rs#L1113), [1117](../../src/event.rs#L1117) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_spill` | `Some` | [1113](../../src/event.rs#L1113), [1114](../../src/event.rs#L1114), [1115](../../src/event.rs#L1115), [1118](../../src/event.rs#L1118) | external-constructor-callback-or-unresolved |
-| `validate_spill` | `required_str` | [1114](../../src/event.rs#L1114) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_spill` | `required_u64` | [1115](../../src/event.rs#L1115) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_spill` | `Err` | [1117](../../src/event.rs#L1117) | external-constructor-callback-or-unresolved |
-| `validate_spill` | `Ok` | [1122](../../src/event.rs#L1122) | external-constructor-callback-or-unresolved |
-| `validate_resume` | `Ok` | [1127](../../src/event.rs#L1127), [1130](../../src/event.rs#L1130) | external-constructor-callback-or-unresolved |
-| `validate_resume` | `value.len` | [1128](../../src/event.rs#L1128) | receiver-type-required |
-| `validate_resume` | `required_u64` | [1129](../../src/event.rs#L1129) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `validate_resume` | `Some` | [1129](../../src/event.rs#L1129), [1133](../../src/event.rs#L1133) | external-constructor-callback-or-unresolved |
-| `validate_resume` | `Err` | [1132](../../src/event.rs#L1132) | external-constructor-callback-or-unresolved |
-| `validate_resume` | `SchemaError::event` | [1132](../../src/event.rs#L1132) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_origin_equality` | `object.get` | [1144](../../src/event.rs#L1144) | receiver-type-required |
-| `validate_origin_equality` | `Ok` | [1145](../../src/event.rs#L1145), [1158](../../src/event.rs#L1158) | external-constructor-callback-or-unresolved |
-| `validate_origin_equality` | `origin         .as_object()         .ok_or_else` | [1147](../../src/event.rs#L1147) | receiver-type-required |
-| `validate_origin_equality` | `origin         .as_object` | [1147](../../src/event.rs#L1147) | receiver-type-required |
-| `validate_origin_equality` | `SchemaError::event` | [1149](../../src/event.rs#L1149) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_origin_equality` | `Some` | [1149](../../src/event.rs#L1149), [1150](../../src/event.rs#L1150), [1151](../../src/event.rs#L1151) | external-constructor-callback-or-unresolved |
-| `validate_origin_equality` | `required_str` | [1150](../../src/event.rs#L1150) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_origin_equality` | `Err` | [1152](../../src/event.rs#L1152) | external-constructor-callback-or-unresolved |
-| `validate_origin_equality` | `SchemaError::constraint` | [1152](../../src/event.rs#L1152) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
-| `validate_origin_tuple` | `required_str(value, field, Some(seq))?.is_empty` | [1163](../../src/event.rs#L1163) | receiver-type-required |
-| `validate_origin_tuple` | `required_str` | [1163](../../src/event.rs#L1163) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `validate_origin_tuple` | `Some` | [1163](../../src/event.rs#L1163), [1165](../../src/event.rs#L1165) | external-constructor-callback-or-unresolved |
-| `validate_origin_tuple` | `Err` | [1164](../../src/event.rs#L1164) | external-constructor-callback-or-unresolved |
-| `validate_origin_tuple` | `SchemaError::event` | [1164](../../src/event.rs#L1164) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_origin_tuple` | `Ok` | [1170](../../src/event.rs#L1170) | external-constructor-callback-or-unresolved |
-| `validate_timestamp` | `value.as_bytes` | [1174](../../src/event.rs#L1174) | receiver-type-required |
-| `validate_timestamp` | `bytes.len` | [1175](../../src/event.rs#L1175) | receiver-type-required |
-| `validate_timestamp` | `bytes.iter().enumerate().all` | [1183](../../src/event.rs#L1183) | receiver-type-required |
-| `validate_timestamp` | `bytes.iter().enumerate` | [1183](../../src/event.rs#L1183) | receiver-type-required |
-| `validate_timestamp` | `bytes.iter` | [1183](../../src/event.rs#L1183) | receiver-type-required |
-| `validate_timestamp` | `byte.is_ascii_digit` | [1184](../../src/event.rs#L1184) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[5..7]).is_some_and` | [1187](../../src/event.rs#L1187) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal` | [1187](../../src/event.rs#L1187), [1188](../../src/event.rs#L1188), [1189](../../src/event.rs#L1189), [1190](../../src/event.rs#L1190), [1193](../../src/event.rs#L1193), [1194](../../src/event.rs#L1194), [1195](../../src/event.rs#L1195) | [schema::event::parse_decimal](../../src/event.rs#L1205) |
-| `validate_timestamp` | `(1..=12).contains` | [1187](../../src/event.rs#L1187) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[8..10]).is_some_and` | [1188](../../src/event.rs#L1188) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[0..4]).expect` | [1189](../../src/event.rs#L1189) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[5..7]).expect` | [1190](../../src/event.rs#L1190) | receiver-type-required |
-| `validate_timestamp` | `(1..=days_in_month(year, month)).contains` | [1191](../../src/event.rs#L1191) | receiver-type-required |
-| `validate_timestamp` | `days_in_month` | [1191](../../src/event.rs#L1191) | [schema::event::days_in_month](../../src/event.rs#L1212) |
-| `validate_timestamp` | `parse_decimal(&bytes[11..13]).is_some_and` | [1193](../../src/event.rs#L1193) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[14..16]).is_some_and` | [1194](../../src/event.rs#L1194) | receiver-type-required |
-| `validate_timestamp` | `parse_decimal(&bytes[17..19]).is_some_and` | [1195](../../src/event.rs#L1195) | receiver-type-required |
-| `validate_timestamp` | `Err` | [1197](../../src/event.rs#L1197) | external-constructor-callback-or-unresolved |
-| `validate_timestamp` | `SchemaError::event` | [1197](../../src/event.rs#L1197) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_timestamp` | `Some` | [1198](../../src/event.rs#L1198) | external-constructor-callback-or-unresolved |
-| `validate_timestamp` | `Ok` | [1202](../../src/event.rs#L1202) | external-constructor-callback-or-unresolved |
-| `parse_decimal` | `bytes.iter().try_fold` | [1206](../../src/event.rs#L1206) | receiver-type-required |
-| `parse_decimal` | `bytes.iter` | [1206](../../src/event.rs#L1206) | receiver-type-required |
-| `parse_decimal` | `byte.is_ascii_digit()             .then_some` | [1207](../../src/event.rs#L1207) | receiver-type-required |
-| `parse_decimal` | `byte.is_ascii_digit` | [1207](../../src/event.rs#L1207) | receiver-type-required |
-| `parse_decimal` | `u32::from` | [1208](../../src/event.rs#L1208) | external-constructor-callback-or-unresolved |
-| `days_in_month` | `is_leap_year` | [1216](../../src/event.rs#L1216) | [schema::event::is_leap_year](../../src/event.rs#L1222) |
-| `is_leap_year` | `divisible_by` | [1223](../../src/event.rs#L1223) | [schema::event::divisible_by](../../src/event.rs#L1226) |
-| `required` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .ok_or_else` | [1235](../../src/event.rs#L1235) | receiver-type-required |
-| `required` | `object         .get(field)         .filter` | [1235](../../src/event.rs#L1235) | receiver-type-required |
-| `required` | `object         .get` | [1235](../../src/event.rs#L1235) | receiver-type-required |
-| `required` | `value.is_null` | [1237](../../src/event.rs#L1237) | receiver-type-required |
-| `required` | `SchemaError::event` | [1239](../../src/event.rs#L1239) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required` | `Some` | [1239](../../src/event.rs#L1239) | external-constructor-callback-or-unresolved |
-| `required_str` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_str)         .ok_or_else` | [1248](../../src/event.rs#L1248) | receiver-type-required |
-| `required_str` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then` | [1248](../../src/event.rs#L1248) | receiver-type-required |
-| `required_str` | `object         .get(field)         .filter` | [1248](../../src/event.rs#L1248) | receiver-type-required |
-| `required_str` | `object         .get` | [1248](../../src/event.rs#L1248) | receiver-type-required |
-| `required_str` | `value.is_null` | [1250](../../src/event.rs#L1250) | receiver-type-required |
-| `required_str` | `SchemaError::event` | [1252](../../src/event.rs#L1252) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_id` | `required_str` | [1260](../../src/event.rs#L1260) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `required_id` | `Some` | [1260](../../src/event.rs#L1260), [1263](../../src/event.rs#L1263) | external-constructor-callback-or-unresolved |
-| `required_id` | `value.is_empty` | [1261](../../src/event.rs#L1261) | receiver-type-required |
-| `required_id` | `Err` | [1262](../../src/event.rs#L1262) | external-constructor-callback-or-unresolved |
-| `required_id` | `SchemaError::event` | [1262](../../src/event.rs#L1262) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_id` | `Ok` | [1267](../../src/event.rs#L1267) | external-constructor-callback-or-unresolved |
-| `optional_str` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_str()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be a string")))         })         .transpose` | [1275](../../src/event.rs#L1275) | receiver-type-required |
-| `optional_str` | `object         .get(field)         .map` | [1275](../../src/event.rs#L1275) | receiver-type-required |
-| `optional_str` | `object         .get` | [1275](../../src/event.rs#L1275) | receiver-type-required |
-| `optional_str` | `value                 .as_str()                 .ok_or_else` | [1278](../../src/event.rs#L1278) | receiver-type-required |
-| `optional_str` | `value                 .as_str` | [1278](../../src/event.rs#L1278) | receiver-type-required |
-| `optional_str` | `SchemaError::event` | [1280](../../src/event.rs#L1280) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_str` | `Some` | [1280](../../src/event.rs#L1280) | external-constructor-callback-or-unresolved |
-| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_u64)         .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)         .ok_or_else` | [1290](../../src/event.rs#L1290) | receiver-type-required |
-| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_u64)         .filter` | [1290](../../src/event.rs#L1290) | receiver-type-required |
-| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then` | [1290](../../src/event.rs#L1290) | receiver-type-required |
-| `required_u64` | `object         .get(field)         .filter` | [1290](../../src/event.rs#L1290) | receiver-type-required |
-| `required_u64` | `object         .get` | [1290](../../src/event.rs#L1290) | receiver-type-required |
-| `required_u64` | `value.is_null` | [1292](../../src/event.rs#L1292) | receiver-type-required |
-| `required_u64` | `SchemaError::event` | [1296](../../src/event.rs#L1296) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_u64` | `Ok` | [1298](../../src/event.rs#L1298) | external-constructor-callback-or-unresolved |
-| `optional_u64` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_u64()                 .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)                 .ok_or_else(&#124;&#124; {                     SchemaError::event(                         Some(seq),                         format!("{field} must be a nonnegative safe integer"),                     )                 })         })         .transpose` | [1306](../../src/event.rs#L1306) | receiver-type-required |
-| `optional_u64` | `object         .get(field)         .map` | [1306](../../src/event.rs#L1306) | receiver-type-required |
-| `optional_u64` | `object         .get` | [1306](../../src/event.rs#L1306) | receiver-type-required |
-| `optional_u64` | `value                 .as_u64()                 .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)                 .ok_or_else` | [1309](../../src/event.rs#L1309) | receiver-type-required |
-| `optional_u64` | `value                 .as_u64()                 .filter` | [1309](../../src/event.rs#L1309) | receiver-type-required |
-| `optional_u64` | `value                 .as_u64` | [1309](../../src/event.rs#L1309) | receiver-type-required |
-| `optional_u64` | `SchemaError::event` | [1313](../../src/event.rs#L1313) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_u64` | `Some` | [1314](../../src/event.rs#L1314) | external-constructor-callback-or-unresolved |
-| `required_bool` | `object         .get(field)         .and_then(Value::as_bool)         .ok_or_else` | [1323](../../src/event.rs#L1323) | receiver-type-required |
-| `required_bool` | `object         .get(field)         .and_then` | [1323](../../src/event.rs#L1323) | receiver-type-required |
-| `required_bool` | `object         .get` | [1323](../../src/event.rs#L1323) | receiver-type-required |
-| `required_bool` | `SchemaError::event` | [1326](../../src/event.rs#L1326) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_bool` | `Some` | [1326](../../src/event.rs#L1326) | external-constructor-callback-or-unresolved |
-| `optional_bool` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_bool()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be boolean")))         })         .transpose` | [1334](../../src/event.rs#L1334) | receiver-type-required |
-| `optional_bool` | `object         .get(field)         .map` | [1334](../../src/event.rs#L1334) | receiver-type-required |
-| `optional_bool` | `object         .get` | [1334](../../src/event.rs#L1334) | receiver-type-required |
-| `optional_bool` | `value                 .as_bool()                 .ok_or_else` | [1337](../../src/event.rs#L1337) | receiver-type-required |
-| `optional_bool` | `value                 .as_bool` | [1337](../../src/event.rs#L1337) | receiver-type-required |
-| `optional_bool` | `SchemaError::event` | [1339](../../src/event.rs#L1339) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_bool` | `Some` | [1339](../../src/event.rs#L1339) | external-constructor-callback-or-unresolved |
-| `required_object` | `required(object, field, seq)?         .as_object()         .ok_or_else` | [1349](../../src/event.rs#L1349) | receiver-type-required |
-| `required_object` | `required(object, field, seq)?         .as_object` | [1349](../../src/event.rs#L1349) | receiver-type-required |
-| `required_object` | `required` | [1349](../../src/event.rs#L1349) | [schema::event::required](../../src/event.rs#L1230) |
-| `required_object` | `SchemaError::event` | [1351](../../src/event.rs#L1351) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_object` | `Some` | [1351](../../src/event.rs#L1351) | external-constructor-callback-or-unresolved |
-| `optional_object` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_object()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be an object")))         })         .transpose` | [1359](../../src/event.rs#L1359) | receiver-type-required |
-| `optional_object` | `object         .get(field)         .map` | [1359](../../src/event.rs#L1359) | receiver-type-required |
-| `optional_object` | `object         .get` | [1359](../../src/event.rs#L1359) | receiver-type-required |
-| `optional_object` | `value                 .as_object()                 .ok_or_else` | [1362](../../src/event.rs#L1362) | receiver-type-required |
-| `optional_object` | `value                 .as_object` | [1362](../../src/event.rs#L1362) | receiver-type-required |
-| `optional_object` | `SchemaError::event` | [1364](../../src/event.rs#L1364) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_object` | `Some` | [1364](../../src/event.rs#L1364) | external-constructor-callback-or-unresolved |
-| `required_array` | `required(object, field, seq)?         .as_array()         .map(Vec::as_slice)         .ok_or_else` | [1374](../../src/event.rs#L1374) | receiver-type-required |
-| `required_array` | `required(object, field, seq)?         .as_array()         .map` | [1374](../../src/event.rs#L1374) | receiver-type-required |
-| `required_array` | `required(object, field, seq)?         .as_array` | [1374](../../src/event.rs#L1374) | receiver-type-required |
-| `required_array` | `required` | [1374](../../src/event.rs#L1374) | [schema::event::required](../../src/event.rs#L1230) |
-| `required_array` | `SchemaError::event` | [1377](../../src/event.rs#L1377) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_array` | `Some` | [1377](../../src/event.rs#L1377) | external-constructor-callback-or-unresolved |
-| `optional_array` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_array()                 .map(Vec::as_slice)                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be an array")))         })         .transpose` | [1385](../../src/event.rs#L1385) | receiver-type-required |
-| `optional_array` | `object         .get(field)         .map` | [1385](../../src/event.rs#L1385) | receiver-type-required |
-| `optional_array` | `object         .get` | [1385](../../src/event.rs#L1385) | receiver-type-required |
-| `optional_array` | `value                 .as_array()                 .map(Vec::as_slice)                 .ok_or_else` | [1388](../../src/event.rs#L1388) | receiver-type-required |
-| `optional_array` | `value                 .as_array()                 .map` | [1388](../../src/event.rs#L1388) | receiver-type-required |
-| `optional_array` | `value                 .as_array` | [1388](../../src/event.rs#L1388) | receiver-type-required |
-| `optional_array` | `SchemaError::event` | [1391](../../src/event.rs#L1391) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_array` | `Some` | [1391](../../src/event.rs#L1391) | external-constructor-callback-or-unresolved |
-| `required_enum` | `required_str` | [1402](../../src/event.rs#L1402) | [schema::event::required_str](../../src/event.rs#L1243) |
-| `required_enum` | `Some` | [1402](../../src/event.rs#L1402), [1405](../../src/event.rs#L1405) | external-constructor-callback-or-unresolved |
-| `required_enum` | `allowed.contains` | [1403](../../src/event.rs#L1403) | receiver-type-required |
-| `required_enum` | `Err` | [1404](../../src/event.rs#L1404) | external-constructor-callback-or-unresolved |
-| `required_enum` | `SchemaError::event` | [1404](../../src/event.rs#L1404) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `required_enum` | `Ok` | [1409](../../src/event.rs#L1409) | external-constructor-callback-or-unresolved |
-| `optional_json_value` | `object.get` | [1413](../../src/event.rs#L1413) | receiver-type-required |
-| `optional_json_value` | `serde_json_canonicalizer::to_vec(value)             .map_err` | [1414](../../src/event.rs#L1414) | receiver-type-required |
-| `optional_json_value` | `serde_json_canonicalizer::to_vec` | [1414](../../src/event.rs#L1414) | external-constructor-callback-or-unresolved |
-| `optional_json_value` | `SchemaError::Canonical` | [1415](../../src/event.rs#L1415) | external-constructor-callback-or-unresolved |
-| `optional_json_value` | `error.to_string` | [1415](../../src/event.rs#L1415) | receiver-type-required |
-| `optional_json_value` | `Ok` | [1417](../../src/event.rs#L1417) | external-constructor-callback-or-unresolved |
-| `optional_visibility` | `optional_str(object, "visibility", seq)?         .map(&#124;value&#124; match value {             "model" => Ok(Visibility::Model),             "runtime" => Ok(Visibility::Runtime),             _ => Err(SchemaError::event(                 Some(seq),                 "visibility must be model or runtime",             )),         })         .transpose` | [1424](../../src/event.rs#L1424) | receiver-type-required |
-| `optional_visibility` | `optional_str(object, "visibility", seq)?         .map` | [1424](../../src/event.rs#L1424) | receiver-type-required |
-| `optional_visibility` | `optional_str` | [1424](../../src/event.rs#L1424) | [schema::event::optional_str](../../src/event.rs#L1270) |
-| `optional_visibility` | `Ok` | [1426](../../src/event.rs#L1426), [1427](../../src/event.rs#L1427) | external-constructor-callback-or-unresolved |
-| `optional_visibility` | `Err` | [1428](../../src/event.rs#L1428) | external-constructor-callback-or-unresolved |
-| `optional_visibility` | `SchemaError::event` | [1428](../../src/event.rs#L1428) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `optional_visibility` | `Some` | [1429](../../src/event.rs#L1429) | external-constructor-callback-or-unresolved |
-| `ranges` | `required_array` | [1441](../../src/event.rs#L1441) | [schema::event::required_array](../../src/event.rs#L1369) |
-| `ranges` | `values         .iter()         .map(&#124;value&#124; {             let value = value.as_object().ok_or_else(&#124;&#124; {                 SchemaError::event(Some(seq), format!("{field} range must be object"))             })?;             let from = required_u64(value, "from", Some(seq))?;             let to = required_u64(value, "to", Some(seq))?;             if from > to {                 return Err(SchemaError::event(                     Some(seq),                     format!("{field} range is reversed"),                 ));             }             Ok((from, to))         })         .collect` | [1442](../../src/event.rs#L1442) | receiver-type-required |
-| `ranges` | `values         .iter()         .map` | [1442](../../src/event.rs#L1442) | receiver-type-required |
-| `ranges` | `values         .iter` | [1442](../../src/event.rs#L1442) | receiver-type-required |
-| `ranges` | `value.as_object().ok_or_else` | [1445](../../src/event.rs#L1445) | receiver-type-required |
-| `ranges` | `value.as_object` | [1445](../../src/event.rs#L1445) | receiver-type-required |
-| `ranges` | `SchemaError::event` | [1446](../../src/event.rs#L1446), [1451](../../src/event.rs#L1451) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `ranges` | `Some` | [1446](../../src/event.rs#L1446), [1448](../../src/event.rs#L1448), [1449](../../src/event.rs#L1449), [1452](../../src/event.rs#L1452) | external-constructor-callback-or-unresolved |
-| `ranges` | `required_u64` | [1448](../../src/event.rs#L1448), [1449](../../src/event.rs#L1449) | [schema::event::required_u64](../../src/event.rs#L1285) |
-| `ranges` | `Err` | [1451](../../src/event.rs#L1451) | external-constructor-callback-or-unresolved |
-| `ranges` | `Ok` | [1456](../../src/event.rs#L1456) | external-constructor-callback-or-unresolved |
-| `validate_ranges_optional` | `object.contains_key` | [1466](../../src/event.rs#L1466) | receiver-type-required |
-| `validate_ranges_optional` | `ranges` | [1467](../../src/event.rs#L1467) | [schema::event::ranges](../../src/event.rs#L1436) |
-| `validate_ranges_optional` | `Ok` | [1469](../../src/event.rs#L1469) | external-constructor-callback-or-unresolved |
-| `validate_ranges_required_from_envelope` | `ranges` | [1477](../../src/event.rs#L1477) | [schema::event::ranges](../../src/event.rs#L1436) |
-| `validate_ranges_required_from_payload` | `ranges` | [1485](../../src/event.rs#L1485) | [schema::event::ranges](../../src/event.rs#L1436) |
-| `validate_u64_array` | `value             .as_u64()             .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)             .is_none` | [1490](../../src/event.rs#L1490) | receiver-type-required |
-| `validate_u64_array` | `value             .as_u64()             .filter` | [1490](../../src/event.rs#L1490) | receiver-type-required |
-| `validate_u64_array` | `value             .as_u64` | [1490](../../src/event.rs#L1490) | receiver-type-required |
-| `validate_u64_array` | `Err` | [1495](../../src/event.rs#L1495) | external-constructor-callback-or-unresolved |
-| `validate_u64_array` | `SchemaError::event` | [1495](../../src/event.rs#L1495) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_u64_array` | `Some` | [1496](../../src/event.rs#L1496) | external-constructor-callback-or-unresolved |
-| `validate_u64_array` | `Ok` | [1501](../../src/event.rs#L1501) | external-constructor-callback-or-unresolved |
-| `validate_strictly_increasing_u64` | `value             .as_u64()             .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)             .ok_or_else` | [1511](../../src/event.rs#L1511) | receiver-type-required |
-| `validate_strictly_increasing_u64` | `value             .as_u64()             .filter` | [1511](../../src/event.rs#L1511) | receiver-type-required |
-| `validate_strictly_increasing_u64` | `value             .as_u64` | [1511](../../src/event.rs#L1511) | receiver-type-required |
-| `validate_strictly_increasing_u64` | `SchemaError::event` | [1515](../../src/event.rs#L1515), [1518](../../src/event.rs#L1518) | [schema::SchemaError::event](../../src/lib.rs#L29) |
-| `validate_strictly_increasing_u64` | `Some` | [1515](../../src/event.rs#L1515), [1519](../../src/event.rs#L1519), [1523](../../src/event.rs#L1523) | external-constructor-callback-or-unresolved |
-| `validate_strictly_increasing_u64` | `previous.is_some_and` | [1517](../../src/event.rs#L1517) | receiver-type-required |
-| `validate_strictly_increasing_u64` | `Err` | [1518](../../src/event.rs#L1518) | external-constructor-callback-or-unresolved |
-| `validate_strictly_increasing_u64` | `Ok` | [1525](../../src/event.rs#L1525) | external-constructor-callback-or-unresolved |
+| `validate_settle` | `optional_u64` | [821](../../src/event.rs#L821) | [schema::event::optional_u64](../../src/event.rs#L1300) |
+| `validate_settle` | `object.get("outcome").and_then` | [822](../../src/event.rs#L822), [833](../../src/event.rs#L833) | receiver-type-required |
+| `validate_settle` | `object.get` | [822](../../src/event.rs#L822), [833](../../src/event.rs#L833) | receiver-type-required |
+| `validate_settle` | `Some` | [822](../../src/event.rs#L822), [828](../../src/event.rs#L828), [833](../../src/event.rs#L833), [835](../../src/event.rs#L835), [845](../../src/event.rs#L845), [846](../../src/event.rs#L846), [847](../../src/event.rs#L847), [850](../../src/event.rs#L850), [864](../../src/event.rs#L864), [878](../../src/event.rs#L878), [891](../../src/event.rs#L891) | external-constructor-callback-or-unresolved |
+| `validate_settle` | `object.contains_key` | [823](../../src/event.rs#L823), [862](../../src/event.rs#L862), [876](../../src/event.rs#L876), [890](../../src/event.rs#L890) | receiver-type-required |
+| `validate_settle` | `Err` | [827](../../src/event.rs#L827), [834](../../src/event.rs#L834), [849](../../src/event.rs#L849), [863](../../src/event.rs#L863), [877](../../src/event.rs#L877), [891](../../src/event.rs#L891) | external-constructor-callback-or-unresolved |
+| `validate_settle` | `SchemaError::event` | [827](../../src/event.rs#L827), [834](../../src/event.rs#L834), [849](../../src/event.rs#L849), [863](../../src/event.rs#L863), [877](../../src/event.rs#L877), [891](../../src/event.rs#L891) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_settle` | `optional_object` | [832](../../src/event.rs#L832) | [schema::event::optional_object](../../src/event.rs#L1353) |
+| `validate_settle` | `required_enum` | [839](../../src/event.rs#L839), [855](../../src/event.rs#L855), [870](../../src/event.rs#L870), [884](../../src/event.rs#L884) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_settle` | `required_u64` | [845](../../src/event.rs#L845), [846](../../src/event.rs#L846), [847](../../src/event.rs#L847) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_settle` | `Ok` | [896](../../src/event.rs#L896) | external-constructor-callback-or-unresolved |
+| `validate_checkpoint` | `required_u64` | [900](../../src/event.rs#L900) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_checkpoint` | `Some` | [900](../../src/event.rs#L900) | external-constructor-callback-or-unresolved |
+| `validate_checkpoint` | `validate_string_or_spill` | [901](../../src/event.rs#L901) | [schema::event::validate_string_or_spill](../../src/event.rs#L1067) |
+| `validate_checkpoint` | `required` | [901](../../src/event.rs#L901) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_checkpoint` | `Ok` | [902](../../src/event.rs#L902) | external-constructor-callback-or-unresolved |
+| `validate_compact` | `validate_ranges_required_from_payload` | [906](../../src/event.rs#L906), [915](../../src/event.rs#L915) | [schema::event::validate_ranges_required_from_payload](../../src/event.rs#L1479) |
+| `validate_compact` | `validate_string_or_spill` | [907](../../src/event.rs#L907) | [schema::event::validate_string_or_spill](../../src/event.rs#L1067) |
+| `validate_compact` | `required` | [907](../../src/event.rs#L907) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_compact` | `optional_object` | [908](../../src/event.rs#L908), [911](../../src/event.rs#L911) | [schema::event::optional_object](../../src/event.rs#L1353) |
+| `validate_compact` | `validate_origin_tuple` | [909](../../src/event.rs#L909) | [schema::event::validate_origin_tuple](../../src/event.rs#L1160) |
+| `validate_compact` | `required_object` | [914](../../src/event.rs#L914) | [schema::event::required_object](../../src/event.rs#L1343) |
+| `validate_compact` | `required_str(bundle, "sha256", Some(seq))?.is_empty` | [916](../../src/event.rs#L916) | receiver-type-required |
+| `validate_compact` | `required_str` | [916](../../src/event.rs#L916) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_compact` | `Some` | [916](../../src/event.rs#L916), [918](../../src/event.rs#L918) | external-constructor-callback-or-unresolved |
+| `validate_compact` | `Err` | [917](../../src/event.rs#L917) | external-constructor-callback-or-unresolved |
+| `validate_compact` | `SchemaError::event` | [917](../../src/event.rs#L917) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_compact` | `required_bool` | [922](../../src/event.rs#L922) | [schema::event::required_bool](../../src/event.rs#L1321) |
+| `validate_compact` | `Ok` | [924](../../src/event.rs#L924) | external-constructor-callback-or-unresolved |
+| `validate_meta` | `optional_str` | [928](../../src/event.rs#L928) | [schema::event::optional_str](../../src/event.rs#L1269) |
+| `validate_meta` | `optional_array` | [929](../../src/event.rs#L929) | [schema::event::optional_array](../../src/event.rs#L1379) |
+| `validate_meta` | `label.as_str().is_none` | [931](../../src/event.rs#L931) | receiver-type-required |
+| `validate_meta` | `label.as_str` | [931](../../src/event.rs#L931) | receiver-type-required |
+| `validate_meta` | `Err` | [932](../../src/event.rs#L932), [944](../../src/event.rs#L944), [959](../../src/event.rs#L959) | external-constructor-callback-or-unresolved |
+| `validate_meta` | `SchemaError::event` | [932](../../src/event.rs#L932), [944](../../src/event.rs#L944), [959](../../src/event.rs#L959) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_meta` | `Some` | [932](../../src/event.rs#L932), [938](../../src/event.rs#L938), [939](../../src/event.rs#L939), [945](../../src/event.rs#L945), [959](../../src/event.rs#L959) | external-constructor-callback-or-unresolved |
+| `validate_meta` | `optional_u64` | [936](../../src/event.rs#L936) | [schema::event::optional_u64](../../src/event.rs#L1300) |
+| `validate_meta` | `optional_object` | [937](../../src/event.rs#L937), [941](../../src/event.rs#L941), [950](../../src/event.rs#L950) | [schema::event::optional_object](../../src/event.rs#L1353) |
+| `validate_meta` | `required_u64` | [938](../../src/event.rs#L938), [939](../../src/event.rs#L939) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_meta` | `validate_origin_tuple` | [942](../../src/event.rs#L942) | [schema::event::validate_origin_tuple](../../src/event.rs#L1160) |
+| `validate_meta` | `object.contains_key` | [943](../../src/event.rs#L943) | receiver-type-required |
+| `validate_meta` | `validate_session_notice` | [951](../../src/event.rs#L951) | [schema::event::validate_session_notice](../../src/event.rs#L969) |
+| `validate_meta` | `object.keys().any` | [953](../../src/event.rs#L953) | receiver-type-required |
+| `validate_meta` | `object.keys` | [953](../../src/event.rs#L953) | receiver-type-required |
+| `validate_meta` | `Ok` | [961](../../src/event.rs#L961) | external-constructor-callback-or-unresolved |
+| `validate_session_notice` | `required_str` | [970](../../src/event.rs#L970), [978](../../src/event.rs#L978) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_session_notice` | `Some` | [970](../../src/event.rs#L970), [973](../../src/event.rs#L973), [978](../../src/event.rs#L978), [980](../../src/event.rs#L980) | external-constructor-callback-or-unresolved |
+| `validate_session_notice` | `Err` | [972](../../src/event.rs#L972), [979](../../src/event.rs#L979) | external-constructor-callback-or-unresolved |
+| `validate_session_notice` | `SchemaError::event` | [972](../../src/event.rs#L972), [979](../../src/event.rs#L979) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_session_notice` | `required_str(notice, field, Some(seq))?.is_empty` | [978](../../src/event.rs#L978) | receiver-type-required |
+| `validate_session_notice` | `Ok` | [985](../../src/event.rs#L985) | external-constructor-callback-or-unresolved |
+| `validate_blocks` | `value             .as_object()             .ok_or_else` | [990](../../src/event.rs#L990) | receiver-type-required |
+| `validate_blocks` | `value             .as_object` | [990](../../src/event.rs#L990) | receiver-type-required |
+| `validate_blocks` | `SchemaError::event` | [992](../../src/event.rs#L992), [1015](../../src/event.rs#L1015), [1030](../../src/event.rs#L1030), [1036](../../src/event.rs#L1036) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_blocks` | `Some` | [992](../../src/event.rs#L992), [1007](../../src/event.rs#L1007), [1010](../../src/event.rs#L1010), [1011](../../src/event.rs#L1011), [1016](../../src/event.rs#L1016), [1022](../../src/event.rs#L1022), [1023](../../src/event.rs#L1023), [1024](../../src/event.rs#L1024), [1031](../../src/event.rs#L1031), [1035](../../src/event.rs#L1035), [1036](../../src/event.rs#L1036), [1041](../../src/event.rs#L1041) | external-constructor-callback-or-unresolved |
+| `validate_blocks` | `required_enum` | [993](../../src/event.rs#L993) | [schema::event::required_enum](../../src/event.rs#L1395) |
+| `validate_blocks` | `required_str` | [1007](../../src/event.rs#L1007), [1010](../../src/event.rs#L1010), [1011](../../src/event.rs#L1011), [1022](../../src/event.rs#L1022), [1023](../../src/event.rs#L1023), [1024](../../src/event.rs#L1024), [1041](../../src/event.rs#L1041) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_blocks` | `optional_str` | [1012](../../src/event.rs#L1012) | [schema::event::optional_str](../../src/event.rs#L1269) |
+| `validate_blocks` | `name.is_empty` | [1013](../../src/event.rs#L1013), [1025](../../src/event.rs#L1025) | receiver-type-required |
+| `validate_blocks` | `name.len` | [1013](../../src/event.rs#L1013), [1026](../../src/event.rs#L1026) | receiver-type-required |
+| `validate_blocks` | `name.chars().any` | [1013](../../src/event.rs#L1013), [1027](../../src/event.rs#L1027) | receiver-type-required |
+| `validate_blocks` | `name.chars` | [1013](../../src/event.rs#L1013), [1027](../../src/event.rs#L1027) | receiver-type-required |
+| `validate_blocks` | `Err` | [1015](../../src/event.rs#L1015), [1030](../../src/event.rs#L1030), [1036](../../src/event.rs#L1036) | external-constructor-callback-or-unresolved |
+| `validate_blocks` | `name.contains` | [1028](../../src/event.rs#L1028) | receiver-type-required |
+| `validate_blocks` | `required_u64` | [1035](../../src/event.rs#L1035) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_blocks` | `required_id` | [1040](../../src/event.rs#L1040), [1045](../../src/event.rs#L1045) | [schema::event::required_id](../../src/event.rs#L1254) |
+| `validate_blocks` | `required` | [1042](../../src/event.rs#L1042) | [schema::event::required](../../src/event.rs#L1229) |
+| `validate_blocks` | `validate_blocks` | [1046](../../src/event.rs#L1046) | [schema::event::validate_blocks](../../src/event.rs#L988) |
+| `validate_blocks` | `required_array` | [1046](../../src/event.rs#L1046) | [schema::event::required_array](../../src/event.rs#L1368) |
+| `validate_blocks` | `optional_bool` | [1047](../../src/event.rs#L1047) | [schema::event::optional_bool](../../src/event.rs#L1328) |
+| `validate_blocks` | `Ok` | [1052](../../src/event.rs#L1052) | external-constructor-callback-or-unresolved |
+| `validate_blocks_or_spill` | `is_spill` | [1056](../../src/event.rs#L1056) | [schema::event::is_spill](../../src/event.rs#L1101) |
+| `validate_blocks_or_spill` | `validate_spill` | [1057](../../src/event.rs#L1057) | [schema::event::validate_spill](../../src/event.rs#L1107) |
+| `validate_blocks_or_spill` | `value             .as_array()             .ok_or_else` | [1059](../../src/event.rs#L1059) | receiver-type-required |
+| `validate_blocks_or_spill` | `value             .as_array` | [1059](../../src/event.rs#L1059) | receiver-type-required |
+| `validate_blocks_or_spill` | `SchemaError::event` | [1061](../../src/event.rs#L1061) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_blocks_or_spill` | `Some` | [1061](../../src/event.rs#L1061) | external-constructor-callback-or-unresolved |
+| `validate_blocks_or_spill` | `validate_inline_size` | [1062](../../src/event.rs#L1062) | [schema::event::validate_inline_size](../../src/event.rs#L1089) |
+| `validate_blocks_or_spill` | `validate_blocks` | [1063](../../src/event.rs#L1063) | [schema::event::validate_blocks](../../src/event.rs#L988) |
+| `validate_string_or_spill` | `is_spill` | [1068](../../src/event.rs#L1068) | [schema::event::is_spill](../../src/event.rs#L1101) |
+| `validate_string_or_spill` | `validate_spill` | [1069](../../src/event.rs#L1069) | [schema::event::validate_spill](../../src/event.rs#L1107) |
+| `validate_string_or_spill` | `value.as_str().is_none` | [1071](../../src/event.rs#L1071) | receiver-type-required |
+| `validate_string_or_spill` | `value.as_str` | [1071](../../src/event.rs#L1071) | receiver-type-required |
+| `validate_string_or_spill` | `Err` | [1072](../../src/event.rs#L1072) | external-constructor-callback-or-unresolved |
+| `validate_string_or_spill` | `SchemaError::event` | [1072](../../src/event.rs#L1072) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_string_or_spill` | `Some` | [1073](../../src/event.rs#L1073) | external-constructor-callback-or-unresolved |
+| `validate_string_or_spill` | `validate_inline_size` | [1077](../../src/event.rs#L1077) | [schema::event::validate_inline_size](../../src/event.rs#L1089) |
+| `validate_json_or_spill` | `is_spill` | [1082](../../src/event.rs#L1082) | [schema::event::is_spill](../../src/event.rs#L1101) |
+| `validate_json_or_spill` | `validate_spill` | [1083](../../src/event.rs#L1083) | [schema::event::validate_spill](../../src/event.rs#L1107) |
+| `validate_json_or_spill` | `validate_inline_size` | [1085](../../src/event.rs#L1085) | [schema::event::validate_inline_size](../../src/event.rs#L1089) |
+| `validate_inline_size` | `serde_json_canonicalizer::to_vec(value)         .map_err` | [1090](../../src/event.rs#L1090) | receiver-type-required |
+| `validate_inline_size` | `serde_json_canonicalizer::to_vec` | [1090](../../src/event.rs#L1090) | external-constructor-callback-or-unresolved |
+| `validate_inline_size` | `SchemaError::event` | [1091](../../src/event.rs#L1091), [1093](../../src/event.rs#L1093) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_inline_size` | `Some` | [1091](../../src/event.rs#L1091), [1094](../../src/event.rs#L1094) | external-constructor-callback-or-unresolved |
+| `validate_inline_size` | `error.to_string` | [1091](../../src/event.rs#L1091) | receiver-type-required |
+| `validate_inline_size` | `bytes.len` | [1092](../../src/event.rs#L1092) | receiver-type-required |
+| `validate_inline_size` | `Err` | [1093](../../src/event.rs#L1093) | external-constructor-callback-or-unresolved |
+| `validate_inline_size` | `Ok` | [1098](../../src/event.rs#L1098) | external-constructor-callback-or-unresolved |
+| `is_spill` | `value         .as_object()         .is_some_and` | [1102](../../src/event.rs#L1102) | receiver-type-required |
+| `is_spill` | `value         .as_object` | [1102](../../src/event.rs#L1102) | receiver-type-required |
+| `is_spill` | `object.len` | [1104](../../src/event.rs#L1104) | receiver-type-required |
+| `is_spill` | `object.contains_key` | [1104](../../src/event.rs#L1104) | receiver-type-required |
+| `validate_spill` | `value         .as_object()         .and_then(&#124;object&#124; object.get("$spill"))         .and_then(Value::as_object)         .ok_or_else` | [1108](../../src/event.rs#L1108) | receiver-type-required |
+| `validate_spill` | `value         .as_object()         .and_then(&#124;object&#124; object.get("$spill"))         .and_then` | [1108](../../src/event.rs#L1108) | receiver-type-required |
+| `validate_spill` | `value         .as_object()         .and_then` | [1108](../../src/event.rs#L1108) | receiver-type-required |
+| `validate_spill` | `value         .as_object` | [1108](../../src/event.rs#L1108) | receiver-type-required |
+| `validate_spill` | `object.get` | [1110](../../src/event.rs#L1110) | receiver-type-required |
+| `validate_spill` | `SchemaError::event` | [1112](../../src/event.rs#L1112), [1116](../../src/event.rs#L1116) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_spill` | `Some` | [1112](../../src/event.rs#L1112), [1113](../../src/event.rs#L1113), [1114](../../src/event.rs#L1114), [1117](../../src/event.rs#L1117) | external-constructor-callback-or-unresolved |
+| `validate_spill` | `required_str` | [1113](../../src/event.rs#L1113) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_spill` | `required_u64` | [1114](../../src/event.rs#L1114) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_spill` | `Err` | [1116](../../src/event.rs#L1116) | external-constructor-callback-or-unresolved |
+| `validate_spill` | `Ok` | [1121](../../src/event.rs#L1121) | external-constructor-callback-or-unresolved |
+| `validate_resume` | `Ok` | [1126](../../src/event.rs#L1126), [1129](../../src/event.rs#L1129) | external-constructor-callback-or-unresolved |
+| `validate_resume` | `value.len` | [1127](../../src/event.rs#L1127) | receiver-type-required |
+| `validate_resume` | `required_u64` | [1128](../../src/event.rs#L1128) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `validate_resume` | `Some` | [1128](../../src/event.rs#L1128), [1132](../../src/event.rs#L1132) | external-constructor-callback-or-unresolved |
+| `validate_resume` | `Err` | [1131](../../src/event.rs#L1131) | external-constructor-callback-or-unresolved |
+| `validate_resume` | `SchemaError::event` | [1131](../../src/event.rs#L1131) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_origin_equality` | `object.get` | [1143](../../src/event.rs#L1143) | receiver-type-required |
+| `validate_origin_equality` | `Ok` | [1144](../../src/event.rs#L1144), [1157](../../src/event.rs#L1157) | external-constructor-callback-or-unresolved |
+| `validate_origin_equality` | `origin         .as_object()         .ok_or_else` | [1146](../../src/event.rs#L1146) | receiver-type-required |
+| `validate_origin_equality` | `origin         .as_object` | [1146](../../src/event.rs#L1146) | receiver-type-required |
+| `validate_origin_equality` | `SchemaError::event` | [1148](../../src/event.rs#L1148) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_origin_equality` | `Some` | [1148](../../src/event.rs#L1148), [1149](../../src/event.rs#L1149), [1150](../../src/event.rs#L1150) | external-constructor-callback-or-unresolved |
+| `validate_origin_equality` | `required_str` | [1149](../../src/event.rs#L1149) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_origin_equality` | `Err` | [1151](../../src/event.rs#L1151) | external-constructor-callback-or-unresolved |
+| `validate_origin_equality` | `SchemaError::constraint` | [1151](../../src/event.rs#L1151) | [schema::SchemaError::constraint](../../src/lib.rs#L36) |
+| `validate_origin_tuple` | `required_str(value, field, Some(seq))?.is_empty` | [1162](../../src/event.rs#L1162) | receiver-type-required |
+| `validate_origin_tuple` | `required_str` | [1162](../../src/event.rs#L1162) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `validate_origin_tuple` | `Some` | [1162](../../src/event.rs#L1162), [1164](../../src/event.rs#L1164) | external-constructor-callback-or-unresolved |
+| `validate_origin_tuple` | `Err` | [1163](../../src/event.rs#L1163) | external-constructor-callback-or-unresolved |
+| `validate_origin_tuple` | `SchemaError::event` | [1163](../../src/event.rs#L1163) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_origin_tuple` | `Ok` | [1169](../../src/event.rs#L1169) | external-constructor-callback-or-unresolved |
+| `validate_timestamp` | `value.as_bytes` | [1173](../../src/event.rs#L1173) | receiver-type-required |
+| `validate_timestamp` | `bytes.len` | [1174](../../src/event.rs#L1174) | receiver-type-required |
+| `validate_timestamp` | `bytes.iter().enumerate().all` | [1182](../../src/event.rs#L1182) | receiver-type-required |
+| `validate_timestamp` | `bytes.iter().enumerate` | [1182](../../src/event.rs#L1182) | receiver-type-required |
+| `validate_timestamp` | `bytes.iter` | [1182](../../src/event.rs#L1182) | receiver-type-required |
+| `validate_timestamp` | `byte.is_ascii_digit` | [1183](../../src/event.rs#L1183) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[5..7]).is_some_and` | [1186](../../src/event.rs#L1186) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal` | [1186](../../src/event.rs#L1186), [1187](../../src/event.rs#L1187), [1188](../../src/event.rs#L1188), [1189](../../src/event.rs#L1189), [1192](../../src/event.rs#L1192), [1193](../../src/event.rs#L1193), [1194](../../src/event.rs#L1194) | [schema::event::parse_decimal](../../src/event.rs#L1204) |
+| `validate_timestamp` | `(1..=12).contains` | [1186](../../src/event.rs#L1186) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[8..10]).is_some_and` | [1187](../../src/event.rs#L1187) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[0..4]).expect` | [1188](../../src/event.rs#L1188) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[5..7]).expect` | [1189](../../src/event.rs#L1189) | receiver-type-required |
+| `validate_timestamp` | `(1..=days_in_month(year, month)).contains` | [1190](../../src/event.rs#L1190) | receiver-type-required |
+| `validate_timestamp` | `days_in_month` | [1190](../../src/event.rs#L1190) | [schema::event::days_in_month](../../src/event.rs#L1211) |
+| `validate_timestamp` | `parse_decimal(&bytes[11..13]).is_some_and` | [1192](../../src/event.rs#L1192) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[14..16]).is_some_and` | [1193](../../src/event.rs#L1193) | receiver-type-required |
+| `validate_timestamp` | `parse_decimal(&bytes[17..19]).is_some_and` | [1194](../../src/event.rs#L1194) | receiver-type-required |
+| `validate_timestamp` | `Err` | [1196](../../src/event.rs#L1196) | external-constructor-callback-or-unresolved |
+| `validate_timestamp` | `SchemaError::event` | [1196](../../src/event.rs#L1196) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_timestamp` | `Some` | [1197](../../src/event.rs#L1197) | external-constructor-callback-or-unresolved |
+| `validate_timestamp` | `Ok` | [1201](../../src/event.rs#L1201) | external-constructor-callback-or-unresolved |
+| `parse_decimal` | `bytes.iter().try_fold` | [1205](../../src/event.rs#L1205) | receiver-type-required |
+| `parse_decimal` | `bytes.iter` | [1205](../../src/event.rs#L1205) | receiver-type-required |
+| `parse_decimal` | `byte.is_ascii_digit()             .then_some` | [1206](../../src/event.rs#L1206) | receiver-type-required |
+| `parse_decimal` | `byte.is_ascii_digit` | [1206](../../src/event.rs#L1206) | receiver-type-required |
+| `parse_decimal` | `u32::from` | [1207](../../src/event.rs#L1207) | external-constructor-callback-or-unresolved |
+| `days_in_month` | `is_leap_year` | [1215](../../src/event.rs#L1215) | [schema::event::is_leap_year](../../src/event.rs#L1221) |
+| `is_leap_year` | `divisible_by` | [1222](../../src/event.rs#L1222) | [schema::event::divisible_by](../../src/event.rs#L1225) |
+| `required` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .ok_or_else` | [1234](../../src/event.rs#L1234) | receiver-type-required |
+| `required` | `object         .get(field)         .filter` | [1234](../../src/event.rs#L1234) | receiver-type-required |
+| `required` | `object         .get` | [1234](../../src/event.rs#L1234) | receiver-type-required |
+| `required` | `value.is_null` | [1236](../../src/event.rs#L1236) | receiver-type-required |
+| `required` | `SchemaError::event` | [1238](../../src/event.rs#L1238) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required` | `Some` | [1238](../../src/event.rs#L1238) | external-constructor-callback-or-unresolved |
+| `required_str` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_str)         .ok_or_else` | [1247](../../src/event.rs#L1247) | receiver-type-required |
+| `required_str` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then` | [1247](../../src/event.rs#L1247) | receiver-type-required |
+| `required_str` | `object         .get(field)         .filter` | [1247](../../src/event.rs#L1247) | receiver-type-required |
+| `required_str` | `object         .get` | [1247](../../src/event.rs#L1247) | receiver-type-required |
+| `required_str` | `value.is_null` | [1249](../../src/event.rs#L1249) | receiver-type-required |
+| `required_str` | `SchemaError::event` | [1251](../../src/event.rs#L1251) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_id` | `required_str` | [1259](../../src/event.rs#L1259) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `required_id` | `Some` | [1259](../../src/event.rs#L1259), [1262](../../src/event.rs#L1262) | external-constructor-callback-or-unresolved |
+| `required_id` | `value.is_empty` | [1260](../../src/event.rs#L1260) | receiver-type-required |
+| `required_id` | `Err` | [1261](../../src/event.rs#L1261) | external-constructor-callback-or-unresolved |
+| `required_id` | `SchemaError::event` | [1261](../../src/event.rs#L1261) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_id` | `Ok` | [1266](../../src/event.rs#L1266) | external-constructor-callback-or-unresolved |
+| `optional_str` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_str()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be a string")))         })         .transpose` | [1274](../../src/event.rs#L1274) | receiver-type-required |
+| `optional_str` | `object         .get(field)         .map` | [1274](../../src/event.rs#L1274) | receiver-type-required |
+| `optional_str` | `object         .get` | [1274](../../src/event.rs#L1274) | receiver-type-required |
+| `optional_str` | `value                 .as_str()                 .ok_or_else` | [1277](../../src/event.rs#L1277) | receiver-type-required |
+| `optional_str` | `value                 .as_str` | [1277](../../src/event.rs#L1277) | receiver-type-required |
+| `optional_str` | `SchemaError::event` | [1279](../../src/event.rs#L1279) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_str` | `Some` | [1279](../../src/event.rs#L1279) | external-constructor-callback-or-unresolved |
+| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_u64)         .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)         .ok_or_else` | [1289](../../src/event.rs#L1289) | receiver-type-required |
+| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then(Value::as_u64)         .filter` | [1289](../../src/event.rs#L1289) | receiver-type-required |
+| `required_u64` | `object         .get(field)         .filter(&#124;value&#124; !value.is_null())         .and_then` | [1289](../../src/event.rs#L1289) | receiver-type-required |
+| `required_u64` | `object         .get(field)         .filter` | [1289](../../src/event.rs#L1289) | receiver-type-required |
+| `required_u64` | `object         .get` | [1289](../../src/event.rs#L1289) | receiver-type-required |
+| `required_u64` | `value.is_null` | [1291](../../src/event.rs#L1291) | receiver-type-required |
+| `required_u64` | `SchemaError::event` | [1295](../../src/event.rs#L1295) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_u64` | `Ok` | [1297](../../src/event.rs#L1297) | external-constructor-callback-or-unresolved |
+| `optional_u64` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_u64()                 .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)                 .ok_or_else(&#124;&#124; {                     SchemaError::event(                         Some(seq),                         format!("{field} must be a nonnegative safe integer"),                     )                 })         })         .transpose` | [1305](../../src/event.rs#L1305) | receiver-type-required |
+| `optional_u64` | `object         .get(field)         .map` | [1305](../../src/event.rs#L1305) | receiver-type-required |
+| `optional_u64` | `object         .get` | [1305](../../src/event.rs#L1305) | receiver-type-required |
+| `optional_u64` | `value                 .as_u64()                 .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)                 .ok_or_else` | [1308](../../src/event.rs#L1308) | receiver-type-required |
+| `optional_u64` | `value                 .as_u64()                 .filter` | [1308](../../src/event.rs#L1308) | receiver-type-required |
+| `optional_u64` | `value                 .as_u64` | [1308](../../src/event.rs#L1308) | receiver-type-required |
+| `optional_u64` | `SchemaError::event` | [1312](../../src/event.rs#L1312) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_u64` | `Some` | [1313](../../src/event.rs#L1313) | external-constructor-callback-or-unresolved |
+| `required_bool` | `object         .get(field)         .and_then(Value::as_bool)         .ok_or_else` | [1322](../../src/event.rs#L1322) | receiver-type-required |
+| `required_bool` | `object         .get(field)         .and_then` | [1322](../../src/event.rs#L1322) | receiver-type-required |
+| `required_bool` | `object         .get` | [1322](../../src/event.rs#L1322) | receiver-type-required |
+| `required_bool` | `SchemaError::event` | [1325](../../src/event.rs#L1325) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_bool` | `Some` | [1325](../../src/event.rs#L1325) | external-constructor-callback-or-unresolved |
+| `optional_bool` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_bool()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be boolean")))         })         .transpose` | [1333](../../src/event.rs#L1333) | receiver-type-required |
+| `optional_bool` | `object         .get(field)         .map` | [1333](../../src/event.rs#L1333) | receiver-type-required |
+| `optional_bool` | `object         .get` | [1333](../../src/event.rs#L1333) | receiver-type-required |
+| `optional_bool` | `value                 .as_bool()                 .ok_or_else` | [1336](../../src/event.rs#L1336) | receiver-type-required |
+| `optional_bool` | `value                 .as_bool` | [1336](../../src/event.rs#L1336) | receiver-type-required |
+| `optional_bool` | `SchemaError::event` | [1338](../../src/event.rs#L1338) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_bool` | `Some` | [1338](../../src/event.rs#L1338) | external-constructor-callback-or-unresolved |
+| `required_object` | `required(object, field, seq)?         .as_object()         .ok_or_else` | [1348](../../src/event.rs#L1348) | receiver-type-required |
+| `required_object` | `required(object, field, seq)?         .as_object` | [1348](../../src/event.rs#L1348) | receiver-type-required |
+| `required_object` | `required` | [1348](../../src/event.rs#L1348) | [schema::event::required](../../src/event.rs#L1229) |
+| `required_object` | `SchemaError::event` | [1350](../../src/event.rs#L1350) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_object` | `Some` | [1350](../../src/event.rs#L1350) | external-constructor-callback-or-unresolved |
+| `optional_object` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_object()                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be an object")))         })         .transpose` | [1358](../../src/event.rs#L1358) | receiver-type-required |
+| `optional_object` | `object         .get(field)         .map` | [1358](../../src/event.rs#L1358) | receiver-type-required |
+| `optional_object` | `object         .get` | [1358](../../src/event.rs#L1358) | receiver-type-required |
+| `optional_object` | `value                 .as_object()                 .ok_or_else` | [1361](../../src/event.rs#L1361) | receiver-type-required |
+| `optional_object` | `value                 .as_object` | [1361](../../src/event.rs#L1361) | receiver-type-required |
+| `optional_object` | `SchemaError::event` | [1363](../../src/event.rs#L1363) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_object` | `Some` | [1363](../../src/event.rs#L1363) | external-constructor-callback-or-unresolved |
+| `required_array` | `required(object, field, seq)?         .as_array()         .map(Vec::as_slice)         .ok_or_else` | [1373](../../src/event.rs#L1373) | receiver-type-required |
+| `required_array` | `required(object, field, seq)?         .as_array()         .map` | [1373](../../src/event.rs#L1373) | receiver-type-required |
+| `required_array` | `required(object, field, seq)?         .as_array` | [1373](../../src/event.rs#L1373) | receiver-type-required |
+| `required_array` | `required` | [1373](../../src/event.rs#L1373) | [schema::event::required](../../src/event.rs#L1229) |
+| `required_array` | `SchemaError::event` | [1376](../../src/event.rs#L1376) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_array` | `Some` | [1376](../../src/event.rs#L1376) | external-constructor-callback-or-unresolved |
+| `optional_array` | `object         .get(field)         .map(&#124;value&#124; {             value                 .as_array()                 .map(Vec::as_slice)                 .ok_or_else(&#124;&#124; SchemaError::event(Some(seq), format!("{field} must be an array")))         })         .transpose` | [1384](../../src/event.rs#L1384) | receiver-type-required |
+| `optional_array` | `object         .get(field)         .map` | [1384](../../src/event.rs#L1384) | receiver-type-required |
+| `optional_array` | `object         .get` | [1384](../../src/event.rs#L1384) | receiver-type-required |
+| `optional_array` | `value                 .as_array()                 .map(Vec::as_slice)                 .ok_or_else` | [1387](../../src/event.rs#L1387) | receiver-type-required |
+| `optional_array` | `value                 .as_array()                 .map` | [1387](../../src/event.rs#L1387) | receiver-type-required |
+| `optional_array` | `value                 .as_array` | [1387](../../src/event.rs#L1387) | receiver-type-required |
+| `optional_array` | `SchemaError::event` | [1390](../../src/event.rs#L1390) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_array` | `Some` | [1390](../../src/event.rs#L1390) | external-constructor-callback-or-unresolved |
+| `required_enum` | `required_str` | [1401](../../src/event.rs#L1401) | [schema::event::required_str](../../src/event.rs#L1242) |
+| `required_enum` | `Some` | [1401](../../src/event.rs#L1401), [1404](../../src/event.rs#L1404) | external-constructor-callback-or-unresolved |
+| `required_enum` | `allowed.contains` | [1402](../../src/event.rs#L1402) | receiver-type-required |
+| `required_enum` | `Err` | [1403](../../src/event.rs#L1403) | external-constructor-callback-or-unresolved |
+| `required_enum` | `SchemaError::event` | [1403](../../src/event.rs#L1403) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `required_enum` | `Ok` | [1408](../../src/event.rs#L1408) | external-constructor-callback-or-unresolved |
+| `optional_json_value` | `object.get` | [1412](../../src/event.rs#L1412) | receiver-type-required |
+| `optional_json_value` | `serde_json_canonicalizer::to_vec(value)             .map_err` | [1413](../../src/event.rs#L1413) | receiver-type-required |
+| `optional_json_value` | `serde_json_canonicalizer::to_vec` | [1413](../../src/event.rs#L1413) | external-constructor-callback-or-unresolved |
+| `optional_json_value` | `SchemaError::Canonical` | [1414](../../src/event.rs#L1414) | external-constructor-callback-or-unresolved |
+| `optional_json_value` | `error.to_string` | [1414](../../src/event.rs#L1414) | receiver-type-required |
+| `optional_json_value` | `Ok` | [1416](../../src/event.rs#L1416) | external-constructor-callback-or-unresolved |
+| `optional_visibility` | `optional_str(object, "visibility", seq)?         .map(&#124;value&#124; match value {             "model" => Ok(Visibility::Model),             "runtime" => Ok(Visibility::Runtime),             _ => Err(SchemaError::event(                 Some(seq),                 "visibility must be model or runtime",             )),         })         .transpose` | [1423](../../src/event.rs#L1423) | receiver-type-required |
+| `optional_visibility` | `optional_str(object, "visibility", seq)?         .map` | [1423](../../src/event.rs#L1423) | receiver-type-required |
+| `optional_visibility` | `optional_str` | [1423](../../src/event.rs#L1423) | [schema::event::optional_str](../../src/event.rs#L1269) |
+| `optional_visibility` | `Ok` | [1425](../../src/event.rs#L1425), [1426](../../src/event.rs#L1426) | external-constructor-callback-or-unresolved |
+| `optional_visibility` | `Err` | [1427](../../src/event.rs#L1427) | external-constructor-callback-or-unresolved |
+| `optional_visibility` | `SchemaError::event` | [1427](../../src/event.rs#L1427) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `optional_visibility` | `Some` | [1428](../../src/event.rs#L1428) | external-constructor-callback-or-unresolved |
+| `ranges` | `required_array` | [1440](../../src/event.rs#L1440) | [schema::event::required_array](../../src/event.rs#L1368) |
+| `ranges` | `values         .iter()         .map(&#124;value&#124; {             let value = value.as_object().ok_or_else(&#124;&#124; {                 SchemaError::event(Some(seq), format!("{field} range must be object"))             })?;             let from = required_u64(value, "from", Some(seq))?;             let to = required_u64(value, "to", Some(seq))?;             if from > to {                 return Err(SchemaError::event(                     Some(seq),                     format!("{field} range is reversed"),                 ));             }             Ok((from, to))         })         .collect` | [1441](../../src/event.rs#L1441) | receiver-type-required |
+| `ranges` | `values         .iter()         .map` | [1441](../../src/event.rs#L1441) | receiver-type-required |
+| `ranges` | `values         .iter` | [1441](../../src/event.rs#L1441) | receiver-type-required |
+| `ranges` | `value.as_object().ok_or_else` | [1444](../../src/event.rs#L1444) | receiver-type-required |
+| `ranges` | `value.as_object` | [1444](../../src/event.rs#L1444) | receiver-type-required |
+| `ranges` | `SchemaError::event` | [1445](../../src/event.rs#L1445), [1450](../../src/event.rs#L1450) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `ranges` | `Some` | [1445](../../src/event.rs#L1445), [1447](../../src/event.rs#L1447), [1448](../../src/event.rs#L1448), [1451](../../src/event.rs#L1451) | external-constructor-callback-or-unresolved |
+| `ranges` | `required_u64` | [1447](../../src/event.rs#L1447), [1448](../../src/event.rs#L1448) | [schema::event::required_u64](../../src/event.rs#L1284) |
+| `ranges` | `Err` | [1450](../../src/event.rs#L1450) | external-constructor-callback-or-unresolved |
+| `ranges` | `Ok` | [1455](../../src/event.rs#L1455) | external-constructor-callback-or-unresolved |
+| `validate_ranges_optional` | `object.contains_key` | [1465](../../src/event.rs#L1465) | receiver-type-required |
+| `validate_ranges_optional` | `ranges` | [1466](../../src/event.rs#L1466) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `validate_ranges_optional` | `Ok` | [1468](../../src/event.rs#L1468) | external-constructor-callback-or-unresolved |
+| `validate_ranges_required_from_envelope` | `ranges` | [1476](../../src/event.rs#L1476) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `validate_ranges_required_from_payload` | `ranges` | [1484](../../src/event.rs#L1484) | [schema::event::ranges](../../src/event.rs#L1435) |
+| `validate_u64_array` | `value             .as_u64()             .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)             .is_none` | [1489](../../src/event.rs#L1489) | receiver-type-required |
+| `validate_u64_array` | `value             .as_u64()             .filter` | [1489](../../src/event.rs#L1489) | receiver-type-required |
+| `validate_u64_array` | `value             .as_u64` | [1489](../../src/event.rs#L1489) | receiver-type-required |
+| `validate_u64_array` | `Err` | [1494](../../src/event.rs#L1494) | external-constructor-callback-or-unresolved |
+| `validate_u64_array` | `SchemaError::event` | [1494](../../src/event.rs#L1494) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_u64_array` | `Some` | [1495](../../src/event.rs#L1495) | external-constructor-callback-or-unresolved |
+| `validate_u64_array` | `Ok` | [1500](../../src/event.rs#L1500) | external-constructor-callback-or-unresolved |
+| `validate_strictly_increasing_u64` | `value             .as_u64()             .filter(&#124;value&#124; *value <= MAX_SAFE_INTEGER)             .ok_or_else` | [1510](../../src/event.rs#L1510) | receiver-type-required |
+| `validate_strictly_increasing_u64` | `value             .as_u64()             .filter` | [1510](../../src/event.rs#L1510) | receiver-type-required |
+| `validate_strictly_increasing_u64` | `value             .as_u64` | [1510](../../src/event.rs#L1510) | receiver-type-required |
+| `validate_strictly_increasing_u64` | `SchemaError::event` | [1514](../../src/event.rs#L1514), [1517](../../src/event.rs#L1517) | [schema::SchemaError::event](../../src/lib.rs#L29) |
+| `validate_strictly_increasing_u64` | `Some` | [1514](../../src/event.rs#L1514), [1518](../../src/event.rs#L1518), [1522](../../src/event.rs#L1522) | external-constructor-callback-or-unresolved |
+| `validate_strictly_increasing_u64` | `previous.is_some_and` | [1516](../../src/event.rs#L1516) | receiver-type-required |
+| `validate_strictly_increasing_u64` | `Err` | [1517](../../src/event.rs#L1517) | external-constructor-callback-or-unresolved |
+| `validate_strictly_increasing_u64` | `Ok` | [1524](../../src/event.rs#L1524) | external-constructor-callback-or-unresolved |

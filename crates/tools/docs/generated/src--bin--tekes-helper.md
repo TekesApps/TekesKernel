@@ -65,7 +65,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `arguments.len` | [23](../../src/bin/tekes-helper.rs#L23) | receiver-type-required |
 | `run` | `Err` | [24](../../src/bin/tekes-helper.rs#L24), [33](../../src/bin/tekes-helper.rs#L33) | external-constructor-callback-or-unresolved |
 | `run` | `"--job-runner accepts exactly one request path".into` | [24](../../src/bin/tekes-helper.rs#L24) | receiver-type-required |
-| `run` | `tools::run_job_runner` | [26](../../src/bin/tekes-helper.rs#L26) | [tools::runtime_backends::run_job_runner](../../src/runtime_backends.rs#L1029) |
+| `run` | `tools::run_job_runner` | [26](../../src/bin/tekes-helper.rs#L26) | [tools::runtime_backends::run_job_runner](../../src/runtime_backends.rs#L1028) |
 | `run` | `PathBuf::from` | [26](../../src/bin/tekes-helper.rs#L26), [42](../../src/bin/tekes-helper.rs#L42) | external-constructor-callback-or-unresolved |
 | `run` | `Ok` | [27](../../src/bin/tekes-helper.rs#L27), [46](../../src/bin/tekes-helper.rs#L46) | external-constructor-callback-or-unresolved |
 | `run` | `arguments.into_iter` | [29](../../src/bin/tekes-helper.rs#L29) | receiver-type-required |

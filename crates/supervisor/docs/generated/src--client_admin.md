@@ -443,7 +443,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `change_folders` | `Some` | [257](../../src/client_admin.rs#L257) | external-constructor-callback-or-unresolved |
 | `change_folders` | `NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(                     &self.root,                     &input.workspace_id,                 ))                 .map_err` | [258](../../src/client_admin.rs#L258) | receiver-type-required |
 | `change_folders` | `NamedLock::try_exclusive` | [258](../../src/client_admin.rs#L258) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [258](../../src/client_admin.rs#L258) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6361) |
+| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [258](../../src/client_admin.rs#L258) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6359) |
 | `change_folders` | `failure` | [263](../../src/client_admin.rs#L263) | [tekes-supervisor::client_admin::failure](../../src/client_admin.rs#L519) |
 | `change_folders` | `internal_store` | [268](../../src/client_admin.rs#L268) | [tekes-supervisor::client_admin::internal_store](../../src/client_admin.rs#L926) |
 | `change_folders` | `management_request_hash` | [272](../../src/client_admin.rs#L272) | [tekes-supervisor::client_admin::management_request_hash](../../src/client_admin.rs#L946) |
@@ -456,11 +456,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `change_folders` | `mark_management_handoff` | [293](../../src/client_admin.rs#L293) | [tekes-supervisor::client_admin::mark_management_handoff](../../src/client_admin.rs#L966) |
 | `change_folders` | `to_ijson` | [294](../../src/client_admin.rs#L294) | [tekes-supervisor::client_admin::to_ijson](../../src/client_admin.rs#L513) |
 | `lock_management` | `endpoint::ManagementStore::lock_exclusive(&self.root)             .map_err` | [307](../../src/client_admin.rs#L307) | receiver-type-required |
-| `lock_management` | `endpoint::ManagementStore::lock_exclusive` | [307](../../src/client_admin.rs#L307) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L494) |
+| `lock_management` | `endpoint::ManagementStore::lock_exclusive` | [307](../../src/client_admin.rs#L307) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L496) |
 | `lock_management` | `internal` | [308](../../src/client_admin.rs#L308) | [tekes-supervisor::client_admin::internal](../../src/client_admin.rs#L526) |
 | `lock_management` | `error.to_string` | [308](../../src/client_admin.rs#L308) | receiver-type-required |
 | `management` | `endpoint::ManagementStore::open_light(&self.root)             .map_err` | [312](../../src/client_admin.rs#L312) | receiver-type-required |
-| `management` | `endpoint::ManagementStore::open_light` | [312](../../src/client_admin.rs#L312) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L422) |
+| `management` | `endpoint::ManagementStore::open_light` | [312](../../src/client_admin.rs#L312) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
 | `management` | `internal` | [313](../../src/client_admin.rs#L313) | [tekes-supervisor::client_admin::internal](../../src/client_admin.rs#L526) |
 | `management` | `error.to_string` | [313](../../src/client_admin.rs#L313) | receiver-type-required |
 | `class` | `self.methods             .iter()             .find_map` | [337](../../src/client_admin.rs#L337) | receiver-type-required |
@@ -828,7 +828,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `policy_set_publishes_only_under_the_management_lock` | `folder_fixture` | [1311](../../src/client_admin.rs#L1311) | [tekes-supervisor::client_admin::tests::k1_management_race::folder_fixture](../../src/client_admin.rs#L1258) |
 | `policy_set_publishes_only_under_the_management_lock` | `revision` | [1312](../../src/client_admin.rs#L1312) | [tekes-supervisor::client_admin::tests::k1_management_race::revision](../../src/client_admin.rs#L1299) |
 | `policy_set_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive(root.path()).expect` | [1313](../../src/client_admin.rs#L1313) | receiver-type-required |
-| `policy_set_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive` | [1313](../../src/client_admin.rs#L1313) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L494) |
+| `policy_set_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive` | [1313](../../src/client_admin.rs#L1313) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L496) |
 | `policy_set_publishes_only_under_the_management_lock` | `root.path` | [1313](../../src/client_admin.rs#L1313) | receiver-type-required |
 | `policy_set_publishes_only_under_the_management_lock` | `channel` | [1314](../../src/client_admin.rs#L1314) | external-constructor-callback-or-unresolved |
 | `policy_set_publishes_only_under_the_management_lock` | `std::thread::scope` | [1315](../../src/client_admin.rs#L1315) | external-constructor-callback-or-unresolved |
@@ -857,7 +857,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `desired.canonical_bytes().expect` | [1368](../../src/client_admin.rs#L1368) | receiver-type-required |
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `desired.canonical_bytes` | [1368](../../src/client_admin.rs#L1368) | receiver-type-required |
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive(root.path()).expect` | [1372](../../src/client_admin.rs#L1372) | receiver-type-required |
-| `recovered_policy_intent_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive` | [1372](../../src/client_admin.rs#L1372) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L494) |
+| `recovered_policy_intent_publishes_only_under_the_management_lock` | `endpoint::ManagementStore::lock_exclusive` | [1372](../../src/client_admin.rs#L1372) | [endpoint::management::ManagementStore::lock_exclusive](../../../endpoint/src/management.rs#L496) |
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `root.path` | [1372](../../src/client_admin.rs#L1372) | receiver-type-required |
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `channel` | [1373](../../src/client_admin.rs#L1373) | external-constructor-callback-or-unresolved |
 | `recovered_policy_intent_publishes_only_under_the_management_lock` | `std::thread::scope` | [1374](../../src/client_admin.rs#L1374) | external-constructor-callback-or-unresolved |
@@ -886,10 +886,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `policy_set_racing_the_recovery_tick_never_corrupts_management` | `ticker.join().expect` | [1431](../../src/client_admin.rs#L1431) | receiver-type-required |
 | `policy_set_racing_the_recovery_tick_never_corrupts_management` | `ticker.join` | [1431](../../src/client_admin.rs#L1431) | receiver-type-required |
 | `policy_set_racing_the_recovery_tick_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver(                 root.path(),                 "2026-10-13T06:00:06.000Z",                 None,             )             .expect` | [1435](../../src/client_admin.rs#L1435) | receiver-type-required |
-| `policy_set_racing_the_recovery_tick_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver` | [1435](../../src/client_admin.rs#L1435) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L362) |
+| `policy_set_racing_the_recovery_tick_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver` | [1435](../../src/client_admin.rs#L1435) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L364) |
 | `policy_set_racing_relocate_never_corrupts_management` | `folder_fixture` | [1447](../../src/client_admin.rs#L1447) | [tekes-supervisor::client_admin::tests::k1_management_race::folder_fixture](../../src/client_admin.rs#L1258) |
 | `policy_set_racing_relocate_never_corrupts_management` | `root.path().join` | [1448](../../src/client_admin.rs#L1448) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `root.path` | [1448](../../src/client_admin.rs#L1448), [1484](../../src/client_admin.rs#L1484), [1514](../../src/client_admin.rs#L1514) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `root.path` | [1448](../../src/client_admin.rs#L1448), [1488](../../src/client_admin.rs#L1488), [1518](../../src/client_admin.rs#L1518) | receiver-type-required |
 | `policy_set_racing_relocate_never_corrupts_management` | `fs::create_dir(&other).expect` | [1449](../../src/client_admin.rs#L1449) | receiver-type-required |
 | `policy_set_racing_relocate_never_corrupts_management` | `fs::create_dir` | [1449](../../src/client_admin.rs#L1449) | external-constructor-callback-or-unresolved |
 | `policy_set_racing_relocate_never_corrupts_management` | `fs::canonicalize(&project)                 .expect("first")                 .to_string_lossy()                 .into_owned` | [1450](../../src/client_admin.rs#L1450) | receiver-type-required |
@@ -903,22 +903,23 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `policy_set_racing_relocate_never_corrupts_management` | `std::thread::scope` | [1459](../../src/client_admin.rs#L1459) | external-constructor-callback-or-unresolved |
 | `policy_set_racing_relocate_never_corrupts_management` | `scope.spawn` | [1460](../../src/client_admin.rs#L1460) | receiver-type-required |
 | `policy_set_racing_relocate_never_corrupts_management` | `done.load` | [1463](../../src/client_admin.rs#L1463) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `policy_call` | [1465](../../src/client_admin.rs#L1465) | [tekes-supervisor::client_admin::tests::k1_management_race::policy_call](../../src/client_admin.rs#L1289) |
-| `policy_set_racing_relocate_never_corrupts_management` | `revision` | [1467](../../src/client_admin.rs#L1467) | [tekes-supervisor::client_admin::tests::k1_management_race::revision](../../src/client_admin.rs#L1299) |
-| `policy_set_racing_relocate_never_corrupts_management` | `serde_json::to_value(&request.payload).expect` | [1470](../../src/client_admin.rs#L1470) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `serde_json::to_value` | [1470](../../src/client_admin.rs#L1470) | external-constructor-callback-or-unresolved |
-| `policy_set_racing_relocate_never_corrupts_management` | `routes.execute` | [1471](../../src/client_admin.rs#L1471) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `project.to_string_lossy().into_owned` | [1480](../../src/client_admin.rs#L1480) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `project.to_string_lossy` | [1480](../../src/client_admin.rs#L1480) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `second.clone` | [1481](../../src/client_admin.rs#L1481), [1498](../../src/client_admin.rs#L1498) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_light(root.path()).expect` | [1484](../../src/client_admin.rs#L1484) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_light` | [1484](../../src/client_admin.rs#L1484) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L422) |
-| `policy_set_racing_relocate_never_corrupts_management` | `store.relocate_workspace` | [1485](../../src/client_admin.rs#L1485) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `"0".repeat` | [1487](../../src/client_admin.rs#L1487) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `to.clone` | [1494](../../src/client_admin.rs#L1494) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `first.clone` | [1496](../../src/client_admin.rs#L1496) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `done.store` | [1505](../../src/client_admin.rs#L1505) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `writer.join().expect` | [1506](../../src/client_admin.rs#L1506) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `writer.join` | [1506](../../src/client_admin.rs#L1506) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver(                 root.path(),                 "2026-10-13T06:00:06.000Z",                 None,             )             .expect` | [1513](../../src/client_admin.rs#L1513) | receiver-type-required |
-| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver` | [1513](../../src/client_admin.rs#L1513) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L362) |
+| `policy_set_racing_relocate_never_corrupts_management` | `index.is_multiple_of` | [1464](../../src/client_admin.rs#L1464) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `policy_call` | [1469](../../src/client_admin.rs#L1469) | [tekes-supervisor::client_admin::tests::k1_management_race::policy_call](../../src/client_admin.rs#L1289) |
+| `policy_set_racing_relocate_never_corrupts_management` | `revision` | [1471](../../src/client_admin.rs#L1471) | [tekes-supervisor::client_admin::tests::k1_management_race::revision](../../src/client_admin.rs#L1299) |
+| `policy_set_racing_relocate_never_corrupts_management` | `serde_json::to_value(&request.payload).expect` | [1474](../../src/client_admin.rs#L1474) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `serde_json::to_value` | [1474](../../src/client_admin.rs#L1474) | external-constructor-callback-or-unresolved |
+| `policy_set_racing_relocate_never_corrupts_management` | `routes.execute` | [1475](../../src/client_admin.rs#L1475) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `project.to_string_lossy().into_owned` | [1484](../../src/client_admin.rs#L1484) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `project.to_string_lossy` | [1484](../../src/client_admin.rs#L1484) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `second.clone` | [1485](../../src/client_admin.rs#L1485), [1502](../../src/client_admin.rs#L1502) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_light(root.path()).expect` | [1488](../../src/client_admin.rs#L1488) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_light` | [1488](../../src/client_admin.rs#L1488) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
+| `policy_set_racing_relocate_never_corrupts_management` | `store.relocate_workspace` | [1489](../../src/client_admin.rs#L1489) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `"0".repeat` | [1491](../../src/client_admin.rs#L1491) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `to.clone` | [1498](../../src/client_admin.rs#L1498) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `first.clone` | [1500](../../src/client_admin.rs#L1500) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `done.store` | [1509](../../src/client_admin.rs#L1509) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `writer.join().expect` | [1510](../../src/client_admin.rs#L1510) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `writer.join` | [1510](../../src/client_admin.rs#L1510) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver(                 root.path(),                 "2026-10-13T06:00:06.000Z",                 None,             )             .expect` | [1517](../../src/client_admin.rs#L1517) | receiver-type-required |
+| `policy_set_racing_relocate_never_corrupts_management` | `endpoint::ManagementStore::open_at_with_queue_driver` | [1517](../../src/client_admin.rs#L1517) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L364) |

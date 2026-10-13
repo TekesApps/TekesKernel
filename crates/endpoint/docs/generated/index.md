@@ -36,8 +36,8 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/endpoint/src/all_session.rs](../../src/all_session.rs) | 23 | 149 | [Symbols and calls](src--all_session.md) |
 | [crates/endpoint/src/approval_policy.rs](../../src/approval_policy.rs) | 9 | 6 | [Symbols and calls](src--approval_policy.md) |
-| [crates/endpoint/src/attachment.rs](../../src/attachment.rs) | 91 | 879 | [Symbols and calls](src--attachment.md) |
-| [crates/endpoint/src/carrier_adapter.rs](../../src/carrier_adapter.rs) | 40 | 227 | [Symbols and calls](src--carrier_adapter.md) |
+| [crates/endpoint/src/attachment.rs](../../src/attachment.rs) | 91 | 880 | [Symbols and calls](src--attachment.md) |
+| [crates/endpoint/src/carrier_adapter.rs](../../src/carrier_adapter.rs) | 40 | 225 | [Symbols and calls](src--carrier_adapter.md) |
 | [crates/endpoint/src/client_wire.rs](../../src/client_wire.rs) | 8 | 22 | [Symbols and calls](src--client_wire.md) |
 | [crates/endpoint/src/history.rs](../../src/history.rs) | 6 | 65 | [Symbols and calls](src--history.md) |
 | [crates/endpoint/src/host.rs](../../src/host.rs) | 67 | 115 | [Symbols and calls](src--host.md) |

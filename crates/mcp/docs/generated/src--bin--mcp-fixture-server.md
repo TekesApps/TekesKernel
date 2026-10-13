@@ -42,10 +42,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `std::env::args` | [8](../../src/bin/mcp-fixture-server.rs#L8) | external-constructor-callback-or-unresolved |
 | `main` | `arguments.next().unwrap_or_default` | [9](../../src/bin/mcp-fixture-server.rs#L9) | receiver-type-required |
 | `main` | `arguments.next` | [9](../../src/bin/mcp-fixture-server.rs#L9), [11](../../src/bin/mcp-fixture-server.rs#L11) | receiver-type-required |
-| `main` | `std::fs::write(pid_path, std::process::id().to_string()).expect` | [12](../../src/bin/mcp-fixture-server.rs#L12) | receiver-type-required |
-| `main` | `std::fs::write` | [12](../../src/bin/mcp-fixture-server.rs#L12) | external-constructor-callback-or-unresolved |
-| `main` | `std::process::id().to_string` | [12](../../src/bin/mcp-fixture-server.rs#L12) | receiver-type-required |
-| `main` | `std::process::id` | [12](../../src/bin/mcp-fixture-server.rs#L12) | external-constructor-callback-or-unresolved |
+| `main` | `std::fs::write(pid_path, std::process::id().to_string()).expect` | [13](../../src/bin/mcp-fixture-server.rs#L13) | receiver-type-required |
+| `main` | `std::fs::write` | [13](../../src/bin/mcp-fixture-server.rs#L13) | external-constructor-callback-or-unresolved |
+| `main` | `std::process::id().to_string` | [13](../../src/bin/mcp-fixture-server.rs#L13) | receiver-type-required |
+| `main` | `std::process::id` | [13](../../src/bin/mcp-fixture-server.rs#L13) | external-constructor-callback-or-unresolved |
 | `main` | `(scenario == "descendant-inherits-stderr").then` | [15](../../src/bin/mcp-fixture-server.rs#L15) | receiver-type-required |
 | `main` | `Command::new("/bin/sh")             .args(["-c", "sleep 2"])             .stdin(Stdio::null())             .stdout(Stdio::null())             .stderr(Stdio::inherit())             .spawn()             .expect` | [16](../../src/bin/mcp-fixture-server.rs#L16) | receiver-type-required |
 | `main` | `Command::new("/bin/sh")             .args(["-c", "sleep 2"])             .stdin(Stdio::null())             .stdout(Stdio::null())             .stderr(Stdio::inherit())             .spawn` | [16](../../src/bin/mcp-fixture-server.rs#L16) | receiver-type-required |

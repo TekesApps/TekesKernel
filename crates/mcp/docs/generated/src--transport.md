@@ -65,26 +65,26 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [mcp::transport::HttpTransport::new_with_authorization_provider](../../src/transport.rs#L703) | function_item | `pub` |  |
 | [mcp::transport::HttpTransport::new_with_request_authorization_provider](../../src/transport.rs#L727) | function_item | `pub` |  |
 | [mcp::transport::HttpTransport::request_headers](../../src/transport.rs#L784) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::start_catalog_subscription](../../src/transport.rs#L910) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::install_tool_catalog](../../src/transport.rs#L929) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::supports_http_discovery](../../src/transport.rs#L934) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::start_scoped_request](../../src/transport.rs#L938) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::request](../../src/transport.rs#L948) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::notify](../../src/transport.rs#L1108) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::close](../../src/transport.rs#L1137) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::reconnect](../../src/transport.rs#L1171) | function_item | `private` |  |
-| [mcp::transport::HttpTransport::take_notifications](../../src/transport.rs#L1181) | function_item | `private` |  |
-| [mcp::transport::SseDecoder](../../src/transport.rs#L1187) | struct_item | `private` |  |
-| [mcp::transport::SseDecoder::push](../../src/transport.rs#L1194) | function_item | `private` |  |
-| [mcp::transport::Inbound](../../src/transport.rs#L1238) | enum_item | `private` |  |
-| [mcp::transport::InboundWire](../../src/transport.rs#L1246) | struct_item | `private` |  |
-| [mcp::transport::decode_response](../../src/transport.rs#L1260) | function_item | `private` |  |
-| [mcp::transport::decode_inbound](../../src/transport.rs#L1269) | function_item | `private` |  |
-| [mcp::transport::tests::owned_scoped_requests_cannot_outlive_close_or_reconnect](../../src/transport.rs#L1346) | function_item | `private` | test; #[cfg(test)] |
-| [mcp::transport::tests::duplicate_json_members_fail_before_value_collapse](../../src/transport.rs#L1426) | function_item | `private` | test; #[cfg(test)] |
-| [mcp::transport::tests::cancelled_response_tombstone_is_consumed_once](../../src/transport.rs#L1440) | function_item | `private` | test; #[cfg(test)] |
-| [mcp::transport::tests::sse_decoder_yields_the_first_complete_event_without_eof](../../src/transport.rs#L1462) | function_item | `private` | test; #[cfg(test)] |
-| [mcp::transport::tests::timed_out_detached_reaper_does_not_delay_runtime_drop](../../src/transport.rs#L1481) | function_item | `private` | test; #[cfg(test)] |
+| [mcp::transport::HttpTransport::start_catalog_subscription](../../src/transport.rs#L909) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::install_tool_catalog](../../src/transport.rs#L928) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::supports_http_discovery](../../src/transport.rs#L933) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::start_scoped_request](../../src/transport.rs#L937) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::request](../../src/transport.rs#L947) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::notify](../../src/transport.rs#L1106) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::close](../../src/transport.rs#L1135) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::reconnect](../../src/transport.rs#L1169) | function_item | `private` |  |
+| [mcp::transport::HttpTransport::take_notifications](../../src/transport.rs#L1179) | function_item | `private` |  |
+| [mcp::transport::SseDecoder](../../src/transport.rs#L1185) | struct_item | `private` |  |
+| [mcp::transport::SseDecoder::push](../../src/transport.rs#L1192) | function_item | `private` |  |
+| [mcp::transport::Inbound](../../src/transport.rs#L1236) | enum_item | `private` |  |
+| [mcp::transport::InboundWire](../../src/transport.rs#L1244) | struct_item | `private` |  |
+| [mcp::transport::decode_response](../../src/transport.rs#L1258) | function_item | `private` |  |
+| [mcp::transport::decode_inbound](../../src/transport.rs#L1267) | function_item | `private` |  |
+| [mcp::transport::tests::owned_scoped_requests_cannot_outlive_close_or_reconnect](../../src/transport.rs#L1344) | function_item | `private` | test; #[cfg(test)] |
+| [mcp::transport::tests::duplicate_json_members_fail_before_value_collapse](../../src/transport.rs#L1424) | function_item | `private` | test; #[cfg(test)] |
+| [mcp::transport::tests::cancelled_response_tombstone_is_consumed_once](../../src/transport.rs#L1438) | function_item | `private` | test; #[cfg(test)] |
+| [mcp::transport::tests::sse_decoder_yields_the_first_complete_event_without_eof](../../src/transport.rs#L1460) | function_item | `private` | test; #[cfg(test)] |
+| [mcp::transport::tests::timed_out_detached_reaper_does_not_delay_runtime_drop](../../src/transport.rs#L1479) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -313,7 +313,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request_inner` | `self.read_response_line` | [191](../../src/transport.rs#L191) | [mcp::transport::StdioTransport::read_response_line](../../src/transport.rs#L238) |
 | `request_inner` | `McpError::Timeout` | [193](../../src/transport.rs#L193) | external-constructor-callback-or-unresolved |
 | `request_inner` | `request.method.clone` | [193](../../src/transport.rs#L193) | receiver-type-required |
-| `request_inner` | `decode_inbound` | [194](../../src/transport.rs#L194) | [mcp::transport::decode_inbound](../../src/transport.rs#L1269) |
+| `request_inner` | `decode_inbound` | [194](../../src/transport.rs#L194) | [mcp::transport::decode_inbound](../../src/transport.rs#L1267) |
 | `request_inner` | `Ok` | [195](../../src/transport.rs#L195) | external-constructor-callback-or-unresolved |
 | `request_inner` | `self.notifications.push` | [196](../../src/transport.rs#L196) | receiver-type-required |
 | `close_after_protocol_error` | `self.terminate` | [207](../../src/transport.rs#L207) | [mcp::transport::StdioTransport::terminate](../../src/transport.rs#L159) |
@@ -592,16 +592,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request_headers` | `Some` | [801](../../src/transport.rs#L801), [865](../../src/transport.rs#L865), [866](../../src/transport.rs#L866), [867](../../src/transport.rs#L867) | external-constructor-callback-or-unresolved |
 | `request_headers` | `authorization.identity.clone` | [801](../../src/transport.rs#L801) | receiver-type-required |
 | `request_headers` | `HeaderMap::new` | [802](../../src/transport.rs#L802) | external-constructor-callback-or-unresolved |
-| `request_headers` | `map.insert` | [803](../../src/transport.rs#L803), [804](../../src/transport.rs#L804), [809](../../src/transport.rs#L809), [831](../../src/transport.rs#L831), [840](../../src/transport.rs#L840), [843](../../src/transport.rs#L843), [854](../../src/transport.rs#L854), [859](../../src/transport.rs#L859), [883](../../src/transport.rs#L883), [896](../../src/transport.rs#L896) | receiver-type-required |
+| `request_headers` | `map.insert` | [803](../../src/transport.rs#L803), [804](../../src/transport.rs#L804), [809](../../src/transport.rs#L809), [831](../../src/transport.rs#L831), [840](../../src/transport.rs#L840), [843](../../src/transport.rs#L843), [854](../../src/transport.rs#L854), [859](../../src/transport.rs#L859), [883](../../src/transport.rs#L883), [897](../../src/transport.rs#L897) | receiver-type-required |
 | `request_headers` | `HeaderValue::from_static` | [803](../../src/transport.rs#L803), [806](../../src/transport.rs#L806) | external-constructor-callback-or-unresolved |
 | `request_headers` | `name.clone` | [810](../../src/transport.rs#L810) | receiver-type-required |
 | `request_headers` | `HeaderValue::from_str(value.as_str())                     .map_err` | [811](../../src/transport.rs#L811) | receiver-type-required |
-| `request_headers` | `HeaderValue::from_str` | [811](../../src/transport.rs#L811), [833](../../src/transport.rs#L833), [838](../../src/transport.rs#L838), [856](../../src/transport.rs#L856), [861](../../src/transport.rs#L861), [885](../../src/transport.rs#L885), [899](../../src/transport.rs#L899) | external-constructor-callback-or-unresolved |
+| `request_headers` | `HeaderValue::from_str` | [811](../../src/transport.rs#L811), [833](../../src/transport.rs#L833), [838](../../src/transport.rs#L838), [856](../../src/transport.rs#L856), [861](../../src/transport.rs#L861), [885](../../src/transport.rs#L885), [900](../../src/transport.rs#L900) | external-constructor-callback-or-unresolved |
 | `request_headers` | `value.as_str` | [811](../../src/transport.rs#L811) | receiver-type-required |
 | `request_headers` | `error.to_string` | [812](../../src/transport.rs#L812), [817](../../src/transport.rs#L817), [834](../../src/transport.rs#L834), [839](../../src/transport.rs#L839), [849](../../src/transport.rs#L849), [857](../../src/transport.rs#L857), [862](../../src/transport.rs#L862), [886](../../src/transport.rs#L886) | receiver-type-required |
 | `request_headers` | `HeaderName::from_bytes(name.as_bytes())                 .map_err` | [816](../../src/transport.rs#L816) | receiver-type-required |
-| `request_headers` | `HeaderName::from_bytes` | [816](../../src/transport.rs#L816), [897](../../src/transport.rs#L897) | external-constructor-callback-or-unresolved |
-| `request_headers` | `name.as_bytes` | [816](../../src/transport.rs#L816), [897](../../src/transport.rs#L897) | receiver-type-required |
+| `request_headers` | `HeaderName::from_bytes` | [816](../../src/transport.rs#L816), [898](../../src/transport.rs#L898) | external-constructor-callback-or-unresolved |
+| `request_headers` | `name.as_bytes` | [816](../../src/transport.rs#L816), [898](../../src/transport.rs#L898) | receiver-type-required |
 | `request_headers` | `name.as_str().eq_ignore_ascii_case` | [821](../../src/transport.rs#L821), [822](../../src/transport.rs#L822), [823](../../src/transport.rs#L823), [824](../../src/transport.rs#L824) | receiver-type-required |
 | `request_headers` | `name.as_str` | [821](../../src/transport.rs#L821), [822](../../src/transport.rs#L822), [823](../../src/transport.rs#L823), [824](../../src/transport.rs#L824), [825](../../src/transport.rs#L825) | receiver-type-required |
 | `request_headers` | `name.as_str().starts_with` | [825](../../src/transport.rs#L825) | receiver-type-required |
@@ -611,7 +611,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request_headers` | `session_id.clone` | [845](../../src/transport.rs#L845) | receiver-type-required |
 | `request_headers` | `serde_json::to_value(request).map_err` | [849](../../src/transport.rs#L849) | receiver-type-required |
 | `request_headers` | `serde_json::to_value` | [849](../../src/transport.rs#L849) | external-constructor-callback-or-unresolved |
-| `request_headers` | `McpError::Protocol` | [849](../../src/transport.rs#L849), [857](../../src/transport.rs#L857), [862](../../src/transport.rs#L862), [886](../../src/transport.rs#L886), [898](../../src/transport.rs#L898), [900](../../src/transport.rs#L900) | external-constructor-callback-or-unresolved |
+| `request_headers` | `McpError::Protocol` | [849](../../src/transport.rs#L849), [857](../../src/transport.rs#L857), [862](../../src/transport.rs#L862), [886](../../src/transport.rs#L886), [899](../../src/transport.rs#L899), [900](../../src/transport.rs#L900) | external-constructor-callback-or-unresolved |
 | `request_headers` | `request_value             .pointer("/params/_meta/io.modelcontextprotocol~1protocolVersion")             .and_then` | [850](../../src/transport.rs#L850) | receiver-type-required |
 | `request_headers` | `request_value             .pointer` | [850](../../src/transport.rs#L850) | receiver-type-required |
 | `request_headers` | `HeaderValue::from_str(version)                     .map_err` | [856](../../src/transport.rs#L856) | receiver-type-required |
@@ -628,273 +628,273 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request_headers` | `name.ends_with` | [874](../../src/transport.rs#L874) | receiver-type-required |
 | `request_headers` | `name.to_owned` | [876](../../src/transport.rs#L876) | receiver-type-required |
 | `request_headers` | `HeaderValue::from_str(&encoded)                         .map_err` | [885](../../src/transport.rs#L885) | receiver-type-required |
-| `request_headers` | `map.contains_key` | [890](../../src/transport.rs#L890) | receiver-type-required |
-| `request_headers` | `request_value["params"]["name"]                 .as_str()                 .and_then` | [891](../../src/transport.rs#L891) | receiver-type-required |
-| `request_headers` | `request_value["params"]["name"]                 .as_str` | [891](../../src/transport.rs#L891) | receiver-type-required |
-| `request_headers` | `self.parameter_headers.get` | [893](../../src/transport.rs#L893) | receiver-type-required |
-| `request_headers` | `projection.project` | [895](../../src/transport.rs#L895) | receiver-type-required |
-| `request_headers` | `HeaderName::from_bytes(name.as_bytes())                             .map_err` | [897](../../src/transport.rs#L897) | receiver-type-required |
-| `request_headers` | `e.to_string` | [898](../../src/transport.rs#L898), [900](../../src/transport.rs#L900) | receiver-type-required |
-| `request_headers` | `HeaderValue::from_str(&value)                             .map_err` | [899](../../src/transport.rs#L899) | receiver-type-required |
-| `request_headers` | `Ok` | [905](../../src/transport.rs#L905) | external-constructor-callback-or-unresolved |
-| `start_catalog_subscription` | `crate::McpSubscriptionFilter::new(id, capabilities, &[]).is_empty` | [916](../../src/transport.rs#L916) | receiver-type-required |
-| `start_catalog_subscription` | `crate::McpSubscriptionFilter::new` | [916](../../src/transport.rs#L916) | [mcp::subscription::McpSubscriptionFilter::new](../../src/subscription.rs#L16) |
-| `start_catalog_subscription` | `Some` | [919](../../src/transport.rs#L919) | external-constructor-callback-or-unresolved |
-| `start_catalog_subscription` | `self.listen_subscription` | [919](../../src/transport.rs#L919) | receiver-type-required |
-| `start_catalog_subscription` | `Duration::from_secs` | [923](../../src/transport.rs#L923) | external-constructor-callback-or-unresolved |
-| `start_catalog_subscription` | `crate::McpCancellationToken::default` | [924](../../src/transport.rs#L924) | external-constructor-callback-or-unresolved |
-| `install_tool_catalog` | `crate::parameter_headers::ParameterHeaders::catalog` | [930](../../src/transport.rs#L930) | [mcp::parameter_headers::ParameterHeaders::catalog](../../src/parameter_headers.rs#L20) |
-| `install_tool_catalog` | `Ok` | [931](../../src/transport.rs#L931) | external-constructor-callback-or-unresolved |
-| `start_scoped_request` | `Some` | [945](../../src/transport.rs#L945) | external-constructor-callback-or-unresolved |
-| `start_scoped_request` | `self.start_modern_scoped` | [945](../../src/transport.rs#L945) | receiver-type-required |
-| `request` | `Box::pin` | [953](../../src/transport.rs#L953) | external-constructor-callback-or-unresolved |
-| `request` | `request                 .id                 .ok_or_else` | [954](../../src/transport.rs#L954) | receiver-type-required |
-| `request` | `McpError::Protocol` | [956](../../src/transport.rs#L956), [1042](../../src/transport.rs#L1042), [1061](../../src/transport.rs#L1061), [1079](../../src/transport.rs#L1079), [1089](../../src/transport.rs#L1089), [1095](../../src/transport.rs#L1095) | external-constructor-callback-or-unresolved |
-| `request` | `"request id is absent".to_owned` | [956](../../src/transport.rs#L956) | receiver-type-required |
-| `request` | `self.request_headers` | [957](../../src/transport.rs#L957) | receiver-type-required |
-| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json(request)                 .send()                 .await                 .map_err` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json(request)                 .send` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self                 .client                 .post(self.url.clone())                 .headers` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self                 .client                 .post` | [958](../../src/transport.rs#L958) | receiver-type-required |
-| `request` | `self.url.clone` | [960](../../src/transport.rs#L960) | receiver-type-required |
-| `request` | `error.is_timeout` | [967](../../src/transport.rs#L967) | receiver-type-required |
-| `request` | `McpError::Timeout` | [968](../../src/transport.rs#L968) | external-constructor-callback-or-unresolved |
-| `request` | `request.method.clone` | [968](../../src/transport.rs#L968) | receiver-type-required |
-| `request` | `McpError::Transport` | [970](../../src/transport.rs#L970), [974](../../src/transport.rs#L974), [1027](../../src/transport.rs#L1027), [1050](../../src/transport.rs#L1050), [1087](../../src/transport.rs#L1087) | external-constructor-callback-or-unresolved |
-| `request` | `error.to_string` | [970](../../src/transport.rs#L970), [1050](../../src/transport.rs#L1050), [1061](../../src/transport.rs#L1061), [1087](../../src/transport.rs#L1087) | receiver-type-required |
-| `request` | `response.status().is_redirection` | [973](../../src/transport.rs#L973) | receiver-type-required |
-| `request` | `response.status` | [973](../../src/transport.rs#L973), [978](../../src/transport.rs#L978), [979](../../src/transport.rs#L979) | receiver-type-required |
-| `request` | `Err` | [974](../../src/transport.rs#L974), [1019](../../src/transport.rs#L1019), [1027](../../src/transport.rs#L1027), [1042](../../src/transport.rs#L1042), [1089](../../src/transport.rs#L1089), [1095](../../src/transport.rs#L1095) | external-constructor-callback-or-unresolved |
-| `request` | `"cross-origin redirect rejected".to_owned` | [975](../../src/transport.rs#L975) | receiver-type-required |
-| `request` | `response.status().is_success` | [978](../../src/transport.rs#L978) | receiver-type-required |
-| `request` | `status.is_client_error` | [982](../../src/transport.rs#L982) | receiver-type-required |
-| `request` | `status.as_u16` | [982](../../src/transport.rs#L982) | receiver-type-required |
-| `request` | `response.bytes_stream` | [983](../../src/transport.rs#L983), [1046](../../src/transport.rs#L1046), [1084](../../src/transport.rs#L1084) | receiver-type-required |
-| `request` | `Vec::new` | [984](../../src/transport.rs#L984), [1085](../../src/transport.rs#L1085) | external-constructor-callback-or-unresolved |
-| `request` | `stream.next` | [985](../../src/transport.rs#L985), [1049](../../src/transport.rs#L1049), [1086](../../src/transport.rs#L1086) | receiver-type-required |
-| `request` | `bytes.clear` | [987](../../src/transport.rs#L987), [991](../../src/transport.rs#L991) | receiver-type-required |
-| `request` | `bytes.len` | [990](../../src/transport.rs#L990), [1088](../../src/transport.rs#L1088) | receiver-type-required |
-| `request` | `chunk.len` | [990](../../src/transport.rs#L990), [1088](../../src/transport.rs#L1088) | receiver-type-required |
-| `request` | `bytes.extend_from_slice` | [994](../../src/transport.rs#L994), [1091](../../src/transport.rs#L1091) | receiver-type-required |
-| `request` | `serde_json::from_slice::<JsonRpcResponse>` | [996](../../src/transport.rs#L996) | external-constructor-callback-or-unresolved |
-| `request` | `rpc.error.is_some` | [997](../../src/transport.rs#L997) | receiver-type-required |
-| `request` | `request.id.is_some_and` | [998](../../src/transport.rs#L998) | receiver-type-required |
-| `request` | `rpc.validate_for(id).is_ok` | [998](../../src/transport.rs#L998) | receiver-type-required |
-| `request` | `rpc.validate_for` | [998](../../src/transport.rs#L998) | receiver-type-required |
-| `request` | `Ok` | [1000](../../src/transport.rs#L1000) | external-constructor-callback-or-unresolved |
-| `request` | `serde_json::from_slice::<serde_json::Value>` | [1008](../../src/transport.rs#L1008) | external-constructor-callback-or-unresolved |
-| `request` | `error["message"].as_str().unwrap_or_default` | [1010](../../src/transport.rs#L1010) | receiver-type-required |
-| `request` | `error["message"].as_str` | [1010](../../src/transport.rs#L1010) | receiver-type-required |
-| `request` | `error["code"].as_i64` | [1011](../../src/transport.rs#L1011) | receiver-type-required |
-| `request` | `Some` | [1011](../../src/transport.rs#L1011), [1030](../../src/transport.rs#L1030), [1054](../../src/transport.rs#L1054) | external-constructor-callback-or-unresolved |
-| `request` | `message.to_ascii_lowercase().contains` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
-| `request` | `message.to_ascii_lowercase` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
-| `request` | `error                                 .get("data")                                 .filter(&#124;data&#124; !data.is_null())                                 .and_then(&#124;data&#124; serde_json::to_vec(data).ok())                                 .and_then` | [1014](../../src/transport.rs#L1014) | receiver-type-required |
-| `request` | `error                                 .get("data")                                 .filter(&#124;data&#124; !data.is_null())                                 .and_then` | [1014](../../src/transport.rs#L1014) | receiver-type-required |
-| `request` | `error                                 .get("data")                                 .filter` | [1014](../../src/transport.rs#L1014) | receiver-type-required |
-| `request` | `error                                 .get` | [1014](../../src/transport.rs#L1014) | receiver-type-required |
-| `request` | `data.is_null` | [1016](../../src/transport.rs#L1016) | receiver-type-required |
-| `request` | `serde_json::to_vec(data).ok` | [1017](../../src/transport.rs#L1017) | receiver-type-required |
-| `request` | `serde_json::to_vec` | [1017](../../src/transport.rs#L1017) | external-constructor-callback-or-unresolved |
-| `request` | `IJsonValue::parse(&bytes).ok` | [1018](../../src/transport.rs#L1018) | receiver-type-required |
-| `request` | `IJsonValue::parse` | [1018](../../src/transport.rs#L1018) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `request` | `message.to_owned` | [1021](../../src/transport.rs#L1021) | receiver-type-required |
-| `request` | `response.headers().get` | [1029](../../src/transport.rs#L1029) | receiver-type-required |
-| `request` | `response.headers` | [1029](../../src/transport.rs#L1029) | receiver-type-required |
-| `request` | `session_id.clone` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
-| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then(&#124;value&#124; value.to_str().ok())                 .unwrap_or("")                 .to_owned` | [1032](../../src/transport.rs#L1032) | receiver-type-required |
-| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then(&#124;value&#124; value.to_str().ok())                 .unwrap_or` | [1032](../../src/transport.rs#L1032) | receiver-type-required |
-| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then` | [1032](../../src/transport.rs#L1032) | receiver-type-required |
-| `request` | `response                 .headers()                 .get` | [1032](../../src/transport.rs#L1032) | receiver-type-required |
-| `request` | `response                 .headers` | [1032](../../src/transport.rs#L1032) | receiver-type-required |
-| `request` | `value.to_str().ok` | [1035](../../src/transport.rs#L1035) | receiver-type-required |
-| `request` | `value.to_str` | [1035](../../src/transport.rs#L1035) | receiver-type-required |
-| `request` | `response                 .content_length()                 .is_some_and` | [1038](../../src/transport.rs#L1038) | receiver-type-required |
-| `request` | `response                 .content_length` | [1038](../../src/transport.rs#L1038) | receiver-type-required |
-| `request` | `"HTTP result exceeds 4 MiB".to_owned` | [1042](../../src/transport.rs#L1042), [1089](../../src/transport.rs#L1089) | receiver-type-required |
-| `request` | `content_type.split(';').next().map(str::trim).unwrap_or` | [1044](../../src/transport.rs#L1044) | receiver-type-required |
-| `request` | `content_type.split(';').next().map` | [1044](../../src/transport.rs#L1044) | receiver-type-required |
-| `request` | `content_type.split(';').next` | [1044](../../src/transport.rs#L1044) | receiver-type-required |
-| `request` | `content_type.split` | [1044](../../src/transport.rs#L1044) | receiver-type-required |
-| `request` | `SseDecoder::default` | [1047](../../src/transport.rs#L1047) | external-constructor-callback-or-unresolved |
-| `request` | `chunk.map_err` | [1050](../../src/transport.rs#L1050), [1087](../../src/transport.rs#L1087) | receiver-type-required |
-| `request` | `decoder.push` | [1051](../../src/transport.rs#L1051) | receiver-type-required |
-| `request` | `decode_inbound` | [1052](../../src/transport.rs#L1052) | [mcp::transport::decode_inbound](../../src/transport.rs#L1269) |
-| `request` | `BTreeSet::new` | [1052](../../src/transport.rs#L1052) | external-constructor-callback-or-unresolved |
-| `request` | `serde_json::from_slice(&payload).map_err` | [1060](../../src/transport.rs#L1060) | receiver-type-required |
-| `request` | `serde_json::from_slice` | [1060](../../src/transport.rs#L1060) | external-constructor-callback-or-unresolved |
-| `request` | `handler` | [1063](../../src/transport.rs#L1063), [1066](../../src/transport.rs#L1066) | external-constructor-callback-or-unresolved |
-| `request` | `self.notifications.push` | [1068](../../src/transport.rs#L1068) | receiver-type-required |
-| `request` | `result.is_some` | [1074](../../src/transport.rs#L1074) | receiver-type-required |
-| `request` | `result.ok_or_else` | [1078](../../src/transport.rs#L1078) | receiver-type-required |
-| `request` | `"SSE contains no complete matching response event".to_owned` | [1080](../../src/transport.rs#L1080) | receiver-type-required |
-| `request` | `bytes.len().saturating_add` | [1088](../../src/transport.rs#L1088) | receiver-type-required |
-| `request` | `decode_response` | [1093](../../src/transport.rs#L1093) | [mcp::transport::decode_response](../../src/transport.rs#L1260) |
-| `request` | `self.scoped_generation.cancel` | [1100](../../src/transport.rs#L1100) | receiver-type-required |
-| `notify` | `Box::pin` | [1109](../../src/transport.rs#L1109) | external-constructor-callback-or-unresolved |
-| `notify` | `notification.id.is_some` | [1110](../../src/transport.rs#L1110) | receiver-type-required |
-| `notify` | `Err` | [1111](../../src/transport.rs#L1111), [1129](../../src/transport.rs#L1129) | external-constructor-callback-or-unresolved |
-| `notify` | `McpError::Protocol` | [1111](../../src/transport.rs#L1111) | external-constructor-callback-or-unresolved |
-| `notify` | `"notification has an id".to_owned` | [1111](../../src/transport.rs#L1111) | receiver-type-required |
-| `notify` | `self.request_headers` | [1113](../../src/transport.rs#L1113) | receiver-type-required |
-| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json(notification)                 .send()                 .await                 .map_err` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json(notification)                 .send` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self                 .client                 .post(self.url.clone())                 .headers` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self                 .client                 .post` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
-| `notify` | `self.url.clone` | [1116](../../src/transport.rs#L1116) | receiver-type-required |
-| `notify` | `Duration::from_secs` | [1118](../../src/transport.rs#L1118) | external-constructor-callback-or-unresolved |
-| `notify` | `McpError::Transport` | [1122](../../src/transport.rs#L1122), [1129](../../src/transport.rs#L1129) | external-constructor-callback-or-unresolved |
-| `notify` | `error.to_string` | [1122](../../src/transport.rs#L1122) | receiver-type-required |
-| `notify` | `response.headers().get` | [1123](../../src/transport.rs#L1123) | receiver-type-required |
-| `notify` | `response.headers` | [1123](../../src/transport.rs#L1123) | receiver-type-required |
-| `notify` | `Some` | [1124](../../src/transport.rs#L1124) | external-constructor-callback-or-unresolved |
-| `notify` | `session_id.clone` | [1124](../../src/transport.rs#L1124) | receiver-type-required |
-| `notify` | `response.status().is_success` | [1126](../../src/transport.rs#L1126) | receiver-type-required |
-| `notify` | `response.status` | [1126](../../src/transport.rs#L1126) | receiver-type-required |
-| `notify` | `Ok` | [1127](../../src/transport.rs#L1127) | external-constructor-callback-or-unresolved |
-| `close` | `self.session_id.is_some` | [1140](../../src/transport.rs#L1140) | receiver-type-required |
-| `close` | `self.request_headers(&JsonRpcRequest::notification("", None))                 .ok()                 .filter` | [1141](../../src/transport.rs#L1141) | receiver-type-required |
-| `close` | `self.request_headers(&JsonRpcRequest::notification("", None))                 .ok` | [1141](../../src/transport.rs#L1141) | receiver-type-required |
-| `close` | `self.request_headers` | [1141](../../src/transport.rs#L1141) | receiver-type-required |
-| `close` | `JsonRpcRequest::notification` | [1141](../../src/transport.rs#L1141) | [mcp::types::JsonRpcRequest::notification](../../src/types.rs#L66) |
-| `close` | `headers.contains_key` | [1143](../../src/transport.rs#L1143) | receiver-type-required |
-| `close` | `self.scoped_generation.cancel` | [1147](../../src/transport.rs#L1147) | receiver-type-required |
-| `close` | `Box::pin` | [1151](../../src/transport.rs#L1151) | external-constructor-callback-or-unresolved |
-| `close` | `headers.insert` | [1153](../../src/transport.rs#L1153) | receiver-type-required |
-| `close` | `HeaderName::from_static` | [1154](../../src/transport.rs#L1154) | external-constructor-callback-or-unresolved |
-| `close` | `HeaderValue::from_static` | [1155](../../src/transport.rs#L1155) | external-constructor-callback-or-unresolved |
-| `close` | `self                     .client                     .delete(self.url.clone())                     .headers(headers)                     .timeout(Duration::from_secs(15))                     .send` | [1159](../../src/transport.rs#L1159) | receiver-type-required |
-| `close` | `self                     .client                     .delete(self.url.clone())                     .headers(headers)                     .timeout` | [1159](../../src/transport.rs#L1159) | receiver-type-required |
-| `close` | `self                     .client                     .delete(self.url.clone())                     .headers` | [1159](../../src/transport.rs#L1159) | receiver-type-required |
-| `close` | `self                     .client                     .delete` | [1159](../../src/transport.rs#L1159) | receiver-type-required |
-| `close` | `self.url.clone` | [1161](../../src/transport.rs#L1161) | receiver-type-required |
-| `close` | `Duration::from_secs` | [1163](../../src/transport.rs#L1163) | external-constructor-callback-or-unresolved |
-| `close` | `Ok` | [1167](../../src/transport.rs#L1167) | external-constructor-callback-or-unresolved |
-| `reconnect` | `self.scoped_generation.cancel` | [1172](../../src/transport.rs#L1172) | receiver-type-required |
-| `reconnect` | `crate::McpCancellationToken::default` | [1173](../../src/transport.rs#L1173) | external-constructor-callback-or-unresolved |
-| `reconnect` | `self.notifications.clear` | [1177](../../src/transport.rs#L1177) | receiver-type-required |
-| `reconnect` | `Box::pin` | [1178](../../src/transport.rs#L1178) | external-constructor-callback-or-unresolved |
-| `reconnect` | `Ok` | [1178](../../src/transport.rs#L1178) | external-constructor-callback-or-unresolved |
-| `take_notifications` | `std::mem::take` | [1182](../../src/transport.rs#L1182) | external-constructor-callback-or-unresolved |
-| `push` | `self.pending.len().saturating_add` | [1195](../../src/transport.rs#L1195) | receiver-type-required |
-| `push` | `self.pending.len` | [1195](../../src/transport.rs#L1195) | receiver-type-required |
-| `push` | `chunk.len` | [1195](../../src/transport.rs#L1195) | receiver-type-required |
-| `push` | `Err` | [1196](../../src/transport.rs#L1196), [1211](../../src/transport.rs#L1211), [1229](../../src/transport.rs#L1229) | external-constructor-callback-or-unresolved |
-| `push` | `McpError::Protocol` | [1196](../../src/transport.rs#L1196), [1211](../../src/transport.rs#L1211), [1229](../../src/transport.rs#L1229) | external-constructor-callback-or-unresolved |
-| `push` | `"SSE event exceeds 4 MiB".to_owned` | [1196](../../src/transport.rs#L1196), [1211](../../src/transport.rs#L1211), [1229](../../src/transport.rs#L1229) | receiver-type-required |
-| `push` | `self.pending.extend_from_slice` | [1198](../../src/transport.rs#L1198) | receiver-type-required |
-| `push` | `Vec::new` | [1199](../../src/transport.rs#L1199) | external-constructor-callback-or-unresolved |
-| `push` | `self.pending.iter().position` | [1200](../../src/transport.rs#L1200) | receiver-type-required |
-| `push` | `self.pending.iter` | [1200](../../src/transport.rs#L1200) | receiver-type-required |
-| `push` | `self.pending.drain(..=newline).collect::<Vec<_>>` | [1201](../../src/transport.rs#L1201) | receiver-type-required |
-| `push` | `self.pending.drain` | [1201](../../src/transport.rs#L1201) | receiver-type-required |
-| `push` | `line.pop` | [1202](../../src/transport.rs#L1202), [1204](../../src/transport.rs#L1204) | receiver-type-required |
-| `push` | `line.last` | [1203](../../src/transport.rs#L1203) | receiver-type-required |
-| `push` | `Some` | [1203](../../src/transport.rs#L1203) | external-constructor-callback-or-unresolved |
-| `push` | `line.is_empty` | [1206](../../src/transport.rs#L1206) | receiver-type-required |
-| `push` | `self.data.is_empty` | [1207](../../src/transport.rs#L1207) | receiver-type-required |
-| `push` | `self.data.iter().map(Vec::len).sum::<usize>` | [1208](../../src/transport.rs#L1208) | receiver-type-required |
-| `push` | `self.data.iter().map` | [1208](../../src/transport.rs#L1208) | receiver-type-required |
-| `push` | `self.data.iter` | [1208](../../src/transport.rs#L1208) | receiver-type-required |
-| `push` | `self.data.len().saturating_sub` | [1209](../../src/transport.rs#L1209) | receiver-type-required |
-| `push` | `self.data.len` | [1209](../../src/transport.rs#L1209) | receiver-type-required |
-| `push` | `Vec::with_capacity` | [1213](../../src/transport.rs#L1213) | external-constructor-callback-or-unresolved |
-| `push` | `self.data.drain(..).enumerate` | [1214](../../src/transport.rs#L1214) | receiver-type-required |
-| `push` | `self.data.drain` | [1214](../../src/transport.rs#L1214) | receiver-type-required |
-| `push` | `payload.push` | [1216](../../src/transport.rs#L1216) | receiver-type-required |
-| `push` | `payload.extend_from_slice` | [1218](../../src/transport.rs#L1218) | receiver-type-required |
-| `push` | `events.push` | [1221](../../src/transport.rs#L1221) | receiver-type-required |
-| `push` | `line.strip_prefix` | [1225](../../src/transport.rs#L1225) | receiver-type-required |
-| `push` | `value.strip_prefix(b" ").unwrap_or(value).to_vec` | [1226](../../src/transport.rs#L1226) | receiver-type-required |
-| `push` | `value.strip_prefix(b" ").unwrap_or` | [1226](../../src/transport.rs#L1226) | receiver-type-required |
-| `push` | `value.strip_prefix` | [1226](../../src/transport.rs#L1226) | receiver-type-required |
-| `push` | `self.event_bytes.saturating_add` | [1227](../../src/transport.rs#L1227) | receiver-type-required |
-| `push` | `value.len` | [1227](../../src/transport.rs#L1227) | receiver-type-required |
-| `push` | `self.data.push` | [1231](../../src/transport.rs#L1231) | receiver-type-required |
-| `push` | `Ok` | [1234](../../src/transport.rs#L1234) | external-constructor-callback-or-unresolved |
-| `decode_response` | `decode_inbound` | [1261](../../src/transport.rs#L1261) | [mcp::transport::decode_inbound](../../src/transport.rs#L1269) |
-| `decode_response` | `BTreeSet::new` | [1261](../../src/transport.rs#L1261) | external-constructor-callback-or-unresolved |
-| `decode_response` | `Ok` | [1262](../../src/transport.rs#L1262) | external-constructor-callback-or-unresolved |
-| `decode_response` | `Err` | [1263](../../src/transport.rs#L1263) | external-constructor-callback-or-unresolved |
-| `decode_response` | `McpError::Protocol` | [1263](../../src/transport.rs#L1263) | external-constructor-callback-or-unresolved |
-| `decode_response` | `"HTTP JSON response did not contain a matching response".to_owned` | [1264](../../src/transport.rs#L1264) | receiver-type-required |
-| `decode_inbound` | `serde_json::from_slice(bytes).map_err` | [1275](../../src/transport.rs#L1275) | receiver-type-required |
-| `decode_inbound` | `serde_json::from_slice` | [1275](../../src/transport.rs#L1275) | external-constructor-callback-or-unresolved |
-| `decode_inbound` | `McpError::Protocol` | [1275](../../src/transport.rs#L1275), [1277](../../src/transport.rs#L1277), [1283](../../src/transport.rs#L1283), [1288](../../src/transport.rs#L1288), [1296](../../src/transport.rs#L1296), [1301](../../src/transport.rs#L1301), [1315](../../src/transport.rs#L1315), [1321](../../src/transport.rs#L1321), [1335](../../src/transport.rs#L1335) | external-constructor-callback-or-unresolved |
-| `decode_inbound` | `error.to_string` | [1275](../../src/transport.rs#L1275) | receiver-type-required |
-| `decode_inbound` | `Err` | [1277](../../src/transport.rs#L1277), [1283](../../src/transport.rs#L1283), [1288](../../src/transport.rs#L1288), [1296](../../src/transport.rs#L1296), [1301](../../src/transport.rs#L1301), [1315](../../src/transport.rs#L1315), [1335](../../src/transport.rs#L1335) | external-constructor-callback-or-unresolved |
-| `decode_inbound` | `"JSON-RPC frame version is not 2.0".to_owned` | [1278](../../src/transport.rs#L1278) | receiver-type-required |
-| `decode_inbound` | `"response id is not a positive integer".to_owned` | [1284](../../src/transport.rs#L1284) | receiver-type-required |
-| `decode_inbound` | `frame.method.is_some` | [1287](../../src/transport.rs#L1287) | receiver-type-required |
-| `decode_inbound` | `"server request has no installed client handler".to_owned` | [1289](../../src/transport.rs#L1289) | receiver-type-required |
-| `decode_inbound` | `cancelled_ids.remove` | [1293](../../src/transport.rs#L1293) | receiver-type-required |
-| `decode_inbound` | `Ok` | [1294](../../src/transport.rs#L1294), [1312](../../src/transport.rs#L1312), [1333](../../src/transport.rs#L1333) | external-constructor-callback-or-unresolved |
-| `decode_inbound` | `frame.params.is_some` | [1300](../../src/transport.rs#L1300) | receiver-type-required |
-| `decode_inbound` | `"response contains notification params".to_owned` | [1302](../../src/transport.rs#L1302) | receiver-type-required |
-| `decode_inbound` | `response.validate_for` | [1311](../../src/transport.rs#L1311) | receiver-type-required |
-| `decode_inbound` | `Inbound::Response` | [1312](../../src/transport.rs#L1312) | external-constructor-callback-or-unresolved |
-| `decode_inbound` | `frame.result.is_some` | [1314](../../src/transport.rs#L1314) | receiver-type-required |
-| `decode_inbound` | `frame.error.is_some` | [1314](../../src/transport.rs#L1314) | receiver-type-required |
-| `decode_inbound` | `"id-less frame is not a notification".to_owned` | [1316](../../src/transport.rs#L1316), [1321](../../src/transport.rs#L1321) | receiver-type-required |
-| `decode_inbound` | `frame         .method         .ok_or_else` | [1319](../../src/transport.rs#L1319) | receiver-type-required |
-| `decode_inbound` | `Inbound::Notification` | [1333](../../src/transport.rs#L1333) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap` | [1348](../../src/transport.rs#L1348) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::net::TcpListener::bind` | [1348](../../src/transport.rs#L1348) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.local_addr().unwrap` | [1349](../../src/transport.rs#L1349) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.local_addr` | [1349](../../src/transport.rs#L1349) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Arc::new` | [1350](../../src/transport.rs#L1350) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::sync::Notify::new` | [1350](../../src/transport.rs#L1350) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `received.clone` | [1351](../../src/transport.rs#L1351) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::spawn` | [1352](../../src/transport.rs#L1352) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.accept().await.unwrap` | [1353](../../src/transport.rs#L1353) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.accept` | [1353](../../src/transport.rs#L1353) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Vec::new` | [1354](../../src/transport.rs#L1354) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `socket.read(&mut chunk).await.unwrap` | [1357](../../src/transport.rs#L1357) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `socket.read` | [1357](../../src/transport.rs#L1357) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.extend_from_slice` | [1359](../../src/transport.rs#L1359) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.windows(4).position` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.windows` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `String::from_utf8_lossy(&bytes[..offset]).to_ascii_lowercase` | [1361](../../src/transport.rs#L1361) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `String::from_utf8_lossy` | [1361](../../src/transport.rs#L1361) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim()                             .parse()                             .unwrap` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim()                             .parse` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `line.strip_prefix` | [1364](../../src/transport.rs#L1364) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.len` | [1369](../../src/transport.rs#L1369) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `signal.notify_one` | [1374](../../src/transport.rs#L1374) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `HttpTransport::new(                 format!("http://{address}/mcp").parse().unwrap(),                 &BTreeMap::new(),                 None,                 true,             )             .unwrap` | [1391](../../src/transport.rs#L1391) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `HttpTransport::new` | [1391](../../src/transport.rs#L1391) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `format!("http://{address}/mcp").parse().unwrap` | [1392](../../src/transport.rs#L1392) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `format!("http://{address}/mcp").parse` | [1392](../../src/transport.rs#L1392) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `BTreeMap::new` | [1393](../../src/transport.rs#L1393) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `serde_json::from_value(serde_json::json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"write","arguments":{},"_meta":{"io.modelcontextprotocol/protocolVersion":crate::MODERN_PROTOCOL_VERSION}}})).unwrap` | [1398](../../src/transport.rs#L1398) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `serde_json::from_value` | [1398](../../src/transport.rs#L1398) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `transport.start_modern_scoped` | [1399](../../src/transport.rs#L1399), [1405](../../src/transport.rs#L1405) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `request.clone` | [1400](../../src/transport.rs#L1400) | receiver-type-required |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Duration::from_secs` | [1401](../../src/transport.rs#L1401), [1407](../../src/transport.rs#L1407) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `crate::McpCancellationToken::default` | [1402](../../src/transport.rs#L1402), [1408](../../src/transport.rs#L1408) | external-constructor-callback-or-unresolved |
-| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `server.await.unwrap` | [1421](../../src/transport.rs#L1421) | receiver-type-required |
-| `cancelled_response_tombstone_is_consumed_once` | `BTreeSet::from` | [1441](../../src/transport.rs#L1441) | external-constructor-callback-or-unresolved |
-| `sse_decoder_yields_the_first_complete_event_without_eof` | `SseDecoder::default` | [1463](../../src/transport.rs#L1463) | external-constructor-callback-or-unresolved |
-| `sse_decoder_yields_the_first_complete_event_without_eof` | `decoder             .push(b"\"result\":{}}\n\n: connection remains open\n")             .expect` | [1470](../../src/transport.rs#L1470) | receiver-type-required |
-| `sse_decoder_yields_the_first_complete_event_without_eof` | `decoder             .push` | [1470](../../src/transport.rs#L1470) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::time::Instant::now` | [1482](../../src/transport.rs#L1482) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .expect` | [1483](../../src/transport.rs#L1483) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build` | [1483](../../src/transport.rs#L1483) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all` | [1483](../../src/transport.rs#L1483) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread` | [1483](../../src/transport.rs#L1483) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `runtime.block_on` | [1487](../../src/transport.rs#L1487) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::sync::oneshot::channel` | [1488](../../src/transport.rs#L1488) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::thread::spawn` | [1489](../../src/transport.rs#L1489) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::thread::sleep` | [1490](../../src/transport.rs#L1490) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `Duration::from_secs` | [1490](../../src/transport.rs#L1490) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `sender.send` | [1491](../../src/transport.rs#L1491) | receiver-type-required |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `Ok` | [1491](../../src/transport.rs#L1491) | external-constructor-callback-or-unresolved |
-| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `drop` | [1498](../../src/transport.rs#L1498) | external-constructor-callback-or-unresolved |
+| `request_headers` | `map.contains_key` | [891](../../src/transport.rs#L891) | receiver-type-required |
+| `request_headers` | `request_value["params"]["name"]                 .as_str()                 .and_then` | [892](../../src/transport.rs#L892) | receiver-type-required |
+| `request_headers` | `request_value["params"]["name"]                 .as_str` | [892](../../src/transport.rs#L892) | receiver-type-required |
+| `request_headers` | `self.parameter_headers.get` | [894](../../src/transport.rs#L894) | receiver-type-required |
+| `request_headers` | `projection.project` | [896](../../src/transport.rs#L896) | receiver-type-required |
+| `request_headers` | `HeaderName::from_bytes(name.as_bytes())                         .map_err` | [898](../../src/transport.rs#L898) | receiver-type-required |
+| `request_headers` | `e.to_string` | [899](../../src/transport.rs#L899), [900](../../src/transport.rs#L900) | receiver-type-required |
+| `request_headers` | `HeaderValue::from_str(&value).map_err` | [900](../../src/transport.rs#L900) | receiver-type-required |
+| `request_headers` | `Ok` | [904](../../src/transport.rs#L904) | external-constructor-callback-or-unresolved |
+| `start_catalog_subscription` | `crate::McpSubscriptionFilter::new(id, capabilities, &[]).is_empty` | [915](../../src/transport.rs#L915) | receiver-type-required |
+| `start_catalog_subscription` | `crate::McpSubscriptionFilter::new` | [915](../../src/transport.rs#L915) | [mcp::subscription::McpSubscriptionFilter::new](../../src/subscription.rs#L16) |
+| `start_catalog_subscription` | `Some` | [918](../../src/transport.rs#L918) | external-constructor-callback-or-unresolved |
+| `start_catalog_subscription` | `self.listen_subscription` | [918](../../src/transport.rs#L918) | receiver-type-required |
+| `start_catalog_subscription` | `Duration::from_secs` | [922](../../src/transport.rs#L922) | external-constructor-callback-or-unresolved |
+| `start_catalog_subscription` | `crate::McpCancellationToken::default` | [923](../../src/transport.rs#L923) | external-constructor-callback-or-unresolved |
+| `install_tool_catalog` | `crate::parameter_headers::ParameterHeaders::catalog` | [929](../../src/transport.rs#L929) | [mcp::parameter_headers::ParameterHeaders::catalog](../../src/parameter_headers.rs#L20) |
+| `install_tool_catalog` | `Ok` | [930](../../src/transport.rs#L930) | external-constructor-callback-or-unresolved |
+| `start_scoped_request` | `Some` | [944](../../src/transport.rs#L944) | external-constructor-callback-or-unresolved |
+| `start_scoped_request` | `self.start_modern_scoped` | [944](../../src/transport.rs#L944) | receiver-type-required |
+| `request` | `Box::pin` | [952](../../src/transport.rs#L952) | external-constructor-callback-or-unresolved |
+| `request` | `request                 .id                 .ok_or_else` | [953](../../src/transport.rs#L953) | receiver-type-required |
+| `request` | `McpError::Protocol` | [955](../../src/transport.rs#L955), [1040](../../src/transport.rs#L1040), [1059](../../src/transport.rs#L1059), [1077](../../src/transport.rs#L1077), [1087](../../src/transport.rs#L1087), [1093](../../src/transport.rs#L1093) | external-constructor-callback-or-unresolved |
+| `request` | `"request id is absent".to_owned` | [955](../../src/transport.rs#L955) | receiver-type-required |
+| `request` | `self.request_headers` | [956](../../src/transport.rs#L956) | receiver-type-required |
+| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json(request)                 .send()                 .await                 .map_err` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json(request)                 .send` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(timeout)                 .json` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self                 .client                 .post(self.url.clone())                 .headers` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self                 .client                 .post` | [957](../../src/transport.rs#L957) | receiver-type-required |
+| `request` | `self.url.clone` | [959](../../src/transport.rs#L959) | receiver-type-required |
+| `request` | `error.is_timeout` | [966](../../src/transport.rs#L966) | receiver-type-required |
+| `request` | `McpError::Timeout` | [967](../../src/transport.rs#L967) | external-constructor-callback-or-unresolved |
+| `request` | `request.method.clone` | [967](../../src/transport.rs#L967) | receiver-type-required |
+| `request` | `McpError::Transport` | [969](../../src/transport.rs#L969), [973](../../src/transport.rs#L973), [1025](../../src/transport.rs#L1025), [1048](../../src/transport.rs#L1048), [1085](../../src/transport.rs#L1085) | external-constructor-callback-or-unresolved |
+| `request` | `error.to_string` | [969](../../src/transport.rs#L969), [1048](../../src/transport.rs#L1048), [1059](../../src/transport.rs#L1059), [1085](../../src/transport.rs#L1085) | receiver-type-required |
+| `request` | `response.status().is_redirection` | [972](../../src/transport.rs#L972) | receiver-type-required |
+| `request` | `response.status` | [972](../../src/transport.rs#L972), [977](../../src/transport.rs#L977), [978](../../src/transport.rs#L978) | receiver-type-required |
+| `request` | `Err` | [973](../../src/transport.rs#L973), [1017](../../src/transport.rs#L1017), [1025](../../src/transport.rs#L1025), [1040](../../src/transport.rs#L1040), [1087](../../src/transport.rs#L1087), [1093](../../src/transport.rs#L1093) | external-constructor-callback-or-unresolved |
+| `request` | `"cross-origin redirect rejected".to_owned` | [974](../../src/transport.rs#L974) | receiver-type-required |
+| `request` | `response.status().is_success` | [977](../../src/transport.rs#L977) | receiver-type-required |
+| `request` | `status.is_client_error` | [981](../../src/transport.rs#L981) | receiver-type-required |
+| `request` | `status.as_u16` | [981](../../src/transport.rs#L981) | receiver-type-required |
+| `request` | `response.bytes_stream` | [982](../../src/transport.rs#L982), [1044](../../src/transport.rs#L1044), [1082](../../src/transport.rs#L1082) | receiver-type-required |
+| `request` | `Vec::new` | [983](../../src/transport.rs#L983), [1083](../../src/transport.rs#L1083) | external-constructor-callback-or-unresolved |
+| `request` | `stream.next` | [984](../../src/transport.rs#L984), [1047](../../src/transport.rs#L1047), [1084](../../src/transport.rs#L1084) | receiver-type-required |
+| `request` | `bytes.clear` | [986](../../src/transport.rs#L986), [990](../../src/transport.rs#L990) | receiver-type-required |
+| `request` | `bytes.len` | [989](../../src/transport.rs#L989), [1086](../../src/transport.rs#L1086) | receiver-type-required |
+| `request` | `chunk.len` | [989](../../src/transport.rs#L989), [1086](../../src/transport.rs#L1086) | receiver-type-required |
+| `request` | `bytes.extend_from_slice` | [993](../../src/transport.rs#L993), [1089](../../src/transport.rs#L1089) | receiver-type-required |
+| `request` | `serde_json::from_slice::<JsonRpcResponse>` | [995](../../src/transport.rs#L995) | external-constructor-callback-or-unresolved |
+| `request` | `rpc.error.is_some` | [996](../../src/transport.rs#L996) | receiver-type-required |
+| `request` | `request.id.is_some_and` | [997](../../src/transport.rs#L997) | receiver-type-required |
+| `request` | `rpc.validate_for(id).is_ok` | [997](../../src/transport.rs#L997) | receiver-type-required |
+| `request` | `rpc.validate_for` | [997](../../src/transport.rs#L997) | receiver-type-required |
+| `request` | `Ok` | [999](../../src/transport.rs#L999) | external-constructor-callback-or-unresolved |
+| `request` | `serde_json::from_slice::<serde_json::Value>` | [1006](../../src/transport.rs#L1006) | external-constructor-callback-or-unresolved |
+| `request` | `error["message"].as_str().unwrap_or_default` | [1008](../../src/transport.rs#L1008) | receiver-type-required |
+| `request` | `error["message"].as_str` | [1008](../../src/transport.rs#L1008) | receiver-type-required |
+| `request` | `error["code"].as_i64` | [1009](../../src/transport.rs#L1009) | receiver-type-required |
+| `request` | `Some` | [1009](../../src/transport.rs#L1009), [1028](../../src/transport.rs#L1028), [1052](../../src/transport.rs#L1052) | external-constructor-callback-or-unresolved |
+| `request` | `message.to_ascii_lowercase().contains` | [1010](../../src/transport.rs#L1010) | receiver-type-required |
+| `request` | `message.to_ascii_lowercase` | [1010](../../src/transport.rs#L1010) | receiver-type-required |
+| `request` | `error                                 .get("data")                                 .filter(&#124;data&#124; !data.is_null())                                 .and_then(&#124;data&#124; serde_json::to_vec(data).ok())                                 .and_then` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
+| `request` | `error                                 .get("data")                                 .filter(&#124;data&#124; !data.is_null())                                 .and_then` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
+| `request` | `error                                 .get("data")                                 .filter` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
+| `request` | `error                                 .get` | [1012](../../src/transport.rs#L1012) | receiver-type-required |
+| `request` | `data.is_null` | [1014](../../src/transport.rs#L1014) | receiver-type-required |
+| `request` | `serde_json::to_vec(data).ok` | [1015](../../src/transport.rs#L1015) | receiver-type-required |
+| `request` | `serde_json::to_vec` | [1015](../../src/transport.rs#L1015) | external-constructor-callback-or-unresolved |
+| `request` | `IJsonValue::parse(&bytes).ok` | [1016](../../src/transport.rs#L1016) | receiver-type-required |
+| `request` | `IJsonValue::parse` | [1016](../../src/transport.rs#L1016) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `request` | `message.to_owned` | [1019](../../src/transport.rs#L1019) | receiver-type-required |
+| `request` | `response.headers().get` | [1027](../../src/transport.rs#L1027) | receiver-type-required |
+| `request` | `response.headers` | [1027](../../src/transport.rs#L1027) | receiver-type-required |
+| `request` | `session_id.clone` | [1028](../../src/transport.rs#L1028) | receiver-type-required |
+| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then(&#124;value&#124; value.to_str().ok())                 .unwrap_or("")                 .to_owned` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
+| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then(&#124;value&#124; value.to_str().ok())                 .unwrap_or` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
+| `request` | `response                 .headers()                 .get(CONTENT_TYPE)                 .and_then` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
+| `request` | `response                 .headers()                 .get` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
+| `request` | `response                 .headers` | [1030](../../src/transport.rs#L1030) | receiver-type-required |
+| `request` | `value.to_str().ok` | [1033](../../src/transport.rs#L1033) | receiver-type-required |
+| `request` | `value.to_str` | [1033](../../src/transport.rs#L1033) | receiver-type-required |
+| `request` | `response                 .content_length()                 .is_some_and` | [1036](../../src/transport.rs#L1036) | receiver-type-required |
+| `request` | `response                 .content_length` | [1036](../../src/transport.rs#L1036) | receiver-type-required |
+| `request` | `"HTTP result exceeds 4 MiB".to_owned` | [1040](../../src/transport.rs#L1040), [1087](../../src/transport.rs#L1087) | receiver-type-required |
+| `request` | `content_type.split(';').next().map(str::trim).unwrap_or` | [1042](../../src/transport.rs#L1042) | receiver-type-required |
+| `request` | `content_type.split(';').next().map` | [1042](../../src/transport.rs#L1042) | receiver-type-required |
+| `request` | `content_type.split(';').next` | [1042](../../src/transport.rs#L1042) | receiver-type-required |
+| `request` | `content_type.split` | [1042](../../src/transport.rs#L1042) | receiver-type-required |
+| `request` | `SseDecoder::default` | [1045](../../src/transport.rs#L1045) | external-constructor-callback-or-unresolved |
+| `request` | `chunk.map_err` | [1048](../../src/transport.rs#L1048), [1085](../../src/transport.rs#L1085) | receiver-type-required |
+| `request` | `decoder.push` | [1049](../../src/transport.rs#L1049) | receiver-type-required |
+| `request` | `decode_inbound` | [1050](../../src/transport.rs#L1050) | [mcp::transport::decode_inbound](../../src/transport.rs#L1267) |
+| `request` | `BTreeSet::new` | [1050](../../src/transport.rs#L1050) | external-constructor-callback-or-unresolved |
+| `request` | `serde_json::from_slice(&payload).map_err` | [1058](../../src/transport.rs#L1058) | receiver-type-required |
+| `request` | `serde_json::from_slice` | [1058](../../src/transport.rs#L1058) | external-constructor-callback-or-unresolved |
+| `request` | `handler` | [1061](../../src/transport.rs#L1061), [1064](../../src/transport.rs#L1064) | external-constructor-callback-or-unresolved |
+| `request` | `self.notifications.push` | [1066](../../src/transport.rs#L1066) | receiver-type-required |
+| `request` | `result.is_some` | [1072](../../src/transport.rs#L1072) | receiver-type-required |
+| `request` | `result.ok_or_else` | [1076](../../src/transport.rs#L1076) | receiver-type-required |
+| `request` | `"SSE contains no complete matching response event".to_owned` | [1078](../../src/transport.rs#L1078) | receiver-type-required |
+| `request` | `bytes.len().saturating_add` | [1086](../../src/transport.rs#L1086) | receiver-type-required |
+| `request` | `decode_response` | [1091](../../src/transport.rs#L1091) | [mcp::transport::decode_response](../../src/transport.rs#L1258) |
+| `request` | `self.scoped_generation.cancel` | [1098](../../src/transport.rs#L1098) | receiver-type-required |
+| `notify` | `Box::pin` | [1107](../../src/transport.rs#L1107) | external-constructor-callback-or-unresolved |
+| `notify` | `notification.id.is_some` | [1108](../../src/transport.rs#L1108) | receiver-type-required |
+| `notify` | `Err` | [1109](../../src/transport.rs#L1109), [1127](../../src/transport.rs#L1127) | external-constructor-callback-or-unresolved |
+| `notify` | `McpError::Protocol` | [1109](../../src/transport.rs#L1109) | external-constructor-callback-or-unresolved |
+| `notify` | `"notification has an id".to_owned` | [1109](../../src/transport.rs#L1109) | receiver-type-required |
+| `notify` | `self.request_headers` | [1111](../../src/transport.rs#L1111) | receiver-type-required |
+| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json(notification)                 .send()                 .await                 .map_err` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json(notification)                 .send` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout(Duration::from_secs(15))                 .json` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self                 .client                 .post(self.url.clone())                 .headers(headers)                 .timeout` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self                 .client                 .post(self.url.clone())                 .headers` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self                 .client                 .post` | [1112](../../src/transport.rs#L1112) | receiver-type-required |
+| `notify` | `self.url.clone` | [1114](../../src/transport.rs#L1114) | receiver-type-required |
+| `notify` | `Duration::from_secs` | [1116](../../src/transport.rs#L1116) | external-constructor-callback-or-unresolved |
+| `notify` | `McpError::Transport` | [1120](../../src/transport.rs#L1120), [1127](../../src/transport.rs#L1127) | external-constructor-callback-or-unresolved |
+| `notify` | `error.to_string` | [1120](../../src/transport.rs#L1120) | receiver-type-required |
+| `notify` | `response.headers().get` | [1121](../../src/transport.rs#L1121) | receiver-type-required |
+| `notify` | `response.headers` | [1121](../../src/transport.rs#L1121) | receiver-type-required |
+| `notify` | `Some` | [1122](../../src/transport.rs#L1122) | external-constructor-callback-or-unresolved |
+| `notify` | `session_id.clone` | [1122](../../src/transport.rs#L1122) | receiver-type-required |
+| `notify` | `response.status().is_success` | [1124](../../src/transport.rs#L1124) | receiver-type-required |
+| `notify` | `response.status` | [1124](../../src/transport.rs#L1124) | receiver-type-required |
+| `notify` | `Ok` | [1125](../../src/transport.rs#L1125) | external-constructor-callback-or-unresolved |
+| `close` | `self.session_id.is_some` | [1138](../../src/transport.rs#L1138) | receiver-type-required |
+| `close` | `self.request_headers(&JsonRpcRequest::notification("", None))                 .ok()                 .filter` | [1139](../../src/transport.rs#L1139) | receiver-type-required |
+| `close` | `self.request_headers(&JsonRpcRequest::notification("", None))                 .ok` | [1139](../../src/transport.rs#L1139) | receiver-type-required |
+| `close` | `self.request_headers` | [1139](../../src/transport.rs#L1139) | receiver-type-required |
+| `close` | `JsonRpcRequest::notification` | [1139](../../src/transport.rs#L1139) | [mcp::types::JsonRpcRequest::notification](../../src/types.rs#L66) |
+| `close` | `headers.contains_key` | [1141](../../src/transport.rs#L1141) | receiver-type-required |
+| `close` | `self.scoped_generation.cancel` | [1145](../../src/transport.rs#L1145) | receiver-type-required |
+| `close` | `Box::pin` | [1149](../../src/transport.rs#L1149) | external-constructor-callback-or-unresolved |
+| `close` | `headers.insert` | [1151](../../src/transport.rs#L1151) | receiver-type-required |
+| `close` | `HeaderName::from_static` | [1152](../../src/transport.rs#L1152) | external-constructor-callback-or-unresolved |
+| `close` | `HeaderValue::from_static` | [1153](../../src/transport.rs#L1153) | external-constructor-callback-or-unresolved |
+| `close` | `self                     .client                     .delete(self.url.clone())                     .headers(headers)                     .timeout(Duration::from_secs(15))                     .send` | [1157](../../src/transport.rs#L1157) | receiver-type-required |
+| `close` | `self                     .client                     .delete(self.url.clone())                     .headers(headers)                     .timeout` | [1157](../../src/transport.rs#L1157) | receiver-type-required |
+| `close` | `self                     .client                     .delete(self.url.clone())                     .headers` | [1157](../../src/transport.rs#L1157) | receiver-type-required |
+| `close` | `self                     .client                     .delete` | [1157](../../src/transport.rs#L1157) | receiver-type-required |
+| `close` | `self.url.clone` | [1159](../../src/transport.rs#L1159) | receiver-type-required |
+| `close` | `Duration::from_secs` | [1161](../../src/transport.rs#L1161) | external-constructor-callback-or-unresolved |
+| `close` | `Ok` | [1165](../../src/transport.rs#L1165) | external-constructor-callback-or-unresolved |
+| `reconnect` | `self.scoped_generation.cancel` | [1170](../../src/transport.rs#L1170) | receiver-type-required |
+| `reconnect` | `crate::McpCancellationToken::default` | [1171](../../src/transport.rs#L1171) | external-constructor-callback-or-unresolved |
+| `reconnect` | `self.notifications.clear` | [1175](../../src/transport.rs#L1175) | receiver-type-required |
+| `reconnect` | `Box::pin` | [1176](../../src/transport.rs#L1176) | external-constructor-callback-or-unresolved |
+| `reconnect` | `Ok` | [1176](../../src/transport.rs#L1176) | external-constructor-callback-or-unresolved |
+| `take_notifications` | `std::mem::take` | [1180](../../src/transport.rs#L1180) | external-constructor-callback-or-unresolved |
+| `push` | `self.pending.len().saturating_add` | [1193](../../src/transport.rs#L1193) | receiver-type-required |
+| `push` | `self.pending.len` | [1193](../../src/transport.rs#L1193) | receiver-type-required |
+| `push` | `chunk.len` | [1193](../../src/transport.rs#L1193) | receiver-type-required |
+| `push` | `Err` | [1194](../../src/transport.rs#L1194), [1209](../../src/transport.rs#L1209), [1227](../../src/transport.rs#L1227) | external-constructor-callback-or-unresolved |
+| `push` | `McpError::Protocol` | [1194](../../src/transport.rs#L1194), [1209](../../src/transport.rs#L1209), [1227](../../src/transport.rs#L1227) | external-constructor-callback-or-unresolved |
+| `push` | `"SSE event exceeds 4 MiB".to_owned` | [1194](../../src/transport.rs#L1194), [1209](../../src/transport.rs#L1209), [1227](../../src/transport.rs#L1227) | receiver-type-required |
+| `push` | `self.pending.extend_from_slice` | [1196](../../src/transport.rs#L1196) | receiver-type-required |
+| `push` | `Vec::new` | [1197](../../src/transport.rs#L1197) | external-constructor-callback-or-unresolved |
+| `push` | `self.pending.iter().position` | [1198](../../src/transport.rs#L1198) | receiver-type-required |
+| `push` | `self.pending.iter` | [1198](../../src/transport.rs#L1198) | receiver-type-required |
+| `push` | `self.pending.drain(..=newline).collect::<Vec<_>>` | [1199](../../src/transport.rs#L1199) | receiver-type-required |
+| `push` | `self.pending.drain` | [1199](../../src/transport.rs#L1199) | receiver-type-required |
+| `push` | `line.pop` | [1200](../../src/transport.rs#L1200), [1202](../../src/transport.rs#L1202) | receiver-type-required |
+| `push` | `line.last` | [1201](../../src/transport.rs#L1201) | receiver-type-required |
+| `push` | `Some` | [1201](../../src/transport.rs#L1201) | external-constructor-callback-or-unresolved |
+| `push` | `line.is_empty` | [1204](../../src/transport.rs#L1204) | receiver-type-required |
+| `push` | `self.data.is_empty` | [1205](../../src/transport.rs#L1205) | receiver-type-required |
+| `push` | `self.data.iter().map(Vec::len).sum::<usize>` | [1206](../../src/transport.rs#L1206) | receiver-type-required |
+| `push` | `self.data.iter().map` | [1206](../../src/transport.rs#L1206) | receiver-type-required |
+| `push` | `self.data.iter` | [1206](../../src/transport.rs#L1206) | receiver-type-required |
+| `push` | `self.data.len().saturating_sub` | [1207](../../src/transport.rs#L1207) | receiver-type-required |
+| `push` | `self.data.len` | [1207](../../src/transport.rs#L1207) | receiver-type-required |
+| `push` | `Vec::with_capacity` | [1211](../../src/transport.rs#L1211) | external-constructor-callback-or-unresolved |
+| `push` | `self.data.drain(..).enumerate` | [1212](../../src/transport.rs#L1212) | receiver-type-required |
+| `push` | `self.data.drain` | [1212](../../src/transport.rs#L1212) | receiver-type-required |
+| `push` | `payload.push` | [1214](../../src/transport.rs#L1214) | receiver-type-required |
+| `push` | `payload.extend_from_slice` | [1216](../../src/transport.rs#L1216) | receiver-type-required |
+| `push` | `events.push` | [1219](../../src/transport.rs#L1219) | receiver-type-required |
+| `push` | `line.strip_prefix` | [1223](../../src/transport.rs#L1223) | receiver-type-required |
+| `push` | `value.strip_prefix(b" ").unwrap_or(value).to_vec` | [1224](../../src/transport.rs#L1224) | receiver-type-required |
+| `push` | `value.strip_prefix(b" ").unwrap_or` | [1224](../../src/transport.rs#L1224) | receiver-type-required |
+| `push` | `value.strip_prefix` | [1224](../../src/transport.rs#L1224) | receiver-type-required |
+| `push` | `self.event_bytes.saturating_add` | [1225](../../src/transport.rs#L1225) | receiver-type-required |
+| `push` | `value.len` | [1225](../../src/transport.rs#L1225) | receiver-type-required |
+| `push` | `self.data.push` | [1229](../../src/transport.rs#L1229) | receiver-type-required |
+| `push` | `Ok` | [1232](../../src/transport.rs#L1232) | external-constructor-callback-or-unresolved |
+| `decode_response` | `decode_inbound` | [1259](../../src/transport.rs#L1259) | [mcp::transport::decode_inbound](../../src/transport.rs#L1267) |
+| `decode_response` | `BTreeSet::new` | [1259](../../src/transport.rs#L1259) | external-constructor-callback-or-unresolved |
+| `decode_response` | `Ok` | [1260](../../src/transport.rs#L1260) | external-constructor-callback-or-unresolved |
+| `decode_response` | `Err` | [1261](../../src/transport.rs#L1261) | external-constructor-callback-or-unresolved |
+| `decode_response` | `McpError::Protocol` | [1261](../../src/transport.rs#L1261) | external-constructor-callback-or-unresolved |
+| `decode_response` | `"HTTP JSON response did not contain a matching response".to_owned` | [1262](../../src/transport.rs#L1262) | receiver-type-required |
+| `decode_inbound` | `serde_json::from_slice(bytes).map_err` | [1273](../../src/transport.rs#L1273) | receiver-type-required |
+| `decode_inbound` | `serde_json::from_slice` | [1273](../../src/transport.rs#L1273) | external-constructor-callback-or-unresolved |
+| `decode_inbound` | `McpError::Protocol` | [1273](../../src/transport.rs#L1273), [1275](../../src/transport.rs#L1275), [1281](../../src/transport.rs#L1281), [1286](../../src/transport.rs#L1286), [1294](../../src/transport.rs#L1294), [1299](../../src/transport.rs#L1299), [1313](../../src/transport.rs#L1313), [1319](../../src/transport.rs#L1319), [1333](../../src/transport.rs#L1333) | external-constructor-callback-or-unresolved |
+| `decode_inbound` | `error.to_string` | [1273](../../src/transport.rs#L1273) | receiver-type-required |
+| `decode_inbound` | `Err` | [1275](../../src/transport.rs#L1275), [1281](../../src/transport.rs#L1281), [1286](../../src/transport.rs#L1286), [1294](../../src/transport.rs#L1294), [1299](../../src/transport.rs#L1299), [1313](../../src/transport.rs#L1313), [1333](../../src/transport.rs#L1333) | external-constructor-callback-or-unresolved |
+| `decode_inbound` | `"JSON-RPC frame version is not 2.0".to_owned` | [1276](../../src/transport.rs#L1276) | receiver-type-required |
+| `decode_inbound` | `"response id is not a positive integer".to_owned` | [1282](../../src/transport.rs#L1282) | receiver-type-required |
+| `decode_inbound` | `frame.method.is_some` | [1285](../../src/transport.rs#L1285) | receiver-type-required |
+| `decode_inbound` | `"server request has no installed client handler".to_owned` | [1287](../../src/transport.rs#L1287) | receiver-type-required |
+| `decode_inbound` | `cancelled_ids.remove` | [1291](../../src/transport.rs#L1291) | receiver-type-required |
+| `decode_inbound` | `Ok` | [1292](../../src/transport.rs#L1292), [1310](../../src/transport.rs#L1310), [1331](../../src/transport.rs#L1331) | external-constructor-callback-or-unresolved |
+| `decode_inbound` | `frame.params.is_some` | [1298](../../src/transport.rs#L1298) | receiver-type-required |
+| `decode_inbound` | `"response contains notification params".to_owned` | [1300](../../src/transport.rs#L1300) | receiver-type-required |
+| `decode_inbound` | `response.validate_for` | [1309](../../src/transport.rs#L1309) | receiver-type-required |
+| `decode_inbound` | `Inbound::Response` | [1310](../../src/transport.rs#L1310) | external-constructor-callback-or-unresolved |
+| `decode_inbound` | `frame.result.is_some` | [1312](../../src/transport.rs#L1312) | receiver-type-required |
+| `decode_inbound` | `frame.error.is_some` | [1312](../../src/transport.rs#L1312) | receiver-type-required |
+| `decode_inbound` | `"id-less frame is not a notification".to_owned` | [1314](../../src/transport.rs#L1314), [1319](../../src/transport.rs#L1319) | receiver-type-required |
+| `decode_inbound` | `frame         .method         .ok_or_else` | [1317](../../src/transport.rs#L1317) | receiver-type-required |
+| `decode_inbound` | `Inbound::Notification` | [1331](../../src/transport.rs#L1331) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap` | [1346](../../src/transport.rs#L1346) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::net::TcpListener::bind` | [1346](../../src/transport.rs#L1346) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.local_addr().unwrap` | [1347](../../src/transport.rs#L1347) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.local_addr` | [1347](../../src/transport.rs#L1347) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Arc::new` | [1348](../../src/transport.rs#L1348) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::sync::Notify::new` | [1348](../../src/transport.rs#L1348) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `received.clone` | [1349](../../src/transport.rs#L1349) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `tokio::spawn` | [1350](../../src/transport.rs#L1350) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.accept().await.unwrap` | [1351](../../src/transport.rs#L1351) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `listener.accept` | [1351](../../src/transport.rs#L1351) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Vec::new` | [1352](../../src/transport.rs#L1352) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `socket.read(&mut chunk).await.unwrap` | [1355](../../src/transport.rs#L1355) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `socket.read` | [1355](../../src/transport.rs#L1355) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.extend_from_slice` | [1357](../../src/transport.rs#L1357) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.windows(4).position` | [1358](../../src/transport.rs#L1358) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.windows` | [1358](../../src/transport.rs#L1358) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `String::from_utf8_lossy(&bytes[..offset]).to_ascii_lowercase` | [1359](../../src/transport.rs#L1359) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `String::from_utf8_lossy` | [1359](../../src/transport.rs#L1359) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim()                             .parse()                             .unwrap` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim()                             .parse` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap()                             .trim` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map(&#124;line&#124; line.strip_prefix("content-length:"))                             .unwrap` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines()                             .find_map` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `header                             .lines` | [1360](../../src/transport.rs#L1360) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `line.strip_prefix` | [1362](../../src/transport.rs#L1362) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `bytes.len` | [1367](../../src/transport.rs#L1367) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `signal.notify_one` | [1372](../../src/transport.rs#L1372) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `HttpTransport::new(                 format!("http://{address}/mcp").parse().unwrap(),                 &BTreeMap::new(),                 None,                 true,             )             .unwrap` | [1389](../../src/transport.rs#L1389) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `HttpTransport::new` | [1389](../../src/transport.rs#L1389) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `format!("http://{address}/mcp").parse().unwrap` | [1390](../../src/transport.rs#L1390) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `format!("http://{address}/mcp").parse` | [1390](../../src/transport.rs#L1390) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `BTreeMap::new` | [1391](../../src/transport.rs#L1391) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `serde_json::from_value(serde_json::json!({"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"write","arguments":{},"_meta":{"io.modelcontextprotocol/protocolVersion":crate::MODERN_PROTOCOL_VERSION}}})).unwrap` | [1396](../../src/transport.rs#L1396) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `serde_json::from_value` | [1396](../../src/transport.rs#L1396) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `transport.start_modern_scoped` | [1397](../../src/transport.rs#L1397), [1403](../../src/transport.rs#L1403) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `request.clone` | [1398](../../src/transport.rs#L1398) | receiver-type-required |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `Duration::from_secs` | [1399](../../src/transport.rs#L1399), [1405](../../src/transport.rs#L1405) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `crate::McpCancellationToken::default` | [1400](../../src/transport.rs#L1400), [1406](../../src/transport.rs#L1406) | external-constructor-callback-or-unresolved |
+| `owned_scoped_requests_cannot_outlive_close_or_reconnect` | `server.await.unwrap` | [1419](../../src/transport.rs#L1419) | receiver-type-required |
+| `cancelled_response_tombstone_is_consumed_once` | `BTreeSet::from` | [1439](../../src/transport.rs#L1439) | external-constructor-callback-or-unresolved |
+| `sse_decoder_yields_the_first_complete_event_without_eof` | `SseDecoder::default` | [1461](../../src/transport.rs#L1461) | external-constructor-callback-or-unresolved |
+| `sse_decoder_yields_the_first_complete_event_without_eof` | `decoder             .push(b"\"result\":{}}\n\n: connection remains open\n")             .expect` | [1468](../../src/transport.rs#L1468) | receiver-type-required |
+| `sse_decoder_yields_the_first_complete_event_without_eof` | `decoder             .push` | [1468](../../src/transport.rs#L1468) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::time::Instant::now` | [1480](../../src/transport.rs#L1480) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .expect` | [1481](../../src/transport.rs#L1481) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build` | [1481](../../src/transport.rs#L1481) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread()             .enable_all` | [1481](../../src/transport.rs#L1481) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::runtime::Builder::new_current_thread` | [1481](../../src/transport.rs#L1481) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `runtime.block_on` | [1485](../../src/transport.rs#L1485) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `tokio::sync::oneshot::channel` | [1486](../../src/transport.rs#L1486) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::thread::spawn` | [1487](../../src/transport.rs#L1487) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `std::thread::sleep` | [1488](../../src/transport.rs#L1488) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `Duration::from_secs` | [1488](../../src/transport.rs#L1488) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `sender.send` | [1489](../../src/transport.rs#L1489) | receiver-type-required |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `Ok` | [1489](../../src/transport.rs#L1489) | external-constructor-callback-or-unresolved |
+| `timed_out_detached_reaper_does_not_delay_runtime_drop` | `drop` | [1496](../../src/transport.rs#L1496) | external-constructor-callback-or-unresolved |

@@ -753,7 +753,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_pending_management` | `ManagementError::QueueRecoveryFailed` | [203](../../src/endpoint_host.rs#L203) | external-constructor-callback-or-unresolved |
 | `recover_pending_management` | `error.to_string` | [203](../../src/endpoint_host.rs#L203) | receiver-type-required |
 | `recover_pending_management` | `ManagementStore::open_recovering_again(         root,         &started_at,         Some(&QueueRecoveryAdapter { authority }),         validated,     )     .map` | [204](../../src/endpoint_host.rs#L204) | receiver-type-required |
-| `recover_pending_management` | `ManagementStore::open_recovering_again` | [204](../../src/endpoint_host.rs#L204) | [endpoint::management::ManagementStore::open_recovering_again](../../../endpoint/src/management.rs#L373) |
+| `recover_pending_management` | `ManagementStore::open_recovering_again` | [204](../../src/endpoint_host.rs#L204) | [endpoint::management::ManagementStore::open_recovering_again](../../../endpoint/src/management.rs#L375) |
 | `recover_pending_management` | `Some` | [207](../../src/endpoint_host.rs#L207) | external-constructor-callback-or-unresolved |
 | `execute` | `serde_json::from_slice(&pending.action.canonical_bytes()?)             .map_err` | [222](../../src/endpoint_host.rs#L222) | receiver-type-required |
 | `execute` | `serde_json::from_slice` | [222](../../src/endpoint_host.rs#L222) | external-constructor-callback-or-unresolved |
@@ -898,7 +898,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_route_ownership` | `PathBuf::from` | [720](../../src/endpoint_host.rs#L720) | external-constructor-callback-or-unresolved |
 | `open_with_route_ownership` | `queue_authority             .as_deref()             .map` | [721](../../src/endpoint_host.rs#L721) | receiver-type-required |
 | `open_with_route_ownership` | `queue_authority             .as_deref` | [721](../../src/endpoint_host.rs#L721) | receiver-type-required |
-| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [724](../../src/endpoint_host.rs#L724) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L362) |
+| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [724](../../src/endpoint_host.rs#L724) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L364) |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref()                 .map` | [727](../../src/endpoint_host.rs#L727) | receiver-type-required |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref` | [727](../../src/endpoint_host.rs#L727) | receiver-type-required |
 | `open_with_route_ownership` | `Ok` | [733](../../src/endpoint_host.rs#L733) | external-constructor-callback-or-unresolved |
@@ -983,7 +983,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `required_string` | [915](../../src/endpoint_host.rs#L915), [916](../../src/endpoint_host.rs#L916), [917](../../src/endpoint_host.rs#L917) | [tekes-supervisor::endpoint_host::required_string](../../src/endpoint_host.rs#L2128) |
 | `relocate_workspace` | `store::NamedLock::try_exclusive(             crate::process_host::workspace_quiescence_lock_path(&self.storage_root, workspace_id),         )         .map_err` | [920](../../src/endpoint_host.rs#L920) | receiver-type-required |
 | `relocate_workspace` | `store::NamedLock::try_exclusive` | [920](../../src/endpoint_host.rs#L920) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [921](../../src/endpoint_host.rs#L921) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6361) |
+| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [921](../../src/endpoint_host.rs#L921) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6359) |
 | `relocate_workspace` | `EndpointRpcFailure::new` | [924](../../src/endpoint_host.rs#L924) | [tekes-supervisor::endpoint_host::EndpointRpcFailure::new](../../src/endpoint_host.rs#L2692) |
 | `relocate_workspace` | `internal_failure` | [929](../../src/endpoint_host.rs#L929) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2112) |
 | `relocate_workspace` | `(self.clock)().map_err` | [931](../../src/endpoint_host.rs#L931) | receiver-type-required |
@@ -1281,33 +1281,33 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `Ok` | [1563](../../src/endpoint_host.rs#L1563) | external-constructor-callback-or-unresolved |
 | `open` | `ProductionEndpointHost::open` | [1564](../../src/endpoint_host.rs#L1564) | [tekes-supervisor::endpoint_host::ProductionEndpointHost::open](../../src/endpoint_host.rs#L565) |
 | `open` | `EndpointDispatcher::new` | [1565](../../src/endpoint_host.rs#L1565) | [endpoint::host::EndpointDispatcher::new](../../../endpoint/src/host.rs#L451) |
-| `open` | `RpcRegistry::open` | [1565](../../src/endpoint_host.rs#L1565) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L121) |
+| `open` | `RpcRegistry::open` | [1565](../../src/endpoint_host.rs#L1565) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L123) |
 | `open` | `EndpointSubscriptionHub::default` | [1566](../../src/endpoint_host.rs#L1566) | external-constructor-callback-or-unresolved |
 | `open_with_clock` | `root.as_ref` | [1575](../../src/endpoint_host.rs#L1575) | receiver-type-required |
 | `open_with_clock` | `Ok` | [1576](../../src/endpoint_host.rs#L1576) | external-constructor-callback-or-unresolved |
 | `open_with_clock` | `ProductionEndpointHost::open_with_clock` | [1577](../../src/endpoint_host.rs#L1577) | [tekes-supervisor::endpoint_host::ProductionEndpointHost::open_with_clock](../../src/endpoint_host.rs#L580) |
 | `open_with_clock` | `EndpointDispatcher::new` | [1578](../../src/endpoint_host.rs#L1578) | [endpoint::host::EndpointDispatcher::new](../../../endpoint/src/host.rs#L451) |
-| `open_with_clock` | `RpcRegistry::open` | [1578](../../src/endpoint_host.rs#L1578) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L121) |
+| `open_with_clock` | `RpcRegistry::open` | [1578](../../src/endpoint_host.rs#L1578) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L123) |
 | `open_with_clock` | `EndpointSubscriptionHub::default` | [1579](../../src/endpoint_host.rs#L1579) | external-constructor-callback-or-unresolved |
 | `open_with_routes` | `root.as_ref` | [1589](../../src/endpoint_host.rs#L1589) | receiver-type-required |
 | `open_with_routes` | `Ok` | [1590](../../src/endpoint_host.rs#L1590) | external-constructor-callback-or-unresolved |
 | `open_with_routes` | `ProductionEndpointHost::open_with_routes` | [1591](../../src/endpoint_host.rs#L1591) | [tekes-supervisor::endpoint_host::ProductionEndpointHost::open_with_routes](../../src/endpoint_host.rs#L589) |
 | `open_with_routes` | `Some` | [1591](../../src/endpoint_host.rs#L1591) | external-constructor-callback-or-unresolved |
 | `open_with_routes` | `EndpointDispatcher::new` | [1592](../../src/endpoint_host.rs#L1592) | [endpoint::host::EndpointDispatcher::new](../../../endpoint/src/host.rs#L451) |
-| `open_with_routes` | `RpcRegistry::open` | [1592](../../src/endpoint_host.rs#L1592) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L121) |
+| `open_with_routes` | `RpcRegistry::open` | [1592](../../src/endpoint_host.rs#L1592) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L123) |
 | `open_with_routes` | `EndpointSubscriptionHub::default` | [1593](../../src/endpoint_host.rs#L1593) | external-constructor-callback-or-unresolved |
 | `open_with_route_authority` | `root.as_ref` | [1603](../../src/endpoint_host.rs#L1603) | receiver-type-required |
 | `open_with_route_authority` | `Ok` | [1604](../../src/endpoint_host.rs#L1604) | external-constructor-callback-or-unresolved |
 | `open_with_route_authority` | `ProductionEndpointHost::open_with_route_authority` | [1605](../../src/endpoint_host.rs#L1605) | [tekes-supervisor::endpoint_host::ProductionEndpointHost::open_with_route_authority](../../src/endpoint_host.rs#L665) |
 | `open_with_route_authority` | `EndpointDispatcher::new` | [1614](../../src/endpoint_host.rs#L1614) | [endpoint::host::EndpointDispatcher::new](../../../endpoint/src/host.rs#L451) |
-| `open_with_route_authority` | `RpcRegistry::open` | [1614](../../src/endpoint_host.rs#L1614) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L121) |
+| `open_with_route_authority` | `RpcRegistry::open` | [1614](../../src/endpoint_host.rs#L1614) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L123) |
 | `open_with_route_authority` | `EndpointSubscriptionHub::default` | [1615](../../src/endpoint_host.rs#L1615) | external-constructor-callback-or-unresolved |
 | `open_with_authorities` | `Self::open_with_full_authorities` | [1626](../../src/endpoint_host.rs#L1626) | [tekes-supervisor::endpoint_host::ProductionEndpointAssembly::open_with_full_authorities](../../src/endpoint_host.rs#L1637) |
 | `open_with_full_authorities` | `root.as_ref` | [1646](../../src/endpoint_host.rs#L1646) | receiver-type-required |
 | `open_with_full_authorities` | `Ok` | [1647](../../src/endpoint_host.rs#L1647) | external-constructor-callback-or-unresolved |
 | `open_with_full_authorities` | `ProductionEndpointHost::open_with_full_authorities` | [1648](../../src/endpoint_host.rs#L1648) | [tekes-supervisor::endpoint_host::ProductionEndpointHost::open_with_full_authorities](../../src/endpoint_host.rs#L616) |
 | `open_with_full_authorities` | `EndpointDispatcher::new` | [1657](../../src/endpoint_host.rs#L1657) | [endpoint::host::EndpointDispatcher::new](../../../endpoint/src/host.rs#L451) |
-| `open_with_full_authorities` | `RpcRegistry::open` | [1657](../../src/endpoint_host.rs#L1657) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L121) |
+| `open_with_full_authorities` | `RpcRegistry::open` | [1657](../../src/endpoint_host.rs#L1657) | [endpoint::idempotency::RpcRegistry::open](../../../endpoint/src/idempotency.rs#L123) |
 | `open_with_full_authorities` | `EndpointSubscriptionHub::default` | [1658](../../src/endpoint_host.rs#L1658) | external-constructor-callback-or-unresolved |
 | `dispatch` | `Ok` | [1666](../../src/endpoint_host.rs#L1666) | external-constructor-callback-or-unresolved |
 | `dispatch` | `self.dispatcher.dispatch` | [1666](../../src/endpoint_host.rs#L1666) | receiver-type-required |

@@ -134,10 +134,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `origin_event` | `json!({         "v": 1,         "seq": ledger.next_seq(),         "kind": kind,         "ts": timestamp,         "origin_key": origin.key,         "origin_tuple": origin     })     .as_object` | [166](../../src/ledger_events.rs#L166) | receiver-type-required |
 | `append_and_receipt` | `ledger.projection` | [186](../../src/ledger_events.rs#L186) | receiver-type-required |
 | `append_and_receipt` | `projection.origin_tuples.get` | [187](../../src/ledger_events.rs#L187) | receiver-type-required |
-| `append_and_receipt` | `stdout.write_all` | [188](../../src/ledger_events.rs#L188), [203](../../src/ledger_events.rs#L203) | receiver-type-required |
-| `append_and_receipt` | `encode_line` | [188](../../src/ledger_events.rs#L188), [203](../../src/ledger_events.rs#L203) | external-constructor-callback-or-unresolved |
-| `append_and_receipt` | `stdout.flush` | [196](../../src/ledger_events.rs#L196), [211](../../src/ledger_events.rs#L211) | receiver-type-required |
-| `append_and_receipt` | `Ok` | [197](../../src/ledger_events.rs#L197), [213](../../src/ledger_events.rs#L213) | external-constructor-callback-or-unresolved |
+| `append_and_receipt` | `stdout.write_all` | [189](../../src/ledger_events.rs#L189), [203](../../src/ledger_events.rs#L203) | receiver-type-required |
+| `append_and_receipt` | `encode_line` | [189](../../src/ledger_events.rs#L189), [203](../../src/ledger_events.rs#L203) | external-constructor-callback-or-unresolved |
+| `append_and_receipt` | `stdout.flush` | [197](../../src/ledger_events.rs#L197), [211](../../src/ledger_events.rs#L211) | receiver-type-required |
+| `append_and_receipt` | `Ok` | [198](../../src/ledger_events.rs#L198), [213](../../src/ledger_events.rs#L213) | external-constructor-callback-or-unresolved |
 | `append_and_receipt` | `make_event` | [200](../../src/ledger_events.rs#L200) | [tekes-worker::ledger_events::make_event](../../src/ledger_events.rs#L239) |
 | `append_and_receipt` | `Value::Object` | [200](../../src/ledger_events.rs#L200) | external-constructor-callback-or-unresolved |
 | `append_and_receipt` | `event.seq` | [201](../../src/ledger_events.rs#L201) | receiver-type-required |

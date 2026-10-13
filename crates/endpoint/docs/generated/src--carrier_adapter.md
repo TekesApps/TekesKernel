@@ -170,10 +170,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `respond` | `Err` | [146](../../src/carrier_adapter.rs#L146), [199](../../src/carrier_adapter.rs#L199), [206](../../src/carrier_adapter.rs#L206), [219](../../src/carrier_adapter.rs#L219), [224](../../src/carrier_adapter.rs#L224) | external-constructor-callback-or-unresolved |
 | `respond` | `"respond admission authority changed during lookup".to_owned` | [147](../../src/carrier_adapter.rs#L147) | receiver-type-required |
 | `respond` | `respond_claim` | [150](../../src/carrier_adapter.rs#L150) | [endpoint::carrier_adapter::respond_claim](../../src/carrier_adapter.rs#L346) |
-| `respond` | `state.resolution.is_some` | [152](../../src/carrier_adapter.rs#L152) | receiver-type-required |
 | `respond` | `self.registry.lookup` | [153](../../src/carrier_adapter.rs#L153) | receiver-type-required |
 | `respond` | `receipt_from_cached` | [154](../../src/carrier_adapter.rs#L154) | [endpoint::carrier_adapter::receipt_from_cached](../../src/carrier_adapter.rs#L371) |
-| `respond` | `state.resolution.expect` | [156](../../src/carrier_adapter.rs#L156) | receiver-type-required |
 | `respond` | `self                             .registry                             .handoff(&claim)                             .map_err(&#124;error&#124; HostFailure::Internal(error.to_string()))?                             .map_or_else` | [157](../../src/carrier_adapter.rs#L157) | receiver-type-required |
 | `respond` | `self                             .registry                             .handoff(&claim)                             .map_err` | [157](../../src/carrier_adapter.rs#L157) | receiver-type-required |
 | `respond` | `self                             .registry                             .handoff` | [157](../../src/carrier_adapter.rs#L157) | receiver-type-required |

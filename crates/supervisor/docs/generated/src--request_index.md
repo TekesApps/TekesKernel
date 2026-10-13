@@ -132,7 +132,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `remove` | `self.state` | [91](../../src/request_index.rs#L91) | [tekes-supervisor::request_index::RequestIndex::state](../../src/request_index.rs#L54) |
 | `remove` | `state.by_rpc.remove` | [92](../../src/request_index.rs#L92) | receiver-type-required |
 | `remove` | `state.by_session.get_mut` | [93](../../src/request_index.rs#L93) | receiver-type-required |
-| `remove` | `ids.retain` | [94](../../src/request_index.rs#L94) | receiver-type-required |
+| `remove` | `ids.retain` | [95](../../src/request_index.rs#L95) | receiver-type-required |
 | `forget_session` | `self.state` | [102](../../src/request_index.rs#L102) | [tekes-supervisor::request_index::RequestIndex::state](../../src/request_index.rs#L54) |
 | `forget_session` | `state.by_session.remove(session).unwrap_or_default` | [103](../../src/request_index.rs#L103) | receiver-type-required |
 | `forget_session` | `state.by_session.remove` | [103](../../src/request_index.rs#L103) | receiver-type-required |

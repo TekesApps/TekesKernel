@@ -553,6 +553,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_part` | `name.clone` | [857](../../src/attachment.rs#L857) | receiver-type-required |
 | `decode_padded_base64` | `value.as_bytes` | [864](../../src/attachment.rs#L864) | receiver-type-required |
 | `decode_padded_base64` | `bytes.is_empty` | [865](../../src/attachment.rs#L865) | receiver-type-required |
+| `decode_padded_base64` | `bytes.len().is_multiple_of` | [865](../../src/attachment.rs#L865) | receiver-type-required |
 | `decode_padded_base64` | `bytes.len` | [865](../../src/attachment.rs#L865), [875](../../src/attachment.rs#L875) | receiver-type-required |
 | `decode_padded_base64` | `Err` | [866](../../src/attachment.rs#L866), [883](../../src/attachment.rs#L883), [888](../../src/attachment.rs#L888), [897](../../src/attachment.rs#L897), [903](../../src/attachment.rs#L903) | external-constructor-callback-or-unresolved |
 | `decode_padded_base64` | `bytes.ends_with` | [868](../../src/attachment.rs#L868), [870](../../src/attachment.rs#L870) | receiver-type-required |

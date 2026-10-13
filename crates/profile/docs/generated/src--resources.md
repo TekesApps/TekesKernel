@@ -249,11 +249,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `build_commands` | `Ok` | [330](../../src/resources.rs#L330) | external-constructor-callback-or-unresolved |
 | `parse_skill_manifest` | `parse_front_matter(content, true)         .map_err` | [345](../../src/resources.rs#L345) | receiver-type-required |
 | `parse_skill_manifest` | `parse_front_matter` | [345](../../src/resources.rs#L345) | [profile::resources::parse_front_matter](../../src/resources.rs#L390) |
-| `parse_skill_manifest` | `ResourceError::InvalidSkill` | [346](../../src/resources.rs#L346), [349](../../src/resources.rs#L349), [359](../../src/resources.rs#L359), [366](../../src/resources.rs#L366) | external-constructor-callback-or-unresolved |
+| `parse_skill_manifest` | `ResourceError::InvalidSkill` | [346](../../src/resources.rs#L346), [350](../../src/resources.rs#L350), [359](../../src/resources.rs#L359), [366](../../src/resources.rs#L366) | external-constructor-callback-or-unresolved |
 | `parse_skill_manifest` | `error.to_string` | [346](../../src/resources.rs#L346) | receiver-type-required |
 | `parse_skill_manifest` | `parsed.fields.get` | [347](../../src/resources.rs#L347) | receiver-type-required |
-| `parse_skill_manifest` | `Err` | [349](../../src/resources.rs#L349) | external-constructor-callback-or-unresolved |
-| `parse_skill_manifest` | `"schema_version must be 1".to_owned` | [350](../../src/resources.rs#L350) | receiver-type-required |
+| `parse_skill_manifest` | `Err` | [350](../../src/resources.rs#L350) | external-constructor-callback-or-unresolved |
+| `parse_skill_manifest` | `"schema_version must be 1".to_owned` | [351](../../src/resources.rs#L351) | receiver-type-required |
 | `parse_skill_manifest` | `parsed         .fields         .get("name")         .filter(&#124;value&#124; !value.is_empty())         .cloned()         .ok_or_else` | [354](../../src/resources.rs#L354) | receiver-type-required |
 | `parse_skill_manifest` | `parsed         .fields         .get("name")         .filter(&#124;value&#124; !value.is_empty())         .cloned` | [354](../../src/resources.rs#L354) | receiver-type-required |
 | `parse_skill_manifest` | `parsed         .fields         .get("name")         .filter` | [354](../../src/resources.rs#L354) | receiver-type-required |
