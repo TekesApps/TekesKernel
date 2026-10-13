@@ -545,11 +545,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execution_cwd` | `self.workspace.cwd.first().map` | [277](../../src/config.rs#L277) | receiver-type-required |
 | `execution_cwd` | `self.workspace.cwd.first` | [277](../../src/config.rs#L277) | receiver-type-required |
 | `canonical_bytes` | `validate_snapshot` | [281](../../src/config.rs#L281) | [profile::config::validate_snapshot](../../src/config.rs#L1598) |
-| `canonical_bytes` | `canonical_line` | [282](../../src/config.rs#L282) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `canonical_bytes` | `canonical_line` | [282](../../src/config.rs#L282) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `digest` | `Ok` | [286](../../src/config.rs#L286) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [286](../../src/config.rs#L286) | [profile::digest](../../src/lib.rs#L123) |
+| `digest` | `digest` | [286](../../src/config.rs#L286) | [profile::digest](../../src/lib.rs#L124) |
 | `digest` | `self.canonical_bytes` | [286](../../src/config.rs#L286) | [profile::config::ConfigSnapshot::canonical_bytes](../../src/config.rs#L280) |
-| `decode` | `parse_canonical` | [290](../../src/config.rs#L290) | [profile::parse_canonical](../../src/lib.rs#L64) |
+| `decode` | `parse_canonical` | [290](../../src/config.rs#L290) | [profile::parse_canonical](../../src/lib.rs#L65) |
 | `decode` | `Err` | [292](../../src/config.rs#L292) | external-constructor-callback-or-unresolved |
 | `decode` | `PathBuf::from` | [293](../../src/config.rs#L293) | external-constructor-callback-or-unresolved |
 | `decode` | `validate_snapshot` | [297](../../src/config.rs#L297) | [profile::config::validate_snapshot](../../src/config.rs#L1598) |
@@ -813,7 +813,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_workspace` | `validate_workspace` | [877](../../src/config.rs#L877), [883](../../src/config.rs#L883) | [profile::config::validate_workspace](../../src/config.rs#L1298) |
 | `publish_workspace` | `check_publication_revision` | [882](../../src/config.rs#L882) | [profile::config::check_publication_revision](../../src/config.rs#L1214) |
 | `publish_workspace` | `AtomicPublisher::replace` | [884](../../src/config.rs#L884) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_workspace` | `canonical_line` | [884](../../src/config.rs#L884) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_workspace` | `canonical_line` | [884](../../src/config.rs#L884) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_workspace` | `Ok` | [885](../../src/config.rs#L885) | external-constructor-callback-or-unresolved |
 | `publish_providers` | `self.root.join` | [893](../../src/config.rs#L893) | receiver-type-required |
 | `publish_providers` | `self.publish_global` | [894](../../src/config.rs#L894) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1053) |
@@ -832,7 +832,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_providers_checked` | `check_publication_revision` | [922](../../src/config.rs#L922) | [profile::config::check_publication_revision](../../src/config.rs#L1214) |
 | `publish_providers_checked` | `self.validate_all_provider_references_unlocked` | [924](../../src/config.rs#L924) | [profile::config::ConfigRepository::validate_all_provider_references_unlocked](../../src/config.rs#L1166) |
 | `publish_providers_checked` | `AtomicPublisher::replace` | [925](../../src/config.rs#L925) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_providers_checked` | `canonical_line` | [925](../../src/config.rs#L925) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_providers_checked` | `canonical_line` | [925](../../src/config.rs#L925) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_providers_checked` | `Ok` | [926](../../src/config.rs#L926) | external-constructor-callback-or-unresolved |
 | `publish_settings` | `self.root.join` | [934](../../src/config.rs#L934) | receiver-type-required |
 | `publish_settings` | `self.publish_global` | [935](../../src/config.rs#L935) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1053) |
@@ -850,7 +850,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_settings_checked` | `Vec::new` | [966](../../src/config.rs#L966) | external-constructor-callback-or-unresolved |
 | `publish_settings_checked` | `validate_references` | [969](../../src/config.rs#L969) | [profile::config::validate_references](../../src/config.rs#L1497) |
 | `publish_settings_checked` | `AtomicPublisher::replace` | [970](../../src/config.rs#L970) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_settings_checked` | `canonical_line` | [970](../../src/config.rs#L970) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_settings_checked` | `canonical_line` | [970](../../src/config.rs#L970) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_settings_checked` | `Ok` | [971](../../src/config.rs#L971) | external-constructor-callback-or-unresolved |
 | `publish_workspace_policy` | `validate_workspace_id` | [983](../../src/config.rs#L983) | [profile::config::validate_workspace_id](../../src/config.rs#L1253) |
 | `publish_workspace_policy` | `workspace_document_path` | [984](../../src/config.rs#L984) | [profile::config::workspace_document_path](../../src/config.rs#L1270) |
@@ -872,7 +872,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_workspace_policy` | `validate_settings` | [1009](../../src/config.rs#L1009) | [profile::config::validate_settings](../../src/config.rs#L1435) |
 | `publish_workspace_policy` | `validate_references` | [1010](../../src/config.rs#L1010) | [profile::config::validate_references](../../src/config.rs#L1497) |
 | `publish_workspace_policy` | `AtomicPublisher::replace` | [1011](../../src/config.rs#L1011) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_workspace_policy` | `canonical_line` | [1011](../../src/config.rs#L1011) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_workspace_policy` | `canonical_line` | [1011](../../src/config.rs#L1011) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_workspace_policy` | `Ok` | [1012](../../src/config.rs#L1012) | external-constructor-callback-or-unresolved |
 | `publish_session_settings` | `store::session_settings_path` | [1021](../../src/config.rs#L1021) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
 | `publish_session_settings` | `session_folder.as_ref` | [1021](../../src/config.rs#L1021) | receiver-type-required |
@@ -888,7 +888,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_session_settings` | `Some` | [1035](../../src/config.rs#L1035) | external-constructor-callback-or-unresolved |
 | `publish_session_settings` | `value.clone` | [1035](../../src/config.rs#L1035) | receiver-type-required |
 | `publish_session_settings` | `AtomicPublisher::replace` | [1036](../../src/config.rs#L1036) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_session_settings` | `canonical_line` | [1036](../../src/config.rs#L1036) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_session_settings` | `canonical_line` | [1036](../../src/config.rs#L1036) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_session_settings` | `Ok` | [1037](../../src/config.rs#L1037) | external-constructor-callback-or-unresolved |
 | `session_settings` | `NamedLock::shared` | [1044](../../src/config.rs#L1044) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `session_settings` | `self.root.join` | [1044](../../src/config.rs#L1044) | receiver-type-required |
@@ -900,7 +900,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_global` | `NamedLock::exclusive` | [1061](../../src/config.rs#L1061) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_global` | `self.root.join` | [1061](../../src/config.rs#L1061) | receiver-type-required |
 | `publish_global` | `fs::read` | [1062](../../src/config.rs#L1062) | external-constructor-callback-or-unresolved |
-| `publish_global` | `parse_canonical` | [1064](../../src/config.rs#L1064) | [profile::parse_canonical](../../src/lib.rs#L64) |
+| `publish_global` | `parse_canonical` | [1064](../../src/config.rs#L1064) | [profile::parse_canonical](../../src/lib.rs#L65) |
 | `publish_global` | `validate` | [1065](../../src/config.rs#L1065), [1072](../../src/config.rs#L1072) | external-constructor-callback-or-unresolved |
 | `publish_global` | `revision_from_value` | [1066](../../src/config.rs#L1066) | [profile::config::revision_from_value](../../src/config.rs#L1236) |
 | `publish_global` | `error.kind` | [1068](../../src/config.rs#L1068) | receiver-type-required |
@@ -908,7 +908,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_global` | `error.into` | [1069](../../src/config.rs#L1069) | receiver-type-required |
 | `publish_global` | `check_publication_revision` | [1071](../../src/config.rs#L1071) | [profile::config::check_publication_revision](../../src/config.rs#L1214) |
 | `publish_global` | `AtomicPublisher::replace` | [1073](../../src/config.rs#L1073) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_global` | `canonical_line` | [1073](../../src/config.rs#L1073) | [profile::canonical_line](../../src/lib.rs#L109) |
+| `publish_global` | `canonical_line` | [1073](../../src/config.rs#L1073) | [profile::canonical_line](../../src/lib.rs#L110) |
 | `publish_global` | `Ok` | [1074](../../src/config.rs#L1074) | external-constructor-callback-or-unresolved |
 | `resolve_unlocked` | `workspace_document_path` | [1083](../../src/config.rs#L1083) | [profile::config::workspace_document_path](../../src/config.rs#L1270) |
 | `resolve_unlocked` | `self.read_required` | [1084](../../src/config.rs#L1084) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1151) |
@@ -942,12 +942,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_unlocked` | `Ok` | [1134](../../src/config.rs#L1134) | external-constructor-callback-or-unresolved |
 | `resolve_unlocked` | `session_settings.as_ref().map` | [1140](../../src/config.rs#L1140) | receiver-type-required |
 | `resolve_unlocked` | `session_settings.as_ref` | [1140](../../src/config.rs#L1140) | receiver-type-required |
-| `read_required` | `parse_canonical` | [1152](../../src/config.rs#L1152) | [profile::parse_canonical](../../src/lib.rs#L64) |
+| `read_required` | `parse_canonical` | [1152](../../src/config.rs#L1152) | [profile::parse_canonical](../../src/lib.rs#L65) |
 | `read_required` | `fs::read` | [1152](../../src/config.rs#L1152) | external-constructor-callback-or-unresolved |
 | `read_optional` | `fs::read` | [1159](../../src/config.rs#L1159) | external-constructor-callback-or-unresolved |
 | `read_optional` | `Ok` | [1160](../../src/config.rs#L1160), [1161](../../src/config.rs#L1161) | external-constructor-callback-or-unresolved |
 | `read_optional` | `Some` | [1160](../../src/config.rs#L1160) | external-constructor-callback-or-unresolved |
-| `read_optional` | `parse_canonical` | [1160](../../src/config.rs#L1160) | [profile::parse_canonical](../../src/lib.rs#L64) |
+| `read_optional` | `parse_canonical` | [1160](../../src/config.rs#L1160) | [profile::parse_canonical](../../src/lib.rs#L65) |
 | `read_optional` | `error.kind` | [1161](../../src/config.rs#L1161) | receiver-type-required |
 | `read_optional` | `Err` | [1162](../../src/config.rs#L1162) | external-constructor-callback-or-unresolved |
 | `read_optional` | `error.into` | [1162](../../src/config.rs#L1162) | receiver-type-required |

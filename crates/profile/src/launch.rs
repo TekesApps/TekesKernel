@@ -164,7 +164,18 @@ pub struct LaunchBindings {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub goal_id: Option<String>,
     pub dynamic_catalog: DynamicToolCatalog,
+    /// Names the workspace policy allows but the host refused to project for
+    /// this launch (an MCP tool whose schema the dynamic-schema contract
+    /// rejects, on a server that is otherwise healthy). They are not in
+    /// `dynamic_catalog` and nothing dispatches them; listing them only lets
+    /// the policy-reference check tell "refused, reported" from "unknown".
+    /// Absent when empty, so a launch without refusals keeps its bytes.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub unavailable_tools: Vec<String>,
 }
+
+/// Upper bound on [`LaunchBindings::unavailable_tools`].
+pub const MAX_UNAVAILABLE_TOOLS: usize = 1024;
 
 impl LaunchBindings {
     pub fn bind(
@@ -172,12 +183,28 @@ impl LaunchBindings {
         goal_id: Option<String>,
         dynamic_catalog: DynamicToolCatalog,
     ) -> Result<Self, ProfileError> {
+        Self::bind_with_unavailable(config, goal_id, dynamic_catalog, Vec::new())
+    }
+
+    /// Like [`Self::bind`], additionally recording policy-allowed names the
+    /// host refused to project. Names are sorted and de-duplicated; a name
+    /// that the policy does not allow, or that is in the effective catalog,
+    /// is rejected.
+    pub fn bind_with_unavailable(
+        config: &ConfigSnapshot,
+        goal_id: Option<String>,
+        dynamic_catalog: DynamicToolCatalog,
+        mut unavailable_tools: Vec<String>,
+    ) -> Result<Self, ProfileError> {
+        unavailable_tools.sort();
+        unavailable_tools.dedup();
         let value = Self {
             format: FORMAT,
             workspace: config.workspace.id.clone(),
             config_digest: config.digest()?,
             goal_id,
             dynamic_catalog,
+            unavailable_tools,
         };
         value.validate_against(config)?;
         Ok(value)
@@ -253,13 +280,38 @@ impl LaunchBindings {
                     .map(|tool| tool.name.clone()),
             )
             .collect::<BTreeSet<_>>();
+        let unavailable = self
+            .unavailable_tools
+            .iter()
+            .map(String::as_str)
+            .collect::<BTreeSet<_>>();
+        for name in &unavailable {
+            // A refused name must be one the policy actually allows and must
+            // not also be executable: the list excuses a reference, it never
+            // adds or hides authority.
+            if effective_names.contains(*name)
+                || !config
+                    .workspace
+                    .policy
+                    .allowed_tools
+                    .iter()
+                    .any(|allowed| allowed == name)
+            {
+                return Err(ProfileError::InvalidReference {
+                    path: path.to_path_buf(),
+                    reason: format!(
+                        "unavailable tool {name:?} is executable or not allowed by the policy"
+                    ),
+                });
+            }
+        }
         for allowed in &config.workspace.policy.allowed_tools {
             // Retired builtins may remain in historical workspace policies.
             // Accept the old selector without restoring an executable capability.
             if matches!(allowed.as_str(), "note" | "recall") {
                 continue;
             }
-            if !effective_names.contains(allowed) {
+            if !effective_names.contains(allowed) && !unavailable.contains(allowed.as_str()) {
                 return Err(ProfileError::InvalidReference {
                     path: path.to_path_buf(),
                     reason: format!(
@@ -284,7 +336,21 @@ fn validate_launch_bindings(value: &LaunchBindings, path: &Path) -> Result<(), P
     if let Some(goal_id) = &value.goal_id {
         validate_identifier(goal_id, "goal_id", 128, path)?;
     }
-    validate_dynamic_catalog(&value.dynamic_catalog, path)
+    validate_dynamic_catalog(&value.dynamic_catalog, path)?;
+    if value.unavailable_tools.len() > MAX_UNAVAILABLE_TOOLS {
+        return invalid(path, "unavailable_tools exceeds its bound");
+    }
+    for name in &value.unavailable_tools {
+        validate_tool_name(name, path)?;
+    }
+    if value
+        .unavailable_tools
+        .windows(2)
+        .any(|pair| pair[0] >= pair[1])
+    {
+        return invalid(path, "unavailable_tools must be sorted and unique");
+    }
+    Ok(())
 }
 
 fn validate_dynamic_catalog(value: &DynamicToolCatalog, path: &Path) -> Result<(), ProfileError> {
@@ -364,6 +430,44 @@ const DYNAMIC_SCHEMA_KEYWORDS: [&str; 33] = [
     "$comment",
     "deprecated",
 ];
+
+/// A dynamic-tool schema refusal split into the JSON pointer of the refused
+/// node, the keyword the message names (when it names one) and the message
+/// without the pointer. The pointer and message are produced by the schema
+/// walk below in the form `<pointer>: <message>`; keeping the split here keeps
+/// the producer and its only parser together.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct SchemaRefusal {
+    pub pointer: Option<String>,
+    pub keyword: Option<String>,
+    pub message: String,
+}
+
+impl SchemaRefusal {
+    #[must_use]
+    pub fn from_error(error: &ProfileError) -> Self {
+        let reason = match error {
+            ProfileError::InvalidSchema { reason, .. } => reason.clone(),
+            other => other.to_string(),
+        };
+        let (pointer, message) = match reason.split_once(": ") {
+            Some((pointer, message)) if pointer.starts_with('/') => {
+                (Some(pointer.to_owned()), message.to_owned())
+            }
+            _ => (None, reason),
+        };
+        let keyword = message.split_once("keyword \"").and_then(|(_, rest)| {
+            rest.split_once('"')
+                .map(|(keyword, _)| keyword.to_owned())
+                .filter(|keyword| !keyword.is_empty())
+        });
+        Self {
+            pointer,
+            keyword,
+            message,
+        }
+    }
+}
 
 /// Where a node sits inside the tool schema, for error messages
 /// (`/parameters/properties/layout/anyOf/1`).

@@ -16,6 +16,7 @@ pub fn resolve_worker_launch_bindings(
     instruction: &InstructionSnapshot,
     goal_id: Option<String>,
     tools: Vec<profile::DynamicTool>,
+    unavailable_tools: Vec<String>,
 ) -> Result<WorkerLaunchBindings, DynamicBindingError> {
     let dynamic_catalog = DynamicToolCatalog::resolve(tools)
         .map_err(|error| DynamicBindingError::Invalid(error.to_string()))?;
@@ -25,11 +26,13 @@ pub fn resolve_worker_launch_bindings(
     let bindings = WorkerLaunchBindings {
         goal_id,
         dynamic_catalog,
+        unavailable_tools,
     };
-    profile::LaunchBindings::bind(
+    profile::LaunchBindings::bind_with_unavailable(
         config,
         bindings.goal_id.clone(),
         bindings.dynamic_catalog.clone(),
+        bindings.unavailable_tools.clone(),
     )
     .map_err(|error| DynamicBindingError::Invalid(error.to_string()))?;
     Ok(bindings)
@@ -132,6 +135,7 @@ mod tests {
             &instruction(),
             None,
             vec![mcp_tool("mcp__fixture__echo")],
+            Vec::new(),
         )
         .expect("bindings");
         assert_eq!(bindings.dynamic_catalog.tools.len(), 1);
@@ -141,10 +145,74 @@ mod tests {
             &instruction(),
             None,
             vec![mcp_tool("mcp__fixture__echo")],
+            Vec::new(),
         );
         assert!(
             missing.is_err(),
             "an allowed reference to an unbound tool fails the launch"
+        );
+    }
+
+    #[test]
+    fn a_refused_tool_is_excused_by_exact_name_and_never_becomes_executable() {
+        let allowed = || {
+            config(vec![
+                "mcp__fixture__echo".to_owned(),
+                "mcp__fixture__refused".to_owned(),
+            ])
+        };
+        let tools = || vec![mcp_tool("mcp__fixture__echo")];
+        // Without the refusal list the reference is unknown and the launch fails.
+        assert!(
+            resolve_worker_launch_bindings(&allowed(), &instruction(), None, tools(), Vec::new())
+                .is_err()
+        );
+        let bindings = resolve_worker_launch_bindings(
+            &allowed(),
+            &instruction(),
+            None,
+            tools(),
+            vec!["mcp__fixture__refused".to_owned()],
+        )
+        .expect("refused name is excused");
+        assert_eq!(
+            bindings
+                .dynamic_catalog
+                .tools
+                .iter()
+                .map(|tool| tool.name.as_str())
+                .collect::<Vec<_>>(),
+            vec!["mcp__fixture__echo"]
+        );
+        assert_eq!(
+            bindings.unavailable_tools,
+            vec!["mcp__fixture__refused".to_owned()]
+        );
+        // A different unknown name is not excused, and a bound tool cannot be
+        // declared unavailable.
+        let other = config(vec!["mcp__fixture__missing".to_owned()]);
+        assert!(
+            resolve_worker_launch_bindings(
+                &other,
+                &instruction(),
+                None,
+                tools(),
+                vec!["mcp__fixture__refused".to_owned()]
+            )
+            .is_err()
+        );
+        assert!(
+            resolve_worker_launch_bindings(
+                &allowed(),
+                &instruction(),
+                None,
+                tools(),
+                vec![
+                    "mcp__fixture__echo".to_owned(),
+                    "mcp__fixture__refused".to_owned()
+                ]
+            )
+            .is_err()
         );
     }
 
@@ -155,6 +223,7 @@ mod tests {
             &instruction(),
             None,
             vec![mcp_tool("read")],
+            Vec::new(),
         );
         assert!(collision.is_err());
     }

@@ -1,7 +1,7 @@
 use profile::{
     ConfigSnapshot, DynamicTool, DynamicToolCatalog, DynamicToolEffect, DynamicToolSource,
     DynamicToolSourceKind, LaunchBindings, ProvidersConfig, ResolvedWorkspace, RevisionVector,
-    SettingsConfig, WorkspacePolicy,
+    SchemaRefusal, SettingsConfig, WorkspacePolicy,
 };
 use schema::IJsonValue;
 use serde_json::json;
@@ -397,4 +397,164 @@ fn retired_memory_selectors_do_not_break_historical_workspace_launches() {
     .unwrap();
     let bytes = bindings.canonical_bytes().unwrap();
     LaunchBindings::decode(&bytes, &snapshot).unwrap();
+}
+
+/// `SchemaRefusal` splits the walk's `<pointer>: <message>` text; the walk and
+/// the split are tested together so a changed message cannot silently drop the
+/// pointer or keyword from a per-tool diagnostic.
+#[test]
+fn schema_refusal_splits_pointer_keyword_and_message_from_real_refusals() {
+    for (parameters, pointer, keyword, message) in [
+        (
+            json!({"type":"object","properties":{"p":{"type":"object","maxProperties":2,"properties":{}}}}),
+            Some("/parameters/properties/p"),
+            Some("maxProperties"),
+            "uses unsupported keyword \"maxProperties\"",
+        ),
+        (
+            json!({"type":"object","properties":{"p":{"type":"object","properties":{},"$defs":{}}}}),
+            Some("/parameters/properties/p"),
+            Some("$defs"),
+            "keyword \"$defs\" is only accepted at the root of an MCP parameters schema",
+        ),
+        (
+            json!({"type":"object","properties":{"p":{"type":"string","format":7}}}),
+            Some("/parameters/properties/p"),
+            None,
+            "format must be a string",
+        ),
+    ] {
+        let error = DynamicTool::declared(
+            "mcp__probe__tool",
+            DynamicToolSource {
+                kind: DynamicToolSourceKind::Mcp,
+                id: "probe".to_owned(),
+            },
+            DynamicToolEffect::ReadOnly,
+            false,
+            Vec::new(),
+            ijson(json!({"name":"mcp__probe__tool","description":"Probe","parameters":parameters})),
+        )
+        .expect_err("refused schema");
+        let refusal = SchemaRefusal::from_error(&error);
+        assert_eq!(refusal.pointer.as_deref(), pointer, "{error}");
+        assert_eq!(refusal.keyword.as_deref(), keyword, "{error}");
+        assert_eq!(refusal.message, message);
+    }
+    // A refusal without a pointer keeps the whole sentence.
+    let error = DynamicTool::declared(
+        "mcp__probe__tool",
+        DynamicToolSource {
+            kind: DynamicToolSourceKind::Mcp,
+            id: "probe".to_owned(),
+        },
+        DynamicToolEffect::ReadOnly,
+        false,
+        Vec::new(),
+        ijson(json!({"name":"mcp__probe__tool","description":"","parameters":{"type":"object","properties":{}}})),
+    )
+    .expect_err("blank description");
+    let refusal = SchemaRefusal::from_error(&error);
+    assert_eq!(refusal.pointer, None);
+    assert!(
+        refusal.message.contains("description"),
+        "{}",
+        refusal.message
+    );
+}
+
+/// `unavailable_tools` excuses a policy reference to a refused tool, and only
+/// that: it never excuses an unknown name, never lists an allowed-and-bound
+/// tool, and is absent (so bytes are unchanged) when empty.
+#[test]
+fn unavailable_tools_excuse_only_allowed_unbound_names_and_keep_empty_bytes() {
+    let directory = tempfile::tempdir().expect("workspace");
+    let tool = dynamic_tool(
+        "mcp__probe__alpha",
+        DynamicToolSourceKind::Mcp,
+        "probe",
+        false,
+    );
+    let catalog = DynamicToolCatalog::resolve(vec![tool]).expect("catalog");
+    let config = config(
+        directory.path(),
+        vec![
+            "mcp__probe__alpha".to_owned(),
+            "mcp__probe__beta".to_owned(),
+        ],
+    );
+
+    // Unknown to the catalog and not excused: the launch is still refused.
+    assert!(LaunchBindings::bind(&config, None, catalog.clone()).is_err());
+    // Excused by an exact refused name.
+    let bindings = LaunchBindings::bind_with_unavailable(
+        &config,
+        None,
+        catalog.clone(),
+        vec!["mcp__probe__beta".to_owned()],
+    )
+    .expect("refused tool is excused");
+    let bytes = bindings.canonical_bytes().expect("canonical");
+    let digest = bindings.digest().expect("digest");
+    let decoded = LaunchBindings::decode_verified(&bytes, &digest, &config).expect("decode");
+    assert_eq!(
+        decoded.unavailable_tools,
+        vec!["mcp__probe__beta".to_owned()]
+    );
+    assert!(
+        std::str::from_utf8(&bytes)
+            .unwrap()
+            .contains("\"unavailable_tools\":[\"mcp__probe__beta\"]")
+    );
+
+    // Another unknown name is not excused by it.
+    let mut other = config.clone();
+    other.workspace.policy.allowed_tools = vec![
+        "mcp__probe__alpha".to_owned(),
+        "mcp__probe__beta".to_owned(),
+        "mcp__probe__gamma".to_owned(),
+    ];
+    assert!(
+        LaunchBindings::bind_with_unavailable(
+            &other,
+            None,
+            catalog.clone(),
+            vec!["mcp__probe__beta".to_owned()],
+        )
+        .is_err()
+    );
+    // A bound (executable) tool cannot be listed as unavailable, and a name
+    // the policy does not allow cannot be listed at all.
+    assert!(
+        LaunchBindings::bind_with_unavailable(
+            &config,
+            None,
+            catalog.clone(),
+            vec![
+                "mcp__probe__alpha".to_owned(),
+                "mcp__probe__beta".to_owned()
+            ],
+        )
+        .is_err()
+    );
+    let mut narrower = config.clone();
+    narrower.workspace.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
+    assert!(
+        LaunchBindings::bind_with_unavailable(
+            &narrower,
+            None,
+            catalog.clone(),
+            vec!["mcp__probe__beta".to_owned()],
+        )
+        .is_err()
+    );
+    // Empty: no field, same bytes as before this contract existed.
+    let mut plain = config;
+    plain.workspace.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
+    let plain = LaunchBindings::bind(&plain, None, catalog).expect("plain");
+    assert!(
+        !std::str::from_utf8(&plain.canonical_bytes().unwrap())
+            .unwrap()
+            .contains("unavailable_tools")
+    );
 }

@@ -169,16 +169,58 @@ a binding only while that generation remains unchanged; an ignored
 `list_changed` notification is a contract violation.
 
 Workspace preparation isolates credential-binding, peer-preparation and
-catalog-projection failure per server. A failed server contributes no tools or
-routes and projects `readiness:{state:"refresh-failed",code}` with `code` one
-of `credential-unavailable`, `refresh-failed` (the process did not start, the
-handshake or `tools/list` failed or timed out) or `projection-failed` (a tool's
-schema or external-effect contract was refused by the dynamic launch
-validator); other servers remain usable, and the session receives one
-`mcp_server` notice per skipped server naming the server, the tool and the
-reason. Launch fails only when the effective workspace `allowed_tools` names
-the failed server's `mcp__<server>__` namespace. A degraded binding is retried
-on the next preparation demand rather than cached as ready.
+catalog-projection failure. Isolation has two grains:
+
+- **Per server.** A server that cannot be prepared contributes no tools or
+  routes and projects `readiness:{state:"refresh-failed",code}` with `code` one
+  of `credential-unavailable`, `refresh-failed` (the process did not start, the
+  handshake or `tools/list` failed or timed out, or the listing itself was
+  invalid at the MCP level: repeated cursors, duplicate names, a changing
+  server identity) or `projection-failed` (the server's catalog cannot be
+  projected as a whole: its tools share a name, or a projected route collides
+  with another server's). The session receives one `mcp_server` notice per
+  skipped server naming the server and the reason.
+- **Per tool.** A tool whose own description, parameters schema, projected
+  name or external-effect declaration the dynamic launch validator refuses
+  (for example a schema keyword outside the keyword contract of
+  [launch-bindings](launch-bindings.md)), or whose reconcile tool was refused,
+  is excluded alone. Its server is prepared, stays `ready`, and every other
+  tool of it projects and routes normally. A refused tool has no route, is not
+  in the catalog and cannot be called. Each refusal is a bounded structured
+  diagnostic: `server`, `tool` (as listed, at most 256 bytes), `name` (the
+  projected name, absent only for an empty tool name), `code`
+  (`schema-refused`, `external-effect-refused`, `dependency-refused`),
+  `pointer` (JSON pointer of the refused schema node, when the cause is a
+  schema node), `keyword` (the offending keyword, when the cause names one)
+  and `reason` (at most 512 bytes, no pointer, never a copy of the schema).
+  It is written to supervisor.log as
+  `mcp-tool-projection-refused: server=… tool=… code=… pointer=… keyword=…
+  reason=…` (values quoted; at most 32 lines per server, then an `omitted=N`
+  line), reported once per worker launch in an `mcp_tool` notice per server
+  naming each skipped tool and its reason, and listed by `mcp.list` as
+  `readiness:{state:"ready",refusedToolCount,refusedTools:[…]}` (at most 32
+  entries, additive; absent when nothing was refused).
+
+Which grain a cause belongs to follows what it makes ambiguous. A bad schema,
+description, name or effect declaration says nothing about the other tools of
+the listing, so it is per tool. Duplicate names in one listing, a pool or route
+collision across servers and a catalog that still fails validation as a whole
+make the server's identity for its own tools ambiguous, so they stay per server
+(fail the complete source), as do spawn, handshake and `tools/list` failures.
+
+Other servers remain usable in both cases. Launch fails because of a server
+only when the effective workspace `allowed_tools` names a failed server's
+`mcp__<server>__` namespace. It does not fail because the policy names a
+tool refused by the per-tool grain: such a name is accepted, reported
+(see [client-extensions](client-extensions.md) §Workspace administration),
+recorded in the launch binding's `unavailable_tools` and is simply not
+available to the run. A name the policy gives that no catalog has and no
+refusal accounts for is still an unknown tool. A degraded binding (any
+per-server failure) is retried on the next preparation demand rather than
+cached as ready; per-tool refusals are part of the cached binding and are
+re-evaluated when the catalog generation or configuration changes. A route
+reconnect re-projects the server's catalog under the same per-tool rule: a
+sibling that stays refused is not drift.
 
 MCP tool names project as `mcp__<server>__<tool>`. Both components use the
 same reversible escaping locked by fixtures: ASCII letters, digits and `_`

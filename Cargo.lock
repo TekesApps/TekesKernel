@@ -228,6 +228,7 @@ version = "0.4.5"
 dependencies = [
  "endpoint",
  "engine",
+ "mcp",
  "profile",
  "schema",
  "serde_json",

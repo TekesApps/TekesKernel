@@ -135,6 +135,9 @@ pub struct WorkerLaunch {
 pub struct WorkerLaunchBindings {
     pub goal_id: Option<String>,
     pub dynamic_catalog: DynamicToolCatalog,
+    /// Policy-allowed names the host refused to project (see
+    /// [`profile::LaunchBindings::unavailable_tools`]).
+    pub unavailable_tools: Vec<String>,
 }
 
 type WorkerLaunchBindingResolver<'a> =
@@ -148,6 +151,7 @@ impl Default for WorkerLaunchBindings {
                 format: 1,
                 tools: Vec::new(),
             },
+            unavailable_tools: Vec::new(),
         }
     }
 }
@@ -245,8 +249,12 @@ fn launch_profiled_worker_inner(
             ));
         }
     };
-    let launch_bindings =
-        LaunchBindings::bind(&profile.config, bindings.goal_id, bindings.dynamic_catalog)?;
+    let launch_bindings = LaunchBindings::bind_with_unavailable(
+        &profile.config,
+        bindings.goal_id,
+        bindings.dynamic_catalog,
+        bindings.unavailable_tools,
+    )?;
     let launch = WorkerLaunchSpec {
         binary: spec.binary.clone(),
         ledger: spec.ledger.clone(),

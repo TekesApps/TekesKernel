@@ -8,7 +8,8 @@ use mcp::{
     McpCancellationToken, McpClient, McpCredentialFieldOperation, McpCredentialReferenceState,
     McpError, McpImplementation, McpManagementMutation, McpMutationReceipt, McpPeer, McpPoolKey,
     McpRegistryError, McpRegistryStore, McpResource, McpScope, McpServerConfig, McpServerReference,
-    McpTool, McpToolCallContext, McpTransportConfig, ProtocolMode, StdioTransport, project_catalog,
+    McpTool, McpToolCallContext, McpToolRefusal, McpTransportConfig, ProtocolMode, StdioTransport,
+    project_catalog_partial,
 };
 use plugins::{
     ComponentKind, HostEnvironment, MacOsNativeHelperVerifier, NativeHelperVerifier,
@@ -43,11 +44,45 @@ pub struct McpWorkspaceBinding {
     pub catalog: DynamicToolCatalog,
     pub authority: Arc<McpDynamicSupervisorAuthority>,
     pub failures: Vec<McpServerFailure>,
+    /// Tools a healthy server listed that the dynamic launch validator refused.
+    /// They are excluded from `catalog` and from the routes; the server's other
+    /// tools are unaffected and the server is not in `failures`. A policy that
+    /// names one of these is not an unknown name and not an unavailable
+    /// server: the tool is simply unavailable, for this reason.
+    pub tool_refusals: Vec<McpRefusedTool>,
     /// The standalone registry could not be read or resolved, so no
     /// registry-configured server joined this binding (plugin servers still
     /// do). A worker launches degraded rather than not at all; the message is
     /// for the session notice.
     pub registry_failure: Option<String>,
+}
+
+impl McpWorkspaceBinding {
+    /// The refused tools whose projected name the policy allows, in listing
+    /// order.
+    #[must_use]
+    pub fn refused_allowed_tools(&self, allowed_tools: &[String]) -> Vec<McpRefusedTool> {
+        self.tool_refusals
+            .iter()
+            .filter(|refused| {
+                refused
+                    .refusal
+                    .name
+                    .as_ref()
+                    .is_some_and(|name| allowed_tools.contains(name))
+            })
+            .cloned()
+            .collect()
+    }
+
+    /// The names of [`Self::refused_allowed_tools`], for the launch binding.
+    #[must_use]
+    pub fn refused_allowed_tool_names(&self, allowed_tools: &[String]) -> Vec<String> {
+        self.refused_allowed_tools(allowed_tools)
+            .into_iter()
+            .filter_map(|refused| refused.refusal.name)
+            .collect()
+    }
 }
 
 /// One server that did not join a binding. `code` is the stable readiness
@@ -60,6 +95,19 @@ pub struct McpServerFailure {
     pub code: &'static str,
     pub detail: Option<String>,
 }
+
+/// One tool of a healthy MCP server that did not project. `refusal` carries
+/// the bounded structured cause (code, JSON pointer, keyword, reason).
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct McpRefusedTool {
+    pub server: McpServerReference,
+    pub refusal: McpToolRefusal,
+}
+
+/// Most refused tools a diagnostic surface (supervisor.log, session notice,
+/// `mcp.list`, the `workspace.policy.set` result) enumerates for one server
+/// or one call. The refusal itself is never limited; only its reporting.
+pub const MAX_REPORTED_TOOL_REFUSALS: usize = 32;
 
 #[derive(Clone, Debug)]
 pub struct McpResourceBinding {
@@ -81,6 +129,8 @@ pub struct McpRuntime {
     preparation: Mutex<()>,
     bindings: Mutex<BTreeMap<String, CachedBinding>>,
     failure_states: Mutex<BTreeMap<McpServerReference, &'static str>>,
+    /// Tools each healthy server's last preparation refused to project.
+    tool_refusal_states: Mutex<BTreeMap<McpServerReference, Vec<McpToolRefusal>>>,
     /// Per-process generation prevents a resource reference issued by a dead
     /// runtime from being rebound to a freshly connected peer after restart.
     resource_instance: String,
@@ -180,6 +230,7 @@ struct CachedBinding {
     routes: BTreeMap<String, McpRoute>,
     catalog_generations: BTreeMap<McpPoolKey, u64>,
     failures: Vec<McpServerFailure>,
+    tool_refusals: Vec<McpRefusedTool>,
     registry_failure: Option<String>,
 }
 
@@ -214,6 +265,7 @@ impl McpRuntime {
             preparation: Mutex::new(()),
             bindings: Mutex::new(BTreeMap::new()),
             failure_states: Mutex::new(BTreeMap::new()),
+            tool_refusal_states: Mutex::new(BTreeMap::new()),
             resource_instance: uuid::Uuid::new_v4().to_string(),
         })
     }
@@ -310,6 +362,27 @@ impl McpRuntime {
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .get(reference)
             .copied()
+    }
+
+    fn server_tool_refusals(&self, reference: &McpServerReference) -> Vec<McpToolRefusal> {
+        self.tool_refusal_states
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(reference)
+            .cloned()
+            .unwrap_or_default()
+    }
+
+    fn set_tool_refusal_state(&self, reference: &McpServerReference, refused: &[McpToolRefusal]) {
+        let mut states = self
+            .tool_refusal_states
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if refused.is_empty() {
+            states.remove(reference);
+        } else {
+            states.insert(reference.clone(), refused.to_vec());
+        }
     }
 
     pub fn get_server(
@@ -492,6 +565,7 @@ impl McpRuntime {
                 });
                 let catalog = binding.catalog.clone();
                 let failures = binding.failures.clone();
+                let tool_refusals = binding.tool_refusals.clone();
                 let mut binding = binding;
                 binding.authority = Arc::downgrade(&authority);
                 self.bindings
@@ -502,6 +576,7 @@ impl McpRuntime {
                     catalog,
                     authority,
                     failures,
+                    tool_refusals,
                     registry_failure: None,
                 });
             }
@@ -509,31 +584,38 @@ impl McpRuntime {
                 let _ = self.broker.handle().remove(key);
             }
         }
-        let (tools, routes, catalog_generations, failures) = with_preparation_runtime(|runtime| {
-            let mut tools = Vec::new();
-            let mut routes = BTreeMap::new();
-            let mut catalog_generations = BTreeMap::new();
-            let mut failures = Vec::new();
-            for (server, plugin) in servers.iter().zip(&plugin_resolutions) {
-                if let Err(error) = self.require_bound_credentials(server) {
-                    eprintln!(
-                        "mcp-server-refresh-failed: server={} code=credential-unavailable",
-                        server.reference.name
-                    );
-                    let _ = error;
-                    failures.push(McpServerFailure {
-                        server: server.reference.clone(),
-                        code: "credential-unavailable",
-                        detail: None,
-                    });
-                    self.failure_states
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .insert(server.reference.clone(), "credential-unavailable");
-                    continue;
-                }
-                let prepared =
-                    match prepare_server(server, plugin.as_ref(), self.secret_access(), runtime) {
+        let (tools, routes, catalog_generations, failures, tool_refusals) =
+            with_preparation_runtime(|runtime| {
+                let mut tools = Vec::new();
+                let mut routes = BTreeMap::new();
+                let mut catalog_generations = BTreeMap::new();
+                let mut failures = Vec::new();
+                let mut tool_refusals = Vec::new();
+                for (server, plugin) in servers.iter().zip(&plugin_resolutions) {
+                    if let Err(error) = self.require_bound_credentials(server) {
+                        eprintln!(
+                            "mcp-server-refresh-failed: server={} code=credential-unavailable",
+                            server.reference.name
+                        );
+                        let _ = error;
+                        failures.push(McpServerFailure {
+                            server: server.reference.clone(),
+                            code: "credential-unavailable",
+                            detail: None,
+                        });
+                        self.failure_states
+                            .lock()
+                            .unwrap_or_else(std::sync::PoisonError::into_inner)
+                            .insert(server.reference.clone(), "credential-unavailable");
+                        self.set_tool_refusal_state(&server.reference, &[]);
+                        continue;
+                    }
+                    let prepared = match prepare_server(
+                        server,
+                        plugin.as_ref(),
+                        self.secret_access(),
+                        runtime,
+                    ) {
                         Ok(prepared) => prepared,
                         Err(error) => {
                             eprintln!(
@@ -550,45 +632,56 @@ impl McpRuntime {
                                 .lock()
                                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                                 .insert(server.reference.clone(), "refresh-failed");
+                            self.set_tool_refusal_state(&server.reference, &[]);
                             continue;
                         }
                     };
-                self.failure_states
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner)
-                    .remove(&server.reference);
-                // One server's catalog that cannot be projected (a schema
-                // keyword the profile refuses, a broken external-effect
-                // contract) drops that server alone: the worker still launches
-                // with every other server's tools, and the session learns
-                // which server, which tool and why through the notice.
-                match self.bind_prepared_server(server, plugin.as_ref(), prepared, &routes) {
-                    Ok(bound) => {
-                        routes.extend(bound.routes);
-                        catalog_generations.insert(bound.key, bound.generation);
-                        tools.extend(bound.tools);
-                    }
-                    Err(error) => {
-                        let detail = error.to_string();
-                        eprintln!(
-                            "mcp-server-projection-failed: server={} code=projection-failed reason={}",
-                            server.reference.name,
-                            detail.replace('\n', " ")
-                        );
-                        failures.push(McpServerFailure {
-                            server: server.reference.clone(),
-                            code: "projection-failed",
-                            detail: Some(detail),
-                        });
-                        self.failure_states
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner)
-                            .insert(server.reference.clone(), "projection-failed");
+                    self.failure_states
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner)
+                        .remove(&server.reference);
+                    // A tool the dynamic launch validator refuses (a schema keyword
+                    // outside the contract, a broken external-effect declaration)
+                    // is excluded by itself: the server's other tools project, and
+                    // the refusal is reported per tool. A catalog that cannot be
+                    // projected at all (duplicate tool names, a route conflict)
+                    // drops that server alone, as before.
+                    match self.bind_prepared_server(server, plugin.as_ref(), prepared, &routes) {
+                        Ok(bound) => {
+                            routes.extend(bound.routes);
+                            catalog_generations.insert(bound.key, bound.generation);
+                            tools.extend(bound.tools);
+                            log_tool_refusals(&server.reference, &bound.refused);
+                            self.set_tool_refusal_state(&server.reference, &bound.refused);
+                            tool_refusals.extend(bound.refused.into_iter().map(|refusal| {
+                                McpRefusedTool {
+                                    server: server.reference.clone(),
+                                    refusal,
+                                }
+                            }));
+                        }
+                        Err(error) => {
+                            let detail = error.to_string();
+                            eprintln!(
+                                "mcp-server-projection-failed: server={} code=projection-failed reason={}",
+                                server.reference.name,
+                                detail.replace('\n', " ")
+                            );
+                            failures.push(McpServerFailure {
+                                server: server.reference.clone(),
+                                code: "projection-failed",
+                                detail: Some(detail),
+                            });
+                            self.failure_states
+                                .lock()
+                                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                .insert(server.reference.clone(), "projection-failed");
+                            self.set_tool_refusal_state(&server.reference, &[]);
+                        }
                     }
                 }
-            }
-            Ok((tools, routes, catalog_generations, failures))
-        })?;
+                Ok((tools, routes, catalog_generations, failures, tool_refusals))
+            })?;
         let catalog = DynamicToolCatalog::resolve(tools)
             .map_err(|error| McpError::Conflict(error.to_string()))?;
         let authority = Arc::new(McpDynamicSupervisorAuthority::new(
@@ -618,6 +711,7 @@ impl McpRuntime {
                     routes,
                     catalog_generations,
                     failures: failures.clone(),
+                    tool_refusals: tool_refusals.clone(),
                     registry_failure: registry_failure.clone(),
                 },
             );
@@ -625,6 +719,7 @@ impl McpRuntime {
             catalog,
             authority,
             failures,
+            tool_refusals,
             registry_failure,
         })
     }
@@ -639,17 +734,28 @@ impl McpRuntime {
         prepared: PreparedServer,
         existing_routes: &BTreeMap<String, McpRoute>,
     ) -> Result<BoundServer, McpError> {
-        let projected = project_catalog(&server.reference.name, &prepared.tools, server.always_on)
-            .map_err(|error| McpError::Conflict(error.to_string()))?;
+        let partial =
+            project_catalog_partial(&server.reference.name, &prepared.tools, server.always_on)
+                .map_err(|error| McpError::Conflict(error.to_string()))?;
+        let projected = partial.catalog;
+        let refused = partial.refused;
+        // Only tools that projected get a route; a refused tool never reaches
+        // the pool, so nothing can dispatch it.
+        let projected_names = projected
+            .tools
+            .iter()
+            .map(|tool| tool.name.as_str())
+            .collect::<BTreeSet<_>>();
         let remote_names = prepared
             .tools
             .iter()
-            .map(|remote| {
+            .filter_map(|remote| {
                 mcp::project_name(&server.reference.name, &remote.name)
+                    .ok()
+                    .filter(|name| projected_names.contains(name.as_str()))
                     .map(|projected| (projected, remote.name.clone()))
-                    .map_err(|error| McpError::Conflict(error.to_string()))
             })
-            .collect::<Result<BTreeMap<_, _>, _>>()?;
+            .collect::<BTreeMap<_, _>>();
         let mut routes = BTreeMap::new();
         for dynamic in &projected.tools {
             let remote_name = remote_names.get(&dynamic.name).ok_or_else(|| {
@@ -725,6 +831,7 @@ impl McpRuntime {
             generation,
             routes,
             tools: projected.tools,
+            refused,
         })
     }
 
@@ -1260,7 +1367,10 @@ impl ProductionEndpointRoutes for McpManagementRoutes {
                     .map_err(map_registry_failure)?;
                 let servers = servers.into_iter().map(|server| {
                     let readiness = self.runtime.server_readiness(&server.reference).map_or_else(
-                        || json!({"state":"ready"}),
+                        || {
+                            let refused = self.runtime.server_tool_refusals(&server.reference);
+                            tool_refusals_readiness(&refused)
+                        },
                         |code| json!({"state":"refresh-failed","code":code}),
                     );
                     json!({"editable":server.reference.scope != mcp::McpScope::Plugin,"readiness":readiness,"server":server})
@@ -1485,12 +1595,86 @@ fn binding_fingerprint(
     Ok(format!("sha256-{:x}", hasher.finalize()))
 }
 
+/// `mcp.list` readiness of a healthy server: `{state:"ready"}`, plus
+/// `refusedTools` (at most [`MAX_REPORTED_TOOL_REFUSALS`] entries) and
+/// `refusedToolCount` when some of its tools did not project.
+fn tool_refusals_readiness(refused: &[McpToolRefusal]) -> Value {
+    if refused.is_empty() {
+        return json!({"state":"ready"});
+    }
+    json!({
+        "state":"ready",
+        "refusedToolCount":refused.len(),
+        "refusedTools":refused
+            .iter()
+            .take(MAX_REPORTED_TOOL_REFUSALS)
+            .map(tool_refusal_json)
+            .collect::<Vec<_>>(),
+    })
+}
+
+/// The wire form of a refused tool in a result that is not scoped to one
+/// server: [`tool_refusal_json`] plus `server`.
+pub(crate) fn refused_tool_json(refused: &McpRefusedTool) -> Value {
+    let mut value = tool_refusal_json(&refused.refusal);
+    value
+        .as_object_mut()
+        .expect("object literal")
+        .insert("server".to_owned(), json!(refused.server.name));
+    value
+}
+
+/// The bounded wire form of one refusal: `tool`, `code`, `reason`, and when
+/// known `name` (the projected `mcp__<server>__<tool>`), `pointer`, `keyword`.
+pub(crate) fn tool_refusal_json(refusal: &McpToolRefusal) -> Value {
+    let mut value = json!({
+        "tool":refusal.tool,
+        "code":refusal.code,
+        "reason":refusal.reason,
+    });
+    let object = value.as_object_mut().expect("object literal");
+    if let Some(name) = &refusal.name {
+        object.insert("name".to_owned(), json!(name));
+    }
+    if let Some(pointer) = &refusal.pointer {
+        object.insert("pointer".to_owned(), json!(pointer));
+    }
+    if let Some(keyword) = &refusal.keyword {
+        object.insert("keyword".to_owned(), json!(keyword));
+    }
+    value
+}
+
+/// One supervisor.log line per refused tool (bounded), values quoted so a
+/// hostile tool name or reason cannot forge a log line.
+fn log_tool_refusals(server: &McpServerReference, refused: &[McpToolRefusal]) {
+    for refusal in refused.iter().take(MAX_REPORTED_TOOL_REFUSALS) {
+        eprintln!(
+            "mcp-tool-projection-refused: server={:?} tool={:?} code={} pointer={:?} keyword={:?} reason={:?}",
+            server.name,
+            refusal.tool,
+            refusal.code,
+            refusal.pointer.as_deref().unwrap_or(""),
+            refusal.keyword.as_deref().unwrap_or(""),
+            refusal.reason
+        );
+    }
+    if refused.len() > MAX_REPORTED_TOOL_REFUSALS {
+        eprintln!(
+            "mcp-tool-projection-refused: server={:?} omitted={}",
+            server.name,
+            refused.len() - MAX_REPORTED_TOOL_REFUSALS
+        );
+    }
+}
+
 /// One server's share of a workspace binding once its catalog projected.
 struct BoundServer {
     key: McpPoolKey,
     generation: u64,
     routes: BTreeMap<String, McpRoute>,
     tools: Vec<DynamicTool>,
+    refused: Vec<McpToolRefusal>,
 }
 
 struct PreparedServer {
@@ -2379,12 +2563,16 @@ impl McpDynamicSupervisorAuthority {
             McpRouteContract::capture(prepared.peer.as_ref(), effect_tool, reconcile_tool)
                 .map_err(route_preparation_error)?;
         validate_reconnected_contract(&route.contract, &reconnected_contract)?;
-        let projected = project_catalog(
+        // The reconnected catalog is judged per tool like the first one: a
+        // sibling tool that stays refused must not fail the reconnect of this
+        // route, while this route's own tool must still project unchanged.
+        let projected = project_catalog_partial(
             &route.server.reference.name,
             &prepared.tools,
             route.server.always_on,
         )
-        .map_err(|error| RoutePeerError::ContractChanged(error.to_string()))?;
+        .map_err(|error| RoutePeerError::ContractChanged(error.to_string()))?
+        .catalog;
         let reconnected_tool = projected
             .tools
             .iter()
@@ -3571,25 +3759,30 @@ done
         }
     }
 
-    /// One server whose catalog the profile refuses (a schema keyword outside
-    /// the dynamic-schema contract) is dropped from the binding by itself: the
-    /// other server's tools launch, and the failure names the server, the
-    /// tool and the reason for the session notice.
+    /// A tool the profile refuses (a schema keyword outside the dynamic-schema
+    /// contract) is excluded by itself. Its server stays healthy and keeps its
+    /// other tools; every refusal names server, tool, JSON pointer, keyword and
+    /// reason, and a second preparation (a cache hit) reports the same.
     #[test]
-    fn prepare_workspace_drops_only_the_server_whose_catalog_fails_projection() {
+    fn prepare_workspace_refuses_only_the_tool_whose_schema_fails_projection() {
         let root = tempfile::tempdir().unwrap();
         let good = root.path().join("good-server");
+        let mixed = root.path().join("mixed-server");
         let bad = root.path().join("bad-server");
         write_stdio_catalog_server(
             &good,
             r#"[{"name":"greet","description":"Greeting","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{"who":{"type":"string"}},"required":["who"],"additionalProperties":false}}]"#,
         );
         write_stdio_catalog_server(
+            &mixed,
+            r#"[{"name":"measure","description":"Measure","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{"operand":{"type":"object","minProperties":1,"maxProperties":2,"properties":{"left":{"type":"string"}},"additionalProperties":false}},"required":["operand"],"additionalProperties":false}},{"name":"context","description":"Context","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{},"required":[],"additionalProperties":false}}]"#,
+        );
+        write_stdio_catalog_server(
             &bad,
             r#"[{"name":"get_entities","description":"Read entities","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{"layout":{"type":"string","not":{"const":"model"}}},"required":[],"additionalProperties":false}}]"#,
         );
         let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
-        for (name, script) in [("good", &good), ("bad", &bad)] {
+        for (name, script) in [("good", &good), ("mixed", &mixed), ("bad", &bad)] {
             runtime
                 .mutate(
                     &format!("save-{name}"),
@@ -3602,7 +3795,7 @@ done
         }
         let binding = runtime
             .prepare_workspace("ws")
-            .expect("one refused catalog must not block the launch");
+            .expect("a refused tool must not block the launch");
         assert_eq!(
             binding
                 .catalog
@@ -3610,21 +3803,107 @@ done
                 .iter()
                 .map(|tool| tool.name.as_str())
                 .collect::<Vec<_>>(),
-            vec!["mcp__good__greet"]
+            vec!["mcp__good__greet", "mcp__mixed__context"]
         );
-        assert!(binding.authority.supports(&binding.catalog.tools[0]));
-        assert_eq!(binding.failures.len(), 1, "{:?}", binding.failures);
-        let failure = &binding.failures[0];
-        assert_eq!(failure.server.name, "bad");
-        assert_eq!(failure.code, "projection-failed");
-        let detail = failure.detail.as_deref().expect("projection detail");
-        assert!(detail.contains("get_entities"), "{detail}");
-        assert!(detail.contains("unsupported keyword"), "{detail}");
-        assert_eq!(
-            runtime.server_readiness(&failure.server),
-            Some("projection-failed")
-        );
+        for tool in &binding.catalog.tools {
+            assert!(binding.authority.supports(tool));
+        }
+        // No server failed: refusal is per tool.
+        assert!(binding.failures.is_empty(), "{:?}", binding.failures);
         assert_eq!(binding.registry_failure, None);
+        let refusals = binding
+            .tool_refusals
+            .iter()
+            .map(|refused| {
+                (
+                    refused.server.name.as_str(),
+                    refused.refusal.tool.as_str(),
+                    refused.refusal.pointer.as_deref().unwrap_or(""),
+                    refused.refusal.keyword.as_deref().unwrap_or(""),
+                )
+            })
+            .collect::<Vec<_>>();
+        assert_eq!(
+            refusals,
+            vec![
+                (
+                    "bad",
+                    "get_entities",
+                    "/parameters/properties/layout",
+                    "not"
+                ),
+                (
+                    "mixed",
+                    "measure",
+                    "/parameters/properties/operand",
+                    "maxProperties"
+                ),
+            ]
+        );
+        assert!(
+            binding
+                .tool_refusals
+                .iter()
+                .all(|refused| refused.refusal.reason.contains("unsupported keyword"))
+        );
+        for server in ["good", "mixed", "bad"] {
+            let reference = stdio_user_server(server, &good).reference;
+            assert_eq!(runtime.server_readiness(&reference), None, "{server}");
+        }
+        // The status surface: a ready server lists its refused tools, bounded.
+        let readiness = tool_refusals_readiness(
+            &runtime.server_tool_refusals(&stdio_user_server("mixed", &good).reference),
+        );
+        assert_eq!(readiness["state"], "ready");
+        assert_eq!(readiness["refusedToolCount"], 1);
+        assert_eq!(readiness["refusedTools"][0]["tool"], "measure");
+        assert_eq!(readiness["refusedTools"][0]["name"], "mcp__mixed__measure");
+        assert_eq!(readiness["refusedTools"][0]["keyword"], "maxProperties");
+        assert_eq!(
+            tool_refusals_readiness(
+                &runtime.server_tool_refusals(&stdio_user_server("good", &good).reference)
+            ),
+            json!({"state":"ready"})
+        );
+        // Policy view: only allowed names, by exact projected name.
+        let allowed = vec![
+            "mcp__mixed__measure".to_owned(),
+            "mcp__mixed__context".to_owned(),
+            "mcp__mixed__unlisted".to_owned(),
+        ];
+        assert_eq!(
+            binding.refused_allowed_tool_names(&allowed),
+            vec!["mcp__mixed__measure".to_owned()]
+        );
+        // A cache hit keeps the same diagnostics.
+        let again = runtime.prepare_workspace("ws").expect("cache hit");
+        assert_eq!(again.tool_refusals, binding.tool_refusals);
+        assert_eq!(again.catalog.tools, binding.catalog.tools);
+    }
+
+    /// Diagnostics are bounded: only the first `MAX_REPORTED_TOOL_REFUSALS`
+    /// are enumerated, the count is exact.
+    #[test]
+    fn refusal_reports_are_bounded() {
+        let many = (0..MAX_REPORTED_TOOL_REFUSALS + 5)
+            .map(|index| McpToolRefusal {
+                tool: format!("tool{index}"),
+                name: Some(format!("mcp__probe__tool{index}")),
+                code: "schema-refused",
+                pointer: Some("/parameters".to_owned()),
+                keyword: None,
+                reason: "reason".to_owned(),
+            })
+            .collect::<Vec<_>>();
+        let readiness = tool_refusals_readiness(&many);
+        assert_eq!(
+            readiness["refusedToolCount"],
+            MAX_REPORTED_TOOL_REFUSALS + 5
+        );
+        assert_eq!(
+            readiness["refusedTools"].as_array().unwrap().len(),
+            MAX_REPORTED_TOOL_REFUSALS
+        );
     }
 
     #[test]
@@ -3797,6 +4076,93 @@ done
             assert!(!log.contains("reconcile"), "{drift:?}");
             assert!(!log.contains("effect"), "{drift:?}");
         }
+    }
+
+    /// A sibling tool that stays refused is not drift: reconnecting an
+    /// effectful route re-projects the catalog per tool, so the route's own
+    /// tool still registers the peer again.
+    #[test]
+    fn reconnect_tolerates_a_still_refused_sibling_tool() {
+        let root = tempfile::tempdir().expect("root");
+        let script = root.path().join("mcp-server");
+        let log = root.path().join("server.log");
+        write_effect_server(&script, None, false);
+        let source = fs::read_to_string(&script).expect("server script");
+        let refused_sibling = r#"{"name":"orders/export","description":"Export","inputSchema":{"type":"object","properties":{"rows":{"type":"object","maxProperties":3,"properties":{}}},"required":[],"additionalProperties":false},"annotations":{"readOnlyHint":true,"destructiveHint":false}},"#;
+        let injected = source.replacen(
+            "\"result\":{\"tools\":[",
+            &format!("\"result\":{{\"tools\":[{refused_sibling}"),
+            1,
+        );
+        assert_ne!(injected, source, "the fixture catalog was not extended");
+        fs::write(&script, injected).expect("extended server script");
+        let runtime =
+            McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).expect("runtime");
+        let mut server = stdio_user_server("orders", &script);
+        server.transport = McpTransportConfig::Stdio {
+            command: vec![
+                script.to_string_lossy().into_owned(),
+                log.to_string_lossy().into_owned(),
+            ],
+            cwd: None,
+            environment: BTreeMap::new(),
+        };
+        runtime
+            .mutate(
+                "save-orders",
+                &McpManagementMutation::Save {
+                    server,
+                    credential_fields: BTreeMap::new(),
+                },
+            )
+            .expect("save server");
+        let binding = runtime.prepare_workspace("ws").expect("prepare workspace");
+        assert!(binding.failures.is_empty(), "{:?}", binding.failures);
+        assert_eq!(binding.tool_refusals.len(), 1);
+        assert_eq!(binding.tool_refusals[0].refusal.tool, "orders/export");
+        let tool = binding
+            .catalog
+            .tools
+            .iter()
+            .find(|tool| tool.external_effect.is_some())
+            .expect("effect tool")
+            .clone();
+        let route = binding
+            .authority
+            .routes
+            .get(&tool.name)
+            .expect("effect route")
+            .clone();
+        assert!(
+            binding
+                .authority
+                .broker
+                .remove(route.key.clone())
+                .expect("evict peer")
+        );
+        let request = ToolControl::new(
+            "018f0000-0000-7000-8000-000000000001",
+            "018f0000-0000-7000-8000-000000000001",
+            1,
+            "call-orders",
+            tool.name.clone(),
+            json_to_ijson(&json!({"sku":"one"})).expect("arguments"),
+        )
+        .expect("request");
+        let resolution = binding.authority.reconcile(&tool, &request);
+        assert!(
+            !matches!(resolution, ExternalEffectResolution::Conflicted { .. }),
+            "{resolution:?}"
+        );
+        assert!(
+            binding
+                .authority
+                .broker
+                .catalog_generation(route.key)
+                .expect("generation")
+                .is_some(),
+            "the reconnected peer registers"
+        );
     }
 
     #[test]

@@ -473,7 +473,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `load_profiles` | `profile::ConfigSnapshot::decode` | [544](../../src/main.rs#L544) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L289) |
 | `load_profiles` | `profile::InstructionSnapshot::decode` | [545](../../src/main.rs#L545) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L183) |
 | `load_profiles` | `instruction.validate_against_config` | [546](../../src/main.rs#L546) | receiver-type-required |
-| `load_profiles` | `LaunchBindings::decode_verified` | [547](../../src/main.rs#L547) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L198) |
+| `load_profiles` | `LaunchBindings::decode_verified` | [547](../../src/main.rs#L547) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L225) |
 | `load_profiles` | `instruction.meet_workspace_policy` | [552](../../src/main.rs#L552) | receiver-type-required |
 | `load_profiles` | `config.digest` | [553](../../src/main.rs#L553) | receiver-type-required |
 | `load_profiles` | `instruction.digest` | [554](../../src/main.rs#L554) | receiver-type-required |

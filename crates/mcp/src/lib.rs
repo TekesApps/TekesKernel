@@ -23,7 +23,10 @@ pub use management::{
     McpServerReference, McpTransportConfig,
 };
 pub use pool::{McpPool, McpPoolError, McpPoolKey, McpPoolLease, PooledPeer};
-pub use projection::{McpProjectionError, project_catalog, project_name};
+pub use projection::{
+    MAX_TOOL_REFUSAL_NAME_BYTES, MAX_TOOL_REFUSAL_REASON_BYTES, McpProjectionError, McpToolRefusal,
+    PartialProjection, project_catalog, project_catalog_partial, project_name, refusal_code,
+};
 pub use recovery::{McpLossState, RecoveryAction, recovery_action};
 pub use transport::{HttpRequestAuthorization, HttpTransport, McpTransport, StdioTransport};
 pub use types::{
