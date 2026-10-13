@@ -7705,17 +7705,28 @@ mod tests {
         assert!(host.periodic_sweep_once().expect("periodic sweep"));
 
         let mut delivered = Vec::new();
-        for _ in 0..3 {
-            let endpoint::SessionSyncFrame::JournalEvent { event, .. } =
-                block_on_ready(journal.recv())
-                    .expect("live repair item")
-                    .expect("live repair frame")
-            else {
-                panic!("expected a live journal event after the sweep repair")
-            };
-            delivered.push(event.event_type);
+        let mut replayed = Vec::new();
+        while delivered.len() < 3 {
+            match block_on_ready(journal.recv())
+                .expect("live repair item")
+                .expect("live repair frame")
+            {
+                // The context projections newer than the snapshot's cut follow the snapshot at
+                // their true sequence (N1); they are not part of this test's subject.
+                endpoint::SessionSyncFrame::JournalProjection { key, .. } => replayed.push(key),
+                endpoint::SessionSyncFrame::JournalEvent { event, .. } => {
+                    delivered.push(event.event_type);
+                }
+                _ => panic!("expected a live journal event after the sweep repair"),
+            }
         }
         assert_eq!(delivered, ["assistant/message", "step/end", "turn/end"]);
+        assert!(
+            replayed
+                .iter()
+                .all(|key| key == "contextDetails" || key == "contextUsage"),
+            "only the context projections are replayed after the snapshot"
+        );
         let records = EndpointJournal::open(&folder)
             .expect("endpoint journal")
             .records()

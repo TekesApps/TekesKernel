@@ -135,12 +135,14 @@ Opening `session-journal` is follow-first:
    values with an `asOfSeq` that is a label clamped to `throughSequence` (a
    client rejects a projection beyond the frozen cut); it is not the context
    projection clock described in §Native context presentation, which can be ahead of the
-   cut. The current value is not re-sent as a frame. A client that already holds
-   a higher sequence for that projection (for example from its control
-   baseline) keeps its own value and ignores the snapshot's; the snapshot value is
-   therefore not a guarantee that a reopened thread shows a usage that changed
-   while it was idle. A projection frame published after the cut has a sequence
-   beyond it and is applied normally.
+   cut. When the context projection clock is ahead of the cut, the same
+   `contextDetails` and then `contextUsage` values are emitted as `projection`
+   frames immediately after the snapshot, carrying that true clock sequence
+   (beyond the cut). A client keeps the highest sequence per projection key, so
+   the replayed frame replaces an older value from its control baseline (a usage
+   that changed while the thread was idle) and is ignored when the client already
+   holds the same sequence. A projection frame published later has a higher
+   sequence and is applied normally.
 5. Emit later durable `event` frames strictly from `throughSequence + 1`.
    Provider output may additionally arrive as unsequenced `transient`
    frames after the baseline; these are process-local presentation data and do
