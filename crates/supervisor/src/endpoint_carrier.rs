@@ -1609,7 +1609,7 @@ impl ProductionCarrierStreams {
                 }
                 for session in catalog.children_unverified {
                     let folder = self.inner.root.join("threads").join(&session);
-                    if children_may_hold_requests(&folder) {
+                    if self.inner.requests.children_may_hold(&session, &folder) {
                         candidates.insert(session);
                     }
                 }

@@ -11383,6 +11383,44 @@ mod tests {
         host.shutdown();
     }
 
+    /// O-final n2: after the first main-line doorbell the catalog cannot vouch for the child
+    /// lines, so every actionables recompute asks about them; an unchanged child file is not read
+    /// again, and a child that grows is.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn actionables_recomputes_do_not_reread_unchanged_child_files() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-0000000000c1";
+        let child = "018f0000-0000-7000-8000-0000000000c2";
+        let child_path = write_thread_with_child(root.path(), session, child, false);
+        let (host, streams) = open_host(root.path());
+        host.hydrate(session).expect("hydrate");
+        host.publish_appended(session).expect("doorbell");
+        assert_eq!(
+            SupervisorSessionAuthority::hold_catalog(&*host)
+                .expect("catalog")
+                .children_unverified,
+            vec![session.to_owned()],
+            "the doorbell fold left the child lines unverified"
+        );
+        for _ in 0..5 {
+            assert!(streams.actionable_ids_for_test().is_empty());
+        }
+        assert_eq!(
+            streams.requests().children_scans(),
+            1,
+            "five recomputes read the unchanged child file once"
+        );
+        append_test_events(&child_path, vec![child_request_event()]);
+        assert_eq!(
+            streams.actionable_ids_for_test(),
+            vec![child_rpc_id(session, child)],
+            "a child that grew with a request is read again and found"
+        );
+        assert_eq!(streams.requests().children_scans(), 2);
+        host.shutdown();
+    }
+
     /// O-final m4: a scratch thread that was busy at the post-ready cleanup (a lock holder) is
     /// remembered, and the next cleanup (the recovery tick runs it while any are left) removes it
     /// once the holder is gone.
