@@ -448,9 +448,12 @@ impl ManagementStore {
 
     /// Publishes corrected endpoint metadata for every workspace whose metadata is missing or
     /// does not match its config, without an operation record and without the Inventory phase
-    /// (which reads threads). The caller holds the management `lock`; `config/.lock` is taken
-    /// here in the same order `drive_workspace_operation` uses (management, then config), so a
-    /// config writer cannot publish between the read of the config and the write of its metadata.
+    /// (which reads threads). The caller holds the management `lock`. This function holds
+    /// `config/.lock` shared from the config read to the metadata write, so no config writer can
+    /// publish in between. That is the only protection here: `config/.lock` is not held across
+    /// an operation (`begin_workspace_operation` to the Carriers publication). Every writer of
+    /// workspace config therefore takes the management `lock` first (management, then config);
+    /// `client_admin` does so around `workspace.policy.set`.
     fn heal_workspace_metadata_locked(&self, started_at: &str) -> Result<(), ManagementError> {
         let _config = NamedLock::shared(self.storage_root.join("config/.lock"))?;
         for config in self.workspace_configs()?.into_values() {
@@ -483,6 +486,17 @@ impl ManagementStore {
         Ok(())
     }
 
+    /// The management lock, exclusive, for a workspace-config writer outside this crate.
+    /// Every operation here stages a config snapshot under this lock and publishes it later in
+    /// the same critical section, so a writer that does not hold it can publish in between and
+    /// leave the operation unable to complete. Lock order is management, then `config/.lock`
+    /// (which the writer takes itself); hold this only around the publication.
+    pub fn lock_exclusive(storage_root: impl AsRef<Path>) -> Result<NamedLock, ManagementError> {
+        let root = store::endpoint_management_root(storage_root.as_ref())?;
+        fs::create_dir_all(&root)?;
+        Ok(NamedLock::exclusive(root.join("lock"))?)
+    }
+
     #[must_use]
     pub fn root(&self) -> &Path {
         &self.root
@@ -500,7 +514,6 @@ impl ManagementStore {
         self.recover_skipping(queue_driver, None)
     }
 
-    #[allow(unused_assignments)]
     fn recover_skipping(
         &self,
         queue_driver: Option<&dyn QueueRecoveryDriver>,
@@ -514,123 +527,218 @@ impl ManagementStore {
             self.remove_recordless_payloads()?;
             self.operation_paths()?
         };
+        // One failing record does not stop the pass: the others are still recovered, and the
+        // first failure is returned afterwards so boot still fails on it.
+        let mut first_error = None;
         for path in paths {
-            let mut lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
-            if !path.exists() {
-                continue;
+            if let Err(error) = self.recover_record(path, queue_driver, validated.as_deref_mut()) {
+                first_error.get_or_insert(error);
             }
-            let identity = file_identity(&path);
-            if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref()) {
-                if known.0.contains(&(path.clone(), *identity)) {
-                    continue;
-                }
+        }
+        first_error.map_or(Ok(()), Err)
+    }
+
+    #[allow(unused_assignments)]
+    fn recover_record(
+        &self,
+        path: PathBuf,
+        queue_driver: Option<&dyn QueueRecoveryDriver>,
+        validated: Option<&mut CompleteOperations>,
+    ) -> Result<(), ManagementError> {
+        let mut lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
+        if !path.exists() {
+            return Ok(());
+        }
+        let identity = file_identity(&path);
+        if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref()) {
+            if known.0.contains(&(path.clone(), *identity)) {
+                return Ok(());
             }
-            let record = read_canonical::<OperationRecord>(&path)?;
-            let kind = intent_kind(&record)?;
-            if record.phase == OperationPhase::Complete {
-                if let (Some(known), Some(identity)) = (validated.as_deref_mut(), identity) {
-                    known.0.insert((path.clone(), identity));
-                }
-                match kind.as_str() {
-                    "workspace" => {
-                        workspace_intent(&record)?;
-                    }
-                    "folder-move" => {
-                        folder_move_intent(&record)?;
-                    }
-                    "session-create" => {
-                        session_create_intent(&record)?;
-                    }
-                    "select-model" => {
-                        select_model_intent(&record)?;
-                    }
-                    "fork" => {
-                        fork_intent(&record)?;
-                    }
-                    "queue-transaction" => {
-                        let intent = queue_transaction_intent(&record)?;
-                        verify_queue_payload(
-                            &self.operation_payload_path(&record.rpc_id),
-                            &intent,
-                        )?;
-                        queue_completion_from_record(&record)?;
-                        continue;
-                    }
-                    other => {
-                        return Err(ManagementError::CorruptOperation(format!(
-                            "unknown operation intent kind: {other}"
-                        )));
-                    }
-                }
-                if record.response.is_none() {
-                    return Err(ManagementError::CorruptOperation(
-                        "complete operation lacks response".to_owned(),
-                    ));
-                }
-                continue;
+        }
+        let record = read_canonical::<OperationRecord>(&path)?;
+        let kind = intent_kind(&record)?;
+        if kind == "workspace" && record.v != VERSION {
+            // A newer Kernel's record after a downgrade is not corrupt and not ours to judge:
+            // leave it, and its payload, for its owner.
+            eprintln!(
+                "management-operation-skipped: record={} reason=unsupported record version",
+                path.file_stem()
+                    .map_or_else(String::new, |stem| stem.to_string_lossy().into_owned())
+            );
+            return Ok(());
+        }
+        if record.phase == OperationPhase::Complete {
+            if let (Some(known), Some(identity)) = (validated, identity) {
+                known.0.insert((path.clone(), identity));
             }
-            let recovery = match kind.as_str() {
+            match kind.as_str() {
                 "workspace" => {
-                    workspace_intent(&record)?;
-                    self.drive_workspace_operation(&path, record).map(|_| ())
+                    if let Err(error) = workspace_intent(&record) {
+                        return self.quarantine_corrupt_workspace(&path, error);
+                    }
                 }
                 "folder-move" => {
                     folder_move_intent(&record)?;
-                    self.drive_folder_move(&path, record, None).map(|_| ())
                 }
                 "session-create" => {
                     session_create_intent(&record)?;
-                    self.drive_session_create(&path, record).map(|_| ())
                 }
                 "select-model" => {
                     select_model_intent(&record)?;
-                    self.drive_select_model(&path, record).map(|_| ())
                 }
                 "fork" => {
-                    if self.fork_was_quarantined(&record)? {
-                        // The source and failed operation are preserved. This fork has
-                        // no successful response, but must not block unrelated sessions.
-                        continue;
-                    }
-                    self.drive_fork(&path, record).map(|_| ())
+                    fork_intent(&record)?;
                 }
                 "queue-transaction" => {
                     let intent = queue_transaction_intent(&record)?;
                     verify_queue_payload(&self.operation_payload_path(&record.rpc_id), &intent)?;
-                    let pending = pending_queue_transaction(&record)?;
-                    let driver = queue_driver.ok_or_else(|| {
-                        ManagementError::QueueRecoveryRequired(pending.session_id.clone())
-                    })?;
-                    // The driver may start a worker (a handshake of up to 10 s): do not hold
-                    // the management lock meanwhile, and re-check the record after it.
-                    drop(lock.take());
-                    let decision = driver.execute(&pending)?;
-                    lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
-                    let current = read_canonical::<OperationRecord>(&path)?;
-                    if current.phase == OperationPhase::Complete {
-                        continue;
-                    }
-                    self.drive_queue_completion(&path, record, decision)
-                        .map(|_| ())
+                    queue_completion_from_record(&record)?;
+                    return Ok(());
                 }
                 other => {
                     return Err(ManagementError::CorruptOperation(format!(
                         "unknown operation intent kind: {other}"
                     )));
                 }
-            };
-            match recovery {
-                Ok(()) => {}
-                Err(ManagementError::InvalidPath(unavailable))
-                    if unavailable_absolute_path(&unavailable) =>
-                {
-                    // A durable operation bound to a removed checkout or an unmounted volume is
-                    // still pending, not corrupt. Preserve it for a later recovery pass without
-                    // making one unavailable workspace prevent the endpoint from becoming ready.
-                }
-                Err(error) => return Err(error),
             }
+            if record.response.is_none() {
+                let error = ManagementError::CorruptOperation(
+                    "complete operation lacks response".to_owned(),
+                );
+                return if kind == "workspace" {
+                    self.quarantine_corrupt_workspace(&path, error)
+                } else {
+                    Err(error)
+                };
+            }
+            return Ok(());
         }
+        let recovery = match kind.as_str() {
+            "workspace" => workspace_intent(&record)
+                .and_then(|_| self.drive_workspace_operation(&path, record))
+                .map(|_| ()),
+            "folder-move" => {
+                folder_move_intent(&record)?;
+                self.drive_folder_move(&path, record, None).map(|_| ())
+            }
+            "session-create" => {
+                session_create_intent(&record)?;
+                self.drive_session_create(&path, record).map(|_| ())
+            }
+            "select-model" => {
+                select_model_intent(&record)?;
+                self.drive_select_model(&path, record).map(|_| ())
+            }
+            "fork" => {
+                if self.fork_was_quarantined(&record)? {
+                    // The source and failed operation are preserved. This fork has
+                    // no successful response, but must not block unrelated sessions.
+                    return Ok(());
+                }
+                self.drive_fork(&path, record).map(|_| ())
+            }
+            "queue-transaction" => {
+                let intent = queue_transaction_intent(&record)?;
+                verify_queue_payload(&self.operation_payload_path(&record.rpc_id), &intent)?;
+                let pending = pending_queue_transaction(&record)?;
+                let driver = queue_driver.ok_or_else(|| {
+                    ManagementError::QueueRecoveryRequired(pending.session_id.clone())
+                })?;
+                // The driver may start a worker (a handshake of up to 10 s): do not hold
+                // the management lock meanwhile, and re-check the record after it.
+                drop(lock.take());
+                let decision = driver.execute(&pending)?;
+                lock = Some(NamedLock::exclusive(self.root.join("lock"))?);
+                let current = read_canonical::<OperationRecord>(&path)?;
+                if current.phase == OperationPhase::Complete {
+                    return Ok(());
+                }
+                self.drive_queue_completion(&path, record, decision)
+                    .map(|_| ())
+            }
+            other => {
+                return Err(ManagementError::CorruptOperation(format!(
+                    "unknown operation intent kind: {other}"
+                )));
+            }
+        };
+        match recovery {
+            Ok(()) => {}
+            Err(ManagementError::InvalidPath(unavailable))
+                if unavailable_absolute_path(&unavailable) =>
+            {
+                // A durable operation bound to a removed checkout or an unmounted volume is
+                // still pending, not corrupt. Preserve it for a later recovery pass without
+                // making one unavailable workspace prevent the endpoint from becoming ready.
+            }
+            // K1: an operation that can never complete must not keep the endpoint from
+            // becoming ready. Its record and payload are preserved outside the recovery set.
+            Err(error @ ManagementError::CorruptOperation(_)) if kind == "workspace" => {
+                return self.quarantine_corrupt_workspace(&path, error);
+            }
+            Err(error) => return Err(error),
+        }
+        Ok(())
+    }
+
+    fn quarantine_corrupt_workspace(
+        &self,
+        path: &Path,
+        error: ManagementError,
+    ) -> Result<(), ManagementError> {
+        match error {
+            ManagementError::CorruptOperation(reason) => self.quarantine_operation(path, &reason),
+            other => Err(other),
+        }
+    }
+
+    /// Moves a workspace operation that can never complete, with its payload, to
+    /// `quarantine/<digest>/` (`record.json`, `payload-root/`, `reason.txt`) so recovery and boot
+    /// stop re-driving it. The payload is copied and made durable first and the record is renamed
+    /// last. Before that rename the operation is still intact in the recovery set and a retry
+    /// starts over; after it the leftover payload is recordless and removed. No step loses the
+    /// payload or leaves a record that could be driven without it.
+    fn quarantine_operation(&self, path: &Path, reason: &str) -> Result<(), ManagementError> {
+        let digest = path
+            .file_stem()
+            .and_then(|value| value.to_str())
+            .filter(|value| is_hex_digest(value))
+            .ok_or_else(|| {
+                ManagementError::CorruptOperation("operation record has no digest name".to_owned())
+            })?
+            .to_owned();
+        let quarantine = self.root.join("quarantine");
+        fs::create_dir_all(&quarantine)?;
+        // An earlier quarantine of the same digest is evidence: never overwrite it.
+        let mut target = quarantine.join(&digest);
+        let mut attempt = 1_u32;
+        while target.join("record.json").exists() {
+            target = quarantine.join(format!("{digest}-{attempt}"));
+            attempt += 1;
+        }
+        // A directory without `record.json` is an unfinished copy; the original is still here.
+        if target.exists() {
+            fs::remove_dir_all(&target)?;
+        }
+        fs::create_dir_all(&target)?;
+        let payload_root = path.with_extension("");
+        if payload_root.is_dir() {
+            copy_payload_tree(&payload_root, &target.join("payload-root"))?;
+        }
+        AtomicPublisher::replace(target.join("reason.txt"), reason.as_bytes())?;
+        File::open(&target)?.sync_all()?;
+        File::open(&quarantine)?.sync_all()?;
+        fs::rename(path, target.join("record.json"))?;
+        File::open(&target)?.sync_all()?;
+        let prefix = path.parent().ok_or_else(|| {
+            ManagementError::CorruptOperation("operation record has no prefix".to_owned())
+        })?;
+        File::open(prefix)?.sync_all()?;
+        if payload_root.is_dir() {
+            fs::remove_dir_all(&payload_root)?;
+            File::open(prefix)?.sync_all()?;
+        }
+        eprintln!("management-operation-quarantined: record={digest} reason={reason}");
         Ok(())
     }
 
@@ -657,42 +765,13 @@ impl ManagementStore {
         Ok(())
     }
 
+    /// Workspace metadata is derived state (a digest of the workspace config), so the periodic
+    /// reconcile heals it in place under the management lock. It must not stage an operation
+    /// record: a record carries a config snapshot, and a config writer that publishes after the
+    /// snapshot makes the record's Carriers check fail forever (K1).
     fn reconcile_workspace_metadata(&self, started_at: &str) -> Result<(), ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
-        for config in self.workspace_configs()?.into_values() {
-            if primary_path(&config).is_err() {
-                continue;
-            }
-            let metadata = self.read_metadata_optional(&config.id)?;
-            let matches = metadata
-                .as_ref()
-                .is_some_and(|metadata| verify_metadata(&config, metadata).is_ok());
-            if matches {
-                continue;
-            }
-            let digest = hex_digest(&canonical_line(&config)?);
-            let missing = metadata.is_none();
-            let action = if missing { "create" } else { "rename" };
-            let operation = if missing {
-                "workspace.create"
-            } else {
-                "workspace.rename"
-            };
-            let rpc_id = format!("synthetic-workspace-{action}-{}-{digest}", config.id);
-            let record = self.begin_workspace_operation(WorkspaceOperationWrite {
-                rpc_id: &rpc_id,
-                request_sha256: &digest,
-                operation,
-                action,
-                config: &config,
-                started_at,
-                created: missing.then_some(false),
-                relocation: None,
-                folder: None,
-            })?;
-            self.drive_workspace_operation(&record.0, record.1)?;
-        }
-        Ok(())
+        self.heal_workspace_metadata_locked(started_at)
     }
 
     pub fn list_workspaces(
@@ -2938,6 +3017,28 @@ fn verify_session_create_genesis(
     Ok(())
 }
 
+/// Copies a payload directory (regular files and directories only) and syncs every file.
+fn copy_payload_tree(source: &Path, target: &Path) -> Result<(), ManagementError> {
+    fs::create_dir_all(target)?;
+    for entry in fs::read_dir(source)? {
+        let entry = entry?;
+        let destination = target.join(entry.file_name());
+        let kind = entry.file_type()?;
+        if kind.is_dir() {
+            copy_payload_tree(&entry.path(), &destination)?;
+        } else if kind.is_file() {
+            fs::copy(entry.path(), &destination)?;
+            File::open(&destination)?.sync_all()?;
+        } else {
+            return Err(ManagementError::CorruptOperation(
+                "operation payload holds a non-regular entry".to_owned(),
+            ));
+        }
+    }
+    File::open(target)?.sync_all()?;
+    Ok(())
+}
+
 fn sync_operation_payload(payload: &Path) -> Result<(), ManagementError> {
     File::open(payload)?.sync_all()?;
     let rpc_root = payload.parent().ok_or_else(|| {
@@ -4605,5 +4706,474 @@ mod tests {
 
         ManagementStore::open_at(root.path(), "2026-09-01T00:00:01.000Z")
             .expect("completed history must not require its old path");
+    }
+}
+
+/// K1: the periodic recovery tick, `workspace.policy.set` and a workspace operation used to
+/// race on one workspace document; the loser left an operation that could never complete and
+/// every later boot failed on it.
+#[cfg(test)]
+mod k1_management_race {
+    use super::*;
+    use profile::{ConfigRepository, WorkspaceConfig, WorkspaceFolder};
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicBool, Ordering};
+
+    const BOOT: &str = "2026-10-13T05:38:06.787Z";
+    const TICK: &str = "2026-10-13T05:38:27.837Z";
+    const LATER: &str = "2026-10-13T06:00:06.000Z";
+    const WORKSPACE: &str = "ws-k1";
+
+    fn fixture(root: &Path) -> (ConfigRepository, PathBuf) {
+        let project = root.join("project");
+        fs::create_dir(&project).expect("project");
+        let folder = project.to_string_lossy().into_owned();
+        let repository = ConfigRepository::open(root).expect("config");
+        repository
+            .publish_workspace(
+                0,
+                &WorkspaceConfig {
+                    format: 1,
+                    revision: 1,
+                    id: WORKSPACE.to_owned(),
+                    name: "K1".to_owned(),
+                    cwd: Vec::new(),
+                    folders: vec![WorkspaceFolder {
+                        id: "folder-0001".to_owned(),
+                        path: folder.clone(),
+                    }],
+                    policy: Some(default_workspace_policy(&folder)),
+                },
+            )
+            .expect("workspace rev 1");
+        (repository, project)
+    }
+
+    fn policy_with(project: &Path, extra: &str) -> WorkspacePolicy {
+        let mut policy = default_workspace_policy(&project.to_string_lossy());
+        policy.allowed_tools.push(extra.to_owned());
+        policy
+    }
+
+    fn set_policy(repository: &ConfigRepository, project: &Path, extra: &str) {
+        let revision = repository.workspace(WORKSPACE).expect("workspace").revision;
+        repository
+            .publish_workspace_policy(WORKSPACE, revision, policy_with(project, extra))
+            .expect("policy set");
+    }
+
+    fn quarantine_root(root: &Path) -> PathBuf {
+        store::endpoint_management_root(root)
+            .expect("management root")
+            .join("quarantine")
+    }
+
+    fn stale_metadata(store: &ManagementStore) {
+        let path = store.metadata_path(WORKSPACE);
+        let mut metadata: WorkspaceMetadata = read_canonical(&path).expect("metadata");
+        metadata.config_digest = "0".repeat(64);
+        publish_canonical(&path, &metadata).expect("stale metadata");
+    }
+
+    fn metadata_matches(store: &ManagementStore, id: &str) -> bool {
+        let config = store.workspace_configs().expect("configs")[id].clone();
+        verify_metadata(&config, &store.read_metadata(id).expect("metadata")).is_ok()
+    }
+
+    /// Prepares a rename of the current config and drives it to Carriers, then lets the live
+    /// config move on by two revisions: the Carriers check can never pass.
+    fn stuck_carriers_record(
+        store: &ManagementStore,
+        repository: &ConfigRepository,
+        project: &Path,
+        rpc_id: &str,
+    ) -> PathBuf {
+        let mut config = store.workspace_configs().expect("configs")[WORKSPACE].clone();
+        config.revision += 1;
+        config.name = "K1 renamed".to_owned();
+        let digest = hex_digest(&canonical_line(&config).expect("line"));
+        let (path, mut record) = store
+            .begin_workspace_operation(WorkspaceOperationWrite {
+                rpc_id,
+                request_sha256: &digest,
+                operation: "workspace.rename",
+                action: "rename",
+                config: &config,
+                started_at: TICK,
+                created: None,
+                relocation: None,
+                folder: None,
+            })
+            .expect("prepared");
+        record.phase = OperationPhase::Carriers;
+        publish_canonical(&path, &record).expect("carriers");
+        set_policy(repository, project, "mcp__a__a");
+        set_policy(repository, project, "mcp__b__b");
+        path
+    }
+
+    /// The tick used to stage a synthetic `workspace.rename` for stale metadata, which a policy
+    /// set between its snapshot and its Carriers check broke. It now heals the metadata in place
+    /// and leaves no operation behind.
+    #[test]
+    fn tick_heals_stale_metadata_without_staging_an_operation() {
+        let root = tempfile::tempdir().expect("root");
+        let (repository, project) = fixture(root.path());
+        let store = ManagementStore::open_at(root.path(), BOOT).expect("boot");
+        let before = store.operation_paths().expect("operations");
+        set_policy(&repository, &project, "mcp__a__a");
+        stale_metadata(&store);
+        assert!(!metadata_matches(&store, WORKSPACE));
+
+        let mut validated = CompleteOperations::default();
+        let tick = ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)
+            .expect("tick");
+
+        assert!(
+            metadata_matches(&tick, WORKSPACE),
+            "the tick healed the metadata"
+        );
+        assert_eq!(
+            tick.operation_paths().expect("operations"),
+            before,
+            "no synthetic operation is staged"
+        );
+        assert!(!quarantine_root(root.path()).exists());
+        set_policy(&repository, &project, "mcp__b__b");
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+    }
+
+    /// The unmodified production functions on two threads: one loops `workspace.policy.set`
+    /// publications, the other loops the recovering open the 30 s tick calls.
+    #[test]
+    fn tick_never_fails_while_policy_set_publishes() {
+        let root = tempfile::tempdir().expect("root");
+        let (_repository, project) = fixture(root.path());
+        ManagementStore::open_at(root.path(), BOOT).expect("boot");
+        let stop = Arc::new(AtomicBool::new(false));
+        let writer = {
+            let stop = Arc::clone(&stop);
+            let root = root.path().to_path_buf();
+            std::thread::spawn(move || {
+                let repository = ConfigRepository::open(&root).expect("config");
+                let mut writes = 0_u64;
+                while !stop.load(Ordering::Acquire) {
+                    let current = repository.workspace(WORKSPACE).expect("workspace");
+                    let _ = repository.publish_workspace_policy(
+                        WORKSPACE,
+                        current.revision,
+                        policy_with(&project, &format!("mcp__t__{writes}")),
+                    );
+                    writes += 1;
+                }
+                writes
+            })
+        };
+        let mut validated = CompleteOperations::default();
+        let mut failures = 0_u32;
+        for _ in 0..100 {
+            if ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)
+                .is_err()
+            {
+                failures += 1;
+            }
+        }
+        stop.store(true, Ordering::Release);
+        let writes = writer.join().expect("writer");
+        assert_eq!(failures, 0, "no tick fails");
+        assert!(writes > 20, "the writer ran concurrently");
+        assert!(!quarantine_root(root.path()).exists());
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+    }
+
+    /// The F148 parked shape, generated. The 0.4.4 tick staged a synthetic `workspace.rename` of
+    /// the unchanged live config (no revision bump) for stale metadata; policy sets then moved
+    /// the live document on before the Carriers check. Names are generated and every digest is
+    /// computed by production code, so the state is self-consistent. Returns the record path, the
+    /// record bytes and the staged payload bytes.
+    fn parked_synthetic_rename(root: &Path) -> (PathBuf, Vec<u8>, Vec<u8>) {
+        let (repository, project) = fixture(root);
+        let store = ManagementStore::open_at(root, BOOT).expect("boot");
+        // Size realism without real names: a generated tool list of the product's order of size.
+        let mut policy = default_workspace_policy(&project.to_string_lossy());
+        policy.allowed_tools = (0..232)
+            .map(|index| format!("mcp__fixture_server__tool_{index:03}"))
+            .collect();
+        let revision = repository.workspace(WORKSPACE).expect("workspace").revision;
+        repository
+            .publish_workspace_policy(WORKSPACE, revision, policy)
+            .expect("policy set");
+        stale_metadata(&store);
+        let config = store.workspace_configs().expect("configs")[WORKSPACE].clone();
+        assert_eq!(config.revision, 2, "staged at the live revision, no bump");
+        let digest = hex_digest(&canonical_line(&config).expect("line"));
+        // The id shape the 0.4.4 tick used.
+        let rpc_id = format!("synthetic-workspace-rename-{WORKSPACE}-{digest}");
+        let (path, mut record) = store
+            .begin_workspace_operation(WorkspaceOperationWrite {
+                rpc_id: &rpc_id,
+                request_sha256: &digest,
+                operation: "workspace.rename",
+                action: "rename",
+                config: &config,
+                started_at: TICK,
+                created: None,
+                relocation: None,
+                folder: None,
+            })
+            .expect("prepared");
+        record.phase = OperationPhase::Carriers;
+        publish_canonical(&path, &record).expect("carriers");
+        for extra in [
+            "mcp__fixture_server__a",
+            "mcp__fixture_server__b",
+            "mcp__fixture_server__c",
+        ] {
+            set_policy(&repository, &project, extra);
+        }
+        let staged =
+            fs::read(store.operation_payload_path(&rpc_id).join("workspace.json")).expect("staged");
+        let bytes = fs::read(&path).expect("record bytes");
+        (path, bytes, staged)
+    }
+
+    /// The parked F148 state (a synthetic `workspace.rename` stuck in `carriers`, staged at
+    /// revision 2) against a live workspace that has since moved on to revision 5.
+    #[test]
+    fn boot_quarantines_the_parked_carriers_record_and_succeeds() {
+        let root = tempfile::tempdir().expect("root");
+        let (path, record, staged) = parked_synthetic_rename(root.path());
+        let repository = ConfigRepository::open(root.path()).expect("config");
+        assert_eq!(repository.workspace(WORKSPACE).expect("live").revision, 5);
+        let digest = path
+            .file_stem()
+            .expect("stem")
+            .to_string_lossy()
+            .into_owned();
+
+        // Without the quarantine this is the exit-74 boot failure of the parked root.
+        let boot = ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)
+            .expect("boot quarantines the record and continues");
+
+        assert!(!path.exists(), "the record left the recovery set");
+        let target = quarantine_root(root.path()).join(&digest);
+        assert_eq!(
+            fs::read(target.join("record.json")).expect("record"),
+            record
+        );
+        assert_eq!(
+            fs::read(target.join("payload-root/payload/workspace.json")).expect("payload"),
+            staged
+        );
+        assert_eq!(
+            fs::read_to_string(target.join("reason.txt")).expect("reason"),
+            "workspace publication does not match prepared revision"
+        );
+        assert_eq!(
+            boot.operation_paths().expect("operations"),
+            Vec::<PathBuf>::new()
+        );
+        assert!(
+            !path.with_extension("").exists(),
+            "the original payload directory is gone"
+        );
+        assert!(
+            metadata_matches(&boot, WORKSPACE),
+            "the workspace metadata was healed"
+        );
+        // The live workspace is untouched and a second boot is clean.
+        assert_eq!(repository.workspace(WORKSPACE).expect("live").revision, 5);
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("second boot");
+        assert_eq!(
+            fs::read_dir(quarantine_root(root.path()))
+                .expect("quarantine")
+                .count(),
+            1
+        );
+    }
+
+    /// A record of another version (a newer Kernel's, after a downgrade) is not this Kernel's to
+    /// judge: it is logged and left in place with its payload, never quarantined.
+    #[test]
+    fn record_of_another_version_is_left_in_place_not_quarantined() {
+        let root = tempfile::tempdir().expect("root");
+        let (path, _, staged) = parked_synthetic_rename(root.path());
+        let mut record: OperationRecord = read_canonical(&path).expect("record");
+        record.v = VERSION + 1;
+        publish_canonical(&path, &record).expect("newer record");
+        let before = fs::read(&path).expect("record bytes");
+
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)
+            .expect("boot skips the record");
+
+        assert_eq!(fs::read(&path).expect("record"), before);
+        assert_eq!(
+            fs::read(path.with_extension("").join("payload/workspace.json")).expect("payload"),
+            staged
+        );
+        assert!(!quarantine_root(root.path()).exists());
+    }
+
+    /// The quarantine keeps the whole payload, the record is never driven again, and earlier
+    /// evidence for the same digest is never overwritten.
+    #[test]
+    fn quarantine_keeps_the_payload_and_never_redrives_the_operation() {
+        let root = tempfile::tempdir().expect("root");
+        let (repository, project) = fixture(root.path());
+        let store = ManagementStore::open_at(root.path(), BOOT).expect("boot");
+        let path = stuck_carriers_record(&store, &repository, &project, "rpc-stuck");
+        let digest = path
+            .file_stem()
+            .expect("stem")
+            .to_string_lossy()
+            .into_owned();
+        let original = fs::read(&path).expect("record bytes");
+        let staged = fs::read(
+            store
+                .operation_payload_path("rpc-stuck")
+                .join("workspace.json"),
+        )
+        .expect("staged");
+        // An unfinished copy left by an interrupted quarantine must not leak into the new one.
+        let partial = quarantine_root(root.path()).join(&digest);
+        fs::create_dir_all(partial.join("payload-root/stale")).expect("partial");
+        fs::write(partial.join("payload-root/stale/leftover"), b"x").expect("leftover");
+        let revision = repository.workspace(WORKSPACE).expect("live").revision;
+
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+
+        let first = quarantine_root(root.path()).join(&digest);
+        assert_eq!(
+            fs::read(first.join("record.json")).expect("record"),
+            original
+        );
+        assert_eq!(
+            fs::read(first.join("payload-root/payload/workspace.json")).expect("payload"),
+            staged
+        );
+        assert!(!first.join("payload-root/stale").exists());
+        assert!(!path.exists());
+        assert!(!store.operation_payload_path("rpc-stuck").exists());
+        // Never re-driven: the live config was not touched by another publication.
+        assert_eq!(
+            repository.workspace(WORKSPACE).expect("live").revision,
+            revision
+        );
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+        assert_eq!(
+            fs::read(first.join("record.json")).expect("record"),
+            original
+        );
+
+        // The same rpc id stuck again lands beside the first, not on top of it.
+        let again = stuck_carriers_record(&store, &repository, &project, "rpc-stuck");
+        assert_eq!(again, path);
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+        let second = quarantine_root(root.path()).join(format!("{digest}-1"));
+        assert!(second.join("record.json").is_file());
+        assert!(second.join("payload-root/payload/workspace.json").is_file());
+        assert_eq!(
+            fs::read(first.join("record.json")).expect("record"),
+            original
+        );
+    }
+
+    /// A completed workspace record without its response can never serve a retry either.
+    #[test]
+    fn complete_workspace_record_without_response_is_quarantined() {
+        let root = tempfile::tempdir().expect("root");
+        let (_repository, _project) = fixture(root.path());
+        let store = ManagementStore::open_at(root.path(), BOOT).expect("boot");
+        let config = store.workspace_configs().expect("configs")[WORKSPACE].clone();
+        let (path, mut record) = store
+            .begin_workspace_operation(WorkspaceOperationWrite {
+                rpc_id: "rpc-complete",
+                request_sha256: &"1".repeat(64),
+                operation: "workspace.rename",
+                action: "rename",
+                config: &config,
+                started_at: TICK,
+                created: None,
+                relocation: None,
+                folder: None,
+            })
+            .expect("prepared");
+        record.phase = OperationPhase::Complete;
+        publish_canonical(&path, &record).expect("complete without response");
+
+        ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect("boot");
+
+        assert!(!path.exists());
+        let digest = path.file_stem().expect("stem");
+        assert!(
+            quarantine_root(root.path())
+                .join(digest)
+                .join("record.json")
+                .is_file()
+        );
+    }
+
+    /// One failing record does not stop the pass: the others are recovered and the failure is
+    /// still reported. A corrupt operation that is not a workspace operation is not quarantined.
+    #[test]
+    fn one_failing_record_does_not_stop_the_others_from_recovering() {
+        let root = tempfile::tempdir().expect("root");
+        let (_repository, _project) = fixture(root.path());
+        let store = ManagementStore::open_at(root.path(), BOOT).expect("boot");
+        let mut config = store.workspace_configs().expect("configs")[WORKSPACE].clone();
+        config.revision += 1;
+        config.name = "K1 recovered".to_owned();
+        let digest = hex_digest(&canonical_line(&config).expect("line"));
+        let (pending, _) = store
+            .begin_workspace_operation(WorkspaceOperationWrite {
+                rpc_id: "rpc-pending",
+                request_sha256: &digest,
+                operation: "workspace.rename",
+                action: "rename",
+                config: &config,
+                started_at: TICK,
+                created: None,
+                relocation: None,
+                folder: None,
+            })
+            .expect("pending rename");
+        // A record of an unknown kind that sorts before the pending rename.
+        let bogus = (0..)
+            .map(|index| format!("rpc-bogus-{index}"))
+            .find(|rpc_id| store.operation_path(rpc_id) < pending)
+            .expect("bogus rpc id");
+        let bogus_path = store.operation_path(&bogus);
+        fs::create_dir_all(bogus_path.parent().expect("prefix")).expect("prefix");
+        publish_canonical(
+            &bogus_path,
+            &OperationRecord {
+                v: VERSION,
+                rpc_id: bogus,
+                operation: "bogus".to_owned(),
+                request_sha256: "0".repeat(64),
+                phase: OperationPhase::Prepared,
+                started_at: TICK.to_owned(),
+                intent: to_ijson(&json!({"kind":"bogus"})).expect("intent"),
+                response: None,
+            },
+        )
+        .expect("bogus record");
+
+        let error = store
+            .recover()
+            .expect_err("the unknown kind still fails the pass");
+
+        assert!(matches!(error, ManagementError::CorruptOperation(_)));
+        assert!(
+            bogus_path.is_file(),
+            "a non-workspace record is not quarantined"
+        );
+        assert!(!quarantine_root(root.path()).exists());
+        let recovered: OperationRecord = read_canonical(&pending).expect("pending record");
+        assert_eq!(recovered.phase, OperationPhase::Complete);
+        assert_eq!(
+            store.workspace_configs().expect("configs")[WORKSPACE].name,
+            "K1 recovered"
+        );
     }
 }

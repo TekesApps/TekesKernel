@@ -97,10 +97,16 @@ impl ClientAdminRoutes {
                             .resolve(&desired.id)
                             .map_err(internal_profile)?;
                         let policy = desired.policy.clone().unwrap_or_default();
-                        let published = self
-                            .repository
-                            .publish_workspace_policy(&desired.id, record.expected_revision, policy)
-                            .map_err(map_policy)?;
+                        let published = {
+                            let _management = self.lock_management()?;
+                            self.repository
+                                .publish_workspace_policy(
+                                    &desired.id,
+                                    record.expected_revision,
+                                    policy,
+                                )
+                                .map_err(map_policy)?
+                        };
                         if published.canonical_bytes().map_err(map_policy)? != record.desired {
                             return Err(internal(
                                 "recovered workspace publication differs from intent",
@@ -183,11 +189,20 @@ impl ClientAdminRoutes {
             &desired,
             &result,
         )?;
-        let published = match self.repository.publish_workspace_policy(
-            &input.workspace_id,
-            input.expected_revision,
-            input.policy.clone(),
-        ) {
+        // The management lock covers only the publication: a management operation stages a
+        // snapshot of this document under that lock and publishes it later under the same
+        // lock, so a publication in between would leave the operation unable to complete (K1).
+        // The expected-revision check is made again inside the publication; if an operation
+        // moved the document while this call waited, the call fails as stale.
+        let published = {
+            let _management = self.lock_management()?;
+            self.repository.publish_workspace_policy(
+                &input.workspace_id,
+                input.expected_revision,
+                input.policy.clone(),
+            )
+        };
+        let published = match published {
             Ok(value) => value,
             Err(error) => {
                 self.journal.abort(request)?;
@@ -225,7 +240,8 @@ impl ClientAdminRoutes {
     /// Folder edits are management operations: the endpoint operation record
     /// is their durable carrier, so a retried rpc id resumes that record.
     /// The admin gate serializes them with `workspace.policy.set`, the other
-    /// in-process writer of the same workspace document.
+    /// in-process writer of the same workspace document, and `set_policy`
+    /// publishes under the management lock these operations hold throughout.
     fn change_folders(
         &self,
         request: &EndpointHostCall,
@@ -288,6 +304,12 @@ impl ClientAdminRoutes {
                 "folders":folders.folders,
             },
         }))
+    }
+
+    /// Management lock, then `config/.lock` inside the publication.
+    fn lock_management(&self) -> Result<NamedLock, ProductionRouteFailure> {
+        endpoint::ManagementStore::lock_exclusive(&self.root)
+            .map_err(|error| internal(error.to_string()))
     }
 
     fn management(&self) -> Result<endpoint::ManagementStore, ProductionRouteFailure> {
@@ -1167,6 +1189,274 @@ mod tests {
                     .expect("workspace"),
                 desired
             );
+        }
+    }
+
+    /// K1. A workspace operation stages a snapshot of the workspace document under the
+    /// management lock and publishes it later under the same lock, so `workspace.policy.set`
+    /// (and the policy intent replay at startup) must publish only while holding it.
+    mod k1_management_race {
+        use super::*;
+        use std::sync::mpsc::{RecvTimeoutError, channel};
+        use std::time::Duration;
+
+        fn folder_fixture() -> (
+            TempDir,
+            Arc<ProductionProcessHost>,
+            ClientAdminRoutes,
+            PathBuf,
+        ) {
+            let (root, host, routes) = fixture();
+            let project = root.path().join("project");
+            fs::create_dir(&project).expect("project");
+            let folder = project.to_string_lossy().into_owned();
+            routes
+                .repository
+                .publish_workspace(
+                    1,
+                    &WorkspaceConfig {
+                        format: 1,
+                        revision: 2,
+                        id: "workspace-1".to_owned(),
+                        name: "Workspace".to_owned(),
+                        cwd: Vec::new(),
+                        folders: vec![profile::WorkspaceFolder {
+                            id: "folder-0001".to_owned(),
+                            path: folder,
+                        }],
+                        policy: Some(WorkspacePolicy::default()),
+                    },
+                )
+                .expect("workspace with a folder");
+            (root, host, routes, project)
+        }
+
+        fn policy_call(rpc_id: &str, expected_revision: u64, tool: &str) -> EndpointHostCall {
+            call(
+                rpc_id,
+                "workspace.policy.set",
+                json!({"workspaceId":"workspace-1","expectedRevision":expected_revision,
+                    "policy":{"network":false,"allowed_tools":[tool],"writable_roots":[]}}),
+                false,
+            )
+        }
+
+        fn revision(routes: &ClientAdminRoutes) -> u64 {
+            routes
+                .repository
+                .workspace("workspace-1")
+                .expect("workspace")
+                .revision
+        }
+
+        /// A policy set that arrives while a management operation holds the lock must not
+        /// publish until the lock is released.
+        #[test]
+        fn policy_set_publishes_only_under_the_management_lock() {
+            let (root, _host, routes, _project) = folder_fixture();
+            let before = revision(&routes);
+            let held = endpoint::ManagementStore::lock_exclusive(root.path()).expect("lock");
+            let (sender, receiver) = channel();
+            std::thread::scope(|scope| {
+                scope.spawn(|| {
+                    let request = policy_call("rpc-locked-policy", before, "read");
+                    let payload = serde_json::to_value(&request.payload).expect("payload");
+                    let result = routes.execute(&request, &payload, "uid:1");
+                    sender.send(result.is_ok()).expect("result");
+                });
+                assert!(
+                    matches!(
+                        receiver.recv_timeout(Duration::from_millis(500)),
+                        Err(RecvTimeoutError::Timeout)
+                    ),
+                    "the policy set must wait for the management lock"
+                );
+                assert_eq!(revision(&routes), before, "nothing was published yet");
+                drop(held);
+                assert!(
+                    receiver
+                        .recv_timeout(Duration::from_secs(30))
+                        .expect("the policy set completes once the lock is free")
+                );
+            });
+            assert_eq!(revision(&routes), before + 1);
+        }
+
+        /// The startup replay of a journaled policy intent publishes under the same lock.
+        #[test]
+        fn recovered_policy_intent_publishes_only_under_the_management_lock() {
+            let (root, _host, routes, _project) = folder_fixture();
+            let before = revision(&routes);
+            let request = policy_call("rpc-replayed-policy", before, "read");
+            let mut desired = routes
+                .repository
+                .workspace("workspace-1")
+                .expect("workspace");
+            desired.revision = before + 1;
+            desired.policy = Some(WorkspacePolicy {
+                allowed_tools: vec!["read".to_owned()],
+                ..WorkspacePolicy::default()
+            });
+            let result = policy_result(desired.revision, desired.policy.as_ref().expect("policy"))
+                .expect("result");
+            routes
+                .journal
+                .begin(
+                    &request,
+                    "workspaces/workspace-1/workspace.json",
+                    before,
+                    desired.revision,
+                    &desired.canonical_bytes().expect("desired"),
+                    &result,
+                )
+                .expect("prepare");
+            let held = endpoint::ManagementStore::lock_exclusive(root.path()).expect("lock");
+            let (sender, receiver) = channel();
+            std::thread::scope(|scope| {
+                scope.spawn(|| {
+                    sender
+                        .send(routes.recover_pending_intents().is_ok())
+                        .expect("result");
+                });
+                assert!(
+                    matches!(
+                        receiver.recv_timeout(Duration::from_millis(500)),
+                        Err(RecvTimeoutError::Timeout)
+                    ),
+                    "the replay must wait for the management lock"
+                );
+                assert_eq!(revision(&routes), before, "nothing was published yet");
+                drop(held);
+                assert!(
+                    receiver
+                        .recv_timeout(Duration::from_secs(30))
+                        .expect("the replay completes once the lock is free")
+                );
+            });
+            assert_eq!(revision(&routes), before + 1);
+        }
+
+        /// The 30 s management recovery tick against a stream of `workspace.policy.set` calls.
+        #[test]
+        fn policy_set_racing_the_recovery_tick_never_corrupts_management() {
+            let (root, host, routes, _project) = folder_fixture();
+            let done = std::sync::atomic::AtomicBool::new(false);
+            let (applied, tick_failures) = std::thread::scope(|scope| {
+                let ticker = scope.spawn(|| {
+                    let mut validated = endpoint::CompleteOperations::default();
+                    let mut failures = 0_u32;
+                    while !done.load(std::sync::atomic::Ordering::Acquire) {
+                        if crate::endpoint_host::recover_pending_management(
+                            root.path(),
+                            &*host,
+                            &mut validated,
+                        )
+                        .is_err()
+                        {
+                            failures += 1;
+                        }
+                    }
+                    failures
+                });
+                let mut applied = 0_u32;
+                for index in 0..120_u32 {
+                    let tool = if index % 2 == 0 { "read" } else { "grep" };
+                    let request =
+                        policy_call(&format!("rpc-race-policy-{index}"), revision(&routes), tool);
+                    let payload = serde_json::to_value(&request.payload).expect("payload");
+                    if routes.execute(&request, &payload, "uid:1").is_ok() {
+                        applied += 1;
+                    }
+                }
+                done.store(true, std::sync::atomic::Ordering::Release);
+                (applied, ticker.join().expect("ticker"))
+            });
+            assert_eq!(applied, 120, "only this thread writes the policy");
+            assert_eq!(tick_failures, 0, "no recovery tick failed");
+            endpoint::ManagementStore::open_at_with_queue_driver(
+                root.path(),
+                "2026-10-13T06:00:06.000Z",
+                None,
+            )
+            .expect("boot");
+        }
+
+        /// `workspace.relocate` against a stream of `workspace.policy.set` calls. A policy set
+        /// that loses to a relocate is stale; nothing may fail any other way.
+        #[test]
+        fn policy_set_racing_relocate_never_corrupts_management() {
+            let (root, _host, routes, project) = folder_fixture();
+            let other = root.path().join("project-moved");
+            fs::create_dir(&other).expect("other");
+            let first = fs::canonicalize(&project)
+                .expect("first")
+                .to_string_lossy()
+                .into_owned();
+            let second = fs::canonicalize(&other)
+                .expect("second")
+                .to_string_lossy()
+                .into_owned();
+            let done = std::sync::atomic::AtomicBool::new(false);
+            let (relocate_failures, other_policy_failures) = std::thread::scope(|scope| {
+                let writer = scope.spawn(|| {
+                    let mut index = 0_u32;
+                    let mut other_failures = 0_u32;
+                    while !done.load(std::sync::atomic::Ordering::Acquire) {
+                        let tool = if index % 2 == 0 { "read" } else { "grep" };
+                        let request = policy_call(
+                            &format!("rpc-relocate-race-policy-{index}"),
+                            revision(&routes),
+                            tool,
+                        );
+                        let payload = serde_json::to_value(&request.payload).expect("payload");
+                        if let Err(error) = routes.execute(&request, &payload, "uid:1") {
+                            if error.code != "stale-revision" {
+                                other_failures += 1;
+                            }
+                        }
+                        index += 1;
+                    }
+                    other_failures
+                });
+                let mut from = project.to_string_lossy().into_owned();
+                let mut to = second.clone();
+                let mut failures = 0_u32;
+                for index in 0..80_u32 {
+                    let store = endpoint::ManagementStore::open_light(root.path()).expect("light");
+                    match store.relocate_workspace(
+                        &format!("rpc-race-relocate-{index}"),
+                        &"0".repeat(64),
+                        "workspace-1",
+                        &from,
+                        &to,
+                        "2026-10-13T05:40:00.000Z",
+                    ) {
+                        Ok(_) => {
+                            let moved_to = to.clone();
+                            to = if moved_to == second {
+                                first.clone()
+                            } else {
+                                second.clone()
+                            };
+                            from = moved_to;
+                        }
+                        Err(_) => failures += 1,
+                    }
+                }
+                done.store(true, std::sync::atomic::Ordering::Release);
+                (failures, writer.join().expect("writer"))
+            });
+            assert_eq!(relocate_failures, 0, "no relocate failed");
+            assert_eq!(
+                other_policy_failures, 0,
+                "policy sets only ever lose as stale"
+            );
+            endpoint::ManagementStore::open_at_with_queue_driver(
+                root.path(),
+                "2026-10-13T06:00:06.000Z",
+                None,
+            )
+            .expect("boot");
         }
     }
 }

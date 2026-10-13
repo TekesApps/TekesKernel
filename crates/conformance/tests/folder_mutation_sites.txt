@@ -7,8 +7,14 @@ crates/endpoint/src/idempotency.rs|repair_all|remove_file|1|rpc
 crates/endpoint/src/idempotency.rs|repair_all|rename|1|rpc
 crates/endpoint/src/journal.rs|retire_legacy_journal|remove_file|1|journal
 crates/endpoint/src/journal.rs|retire_outdated_journal|remove_file|2|journal
+crates/endpoint/src/management.rs|copy_payload_tree|copy|1|staging
+crates/endpoint/src/management.rs|copy_payload_tree|create_dir_all|1|staging
+crates/endpoint/src/management.rs|lock_exclusive|create_dir_all|1|layout
 crates/endpoint/src/management.rs|open_recovering|create_dir_all|2|layout
 crates/endpoint/src/management.rs|open_light_at|create_dir_all|2|layout
+crates/endpoint/src/management.rs|quarantine_operation|create_dir_all|2|staging
+crates/endpoint/src/management.rs|quarantine_operation|remove_dir_all|2|staging
+crates/endpoint/src/management.rs|quarantine_operation|rename|1|staging
 crates/endpoint/src/management.rs|remove_recordless_payload|remove_dir_all|1|staging
 crates/endpoint/src/management.rs|remove_recordless_payloads|remove_dir_all|1|staging
 crates/engine/src/permission_mode.rs|write_permission_mode|remove_file|1|other

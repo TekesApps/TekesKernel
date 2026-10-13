@@ -7,6 +7,7 @@
 | Target | Kind | Entry |
 |---|---|---|
 | `conformance` | lib | [crates/conformance/src/lib.rs](../../src/lib.rs) |
+| `fixture_privacy` | test | [crates/conformance/tests/fixture_privacy.rs](../../tests/fixture_privacy.rs) |
 | `folder_mutation_sites` | test | [crates/conformance/tests/folder_mutation_sites.rs](../../tests/folder_mutation_sites.rs) |
 | `session_endpoint` | test | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) |
 | `slice11_gates` | test | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) |
@@ -41,6 +42,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/conformance/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
+| [crates/conformance/tests/fixture_privacy.rs](../../tests/fixture_privacy.rs) | 7 | 55 | `inventory.json` |
 | [crates/conformance/tests/folder_mutation_sites.rs](../../tests/folder_mutation_sites.rs) | 20 | 172 | `inventory.json` |
 | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 2 | 17 | `inventory.json` |
 | [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 449 | `inventory.json` |
