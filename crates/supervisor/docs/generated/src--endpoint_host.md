@@ -1338,7 +1338,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `model_projection` | `provider.models.iter().filter` | [1730](../../src/endpoint_host.rs#L1730) | receiver-type-required |
 | `model_projection` | `provider.models.iter` | [1730](../../src/endpoint_host.rs#L1730) | receiver-type-required |
 | `model_projection` | `provider::resolve_profile(provider, configured).ok` | [1731](../../src/endpoint_host.rs#L1731) | receiver-type-required |
-| `model_projection` | `provider::resolve_profile` | [1731](../../src/endpoint_host.rs#L1731) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L691) |
+| `model_projection` | `provider::resolve_profile` | [1731](../../src/endpoint_host.rs#L1731) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
 | `model_projection` | `profile                 .as_ref()                 .map(&#124;profile&#124; profile.reasoning_efforts().to_vec())                 .unwrap_or_default` | [1732](../../src/endpoint_host.rs#L1732) | receiver-type-required |
 | `model_projection` | `profile                 .as_ref()                 .map` | [1732](../../src/endpoint_host.rs#L1732) | receiver-type-required |
 | `model_projection` | `profile                 .as_ref` | [1732](../../src/endpoint_host.rs#L1732), [1736](../../src/endpoint_host.rs#L1736) | receiver-type-required |
@@ -1379,7 +1379,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `model_is_configured` | `provider         .models         .iter` | [1810](../../src/endpoint_host.rs#L1810) | receiver-type-required |
 | `model_is_configured` | `effort.is_none_or` | [1817](../../src/endpoint_host.rs#L1817) | receiver-type-required |
 | `model_is_configured` | `provider::resolve_profile(provider, model).is_ok_and` | [1818](../../src/endpoint_host.rs#L1818) | receiver-type-required |
-| `model_is_configured` | `provider::resolve_profile` | [1818](../../src/endpoint_host.rs#L1818) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L691) |
+| `model_is_configured` | `provider::resolve_profile` | [1818](../../src/endpoint_host.rs#L1818) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
 | `model_is_configured` | `profile                 .reasoning_efforts()                 .iter()                 .any` | [1819](../../src/endpoint_host.rs#L1819) | receiver-type-required |
 | `model_is_configured` | `profile                 .reasoning_efforts()                 .iter` | [1819](../../src/endpoint_host.rs#L1819) | receiver-type-required |
 | `model_is_configured` | `profile                 .reasoning_efforts` | [1819](../../src/endpoint_host.rs#L1819) | receiver-type-required |
