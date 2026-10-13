@@ -46,7 +46,16 @@ Proposed as 0.4.2 (not versioned yet: the release commit bumps the workspace ver
   n2): the prefilter answer is cached against the names and lengths of the child files.
   Threads whose child ledger holds a historical `approval_request` are still folded per recompute.
 
+### Behaviour notes
+- After a journal snapshot, clients now receive `contextDetails` and `contextUsage` projection
+  frames at their true clock sequence when it is beyond the snapshot's cut (see N1 above); an older
+  client treats them as ordinary live projection frames.
+
 ### Known issues
+- A steer that a turn which failed under 0.4.0 or 0.4.1 already dropped from the model's context
+  is not replayed later; only steers delivered with 0.4.2 are re-anchored (L1).
+- A child hold written with no doorbell (a child worker dying between its durable append and its
+  message) is still seen only through the child-file prefilter, after the next main-line fold (L2).
 - Holding a ledger's lock to decide on damage can, for an instant, make a starting worker's
   non-blocking acquire fail with `Busy` (as `probe_line_lock` already does).
 - The worker test `permission_mode_file_change_applies_to_the_next_tool_batch` remains

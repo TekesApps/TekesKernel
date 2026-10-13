@@ -1026,7 +1026,8 @@ fn a_reopened_journal_replays_the_sequence_the_reconcile_published() {
         serde_json::from_slice(&std::fs::read(&path).expect("republished")).expect("JSON");
     assert_eq!(sequence, published["sequence"].as_u64().expect("sequence"));
     assert_eq!(value, published["value"]["contextUsage"]);
-    assert_ne!(value["usedTokens"], 4242, "the stale value was replaced");
+    let used = &value["usedTokens"];
+    assert_ne!(*used, 4242, "the stale value was replaced");
     host.shutdown();
 }
 
