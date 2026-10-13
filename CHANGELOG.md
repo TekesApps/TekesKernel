@@ -6,6 +6,8 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.4.6 — 2026-10-13
+
 Additive wire changes only (see "Wire" below); no existing field changes meaning.
 
 ### Fixed
