@@ -312,9 +312,9 @@ where
     #[cfg(target_os = "macos")]
     let sandbox_backend = SandboxBackend::DarwinSeatbeltV1;
     #[cfg(target_os = "linux")]
-    let sandbox_backend = SandboxBackend::LinuxLandlockSeccompV1;
+    let sandbox_backend = SandboxBackend::LinuxAutoV1;
     #[cfg(not(any(target_os = "macos", target_os = "linux")))]
-    let sandbox_backend = SandboxBackend::LinuxLandlockSeccompV1;
+    let sandbox_backend = SandboxBackend::LinuxAutoV1;
     let probe = probe_backend(sandbox_backend);
     let roots = profile
         .config

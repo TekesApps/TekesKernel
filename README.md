@@ -11,10 +11,14 @@ but APIs and on-disk layouts can still change between releases.
 
 **Platforms.** macOS on Apple silicon is the primary platform, and some
 recovery tests run only there. Linux on x86_64 and aarch64 has native CI
-builds and runtime tests, and confines tools with Landlock ABI 3 or later
-plus seccomp filters. The Linux backend rejects loopback-only network
-policies and filesystem metadata changes (`chmod`, `chown`, timestamps and
-extended attributes), including inside writable roots. With network denied,
+builds and runtime tests. Its automatic sandbox selection prefers bubblewrap
+0.4.0 or later plus seccomp, and falls back to Landlock ABI 3 or later plus
+seccomp when bubblewrap is unavailable. Bubblewrap requires working user and
+mount namespaces but does not require Landlock. Both backends reject
+loopback-only network policies. Landlock also denies filesystem metadata
+changes (`chmod`, `chown`, timestamps and extended attributes), including
+inside writable roots; bubblewrap confines those operations using mounts.
+With network denied,
 local socketpair read/write remains available for subprocess communication;
 `connect`, `bind`, `sendto`, `sendmsg` and `sendmmsg` are denied. See
 [tool permissions](docs/runtime/tool-permissions.md#sandboxing) for the
@@ -51,8 +55,8 @@ repositories (names and pinned revisions only).
    [tail lifecycle contract](spec/tail-lifecycle.md).
 3. **The sandbox is mandatory and fails closed.** Tools run under an OS profile
    derived from the same policy as the permission checks: Seatbelt on macOS,
-   Landlock plus seccomp on Linux. When the profile cannot be applied, the
-   tool is refused; it never runs unconfined. See the
+   bubblewrap or Landlock plus seccomp on Linux. When the profile cannot be
+   applied, the tool is refused; it never runs unconfined. See the
    [sandbox profile](spec/sandbox-profile.md) and
    [tool permissions](docs/runtime/tool-permissions.md).
 4. **Approvals are durable.** An approval request or a question to the user is

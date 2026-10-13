@@ -819,6 +819,10 @@ impl HelperClient {
                 .arg("--root")
                 .arg(format!("{name}={}", path.display()));
         }
+        // A private mount tree may not expose the caller's inherited cwd.
+        if let Some((_, root)) = self.roots.first() {
+            command.current_dir(root);
+        }
         command.process_group(0);
         let mut child = command
             .stdin(Stdio::piped())

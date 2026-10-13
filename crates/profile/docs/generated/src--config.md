@@ -1063,7 +1063,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_web_search_origin` | `host.ends_with` | [1425](../../src/config.rs#L1425) | receiver-type-required |
 | `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>()             .is_ok_and` | [1426](../../src/config.rs#L1426) | receiver-type-required |
 | `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>` | [1426](../../src/config.rs#L1426) | receiver-type-required |
-| `validate_web_search_origin` | `tools::is_public_internet_address` | [1428](../../src/config.rs#L1428) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1488) |
+| `validate_web_search_origin` | `tools::is_public_internet_address` | [1428](../../src/config.rs#L1428) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1683) |
 | `validate_web_search_origin` | `Ok` | [1432](../../src/config.rs#L1432) | external-constructor-callback-or-unresolved |
 | `validate_settings` | `validate_common` | [1440](../../src/config.rs#L1440) | [profile::config::validate_common](../../src/config.rs#L1276) |
 | `validate_settings` | `Some` | [1442](../../src/config.rs#L1442) | external-constructor-callback-or-unresolved |

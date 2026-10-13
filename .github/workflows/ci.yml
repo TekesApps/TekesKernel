@@ -47,9 +47,14 @@ jobs:
       - name: Install the pinned toolchain
         run: rustup show active-toolchain || rustup toolchain install
       - uses: Swatinem/rust-cache@v2
+      - name: Install Linux sandbox dependency
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y bubblewrap
+          bwrap --version
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
-      - name: Linux sandbox runtime
-        run: scripts/ci-linux-sandbox.sh
+      - name: Linux sandbox runtime (bubblewrap, Landlock and automatic selection)
+        run: scripts/ci-linux-sandbox.sh --backend all
       - name: Build and test
         run: cargo test --workspace --locked --no-fail-fast

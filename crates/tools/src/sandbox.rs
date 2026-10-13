@@ -67,6 +67,9 @@ impl SandboxPolicy {
 #[serde(rename_all = "snake_case")]
 pub enum SandboxBackend {
     DarwinSeatbeltV1,
+    /// Prefer a verified bubblewrap backend, then a verified Landlock backend.
+    LinuxAutoV1,
+    LinuxBubblewrapSeccompV1,
     LinuxLandlockSeccompV1,
 }
 
@@ -218,6 +221,45 @@ pub fn compile_linux_plan(policy: &SandboxPolicy) -> Result<Vec<u8>, SandboxErro
     Ok(bytes)
 }
 
+/// Deterministic description of the bubblewrap launcher. Probe and launch must
+/// still verify installed bubblewrap, user namespaces and seccomp at runtime.
+pub fn compile_linux_bubblewrap_plan(policy: &SandboxPolicy) -> Result<Vec<u8>, SandboxError> {
+    policy.validate()?;
+    if policy.network == NetworkPolicy::Loopback || !policy.allow_process {
+        return Err(SandboxError::Unavailable(
+            "bubblewrap requires allow_process=true and network=deny or all".to_owned(),
+        ));
+    }
+    let mut namespaces = vec!["ipc", "mount", "pid", "user", "uts"];
+    if policy.network == NetworkPolicy::Deny {
+        namespaces.push("network");
+        namespaces.sort_unstable();
+    }
+    let mut plan = json!({
+        "allow_process": policy.allow_process,
+        "backend": "linux-bubblewrap-seccomp",
+        "bubblewrap_version_min": "0.4.0",
+        "capabilities": [],
+        "namespaces": namespaces,
+        "network": policy.network,
+        "private_devices": true,
+        "private_proc": true,
+        "read_roots": policy.read_roots,
+        "root_readonly": true,
+        "seccomp_classes": ["basic", "filesystem", "process"],
+        "write_roots": policy.write_roots,
+    });
+    if let Some(scratch) = &policy.scratch {
+        plan.as_object_mut()
+            .expect("plan object")
+            .insert("scratch".to_owned(), json!(scratch));
+    }
+    let mut bytes = serde_json_canonicalizer::to_vec(&plan)
+        .map_err(|error| SandboxError::Encoding(error.to_string()))?;
+    bytes.push(b'\n');
+    Ok(bytes)
+}
+
 pub fn validate_unsandboxed_approval(
     approval: &SandboxApproval,
     run: &str,
@@ -238,6 +280,8 @@ pub fn validate_unsandboxed_approval(
 pub fn probe_backend(backend: SandboxBackend) -> ProbeStatus {
     match backend {
         SandboxBackend::DarwinSeatbeltV1 => probe_darwin(),
+        SandboxBackend::LinuxAutoV1 => select_linux_backend(probe_bubblewrap(), probe_linux),
+        SandboxBackend::LinuxBubblewrapSeccompV1 => probe_bubblewrap(),
         SandboxBackend::LinuxLandlockSeccompV1 => probe_linux(),
     }
 }
@@ -270,6 +314,9 @@ pub(crate) fn sandbox_command(
         any(target_arch = "x86_64", target_arch = "aarch64")
     ))]
     {
+        if backend == crate::bubblewrap_sandbox::BACKEND {
+            return crate::bubblewrap_sandbox::command(policy, executable);
+        }
         if backend != crate::linux_sandbox::BACKEND {
             return Err(SandboxError::Unavailable(format!(
                 "probe selected incompatible backend {backend}"
@@ -313,6 +360,69 @@ fn probe_darwin() -> ProbeStatus {
         probe_confinement(ProbeStatus::Available {
             backend: "darwin-seatbelt".to_owned(),
             version: std::env::consts::OS.to_owned(),
+        })
+    }
+}
+
+fn select_linux_backend(
+    bubblewrap: ProbeStatus,
+    landlock: impl FnOnce() -> ProbeStatus,
+) -> ProbeStatus {
+    if matches!(bubblewrap, ProbeStatus::Available { .. }) {
+        return bubblewrap;
+    }
+    let fallback = landlock();
+    if matches!(fallback, ProbeStatus::Available { .. }) {
+        return fallback;
+    }
+    let ProbeStatus::Unavailable { class, detail } = fallback else {
+        unreachable!()
+    };
+    ProbeStatus::Unavailable {
+        class,
+        detail: format!("bubblewrap probe: {bubblewrap:?}; Landlock probe: {detail}"),
+    }
+}
+
+fn probe_bubblewrap() -> ProbeStatus {
+    #[cfg(not(all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    )))]
+    {
+        ProbeStatus::Unavailable {
+            class: ProbeFailure::Unsupported,
+            detail: "bubblewrap/seccomp requires Linux on x86_64 or aarch64".to_owned(),
+        }
+    }
+    #[cfg(all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    ))]
+    {
+        let binary = match crate::bubblewrap_sandbox::binary() {
+            Ok(binary) => binary,
+            Err(error) => {
+                return ProbeStatus::Unavailable {
+                    class: ProbeFailure::Missing,
+                    detail: error.to_string(),
+                };
+            }
+        };
+        let version = match probe_output(Command::new(binary).arg("--version")) {
+            Ok(output) if output.status.success() => {
+                String::from_utf8_lossy(&output.stdout).trim().to_owned()
+            }
+            result => {
+                return ProbeStatus::Unavailable {
+                    class: ProbeFailure::Rejected,
+                    detail: format!("bubblewrap version probe failed: {result:?}"),
+                };
+            }
+        };
+        probe_confinement(ProbeStatus::Available {
+            backend: crate::bubblewrap_sandbox::BACKEND.to_owned(),
+            version,
         })
     }
 }
@@ -375,14 +485,26 @@ fn probe_confinement(candidate: ProbeStatus) -> ProbeStatus {
             allow_process: true,
             scratch: None,
         };
-        let read = sandbox_command(&policy, &candidate, Path::new("/bin/cat"))?
-            .arg(allowed.join("read.txt"))
-            .output()?;
-        let denied = sandbox_command(&policy, &candidate, Path::new("/usr/bin/touch"))?
-            .arg(outside.join("denied.txt"))
-            .output()?;
+        let read = probe_output(
+            sandbox_command(&policy, &candidate, Path::new("/bin/cat"))?
+                .current_dir(&allowed)
+                .arg(allowed.join("read.txt")),
+        )?;
+        let write = probe_output(
+            sandbox_command(&policy, &candidate, Path::new("/bin/sh"))?
+                .current_dir(&allowed)
+                .args(["-c", "printf ok > write.txt"]),
+        )?;
+        let denied = probe_output(
+            sandbox_command(&policy, &candidate, Path::new("/bin/sh"))?
+                .current_dir(&allowed)
+                .args(["-c", "printf denied > \"$1\"", "probe"])
+                .arg(outside.join("denied.txt")),
+        )?;
         if read.status.success()
             && read.stdout == b"ok"
+            && write.status.success()
+            && fs::read(allowed.join("write.txt"))? == b"ok"
             && !denied.status.success()
             && !outside.join("denied.txt").exists()
         {
@@ -406,6 +528,41 @@ fn probe_confinement(candidate: ProbeStatus) -> ProbeStatus {
             detail: error.to_string(),
         },
     }
+}
+
+/// Keep a broken launcher from hanging host startup. Probe commands have only
+/// bounded output (version, cat and shell builtins) and a dedicated process group.
+#[cfg(any(
+    target_os = "macos",
+    all(
+        target_os = "linux",
+        any(target_arch = "x86_64", target_arch = "aarch64")
+    )
+))]
+fn probe_output(command: &mut Command) -> Result<std::process::Output, SandboxError> {
+    use std::os::unix::process::CommandExt;
+    use std::process::Stdio;
+    use std::time::{Duration, Instant};
+    let mut child = command
+        .process_group(0)
+        .stdin(Stdio::null())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()?;
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while child.try_wait()?.is_none() {
+        if Instant::now() >= deadline {
+            // SAFETY: the child was assigned its own process group above.
+            unsafe {
+                libc::kill(-(child.id() as i32), libc::SIGKILL);
+            }
+            let _ = child.kill();
+            let _ = child.wait();
+            return Err(SandboxError::Probe("sandbox probe timed out".to_owned()));
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    Ok(child.wait_with_output()?)
 }
 
 fn validate_roots(values: &[String]) -> Result<(), SandboxError> {
@@ -461,4 +618,52 @@ fn probe_nonce() -> u64 {
     use std::sync::atomic::{AtomicU64, Ordering};
     static NONCE: AtomicU64 = AtomicU64::new(0);
     NONCE.fetch_add(1, Ordering::Relaxed)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    fn available(backend: &str) -> ProbeStatus {
+        ProbeStatus::Available {
+            backend: backend.to_owned(),
+            version: "test".to_owned(),
+        }
+    }
+    fn missing() -> ProbeStatus {
+        ProbeStatus::Unavailable {
+            class: ProbeFailure::Missing,
+            detail: "missing".to_owned(),
+        }
+    }
+    #[test]
+    fn linux_auto_prefers_bubblewrap_without_probing_landlock() {
+        assert_eq!(
+            select_linux_backend(available("linux-bubblewrap-seccomp"), || panic!(
+                "unnecessary fallback"
+            )),
+            available("linux-bubblewrap-seccomp")
+        );
+    }
+    #[test]
+    fn linux_auto_falls_back_only_to_available_landlock() {
+        assert_eq!(
+            select_linux_backend(missing(), || available("linux-landlock-seccomp")),
+            available("linux-landlock-seccomp")
+        );
+        assert!(matches!(
+            select_linux_backend(missing(), missing),
+            ProbeStatus::Unavailable { .. }
+        ));
+    }
+    #[test]
+    fn bubblewrap_plan_matches_golden_bytes() {
+        let policy: SandboxPolicy = serde_json::from_str(include_str!(
+            "../../../fixtures/sandbox/policy.canonical.json"
+        ))
+        .unwrap();
+        assert_eq!(
+            compile_linux_bubblewrap_plan(&policy).unwrap(),
+            include_bytes!("../../../fixtures/sandbox/linux-bubblewrap-plan.canonical.json")
+        );
+    }
 }

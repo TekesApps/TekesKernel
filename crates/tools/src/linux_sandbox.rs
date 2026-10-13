@@ -37,7 +37,7 @@ const ACCESS_FILE: u64 = ACCESS_EXECUTE | ACCESS_WRITE_FILE | ACCESS_READ_FILE |
 /// Read-only runtime roots every confined program needs: binaries, shared
 /// libraries, the dynamic loader cache and system configuration, and the
 /// process and CPU views runtimes consult. Missing roots are skipped.
-const SYSTEM_READ_ROOTS: &[&str] = &[
+pub(crate) const SYSTEM_READ_ROOTS: &[&str] = &[
     "/bin",
     "/etc",
     "/lib",
@@ -135,7 +135,7 @@ pub(crate) fn confine(
     }
     let abi = supported_abi().map_err(|(_, detail)| SandboxError::Unavailable(detail))?;
     let ruleset = landlock_ruleset(policy, executable, abi)?;
-    let filter = seccomp_filter(policy)?;
+    let filter = seccomp_filter(policy, true)?;
     // SAFETY: the closure runs in the forked child before exec. It performs
     // only raw syscalls on memory the parent prepared (the ruleset descriptor
     // and the filter instructions it owns), allocates nothing and takes no
@@ -308,7 +308,7 @@ fn add_rule(
 }
 
 /// The `PT_INTERP` path of a 64-bit little-endian ELF executable, if any.
-fn elf_interpreter(executable: &Path) -> Result<Option<PathBuf>, SandboxError> {
+pub(crate) fn elf_interpreter(executable: &Path) -> Result<Option<PathBuf>, SandboxError> {
     let mut header = Vec::new();
     File::open(executable)?
         .take(64 * 1024)
@@ -397,10 +397,8 @@ const SYS_FCHMODAT2: libc::c_long = 452;
 const SYS_SETXATTRAT: libc::c_long = 463;
 const SYS_REMOVEXATTRAT: libc::c_long = 466;
 
-/// Syscalls no confined program may make: kernel-extension, mount and
-/// namespace interfaces, the kernel keyring, and io_uring, whose operations
-/// would bypass the socket rules below.
-const DENIED: &[(libc::c_long, i32)] = &[
+/// Additional restrictions required when filesystem isolation uses Landlock.
+const METADATA_DENIED: &[(libc::c_long, i32)] = &[
     // Landlock does not mediate these metadata mutations. Seccomp cannot
     // inspect their paths, so deny them even inside writable roots.
     (libc::SYS_fchmod, libc::EPERM),
@@ -429,6 +427,11 @@ const DENIED: &[(libc::c_long, i32)] = &[
     (libc::SYS_utimes, libc::EPERM),
     #[cfg(target_arch = "x86_64")]
     (libc::SYS_futimesat, libc::EPERM),
+];
+
+/// Shared restrictions on kernel extensions, mounts, namespaces and io_uring
+/// (whose operations would bypass the socket rules below).
+const DENIED: &[(libc::c_long, i32)] = &[
     (libc::SYS_add_key, libc::EPERM),
     (libc::SYS_bpf, libc::EPERM),
     (libc::SYS_delete_module, libc::EPERM),
@@ -511,7 +514,10 @@ impl Program {
     }
 }
 
-fn seccomp_filter(policy: &SandboxPolicy) -> Result<Box<[libc::sock_filter]>, SandboxError> {
+pub(crate) fn seccomp_filter(
+    policy: &SandboxPolicy,
+    restrict_metadata: bool,
+) -> Result<Box<[libc::sock_filter]>, SandboxError> {
     let mut program = Program::default();
     // A foreign syscall ABI would bypass every number-based rule.
     program.load(DATA_ARCH);
@@ -526,6 +532,11 @@ fn seccomp_filter(policy: &SandboxPolicy) -> Result<Box<[libc::sock_filter]>, Sa
     }
     for &(nr, errno) in DENIED {
         program.deny(nr, errno);
+    }
+    if restrict_metadata {
+        for &(nr, errno) in METADATA_DENIED {
+            program.deny(nr, errno);
+        }
     }
     program.deny_if_any(libc::SYS_clone, 0, CLONE_NAMESPACES, libc::EPERM);
     program.deny_if_equal(libc::SYS_ioctl, 1, TIOCSTI, libc::EPERM);

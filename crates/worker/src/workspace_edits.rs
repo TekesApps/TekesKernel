@@ -213,7 +213,7 @@ mod tests {
         #[cfg(target_os = "macos")]
         let sandbox = SandboxBackend::DarwinSeatbeltV1;
         #[cfg(target_os = "linux")]
-        let sandbox = SandboxBackend::LinuxLandlockSeccompV1;
+        let sandbox = SandboxBackend::LinuxAutoV1;
         let client = HelperClient::sandboxed_with_scratch(
             helper,
             vec![("workspace".into(), root.clone())],

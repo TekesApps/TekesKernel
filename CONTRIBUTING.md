@@ -19,16 +19,24 @@ needs to be merged.
 The toolchain is pinned in `rust-toolchain.toml`; `rustup` installs it on first
 use. macOS on Apple silicon is the primary platform. CI also builds and tests
 on Linux and must pass there, so keep macOS-only code behind
-`#[cfg(target_os = "macos")]`. On Linux x86_64 and aarch64 the sandbox tests
-need Landlock ABI 3 or later and seccomp filters available. ABI 3 is required
-to confine file truncation as well as writes. The kernel syscall
-probe is authoritative; `/sys/kernel/security/lsm` lists `landlock` when
-securityfs is mounted and readable. A container whose seccomp profile blocks
-the Landlock syscalls fails these tests. Run `scripts/ci-linux-sandbox.sh` on
-a native Linux host to check actual filesystem, network and process
-confinement plus the helper/job launchers. CI runs this as a separate required
-step on native x86_64 and aarch64 runners, and also runs these tests in the
-workspace suite. Python 3 runs the fixture checks. To regenerate the
+`#[cfg(target_os = "macos")]`. Linux has two sandbox backends, both requiring
+seccomp filters. Bubblewrap 0.4.0 or later requires unprivileged user, mount,
+PID, IPC and UTS namespaces, plus network namespaces for network-denied tools.
+It works without Landlock, including on compatible Linux 5.10 hosts.
+The Landlock backend requires ABI 3 or later to confine file truncation as
+well as writes. Actual launch probes are authoritative; a container or host
+security policy that blocks the required namespaces or syscalls fails the
+corresponding backend tests.
+
+Run `scripts/ci-linux-sandbox.sh --backend all` on a native Linux host to
+check both backends independently, then automatic selection, through the
+filesystem/network/process tests and helper/job launchers. CI installs
+bubblewrap and requires all three paths on native x86_64 and aarch64 runners.
+On a host without Landlock, run `scripts/ci-linux-sandbox.sh --backend bubblewrap`
+and `scripts/ci-linux-sandbox.sh --backend auto`; these focused
+runs do not claim Landlock coverage. The runner does not change host security
+configuration or services. See [scripts/README.md](scripts/README.md) for
+prerequisites and diagnostics. Python 3 runs the fixture checks. To regenerate the
 architecture atlas, install its pinned dependencies:
 
 ```sh

@@ -84,6 +84,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SandboxError` | `sandbox::SandboxError` | `pub` |
 | `SandboxPolicy` | `sandbox::SandboxPolicy` | `pub` |
 | `compile_darwin_profile` | `sandbox::compile_darwin_profile` | `pub` |
+| `compile_linux_bubblewrap_plan` | `sandbox::compile_linux_bubblewrap_plan` | `pub` |
 | `compile_linux_plan` | `sandbox::compile_linux_plan` | `pub` |
 | `policy_digest` | `sandbox::policy_digest` | `pub` |
 | `probe_backend` | `sandbox::probe_backend` | `pub` |
@@ -105,6 +106,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Module | Visibility | Attributes |
 |---|---|---|
+| `tools::bubblewrap_sandbox` | `private` | #[cfg(all(     target_os = "linux",     any(target_arch = "x86_64", target_arch = "aarch64") ))] |
 | `tools::builtin` | `private` |  |
 | `tools::guidance` | `private` |  |
 | `tools::helper` | `private` |  |

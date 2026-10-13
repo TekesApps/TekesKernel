@@ -59,6 +59,48 @@ baseline is a probed platform dependency: a missing or behaviorally rejected
 baseline fails the backend probe rather than widening authority. It selects no network,
 loopback-only, or all network from `network`.
 
+Linux production launchers request `LinuxAutoV1`: probe bubblewrap first and
+use Landlock only when that probe is unavailable. A successful probe records
+the concrete backend; policy rejection or launch failure never retries a
+weaker backend or unsandboxed execution. Callers can also require either
+concrete backend explicitly. Both support x86_64 and aarch64.
+
+`linux-bubblewrap-seccomp` uses a root-owned, non-user-writable installation
+at `/usr/bin/bwrap` or `/bin/bwrap` (bubblewrap 0.4.0 or later). It requires
+working unprivileged user namespaces, mount/PID/IPC/UTS namespaces and seccomp,
+but does not require Landlock or a privileged daemon. Its canonical plan is
+emitted by `compile_linux_bubblewrap_plan`; the existing `compile_linux_plan`
+continues to describe the explicit Landlock backend.
+
+- Start with an empty mount tree, bind fixed runtime and declared read roots
+  read-only, and bind write roots and scratch read-write. Canonical targets
+  and explicit aliases preserve the authorized object. Writable parent grants
+  also cover nested read roots. Synthetic parent directories are read-only.
+- Create a private `/proc` for the PID namespace and a minimal `/dev`. Never
+  bind the host process/device trees. Roots resolving to `/`, write roots
+  overlapping `/proc` or `/dev`, and aliases to those host trees are refused.
+The host must keep policy root identities stable during launch. Bubblewrap
+0.4 resolves bind-source paths during setup; this contract does not isolate
+against a hostile, concurrent same-UID host process replacing authorized
+roots. User namespaces are not a substitute for separate service accounts.
+
+- Drop every capability. Build and seal a seccomp BPF memfd in the parent;
+  the fork child only passes its descriptor. Bubblewrap installs the filter
+  **after** namespace/mount setup and before executing the target. It uses the
+  common syscall restrictions below, except metadata mutation syscalls:
+  read-only/absent mounts enforce those boundaries, so chmod/utime/xattr work
+  inside writable roots.
+- Network `deny` adds a private network namespace and the common socket
+  restrictions. `all` retains the host network. `loopback` and
+  `allow_process=false` are explicitly refused; executable replacement is not
+  confined by this backend. No unsupported policy silently loses a restriction.
+- Ordinary helpers die with their parent. Detached jobs keep their dedicated
+  host session/process group and survive broker exit; their PID namespace
+  is bound to the durable job identity. Cancellation/stop must terminate the
+  namespace, including descendants outside the initial process group. Durable
+  jobs require `pidfd_open`/`pidfd_send_signal`; launch checks support and signal
+  permission before releasing the target, using signal zero without killing it.
+
 `linux-landlock-seccomp` emits the canonical JSON plan that describes what the
 Linux launcher applies: the same roots and network class, Landlock ABI
 minimum, and a closed seccomp syscall class. Applying it is mandatory;
@@ -101,9 +143,10 @@ both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
   the allowed ELF loader can replace the current process with another
   readable executable. Production shell/job policies allow processes.
 
-The launcher supports x86_64 and aarch64; other architectures probe as
-`unsupported`. Filesystem Unix sockets are not mediated by either half, so
-`all` network also reaches local socket files the user can open.
+Other architectures probe as `unsupported`. Landlock does not mediate
+filesystem Unix sockets; `all` network also reaches local socket files the
+user can open. Bubblewrap exposes only sockets in mounted roots but does not
+restrict network destinations under `all`.
 
 Profiles escape path literals and reject control/NUL characters. Golden bytes
 live in `fixtures/sandbox/`.
@@ -112,7 +155,8 @@ live in `fixtures/sandbox/`.
 
 At boot and after an executable/platform change, the Platform seam compiles
 the golden probe policy and runs a confined probe which must prove both an
-allowed read and a denied write outside the policy. Probe status is one of:
+allowed read, an allowed content write, and a denied write outside the policy.
+Each probe subprocess has a five-second deadline. Probe status is one of:
 
 ```text
 {"available":{"backend":string,"version":string}}
@@ -138,10 +182,11 @@ side-effect-capable tools still probe their backend and fail closed as above.
 ## Platform coverage
 
 macOS uses Seatbelt (`sandbox-exec` or equivalent libsandbox entry point) and
-the profile applies before the requested executable starts. Linux uses
-Landlock (ABI 3 or later) plus seccomp and fails closed when either required
-half is absent: the probe reports `missing`, and a launch whose ruleset or
-filter cannot be applied fails to spawn.
+the profile applies before the requested executable starts. Linux prefers
+bubblewrap plus seccomp and falls back to Landlock (ABI 3 or later) plus
+seccomp only during backend probing. If neither is usable, probing reports
+unavailable. A failed namespace, ruleset or filter setup never starts the
+requested program without confinement.
 Mobile has no exec backend. Sandboxing is inherited by the full child tree;
 rlimits, clean environment, and advisory path validation are complementary,
 not substitutes.
