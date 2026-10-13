@@ -243,7 +243,10 @@ fn job_launch_policy_is_per_call_bounded_and_defaults_to_primary_workspace() {
         started.spec.working_directory.as_deref(),
         Some(workspace.as_str())
     );
-    assert_eq!(started.spec.writable_paths, [requested.clone()]);
+    assert_eq!(
+        started.spec.writable_paths,
+        std::slice::from_ref(&requested)
+    );
 
     let launches = launcher.launches.lock().unwrap();
     assert_eq!(launches.len(), 1);
@@ -295,11 +298,11 @@ fn job_survives_launching_supervisor_process_exit() {
     let broker = JobBroker::new(root.path(), 4096).unwrap();
     let mut terminal = None;
     for _ in 0..300 {
-        if let BackendOutcome::Completed(Ok(record)) = broker.status("survivor") {
-            if matches!(record.state, JobState::Exited { .. }) {
-                terminal = Some(record);
-                break;
-            }
+        if let BackendOutcome::Completed(Ok(record)) = broker.status("survivor")
+            && matches!(record.state, JobState::Exited { .. })
+        {
+            terminal = Some(record);
+            break;
         }
         thread::sleep(Duration::from_millis(10));
     }

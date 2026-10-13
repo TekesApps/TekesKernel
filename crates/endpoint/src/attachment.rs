@@ -862,7 +862,7 @@ fn validate_part(part: &PromptPart) -> Result<ValidatedPart, PromptMaterializeEr
 
 fn decode_padded_base64(value: &str) -> Result<Vec<u8>, AttachmentErrorReason> {
     let bytes = value.as_bytes();
-    if bytes.is_empty() || bytes.len() % 4 != 0 {
+    if bytes.is_empty() || !bytes.len().is_multiple_of(4) {
         return Err(AttachmentErrorReason::InvalidBase64);
     }
     let padding = if bytes.ends_with(b"==") {

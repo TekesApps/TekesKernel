@@ -1179,33 +1179,33 @@ fn page<T: DeserializeOwned>(value: IJsonValue, key: &str) -> Result<Page<T>, Mc
         .map(serde_json::from_value)
         .transpose()
         .map_err(|error| McpError::Protocol(error.to_string()))?;
-    if let Some(result_type) = object.remove("resultType") {
-        if result_type.as_str() != Some("complete") {
-            return Err(McpError::Protocol(
-                "modern catalog page is not complete".to_owned(),
-            ));
-        }
+    if let Some(result_type) = object.remove("resultType")
+        && result_type.as_str() != Some("complete")
+    {
+        return Err(McpError::Protocol(
+            "modern catalog page is not complete".to_owned(),
+        ));
     }
-    if let Some(ttl) = object.remove("ttlMs") {
-        if ttl.as_u64().is_none() {
-            return Err(McpError::Protocol(
-                "modern catalog ttlMs is invalid".to_owned(),
-            ));
-        }
+    if let Some(ttl) = object.remove("ttlMs")
+        && ttl.as_u64().is_none()
+    {
+        return Err(McpError::Protocol(
+            "modern catalog ttlMs is invalid".to_owned(),
+        ));
     }
-    if let Some(scope) = object.remove("cacheScope") {
-        if !matches!(scope.as_str(), Some("private" | "public" | "none")) {
-            return Err(McpError::Protocol(
-                "modern catalog cacheScope is invalid".to_owned(),
-            ));
-        }
+    if let Some(scope) = object.remove("cacheScope")
+        && !matches!(scope.as_str(), Some("private" | "public" | "none"))
+    {
+        return Err(McpError::Protocol(
+            "modern catalog cacheScope is invalid".to_owned(),
+        ));
     }
-    if let Some(metadata) = object.remove("_meta") {
-        if !metadata.is_object() {
-            return Err(McpError::Protocol(
-                "catalog _meta must be an object".to_owned(),
-            ));
-        }
+    if let Some(metadata) = object.remove("_meta")
+        && !metadata.is_object()
+    {
+        return Err(McpError::Protocol(
+            "catalog _meta must be an object".to_owned(),
+        ));
     }
     if !object.is_empty() {
         return Err(McpError::Protocol(
@@ -1224,10 +1224,10 @@ fn adopt_official_task_shape(task: &mut serde_json::Value) {
         return;
     };
     for (official, kernel) in [("pollInterval", "pollIntervalMs"), ("ttl", "ttlMs")] {
-        if !object.contains_key(kernel) {
-            if let Some(value) = object.get(official).cloned() {
-                object.insert(kernel.to_owned(), value);
-            }
+        if !object.contains_key(kernel)
+            && let Some(value) = object.get(official).cloned()
+        {
+            object.insert(kernel.to_owned(), value);
         }
     }
 }

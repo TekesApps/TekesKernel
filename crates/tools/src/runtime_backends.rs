@@ -880,12 +880,11 @@ impl JobBroker {
         let mut ids = Vec::new();
         for entry in fs::read_dir(&self.root).map_err(io_failure)? {
             let entry = entry.map_err(io_failure)?;
-            if entry.file_type().map_err(io_failure)?.is_dir() {
-                if let Some(id) = entry.file_name().to_str() {
-                    if validate_job_id(id).is_ok() {
-                        ids.push(id.to_owned());
-                    }
-                }
+            if entry.file_type().map_err(io_failure)?.is_dir()
+                && let Some(id) = entry.file_name().to_str()
+                && validate_job_id(id).is_ok()
+            {
+                ids.push(id.to_owned());
             }
         }
         ids.sort_by(|left, right| left.as_bytes().cmp(right.as_bytes()));
@@ -1525,12 +1524,12 @@ pub fn route_public_url_with(
         .and_then(|value| value.strip_suffix(']'))
         .unwrap_or(&host);
     let literal = address_literal.parse::<IpAddr>().ok();
-    if let Some(address) = literal {
-        if !is_public_internet_address(address) {
-            return Err(BackendFailure::Denied(
-                "URL names a non-public address".to_owned(),
-            ));
-        }
+    if let Some(address) = literal
+        && !is_public_internet_address(address)
+    {
+        return Err(BackendFailure::Denied(
+            "URL names a non-public address".to_owned(),
+        ));
     }
     if let Some(proxy) = outbound_proxy_for(url.scheme(), address_literal, literal, &env) {
         return Ok(PublicRoute::Proxied { proxy });
@@ -1616,10 +1615,9 @@ fn no_proxy_exempts(no_proxy: &str, host: &str, literal: Option<IpAddr>) -> bool
         if let Some((network, bits)) = entry.split_once('/') {
             if let (Some(ip), Ok(network), Ok(bits)) =
                 (literal, network.parse::<IpAddr>(), bits.parse::<u32>())
+                && cidr_contains(network, bits, ip)
             {
-                if cidr_contains(network, bits, ip) {
-                    return true;
-                }
+                return true;
             }
             continue;
         }

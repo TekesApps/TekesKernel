@@ -1121,6 +1121,8 @@ async fn close_mux_protocol(socket: &mut WebSocket, message: &str) {
         .await;
 }
 
+// The error is the ready-made HTTP response, the same type every handler here returns.
+#[allow(clippy::result_large_err)]
 fn acquire(semaphore: &Arc<Semaphore>) -> Result<OwnedSemaphorePermit, Response> {
     Arc::clone(semaphore).try_acquire_owned().map_err(|_| {
         carrier_error(

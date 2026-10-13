@@ -39,10 +39,11 @@ pub(crate) fn publish(
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => None,
         Err(error) => return Err(error.to_string()),
     };
-    if let Some(previous) = &previous {
-        if previous.value == value && previous.sequence >= minimum_sequence {
-            return Ok((previous.sequence, false));
-        }
+    if let Some(previous) = &previous
+        && previous.value == value
+        && previous.sequence >= minimum_sequence
+    {
+        return Ok((previous.sequence, false));
     }
     let sequence = match previous {
         Some(previous) => previous

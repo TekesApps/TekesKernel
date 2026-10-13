@@ -275,10 +275,10 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
         // A crash between a completed final and the next goal turn must not
         // strand an active goal on a settled tail. This is idempotent because
         // only a settled tail can admit the next turn.
-        if startup_transaction.is_none() {
-            if let Some(profile) = &runtime_profile {
-                open_goal_continuation(&mut ledger, &options, profile, &cancellation)?;
-            }
+        if startup_transaction.is_none()
+            && let Some(profile) = &runtime_profile
+        {
+            open_goal_continuation(&mut ledger, &options, profile, &cancellation)?;
         }
         let facts = ledger
             .projection()
@@ -642,13 +642,14 @@ fn sibling_helper_path() -> Result<PathBuf, Box<dyn std::error::Error>> {
         .parent()
         .ok_or("worker executable has no parent directory")?;
     let sibling = directory.join("tekes-helper");
-    if cfg!(test) && !sibling.is_file() && directory.file_name().is_some_and(|name| name == "deps")
+    if cfg!(test)
+        && !sibling.is_file()
+        && directory.file_name().is_some_and(|name| name == "deps")
+        && let Some(parent) = directory.parent()
     {
-        if let Some(parent) = directory.parent() {
-            let built = parent.join("tekes-helper");
-            if built.is_file() {
-                return Ok(built);
-            }
+        let built = parent.join("tekes-helper");
+        if built.is_file() {
+            return Ok(built);
         }
     }
     Ok(sibling)

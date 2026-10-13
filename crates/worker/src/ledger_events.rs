@@ -183,19 +183,19 @@ pub(crate) fn append_and_receipt(
     origin: &schema::OriginTuple,
     object: Map<String, Value>,
 ) -> Result<(), Box<dyn std::error::Error>> {
-    if let Some(projection) = ledger.projection() {
-        if let Some(existing_seq) = projection.origin_tuples.get(origin) {
-            stdout.write_all(&encode_line(
-                "receipt",
-                &Receipt {
-                    delivery,
-                    seq: *existing_seq,
-                    deduplicated: true,
-                },
-            )?)?;
-            stdout.flush()?;
-            return Ok(());
-        }
+    if let Some(projection) = ledger.projection()
+        && let Some(existing_seq) = projection.origin_tuples.get(origin)
+    {
+        stdout.write_all(&encode_line(
+            "receipt",
+            &Receipt {
+                delivery,
+                seq: *existing_seq,
+                deduplicated: true,
+            },
+        )?)?;
+        stdout.flush()?;
+        return Ok(());
     }
     let event = make_event(Value::Object(object))?;
     let seq = event.seq();

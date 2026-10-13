@@ -99,6 +99,8 @@ struct Record {
     retired_reason: Option<String>,
 }
 
+// One entry exists per live claim; boxing the active state would only add indirection.
+#[allow(clippy::large_enum_variant)]
 enum Entry {
     Active {
         claim: Box<RpcClaim>,

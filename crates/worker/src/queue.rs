@@ -85,20 +85,20 @@ pub(crate) fn execute_queue_transaction(
         }
     };
 
-    if let Some((_, _, assets)) = &replacement {
-        if let Err(error) = verify_queue_assets(ledger, assets.as_deref().unwrap_or_default()) {
-            if retract_seq.is_some() {
-                return Err(StoreError::Corruption(format!(
-                    "queue replacement asset became invalid after retraction: {error}"
-                ))
-                .into());
-            }
-            return Ok(queue_rejected(
-                transaction,
-                QueueTransactionRejectCode::AttachmentError,
-                Some("CORRUPT".to_owned()),
-            ));
+    if let Some((_, _, assets)) = &replacement
+        && let Err(error) = verify_queue_assets(ledger, assets.as_deref().unwrap_or_default())
+    {
+        if retract_seq.is_some() {
+            return Err(StoreError::Corruption(format!(
+                "queue replacement asset became invalid after retraction: {error}"
+            ))
+            .into());
         }
+        return Ok(queue_rejected(
+            transaction,
+            QueueTransactionRejectCode::AttachmentError,
+            Some("CORRUPT".to_owned()),
+        ));
     }
 
     if let Some(seq) = retract_seq {

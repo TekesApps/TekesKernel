@@ -89,10 +89,10 @@ impl RequestIndex {
     /// Drops a hit that turned out stale (the thread no longer holds the request).
     pub(crate) fn remove(&self, rpc_id: &str) {
         let mut state = self.state();
-        if let Some(entry) = state.by_rpc.remove(rpc_id) {
-            if let Some(ids) = state.by_session.get_mut(&entry.session) {
-                ids.retain(|id| id != rpc_id);
-            }
+        if let Some(entry) = state.by_rpc.remove(rpc_id)
+            && let Some(ids) = state.by_session.get_mut(&entry.session)
+        {
+            ids.retain(|id| id != rpc_id);
         }
     }
 
@@ -156,10 +156,10 @@ impl RequestIndex {
             // The folder cannot be listed: let the fold report it, as the scan does.
             return true;
         };
-        if let Some((known, answer)) = self.state().children_prefilter.get(session) {
-            if *known == signature {
-                return *answer;
-            }
+        if let Some((known, answer)) = self.state().children_prefilter.get(session)
+            && *known == signature
+        {
+            return *answer;
         }
         #[cfg(test)]
         self.children_scans

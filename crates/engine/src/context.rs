@@ -21,10 +21,10 @@ pub fn compaction_anchor_sequences(
     let mut admitted_inputs = std::collections::BTreeSet::new();
     for row in &rows {
         superseded.extend(seqs_from_ranges(row.get("supersedes"))?);
-        if row["kind"] == "turn_open" {
-            if let Some(inputs) = row["trigger"]["inputs"].as_array() {
-                admitted_inputs.extend(inputs.iter().filter_map(Value::as_u64));
-            }
+        if row["kind"] == "turn_open"
+            && let Some(inputs) = row["trigger"]["inputs"].as_array()
+        {
+            admitted_inputs.extend(inputs.iter().filter_map(Value::as_u64));
         }
     }
     let live = rows
@@ -74,10 +74,10 @@ pub fn compaction_anchor_sequences(
         if let Some(attempt) = row["attempt"].as_str() {
             attempts.insert(attempt);
         }
-        if let Some(call) = row["call"].as_str().and_then(|id| calls.get(id)) {
-            if let Some(attempt) = call["attempt"].as_str() {
-                attempts.insert(attempt);
-            }
+        if let Some(call) = row["call"].as_str().and_then(|id| calls.get(id))
+            && let Some(attempt) = call["attempt"].as_str()
+        {
+            attempts.insert(attempt);
         }
     }
     let retained_calls = calls

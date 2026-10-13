@@ -11,7 +11,7 @@ to Rust (D-63). It is not an event, wire, or lifecycle authority; `spec/` wins.
 
 - Rust edition 2024 with Cargo resolver 2.
 - `rust-toolchain.toml` pins the repository's verified Slice-1
-  toolchain, `1.85.1`, with `rustfmt` and `clippy`; upgrades are deliberate
+  toolchain, `1.95.0`, with `rustfmt` and `clippy`; upgrades are deliberate
   commits, never floating CI behavior.
 - `Cargo.lock` is committed for binaries and CI reproducibility.
 - The authoritative Slice-1–10 lane is `aarch64-apple-darwin` on macOS 15 or

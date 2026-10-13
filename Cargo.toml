@@ -28,7 +28,7 @@ resolver = "2"
 version = "0.4.6"
 edition = "2024"
 license = "MIT"
-rust-version = "1.85.1"
+rust-version = "1.95.0"
 description = "Agent execution kernel: append-only ledgers, one worker process per line of work, and a supervisor that serves the Session Endpoint"
 # The crates are not published to crates.io; several names (schema, store, engine) are generic.
 publish = false

@@ -308,6 +308,8 @@ pub enum QueueTransactionCompletion {
     },
 }
 
+// Pending is the transient arm; boxing it would change the public state type.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, PartialEq)]
 pub enum QueueTransactionState {
     Pending(PendingQueueTransaction),
@@ -550,10 +552,10 @@ impl ManagementStore {
             return Ok(());
         }
         let identity = file_identity(&path);
-        if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref()) {
-            if known.0.contains(&(path.clone(), *identity)) {
-                return Ok(());
-            }
+        if let (Some(known), Some(identity)) = (validated.as_deref(), identity.as_ref())
+            && known.0.contains(&(path.clone(), *identity))
+        {
+            return Ok(());
         }
         let record = read_canonical::<OperationRecord>(&path)?;
         let kind = intent_kind(&record)?;

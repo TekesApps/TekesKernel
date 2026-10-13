@@ -250,10 +250,10 @@ impl<'de> Deserialize<'de> for McpIcon {
                 return Err(serde::de::Error::custom("icon mimeType is malformed"));
             }
         }
-        if let Some(sizes) = &raw.sizes {
-            if sizes.len() > 16 || !sizes.iter().all(|size| valid_icon_size(size)) {
-                return Err(serde::de::Error::custom("icon sizes are malformed"));
-            }
+        if let Some(sizes) = &raw.sizes
+            && (sizes.len() > 16 || !sizes.iter().all(|size| valid_icon_size(size)))
+        {
+            return Err(serde::de::Error::custom("icon sizes are malformed"));
         }
         Ok(Self {
             src: raw.src,

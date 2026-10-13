@@ -42,10 +42,10 @@ pub(crate) fn run_provider_turn(
 ) -> Result<(), Box<dyn std::error::Error>> {
     if let Some(hooks) = &options.lifecycle_hooks {
         ledger.sync_prefix()?;
-        if let Some(turn) = ledger.projection().and_then(|p| p.latest_turn) {
-            if !ledger.projection().is_some_and(|p| p.terminal_tail) {
-                hooks.before_turn(ledger, turn);
-            }
+        if let Some(turn) = ledger.projection().and_then(|p| p.latest_turn)
+            && !ledger.projection().is_some_and(|p| p.terminal_tail)
+        {
+            hooks.before_turn(ledger, turn);
         }
     }
     let mut execution_profile = profile.clone();
@@ -797,16 +797,10 @@ fn run_provider_turn_inner(
             &terminal.raw_response,
         )?;
     }
-    if let ProviderCompletion::Terminal(terminal) = &completion {
-        if let Some(changes) = &terminal.input_transformations {
-            record_input_transformations(
-                ledger,
-                &options.event_timestamp(),
-                turn,
-                &attempt,
-                changes,
-            )?;
-        }
+    if let ProviderCompletion::Terminal(terminal) = &completion
+        && let Some(changes) = &terminal.input_transformations
+    {
+        record_input_transformations(ledger, &options.event_timestamp(), turn, &attempt, changes)?;
     }
     let runtime_cancelled_provider = matches!(
         &completion,

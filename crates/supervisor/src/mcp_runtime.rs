@@ -1916,12 +1916,11 @@ pub(crate) fn current_operating_system_version() -> String {
     if let Ok(output) = std::process::Command::new("/usr/bin/sw_vers")
         .arg("-productVersion")
         .output()
+        && output.status.success()
     {
-        if output.status.success() {
-            let value = String::from_utf8_lossy(&output.stdout).trim().to_owned();
-            if !value.is_empty() {
-                return value;
-            }
+        let value = String::from_utf8_lossy(&output.stdout).trim().to_owned();
+        if !value.is_empty() {
+            return value;
         }
     }
     "0".to_owned()

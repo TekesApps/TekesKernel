@@ -382,40 +382,38 @@ fn validate_schema_value(schema: &Value, value: &Value, path: &str) -> Result<()
         .as_object()
         .ok_or_else(|| format!("{path}: schema node is not an object"))?;
 
-    if let Some(constant) = object.get("const") {
-        if value != constant {
-            return Err(format!("{path}: value does not match const"));
-        }
+    if let Some(constant) = object.get("const")
+        && value != constant
+    {
+        return Err(format!("{path}: value does not match const"));
     }
-    if let Some(values) = object.get("enum").and_then(Value::as_array) {
-        if !values.contains(value) {
-            return Err(format!("{path}: value is outside enum"));
-        }
+    if let Some(values) = object.get("enum").and_then(Value::as_array)
+        && !values.contains(value)
+    {
+        return Err(format!("{path}: value is outside enum"));
     }
     if let Some(branches) = object.get("allOf").and_then(Value::as_array) {
         for branch in branches {
             validate_schema_value(branch, value, path)?;
         }
     }
-    if let Some(branches) = object.get("anyOf").and_then(Value::as_array) {
-        if !branches
+    if let Some(branches) = object.get("anyOf").and_then(Value::as_array)
+        && !branches
             .iter()
             .any(|branch| validate_schema_value(branch, value, path).is_ok())
-        {
-            return Err(format!("{path}: value matches no anyOf branch"));
-        }
+    {
+        return Err(format!("{path}: value matches no anyOf branch"));
     }
-    if let Some(branches) = object.get("oneOf").and_then(Value::as_array) {
-        if branches
+    if let Some(branches) = object.get("oneOf").and_then(Value::as_array)
+        && branches
             .iter()
             .filter(|branch| validate_schema_value(branch, value, path).is_ok())
             .count()
             != 1
-        {
-            return Err(format!(
-                "{path}: value does not match exactly one oneOf branch"
-            ));
-        }
+    {
+        return Err(format!(
+            "{path}: value does not match exactly one oneOf branch"
+        ));
     }
 
     if let Some(kind) = object.get("type").and_then(Value::as_str) {
@@ -461,15 +459,15 @@ fn validate_schema_value(schema: &Value, value: &Value, path: &str) -> Result<()
         }
     }
     if let Some(items) = value.as_array() {
-        if let Some(minimum) = object.get("minItems").and_then(Value::as_u64) {
-            if items.len() < minimum as usize {
-                return Err(format!("{path}: fewer than minItems"));
-            }
+        if let Some(minimum) = object.get("minItems").and_then(Value::as_u64)
+            && items.len() < minimum as usize
+        {
+            return Err(format!("{path}: fewer than minItems"));
         }
-        if let Some(maximum) = object.get("maxItems").and_then(Value::as_u64) {
-            if items.len() > maximum as usize {
-                return Err(format!("{path}: more than maxItems"));
-            }
+        if let Some(maximum) = object.get("maxItems").and_then(Value::as_u64)
+            && items.len() > maximum as usize
+        {
+            return Err(format!("{path}: more than maxItems"));
         }
         if let Some(item_schema) = object.get("items") {
             for (index, item) in items.iter().enumerate() {
@@ -478,27 +476,27 @@ fn validate_schema_value(schema: &Value, value: &Value, path: &str) -> Result<()
         }
     }
     if let Some(text) = value.as_str() {
-        if let Some(minimum) = object.get("minLength").and_then(Value::as_u64) {
-            if text.chars().count() < minimum as usize {
-                return Err(format!("{path}: shorter than minLength"));
-            }
+        if let Some(minimum) = object.get("minLength").and_then(Value::as_u64)
+            && text.chars().count() < minimum as usize
+        {
+            return Err(format!("{path}: shorter than minLength"));
         }
-        if let Some(maximum) = object.get("maxLength").and_then(Value::as_u64) {
-            if text.chars().count() > maximum as usize {
-                return Err(format!("{path}: longer than maxLength"));
-            }
+        if let Some(maximum) = object.get("maxLength").and_then(Value::as_u64)
+            && text.chars().count() > maximum as usize
+        {
+            return Err(format!("{path}: longer than maxLength"));
         }
     }
     if let Some(number) = value.as_f64() {
-        if let Some(minimum) = object.get("minimum").and_then(Value::as_f64) {
-            if number < minimum {
-                return Err(format!("{path}: below minimum"));
-            }
+        if let Some(minimum) = object.get("minimum").and_then(Value::as_f64)
+            && number < minimum
+        {
+            return Err(format!("{path}: below minimum"));
         }
-        if let Some(maximum) = object.get("maximum").and_then(Value::as_f64) {
-            if number > maximum {
-                return Err(format!("{path}: above maximum"));
-            }
+        if let Some(maximum) = object.get("maximum").and_then(Value::as_f64)
+            && number > maximum
+        {
+            return Err(format!("{path}: above maximum"));
         }
     }
     Ok(())

@@ -479,40 +479,40 @@ impl RespondAuthority for ProductionRespondAuthority {
             let state = session_requests_mode(&folder, &authorization.session_id, true)?
                 .into_iter()
                 .find(|state| state.request.rpc_id == authorization.rpc_id);
-            if let Some(state) = state {
-                if let Some(line) = state.request.source_line.as_deref() {
-                    let (projection, ancestor_stopped) = actionable_projection_mode(
-                        &folder,
-                        &authorization.session_id,
-                        Some(line),
-                        true,
-                    )?;
-                    if ancestor_stopped || projection.lifecycle.stop_active {
-                        return Err(internal("stop became active before child respond"));
-                    }
-                    validate_request_binding(
-                        &projection.events,
-                        state.request.causal_kernel_seq,
-                        state.request.frame_type,
-                        &state.request.envelope.payload,
-                    )?;
-                    let held = projection
-                        .events
-                        .iter()
-                        .find(|e| e.seq() == state.request.causal_kernel_seq)
-                        .ok_or_else(|| internal("child hold disappeared"))?;
-                    if state.request.session_id != authorization.session_id
-                        || held.string_field("call") != Some(authorization.call.as_str())
-                    {
-                        return Err(internal("child response causal identity mismatch"));
-                    }
-                    authorization.session_id = format!(
-                        "{}:{}",
-                        authorization.session_id,
-                        line.strip_suffix(".jsonl")
-                            .expect("validated child filename")
-                    );
+            if let Some(state) = state
+                && let Some(line) = state.request.source_line.as_deref()
+            {
+                let (projection, ancestor_stopped) = actionable_projection_mode(
+                    &folder,
+                    &authorization.session_id,
+                    Some(line),
+                    true,
+                )?;
+                if ancestor_stopped || projection.lifecycle.stop_active {
+                    return Err(internal("stop became active before child respond"));
                 }
+                validate_request_binding(
+                    &projection.events,
+                    state.request.causal_kernel_seq,
+                    state.request.frame_type,
+                    &state.request.envelope.payload,
+                )?;
+                let held = projection
+                    .events
+                    .iter()
+                    .find(|e| e.seq() == state.request.causal_kernel_seq)
+                    .ok_or_else(|| internal("child hold disappeared"))?;
+                if state.request.session_id != authorization.session_id
+                    || held.string_field("call") != Some(authorization.call.as_str())
+                {
+                    return Err(internal("child response causal identity mismatch"));
+                }
+                authorization.session_id = format!(
+                    "{}:{}",
+                    authorization.session_id,
+                    line.strip_suffix(".jsonl")
+                        .expect("validated child filename")
+                );
             }
         }
         let message = self.worker_message(&authorization);
@@ -1446,10 +1446,10 @@ impl ProductionCarrierStreams {
         &self,
         include_archived: bool,
     ) -> Result<Vec<endpoint::SessionInventoryItem>, ProductionCarrierError> {
-        if let Some(authority) = self.session_authority() {
-            if let Some(items) = authority.inventory_items(include_archived) {
-                return items.map_err(ProductionCarrierError::Lifecycle);
-            }
+        if let Some(authority) = self.session_authority()
+            && let Some(items) = authority.inventory_items(include_archived)
+        {
+            return items.map_err(ProductionCarrierError::Lifecycle);
         }
         let endpoint = endpoint::NativeEndpoint::open(&self.inner.root)?;
         Ok(endpoint
@@ -1843,13 +1843,13 @@ impl ProductionCarrierStreams {
         // A stale journal (projection failed after settle, or a supervisor locked
         // append with no worker) must not become the snapshot a client folds
         // from. Failure only logs: the periodic sweep repairs within one tick.
-        if let Some(authority) = self.session_authority() {
-            if let Err(error) = authority.reconcile_projection(&address.session_id) {
-                eprintln!(
-                    "carrier-journal-open-projection-failed: session={} error={error}",
-                    address.session_id
-                );
-            }
+        if let Some(authority) = self.session_authority()
+            && let Err(error) = authority.reconcile_projection(&address.session_id)
+        {
+            eprintln!(
+                "carrier-journal-open-projection-failed: session={} error={error}",
+                address.session_id
+            );
         }
         let session = load_mux_session(&self.inner.root, &address.session_id)?;
         let rpc_id = self.next_rpc_id("journal-follow");
@@ -1956,16 +1956,16 @@ impl ProductionCarrierStreams {
             if known["values"].is_object() {
                 values = known["values"].clone();
             }
-            if true_sequence > through_sequence {
-                if let Ok(sequence) = u64::try_from(true_sequence) {
-                    for key in ["contextDetails", "contextUsage"] {
-                        if let Some(value) = values.get(key) {
-                            replay.push(ProjectionReplay {
-                                key: key.to_owned(),
-                                value: IJsonValue::parse(&serde_json::to_vec(value)?)?,
-                                sequence,
-                            });
-                        }
+            if true_sequence > through_sequence
+                && let Ok(sequence) = u64::try_from(true_sequence)
+            {
+                for key in ["contextDetails", "contextUsage"] {
+                    if let Some(value) = values.get(key) {
+                        replay.push(ProjectionReplay {
+                            key: key.to_owned(),
+                            value: IJsonValue::parse(&serde_json::to_vec(value)?)?,
+                            sequence,
+                        });
                     }
                 }
             }

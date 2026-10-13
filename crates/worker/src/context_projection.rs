@@ -175,10 +175,8 @@ pub(crate) fn project_provider_context_mode(
                     input_position.insert(seq, event.seq());
                 }
             }
-            EventKind::Settle => {
-                if open_turn == event.turn() {
-                    open_turn = None;
-                }
+            EventKind::Settle if open_turn == event.turn() => {
+                open_turn = None;
             }
             EventKind::Input if object.get("steer").and_then(Value::as_bool) == Some(true) => {
                 steer_seqs.push(event.seq());
@@ -698,15 +696,14 @@ pub(crate) fn render_event_item(
                 let mut blocks = render_blocks(ledger, content)?;
                 // The ledger body stays canonical JSON; the model reads the
                 // fixed tool's plain-text projection of it.
-                if let [block] = blocks.as_mut_slice() {
-                    if let Some(text) = block
+                if let [block] = blocks.as_mut_slice()
+                    && let Some(text) = block
                         .get("text")
                         .and_then(Value::as_str)
                         .filter(|_| block.get("type").and_then(Value::as_str) == Some("text"))
                         .and_then(|text| result_presentation::present(name, text, outcome == "ok"))
-                    {
-                        *block = json!({"type":"text","text":text});
-                    }
+                {
+                    *block = json!({"type":"text","text":text});
                 }
                 Value::Array(blocks)
             } else {

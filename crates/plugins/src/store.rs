@@ -647,22 +647,22 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
                 .find(|receipt| receipt.plugin_id == operation.plugin_id);
             let committed = current == operation.next.as_ref();
             if committed {
-                if let Some(previous) = &operation.previous {
-                    if operation.next.as_ref().is_none_or(|next| {
+                if let Some(previous) = &operation.previous
+                    && operation.next.as_ref().is_none_or(|next| {
                         next.package_relative_path != previous.package_relative_path
-                    }) {
-                        remove_tree(&self.root.join(&previous.package_relative_path))?;
-                    }
+                    })
+                {
+                    remove_tree(&self.root.join(&previous.package_relative_path))?;
                 }
                 if operation.next.is_none() {
                     remove_tree(&self.data_root().join(&operation.plugin_id))?;
                 }
-            } else if let Some(next) = &operation.next {
-                if operation.previous.as_ref().is_none_or(|previous| {
+            } else if let Some(next) = &operation.next
+                && operation.previous.as_ref().is_none_or(|previous| {
                     previous.package_relative_path != next.package_relative_path
-                }) {
-                    remove_tree(&self.root.join(&next.package_relative_path))?;
-                }
+                })
+            {
+                remove_tree(&self.root.join(&next.package_relative_path))?;
             }
             fs::remove_file(self.operation_path())
                 .map_err(|error| PluginError::Storage(error.to_string()))?;

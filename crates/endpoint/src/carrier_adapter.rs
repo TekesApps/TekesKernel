@@ -149,11 +149,11 @@ impl<A: RespondAuthority> CarrierRespondHandler for JournalRespondHandler<A> {
             }
             let claim_request = respond_claim(&response)?;
             let state = &located.state;
-            if state.resolution.is_some() {
+            if let Some(resolution) = state.resolution {
                 return match self.registry.lookup(&claim_request) {
                     Ok(RpcLookup::Completed(result)) => receipt_from_cached(result),
                     Ok(RpcLookup::Pending(claim)) => {
-                        let semantic_seq = state.resolution.expect("filtered").0;
+                        let semantic_seq = resolution.0;
                         let proof = self
                             .registry
                             .handoff(&claim)

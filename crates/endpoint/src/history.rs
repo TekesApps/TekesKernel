@@ -63,13 +63,10 @@ pub fn history_page(
             .iter()
             .flat_map(|record| record.kernel_seqs.iter().copied())
             .collect::<BTreeSet<_>>();
-        loop {
-            let Some(group_start) = records[..lower]
-                .iter()
-                .position(|record| record.kernel_seqs.iter().any(|seq| group.contains(seq)))
-            else {
-                break;
-            };
+        while let Some(group_start) = records[..lower]
+            .iter()
+            .position(|record| record.kernel_seqs.iter().any(|seq| group.contains(seq)))
+        {
             lower = group_start;
             group.extend(
                 records[lower..eligible_end]

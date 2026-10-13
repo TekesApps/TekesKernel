@@ -1461,17 +1461,21 @@ mod tests {
                     let mut index = 0_u32;
                     let mut other_failures = 0_u32;
                     while !done.load(std::sync::atomic::Ordering::Acquire) {
-                        let tool = if index % 2 == 0 { "read" } else { "grep" };
+                        let tool = if index.is_multiple_of(2) {
+                            "read"
+                        } else {
+                            "grep"
+                        };
                         let request = policy_call(
                             &format!("rpc-relocate-race-policy-{index}"),
                             revision(&routes),
                             tool,
                         );
                         let payload = serde_json::to_value(&request.payload).expect("payload");
-                        if let Err(error) = routes.execute(&request, &payload, "uid:1") {
-                            if error.code != "stale-revision" {
-                                other_failures += 1;
-                            }
+                        if let Err(error) = routes.execute(&request, &payload, "uid:1")
+                            && error.code != "stale-revision"
+                        {
+                            other_failures += 1;
                         }
                         index += 1;
                     }

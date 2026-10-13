@@ -37,21 +37,19 @@ pub(crate) fn reconcile_provider_attempt(
     stdout: &mut impl Write,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let Some(attempt) = unresolved_attempt(ledger)? else {
-        if let Some(projection) = ledger.projection() {
-            if !projection.terminal_tail
-                && !projection.lifecycle.unresolved_work
-                && !projection.lifecycle.open_hold
-            {
-                if let Some(turn) = projection.latest_turn {
-                    append_settle(
-                        ledger,
-                        &options.event_timestamp(),
-                        turn,
-                        "interrupted",
-                        Some("recovered"),
-                    )?;
-                }
-            }
+        if let Some(projection) = ledger.projection()
+            && !projection.terminal_tail
+            && !projection.lifecycle.unresolved_work
+            && !projection.lifecycle.open_hold
+            && let Some(turn) = projection.latest_turn
+        {
+            append_settle(
+                ledger,
+                &options.event_timestamp(),
+                turn,
+                "interrupted",
+                Some("recovered"),
+            )?;
         }
         return Ok(());
     };
@@ -176,42 +174,42 @@ where
             tool.is_some_and(|tool| tool.backend == Backend::SupervisorControl);
         let durable_approval_resume =
             call.approval_response.is_some() && call.execution_tracked && !call.execution_started;
-        if replay_safe || stable_receipt_recovery || durable_approval_resume || never_started {
-            if let Some(profile) = profile {
-                let provider_call = provider::ToolCall {
-                    call_id: call.call.clone(),
-                    name: call.name.clone(),
-                    arguments: call.arguments.clone(),
-                };
-                if execute_provider_tool_calls(
-                    ledger,
-                    ToolCallBatch {
+        if (replay_safe || stable_receipt_recovery || durable_approval_resume || never_started)
+            && let Some(profile) = profile
+        {
+            let provider_call = provider::ToolCall {
+                call_id: call.call.clone(),
+                name: call.name.clone(),
+                arguments: call.arguments.clone(),
+            };
+            if execute_provider_tool_calls(
+                ledger,
+                ToolCallBatch {
+                    options,
+                    profile,
+                    selected,
+                    attempt: &call.attempt,
+                    turn: call.turn,
+                    calls: std::slice::from_ref(&provider_call),
+                    cancellation,
+                },
+                None,
+                lines,
+                stdout,
+            )? {
+                if reconcile_only {
+                    append_aborted_tool_result(
+                        ledger,
                         options,
-                        profile,
-                        selected,
-                        attempt: &call.attempt,
-                        turn: call.turn,
-                        calls: std::slice::from_ref(&provider_call),
-                        cancellation,
-                    },
-                    None,
-                    lines,
-                    stdout,
-                )? {
-                    if reconcile_only {
-                        append_aborted_tool_result(
-                            ledger,
-                            options,
-                            &call.call,
-                            call.turn,
-                            "recovered",
-                        )?;
-                    } else {
-                        return Ok(true);
-                    }
+                        &call.call,
+                        call.turn,
+                        "recovered",
+                    )?;
+                } else {
+                    return Ok(true);
                 }
-                continue;
             }
+            continue;
         }
         // Without a profile there is nothing to execute with, but an unstarted
         // call is still not a crash.
@@ -509,12 +507,11 @@ pub(crate) fn unresolved_attempt(
                 }
             }
             EventKind::ToolResult => {
-                if let Some(call) = event.string_field("call") {
-                    if let Some(attempt_id) = call_attempts.get(call) {
-                        if let Some(attempt) = attempts.get_mut(attempt_id) {
-                            attempt.results.insert(call.to_owned());
-                        }
-                    }
+                if let Some(call) = event.string_field("call")
+                    && let Some(attempt_id) = call_attempts.get(call)
+                    && let Some(attempt) = attempts.get_mut(attempt_id)
+                {
+                    attempt.results.insert(call.to_owned());
                 }
             }
             EventKind::Settle => {
