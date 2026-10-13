@@ -441,9 +441,17 @@ fn confined_probe_process() {
         }
         "socketpair-escape" => {
             let (socket, peer) = UnixDatagram::pair().unwrap();
-            socket.send(b"local IPC").unwrap();
+            let payload = b"local IPC";
+            // UnixDatagram::send uses sendto on Linux, which the network-deny
+            // policy rejects. Anonymous IPC deliberately uses read/write.
+            // SAFETY: the descriptor and payload stay live for this write.
+            assert_eq!(
+                unsafe { libc::write(socket.as_raw_fd(), payload.as_ptr().cast(), payload.len()) },
+                payload.len() as isize
+            );
             let mut local = [0; 16];
-            assert_eq!(peer.recv(&mut local).unwrap(), b"local IPC".len());
+            assert_eq!(peer.recv(&mut local).unwrap(), payload.len());
+            assert_eq!(&local[..payload.len()], payload);
             let endpoint = outside.join("socket");
             assert_denied(socket.send_to(b"escape", &endpoint));
             assert_denied(socket.connect(&endpoint));

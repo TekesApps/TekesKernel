@@ -96,8 +96,8 @@ both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
   Landlock or seccomp and is refused at launch.
 - **Process** creation without `allow_process` refuses `fork`, `vfork` and
   `clone` without `CLONE_THREAD`, so only threads of the requested program
-  run. This does not provide complete process isolation: on kernels
-  without signal scoping the sandbox can signal same-UID processes, and
+  run. This does not provide complete process isolation: signal scoping
+  is not enabled, so the sandbox can signal same-UID processes, and
   the allowed ELF loader can replace the current process with another
   readable executable. Production shell/job policies allow processes.
 
