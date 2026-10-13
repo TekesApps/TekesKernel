@@ -16,6 +16,21 @@ workspace version in `Cargo.toml`.
 - Native x86_64 and aarch64 Linux sandbox CI gates, including public job-launcher
   tests for filesystem and network isolation, descendants, and failed launches.
 
+## 0.4.3 — 2026-10-13
+
+### Fixed
+- DeepSeek Responses now accepts image inputs supported by its API. The dialect capability
+  declaration previously rejected an image locally before the request could be sent. Historical
+  images are also preserved when a later annotation or text input replays the conversation.
+  Non-image file inputs remain unsupported by this dialect.
+- This release builds on 0.4.2 and retains its steering, cancellation receipt, context projection
+  replay, quarantine locking, and request publication fixes.
+
+### Client compatibility
+- Input-bubble image display is fixed separately in TekesClientKit: Kernel image asset references
+  now resolve through the existing session-authorized attachment API, including historical inputs.
+
+
 ## 0.4.2 — 2026-10-13
 
 ### Fixed

@@ -75,11 +75,12 @@ impl DialectId {
                 &["text", "image", "file", "tool_call", "tool_result"]
             }
             Self::AnthropicMessagesV1 => &["text", "image", "file", "tool_call", "tool_result"],
-            Self::GenericChatV1 | Self::OpenaiChatV1 => {
+            // DeepSeek Flash accepts input_image on the Responses API. Images
+            // must use that path; arbitrary input_file blocks remain unsupported.
+            Self::GenericChatV1 | Self::OpenaiChatV1 | Self::DeepseekResponsesV1 => {
                 &["text", "image", "tool_call", "tool_result"]
             }
-            Self::DeepseekResponsesV1
-            | Self::DeepseekChatV1
+            Self::DeepseekChatV1
             | Self::KimiChatV1
             | Self::GlmChatV1
             | Self::OllamaChatV1

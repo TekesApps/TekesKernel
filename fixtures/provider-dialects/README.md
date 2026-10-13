@@ -30,3 +30,9 @@ runtime implementation may rewrite the oracle.
 
 An advertised tuple needs every proof arm in the registry. A family-level
 fixture in `provider-runtime/` does not satisfy this corpus.
+
+DeepSeek Responses accepts images as `input_image` (including base64 data URLs),
+as documented at https://api-docs.deepseek.com/guides/responses_api/#image-input.
+Its input-block capability includes images, while arbitrary file inputs remain
+unsupported. Regression coverage also retains a historical image when a later
+user message contains annotations.
