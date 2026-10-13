@@ -30,19 +30,19 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::context_projection::dynamic_catalog_revision](../../src/context_projection.rs#L4) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::context_projection::native_search_references](../../src/context_projection.rs#L20) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context](../../src/context_projection.rs#L94) |
-| [tekes-worker::context_projection::seed_provider_items](../../src/context_projection.rs#L462) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104) |
-| [tekes-worker::context_projection::render_event_item](../../src/context_projection.rs#L606) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104) |
-| [tekes-worker::context_projection::render_blocks](../../src/context_projection.rs#L691) | `pub(crate)` | [tekes-worker::context_projection::render_event_item](../../src/context_projection.rs#L606) |
-| [tekes-worker::context_projection::materialize_json](../../src/context_projection.rs#L742) | `pub(crate)` | [tekes-worker::context_projection::native_search_references](../../src/context_projection.rs#L20); [tekes-worker::context_projection::render_blocks](../../src/context_projection.rs#L691); [tekes-worker::context_projection::materialize_string](../../src/context_projection.rs#L770); [tekes-worker::context_projection::append_tool_result_trim](../../src/context_projection.rs#L864) |
-| [tekes-worker::context_projection::materialize_json_at](../../src/context_projection.rs#L749) | `pub(crate)` | [tekes-worker::context_projection::materialize_json](../../src/context_projection.rs#L742) |
-| [tekes-worker::context_projection::materialize_string](../../src/context_projection.rs#L770) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104); [tekes-worker::context_projection::render_sealed_carrier](../../src/context_projection.rs#L579) |
-| [tekes-worker::context_projection::effective_system](../../src/context_projection.rs#L797) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::context_projection::EpochAppend](../../src/context_projection.rs#L809) | `pub(crate)` | not a function |
-| [tekes-worker::context_projection::epoch_open_reason](../../src/context_projection.rs#L824) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::context_projection::append_tool_result_trim](../../src/context_projection.rs#L864) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::context_projection::append_provider_epoch](../../src/context_projection.rs#L904) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::context_projection::latest_compatible_epoch](../../src/context_projection.rs#L950) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::context_projection::ranges](../../src/context_projection.rs#L985) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::seed_provider_items](../../src/context_projection.rs#L519) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104) |
+| [tekes-worker::context_projection::render_event_item](../../src/context_projection.rs#L663) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104) |
+| [tekes-worker::context_projection::render_blocks](../../src/context_projection.rs#L748) | `pub(crate)` | [tekes-worker::context_projection::render_event_item](../../src/context_projection.rs#L663) |
+| [tekes-worker::context_projection::materialize_json](../../src/context_projection.rs#L799) | `pub(crate)` | [tekes-worker::context_projection::native_search_references](../../src/context_projection.rs#L20); [tekes-worker::context_projection::render_blocks](../../src/context_projection.rs#L748); [tekes-worker::context_projection::materialize_string](../../src/context_projection.rs#L827); [tekes-worker::context_projection::append_tool_result_trim](../../src/context_projection.rs#L921) |
+| [tekes-worker::context_projection::materialize_json_at](../../src/context_projection.rs#L806) | `pub(crate)` | [tekes-worker::context_projection::materialize_json](../../src/context_projection.rs#L799) |
+| [tekes-worker::context_projection::materialize_string](../../src/context_projection.rs#L827) | `pub(crate)` | [tekes-worker::context_projection::project_provider_context_mode](../../src/context_projection.rs#L104); [tekes-worker::context_projection::render_sealed_carrier](../../src/context_projection.rs#L636) |
+| [tekes-worker::context_projection::effective_system](../../src/context_projection.rs#L854) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::EpochAppend](../../src/context_projection.rs#L866) | `pub(crate)` | not a function |
+| [tekes-worker::context_projection::epoch_open_reason](../../src/context_projection.rs#L881) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::append_tool_result_trim](../../src/context_projection.rs#L921) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::append_provider_epoch](../../src/context_projection.rs#L961) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::latest_compatible_epoch](../../src/context_projection.rs#L1007) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::context_projection::ranges](../../src/context_projection.rs#L1042) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::continuation::ContinuationFacts](../../src/continuation.rs#L5) | `pub(crate)` | not a function |
 | [tekes-worker::continuation::continuation_facts](../../src/continuation.rs#L22) | `pub(crate)` | [tekes-worker::continuation::wait_tool_continuation](../../src/continuation.rs#L157) |
 | [tekes-worker::continuation::CONTINUATION_INPUT_SCOPE](../../src/continuation.rs#L130) | `pub(crate)` | not a function |

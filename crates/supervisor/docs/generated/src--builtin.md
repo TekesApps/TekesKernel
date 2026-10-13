@@ -173,7 +173,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `transport::TransportConfig::loopback` | [165](../../src/builtin.rs#L165) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
 | `run` | `transport::BearerToken::new` | [165](../../src/builtin.rs#L165) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
 | `run` | `ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?             .with_file_changes` | [167](../../src/builtin.rs#L167) | receiver-type-required |
-| `run` | `ProductionCarrierAssembly::assemble` | [167](../../src/builtin.rs#L167) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2562) |
+| `run` | `ProductionCarrierAssembly::assemble` | [167](../../src/builtin.rs#L167) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
 | `run` | `process.clone` | [167](../../src/builtin.rs#L167), [168](../../src/builtin.rs#L168) | receiver-type-required |
 | `run` | `process.attach_streams` | [170](../../src/builtin.rs#L170) | receiver-type-required |
 | `run` | `assembly.streams().clone` | [170](../../src/builtin.rs#L170) | receiver-type-required |

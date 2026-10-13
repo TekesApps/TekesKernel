@@ -62,7 +62,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 352 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 7 | 37 | [Symbols and calls](src--dynamic_bindings.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 161 | 1517 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 162 | 1535 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 151 | 1026 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
@@ -71,10 +71,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 179 | 1928 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 350 | 6305 | [Symbols and calls](src--process_host.md) |
-| [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 14 | 1796 | [Symbols and calls](src--process_live_tests.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 354 | 6387 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1879 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 819 | [Symbols and calls](src--production_tool_control.md) |
-| [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 25 | 136 | [Symbols and calls](src--request_index.md) |
+| [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |
 | [crates/supervisor/src/thread_card.rs](../../src/thread_card.rs) | 46 | 266 | [Symbols and calls](src--thread_card.md) |
@@ -82,7 +82,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/workspace_routes.rs](../../src/workspace_routes.rs) | 13 | 201 | [Symbols and calls](src--workspace_routes.md) |
 | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) | 3 | 106 | `inventory.json` |
 | [crates/supervisor/tests/ready_reads_no_thread.rs](../../tests/ready_reads_no_thread.rs) | 6 | 127 | `inventory.json` |
-| [crates/supervisor/tests/s4_lazy_boot_streams.rs](../../tests/s4_lazy_boot_streams.rs) | 60 | 745 | `inventory.json` |
+| [crates/supervisor/tests/s4_lazy_boot_streams.rs](../../tests/s4_lazy_boot_streams.rs) | 65 | 895 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 9 | 60 | `inventory.json` |
 | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 28 | 278 | `inventory.json` |
 | [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 306 | `inventory.json` |
@@ -138,7 +138,7 @@ flowchart LR
   m5 -->|"2"| m20
   m9 -->|"4"| m6
   m9 -->|"1"| m11
-  m9 -->|"6"| m19
+  m9 -->|"5"| m19
   m10 -->|"1"| m12
   m10 -->|"1"| m17
   m12 -->|"1"| m1
@@ -154,7 +154,7 @@ flowchart LR
   m17 -->|"4"| m1
   m17 -->|"1"| m3
   m17 -->|"3"| m8
-  m17 -->|"2"| m10
+  m17 -->|"3"| m10
   m17 -->|"181"| m12
   m17 -->|"1"| m13
   m17 -->|"1"| m16
