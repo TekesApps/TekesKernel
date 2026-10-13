@@ -554,6 +554,7 @@
    "EXPECTED.md",
    "approval.canonical.json",
    "darwin-seatbelt.sb",
+   "linux-bubblewrap-plan.canonical.json",
    "linux-plan.canonical.json",
    "policy.canonical.json",
    "unsorted.invalid.json",

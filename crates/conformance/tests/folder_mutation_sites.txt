@@ -98,7 +98,7 @@ crates/tools/src/helper.rs|rename_at|renameat|1|other
 crates/tools/src/helper.rs|rename_at|renameatx_np|1|other
 crates/tools/src/helper.rs|rename_at|unlinkat|1|other
 crates/tools/src/helper.rs|unlink_at|unlinkat|1|other
-crates/tools/src/runtime_backends.rs|new|create_dir_all|1|other
+crates/tools/src/runtime_backends.rs|open|create_dir_all|2|other
 crates/tools/src/runtime_backends.rs|start_inner|create_dir|1|other
 crates/tools/src/sandbox.rs|probe_confinement|create_dir_all|2|other
 crates/tools/src/sandbox.rs|probe_confinement|remove_dir_all|1|other

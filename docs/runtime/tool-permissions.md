@@ -15,17 +15,21 @@ network authority. Containment is four layers from one policy source:
    errors, bypassable by the program at runtime — never the real boundary.
 4. **Mandatory OS profile** — derived from the *same* policy (writable
    roots, network class) and applied at spawn: Seatbelt on macOS,
-   landlock/seccomp on Linux, via the `Platform` seam. One policy source,
-   two enforcement points; configuring them separately is a defect.
+   bubblewrap/seccomp or Landlock/seccomp on Linux, via the `Platform` seam.
+   One policy source, two enforcement points; configuring them separately is
+   a defect.
 
 Mechanics: macOS = Seatbelt (SBPL profile via libsandbox/sandbox-exec);
-Linux = Landlock for the filesystem plus seccomp for sockets, process
-creation and kernel interfaces, applied in the child before `execve`; no
-namespace or bubblewrap layer. Both are
-**inherited by the whole child tree**, which is why they work for `sh -c`
-and its grandchildren. Both are **probed dependencies that fail closed**
-(R3-21): the Seatbelt entry points are formally deprecated and landlock
-depends on kernel version — boot probes the backend, and where no working
+Linux = bubblewrap namespaces and mounts, or Landlock filesystem rules,
+combined with seccomp for sockets, process creation and kernel interfaces.
+The bubblewrap backend builds a filesystem from the policy's read-only and
+writable roots, isolates PID/IPC/UTS namespaces, drops capabilities and
+installs the seccomp filter before launching the tool. The Landlock backend
+applies its rules and filter in the child before `execve`. All profiles are
+**inherited by the whole child tree**, including shell grandchildren, and
+are **probed dependencies that fail closed** (R3-21). Boot probes the backend;
+the Seatbelt entry points are formally deprecated, bubblewrap needs working
+namespaces, and Landlock depends on kernel support. Where no working
 profile mechanism exists, side-effect-capable exec refuses to run without a
 durable per-run unsandboxed approval. Silent unconfined execution is never a
 fallback. Profiles are deny-by-default, derived from the one
@@ -36,6 +40,64 @@ uid, so mode bits cannot distinguish them from the user; rlimits/umask/
 O_CLOEXEC/clean env are complementary *resource* caps, not reachability
 bounds. Running a command unsandboxed is an approval-gate escalation
 recorded as an event, never a standing configuration.
+
+Linux supports native x86_64 and aarch64. Production uses `LinuxAutoV1`,
+which probes `LinuxBubblewrapSeccompV1` first and then
+`LinuxLandlockSeccompV1` when bubblewrap is unavailable. The probe records
+the concrete selected backend. Both may also be selected explicitly;
+explicit selection never silently switches backends. A failed launch is
+refused rather than retried without isolation.
+
+Bubblewrap must be version 0.4.0 or later, with unprivileged user, mount,
+PID, IPC and UTS namespaces and seccomp enabled. Network-denied policies
+also require a network namespace. This backend does not require Landlock.
+Landlock requires ABI 3 or later because earlier ABIs cannot confine file
+truncation. Run `scripts/ci-linux-sandbox.sh --backend all` to test each
+backend separately and automatic selection; CI requires the same gates on
+both architectures. On a host without Landlock, `--backend bubblewrap` and
+`--backend auto` test the supported paths without claiming Landlock coverage.
+
+Detached jobs retain their host process identity outside the writable job
+directory, under the broker's private `.launch` directory. A writable root
+or scratch directory that covers this authority directory is rejected.
+The sandboxed runner identifies itself over an inherited socket using
+kernel-supplied credentials; its namespace-local PID and start identity
+must match the authenticated launch. Reconnecting and stopping a job use
+the private host receipt, never a PID supplied by the target. Bubblewrap
+job cancellation additionally requires `pidfd_open` and `pidfd_send_signal`
+(available in Linux 5.10), verified before the target is released: it verifies the live namespace-init ancestry and
+pins that process before signalling the group, so descendants that create
+another session are also terminated. Detached jobs omit the ordinary
+helper's parent-death binding and can outlive the launching supervisor.
+
+Running jobs created by an older Kernel without a private launch receipt
+cannot be verified or stopped by the upgraded broker; it fails closed
+rather than trusting their writable metadata. Let those jobs finish, or
+stop them with the previous Kernel before upgrading. Their terminal
+records remain readable.
+
+Linux policies have these explicit limits:
+
+- `network=loopback` is refused because neither backend enforces a
+  loopback-only destination policy.
+- Bubblewrap refuses `allow_process=false`: its namespace setup requires
+  an init process and it cannot enforce this policy's single-process
+  semantics. Explicit Landlock selection retains support for that policy.
+- With Landlock, filesystem metadata mutation (`chmod`, `chown`, `utime` and
+  their variants, and setting/removing extended attributes) is denied globally by seccomp.
+  Landlock does not confine those operations, so even files inside writable
+  roots cannot have their mode, owner, timestamps or extended attributes
+  changed by these syscalls. Creating and writing files still updates their
+  ordinary filesystem timestamps. Bubblewrap permits these operations
+  inside writable mounts subject to ordinary user permissions; read-only
+  mounts and paths outside the filesystem view remain protected.
+- `network=deny` blocks socket creation plus `connect`, `bind`, `sendto`,
+  `sendmsg` and `sendmmsg`, including address-based operations on inherited
+  sockets. Local `socketpair` creation and read/write remain available for
+  subprocess communication. This does not revoke read/write authority on an
+  already-connected socket deliberately inherited by the caller. Bubblewrap
+  additionally isolates the network namespace for `deny`; `network=all`
+  retains the caller's network namespace.
 
 Rules: exec spawns **argv-direct, no shell interpretation** — only the shell
 tool itself runs `sh -c`. In-process tools cannot be individually profiled

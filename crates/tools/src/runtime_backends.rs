@@ -453,6 +453,8 @@ struct JobRunnerRequest {
     id: String,
     tail_bytes: usize,
     spec: JobSpec,
+    #[serde(default)]
+    pid_namespace: bool,
 }
 
 /// Constructs the `tekes-helper` runner command with the mandatory effective
@@ -461,6 +463,13 @@ struct JobRunnerRequest {
 /// The broker deliberately cannot construct an unsandboxed target command
 /// from a `JobSpec`; executable assembly supplies this boundary.
 pub trait SandboxedJobLauncher: Send + Sync {
+    /// True only when the trusted launcher creates a private PID namespace.
+    /// The broker then authenticates the real runner through kernel-supplied
+    /// Unix socket credentials before making its start permit durable.
+    fn uses_pid_namespace(&self) -> bool {
+        false
+    }
+
     fn runner_command(
         &self,
         spec: &JobSpec,
@@ -514,11 +523,24 @@ impl HelperJobLauncher {
 }
 
 impl SandboxedJobLauncher for HelperJobLauncher {
+    fn uses_pid_namespace(&self) -> bool {
+        matches!(&self.probe, ProbeStatus::Available { backend, .. }
+            if backend == "linux-bubblewrap-seccomp")
+    }
+
     fn runner_command(
         &self,
         _spec: &JobSpec,
         effective_policy: &SandboxPolicy,
     ) -> Result<Command, BackendFailure> {
+        #[cfg(all(
+            target_os = "linux",
+            any(target_arch = "x86_64", target_arch = "aarch64")
+        ))]
+        if self.uses_pid_namespace() {
+            return crate::bubblewrap_sandbox::detached_command(effective_policy, &self.executable)
+                .map_err(|error| BackendFailure::Unavailable(error.to_string()));
+        }
         sandbox_command(effective_policy, &self.probe, &self.executable)
             .map_err(|error| BackendFailure::Unavailable(error.to_string()))
     }
@@ -527,18 +549,26 @@ impl SandboxedJobLauncher for HelperJobLauncher {
 #[derive(Clone, Debug)]
 pub struct JobBroker {
     root: PathBuf,
+    launch_root: PathBuf,
     tail_bytes: usize,
     stop_grace: Duration,
 }
 
 impl JobBroker {
     pub fn new(root: impl Into<PathBuf>, tail_bytes: usize) -> Result<Self, BackendFailure> {
+        Self::open(root.into(), tail_bytes, true)
+    }
+
+    fn open(
+        root: PathBuf,
+        tail_bytes: usize,
+        create_launch_authority: bool,
+    ) -> Result<Self, BackendFailure> {
         if tail_bytes == 0 || tail_bytes > HARD_JOB_TAIL_BYTES {
             return Err(BackendFailure::Limit(format!(
                 "job tail must be in 1..={HARD_JOB_TAIL_BYTES}"
             )));
         }
-        let root = root.into();
         fs::create_dir_all(&root).map_err(io_failure)?;
         if fs::symlink_metadata(&root)
             .map_err(io_failure)?
@@ -548,8 +578,22 @@ impl JobBroker {
             return Err(BackendFailure::Denied("job root is a symlink".to_owned()));
         }
         let root = fs::canonicalize(root).map_err(io_failure)?;
+        let launch_root = root.join(".launch");
+        if create_launch_authority {
+            fs::create_dir_all(&launch_root).map_err(io_failure)?;
+            if fs::symlink_metadata(&launch_root)
+                .map_err(io_failure)?
+                .file_type()
+                .is_symlink()
+            {
+                return Err(BackendFailure::Denied(
+                    "job launch authority is a symlink".to_owned(),
+                ));
+            }
+        }
         Ok(Self {
             root,
+            launch_root,
             tail_bytes,
             stop_grace: Duration::from_millis(500),
         })
@@ -600,6 +644,20 @@ impl JobBroker {
         launcher: Arc<L>,
         cancellation: &CancellationToken,
     ) -> Result<JobRecord, BackendFailure> {
+        // Never expose the broker's signal authority through a writable
+        // policy root. Per-job state/tails remain writable by the runner.
+        for root in effective_policy
+            .write_roots
+            .iter()
+            .chain(effective_policy.scratch.iter())
+        {
+            let canonical = fs::canonicalize(root).map_err(io_failure)?;
+            if self.launch_root.starts_with(canonical) {
+                return Err(BackendFailure::Denied(
+                    "job writable roots overlap private launch authority".to_owned(),
+                ));
+            }
+        }
         let directory = self.job_directory(id);
         fs::create_dir(&directory).map_err(|error| {
             if error.kind() == std::io::ErrorKind::AlreadyExists {
@@ -642,6 +700,7 @@ impl JobBroker {
             id: id.to_owned(),
             tail_bytes: self.tail_bytes,
             spec: spec.clone(),
+            pid_namespace: launcher.uses_pid_namespace(),
         };
         let request_path = directory.join("runner.json");
         let request_bytes = serde_json_canonicalizer::to_vec(&runner_request)
@@ -671,6 +730,15 @@ impl JobBroker {
             .stdin(Stdio::null())
             .stdout(Stdio::null())
             .stderr(Stdio::null());
+        #[cfg(target_os = "linux")]
+        let identity_channel = if runner_request.pid_namespace {
+            use std::os::fd::OwnedFd;
+            let (channel, stdin) = namespace_identity_channel()?;
+            command.stdin(Stdio::from(OwnedFd::from(stdin)));
+            Some(channel)
+        } else {
+            None
+        };
         // SAFETY: the closure performs only the async-signal-safe `setsid`
         // syscall in the child immediately before exec.
         unsafe {
@@ -687,24 +755,82 @@ impl JobBroker {
             terminate_group(&mut child, Duration::from_millis(100));
             BackendFailure::Unknown("could not obtain process start identity".to_owned())
         })?;
+        #[cfg(target_os = "linux")]
+        let namespace_identity = if let Some(channel) = identity_channel {
+            match authenticate_namespace_runner(&channel, pid, &token) {
+                Ok(identity) => Some(identity),
+                Err(error) => {
+                    terminate_group(&mut child, Duration::from_millis(100));
+                    return Err(error);
+                }
+            }
+        } else {
+            None
+        };
+        #[cfg(not(target_os = "linux"))]
+        let namespace_identity = None;
+        #[cfg(target_os = "linux")]
+        if let Some(identity) = &namespace_identity {
+            let bytes = serde_json_canonicalizer::to_vec(identity)
+                .map_err(|error| BackendFailure::Protocol(error.to_string()))?;
+            if let Err(error) =
+                AtomicPublisher::replace(directory.join("runner.identity.json"), &bytes)
+            {
+                let _ = identity.stop_namespace();
+                terminate_group(&mut child, Duration::from_millis(100));
+                return Err(store_failure(error));
+            }
+        }
+        let host_receipt = JobHostReceipt {
+            id: id.to_owned(),
+            pid,
+            process_start: token.clone(),
+            namespace_identity: namespace_identity.clone(),
+        };
+        let receipt_bytes = serde_json_canonicalizer::to_vec(&host_receipt)
+            .map_err(|error| BackendFailure::Protocol(error.to_string()))?;
+        if let Err(error) =
+            AtomicPublisher::replace(self.launch_root.join(format!("{id}.json")), &receipt_bytes)
+        {
+            #[cfg(target_os = "linux")]
+            if let Some(identity) = &namespace_identity {
+                let _ = identity.stop_namespace();
+            }
+            terminate_group(&mut child, Duration::from_millis(100));
+            return Err(store_failure(error));
+        }
         let mut running = starting;
         running.state = JobState::Running;
         running.pid = Some(pid);
         running.process_start = Some(token);
         running.updated_unix_ms = unix_millis()?;
         if let Err(error) = self.write_record(&running) {
+            #[cfg(target_os = "linux")]
+            if let Some(identity) = &namespace_identity {
+                let _ = identity.stop_namespace();
+            }
             terminate_group(&mut child, Duration::from_millis(100));
             return Err(error);
         }
         if cancellation.is_cancelled() {
+            #[cfg(target_os = "linux")]
+            if let Some(identity) = &namespace_identity {
+                let _ = identity.stop_namespace();
+            }
             terminate_group(&mut child, Duration::from_millis(100));
             running.state = JobState::Unknown;
             running.updated_unix_ms = unix_millis()?;
             self.write_record(&running)?;
             return Err(BackendFailure::Cancelled);
         }
-        AtomicPublisher::replace(directory.join("start.permit"), b"start\n")
-            .map_err(store_failure)?;
+        if let Err(error) = AtomicPublisher::replace(directory.join("start.permit"), b"start\n") {
+            #[cfg(target_os = "linux")]
+            if let Some(identity) = &namespace_identity {
+                let _ = identity.stop_namespace();
+            }
+            terminate_group(&mut child, Duration::from_millis(100));
+            return Err(store_failure(error));
+        }
 
         // Reaping is an optimization only. The detached runner owns the target,
         // tails and terminal record and remains correct if this process dies.
@@ -729,6 +855,7 @@ impl JobBroker {
             record.updated_unix_ms = unix_millis()?;
             self.write_record(&record)?;
         } else if record.state == JobState::Running {
+            self.host_receipt(&record)?;
             let live =
                 record
                     .pid
@@ -795,19 +922,41 @@ impl JobBroker {
             )));
         }
         let pid = record.pid.expect("running job has pid");
-        signal_group(pid, libc::SIGTERM)?;
+        #[cfg(target_os = "linux")]
+        let namespace_identity = self.host_receipt(&record)?.namespace_identity;
+        #[cfg(target_os = "linux")]
+        let namespace_stop = namespace_identity
+            .as_ref()
+            .map(NamespaceRunnerIdentity::stop_handle)
+            .transpose()?
+            .flatten();
+        if process_start_token(pid).as_deref() == record.process_start.as_deref() {
+            signal_group(pid, libc::SIGTERM)?;
+        }
         let deadline = Instant::now() + self.stop_grace;
         while Instant::now() < deadline {
             if cancellation.is_cancelled() {
                 return Err(BackendFailure::Cancelled);
             }
-            if process_start_token(pid).as_deref() != record.process_start.as_deref() {
+            let live = process_start_token(pid).as_deref() == record.process_start.as_deref();
+            #[cfg(target_os = "linux")]
+            let live = live
+                || namespace_identity
+                    .as_ref()
+                    .is_some_and(|identity| identity.namespace_is_live());
+            if !live {
                 break;
             }
             thread::sleep(Duration::from_millis(10));
         }
         if process_start_token(pid).as_deref() == record.process_start.as_deref() {
             signal_group(pid, libc::SIGKILL)?;
+        }
+        #[cfg(target_os = "linux")]
+        if let Some(handle) = namespace_stop {
+            // Killing the verified PID-namespace init terminates every member,
+            // including a target that created a new session or process group.
+            handle.kill()?;
         }
         record.state = JobState::Stopped;
         record.updated_unix_ms = unix_millis()?;
@@ -817,6 +966,32 @@ impl JobBroker {
 
     fn job_directory(&self, id: &str) -> PathBuf {
         self.root.join(id)
+    }
+
+    fn host_receipt(&self, record: &JobRecord) -> Result<JobHostReceipt, BackendFailure> {
+        let receipt: JobHostReceipt = serde_json::from_slice(
+            &fs::read(self.launch_root.join(format!("{}.json", record.id))).map_err(io_failure)?,
+        )
+        .map_err(|error| BackendFailure::Protocol(error.to_string()))?;
+        if record.id != receipt.id
+            || record.pid != Some(receipt.pid)
+            || record.process_start.as_deref() != Some(receipt.process_start.as_str())
+        {
+            return Err(BackendFailure::Conflict(
+                "job record does not match private launch authority".to_owned(),
+            ));
+        }
+        #[cfg(target_os = "linux")]
+        if receipt
+            .namespace_identity
+            .as_ref()
+            .is_some_and(|identity| !identity.matches_record(record))
+        {
+            return Err(BackendFailure::Conflict(
+                "namespace receipt does not match private launch authority".to_owned(),
+            ));
+        }
+        Ok(receipt)
     }
 
     fn read_record(&self, id: &str) -> Result<JobRecord, BackendFailure> {
@@ -829,7 +1004,14 @@ impl JobBroker {
                 io_failure(error)
             }
         })?;
-        serde_json::from_slice(&bytes).map_err(|error| BackendFailure::Protocol(error.to_string()))
+        let record: JobRecord = serde_json::from_slice(&bytes)
+            .map_err(|error| BackendFailure::Protocol(error.to_string()))?;
+        if record.id != id {
+            return Err(BackendFailure::Conflict(
+                "job record id does not match the requested job".to_owned(),
+            ));
+        }
+        Ok(record)
     }
 
     fn write_record(&self, record: &JobRecord) -> Result<(), BackendFailure> {
@@ -865,7 +1047,7 @@ pub fn run_job_runner(request_path: impl AsRef<Path>) -> Result<(), BackendFailu
         ));
     }
     validate_job_id(&request.id)?;
-    let broker = JobBroker::new(&request.root, request.tail_bytes)?;
+    let broker = JobBroker::open(PathBuf::from(&request.root), request.tail_bytes, false)?;
     let directory = broker.job_directory(&request.id);
     if request_path != directory.join("runner.json") {
         return Err(BackendFailure::Denied(
@@ -873,6 +1055,10 @@ pub fn run_job_runner(request_path: impl AsRef<Path>) -> Result<(), BackendFailu
         ));
     }
     let permit = directory.join("start.permit");
+    #[cfg(target_os = "linux")]
+    if request.pid_namespace {
+        announce_namespace_runner()?;
+    }
     let deadline = Instant::now() + Duration::from_secs(30);
     while !permit.is_file() {
         if Instant::now() >= deadline {
@@ -882,10 +1068,19 @@ pub fn run_job_runner(request_path: impl AsRef<Path>) -> Result<(), BackendFailu
     }
     let record = broker.read_record(&request.id)?;
     let runner_pid = std::process::id();
-    if record.state != JobState::Running
-        || record.pid != Some(runner_pid)
-        || record.process_start.as_deref() != process_start_token(runner_pid).as_deref()
-    {
+    let identity_matches = record.pid == Some(runner_pid)
+        && record.process_start.as_deref() == process_start_token(runner_pid).as_deref();
+    #[cfg(target_os = "linux")]
+    let identity_matches = if request.pid_namespace {
+        let identity: NamespaceRunnerIdentity = serde_json::from_slice(
+            &fs::read(directory.join("runner.identity.json")).map_err(io_failure)?,
+        )
+        .map_err(|error| BackendFailure::Protocol(error.to_string()))?;
+        identity.matches_record(&record) && identity.matches_current_runner()
+    } else {
+        identity_matches
+    };
+    if record.state != JobState::Running || !identity_matches {
         return Err(BackendFailure::Conflict(
             "job runner does not match the durable running record".to_owned(),
         ));
@@ -1977,6 +2172,328 @@ fn terminate_group(child: &mut Child, grace: Duration) {
     let _ = child.wait();
 }
 
+/// Host PID authority is kept separate from the runner's namespace-local PID.
+/// This private receipt is written by the broker only after SCM_CREDENTIALS
+/// identifies the runner on an inherited socket and /proc proves its ancestry.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct JobHostReceipt {
+    id: String,
+    pid: u32,
+    process_start: String,
+    namespace_identity: Option<NamespaceRunnerIdentity>,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct NamespaceRunnerIdentity {
+    wrapper_pid: u32,
+    wrapper_start: String,
+    runner: LinuxProcessIdentity,
+    init: LinuxProcessIdentity,
+}
+
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LinuxProcessIdentity {
+    pid: u32,
+    parent: u32,
+    group: u32,
+    session: u32,
+    start: String,
+    namespace_pid: u32,
+    namespace_device: u64,
+    namespace_inode: u64,
+}
+
+#[cfg(target_os = "linux")]
+impl LinuxProcessIdentity {
+    fn read(pid: u32) -> Option<Self> {
+        use std::os::unix::fs::MetadataExt;
+        let stat = fs::read_to_string(format!("/proc/{pid}/stat")).ok()?;
+        let end = stat.rfind(')')?;
+        let fields: Vec<_> = stat.get(end + 2..)?.split_whitespace().collect();
+        let status = fs::read_to_string(format!("/proc/{pid}/status")).ok()?;
+        let namespace_pid = status.lines().find_map(|line| {
+            line.strip_prefix("NSpid:")?
+                .split_whitespace()
+                .last()?
+                .parse()
+                .ok()
+        })?;
+        let namespace = fs::metadata(format!("/proc/{pid}/ns/pid")).ok()?;
+        Some(Self {
+            pid,
+            parent: fields.get(1)?.parse().ok()?,
+            group: fields.get(2)?.parse().ok()?,
+            session: fields.get(3)?.parse().ok()?,
+            start: fields.get(19)?.to_string(),
+            namespace_pid,
+            namespace_device: namespace.dev(),
+            namespace_inode: namespace.ino(),
+        })
+    }
+
+    fn same_namespace(&self, other: &Self) -> bool {
+        self.namespace_device == other.namespace_device
+            && self.namespace_inode == other.namespace_inode
+    }
+
+    fn is_live(&self) -> bool {
+        Self::read(self.pid).is_some_and(|current| {
+            current.start == self.start
+                && current.namespace_pid == self.namespace_pid
+                && current.same_namespace(self)
+        })
+    }
+}
+
+#[cfg(target_os = "linux")]
+impl NamespaceRunnerIdentity {
+    fn matches_record(&self, record: &JobRecord) -> bool {
+        record.pid == Some(self.wrapper_pid)
+            && record.process_start.as_deref() == Some(self.wrapper_start.as_str())
+            && self.runner.same_namespace(&self.init)
+            && self.init.namespace_pid == 1
+            && self.runner.namespace_pid > 1
+            && self.runner.parent == self.init.pid
+            && self.runner.group == self.wrapper_pid
+            && self.runner.session == self.wrapper_pid
+    }
+
+    fn matches_current_runner(&self) -> bool {
+        LinuxProcessIdentity::read(std::process::id()).is_some_and(|current| {
+            current.pid == self.runner.namespace_pid
+                && current.start == self.runner.start
+                && current.same_namespace(&self.runner)
+        })
+    }
+
+    fn namespace_is_live(&self) -> bool {
+        self.init.is_live()
+    }
+
+    fn stop_namespace(&self) -> Result<(), BackendFailure> {
+        if let Some(handle) = self.stop_handle()? {
+            handle.kill()?;
+        }
+        Ok(())
+    }
+
+    fn stop_handle(&self) -> Result<Option<NamespaceStopHandle>, BackendFailure> {
+        use std::os::fd::FromRawFd;
+        if !self.init.is_live() {
+            return Ok(None);
+        }
+        // SAFETY: pidfd_open takes scalar arguments and returns an owned
+        // descriptor. It pins this process even if its numeric PID is reused.
+        let fd = unsafe { libc::syscall(libc::SYS_pidfd_open, self.init.pid, 0_u32) };
+        if fd < 0 {
+            let error = std::io::Error::last_os_error();
+            if error.raw_os_error() == Some(libc::ESRCH) {
+                return Ok(None);
+            }
+            return Err(BackendFailure::Unavailable(format!(
+                "cannot pin namespace init identity: {error}"
+            )));
+        }
+        // SAFETY: the successful syscall returned a new descriptor owned here.
+        let handle = NamespaceStopHandle(unsafe { std::os::fd::OwnedFd::from_raw_fd(fd as i32) });
+        let invalid = || {
+            BackendFailure::Unknown("namespace launch lineage is no longer verifiable".to_owned())
+        };
+        let (Some(wrapper), Some(init), Some(broker)) = (
+            LinuxProcessIdentity::read(self.wrapper_pid),
+            LinuxProcessIdentity::read(self.init.pid),
+            LinuxProcessIdentity::read(std::process::id()),
+        ) else {
+            // Natural completion can race stop after pidfd_open. A live init
+            // whose ancestry disappeared remains unverified and is not signaled.
+            return if self.init.is_live() {
+                Err(invalid())
+            } else {
+                Ok(None)
+            };
+        };
+        if wrapper.start != self.wrapper_start
+            || init.start != self.init.start
+            || init.parent != self.wrapper_pid
+            || init.group != self.wrapper_pid
+            || init.session != self.wrapper_pid
+            || init.namespace_pid != 1
+            || !init.same_namespace(&self.init)
+            || init.same_namespace(&broker)
+            || !wrapper.same_namespace(&broker)
+        {
+            return Err(invalid());
+        }
+        handle.send_signal(0)?;
+        Ok(Some(handle))
+    }
+}
+
+#[cfg(target_os = "linux")]
+struct NamespaceStopHandle(std::os::fd::OwnedFd);
+
+#[cfg(target_os = "linux")]
+impl NamespaceStopHandle {
+    fn kill(self) -> Result<(), BackendFailure> {
+        self.send_signal(libc::SIGKILL)
+    }
+
+    fn send_signal(&self, signal: i32) -> Result<(), BackendFailure> {
+        use std::os::fd::AsRawFd;
+        // SAFETY: this descriptor was acquired and authenticated while the
+        // wrapper/init lineage was live. No later PID lookup selects a target.
+        let result = unsafe {
+            libc::syscall(
+                libc::SYS_pidfd_send_signal,
+                self.0.as_raw_fd(),
+                signal,
+                std::ptr::null::<libc::siginfo_t>(),
+                0_u32,
+            )
+        };
+        if result == 0 {
+            return Ok(());
+        }
+        let error = std::io::Error::last_os_error();
+        if error.raw_os_error() == Some(libc::ESRCH) {
+            Ok(())
+        } else {
+            Err(io_failure(error))
+        }
+    }
+}
+
+#[cfg(target_os = "linux")]
+fn namespace_identity_channel() -> Result<
+    (
+        std::os::unix::net::UnixStream,
+        std::os::unix::net::UnixStream,
+    ),
+    BackendFailure,
+> {
+    use std::os::fd::AsRawFd;
+    let (broker, runner) = std::os::unix::net::UnixStream::pair().map_err(io_failure)?;
+    broker
+        .set_read_timeout(Some(Duration::from_secs(10)))
+        .map_err(io_failure)?;
+    let enabled: libc::c_int = 1;
+    // SAFETY: setsockopt copies a valid c_int from the supplied pointer.
+    let result = unsafe {
+        libc::setsockopt(
+            broker.as_raw_fd(),
+            libc::SOL_SOCKET,
+            libc::SO_PASSCRED,
+            (&enabled as *const libc::c_int).cast(),
+            std::mem::size_of_val(&enabled) as libc::socklen_t,
+        )
+    };
+    if result != 0 {
+        return Err(io_failure(std::io::Error::last_os_error()));
+    }
+    Ok((broker, runner))
+}
+
+#[cfg(target_os = "linux")]
+fn announce_namespace_runner() -> Result<(), BackendFailure> {
+    use std::io::Write;
+    use std::os::fd::FromRawFd;
+    // SAFETY: the job runner owns stdin, which the trusted broker replaced
+    // with a socket. It is closed after this one-byte announcement and never
+    // inherited by the target. write(2) works with network-denied seccomp.
+    let mut stdin = unsafe { File::from_raw_fd(libc::STDIN_FILENO) };
+    stdin.write_all(&[0xa1]).map_err(io_failure)
+}
+
+#[cfg(target_os = "linux")]
+fn namespace_runner_peer(channel: &std::os::unix::net::UnixStream) -> Result<u32, BackendFailure> {
+    use std::os::fd::AsRawFd;
+    let mut byte = [0_u8; 1];
+    let mut iov = libc::iovec {
+        iov_base: byte.as_mut_ptr().cast(),
+        iov_len: byte.len(),
+    };
+    // usize storage preserves cmsghdr alignment on both supported architectures.
+    let mut control = [0_usize; 8];
+    // SAFETY: all-zero msghdr has null optional pointers. The buffers below
+    // remain alive and writable throughout recvmsg and ancillary parsing.
+    let mut message: libc::msghdr = unsafe { std::mem::zeroed() };
+    message.msg_iov = &mut iov;
+    message.msg_iovlen = 1;
+    message.msg_control = control.as_mut_ptr().cast();
+    message.msg_controllen = std::mem::size_of_val(&control);
+    // SAFETY: message points only into the initialized buffers above.
+    let received = unsafe { libc::recvmsg(channel.as_raw_fd(), &mut message, 0) };
+    if received < 0 {
+        return Err(io_failure(std::io::Error::last_os_error()));
+    }
+    if received != 1 || byte != [0xa1] || message.msg_flags & libc::MSG_CTRUNC != 0 {
+        return Err(BackendFailure::Protocol(
+            "missing namespace runner credentials".to_owned(),
+        ));
+    }
+    // SAFETY: recvmsg populated the control-buffer lengths, and the CMSG
+    // helpers bound iteration to that buffer. Credentials are copied by value.
+    unsafe {
+        let mut header = libc::CMSG_FIRSTHDR(&message);
+        while !header.is_null() {
+            if (*header).cmsg_level == libc::SOL_SOCKET
+                && (*header).cmsg_type == libc::SCM_CREDENTIALS
+                && (*header).cmsg_len
+                    >= libc::CMSG_LEN(std::mem::size_of::<libc::ucred>() as u32) as usize
+            {
+                let credentials =
+                    std::ptr::read_unaligned(libc::CMSG_DATA(header).cast::<libc::ucred>());
+                if credentials.pid > 0 && credentials.uid == libc::geteuid() {
+                    return Ok(credentials.pid as u32);
+                }
+            }
+            header = libc::CMSG_NXTHDR(&message, header);
+        }
+    }
+    Err(BackendFailure::Denied(
+        "namespace runner credentials do not match the launching user".to_owned(),
+    ))
+}
+
+#[cfg(target_os = "linux")]
+fn authenticate_namespace_runner(
+    channel: &std::os::unix::net::UnixStream,
+    wrapper_pid: u32,
+    wrapper_start: &str,
+) -> Result<NamespaceRunnerIdentity, BackendFailure> {
+    let peer = namespace_runner_peer(channel)?;
+    let invalid = || {
+        BackendFailure::Conflict(
+            "namespace runner is not a child of the verified launch".to_owned(),
+        )
+    };
+    let runner = LinuxProcessIdentity::read(peer).ok_or_else(invalid)?;
+    let init = LinuxProcessIdentity::read(runner.parent).ok_or_else(invalid)?;
+    if runner.group != wrapper_pid
+        || runner.session != wrapper_pid
+        || runner.namespace_pid <= 1
+        || init.namespace_pid != 1
+        || !runner.same_namespace(&init)
+        || init.parent != wrapper_pid
+        || process_start_token(wrapper_pid).as_deref() != Some(wrapper_start)
+    {
+        return Err(invalid());
+    }
+    let identity = NamespaceRunnerIdentity {
+        wrapper_pid,
+        wrapper_start: wrapper_start.to_owned(),
+        runner,
+        init,
+    };
+    // Refuse a durable job before releasing its target unless this host can
+    // pin and signal its namespace init. Signal zero only checks permission.
+    identity.stop_handle()?.ok_or_else(invalid)?;
+    Ok(identity)
+}
+
 #[cfg(target_os = "macos")]
 fn process_start_token(pid: u32) -> Option<String> {
     let mut info = std::mem::MaybeUninit::<libc::proc_bsdinfo>::zeroed();
@@ -2067,6 +2584,178 @@ mod disabled_job_launcher_tests {
             launcher.runner_command(&spec, &policy),
             Err(BackendFailure::Unavailable(_))
         ));
+    }
+}
+
+#[cfg(all(test, target_os = "linux"))]
+mod namespace_job_identity_tests {
+    use super::*;
+    use std::io::Write;
+
+    #[test]
+    fn inherited_socket_reports_kernel_sender_identity() {
+        let (broker, mut runner) = namespace_identity_channel().unwrap();
+        runner.write_all(&[0xa1]).unwrap();
+        assert_eq!(namespace_runner_peer(&broker).unwrap(), std::process::id());
+    }
+
+    #[test]
+    fn namespace_authentication_refuses_an_unrelated_sender() {
+        let (broker, mut runner) = namespace_identity_channel().unwrap();
+        runner.write_all(&[0xa1]).unwrap();
+        let pid = std::process::id();
+        assert!(matches!(
+            authenticate_namespace_runner(&broker, pid, &process_start_token(pid).unwrap()),
+            Err(BackendFailure::Conflict(_))
+        ));
+    }
+
+    #[test]
+    fn runner_identity_requires_matching_pid_start_and_namespace() {
+        let current = LinuxProcessIdentity::read(std::process::id()).unwrap();
+        let mut identity = NamespaceRunnerIdentity {
+            wrapper_pid: current.parent,
+            wrapper_start: "irrelevant-to-runner-check".to_owned(),
+            init: current.clone(),
+            runner: current,
+        };
+        assert!(identity.matches_current_runner());
+        identity.runner.start.push('0');
+        assert!(!identity.matches_current_runner());
+        identity.runner.start.pop();
+        identity.runner.namespace_inode ^= 1;
+        assert!(!identity.matches_current_runner());
+        identity.runner.namespace_inode ^= 1;
+        identity.runner.namespace_pid += 1;
+        assert!(!identity.matches_current_runner());
+    }
+
+    #[test]
+    fn stale_namespace_identity_never_signals_a_live_process() {
+        let mut child = Command::new("/bin/sleep").arg("10").spawn().unwrap();
+        let current = LinuxProcessIdentity::read(child.id()).unwrap();
+        let mut identity = NamespaceRunnerIdentity {
+            wrapper_pid: std::process::id(),
+            wrapper_start: "unused".to_owned(),
+            runner: current.clone(),
+            init: current,
+        };
+        identity.init.start.push('0');
+        identity.stop_namespace().unwrap();
+        let still_live = child.try_wait().unwrap().is_none();
+        child.kill().unwrap();
+        child.wait().unwrap();
+        assert!(still_live, "stale identity must not signal a reused PID");
+    }
+
+    #[test]
+    fn forged_namespace_receipt_cannot_select_a_host_process() {
+        let current = LinuxProcessIdentity::read(std::process::id()).unwrap();
+        let identity = NamespaceRunnerIdentity {
+            wrapper_pid: current.pid,
+            wrapper_start: current.start.clone(),
+            runner: current.clone(),
+            init: current,
+        };
+        assert!(matches!(
+            identity.stop_handle(),
+            Err(BackendFailure::Unknown(_))
+        ));
+    }
+
+    fn test_record(id: &str) -> JobRecord {
+        JobRecord {
+            format: 1,
+            id: id.to_owned(),
+            spec: JobSpec {
+                program: "/bin/true".to_owned(),
+                args: vec![],
+                working_directory: None,
+                writable_paths: vec![],
+                environment: BTreeMap::new(),
+            },
+            state: JobState::Running,
+            pid: Some(std::process::id()),
+            process_start: process_start_token(std::process::id()),
+            created_unix_ms: 1,
+            updated_unix_ms: 1,
+            stdout_tail: "stdout.tail".to_owned(),
+            stderr_tail: "stderr.tail".to_owned(),
+        }
+    }
+
+    #[test]
+    fn sandbox_written_pid_and_job_id_cannot_replace_host_authority() {
+        let directory = tempfile::tempdir().unwrap();
+        let broker = JobBroker::new(directory.path(), 4096).unwrap();
+        let mut record = test_record("owned");
+        fs::create_dir(broker.job_directory("owned")).unwrap();
+        let receipt = JobHostReceipt {
+            id: record.id.clone(),
+            pid: record.pid.unwrap(),
+            process_start: record.process_start.clone().unwrap(),
+            namespace_identity: None,
+        };
+        fs::write(
+            broker.launch_root.join("owned.json"),
+            serde_json::to_vec(&receipt).unwrap(),
+        )
+        .unwrap();
+        broker.host_receipt(&record).unwrap();
+        record.pid = Some(record.pid.unwrap() + 1);
+        assert!(matches!(
+            broker.host_receipt(&record),
+            Err(BackendFailure::Conflict(_))
+        ));
+        record = test_record("other");
+        fs::write(
+            broker.job_directory("owned").join("job.json"),
+            serde_json::to_vec(&record).unwrap(),
+        )
+        .unwrap();
+        assert!(matches!(
+            broker.read_record("owned"),
+            Err(BackendFailure::Conflict(_))
+        ));
+    }
+
+    #[test]
+    fn writable_root_cannot_cover_private_launch_receipts() {
+        struct NeverLaunch;
+        impl SandboxedJobLauncher for NeverLaunch {
+            fn runner_command(
+                &self,
+                _: &JobSpec,
+                _: &SandboxPolicy,
+            ) -> Result<Command, BackendFailure> {
+                panic!("invalid roots must fail before spawning")
+            }
+        }
+        let directory = tempfile::tempdir().unwrap();
+        let broker = JobBroker::new(directory.path(), 4096).unwrap();
+        let root = fs::canonicalize(directory.path())
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let policy = SandboxPolicy {
+            format: 1,
+            read_roots: vec![root.clone()],
+            write_roots: vec![root],
+            network: crate::NetworkPolicy::Deny,
+            allow_process: true,
+            scratch: None,
+        };
+        assert!(matches!(
+            broker.start_inner(
+                "unsafe",
+                test_record("unused").spec,
+                policy,
+                Arc::new(NeverLaunch),
+                &CancellationToken::default()
+            ),
+            Err(BackendFailure::Denied(_))
+        ));
+        assert!(!broker.job_directory("unsafe").exists());
     }
 }
 

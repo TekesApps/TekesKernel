@@ -1013,17 +1013,22 @@ fn slice4_gate_11_sandbox_backend_probe() {
     ));
 }
 
-/// The backend production selects on this host.
+/// Production auto selection unless CI explicitly requires one Linux backend.
 fn host_sandbox_backend() -> SandboxBackend {
     if cfg!(target_os = "macos") {
         SandboxBackend::DarwinSeatbeltV1
     } else {
-        SandboxBackend::LinuxLandlockSeccompV1
+        match std::env::var("TEKES_SANDBOX_TEST_BACKEND").as_deref() {
+            Ok("bubblewrap") => SandboxBackend::LinuxBubblewrapSeccompV1,
+            Ok("landlock") => SandboxBackend::LinuxLandlockSeccompV1,
+            Ok("auto") | Err(_) => SandboxBackend::LinuxAutoV1,
+            Ok(other) => panic!("unknown TEKES_SANDBOX_TEST_BACKEND: {other}"),
+        }
     }
 }
 
 /// Whether this host must provide a working sandbox: macOS, and Linux on the
-/// architectures the Landlock/seccomp launcher supports.
+/// architectures the Linux sandbox launchers support.
 fn host_has_sandbox() -> bool {
     cfg!(any(
         target_os = "macos",

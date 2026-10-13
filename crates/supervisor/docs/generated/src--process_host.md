@@ -2543,12 +2543,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preflight_mandatory_authorities` | `DaemonError::required_broker` | [2737](../../src/process_host.rs#L2737), [2743](../../src/process_host.rs#L2743), [2749](../../src/process_host.rs#L2749) | [tekes-supervisor::host_runtime::DaemonError::required_broker](../../src/host_runtime.rs#L586) |
 | `preflight_mandatory_authorities` | `self.is_mcp_only_app_sandbox_host` | [2741](../../src/process_host.rs#L2741) | [tekes-supervisor::process_host::ProductionProcessHost::is_mcp_only_app_sandbox_host](../../src/process_host.rs#L2754) |
 | `preflight_mandatory_authorities` | `tools::HelperJobLauncher::disabled(self.worker_binary.with_file_name("tekes-helper"))                 .map_err` | [2742](../../src/process_host.rs#L2742) | receiver-type-required |
-| `preflight_mandatory_authorities` | `tools::HelperJobLauncher::disabled` | [2742](../../src/process_host.rs#L2742) | [tools::runtime_backends::HelperJobLauncher::disabled](../../../tools/src/runtime_backends.rs#L499) |
+| `preflight_mandatory_authorities` | `tools::HelperJobLauncher::disabled` | [2742](../../src/process_host.rs#L2742) | [tools::runtime_backends::HelperJobLauncher::disabled](../../../tools/src/runtime_backends.rs#L508) |
 | `preflight_mandatory_authorities` | `self.worker_binary.with_file_name` | [2742](../../src/process_host.rs#L2742), [2746](../../src/process_host.rs#L2746) | receiver-type-required |
 | `preflight_mandatory_authorities` | `error.to_string` | [2743](../../src/process_host.rs#L2743), [2749](../../src/process_host.rs#L2749) | receiver-type-required |
 | `preflight_mandatory_authorities` | `tools::HelperJobLauncher::new(                 self.worker_binary.with_file_name("tekes-helper"),                 tools::probe_backend(production_sandbox_backend()),             )             .map_err` | [2745](../../src/process_host.rs#L2745) | receiver-type-required |
-| `preflight_mandatory_authorities` | `tools::HelperJobLauncher::new` | [2745](../../src/process_host.rs#L2745) | [tools::runtime_backends::HelperJobLauncher::new](../../../tools/src/runtime_backends.rs#L481) |
-| `preflight_mandatory_authorities` | `tools::probe_backend` | [2747](../../src/process_host.rs#L2747) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L235) |
+| `preflight_mandatory_authorities` | `tools::HelperJobLauncher::new` | [2745](../../src/process_host.rs#L2745) | [tools::runtime_backends::HelperJobLauncher::new](../../../tools/src/runtime_backends.rs#L490) |
+| `preflight_mandatory_authorities` | `tools::probe_backend` | [2747](../../src/process_host.rs#L2747) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L280) |
 | `preflight_mandatory_authorities` | `production_sandbox_backend` | [2747](../../src/process_host.rs#L2747) | [tekes-supervisor::process_host::production_sandbox_backend](../../src/process_host.rs#L123) |
 | `preflight_mandatory_authorities` | `Ok` | [2751](../../src/process_host.rs#L2751) | external-constructor-callback-or-unresolved |
 | `is_mcp_only_app_sandbox_host` | `self.root.join` | [2755](../../src/process_host.rs#L2755) | receiver-type-required |
@@ -2567,9 +2567,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `freeze_tool_authority` | `self.worker_binary.with_file_name` | [2780](../../src/process_host.rs#L2780) | receiver-type-required |
 | `freeze_tool_authority` | `if self.is_mcp_only_app_sandbox_host()? {             tools::HelperJobLauncher::disabled(executable)         } else {             tools::HelperJobLauncher::new(                 executable,                 tools::probe_backend(production_sandbox_backend()),             )         }         .map_err` | [2781](../../src/process_host.rs#L2781) | receiver-type-required |
 | `freeze_tool_authority` | `self.is_mcp_only_app_sandbox_host` | [2781](../../src/process_host.rs#L2781) | [tekes-supervisor::process_host::ProductionProcessHost::is_mcp_only_app_sandbox_host](../../src/process_host.rs#L2754) |
-| `freeze_tool_authority` | `tools::HelperJobLauncher::disabled` | [2782](../../src/process_host.rs#L2782) | [tools::runtime_backends::HelperJobLauncher::disabled](../../../tools/src/runtime_backends.rs#L499) |
-| `freeze_tool_authority` | `tools::HelperJobLauncher::new` | [2784](../../src/process_host.rs#L2784) | [tools::runtime_backends::HelperJobLauncher::new](../../../tools/src/runtime_backends.rs#L481) |
-| `freeze_tool_authority` | `tools::probe_backend` | [2786](../../src/process_host.rs#L2786) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L235) |
+| `freeze_tool_authority` | `tools::HelperJobLauncher::disabled` | [2782](../../src/process_host.rs#L2782) | [tools::runtime_backends::HelperJobLauncher::disabled](../../../tools/src/runtime_backends.rs#L508) |
+| `freeze_tool_authority` | `tools::HelperJobLauncher::new` | [2784](../../src/process_host.rs#L2784) | [tools::runtime_backends::HelperJobLauncher::new](../../../tools/src/runtime_backends.rs#L490) |
+| `freeze_tool_authority` | `tools::probe_backend` | [2786](../../src/process_host.rs#L2786) | [tools::sandbox::probe_backend](../../../tools/src/sandbox.rs#L280) |
 | `freeze_tool_authority` | `production_sandbox_backend` | [2786](../../src/process_host.rs#L2786) | [tekes-supervisor::process_host::production_sandbox_backend](../../src/process_host.rs#L123) |
 | `freeze_tool_authority` | `DaemonError::required_broker` | [2789](../../src/process_host.rs#L2789) | [tekes-supervisor::host_runtime::DaemonError::required_broker](../../src/host_runtime.rs#L586) |
 | `freeze_tool_authority` | `error.to_string` | [2789](../../src/process_host.rs#L2789) | receiver-type-required |

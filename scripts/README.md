@@ -29,6 +29,54 @@ one area. `ci-slice12.sh` and `ci-slice14a.sh` also run real-reference
 qualification when `TEKES_COMPUTER_USE_ARCHIVE` or signed executables are
 provided, and report "not qualified" otherwise.
 
+`ci-linux-sandbox.sh` runs Linux backend unit tests, public helper/job
+runtime tests and helper/probe/approval gates on a native Linux x86_64 or
+aarch64 host. By default it requires bubblewrap/seccomp, Landlock/seccomp
+and automatic backend selection to pass independently, so automatic
+fallback cannot hide a broken backend. A missing test suite or unavailable
+requested backend fails the run. The tests exercise confined processes and
+filesystem/network denials without provider credentials or external
+network access. GitHub's Linux jobs install bubblewrap and `apparmor-profiles`
+on native `ubuntu-24.04` (x86_64) and `ubuntu-24.04-arm` (aarch64) runners.
+Their setup copies the distribution's `bwrap-userns-restrict` profile from
+`/usr/share/apparmor/extra-profiles/` into `/etc/apparmor.d/` and loads only
+that profile with `apparmor_parser -r`. This grants bubblewrap namespace
+setup while retaining the child profile's capability restrictions; global
+AppArmor and user-namespace restrictions remain enabled. The setup logs
+package versions and reads the relevant sysctls for diagnostics. It then
+runs this script before the complete workspace suite:
+
+```bash
+scripts/ci-linux-sandbox.sh --backend all
+```
+
+The bubblewrap pass also runs its explicitly selected lifecycle tests:
+helper cancellation and timeouts, stopping jobs after reopening the broker,
+and detached jobs surviving the launching supervisor. Namespace identity
+tests verify that forged or stale process metadata cannot authorize signals
+and writable roots cannot cover the broker's private launch receipts.
+
+Use `--backend bubblewrap`, `--backend landlock` or `--backend auto` for a
+host with only that capability; these runs report only the selected path.
+The selector `TEKES_SANDBOX_TEST_BACKEND` is interpreted by integration
+tests only, not by production code. Bubblewrap needs version 0.4.0 or later,
+working unprivileged user/mount/PID/IPC/UTS namespaces, network namespaces
+for network-denied tools, and seccomp. Landlock needs ABI 3 or later (to
+confine truncation) and seccomp. Neither backend requires running Kernel as
+root.
+
+The script prints the kernel and, when readable, enabled LSMs for diagnosis.
+An unreadable `/sys/kernel/security/lsm` alone does not indicate missing
+support; actual launch probes decide. Host policy may restrict unprivileged
+user namespaces even when bubblewrap is installed. On Ubuntu, inspect the
+distribution's bubblewrap AppArmor profile instead of disabling AppArmor
+or user-namespace restrictions globally; see
+[Ubuntu's explanation](https://discourse.ubuntu.com/t/understanding-apparmor-user-namespace-restriction/58007).
+The test script never installs packages, changes host configuration or
+restarts services. On a shared server, use a separate checkout and target
+directory, and bound build/test concurrency using `CARGO_BUILD_JOBS` and
+`RUST_TEST_THREADS`.
+
 ## Tests that need a build or macOS tooling
 
 | Script | Needs |

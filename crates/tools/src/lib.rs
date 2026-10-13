@@ -1,5 +1,10 @@
 //! Slice-4 tool hook, helper, sandbox, and write-ahead execution contracts.
 
+#[cfg(all(
+    target_os = "linux",
+    any(target_arch = "x86_64", target_arch = "aarch64")
+))]
+mod bubblewrap_sandbox;
 mod builtin;
 mod guidance;
 mod helper;
@@ -42,8 +47,8 @@ pub use pipeline::{
 pub use runtime_backends::*;
 pub use sandbox::{
     NetworkPolicy, ProbeFailure, ProbeStatus, SandboxApproval, SandboxBackend, SandboxError,
-    SandboxPolicy, compile_darwin_profile, compile_linux_plan, policy_digest, probe_backend,
-    validate_unsandboxed_approval,
+    SandboxPolicy, compile_darwin_profile, compile_linux_bubblewrap_plan, compile_linux_plan,
+    policy_digest, probe_backend, validate_unsandboxed_approval,
 };
 pub use schema_registry::{
     FIXED_SCHEMA_REVISION, FixedToolSchema, ObjectRule, ObjectSchema, PropertySchema,

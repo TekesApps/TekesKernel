@@ -14,7 +14,9 @@ use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-use crate::sandbox::{NetworkPolicy, ProbeFailure, SandboxError, SandboxPolicy};
+use crate::sandbox::{
+    LINUX_LANDLOCK_ABI_MIN, NetworkPolicy, ProbeFailure, SandboxError, SandboxPolicy,
+};
 
 pub(crate) const BACKEND: &str = "linux-landlock-seccomp";
 
@@ -35,7 +37,7 @@ const ACCESS_FILE: u64 = ACCESS_EXECUTE | ACCESS_WRITE_FILE | ACCESS_READ_FILE |
 /// Read-only runtime roots every confined program needs: binaries, shared
 /// libraries, the dynamic loader cache and system configuration, and the
 /// process and CPU views runtimes consult. Missing roots are skipped.
-const SYSTEM_READ_ROOTS: &[&str] = &[
+pub(crate) const SYSTEM_READ_ROOTS: &[&str] = &[
     "/bin",
     "/etc",
     "/lib",
@@ -92,6 +94,9 @@ pub(crate) fn supported_abi() -> Result<u32, (ProbeFailure, String)> {
             format!("Landlock is not available in this kernel: {error}"),
         ));
     }
+    let abi = u32::try_from(abi)
+        .map_err(|_| (ProbeFailure::Rejected, "invalid Landlock ABI".to_owned()))?;
+    require_safe_abi(abi)?;
     // SAFETY: PR_GET_SECCOMP takes no pointers; -1 means seccomp is not built.
     if unsafe { libc::prctl(libc::PR_GET_SECCOMP, 0, 0, 0, 0) } < 0 {
         let error = io::Error::last_os_error();
@@ -100,7 +105,20 @@ pub(crate) fn supported_abi() -> Result<u32, (ProbeFailure, String)> {
             format!("seccomp is not available in this kernel: {error}"),
         ));
     }
-    u32::try_from(abi).map_err(|_| (ProbeFailure::Rejected, "invalid Landlock ABI".to_owned()))
+    Ok(abi)
+}
+
+fn require_safe_abi(abi: u32) -> Result<(), (ProbeFailure, String)> {
+    if abi < LINUX_LANDLOCK_ABI_MIN {
+        Err((
+            ProbeFailure::Unsupported,
+            format!(
+                "Landlock ABI {abi} cannot enforce file truncation; ABI {LINUX_LANDLOCK_ABI_MIN} or later is required"
+            ),
+        ))
+    } else {
+        Ok(())
+    }
 }
 
 /// Configures `command`, which must run `executable`, to start under `policy`.
@@ -117,7 +135,7 @@ pub(crate) fn confine(
     }
     let abi = supported_abi().map_err(|(_, detail)| SandboxError::Unavailable(detail))?;
     let ruleset = landlock_ruleset(policy, executable, abi)?;
-    let filter = seccomp_filter(policy)?;
+    let filter = seccomp_filter(policy, true)?;
     // SAFETY: the closure runs in the forked child before exec. It performs
     // only raw syscalls on memory the parent prepared (the ruleset descriptor
     // and the filter instructions it owns), allocates nothing and takes no
@@ -290,7 +308,7 @@ fn add_rule(
 }
 
 /// The `PT_INTERP` path of a 64-bit little-endian ELF executable, if any.
-fn elf_interpreter(executable: &Path) -> Result<Option<PathBuf>, SandboxError> {
+pub(crate) fn elf_interpreter(executable: &Path) -> Result<Option<PathBuf>, SandboxError> {
     let mut header = Vec::new();
     File::open(executable)?
         .take(64 * 1024)
@@ -350,6 +368,7 @@ const SECCOMP_RET_ALLOW: u32 = 0x7fff_0000;
 
 const BPF_LD_W_ABS: u16 = 0x20;
 const BPF_JMP_JEQ_K: u16 = 0x15;
+#[cfg(target_arch = "x86_64")]
 const BPF_JMP_JGE_K: u16 = 0x35;
 const BPF_JMP_JSET_K: u16 = 0x45;
 const BPF_RET_K: u16 = 0x06;
@@ -372,10 +391,46 @@ const CLONE_NAMESPACES: u32 = 0x0000_0080 // CLONE_NEWTIME
     | 0x4000_0000; // CLONE_NEWNET
 const TIOCSTI: u32 = 0x5412;
 const TIOCLINUX: u32 = 0x541c;
+// asm-generic syscall numbers shared by x86_64 and aarch64. The pinned
+// libc does not expose all three on both targets yet.
+const SYS_FCHMODAT2: libc::c_long = 452;
+const SYS_SETXATTRAT: libc::c_long = 463;
+const SYS_REMOVEXATTRAT: libc::c_long = 466;
 
-/// Syscalls no confined program may make: kernel-extension, mount and
-/// namespace interfaces, the kernel keyring, and io_uring, whose operations
-/// would bypass the socket rules below.
+/// Additional restrictions required when filesystem isolation uses Landlock.
+const METADATA_DENIED: &[(libc::c_long, i32)] = &[
+    // Landlock does not mediate these metadata mutations. Seccomp cannot
+    // inspect their paths, so deny them even inside writable roots.
+    (libc::SYS_fchmod, libc::EPERM),
+    (libc::SYS_fchmodat, libc::EPERM),
+    (SYS_FCHMODAT2, libc::EPERM),
+    (libc::SYS_fchown, libc::EPERM),
+    (libc::SYS_fchownat, libc::EPERM),
+    (libc::SYS_setxattr, libc::EPERM),
+    (libc::SYS_lsetxattr, libc::EPERM),
+    (libc::SYS_fsetxattr, libc::EPERM),
+    (libc::SYS_removexattr, libc::EPERM),
+    (libc::SYS_lremovexattr, libc::EPERM),
+    (libc::SYS_fremovexattr, libc::EPERM),
+    (SYS_SETXATTRAT, libc::EPERM),
+    (SYS_REMOVEXATTRAT, libc::EPERM),
+    (libc::SYS_utimensat, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_chmod, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_chown, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_lchown, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_utime, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_utimes, libc::EPERM),
+    #[cfg(target_arch = "x86_64")]
+    (libc::SYS_futimesat, libc::EPERM),
+];
+
+/// Shared restrictions on kernel extensions, mounts, namespaces and io_uring
+/// (whose operations would bypass the socket rules below).
 const DENIED: &[(libc::c_long, i32)] = &[
     (libc::SYS_add_key, libc::EPERM),
     (libc::SYS_bpf, libc::EPERM),
@@ -459,7 +514,10 @@ impl Program {
     }
 }
 
-fn seccomp_filter(policy: &SandboxPolicy) -> Result<Box<[libc::sock_filter]>, SandboxError> {
+pub(crate) fn seccomp_filter(
+    policy: &SandboxPolicy,
+    restrict_metadata: bool,
+) -> Result<Box<[libc::sock_filter]>, SandboxError> {
     let mut program = Program::default();
     // A foreign syscall ABI would bypass every number-based rule.
     program.load(DATA_ARCH);
@@ -475,13 +533,29 @@ fn seccomp_filter(policy: &SandboxPolicy) -> Result<Box<[libc::sock_filter]>, Sa
     for &(nr, errno) in DENIED {
         program.deny(nr, errno);
     }
+    if restrict_metadata {
+        for &(nr, errno) in METADATA_DENIED {
+            program.deny(nr, errno);
+        }
+    }
     program.deny_if_any(libc::SYS_clone, 0, CLONE_NAMESPACES, libc::EPERM);
     program.deny_if_equal(libc::SYS_ioctl, 1, TIOCSTI, libc::EPERM);
     program.deny_if_equal(libc::SYS_ioctl, 1, TIOCLINUX, libc::EPERM);
     if policy.network == NetworkPolicy::Deny {
-        // socketpair stays available: it creates no endpoint outside the
-        // process tree.
-        program.deny(libc::SYS_socket, libc::EACCES);
+        // An AF_UNIX datagram socketpair can be reconnected or send a
+        // datagram to an external pathname/abstract socket without socket().
+        // Keep socketpair read/write IPC, but deny endpoint changes and
+        // addressed sends (including destinations hidden behind msghdr).
+        for nr in [
+            libc::SYS_socket,
+            libc::SYS_connect,
+            libc::SYS_bind,
+            libc::SYS_sendto,
+            libc::SYS_sendmsg,
+            libc::SYS_sendmmsg,
+        ] {
+            program.deny(nr, libc::EACCES);
+        }
     }
     if !policy.allow_process {
         program.deny_unless_any(libc::SYS_clone, 0, CLONE_THREAD, libc::EPERM);
@@ -507,6 +581,18 @@ mod tests {
     use crate::sandbox::{
         NetworkPolicy, ProbeStatus, SandboxBackend, SandboxPolicy, probe_backend, sandbox_command,
     };
+
+    #[test]
+    fn landlock_abis_without_truncation_control_are_rejected() {
+        for abi in 0..3 {
+            let (class, detail) = super::require_safe_abi(abi).unwrap_err();
+            assert_eq!(class, crate::sandbox::ProbeFailure::Unsupported);
+            assert!(detail.contains("truncation"));
+        }
+        for abi in [3, 4, 6, u32::MAX] {
+            assert!(super::require_safe_abi(abi).is_ok());
+        }
+    }
 
     struct Fixture {
         _root: tempfile::TempDir,

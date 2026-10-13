@@ -124,7 +124,7 @@ fn production_sandbox_backend() -> tools::SandboxBackend {
     if cfg!(target_os = "macos") {
         tools::SandboxBackend::DarwinSeatbeltV1
     } else {
-        tools::SandboxBackend::LinuxLandlockSeccompV1
+        tools::SandboxBackend::LinuxAutoV1
     }
 }
 

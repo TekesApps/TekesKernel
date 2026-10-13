@@ -6,6 +6,31 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.4.4 — 2026-10-13
+
+### Fixed
+- Linux Landlock sandbox launches now require ABI 3 so truncation cannot modify
+  files outside writable roots. Network-denied tools cannot redirect Unix
+  socketpairs to outside endpoints, and seccomp refuses metadata mutations
+  that Landlock does not mediate (also within writable roots).
+
+### Added
+- Linux bubblewrap/seccomp sandbox backend, requiring bubblewrap 0.4.0 or
+  later and unprivileged namespaces but no Landlock support. Automatic
+  selection probes bubblewrap first, falls back to Landlock when unavailable,
+  and refuses execution when neither can confine the tool. The namespace
+  backend permits filesystem metadata changes inside writable roots and
+  isolates the network namespace for network-denied tools.
+- Detached jobs authenticate their sandboxed runner and retain private host
+  launch receipts for reconnecting and stopping. Bubblewrap jobs use verified
+  pidfds to terminate the complete PID namespace. Running jobs from older
+  versions without a private receipt fail verification after an upgrade;
+  finish or stop them before upgrading.
+- Native x86_64 and aarch64 Linux sandbox CI gates, including public job-launcher
+  tests for filesystem and network isolation, descendants, and failed launches.
+  Both backends are tested explicitly before automatic selection, preventing
+  fallback from hiding a failed implementation.
+
 ## 0.4.3 — 2026-10-13
 
 ### Fixed
