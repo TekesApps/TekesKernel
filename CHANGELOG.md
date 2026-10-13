@@ -6,6 +6,61 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Proposed as 0.4.2 (not versioned yet: the release commit bumps the workspace version).
+
+### Fixed
+- **Steering while a `subagent` or `task` runs no longer fails the turn (F146-D2).** A steer is
+  delivered at the child-wait yield point, so it sat between the spawning call and its
+  `child_result` and the provider-context projection rendered it between the `function_call` and
+  its output (DeepSeek `http_400 ... No tool output found`; the turn failed and the steer was
+  dropped). The projection now re-anchors a steer that falls inside an open call-to-result span
+  to just after the last result of that batch (also for a mixed batch of a spawned call and
+  ordinary calls); several steers keep their order and a steer outside a span keeps its place.
+  The ledger is unchanged, so existing threads heal on their next request. Tests: the 0.4.1 fake
+  DeepSeek pairing rule for `subagent`, `task`, a multi-call batch (the ordinary result before and
+  after the steer), several steers, a later turn, and a control.
+- **`session.cancel` no longer returns `internal` after a successful stop (D6).** When the worker
+  had exited at the end of its turn, the stop write hit EPIPE and the route returned the I/O error,
+  although the stop was durable. `cancel` now confirms the worker's exit (within a second, like the
+  prompt, compact and respond paths) and returns the durable receipt of the locked author; a worker
+  that is still running keeps the error. The failure message now carries the stage (`stop-write`,
+  `receipt`, `cascade`) and the elapsed milliseconds, so `endpoint-route-error-folded` shows where a
+  stop failed, and a `session-cancel-worker-exited` line records the fallback.
+- **A thread reopened after a config change shows its new context usage (N1).** The journal
+  snapshot labels its projections with `asOfSeq` clamped to the cut, which a client holding the newer
+  control baseline does not take as an update. The open now follows the snapshot with
+  `contextDetails` then `contextUsage` projection frames carrying their true clock sequence when it
+  is beyond the cut (ClientKit 0.1.97 accepts and merges them; the client contract script decodes
+  and validates them from a real process). `spec/session-endpoint.md` §session-journal is updated.
+  This supersedes the 0.4.0 note that a reopened thread was not guaranteed to show a changed usage.
+- **Quarantine decisions no longer rest on two unlocked reads 25 ms apart (O-final m3, n3).** A
+  ledger whose unlocked read shows a complete invalid record is judged on a read under a
+  non-blocking exclusive lock of the line: a free lock gives an authoritative read, a busy lock means
+  a live holder owns the line and the decision is deferred. This covers the main-ledger fold, child
+  lines and thread hydration.
+- **A request frame refused at the 256-session limit is retried (O-final n4).** The published set is
+  restored when the frame fails to go out, so the next reconcile announces it.
+
+### Changed
+- The actionables baseline no longer byte-reads unchanged child ledgers on every recompute (O-final
+  n2): the prefilter answer is cached against the names and lengths of the child files.
+  Threads whose child ledger holds a historical `approval_request` are still folded per recompute.
+
+### Behaviour notes
+- After a journal snapshot, clients now receive `contextDetails` and `contextUsage` projection
+  frames at their true clock sequence when it is beyond the snapshot's cut (see N1 above); an older
+  client treats them as ordinary live projection frames.
+
+### Known issues
+- A steer that a turn which failed under 0.4.0 or 0.4.1 already dropped from the model's context
+  is not replayed later; only steers delivered with 0.4.2 are re-anchored (L1).
+- A child hold written with no doorbell (a child worker dying between its durable append and its
+  message) is still seen only through the child-file prefilter, after the next main-line fold (L2).
+- Holding a ledger's lock to decide on damage can, for an instant, make a starting worker's
+  non-blocking acquire fail with `Busy` (as `probe_line_lock` already does).
+- The worker test `permission_mode_file_change_applies_to_the_next_tool_batch` remains
+  environment-dependent (see 0.4.1).
+
 ## 0.4.1 — 2026-10-13
 
 ### Fixed

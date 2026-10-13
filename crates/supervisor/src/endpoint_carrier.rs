@@ -603,6 +603,13 @@ struct TrackedHost {
     lease: Weak<()>,
 }
 
+/// A context projection replayed as a frame after a journal snapshot, at its true clock sequence.
+struct ProjectionReplay {
+    key: String,
+    value: IJsonValue,
+    sequence: u64,
+}
+
 impl ProductionCarrierStreams {
     fn recover_actionables(&self, session: &str) -> Result<(), ProductionCarrierError> {
         let folder = self.inner.root.join("threads").join(session);
@@ -716,7 +723,8 @@ impl ProductionCarrierStreams {
                 })
                 .map(|(_, frame)| frame)
                 .collect::<Vec<_>>();
-            published.insert(key, (projection.last_seq, pending));
+            let recorded = (projection.last_seq, pending);
+            published.insert(key.clone(), recorded.clone());
             // Published after the lock is released: a first publication for a session attaches
             // it (a journal parse and a fold), which must not hold up every other session's
             // reconcile (O-final m5). The set above already carries the newer sequence, and
@@ -724,7 +732,20 @@ impl ProductionCarrierStreams {
             // does not matter.
             drop(published);
             for frame in changed {
-                self.publish_session_frame(session_id, frame)?;
+                if let Err(error) = self.publish_session_frame(session_id, frame) {
+                    // The frame did not go out (at the 256-session limit): forget the change so
+                    // the next reconcile announces it, unless a newer reconcile has superseded
+                    // this record meanwhile (O-final n4).
+                    let mut published = self
+                        .inner
+                        .published_actionables
+                        .lock()
+                        .unwrap_or_else(std::sync::PoisonError::into_inner);
+                    if published.get(&key) == Some(&recorded) {
+                        published.insert(key, (published_through, previous));
+                    }
+                    return Err(error);
+                }
             }
         } else if projection.last_seq > published_through {
             published.insert(key, (projection.last_seq, pending));
@@ -1588,7 +1609,7 @@ impl ProductionCarrierStreams {
                 }
                 for session in catalog.children_unverified {
                     let folder = self.inner.root.join("threads").join(&session);
-                    if children_may_hold_requests(&folder) {
+                    if self.inner.requests.children_may_hold(&session, &folder) {
                         candidates.insert(session);
                     }
                 }
@@ -1854,26 +1875,40 @@ impl ProductionCarrierStreams {
                 .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
         endpoint::NativeEndpoint::open(&self.inner.root)?
             .hydrate_historical_submissions(&address.session_id, &mut page.events);
-        let projections = self.snapshot_projections(&address.session_id, through_sequence)?;
+        let (projections, replay) =
+            self.snapshot_projections(&address.session_id, through_sequence)?;
         let (_, source) = mux.into_stream();
+        // The snapshot's projections are labelled with the cut, which a client that already
+        // holds the newer control baseline does not accept as an update. The same values follow
+        // as projection frames carrying their true clock sequence (N1).
+        let mut pending = VecDeque::from([SessionSyncFrame::JournalSnapshot {
+            generation,
+            snapshot: SessionJournalSnapshot {
+                window_limit: max_messages,
+                address: address.clone(),
+                through_sequence,
+                entries: page.events,
+                has_more_before: page.has_more,
+                projections,
+            },
+        }]);
+        pending.extend(
+            replay
+                .into_iter()
+                .map(|projection| SessionSyncFrame::JournalProjection {
+                    generation,
+                    address: address.clone(),
+                    key: projection.key,
+                    value: projection.value,
+                    sequence: projection.sequence,
+                }),
+        );
         Ok(Box::new(ProductionStream {
             _lease: Some(lease),
             owner: self.clone(),
             generation,
-            kind: ProductionStreamKind::Journal(address.clone()),
-            pending: [SessionSyncFrame::JournalSnapshot {
-                generation,
-                snapshot: SessionJournalSnapshot {
-                    window_limit: max_messages,
-                    address,
-                    through_sequence,
-                    entries: page.events,
-                    has_more_before: page.has_more,
-                    projections,
-                },
-            }]
-            .into_iter()
-            .collect(),
+            kind: ProductionStreamKind::Journal(address),
+            pending,
             source: Some(source),
         }))
     }
@@ -1881,12 +1916,19 @@ impl ProductionCarrierStreams {
     /// The projections a journal snapshot carries: the thread's current context usage and
     /// details (from the control cache the reconcile just refreshed, else the persisted file), so
     /// a client that rebaselines on the snapshot shows the usage after a config change instead of
-    /// the value it had before. `asOfSeq` never exceeds the snapshot's cut (the client rejects a projection beyond its frozen cut).
+    /// the value it had before. `asOfSeq` never exceeds the snapshot's cut (the client rejects a
+    /// projection beyond its frozen cut).
+    ///
+    /// The second result lists the frames to send right after the snapshot: the context
+    /// projections that are newer than the cut, with their true clock sequence. A client keeps the
+    /// highest sequence per projection key, so the clamped snapshot value alone loses to a
+    /// control baseline that already holds the older value at the true sequence; the frame at the
+    /// true sequence replaces it, and an equal sequence (nothing changed) is ignored.
     fn snapshot_projections(
         &self,
         session_id: &str,
         through_sequence: i64,
-    ) -> Result<IJsonValue, ProductionCarrierError> {
+    ) -> Result<(IJsonValue, Vec<ProjectionReplay>), ProductionCarrierError> {
         let cached = self
             .inner
             .controls
@@ -1902,26 +1944,39 @@ impl ProductionCarrierStreams {
         });
         let mut as_of = through_sequence;
         let mut values = json!({});
+        let mut replay = Vec::new();
         if let Some(item) = item {
             let known: Value = serde_json::from_slice(&item.projections.canonical_bytes()?)?;
             // The client rejects a snapshot whose projections are newer than its frozen cut
             // (`projectionBeyondFrozenCut`: asOfSeq > throughSequence). The reconcile that just
-            // ran publishes the projection at journal tail + 1, so the sequence is clamped to the
-            // cut. The values are the current ones; a later projection frame carries a sequence
-            // beyond the cut and is applied (the same value is idempotent), and a frame at or
-            // below the clamped sequence is ignored.
-            as_of = known["asOfSeq"]
-                .as_i64()
-                .unwrap_or(-1)
-                .min(through_sequence);
+            // ran publishes the projection at journal tail + 1, so the snapshot's sequence is
+            // clamped to the cut and the true sequence travels on the replayed frames below.
+            let true_sequence = known["asOfSeq"].as_i64().unwrap_or(-1);
+            as_of = true_sequence.min(through_sequence);
             if known["values"].is_object() {
                 values = known["values"].clone();
             }
+            if true_sequence > through_sequence {
+                if let Ok(sequence) = u64::try_from(true_sequence) {
+                    for key in ["contextDetails", "contextUsage"] {
+                        if let Some(value) = values.get(key) {
+                            replay.push(ProjectionReplay {
+                                key: key.to_owned(),
+                                value: IJsonValue::parse(&serde_json::to_vec(value)?)?,
+                                sequence,
+                            });
+                        }
+                    }
+                }
+            }
         }
-        Ok(IJsonValue::parse(&serde_json::to_vec(&json!({
-            "asOfSeq": as_of,
-            "values": values,
-        }))?)?)
+        Ok((
+            IJsonValue::parse(&serde_json::to_vec(&json!({
+                "asOfSeq": as_of,
+                "values": values,
+            }))?)?,
+            replay,
+        ))
     }
 
     pub(crate) fn open_mux(

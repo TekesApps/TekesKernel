@@ -221,7 +221,26 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
                 assert other in ('workspace-smoke','inventory','control','actionables','journal'),value
                 captured.append({'kind':'workspace' if other=='workspace-smoke' else other,'frame':value['frame']})
             captured.append({'kind':kind,'frame':value['frame']})
-            if kind=='journal':assert value['frame']['snapshot']['windowLimit']==7,value
+            if kind=='journal':
+                assert value['frame']['snapshot']['windowLimit']==7,value
+                # N1: the context projections newer than the frozen cut follow the snapshot as
+                # projection frames at their true clock sequence (the snapshot label is clamped
+                # to the cut, which a client holding the newer control baseline does not take).
+                snapshot=value['frame']['snapshot'];cut=snapshot['throughSequence'];label=snapshot['projections']['asOfSeq']
+                sock.settimeout(1.0);replayed=[]
+                try:
+                    while True:
+                        more=receive()
+                        if more.get('streamId')!='journal':continue
+                        captured.append({'kind':'journal','frame':more['frame']});replayed.append(more['frame'])
+                except (socket.timeout,TimeoutError):pass
+                sock.settimeout(None)
+                assert [f['type'] for f in replayed]==['projection']*2,replayed
+                assert [f['frame']['key'] for f in replayed]==['contextDetails','contextUsage'],replayed
+                for f in replayed:
+                    assert f['frame']['seq']>cut and f['frame']['seq']>label,(f,cut,label)
+                    assert f['frame']['value']==snapshot['projections']['values'][f['frame']['key']],f
+                print('JOURNAL_CONTEXT_PROJECTION_REPLAY_OK',cut,label,[f['frame']['seq'] for f in replayed])
             if kind=='journal' and os.environ.get('TEKES_TEST_IMAGE_PROMPT'):
                 assert 'KERNEL_IMAGE_RESPONSE_OK' in json.dumps(value['frame']), 'Committed answer missing from journal baseline'
                 print('IMAGE_ANSWER_CLIENT_BASELINE_OK')

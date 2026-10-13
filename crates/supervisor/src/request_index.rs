@@ -37,11 +37,17 @@ struct State {
     /// Card-less folders (unverified threads, archives) already examined -- prefiltered and, if
     /// they hold requests, folded and indexed -- with the signature of the bytes examined.
     examined: HashMap<String, u64>,
+    /// The byte prefilter of a thread's child lines, with the signature of the child files it
+    /// was computed for: an unchanged signature answers it without reading the files again.
+    children_prefilter: HashMap<String, (u64, bool)>,
 }
 
 #[derive(Default)]
 pub(crate) struct RequestIndex {
     state: Mutex<State>,
+    /// Test observer: how many times the child files were actually read by the prefilter.
+    #[cfg(test)]
+    children_scans: std::sync::atomic::AtomicU64,
 }
 
 impl RequestIndex {
@@ -99,6 +105,7 @@ impl RequestIndex {
         }
         state.examined.remove(session);
         state.examined.remove(&format!("{session}#children"));
+        state.children_prefilter.remove(session);
     }
 
     pub(crate) fn is_known_missing(&self, rpc_id: &str) -> bool {
@@ -140,6 +147,39 @@ impl RequestIndex {
         self.state().examined.insert(session.to_owned(), signature);
     }
 
+    /// `children_may_hold_requests` for the actionables baseline, which asks about every thread
+    /// whose child lines the catalog cannot vouch for on every recompute. Child ledgers are
+    /// append-only, so an unchanged signature of the child files (names and lengths) means
+    /// unchanged bytes and the earlier answer stands; only a grown child file is read again.
+    pub(crate) fn children_may_hold(&self, session: &str, folder: &Path) -> bool {
+        let Some(signature) = children_signature(folder) else {
+            // The folder cannot be listed: let the fold report it, as the scan does.
+            return true;
+        };
+        if let Some((known, answer)) = self.state().children_prefilter.get(session) {
+            if *known == signature {
+                return *answer;
+            }
+        }
+        #[cfg(test)]
+        self.children_scans
+            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+        // The scan runs outside the lock. A file that grew after the signature was taken is
+        // read at its newer length, and the changed signature makes the next call read again.
+        let answer = children_may_hold_requests(folder);
+        self.state()
+            .children_prefilter
+            .insert(session.to_owned(), (signature, answer));
+        answer
+    }
+
+    /// Test observer: child-file prefilter reads so far.
+    #[cfg(test)]
+    pub(crate) fn children_scans(&self) -> u64 {
+        self.children_scans
+            .load(std::sync::atomic::Ordering::Relaxed)
+    }
+
     #[cfg(test)]
     pub(crate) fn len(&self) -> usize {
         self.state().by_rpc.len()
@@ -150,11 +190,24 @@ impl RequestIndex {
 /// endpoint journal. Ledgers are append-only and rewrite/redact publish a new folder, so an
 /// unchanged signature means nothing new could have been appended.
 pub(crate) fn ledger_signature(folder: &Path) -> Option<u64> {
+    signature_of(folder, false)
+}
+
+/// `ledger_signature` over the child line files only (everything but `main.jsonl`): the main
+/// ledger grows with every turn and must not invalidate what is known about the children.
+fn children_signature(folder: &Path) -> Option<u64> {
+    signature_of(folder, true)
+}
+
+fn signature_of(folder: &Path, children_only: bool) -> Option<u64> {
     let mut signature = 0_u64;
     for entry in fs::read_dir(folder).ok()?.flatten() {
         let name = entry.file_name();
         let name = name.to_string_lossy();
-        if !name.ends_with(".jsonl") || name == endpoint::JOURNAL_FILE {
+        if !name.ends_with(".jsonl")
+            || name == endpoint::JOURNAL_FILE
+            || (children_only && name == "main.jsonl")
+        {
             continue;
         }
         let length = entry.metadata().ok()?.len();
@@ -239,6 +292,48 @@ mod tests {
         index.forget_session(session);
         assert!(index.lookup(&main).is_none());
         assert_eq!(index.len(), 0);
+    }
+
+    /// O-final n2: the child-file prefilter of the actionables baseline reads the child files
+    /// once per change of the child files, not once per recompute, and a grown child is read
+    /// again. The main ledger growing does not invalidate it.
+    #[test]
+    fn the_child_prefilter_reads_the_child_files_only_when_they_change() {
+        let folder = tempfile::tempdir().expect("folder");
+        let session = "018f0000-0000-7000-8000-000000000001";
+        let child = folder
+            .path()
+            .join("018f0000-0000-7000-8000-000000000002.jsonl");
+        fs::write(&child, b"{\"kind\":\"turn_open\"}\n").expect("child");
+        fs::write(folder.path().join("main.jsonl"), b"{}\n").expect("main");
+        let index = RequestIndex::default();
+        assert!(!index.children_may_hold(session, folder.path()));
+        assert!(!index.children_may_hold(session, folder.path()));
+        assert_eq!(
+            index.children_scans(),
+            1,
+            "the second recompute reads nothing"
+        );
+        // main grows (every turn does): the children are unchanged
+        fs::write(folder.path().join("main.jsonl"), b"{}\n{}\n").expect("main grows");
+        assert!(!index.children_may_hold(session, folder.path()));
+        assert_eq!(
+            index.children_scans(),
+            1,
+            "main.jsonl is not part of the signature"
+        );
+        // a child grows with a request: read again, and the answer changes
+        let mut text = fs::read(&child).expect("child");
+        text.extend_from_slice(b"{\"kind\":\"approval_request\",\"seq\":2}\n");
+        fs::write(&child, text).expect("child grows");
+        assert!(index.children_may_hold(session, folder.path()));
+        assert_eq!(index.children_scans(), 2);
+        assert!(index.children_may_hold(session, folder.path()));
+        assert_eq!(index.children_scans(), 2);
+        // a forgotten session (id reuse) is read afresh
+        index.forget_session(session);
+        assert!(index.children_may_hold(session, folder.path()));
+        assert_eq!(index.children_scans(), 3);
     }
 
     #[test]

@@ -879,6 +879,158 @@ fn the_journal_snapshot_carries_the_context_projection_within_the_cut() {
     host.shutdown();
 }
 
+/// The journal stream after its snapshot: the pending frames the open queued.
+fn open_journal_frames(
+    assembly: &ProductionCarrierAssembly,
+    stream: u64,
+    session: &str,
+    count: usize,
+) -> Vec<SessionSyncFrame> {
+    let mut journal = block_on_ready(assembly.host().open_mux_stream(
+        stream,
+        SessionStreamTarget::SessionJournal {
+            address: SessionAddress {
+                session_id: session.to_owned(),
+            },
+            max_messages: 50,
+        },
+    ))
+    .expect("journal stream");
+    (0..count)
+        .map(|_| {
+            block_on_ready(journal.recv())
+                .expect("item")
+                .expect("frame")
+        })
+        .collect()
+}
+
+fn projection_frame(frame: &SessionSyncFrame) -> (String, serde_json::Value, u64) {
+    let SessionSyncFrame::JournalProjection {
+        key,
+        value,
+        sequence,
+        ..
+    } = frame
+    else {
+        panic!("expected a journal projection frame")
+    };
+    (
+        key.clone(),
+        serde_json::from_slice(&value.canonical_bytes().expect("bytes")).expect("value JSON"),
+        *sequence,
+    )
+}
+
+/// N1: the snapshot's projection sequence is clamped to the cut, which a client holding the
+/// newer control baseline does not take as an update (it keeps the highest sequence per key).
+/// The open therefore follows the snapshot with the context projections at their true clock
+/// sequence, beyond the cut, so a changed usage reaches a reopened idle thread.
+#[test]
+fn the_journal_open_replays_the_context_projection_at_its_true_sequence() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let (blank, held) = (blank_id(810), blank_id(811));
+    write_session_at(root.path(), &blank, false);
+    write_session_at(root.path(), &held, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    for (n, session) in [&blank, &held].into_iter().enumerate() {
+        let frames = open_journal_frames(&assembly, 20 + n as u64, session, 3);
+        let SessionSyncFrame::JournalSnapshot { snapshot, .. } = &frames[0] else {
+            panic!("the first frame is the snapshot")
+        };
+        assert_client_accepts(snapshot, session);
+        let carried: serde_json::Value =
+            serde_json::from_slice(&snapshot.projections.canonical_bytes().expect("bytes"))
+                .expect("projections JSON");
+        let saved: serde_json::Value = serde_json::from_slice(
+            &std::fs::read(
+                root.path()
+                    .join("threads")
+                    .join(session)
+                    .join("context-usage.projection.json"),
+            )
+            .expect("persisted projection"),
+        )
+        .expect("saved JSON");
+        let sequence = saved["sequence"].as_u64().expect("persisted sequence");
+        assert!(
+            i64::try_from(sequence).expect("fits") > snapshot.through_sequence,
+            "the true clock is beyond the cut, which is why the snapshot is clamped"
+        );
+        assert!(
+            carried["asOfSeq"].as_i64().expect("asOfSeq") < i64::try_from(sequence).expect("fits"),
+            "the clamped snapshot label is below the true sequence"
+        );
+        let replayed = frames[1..].iter().map(projection_frame).collect::<Vec<_>>();
+        assert_eq!(
+            replayed
+                .iter()
+                .map(|frame| frame.0.as_str())
+                .collect::<Vec<_>>(),
+            ["contextDetails", "contextUsage"]
+        );
+        for (key, value, replayed_sequence) in &replayed {
+            assert_eq!(*replayed_sequence, sequence, "the persisted clock sequence");
+            assert_eq!(value, &carried["values"][key.as_str()]);
+            assert_eq!(value, &saved["value"][key.as_str()]);
+        }
+    }
+    host.shutdown();
+}
+
+/// N1, the scenario: the projection moved while the thread was idle (its persisted value no
+/// longer matches the ledger), so the client's control baseline holds the old value at the old
+/// sequence. The reopen's reconcile republishes it at a higher sequence and the journal replays
+/// exactly that sequence and value, which the client's strictly-greater merge takes.
+#[test]
+fn a_reopened_journal_replays_the_sequence_the_reconcile_published() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let held = blank_id(820);
+    write_session_at(root.path(), &held, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let first = open_journal_frames(&assembly, 30, &held, 3);
+    let (_, _, old_sequence) = projection_frame(&first[2]);
+
+    let path = root
+        .path()
+        .join("threads")
+        .join(&held)
+        .join("context-usage.projection.json");
+    let mut saved: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&path).expect("saved")).expect("saved JSON");
+    saved["value"]["contextUsage"]["usedTokens"] = serde_json::json!(4242);
+    std::fs::write(&path, serde_json::to_vec(&saved).expect("json")).expect("stale projection");
+
+    let second = open_journal_frames(&assembly, 31, &held, 3);
+    let (key, value, sequence) = projection_frame(&second[2]);
+    assert_eq!(key, "contextUsage");
+    assert!(
+        sequence > old_sequence,
+        "the republished projection is newer than the one the client holds"
+    );
+    let published: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&path).expect("republished")).expect("JSON");
+    assert_eq!(sequence, published["sequence"].as_u64().expect("sequence"));
+    assert_eq!(value, published["value"]["contextUsage"]);
+    let used = &value["usedTokens"];
+    assert_ne!(*used, 4242, "the stale value was replaced");
+    host.shutdown();
+}
+
 /// E836 C3: a thread whose workspace no longer exists is not hidden from the sidebar behind
 /// the Kernel's back: the inventory baseline fails (as it always did) instead of silently
 /// dropping the row.
@@ -1037,6 +1189,60 @@ fn actionable_ids(assembly: &ProductionCarrierAssembly, generation: u64) -> Vec<
         panic!("expected an actionable baseline")
     };
     items.into_iter().map(|item| item.id).collect()
+}
+
+/// O-final n4: a request frame that could not be announced at the 256-session limit is
+/// announced by the next reconcile once a slot is free. The published set must not record the
+/// request before the frame is out, or the retry sees "nothing changed" and the frame is lost.
+#[test]
+fn a_request_frame_refused_at_the_session_limit_is_announced_by_the_next_reconcile() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let sessions = (100..357).map(blank_id).collect::<Vec<_>>();
+    for (index, session) in sessions.iter().enumerate() {
+        write_session_at(root.path(), session, index == 256);
+    }
+    let assembly = assembly(root.path());
+    let host = kernel_host(root.path(), &assembly);
+    let streams = assembly.streams().clone();
+    let live = Arc::new(LiveSessions::default());
+    let authority: Arc<dyn SupervisorSessionAuthority> = live.clone();
+    streams.attach_session_authority(Arc::downgrade(&authority));
+    let mut mux = block_on_ready(endpoint::CarrierStreamHandler::open_stream(
+        &streams,
+        endpoint::StreamChannel::Mux,
+    ))
+    .expect("mux");
+    for session in &sessions[..256] {
+        live.0.lock().expect("live").insert(session.clone());
+        streams.attach_session(session).expect("attach");
+    }
+    // At the limit: the doorbell succeeds, the request frame cannot be announced.
+    SupervisorSessionAuthority::reconcile_projection(&*host, &sessions[256])
+        .expect("the limit does not fail the doorbell");
+    while poll_once(mux.recv()).is_some() {}
+    // A slot frees up; the next reconcile of the same unchanged ledger announces the frame.
+    live.0.lock().expect("live").remove(&sessions[0]);
+    SupervisorSessionAuthority::reconcile_projection(&*host, &sessions[256])
+        .expect("the retry succeeds");
+    let mut announced = Vec::new();
+    while let Some(Some(Ok(frame))) = poll_once(mux.recv()) {
+        announced.push((
+            frame.method.clone(),
+            String::from_utf8_lossy(&frame.payload.canonical_bytes().expect("payload"))
+                .into_owned(),
+        ));
+    }
+    assert!(
+        announced
+            .iter()
+            .any(|(method, params)| method.contains("approval") && params.contains(&sessions[256])),
+        "the held request of the 257th session is announced after the retry"
+    );
+    host.shutdown();
 }
 
 fn kernel_host(

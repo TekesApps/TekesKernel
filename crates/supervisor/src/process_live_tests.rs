@@ -534,6 +534,112 @@ exit 0
     }
 }
 
+#[test]
+fn cancel_stage_failure_names_the_stage_and_keeps_typed_failures() {
+    let started = Instant::now();
+    let annotated = cancel_stage_failure(
+        "stop-write",
+        started,
+        internal("Broken pipe (os error 32)"),
+    );
+    assert_eq!(annotated.code, "internal");
+    assert!(
+        annotated
+            .message
+            .starts_with("session.cancel stage=stop-write elapsed_ms="),
+        "the folded log line names the stage and elapsed time"
+    );
+    assert!(annotated.message.ends_with(": Broken pipe (os error 32)"));
+    let typed = cancel_stage_failure(
+        "receipt",
+        started,
+        failure("turn-conflict", "Turn conflict"),
+    );
+    assert_eq!(typed.message, "Turn conflict");
+}
+
+/// D6: the worker exits when its turn ends, so a stop that finds the pipe
+/// closed must confirm the exit and return the durable receipt, not `internal`.
+#[cfg(target_os = "macos")]
+#[test]
+fn cancel_after_the_worker_closed_stdin_returns_the_durable_receipt() {
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    fs::create_dir_all(&workspace).unwrap();
+    fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
+    write_canonical_test_json(
+        &root.path().join("workspaces/ws/workspace.json"),
+        json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
+    );
+    let bin = root.path().join("fake-worker");
+    fs::write(
+        &bin,
+        br##"#!/bin/sh
+printf '%s\n' '{"hello":{"max":2,"min":2,"proto":"tekes-worker"}}'
+IFS= read -r selected
+while [ ! -f "$0.exit" ]; do sleep 0.01; done
+exec 0<&-
+: > "$0.closed"
+sleep 0.2
+exit 0
+"##,
+    )
+    .unwrap();
+    fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).unwrap();
+    let helper = root.path().join("tekes-helper");
+    fs::write(&helper, b"#!/bin/sh\nexit 0\n").unwrap();
+    fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).unwrap();
+    let session = "018f0000-0000-7000-8000-000000000129";
+    let folder = root.path().join("threads").join(session);
+    fs::create_dir_all(folder.join("assets")).unwrap();
+    write_test_genesis(&folder.join("main.jsonl"), session);
+    append_test_input(&folder.join("main.jsonl"), session);
+    let host =
+        ProductionProcessHost::open(root.path(), &bin, "test", root.path().join(".agent")).unwrap();
+    let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        host.schedule_main(session).unwrap().unwrap();
+        let worker = host.live_worker(session).unwrap();
+        fs::write(root.path().join("fake-worker.exit"), b"exit").unwrap();
+        let deadline = Instant::now() + Duration::from_secs(2);
+        while !root.path().join("fake-worker.closed").exists() {
+            assert!(Instant::now() < deadline, "worker never closed stdin");
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        assert!(
+            worker.alive.load(Ordering::Acquire),
+            "must exercise the closed pipe before the reader observes the exit"
+        );
+        let origin = OriginTuple {
+            principal: "test".into(),
+            client: "test".into(),
+            target: session.into(),
+            op: "session.cancel".into(),
+            key: "stop-after-exit".into(),
+        };
+        let receipt = host
+            .cancel(session, "2026-08-28T00:00:05.000Z", &origin)
+            .expect("a stop after the worker exited is durable, not an internal error");
+        assert!(
+            child_exited_within(&worker.child, Duration::ZERO),
+            "the fallback requires the confirmed process exit"
+        );
+        let bytes = fs::read(folder.join("main.jsonl")).unwrap();
+        let projection = scan_valid_prefix(&bytes, 1).projection.unwrap();
+        let stops = projection
+            .events
+            .iter()
+            .filter(|event| event.kind() == &EventKind::StopRequested)
+            .collect::<Vec<_>>();
+        assert_eq!(stops.len(), 1, "exactly one durable stop");
+        assert_eq!(stops[0].seq(), receipt.seq);
+        assert_eq!(stops[0].string_field("origin_key"), Some("stop-after-exit"));
+    }));
+    host.shutdown();
+    if let Err(error) = result {
+        std::panic::resume_unwind(error);
+    }
+}
+
 #[cfg(target_os = "macos")]
 #[test]
 #[ignore = "real worker and scripted provider; scripts/run-validator-exhaustion.py"]

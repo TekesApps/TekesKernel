@@ -7499,7 +7499,12 @@ fn deepseek_pairing_rule_rejects_a_message_between_call_and_output() {
 /// The next DeepSeek Responses request body's `input`, built from the ledger
 /// exactly as the worker builds it for the following provider attempt.
 fn deepseek_next_request_input(ledger: &LockedLedger) -> (Vec<Value>, Vec<u64>) {
-    let context = project_provider_context(ledger, "e1", DialectId::DeepseekResponsesV1, 2)
+    deepseek_request_input_at(ledger, 2)
+}
+
+/// The DeepSeek request body's `input` for provider `turn`.
+fn deepseek_request_input_at(ledger: &LockedLedger, turn: u64) -> (Vec<Value>, Vec<u64>) {
+    let context = project_provider_context(ledger, "e1", DialectId::DeepseekResponsesV1, turn)
         .expect("parent projection after the child completed");
     let admits = context.admits.clone();
     let provider_config = Provider {
@@ -7909,5 +7914,304 @@ fn ledger_stuck_with_delegation_between_call_and_child_result_projects_paired() 
             .iter()
             .any(|item| item.to_string().contains("delegation")),
         "the parent request must not carry the child's assignment record: {input:?}"
+    );
+}
+
+/// A DeepSeek parent ledger whose single sealed response carries every `calls`
+/// entry as a `function_call` (one parallel batch), with no results yet.
+fn deepseek_batch_ledger(calls: &[(&str, &str, Value)]) -> (tempfile::TempDir, LockedLedger) {
+    let (directory, mut ledger) = context_ledger("deepseek_responses_v1", false);
+    append_test_attempt(&mut ledger, "batch-attempt");
+    for (call, name, arguments) in calls {
+        append_test_call(&mut ledger, "batch-attempt", call, name, arguments.clone());
+    }
+    let fragment = calls
+        .iter()
+        .enumerate()
+        .map(|(index, (call, name, arguments))| {
+            json!({
+                "arguments": serde_json::to_string(arguments).unwrap(),
+                "call_id": call, "id": format!("fc-{index}"), "name": name,
+                "status":"completed", "type":"function_call"
+            })
+        })
+        .collect::<Vec<_>>();
+    let output = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"output",
+        "ts":"2026-08-27T09:00:03.000Z","attempt":"batch-attempt","content":[],
+        "final_answer":false,
+        "sealed":{"version":1,"adapter":"deepseek_responses_v1",
+            "fragments":serde_json::to_string(&fragment).unwrap()},
+        "usage":{"availability":"unavailable"}
+    }))
+    .expect("output");
+    ledger
+        .append_contract(output, BarrierContext::default())
+        .expect("output barrier");
+    (directory, ledger)
+}
+
+fn append_ledger_event(ledger: &mut LockedLedger, mut value: Value) -> u64 {
+    let seq = ledger.next_seq();
+    value["v"] = json!(1);
+    value["seq"] = json!(seq);
+    value["ts"] = json!("2026-08-27T09:00:03.000Z");
+    ledger
+        .append_contract(make_event(value).expect("event"), BarrierContext::default())
+        .expect("append");
+    seq
+}
+
+/// The subagent call's host records up to the spawn (what the writer appends
+/// before it waits for the child).
+fn append_subagent_start(ledger: &mut LockedLedger, call: &str, arguments: &Value) {
+    append_ledger_event(
+        ledger,
+        json!({"turn":2,"kind":"tool_execution_started","call":call}),
+    );
+    append_ledger_event(
+        ledger,
+        json!({"turn":2,"kind":"state","subkind":"delegation","payload":{
+            "call":call,"name":"subagent","invocation":arguments,"resolved_inputs":[]}}),
+    );
+    append_ledger_event(
+        ledger,
+        json!({"turn":2,"kind":"spawn","child":"steer-child.jsonl","call":call,
+            "spawn_id":"spawn-steer","resume":{"bounded":3},"seed":{"kinds":["state"]}}),
+    );
+}
+
+fn append_child_result(ledger: &mut LockedLedger, call: &str) -> u64 {
+    append_ledger_event(
+        ledger,
+        json!({"turn":2,"kind":"child_result","call":call,"child":"steer-child.jsonl",
+            "spawn_id":"spawn-steer","outcome":"completed","summary":"done"}),
+    )
+}
+
+/// A user steer delivered while the turn is open, as the ledger records it.
+fn append_steer(ledger: &mut LockedLedger, key: &str, text: &str) -> u64 {
+    append_ledger_event(
+        ledger,
+        json!({"kind":"input","steer":true,"content":[{"type":"text","text":text}],
+            "origin_key":key,"origin_tuple":{"principal":"p","client":"cli","target":"t",
+                "op":"submit","key":key}}),
+    )
+}
+
+fn append_ok_tool_result(ledger: &mut LockedLedger, call: &str) -> u64 {
+    append_ledger_event(
+        ledger,
+        json!({"turn":2,"kind":"tool_result","call":call,"outcome":"ok",
+            "content":[{"type":"text","text":"ok"}]}),
+    )
+}
+
+fn input_index_containing(input: &[Value], needle: &str) -> usize {
+    let hits = input
+        .iter()
+        .enumerate()
+        .filter(|(_, item)| item.to_string().contains(needle))
+        .map(|(index, _)| index)
+        .collect::<Vec<_>>();
+    assert_eq!(hits.len(), 1, "the text must be sent exactly once");
+    hits[0]
+}
+
+fn function_item_index(input: &[Value], kind: &str, call: &str) -> usize {
+    input
+        .iter()
+        .position(|item| {
+            item.get("type").and_then(Value::as_str) == Some(kind)
+                && item.get("call_id").and_then(Value::as_str) == Some(call)
+        })
+        .expect("the request carries the call item")
+}
+
+fn subagent_arguments() -> Value {
+    json!({"brief":"b","report_back_session_id":"018f0000-0000-7000-8000-000000000003"})
+}
+
+/// F146-D2: a steer delivered while a subagent runs lands between the
+/// spawning call and its `child_result` in the ledger. It must be sent after
+/// the call's output, once, and be admitted with the child_result.
+#[test]
+fn steer_during_a_subagent_wait_is_sent_after_the_call_output() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) =
+        deepseek_batch_ledger(&[("call_00_STEER", "subagent", arguments.clone())]);
+    append_subagent_start(&mut ledger, "call_00_STEER", &arguments);
+    let steer_seq = append_steer(&mut ledger, "steer-1", "also check the tests");
+    let child_result_seq = append_child_result(&mut ledger, "call_00_STEER");
+    append_ok_tool_result(&mut ledger, "call_00_STEER");
+
+    let (input, admits) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("a steer must not split a call from its output");
+    assert_output_follows_call_directly(&input, "call_00_STEER");
+    let output = function_item_index(&input, "function_call_output", "call_00_STEER");
+    let steer = input_index_containing(&input, "also check the tests");
+    assert!(output < steer, "the steer is sent after the call's output");
+    assert_eq!(steer, input.len() - 1, "nothing follows the steer");
+    assert_eq!(admits, [steer_seq, child_result_seq]);
+}
+
+/// The same defect with a `task` call: the projection is call-name agnostic.
+#[test]
+fn steer_during_a_task_wait_is_sent_after_the_call_output() {
+    let arguments = json!({
+        "task_name":"audit","goal":"find defects","instructions":"inspect inputs",
+        "input_sources":[],
+        "output":{"mode":"inline","format":"text","name":"result","path":"","contract":"findings"}
+    });
+    let (_directory, mut ledger) =
+        deepseek_batch_ledger(&[("call_00_TASKSTEER", "task", arguments.clone())]);
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"tool_execution_started","call":"call_00_TASKSTEER"}),
+    );
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"spawn","child":"steer-child.jsonl","call":"call_00_TASKSTEER",
+            "spawn_id":"spawn-steer","resume":{"bounded":3},"seed":{"kinds":["state"]}}),
+    );
+    append_steer(&mut ledger, "steer-1", "also check the tests");
+    append_child_result(&mut ledger, "call_00_TASKSTEER");
+
+    let (input, _) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("a steer must not split a task call from its output");
+    assert_output_follows_call_directly(&input, "call_00_TASKSTEER");
+    assert!(
+        function_item_index(&input, "function_call_output", "call_00_TASKSTEER")
+            < input_index_containing(&input, "also check the tests")
+    );
+}
+
+/// Batch of a subagent call (A) and an ordinary call (B): B's result lands
+/// before the steer, A's child_result after. The steer goes after A's.
+#[test]
+fn steer_in_a_multi_call_batch_goes_after_the_last_result() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) = deepseek_batch_ledger(&[
+        ("call_00_A", "subagent", arguments.clone()),
+        ("call_00_B", "read", json!({"path":"a.txt"})),
+    ]);
+    append_subagent_start(&mut ledger, "call_00_A", &arguments);
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"tool_execution_started","call":"call_00_B"}),
+    );
+    append_ok_tool_result(&mut ledger, "call_00_B");
+    append_steer(&mut ledger, "steer-1", "also check the tests");
+    append_child_result(&mut ledger, "call_00_A");
+    append_ok_tool_result(&mut ledger, "call_00_A");
+
+    let (input, _) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("batch is paired and the steer follows it");
+    let steer = input_index_containing(&input, "also check the tests");
+    assert!(function_item_index(&input, "function_call_output", "call_00_A") < steer);
+    assert!(function_item_index(&input, "function_call_output", "call_00_B") < steer);
+    assert_eq!(steer, input.len() - 1);
+}
+
+/// Batch where the steer lands between A's result and B's later result: the
+/// steer must wait for B as well, not sit between the outputs.
+#[test]
+fn steer_between_two_results_of_one_batch_waits_for_the_later_one() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) = deepseek_batch_ledger(&[
+        ("call_00_A", "subagent", arguments.clone()),
+        ("call_00_B", "read", json!({"path":"a.txt"})),
+    ]);
+    append_subagent_start(&mut ledger, "call_00_A", &arguments);
+    append_child_result(&mut ledger, "call_00_A");
+    append_steer(&mut ledger, "steer-1", "also check the tests");
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"tool_execution_started","call":"call_00_B"}),
+    );
+    append_ok_tool_result(&mut ledger, "call_00_B");
+
+    let (input, _) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("the steer must not sit between the outputs");
+    let steer = input_index_containing(&input, "also check the tests");
+    assert!(function_item_index(&input, "function_call_output", "call_00_A") < steer);
+    assert!(function_item_index(&input, "function_call_output", "call_00_B") < steer);
+}
+
+/// Several steers during the wait keep their order, all after the output.
+#[test]
+fn steers_during_a_wait_keep_their_order_after_the_output() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) =
+        deepseek_batch_ledger(&[("call_00_STEER", "subagent", arguments.clone())]);
+    append_subagent_start(&mut ledger, "call_00_STEER", &arguments);
+    append_steer(&mut ledger, "steer-1", "first steer text");
+    append_steer(&mut ledger, "steer-2", "second steer text");
+    append_child_result(&mut ledger, "call_00_STEER");
+
+    let (input, _) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("steers do not split the call");
+    let first = input_index_containing(&input, "first steer text");
+    let second = input_index_containing(&input, "second steer text");
+    assert!(
+        function_item_index(&input, "function_call_output", "call_00_STEER") < first
+            && first < second
+    );
+}
+
+/// Once a settled attempt admitted the re-anchored steer, a later turn still
+/// replays it after the call's output (the stateless replay keeps the order).
+#[test]
+fn admitted_steer_stays_after_the_output_on_later_turns() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) =
+        deepseek_batch_ledger(&[("call_00_STEER", "subagent", arguments.clone())]);
+    append_subagent_start(&mut ledger, "call_00_STEER", &arguments);
+    let steer_seq = append_steer(&mut ledger, "steer-1", "also check the tests");
+    let child_result_seq = append_child_result(&mut ledger, "call_00_STEER");
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"attempt","request":{"asset":"sha256-abababababababababababababababababababababababababababababababab","bytes":4096},
+            "attempt":"after","epoch":"e1","wire_digest":"w",
+            "admits":[{"from":steer_seq,"to":steer_seq},{"from":child_result_seq,"to":child_result_seq}]}),
+    );
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"output","attempt":"after","content":[{"type":"text","text":"answer"}],
+            "sealed":{"version":1,"adapter":"deepseek_responses_v1",
+                "fragments":"[{\"content\":[{\"text\":\"answer\",\"type\":\"output_text\"}],\"role\":\"assistant\",\"type\":\"message\"}]"},
+            "usage":{"availability":"unavailable"}}),
+    );
+    append_ledger_event(
+        &mut ledger,
+        json!({"turn":2,"kind":"settle","outcome":"completed"}),
+    );
+
+    let (input, _) = deepseek_request_input_at(&ledger, 3);
+    deepseek_pairing_violation(&input).expect("the later turn is paired");
+    assert!(
+        function_item_index(&input, "function_call_output", "call_00_STEER")
+            < input_index_containing(&input, "also check the tests")
+    );
+}
+
+/// Controls: a steer outside any open call-to-result span keeps its own
+/// chronological position.
+#[test]
+fn steer_outside_a_pending_call_keeps_its_chronological_position() {
+    let arguments = subagent_arguments();
+    let (_directory, mut ledger) =
+        deepseek_batch_ledger(&[("call_00_STEER", "subagent", arguments.clone())]);
+    append_subagent_start(&mut ledger, "call_00_STEER", &arguments);
+    append_child_result(&mut ledger, "call_00_STEER");
+    append_ok_tool_result(&mut ledger, "call_00_STEER");
+    append_steer(&mut ledger, "steer-late", "late steer text");
+
+    let (input, _) = deepseek_next_request_input(&ledger);
+    deepseek_pairing_violation(&input).expect("paired");
+    assert_output_follows_call_directly(&input, "call_00_STEER");
+    assert_eq!(
+        input_index_containing(&input, "late steer text"),
+        input.len() - 1
     );
 }

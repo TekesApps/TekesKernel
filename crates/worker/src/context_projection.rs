@@ -126,6 +126,8 @@ pub(crate) fn project_provider_context_mode(
     let mut input_position = std::collections::BTreeMap::<u64, u64>::new();
     let mut call_turn = std::collections::BTreeMap::<String, u64>::new();
     let mut call_name = std::collections::BTreeMap::<String, String>::new();
+    let mut steer_seqs = Vec::<u64>::new();
+    let mut call_seqs = std::collections::BTreeMap::<String, u64>::new();
     let mut spawned_calls = std::collections::BTreeSet::<String>::new();
     let mut open_turn = None;
     let mut continuation_id = None;
@@ -179,6 +181,7 @@ pub(crate) fn project_provider_context_mode(
                 }
             }
             EventKind::Input if object.get("steer").and_then(Value::as_bool) == Some(true) => {
+                steer_seqs.push(event.seq());
                 if let Some(target) = open_turn {
                     input_turn.insert(event.seq(), target);
                 }
@@ -229,6 +232,7 @@ pub(crate) fn project_provider_context_mode(
                     call_attempts.insert(call.to_owned(), attempt.to_owned());
                 }
                 call_turn.insert(call.to_owned(), event.turn().ok_or("tool_call lacks turn")?);
+                call_seqs.insert(call.to_owned(), event.seq());
                 call_name.insert(
                     call.to_owned(),
                     event
@@ -335,8 +339,7 @@ pub(crate) fn project_provider_context_mode(
         let output = output_positions.get(call_attempts.get(event.string_field("call")?)?)?;
         (*output > anchor).then_some(*output)
     };
-    let mut ordered_events = projection.events.iter().collect::<Vec<_>>();
-    ordered_events.sort_by_key(|event| {
+    let base_key = |event: &Event| -> (u64, u8, u64) {
         let anchor = render_anchor(event.seq());
         if let Some(position) = input_position.get(&anchor) {
             (*position, 0_u8, anchor)
@@ -345,6 +348,60 @@ pub(crate) fn project_provider_context_mode(
         } else {
             (anchor, 0, anchor)
         }
+    };
+    // A steer retains chronology, so one delivered while a call's result is
+    // still pending (a subagent or task child running) would render between
+    // that call and its output; providers reject that ("No tool output found
+    // for tool call"). Re-anchor it after the last result of the open batch.
+    // The ledger is unchanged, so a thread already in this shape heals when
+    // the context is rebuilt.
+    let mut steer_anchor = std::collections::BTreeMap::<u64, u64>::new();
+    let steers = steer_seqs
+        .iter()
+        .copied()
+        .filter(|seq| !superseded.contains(seq) && !input_position.contains_key(seq))
+        .collect::<Vec<_>>();
+    if !steers.is_empty() {
+        // (call position, result render position) of every rendered result.
+        let spans = projection
+            .events
+            .iter()
+            .filter(|event| {
+                !superseded.contains(&event.seq())
+                    && match event.kind() {
+                        EventKind::ChildResult => true,
+                        EventKind::ToolResult => event
+                            .string_field("call")
+                            .is_some_and(|call| !spawned_calls.contains(call)),
+                        _ => false,
+                    }
+            })
+            .filter_map(|event| {
+                let call = event.string_field("call")?;
+                // An attempt's sealed output carries its calls; before one
+                // exists the call renders at its own event.
+                let call_position = call_attempts
+                    .get(call)
+                    .and_then(|attempt| output_positions.get(attempt))
+                    .or_else(|| call_seqs.get(call))?;
+                Some((*call_position, base_key(event).0))
+            })
+            .collect::<Vec<_>>();
+        for steer in steers {
+            let last_result = spans
+                .iter()
+                .filter(|(call, result)| *call < steer && steer < *result)
+                .map(|(_, result)| *result)
+                .max();
+            if let Some(position) = last_result {
+                steer_anchor.insert(steer, position);
+            }
+        }
+    }
+    let mut ordered_events = projection.events.iter().collect::<Vec<_>>();
+    ordered_events.sort_by_key(|event| match steer_anchor.get(&event.seq()) {
+        Some(position) => (*position, 2_u8, event.seq()),
+        None => base_key(event),
     });
     for event in ordered_events {
         let raw = serde_json::to_value(event.raw())?;
