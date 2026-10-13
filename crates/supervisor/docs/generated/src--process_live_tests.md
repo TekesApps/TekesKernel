@@ -942,7 +942,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools().is_some` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
 | `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
 | `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider::resolve_profile` | [1201](../../src/process_live_tests.rs#L1201) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L691) |
+| `real_public_deferred_tool_search` | `provider::resolve_profile` | [1201](../../src/process_live_tests.rs#L1201) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
 | `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap().to_owned` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |
 | `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |
 | `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |

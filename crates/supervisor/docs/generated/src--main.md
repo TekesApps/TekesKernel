@@ -53,7 +53,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `Some` | [7](../../src/main.rs#L7), [20](../../src/main.rs#L20), [44](../../src/main.rs#L44) | external-constructor-callback-or-unresolved |
 | `main` | `std::ffi::OsStr::new` | [7](../../src/main.rs#L7), [20](../../src/main.rs#L20), [44](../../src/main.rs#L44) | external-constructor-callback-or-unresolved |
 | `main` | `serde_json::to_string` | [9](../../src/main.rs#L9) | external-constructor-callback-or-unresolved |
-| `main` | `provider::supported_dialects` | [9](../../src/main.rs#L9) | [provider::dialect::supported_dialects](../../../provider/src/dialect.rs#L669) |
+| `main` | `provider::supported_dialects` | [9](../../src/main.rs#L9) | [provider::dialect::supported_dialects](../../../provider/src/dialect.rs#L670) |
 | `main` | `ExitCode::from` | [16](../../src/main.rs#L16), [23](../../src/main.rs#L23), [38](../../src/main.rs#L38), [60](../../src/main.rs#L60) | external-constructor-callback-or-unresolved |
 | `main` | `env::args_os().collect::<Vec<_>>` | [21](../../src/main.rs#L21) | receiver-type-required |
 | `main` | `args.len` | [22](../../src/main.rs#L22) | receiver-type-required |

@@ -56,7 +56,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/provider/src/secret_store.rs](../../src/secret_store.rs) | 35 | 130 | [Symbols and calls](src--secret_store.md) |
 | [crates/provider/src/sse.rs](../../src/sse.rs) | 15 | 92 | [Symbols and calls](src--sse.md) |
 | [crates/provider/tests/anthropic_messages_alignment.rs](../../tests/anthropic_messages_alignment.rs) | 21 | 176 | `inventory.json` |
-| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 33 | 729 | `inventory.json` |
+| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 34 | 744 | `inventory.json` |
 | [crates/provider/tests/live_anthropic_thinking.rs](../../tests/live_anthropic_thinking.rs) | 2 | 153 | `inventory.json` |
 | [crates/provider/tests/live_cache.rs](../../tests/live_cache.rs) | 5 | 107 | `inventory.json` |
 | [crates/provider/tests/live_chat_layout.rs](../../tests/live_chat_layout.rs) | 1 | 57 | `inventory.json` |
