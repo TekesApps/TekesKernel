@@ -47,11 +47,23 @@ jobs:
       - name: Install the pinned toolchain
         run: rustup show active-toolchain || rustup toolchain install
       - uses: Swatinem/rust-cache@v2
-      - name: Install Linux sandbox dependency
+      - name: Install Linux sandbox dependencies and bubblewrap AppArmor profile
         run: |
           sudo apt-get update
-          sudo apt-get install --no-install-recommends -y bubblewrap
+          sudo apt-get install --no-install-recommends -y bubblewrap apparmor-profiles
+          # Ubuntu 24.04 restricts namespace capabilities unless bwrap has
+          # its distribution profile. Load only that profile; keep global
+          # AppArmor and unprivileged-userns restrictions unchanged.
+          sudo install -m 0644 \
+            /usr/share/apparmor/extra-profiles/bwrap-userns-restrict \
+            /etc/apparmor.d/bwrap-userns-restrict
+          sudo apparmor_parser -r /etc/apparmor.d/bwrap-userns-restrict
           bwrap --version
+          dpkg-query -W bubblewrap apparmor apparmor-profiles
+          sysctl -e kernel.unprivileged_userns_clone \
+            kernel.apparmor_restrict_unprivileged_userns \
+            kernel.apparmor_restrict_unprivileged_unconfined \
+            user.max_user_namespaces
       - name: Clippy
         run: cargo clippy --workspace --all-targets --locked -- -D warnings
       - name: Linux sandbox runtime (bubblewrap, Landlock and automatic selection)

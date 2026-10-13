@@ -36,9 +36,15 @@ and automatic backend selection to pass independently, so automatic
 fallback cannot hide a broken backend. A missing test suite or unavailable
 requested backend fails the run. The tests exercise confined processes and
 filesystem/network denials without provider credentials or external
-network access. GitHub's Linux jobs install bubblewrap and run this script
-on native `ubuntu-24.04` (x86_64) and `ubuntu-24.04-arm` (aarch64) runners
-before the complete workspace suite:
+network access. GitHub's Linux jobs install bubblewrap and `apparmor-profiles`
+on native `ubuntu-24.04` (x86_64) and `ubuntu-24.04-arm` (aarch64) runners.
+Their setup copies the distribution's `bwrap-userns-restrict` profile from
+`/usr/share/apparmor/extra-profiles/` into `/etc/apparmor.d/` and loads only
+that profile with `apparmor_parser -r`. This grants bubblewrap namespace
+setup while retaining the child profile's capability restrictions; global
+AppArmor and user-namespace restrictions remain enabled. The setup logs
+package versions and reads the relevant sysctls for diagnostics. It then
+runs this script before the complete workspace suite:
 
 ```bash
 scripts/ci-linux-sandbox.sh --backend all
