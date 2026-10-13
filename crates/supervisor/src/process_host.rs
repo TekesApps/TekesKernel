@@ -933,15 +933,22 @@ impl ProductionProcessHost {
     /// Validates a replacement workspace-local policy against the current
     /// immutable instruction ceiling and every currently installed tool
     /// catalog. No worker is started and no config bytes are written.
+    ///
+    /// Returns the policy-named tools that are unavailable because their
+    /// healthy MCP server refused to project them (per tool; see
+    /// mcp-runtime). Such a name is neither an unknown tool nor an unavailable
+    /// server: the policy is accepted, the tool is not callable and not in the
+    /// catalog, and the caller reports it with its reason.
     pub fn validate_workspace_policy_candidate(
         &self,
         workspace_id: &str,
         policy: &profile::WorkspacePolicy,
-    ) -> Result<(), DaemonError> {
+    ) -> Result<Vec<crate::mcp_runtime::McpRefusedTool>, PolicyCandidateError> {
+        use PolicyCandidateCause as Cause;
         let mut config = self
             .repository
             .resolve(workspace_id)
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+            .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         config.workspace.policy = policy.clone();
         let instruction = profile::InstructionResolver::new_scoped(
             &self.user_agent_dir,
@@ -949,7 +956,7 @@ impl ProductionProcessHost {
             config.workspace.cwd.iter().map(PathBuf::from),
         )
         .capture()
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         let effective = instruction.meet_workspace_policy(policy);
         if effective.network != policy.network
             || effective.allowed_tools.iter().collect::<BTreeSet<_>>()
@@ -958,7 +965,8 @@ impl ProductionProcessHost {
                 != policy.writable_roots.iter().collect::<BTreeSet<_>>()
             || effective.max_wall_seconds != policy.max_wall_seconds
         {
-            return Err(DaemonError::required_broker(
+            return Err(PolicyCandidateError::new(
+                Cause::AuthorityCeiling,
                 "workspace policy exceeds the immutable instruction ceiling",
             ));
         }
@@ -975,9 +983,14 @@ impl ProductionProcessHost {
             .collect::<BTreeSet<_>>();
         let mut discovery_config = config.clone();
         discovery_config.workspace.policy.allowed_tools.clear();
-        let bindings =
-            resolve_worker_launch_bindings(&discovery_config, &instruction, None, Vec::new())
-                .map_err(|error| DaemonError::required_broker(error.to_string()))?;
+        let bindings = resolve_worker_launch_bindings(
+            &discovery_config,
+            &instruction,
+            None,
+            Vec::new(),
+            Vec::new(),
+        )
+        .map_err(|error| PolicyCandidateError::new(Cause::AuthorityCeiling, error))?;
         available.extend(
             bindings
                 .dynamic_catalog
@@ -988,19 +1001,36 @@ impl ProductionProcessHost {
         let mcp = self
             .mcp_runtime
             .prepare_workspace(workspace_id)
-            .map_err(|error| DaemonError::required_broker(error.to_string()))?;
+            .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         if mcp_failure_is_required(&mcp.failures, &policy.allowed_tools) {
-            return Err(DaemonError::required_broker(
-                "workspace policy requires an unavailable MCP server",
+            return Err(PolicyCandidateError::new(
+                Cause::McpServerUnavailable,
+                required_mcp_failure_reason(&mcp.failures, &policy.allowed_tools),
             ));
         }
-        available.extend(mcp.catalog.tools.into_iter().map(|tool| tool.name));
-        if !requested.is_subset(&available) {
-            return Err(DaemonError::required_broker(
-                "workspace policy names a tool outside the installed catalog",
+        available.extend(mcp.catalog.tools.iter().map(|tool| tool.name.clone()));
+        // A refused tool is excused only by its exact projected name on a
+        // server that otherwise prepared; every other absent name is still
+        // outside the installed catalog.
+        let unavailable = mcp.refused_allowed_tools(&policy.allowed_tools);
+        let excused = unavailable
+            .iter()
+            .filter_map(|refused| refused.refusal.name.clone())
+            .collect::<BTreeSet<_>>();
+        let unknown = requested
+            .iter()
+            .filter(|name| !available.contains(*name) && !excused.contains(*name))
+            .collect::<Vec<_>>();
+        if !unknown.is_empty() {
+            return Err(PolicyCandidateError::new(
+                Cause::ToolNotInstalled,
+                format!(
+                    "workspace policy names a tool outside the installed catalog: {}",
+                    bounded_name_list(unknown.iter().map(|name| name.as_str()))
+                ),
             ));
         }
-        Ok(())
+        Ok(unavailable)
     }
 
     /// Applies the privilege-reduction half of config publication. A relaxed
@@ -1260,9 +1290,15 @@ impl ProductionProcessHost {
                 "workspace policy requires an unavailable MCP server",
             ));
         }
-        let binding =
-            resolve_worker_launch_bindings(&config, &instruction, None, mcp.catalog.tools)
-                .map_err(|error| DaemonError::required_broker(error.to_string()))?;
+        let unavailable = mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
+        let binding = resolve_worker_launch_bindings(
+            &config,
+            &instruction,
+            None,
+            mcp.catalog.tools,
+            unavailable,
+        )
+        .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         Ok(binding.dynamic_catalog)
     }
 
@@ -2547,8 +2583,14 @@ impl ProductionProcessHost {
                 // what it is missing through a notice rather than a dead turn.
                 *launch_notices_capture
                     .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                    mcp_launch_notices(mcp.registry_failure.as_deref(), &mcp.failures);
+                    .unwrap_or_else(std::sync::PoisonError::into_inner) = mcp_launch_notices(
+                    mcp.registry_failure.as_deref(),
+                    &mcp.failures,
+                    &mcp.tool_refusals,
+                    &config.workspace.policy.allowed_tools,
+                );
+                let unavailable =
+                    mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
                 // The bound goal is the session's durable goals.v1 record id
                 // (never a session, ledger, or process id).
                 let bindings = resolve_worker_launch_bindings(
@@ -2556,6 +2598,7 @@ impl ProductionProcessHost {
                     instruction,
                     goal_id.clone(),
                     mcp.catalog.tools,
+                    unavailable,
                 )
                 .map_err(|error| error.to_string())?;
                 *mcp_routes_capture
@@ -4461,9 +4504,14 @@ impl ProductionProcessHost {
 /// The notices a degraded MCP launch owes the session: one for an unreadable
 /// registry (no registry-configured server joined the catalog) and one per
 /// server that could not be prepared. Nothing when the catalog is complete.
+/// Most refused tools one `mcp_tool` notice names.
+const MAX_NOTICE_TOOLS: usize = 8;
+
 fn mcp_launch_notices(
     registry_failure: Option<&str>,
     failures: &[crate::mcp_runtime::McpServerFailure],
+    tool_refusals: &[crate::mcp_runtime::McpRefusedTool],
+    allowed_tools: &[String],
 ) -> Vec<SessionNotice> {
     let mut notices = Vec::new();
     if let Some(message) = registry_failure {
@@ -4483,6 +4531,54 @@ fn mcp_launch_notices(
             message: format!(
                 "MCP server {} was skipped for this run: {reason}",
                 failure.server.name
+            ),
+        });
+    }
+    // One notice per healthy server that skipped tools: the server stays
+    // available, the notice names each skipped tool, where in its schema and
+    // why. At most `MAX_NOTICE_TOOLS` are listed, those the workspace policy
+    // names first; the rest is counted.
+    let mut servers = BTreeMap::<&mcp::McpServerReference, Vec<&mcp::McpToolRefusal>>::new();
+    for refused in tool_refusals {
+        servers
+            .entry(&refused.server)
+            .or_default()
+            .push(&refused.refusal);
+    }
+    for (server, mut refusals) in servers {
+        refusals.sort_by_key(|refusal| {
+            !refusal
+                .name
+                .as_ref()
+                .is_some_and(|name| allowed_tools.contains(name))
+        });
+        let listed = refusals
+            .iter()
+            .take(MAX_NOTICE_TOOLS)
+            .map(|refusal| {
+                let location = refusal
+                    .pointer
+                    .as_deref()
+                    .map(|pointer| format!(" at {pointer}"))
+                    .unwrap_or_default();
+                format!("{}{location}: {}", refusal.tool, refusal.reason)
+            })
+            .collect::<Vec<_>>()
+            .join("; ");
+        let omitted = refusals.len().saturating_sub(MAX_NOTICE_TOOLS);
+        let tail = if omitted == 0 {
+            String::new()
+        } else {
+            format!("; and {omitted} more")
+        };
+        notices.push(SessionNotice {
+            severity: SessionNoticeSeverity::Warning,
+            classification: "mcp_tool".to_owned(),
+            operation: "worker-launch".to_owned(),
+            message: format!(
+                "MCP server {} is available but {} of its tools were skipped for this run: {listed}{tail}",
+                server.name,
+                refusals.len()
             ),
         });
     }
@@ -4614,6 +4710,96 @@ fn mcp_failure_is_required(
             .expect("static marker remains unescaped");
         allowed_tools.iter().any(|tool| tool.starts_with(prefix))
     })
+}
+
+/// The reason text for a policy that names an unavailable MCP server: which
+/// servers, and each one's stable failure code.
+fn required_mcp_failure_reason(
+    failures: &[crate::mcp_runtime::McpServerFailure],
+    allowed_tools: &[String],
+) -> String {
+    let required = failures
+        .iter()
+        .filter(|failure| mcp_failure_is_required(std::slice::from_ref(failure), allowed_tools))
+        .map(|failure| format!("{} ({})", failure.server.name, failure.code))
+        .collect::<Vec<_>>();
+    format!(
+        "workspace policy requires an unavailable MCP server: {}",
+        bounded_name_list(required.iter().map(String::as_str))
+    )
+}
+
+/// At most eight comma-separated names, each cut to 128 bytes, then a count.
+fn bounded_name_list<'a>(names: impl Iterator<Item = &'a str>) -> String {
+    const LISTED: usize = 8;
+    let names = names.collect::<Vec<_>>();
+    let mut text = names
+        .iter()
+        .take(LISTED)
+        .map(|name| {
+            let mut end = name.len().min(128);
+            while !name.is_char_boundary(end) {
+                end -= 1;
+            }
+            name[..end].to_owned()
+        })
+        .collect::<Vec<_>>()
+        .join(", ");
+    if names.len() > LISTED {
+        text.push_str(&format!(" and {} more", names.len() - LISTED));
+    }
+    text
+}
+
+/// Why `validate_workspace_policy_candidate` refused a policy. The cause is
+/// stable and machine-readable; the reason is the precise human sentence.
+#[derive(Debug)]
+pub struct PolicyCandidateError {
+    pub cause: PolicyCandidateCause,
+    reason: String,
+}
+
+impl PolicyCandidateError {
+    fn new(cause: PolicyCandidateCause, reason: impl ToString) -> Self {
+        Self {
+            cause,
+            reason: reason.to_string(),
+        }
+    }
+}
+
+impl std::fmt::Display for PolicyCandidateError {
+    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        formatter.write_str(&self.reason)
+    }
+}
+
+impl std::error::Error for PolicyCandidateError {}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum PolicyCandidateCause {
+    /// The policy exceeds a ceiling: the immutable instruction ceiling, or a
+    /// limit the resolved configuration enforces (a writable root outside
+    /// every workspace folder).
+    AuthorityCeiling,
+    /// The policy names a tool that is in no installed catalog.
+    ToolNotInstalled,
+    /// The policy names a tool of an MCP server that is not available.
+    McpServerUnavailable,
+    /// The catalogs needed to judge the policy could not be assembled.
+    CatalogUnavailable,
+}
+
+impl PolicyCandidateCause {
+    #[must_use]
+    pub const fn code(self) -> &'static str {
+        match self {
+            Self::AuthorityCeiling => "authority-ceiling",
+            Self::ToolNotInstalled => "tool-not-installed",
+            Self::McpServerUnavailable => "mcp-server-unavailable",
+            Self::CatalogUnavailable => "catalog-unavailable",
+        }
+    }
 }
 
 const fn child_dependency_admitted(ordinary_capacity: bool, parent_is_live_waiter: bool) -> bool {
@@ -7040,6 +7226,8 @@ mod tests {
                     detail: None,
                 },
             ],
+            &[],
+            &[],
         );
         assert_eq!(notices.len(), 2);
         assert_eq!(notices[0].classification, "mcp_server");
@@ -7051,6 +7239,198 @@ mod tests {
             notices[1].message,
             "MCP server offline was skipped for this run: refresh-failed"
         );
+    }
+
+    #[test]
+    fn refused_tools_produce_one_bounded_notice_per_healthy_server() {
+        let reference = mcp::McpServerReference {
+            workspace_id: "ws".to_owned(),
+            scope: mcp::McpScope::User,
+            name: "probe".to_owned(),
+        };
+        let refusal = |index: usize| crate::mcp_runtime::McpRefusedTool {
+            server: reference.clone(),
+            refusal: mcp::McpToolRefusal {
+                tool: format!("tool{index}"),
+                name: Some(format!("mcp__probe__tool{index}")),
+                code: "schema-refused",
+                pointer: Some("/parameters/properties/operand".to_owned()),
+                keyword: Some("maxProperties".to_owned()),
+                reason: "uses unsupported keyword \"maxProperties\"".to_owned(),
+            },
+        };
+        let one = mcp_launch_notices(None, &[], &[refusal(0)], &[]);
+        assert_eq!(one.len(), 1);
+        assert_eq!(one[0].classification, "mcp_tool");
+        assert_eq!(
+            one[0].message,
+            "MCP server probe is available but 1 of its tools were skipped for this run: tool0 at /parameters/properties/operand: uses unsupported keyword \"maxProperties\""
+        );
+        let many = (0..MAX_NOTICE_TOOLS + 3).map(refusal).collect::<Vec<_>>();
+        // The policy names the last tool: it is listed first, not cut.
+        let last = format!("mcp__probe__tool{}", MAX_NOTICE_TOOLS + 2);
+        let notices = mcp_launch_notices(None, &[], &many, std::slice::from_ref(&last));
+        assert_eq!(notices.len(), 1, "one notice per server, not per tool");
+        let message = &notices[0].message;
+        assert!(message.ends_with("; and 3 more"), "{message}");
+        assert!(
+            message.contains(&format!("{} of its tools", MAX_NOTICE_TOOLS + 3)),
+            "{message}"
+        );
+        assert!(message.contains(&format!("tool{} at", MAX_NOTICE_TOOLS + 2)));
+        assert!(!message.contains("tool7 at"), "{message}");
+        assert_eq!(message.matches(" at /parameters").count(), MAX_NOTICE_TOOLS);
+    }
+
+    #[cfg(target_os = "macos")]
+    fn write_catalog_server(script: &Path, tools_json: &str) {
+        fs::write(
+            script,
+            format!(
+                "#!/bin/sh\nwhile IFS= read -r line; do\ncase \"$line\" in\n*'\"method\":\"initialize\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{{\"protocolVersion\":\"{}\",\"capabilities\":{{\"tools\":{{}}}},\"serverInfo\":{{\"name\":\"catalog\",\"version\":\"1\"}}}}}}' ;;\n*'\"method\":\"tools/list\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{{\"tools\":{tools_json}}}}}' ;;\nesac\ndone\n",
+                mcp::LEGACY_PROTOCOL_VERSION
+            ),
+        )
+        .expect("catalog server");
+        fs::set_permissions(script, fs::Permissions::from_mode(0o755)).expect("script mode");
+    }
+
+    /// Runs one real worker launch (the worker itself exits at once) under
+    /// `allowed_tools` and returns the stranded-input notice message. A launch
+    /// whose bindings were refused says so; one that reached the worker does not.
+    #[cfg(target_os = "macos")]
+    fn launch_notice_for_policy(servers: &[(&str, String)], allowed_tools: &[&str]) -> String {
+        let root = tempfile::tempdir().expect("process host root");
+        let workspace = root.path().join("workspace");
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspace config");
+        write_canonical_test_json(
+            &root.path().join("workspaces/ws/workspace.json"),
+            json!({"format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":allowed_tools,"network":false,"writable_roots":[]}}),
+        );
+        let session = "018f0000-0000-7000-8000-000000000121";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+        let worker = root.path().join("failing-worker");
+        fs::write(&worker, b"#!/bin/sh\nexit 1\n").expect("failing worker");
+        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+        let host = ProductionProcessHost::open(
+            root.path(),
+            worker,
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        for (name, tools_json) in servers {
+            let script = root.path().join(format!("{name}-server"));
+            write_catalog_server(&script, tools_json);
+            host.mcp_runtime
+                .mutate(
+                    &format!("save-{name}"),
+                    &mcp::McpManagementMutation::Save {
+                        server: mcp::McpServerConfig {
+                            reference: mcp::McpServerReference {
+                                workspace_id: "ws".to_owned(),
+                                scope: mcp::McpScope::User,
+                                name: (*name).to_owned(),
+                            },
+                            transport: mcp::McpTransportConfig::Stdio {
+                                command: vec![script.to_string_lossy().into_owned()],
+                                cwd: None,
+                                environment: BTreeMap::new(),
+                            },
+                            enabled: true,
+                            always_on: false,
+                            protocol_mode: mcp::ProtocolMode::Legacy,
+                            owner: None,
+                            plugin_component: None,
+                            project_trusted: true,
+                        },
+                        credential_fields: BTreeMap::new(),
+                    },
+                )
+                .expect("save server");
+        }
+        let origin = OriginTuple {
+            principal: "test".to_owned(),
+            client: "test".to_owned(),
+            target: session.to_owned(),
+            op: "session.prompt".to_owned(),
+            key: "rpc-launch-probe".to_owned(),
+        };
+        let prompt = MaterializedPrompt {
+            blocks: vec![Block::Text {
+                text: "launch probe".to_owned(),
+            }],
+            attachments: Vec::new(),
+            files: Vec::new(),
+        };
+        host.locked_prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, false)
+            .expect("durable prompt");
+        let notices = session_notices(&fs::read(&ledger).expect("ledger"));
+        let launch = notices
+            .iter()
+            .find(|notice| notice["classification"] == "worker_launch")
+            .unwrap_or_else(|| panic!("no worker_launch notice: {notices:?}"));
+        launch["message"].as_str().unwrap_or_default().to_owned()
+    }
+
+    /// set-accepted implies launch-accepted: every policy below is one
+    /// `validate_workspace_policy_candidate` accepts, and the real launch gets
+    /// past the bindings (it then fails only because the stub worker exits). The
+    /// control shows the probe can tell a refused binding from a started worker.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn a_policy_set_accepts_never_breaks_the_launch_binding() {
+        let bad = |name: &str| {
+            format!(
+                r#"{{"name":"{name}","description":"Bad","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{"o":{{"type":"object","maxProperties":2,"properties":{{}}}}}},"required":[],"additionalProperties":false}}}}"#
+            )
+        };
+        let good = |name: &str| {
+            format!(
+                r#"{{"name":"{name}","description":"Good","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{}},"required":[],"additionalProperties":false}}}}"#
+            )
+        };
+        let binding_refused =
+            |message: &str| message.contains("launch bindings could not be derived");
+        // Control: an unknown name is refused at launch, as at set.
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{}]", good("alpha")))],
+            &["mcp__probe__nope"],
+        );
+        assert!(binding_refused(&message), "{message}");
+        // An ordinary refused tool.
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{},{}]", good("alpha"), bad("beta")))],
+            &["mcp__probe__alpha", "mcp__probe__beta"],
+        );
+        assert!(!binding_refused(&message), "{message}");
+        // A refused tool whose projected name collides with a healthy tool's.
+        let message = launch_notice_for_policy(
+            &[
+                ("a", format!("[{}]", bad("b__c"))),
+                ("a__b", format!("[{}]", good("c"))),
+            ],
+            &["mcp__a__b__c"],
+        );
+        assert!(!binding_refused(&message), "{message}");
+        // A refused tool whose projected name is too long for a launch name
+        // does not disturb the other tools' launch (a policy cannot name it:
+        // `set` refuses it as unknown).
+        let long = "x".repeat(130);
+        let message = launch_notice_for_policy(
+            &[("probe", format!("[{},{}]", good("alpha"), bad(&long)))],
+            &["mcp__probe__alpha"],
+        );
+        assert!(!binding_refused(&message), "{message}");
     }
 
     #[test]

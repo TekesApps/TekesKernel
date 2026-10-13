@@ -274,6 +274,35 @@ only when the replacement actually reduces a live run's effective authority.
 Errors are `workspace-not-found`,
 `stale-revision`, `policy-invalid`, and `policy-escalation`.
 
+`policy-escalation` is the code for every way a policy can exceed what is
+installed or granted, so its `message` and `details` say which. `details`
+always carries `reason`, the precise sentence, and `cause`, one of:
+
+| `cause` | `message` | meaning |
+|---|---|---|
+| `authority-ceiling` | Workspace policy exceeds an authority ceiling | the immutable instruction ceiling, or a limit the resolved configuration enforces (a writable root outside every workspace folder) |
+| `tool-not-installed` | Workspace policy names a tool that is not installed | a name in no installed catalog and not accounted for by a refusal below; `reason` lists the names (at most eight) |
+| `mcp-server-unavailable` | Workspace policy requires an MCP server that is unavailable | the policy names a tool of an MCP server that failed as a whole (`refresh-failed`, `credential-unavailable`, `projection-failed`); `reason` lists the servers and codes |
+
+A policy that could not be judged because the catalogs could not be assembled
+(configuration, instructions or MCP preparation failed) is not an escalation: it
+fails as `internal` with `details.cause = "catalog-unavailable"`.
+
+An MCP tool whose own schema the dynamic launch validator refuses is excluded
+alone while its server stays ready ([mcp-runtime](mcp-runtime.md) §Catalogs). A
+policy naming such a tool is therefore not refused: it is accepted exactly as
+sent (`workspace.policy.get` returns it), the tool is absent from `tools/list`
+and `tools/resolve` answers `tool-not-found`, the tool is not callable in any
+run, and the result reports it. The result is
+`{format:1,revision,policy}` plus, only when at least one named tool is
+unavailable for this reason, `unavailableTools` (at most 32 entries
+`{server,tool,name,code,reason,pointer?,keyword?}`, the diagnostic of
+mcp-runtime) and, when more exist, `unavailableToolCount`. Only an exact
+projected name of a refused tool is excused, and only when that name is a valid
+launch tool name (at most 128 bytes) and not also an executable catalog entry; a
+refused tool with an overlong projected name is an unknown tool (`tool-not-installed`); the check for unknown names, for an
+unavailable server and for every ceiling is unchanged.
+
 `workspaceFolders.v1` edits the ordered `config` `Workspace.folders` list:
 
 ```text

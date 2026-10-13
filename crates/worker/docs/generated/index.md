@@ -58,7 +58,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/worker/src/validation_tests.rs](../../src/validation_tests.rs) | 19 | 451 | [Symbols and calls](src--validation_tests.md) |
 | [crates/worker/src/web_search.rs](../../src/web_search.rs) | 14 | 159 | [Symbols and calls](src--web_search.md) |
 | [crates/worker/src/workspace_edits.rs](../../src/workspace_edits.rs) | 10 | 153 | [Symbols and calls](src--workspace_edits.md) |
-| [crates/worker/tests/shell.rs](../../tests/shell.rs) | 21 | 1093 | `inventory.json` |
+| [crates/worker/tests/shell.rs](../../tests/shell.rs) | 21 | 1094 | `inventory.json` |
 
 ## Cross-file direct calls
 

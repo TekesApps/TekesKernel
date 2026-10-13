@@ -9,6 +9,7 @@ publish = false
 [dependencies]
 endpoint = { path = "../endpoint" }
 engine = { path = "../engine" }
+mcp = { path = "../mcp" }
 profile = { path = "../profile" }
 schema = { path = "../schema" }
 serde_json.workspace = true

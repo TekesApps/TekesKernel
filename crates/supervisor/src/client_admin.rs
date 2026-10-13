@@ -15,7 +15,8 @@ use sha2::{Digest, Sha256};
 use store::{AtomicPublisher, NamedLock};
 
 use crate::endpoint_host::{ProductionEndpointRoutes, ProductionRouteFailure};
-use crate::process_host::ProductionProcessHost;
+use crate::mcp_runtime::{MAX_REPORTED_TOOL_REFUSALS, McpRefusedTool, refused_tool_json};
+use crate::process_host::{PolicyCandidateCause, PolicyCandidateError, ProductionProcessHost};
 
 pub const WORKSPACE_POLICY_METHODS: [(&str, MethodClass); 2] = [
     ("workspace.policy.get", MethodClass::ReadOnly),
@@ -163,15 +164,10 @@ impl ClientAdminRoutes {
         if workspace.revision != input.expected_revision {
             return Err(stale(input.expected_revision, workspace.revision));
         }
-        self.process_host
+        let unavailable = self
+            .process_host
             .validate_workspace_policy_candidate(&input.workspace_id, &input.policy)
-            .map_err(|error| {
-                failure(
-                    "policy-escalation",
-                    "Workspace policy exceeds an authority ceiling",
-                    json!({"reason":error.to_string()}),
-                )
-            })?;
+            .map_err(policy_candidate_failure)?;
         let previous = self
             .repository
             .resolve(&input.workspace_id)
@@ -180,7 +176,7 @@ impl ClientAdminRoutes {
         desired_workspace.revision = next_revision(desired_workspace.revision)?;
         desired_workspace.policy = Some(input.policy.clone());
         let desired = desired_workspace.canonical_bytes().map_err(map_policy)?;
-        let result = policy_result(desired_workspace.revision, &input.policy)?;
+        let result = policy_result(desired_workspace.revision, &input.policy, &unavailable)?;
         self.journal.begin(
             request,
             &format!("workspaces/{}/workspace.json", input.workspace_id),
@@ -585,11 +581,69 @@ fn map_policy(error: profile::ProfileError) -> ProductionRouteFailure {
         ),
     }
 }
+/// Maps a refused candidate policy to its endpoint failure.
+///
+/// The documented codes stay. `policy-escalation` is the documented code for
+/// every way a policy can exceed what is installed or granted (the instruction
+/// ceiling, a tool no catalog has, an MCP server that is not available), so
+/// those keep it and differ in `message` and in `details.cause`. A candidate
+/// that could not be judged because the catalogs could not be assembled is not
+/// an escalation and is reported as `internal`. `details.reason` always
+/// carries the precise sentence.
+fn policy_candidate_failure(error: PolicyCandidateError) -> ProductionRouteFailure {
+    let details = json!({"reason":error.to_string(),"cause":error.cause.code()});
+    match error.cause {
+        PolicyCandidateCause::AuthorityCeiling => failure(
+            "policy-escalation",
+            "Workspace policy exceeds an authority ceiling",
+            details,
+        ),
+        PolicyCandidateCause::ToolNotInstalled => failure(
+            "policy-escalation",
+            "Workspace policy names a tool that is not installed",
+            details,
+        ),
+        PolicyCandidateCause::McpServerUnavailable => failure(
+            "policy-escalation",
+            "Workspace policy requires an MCP server that is unavailable",
+            details,
+        ),
+        PolicyCandidateCause::CatalogUnavailable => failure(
+            "internal",
+            "Workspace policy could not be checked against the installed catalogs",
+            details,
+        ),
+    }
+}
+
+/// `{format,revision,policy}` plus, only when the policy names tools that an
+/// otherwise healthy MCP server refused to project, `unavailableTools`: at most
+/// [`MAX_REPORTED_TOOL_REFUSALS`] entries `{server,tool,name,code,reason,
+/// pointer?,keyword?}`, with `unavailableToolCount` when more exist. Those
+/// tools are accepted in the policy, absent from the catalog and not callable.
 fn policy_result(
     revision: u64,
     policy: &WorkspacePolicy,
+    unavailable: &[McpRefusedTool],
 ) -> Result<IJsonValue, ProductionRouteFailure> {
-    to_ijson(&json!({"format":1,"revision":revision,"policy":policy}))
+    let mut result = json!({"format":1,"revision":revision,"policy":policy});
+    if !unavailable.is_empty() {
+        let object = result.as_object_mut().expect("object literal");
+        object.insert(
+            "unavailableTools".to_owned(),
+            Value::Array(
+                unavailable
+                    .iter()
+                    .take(MAX_REPORTED_TOOL_REFUSALS)
+                    .map(refused_tool_json)
+                    .collect(),
+            ),
+        );
+        if unavailable.len() > MAX_REPORTED_TOOL_REFUSALS {
+            object.insert("unavailableToolCount".to_owned(), json!(unavailable.len()));
+        }
+    }
+    to_ijson(&result)
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -1085,7 +1139,8 @@ mod tests {
             }}),
             false,
         );
-        let result = policy_result(2, desired.policy.as_ref().expect("policy")).expect("result");
+        let result =
+            policy_result(2, desired.policy.as_ref().expect("policy"), &[]).expect("result");
         assert!(matches!(
             routes.journal.begin(
                 &interrupted,
@@ -1151,7 +1206,7 @@ mod tests {
                 ..WorkspacePolicy::default()
             });
             let result =
-                policy_result(2, desired.policy.as_ref().expect("policy")).expect("result");
+                policy_result(2, desired.policy.as_ref().expect("policy"), &[]).expect("result");
             routes
                 .journal
                 .begin(
@@ -1297,8 +1352,12 @@ mod tests {
                 allowed_tools: vec!["read".to_owned()],
                 ..WorkspacePolicy::default()
             });
-            let result = policy_result(desired.revision, desired.policy.as_ref().expect("policy"))
-                .expect("result");
+            let result = policy_result(
+                desired.revision,
+                desired.policy.as_ref().expect("policy"),
+                &[],
+            )
+            .expect("result");
             routes
                 .journal
                 .begin(

@@ -611,7 +611,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `routes` | `AtomicCapabilityRoutes::new` | [404](../../src/client_extensions.rs#L404) | [tekes-supervisor::client_extensions::AtomicCapabilityRoutes::new](../../src/client_extensions.rs#L195) |
 | `routes` | `Arc::clone` | [407](../../src/client_extensions.rs#L407) | external-constructor-callback-or-unresolved |
 | `routes` | `routes.push` | [411](../../src/client_extensions.rs#L411) | receiver-type-required |
-| `routes` | `McpManagementRoutes::new` | [411](../../src/client_extensions.rs#L411) | [tekes-supervisor::mcp_runtime::McpManagementRoutes::new](../../src/mcp_runtime.rs#L1161) |
+| `routes` | `McpManagementRoutes::new` | [411](../../src/client_extensions.rs#L411) | [tekes-supervisor::mcp_runtime::McpManagementRoutes::new](../../src/mcp_runtime.rs#L1273) |
 | `routes` | `self.process.mcp_runtime` | [412](../../src/client_extensions.rs#L412) | receiver-type-required |
 | `plugin_store` | `self.plugins.as_deref().ok_or_else` | [420](../../src/client_extensions.rs#L420) | receiver-type-required |
 | `plugin_store` | `self.plugins.as_deref` | [420](../../src/client_extensions.rs#L420) | receiver-type-required |

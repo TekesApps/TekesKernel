@@ -10,7 +10,8 @@ use mcp::{
     McpManagementFault, McpManagementMutation, McpPeer, McpPeerFuture, McpPool, McpPoolKey,
     McpRegistry, McpRegistryStore, McpScope, McpServerConfig, McpServerReference, McpTool,
     McpToolAnnotations, McpToolCallContext, McpToolContinuation, McpTransport, McpTransportConfig,
-    ProtocolMode, RecoveryAction, StdioTransport, project_catalog, project_name, recovery_action,
+    ProtocolMode, RecoveryAction, StdioTransport, project_catalog, project_catalog_partial,
+    project_name, recovery_action,
 };
 use profile::{DynamicToolEffect, ExternalEffectProtocol};
 use schema::IJsonValue;
@@ -2238,4 +2239,186 @@ fn registry_file_tolerates_missing_trailing_newline_and_names_the_file_on_corrup
     let error = store.load().expect_err("corrupt registry").to_string();
     assert!(error.contains("mcp-servers.json"), "{error}");
     assert!(error.contains("not canonical"), "{error}");
+}
+
+fn per_tool_fixture(name: &str, schema: &str) -> McpTool {
+    McpTool {
+        name: name.to_owned(),
+        description: format!("Fixture tool {name}"),
+        input_schema: IJsonValue::parse_str(schema).expect("fixture schema"),
+        annotations: McpToolAnnotations {
+            read_only_hint: true,
+            destructive_hint: false,
+        },
+        metadata: None,
+        execution: None,
+    }
+}
+
+const PER_TOOL_GOOD_SCHEMA: &str = r#"{"additionalProperties":false,"properties":{"value":{"type":"string"}},"required":["value"],"type":"object"}"#;
+const PER_TOOL_BAD_SCHEMA: &str = r#"{"additionalProperties":false,"properties":{"operand":{"additionalProperties":false,"maxProperties":2,"minProperties":1,"properties":{"left":{"type":"string"}},"type":"object"}},"required":["operand"],"type":"object"}"#;
+
+/// mcp-runtime §Catalogs: a tool outside the dynamic-schema contract is
+/// refused by itself; the same listing's other tools still project.
+#[test]
+fn partial_projection_excludes_only_the_refused_tool_and_locates_the_cause() {
+    let good = per_tool_fixture("alpha", PER_TOOL_GOOD_SCHEMA);
+    let bad = per_tool_fixture("beta", PER_TOOL_BAD_SCHEMA);
+    let partial =
+        project_catalog_partial("probe", &[bad.clone(), good.clone()], false).expect("partial");
+    assert_eq!(
+        partial
+            .catalog
+            .tools
+            .iter()
+            .map(|tool| tool.name.as_str())
+            .collect::<Vec<_>>(),
+        vec!["mcp__probe__alpha"]
+    );
+    assert_eq!(partial.refused.len(), 1);
+    let refusal = &partial.refused[0];
+    assert_eq!(refusal.tool, "beta");
+    assert_eq!(refusal.name.as_deref(), Some("mcp__probe__beta"));
+    assert_eq!(refusal.code, "schema-refused");
+    assert_eq!(
+        refusal.pointer.as_deref(),
+        Some("/parameters/properties/operand")
+    );
+    assert_eq!(refusal.keyword.as_deref(), Some("maxProperties"));
+    assert!(
+        refusal.reason.contains("unsupported keyword"),
+        "{}",
+        refusal.reason
+    );
+    assert!(
+        !refusal.reason.contains("/parameters"),
+        "pointer is separate"
+    );
+
+    // The strict projection still refuses the whole catalog, naming the tool.
+    let error = project_catalog("probe", &[bad, good], false)
+        .expect_err("strict projection")
+        .to_string();
+    assert!(error.contains("tool beta"), "{error}");
+    assert!(error.contains("/parameters/properties/operand"), "{error}");
+}
+
+#[test]
+fn partial_projection_reports_are_bounded_and_server_level_causes_stay_errors() {
+    // An oversized description is cut in the diagnostic, not copied.
+    let mut loud = per_tool_fixture("loud", PER_TOOL_GOOD_SCHEMA);
+    loud.description = "y".repeat(5000);
+    let partial = project_catalog_partial("probe", &[loud], false).expect("partial");
+    assert_eq!(partial.refused.len(), 1);
+    assert!(partial.refused[0].reason.len() <= 512);
+    let mut long_name = per_tool_fixture(&"n".repeat(300), PER_TOOL_GOOD_SCHEMA);
+    long_name.description = "ok".to_owned();
+    let partial = project_catalog_partial("probe", &[long_name], false).expect("partial");
+    assert!(partial.refused[0].tool.len() <= 256);
+
+    // A tool with an empty name cannot be projected; it is refused alone.
+    let unnamed = per_tool_fixture("", PER_TOOL_GOOD_SCHEMA);
+    let good = per_tool_fixture("alpha", PER_TOOL_GOOD_SCHEMA);
+    let partial =
+        project_catalog_partial("probe", &[unnamed, good.clone()], false).expect("partial");
+    assert_eq!(partial.catalog.tools.len(), 1);
+    assert_eq!(partial.refused[0].name, None);
+
+    // Duplicate names in one listing and an empty server name stay server-level.
+    assert!(matches!(
+        project_catalog_partial("probe", &[good.clone(), good.clone()], false),
+        Err(mcp::McpProjectionError::Duplicate(_))
+    ));
+    assert!(matches!(
+        project_catalog_partial("", &[good], false),
+        Err(mcp::McpProjectionError::EmptyName)
+    ));
+}
+
+/// A mutating tool is only as good as its reconcile tool: refusing the latter
+/// refuses the former, and an unrelated tool is untouched.
+#[test]
+fn partial_projection_refuses_an_effectful_tool_whose_reconcile_tool_was_refused() {
+    let reconcile = McpTool {
+        name: "lookup".to_owned(),
+        description: "Query by key".to_owned(),
+        input_schema: IJsonValue::parse_str(
+            r#"{"additionalProperties":false,"maxProperties":1,"properties":{"idempotencyKey":{"type":"string"}},"required":["idempotencyKey"],"type":"object"}"#,
+        )
+        .expect("reconcile schema"),
+        annotations: McpToolAnnotations {
+            read_only_hint: true,
+            destructive_hint: false,
+        },
+        metadata: None,
+        execution: None,
+    };
+    let create = McpTool {
+        name: "create".to_owned(),
+        description: "Create".to_owned(),
+        input_schema: IJsonValue::parse_str(PER_TOOL_GOOD_SCHEMA).expect("create schema"),
+        annotations: McpToolAnnotations {
+            read_only_hint: false,
+            destructive_hint: true,
+        },
+        metadata: Some(
+            IJsonValue::parse_str(
+                r#"{"io.tekes/externalEffect":{"reconcileTool":"lookup","version":1}}"#,
+            )
+            .expect("effect metadata"),
+        ),
+        execution: None,
+    };
+    let other = per_tool_fixture("other", PER_TOOL_GOOD_SCHEMA);
+    let partial =
+        project_catalog_partial("shop", &[create, reconcile, other], false).expect("partial");
+    assert_eq!(
+        partial
+            .catalog
+            .tools
+            .iter()
+            .map(|tool| tool.name.as_str())
+            .collect::<Vec<_>>(),
+        vec!["mcp__shop__other"]
+    );
+    let codes = partial
+        .refused
+        .iter()
+        .map(|refusal| (refusal.tool.as_str(), refusal.code))
+        .collect::<Vec<_>>();
+    assert_eq!(
+        codes,
+        vec![
+            ("create", "dependency-refused"),
+            ("lookup", "schema-refused")
+        ]
+    );
+}
+
+/// A reported projected name is always a valid launch tool name: a name the
+/// launch binding would reject (overlong after escaping) is not reported, so a
+/// policy naming it can never be excused.
+#[test]
+fn refusal_names_are_reported_only_when_the_launch_binding_accepts_them() {
+    let overlong = per_tool_fixture(&"x".repeat(130), PER_TOOL_BAD_SCHEMA);
+    let escaping = per_tool_fixture(&"/".repeat(50), PER_TOOL_BAD_SCHEMA);
+    let ordinary = per_tool_fixture("beta", PER_TOOL_BAD_SCHEMA);
+    let partial =
+        project_catalog_partial("probe", &[overlong, escaping, ordinary], false).expect("partial");
+    assert_eq!(partial.refused.len(), 3);
+    assert_eq!(partial.refused[0].name, None, "130 bytes plus prefix");
+    assert_eq!(
+        partial.refused[1].name, None,
+        "50 slashes escape to 150 bytes"
+    );
+    assert_eq!(partial.refused[2].name.as_deref(), Some("mcp__probe__beta"));
+    for refusal in &partial.refused {
+        assert!(
+            refusal
+                .name
+                .as_deref()
+                .is_none_or(profile::is_dynamic_tool_name)
+        );
+        assert!(refusal.tool.len() <= 256);
+    }
 }

@@ -6,6 +6,78 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+Additive wire changes only (see "Wire" below); no existing field changes meaning.
+
+### Fixed
+- One MCP tool whose schema the dynamic-schema contract refuses (for example a
+  `maxProperties` or `minProperties` keyword) no longer takes its whole server
+  down. The tool is excluded alone; the server's other tools project, route and
+  stay available, and the server stays `ready`. Before, preparation dropped the
+  server (`mcp-server-projection-failed`), the policy naming its tools then
+  failed, and the client saw only "Workspace policy exceeds an authority
+  ceiling". Present since 0.2.0.
+  - Per tool: a schema, description, projected name or external-effect
+    declaration the launch validator refuses, and an effectful tool whose
+    reconcile tool was refused. Per server (unchanged): spawn, handshake and
+    `tools/list` failures, duplicate tool names in one listing, and route or
+    pool collisions.
+  - Each refusal is a bounded diagnostic (`server`, `tool`, `name`, `code`,
+    JSON `pointer`, `keyword`, `reason`) in supervisor.log
+    (`mcp-tool-projection-refused`), in an `mcp_tool` session notice per server
+    at worker launch, and in `mcp.list`.
+  - `workspace.policy.set` accepts a policy that names a refused tool, stores it
+    as sent and reports it in `unavailableTools`; the tool is not in
+    `tools/list`, `tools/resolve` answers `tool-not-found`, and it is not
+    callable. An unknown name, an unavailable server and every ceiling are
+    refused as before. The worker launch honours the same rule through the
+    launch binding's optional `unavailable_tools`.
+  - A refusal reports a projected `name` only when it is a valid launch tool name
+    (at most 128 bytes, no ASCII control). A refused tool whose projected name is
+    longer is an unknown tool at `workspace.policy.set` (`tool-not-installed`), and
+    a refusal whose projected name is also an executable tool's (server `a` tool
+    `b__c` against server `a__b` tool `c`) is not reported as unavailable. A policy
+    that `set` accepts therefore always yields a valid launch binding, `tools/list`
+    and worker launch.
+  - The `mcp_tool` notice names at most eight skipped tools, those the workspace
+    policy names first, and counts the rest.
+  - A route reconnect re-projects the catalog per tool, so a sibling that stays
+    refused is not reported as drift of an effectful route.
+- `workspace.policy.set` failures say what failed. `policy-escalation` stays the
+  code for everything that exceeds what is installed or granted, but `message`
+  now differs by cause and `details.cause` is one of `authority-ceiling`,
+  `tool-not-installed`, `mcp-server-unavailable`; `details.reason` is as
+  precise as before and now lists the offending tool or server names. A policy
+  that could not be judged because configuration, instructions or MCP
+  preparation failed is reported as `internal` with
+  `details.cause = "catalog-unavailable"` instead of as an escalation.
+
+### Wire
+- `workspace.policy.set` result: optional `unavailableTools` (at most 32 entries)
+  and `unavailableToolCount`, present only when the policy names a refused tool.
+- `workspace.policy.set` failure `details`: new `cause`.
+- `mcp.list` row `readiness` for a ready server: optional `refusedToolCount` and
+  `refusedTools` (at most 32 entries).
+- Launch bindings v1: optional `unavailable_tools` (absent when empty, so bytes
+  of a launch without refusals are unchanged). Host to worker only.
+- New session notice classification `mcp_tool`.
+- `mcp` crate: `project_catalog_partial`, `McpToolRefusal`; `project_catalog`
+  keeps its all-or-nothing behavior. `profile` crate:
+  `LaunchBindings::bind_with_unavailable`, `SchemaRefusal`.
+
+### Known behavior changes
+- Host and worker must come from the same release. An older worker refuses a
+  launch whose bindings carry `unavailable_tools` (it rejects unknown fields);
+  that only happens when a launch has refused tools, which 0.4.5 would have
+  answered by dropping the whole server.
+- An explicit empty `unavailable_tools` in launch bindings is rejected on decode
+  (the host never emits it).
+- A server whose only defect is a refused tool is now `ready` with zero or more
+  tools instead of `refresh-failed`/`projection-failed`, and a policy naming
+  only its refused tools is accepted instead of failing the whole policy.
+- The `message` of `policy-escalation` is no longer always "Workspace policy
+  exceeds an authority ceiling"; clients should match on `code` and
+  `details.cause`.
+
 ## 0.4.5 — 2026-10-13
 
 No wire-format change.

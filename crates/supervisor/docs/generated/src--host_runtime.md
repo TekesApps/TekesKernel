@@ -442,7 +442,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_application_endpoint_host` | `command_clock` | [383](../../src/host_runtime.rs#L383) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `DaemonError::corrupt` | [388](../../src/host_runtime.rs#L388), [404](../../src/host_runtime.rs#L404), [415](../../src/host_runtime.rs#L415) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
 | `assemble_application_endpoint_host` | `ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))             .map_err` | [391](../../src/host_runtime.rs#L391) | receiver-type-required |
-| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [391](../../src/host_runtime.rs#L391) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L40) |
+| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [391](../../src/host_runtime.rs#L391) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L41) |
 | `assemble_application_endpoint_host` | `extensions.routes` | [394](../../src/host_runtime.rs#L394) | receiver-type-required |
 | `assemble_application_endpoint_host` | `extension_routes.extend` | [395](../../src/host_runtime.rs#L395) | receiver-type-required |
 | `assemble_application_endpoint_host` | `admin_routes.routes` | [395](../../src/host_runtime.rs#L395) | receiver-type-required |

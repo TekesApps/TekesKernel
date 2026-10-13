@@ -197,7 +197,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `live_kernel_turn` | `session_controls::execute_goal(&storage_root, "goals.edit",             &json!({"sessionId":session,"ref":{"id":"new","revision":0},"objective":objective}), None).unwrap` | [130](../../src/live_tests.rs#L130) | receiver-type-required |
 | `live_kernel_turn` | `session_controls::execute_goal` | [130](../../src/live_tests.rs#L130) | [session-controls::execute_goal](../../../session-controls/src/lib.rs#L245) |
 | `live_kernel_turn` | `profile::LaunchBindings::bind(&profile.config,             Some(created["id"].as_str().unwrap().to_owned()), Default::default()).unwrap` | [132](../../src/live_tests.rs#L132) | receiver-type-required |
-| `live_kernel_turn` | `profile::LaunchBindings::bind` | [132](../../src/live_tests.rs#L132), [135](../../src/live_tests.rs#L135) | [profile::launch::LaunchBindings::bind](../../../profile/src/launch.rs#L170) |
+| `live_kernel_turn` | `profile::LaunchBindings::bind` | [132](../../src/live_tests.rs#L132), [135](../../src/live_tests.rs#L135) | [profile::launch::LaunchBindings::bind](../../../profile/src/launch.rs#L181) |
 | `live_kernel_turn` | `created["id"].as_str().unwrap().to_owned` | [133](../../src/live_tests.rs#L133) | receiver-type-required |
 | `live_kernel_turn` | `created["id"].as_str().unwrap` | [133](../../src/live_tests.rs#L133) | receiver-type-required |
 | `live_kernel_turn` | `created["id"].as_str` | [133](../../src/live_tests.rs#L133) | receiver-type-required |

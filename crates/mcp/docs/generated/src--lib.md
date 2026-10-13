@@ -8,12 +8,12 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [mcp::LEGACY_PROTOCOL_VERSION](../../src/lib.rs#L36) | const_item | `pub` |  |
-| [mcp::MODERN_PROTOCOL_VERSION](../../src/lib.rs#L37) | const_item | `pub` |  |
-| [mcp::MAX_FRAME_BYTES](../../src/lib.rs#L38) | const_item | `pub` |  |
-| [mcp::MAX_CATALOG_ITEMS](../../src/lib.rs#L39) | const_item | `pub` |  |
-| [mcp::MAX_CATALOG_PAGES](../../src/lib.rs#L40) | const_item | `pub` |  |
-| [mcp::MAX_CONTINUATION_ROUNDS](../../src/lib.rs#L41) | const_item | `pub` |  |
+| [mcp::LEGACY_PROTOCOL_VERSION](../../src/lib.rs#L39) | const_item | `pub` |  |
+| [mcp::MODERN_PROTOCOL_VERSION](../../src/lib.rs#L40) | const_item | `pub` |  |
+| [mcp::MAX_FRAME_BYTES](../../src/lib.rs#L41) | const_item | `pub` |  |
+| [mcp::MAX_CATALOG_ITEMS](../../src/lib.rs#L42) | const_item | `pub` |  |
+| [mcp::MAX_CATALOG_PAGES](../../src/lib.rs#L43) | const_item | `pub` |  |
+| [mcp::MAX_CONTINUATION_ROUNDS](../../src/lib.rs#L44) | const_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -43,9 +43,15 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `McpPoolKey` | `pool::McpPoolKey` | `pub` |
 | `McpPoolLease` | `pool::McpPoolLease` | `pub` |
 | `PooledPeer` | `pool::PooledPeer` | `pub` |
+| `MAX_TOOL_REFUSAL_NAME_BYTES` | `projection::MAX_TOOL_REFUSAL_NAME_BYTES` | `pub` |
+| `MAX_TOOL_REFUSAL_REASON_BYTES` | `projection::MAX_TOOL_REFUSAL_REASON_BYTES` | `pub` |
 | `McpProjectionError` | `projection::McpProjectionError` | `pub` |
+| `McpToolRefusal` | `projection::McpToolRefusal` | `pub` |
+| `PartialProjection` | `projection::PartialProjection` | `pub` |
 | `project_catalog` | `projection::project_catalog` | `pub` |
+| `project_catalog_partial` | `projection::project_catalog_partial` | `pub` |
 | `project_name` | `projection::project_name` | `pub` |
+| `refusal_code` | `projection::refusal_code` | `pub` |
 | `McpLossState` | `recovery::McpLossState` | `pub` |
 | `RecoveryAction` | `recovery::RecoveryAction` | `pub` |
 | `recovery_action` | `recovery::recovery_action` | `pub` |

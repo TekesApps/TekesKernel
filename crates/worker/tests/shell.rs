@@ -489,6 +489,7 @@ fn supervisor_passes_immutable_profile_descriptors() {
                 format: 1,
                 tools: Vec::new(),
             },
+            unavailable_tools: Vec::new(),
         },
     )
     .expect("launch worker");

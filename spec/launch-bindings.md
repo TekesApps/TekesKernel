@@ -19,9 +19,23 @@ LaunchBindings = {
   workspace: string,
   config_digest: 64 lowercase hex digits,
   goal_id?: nonempty string <= 128 UTF-8 bytes without ASCII control,
-  dynamic_catalog: DynamicCatalog
+  dynamic_catalog: DynamicCatalog,
+  unavailable_tools?: [tool name, ...]
 }
 ```
+
+`unavailable_tools` lists workspace-policy `allowed_tools` names the host
+refused to project for this launch (an MCP tool refused alone on a healthy
+server, [mcp-runtime](mcp-runtime.md) §Catalogs). It is absent when empty, so a
+launch without refusals keeps its bytes. An explicit empty array is rejected on decode
+(it would be a second byte form of the omitted field), as `goal_id: null` is. The
+list is strictly sorted, at most
+1024 names, each a valid tool name; every entry must be allowed by the policy
+and must not be in the effective catalog (fixed or dynamic). Every
+`allowed_tools` name of the ConfigSnapshot must be a fixed tool, an entry of
+`dynamic_catalog` or an entry of `unavailable_tools` (the retired `note` and
+`recall` selectors aside); otherwise the launch fails. The list excuses exactly
+those names: nothing dispatches them and no other missing name is excused.
 
 An absent `goal_id` disables `new_goal` and `set_goal_state`. An invalid,
 empty, or unbound id aborts launch; the worker never synthesizes goal identity.
