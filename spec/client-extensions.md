@@ -83,12 +83,12 @@ session or writes configuration. The preset model, limits and render order are
 
 | method | request | result |
 |---|---|---|
-| `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes}, invalidReasons:[str]}` |
-| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str}` |
+| `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes,maxTools,maxMcpServers,maxMcpToolsPerServer,maxSkills}, invalidReasons:[str]}` |
+| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str]}` |
 
 `session.presets.resolve` resolves the preset exactly as `session.create`
-would under that workspace's base and returns the same digest the session's
-genesis would record. `presetText` is the harness identity and the
+would under that workspace's base, instruction snapshot and MCP registry, and
+returns the same digest and selection the session's genesis would record. `presetText` is the harness identity and the
 preset-owned text with `{model}` unresolved; the working directory and the
 `AGENTS.md` scopes follow it in a session. A client can run it in its own build
 or tests to prove its presets before shipping them. Additional errors:

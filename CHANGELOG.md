@@ -19,8 +19,15 @@ workspace version in `Cargo.toml`.
     returns the rendered preset text and digest.
   - New closed error `preset-invalid {reason, layer?, field?}` on
     `session.create`. Members that carry MCP definitions or credentials are
-    refused as `secret-in-preset`; `tools`, `mcp`, `skills` and layer
-    `defaults` are reserved (`unsupported-field`).
+    refused as `secret-in-preset`; layer `defaults` is reserved
+    (`unsupported-field`).
+  - Session-level selection: `tools` (fixed tools), `mcp` (registered servers
+    by name plus tool names; the definition stays in `mcp.v1`) and `skills`.
+    The selection replaces the workspace `allowed_tools` for that session at
+    every launch and is still met by the instruction policy; `skills` narrows
+    what `skill_explorer` and `skill` see. A server removed after creation
+    fails the launch (`invalid_reference`) instead of silently dropping its
+    tools.
   - `identityProfile` stays as sugar and renders byte-for-byte as before;
     sessions without a preset keep their identity-profile genesis.
 

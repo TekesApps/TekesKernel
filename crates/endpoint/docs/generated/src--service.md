@@ -288,7 +288,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `genesis_preset_summary` | `serde_json::to_value` | [105](../../src/service.rs#L105) | external-constructor-callback-or-unresolved |
 | `genesis_preset_summary` | `genesis.raw` | [105](../../src/service.rs#L105) | receiver-type-required |
 | `genesis_preset_summary` | `tools::ResolvedPreset::from_genesis(raw.get("preset")?).ok` | [106](../../src/service.rs#L106) | receiver-type-required |
-| `genesis_preset_summary` | `tools::ResolvedPreset::from_genesis` | [106](../../src/service.rs#L106) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L489) |
+| `genesis_preset_summary` | `tools::ResolvedPreset::from_genesis` | [106](../../src/service.rs#L106) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L781) |
 | `genesis_preset_summary` | `raw.get` | [106](../../src/service.rs#L106) | receiver-type-required |
 | `genesis_preset_summary` | `Some` | [107](../../src/service.rs#L107) | external-constructor-callback-or-unresolved |
 | `genesis_preset_summary` | `preset.summary` | [107](../../src/service.rs#L107) | receiver-type-required |

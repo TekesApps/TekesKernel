@@ -1752,6 +1752,28 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
             "session.presets.describe" => encode(&tools::describe_presets()),
             "session.presets.resolve" => {
                 let workspace_id = payload["workspaceId"].as_str().unwrap_or_default();
+                let snapshot = self.workspace_snapshot(workspace_id)?;
+                let instruction = profile::InstructionResolver::new_scoped(
+                    self.process.user_agent_dir(),
+                    self.process
+                        .user_agent_dir()
+                        .join("workspaces")
+                        .join(workspace_id),
+                    snapshot.workspace.cwd.iter().map(Path::new),
+                )
+                .capture()
+                .map_err(|_| {
+                    failure(
+                        "internal",
+                        "Endpoint operation failed",
+                        serde_json::json!({}),
+                    )
+                })?;
+                let environment = endpoint::SessionPresetEnvironment::new(
+                    workspace_id,
+                    &instruction,
+                    Some(self.mcp.as_ref() as &dyn endpoint::PresetMcpSource),
+                );
                 let base = profile::ConfigRepository::open(&self.root)
                     .and_then(|repository| repository.workspace(workspace_id))
                     .map_err(|error| match error {
@@ -1773,21 +1795,32 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                     .policy
                     .and_then(|policy| policy.base)
                     .unwrap_or_default();
-                let preset = tools::ResolvedPreset::resolve_request(&payload["preset"], base)
-                    .map_err(|error| match error {
-                        tools::PresetError::BadRequest(message) => bad_request(&message),
-                        tools::PresetError::Invalid(invalid) => failure(
-                            "preset-invalid",
-                            "Session preset is invalid",
-                            invalid.detail(),
-                        ),
-                    })?;
-                encode(&serde_json::json!({
+                let preset =
+                    tools::ResolvedPreset::resolve_request(&payload["preset"], base, &environment)
+                        .map_err(|error| match error {
+                            tools::PresetError::BadRequest(message) => bad_request(&message),
+                            tools::PresetError::Invalid(invalid) => failure(
+                                "preset-invalid",
+                                "Session preset is invalid",
+                                invalid.detail(),
+                            ),
+                        })?;
+                let mut result = serde_json::json!({
                     "base": preset.base,
                     "layers": preset.summary()["layers"],
                     "presetText": preset.preset_text(),
                     "digest": preset.digest,
-                }))
+                });
+                if let Some(tools) = &preset.tools {
+                    result["tools"] = serde_json::json!(tools);
+                }
+                if !preset.mcp.is_empty() {
+                    result["mcp"] = serde_json::json!(preset.mcp);
+                }
+                if let Some(skills) = &preset.skills {
+                    result["skills"] = serde_json::json!(skills);
+                }
+                encode(&result)
             }
             "session.initialPresets" => encode(&serde_json::json!({
                 "presets": [
@@ -3198,11 +3231,19 @@ mod tests {
         let refused = execute(
             &extensions,
             "session.presets.resolve",
+            &serde_json::json!({"workspaceId":"ws-general","preset":{"tools":["report"]}}),
+            "resolve-role-tool",
+        )
+        .expect_err("role tools are not selectable");
+        assert_eq!(refused.code, "preset-invalid");
+        let selected = execute(
+            &extensions,
+            "session.presets.resolve",
             &serde_json::json!({"workspaceId":"ws-general","preset":{"tools":["read"]}}),
             "resolve-tools",
         )
-        .expect_err("tools are not applied yet");
-        assert_eq!(refused.code, "preset-invalid");
+        .expect("a fixed tool selection resolves");
+        assert_eq!(selected["tools"], serde_json::json!(["read"]));
         let missing = execute(
             &extensions,
             "session.presets.resolve",

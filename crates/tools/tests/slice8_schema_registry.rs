@@ -506,8 +506,12 @@ fn session_preset_render_oracle_matches_the_resolver() {
     assert!(cases.len() >= 7);
     for case in cases {
         let base = tools::PresetBase::parse(case["base"].as_str().unwrap()).unwrap();
-        let preset = tools::ResolvedPreset::resolve_request(&case["preset"], base)
-            .unwrap_or_else(|error| panic!("{}: {error:?}", case["name"]));
+        let preset = tools::ResolvedPreset::resolve_request(
+            &case["preset"],
+            base,
+            &tools::NoPresetEnvironment,
+        )
+        .unwrap_or_else(|error| panic!("{}: {error:?}", case["name"]));
         assert_eq!(preset.digest, case["digest"], "{}", case["name"]);
         assert_eq!(
             preset.render(

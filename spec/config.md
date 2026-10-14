@@ -153,7 +153,10 @@ that session's preset ([session-endpoint § Session presets](session-endpoint.md
 so changing it affects only later sessions and never respawns a worker.
 
 `allowed_tools` is interpreted by
-[builtin-tools](builtin-tools.md). Config parsing validates its strings
+[builtin-tools](builtin-tools.md). For a session whose preset selects tools,
+the preset's selection replaces it in that session's snapshot
+([session-endpoint § Session presets](session-endpoint.md#session-presets)); the
+instruction policy meets either one. Config parsing validates its strings
 but does not synthesize or connect dynamic catalogs. After fixed tools and the
 configured external/plugin/MCP catalogs resolve, every allowed name must name
 one effective catalog entry or launch fails `invalid_reference`; policy can

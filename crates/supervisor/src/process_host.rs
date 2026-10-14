@@ -1473,6 +1473,7 @@ impl ProductionProcessHost {
                 cwd: None,
                 identity_profile: None,
                 preset: None,
+                preset_mcp: None,
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: "schedule",

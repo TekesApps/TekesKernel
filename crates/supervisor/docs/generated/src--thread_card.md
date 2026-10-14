@@ -231,7 +231,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare` | `Some` | [164](../../src/thread_card.rs#L164) | external-constructor-callback-or-unresolved |
 | `prepare` | `session.to_owned` | [165](../../src/thread_card.rs#L165) | receiver-type-required |
 | `prepare` | `crate::host_runtime::system_timestamp().ok` | [166](../../src/thread_card.rs#L166) | receiver-type-required |
-| `prepare` | `crate::host_runtime::system_timestamp` | [166](../../src/thread_card.rs#L166) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
+| `prepare` | `crate::host_runtime::system_timestamp` | [166](../../src/thread_card.rs#L166) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L497) |
 | `complete_children` | `fold_children` | [177](../../src/thread_card.rs#L177) | [tekes-supervisor::thread_card::fold_children](../../src/thread_card.rs#L194) |
 | `complete_children` | `card.lines.extend` | [178](../../src/thread_card.rs#L178) | receiver-type-required |
 | `fold_child_views` | `fold_children(session, folder)         .iter()         .map(PreparedLine::view)         .collect` | [188](../../src/thread_card.rs#L188) | receiver-type-required |

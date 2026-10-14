@@ -534,9 +534,21 @@ pub struct ProductionEndpointHost {
     delivery_authority: Option<Arc<dyn SessionDeliveryAuthority>>,
     queue_authority: Option<Arc<dyn QueueTransactionAuthority>>,
     input_admission: Arc<SessionInputAdmissionAuthority>,
+    /// MCP registry lookups for `session.create {preset}` references.
+    preset_mcp: Option<Arc<dyn endpoint::PresetMcpSource + Send + Sync>>,
 }
 
 impl ProductionEndpointHost {
+    /// Lets session presets reference the MCP servers registered for a workspace.
+    #[must_use]
+    pub fn with_preset_mcp(
+        mut self,
+        source: Arc<dyn endpoint::PresetMcpSource + Send + Sync>,
+    ) -> Self {
+        self.preset_mcp = Some(source);
+        self
+    }
+
     pub fn mux_description(&self) -> endpoint::MuxHostDescription {
         let mut capabilities = endpoint::SessionEndpointCapability::required();
         capabilities.extend([
@@ -749,6 +761,7 @@ impl ProductionEndpointHost {
             input_admission: input_admission.unwrap_or_else(|| {
                 Arc::new(SessionInputAdmissionAuthority::new(root.to_path_buf()))
             }),
+            preset_mcp: None,
         })
     }
 
@@ -1035,6 +1048,10 @@ impl ProductionEndpointHost {
                 cwd,
                 identity_profile,
                 preset,
+                preset_mcp: self
+                    .preset_mcp
+                    .as_deref()
+                    .map(|source| source as &dyn endpoint::PresetMcpSource),
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: &self.principal,

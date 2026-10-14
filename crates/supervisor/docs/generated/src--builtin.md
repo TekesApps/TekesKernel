@@ -166,7 +166,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `launch.root.to_string_lossy().into` | [144](../../src/builtin.rs#L144), [148](../../src/builtin.rs#L148) | receiver-type-required |
 | `run` | `launch.root.to_string_lossy` | [144](../../src/builtin.rs#L144), [148](../../src/builtin.rs#L148) | receiver-type-required |
 | `run` | `host_runtime::system_timestamp()                 .map_err` | [152](../../src/builtin.rs#L152) | receiver-type-required |
-| `run` | `host_runtime::system_timestamp` | [152](../../src/builtin.rs#L152) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
+| `run` | `host_runtime::system_timestamp` | [152](../../src/builtin.rs#L152) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L497) |
 | `run` | `Arc::clone` | [156](../../src/builtin.rs#L156) | external-constructor-callback-or-unresolved |
 | `run` | `tokio::net::TcpListener::bind` | [159](../../src/builtin.rs#L159), [162](../../src/builtin.rs#L162) | external-constructor-callback-or-unresolved |
 | `run` | `listener.local_addr` | [160](../../src/builtin.rs#L160), [184](../../src/builtin.rs#L184) | receiver-type-required |
@@ -181,7 +181,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `process.arm_admission` | [173](../../src/builtin.rs#L173) | receiver-type-required |
 | `run` | `assembly.mark_ready` | [174](../../src/builtin.rs#L174) | receiver-type-required |
 | `run` | `process.start_periodic_sweep` | [175](../../src/builtin.rs#L175) | receiver-type-required |
-| `run` | `host_runtime::install_termination_handler` | [177](../../src/builtin.rs#L177) | [tekes-supervisor::host_runtime::install_termination_handler](../../src/host_runtime.rs#L464) |
+| `run` | `host_runtime::install_termination_handler` | [177](../../src/builtin.rs#L177) | [tekes-supervisor::host_runtime::install_termination_handler](../../src/host_runtime.rs#L466) |
 | `run` | `assembly.into_server` | [178](../../src/builtin.rs#L178) | receiver-type-required |
 | `run` | `server.handle` | [179](../../src/builtin.rs#L179) | receiver-type-required |
 | `run` | `server.web_client` | [185](../../src/builtin.rs#L185) | receiver-type-required |
@@ -199,5 +199,5 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::thread::Builder::new` | [212](../../src/builtin.rs#L212) | external-constructor-callback-or-unresolved |
 | `run` | `"launcher-lifetime".into` | [213](../../src/builtin.rs#L213) | receiver-type-required |
 | `run` | `lifetime_sender.send` | [215](../../src/builtin.rs#L215) | receiver-type-required |
-| `run` | `host_runtime::wait_for_launcher_shutdown` | [215](../../src/builtin.rs#L215) | [tekes-supervisor::host_runtime::wait_for_launcher_shutdown](../../src/host_runtime.rs#L455) |
+| `run` | `host_runtime::wait_for_launcher_shutdown` | [215](../../src/builtin.rs#L215) | [tekes-supervisor::host_runtime::wait_for_launcher_shutdown](../../src/host_runtime.rs#L457) |
 | `run` | `Ok` | [233](../../src/builtin.rs#L233) | external-constructor-callback-or-unresolved |

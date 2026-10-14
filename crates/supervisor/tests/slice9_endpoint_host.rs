@@ -546,13 +546,32 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     );
     assert_eq!(code, "preset-invalid");
     assert_eq!(details["reason"], "secret-in-preset");
+    let (code, details) = error(
+        "rpc-preset-role-tool",
+        format!(r#"{{"workspaceId":"{workspace_id}","preset":{{"tools":["verify"]}}}}"#),
+    );
+    assert_eq!(
+        (code.as_str(), details),
+        (
+            "preset-invalid",
+            serde_json::json!({"reason":"role-tool","field":"preset.tools[0]"})
+        )
+    );
+    let (code, details) = error(
+        "rpc-preset-unknown-server",
+        format!(
+            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"pdf2cad","tools":["convert"]}}]}}}}"#
+        ),
+    );
+    assert_eq!(code, "preset-invalid");
+    assert_eq!(details["reason"], "unknown-mcp-server");
     assert!(!root.path().join("threads").join(SESSION).exists());
 
     let created = block_on_ready(assembly.dispatch(request(
         "rpc-preset-create",
         "session.create",
         &format!(
-            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer the DXF tools."}}]}}}}"#
+            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer the DXF tools.","tools":["read","grep"]}}]}}}}"#
         ),
     )))
     .expect("session create");
@@ -564,6 +583,10 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     assert!(genesis.get("identity_profile").is_none());
     assert_eq!(genesis["min_reader"], 2);
     assert_eq!(genesis["preset"]["base"], "general");
+    assert_eq!(
+        genesis["preset"]["tools"],
+        serde_json::json!(["grep", "read"])
+    );
     let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("genesis preset");
     assert!(
         preset
