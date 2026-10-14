@@ -167,6 +167,10 @@ struct ForkIntent {
     principal: String,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     ephemeral: bool,
+    /// Preset resolved at fork time for the destination; frozen so a retry
+    /// rebuilds the same genesis whatever the registry says later.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    preset: Option<tools::ResolvedPreset>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -323,6 +327,11 @@ pub struct ForkSessionOperation<'a> {
     pub principal: &'a str,
     /// Publish the destination as a scratch ledger (see `session.discard`).
     pub ephemeral: bool,
+    /// Raw `session.fork {preset}`: replaces the source's preset in the
+    /// destination, resolved under the source workspace.
+    pub preset: Option<&'a Value>,
+    pub preset_mcp: Option<&'a dyn PresetMcpSource>,
+    pub user_agent_dir: &'a Path,
 }
 
 /// One completed `session.fork` as inventory sees it.
@@ -1196,6 +1205,17 @@ impl ManagementStore {
         // EndpointJournal holds a shared folder lifecycle lock. Release it
         // before rewrite publication acquires the source exclusively.
         drop(journal);
+        let preset = request
+            .preset
+            .map(|raw| {
+                self.resolve_fork_preset(
+                    &source_folder,
+                    raw,
+                    request.user_agent_dir,
+                    request.preset_mcp,
+                )
+            })
+            .transpose()?;
         let destination = allocate_uuid_v7()?;
         let rewrite_op_id = format!("endpoint-fork-{}", hex_digest(request.rpc_id.as_bytes()));
         let intent = ForkIntent {
@@ -1207,6 +1227,7 @@ impl ManagementStore {
             rewrite_op_id,
             principal: request.principal.to_owned(),
             ephemeral: request.ephemeral,
+            preset,
         };
         let record = OperationRecord {
             v: VERSION,
@@ -1221,6 +1242,46 @@ impl ManagementStore {
         publish_canonical(&operation_path, &record)?;
         let response = self.drive_fork(&operation_path, record)?;
         fork_id_from_response(response)
+    }
+
+    /// Resolves a `session.fork {preset}` under the source session's workspace
+    /// base, instruction snapshot and MCP registry, exactly as `session.create`.
+    fn resolve_fork_preset(
+        &self,
+        source_folder: &Path,
+        raw: &Value,
+        user_agent_dir: &Path,
+        mcp: Option<&dyn PresetMcpSource>,
+    ) -> Result<tools::ResolvedPreset, ManagementError> {
+        let genesis = store::read_genesis(source_folder.join("main.jsonl"))?.ok_or_else(|| {
+            ManagementError::CorruptOperation("fork source has no genesis".to_owned())
+        })?;
+        let workspace_id = genesis
+            .string_field("workspace")
+            .ok_or_else(|| {
+                ManagementError::CorruptOperation(
+                    "fork source genesis lacks a workspace".to_owned(),
+                )
+            })?
+            .to_owned();
+        let config = match genesis.string_field("folder_binding") {
+            Some(binding) => self.config.resolve_for_binding(&workspace_id, binding)?,
+            None => self.config.resolve(&workspace_id)?,
+        };
+        let instruction = InstructionResolver::new_scoped(
+            user_agent_dir,
+            user_agent_dir.join("workspaces").join(&workspace_id),
+            config.workspace.cwd.iter().map(Path::new),
+        )
+        .capture()?;
+        let environment = SessionPresetEnvironment::new(&workspace_id, &instruction, mcp);
+        session_preset(
+            Some(raw),
+            None,
+            config.workspace.policy.base.unwrap_or_default(),
+            &environment,
+        )?
+        .ok_or_else(|| ManagementError::CorruptOperation("fork preset did not resolve".to_owned()))
     }
 
     /// Publishes the durable queue-management gate before a worker delivery.
@@ -2601,6 +2662,11 @@ impl ManagementStore {
                         thread: intent.dest.clone(),
                         origin,
                         ephemeral: intent.ephemeral,
+                        preset: intent
+                            .preset
+                            .as_ref()
+                            .map(serde_json::to_value)
+                            .transpose()?,
                     },
                     &record.started_at,
                 )?;
@@ -4261,6 +4327,7 @@ mod tests {
                 rewrite_op_id: "failed-fork".into(),
                 principal: "uid:501".into(),
                 ephemeral: false,
+                preset: None,
             })
             .unwrap(),
         };

@@ -86,6 +86,10 @@ pub struct RewriteOperation {
     /// Recorded on the operation so crash recovery rebuilds the same genesis.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub ephemeral: bool,
+    /// A session preset that replaces the source's in the destination
+    /// `main.jsonl` genesis (`session.fork {preset}`); child ledgers keep theirs.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub genesis_preset: Option<serde_json::Value>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub redaction: Option<RedactionInventory>,
 }
@@ -95,6 +99,8 @@ pub struct ForkGenesisBinding {
     pub thread: String,
     pub origin: OriginTuple,
     pub ephemeral: bool,
+    /// Resolved preset for the destination genesis; `None` copies the source's.
+    pub preset: Option<serde_json::Value>,
 }
 
 impl RewriteOperation {
@@ -146,7 +152,7 @@ struct GenesisContext<'a> {
 }
 
 enum RewriteMode<'a> {
-    Fork(Option<(u64, OriginTuple, bool)>),
+    Fork(Option<(u64, OriginTuple, bool, Option<Value>)>),
     Redact(&'a [Vec<u8>]),
 }
 
@@ -186,7 +192,12 @@ impl ThreadStore {
             source,
             &binding.thread,
             created_at,
-            RewriteMode::Fork(Some((kernel_anchor, binding.origin, binding.ephemeral))),
+            RewriteMode::Fork(Some((
+                kernel_anchor,
+                binding.origin,
+                binding.ephemeral,
+                binding.preset,
+            ))),
         )
     }
 
@@ -260,7 +271,7 @@ impl ThreadStore {
         let _lifecycle = DirectoryLock::exclusive(&source_folder)?;
         let ledgers = read_source_ledgers(&source_folder)?;
         let materialized_ledgers = match fork_anchor.as_ref() {
-            Some((anchor, _, _)) => source_prefix_ledgers(&ledgers, *anchor)?,
+            Some((anchor, _, _, _)) => source_prefix_ledgers(&ledgers, *anchor)?,
             None => ledgers.clone(),
         };
         validate_terminal_source(&materialized_ledgers)?;
@@ -280,14 +291,17 @@ impl ThreadStore {
             source_digest,
             phase: RewritePhase::Prepared,
             files,
-            source_anchor: fork_anchor.as_ref().map(|(seq, _, _)| RewriteEventRef {
+            source_anchor: fork_anchor.as_ref().map(|(seq, _, _, _)| RewriteEventRef {
                 file: "main.jsonl".to_owned(),
                 seq: *seq,
             }),
             ephemeral: fork_anchor
                 .as_ref()
-                .is_some_and(|(_, _, ephemeral)| *ephemeral),
-            genesis_origin: fork_anchor.map(|(_, origin, _)| origin),
+                .is_some_and(|(_, _, ephemeral, _)| *ephemeral),
+            genesis_preset: fork_anchor
+                .as_ref()
+                .and_then(|(_, _, _, preset)| preset.clone()),
+            genesis_origin: fork_anchor.map(|(_, origin, _, _)| origin),
             redaction,
         };
         validate_operation(&operation)?;
@@ -673,6 +687,13 @@ fn validate_operation(operation: &RewriteOperation) -> Result<(), StoreError> {
     {
         return Err(StoreError::Corruption(
             "only an anchored fork can publish an ephemeral destination".to_owned(),
+        ));
+    }
+    if operation.genesis_preset.is_some()
+        && (operation.kind != RewriteKind::Fork || operation.genesis_origin.is_none())
+    {
+        return Err(StoreError::Corruption(
+            "only an anchored fork can replace the destination preset".to_owned(),
         ));
     }
     if operation.files.is_empty()
@@ -1628,8 +1649,16 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
     if let Some(identity) = object.get("identity_profile") {
         target.insert("identity_profile".to_owned(), identity.clone());
     }
-    // A preset genesis needs reader 2 whatever the copied minima say.
-    if let Some(preset) = object.get("preset") {
+    // An explicit fork preset replaces the source's on the main line only;
+    // a preset genesis needs reader 2 whatever the copied minima say.
+    let preset = match (&context.operation.genesis_preset, context.source_file) {
+        (Some(replacement), "main.jsonl") => {
+            target.remove("identity_profile");
+            Some(replacement)
+        }
+        _ => object.get("preset"),
+    };
+    if let Some(preset) = preset {
         target.insert("preset".to_owned(), preset.clone());
         let reader = target
             .get("min_reader")
@@ -2593,6 +2622,7 @@ mod tests {
                     "session.fork",
                 ),
                 ephemeral: false,
+                preset: None,
             },
             "2026-08-28T10:00:00.000Z",
         );
@@ -2605,6 +2635,7 @@ mod tests {
             thread: destination_id.to_owned(),
             origin: origin(destination_id, "fork-rpc", "session.fork"),
             ephemeral: false,
+            preset: None,
         };
         let operation = store
             .begin_fork_at_kernel_anchor(
@@ -2851,6 +2882,7 @@ mod tests {
                     thread: destination_id.to_owned(),
                     origin: origin(destination_id, "fork-child", "session.fork"),
                     ephemeral: false,
+                    preset: None,
                 },
                 "2026-08-28T10:00:00.000Z",
             )
@@ -2940,6 +2972,7 @@ mod tests {
                 source_anchor: None,
                 genesis_origin: None,
                 ephemeral: false,
+                genesis_preset: None,
                 redaction: (kind == RewriteKind::Redact).then_some(RedactionInventory {
                     events: Vec::new(),
                     assets: Vec::new(),

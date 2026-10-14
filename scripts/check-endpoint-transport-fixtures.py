@@ -106,7 +106,7 @@ ROUTE_ALLOWED_ERRORS = {
     "session.updateQueue": {"session-not-found", "archived", "queue-item-not-found", "steer-unavailable", "attachment-error", "idempotency-conflict", "accepted-but-not-confirmed", "internal"},
     "session.cancel": {"session-not-found", "archived", "idempotency-conflict", "accepted-but-not-confirmed", "internal"},
     "session.rename": {"session-not-found", "archived", "title-invalid", "idempotency-conflict", "accepted-but-not-confirmed", "internal"},
-    "session.fork": {"session-not-found", "archived", "invalid-at-seq", "active-session-limit", "idempotency-conflict", "internal"},
+    "session.fork": {"bad-request", "session-not-found", "archived", "invalid-at-seq", "active-session-limit", "preset-invalid", "idempotency-conflict", "internal"},
     "session.discard": {"session-not-found", "archived", "not-ephemeral", "session-running", "idempotency-conflict", "internal"},
     "session.attachment": {"session-not-found", "archived", "attachment-error", "internal"},
     "session.models": {"session-not-found", "archived", "internal"},

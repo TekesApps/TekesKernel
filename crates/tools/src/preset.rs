@@ -765,7 +765,7 @@ impl ResolvedPreset {
         Ok(preset)
     }
 
-    /// `sha256-` over the RFC 8785 bytes of the preset without `digest`.
+    /// `sha256:` over the RFC 8785 bytes of the preset without `digest`.
     fn compute_digest(&self) -> String {
         let mut preimage = serde_json::to_value(self).expect("preset is JSON");
         preimage
@@ -773,7 +773,9 @@ impl ResolvedPreset {
             .expect("preset object")
             .remove("digest");
         let canonical = serde_json_canonicalizer::to_vec(&preimage).expect("preset is JSON");
-        format!("sha256-{:x}", Sha256::digest(canonical))
+        // `sha256:` rather than the asset prefix `sha256-`: ledger rewrites treat
+        // every `sha256-<hex>` string as an asset reference.
+        format!("sha256:{:x}", Sha256::digest(canonical))
     }
 
     /// Reads and checks a genesis `preset` member: known format and base,
@@ -1032,7 +1034,7 @@ mod tests {
             self.permitted.as_ref()
         }
         fn mcp_server_digest(&self, server: &str) -> Option<String> {
-            (server == "dxf").then(|| "sha256-dxf".to_owned())
+            (server == "dxf").then(|| "sha256:dxf".to_owned())
         }
         fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
             (!tool.contains('/')).then(|| format!("mcp__{server}__{tool}"))
@@ -1217,7 +1219,7 @@ mod tests {
             preset.mcp,
             vec![PresetMcpRef {
                 server: "dxf".to_owned(),
-                digest: "sha256-dxf".to_owned(),
+                digest: "sha256:dxf".to_owned(),
                 tools: vec!["draw".to_owned(), "open".to_owned()],
             }]
         );

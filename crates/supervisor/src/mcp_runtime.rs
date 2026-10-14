@@ -347,7 +347,7 @@ impl McpRuntime {
         }
     }
 
-    /// Definition digest (`sha256-` over the canonical config) of the server a
+    /// Definition digest (`sha256:` over the canonical config) of the server a
     /// session preset names, preferring a project entry over a user entry and
     /// a user entry over a plugin one.
     pub fn preset_server_digest(&self, workspace_id: &str, server: &str) -> Option<String> {
@@ -362,7 +362,7 @@ impl McpRuntime {
             .filter(|config| config.reference.name == server)
             .min_by_key(|config| rank(&config.reference.scope))?;
         let bytes = serde_json_canonicalizer::to_vec(config).ok()?;
-        Some(format!("sha256-{:x}", Sha256::digest(bytes)))
+        Some(format!("sha256:{:x}", Sha256::digest(bytes)))
     }
 
     pub fn list_servers(
@@ -3522,7 +3522,7 @@ for line in sys.stdin:
         };
         let digest = |config: &McpServerConfig| {
             format!(
-                "sha256-{:x}",
+                "sha256:{:x}",
                 Sha256::digest(serde_json_canonicalizer::to_vec(config).unwrap())
             )
         };

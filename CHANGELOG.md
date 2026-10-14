@@ -28,6 +28,13 @@ workspace version in `Cargo.toml`.
     what `skill_explorer` and `skill` see. A server removed after creation
     fails the launch (`invalid_reference`) instead of silently dropping its
     tools.
+  - `session.fork {preset?}`: a fork copies the source's opening unless the
+    request carries a preset, which is resolved under the source workspace and
+    replaces it in the destination. `session.fork` may now return
+    `bad-request` and `preset-invalid`.
+  - Preset and MCP definition digests are written `sha256:<hex>`. The asset
+    form `sha256-<hex>` made ledger rewrites (fork, redact) look for a
+    nonexistent asset, so forking a preset session failed.
   - `identityProfile` stays as sugar and renders byte-for-byte as before;
     sessions without a preset keep their identity-profile genesis.
 
