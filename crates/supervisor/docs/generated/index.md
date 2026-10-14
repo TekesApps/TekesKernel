@@ -58,7 +58,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 141 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 166 | [Symbols and calls](src--catalog.md) |
 | [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 79 | 623 | [Symbols and calls](src--client_admin.md) |
-| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 139 | 1686 | [Symbols and calls](src--client_extensions.md) |
+| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 139 | 1688 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 352 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 48 | [Symbols and calls](src--dynamic_bindings.md) |
@@ -70,8 +70,8 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 184 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
-| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 197 | 2188 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 368 | 6539 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 199 | 2250 | [Symbols and calls](src--mcp_runtime.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 371 | 6568 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1880 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 819 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |

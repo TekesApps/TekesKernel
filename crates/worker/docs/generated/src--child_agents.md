@@ -14,19 +14,19 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) | function_item | `pub(crate)` |  |
 | [tekes-worker::child_agents::durable_invocation](../../src/child_agents.rs#L191) | function_item | `private` |  |
 | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L339) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::TaskInputError](../../src/child_agents.rs#L386) | struct_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::TaskInputError::fmt](../../src/child_agents.rs#L388) | function_item | `private` |  |
-| [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L398) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L473) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::call_turn](../../src/child_agents.rs#L502) | function_item | `private` |  |
-| [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L514) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L548) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L598) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L647) | function_item | `pub(crate)` |  |
-| [tekes-worker::child_agents::child_report_summary](../../src/child_agents.rs#L656) | function_item | `private` |  |
-| [tekes-worker::child_agents::bounded_text](../../src/child_agents.rs#L696) | function_item | `private` |  |
-| [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L707) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L332) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::TaskInputError](../../src/child_agents.rs#L379) | struct_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::TaskInputError::fmt](../../src/child_agents.rs#L381) | function_item | `private` |  |
+| [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L391) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L466) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::call_turn](../../src/child_agents.rs#L495) | function_item | `private` |  |
+| [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L507) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L541) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L591) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L640) | function_item | `pub(crate)` |  |
+| [tekes-worker::child_agents::child_report_summary](../../src/child_agents.rs#L649) | function_item | `private` |  |
+| [tekes-worker::child_agents::bounded_text](../../src/child_agents.rs#L689) | function_item | `private` |  |
+| [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L700) | function_item | `pub(crate)` |  |
 
 ## Imports / reexports
 
@@ -135,13 +135,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_child_spawn_tool` | `ToolControl::new` | [117](../../src/child_agents.rs#L117) | external-constructor-callback-or-unresolved |
 | `execute_child_spawn_tool` | `exchange_tool_control_runtime` | [125](../../src/child_agents.rs#L125) | external-constructor-callback-or-unresolved |
 | `execute_child_spawn_tool` | `control.error.is_some` | [127](../../src/child_agents.rs#L127) | receiver-type-required |
-| `execute_child_spawn_tool` | `append_child_result_once` | [128](../../src/child_agents.rs#L128), [142](../../src/child_agents.rs#L142), [156](../../src/child_agents.rs#L156) | [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L707) |
+| `execute_child_spawn_tool` | `append_child_result_once` | [128](../../src/child_agents.rs#L128), [142](../../src/child_agents.rs#L142), [156](../../src/child_agents.rs#L156) | [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L700) |
 | `execute_child_spawn_tool` | `"failed".to_owned` | [135](../../src/child_agents.rs#L135), [149](../../src/child_agents.rs#L149) | receiver-type-required |
 | `execute_child_spawn_tool` | `control.error.as_ref().map` | [136](../../src/child_agents.rs#L136) | receiver-type-required |
 | `execute_child_spawn_tool` | `control.error.as_ref` | [136](../../src/child_agents.rs#L136) | receiver-type-required |
 | `execute_child_spawn_tool` | `error.message.clone` | [136](../../src/child_agents.rs#L136) | receiver-type-required |
-| `execute_child_spawn_tool` | `exchange_launch_child_runtime` | [140](../../src/child_agents.rs#L140) | [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L548) |
-| `execute_child_spawn_tool` | `wait_for_child_terminal` | [155](../../src/child_agents.rs#L155) | [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L598) |
+| `execute_child_spawn_tool` | `exchange_launch_child_runtime` | [140](../../src/child_agents.rs#L140) | [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L541) |
+| `execute_child_spawn_tool` | `wait_for_child_terminal` | [155](../../src/child_agents.rs#L155) | [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L591) |
 | `execute_child_spawn_tool` | `"child result backend cannot report a remote continuation".into` | [185](../../src/child_agents.rs#L185) | receiver-type-required |
 | `execute_child_spawn_tool` | `"child result backend deferred unexpectedly".into` | [187](../../src/child_agents.rs#L187) | receiver-type-required |
 | `durable_invocation` | `ledger.projection().and_then` | [196](../../src/child_agents.rs#L196) | receiver-type-required |
@@ -168,7 +168,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_durable_child` | `event.string_field` | [223](../../src/child_agents.rs#L223) | receiver-type-required |
 | `ensure_durable_child` | `Some` | [223](../../src/child_agents.rs#L223), [244](../../src/child_agents.rs#L244) | external-constructor-callback-or-unresolved |
 | `ensure_durable_child` | `call.call_id.as_str` | [223](../../src/child_agents.rs#L223) | receiver-type-required |
-| `ensure_durable_child` | `serde_json::to_value` | [226](../../src/child_agents.rs#L226), [310](../../src/child_agents.rs#L310) | external-constructor-callback-or-unresolved |
+| `ensure_durable_child` | `serde_json::to_value` | [226](../../src/child_agents.rs#L226) | external-constructor-callback-or-unresolved |
 | `ensure_durable_child` | `spawn.raw` | [226](../../src/child_agents.rs#L226) | receiver-type-required |
 | `ensure_durable_child` | `spawn             .string_field("child")             .ok_or("spawn child is missing")?             .to_owned` | [227](../../src/child_agents.rs#L227) | receiver-type-required |
 | `ensure_durable_child` | `spawn             .string_field("child")             .ok_or` | [227](../../src/child_agents.rs#L227) | receiver-type-required |
@@ -183,14 +183,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_durable_child` | `child_path             .file_stem` | [236](../../src/child_agents.rs#L236) | receiver-type-required |
 | `ensure_durable_child` | `name.to_str` | [238](../../src/child_agents.rs#L238), [288](../../src/child_agents.rs#L288) | receiver-type-required |
 | `ensure_durable_child` | `child_path.exists` | [241](../../src/child_agents.rs#L241) | receiver-type-required |
-| `ensure_durable_child` | `read_child_projection` | [242](../../src/child_agents.rs#L242) | [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L647) |
+| `ensure_durable_child` | `read_child_projection` | [242](../../src/child_agents.rs#L242) | [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L640) |
 | `ensure_durable_child` | `child.events.first().ok_or` | [243](../../src/child_agents.rs#L243) | receiver-type-required |
 | `ensure_durable_child` | `child.events.first` | [243](../../src/child_agents.rs#L243) | receiver-type-required |
 | `ensure_durable_child` | `genesis.string_field` | [244](../../src/child_agents.rs#L244), [268](../../src/child_agents.rs#L268) | receiver-type-required |
 | `ensure_durable_child` | `child_line.as_str` | [244](../../src/child_agents.rs#L244) | receiver-type-required |
 | `ensure_durable_child` | `Err` | [245](../../src/child_agents.rs#L245) | external-constructor-callback-or-unresolved |
 | `ensure_durable_child` | `"spawn child file does not match child genesis".into` | [245](../../src/child_agents.rs#L245) | receiver-type-required |
-| `ensure_durable_child` | `Ok` | [248](../../src/child_agents.rs#L248), [331](../../src/child_agents.rs#L331) | external-constructor-callback-or-unresolved |
+| `ensure_durable_child` | `Ok` | [248](../../src/child_agents.rs#L248), [324](../../src/child_agents.rs#L324) | external-constructor-callback-or-unresolved |
 | `ensure_durable_child` | `spawn                 .string_field("spawn_id")                 .ok_or("spawn id is missing")?                 .to_owned` | [251](../../src/child_agents.rs#L251) | receiver-type-required |
 | `ensure_durable_child` | `spawn                 .string_field("spawn_id")                 .ok_or` | [251](../../src/child_agents.rs#L251) | receiver-type-required |
 | `ensure_durable_child` | `spawn                 .string_field` | [251](../../src/child_agents.rs#L251) | receiver-type-required |
@@ -198,14 +198,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_durable_child` | `raw.get("resume")                     .cloned()                     .ok_or` | [256](../../src/child_agents.rs#L256) | receiver-type-required |
 | `ensure_durable_child` | `raw.get("resume")                     .cloned` | [256](../../src/child_agents.rs#L256) | receiver-type-required |
 | `ensure_durable_child` | `raw.get` | [256](../../src/child_agents.rs#L256) | receiver-type-required |
-| `ensure_durable_child` | `ensure_delegation_state` | [263](../../src/child_agents.rs#L263) | [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L339) |
+| `ensure_durable_child` | `ensure_delegation_state` | [263](../../src/child_agents.rs#L263) | [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L332) |
 | `ensure_durable_child` | `ledger.next_seq` | [264](../../src/child_agents.rs#L264) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.events.first())         .and_then(&#124;genesis&#124; genesis.string_field("thread"))         .ok_or` | [265](../../src/child_agents.rs#L265) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.events.first())         .and_then` | [265](../../src/child_agents.rs#L265) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .projection()         .and_then` | [265](../../src/child_agents.rs#L265) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .projection` | [265](../../src/child_agents.rs#L265) | receiver-type-required |
 | `ensure_durable_child` | `projection.events.first` | [267](../../src/child_agents.rs#L267) | receiver-type-required |
-| `ensure_durable_child` | `child_identity` | [270](../../src/child_agents.rs#L270) | [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L473) |
+| `ensure_durable_child` | `child_identity` | [270](../../src/child_agents.rs#L270) | [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L466) |
 | `ensure_durable_child` | `ResumePolicy::Bounded` | [272](../../src/child_agents.rs#L272) | external-constructor-callback-or-unresolved |
 | `ensure_durable_child` | `delegation.canonical_bytes` | [273](../../src/child_agents.rs#L273) | receiver-type-required |
 | `ensure_durable_child` | `seed_bytes.push` | [274](../../src/child_agents.rs#L274) | receiver-type-required |
@@ -220,249 +220,244 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_durable_child` | `ledger         .path()         .file_name()         .and_then(&#124;name&#124; name.to_str())         .ok_or` | [285](../../src/child_agents.rs#L285) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .path()         .file_name()         .and_then` | [285](../../src/child_agents.rs#L285) | receiver-type-required |
 | `ensure_durable_child` | `ledger         .path()         .file_name` | [285](../../src/child_agents.rs#L285) | receiver-type-required |
-| `ensure_durable_child` | `identity::genesis_preset` | [307](../../src/child_agents.rs#L307) | external-constructor-callback-or-unresolved |
-| `ensure_durable_child` | `genesis.as_object_mut().expect` | [308](../../src/child_agents.rs#L308), [318](../../src/child_agents.rs#L318) | receiver-type-required |
-| `ensure_durable_child` | `genesis.as_object_mut` | [308](../../src/child_agents.rs#L308), [318](../../src/child_agents.rs#L318) | receiver-type-required |
-| `ensure_durable_child` | `object.insert` | [309](../../src/child_agents.rs#L309), [310](../../src/child_agents.rs#L310) | receiver-type-required |
-| `ensure_durable_child` | `"min_reader".to_owned` | [309](../../src/child_agents.rs#L309) | receiver-type-required |
-| `ensure_durable_child` | `"preset".to_owned` | [310](../../src/child_agents.rs#L310) | receiver-type-required |
-| `ensure_durable_child` | `identity::selected` | [311](../../src/child_agents.rs#L311) | external-constructor-callback-or-unresolved |
-| `ensure_durable_child` | `genesis             .as_object_mut()             .expect("genesis object")             .insert` | [312](../../src/child_agents.rs#L312) | receiver-type-required |
-| `ensure_durable_child` | `genesis             .as_object_mut()             .expect` | [312](../../src/child_agents.rs#L312) | receiver-type-required |
-| `ensure_durable_child` | `genesis             .as_object_mut` | [312](../../src/child_agents.rs#L312) | receiver-type-required |
-| `ensure_durable_child` | `"identity_profile".to_owned` | [315](../../src/child_agents.rs#L315) | receiver-type-required |
-| `ensure_durable_child` | `options.instruction_digest.is_empty` | [317](../../src/child_agents.rs#L317) | receiver-type-required |
-| `ensure_durable_child` | `genesis.as_object_mut().expect("genesis object").insert` | [318](../../src/child_agents.rs#L318) | receiver-type-required |
-| `ensure_durable_child` | `"instruction".to_owned` | [319](../../src/child_agents.rs#L319) | receiver-type-required |
-| `ensure_durable_child` | `publish_child_genesis` | [323](../../src/child_agents.rs#L323) | [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L514) |
-| `ensure_durable_child` | `make_event` | [323](../../src/child_agents.rs#L323), [324](../../src/child_agents.rs#L324) | external-constructor-callback-or-unresolved |
-| `ensure_durable_child` | `ledger.append_contract` | [330](../../src/child_agents.rs#L330) | receiver-type-required |
-| `ensure_durable_child` | `BarrierContext::default` | [330](../../src/child_agents.rs#L330) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `serde_json::to_value` | [345](../../src/child_agents.rs#L345), [353](../../src/child_agents.rs#L353), [365](../../src/child_agents.rs#L365) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `ledger.projection().and_then` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
-| `ensure_delegation_state` | `ledger.projection` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
-| `ensure_delegation_state` | `projection.events.iter().find` | [347](../../src/child_agents.rs#L347) | receiver-type-required |
-| `ensure_delegation_state` | `projection.events.iter` | [347](../../src/child_agents.rs#L347) | receiver-type-required |
-| `ensure_delegation_state` | `event.kind` | [348](../../src/child_agents.rs#L348) | receiver-type-required |
-| `ensure_delegation_state` | `event.string_field` | [349](../../src/child_agents.rs#L349) | receiver-type-required |
-| `ensure_delegation_state` | `Some` | [349](../../src/child_agents.rs#L349), [362](../../src/child_agents.rs#L362), [366](../../src/child_agents.rs#L366), [367](../../src/child_agents.rs#L367) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok()                 .and_then(&#124;value&#124; {                     value                         .pointer("/payload/call")                         .and_then(Value::as_str)                         .map(str::to_owned)                 })                 .as_deref` | [353](../../src/child_agents.rs#L353) | receiver-type-required |
-| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok()                 .and_then` | [353](../../src/child_agents.rs#L353) | receiver-type-required |
-| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok` | [353](../../src/child_agents.rs#L353) | receiver-type-required |
-| `ensure_delegation_state` | `event.raw` | [353](../../src/child_agents.rs#L353) | receiver-type-required |
-| `ensure_delegation_state` | `value                         .pointer("/payload/call")                         .and_then(Value::as_str)                         .map` | [356](../../src/child_agents.rs#L356) | receiver-type-required |
-| `ensure_delegation_state` | `value                         .pointer("/payload/call")                         .and_then` | [356](../../src/child_agents.rs#L356) | receiver-type-required |
-| `ensure_delegation_state` | `value                         .pointer` | [356](../../src/child_agents.rs#L356) | receiver-type-required |
-| `ensure_delegation_state` | `call.call_id.as_str` | [362](../../src/child_agents.rs#L362) | receiver-type-required |
-| `ensure_delegation_state` | `existing.raw` | [365](../../src/child_agents.rs#L365) | receiver-type-required |
-| `ensure_delegation_state` | `raw.pointer("/payload/name").and_then` | [366](../../src/child_agents.rs#L366) | receiver-type-required |
-| `ensure_delegation_state` | `raw.pointer` | [366](../../src/child_agents.rs#L366), [367](../../src/child_agents.rs#L367) | receiver-type-required |
-| `ensure_delegation_state` | `call.name.as_str` | [366](../../src/child_agents.rs#L366) | receiver-type-required |
-| `ensure_delegation_state` | `Err` | [369](../../src/child_agents.rs#L369) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `"durable delegation state does not match effective invocation".into` | [369](../../src/child_agents.rs#L369) | receiver-type-required |
-| `ensure_delegation_state` | `Ok` | [371](../../src/child_agents.rs#L371), [382](../../src/child_agents.rs#L382) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `existing.clone` | [371](../../src/child_agents.rs#L371) | receiver-type-required |
-| `ensure_delegation_state` | `resolve_completed_task_inputs` | [374](../../src/child_agents.rs#L374) | [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L398) |
-| `ensure_delegation_state` | `make_event` | [375](../../src/child_agents.rs#L375) | external-constructor-callback-or-unresolved |
-| `ensure_delegation_state` | `ledger.append_contract` | [381](../../src/child_agents.rs#L381) | receiver-type-required |
-| `ensure_delegation_state` | `event.clone` | [381](../../src/child_agents.rs#L381) | receiver-type-required |
-| `ensure_delegation_state` | `BarrierContext::default` | [381](../../src/child_agents.rs#L381) | external-constructor-callback-or-unresolved |
-| `fmt` | `formatter.write_str` | [389](../../src/child_agents.rs#L389) | receiver-type-required |
-| `resolve_completed_task_inputs` | `invocation.get("input_sources").and_then` | [403](../../src/child_agents.rs#L403) | receiver-type-required |
-| `resolve_completed_task_inputs` | `invocation.get` | [403](../../src/child_agents.rs#L403) | receiver-type-required |
-| `resolve_completed_task_inputs` | `Ok` | [404](../../src/child_agents.rs#L404), [470](../../src/child_agents.rs#L470) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `ledger.projection().ok_or` | [406](../../src/child_agents.rs#L406) | receiver-type-required |
-| `resolve_completed_task_inputs` | `ledger.projection` | [406](../../src/child_agents.rs#L406) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find(&#124;event&#124; {             event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(current_call)         })         .map(Event::seq)         .ok_or` | [407](../../src/child_agents.rs#L407) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find(&#124;event&#124; {             event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(current_call)         })         .map` | [407](../../src/child_agents.rs#L407) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find` | [407](../../src/child_agents.rs#L407) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection         .events         .iter` | [407](../../src/child_agents.rs#L407) | receiver-type-required |
-| `resolve_completed_task_inputs` | `event.kind` | [411](../../src/child_agents.rs#L411), [423](../../src/child_agents.rs#L423), [448](../../src/child_agents.rs#L448) | receiver-type-required |
-| `resolve_completed_task_inputs` | `event.string_field` | [411](../../src/child_agents.rs#L411), [424](../../src/child_agents.rs#L424), [449](../../src/child_agents.rs#L449), [450](../../src/child_agents.rs#L450) | receiver-type-required |
-| `resolve_completed_task_inputs` | `Some` | [411](../../src/child_agents.rs#L411), [424](../../src/child_agents.rs#L424), [428](../../src/child_agents.rs#L428), [432](../../src/child_agents.rs#L432), [449](../../src/child_agents.rs#L449), [450](../../src/child_agents.rs#L450) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `Vec::new` | [415](../../src/child_agents.rs#L415) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `source.as_str().ok_or` | [417](../../src/child_agents.rs#L417) | receiver-type-required |
-| `resolve_completed_task_inputs` | `source.as_str` | [417](../../src/child_agents.rs#L417) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter(&#124;event&#124; {                 event.seq() < current_seq                     && event.kind() == &EventKind::State                     && event.string_field("subkind") == Some("delegation")             })             .filter_map(&#124;event&#124; {                 let raw = serde_json::to_value(event.raw()).ok()?;                 (raw.pointer("/payload/name").and_then(Value::as_str) == Some("task")                     && raw                         .pointer("/payload/invocation/task_name")                         .and_then(Value::as_str)                         == Some(source))                 .then_some((event, raw))             })             .collect::<Vec<_>>` | [418](../../src/child_agents.rs#L418) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter(&#124;event&#124; {                 event.seq() < current_seq                     && event.kind() == &EventKind::State                     && event.string_field("subkind") == Some("delegation")             })             .filter_map` | [418](../../src/child_agents.rs#L418) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter` | [418](../../src/child_agents.rs#L418) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection             .events             .iter` | [418](../../src/child_agents.rs#L418) | receiver-type-required |
-| `resolve_completed_task_inputs` | `event.seq` | [422](../../src/child_agents.rs#L422), [447](../../src/child_agents.rs#L447) | receiver-type-required |
-| `resolve_completed_task_inputs` | `serde_json::to_value(event.raw()).ok` | [427](../../src/child_agents.rs#L427) | receiver-type-required |
-| `resolve_completed_task_inputs` | `serde_json::to_value` | [427](../../src/child_agents.rs#L427) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `event.raw` | [427](../../src/child_agents.rs#L427) | receiver-type-required |
-| `resolve_completed_task_inputs` | `(raw.pointer("/payload/name").and_then(Value::as_str) == Some("task")                     && raw                         .pointer("/payload/invocation/task_name")                         .and_then(Value::as_str)                         == Some(source))                 .then_some` | [428](../../src/child_agents.rs#L428) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw.pointer("/payload/name").and_then` | [428](../../src/child_agents.rs#L428) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw.pointer` | [428](../../src/child_agents.rs#L428) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw                         .pointer("/payload/invocation/task_name")                         .and_then` | [429](../../src/child_agents.rs#L429) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw                         .pointer` | [429](../../src/child_agents.rs#L429) | receiver-type-required |
-| `resolve_completed_task_inputs` | `matches.is_empty` | [436](../../src/child_agents.rs#L436) | receiver-type-required |
-| `resolve_completed_task_inputs` | `matches.last().expect` | [441](../../src/child_agents.rs#L441) | receiver-type-required |
-| `resolve_completed_task_inputs` | `matches.last` | [441](../../src/child_agents.rs#L441) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw             .pointer("/payload/call")             .and_then(Value::as_str)             .ok_or` | [442](../../src/child_agents.rs#L442) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw             .pointer("/payload/call")             .and_then` | [442](../../src/child_agents.rs#L442) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw             .pointer` | [442](../../src/child_agents.rs#L442), [457](../../src/child_agents.rs#L457) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection.events.iter().find` | [446](../../src/child_agents.rs#L446) | receiver-type-required |
-| `resolve_completed_task_inputs` | `projection.events.iter` | [446](../../src/child_agents.rs#L446) | receiver-type-required |
-| `resolve_completed_task_inputs` | `Err` | [453](../../src/child_agents.rs#L453) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `Box::new` | [453](../../src/child_agents.rs#L453) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `TaskInputError` | [453](../../src/child_agents.rs#L453) | external-constructor-callback-or-unresolved |
-| `resolve_completed_task_inputs` | `raw             .pointer("/payload/invocation/output")             .cloned()             .ok_or` | [457](../../src/child_agents.rs#L457) | receiver-type-required |
-| `resolve_completed_task_inputs` | `raw             .pointer("/payload/invocation/output")             .cloned` | [457](../../src/child_agents.rs#L457) | receiver-type-required |
-| `resolve_completed_task_inputs` | `output             .get("path")             .and_then(Value::as_str)             .ok_or` | [461](../../src/child_agents.rs#L461) | receiver-type-required |
-| `resolve_completed_task_inputs` | `output             .get("path")             .and_then` | [461](../../src/child_agents.rs#L461) | receiver-type-required |
-| `resolve_completed_task_inputs` | `output             .get` | [461](../../src/child_agents.rs#L461) | receiver-type-required |
-| `resolve_completed_task_inputs` | `resolved.push` | [465](../../src/child_agents.rs#L465) | receiver-type-required |
-| `resolve_completed_task_inputs` | `Value::Array` | [470](../../src/child_agents.rs#L470) | external-constructor-callback-or-unresolved |
-| `child_identity` | `Sha256::new` | [474](../../src/child_agents.rs#L474) | external-constructor-callback-or-unresolved |
-| `child_identity` | `hasher.update` | [475](../../src/child_agents.rs#L475), [476](../../src/child_agents.rs#L476), [477](../../src/child_agents.rs#L477), [478](../../src/child_agents.rs#L478), [479](../../src/child_agents.rs#L479), [480](../../src/child_agents.rs#L480) | receiver-type-required |
-| `child_identity` | `parent.as_bytes` | [476](../../src/child_agents.rs#L476) | receiver-type-required |
-| `child_identity` | `call.as_bytes` | [478](../../src/child_agents.rs#L478) | receiver-type-required |
-| `child_identity` | `spawn_seq.to_string().as_bytes` | [480](../../src/child_agents.rs#L480) | receiver-type-required |
-| `child_identity` | `spawn_seq.to_string` | [480](../../src/child_agents.rs#L480) | receiver-type-required |
-| `child_identity` | `hasher.finalize().into` | [481](../../src/child_agents.rs#L481) | receiver-type-required |
-| `child_identity` | `hasher.finalize` | [481](../../src/child_agents.rs#L481) | receiver-type-required |
-| `child_identity` | `bytes.copy_from_slice` | [483](../../src/child_agents.rs#L483) | receiver-type-required |
-| `child_identity` | `String::with_capacity` | [486](../../src/child_agents.rs#L486) | external-constructor-callback-or-unresolved |
-| `child_identity` | `write!(&mut hex, "{byte:02x}").expect` | [489](../../src/child_agents.rs#L489) | receiver-type-required |
-| `call_turn` | `ledger         .projection()         .and_then(&#124;projection&#124; {             projection.events.iter().find(&#124;event&#124; {                 event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(call)             })         })         .and_then(Event::turn)         .ok_or_else` | [503](../../src/child_agents.rs#L503) | receiver-type-required |
-| `call_turn` | `ledger         .projection()         .and_then(&#124;projection&#124; {             projection.events.iter().find(&#124;event&#124; {                 event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(call)             })         })         .and_then` | [503](../../src/child_agents.rs#L503) | receiver-type-required |
-| `call_turn` | `ledger         .projection()         .and_then` | [503](../../src/child_agents.rs#L503) | receiver-type-required |
-| `call_turn` | `ledger         .projection` | [503](../../src/child_agents.rs#L503) | receiver-type-required |
-| `call_turn` | `projection.events.iter().find` | [506](../../src/child_agents.rs#L506) | receiver-type-required |
-| `call_turn` | `projection.events.iter` | [506](../../src/child_agents.rs#L506) | receiver-type-required |
-| `call_turn` | `event.kind` | [507](../../src/child_agents.rs#L507) | receiver-type-required |
-| `call_turn` | `event.string_field` | [507](../../src/child_agents.rs#L507) | receiver-type-required |
-| `call_turn` | `Some` | [507](../../src/child_agents.rs#L507) | external-constructor-callback-or-unresolved |
-| `call_turn` | `"tool_call turn is missing".into` | [511](../../src/child_agents.rs#L511) | receiver-type-required |
-| `publish_child_genesis` | `folder.join` | [519](../../src/child_agents.rs#L519), [528](../../src/child_agents.rs#L528) | receiver-type-required |
-| `publish_child_genesis` | `genesis.canonical_bytes` | [520](../../src/child_agents.rs#L520) | receiver-type-required |
-| `publish_child_genesis` | `expected.push` | [521](../../src/child_agents.rs#L521) | receiver-type-required |
-| `publish_child_genesis` | `destination.exists` | [522](../../src/child_agents.rs#L522) | receiver-type-required |
-| `publish_child_genesis` | `fs::read` | [523](../../src/child_agents.rs#L523) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `Ok` | [524](../../src/child_agents.rs#L524), [540](../../src/child_agents.rs#L540) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `Err` | [526](../../src/child_agents.rs#L526) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `format!("child file {child_file} exists with different genesis").into` | [526](../../src/child_agents.rs#L526) | receiver-type-required |
-| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new(true)         .mode(0o600)         .open` | [529](../../src/child_agents.rs#L529) | receiver-type-required |
-| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new(true)         .mode` | [529](../../src/child_agents.rs#L529) | receiver-type-required |
-| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new` | [529](../../src/child_agents.rs#L529) | receiver-type-required |
-| `publish_child_genesis` | `OpenOptions::new()         .write` | [529](../../src/child_agents.rs#L529) | receiver-type-required |
-| `publish_child_genesis` | `OpenOptions::new` | [529](../../src/child_agents.rs#L529) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `(&#124;&#124; -> Result<(), Box<dyn std::error::Error>> {         file.write_all(&expected)?;         file.sync_all()?;         drop(file);         fs::rename(&temp, &destination)?;         File::open(folder)?.sync_all()?;         Ok(())     })` | [534](../../src/child_agents.rs#L534) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `file.write_all` | [535](../../src/child_agents.rs#L535) | receiver-type-required |
-| `publish_child_genesis` | `file.sync_all` | [536](../../src/child_agents.rs#L536) | receiver-type-required |
-| `publish_child_genesis` | `drop` | [537](../../src/child_agents.rs#L537) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `fs::rename` | [538](../../src/child_agents.rs#L538) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `File::open(folder)?.sync_all` | [539](../../src/child_agents.rs#L539) | receiver-type-required |
-| `publish_child_genesis` | `File::open` | [539](../../src/child_agents.rs#L539) | external-constructor-callback-or-unresolved |
-| `publish_child_genesis` | `result.is_err` | [542](../../src/child_agents.rs#L542) | receiver-type-required |
-| `publish_child_genesis` | `fs::remove_file` | [543](../../src/child_agents.rs#L543) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `stdout.write_all` | [558](../../src/child_agents.rs#L558), [579](../../src/child_agents.rs#L579) | receiver-type-required |
-| `exchange_launch_child_runtime` | `encode_line` | [558](../../src/child_agents.rs#L558), [579](../../src/child_agents.rs#L579) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `spawn.child.clone` | [561](../../src/child_agents.rs#L561) | receiver-type-required |
-| `exchange_launch_child_runtime` | `spawn.spawn_id.clone` | [562](../../src/child_agents.rs#L562) | receiver-type-required |
-| `exchange_launch_child_runtime` | `stdout.flush` | [566](../../src/child_agents.rs#L566), [580](../../src/child_agents.rs#L580) | receiver-type-required |
-| `exchange_launch_child_runtime` | `lines.next().ok_or_else` | [568](../../src/child_agents.rs#L568) | receiver-type-required |
-| `exchange_launch_child_runtime` | `lines.next` | [568](../../src/child_agents.rs#L568) | receiver-type-required |
-| `exchange_launch_child_runtime` | `cancellation.cancel` | [569](../../src/child_agents.rs#L569), [583](../../src/child_agents.rs#L583) | receiver-type-required |
-| `exchange_launch_child_runtime` | `ProtocolFailure` | [570](../../src/child_agents.rs#L570), [590](../../src/child_agents.rs#L590) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `"supervisor EOF while awaiting launch_result".to_owned` | [570](../../src/child_agents.rs#L570) | receiver-type-required |
-| `exchange_launch_child_runtime` | `decode_supervisor` | [572](../../src/child_agents.rs#L572) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `line.as_bytes` | [572](../../src/child_agents.rs#L572) | receiver-type-required |
-| `exchange_launch_child_runtime` | `Ok` | [576](../../src/child_agents.rs#L576) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `cancellation.defer` | [584](../../src/child_agents.rs#L584) | receiver-type-required |
-| `exchange_launch_child_runtime` | `Err` | [585](../../src/child_agents.rs#L585), [590](../../src/child_agents.rs#L590) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `"child launch cancelled by stop".into` | [585](../../src/child_agents.rs#L585) | receiver-type-required |
-| `exchange_launch_child_runtime` | `cancellation.park_delivery` | [587](../../src/child_agents.rs#L587) | receiver-type-required |
-| `exchange_launch_child_runtime` | `cancellation.mark_protocol_failed` | [589](../../src/child_agents.rs#L589) | receiver-type-required |
-| `exchange_launch_child_runtime` | `Box::new` | [590](../../src/child_agents.rs#L590) | external-constructor-callback-or-unresolved |
-| `exchange_launch_child_runtime` | `"unexpected supervisor message while awaiting launch_result".to_owned` | [591](../../src/child_agents.rs#L591) | receiver-type-required |
-| `wait_for_child_terminal` | `parent         .path()         .parent()         .ok_or("parent ledger has no folder")?         .join` | [606](../../src/child_agents.rs#L606) | receiver-type-required |
-| `wait_for_child_terminal` | `parent         .path()         .parent()         .ok_or` | [606](../../src/child_agents.rs#L606) | receiver-type-required |
-| `wait_for_child_terminal` | `parent         .path()         .parent` | [606](../../src/child_agents.rs#L606) | receiver-type-required |
-| `wait_for_child_terminal` | `parent         .path` | [606](../../src/child_agents.rs#L606) | receiver-type-required |
-| `wait_for_child_terminal` | `cancellation.stop_requested` | [612](../../src/child_agents.rs#L612) | receiver-type-required |
-| `wait_for_child_terminal` | `Err` | [613](../../src/child_agents.rs#L613), [616](../../src/child_agents.rs#L616), [636](../../src/child_agents.rs#L636) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `"child wait cancelled by stop".into` | [613](../../src/child_agents.rs#L613) | receiver-type-required |
-| `wait_for_child_terminal` | `cancellation.supervisor_lost` | [615](../../src/child_agents.rs#L615) | receiver-type-required |
-| `wait_for_child_terminal` | `Box::new` | [616](../../src/child_agents.rs#L616) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `ProtocolFailure` | [616](../../src/child_agents.rs#L616) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `"supervisor EOF while waiting for child".to_owned` | [617](../../src/child_agents.rs#L617) | receiver-type-required |
-| `wait_for_child_terminal` | `drain_parked_deliveries` | [622](../../src/child_agents.rs#L622) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `read_child_projection` | [623](../../src/child_agents.rs#L623) | [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L647) |
-| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev()                 .find(&#124;event&#124; event.kind() == &EventKind::Settle)                 .ok_or` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
-| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev()                 .find` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
-| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
-| `wait_for_child_terminal` | `projection                 .events                 .iter` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
-| `wait_for_child_terminal` | `event.kind` | [629](../../src/child_agents.rs#L629) | receiver-type-required |
-| `wait_for_child_terminal` | `serde_json::to_value` | [631](../../src/child_agents.rs#L631) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `settle.raw` | [631](../../src/child_agents.rs#L631) | receiver-type-required |
-| `wait_for_child_terminal` | `raw.get("outcome").and_then` | [632](../../src/child_agents.rs#L632) | receiver-type-required |
-| `wait_for_child_terminal` | `raw.get` | [632](../../src/child_agents.rs#L632) | receiver-type-required |
-| `wait_for_child_terminal` | `"child settle has unknown outcome".into` | [636](../../src/child_agents.rs#L636) | receiver-type-required |
-| `wait_for_child_terminal` | `Ok` | [638](../../src/child_agents.rs#L638) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `outcome.to_owned` | [639](../../src/child_agents.rs#L639) | receiver-type-required |
-| `wait_for_child_terminal` | `child_report_summary` | [640](../../src/child_agents.rs#L640) | [tekes-worker::child_agents::child_report_summary](../../src/child_agents.rs#L656) |
-| `wait_for_child_terminal` | `std::thread::sleep` | [643](../../src/child_agents.rs#L643) | external-constructor-callback-or-unresolved |
-| `wait_for_child_terminal` | `Duration::from_millis` | [643](../../src/child_agents.rs#L643) | external-constructor-callback-or-unresolved |
-| `read_child_projection` | `fs::read` | [650](../../src/child_agents.rs#L650) | external-constructor-callback-or-unresolved |
-| `read_child_projection` | `scan_valid_prefix(&bytes, schema::READER_VERSION)         .projection         .ok_or_else` | [651](../../src/child_agents.rs#L651) | receiver-type-required |
-| `read_child_projection` | `scan_valid_prefix` | [651](../../src/child_agents.rs#L651) | external-constructor-callback-or-unresolved |
-| `read_child_projection` | `"child ledger has no projection".into` | [653](../../src/child_agents.rs#L653) | receiver-type-required |
-| `child_report_summary` | `AssetStore::new` | [660](../../src/child_agents.rs#L660) | external-constructor-callback-or-unresolved |
-| `child_report_summary` | `path.parent()             .ok_or("child ledger has no folder")?             .join` | [661](../../src/child_agents.rs#L661) | receiver-type-required |
-| `child_report_summary` | `path.parent()             .ok_or` | [661](../../src/child_agents.rs#L661) | receiver-type-required |
-| `child_report_summary` | `path.parent` | [661](../../src/child_agents.rs#L661) | receiver-type-required |
-| `child_report_summary` | `projection.events.iter().rev` | [665](../../src/child_agents.rs#L665) | receiver-type-required |
-| `child_report_summary` | `projection.events.iter` | [665](../../src/child_agents.rs#L665), [670](../../src/child_agents.rs#L670) | receiver-type-required |
-| `child_report_summary` | `event.kind` | [666](../../src/child_agents.rs#L666) | receiver-type-required |
-| `child_report_summary` | `event.string_field` | [666](../../src/child_agents.rs#L666), [674](../../src/child_agents.rs#L674) | receiver-type-required |
-| `child_report_summary` | `Some` | [666](../../src/child_agents.rs#L666), [675](../../src/child_agents.rs#L675), [690](../../src/child_agents.rs#L690) | external-constructor-callback-or-unresolved |
-| `child_report_summary` | `event.turn` | [669](../../src/child_agents.rs#L669), [673](../../src/child_agents.rs#L673) | receiver-type-required |
-| `child_report_summary` | `projection.events.iter().any` | [670](../../src/child_agents.rs#L670) | receiver-type-required |
-| `child_report_summary` | `result.kind` | [671](../../src/child_agents.rs#L671) | receiver-type-required |
-| `child_report_summary` | `result.seq` | [672](../../src/child_agents.rs#L672) | receiver-type-required |
-| `child_report_summary` | `event.seq` | [672](../../src/child_agents.rs#L672) | receiver-type-required |
-| `child_report_summary` | `result.turn` | [673](../../src/child_agents.rs#L673) | receiver-type-required |
-| `child_report_summary` | `result.string_field` | [674](../../src/child_agents.rs#L674), [675](../../src/child_agents.rs#L675) | receiver-type-required |
-| `child_report_summary` | `serde_json::to_value` | [680](../../src/child_agents.rs#L680) | external-constructor-callback-or-unresolved |
-| `child_report_summary` | `event.raw` | [680](../../src/child_agents.rs#L680) | receiver-type-required |
-| `child_report_summary` | `raw.get("args").cloned().ok_or` | [681](../../src/child_agents.rs#L681) | receiver-type-required |
-| `child_report_summary` | `raw.get("args").cloned` | [681](../../src/child_agents.rs#L681) | receiver-type-required |
-| `child_report_summary` | `raw.get` | [681](../../src/child_agents.rs#L681) | receiver-type-required |
-| `child_report_summary` | `args             .get("$spill")             .and_then(&#124;spill&#124; spill.get("asset"))             .and_then` | [682](../../src/child_agents.rs#L682) | receiver-type-required |
-| `child_report_summary` | `args             .get("$spill")             .and_then` | [682](../../src/child_agents.rs#L682) | receiver-type-required |
-| `child_report_summary` | `args             .get` | [682](../../src/child_agents.rs#L682) | receiver-type-required |
-| `child_report_summary` | `spill.get` | [684](../../src/child_agents.rs#L684) | receiver-type-required |
-| `child_report_summary` | `serde_json::from_slice` | [687](../../src/child_agents.rs#L687) | external-constructor-callback-or-unresolved |
-| `child_report_summary` | `assets.read_verified` | [687](../../src/child_agents.rs#L687) | receiver-type-required |
-| `child_report_summary` | `args.get("result").and_then` | [689](../../src/child_agents.rs#L689) | receiver-type-required |
-| `child_report_summary` | `args.get` | [689](../../src/child_agents.rs#L689) | receiver-type-required |
-| `child_report_summary` | `Ok` | [690](../../src/child_agents.rs#L690), [693](../../src/child_agents.rs#L693) | external-constructor-callback-or-unresolved |
-| `child_report_summary` | `bounded_text` | [690](../../src/child_agents.rs#L690) | [tekes-worker::child_agents::bounded_text](../../src/child_agents.rs#L696) |
-| `bounded_text` | `value.len` | [697](../../src/child_agents.rs#L697) | receiver-type-required |
-| `bounded_text` | `value.to_owned` | [698](../../src/child_agents.rs#L698) | receiver-type-required |
-| `bounded_text` | `value.is_char_boundary` | [701](../../src/child_agents.rs#L701) | receiver-type-required |
-| `append_child_result_once` | `ledger.projection().and_then` | [715](../../src/child_agents.rs#L715) | receiver-type-required |
-| `append_child_result_once` | `ledger.projection` | [715](../../src/child_agents.rs#L715) | receiver-type-required |
-| `append_child_result_once` | `projection.events.iter().find` | [716](../../src/child_agents.rs#L716) | receiver-type-required |
-| `append_child_result_once` | `projection.events.iter` | [716](../../src/child_agents.rs#L716) | receiver-type-required |
-| `append_child_result_once` | `event.kind` | [717](../../src/child_agents.rs#L717) | receiver-type-required |
-| `append_child_result_once` | `event.string_field` | [718](../../src/child_agents.rs#L718) | receiver-type-required |
-| `append_child_result_once` | `Some` | [718](../../src/child_agents.rs#L718), [721](../../src/child_agents.rs#L721), [722](../../src/child_agents.rs#L722) | external-constructor-callback-or-unresolved |
-| `append_child_result_once` | `call.call_id.as_str` | [718](../../src/child_agents.rs#L718) | receiver-type-required |
-| `append_child_result_once` | `existing.string_field` | [721](../../src/child_agents.rs#L721), [722](../../src/child_agents.rs#L722) | receiver-type-required |
-| `append_child_result_once` | `spawn.child_file.as_str` | [721](../../src/child_agents.rs#L721) | receiver-type-required |
-| `append_child_result_once` | `spawn.spawn_id.as_str` | [722](../../src/child_agents.rs#L722) | receiver-type-required |
-| `append_child_result_once` | `Ok` | [724](../../src/child_agents.rs#L724), [740](../../src/child_agents.rs#L740) | external-constructor-callback-or-unresolved |
-| `append_child_result_once` | `Err` | [726](../../src/child_agents.rs#L726) | external-constructor-callback-or-unresolved |
-| `append_child_result_once` | `"existing child_result does not match spawn".into` | [726](../../src/child_agents.rs#L726) | receiver-type-required |
-| `append_child_result_once` | `value             .as_object_mut()             .expect("child_result object")             .insert` | [734](../../src/child_agents.rs#L734) | receiver-type-required |
-| `append_child_result_once` | `value             .as_object_mut()             .expect` | [734](../../src/child_agents.rs#L734) | receiver-type-required |
-| `append_child_result_once` | `value             .as_object_mut` | [734](../../src/child_agents.rs#L734) | receiver-type-required |
-| `append_child_result_once` | `"summary".to_owned` | [737](../../src/child_agents.rs#L737) | receiver-type-required |
-| `append_child_result_once` | `Value::String` | [737](../../src/child_agents.rs#L737) | external-constructor-callback-or-unresolved |
-| `append_child_result_once` | `summary.clone` | [737](../../src/child_agents.rs#L737) | receiver-type-required |
-| `append_child_result_once` | `ledger.append_contract` | [739](../../src/child_agents.rs#L739) | receiver-type-required |
-| `append_child_result_once` | `make_event` | [739](../../src/child_agents.rs#L739) | external-constructor-callback-or-unresolved |
-| `append_child_result_once` | `BarrierContext::default` | [739](../../src/child_agents.rs#L739) | external-constructor-callback-or-unresolved |
+| `ensure_durable_child` | `genesis         .as_object_mut()         .expect("genesis object")         .extend` | [306](../../src/child_agents.rs#L306) | receiver-type-required |
+| `ensure_durable_child` | `genesis         .as_object_mut()         .expect` | [306](../../src/child_agents.rs#L306) | receiver-type-required |
+| `ensure_durable_child` | `genesis         .as_object_mut` | [306](../../src/child_agents.rs#L306) | receiver-type-required |
+| `ensure_durable_child` | `identity::inherited_opening` | [309](../../src/child_agents.rs#L309) | external-constructor-callback-or-unresolved |
+| `ensure_durable_child` | `options.instruction_digest.is_empty` | [310](../../src/child_agents.rs#L310) | receiver-type-required |
+| `ensure_durable_child` | `genesis.as_object_mut().expect("genesis object").insert` | [311](../../src/child_agents.rs#L311) | receiver-type-required |
+| `ensure_durable_child` | `genesis.as_object_mut().expect` | [311](../../src/child_agents.rs#L311) | receiver-type-required |
+| `ensure_durable_child` | `genesis.as_object_mut` | [311](../../src/child_agents.rs#L311) | receiver-type-required |
+| `ensure_durable_child` | `"instruction".to_owned` | [312](../../src/child_agents.rs#L312) | receiver-type-required |
+| `ensure_durable_child` | `publish_child_genesis` | [316](../../src/child_agents.rs#L316) | [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L507) |
+| `ensure_durable_child` | `make_event` | [316](../../src/child_agents.rs#L316), [317](../../src/child_agents.rs#L317) | external-constructor-callback-or-unresolved |
+| `ensure_durable_child` | `ledger.append_contract` | [323](../../src/child_agents.rs#L323) | receiver-type-required |
+| `ensure_durable_child` | `BarrierContext::default` | [323](../../src/child_agents.rs#L323) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `serde_json::to_value` | [338](../../src/child_agents.rs#L338), [346](../../src/child_agents.rs#L346), [358](../../src/child_agents.rs#L358) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `ledger.projection().and_then` | [339](../../src/child_agents.rs#L339) | receiver-type-required |
+| `ensure_delegation_state` | `ledger.projection` | [339](../../src/child_agents.rs#L339) | receiver-type-required |
+| `ensure_delegation_state` | `projection.events.iter().find` | [340](../../src/child_agents.rs#L340) | receiver-type-required |
+| `ensure_delegation_state` | `projection.events.iter` | [340](../../src/child_agents.rs#L340) | receiver-type-required |
+| `ensure_delegation_state` | `event.kind` | [341](../../src/child_agents.rs#L341) | receiver-type-required |
+| `ensure_delegation_state` | `event.string_field` | [342](../../src/child_agents.rs#L342) | receiver-type-required |
+| `ensure_delegation_state` | `Some` | [342](../../src/child_agents.rs#L342), [355](../../src/child_agents.rs#L355), [359](../../src/child_agents.rs#L359), [360](../../src/child_agents.rs#L360) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok()                 .and_then(&#124;value&#124; {                     value                         .pointer("/payload/call")                         .and_then(Value::as_str)                         .map(str::to_owned)                 })                 .as_deref` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
+| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok()                 .and_then` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
+| `ensure_delegation_state` | `serde_json::to_value(event.raw())                 .ok` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
+| `ensure_delegation_state` | `event.raw` | [346](../../src/child_agents.rs#L346) | receiver-type-required |
+| `ensure_delegation_state` | `value                         .pointer("/payload/call")                         .and_then(Value::as_str)                         .map` | [349](../../src/child_agents.rs#L349) | receiver-type-required |
+| `ensure_delegation_state` | `value                         .pointer("/payload/call")                         .and_then` | [349](../../src/child_agents.rs#L349) | receiver-type-required |
+| `ensure_delegation_state` | `value                         .pointer` | [349](../../src/child_agents.rs#L349) | receiver-type-required |
+| `ensure_delegation_state` | `call.call_id.as_str` | [355](../../src/child_agents.rs#L355) | receiver-type-required |
+| `ensure_delegation_state` | `existing.raw` | [358](../../src/child_agents.rs#L358) | receiver-type-required |
+| `ensure_delegation_state` | `raw.pointer("/payload/name").and_then` | [359](../../src/child_agents.rs#L359) | receiver-type-required |
+| `ensure_delegation_state` | `raw.pointer` | [359](../../src/child_agents.rs#L359), [360](../../src/child_agents.rs#L360) | receiver-type-required |
+| `ensure_delegation_state` | `call.name.as_str` | [359](../../src/child_agents.rs#L359) | receiver-type-required |
+| `ensure_delegation_state` | `Err` | [362](../../src/child_agents.rs#L362) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `"durable delegation state does not match effective invocation".into` | [362](../../src/child_agents.rs#L362) | receiver-type-required |
+| `ensure_delegation_state` | `Ok` | [364](../../src/child_agents.rs#L364), [375](../../src/child_agents.rs#L375) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `existing.clone` | [364](../../src/child_agents.rs#L364) | receiver-type-required |
+| `ensure_delegation_state` | `resolve_completed_task_inputs` | [367](../../src/child_agents.rs#L367) | [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L391) |
+| `ensure_delegation_state` | `make_event` | [368](../../src/child_agents.rs#L368) | external-constructor-callback-or-unresolved |
+| `ensure_delegation_state` | `ledger.append_contract` | [374](../../src/child_agents.rs#L374) | receiver-type-required |
+| `ensure_delegation_state` | `event.clone` | [374](../../src/child_agents.rs#L374) | receiver-type-required |
+| `ensure_delegation_state` | `BarrierContext::default` | [374](../../src/child_agents.rs#L374) | external-constructor-callback-or-unresolved |
+| `fmt` | `formatter.write_str` | [382](../../src/child_agents.rs#L382) | receiver-type-required |
+| `resolve_completed_task_inputs` | `invocation.get("input_sources").and_then` | [396](../../src/child_agents.rs#L396) | receiver-type-required |
+| `resolve_completed_task_inputs` | `invocation.get` | [396](../../src/child_agents.rs#L396) | receiver-type-required |
+| `resolve_completed_task_inputs` | `Ok` | [397](../../src/child_agents.rs#L397), [463](../../src/child_agents.rs#L463) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `ledger.projection().ok_or` | [399](../../src/child_agents.rs#L399) | receiver-type-required |
+| `resolve_completed_task_inputs` | `ledger.projection` | [399](../../src/child_agents.rs#L399) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find(&#124;event&#124; {             event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(current_call)         })         .map(Event::seq)         .ok_or` | [400](../../src/child_agents.rs#L400) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find(&#124;event&#124; {             event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(current_call)         })         .map` | [400](../../src/child_agents.rs#L400) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection         .events         .iter()         .find` | [400](../../src/child_agents.rs#L400) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection         .events         .iter` | [400](../../src/child_agents.rs#L400) | receiver-type-required |
+| `resolve_completed_task_inputs` | `event.kind` | [404](../../src/child_agents.rs#L404), [416](../../src/child_agents.rs#L416), [441](../../src/child_agents.rs#L441) | receiver-type-required |
+| `resolve_completed_task_inputs` | `event.string_field` | [404](../../src/child_agents.rs#L404), [417](../../src/child_agents.rs#L417), [442](../../src/child_agents.rs#L442), [443](../../src/child_agents.rs#L443) | receiver-type-required |
+| `resolve_completed_task_inputs` | `Some` | [404](../../src/child_agents.rs#L404), [417](../../src/child_agents.rs#L417), [421](../../src/child_agents.rs#L421), [425](../../src/child_agents.rs#L425), [442](../../src/child_agents.rs#L442), [443](../../src/child_agents.rs#L443) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `Vec::new` | [408](../../src/child_agents.rs#L408) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `source.as_str().ok_or` | [410](../../src/child_agents.rs#L410) | receiver-type-required |
+| `resolve_completed_task_inputs` | `source.as_str` | [410](../../src/child_agents.rs#L410) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter(&#124;event&#124; {                 event.seq() < current_seq                     && event.kind() == &EventKind::State                     && event.string_field("subkind") == Some("delegation")             })             .filter_map(&#124;event&#124; {                 let raw = serde_json::to_value(event.raw()).ok()?;                 (raw.pointer("/payload/name").and_then(Value::as_str) == Some("task")                     && raw                         .pointer("/payload/invocation/task_name")                         .and_then(Value::as_str)                         == Some(source))                 .then_some((event, raw))             })             .collect::<Vec<_>>` | [411](../../src/child_agents.rs#L411) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter(&#124;event&#124; {                 event.seq() < current_seq                     && event.kind() == &EventKind::State                     && event.string_field("subkind") == Some("delegation")             })             .filter_map` | [411](../../src/child_agents.rs#L411) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection             .events             .iter()             .filter` | [411](../../src/child_agents.rs#L411) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection             .events             .iter` | [411](../../src/child_agents.rs#L411) | receiver-type-required |
+| `resolve_completed_task_inputs` | `event.seq` | [415](../../src/child_agents.rs#L415), [440](../../src/child_agents.rs#L440) | receiver-type-required |
+| `resolve_completed_task_inputs` | `serde_json::to_value(event.raw()).ok` | [420](../../src/child_agents.rs#L420) | receiver-type-required |
+| `resolve_completed_task_inputs` | `serde_json::to_value` | [420](../../src/child_agents.rs#L420) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `event.raw` | [420](../../src/child_agents.rs#L420) | receiver-type-required |
+| `resolve_completed_task_inputs` | `(raw.pointer("/payload/name").and_then(Value::as_str) == Some("task")                     && raw                         .pointer("/payload/invocation/task_name")                         .and_then(Value::as_str)                         == Some(source))                 .then_some` | [421](../../src/child_agents.rs#L421) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw.pointer("/payload/name").and_then` | [421](../../src/child_agents.rs#L421) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw.pointer` | [421](../../src/child_agents.rs#L421) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw                         .pointer("/payload/invocation/task_name")                         .and_then` | [422](../../src/child_agents.rs#L422) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw                         .pointer` | [422](../../src/child_agents.rs#L422) | receiver-type-required |
+| `resolve_completed_task_inputs` | `matches.is_empty` | [429](../../src/child_agents.rs#L429) | receiver-type-required |
+| `resolve_completed_task_inputs` | `matches.last().expect` | [434](../../src/child_agents.rs#L434) | receiver-type-required |
+| `resolve_completed_task_inputs` | `matches.last` | [434](../../src/child_agents.rs#L434) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw             .pointer("/payload/call")             .and_then(Value::as_str)             .ok_or` | [435](../../src/child_agents.rs#L435) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw             .pointer("/payload/call")             .and_then` | [435](../../src/child_agents.rs#L435) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw             .pointer` | [435](../../src/child_agents.rs#L435), [450](../../src/child_agents.rs#L450) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection.events.iter().find` | [439](../../src/child_agents.rs#L439) | receiver-type-required |
+| `resolve_completed_task_inputs` | `projection.events.iter` | [439](../../src/child_agents.rs#L439) | receiver-type-required |
+| `resolve_completed_task_inputs` | `Err` | [446](../../src/child_agents.rs#L446) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `Box::new` | [446](../../src/child_agents.rs#L446) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `TaskInputError` | [446](../../src/child_agents.rs#L446) | external-constructor-callback-or-unresolved |
+| `resolve_completed_task_inputs` | `raw             .pointer("/payload/invocation/output")             .cloned()             .ok_or` | [450](../../src/child_agents.rs#L450) | receiver-type-required |
+| `resolve_completed_task_inputs` | `raw             .pointer("/payload/invocation/output")             .cloned` | [450](../../src/child_agents.rs#L450) | receiver-type-required |
+| `resolve_completed_task_inputs` | `output             .get("path")             .and_then(Value::as_str)             .ok_or` | [454](../../src/child_agents.rs#L454) | receiver-type-required |
+| `resolve_completed_task_inputs` | `output             .get("path")             .and_then` | [454](../../src/child_agents.rs#L454) | receiver-type-required |
+| `resolve_completed_task_inputs` | `output             .get` | [454](../../src/child_agents.rs#L454) | receiver-type-required |
+| `resolve_completed_task_inputs` | `resolved.push` | [458](../../src/child_agents.rs#L458) | receiver-type-required |
+| `resolve_completed_task_inputs` | `Value::Array` | [463](../../src/child_agents.rs#L463) | external-constructor-callback-or-unresolved |
+| `child_identity` | `Sha256::new` | [467](../../src/child_agents.rs#L467) | external-constructor-callback-or-unresolved |
+| `child_identity` | `hasher.update` | [468](../../src/child_agents.rs#L468), [469](../../src/child_agents.rs#L469), [470](../../src/child_agents.rs#L470), [471](../../src/child_agents.rs#L471), [472](../../src/child_agents.rs#L472), [473](../../src/child_agents.rs#L473) | receiver-type-required |
+| `child_identity` | `parent.as_bytes` | [469](../../src/child_agents.rs#L469) | receiver-type-required |
+| `child_identity` | `call.as_bytes` | [471](../../src/child_agents.rs#L471) | receiver-type-required |
+| `child_identity` | `spawn_seq.to_string().as_bytes` | [473](../../src/child_agents.rs#L473) | receiver-type-required |
+| `child_identity` | `spawn_seq.to_string` | [473](../../src/child_agents.rs#L473) | receiver-type-required |
+| `child_identity` | `hasher.finalize().into` | [474](../../src/child_agents.rs#L474) | receiver-type-required |
+| `child_identity` | `hasher.finalize` | [474](../../src/child_agents.rs#L474) | receiver-type-required |
+| `child_identity` | `bytes.copy_from_slice` | [476](../../src/child_agents.rs#L476) | receiver-type-required |
+| `child_identity` | `String::with_capacity` | [479](../../src/child_agents.rs#L479) | external-constructor-callback-or-unresolved |
+| `child_identity` | `write!(&mut hex, "{byte:02x}").expect` | [482](../../src/child_agents.rs#L482) | receiver-type-required |
+| `call_turn` | `ledger         .projection()         .and_then(&#124;projection&#124; {             projection.events.iter().find(&#124;event&#124; {                 event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(call)             })         })         .and_then(Event::turn)         .ok_or_else` | [496](../../src/child_agents.rs#L496) | receiver-type-required |
+| `call_turn` | `ledger         .projection()         .and_then(&#124;projection&#124; {             projection.events.iter().find(&#124;event&#124; {                 event.kind() == &EventKind::ToolCall && event.string_field("call") == Some(call)             })         })         .and_then` | [496](../../src/child_agents.rs#L496) | receiver-type-required |
+| `call_turn` | `ledger         .projection()         .and_then` | [496](../../src/child_agents.rs#L496) | receiver-type-required |
+| `call_turn` | `ledger         .projection` | [496](../../src/child_agents.rs#L496) | receiver-type-required |
+| `call_turn` | `projection.events.iter().find` | [499](../../src/child_agents.rs#L499) | receiver-type-required |
+| `call_turn` | `projection.events.iter` | [499](../../src/child_agents.rs#L499) | receiver-type-required |
+| `call_turn` | `event.kind` | [500](../../src/child_agents.rs#L500) | receiver-type-required |
+| `call_turn` | `event.string_field` | [500](../../src/child_agents.rs#L500) | receiver-type-required |
+| `call_turn` | `Some` | [500](../../src/child_agents.rs#L500) | external-constructor-callback-or-unresolved |
+| `call_turn` | `"tool_call turn is missing".into` | [504](../../src/child_agents.rs#L504) | receiver-type-required |
+| `publish_child_genesis` | `folder.join` | [512](../../src/child_agents.rs#L512), [521](../../src/child_agents.rs#L521) | receiver-type-required |
+| `publish_child_genesis` | `genesis.canonical_bytes` | [513](../../src/child_agents.rs#L513) | receiver-type-required |
+| `publish_child_genesis` | `expected.push` | [514](../../src/child_agents.rs#L514) | receiver-type-required |
+| `publish_child_genesis` | `destination.exists` | [515](../../src/child_agents.rs#L515) | receiver-type-required |
+| `publish_child_genesis` | `fs::read` | [516](../../src/child_agents.rs#L516) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `Ok` | [517](../../src/child_agents.rs#L517), [533](../../src/child_agents.rs#L533) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `Err` | [519](../../src/child_agents.rs#L519) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `format!("child file {child_file} exists with different genesis").into` | [519](../../src/child_agents.rs#L519) | receiver-type-required |
+| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new(true)         .mode(0o600)         .open` | [522](../../src/child_agents.rs#L522) | receiver-type-required |
+| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new(true)         .mode` | [522](../../src/child_agents.rs#L522) | receiver-type-required |
+| `publish_child_genesis` | `OpenOptions::new()         .write(true)         .create_new` | [522](../../src/child_agents.rs#L522) | receiver-type-required |
+| `publish_child_genesis` | `OpenOptions::new()         .write` | [522](../../src/child_agents.rs#L522) | receiver-type-required |
+| `publish_child_genesis` | `OpenOptions::new` | [522](../../src/child_agents.rs#L522) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `(&#124;&#124; -> Result<(), Box<dyn std::error::Error>> {         file.write_all(&expected)?;         file.sync_all()?;         drop(file);         fs::rename(&temp, &destination)?;         File::open(folder)?.sync_all()?;         Ok(())     })` | [527](../../src/child_agents.rs#L527) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `file.write_all` | [528](../../src/child_agents.rs#L528) | receiver-type-required |
+| `publish_child_genesis` | `file.sync_all` | [529](../../src/child_agents.rs#L529) | receiver-type-required |
+| `publish_child_genesis` | `drop` | [530](../../src/child_agents.rs#L530) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `fs::rename` | [531](../../src/child_agents.rs#L531) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `File::open(folder)?.sync_all` | [532](../../src/child_agents.rs#L532) | receiver-type-required |
+| `publish_child_genesis` | `File::open` | [532](../../src/child_agents.rs#L532) | external-constructor-callback-or-unresolved |
+| `publish_child_genesis` | `result.is_err` | [535](../../src/child_agents.rs#L535) | receiver-type-required |
+| `publish_child_genesis` | `fs::remove_file` | [536](../../src/child_agents.rs#L536) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `stdout.write_all` | [551](../../src/child_agents.rs#L551), [572](../../src/child_agents.rs#L572) | receiver-type-required |
+| `exchange_launch_child_runtime` | `encode_line` | [551](../../src/child_agents.rs#L551), [572](../../src/child_agents.rs#L572) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `spawn.child.clone` | [554](../../src/child_agents.rs#L554) | receiver-type-required |
+| `exchange_launch_child_runtime` | `spawn.spawn_id.clone` | [555](../../src/child_agents.rs#L555) | receiver-type-required |
+| `exchange_launch_child_runtime` | `stdout.flush` | [559](../../src/child_agents.rs#L559), [573](../../src/child_agents.rs#L573) | receiver-type-required |
+| `exchange_launch_child_runtime` | `lines.next().ok_or_else` | [561](../../src/child_agents.rs#L561) | receiver-type-required |
+| `exchange_launch_child_runtime` | `lines.next` | [561](../../src/child_agents.rs#L561) | receiver-type-required |
+| `exchange_launch_child_runtime` | `cancellation.cancel` | [562](../../src/child_agents.rs#L562), [576](../../src/child_agents.rs#L576) | receiver-type-required |
+| `exchange_launch_child_runtime` | `ProtocolFailure` | [563](../../src/child_agents.rs#L563), [583](../../src/child_agents.rs#L583) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `"supervisor EOF while awaiting launch_result".to_owned` | [563](../../src/child_agents.rs#L563) | receiver-type-required |
+| `exchange_launch_child_runtime` | `decode_supervisor` | [565](../../src/child_agents.rs#L565) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `line.as_bytes` | [565](../../src/child_agents.rs#L565) | receiver-type-required |
+| `exchange_launch_child_runtime` | `Ok` | [569](../../src/child_agents.rs#L569) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `cancellation.defer` | [577](../../src/child_agents.rs#L577) | receiver-type-required |
+| `exchange_launch_child_runtime` | `Err` | [578](../../src/child_agents.rs#L578), [583](../../src/child_agents.rs#L583) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `"child launch cancelled by stop".into` | [578](../../src/child_agents.rs#L578) | receiver-type-required |
+| `exchange_launch_child_runtime` | `cancellation.park_delivery` | [580](../../src/child_agents.rs#L580) | receiver-type-required |
+| `exchange_launch_child_runtime` | `cancellation.mark_protocol_failed` | [582](../../src/child_agents.rs#L582) | receiver-type-required |
+| `exchange_launch_child_runtime` | `Box::new` | [583](../../src/child_agents.rs#L583) | external-constructor-callback-or-unresolved |
+| `exchange_launch_child_runtime` | `"unexpected supervisor message while awaiting launch_result".to_owned` | [584](../../src/child_agents.rs#L584) | receiver-type-required |
+| `wait_for_child_terminal` | `parent         .path()         .parent()         .ok_or("parent ledger has no folder")?         .join` | [599](../../src/child_agents.rs#L599) | receiver-type-required |
+| `wait_for_child_terminal` | `parent         .path()         .parent()         .ok_or` | [599](../../src/child_agents.rs#L599) | receiver-type-required |
+| `wait_for_child_terminal` | `parent         .path()         .parent` | [599](../../src/child_agents.rs#L599) | receiver-type-required |
+| `wait_for_child_terminal` | `parent         .path` | [599](../../src/child_agents.rs#L599) | receiver-type-required |
+| `wait_for_child_terminal` | `cancellation.stop_requested` | [605](../../src/child_agents.rs#L605) | receiver-type-required |
+| `wait_for_child_terminal` | `Err` | [606](../../src/child_agents.rs#L606), [609](../../src/child_agents.rs#L609), [629](../../src/child_agents.rs#L629) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `"child wait cancelled by stop".into` | [606](../../src/child_agents.rs#L606) | receiver-type-required |
+| `wait_for_child_terminal` | `cancellation.supervisor_lost` | [608](../../src/child_agents.rs#L608) | receiver-type-required |
+| `wait_for_child_terminal` | `Box::new` | [609](../../src/child_agents.rs#L609) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `ProtocolFailure` | [609](../../src/child_agents.rs#L609) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `"supervisor EOF while waiting for child".to_owned` | [610](../../src/child_agents.rs#L610) | receiver-type-required |
+| `wait_for_child_terminal` | `drain_parked_deliveries` | [615](../../src/child_agents.rs#L615) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `read_child_projection` | [616](../../src/child_agents.rs#L616) | [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L640) |
+| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev()                 .find(&#124;event&#124; event.kind() == &EventKind::Settle)                 .ok_or` | [618](../../src/child_agents.rs#L618) | receiver-type-required |
+| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev()                 .find` | [618](../../src/child_agents.rs#L618) | receiver-type-required |
+| `wait_for_child_terminal` | `projection                 .events                 .iter()                 .rev` | [618](../../src/child_agents.rs#L618) | receiver-type-required |
+| `wait_for_child_terminal` | `projection                 .events                 .iter` | [618](../../src/child_agents.rs#L618) | receiver-type-required |
+| `wait_for_child_terminal` | `event.kind` | [622](../../src/child_agents.rs#L622) | receiver-type-required |
+| `wait_for_child_terminal` | `serde_json::to_value` | [624](../../src/child_agents.rs#L624) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `settle.raw` | [624](../../src/child_agents.rs#L624) | receiver-type-required |
+| `wait_for_child_terminal` | `raw.get("outcome").and_then` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
+| `wait_for_child_terminal` | `raw.get` | [625](../../src/child_agents.rs#L625) | receiver-type-required |
+| `wait_for_child_terminal` | `"child settle has unknown outcome".into` | [629](../../src/child_agents.rs#L629) | receiver-type-required |
+| `wait_for_child_terminal` | `Ok` | [631](../../src/child_agents.rs#L631) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `outcome.to_owned` | [632](../../src/child_agents.rs#L632) | receiver-type-required |
+| `wait_for_child_terminal` | `child_report_summary` | [633](../../src/child_agents.rs#L633) | [tekes-worker::child_agents::child_report_summary](../../src/child_agents.rs#L649) |
+| `wait_for_child_terminal` | `std::thread::sleep` | [636](../../src/child_agents.rs#L636) | external-constructor-callback-or-unresolved |
+| `wait_for_child_terminal` | `Duration::from_millis` | [636](../../src/child_agents.rs#L636) | external-constructor-callback-or-unresolved |
+| `read_child_projection` | `fs::read` | [643](../../src/child_agents.rs#L643) | external-constructor-callback-or-unresolved |
+| `read_child_projection` | `scan_valid_prefix(&bytes, schema::READER_VERSION)         .projection         .ok_or_else` | [644](../../src/child_agents.rs#L644) | receiver-type-required |
+| `read_child_projection` | `scan_valid_prefix` | [644](../../src/child_agents.rs#L644) | external-constructor-callback-or-unresolved |
+| `read_child_projection` | `"child ledger has no projection".into` | [646](../../src/child_agents.rs#L646) | receiver-type-required |
+| `child_report_summary` | `AssetStore::new` | [653](../../src/child_agents.rs#L653) | external-constructor-callback-or-unresolved |
+| `child_report_summary` | `path.parent()             .ok_or("child ledger has no folder")?             .join` | [654](../../src/child_agents.rs#L654) | receiver-type-required |
+| `child_report_summary` | `path.parent()             .ok_or` | [654](../../src/child_agents.rs#L654) | receiver-type-required |
+| `child_report_summary` | `path.parent` | [654](../../src/child_agents.rs#L654) | receiver-type-required |
+| `child_report_summary` | `projection.events.iter().rev` | [658](../../src/child_agents.rs#L658) | receiver-type-required |
+| `child_report_summary` | `projection.events.iter` | [658](../../src/child_agents.rs#L658), [663](../../src/child_agents.rs#L663) | receiver-type-required |
+| `child_report_summary` | `event.kind` | [659](../../src/child_agents.rs#L659) | receiver-type-required |
+| `child_report_summary` | `event.string_field` | [659](../../src/child_agents.rs#L659), [667](../../src/child_agents.rs#L667) | receiver-type-required |
+| `child_report_summary` | `Some` | [659](../../src/child_agents.rs#L659), [668](../../src/child_agents.rs#L668), [683](../../src/child_agents.rs#L683) | external-constructor-callback-or-unresolved |
+| `child_report_summary` | `event.turn` | [662](../../src/child_agents.rs#L662), [666](../../src/child_agents.rs#L666) | receiver-type-required |
+| `child_report_summary` | `projection.events.iter().any` | [663](../../src/child_agents.rs#L663) | receiver-type-required |
+| `child_report_summary` | `result.kind` | [664](../../src/child_agents.rs#L664) | receiver-type-required |
+| `child_report_summary` | `result.seq` | [665](../../src/child_agents.rs#L665) | receiver-type-required |
+| `child_report_summary` | `event.seq` | [665](../../src/child_agents.rs#L665) | receiver-type-required |
+| `child_report_summary` | `result.turn` | [666](../../src/child_agents.rs#L666) | receiver-type-required |
+| `child_report_summary` | `result.string_field` | [667](../../src/child_agents.rs#L667), [668](../../src/child_agents.rs#L668) | receiver-type-required |
+| `child_report_summary` | `serde_json::to_value` | [673](../../src/child_agents.rs#L673) | external-constructor-callback-or-unresolved |
+| `child_report_summary` | `event.raw` | [673](../../src/child_agents.rs#L673) | receiver-type-required |
+| `child_report_summary` | `raw.get("args").cloned().ok_or` | [674](../../src/child_agents.rs#L674) | receiver-type-required |
+| `child_report_summary` | `raw.get("args").cloned` | [674](../../src/child_agents.rs#L674) | receiver-type-required |
+| `child_report_summary` | `raw.get` | [674](../../src/child_agents.rs#L674) | receiver-type-required |
+| `child_report_summary` | `args             .get("$spill")             .and_then(&#124;spill&#124; spill.get("asset"))             .and_then` | [675](../../src/child_agents.rs#L675) | receiver-type-required |
+| `child_report_summary` | `args             .get("$spill")             .and_then` | [675](../../src/child_agents.rs#L675) | receiver-type-required |
+| `child_report_summary` | `args             .get` | [675](../../src/child_agents.rs#L675) | receiver-type-required |
+| `child_report_summary` | `spill.get` | [677](../../src/child_agents.rs#L677) | receiver-type-required |
+| `child_report_summary` | `serde_json::from_slice` | [680](../../src/child_agents.rs#L680) | external-constructor-callback-or-unresolved |
+| `child_report_summary` | `assets.read_verified` | [680](../../src/child_agents.rs#L680) | receiver-type-required |
+| `child_report_summary` | `args.get("result").and_then` | [682](../../src/child_agents.rs#L682) | receiver-type-required |
+| `child_report_summary` | `args.get` | [682](../../src/child_agents.rs#L682) | receiver-type-required |
+| `child_report_summary` | `Ok` | [683](../../src/child_agents.rs#L683), [686](../../src/child_agents.rs#L686) | external-constructor-callback-or-unresolved |
+| `child_report_summary` | `bounded_text` | [683](../../src/child_agents.rs#L683) | [tekes-worker::child_agents::bounded_text](../../src/child_agents.rs#L689) |
+| `bounded_text` | `value.len` | [690](../../src/child_agents.rs#L690) | receiver-type-required |
+| `bounded_text` | `value.to_owned` | [691](../../src/child_agents.rs#L691) | receiver-type-required |
+| `bounded_text` | `value.is_char_boundary` | [694](../../src/child_agents.rs#L694) | receiver-type-required |
+| `append_child_result_once` | `ledger.projection().and_then` | [708](../../src/child_agents.rs#L708) | receiver-type-required |
+| `append_child_result_once` | `ledger.projection` | [708](../../src/child_agents.rs#L708) | receiver-type-required |
+| `append_child_result_once` | `projection.events.iter().find` | [709](../../src/child_agents.rs#L709) | receiver-type-required |
+| `append_child_result_once` | `projection.events.iter` | [709](../../src/child_agents.rs#L709) | receiver-type-required |
+| `append_child_result_once` | `event.kind` | [710](../../src/child_agents.rs#L710) | receiver-type-required |
+| `append_child_result_once` | `event.string_field` | [711](../../src/child_agents.rs#L711) | receiver-type-required |
+| `append_child_result_once` | `Some` | [711](../../src/child_agents.rs#L711), [714](../../src/child_agents.rs#L714), [715](../../src/child_agents.rs#L715) | external-constructor-callback-or-unresolved |
+| `append_child_result_once` | `call.call_id.as_str` | [711](../../src/child_agents.rs#L711) | receiver-type-required |
+| `append_child_result_once` | `existing.string_field` | [714](../../src/child_agents.rs#L714), [715](../../src/child_agents.rs#L715) | receiver-type-required |
+| `append_child_result_once` | `spawn.child_file.as_str` | [714](../../src/child_agents.rs#L714) | receiver-type-required |
+| `append_child_result_once` | `spawn.spawn_id.as_str` | [715](../../src/child_agents.rs#L715) | receiver-type-required |
+| `append_child_result_once` | `Ok` | [717](../../src/child_agents.rs#L717), [733](../../src/child_agents.rs#L733) | external-constructor-callback-or-unresolved |
+| `append_child_result_once` | `Err` | [719](../../src/child_agents.rs#L719) | external-constructor-callback-or-unresolved |
+| `append_child_result_once` | `"existing child_result does not match spawn".into` | [719](../../src/child_agents.rs#L719) | receiver-type-required |
+| `append_child_result_once` | `value             .as_object_mut()             .expect("child_result object")             .insert` | [727](../../src/child_agents.rs#L727) | receiver-type-required |
+| `append_child_result_once` | `value             .as_object_mut()             .expect` | [727](../../src/child_agents.rs#L727) | receiver-type-required |
+| `append_child_result_once` | `value             .as_object_mut` | [727](../../src/child_agents.rs#L727) | receiver-type-required |
+| `append_child_result_once` | `"summary".to_owned` | [730](../../src/child_agents.rs#L730) | receiver-type-required |
+| `append_child_result_once` | `Value::String` | [730](../../src/child_agents.rs#L730) | external-constructor-callback-or-unresolved |
+| `append_child_result_once` | `summary.clone` | [730](../../src/child_agents.rs#L730) | receiver-type-required |
+| `append_child_result_once` | `ledger.append_contract` | [732](../../src/child_agents.rs#L732) | receiver-type-required |
+| `append_child_result_once` | `make_event` | [732](../../src/child_agents.rs#L732) | external-constructor-callback-or-unresolved |
+| `append_child_result_once` | `BarrierContext::default` | [732](../../src/child_agents.rs#L732) | external-constructor-callback-or-unresolved |

@@ -2559,6 +2559,7 @@ impl ProductionProcessHost {
         let run_id = format!("daemon-{}-{ordinal}", std::process::id());
         let launch_notices = Arc::new(Mutex::new(Vec::<SessionNotice>::new()));
         let launch_notices_capture = Arc::clone(&launch_notices);
+        let preset_skills = genesis_preset_skills(&ledger);
         let mut launch = launch_profiled_worker_with_secret_store_and_binding_resolver(
             &self.repository,
             &ProfiledWorkerLaunchSpec {
@@ -2583,14 +2584,19 @@ impl ProductionProcessHost {
                 }
                 // A degraded MCP catalog still launches; the session learns
                 // what it is missing through a notice rather than a dead turn.
-                *launch_notices_capture
-                    .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner) = mcp_launch_notices(
+                let mut notices = mcp_launch_notices(
                     mcp.registry_failure.as_deref(),
                     &mcp.failures,
                     &mcp.tool_refusals,
                     &config.workspace.policy.allowed_tools,
                 );
+                notices.extend(missing_preset_skill_notice(
+                    preset_skills.as_deref(),
+                    instruction,
+                ));
+                *launch_notices_capture
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner) = notices;
                 let unavailable =
                     mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
                 // The bound goal is the session's durable goals.v1 record id
@@ -4509,6 +4515,38 @@ impl ProductionProcessHost {
 /// server that could not be prepared. Nothing when the catalog is complete.
 /// Most refused tools one `mcp_tool` notice names.
 const MAX_NOTICE_TOOLS: usize = 8;
+
+/// The skills a session preset selects, read from the ledger's genesis.
+fn genesis_preset_skills(ledger: &Path) -> Option<Vec<String>> {
+    let genesis = store::read_genesis(ledger).ok()??;
+    let raw = serde_json::to_value(genesis.raw()).ok()?;
+    tools::ResolvedPreset::from_genesis(raw.get("preset")?)
+        .ok()?
+        .skills
+}
+
+/// A preset-selected skill the launch's instruction snapshot no longer has is
+/// absent for the run (spec session-endpoint §Session presets); the session
+/// learns which through one warning.
+fn missing_preset_skill_notice(
+    selected: Option<&[String]>,
+    instruction: &profile::InstructionSnapshot,
+) -> Option<SessionNotice> {
+    let missing = selected?
+        .iter()
+        .filter(|name| !instruction.effective.skills.contains_key(name.as_str()))
+        .map(String::as_str)
+        .collect::<Vec<_>>();
+    (!missing.is_empty()).then(|| SessionNotice {
+        severity: SessionNoticeSeverity::Warning,
+        classification: "preset_skill".to_owned(),
+        operation: "worker-launch".to_owned(),
+        message: format!(
+            "Preset skills are unavailable for this run: {}",
+            missing.join(", ")
+        ),
+    })
+}
 
 fn mcp_launch_notices(
     registry_failure: Option<&str>,
@@ -7209,6 +7247,35 @@ mod tests {
         assert_eq!(current.availability, previous.availability);
         assert_eq!(current.active, vec![scope]);
         assert!(current.revoked.is_empty());
+    }
+
+    #[test]
+    fn a_missing_preset_skill_is_one_warning() {
+        let mut instruction = profile::InstructionSnapshot {
+            format: 1,
+            sources: Vec::new(),
+            effective: profile::EffectiveInstructions::default(),
+        };
+        instruction
+            .effective
+            .skills
+            .insert("drama-scene-revise".to_owned(), 0);
+        let selected = vec![
+            "drama-scene-revise".to_owned(),
+            "drama-story-plan".to_owned(),
+        ];
+        let notice = missing_preset_skill_notice(Some(&selected), &instruction).expect("notice");
+        assert_eq!(notice.severity, SessionNoticeSeverity::Warning);
+        assert_eq!(notice.classification, "preset_skill");
+        assert_eq!(
+            notice.message,
+            "Preset skills are unavailable for this run: drama-story-plan"
+        );
+        assert_eq!(
+            missing_preset_skill_notice(Some(&selected[..1]), &instruction),
+            None
+        );
+        assert_eq!(missing_preset_skill_notice(None, &instruction), None);
     }
 
     #[test]

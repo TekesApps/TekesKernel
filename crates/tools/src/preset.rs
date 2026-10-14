@@ -1013,6 +1013,9 @@ pub fn describe_value() -> Value {
             "maxSkills": MAX_PRESET_SKILLS
         },
         "invalidReasons": PresetInvalidReason::ALL.iter().map(|reason| reason.as_str()).collect::<Vec<_>>(),
+        // Fixed tools a preset may select (`tools`); every other fixed name is a
+        // role tool the worker grants by role.
+        "selectableTools": BuiltinManifest::compiled().interactive_names(),
     })
 }
 

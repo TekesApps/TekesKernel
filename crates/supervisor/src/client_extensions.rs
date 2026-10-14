@@ -1820,6 +1820,9 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                 if let Some(skills) = &preset.skills {
                     result["skills"] = serde_json::json!(skills);
                 }
+                if !preset.mcp.is_empty() {
+                    result["mcpReadiness"] = self.mcp.preset_readiness(workspace_id, &preset);
+                }
                 encode(&result)
             }
             "session.initialPresets" => encode(&serde_json::json!({

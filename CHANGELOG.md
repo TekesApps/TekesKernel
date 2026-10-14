@@ -6,6 +6,19 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- `session.presets.describe` publishes `selectableTools`, the fixed tools a
+  preset's `tools` may name.
+- `session.presets.resolve` reports `mcpReadiness` for each MCP reference
+  against the catalog a launch would bind now (`ready`, `incomplete` with
+  `missingTools`/`refusedTools`, `failed`, `unavailable`), so a client's CI
+  catches a misspelled or removed MCP tool before a session launches. Advisory
+  only; the result digest is unchanged.
+- A launch whose preset selects a skill the instruction snapshot no longer has
+  records one `preset_skill` warning notice naming it (the skill was already
+  absent from the run; now the session learns why).
+- Tests for the delegated child inheriting its parent's preset or identity.
+
 ## 0.7.0 — 2026-10-15
 
 Session presets: a session opens with the workspace base plus ordered domain

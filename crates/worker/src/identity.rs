@@ -51,6 +51,22 @@ pub(super) fn genesis_preset(
         .transpose()
 }
 
+/// The opening genesis members a delegated child inherits: the parent's preset
+/// verbatim (with `min_reader` 2), or its resolved identity profile, or none
+/// while an automatic choice is still pending.
+pub(super) fn inherited_opening(
+    ledger: &LockedLedger,
+) -> Result<serde_json::Map<String, Value>, Box<dyn std::error::Error>> {
+    let mut opening = serde_json::Map::new();
+    if let Some(preset) = genesis_preset(ledger)? {
+        opening.insert("min_reader".to_owned(), json!(2));
+        opening.insert("preset".to_owned(), serde_json::to_value(&preset)?);
+    } else if let Some(identity) = selected(ledger)? {
+        opening.insert("identity_profile".to_owned(), json!(identity.as_str()));
+    }
+    Ok(opening)
+}
+
 /// The preset the root prompt renders: the genesis preset, or the session's
 /// identity profile (selected on first use for `auto`) on the general base.
 pub(super) fn resolve_preset(
@@ -311,6 +327,31 @@ mod tests {
                 tools::PresetBase::General
             )
         );
+    }
+
+    #[test]
+    fn a_delegated_child_inherits_the_parent_opening() {
+        let preset = tools::ResolvedPreset::resolve_request(
+            &json!({"layers":[{"kind":"kernel","id":"coding"}],"tools":["read"]}),
+            tools::PresetBase::General,
+            &tools::NoPresetEnvironment,
+        )
+        .unwrap();
+        let (_directory, with_preset) =
+            ledger_with("Fix it", json!({"min_reader":2,"preset":preset}));
+        let opening = inherited_opening(&with_preset).unwrap();
+        assert_eq!(opening["min_reader"], 2);
+        assert_eq!(opening["preset"], serde_json::to_value(&preset).unwrap());
+        assert!(!opening.contains_key("identity_profile"));
+
+        let (_directory, fixed) = ledger_with("Fix it", json!({"identity_profile":"general"}));
+        assert_eq!(
+            Value::Object(inherited_opening(&fixed).unwrap()),
+            json!({"identity_profile":"general"})
+        );
+        // An automatic choice that is still pending leaves the child on its own.
+        let (_directory, pending) = auto_ledger("Translate this");
+        assert!(inherited_opening(&pending).unwrap().is_empty());
     }
 
     #[test]

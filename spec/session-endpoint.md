@@ -2211,7 +2211,8 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   changed definition that changes the tool schemas opens a
   `tool_profile_change` epoch like any other catalog change. `skills` narrows
   the catalog `skill_explorer` and `skill` see; a selected package the
-  snapshot no longer has is absent. A preset without a selection keeps the
+  snapshot no longer has is absent, and that launch records one `warning`
+  session notice (`classification:"preset_skill"`) naming it. A preset without a selection keeps the
   workspace `allowed_tools` and every skill.
 - **Genesis.** The resolved preset is `preset:{format:1, base, layers,
   tools?, mcp?:[{server,digest,tools}], skills?, digest}`, where `digest` is
