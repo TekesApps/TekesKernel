@@ -65,7 +65,7 @@ fn slice1_gate_28_canonical_envelope_fixtures() {
     );
     let noncanonical = b"{ \"v\":1, \"seq\":1, \"kind\":\"genesis\", \"ts\":\"2026-08-26T09:00:00.000Z\", \"format\":1, \"thread\":\"018f0000-0000-7000-8000-000000000001\", \"workspace\":\"ws\", \"min_reader\":1, \"min_writer\":1, \"origin_key\":\"k\", \"origin_tuple\":{\"principal\":\"p\",\"client\":\"c\",\"target\":\"018f0000-0000-7000-8000-000000000001\",\"op\":\"create\",\"key\":\"k\"}, \"resume\":\"never\" }\n";
     assert!(
-        validate_ledger(noncanonical, 1).is_err(),
+        validate_ledger(noncanonical, schema::READER_VERSION).is_err(),
         "durable JSONL requires canonical event bytes"
     );
 
@@ -81,7 +81,7 @@ fn slice1_gate_28_canonical_envelope_fixtures() {
             root.join("invalid").join(case)
         };
         let bytes = read(&path).expect("valid ledger fixture");
-        validate_ledger(&bytes, 1).unwrap_or_else(|error| {
+        validate_ledger(&bytes, schema::READER_VERSION).unwrap_or_else(|error| {
             panic!("{} must validate: {error}", path.display());
         });
     }
@@ -117,7 +117,7 @@ fn slice1_gate_28_canonical_envelope_fixtures() {
         .filter(|case| case.ends_with(".jsonl") && !case.starts_with('_'))
     {
         let bytes = read(&root.join("invalid").join(case)).expect("invalid ledger fixture");
-        let error = validate_ledger(&bytes, 1)
+        let error = validate_ledger(&bytes, schema::READER_VERSION)
             .unwrap_err_or_else(|| panic!("{case} unexpectedly validated"));
         if let Some(expected_rule) = expected_rules.get(case.as_str()).copied().flatten() {
             assert_eq!(error.rule(), Some(expected_rule), "{case}: {error}");
@@ -292,7 +292,7 @@ fn slice1_gate_32_resume_policy_encoding() {
         "{\"binary\":\"tekes-worker-1\",\"config_digest\":\"cfg\",\"instruction_digest\":\"ins\",\"kind\":\"run_start\",\"mode\":\"reconcile\",\"policy\":\"default\",\"recovery_ordinal\":0,\"run\":\"r1\",\"seq\":2,\"ts\":\"2026-08-26T09:00:00.000Z\",\"v\":1}\n",
         "{\"binary\":\"tekes-worker-1\",\"config_digest\":\"cfg\",\"instruction_digest\":\"ins\",\"kind\":\"run_start\",\"mode\":\"reconcile\",\"policy\":\"default\",\"recovery_ordinal\":1,\"run\":\"r2\",\"seq\":3,\"ts\":\"2026-08-26T09:00:00.000Z\",\"v\":1}\n",
     );
-    validate_ledger(ledger.as_bytes(), 1).expect("ordinal chain must replay");
+    validate_ledger(ledger.as_bytes(), schema::READER_VERSION).expect("ordinal chain must replay");
 }
 
 #[test]
@@ -398,8 +398,11 @@ fn slice1_gate_18_upgrade_gate_barrier() {
         .expect("attempt orders epoch and turn_open");
     assert_eq!(sync.0.load(Ordering::SeqCst), 4);
     assert_eq!(ledger.next_seq(), 7);
-    validate_ledger(&fs::read(&ledger_path).expect("ledger bytes"), 1)
-        .expect("durable prefix validates");
+    validate_ledger(
+        &fs::read(&ledger_path).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("durable prefix validates");
 }
 
 #[test]
@@ -421,7 +424,7 @@ fn slice1_gate_29_torn_tail_fault_injection() {
     ] {
         let mut bytes = prefix.clone();
         bytes.extend(read(&root.join("torn").join(case)).expect("torn suffix"));
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         assert!(scan.needs_repair(), "{case}");
         assert_eq!(scan.last_seq(), 8, "{case}");
 
@@ -430,12 +433,14 @@ fn slice1_gate_29_torn_tail_fault_injection() {
         fs::write(&path, &bytes).expect("write torn ledger");
         assert_eq!(fs::read(&path).expect("read-only bytes"), bytes);
         {
-            let ledger = LockedLedger::open(&path, 1).expect("lock-holder repair");
+            let ledger =
+                LockedLedger::open(&path, schema::READER_VERSION).expect("lock-holder repair");
             assert_eq!(ledger.next_seq(), 9, "{case}");
         }
         let repaired = fs::read(&path).expect("repaired bytes");
         assert_eq!(repaired.len() as u64, scan.valid_bytes, "{case}");
-        validate_ledger(&repaired, 1).unwrap_or_else(|error| panic!("{case}: {error}"));
+        validate_ledger(&repaired, schema::READER_VERSION)
+            .unwrap_or_else(|error| panic!("{case}: {error}"));
     }
 }
 
@@ -449,8 +454,9 @@ fn slice1_gate_30_checkpoint_marker_replay() {
         "replay/checkpoint-valid.jsonl",
         "replay/checkpoint-invalidated.jsonl",
     ] {
-        let projection = validate_ledger(&read(&root.join(name)).expect(name), 1)
-            .unwrap_or_else(|error| panic!("{name}: {error}"));
+        let projection =
+            validate_ledger(&read(&root.join(name)).expect(name), schema::READER_VERSION)
+                .unwrap_or_else(|error| panic!("{name}: {error}"));
         assert_eq!(projection.origin_keys.get("k1"), Some(&1), "{name}");
         assert_eq!(projection.origin_keys.get("k9"), Some(&2), "{name}");
         assert_eq!(projection.origin_keys.get("k8"), Some(&3), "{name}");
@@ -559,7 +565,7 @@ fn slice1_gate_05_outcome_usage_crash_window() {
         )
     );
     assert!(
-        validate_ledger(bare.as_bytes(), 1).is_err(),
+        validate_ledger(bare.as_bytes(), schema::READER_VERSION).is_err(),
         "an outcome carries its usage"
     );
 
@@ -589,7 +595,8 @@ fn slice1_gate_05_outcome_usage_crash_window() {
             r#"{"kind":"settle","outcome":"interrupted","reason":"recovered","seq":9,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#
         ),
     );
-    let projection = validate_ledger(recovered.as_bytes(), 1).expect("recovery closure");
+    let projection =
+        validate_ledger(recovered.as_bytes(), schema::READER_VERSION).expect("recovery closure");
     let closure = projection
         .events
         .iter()
@@ -609,17 +616,18 @@ fn slice1_gate_05_outcome_usage_crash_window() {
             r#"{"attempt":"a1","classification":"transport","kind":"error","recoverable":true,"seq":7,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#
         )
     );
-    assert!(validate_ledger(bare_error.as_bytes(), 1).is_err());
+    assert!(validate_ledger(bare_error.as_bytes(), schema::READER_VERSION).is_err());
     let turn_error = format!(
         "{prefix}{}",
         event_line(
             r#"{"classification":"internal","kind":"error","recoverable":false,"seq":7,"ts":"2026-08-26T09:00:00.000Z","turn":1,"usage":{"availability":"unavailable"},"v":1}"#
         )
     );
-    assert!(validate_ledger(turn_error.as_bytes(), 1).is_err());
+    assert!(validate_ledger(turn_error.as_bytes(), schema::READER_VERSION).is_err());
 
     let output = first_lines(&baseline, 8);
-    let output_projection = validate_ledger(output.as_bytes(), 1).expect("output path");
+    let output_projection =
+        validate_ledger(output.as_bytes(), schema::READER_VERSION).expect("output path");
     let outcome = output_projection
         .events
         .iter()
@@ -655,7 +663,8 @@ fn slice1_gate_06_completed_turn_usage_exit() {
     ledger.push_str(&event_line(
         r#"{"kind":"settle","outcome":"completed","seq":12,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#,
     ));
-    let projection = validate_ledger(ledger.as_bytes(), 1).expect("completed turn");
+    let projection =
+        validate_ledger(ledger.as_bytes(), schema::READER_VERSION).expect("completed turn");
     let outcomes = projection
         .events
         .iter()
@@ -762,19 +771,19 @@ fn slice1_gate_33_run_mode_arbitration() {
         read(&root.join("invalid/_valid-baseline.jsonl")).expect("baseline"),
     )
     .expect("ledger");
-    let winner = LockedLedger::open(&path, 1).expect("winner");
+    let winner = LockedLedger::open(&path, schema::READER_VERSION).expect("winner");
     assert!(matches!(
-        LockedLedger::open(&path, 1),
+        LockedLedger::open(&path, schema::READER_VERSION),
         Err(StoreError::Busy)
     ));
     drop(winner);
-    LockedLedger::open(&path, 1).expect("fresh ensure may acquire after exit");
+    LockedLedger::open(&path, schema::READER_VERSION).expect("fresh ensure may acquire after exit");
 }
 
 #[test]
 fn slice1_gate_34_slow_hold_lifecycle() {
     let ledger = hold_ledger_prefix();
-    let parked = validate_ledger(ledger.as_bytes(), 1).expect("parked ledger");
+    let parked = validate_ledger(ledger.as_bytes(), schema::READER_VERSION).expect("parked ledger");
     assert_eq!(
         classify(&parked.lifecycle, LockFacts::FREE),
         TailState::ParkedHold
@@ -788,7 +797,8 @@ fn slice1_gate_34_slow_hold_lifecycle() {
     queued.push_str(&event_line(
         r#"{"content":[{"text":"later","type":"text"}],"kind":"input","origin_key":"q1","origin_tuple":{"client":"cli","key":"q1","op":"submit","principal":"p","target":"t"},"seq":10,"ts":"2026-08-26T09:00:00.000Z","v":1}"#,
     ));
-    let still_parked = validate_ledger(queued.as_bytes(), 1).expect("queued hold");
+    let still_parked =
+        validate_ledger(queued.as_bytes(), schema::READER_VERSION).expect("queued hold");
     assert_eq!(
         classify(&still_parked.lifecycle, LockFacts::FREE),
         TailState::ParkedHold
@@ -798,7 +808,8 @@ fn slice1_gate_34_slow_hold_lifecycle() {
     queued.push_str(&event_line(
         r#"{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"ans1","origin_tuple":{"client":"cli","key":"ans1","op":"approve","principal":"p","target":"t"},"seq":11,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#,
     ));
-    let answered = validate_ledger(queued.as_bytes(), 1).expect("answered hold");
+    let answered =
+        validate_ledger(queued.as_bytes(), schema::READER_VERSION).expect("answered hold");
     assert_eq!(
         classify(&answered.lifecycle, LockFacts::CALLER),
         TailState::AnsweredHold
@@ -901,7 +912,8 @@ fn slice1_gate_01_cold_boot_create_retry() {
     fs::create_dir(stage.join("assets")).expect("staging assets");
     fs::write(stage.join("main.jsonl"), []).expect("staging ledger");
     {
-        let mut ledger = LockedLedger::open(stage.join("main.jsonl"), 1).expect("stage lock");
+        let mut ledger = LockedLedger::open(stage.join("main.jsonl"), schema::READER_VERSION)
+            .expect("stage lock");
         ledger
             .append_contract(
                 genesis_event(durable_id, &crash_origin),
@@ -1032,14 +1044,16 @@ fn slice1_gate_13_busy_unknown_worker() {
     let path = directory.path().join("thread.jsonl");
     let original = read(&root.join("invalid/_valid-baseline.jsonl")).expect("baseline");
     fs::write(&path, &original).expect("write ledger");
-    let surviving_worker = LockedLedger::open(&path, 1).expect("surviving worker");
+    let surviving_worker =
+        LockedLedger::open(&path, schema::READER_VERSION).expect("surviving worker");
     assert!(matches!(
-        LockedLedger::open(&path, 1),
+        LockedLedger::open(&path, schema::READER_VERSION),
         Err(StoreError::Busy)
     ));
     assert_eq!(fs::read(&path).expect("unchanged while busy"), original);
     drop(surviving_worker);
-    LockedLedger::open(&path, 1).expect("normal delivery resumes after holder exit");
+    LockedLedger::open(&path, schema::READER_VERSION)
+        .expect("normal delivery resumes after holder exit");
 
     let first_supervisor = RootLock::acquire(directory.path()).expect("root winner");
     assert!(matches!(
@@ -1062,7 +1076,8 @@ fn slice1_gate_19_canary_per_run_attribution() {
     ledger.push_str(&event_line(
         r#"{"kind":"settle","outcome":"interrupted","reason":"recovered","seq":12,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#,
     ));
-    let projection = validate_ledger(ledger.as_bytes(), 1).expect("two attributed runs");
+    let projection =
+        validate_ledger(ledger.as_bytes(), schema::READER_VERSION).expect("two attributed runs");
     assert_eq!(projection.run_ranges.len(), 2);
     assert_eq!(projection.run_ranges[0].run, "r1");
     assert_eq!(
@@ -1108,7 +1123,8 @@ fn slice1_gate_12_supervisor_total_failure() {
     ledger.push_str(&event_line(
         r#"{"kind":"settle","outcome":"interrupted","reason":"recovered","seq":13,"ts":"2026-08-26T09:00:00.000Z","turn":1,"v":1}"#,
     ));
-    let projection = validate_ledger(ledger.as_bytes(), 1).expect("journaled adopt");
+    let projection =
+        validate_ledger(ledger.as_bytes(), schema::READER_VERSION).expect("journaled adopt");
     let adopted = projection
         .events
         .iter()
@@ -1156,7 +1172,7 @@ fn slice1_gate_12_supervisor_total_failure() {
 
     for boundary in 9..=13 {
         let crashed = first_lines(ledger.as_bytes(), boundary);
-        validate_ledger(crashed.as_bytes(), 1)
+        validate_ledger(crashed.as_bytes(), schema::READER_VERSION)
             .unwrap_or_else(|error| panic!("adopt crash boundary {boundary}: {error}"));
         let completed = format!(
             "{crashed}{}",
@@ -1167,7 +1183,8 @@ fn slice1_gate_12_supervisor_total_failure() {
                 .collect::<String>()
         );
         assert_eq!(completed, ledger);
-        validate_ledger(completed.as_bytes(), 1).expect("idempotent adopt completion");
+        validate_ledger(completed.as_bytes(), schema::READER_VERSION)
+            .expect("idempotent adopt completion");
     }
 
     assert_eq!(
@@ -1197,7 +1214,8 @@ fn slice1_gate_12_supervisor_total_failure() {
 fn slice1_gate_14_stop_mid_grandchild_crash() {
     let root = FixtureRoot::discover().expect("fixture root");
     let cancel = read(&root.join("replay/cancel-before-start.jsonl")).expect("cancel fixture");
-    let active = validate_ledger(first_lines(&cancel, 2).as_bytes(), 1).expect("open stop");
+    let active = validate_ledger(first_lines(&cancel, 2).as_bytes(), schema::READER_VERSION)
+        .expect("open stop");
     assert_eq!(
         classify(&active.lifecycle, LockFacts::FREE),
         TailState::StoppedActive
@@ -1210,7 +1228,8 @@ fn slice1_gate_14_stop_mid_grandchild_crash() {
         run_decision(TailState::StoppedActive, &active.lifecycle),
         RunDecision::Start(RunMode::Reconcile)
     );
-    let closed = validate_ledger(&cancel, 1).expect("cancel-before-start closes generation");
+    let closed = validate_ledger(&cancel, schema::READER_VERSION)
+        .expect("cancel-before-start closes generation");
     assert!(!closed.lifecycle.stop_active);
     assert_eq!(
         classify(&closed.lifecycle, LockFacts::FREE),
@@ -1229,7 +1248,8 @@ fn slice1_gate_14_stop_mid_grandchild_crash() {
     .into_iter()
     .map(event_line)
     .collect::<String>();
-    validate_ledger(release.as_bytes(), 1).expect("new input releases held prefix in seq order");
+    validate_ledger(release.as_bytes(), schema::READER_VERSION)
+        .expect("new input releases held prefix in seq order");
 
     let mut tree = StopTree::default();
     tree.add_root("root");

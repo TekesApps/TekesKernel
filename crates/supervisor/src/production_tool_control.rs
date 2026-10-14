@@ -1220,7 +1220,7 @@ fn session_folder(root: &Path, session: &str) -> Result<(PathBuf, bool), Supervi
 
 fn read_projection(path: &Path) -> Result<schema::LedgerProjection, SupervisorOperationError> {
     let bytes = fs::read(path).map_err(map_io)?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     scan.projection.ok_or_else(|| {
         SupervisorOperationError::Corruption(format!(
             "{} has no valid genesis prefix",

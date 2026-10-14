@@ -72,7 +72,7 @@ fn identical_notice_folds_until_the_next_input() {
         // A user input, appended the way the endpoint's prompt route does once
         // the profile exists (no workspace profile in this fixture).
         let ledger = root.path().join("threads").join(SESSION).join("main.jsonl");
-        let mut locked = store::LockedLedger::open(ledger, 1).expect("ledger");
+        let mut locked = store::LockedLedger::open(ledger, schema::READER_VERSION).expect("ledger");
         let seq = locked.next_seq();
         let value = serde_json::json!({
             "v": 1, "seq": seq, "kind": "input", "ts": "2026-09-21T00:00:02.000Z",

@@ -62,7 +62,7 @@ fn slice6_gate_47_endpoint_authority_byte_sync() {
 fn slice6_gate_48_stable_projection_journal() {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let source = read(&fixtures.join("endpoint/projection-source.jsonl")).expect("source");
-    let projection = validate_ledger(&source, 1).expect("valid source ledger");
+    let projection = validate_ledger(&source, schema::READER_VERSION).expect("valid source ledger");
     let folder = tempfile::tempdir().expect("thread folder");
     let journal = EndpointJournal::open(folder.path()).expect("journal");
     let mut projector = Projector::default();
@@ -105,7 +105,7 @@ fn slice6_gate_48_stable_projection_journal() {
 fn slice6_gate_49_chunks_are_transient_and_never_journaled() {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let source = read(&fixtures.join("endpoint/projection-source.jsonl")).expect("source");
-    let projection = validate_ledger(&source, 1).expect("valid source ledger");
+    let projection = validate_ledger(&source, schema::READER_VERSION).expect("valid source ledger");
     let folder = tempfile::tempdir().expect("thread folder");
     let journal = EndpointJournal::open(folder.path()).expect("journal");
     let mut projector = Projector::default();
@@ -243,7 +243,7 @@ fn slice6_gate_50_endpoint_mutation_and_archive_contract() {
     assert_eq!(first.seq, retry.seq);
     assert!(retry.deduplicated);
     let ledger = fs::read(root.path().join("threads").join(session).join("main.jsonl")).unwrap();
-    let projection = validate_ledger(&ledger, 1).unwrap();
+    let projection = validate_ledger(&ledger, schema::READER_VERSION).unwrap();
     let input = serde_json::to_value(projection.events.last().unwrap().raw()).unwrap();
     assert_eq!(input["kind"], "input");
     let digest = input["submission"]["configDigest"]
@@ -476,7 +476,7 @@ fn origin(target: &str, operation: &str, key: &str) -> OriginTuple {
 fn tool_argument_completion_keeps_attempt_identity_in_live_and_replay() {
     let fixtures = FixtureRoot::discover().unwrap();
     let source = read(&fixtures.join("endpoint/projection-source.jsonl")).unwrap();
-    let projection = validate_ledger(&source, 1).unwrap();
+    let projection = validate_ledger(&source, schema::READER_VERSION).unwrap();
     let folder = tempfile::tempdir().unwrap();
     let journal = EndpointJournal::open(folder.path()).unwrap();
     let mut projector = Projector::default();

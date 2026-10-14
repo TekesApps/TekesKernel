@@ -15,7 +15,9 @@ fn facts(rows: &[Value]) -> schema::LifecycleFacts {
         bytes.extend(serde_json_canonicalizer::to_vec(&row).unwrap());
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).unwrap().lifecycle
+    schema::validate_ledger(&bytes, schema::READER_VERSION)
+        .unwrap()
+        .lifecycle
 }
 
 #[test]

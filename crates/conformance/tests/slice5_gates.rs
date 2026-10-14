@@ -48,7 +48,8 @@ fn slice5_gate_15_redact_rewrite_closure() {
     assert!(!root.path().join("threads").join(SOURCE).exists());
     let destination = root.path().join("threads").join(REDACT_DEST);
     let bytes = fs::read(destination.join("main.jsonl")).expect("redacted ledger");
-    let projection = validate_ledger(&bytes, 1).expect("redacted ledger validates");
+    let projection =
+        validate_ledger(&bytes, schema::READER_VERSION).expect("redacted ledger validates");
     assert!(!bytes.windows(6).any(|window| window == b"SECRET"));
     assert!(!bytes.windows(8).any(|window| window == b"\"sealed\""));
     assert!(projection.events.iter().all(|event| {
@@ -358,7 +359,7 @@ fn prepare_source(store: &ThreadStore, thread: &str, secret: &[u8]) -> (String, 
         );
         bytes.push(b'\n');
     }
-    validate_ledger(&bytes, 1).expect("source ledger validates");
+    validate_ledger(&bytes, schema::READER_VERSION).expect("source ledger validates");
     fs::write(folder.join("main.jsonl"), bytes).expect("source ledger");
     let child_events = [
         json!({"v":1,"seq":1,"kind":"genesis","ts":TS,"format":1,"min_reader":1,"min_writer":1,"thread":CHILD,"workspace":"ws","origin_key":"child-create","origin_tuple":{"principal":"kernel","client":"spawn","target":CHILD,"op":"create","key":"child-create"},"resume":"never","parent":{"file":"main.jsonl","seq":7,"spawn_id":"spawn-1"},"seed":{"source":"parent","kinds":["state"],"snapshot":{"asset":seed_snapshot.asset,"digest":seed_digest}},"config":{"digest":config_digest},"instruction":{"digest":instruction_digest}}),
@@ -373,7 +374,7 @@ fn prepare_source(store: &ThreadStore, thread: &str, secret: &[u8]) -> (String, 
         );
         child_bytes.push(b'\n');
     }
-    validate_ledger(&child_bytes, 1).expect("child ledger validates");
+    validate_ledger(&child_bytes, schema::READER_VERSION).expect("child ledger validates");
     fs::write(folder.join(format!("{CHILD}.jsonl")), child_bytes).expect("child ledger");
     (poisoned.asset, safe.asset)
 }

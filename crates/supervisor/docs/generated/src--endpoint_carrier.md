@@ -143,33 +143,33 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::endpoint_carrier::active_session_ids](../../src/endpoint_carrier.rs#L2701) | function_item | `private` |  |
 | [tekes-supervisor::endpoint_carrier::load_mux_session](../../src/endpoint_carrier.rs#L2714) | function_item | `private` |  |
 | [tekes-supervisor::endpoint_carrier::inventory_row](../../src/endpoint_carrier.rs#L2730) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::semantic_projection](../../src/endpoint_carrier.rs#L2773) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::semantic_line_projection](../../src/endpoint_carrier.rs#L2777) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2788) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2821) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2924) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2965) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::actionable_projection](../../src/endpoint_carrier.rs#L2979) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2987) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3050) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::unresolved_hold_turn](../../src/endpoint_carrier.rs#L3084) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::payload_session_id](../../src/endpoint_carrier.rs#L3109) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::result_session_id](../../src/endpoint_carrier.rs#L3117) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::route_failure](../../src/endpoint_carrier.rs#L3125) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::public_question](../../src/endpoint_carrier.rs#L3137) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::carrier_failure](../../src/endpoint_carrier.rs#L3166) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3176) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::system_timestamp](../../src/endpoint_carrier.rs#L3184) | function_item | `private` |  |
-| [tekes-supervisor::endpoint_carrier::ProductionCarrierError](../../src/endpoint_carrier.rs#L3216) | enum_item | `pub` |  |
-| [tekes-supervisor::endpoint_carrier::question_cancellation_tests::question_denial_projects_as_cancelled_and_answer_as_answered](../../src/endpoint_carrier.rs#L3256) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::TS](../../src/endpoint_carrier.rs#L3311) | const_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3313) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::id](../../src/endpoint_carrier.rs#L3323) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::registered](../../src/endpoint_carrier.rs#L3327) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::first_touches_load_in_parallel_and_do_not_hold_up_live_frames](../../src/endpoint_carrier.rs#L3344) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session](../../src/endpoint_carrier.rs#L3425) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::semantic_projection](../../src/endpoint_carrier.rs#L2774) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::semantic_line_projection](../../src/endpoint_carrier.rs#L2778) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2789) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2822) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2925) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2966) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::actionable_projection](../../src/endpoint_carrier.rs#L2980) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2988) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3051) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::unresolved_hold_turn](../../src/endpoint_carrier.rs#L3085) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::payload_session_id](../../src/endpoint_carrier.rs#L3110) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::result_session_id](../../src/endpoint_carrier.rs#L3118) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::route_failure](../../src/endpoint_carrier.rs#L3126) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::public_question](../../src/endpoint_carrier.rs#L3138) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::carrier_failure](../../src/endpoint_carrier.rs#L3167) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3177) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::system_timestamp](../../src/endpoint_carrier.rs#L3185) | function_item | `private` |  |
+| [tekes-supervisor::endpoint_carrier::ProductionCarrierError](../../src/endpoint_carrier.rs#L3217) | enum_item | `pub` |  |
+| [tekes-supervisor::endpoint_carrier::question_cancellation_tests::question_denial_projects_as_cancelled_and_answer_as_answered](../../src/endpoint_carrier.rs#L3257) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::TS](../../src/endpoint_carrier.rs#L3312) | const_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3314) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::id](../../src/endpoint_carrier.rs#L3324) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::registered](../../src/endpoint_carrier.rs#L3328) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::first_touches_load_in_parallel_and_do_not_hold_up_live_frames](../../src/endpoint_carrier.rs#L3345) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::endpoint_carrier::lazy_registration_tests::a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session](../../src/endpoint_carrier.rs#L3426) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -787,11 +787,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locate_by_scan` | `Some` | [301](../../src/endpoint_carrier.rs#L301) | external-constructor-callback-or-unresolved |
 | `locate_in_folder` | `session_requests_mode(folder, session, true)?             .into_iter()             .find` | [321](../../src/endpoint_carrier.rs#L321) | receiver-type-required |
 | `locate_in_folder` | `session_requests_mode(folder, session, true)?             .into_iter` | [321](../../src/endpoint_carrier.rs#L321) | receiver-type-required |
-| `locate_in_folder` | `session_requests_mode` | [321](../../src/endpoint_carrier.rs#L321) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2924) |
+| `locate_in_folder` | `session_requests_mode` | [321](../../src/endpoint_carrier.rs#L321) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2925) |
 | `locate_in_folder` | `Ok` | [325](../../src/endpoint_carrier.rs#L325), [343](../../src/endpoint_carrier.rs#L343) | external-constructor-callback-or-unresolved |
-| `locate_in_folder` | `actionable_projection_mode` | [327](../../src/endpoint_carrier.rs#L327) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2987) |
+| `locate_in_folder` | `actionable_projection_mode` | [327](../../src/endpoint_carrier.rs#L327) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2988) |
 | `locate_in_folder` | `state.request.source_line.as_deref` | [330](../../src/endpoint_carrier.rs#L330) | receiver-type-required |
-| `locate_in_folder` | `validate_request_binding` | [333](../../src/endpoint_carrier.rs#L333) | [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3050) |
+| `locate_in_folder` | `validate_request_binding` | [333](../../src/endpoint_carrier.rs#L333) | [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3051) |
 | `locate_in_folder` | `self             .admission             .gate(&state.request.session_id)             .map_err` | [339](../../src/endpoint_carrier.rs#L339) | receiver-type-required |
 | `locate_in_folder` | `self             .admission             .gate` | [339](../../src/endpoint_carrier.rs#L339) | receiver-type-required |
 | `locate_in_folder` | `Some` | [343](../../src/endpoint_carrier.rs#L343) | external-constructor-callback-or-unresolved |
@@ -821,7 +821,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_append` | `Err` | [414](../../src/endpoint_carrier.rs#L414), [455](../../src/endpoint_carrier.rs#L455), [461](../../src/endpoint_carrier.rs#L461) | external-constructor-callback-or-unresolved |
 | `locked_append` | `StoreError::Corruption` | [414](../../src/endpoint_carrier.rs#L414), [435](../../src/endpoint_carrier.rs#L435), [439](../../src/endpoint_carrier.rs#L439) | external-constructor-callback-or-unresolved |
 | `locked_append` | `"stop became active before respond append".to_owned` | [415](../../src/endpoint_carrier.rs#L415) | receiver-type-required |
-| `locked_append` | `unresolved_hold_turn` | [418](../../src/endpoint_carrier.rs#L418) | [tekes-supervisor::endpoint_carrier::unresolved_hold_turn](../../src/endpoint_carrier.rs#L3084) |
+| `locked_append` | `unresolved_hold_turn` | [418](../../src/endpoint_carrier.rs#L418) | [tekes-supervisor::endpoint_carrier::unresolved_hold_turn](../../src/endpoint_carrier.rs#L3085) |
 | `locked_append` | `value.as_object().expect("literal is object").clone` | [430](../../src/endpoint_carrier.rs#L430) | receiver-type-required |
 | `locked_append` | `value.as_object().expect` | [430](../../src/endpoint_carrier.rs#L430) | receiver-type-required |
 | `locked_append` | `value.as_object` | [430](../../src/endpoint_carrier.rs#L430) | receiver-type-required |
@@ -845,20 +845,20 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_append` | `"approval append unexpectedly skipped".to_owned` | [456](../../src/endpoint_carrier.rs#L456) | receiver-type-required |
 | `locked_append` | `self                 .live_delivery(authorization, message)?                 .ok_or` | [458](../../src/endpoint_carrier.rs#L458) | receiver-type-required |
 | `locked_append` | `self                 .live_delivery` | [458](../../src/endpoint_carrier.rs#L458) | [tekes-supervisor::endpoint_carrier::ProductionRespondAuthority::live_delivery](../../src/endpoint_carrier.rs#L371) |
-| `locked_append` | `internal` | [461](../../src/endpoint_carrier.rs#L461) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
+| `locked_append` | `internal` | [461](../../src/endpoint_carrier.rs#L461) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
 | `locate` | `self.locate_once` | [468](../../src/endpoint_carrier.rs#L468) | receiver-type-required |
 | `author` | `authorization.session_id.contains` | [477](../../src/endpoint_carrier.rs#L477) | receiver-type-required |
 | `author` | `self.root.join("threads").join` | [478](../../src/endpoint_carrier.rs#L478) | receiver-type-required |
 | `author` | `self.root.join` | [478](../../src/endpoint_carrier.rs#L478) | receiver-type-required |
 | `author` | `session_requests_mode(&folder, &authorization.session_id, true)?                 .into_iter()                 .find` | [479](../../src/endpoint_carrier.rs#L479) | receiver-type-required |
 | `author` | `session_requests_mode(&folder, &authorization.session_id, true)?                 .into_iter` | [479](../../src/endpoint_carrier.rs#L479) | receiver-type-required |
-| `author` | `session_requests_mode` | [479](../../src/endpoint_carrier.rs#L479) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2924) |
+| `author` | `session_requests_mode` | [479](../../src/endpoint_carrier.rs#L479) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2925) |
 | `author` | `state.request.source_line.as_deref` | [483](../../src/endpoint_carrier.rs#L483) | receiver-type-required |
-| `author` | `actionable_projection_mode` | [485](../../src/endpoint_carrier.rs#L485) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2987) |
+| `author` | `actionable_projection_mode` | [485](../../src/endpoint_carrier.rs#L485) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2988) |
 | `author` | `Some` | [488](../../src/endpoint_carrier.rs#L488), [506](../../src/endpoint_carrier.rs#L506) | external-constructor-callback-or-unresolved |
 | `author` | `Err` | [492](../../src/endpoint_carrier.rs#L492), [508](../../src/endpoint_carrier.rs#L508) | external-constructor-callback-or-unresolved |
-| `author` | `internal` | [492](../../src/endpoint_carrier.rs#L492), [504](../../src/endpoint_carrier.rs#L504), [508](../../src/endpoint_carrier.rs#L508) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `author` | `validate_request_binding` | [494](../../src/endpoint_carrier.rs#L494) | [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3050) |
+| `author` | `internal` | [492](../../src/endpoint_carrier.rs#L492), [504](../../src/endpoint_carrier.rs#L504), [508](../../src/endpoint_carrier.rs#L508) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `author` | `validate_request_binding` | [494](../../src/endpoint_carrier.rs#L494) | [tekes-supervisor::endpoint_carrier::validate_request_binding](../../src/endpoint_carrier.rs#L3051) |
 | `author` | `projection                     .events                     .iter()                     .find(&#124;e&#124; e.seq() == state.request.causal_kernel_seq)                     .ok_or_else` | [500](../../src/endpoint_carrier.rs#L500) | receiver-type-required |
 | `author` | `projection                     .events                     .iter()                     .find` | [500](../../src/endpoint_carrier.rs#L500) | receiver-type-required |
 | `author` | `projection                     .events                     .iter` | [500](../../src/endpoint_carrier.rs#L500) | receiver-type-required |
@@ -884,14 +884,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_actionables` | `(line != "main.jsonl").then_some` | [622](../../src/endpoint_carrier.rs#L622) | receiver-type-required |
 | `recover_actionables` | `line.as_str` | [622](../../src/endpoint_carrier.rs#L622) | receiver-type-required |
 | `recover_actionables` | `actionable_projection_mode(&folder, session, source, true)                 .map_err` | [623](../../src/endpoint_carrier.rs#L623) | receiver-type-required |
-| `recover_actionables` | `actionable_projection_mode` | [623](../../src/endpoint_carrier.rs#L623) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2987) |
+| `recover_actionables` | `actionable_projection_mode` | [623](../../src/endpoint_carrier.rs#L623) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2988) |
 | `recover_actionables` | `self.reconcile_actionables_from` | [625](../../src/endpoint_carrier.rs#L625) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::reconcile_actionables_from](../../src/endpoint_carrier.rs#L680) |
 | `recover_actionables` | `projection                 .events                 .iter()                 .filter` | [626](../../src/endpoint_carrier.rs#L626) | receiver-type-required |
 | `recover_actionables` | `projection                 .events                 .iter` | [626](../../src/endpoint_carrier.rs#L626) | receiver-type-required |
 | `recover_actionables` | `e.kind` | [629](../../src/endpoint_carrier.rs#L629) | receiver-type-required |
 | `recover_actionables` | `spawn                     .string_field("child")                     .ok_or_else` | [631](../../src/endpoint_carrier.rs#L631) | receiver-type-required |
 | `recover_actionables` | `spawn                     .string_field` | [631](../../src/endpoint_carrier.rs#L631) | receiver-type-required |
-| `recover_actionables` | `internal_carrier` | [633](../../src/endpoint_carrier.rs#L633), [638](../../src/endpoint_carrier.rs#L638) | [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3176) |
+| `recover_actionables` | `internal_carrier` | [633](../../src/endpoint_carrier.rs#L633), [638](../../src/endpoint_carrier.rs#L638) | [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3177) |
 | `recover_actionables` | `child                     .strip_suffix(".jsonl")                     .ok_or_else` | [636](../../src/endpoint_carrier.rs#L636) | receiver-type-required |
 | `recover_actionables` | `child                     .strip_suffix` | [636](../../src/endpoint_carrier.rs#L636) | receiver-type-required |
 | `recover_actionables` | `endpoint::validate_session_id(id).map_err` | [639](../../src/endpoint_carrier.rs#L639) | receiver-type-required |
@@ -904,17 +904,17 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_actionables` | `self.inner.root.join("threads").join` | [656](../../src/endpoint_carrier.rs#L656) | receiver-type-required |
 | `reconcile_actionables` | `self.inner.root.join` | [656](../../src/endpoint_carrier.rs#L656) | receiver-type-required |
 | `reconcile_actionables` | `actionable_projection(&folder, session_id, source_line).map_err` | [658](../../src/endpoint_carrier.rs#L658) | receiver-type-required |
-| `reconcile_actionables` | `actionable_projection` | [658](../../src/endpoint_carrier.rs#L658) | [tekes-supervisor::endpoint_carrier::actionable_projection](../../src/endpoint_carrier.rs#L2979) |
+| `reconcile_actionables` | `actionable_projection` | [658](../../src/endpoint_carrier.rs#L658) | [tekes-supervisor::endpoint_carrier::actionable_projection](../../src/endpoint_carrier.rs#L2980) |
 | `reconcile_actionables` | `self.reconcile_actionables_from` | [659](../../src/endpoint_carrier.rs#L659) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::reconcile_actionables_from](../../src/endpoint_carrier.rs#L680) |
 | `reconcile_actionables_main` | `projection             .events             .first()             .ok_or_else` | [670](../../src/endpoint_carrier.rs#L670) | receiver-type-required |
 | `reconcile_actionables_main` | `projection             .events             .first` | [670](../../src/endpoint_carrier.rs#L670) | receiver-type-required |
-| `reconcile_actionables_main` | `internal_carrier` | [673](../../src/endpoint_carrier.rs#L673), [675](../../src/endpoint_carrier.rs#L675) | [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3176) |
+| `reconcile_actionables_main` | `internal_carrier` | [673](../../src/endpoint_carrier.rs#L673), [675](../../src/endpoint_carrier.rs#L675) | [tekes-supervisor::endpoint_carrier::internal_carrier](../../src/endpoint_carrier.rs#L3177) |
 | `reconcile_actionables_main` | `genesis.string_field` | [674](../../src/endpoint_carrier.rs#L674) | receiver-type-required |
 | `reconcile_actionables_main` | `Some` | [674](../../src/endpoint_carrier.rs#L674) | external-constructor-callback-or-unresolved |
 | `reconcile_actionables_main` | `Err` | [675](../../src/endpoint_carrier.rs#L675) | external-constructor-callback-or-unresolved |
 | `reconcile_actionables_main` | `self.reconcile_actionables_from` | [677](../../src/endpoint_carrier.rs#L677) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::reconcile_actionables_from](../../src/endpoint_carrier.rs#L680) |
 | `reconcile_actionables_from` | `line_requests(session_id, source_line, projection).map_err` | [687](../../src/endpoint_carrier.rs#L687) | receiver-type-required |
-| `reconcile_actionables_from` | `line_requests` | [687](../../src/endpoint_carrier.rs#L687) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2821) |
+| `reconcile_actionables_from` | `line_requests` | [687](../../src/endpoint_carrier.rs#L687) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2822) |
 | `reconcile_actionables_from` | `self.inner.requests.insert` | [689](../../src/endpoint_carrier.rs#L689) | receiver-type-required |
 | `reconcile_actionables_from` | `requests             .iter()             .filter(&#124;(state, _)&#124; state.resolution.is_none())             .map(&#124;(state, _)&#124; state.request.rpc_id.clone())             .collect::<BTreeSet<_>>` | [697](../../src/endpoint_carrier.rs#L697) | receiver-type-required |
 | `reconcile_actionables_from` | `requests             .iter()             .filter(&#124;(state, _)&#124; state.resolution.is_none())             .map` | [697](../../src/endpoint_carrier.rs#L697) | receiver-type-required |
@@ -1004,7 +1004,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_session_status` | `serde_json::to_vec` | [893](../../src/endpoint_carrier.rs#L893) | external-constructor-callback-or-unresolved |
 | `attach_session` | `self.attach_everywhere` | [902](../../src/endpoint_carrier.rs#L902) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::attach_everywhere](../../src/endpoint_carrier.rs#L926) |
 | `attach_session` | `semantic_line_projection_mode(             &self.inner.root.join("threads").join(session_id),             "main.jsonl",             true,         )         .map_err` | [903](../../src/endpoint_carrier.rs#L903) | receiver-type-required |
-| `attach_session` | `semantic_line_projection_mode` | [903](../../src/endpoint_carrier.rs#L903) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2788) |
+| `attach_session` | `semantic_line_projection_mode` | [903](../../src/endpoint_carrier.rs#L903) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2789) |
 | `attach_session` | `self.inner.root.join("threads").join` | [904](../../src/endpoint_carrier.rs#L904) | receiver-type-required |
 | `attach_session` | `self.inner.root.join` | [904](../../src/endpoint_carrier.rs#L904) | receiver-type-required |
 | `attach_session` | `self.publish_host_frame` | [909](../../src/endpoint_carrier.rs#L909) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::publish_host_frame](../../src/endpoint_carrier.rs#L1116) |
@@ -1020,7 +1020,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `attach_everywhere_with` | `after_load` | [945](../../src/endpoint_carrier.rs#L945) | external-constructor-callback-or-unresolved |
 | `attach_everywhere_with` | `self.inner.generations.lock().map_err` | [949](../../src/endpoint_carrier.rs#L949) | receiver-type-required |
 | `attach_everywhere_with` | `self.inner.generations.lock` | [949](../../src/endpoint_carrier.rs#L949) | receiver-type-required |
-| `attach_everywhere_with` | `poisoned` | [949](../../src/endpoint_carrier.rs#L949), [987](../../src/endpoint_carrier.rs#L987), [1007](../../src/endpoint_carrier.rs#L1007) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `attach_everywhere_with` | `poisoned` | [949](../../src/endpoint_carrier.rs#L949), [987](../../src/endpoint_carrier.rs#L987), [1007](../../src/endpoint_carrier.rs#L1007) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `attach_everywhere_with` | `generations                 .mux                 .retain` | [950](../../src/endpoint_carrier.rs#L950) | receiver-type-required |
 | `attach_everywhere_with` | `generation.lease.strong_count` | [952](../../src/endpoint_carrier.rs#L952) | receiver-type-required |
 | `attach_everywhere_with` | `Vec::new` | [953](../../src/endpoint_carrier.rs#L953) | external-constructor-callback-or-unresolved |
@@ -1059,7 +1059,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `attach_everywhere_with` | `self.next_rpc_id` | [1016](../../src/endpoint_carrier.rs#L1016) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::next_rpc_id](../../src/endpoint_carrier.rs#L1303) |
 | `lacks_registration` | `self.inner.generations.lock().map_err` | [1028](../../src/endpoint_carrier.rs#L1028) | receiver-type-required |
 | `lacks_registration` | `self.inner.generations.lock` | [1028](../../src/endpoint_carrier.rs#L1028) | receiver-type-required |
-| `lacks_registration` | `poisoned` | [1028](../../src/endpoint_carrier.rs#L1028) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `lacks_registration` | `poisoned` | [1028](../../src/endpoint_carrier.rs#L1028) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `lacks_registration` | `generations             .mux             .retain` | [1029](../../src/endpoint_carrier.rs#L1029) | receiver-type-required |
 | `lacks_registration` | `generation.lease.strong_count` | [1031](../../src/endpoint_carrier.rs#L1031) | receiver-type-required |
 | `lacks_registration` | `generation.handle.contains` | [1033](../../src/endpoint_carrier.rs#L1033) | receiver-type-required |
@@ -1088,13 +1088,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `claim_journal` | `self             .inner             .attachments             .lock()             .map_err(&#124;_&#124; poisoned())?             .journal_leases             .entry` | [1079](../../src/endpoint_carrier.rs#L1079) | receiver-type-required |
 | `claim_journal` | `self             .inner             .attachments             .lock()             .map_err` | [1079](../../src/endpoint_carrier.rs#L1079) | receiver-type-required |
 | `claim_journal` | `self             .inner             .attachments             .lock` | [1079](../../src/endpoint_carrier.rs#L1079) | receiver-type-required |
-| `claim_journal` | `poisoned` | [1083](../../src/endpoint_carrier.rs#L1083) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `claim_journal` | `poisoned` | [1083](../../src/endpoint_carrier.rs#L1083) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `claim_journal` | `session_id.to_owned` | [1085](../../src/endpoint_carrier.rs#L1085), [1089](../../src/endpoint_carrier.rs#L1089) | receiver-type-required |
 | `claim_journal` | `Ok` | [1087](../../src/endpoint_carrier.rs#L1087) | external-constructor-callback-or-unresolved |
 | `claim_journal` | `self.clone` | [1088](../../src/endpoint_carrier.rs#L1088) | receiver-type-required |
 | `detach_for_archive` | `self.inner.generations.lock().map_err` | [1094](../../src/endpoint_carrier.rs#L1094) | receiver-type-required |
 | `detach_for_archive` | `self.inner.generations.lock` | [1094](../../src/endpoint_carrier.rs#L1094) | receiver-type-required |
-| `detach_for_archive` | `poisoned` | [1094](../../src/endpoint_carrier.rs#L1094) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `detach_for_archive` | `poisoned` | [1094](../../src/endpoint_carrier.rs#L1094) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `detach_for_archive` | `generations             .mux             .retain` | [1095](../../src/endpoint_carrier.rs#L1095) | receiver-type-required |
 | `detach_for_archive` | `generation.lease.strong_count` | [1097](../../src/endpoint_carrier.rs#L1097) | receiver-type-required |
 | `detach_for_archive` | `generation.handle.detach_for_archive` | [1099](../../src/endpoint_carrier.rs#L1099) | receiver-type-required |
@@ -1109,7 +1109,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_host_frame` | `self.next_rpc_id` | [1117](../../src/endpoint_carrier.rs#L1117) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::next_rpc_id](../../src/endpoint_carrier.rs#L1303) |
 | `publish_host_frame` | `self.inner.generations.lock().map_err` | [1118](../../src/endpoint_carrier.rs#L1118) | receiver-type-required |
 | `publish_host_frame` | `self.inner.generations.lock` | [1118](../../src/endpoint_carrier.rs#L1118) | receiver-type-required |
-| `publish_host_frame` | `poisoned` | [1118](../../src/endpoint_carrier.rs#L1118) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `publish_host_frame` | `poisoned` | [1118](../../src/endpoint_carrier.rs#L1118) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `publish_host_frame` | `generations             .host             .retain` | [1119](../../src/endpoint_carrier.rs#L1119), [1124](../../src/endpoint_carrier.rs#L1124) | receiver-type-required |
 | `publish_host_frame` | `generation.lease.strong_count` | [1121](../../src/endpoint_carrier.rs#L1121) | receiver-type-required |
 | `publish_host_frame` | `generation.queue.push` | [1126](../../src/endpoint_carrier.rs#L1126) | receiver-type-required |
@@ -1130,7 +1130,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `update_control_cache` | `std::slice::from_ref` | [1176](../../src/endpoint_carrier.rs#L1176) | external-constructor-callback-or-unresolved |
 | `update_control_frames` | `self.inner.controls.lock().map_err` | [1183](../../src/endpoint_carrier.rs#L1183) | receiver-type-required |
 | `update_control_frames` | `self.inner.controls.lock` | [1183](../../src/endpoint_carrier.rs#L1183) | receiver-type-required |
-| `update_control_frames` | `poisoned` | [1183](../../src/endpoint_carrier.rs#L1183) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `update_control_frames` | `poisoned` | [1183](../../src/endpoint_carrier.rs#L1183) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `update_control_frames` | `frame.session_id` | [1185](../../src/endpoint_carrier.rs#L1185) | receiver-type-required |
 | `update_control_frames` | `controls                     .entry(session_id.to_owned())                     .or_insert_with` | [1189](../../src/endpoint_carrier.rs#L1189) | receiver-type-required |
 | `update_control_frames` | `controls                     .entry` | [1189](../../src/endpoint_carrier.rs#L1189) | receiver-type-required |
@@ -1158,13 +1158,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_durable_session_event_from_journal` | `self.next_rpc_id` | [1248](../../src/endpoint_carrier.rs#L1248) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::next_rpc_id](../../src/endpoint_carrier.rs#L1303) |
 | `close_mux_generations` | `self.inner.generations.lock().map_err` | [1255](../../src/endpoint_carrier.rs#L1255) | receiver-type-required |
 | `close_mux_generations` | `self.inner.generations.lock` | [1255](../../src/endpoint_carrier.rs#L1255) | receiver-type-required |
-| `close_mux_generations` | `poisoned` | [1255](../../src/endpoint_carrier.rs#L1255) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `close_mux_generations` | `poisoned` | [1255](../../src/endpoint_carrier.rs#L1255) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `close_mux_generations` | `generations.mux.drain` | [1256](../../src/endpoint_carrier.rs#L1256) | receiver-type-required |
 | `close_mux_generations` | `generation.handle.close` | [1257](../../src/endpoint_carrier.rs#L1257) | receiver-type-required |
 | `close_mux_generations` | `Ok` | [1259](../../src/endpoint_carrier.rs#L1259) | external-constructor-callback-or-unresolved |
 | `open_legacy_mux` | `self.inner.generations.lock().map_err` | [1266](../../src/endpoint_carrier.rs#L1266) | receiver-type-required |
 | `open_legacy_mux` | `self.inner.generations.lock` | [1266](../../src/endpoint_carrier.rs#L1266) | receiver-type-required |
-| `open_legacy_mux` | `poisoned` | [1266](../../src/endpoint_carrier.rs#L1266) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `open_legacy_mux` | `poisoned` | [1266](../../src/endpoint_carrier.rs#L1266) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `open_legacy_mux` | `generations             .mux             .retain` | [1267](../../src/endpoint_carrier.rs#L1267) | receiver-type-required |
 | `open_legacy_mux` | `generation.lease.strong_count` | [1269](../../src/endpoint_carrier.rs#L1269) | receiver-type-required |
 | `open_legacy_mux` | `AllSessionMux::open_with_replay(&self.inner.hub, &[])?.into_stream` | [1271](../../src/endpoint_carrier.rs#L1271) | receiver-type-required |
@@ -1181,7 +1181,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_host` | `Arc::new` | [1287](../../src/endpoint_carrier.rs#L1287) | external-constructor-callback-or-unresolved |
 | `open_host` | `self.inner.generations.lock().map_err` | [1288](../../src/endpoint_carrier.rs#L1288) | receiver-type-required |
 | `open_host` | `self.inner.generations.lock` | [1288](../../src/endpoint_carrier.rs#L1288) | receiver-type-required |
-| `open_host` | `poisoned` | [1288](../../src/endpoint_carrier.rs#L1288) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `open_host` | `poisoned` | [1288](../../src/endpoint_carrier.rs#L1288) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `open_host` | `generations             .host             .retain` | [1289](../../src/endpoint_carrier.rs#L1289) | receiver-type-required |
 | `open_host` | `generation.lease.strong_count` | [1291](../../src/endpoint_carrier.rs#L1291) | receiver-type-required |
 | `open_host` | `generations.host.push` | [1292](../../src/endpoint_carrier.rs#L1292) | receiver-type-required |
@@ -1195,7 +1195,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_all_context_projections` | `self.pinned_sessions` | [1316](../../src/endpoint_carrier.rs#L1316) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::pinned_sessions](../../src/endpoint_carrier.rs#L1053) |
 | `refresh_all_context_projections` | `self.inner.generations.lock().map_err` | [1318](../../src/endpoint_carrier.rs#L1318) | receiver-type-required |
 | `refresh_all_context_projections` | `self.inner.generations.lock` | [1318](../../src/endpoint_carrier.rs#L1318) | receiver-type-required |
-| `refresh_all_context_projections` | `poisoned` | [1318](../../src/endpoint_carrier.rs#L1318) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `refresh_all_context_projections` | `poisoned` | [1318](../../src/endpoint_carrier.rs#L1318) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `refresh_all_context_projections` | `HashSet::new` | [1319](../../src/endpoint_carrier.rs#L1319) | external-constructor-callback-or-unresolved |
 | `refresh_all_context_projections` | `generation.handle.baselines` | [1321](../../src/endpoint_carrier.rs#L1321) | receiver-type-required |
 | `refresh_all_context_projections` | `attached.insert` | [1322](../../src/endpoint_carrier.rs#L1322) | receiver-type-required |
@@ -1215,22 +1215,22 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_context_projection` | `endpoint::validate_session_id` | [1355](../../src/endpoint_carrier.rs#L1355) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
 | `refresh_context_projection` | `self             .inner             .context_projection_lock             .lock()             .map_err` | [1356](../../src/endpoint_carrier.rs#L1356) | receiver-type-required |
 | `refresh_context_projection` | `self             .inner             .context_projection_lock             .lock` | [1356](../../src/endpoint_carrier.rs#L1356) | receiver-type-required |
-| `refresh_context_projection` | `poisoned` | [1360](../../src/endpoint_carrier.rs#L1360) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `refresh_context_projection` | `poisoned` | [1360](../../src/endpoint_carrier.rs#L1360) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `refresh_context_projection` | `self.inner.root.join("threads").join` | [1361](../../src/endpoint_carrier.rs#L1361) | receiver-type-required |
 | `refresh_context_projection` | `self.inner.root.join` | [1361](../../src/endpoint_carrier.rs#L1361) | receiver-type-required |
 | `refresh_context_projection` | `semantic_projection(&folder).map_err` | [1362](../../src/endpoint_carrier.rs#L1362) | receiver-type-required |
-| `refresh_context_projection` | `semantic_projection` | [1362](../../src/endpoint_carrier.rs#L1362) | [tekes-supervisor::endpoint_carrier::semantic_projection](../../src/endpoint_carrier.rs#L2773) |
+| `refresh_context_projection` | `semantic_projection` | [1362](../../src/endpoint_carrier.rs#L1362) | [tekes-supervisor::endpoint_carrier::semantic_projection](../../src/endpoint_carrier.rs#L2774) |
 | `refresh_context_projection` | `EndpointJournal::open` | [1363](../../src/endpoint_carrier.rs#L1363) | [endpoint::journal::EndpointJournal::open](../../../endpoint/src/journal.rs#L165) |
 | `refresh_context_projection` | `self.refresh_context_projection_locked` | [1364](../../src/endpoint_carrier.rs#L1364) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::refresh_context_projection_locked](../../src/endpoint_carrier.rs#L1387) |
 | `refresh_context_projection_shared` | `endpoint::validate_session_id(session_id).map_err` | [1377](../../src/endpoint_carrier.rs#L1377) | receiver-type-required |
 | `refresh_context_projection_shared` | `endpoint::validate_session_id` | [1377](../../src/endpoint_carrier.rs#L1377) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
 | `refresh_context_projection_shared` | `self             .inner             .context_projection_lock             .lock()             .map_err` | [1378](../../src/endpoint_carrier.rs#L1378) | receiver-type-required |
 | `refresh_context_projection_shared` | `self             .inner             .context_projection_lock             .lock` | [1378](../../src/endpoint_carrier.rs#L1378) | receiver-type-required |
-| `refresh_context_projection_shared` | `poisoned` | [1382](../../src/endpoint_carrier.rs#L1382) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `refresh_context_projection_shared` | `poisoned` | [1382](../../src/endpoint_carrier.rs#L1382) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `refresh_context_projection_shared` | `self.inner.root.join("threads").join` | [1383](../../src/endpoint_carrier.rs#L1383) | receiver-type-required |
 | `refresh_context_projection_shared` | `self.inner.root.join` | [1383](../../src/endpoint_carrier.rs#L1383) | receiver-type-required |
 | `refresh_context_projection_shared` | `self.refresh_context_projection_locked` | [1384](../../src/endpoint_carrier.rs#L1384) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::refresh_context_projection_locked](../../src/endpoint_carrier.rs#L1387) |
-| `refresh_context_projection_locked` | `endpoint::NativeEndpoint::open` | [1394](../../src/endpoint_carrier.rs#L1394) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
+| `refresh_context_projection_locked` | `endpoint::NativeEndpoint::open` | [1394](../../src/endpoint_carrier.rs#L1394) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
 | `refresh_context_projection_locked` | `endpoint.session_config_snapshot(session_id).ok` | [1395](../../src/endpoint_carrier.rs#L1395) | receiver-type-required |
 | `refresh_context_projection_locked` | `endpoint.session_config_snapshot` | [1395](../../src/endpoint_carrier.rs#L1395) | receiver-type-required |
 | `refresh_context_projection_locked` | `crate::context_usage::sample` | [1396](../../src/endpoint_carrier.rs#L1396) | [tekes-supervisor::context_usage::sample](../../src/context_usage.rs#L209) |
@@ -1244,7 +1244,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_context_projection_locked` | `self             .inner             .controls             .lock()             .map_err(&#124;_&#124; poisoned())?             .get` | [1398](../../src/endpoint_carrier.rs#L1398) | receiver-type-required |
 | `refresh_context_projection_locked` | `self             .inner             .controls             .lock()             .map_err` | [1398](../../src/endpoint_carrier.rs#L1398) | receiver-type-required |
 | `refresh_context_projection_locked` | `self             .inner             .controls             .lock` | [1398](../../src/endpoint_carrier.rs#L1398) | receiver-type-required |
-| `refresh_context_projection_locked` | `poisoned` | [1402](../../src/endpoint_carrier.rs#L1402) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `refresh_context_projection_locked` | `poisoned` | [1402](../../src/endpoint_carrier.rs#L1402) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `refresh_context_projection_locked` | `serde_json::from_slice::<Value>(&item.projections.canonical_bytes().ok()?).ok` | [1405](../../src/endpoint_carrier.rs#L1405) | receiver-type-required |
 | `refresh_context_projection_locked` | `serde_json::from_slice::<Value>` | [1405](../../src/endpoint_carrier.rs#L1405) | external-constructor-callback-or-unresolved |
 | `refresh_context_projection_locked` | `item.projections.canonical_bytes().ok` | [1405](../../src/endpoint_carrier.rs#L1405) | receiver-type-required |
@@ -1268,7 +1268,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_items` | `self.session_authority` | [1449](../../src/endpoint_carrier.rs#L1449) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::session_authority](../../src/endpoint_carrier.rs#L867) |
 | `session_items` | `authority.inventory_items` | [1450](../../src/endpoint_carrier.rs#L1450) | receiver-type-required |
 | `session_items` | `items.map_err` | [1452](../../src/endpoint_carrier.rs#L1452) | receiver-type-required |
-| `session_items` | `endpoint::NativeEndpoint::open` | [1454](../../src/endpoint_carrier.rs#L1454) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
+| `session_items` | `endpoint::NativeEndpoint::open` | [1454](../../src/endpoint_carrier.rs#L1454) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
 | `session_items` | `Ok` | [1455](../../src/endpoint_carrier.rs#L1455) | external-constructor-callback-or-unresolved |
 | `session_items` | `endpoint             .list_sessions(&self.live_sessions())?             .into_iter()             .filter(&#124;session&#124; include_archived &#124;&#124; !session.archived)             .collect` | [1455](../../src/endpoint_carrier.rs#L1455) | receiver-type-required |
 | `session_items` | `endpoint             .list_sessions(&self.live_sessions())?             .into_iter()             .filter` | [1455](../../src/endpoint_carrier.rs#L1455) | receiver-type-required |
@@ -1276,13 +1276,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_items` | `endpoint             .list_sessions` | [1455](../../src/endpoint_carrier.rs#L1455) | receiver-type-required |
 | `session_items` | `self.live_sessions` | [1456](../../src/endpoint_carrier.rs#L1456) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::live_sessions](../../src/endpoint_carrier.rs#L876) |
 | `workspace_baseline` | `self.session_items` | [1466](../../src/endpoint_carrier.rs#L1466) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::session_items](../../src/endpoint_carrier.rs#L1445) |
-| `workspace_baseline` | `endpoint::ManagementStore::open_light` | [1467](../../src/endpoint_carrier.rs#L1467) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
+| `workspace_baseline` | `endpoint::ManagementStore::open_light` | [1467](../../src/endpoint_carrier.rs#L1467) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L428) |
 | `workspace_baseline` | `management.list_workspaces` | [1468](../../src/endpoint_carrier.rs#L1468) | receiver-type-required |
 | `workspace_baseline` | `Ok` | [1469](../../src/endpoint_carrier.rs#L1469) | external-constructor-callback-or-unresolved |
 | `workspace_baseline` | `list                     .items                     .into_iter()                     .map(&#124;workspace&#124; WorkspaceSummary {                         id: workspace.workspace_id,                         path: workspace.path,                         title: workspace.title,                         session_ids: workspace.session_ids,                         created_at: workspace.created_at,                         updated_at: workspace.updated_at,                     })                     .collect` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
 | `workspace_baseline` | `list                     .items                     .into_iter()                     .map` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
 | `workspace_baseline` | `list                     .items                     .into_iter` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
-| `inventory_baseline` | `endpoint::ManagementStore::open_light` | [1493](../../src/endpoint_carrier.rs#L1493) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
+| `inventory_baseline` | `endpoint::ManagementStore::open_light` | [1493](../../src/endpoint_carrier.rs#L1493) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L428) |
 | `inventory_baseline` | `management.completed_fork_lineage` | [1494](../../src/endpoint_carrier.rs#L1494) | receiver-type-required |
 | `inventory_baseline` | `management.workspace_paths` | [1495](../../src/endpoint_carrier.rs#L1495) | receiver-type-required |
 | `inventory_baseline` | `self             .session_items(false)?             .into_iter()             .filter(&#124;session&#124; !session.archived)             .map(&#124;session&#124; inventory_row(session, &paths, &lineage))             .collect::<Result<Vec<_>, endpoint::ManagementError>>` | [1496](../../src/endpoint_carrier.rs#L1496) | receiver-type-required |
@@ -1301,7 +1301,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `inventory_row` | `authority.inventory_item` | [1523](../../src/endpoint_carrier.rs#L1523) | receiver-type-required |
 | `inventory_row` | `item.map_err` | [1526](../../src/endpoint_carrier.rs#L1526) | receiver-type-required |
 | `inventory_row` | `Some` | [1527](../../src/endpoint_carrier.rs#L1527), [1532](../../src/endpoint_carrier.rs#L1532) | external-constructor-callback-or-unresolved |
-| `inventory_row` | `endpoint::ManagementStore::open_light` | [1529](../../src/endpoint_carrier.rs#L1529) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
+| `inventory_row` | `endpoint::ManagementStore::open_light` | [1529](../../src/endpoint_carrier.rs#L1529) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L428) |
 | `inventory_row` | `management.completed_fork_lineage` | [1530](../../src/endpoint_carrier.rs#L1530) | receiver-type-required |
 | `inventory_row` | `management.workspace_paths` | [1531](../../src/endpoint_carrier.rs#L1531) | receiver-type-required |
 | `inventory_row` | `inventory_row` | [1532](../../src/endpoint_carrier.rs#L1532) | [tekes-supervisor::endpoint_carrier::inventory_row](../../src/endpoint_carrier.rs#L2730) |
@@ -1311,7 +1311,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `control_baseline` | `Vec::new` | [1546](../../src/endpoint_carrier.rs#L1546) | external-constructor-callback-or-unresolved |
 | `control_baseline` | `self.inner.controls.lock().map_err` | [1548](../../src/endpoint_carrier.rs#L1548) | receiver-type-required |
 | `control_baseline` | `self.inner.controls.lock` | [1548](../../src/endpoint_carrier.rs#L1548) | receiver-type-required |
-| `control_baseline` | `poisoned` | [1548](../../src/endpoint_carrier.rs#L1548), [1582](../../src/endpoint_carrier.rs#L1582) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `control_baseline` | `poisoned` | [1548](../../src/endpoint_carrier.rs#L1548), [1582](../../src/endpoint_carrier.rs#L1582) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `control_baseline` | `active_session_ids` | [1549](../../src/endpoint_carrier.rs#L1549) | [tekes-supervisor::endpoint_carrier::active_session_ids](../../src/endpoint_carrier.rs#L2701) |
 | `control_baseline` | `controls.contains_key` | [1550](../../src/endpoint_carrier.rs#L1550) | receiver-type-required |
 | `control_baseline` | `unprojected.push` | [1555](../../src/endpoint_carrier.rs#L1555), [1563](../../src/endpoint_carrier.rs#L1563) | receiver-type-required |
@@ -1347,7 +1347,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `actionables_baseline` | `self                 .recover_actionables` | [1633](../../src/endpoint_carrier.rs#L1633) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::recover_actionables](../../src/endpoint_carrier.rs#L614) |
 | `actionables_baseline` | `error.to_string` | [1635](../../src/endpoint_carrier.rs#L1635), [1638](../../src/endpoint_carrier.rs#L1638) | receiver-type-required |
 | `actionables_baseline` | `pending_session_requests_mode(&folder, &session, true)                         .map_err` | [1637](../../src/endpoint_carrier.rs#L1637) | receiver-type-required |
-| `actionables_baseline` | `pending_session_requests_mode` | [1637](../../src/endpoint_carrier.rs#L1637) | [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2965) |
+| `actionables_baseline` | `pending_session_requests_mode` | [1637](../../src/endpoint_carrier.rs#L1637) | [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2966) |
 | `actionables_baseline` | `items.push` | [1656](../../src/endpoint_carrier.rs#L1656) | receiver-type-required |
 | `actionables_baseline` | `items.sort_by` | [1665](../../src/endpoint_carrier.rs#L1665) | receiver-type-required |
 | `actionables_baseline` | `left.id.cmp` | [1665](../../src/endpoint_carrier.rs#L1665) | receiver-type-required |
@@ -1402,7 +1402,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `examine` | `self.inner.requests.note_examined` | [1783](../../src/endpoint_carrier.rs#L1783) | receiver-type-required |
 | `fold_into_index` | `self.inner.root.join(area).join` | [1789](../../src/endpoint_carrier.rs#L1789) | receiver-type-required |
 | `fold_into_index` | `self.inner.root.join` | [1789](../../src/endpoint_carrier.rs#L1789) | receiver-type-required |
-| `fold_into_index` | `session_requests_mode` | [1790](../../src/endpoint_carrier.rs#L1790) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2924) |
+| `fold_into_index` | `session_requests_mode` | [1790](../../src/endpoint_carrier.rs#L1790) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2925) |
 | `fold_into_index` | `self.inner.requests.insert` | [1793](../../src/endpoint_carrier.rs#L1793) | receiver-type-required |
 | `fold_into_index` | `state.request.source_line.as_deref` | [1795](../../src/endpoint_carrier.rs#L1795) | receiver-type-required |
 | `fold_into_index` | `states.is_empty` | [1801](../../src/endpoint_carrier.rs#L1801) | receiver-type-required |
@@ -1426,10 +1426,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_mux_journal` | `ProductionCarrierError::Lifecycle` | [1868](../../src/endpoint_carrier.rs#L1868), [1875](../../src/endpoint_carrier.rs#L1875) | external-constructor-callback-or-unresolved |
 | `open_mux_journal` | `"journal follow did not establish a baseline".to_owned` | [1869](../../src/endpoint_carrier.rs#L1869) | receiver-type-required |
 | `open_mux_journal` | `endpoint::frozen_history_page(&session.endpoint, through_sequence, None, max_messages)                 .map_err` | [1874](../../src/endpoint_carrier.rs#L1874) | receiver-type-required |
-| `open_mux_journal` | `endpoint::frozen_history_page` | [1874](../../src/endpoint_carrier.rs#L1874) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L710) |
+| `open_mux_journal` | `endpoint::frozen_history_page` | [1874](../../src/endpoint_carrier.rs#L1874) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L714) |
 | `open_mux_journal` | `error.to_string` | [1875](../../src/endpoint_carrier.rs#L1875) | receiver-type-required |
 | `open_mux_journal` | `endpoint::NativeEndpoint::open(&self.inner.root)?             .hydrate_historical_submissions` | [1876](../../src/endpoint_carrier.rs#L1876) | receiver-type-required |
-| `open_mux_journal` | `endpoint::NativeEndpoint::open` | [1876](../../src/endpoint_carrier.rs#L1876) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
+| `open_mux_journal` | `endpoint::NativeEndpoint::open` | [1876](../../src/endpoint_carrier.rs#L1876) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
 | `open_mux_journal` | `self.snapshot_projections` | [1879](../../src/endpoint_carrier.rs#L1879) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::snapshot_projections](../../src/endpoint_carrier.rs#L1927) |
 | `open_mux_journal` | `mux.into_stream` | [1880](../../src/endpoint_carrier.rs#L1880) | receiver-type-required |
 | `open_mux_journal` | `VecDeque::from` | [1884](../../src/endpoint_carrier.rs#L1884) | external-constructor-callback-or-unresolved |
@@ -1446,7 +1446,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `snapshot_projections` | `self             .inner             .controls             .lock()             .map_err(&#124;_&#124; poisoned())?             .get` | [1932](../../src/endpoint_carrier.rs#L1932) | receiver-type-required |
 | `snapshot_projections` | `self             .inner             .controls             .lock()             .map_err` | [1932](../../src/endpoint_carrier.rs#L1932) | receiver-type-required |
 | `snapshot_projections` | `self             .inner             .controls             .lock` | [1932](../../src/endpoint_carrier.rs#L1932) | receiver-type-required |
-| `snapshot_projections` | `poisoned` | [1936](../../src/endpoint_carrier.rs#L1936) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `snapshot_projections` | `poisoned` | [1936](../../src/endpoint_carrier.rs#L1936) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `snapshot_projections` | `cached.or_else` | [1939](../../src/endpoint_carrier.rs#L1939) | receiver-type-required |
 | `snapshot_projections` | `crate::context_usage::saved_control_item` | [1940](../../src/endpoint_carrier.rs#L1940) | [tekes-supervisor::context_usage::saved_control_item](../../src/context_usage.rs#L72) |
 | `snapshot_projections` | `self.inner.root.join("threads").join` | [1941](../../src/endpoint_carrier.rs#L1941) | receiver-type-required |
@@ -1506,10 +1506,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `mux_journal_page` | `"expected a V3 journal-page request".to_owned` | [2085](../../src/endpoint_carrier.rs#L2085) | receiver-type-required |
 | `mux_journal_page` | `load_mux_session` | [2088](../../src/endpoint_carrier.rs#L2088) | [tekes-supervisor::endpoint_carrier::load_mux_session](../../src/endpoint_carrier.rs#L2714) |
 | `mux_journal_page` | `endpoint::frozen_history_page(             &session.endpoint,             through_sequence,             before_sequence,             max_messages,         )         .map_err` | [2089](../../src/endpoint_carrier.rs#L2089) | receiver-type-required |
-| `mux_journal_page` | `endpoint::frozen_history_page` | [2089](../../src/endpoint_carrier.rs#L2089) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L710) |
+| `mux_journal_page` | `endpoint::frozen_history_page` | [2089](../../src/endpoint_carrier.rs#L2089) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L714) |
 | `mux_journal_page` | `error.to_string` | [2095](../../src/endpoint_carrier.rs#L2095) | receiver-type-required |
 | `mux_journal_page` | `endpoint::NativeEndpoint::open(&self.inner.root)?             .hydrate_historical_submissions` | [2096](../../src/endpoint_carrier.rs#L2096) | receiver-type-required |
-| `mux_journal_page` | `endpoint::NativeEndpoint::open` | [2096](../../src/endpoint_carrier.rs#L2096) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L248) |
+| `mux_journal_page` | `endpoint::NativeEndpoint::open` | [2096](../../src/endpoint_carrier.rs#L2096) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
 | `mux_journal_page` | `Ok` | [2098](../../src/endpoint_carrier.rs#L2098) | external-constructor-callback-or-unresolved |
 | `map_source` | `serde_json::from_slice` | [2144](../../src/endpoint_carrier.rs#L2144), [2207](../../src/endpoint_carrier.rs#L2207), [2292](../../src/endpoint_carrier.rs#L2292), [2334](../../src/endpoint_carrier.rs#L2334), [2356](../../src/endpoint_carrier.rs#L2356) | external-constructor-callback-or-unresolved |
 | `map_source` | `envelope.payload.canonical_bytes` | [2144](../../src/endpoint_carrier.rs#L2144), [2207](../../src/endpoint_carrier.rs#L2207), [2292](../../src/endpoint_carrier.rs#L2292), [2334](../../src/endpoint_carrier.rs#L2334), [2356](../../src/endpoint_carrier.rs#L2356) | receiver-type-required |
@@ -1558,7 +1558,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `map_source` | `frame.session_id` | [2335](../../src/endpoint_carrier.rs#L2335) | receiver-type-required |
 | `map_source` | `self.owner.inner.controls.lock().map_err` | [2346](../../src/endpoint_carrier.rs#L2346) | receiver-type-required |
 | `map_source` | `self.owner.inner.controls.lock` | [2346](../../src/endpoint_carrier.rs#L2346) | receiver-type-required |
-| `map_source` | `poisoned` | [2346](../../src/endpoint_carrier.rs#L2346) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3180) |
+| `map_source` | `poisoned` | [2346](../../src/endpoint_carrier.rs#L2346) | [tekes-supervisor::endpoint_carrier::poisoned](../../src/endpoint_carrier.rs#L3181) |
 | `map_source` | `controls.get(session_id).cloned().map` | [2347](../../src/endpoint_carrier.rs#L2347) | receiver-type-required |
 | `map_source` | `controls.get(session_id).cloned` | [2347](../../src/endpoint_carrier.rs#L2347) | receiver-type-required |
 | `map_source` | `controls.get` | [2347](../../src/endpoint_carrier.rs#L2347) | receiver-type-required |
@@ -1629,7 +1629,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `call` | `self.streams.close_mux_generations` | [2577](../../src/endpoint_carrier.rs#L2577) | receiver-type-required |
 | `lifecycle_target` | `request.operation.as_str` | [2592](../../src/endpoint_carrier.rs#L2592) | receiver-type-required |
 | `lifecycle_target` | `payload_session_id(&request.payload).map` | [2594](../../src/endpoint_carrier.rs#L2594), [2597](../../src/endpoint_carrier.rs#L2597) | receiver-type-required |
-| `lifecycle_target` | `payload_session_id` | [2594](../../src/endpoint_carrier.rs#L2594), [2597](../../src/endpoint_carrier.rs#L2597) | [tekes-supervisor::endpoint_carrier::payload_session_id](../../src/endpoint_carrier.rs#L3109) |
+| `lifecycle_target` | `payload_session_id` | [2594](../../src/endpoint_carrier.rs#L2594), [2597](../../src/endpoint_carrier.rs#L2597) | [tekes-supervisor::endpoint_carrier::payload_session_id](../../src/endpoint_carrier.rs#L3110) |
 | `lifecycle_target` | `Some` | [2599](../../src/endpoint_carrier.rs#L2599) | external-constructor-callback-or-unresolved |
 | `assemble` | `root.as_ref` | [2623](../../src/endpoint_carrier.rs#L2623) | receiver-type-required |
 | `assemble` | `unary.admission_gates` | [2624](../../src/endpoint_carrier.rs#L2624) | receiver-type-required |
@@ -1682,7 +1682,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `load_mux_session` | `pending_session_requests_mode(&folder, session_id, true)         .map_err(internal_carrier)?         .into_iter()         .map` | [2719](../../src/endpoint_carrier.rs#L2719) | receiver-type-required |
 | `load_mux_session` | `pending_session_requests_mode(&folder, session_id, true)         .map_err(internal_carrier)?         .into_iter` | [2719](../../src/endpoint_carrier.rs#L2719) | receiver-type-required |
 | `load_mux_session` | `pending_session_requests_mode(&folder, session_id, true)         .map_err` | [2719](../../src/endpoint_carrier.rs#L2719) | receiver-type-required |
-| `load_mux_session` | `pending_session_requests_mode` | [2719](../../src/endpoint_carrier.rs#L2719) | [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2965) |
+| `load_mux_session` | `pending_session_requests_mode` | [2719](../../src/endpoint_carrier.rs#L2719) | [tekes-supervisor::endpoint_carrier::pending_session_requests_mode](../../src/endpoint_carrier.rs#L2966) |
 | `load_mux_session` | `Ok` | [2724](../../src/endpoint_carrier.rs#L2724) | external-constructor-callback-or-unresolved |
 | `inventory_row` | `session.title.map` | [2735](../../src/endpoint_carrier.rs#L2735) | receiver-type-required |
 | `inventory_row` | `IJsonValue::parse(             &serde_json::to_vec(&json!({                 "asOfSeq":session.as_of_seq,                 "values":{"sessionTitle":{"title":title}},             }))             .expect("session summary projection serializes"),         )         .expect` | [2736](../../src/endpoint_carrier.rs#L2736) | receiver-type-required |
@@ -1703,315 +1703,315 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `inventory_row` | `tail.as_str().to_owned` | [2765](../../src/endpoint_carrier.rs#L2765) | receiver-type-required |
 | `inventory_row` | `tail.as_str` | [2765](../../src/endpoint_carrier.rs#L2765) | receiver-type-required |
 | `inventory_row` | `Some` | [2768](../../src/endpoint_carrier.rs#L2768) | external-constructor-callback-or-unresolved |
-| `semantic_projection` | `semantic_line_projection` | [2774](../../src/endpoint_carrier.rs#L2774) | [tekes-supervisor::endpoint_carrier::semantic_line_projection](../../src/endpoint_carrier.rs#L2777) |
-| `semantic_line_projection` | `semantic_line_projection_mode` | [2781](../../src/endpoint_carrier.rs#L2781) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2788) |
-| `semantic_line_projection_mode` | `line             .strip_suffix(".jsonl")             .ok_or_else` | [2794](../../src/endpoint_carrier.rs#L2794) | receiver-type-required |
-| `semantic_line_projection_mode` | `line             .strip_suffix` | [2794](../../src/endpoint_carrier.rs#L2794) | receiver-type-required |
-| `semantic_line_projection_mode` | `internal` | [2796](../../src/endpoint_carrier.rs#L2796), [2805](../../src/endpoint_carrier.rs#L2805) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `semantic_line_projection_mode` | `endpoint::validate_session_id(id).map_err` | [2797](../../src/endpoint_carrier.rs#L2797) | receiver-type-required |
-| `semantic_line_projection_mode` | `endpoint::validate_session_id` | [2797](../../src/endpoint_carrier.rs#L2797) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `semantic_line_projection_mode` | `folder.join` | [2799](../../src/endpoint_carrier.rs#L2799) | receiver-type-required |
-| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err(internal)?         .file_type()         .is_file` | [2800](../../src/endpoint_carrier.rs#L2800) | receiver-type-required |
-| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err(internal)?         .file_type` | [2800](../../src/endpoint_carrier.rs#L2800) | receiver-type-required |
-| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err` | [2800](../../src/endpoint_carrier.rs#L2800) | receiver-type-required |
-| `semantic_line_projection_mode` | `fs::symlink_metadata` | [2800](../../src/endpoint_carrier.rs#L2800) | external-constructor-callback-or-unresolved |
-| `semantic_line_projection_mode` | `Err` | [2805](../../src/endpoint_carrier.rs#L2805), [2810](../../src/endpoint_carrier.rs#L2810) | external-constructor-callback-or-unresolved |
-| `semantic_line_projection_mode` | `fs::read(path).map_err` | [2807](../../src/endpoint_carrier.rs#L2807) | receiver-type-required |
-| `semantic_line_projection_mode` | `fs::read` | [2807](../../src/endpoint_carrier.rs#L2807) | external-constructor-callback-or-unresolved |
-| `semantic_line_projection_mode` | `scan_valid_prefix` | [2808](../../src/endpoint_carrier.rs#L2808) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `semantic_line_projection_mode` | `scan.needs_repair` | [2809](../../src/endpoint_carrier.rs#L2809) | receiver-type-required |
-| `semantic_line_projection_mode` | `HostFailure::Internal` | [2810](../../src/endpoint_carrier.rs#L2810), [2815](../../src/endpoint_carrier.rs#L2815) | external-constructor-callback-or-unresolved |
-| `semantic_line_projection_mode` | `"respond semantic ledger requires tail recovery".to_owned` | [2811](../../src/endpoint_carrier.rs#L2811) | receiver-type-required |
-| `semantic_line_projection_mode` | `scan.projection         .ok_or_else` | [2814](../../src/endpoint_carrier.rs#L2814) | receiver-type-required |
-| `semantic_line_projection_mode` | `"respond semantic ledger is empty".to_owned` | [2815](../../src/endpoint_carrier.rs#L2815) | receiver-type-required |
-| `line_requests` | `Vec::new` | [2826](../../src/endpoint_carrier.rs#L2826) | external-constructor-callback-or-unresolved |
-| `line_requests` | `projection         .events         .iter()         .filter` | [2827](../../src/endpoint_carrier.rs#L2827) | receiver-type-required |
-| `line_requests` | `projection         .events         .iter` | [2827](../../src/endpoint_carrier.rs#L2827) | receiver-type-required |
-| `line_requests` | `e.kind` | [2830](../../src/endpoint_carrier.rs#L2830), [2838](../../src/endpoint_carrier.rs#L2838), [2878](../../src/endpoint_carrier.rs#L2878), [2898](../../src/endpoint_carrier.rs#L2898) | receiver-type-required |
-| `line_requests` | `hold             .string_field("call")             .ok_or_else` | [2832](../../src/endpoint_carrier.rs#L2832) | receiver-type-required |
-| `line_requests` | `hold             .string_field` | [2832](../../src/endpoint_carrier.rs#L2832) | receiver-type-required |
-| `line_requests` | `internal` | [2834](../../src/endpoint_carrier.rs#L2834), [2839](../../src/endpoint_carrier.rs#L2839), [2861](../../src/endpoint_carrier.rs#L2861) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `line_requests` | `projection             .events             .iter()             .find(&#124;e&#124; e.kind() == &EventKind::ToolCall && e.string_field("call") == Some(call))             .ok_or_else` | [2835](../../src/endpoint_carrier.rs#L2835) | receiver-type-required |
-| `line_requests` | `projection             .events             .iter()             .find` | [2835](../../src/endpoint_carrier.rs#L2835) | receiver-type-required |
-| `line_requests` | `projection             .events             .iter` | [2835](../../src/endpoint_carrier.rs#L2835) | receiver-type-required |
-| `line_requests` | `e.string_field` | [2838](../../src/endpoint_carrier.rs#L2838), [2879](../../src/endpoint_carrier.rs#L2879), [2899](../../src/endpoint_carrier.rs#L2899) | receiver-type-required |
-| `line_requests` | `Some` | [2838](../../src/endpoint_carrier.rs#L2838), [2840](../../src/endpoint_carrier.rs#L2840), [2863](../../src/endpoint_carrier.rs#L2863), [2879](../../src/endpoint_carrier.rs#L2879), [2899](../../src/endpoint_carrier.rs#L2899) | external-constructor-callback-or-unresolved |
-| `line_requests` | `hold.string_field` | [2840](../../src/endpoint_carrier.rs#L2840), [2864](../../src/endpoint_carrier.rs#L2864) | receiver-type-required |
-| `line_requests` | `hold.has_field` | [2840](../../src/endpoint_carrier.rs#L2840) | receiver-type-required |
-| `line_requests` | `serde_json::to_value(hold.raw()).map_err` | [2842](../../src/endpoint_carrier.rs#L2842) | receiver-type-required |
-| `line_requests` | `serde_json::to_value` | [2842](../../src/endpoint_carrier.rs#L2842), [2882](../../src/endpoint_carrier.rs#L2882), [2900](../../src/endpoint_carrier.rs#L2900) | external-constructor-callback-or-unresolved |
-| `line_requests` | `hold.raw` | [2842](../../src/endpoint_carrier.rs#L2842) | receiver-type-required |
-| `line_requests` | `session_id.to_owned` | [2848](../../src/endpoint_carrier.rs#L2848), [2857](../../src/endpoint_carrier.rs#L2857) | receiver-type-required |
-| `line_requests` | `tool                     .string_field("name")                     .ok_or_else(&#124;&#124; internal("tool lacks name"))?                     .to_owned` | [2859](../../src/endpoint_carrier.rs#L2859) | receiver-type-required |
-| `line_requests` | `tool                     .string_field("name")                     .ok_or_else` | [2859](../../src/endpoint_carrier.rs#L2859) | receiver-type-required |
-| `line_requests` | `tool                     .string_field` | [2859](../../src/endpoint_carrier.rs#L2859) | receiver-type-required |
-| `line_requests` | `call.to_owned` | [2863](../../src/endpoint_carrier.rs#L2863) | receiver-type-required |
-| `line_requests` | `hold.string_field("scope").map` | [2864](../../src/endpoint_carrier.rs#L2864) | receiver-type-required |
-| `line_requests` | `IJsonValue::parse(&serde_json::to_vec(&frame).map_err(internal)?).map_err` | [2868](../../src/endpoint_carrier.rs#L2868) | receiver-type-required |
-| `line_requests` | `IJsonValue::parse` | [2868](../../src/endpoint_carrier.rs#L2868) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `line_requests` | `serde_json::to_vec(&frame).map_err` | [2868](../../src/endpoint_carrier.rs#L2868) | receiver-type-required |
-| `line_requests` | `serde_json::to_vec` | [2868](../../src/endpoint_carrier.rs#L2868) | external-constructor-callback-or-unresolved |
-| `line_requests` | `PendingRequest::derive(session_id, source_line, kind, hold.seq(), payload)             .map_err` | [2874](../../src/endpoint_carrier.rs#L2874) | receiver-type-required |
-| `line_requests` | `PendingRequest::derive` | [2874](../../src/endpoint_carrier.rs#L2874) | [endpoint::requests::PendingRequest::derive](../../../endpoint/src/requests.rs#L62) |
-| `line_requests` | `hold.seq` | [2874](../../src/endpoint_carrier.rs#L2874), [2877](../../src/endpoint_carrier.rs#L2877), [2897](../../src/endpoint_carrier.rs#L2897) | receiver-type-required |
-| `line_requests` | `projection.events.iter().find` | [2876](../../src/endpoint_carrier.rs#L2876), [2896](../../src/endpoint_carrier.rs#L2896) | receiver-type-required |
-| `line_requests` | `projection.events.iter` | [2876](../../src/endpoint_carrier.rs#L2876), [2896](../../src/endpoint_carrier.rs#L2896) | receiver-type-required |
-| `line_requests` | `e.seq` | [2877](../../src/endpoint_carrier.rs#L2877), [2897](../../src/endpoint_carrier.rs#L2897) | receiver-type-required |
-| `line_requests` | `serde_json::to_value(response.raw()).map_err` | [2882](../../src/endpoint_carrier.rs#L2882) | receiver-type-required |
-| `line_requests` | `response.raw` | [2882](../../src/endpoint_carrier.rs#L2882) | receiver-type-required |
-| `line_requests` | `RequestState::resolved(request, response.seq(), outcome).map_err` | [2895](../../src/endpoint_carrier.rs#L2895) | receiver-type-required |
-| `line_requests` | `RequestState::resolved` | [2895](../../src/endpoint_carrier.rs#L2895), [2904](../../src/endpoint_carrier.rs#L2904) | [endpoint::requests::RequestState::resolved](../../../endpoint/src/requests.rs#L97) |
-| `line_requests` | `response.seq` | [2895](../../src/endpoint_carrier.rs#L2895) | receiver-type-required |
-| `line_requests` | `serde_json::to_value(e.raw())                     .ok()                     .is_some_and` | [2900](../../src/endpoint_carrier.rs#L2900) | receiver-type-required |
-| `line_requests` | `serde_json::to_value(e.raw())                     .ok` | [2900](../../src/endpoint_carrier.rs#L2900) | receiver-type-required |
-| `line_requests` | `e.raw` | [2900](../../src/endpoint_carrier.rs#L2900) | receiver-type-required |
-| `line_requests` | `value["outcome"].get("aborted").is_some` | [2902](../../src/endpoint_carrier.rs#L2902) | receiver-type-required |
-| `line_requests` | `value["outcome"].get` | [2902](../../src/endpoint_carrier.rs#L2902) | receiver-type-required |
-| `line_requests` | `RequestState::resolved(                 request,                 aborted.seq(),                 endpoint::ResolutionOutcome::Cancelled,             )             .map_err` | [2904](../../src/endpoint_carrier.rs#L2904) | receiver-type-required |
-| `line_requests` | `aborted.seq` | [2906](../../src/endpoint_carrier.rs#L2906) | receiver-type-required |
-| `line_requests` | `requests.push` | [2916](../../src/endpoint_carrier.rs#L2916) | receiver-type-required |
-| `line_requests` | `Ok` | [2918](../../src/endpoint_carrier.rs#L2918) | external-constructor-callback-or-unresolved |
-| `session_requests_mode` | `Vec::new` | [2929](../../src/endpoint_carrier.rs#L2929) | external-constructor-callback-or-unresolved |
-| `session_requests_mode` | `HashSet::new` | [2931](../../src/endpoint_carrier.rs#L2931) | external-constructor-callback-or-unresolved |
-| `session_requests_mode` | `pending.pop` | [2932](../../src/endpoint_carrier.rs#L2932) | receiver-type-required |
-| `session_requests_mode` | `visited.insert` | [2933](../../src/endpoint_carrier.rs#L2933) | receiver-type-required |
-| `session_requests_mode` | `line.clone` | [2933](../../src/endpoint_carrier.rs#L2933) | receiver-type-required |
-| `session_requests_mode` | `(line != "main.jsonl").then_some` | [2936](../../src/endpoint_carrier.rs#L2936) | receiver-type-required |
-| `session_requests_mode` | `line.as_str` | [2936](../../src/endpoint_carrier.rs#L2936) | receiver-type-required |
-| `session_requests_mode` | `semantic_line_projection_mode` | [2937](../../src/endpoint_carrier.rs#L2937) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2788) |
-| `session_requests_mode` | `states.extend` | [2938](../../src/endpoint_carrier.rs#L2938) | receiver-type-required |
-| `session_requests_mode` | `line_requests(session, source, &projection)?                 .into_iter()                 .map` | [2939](../../src/endpoint_carrier.rs#L2939) | receiver-type-required |
-| `session_requests_mode` | `line_requests(session, source, &projection)?                 .into_iter` | [2939](../../src/endpoint_carrier.rs#L2939) | receiver-type-required |
-| `session_requests_mode` | `line_requests` | [2939](../../src/endpoint_carrier.rs#L2939) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2821) |
-| `session_requests_mode` | `projection             .events             .iter()             .filter` | [2943](../../src/endpoint_carrier.rs#L2943) | receiver-type-required |
-| `session_requests_mode` | `projection             .events             .iter` | [2943](../../src/endpoint_carrier.rs#L2943) | receiver-type-required |
-| `session_requests_mode` | `e.kind` | [2946](../../src/endpoint_carrier.rs#L2946) | receiver-type-required |
-| `session_requests_mode` | `spawn                 .string_field("child")                 .ok_or_else` | [2948](../../src/endpoint_carrier.rs#L2948) | receiver-type-required |
-| `session_requests_mode` | `spawn                 .string_field` | [2948](../../src/endpoint_carrier.rs#L2948) | receiver-type-required |
-| `session_requests_mode` | `internal` | [2950](../../src/endpoint_carrier.rs#L2950), [2953](../../src/endpoint_carrier.rs#L2953) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `session_requests_mode` | `child                 .strip_suffix(".jsonl")                 .ok_or_else` | [2951](../../src/endpoint_carrier.rs#L2951) | receiver-type-required |
-| `session_requests_mode` | `child                 .strip_suffix` | [2951](../../src/endpoint_carrier.rs#L2951) | receiver-type-required |
-| `session_requests_mode` | `endpoint::validate_session_id(id).map_err` | [2954](../../src/endpoint_carrier.rs#L2954) | receiver-type-required |
-| `session_requests_mode` | `endpoint::validate_session_id` | [2954](../../src/endpoint_carrier.rs#L2954) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `session_requests_mode` | `folder.join(child).exists` | [2955](../../src/endpoint_carrier.rs#L2955) | receiver-type-required |
-| `session_requests_mode` | `folder.join` | [2955](../../src/endpoint_carrier.rs#L2955) | receiver-type-required |
-| `session_requests_mode` | `pending.push` | [2956](../../src/endpoint_carrier.rs#L2956) | receiver-type-required |
-| `session_requests_mode` | `child.to_owned` | [2956](../../src/endpoint_carrier.rs#L2956) | receiver-type-required |
-| `session_requests_mode` | `states.sort_by_key` | [2960](../../src/endpoint_carrier.rs#L2960) | receiver-type-required |
-| `session_requests_mode` | `Ok` | [2961](../../src/endpoint_carrier.rs#L2961) | external-constructor-callback-or-unresolved |
-| `pending_session_requests_mode` | `Ok` | [2970](../../src/endpoint_carrier.rs#L2970) | external-constructor-callback-or-unresolved |
-| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter(&#124;state&#124; state.resolution.is_none())         .map(&#124;state&#124; state.request)         .collect` | [2970](../../src/endpoint_carrier.rs#L2970) | receiver-type-required |
-| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter(&#124;state&#124; state.resolution.is_none())         .map` | [2970](../../src/endpoint_carrier.rs#L2970) | receiver-type-required |
-| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter` | [2970](../../src/endpoint_carrier.rs#L2970) | receiver-type-required |
-| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter` | [2970](../../src/endpoint_carrier.rs#L2970) | receiver-type-required |
-| `pending_session_requests_mode` | `session_requests_mode` | [2970](../../src/endpoint_carrier.rs#L2970) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2924) |
-| `pending_session_requests_mode` | `state.resolution.is_none` | [2972](../../src/endpoint_carrier.rs#L2972) | receiver-type-required |
-| `actionable_projection` | `actionable_projection_mode` | [2984](../../src/endpoint_carrier.rs#L2984) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2987) |
-| `actionable_projection_mode` | `source_line.unwrap_or` | [2993](../../src/endpoint_carrier.rs#L2993) | receiver-type-required |
-| `actionable_projection_mode` | `semantic_line_projection_mode` | [2994](../../src/endpoint_carrier.rs#L2994), [3031](../../src/endpoint_carrier.rs#L3031) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2788) |
-| `actionable_projection_mode` | `projection.clone` | [2995](../../src/endpoint_carrier.rs#L2995) | receiver-type-required |
-| `actionable_projection_mode` | `line.to_owned` | [2996](../../src/endpoint_carrier.rs#L2996) | receiver-type-required |
-| `actionable_projection_mode` | `HashSet::new` | [2997](../../src/endpoint_carrier.rs#L2997) | external-constructor-callback-or-unresolved |
-| `actionable_projection_mode` | `visited.insert` | [3000](../../src/endpoint_carrier.rs#L3000) | receiver-type-required |
-| `actionable_projection_mode` | `current_line.clone` | [3000](../../src/endpoint_carrier.rs#L3000) | receiver-type-required |
-| `actionable_projection_mode` | `Err` | [3001](../../src/endpoint_carrier.rs#L3001), [3015](../../src/endpoint_carrier.rs#L3015), [3041](../../src/endpoint_carrier.rs#L3041) | external-constructor-callback-or-unresolved |
-| `actionable_projection_mode` | `internal` | [3001](../../src/endpoint_carrier.rs#L3001), [3006](../../src/endpoint_carrier.rs#L3006), [3015](../../src/endpoint_carrier.rs#L3015), [3024](../../src/endpoint_carrier.rs#L3024), [3027](../../src/endpoint_carrier.rs#L3027), [3030](../../src/endpoint_carrier.rs#L3030), [3036](../../src/endpoint_carrier.rs#L3036), [3041](../../src/endpoint_carrier.rs#L3041) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `actionable_projection_mode` | `current             .events             .first()             .ok_or_else` | [3003](../../src/endpoint_carrier.rs#L3003) | receiver-type-required |
-| `actionable_projection_mode` | `current             .events             .first` | [3003](../../src/endpoint_carrier.rs#L3003) | receiver-type-required |
-| `actionable_projection_mode` | `current_line                 .strip_suffix(".jsonl")                 .expect` | [3010](../../src/endpoint_carrier.rs#L3010) | receiver-type-required |
-| `actionable_projection_mode` | `current_line                 .strip_suffix` | [3010](../../src/endpoint_carrier.rs#L3010) | receiver-type-required |
-| `actionable_projection_mode` | `genesis.string_field` | [3014](../../src/endpoint_carrier.rs#L3014) | receiver-type-required |
-| `actionable_projection_mode` | `Some` | [3014](../../src/endpoint_carrier.rs#L3014), [3038](../../src/endpoint_carrier.rs#L3038), [3039](../../src/endpoint_carrier.rs#L3039) | external-constructor-callback-or-unresolved |
-| `actionable_projection_mode` | `serde_json::to_value(genesis.raw()).map_err` | [3020](../../src/endpoint_carrier.rs#L3020) | receiver-type-required |
-| `actionable_projection_mode` | `serde_json::to_value` | [3020](../../src/endpoint_carrier.rs#L3020) | external-constructor-callback-or-unresolved |
-| `actionable_projection_mode` | `genesis.raw` | [3020](../../src/endpoint_carrier.rs#L3020) | receiver-type-required |
-| `actionable_projection_mode` | `parent["file"]             .as_str()             .ok_or_else` | [3022](../../src/endpoint_carrier.rs#L3022) | receiver-type-required |
-| `actionable_projection_mode` | `parent["file"]             .as_str` | [3022](../../src/endpoint_carrier.rs#L3022) | receiver-type-required |
-| `actionable_projection_mode` | `parent["seq"]             .as_u64()             .ok_or_else` | [3025](../../src/endpoint_carrier.rs#L3025) | receiver-type-required |
-| `actionable_projection_mode` | `parent["seq"]             .as_u64` | [3025](../../src/endpoint_carrier.rs#L3025) | receiver-type-required |
-| `actionable_projection_mode` | `parent["spawn_id"]             .as_str()             .ok_or_else` | [3028](../../src/endpoint_carrier.rs#L3028) | receiver-type-required |
-| `actionable_projection_mode` | `parent["spawn_id"]             .as_str` | [3028](../../src/endpoint_carrier.rs#L3028) | receiver-type-required |
-| `actionable_projection_mode` | `parent_projection             .events             .iter()             .find(&#124;e&#124; e.seq() == parent_seq)             .ok_or_else` | [3032](../../src/endpoint_carrier.rs#L3032) | receiver-type-required |
-| `actionable_projection_mode` | `parent_projection             .events             .iter()             .find` | [3032](../../src/endpoint_carrier.rs#L3032) | receiver-type-required |
-| `actionable_projection_mode` | `parent_projection             .events             .iter` | [3032](../../src/endpoint_carrier.rs#L3032) | receiver-type-required |
-| `actionable_projection_mode` | `e.seq` | [3035](../../src/endpoint_carrier.rs#L3035) | receiver-type-required |
-| `actionable_projection_mode` | `spawn.kind` | [3037](../../src/endpoint_carrier.rs#L3037) | receiver-type-required |
-| `actionable_projection_mode` | `spawn.string_field` | [3038](../../src/endpoint_carrier.rs#L3038), [3039](../../src/endpoint_carrier.rs#L3039) | receiver-type-required |
-| `actionable_projection_mode` | `current_line.as_str` | [3038](../../src/endpoint_carrier.rs#L3038) | receiver-type-required |
-| `actionable_projection_mode` | `parent_line.to_owned` | [3044](../../src/endpoint_carrier.rs#L3044) | receiver-type-required |
-| `actionable_projection_mode` | `Ok` | [3047](../../src/endpoint_carrier.rs#L3047) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `events         .iter()         .find(&#124;event&#124; event.seq() == causal_seq && event.kind() == &EventKind::ApprovalRequest)         .ok_or_else` | [3056](../../src/endpoint_carrier.rs#L3056) | receiver-type-required |
-| `validate_request_binding` | `events         .iter()         .find` | [3056](../../src/endpoint_carrier.rs#L3056) | receiver-type-required |
-| `validate_request_binding` | `events         .iter` | [3056](../../src/endpoint_carrier.rs#L3056) | receiver-type-required |
-| `validate_request_binding` | `event.seq` | [3058](../../src/endpoint_carrier.rs#L3058) | receiver-type-required |
-| `validate_request_binding` | `event.kind` | [3058](../../src/endpoint_carrier.rs#L3058) | receiver-type-required |
-| `validate_request_binding` | `HostFailure::Internal` | [3059](../../src/endpoint_carrier.rs#L3059), [3062](../../src/endpoint_carrier.rs#L3062), [3072](../../src/endpoint_carrier.rs#L3072), [3076](../../src/endpoint_carrier.rs#L3076) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `"ledger lacks the causal approval hold".to_owned` | [3059](../../src/endpoint_carrier.rs#L3059) | receiver-type-required |
-| `validate_request_binding` | `event         .string_field("call")         .ok_or_else` | [3060](../../src/endpoint_carrier.rs#L3060) | receiver-type-required |
-| `validate_request_binding` | `event         .string_field` | [3060](../../src/endpoint_carrier.rs#L3060) | receiver-type-required |
-| `validate_request_binding` | `"causal approval hold lacks its call".to_owned` | [3062](../../src/endpoint_carrier.rs#L3062) | receiver-type-required |
-| `validate_request_binding` | `serde_json::from_slice(&payload.canonical_bytes().map_err(internal)?).map_err` | [3064](../../src/endpoint_carrier.rs#L3064) | receiver-type-required |
-| `validate_request_binding` | `serde_json::from_slice` | [3064](../../src/endpoint_carrier.rs#L3064) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `payload.canonical_bytes().map_err` | [3064](../../src/endpoint_carrier.rs#L3064) | receiver-type-required |
-| `validate_request_binding` | `payload.canonical_bytes` | [3064](../../src/endpoint_carrier.rs#L3064) | receiver-type-required |
-| `validate_request_binding` | `event.string_field` | [3067](../../src/endpoint_carrier.rs#L3067) | receiver-type-required |
-| `validate_request_binding` | `Some` | [3067](../../src/endpoint_carrier.rs#L3067), [3070](../../src/endpoint_carrier.rs#L3070), [3079](../../src/endpoint_carrier.rs#L3079) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `event.has_field` | [3067](../../src/endpoint_carrier.rs#L3067) | receiver-type-required |
-| `validate_request_binding` | `payload.get("callId").and_then` | [3070](../../src/endpoint_carrier.rs#L3070) | receiver-type-required |
-| `validate_request_binding` | `payload.get` | [3070](../../src/endpoint_carrier.rs#L3070) | receiver-type-required |
-| `validate_request_binding` | `Err` | [3072](../../src/endpoint_carrier.rs#L3072), [3076](../../src/endpoint_carrier.rs#L3076) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `"approval request disagrees with its semantic hold".to_owned` | [3073](../../src/endpoint_carrier.rs#L3073) | receiver-type-required |
-| `validate_request_binding` | `"question request disagrees with its semantic hold".to_owned` | [3077](../../src/endpoint_carrier.rs#L3077) | receiver-type-required |
-| `validate_request_binding` | `Ok` | [3079](../../src/endpoint_carrier.rs#L3079), [3080](../../src/endpoint_carrier.rs#L3080) | external-constructor-callback-or-unresolved |
-| `validate_request_binding` | `call.to_owned` | [3079](../../src/endpoint_carrier.rs#L3079) | receiver-type-required |
-| `unresolved_hold_turn` | `events         .iter()         .rev()         .find(&#124;event&#124; {             event.kind() == &EventKind::ApprovalRequest && event.string_field("call") == Some(call)         })         .ok_or_else` | [3085](../../src/endpoint_carrier.rs#L3085) | receiver-type-required |
-| `unresolved_hold_turn` | `events         .iter()         .rev()         .find` | [3085](../../src/endpoint_carrier.rs#L3085) | receiver-type-required |
-| `unresolved_hold_turn` | `events         .iter()         .rev` | [3085](../../src/endpoint_carrier.rs#L3085) | receiver-type-required |
-| `unresolved_hold_turn` | `events         .iter` | [3085](../../src/endpoint_carrier.rs#L3085) | receiver-type-required |
-| `unresolved_hold_turn` | `event.kind` | [3089](../../src/endpoint_carrier.rs#L3089) | receiver-type-required |
-| `unresolved_hold_turn` | `event.string_field` | [3089](../../src/endpoint_carrier.rs#L3089), [3098](../../src/endpoint_carrier.rs#L3098) | receiver-type-required |
-| `unresolved_hold_turn` | `Some` | [3089](../../src/endpoint_carrier.rs#L3089), [3098](../../src/endpoint_carrier.rs#L3098) | external-constructor-callback-or-unresolved |
-| `unresolved_hold_turn` | `StoreError::Corruption` | [3091](../../src/endpoint_carrier.rs#L3091), [3100](../../src/endpoint_carrier.rs#L3100), [3106](../../src/endpoint_carrier.rs#L3106) | external-constructor-callback-or-unresolved |
-| `unresolved_hold_turn` | `"respond hold is missing".to_owned` | [3091](../../src/endpoint_carrier.rs#L3091) | receiver-type-required |
-| `unresolved_hold_turn` | `events.iter().any` | [3092](../../src/endpoint_carrier.rs#L3092) | receiver-type-required |
-| `unresolved_hold_turn` | `events.iter` | [3092](../../src/endpoint_carrier.rs#L3092) | receiver-type-required |
-| `unresolved_hold_turn` | `event.seq` | [3093](../../src/endpoint_carrier.rs#L3093) | receiver-type-required |
-| `unresolved_hold_turn` | `request.seq` | [3093](../../src/endpoint_carrier.rs#L3093) | receiver-type-required |
-| `unresolved_hold_turn` | `Err` | [3100](../../src/endpoint_carrier.rs#L3100) | external-constructor-callback-or-unresolved |
-| `unresolved_hold_turn` | `"respond hold is already resolved".to_owned` | [3101](../../src/endpoint_carrier.rs#L3101) | receiver-type-required |
-| `unresolved_hold_turn` | `request         .turn()         .ok_or_else` | [3104](../../src/endpoint_carrier.rs#L3104) | receiver-type-required |
-| `unresolved_hold_turn` | `request         .turn` | [3104](../../src/endpoint_carrier.rs#L3104) | receiver-type-required |
-| `unresolved_hold_turn` | `"respond hold has no turn".to_owned` | [3106](../../src/endpoint_carrier.rs#L3106) | receiver-type-required |
-| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str()         .map` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `payload_session_id` | `serde_json::from_slice::<Value>` | [3110](../../src/endpoint_carrier.rs#L3110) | external-constructor-callback-or-unresolved |
-| `payload_session_id` | `payload.canonical_bytes().ok` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `payload_session_id` | `payload.canonical_bytes` | [3110](../../src/endpoint_carrier.rs#L3110) | receiver-type-required |
-| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str()         .map` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `result_session_id` | `serde_json::from_slice::<Value>` | [3118](../../src/endpoint_carrier.rs#L3118) | external-constructor-callback-or-unresolved |
-| `result_session_id` | `value.canonical_bytes().ok` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `result_session_id` | `value.canonical_bytes` | [3118](../../src/endpoint_carrier.rs#L3118) | receiver-type-required |
-| `route_failure` | `HostFailure::Internal` | [3126](../../src/endpoint_carrier.rs#L3126) | external-constructor-callback-or-unresolved |
-| `public_question` | `invocation["question"]         .as_str()         .ok_or_else` | [3138](../../src/endpoint_carrier.rs#L3138) | receiver-type-required |
-| `public_question` | `invocation["question"]         .as_str` | [3138](../../src/endpoint_carrier.rs#L3138) | receiver-type-required |
-| `public_question` | `internal` | [3140](../../src/endpoint_carrier.rs#L3140) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `public_question` | `invocation["options"]         .as_array()         .map(&#124;options&#124; {             options                 .iter()                 .filter_map(Value::as_str)                 .map(&#124;label&#124; json!({ "label": label }))                 .collect::<Vec<_>>()         })         .unwrap_or_default` | [3141](../../src/endpoint_carrier.rs#L3141) | receiver-type-required |
-| `public_question` | `invocation["options"]         .as_array()         .map` | [3141](../../src/endpoint_carrier.rs#L3141) | receiver-type-required |
-| `public_question` | `invocation["options"]         .as_array` | [3141](../../src/endpoint_carrier.rs#L3141) | receiver-type-required |
-| `public_question` | `options                 .iter()                 .filter_map(Value::as_str)                 .map(&#124;label&#124; json!({ "label": label }))                 .collect::<Vec<_>>` | [3144](../../src/endpoint_carrier.rs#L3144) | receiver-type-required |
-| `public_question` | `options                 .iter()                 .filter_map(Value::as_str)                 .map` | [3144](../../src/endpoint_carrier.rs#L3144) | receiver-type-required |
-| `public_question` | `options                 .iter()                 .filter_map` | [3144](../../src/endpoint_carrier.rs#L3144) | receiver-type-required |
-| `public_question` | `options                 .iter` | [3144](../../src/endpoint_carrier.rs#L3144) | receiver-type-required |
-| `public_question` | `IJsonValue::parse(&serde_json::to_vec(&row).map_err(internal)?).map_err` | [3158](../../src/endpoint_carrier.rs#L3158) | receiver-type-required |
-| `public_question` | `IJsonValue::parse` | [3158](../../src/endpoint_carrier.rs#L3158) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `public_question` | `serde_json::to_vec(&row).map_err` | [3158](../../src/endpoint_carrier.rs#L3158) | receiver-type-required |
-| `public_question` | `serde_json::to_vec` | [3158](../../src/endpoint_carrier.rs#L3158) | external-constructor-callback-or-unresolved |
-| `internal` | `HostFailure::Internal` | [3162](../../src/endpoint_carrier.rs#L3162) | external-constructor-callback-or-unresolved |
-| `internal` | `error.to_string` | [3162](../../src/endpoint_carrier.rs#L3162) | receiver-type-required |
-| `carrier_failure` | `HostFailure::Quarantined` | [3171](../../src/endpoint_carrier.rs#L3171) | external-constructor-callback-or-unresolved |
-| `carrier_failure` | `internal` | [3172](../../src/endpoint_carrier.rs#L3172) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3161) |
-| `internal_carrier` | `ProductionCarrierError::Lifecycle` | [3177](../../src/endpoint_carrier.rs#L3177) | external-constructor-callback-or-unresolved |
-| `internal_carrier` | `error.to_string` | [3177](../../src/endpoint_carrier.rs#L3177) | receiver-type-required |
-| `poisoned` | `ProductionCarrierError::Lifecycle` | [3181](../../src/endpoint_carrier.rs#L3181) | external-constructor-callback-or-unresolved |
-| `poisoned` | `"carrier generation mutex poisoned".to_owned` | [3181](../../src/endpoint_carrier.rs#L3181) | receiver-type-required |
-| `system_timestamp` | `SystemTime::now()         .duration_since(UNIX_EPOCH)         .map_err` | [3185](../../src/endpoint_carrier.rs#L3185) | receiver-type-required |
-| `system_timestamp` | `SystemTime::now()         .duration_since` | [3185](../../src/endpoint_carrier.rs#L3185) | receiver-type-required |
-| `system_timestamp` | `SystemTime::now` | [3185](../../src/endpoint_carrier.rs#L3185) | external-constructor-callback-or-unresolved |
-| `system_timestamp` | `now.as_secs` | [3188](../../src/endpoint_carrier.rs#L3188) | receiver-type-required |
-| `system_timestamp` | `now.subsec_millis` | [3189](../../src/endpoint_carrier.rs#L3189) | receiver-type-required |
-| `system_timestamp` | `i64::try_from(seconds / 86_400).map_err` | [3194](../../src/endpoint_carrier.rs#L3194) | receiver-type-required |
-| `system_timestamp` | `i64::try_from` | [3194](../../src/endpoint_carrier.rs#L3194) | external-constructor-callback-or-unresolved |
-| `system_timestamp` | `i64::from` | [3206](../../src/endpoint_carrier.rs#L3206) | external-constructor-callback-or-unresolved |
-| `system_timestamp` | `Ok` | [3207](../../src/endpoint_carrier.rs#L3207) | external-constructor-callback-or-unresolved |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `request.clone` | [3269](../../src/endpoint_carrier.rs#L3269) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `Vec::new` | [3279](../../src/endpoint_carrier.rs#L3279) | external-constructor-callback-or-unresolved |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `bytes.extend` | [3281](../../src/endpoint_carrier.rs#L3281) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `serde_json_canonicalizer::to_vec(&event).expect` | [3281](../../src/endpoint_carrier.rs#L3281) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `serde_json_canonicalizer::to_vec` | [3281](../../src/endpoint_carrier.rs#L3281) | external-constructor-callback-or-unresolved |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `bytes.push` | [3282](../../src/endpoint_carrier.rs#L3282) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger(&bytes, 1).expect` | [3284](../../src/endpoint_carrier.rs#L3284) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger` | [3284](../../src/endpoint_carrier.rs#L3284) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `ledger` | [3286](../../src/endpoint_carrier.rs#L3286), [3295](../../src/endpoint_carrier.rs#L3295) | external-constructor-callback-or-unresolved |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests(thread, None, &cancelled).expect` | [3289](../../src/endpoint_carrier.rs#L3289) | receiver-type-required |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests` | [3289](../../src/endpoint_carrier.rs#L3289), [3298](../../src/endpoint_carrier.rs#L3298) | external-constructor-callback-or-unresolved |
-| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests(thread, None, &answered).expect` | [3298](../../src/endpoint_carrier.rs#L3298) | receiver-type-required |
-| `blank_thread` | `ThreadStore::open(root).expect` | [3317](../../src/endpoint_carrier.rs#L3317) | receiver-type-required |
-| `blank_thread` | `ThreadStore::open` | [3317](../../src/endpoint_carrier.rs#L3317) | external-constructor-callback-or-unresolved |
-| `blank_thread` | `root.join("threads").join` | [3318](../../src/endpoint_carrier.rs#L3318) | receiver-type-required |
-| `blank_thread` | `root.join` | [3318](../../src/endpoint_carrier.rs#L3318) | receiver-type-required |
-| `blank_thread` | `fs::create_dir_all(folder.join("assets")).expect` | [3319](../../src/endpoint_carrier.rs#L3319) | receiver-type-required |
-| `blank_thread` | `fs::create_dir_all` | [3319](../../src/endpoint_carrier.rs#L3319) | external-constructor-callback-or-unresolved |
-| `blank_thread` | `folder.join` | [3319](../../src/endpoint_carrier.rs#L3319), [3320](../../src/endpoint_carrier.rs#L3320) | receiver-type-required |
-| `blank_thread` | `fs::write(folder.join("main.jsonl"), genesis + "\n").expect` | [3320](../../src/endpoint_carrier.rs#L3320) | receiver-type-required |
-| `blank_thread` | `fs::write` | [3320](../../src/endpoint_carrier.rs#L3320) | external-constructor-callback-or-unresolved |
-| `registered` | `streams.inner.generations.lock().expect` | [3328](../../src/endpoint_carrier.rs#L3328) | receiver-type-required |
-| `registered` | `streams.inner.generations.lock` | [3328](../../src/endpoint_carrier.rs#L3328) | receiver-type-required |
-| `registered` | `BTreeSet::new` | [3330](../../src/endpoint_carrier.rs#L3330) | external-constructor-callback-or-unresolved |
-| `registered` | `generation.handle.baselines().expect` | [3332](../../src/endpoint_carrier.rs#L3332) | receiver-type-required |
-| `registered` | `generation.handle.baselines` | [3332](../../src/endpoint_carrier.rs#L3332) | receiver-type-required |
-| `registered` | `all.insert` | [3333](../../src/endpoint_carrier.rs#L3333) | receiver-type-required |
-| `registered` | `all.len` | [3336](../../src/endpoint_carrier.rs#L3336) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `tempfile::tempdir().expect` | [3345](../../src/endpoint_carrier.rs#L3345) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `tempfile::tempdir` | [3345](../../src/endpoint_carrier.rs#L3345) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `id` | [3346](../../src/endpoint_carrier.rs#L3346) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::id](../../src/endpoint_carrier.rs#L3323) |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `blank_thread` | [3348](../../src/endpoint_carrier.rs#L3348) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3313) |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `root.path` | [3348](../../src/endpoint_carrier.rs#L3348), [3350](../../src/endpoint_carrier.rs#L3350) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `ProductionCarrierStreams::new` | [3350](../../src/endpoint_carrier.rs#L3350) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams.open_legacy_mux().expect` | [3351](../../src/endpoint_carrier.rs#L3351) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams.open_legacy_mux` | [3351](../../src/endpoint_carrier.rs#L3351) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams             .attach_everywhere(&live)             .expect` | [3352](../../src/endpoint_carrier.rs#L3352) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams             .attach_everywhere` | [3352](../../src/endpoint_carrier.rs#L3352) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::sync::atomic::AtomicUsize::new` | [3356](../../src/endpoint_carrier.rs#L3356) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::thread::scope` | [3357](../../src/endpoint_carrier.rs#L3357), [3384](../../src/endpoint_carrier.rs#L3384) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `scope.spawn` | [3360](../../src/endpoint_carrier.rs#L3360), [3386](../../src/endpoint_carrier.rs#L3386) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `arrived.fetch_add` | [3362](../../src/endpoint_carrier.rs#L3362) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Instant::now` | [3364](../../src/endpoint_carrier.rs#L3364), [3389](../../src/endpoint_carrier.rs#L3389), [3399](../../src/endpoint_carrier.rs#L3399) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Duration::from_secs` | [3364](../../src/endpoint_carrier.rs#L3364), [3389](../../src/endpoint_carrier.rs#L3389), [3399](../../src/endpoint_carrier.rs#L3399) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `arrived.load` | [3365](../../src/endpoint_carrier.rs#L3365) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::thread::sleep` | [3370](../../src/endpoint_carrier.rs#L3370), [3392](../../src/endpoint_carrier.rs#L3392), [3405](../../src/endpoint_carrier.rs#L3405) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Duration::from_millis` | [3370](../../src/endpoint_carrier.rs#L3370), [3392](../../src/endpoint_carrier.rs#L3392), [3405](../../src/endpoint_carrier.rs#L3405) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                         .attach_everywhere_with(session, Some(&rendezvous))                         .expect` | [3373](../../src/endpoint_carrier.rs#L3373) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                         .attach_everywhere_with` | [3373](../../src/endpoint_carrier.rs#L3373) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `Some` | [3374](../../src/endpoint_carrier.rs#L3374), [3396](../../src/endpoint_carrier.rs#L3396) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `AtomicBool::new` | [3382](../../src/endpoint_carrier.rs#L3382), [3383](../../src/endpoint_carrier.rs#L3383) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `holding.store` | [3388](../../src/endpoint_carrier.rs#L3388) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `release.load` | [3390](../../src/endpoint_carrier.rs#L3390) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams_ref                     .attach_everywhere_with(c_ref, Some(&hold))                     .expect` | [3395](../../src/endpoint_carrier.rs#L3395) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams_ref                     .attach_everywhere_with` | [3395](../../src/endpoint_carrier.rs#L3395) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `holding.load` | [3400](../../src/endpoint_carrier.rs#L3400) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                 .publish_session_frame(                     &live,                     endpoint::MuxFrame::Queue {                         session_id: live.clone(),                         items: Vec::new(),                     },                 )                 .expect` | [3407](../../src/endpoint_carrier.rs#L3407) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                 .publish_session_frame` | [3407](../../src/endpoint_carrier.rs#L3407) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `live.clone` | [3411](../../src/endpoint_carrier.rs#L3411) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `Vec::new` | [3412](../../src/endpoint_carrier.rs#L3412) | external-constructor-callback-or-unresolved |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `release.store` | [3416](../../src/endpoint_carrier.rs#L3416) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `slow.join().expect` | [3417](../../src/endpoint_carrier.rs#L3417) | receiver-type-required |
-| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `slow.join` | [3417](../../src/endpoint_carrier.rs#L3417) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `tempfile::tempdir().expect` | [3426](../../src/endpoint_carrier.rs#L3426) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `tempfile::tempdir` | [3426](../../src/endpoint_carrier.rs#L3426) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `(10..70).map(id).collect::<Vec<_>>` | [3427](../../src/endpoint_carrier.rs#L3427) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `(10..70).map` | [3427](../../src/endpoint_carrier.rs#L3427) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `blank_thread` | [3429](../../src/endpoint_carrier.rs#L3429) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3313) |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path` | [3429](../../src/endpoint_carrier.rs#L3429), [3431](../../src/endpoint_carrier.rs#L3431), [3436](../../src/endpoint_carrier.rs#L3436) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `ProductionCarrierStreams::new` | [3431](../../src/endpoint_carrier.rs#L3431) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.open_legacy_mux().expect` | [3432](../../src/endpoint_carrier.rs#L3432) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.open_legacy_mux` | [3432](../../src/endpoint_carrier.rs#L3432) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.claim_journal(open).expect` | [3434](../../src/endpoint_carrier.rs#L3434) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.claim_journal` | [3434](../../src/endpoint_carrier.rs#L3434) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join("threads")                 .join(session)                 .join` | [3436](../../src/endpoint_carrier.rs#L3436) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join("threads")                 .join` | [3436](../../src/endpoint_carrier.rs#L3436) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join` | [3436](../../src/endpoint_carrier.rs#L3436) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams             .refresh_all_context_projections()             .expect` | [3442](../../src/endpoint_carrier.rs#L3442) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams             .refresh_all_context_projections` | [3442](../../src/endpoint_carrier.rs#L3442) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Instant::now` | [3451](../../src/endpoint_carrier.rs#L3451) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Duration::from_secs` | [3451](../../src/endpoint_carrier.rs#L3451) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `sessions.iter().all` | [3452](../../src/endpoint_carrier.rs#L3452) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `sessions.iter` | [3452](../../src/endpoint_carrier.rs#L3452) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `projection(session).exists` | [3452](../../src/endpoint_carrier.rs#L3452) | receiver-type-required |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `projection` | [3452](../../src/endpoint_carrier.rs#L3452) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::thread::sleep` | [3457](../../src/endpoint_carrier.rs#L3457) | external-constructor-callback-or-unresolved |
-| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Duration::from_millis` | [3457](../../src/endpoint_carrier.rs#L3457) | external-constructor-callback-or-unresolved |
+| `semantic_projection` | `semantic_line_projection` | [2775](../../src/endpoint_carrier.rs#L2775) | [tekes-supervisor::endpoint_carrier::semantic_line_projection](../../src/endpoint_carrier.rs#L2778) |
+| `semantic_line_projection` | `semantic_line_projection_mode` | [2782](../../src/endpoint_carrier.rs#L2782) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2789) |
+| `semantic_line_projection_mode` | `line             .strip_suffix(".jsonl")             .ok_or_else` | [2795](../../src/endpoint_carrier.rs#L2795) | receiver-type-required |
+| `semantic_line_projection_mode` | `line             .strip_suffix` | [2795](../../src/endpoint_carrier.rs#L2795) | receiver-type-required |
+| `semantic_line_projection_mode` | `internal` | [2797](../../src/endpoint_carrier.rs#L2797), [2806](../../src/endpoint_carrier.rs#L2806) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `semantic_line_projection_mode` | `endpoint::validate_session_id(id).map_err` | [2798](../../src/endpoint_carrier.rs#L2798) | receiver-type-required |
+| `semantic_line_projection_mode` | `endpoint::validate_session_id` | [2798](../../src/endpoint_carrier.rs#L2798) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `semantic_line_projection_mode` | `folder.join` | [2800](../../src/endpoint_carrier.rs#L2800) | receiver-type-required |
+| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err(internal)?         .file_type()         .is_file` | [2801](../../src/endpoint_carrier.rs#L2801) | receiver-type-required |
+| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err(internal)?         .file_type` | [2801](../../src/endpoint_carrier.rs#L2801) | receiver-type-required |
+| `semantic_line_projection_mode` | `fs::symlink_metadata(&path)         .map_err` | [2801](../../src/endpoint_carrier.rs#L2801) | receiver-type-required |
+| `semantic_line_projection_mode` | `fs::symlink_metadata` | [2801](../../src/endpoint_carrier.rs#L2801) | external-constructor-callback-or-unresolved |
+| `semantic_line_projection_mode` | `Err` | [2806](../../src/endpoint_carrier.rs#L2806), [2811](../../src/endpoint_carrier.rs#L2811) | external-constructor-callback-or-unresolved |
+| `semantic_line_projection_mode` | `fs::read(path).map_err` | [2808](../../src/endpoint_carrier.rs#L2808) | receiver-type-required |
+| `semantic_line_projection_mode` | `fs::read` | [2808](../../src/endpoint_carrier.rs#L2808) | external-constructor-callback-or-unresolved |
+| `semantic_line_projection_mode` | `scan_valid_prefix` | [2809](../../src/endpoint_carrier.rs#L2809) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `semantic_line_projection_mode` | `scan.needs_repair` | [2810](../../src/endpoint_carrier.rs#L2810) | receiver-type-required |
+| `semantic_line_projection_mode` | `HostFailure::Internal` | [2811](../../src/endpoint_carrier.rs#L2811), [2816](../../src/endpoint_carrier.rs#L2816) | external-constructor-callback-or-unresolved |
+| `semantic_line_projection_mode` | `"respond semantic ledger requires tail recovery".to_owned` | [2812](../../src/endpoint_carrier.rs#L2812) | receiver-type-required |
+| `semantic_line_projection_mode` | `scan.projection         .ok_or_else` | [2815](../../src/endpoint_carrier.rs#L2815) | receiver-type-required |
+| `semantic_line_projection_mode` | `"respond semantic ledger is empty".to_owned` | [2816](../../src/endpoint_carrier.rs#L2816) | receiver-type-required |
+| `line_requests` | `Vec::new` | [2827](../../src/endpoint_carrier.rs#L2827) | external-constructor-callback-or-unresolved |
+| `line_requests` | `projection         .events         .iter()         .filter` | [2828](../../src/endpoint_carrier.rs#L2828) | receiver-type-required |
+| `line_requests` | `projection         .events         .iter` | [2828](../../src/endpoint_carrier.rs#L2828) | receiver-type-required |
+| `line_requests` | `e.kind` | [2831](../../src/endpoint_carrier.rs#L2831), [2839](../../src/endpoint_carrier.rs#L2839), [2879](../../src/endpoint_carrier.rs#L2879), [2899](../../src/endpoint_carrier.rs#L2899) | receiver-type-required |
+| `line_requests` | `hold             .string_field("call")             .ok_or_else` | [2833](../../src/endpoint_carrier.rs#L2833) | receiver-type-required |
+| `line_requests` | `hold             .string_field` | [2833](../../src/endpoint_carrier.rs#L2833) | receiver-type-required |
+| `line_requests` | `internal` | [2835](../../src/endpoint_carrier.rs#L2835), [2840](../../src/endpoint_carrier.rs#L2840), [2862](../../src/endpoint_carrier.rs#L2862) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `line_requests` | `projection             .events             .iter()             .find(&#124;e&#124; e.kind() == &EventKind::ToolCall && e.string_field("call") == Some(call))             .ok_or_else` | [2836](../../src/endpoint_carrier.rs#L2836) | receiver-type-required |
+| `line_requests` | `projection             .events             .iter()             .find` | [2836](../../src/endpoint_carrier.rs#L2836) | receiver-type-required |
+| `line_requests` | `projection             .events             .iter` | [2836](../../src/endpoint_carrier.rs#L2836) | receiver-type-required |
+| `line_requests` | `e.string_field` | [2839](../../src/endpoint_carrier.rs#L2839), [2880](../../src/endpoint_carrier.rs#L2880), [2900](../../src/endpoint_carrier.rs#L2900) | receiver-type-required |
+| `line_requests` | `Some` | [2839](../../src/endpoint_carrier.rs#L2839), [2841](../../src/endpoint_carrier.rs#L2841), [2864](../../src/endpoint_carrier.rs#L2864), [2880](../../src/endpoint_carrier.rs#L2880), [2900](../../src/endpoint_carrier.rs#L2900) | external-constructor-callback-or-unresolved |
+| `line_requests` | `hold.string_field` | [2841](../../src/endpoint_carrier.rs#L2841), [2865](../../src/endpoint_carrier.rs#L2865) | receiver-type-required |
+| `line_requests` | `hold.has_field` | [2841](../../src/endpoint_carrier.rs#L2841) | receiver-type-required |
+| `line_requests` | `serde_json::to_value(hold.raw()).map_err` | [2843](../../src/endpoint_carrier.rs#L2843) | receiver-type-required |
+| `line_requests` | `serde_json::to_value` | [2843](../../src/endpoint_carrier.rs#L2843), [2883](../../src/endpoint_carrier.rs#L2883), [2901](../../src/endpoint_carrier.rs#L2901) | external-constructor-callback-or-unresolved |
+| `line_requests` | `hold.raw` | [2843](../../src/endpoint_carrier.rs#L2843) | receiver-type-required |
+| `line_requests` | `session_id.to_owned` | [2849](../../src/endpoint_carrier.rs#L2849), [2858](../../src/endpoint_carrier.rs#L2858) | receiver-type-required |
+| `line_requests` | `tool                     .string_field("name")                     .ok_or_else(&#124;&#124; internal("tool lacks name"))?                     .to_owned` | [2860](../../src/endpoint_carrier.rs#L2860) | receiver-type-required |
+| `line_requests` | `tool                     .string_field("name")                     .ok_or_else` | [2860](../../src/endpoint_carrier.rs#L2860) | receiver-type-required |
+| `line_requests` | `tool                     .string_field` | [2860](../../src/endpoint_carrier.rs#L2860) | receiver-type-required |
+| `line_requests` | `call.to_owned` | [2864](../../src/endpoint_carrier.rs#L2864) | receiver-type-required |
+| `line_requests` | `hold.string_field("scope").map` | [2865](../../src/endpoint_carrier.rs#L2865) | receiver-type-required |
+| `line_requests` | `IJsonValue::parse(&serde_json::to_vec(&frame).map_err(internal)?).map_err` | [2869](../../src/endpoint_carrier.rs#L2869) | receiver-type-required |
+| `line_requests` | `IJsonValue::parse` | [2869](../../src/endpoint_carrier.rs#L2869) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `line_requests` | `serde_json::to_vec(&frame).map_err` | [2869](../../src/endpoint_carrier.rs#L2869) | receiver-type-required |
+| `line_requests` | `serde_json::to_vec` | [2869](../../src/endpoint_carrier.rs#L2869) | external-constructor-callback-or-unresolved |
+| `line_requests` | `PendingRequest::derive(session_id, source_line, kind, hold.seq(), payload)             .map_err` | [2875](../../src/endpoint_carrier.rs#L2875) | receiver-type-required |
+| `line_requests` | `PendingRequest::derive` | [2875](../../src/endpoint_carrier.rs#L2875) | [endpoint::requests::PendingRequest::derive](../../../endpoint/src/requests.rs#L62) |
+| `line_requests` | `hold.seq` | [2875](../../src/endpoint_carrier.rs#L2875), [2878](../../src/endpoint_carrier.rs#L2878), [2898](../../src/endpoint_carrier.rs#L2898) | receiver-type-required |
+| `line_requests` | `projection.events.iter().find` | [2877](../../src/endpoint_carrier.rs#L2877), [2897](../../src/endpoint_carrier.rs#L2897) | receiver-type-required |
+| `line_requests` | `projection.events.iter` | [2877](../../src/endpoint_carrier.rs#L2877), [2897](../../src/endpoint_carrier.rs#L2897) | receiver-type-required |
+| `line_requests` | `e.seq` | [2878](../../src/endpoint_carrier.rs#L2878), [2898](../../src/endpoint_carrier.rs#L2898) | receiver-type-required |
+| `line_requests` | `serde_json::to_value(response.raw()).map_err` | [2883](../../src/endpoint_carrier.rs#L2883) | receiver-type-required |
+| `line_requests` | `response.raw` | [2883](../../src/endpoint_carrier.rs#L2883) | receiver-type-required |
+| `line_requests` | `RequestState::resolved(request, response.seq(), outcome).map_err` | [2896](../../src/endpoint_carrier.rs#L2896) | receiver-type-required |
+| `line_requests` | `RequestState::resolved` | [2896](../../src/endpoint_carrier.rs#L2896), [2905](../../src/endpoint_carrier.rs#L2905) | [endpoint::requests::RequestState::resolved](../../../endpoint/src/requests.rs#L97) |
+| `line_requests` | `response.seq` | [2896](../../src/endpoint_carrier.rs#L2896) | receiver-type-required |
+| `line_requests` | `serde_json::to_value(e.raw())                     .ok()                     .is_some_and` | [2901](../../src/endpoint_carrier.rs#L2901) | receiver-type-required |
+| `line_requests` | `serde_json::to_value(e.raw())                     .ok` | [2901](../../src/endpoint_carrier.rs#L2901) | receiver-type-required |
+| `line_requests` | `e.raw` | [2901](../../src/endpoint_carrier.rs#L2901) | receiver-type-required |
+| `line_requests` | `value["outcome"].get("aborted").is_some` | [2903](../../src/endpoint_carrier.rs#L2903) | receiver-type-required |
+| `line_requests` | `value["outcome"].get` | [2903](../../src/endpoint_carrier.rs#L2903) | receiver-type-required |
+| `line_requests` | `RequestState::resolved(                 request,                 aborted.seq(),                 endpoint::ResolutionOutcome::Cancelled,             )             .map_err` | [2905](../../src/endpoint_carrier.rs#L2905) | receiver-type-required |
+| `line_requests` | `aborted.seq` | [2907](../../src/endpoint_carrier.rs#L2907) | receiver-type-required |
+| `line_requests` | `requests.push` | [2917](../../src/endpoint_carrier.rs#L2917) | receiver-type-required |
+| `line_requests` | `Ok` | [2919](../../src/endpoint_carrier.rs#L2919) | external-constructor-callback-or-unresolved |
+| `session_requests_mode` | `Vec::new` | [2930](../../src/endpoint_carrier.rs#L2930) | external-constructor-callback-or-unresolved |
+| `session_requests_mode` | `HashSet::new` | [2932](../../src/endpoint_carrier.rs#L2932) | external-constructor-callback-or-unresolved |
+| `session_requests_mode` | `pending.pop` | [2933](../../src/endpoint_carrier.rs#L2933) | receiver-type-required |
+| `session_requests_mode` | `visited.insert` | [2934](../../src/endpoint_carrier.rs#L2934) | receiver-type-required |
+| `session_requests_mode` | `line.clone` | [2934](../../src/endpoint_carrier.rs#L2934) | receiver-type-required |
+| `session_requests_mode` | `(line != "main.jsonl").then_some` | [2937](../../src/endpoint_carrier.rs#L2937) | receiver-type-required |
+| `session_requests_mode` | `line.as_str` | [2937](../../src/endpoint_carrier.rs#L2937) | receiver-type-required |
+| `session_requests_mode` | `semantic_line_projection_mode` | [2938](../../src/endpoint_carrier.rs#L2938) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2789) |
+| `session_requests_mode` | `states.extend` | [2939](../../src/endpoint_carrier.rs#L2939) | receiver-type-required |
+| `session_requests_mode` | `line_requests(session, source, &projection)?                 .into_iter()                 .map` | [2940](../../src/endpoint_carrier.rs#L2940) | receiver-type-required |
+| `session_requests_mode` | `line_requests(session, source, &projection)?                 .into_iter` | [2940](../../src/endpoint_carrier.rs#L2940) | receiver-type-required |
+| `session_requests_mode` | `line_requests` | [2940](../../src/endpoint_carrier.rs#L2940) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2822) |
+| `session_requests_mode` | `projection             .events             .iter()             .filter` | [2944](../../src/endpoint_carrier.rs#L2944) | receiver-type-required |
+| `session_requests_mode` | `projection             .events             .iter` | [2944](../../src/endpoint_carrier.rs#L2944) | receiver-type-required |
+| `session_requests_mode` | `e.kind` | [2947](../../src/endpoint_carrier.rs#L2947) | receiver-type-required |
+| `session_requests_mode` | `spawn                 .string_field("child")                 .ok_or_else` | [2949](../../src/endpoint_carrier.rs#L2949) | receiver-type-required |
+| `session_requests_mode` | `spawn                 .string_field` | [2949](../../src/endpoint_carrier.rs#L2949) | receiver-type-required |
+| `session_requests_mode` | `internal` | [2951](../../src/endpoint_carrier.rs#L2951), [2954](../../src/endpoint_carrier.rs#L2954) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `session_requests_mode` | `child                 .strip_suffix(".jsonl")                 .ok_or_else` | [2952](../../src/endpoint_carrier.rs#L2952) | receiver-type-required |
+| `session_requests_mode` | `child                 .strip_suffix` | [2952](../../src/endpoint_carrier.rs#L2952) | receiver-type-required |
+| `session_requests_mode` | `endpoint::validate_session_id(id).map_err` | [2955](../../src/endpoint_carrier.rs#L2955) | receiver-type-required |
+| `session_requests_mode` | `endpoint::validate_session_id` | [2955](../../src/endpoint_carrier.rs#L2955) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `session_requests_mode` | `folder.join(child).exists` | [2956](../../src/endpoint_carrier.rs#L2956) | receiver-type-required |
+| `session_requests_mode` | `folder.join` | [2956](../../src/endpoint_carrier.rs#L2956) | receiver-type-required |
+| `session_requests_mode` | `pending.push` | [2957](../../src/endpoint_carrier.rs#L2957) | receiver-type-required |
+| `session_requests_mode` | `child.to_owned` | [2957](../../src/endpoint_carrier.rs#L2957) | receiver-type-required |
+| `session_requests_mode` | `states.sort_by_key` | [2961](../../src/endpoint_carrier.rs#L2961) | receiver-type-required |
+| `session_requests_mode` | `Ok` | [2962](../../src/endpoint_carrier.rs#L2962) | external-constructor-callback-or-unresolved |
+| `pending_session_requests_mode` | `Ok` | [2971](../../src/endpoint_carrier.rs#L2971) | external-constructor-callback-or-unresolved |
+| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter(&#124;state&#124; state.resolution.is_none())         .map(&#124;state&#124; state.request)         .collect` | [2971](../../src/endpoint_carrier.rs#L2971) | receiver-type-required |
+| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter(&#124;state&#124; state.resolution.is_none())         .map` | [2971](../../src/endpoint_carrier.rs#L2971) | receiver-type-required |
+| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter()         .filter` | [2971](../../src/endpoint_carrier.rs#L2971) | receiver-type-required |
+| `pending_session_requests_mode` | `session_requests_mode(folder, session, tolerant)?         .into_iter` | [2971](../../src/endpoint_carrier.rs#L2971) | receiver-type-required |
+| `pending_session_requests_mode` | `session_requests_mode` | [2971](../../src/endpoint_carrier.rs#L2971) | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L2925) |
+| `pending_session_requests_mode` | `state.resolution.is_none` | [2973](../../src/endpoint_carrier.rs#L2973) | receiver-type-required |
+| `actionable_projection` | `actionable_projection_mode` | [2985](../../src/endpoint_carrier.rs#L2985) | [tekes-supervisor::endpoint_carrier::actionable_projection_mode](../../src/endpoint_carrier.rs#L2988) |
+| `actionable_projection_mode` | `source_line.unwrap_or` | [2994](../../src/endpoint_carrier.rs#L2994) | receiver-type-required |
+| `actionable_projection_mode` | `semantic_line_projection_mode` | [2995](../../src/endpoint_carrier.rs#L2995), [3032](../../src/endpoint_carrier.rs#L3032) | [tekes-supervisor::endpoint_carrier::semantic_line_projection_mode](../../src/endpoint_carrier.rs#L2789) |
+| `actionable_projection_mode` | `projection.clone` | [2996](../../src/endpoint_carrier.rs#L2996) | receiver-type-required |
+| `actionable_projection_mode` | `line.to_owned` | [2997](../../src/endpoint_carrier.rs#L2997) | receiver-type-required |
+| `actionable_projection_mode` | `HashSet::new` | [2998](../../src/endpoint_carrier.rs#L2998) | external-constructor-callback-or-unresolved |
+| `actionable_projection_mode` | `visited.insert` | [3001](../../src/endpoint_carrier.rs#L3001) | receiver-type-required |
+| `actionable_projection_mode` | `current_line.clone` | [3001](../../src/endpoint_carrier.rs#L3001) | receiver-type-required |
+| `actionable_projection_mode` | `Err` | [3002](../../src/endpoint_carrier.rs#L3002), [3016](../../src/endpoint_carrier.rs#L3016), [3042](../../src/endpoint_carrier.rs#L3042) | external-constructor-callback-or-unresolved |
+| `actionable_projection_mode` | `internal` | [3002](../../src/endpoint_carrier.rs#L3002), [3007](../../src/endpoint_carrier.rs#L3007), [3016](../../src/endpoint_carrier.rs#L3016), [3025](../../src/endpoint_carrier.rs#L3025), [3028](../../src/endpoint_carrier.rs#L3028), [3031](../../src/endpoint_carrier.rs#L3031), [3037](../../src/endpoint_carrier.rs#L3037), [3042](../../src/endpoint_carrier.rs#L3042) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `actionable_projection_mode` | `current             .events             .first()             .ok_or_else` | [3004](../../src/endpoint_carrier.rs#L3004) | receiver-type-required |
+| `actionable_projection_mode` | `current             .events             .first` | [3004](../../src/endpoint_carrier.rs#L3004) | receiver-type-required |
+| `actionable_projection_mode` | `current_line                 .strip_suffix(".jsonl")                 .expect` | [3011](../../src/endpoint_carrier.rs#L3011) | receiver-type-required |
+| `actionable_projection_mode` | `current_line                 .strip_suffix` | [3011](../../src/endpoint_carrier.rs#L3011) | receiver-type-required |
+| `actionable_projection_mode` | `genesis.string_field` | [3015](../../src/endpoint_carrier.rs#L3015) | receiver-type-required |
+| `actionable_projection_mode` | `Some` | [3015](../../src/endpoint_carrier.rs#L3015), [3039](../../src/endpoint_carrier.rs#L3039), [3040](../../src/endpoint_carrier.rs#L3040) | external-constructor-callback-or-unresolved |
+| `actionable_projection_mode` | `serde_json::to_value(genesis.raw()).map_err` | [3021](../../src/endpoint_carrier.rs#L3021) | receiver-type-required |
+| `actionable_projection_mode` | `serde_json::to_value` | [3021](../../src/endpoint_carrier.rs#L3021) | external-constructor-callback-or-unresolved |
+| `actionable_projection_mode` | `genesis.raw` | [3021](../../src/endpoint_carrier.rs#L3021) | receiver-type-required |
+| `actionable_projection_mode` | `parent["file"]             .as_str()             .ok_or_else` | [3023](../../src/endpoint_carrier.rs#L3023) | receiver-type-required |
+| `actionable_projection_mode` | `parent["file"]             .as_str` | [3023](../../src/endpoint_carrier.rs#L3023) | receiver-type-required |
+| `actionable_projection_mode` | `parent["seq"]             .as_u64()             .ok_or_else` | [3026](../../src/endpoint_carrier.rs#L3026) | receiver-type-required |
+| `actionable_projection_mode` | `parent["seq"]             .as_u64` | [3026](../../src/endpoint_carrier.rs#L3026) | receiver-type-required |
+| `actionable_projection_mode` | `parent["spawn_id"]             .as_str()             .ok_or_else` | [3029](../../src/endpoint_carrier.rs#L3029) | receiver-type-required |
+| `actionable_projection_mode` | `parent["spawn_id"]             .as_str` | [3029](../../src/endpoint_carrier.rs#L3029) | receiver-type-required |
+| `actionable_projection_mode` | `parent_projection             .events             .iter()             .find(&#124;e&#124; e.seq() == parent_seq)             .ok_or_else` | [3033](../../src/endpoint_carrier.rs#L3033) | receiver-type-required |
+| `actionable_projection_mode` | `parent_projection             .events             .iter()             .find` | [3033](../../src/endpoint_carrier.rs#L3033) | receiver-type-required |
+| `actionable_projection_mode` | `parent_projection             .events             .iter` | [3033](../../src/endpoint_carrier.rs#L3033) | receiver-type-required |
+| `actionable_projection_mode` | `e.seq` | [3036](../../src/endpoint_carrier.rs#L3036) | receiver-type-required |
+| `actionable_projection_mode` | `spawn.kind` | [3038](../../src/endpoint_carrier.rs#L3038) | receiver-type-required |
+| `actionable_projection_mode` | `spawn.string_field` | [3039](../../src/endpoint_carrier.rs#L3039), [3040](../../src/endpoint_carrier.rs#L3040) | receiver-type-required |
+| `actionable_projection_mode` | `current_line.as_str` | [3039](../../src/endpoint_carrier.rs#L3039) | receiver-type-required |
+| `actionable_projection_mode` | `parent_line.to_owned` | [3045](../../src/endpoint_carrier.rs#L3045) | receiver-type-required |
+| `actionable_projection_mode` | `Ok` | [3048](../../src/endpoint_carrier.rs#L3048) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `events         .iter()         .find(&#124;event&#124; event.seq() == causal_seq && event.kind() == &EventKind::ApprovalRequest)         .ok_or_else` | [3057](../../src/endpoint_carrier.rs#L3057) | receiver-type-required |
+| `validate_request_binding` | `events         .iter()         .find` | [3057](../../src/endpoint_carrier.rs#L3057) | receiver-type-required |
+| `validate_request_binding` | `events         .iter` | [3057](../../src/endpoint_carrier.rs#L3057) | receiver-type-required |
+| `validate_request_binding` | `event.seq` | [3059](../../src/endpoint_carrier.rs#L3059) | receiver-type-required |
+| `validate_request_binding` | `event.kind` | [3059](../../src/endpoint_carrier.rs#L3059) | receiver-type-required |
+| `validate_request_binding` | `HostFailure::Internal` | [3060](../../src/endpoint_carrier.rs#L3060), [3063](../../src/endpoint_carrier.rs#L3063), [3073](../../src/endpoint_carrier.rs#L3073), [3077](../../src/endpoint_carrier.rs#L3077) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `"ledger lacks the causal approval hold".to_owned` | [3060](../../src/endpoint_carrier.rs#L3060) | receiver-type-required |
+| `validate_request_binding` | `event         .string_field("call")         .ok_or_else` | [3061](../../src/endpoint_carrier.rs#L3061) | receiver-type-required |
+| `validate_request_binding` | `event         .string_field` | [3061](../../src/endpoint_carrier.rs#L3061) | receiver-type-required |
+| `validate_request_binding` | `"causal approval hold lacks its call".to_owned` | [3063](../../src/endpoint_carrier.rs#L3063) | receiver-type-required |
+| `validate_request_binding` | `serde_json::from_slice(&payload.canonical_bytes().map_err(internal)?).map_err` | [3065](../../src/endpoint_carrier.rs#L3065) | receiver-type-required |
+| `validate_request_binding` | `serde_json::from_slice` | [3065](../../src/endpoint_carrier.rs#L3065) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `payload.canonical_bytes().map_err` | [3065](../../src/endpoint_carrier.rs#L3065) | receiver-type-required |
+| `validate_request_binding` | `payload.canonical_bytes` | [3065](../../src/endpoint_carrier.rs#L3065) | receiver-type-required |
+| `validate_request_binding` | `event.string_field` | [3068](../../src/endpoint_carrier.rs#L3068) | receiver-type-required |
+| `validate_request_binding` | `Some` | [3068](../../src/endpoint_carrier.rs#L3068), [3071](../../src/endpoint_carrier.rs#L3071), [3080](../../src/endpoint_carrier.rs#L3080) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `event.has_field` | [3068](../../src/endpoint_carrier.rs#L3068) | receiver-type-required |
+| `validate_request_binding` | `payload.get("callId").and_then` | [3071](../../src/endpoint_carrier.rs#L3071) | receiver-type-required |
+| `validate_request_binding` | `payload.get` | [3071](../../src/endpoint_carrier.rs#L3071) | receiver-type-required |
+| `validate_request_binding` | `Err` | [3073](../../src/endpoint_carrier.rs#L3073), [3077](../../src/endpoint_carrier.rs#L3077) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `"approval request disagrees with its semantic hold".to_owned` | [3074](../../src/endpoint_carrier.rs#L3074) | receiver-type-required |
+| `validate_request_binding` | `"question request disagrees with its semantic hold".to_owned` | [3078](../../src/endpoint_carrier.rs#L3078) | receiver-type-required |
+| `validate_request_binding` | `Ok` | [3080](../../src/endpoint_carrier.rs#L3080), [3081](../../src/endpoint_carrier.rs#L3081) | external-constructor-callback-or-unresolved |
+| `validate_request_binding` | `call.to_owned` | [3080](../../src/endpoint_carrier.rs#L3080) | receiver-type-required |
+| `unresolved_hold_turn` | `events         .iter()         .rev()         .find(&#124;event&#124; {             event.kind() == &EventKind::ApprovalRequest && event.string_field("call") == Some(call)         })         .ok_or_else` | [3086](../../src/endpoint_carrier.rs#L3086) | receiver-type-required |
+| `unresolved_hold_turn` | `events         .iter()         .rev()         .find` | [3086](../../src/endpoint_carrier.rs#L3086) | receiver-type-required |
+| `unresolved_hold_turn` | `events         .iter()         .rev` | [3086](../../src/endpoint_carrier.rs#L3086) | receiver-type-required |
+| `unresolved_hold_turn` | `events         .iter` | [3086](../../src/endpoint_carrier.rs#L3086) | receiver-type-required |
+| `unresolved_hold_turn` | `event.kind` | [3090](../../src/endpoint_carrier.rs#L3090) | receiver-type-required |
+| `unresolved_hold_turn` | `event.string_field` | [3090](../../src/endpoint_carrier.rs#L3090), [3099](../../src/endpoint_carrier.rs#L3099) | receiver-type-required |
+| `unresolved_hold_turn` | `Some` | [3090](../../src/endpoint_carrier.rs#L3090), [3099](../../src/endpoint_carrier.rs#L3099) | external-constructor-callback-or-unresolved |
+| `unresolved_hold_turn` | `StoreError::Corruption` | [3092](../../src/endpoint_carrier.rs#L3092), [3101](../../src/endpoint_carrier.rs#L3101), [3107](../../src/endpoint_carrier.rs#L3107) | external-constructor-callback-or-unresolved |
+| `unresolved_hold_turn` | `"respond hold is missing".to_owned` | [3092](../../src/endpoint_carrier.rs#L3092) | receiver-type-required |
+| `unresolved_hold_turn` | `events.iter().any` | [3093](../../src/endpoint_carrier.rs#L3093) | receiver-type-required |
+| `unresolved_hold_turn` | `events.iter` | [3093](../../src/endpoint_carrier.rs#L3093) | receiver-type-required |
+| `unresolved_hold_turn` | `event.seq` | [3094](../../src/endpoint_carrier.rs#L3094) | receiver-type-required |
+| `unresolved_hold_turn` | `request.seq` | [3094](../../src/endpoint_carrier.rs#L3094) | receiver-type-required |
+| `unresolved_hold_turn` | `Err` | [3101](../../src/endpoint_carrier.rs#L3101) | external-constructor-callback-or-unresolved |
+| `unresolved_hold_turn` | `"respond hold is already resolved".to_owned` | [3102](../../src/endpoint_carrier.rs#L3102) | receiver-type-required |
+| `unresolved_hold_turn` | `request         .turn()         .ok_or_else` | [3105](../../src/endpoint_carrier.rs#L3105) | receiver-type-required |
+| `unresolved_hold_turn` | `request         .turn` | [3105](../../src/endpoint_carrier.rs#L3105) | receiver-type-required |
+| `unresolved_hold_turn` | `"respond hold has no turn".to_owned` | [3107](../../src/endpoint_carrier.rs#L3107) | receiver-type-required |
+| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str()         .map` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok()?         .get` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `payload_session_id` | `serde_json::from_slice::<Value>(&payload.canonical_bytes().ok()?)         .ok` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `payload_session_id` | `serde_json::from_slice::<Value>` | [3111](../../src/endpoint_carrier.rs#L3111) | external-constructor-callback-or-unresolved |
+| `payload_session_id` | `payload.canonical_bytes().ok` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `payload_session_id` | `payload.canonical_bytes` | [3111](../../src/endpoint_carrier.rs#L3111) | receiver-type-required |
+| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str()         .map` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get("sessionId")?         .as_str` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok()?         .get` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `result_session_id` | `serde_json::from_slice::<Value>(&value.canonical_bytes().ok()?)         .ok` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `result_session_id` | `serde_json::from_slice::<Value>` | [3119](../../src/endpoint_carrier.rs#L3119) | external-constructor-callback-or-unresolved |
+| `result_session_id` | `value.canonical_bytes().ok` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `result_session_id` | `value.canonical_bytes` | [3119](../../src/endpoint_carrier.rs#L3119) | receiver-type-required |
+| `route_failure` | `HostFailure::Internal` | [3127](../../src/endpoint_carrier.rs#L3127) | external-constructor-callback-or-unresolved |
+| `public_question` | `invocation["question"]         .as_str()         .ok_or_else` | [3139](../../src/endpoint_carrier.rs#L3139) | receiver-type-required |
+| `public_question` | `invocation["question"]         .as_str` | [3139](../../src/endpoint_carrier.rs#L3139) | receiver-type-required |
+| `public_question` | `internal` | [3141](../../src/endpoint_carrier.rs#L3141) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `public_question` | `invocation["options"]         .as_array()         .map(&#124;options&#124; {             options                 .iter()                 .filter_map(Value::as_str)                 .map(&#124;label&#124; json!({ "label": label }))                 .collect::<Vec<_>>()         })         .unwrap_or_default` | [3142](../../src/endpoint_carrier.rs#L3142) | receiver-type-required |
+| `public_question` | `invocation["options"]         .as_array()         .map` | [3142](../../src/endpoint_carrier.rs#L3142) | receiver-type-required |
+| `public_question` | `invocation["options"]         .as_array` | [3142](../../src/endpoint_carrier.rs#L3142) | receiver-type-required |
+| `public_question` | `options                 .iter()                 .filter_map(Value::as_str)                 .map(&#124;label&#124; json!({ "label": label }))                 .collect::<Vec<_>>` | [3145](../../src/endpoint_carrier.rs#L3145) | receiver-type-required |
+| `public_question` | `options                 .iter()                 .filter_map(Value::as_str)                 .map` | [3145](../../src/endpoint_carrier.rs#L3145) | receiver-type-required |
+| `public_question` | `options                 .iter()                 .filter_map` | [3145](../../src/endpoint_carrier.rs#L3145) | receiver-type-required |
+| `public_question` | `options                 .iter` | [3145](../../src/endpoint_carrier.rs#L3145) | receiver-type-required |
+| `public_question` | `IJsonValue::parse(&serde_json::to_vec(&row).map_err(internal)?).map_err` | [3159](../../src/endpoint_carrier.rs#L3159) | receiver-type-required |
+| `public_question` | `IJsonValue::parse` | [3159](../../src/endpoint_carrier.rs#L3159) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `public_question` | `serde_json::to_vec(&row).map_err` | [3159](../../src/endpoint_carrier.rs#L3159) | receiver-type-required |
+| `public_question` | `serde_json::to_vec` | [3159](../../src/endpoint_carrier.rs#L3159) | external-constructor-callback-or-unresolved |
+| `internal` | `HostFailure::Internal` | [3163](../../src/endpoint_carrier.rs#L3163) | external-constructor-callback-or-unresolved |
+| `internal` | `error.to_string` | [3163](../../src/endpoint_carrier.rs#L3163) | receiver-type-required |
+| `carrier_failure` | `HostFailure::Quarantined` | [3172](../../src/endpoint_carrier.rs#L3172) | external-constructor-callback-or-unresolved |
+| `carrier_failure` | `internal` | [3173](../../src/endpoint_carrier.rs#L3173) | [tekes-supervisor::endpoint_carrier::internal](../../src/endpoint_carrier.rs#L3162) |
+| `internal_carrier` | `ProductionCarrierError::Lifecycle` | [3178](../../src/endpoint_carrier.rs#L3178) | external-constructor-callback-or-unresolved |
+| `internal_carrier` | `error.to_string` | [3178](../../src/endpoint_carrier.rs#L3178) | receiver-type-required |
+| `poisoned` | `ProductionCarrierError::Lifecycle` | [3182](../../src/endpoint_carrier.rs#L3182) | external-constructor-callback-or-unresolved |
+| `poisoned` | `"carrier generation mutex poisoned".to_owned` | [3182](../../src/endpoint_carrier.rs#L3182) | receiver-type-required |
+| `system_timestamp` | `SystemTime::now()         .duration_since(UNIX_EPOCH)         .map_err` | [3186](../../src/endpoint_carrier.rs#L3186) | receiver-type-required |
+| `system_timestamp` | `SystemTime::now()         .duration_since` | [3186](../../src/endpoint_carrier.rs#L3186) | receiver-type-required |
+| `system_timestamp` | `SystemTime::now` | [3186](../../src/endpoint_carrier.rs#L3186) | external-constructor-callback-or-unresolved |
+| `system_timestamp` | `now.as_secs` | [3189](../../src/endpoint_carrier.rs#L3189) | receiver-type-required |
+| `system_timestamp` | `now.subsec_millis` | [3190](../../src/endpoint_carrier.rs#L3190) | receiver-type-required |
+| `system_timestamp` | `i64::try_from(seconds / 86_400).map_err` | [3195](../../src/endpoint_carrier.rs#L3195) | receiver-type-required |
+| `system_timestamp` | `i64::try_from` | [3195](../../src/endpoint_carrier.rs#L3195) | external-constructor-callback-or-unresolved |
+| `system_timestamp` | `i64::from` | [3207](../../src/endpoint_carrier.rs#L3207) | external-constructor-callback-or-unresolved |
+| `system_timestamp` | `Ok` | [3208](../../src/endpoint_carrier.rs#L3208) | external-constructor-callback-or-unresolved |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `request.clone` | [3270](../../src/endpoint_carrier.rs#L3270) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `Vec::new` | [3280](../../src/endpoint_carrier.rs#L3280) | external-constructor-callback-or-unresolved |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `bytes.extend` | [3282](../../src/endpoint_carrier.rs#L3282) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `serde_json_canonicalizer::to_vec(&event).expect` | [3282](../../src/endpoint_carrier.rs#L3282) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `serde_json_canonicalizer::to_vec` | [3282](../../src/endpoint_carrier.rs#L3282) | external-constructor-callback-or-unresolved |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `bytes.push` | [3283](../../src/endpoint_carrier.rs#L3283) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger(&bytes, schema::READER_VERSION).expect` | [3285](../../src/endpoint_carrier.rs#L3285) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `schema::validate_ledger` | [3285](../../src/endpoint_carrier.rs#L3285) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `ledger` | [3287](../../src/endpoint_carrier.rs#L3287), [3296](../../src/endpoint_carrier.rs#L3296) | external-constructor-callback-or-unresolved |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests(thread, None, &cancelled).expect` | [3290](../../src/endpoint_carrier.rs#L3290) | receiver-type-required |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests` | [3290](../../src/endpoint_carrier.rs#L3290), [3299](../../src/endpoint_carrier.rs#L3299) | external-constructor-callback-or-unresolved |
+| `question_denial_projects_as_cancelled_and_answer_as_answered` | `line_requests(thread, None, &answered).expect` | [3299](../../src/endpoint_carrier.rs#L3299) | receiver-type-required |
+| `blank_thread` | `ThreadStore::open(root).expect` | [3318](../../src/endpoint_carrier.rs#L3318) | receiver-type-required |
+| `blank_thread` | `ThreadStore::open` | [3318](../../src/endpoint_carrier.rs#L3318) | external-constructor-callback-or-unresolved |
+| `blank_thread` | `root.join("threads").join` | [3319](../../src/endpoint_carrier.rs#L3319) | receiver-type-required |
+| `blank_thread` | `root.join` | [3319](../../src/endpoint_carrier.rs#L3319) | receiver-type-required |
+| `blank_thread` | `fs::create_dir_all(folder.join("assets")).expect` | [3320](../../src/endpoint_carrier.rs#L3320) | receiver-type-required |
+| `blank_thread` | `fs::create_dir_all` | [3320](../../src/endpoint_carrier.rs#L3320) | external-constructor-callback-or-unresolved |
+| `blank_thread` | `folder.join` | [3320](../../src/endpoint_carrier.rs#L3320), [3321](../../src/endpoint_carrier.rs#L3321) | receiver-type-required |
+| `blank_thread` | `fs::write(folder.join("main.jsonl"), genesis + "\n").expect` | [3321](../../src/endpoint_carrier.rs#L3321) | receiver-type-required |
+| `blank_thread` | `fs::write` | [3321](../../src/endpoint_carrier.rs#L3321) | external-constructor-callback-or-unresolved |
+| `registered` | `streams.inner.generations.lock().expect` | [3329](../../src/endpoint_carrier.rs#L3329) | receiver-type-required |
+| `registered` | `streams.inner.generations.lock` | [3329](../../src/endpoint_carrier.rs#L3329) | receiver-type-required |
+| `registered` | `BTreeSet::new` | [3331](../../src/endpoint_carrier.rs#L3331) | external-constructor-callback-or-unresolved |
+| `registered` | `generation.handle.baselines().expect` | [3333](../../src/endpoint_carrier.rs#L3333) | receiver-type-required |
+| `registered` | `generation.handle.baselines` | [3333](../../src/endpoint_carrier.rs#L3333) | receiver-type-required |
+| `registered` | `all.insert` | [3334](../../src/endpoint_carrier.rs#L3334) | receiver-type-required |
+| `registered` | `all.len` | [3337](../../src/endpoint_carrier.rs#L3337) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `tempfile::tempdir().expect` | [3346](../../src/endpoint_carrier.rs#L3346) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `tempfile::tempdir` | [3346](../../src/endpoint_carrier.rs#L3346) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `id` | [3347](../../src/endpoint_carrier.rs#L3347) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::id](../../src/endpoint_carrier.rs#L3324) |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `blank_thread` | [3349](../../src/endpoint_carrier.rs#L3349) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3314) |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `root.path` | [3349](../../src/endpoint_carrier.rs#L3349), [3351](../../src/endpoint_carrier.rs#L3351) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `ProductionCarrierStreams::new` | [3351](../../src/endpoint_carrier.rs#L3351) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams.open_legacy_mux().expect` | [3352](../../src/endpoint_carrier.rs#L3352) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams.open_legacy_mux` | [3352](../../src/endpoint_carrier.rs#L3352) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams             .attach_everywhere(&live)             .expect` | [3353](../../src/endpoint_carrier.rs#L3353) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams             .attach_everywhere` | [3353](../../src/endpoint_carrier.rs#L3353) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::sync::atomic::AtomicUsize::new` | [3357](../../src/endpoint_carrier.rs#L3357) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::thread::scope` | [3358](../../src/endpoint_carrier.rs#L3358), [3385](../../src/endpoint_carrier.rs#L3385) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `scope.spawn` | [3361](../../src/endpoint_carrier.rs#L3361), [3387](../../src/endpoint_carrier.rs#L3387) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `arrived.fetch_add` | [3363](../../src/endpoint_carrier.rs#L3363) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Instant::now` | [3365](../../src/endpoint_carrier.rs#L3365), [3390](../../src/endpoint_carrier.rs#L3390), [3400](../../src/endpoint_carrier.rs#L3400) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Duration::from_secs` | [3365](../../src/endpoint_carrier.rs#L3365), [3390](../../src/endpoint_carrier.rs#L3390), [3400](../../src/endpoint_carrier.rs#L3400) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `arrived.load` | [3366](../../src/endpoint_carrier.rs#L3366) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::thread::sleep` | [3371](../../src/endpoint_carrier.rs#L3371), [3393](../../src/endpoint_carrier.rs#L3393), [3406](../../src/endpoint_carrier.rs#L3406) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `std::time::Duration::from_millis` | [3371](../../src/endpoint_carrier.rs#L3371), [3393](../../src/endpoint_carrier.rs#L3393), [3406](../../src/endpoint_carrier.rs#L3406) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                         .attach_everywhere_with(session, Some(&rendezvous))                         .expect` | [3374](../../src/endpoint_carrier.rs#L3374) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                         .attach_everywhere_with` | [3374](../../src/endpoint_carrier.rs#L3374) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `Some` | [3375](../../src/endpoint_carrier.rs#L3375), [3397](../../src/endpoint_carrier.rs#L3397) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `AtomicBool::new` | [3383](../../src/endpoint_carrier.rs#L3383), [3384](../../src/endpoint_carrier.rs#L3384) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `holding.store` | [3389](../../src/endpoint_carrier.rs#L3389) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `release.load` | [3391](../../src/endpoint_carrier.rs#L3391) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams_ref                     .attach_everywhere_with(c_ref, Some(&hold))                     .expect` | [3396](../../src/endpoint_carrier.rs#L3396) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams_ref                     .attach_everywhere_with` | [3396](../../src/endpoint_carrier.rs#L3396) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `holding.load` | [3401](../../src/endpoint_carrier.rs#L3401) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                 .publish_session_frame(                     &live,                     endpoint::MuxFrame::Queue {                         session_id: live.clone(),                         items: Vec::new(),                     },                 )                 .expect` | [3408](../../src/endpoint_carrier.rs#L3408) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `streams                 .publish_session_frame` | [3408](../../src/endpoint_carrier.rs#L3408) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `live.clone` | [3412](../../src/endpoint_carrier.rs#L3412) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `Vec::new` | [3413](../../src/endpoint_carrier.rs#L3413) | external-constructor-callback-or-unresolved |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `release.store` | [3417](../../src/endpoint_carrier.rs#L3417) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `slow.join().expect` | [3418](../../src/endpoint_carrier.rs#L3418) | receiver-type-required |
+| `first_touches_load_in_parallel_and_do_not_hold_up_live_frames` | `slow.join` | [3418](../../src/endpoint_carrier.rs#L3418) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `tempfile::tempdir().expect` | [3427](../../src/endpoint_carrier.rs#L3427) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `tempfile::tempdir` | [3427](../../src/endpoint_carrier.rs#L3427) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `(10..70).map(id).collect::<Vec<_>>` | [3428](../../src/endpoint_carrier.rs#L3428) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `(10..70).map` | [3428](../../src/endpoint_carrier.rs#L3428) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `blank_thread` | [3430](../../src/endpoint_carrier.rs#L3430) | [tekes-supervisor::endpoint_carrier::lazy_registration_tests::blank_thread](../../src/endpoint_carrier.rs#L3314) |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path` | [3430](../../src/endpoint_carrier.rs#L3430), [3432](../../src/endpoint_carrier.rs#L3432), [3437](../../src/endpoint_carrier.rs#L3437) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `ProductionCarrierStreams::new` | [3432](../../src/endpoint_carrier.rs#L3432) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.open_legacy_mux().expect` | [3433](../../src/endpoint_carrier.rs#L3433) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.open_legacy_mux` | [3433](../../src/endpoint_carrier.rs#L3433) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.claim_journal(open).expect` | [3435](../../src/endpoint_carrier.rs#L3435) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams.claim_journal` | [3435](../../src/endpoint_carrier.rs#L3435) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join("threads")                 .join(session)                 .join` | [3437](../../src/endpoint_carrier.rs#L3437) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join("threads")                 .join` | [3437](../../src/endpoint_carrier.rs#L3437) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `root.path()                 .join` | [3437](../../src/endpoint_carrier.rs#L3437) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams             .refresh_all_context_projections()             .expect` | [3443](../../src/endpoint_carrier.rs#L3443) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `streams             .refresh_all_context_projections` | [3443](../../src/endpoint_carrier.rs#L3443) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Instant::now` | [3452](../../src/endpoint_carrier.rs#L3452) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Duration::from_secs` | [3452](../../src/endpoint_carrier.rs#L3452) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `sessions.iter().all` | [3453](../../src/endpoint_carrier.rs#L3453) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `sessions.iter` | [3453](../../src/endpoint_carrier.rs#L3453) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `projection(session).exists` | [3453](../../src/endpoint_carrier.rs#L3453) | receiver-type-required |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `projection` | [3453](../../src/endpoint_carrier.rs#L3453) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::thread::sleep` | [3458](../../src/endpoint_carrier.rs#L3458) | external-constructor-callback-or-unresolved |
+| `a_context_refresh_serves_the_open_thread_first_and_registers_no_idle_session` | `std::time::Duration::from_millis` | [3458](../../src/endpoint_carrier.rs#L3458) | external-constructor-callback-or-unresolved |

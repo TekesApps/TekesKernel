@@ -77,6 +77,23 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `ToolExecution` | `pipeline::ToolExecution` | `pub` |
 | `ToolPipeline` | `pipeline::ToolPipeline` | `pub` |
 | `ToolPipelineError` | `pipeline::ToolPipelineError` | `pub` |
+| `KERNEL_LAYERS` | `preset::KERNEL_LAYERS` | `pub` |
+| `KernelLayer` | `preset::KernelLayer` | `pub` |
+| `MAX_PRESET_DUTY_BYTES` | `preset::MAX_PRESET_DUTY_BYTES` | `pub` |
+| `MAX_PRESET_ID_BYTES` | `preset::MAX_PRESET_ID_BYTES` | `pub` |
+| `MAX_PRESET_IDENTITY_BYTES` | `preset::MAX_PRESET_IDENTITY_BYTES` | `pub` |
+| `MAX_PRESET_LAYERS` | `preset::MAX_PRESET_LAYERS` | `pub` |
+| `MAX_PRESET_TEXT_BYTES` | `preset::MAX_PRESET_TEXT_BYTES` | `pub` |
+| `MAX_PRESET_VERSION_BYTES` | `preset::MAX_PRESET_VERSION_BYTES` | `pub` |
+| `PRESET_FORMAT` | `preset::PRESET_FORMAT` | `pub` |
+| `PRESET_RENDER_VERSION` | `preset::PRESET_RENDER_VERSION` | `pub` |
+| `PresetBase` | `preset::PresetBase` | `pub` |
+| `PresetError` | `preset::PresetError` | `pub` |
+| `PresetInvalid` | `preset::PresetInvalid` | `pub` |
+| `PresetInvalidReason` | `preset::PresetInvalidReason` | `pub` |
+| `PresetLayer` | `preset::PresetLayer` | `pub` |
+| `ResolvedPreset` | `preset::ResolvedPreset` | `pub` |
+| `describe_presets` | `preset::describe_value` | `pub` |
 | `*` | `runtime_backends::*` | `pub` |
 | `NetworkPolicy` | `sandbox::NetworkPolicy` | `pub` |
 | `ProbeFailure` | `sandbox::ProbeFailure` | `pub` |
@@ -116,6 +133,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `tools::lifecycle_hook` | `private` |  |
 | `tools::linux_sandbox` | `private` | #[cfg(all(     target_os = "linux",     any(target_arch = "x86_64", target_arch = "aarch64") ))] |
 | `tools::pipeline` | `private` |  |
+| `tools::preset` | `private` |  |
 | `tools::runtime_backends` | `private` |  |
 | `tools::sandbox` | `private` |  |
 | `tools::schema_registry` | `private` |  |

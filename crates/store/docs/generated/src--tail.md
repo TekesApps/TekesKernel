@@ -407,7 +407,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `repair_thread_tails` | `entry.file_name().to_string_lossy().into_owned` | [681](../../src/tail.rs#L681) | receiver-type-required |
 | `repair_thread_tails` | `entry.file_name().to_string_lossy` | [681](../../src/tail.rs#L681) | receiver-type-required |
 | `repair_thread_tails` | `entry.file_name` | [681](../../src/tail.rs#L681) | receiver-type-required |
-| `repair_thread_tails` | `crate::card::valid_line_name` | [682](../../src/tail.rs#L682) | [store::card::valid_line_name](../../src/card.rs#L252) |
+| `repair_thread_tails` | `crate::card::valid_line_name` | [682](../../src/tail.rs#L682) | [store::card::valid_line_name](../../src/card.rs#L255) |
 | `repair_thread_tails` | `entry.file_type()?.is_file` | [682](../../src/tail.rs#L682) | receiver-type-required |
 | `repair_thread_tails` | `entry.file_type` | [682](../../src/tail.rs#L682) | receiver-type-required |
 | `repair_thread_tails` | `File::open` | [685](../../src/tail.rs#L685) | external-constructor-callback-or-unresolved |

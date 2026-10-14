@@ -555,7 +555,7 @@ fn slice4_gate_07_mutated_tool_write_ahead() {
     let first = tool_ledger();
     let path = first.path().join("main.jsonl");
     let assets = AssetStore::new(first.path().join("assets")).expect("assets");
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let tool_call = ledger
         .projection()
         .expect("projection")
@@ -612,14 +612,14 @@ fn slice4_gate_07_mutated_tool_write_ahead() {
         .flat_map(|line| line.iter().copied().chain(std::iter::once(b'\n')))
         .collect::<Vec<_>>();
     fs::write(&path, crash_prefix).expect("simulate loss after effect");
-    let recovered = LockedLedger::open(&path, 1).expect("recovered prefix");
+    let recovered = LockedLedger::open(&path, schema::READER_VERSION).expect("recovered prefix");
     assert_eq!(recovered.projection().unwrap().last_seq, 9);
     assert!(recovered.projection().unwrap().lifecycle.unresolved_work);
 
     let second = tool_ledger();
     let second_path = second.path().join("main.jsonl");
     let assets = AssetStore::new(second.path().join("assets")).expect("assets");
-    let mut ledger = LockedLedger::open(&second_path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&second_path, schema::READER_VERSION).expect("ledger");
     let decision = ToolPipeline::new(&mut ledger, assets, SecretScanner::failing())
         .execute(&execution, &[], |_, _| Ok(IJsonValue::from("secret")))
         .expect("withheld pipeline");
@@ -637,7 +637,7 @@ fn ordered_hooks_chain_mutations_and_compose_post_decisions() {
     let directory = tool_ledger();
     let path = directory.path().join("main.jsonl");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let first = shell_hook(
         "01-pre",
         HookPhase::Pre,
@@ -706,7 +706,7 @@ fn ordered_hooks_apply_open_and_closed_failure_modes_without_shortening_post_cha
     let directory = tool_ledger();
     let path = directory.path().join("main.jsonl");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let mut pre_open = shell_hook("01-open", HookPhase::Pre, "exit 9");
     pre_open.failure = HookFailureMode::Open;
     let mutate = shell_hook(
@@ -737,7 +737,9 @@ fn ordered_hooks_apply_open_and_closed_failure_modes_without_shortening_post_cha
 
     let directory = tool_ledger();
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let pre_closed = shell_hook("01-closed", HookPhase::Pre, "exit 9");
     let never = shell_hook(
         "02-never",

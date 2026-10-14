@@ -474,6 +474,34 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
     {
         return Err(SchemaError::event(Some(seq), "invalid identity_profile"));
     }
+    // A resolved session preset (spec session-endpoint §Session presets)
+    // replaces the identity profile and needs reader 2, so older readers open
+    // the session read-only instead of rendering it with the wrong prompt.
+    if let Some(preset) = optional_object(object, "preset", seq)? {
+        if object.contains_key("identity_profile") {
+            return Err(SchemaError::event(
+                Some(seq),
+                "genesis carries both preset and identity_profile",
+            ));
+        }
+        if required_u64(object, "min_reader", Some(seq))? < 2 {
+            return Err(SchemaError::event(
+                Some(seq),
+                "a genesis preset requires min_reader 2",
+            ));
+        }
+        if required_u64(preset, "format", Some(seq))? != 1 {
+            return Err(SchemaError::event(Some(seq), "unsupported preset format"));
+        }
+        if !matches!(
+            required_str(preset, "base", Some(seq))?,
+            "general" | "blank"
+        ) {
+            return Err(SchemaError::event(Some(seq), "invalid preset base"));
+        }
+        required_array(preset, "layers", seq)?;
+        required_str(preset, "digest", Some(seq))?;
+    }
     // An ephemeral session is a scratch ledger: it is swept at startup and
     // discarded when its client closes it. Readers that predate the flag see
     // an ordinary session, so the ledger format is not gated on it.

@@ -581,7 +581,7 @@ fn collect_artifacts(
             .ok_or("artifact parent folder missing")?
             .join(child_file);
         let bytes = fs::read(&child_path)?;
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         if scan.needs_repair() {
             return Err("artifact child ledger requires tail repair before validation".into());
         }
@@ -1034,7 +1034,7 @@ fn judge(
     }
     let child_path = ledger.path().parent().unwrap().join(&spawn.child_file);
     let child = loop {
-        match LockedLedger::open(&child_path, 1) {
+        match LockedLedger::open(&child_path, schema::READER_VERSION) {
             Ok(child) => break child,
             Err(StoreError::Busy)
                 if !cancellation.stop_requested() && !cancellation.supervisor_lost() =>
@@ -1401,7 +1401,7 @@ mod artifact_tree_tests {
             bytes.extend(make_event(record).unwrap().canonical_bytes().unwrap());
             bytes.push(b'\n');
         }
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         assert_eq!(
             scan.valid_bytes,
             bytes.len() as u64,

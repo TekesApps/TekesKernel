@@ -89,10 +89,20 @@ consuming `turn_open` (steer: by `attempt.admits`).
 workspace: str, origin_key: str, origin_tuple, resume: "never" |
 {"bounded": int}, parent?: {file: str, seq: int, spawn_id: str},
 seed?: {source: str, kinds: [str], snapshot: {asset: str, digest: str}},
-config: {digest: str}, instruction?: {digest: str}}`
+config: {digest: str}, instruction?: {digest: str},
+identity_profile?: "auto" | "coding" | "general",
+preset?: {format: 1, base: "general" | "blank", layers: [Layer], digest: str}}`
 
 `parent.spawn_id` is the durable child-side binding checked by the launch
 lifecycle (R15-10).
+
+`preset` is the session preset resolved at `session.create`
+([session-endpoint § Session presets](session-endpoint.md#session-presets)).
+A genesis carries `identity_profile` or `preset`, never both, and one that
+carries `preset` sets `min_reader` 2: a reader 1 opens the ledger read-only
+instead of rendering the session with the wrong prompt. This build reads and
+writes reader version 2 (`schema::READER_VERSION`); ledgers with `min_reader`
+1 are unchanged.
 
 **Seed snapshot asset format (R16 closure).** `seed.snapshot` is UTF-8 JSONL
 with one LF-terminated **source event** per line, in strictly increasing

@@ -102,7 +102,9 @@ fn dynamic_dispatch_uses_exact_metadata_and_the_common_policy_pipeline() {
     let dynamic = tool("plugin.frame", true, DynamicToolEffect::ComputerControl);
     let catalog = catalog(vec![dynamic.clone()]);
     let directory = ledger_with_call("plugin.frame", json!({"quality":7}));
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let mut backend = RecordingDynamicBackend {
         available: true,
@@ -164,7 +166,9 @@ fn mcp_destructive_hint_reaches_the_engine_destructive_approval_gate() {
     .expect("project destructive MCP tool");
     assert_eq!(projected.tools[0].effect, DynamicToolEffect::Destructive);
     let directory = ledger_with_call("mcp__computer_2duse__request_permissions", json!({}));
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let mut backend = RecordingDynamicBackend {
         available: true,
@@ -193,7 +197,9 @@ fn deferred_provider_projection_requires_a_visible_search_offer_and_backend() {
     for offered_name in ["plugin.frame", "different.tool"] {
         let directory = ledger_with_offer(offered_name);
         // Reopen durable history: no in-memory activation cache is involved.
-        let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).unwrap();
+        let mut ledger =
+            LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+                .unwrap();
         let assets = AssetStore::new(directory.path().join("assets")).unwrap();
         let pipeline = ToolPipeline::new(&mut ledger, assets, SecretScanner::default());
         let offered = if offered_name == "plugin.frame" {
@@ -256,7 +262,9 @@ fn compaction_over_the_search_result_retires_the_offer() {
         json!({"v":1,"seq":10,"kind":"compact","ts":TS,"covers":[{"from":7,"to":8}],"summary":"[compacted history]"}),
         json!({"v":1,"seq":11,"turn":1,"kind":"tool_call","ts":TS,"attempt":"a1","call":"c2","name":"plugin.frame","args":{"quality":7},"source":"provider"}),
     ]);
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     assert_eq!(
         ledger.projection().unwrap().last_seq,
         12,
@@ -331,7 +339,8 @@ fn deferred_dispatch_requires_a_durable_visible_tool_search_offer() {
     };
 
     let offered = ledger_with_offer("plugin.frame");
-    let mut ledger = LockedLedger::open(offered.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger = LockedLedger::open(offered.path().join("main.jsonl"), schema::READER_VERSION)
+        .expect("ledger");
     let assets = AssetStore::new(offered.path().join("assets")).expect("assets");
     let decision = dispatcher
         .dispatch(
@@ -346,7 +355,11 @@ fn deferred_dispatch_requires_a_durable_visible_tool_search_offer() {
     assert_eq!(backend.calls, 1);
 
     let not_offered = ledger_with_offer("different.tool");
-    let mut ledger = LockedLedger::open(not_offered.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger = LockedLedger::open(
+        not_offered.path().join("main.jsonl"),
+        schema::READER_VERSION,
+    )
+    .expect("ledger");
     let assets = AssetStore::new(not_offered.path().join("assets")).expect("assets");
     let error = dispatcher
         .dispatch(
@@ -370,7 +383,9 @@ fn exact_dynamic_schema_and_dependency_are_checked_before_effect() {
     )]);
     let dispatcher = DynamicToolDispatcher::new(&catalog);
     let directory = ledger_with_call("plugin.frame", json!({"quality":0,"extra":true}));
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let mut backend = RecordingDynamicBackend {
         available: true,
@@ -389,7 +404,9 @@ fn exact_dynamic_schema_and_dependency_are_checked_before_effect() {
     assert_eq!(backend.calls, 0);
 
     let directory = ledger_with_call("plugin.frame", json!({"quality":7}));
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     backend.available = false;
     let error = dispatcher

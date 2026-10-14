@@ -123,7 +123,7 @@ impl ThreadStore {
         let origin = genesis
             .origin_tuple()?
             .ok_or_else(|| StoreError::Corruption("genesis is missing origin tuple".to_owned()))?;
-        crate::tail::check_write_versions(std::iter::once(&genesis), 1)?;
+        crate::tail::check_write_versions(std::iter::once(&genesis), schema::READER_VERSION)?;
         // Membership is observed by the thread-search authority under the
         // shared form of this lock. Hold it across every active-folder
         // publication so a catalog snapshot cannot miss or duplicate a
@@ -144,7 +144,10 @@ impl ThreadStore {
                     "origin index names a missing active/archive folder".to_owned(),
                 ));
             };
-            crate::tail::check_ledger_write_versions(&fs::read(folder.join("main.jsonl"))?, 1)?;
+            crate::tail::check_ledger_write_versions(
+                &fs::read(folder.join("main.jsonl"))?,
+                schema::READER_VERSION,
+            )?;
             publish_create_assets(&folder.join("assets"), assets)?;
             return Ok(CreateOutcome {
                 thread_id: existing,
@@ -159,7 +162,10 @@ impl ThreadStore {
             if destination.exists() || self.root.join("archive").join(&existing).exists() {
                 return Err(StoreError::ThreadCollision);
             }
-            crate::tail::check_ledger_write_versions(&fs::read(stage.join("main.jsonl"))?, 1)?;
+            crate::tail::check_ledger_write_versions(
+                &fs::read(stage.join("main.jsonl"))?,
+                schema::READER_VERSION,
+            )?;
             publish_create_assets(&stage.join("assets"), assets)?;
             fs::rename(&stage, &destination)?;
             File::open(self.root.join(".create-staging"))?.sync_all()?;
@@ -194,7 +200,7 @@ impl ThreadStore {
         let line = stage.join("main.jsonl");
         File::create(&line)?;
         {
-            let mut ledger = LockedLedger::open(&line, 1)?;
+            let mut ledger = LockedLedger::open(&line, schema::READER_VERSION)?;
             ledger.append_contract(genesis, BarrierContext::default())?;
         }
         File::open(&stage)?.sync_all()?;
@@ -345,7 +351,7 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        let mut ledger = LockedLedger::open(folder.join(line_file), 1)?;
+        let mut ledger = LockedLedger::open(folder.join(line_file), schema::READER_VERSION)?;
         if line_file != "main.jsonl" {
             validate_line_ancestry(&folder, thread_id, line_file, ledger.projection())?;
         }
@@ -425,7 +431,7 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        let mut ledger = LockedLedger::open(folder.join("main.jsonl"), 1)?;
+        let mut ledger = LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)?;
         if let Some(seq) = ledger
             .projection()
             .ok_or_else(|| StoreError::Corruption("empty thread ledger".to_owned()))?
@@ -878,7 +884,7 @@ fn validate_line_ancestry(
             .custom_flags(libc::O_CLOEXEC | libc::O_NOFOLLOW)
             .open(path)?
             .read_to_end(&mut parent_bytes)?;
-        let scan = crate::scan_valid_prefix(&parent_bytes, 1);
+        let scan = crate::scan_valid_prefix(&parent_bytes, schema::READER_VERSION);
         let parent_projection = scan
             .projection
             .ok_or_else(|| corrupt("empty parent ledger"))?;

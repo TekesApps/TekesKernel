@@ -667,7 +667,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `remote_mux_inner` | `unavailable` | [811](../../src/server.rs#L811), [819](../../src/server.rs#L819), [823](../../src/server.rs#L823) | [transport::server::unavailable](../../src/server.rs#L1334) |
 | `remote_mux_inner` | `acquire` | [813](../../src/server.rs#L813) | [transport::server::acquire](../../src/server.rs#L1126) |
 | `remote_mux_inner` | `shared.next_mux_generation.fetch_add` | [817](../../src/server.rs#L817) | receiver-type-required |
-| `remote_mux_inner` | `SessionMuxGeneration::new` | [818](../../src/server.rs#L818) | [endpoint::mux::SessionMuxGeneration::new](../../../endpoint/src/mux.rs#L544) |
+| `remote_mux_inner` | `SessionMuxGeneration::new` | [818](../../src/server.rs#L818) | [endpoint::mux::SessionMuxGeneration::new](../../../endpoint/src/mux.rs#L548) |
 | `remote_mux_inner` | `shared.host.mux_description` | [821](../../src/server.rs#L821) | receiver-type-required |
 | `remote_mux_inner` | `host.validate().is_ok` | [822](../../src/server.rs#L822) | receiver-type-required |
 | `remote_mux_inner` | `host.validate` | [822](../../src/server.rs#L822) | receiver-type-required |

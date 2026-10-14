@@ -245,7 +245,7 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
         .parent()
         .ok_or("ledger path has no thread folder")?;
     let _lifecycle = DirectoryLock::shared(folder)?;
-    let mut ledger = match LockedLedger::open(&options.ledger, 1) {
+    let mut ledger = match LockedLedger::open(&options.ledger, schema::READER_VERSION) {
         Ok(ledger) => ledger,
         Err(StoreError::Busy) => return Ok(ExitCode::SUCCESS),
         Err(error) => return Err(error.into()),

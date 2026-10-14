@@ -47,7 +47,8 @@ WorkspacePolicy = {
   allowed_tools?: [str, ...],
   provider?: str,
   model?: str,
-  max_wall_seconds?: int>=1
+  max_wall_seconds?: int>=1,
+  base?: "general" | "blank"
 }
 
 Providers = {
@@ -145,6 +146,11 @@ Validation beyond shape:
    link-local, multicast, unspecified, and localhost names reject. The
    credential id is resolved only for the `web_search` purpose under
    [web-search-provider](web-search-provider.md).
+
+`base` is the session preset base for sessions created in the workspace;
+omitted is `general`. It is read once when a session is created and frozen in
+that session's preset ([session-endpoint § Session presets](session-endpoint.md#session-presets)),
+so changing it affects only later sessions and never respawns a worker.
 
 `allowed_tools` is interpreted by
 [builtin-tools](builtin-tools.md). Config parsing validates its strings

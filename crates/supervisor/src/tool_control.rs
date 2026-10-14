@@ -635,7 +635,7 @@ fn resolve_line(
             continue;
         }
         let bytes = fs::read(&path)?;
-        let scan = store::scan_valid_prefix(&bytes, 1);
+        let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
         let Some(projection) = scan.projection else {
             continue;
         };

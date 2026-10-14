@@ -11,15 +11,15 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::child_agents::ChildTerminal](../../src/child_agents.rs#L24) | `pub(crate)` | not a function |
 | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
-| [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L334) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
-| [tekes-worker::child_agents::TaskInputError](../../src/child_agents.rs#L381) | `pub(crate)` | not a function |
-| [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L393) | `pub(crate)` | [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L334) |
-| [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L468) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
-| [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L509) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
-| [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L543) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
-| [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L593) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
-| [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L642) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213); [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L593) |
-| [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L702) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
+| [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L339) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
+| [tekes-worker::child_agents::TaskInputError](../../src/child_agents.rs#L386) | `pub(crate)` | not a function |
+| [tekes-worker::child_agents::resolve_completed_task_inputs](../../src/child_agents.rs#L398) | `pub(crate)` | [tekes-worker::child_agents::ensure_delegation_state](../../src/child_agents.rs#L339) |
+| [tekes-worker::child_agents::child_identity](../../src/child_agents.rs#L473) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
+| [tekes-worker::child_agents::publish_child_genesis](../../src/child_agents.rs#L514) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213) |
+| [tekes-worker::child_agents::exchange_launch_child_runtime](../../src/child_agents.rs#L548) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
+| [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L598) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
+| [tekes-worker::child_agents::read_child_projection](../../src/child_agents.rs#L647) | `pub(crate)` | [tekes-worker::child_agents::ensure_durable_child](../../src/child_agents.rs#L213); [tekes-worker::child_agents::wait_for_child_terminal](../../src/child_agents.rs#L598) |
+| [tekes-worker::child_agents::append_child_result_once](../../src/child_agents.rs#L707) | `pub(crate)` | [tekes-worker::child_agents::execute_child_spawn_tool](../../src/child_agents.rs#L29) |
 | [tekes-worker::compaction::CONTEXT_RENDERER_VERSION](../../src/compaction.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::compaction::auto_compact_for_turn](../../src/compaction.rs#L5) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::compaction::build_compaction_event](../../src/compaction.rs#L25) | `pub(crate)` | [tekes-worker::compaction::auto_compact_for_turn](../../src/compaction.rs#L5) |
@@ -71,8 +71,10 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::delivery::drain_parked_deliveries](../../src/delivery.rs#L31) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::delivery::handle_delivery](../../src/delivery.rs#L52) | `pub(crate)` | [tekes-worker::delivery::drain_ready_deliveries](../../src/delivery.rs#L10); [tekes-worker::delivery::drain_parked_deliveries](../../src/delivery.rs#L31) |
 | [tekes-worker::delivery::post_turn_exit](../../src/delivery.rs#L190) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::identity::selected](../../src/identity.rs#L7) | `pub(super)` | [tekes-worker::identity::resolve](../../src/identity.rs#L41) |
-| [tekes-worker::identity::resolve](../../src/identity.rs#L41) | `pub(super)` | no resolved direct caller |
+| [tekes-worker::identity::selected](../../src/identity.rs#L7) | `pub(super)` | [tekes-worker::identity::resolve](../../src/identity.rs#L71) |
+| [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) | `pub(super)` | [tekes-worker::identity::resolve_preset](../../src/identity.rs#L56) |
+| [tekes-worker::identity::resolve_preset](../../src/identity.rs#L56) | `pub(super)` | no resolved direct caller |
+| [tekes-worker::identity::resolve](../../src/identity.rs#L71) | `pub(super)` | [tekes-worker::identity::resolve_preset](../../src/identity.rs#L56) |
 | [tekes-worker::ledger_events::append_run_start](../../src/ledger_events.rs#L3) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::ledger_events::open_ready_turn](../../src/ledger_events.rs#L42) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::ledger_events::open_goal_continuation](../../src/ledger_events.rs#L69) | `pub(crate)` | no resolved direct caller |
@@ -97,17 +99,17 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::provider_turn::ProviderContext](../../src/provider_turn.rs#L26) | `pub(crate)` | not a function |
 | [tekes-worker::provider_turn::run_provider_turn](../../src/provider_turn.rs#L33) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::provider_turn::ProviderRunContext](../../src/provider_turn.rs#L102) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1176) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1186) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1194) | `pub(crate)` | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1278) |
-| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1262) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1278) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1299) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1315) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1408) | `pub(crate)` | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1315); [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1397) |
-| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1468) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1488) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1522) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1175) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1185) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1193) | `pub(crate)` | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1277) |
+| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1261) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1277) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1298) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1314) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1407) | `pub(crate)` | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1314); [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1396) |
+| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1467) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1487) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1521) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
 | [tekes-worker::queue::execute_queue_transaction](../../src/queue.rs#L10) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::recovery::UnresolvedAttempt](../../src/recovery.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::PendingToolCall](../../src/recovery.rs#L17) | `pub(crate)` | not a function |

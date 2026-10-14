@@ -69,7 +69,7 @@ fn live_kernel_turn() {
     prefix[1]["content"] = serde_json::json!([{"type":"text","text":prompt}]);
     let bytes = prefix.iter().fold(String::new(), |mut acc, event| { acc.push_str(&serde_json_canonicalizer::to_string(event).unwrap()); acc.push('\n'); acc });
     std::fs::write(&path, bytes).unwrap();
-    let mut ledger = store::LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = store::LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     if prompt.contains("repeated identical read test") {
         std::fs::write(workspace.path().join("repeated.txt"), "KERNEL_REPEATED_OK").unwrap();
     }
@@ -161,7 +161,7 @@ fn live_kernel_turn() {
     output.1 = Some(std::rc::Rc::new(move |launch| {
         let execute = || -> Result<(), Box<dyn std::error::Error>> {
             let child_id = launch["child"].as_str().ok_or("child id missing")?;
-            let mut child = LockedLedger::open(child_folder.join(format!("{child_id}.jsonl")), 1)?;
+            let mut child = LockedLedger::open(child_folder.join(format!("{child_id}.jsonl")), schema::READER_VERSION)?;
             let mut options = test_options(&child);
             options.run_id = format!("validator-{child_id}");
             if child.projection().unwrap().lifecycle.unstarted {

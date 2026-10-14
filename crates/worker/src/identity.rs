@@ -38,6 +38,36 @@ pub(super) fn selected(
     }
 }
 
+/// The genesis preset of an explicit-preset or blank-base session (spec
+/// session-endpoint §Session presets); identity-profile sessions have none.
+pub(super) fn genesis_preset(
+    ledger: &LockedLedger,
+) -> Result<Option<tools::ResolvedPreset>, Box<dyn std::error::Error>> {
+    let projection = ledger.projection().ok_or("ledger projection missing")?;
+    let genesis = projection.events.first().ok_or("genesis missing")?;
+    let raw = serde_json::to_value(genesis.raw())?;
+    raw.get("preset")
+        .map(|preset| tools::ResolvedPreset::from_genesis(preset).map_err(Into::into))
+        .transpose()
+}
+
+/// The preset the root prompt renders: the genesis preset, or the session's
+/// identity profile (selected on first use for `auto`) on the general base.
+pub(super) fn resolve_preset(
+    ledger: &mut LockedLedger,
+    timestamp: &str,
+    turn: u64,
+) -> Result<tools::ResolvedPreset, Box<dyn std::error::Error>> {
+    if let Some(preset) = genesis_preset(ledger)? {
+        return Ok(preset);
+    }
+    let identity = resolve(ledger, timestamp, turn)?;
+    Ok(tools::ResolvedPreset::from_identity(
+        Some(identity),
+        tools::PresetBase::General,
+    ))
+}
+
 pub(super) fn resolve(
     ledger: &mut LockedLedger,
     timestamp: &str,
@@ -208,15 +238,24 @@ mod tests {
     use super::*;
 
     fn auto_ledger(first: &str) -> (tempfile::TempDir, LockedLedger) {
+        ledger_with(first, json!({"identity_profile":"auto"}))
+    }
+
+    fn ledger_with(first: &str, opening: Value) -> (tempfile::TempDir, LockedLedger) {
         let directory = tempfile::tempdir().unwrap();
         let path = directory.path().join("main.jsonl");
         let thread = "018f0000-0000-7000-8000-000000000003";
+        let mut genesis = json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-09-27T00:00:00.000Z",
+            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+            "origin_key":"create","origin_tuple":{"principal":"p","client":"cli",
+                "target":thread,"op":"create","key":"create"},
+            "resume":"never","config":{"digest":"cfg"}});
+        genesis
+            .as_object_mut()
+            .unwrap()
+            .extend(opening.as_object().unwrap().clone());
         let events = [
-            json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-09-27T00:00:00.000Z",
-                "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
-                "origin_key":"create","origin_tuple":{"principal":"p","client":"cli",
-                    "target":thread,"op":"create","key":"create"},
-                "resume":"never","config":{"digest":"cfg"},"identity_profile":"auto"}),
+            genesis,
             json!({"v":1,"seq":2,"kind":"input","ts":"2026-09-27T00:00:01.000Z",
                 "content":[{"type":"text","text":first}],"origin_key":"input",
                 "origin_tuple":{"principal":"p","client":"cli","target":thread,
@@ -235,7 +274,42 @@ mod tests {
             bytes.push(b'\n');
         }
         std::fs::write(&path, bytes).unwrap();
-        (directory, LockedLedger::open(&path, 1).unwrap())
+        (
+            directory,
+            LockedLedger::open(&path, schema::READER_VERSION).unwrap(),
+        )
+    }
+
+    #[test]
+    fn a_genesis_preset_renders_without_classifying() {
+        let preset = tools::ResolvedPreset::resolve_request(
+            &json!({"layers":[{"kind":"inline","id":"creator","version":"1",
+                "identity":"You are a story writing agent powered by the {model} model."}]}),
+            tools::PresetBase::General,
+        )
+        .unwrap();
+        let (_directory, mut ledger) = ledger_with(
+            "Fix the failing test in ledger.rs",
+            json!({"min_reader":2,"preset":preset}),
+        );
+        let before = ledger.projection().unwrap().events.len();
+        let resolved = resolve_preset(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap();
+        assert_eq!(resolved, preset);
+        assert_eq!(ledger.projection().unwrap().events.len(), before);
+        assert!(
+            resolved
+                .render("m", None, "")
+                .contains("You are a story writing agent powered by the m model.")
+        );
+
+        let (_directory, mut legacy) = ledger_with("Fix the bug", json!({}));
+        assert_eq!(
+            resolve_preset(&mut legacy, "2026-09-27T00:00:04.000Z", 1).unwrap(),
+            tools::ResolvedPreset::from_identity(
+                Some(tools::IdentityProfile::Coding),
+                tools::PresetBase::General
+            )
+        );
     }
 
     #[test]
@@ -299,7 +373,7 @@ mod tests {
         );
         let path = ledger.path().to_owned();
         drop(ledger);
-        let reopened = LockedLedger::open(&path, 1).unwrap();
+        let reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         assert_eq!(
             selected(&reopened).unwrap(),
             Some(tools::IdentityProfile::General)
@@ -327,7 +401,7 @@ mod tests {
             "\"identity_profile\":\"coding\"",
         );
         std::fs::write(&path, text).unwrap();
-        ledger = LockedLedger::open(&path, 1).unwrap();
+        ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         assert_eq!(
             resolve(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap(),
             tools::IdentityProfile::Coding

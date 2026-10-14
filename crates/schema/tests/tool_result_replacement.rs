@@ -29,18 +29,18 @@ fn ledger(rows: Vec<Value>) -> Vec<u8> {
 fn a_second_tool_result_is_legal_only_as_an_explicit_replacement() {
     let replacement = json!({"v":1,"seq":6,"turn":1,"kind":"tool_result","ts":TS,"call":"c1","outcome":"ok",
         "content":[{"type":"text","text":"whole [...] output"}],"supersedes":[{"from":5,"to":5}]});
-    validate_ledger(&ledger(vec![replacement.clone()]), 1)
+    validate_ledger(&ledger(vec![replacement.clone()]), schema::READER_VERSION)
         .expect("a retracting replacement is legal");
 
     let mut duplicate = replacement.clone();
     duplicate.as_object_mut().unwrap().remove("supersedes");
-    let error =
-        validate_ledger(&ledger(vec![duplicate]), 1).expect_err("a bare duplicate is rejected");
+    let error = validate_ledger(&ledger(vec![duplicate]), schema::READER_VERSION)
+        .expect_err("a bare duplicate is rejected");
     assert!(error.to_string().contains("supersede"), "{error}");
 
     let mut elsewhere = replacement.clone();
     elsewhere["supersedes"] = json!([{"from":4,"to":4}]);
-    let error = validate_ledger(&ledger(vec![elsewhere]), 1)
+    let error = validate_ledger(&ledger(vec![elsewhere]), schema::READER_VERSION)
         .expect_err("retracting something other than the result it replaces is rejected");
     assert!(error.to_string().contains("supersede"), "{error}");
 
@@ -50,5 +50,6 @@ fn a_second_tool_result_is_legal_only_as_an_explicit_replacement() {
         json!({"v":1,"seq":7,"turn":1,"kind":"tool_result","ts":TS,"call":"c1","outcome":"ok",
             "content":[{"type":"text","text":"shorter"}],"supersedes":[{"from":6,"to":6}]}),
     ];
-    validate_ledger(&ledger(chained), 1).expect("a chained replacement retracts the live result");
+    validate_ledger(&ledger(chained), schema::READER_VERSION)
+        .expect("a chained replacement retracts the live result");
 }

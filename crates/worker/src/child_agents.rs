@@ -303,7 +303,12 @@ pub(crate) fn ensure_durable_child(
         "resume":resume,
         "config":{"digest":options.config_digest}
     });
-    if let Some(identity) = identity::selected(ledger)? {
+    // A child keeps its parent's preset verbatim, or its resolved identity.
+    if let Some(preset) = identity::genesis_preset(ledger)? {
+        let object = genesis.as_object_mut().expect("genesis object");
+        object.insert("min_reader".to_owned(), json!(2));
+        object.insert("preset".to_owned(), serde_json::to_value(&preset)?);
+    } else if let Some(identity) = identity::selected(ledger)? {
         genesis
             .as_object_mut()
             .expect("genesis object")
@@ -643,7 +648,7 @@ pub(crate) fn read_child_projection(
     path: &std::path::Path,
 ) -> Result<schema::LedgerProjection, Box<dyn std::error::Error>> {
     let bytes = fs::read(path)?;
-    scan_valid_prefix(&bytes, 1)
+    scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| "child ledger has no projection".into())
 }

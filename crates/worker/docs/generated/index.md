@@ -35,13 +35,13 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/worker/src/child_agents.rs](../../src/child_agents.rs) | 19 | 458 | [Symbols and calls](src--child_agents.md) |
+| [crates/worker/src/child_agents.rs](../../src/child_agents.rs) | 19 | 466 | [Symbols and calls](src--child_agents.md) |
 | [crates/worker/src/compaction.rs](../../src/compaction.rs) | 10 | 128 | [Symbols and calls](src--compaction.md) |
 | [crates/worker/src/context_projection.rs](../../src/context_projection.rs) | 20 | 635 | [Symbols and calls](src--context_projection.md) |
 | [crates/worker/src/continuation.rs](../../src/continuation.rs) | 11 | 288 | [Symbols and calls](src--continuation.md) |
 | [crates/worker/src/control_channel.rs](../../src/control_channel.rs) | 24 | 61 | [Symbols and calls](src--control_channel.md) |
 | [crates/worker/src/delivery.rs](../../src/delivery.rs) | 4 | 124 | [Symbols and calls](src--delivery.md) |
-| [crates/worker/src/identity.rs](../../src/identity.rs) | 8 | 131 | [Symbols and calls](src--identity.md) |
+| [crates/worker/src/identity.rs](../../src/identity.rs) | 12 | 164 | [Symbols and calls](src--identity.md) |
 | [crates/worker/src/ledger_events.rs](../../src/ledger_events.rs) | 12 | 115 | [Symbols and calls](src--ledger_events.md) |
 | [crates/worker/src/lifecycle_hooks.rs](../../src/lifecycle_hooks.rs) | 11 | 126 | [Symbols and calls](src--lifecycle_hooks.md) |
 | [crates/worker/src/live_tests.rs](../../src/live_tests.rs) | 17 | 795 | [Symbols and calls](src--live_tests.md) |

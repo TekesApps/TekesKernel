@@ -1472,6 +1472,7 @@ impl ProductionProcessHost {
                 workspace_id: Some(&claim.definition.workspace_id),
                 cwd: None,
                 identity_profile: None,
+                preset: None,
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: "schedule",
@@ -1535,7 +1536,7 @@ impl ProductionProcessHost {
             let folder = if active.is_dir() { active } else { archived };
             let ledger = folder.join("main.jsonl");
             let bytes = fs::read(&ledger).map_err(DaemonError::io)?;
-            let scan = scan_valid_prefix(&bytes, 1);
+            let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
             let projection = scan
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("scheduled session has no valid projection"))?;
@@ -2218,7 +2219,7 @@ impl ProductionProcessHost {
         let bytes = fs::read(path).map_err(DaemonError::io)?;
         // The identity is taken before the bytes: a write landing between the two changes the
         // identity, so the next tick rescans rather than trusting facts from a shorter file.
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         let Some(projection) = scan.projection else {
             self.sweep_scans
                 .lock()
@@ -3263,7 +3264,7 @@ impl ProductionProcessHost {
     fn first_root_input(&self, session_id: &str) -> Option<String> {
         let folder = self.root.join("threads").join(session_id);
         let bytes = fs::read(folder.join("main.jsonl")).ok()?;
-        let projection = scan_valid_prefix(&bytes, 1).projection?;
+        let projection = scan_valid_prefix(&bytes, schema::READER_VERSION).projection?;
         projection
             .events
             .iter()
@@ -3532,7 +3533,7 @@ impl ProductionProcessHost {
             .map_err(|error| format!("config snapshot: {error}"))?;
         let folder = self.root.join("threads").join(session_id);
         let bytes = fs::read(folder.join("main.jsonl")).map_err(|error| error.to_string())?;
-        let projection = scan_valid_prefix(&bytes, 1)
+        let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
             .projection
             .ok_or("session has no projection")?;
         let turn = projection
@@ -3730,7 +3731,7 @@ impl ProductionProcessHost {
         // grows with the thread, so concurrent folds of different threads (a cold List, the
         // upgrade pass) run in parallel and never hold up a live session's doorbell (E832 M2).
         let mut bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-        let mut scan = scan_valid_prefix(&bytes, 1);
+        let mut scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         // A complete line that does not validate (or a ledger with no valid genesis) is damage a
         // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
         // after the valid prefix -- is a partial append and only needs repair. The decision is
@@ -3748,7 +3749,7 @@ impl ProductionProcessHost {
                 DamageVerdict::Sound | DamageVerdict::Deferred => {
                     // Not damage (now): the new read is the truth.
                     bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-                    scan = scan_valid_prefix(&bytes, 1);
+                    scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
                 }
             }
         }
@@ -3936,7 +3937,7 @@ impl ProductionProcessHost {
         });
         if !cache_is_current {
             let bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
-            let projection = scan_valid_prefix(&bytes, 1)
+            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("active thread has no projection"))?;
             let journal = EndpointJournal::open(&folder)
@@ -4083,7 +4084,7 @@ impl ProductionProcessHost {
                 continue;
             }
             let bytes = fs::read(&path).map_err(DaemonError::io)?;
-            let projection = scan_valid_prefix(&bytes, 1)
+            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("child line has no projection"))?;
             let Some(genesis) = projection.events.first() else {
@@ -4110,7 +4111,7 @@ impl ProductionProcessHost {
             let key = format!("{session_id}:{}", request.child);
             self.propagate_parent_stop(parent_ledger, &path, &key, &request.child)?;
             let bytes = fs::read(&path).map_err(DaemonError::io)?;
-            let projection = scan_valid_prefix(&bytes, 1)
+            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("child line has no projection"))?;
             let facts = projection.lifecycle;
@@ -4153,7 +4154,7 @@ impl ProductionProcessHost {
         child_line: &str,
     ) -> Result<(), DaemonError> {
         let parent_bytes = fs::read(parent_ledger).map_err(DaemonError::io)?;
-        let parent = scan_valid_prefix(&parent_bytes, 1)
+        let parent = scan_valid_prefix(&parent_bytes, schema::READER_VERSION)
             .projection
             .ok_or_else(|| DaemonError::corrupt("parent line has no projection"))?;
         if !parent.lifecycle.stop_active {
@@ -4179,7 +4180,7 @@ impl ProductionProcessHost {
         .map_err(|error| DaemonError::protocol(error.to_string()))?;
 
         let child_bytes = fs::read(child_ledger).map_err(DaemonError::io)?;
-        let child = scan_valid_prefix(&child_bytes, 1)
+        let child = scan_valid_prefix(&child_bytes, schema::READER_VERSION)
             .projection
             .ok_or_else(|| DaemonError::corrupt("child line has no projection"))?;
         let child_generation = child
@@ -4217,7 +4218,8 @@ impl ProductionProcessHost {
                 .map_err(|error| DaemonError::protocol(error.message))?;
             return Ok(());
         }
-        let mut ledger = LockedLedger::open(child_ledger, 1).map_err(DaemonError::store)?;
+        let mut ledger =
+            LockedLedger::open(child_ledger, schema::READER_VERSION).map_err(DaemonError::store)?;
         let event = schema::Event::from_value(
             IJsonValue::parse(
                 &serde_json::to_vec(&serde_json::json!({
@@ -4252,7 +4254,7 @@ impl ProductionProcessHost {
             .parent()
             .ok_or_else(|| DaemonError::corrupt("parent ledger has no folder"))?;
         let bytes = fs::read(parent_ledger).map_err(DaemonError::io)?;
-        let projection = scan_valid_prefix(&bytes, 1)
+        let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
             .projection
             .ok_or_else(|| DaemonError::corrupt("parent line has no projection"))?;
         let completed_calls = projection
@@ -4282,7 +4284,7 @@ impl ProductionProcessHost {
                 return Err(DaemonError::corrupt("spawn child path is invalid"));
             }
             let child_bytes = fs::read(&child_ledger).map_err(DaemonError::io)?;
-            let child_projection = scan_valid_prefix(&child_bytes, 1)
+            let child_projection = scan_valid_prefix(&child_bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("child line has no projection"))?;
             let child_line = child_projection
@@ -4339,7 +4341,7 @@ impl ProductionProcessHost {
             }
             self.refresh_limits(ledger)?;
             let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-            let facts = scan_valid_prefix(&bytes, 1)
+            let facts = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?
                 .lifecycle;
@@ -4616,7 +4618,7 @@ fn validator_tool_launch_policy(
     instruction: &profile::InstructionSnapshot,
 ) -> Result<Option<tools::JobLaunchPolicy>, DaemonError> {
     let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-    let projection = scan_valid_prefix(&bytes, 1)
+    let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| DaemonError::corrupt("validator ledger has no projection"))?;
     if !projection
@@ -5533,7 +5535,7 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
 /// complete (LF-terminated) record after the valid prefix that does not validate. Returns the
 /// offset of the first invalid byte.
 fn ledger_damage(bytes: &[u8]) -> Option<u64> {
-    let scan = scan_valid_prefix(bytes, 1);
+    let scan = scan_valid_prefix(bytes, schema::READER_VERSION);
     let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
     (scan.projection.is_none()
         || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n'))))
@@ -5692,6 +5694,7 @@ impl ProductionProcessHost {
                 lifecycle: main.facts.clone(),
                 permission_mode: endpoint::permission_mode_of(&folder),
                 identity_profile: view.summary.identity_profile.clone(),
+                preset: view.summary.preset.clone(),
                 ephemeral: view.summary.ephemeral,
             });
         }
@@ -5724,7 +5727,9 @@ impl ProductionProcessHost {
             as_of_seq: 0,
             lifecycle: neutral_lifecycle(),
             permission_mode: endpoint::permission_mode_of(&folder),
+            preset: endpoint::genesis_preset_summary(&genesis),
             identity_profile: match genesis.string_field("identity_profile") {
+                None if endpoint::genesis_preset_summary(&genesis).is_some() => None,
                 None => Some("coding".to_owned()),
                 Some(profile @ ("coding" | "general")) => Some(profile.to_owned()),
                 _ => None,
@@ -5844,6 +5849,7 @@ impl ProductionProcessHost {
                         lifecycle: neutral_lifecycle(),
                         permission_mode: String::new(),
                         identity_profile: None,
+                        preset: None,
                         ephemeral: false,
                     });
                 }
@@ -6240,9 +6246,12 @@ fn unresolved_parent_dependency(
     child_path: &Path,
 ) -> Result<Option<String>, DaemonError> {
     let read = |path: &Path| -> Result<schema::LedgerProjection, DaemonError> {
-        scan_valid_prefix(&fs::read(path).map_err(DaemonError::io)?, 1)
-            .projection
-            .ok_or_else(|| DaemonError::corrupt("dependency ledger has no genesis"))
+        scan_valid_prefix(
+            &fs::read(path).map_err(DaemonError::io)?,
+            schema::READER_VERSION,
+        )
+        .projection
+        .ok_or_else(|| DaemonError::corrupt("dependency ledger has no genesis"))
     };
     let child = read(child_path)?;
     let genesis = child
@@ -6424,7 +6433,7 @@ fn session_workspace_binding(ledger: &Path) -> Result<(String, Option<String>), 
 
 fn ledger_needs_worker(ledger: &Path) -> Result<bool, DaemonError> {
     let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-    let facts = scan_valid_prefix(&bytes, 1)
+    let facts = scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?
         .lifecycle;
@@ -6464,7 +6473,7 @@ fn goal_continuation_due(ledger: &Path) -> Result<bool, DaemonError> {
         return Ok(false);
     }
     let bytes = fs::read(ledger).map_err(DaemonError::io)?;
-    let projection = scan_valid_prefix(&bytes, 1)
+    let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| DaemonError::corrupt("goal ledger has no projection"))?;
     let facts = &projection.lifecycle;
@@ -6593,7 +6602,7 @@ fn read_worker_hello(
 fn next_stop_generation(root: &Path, session_id: &str) -> Result<u64, ProductionRouteFailure> {
     let ledger = root.join("threads").join(session_id).join("main.jsonl");
     let bytes = fs::read(&ledger).map_err(internal)?;
-    let projection = scan_valid_prefix(&bytes, 1)
+    let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| internal("worker ledger has no projection"))?;
     Ok(projection
@@ -7031,7 +7040,8 @@ mod tests {
             .expect("system asset");
         {
             let mut ledger =
-                store::LockedLedger::open(folder.join("main.jsonl"), 1).expect("ledger");
+                store::LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)
+                    .expect("ledger");
             for value in [
                 json!({"v":1,"seq":2,"kind":"input","ts":"2026-09-05T00:00:01.000Z","content":[{"type":"text","text":"PRE"}],"origin_key":"input-1","origin_tuple":{"principal":"user","client":"test","target":session,"op":"prompt","key":"input-1"}}),
                 json!({"v":1,"seq":3,"turn":1,"kind":"turn_open","ts":"2026-09-05T00:00:01.000Z","trigger":{"inputs":[2]}}),
@@ -7098,7 +7108,8 @@ mod tests {
             "a repeated origin appends nothing"
         );
         // The reopened ledger is valid and its next epoch reason will be compaction.
-        let projection = schema::validate_ledger(ledger.as_bytes(), 1).expect("valid ledger");
+        let projection = schema::validate_ledger(ledger.as_bytes(), schema::READER_VERSION)
+            .expect("valid ledger");
         assert!(
             projection
                 .events
@@ -8034,7 +8045,8 @@ mod tests {
         assert!(!items[0].running);
         assert_eq!(items[0].tail, "settled");
 
-        let held = LockedLedger::open(folder.join("main.jsonl"), 1).expect("hold the line lock");
+        let held = LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)
+            .expect("hold the line lock");
         host.publish_session_status(session);
         let endpoint::SessionSyncFrame::InventoryUpsert {
             session: summary, ..
@@ -8684,9 +8696,10 @@ mod tests {
             .join("threads")
             .join(&session)
             .join("main.jsonl");
-        let projection = store::scan_valid_prefix(&fs::read(ledger).expect("ledger"), 1)
-            .projection
-            .expect("valid projection");
+        let projection =
+            store::scan_valid_prefix(&fs::read(ledger).expect("ledger"), schema::READER_VERSION)
+                .projection
+                .expect("valid projection");
         assert_eq!(projection.events.len(), 3);
         assert_eq!(projection.events[0].kind(), &EventKind::Genesis);
         assert_eq!(projection.events[1].kind(), &EventKind::Input);
@@ -8924,7 +8937,8 @@ mod tests {
         let ledger = folder.join("main.jsonl");
         write_test_genesis(&ledger, session);
         append_test_input(&ledger, session);
-        let holder = LockedLedger::open(&ledger, 1).expect("legacy holder lock");
+        let holder =
+            LockedLedger::open(&ledger, schema::READER_VERSION).expect("legacy holder lock");
         let host = ProductionProcessHost::open(
             root.path(),
             &bin,
@@ -9632,7 +9646,7 @@ mod tests {
 
         for ledger in [&main, &child_ledger, &grandchild_ledger] {
             let bytes = fs::read(ledger).expect("descendant ledger");
-            let projection = scan_valid_prefix(&bytes, 1)
+            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .expect("descendant projection");
             assert!(
@@ -9736,7 +9750,7 @@ mod tests {
 
         for ledger in [&main, &child_ledger, &grandchild_ledger] {
             let bytes = fs::read(ledger).expect("descendant ledger");
-            let projection = scan_valid_prefix(&bytes, 1)
+            let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .expect("descendant projection");
             assert_eq!(
@@ -9993,7 +10007,7 @@ mod tests {
         )
         .unwrap();
         host.shutdown();
-        let ledger = LockedLedger::open(&path, 1).unwrap();
+        let ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         let rows = &ledger.projection().unwrap().events;
         assert_eq!(
             rows.iter()
@@ -10071,7 +10085,7 @@ mod tests {
             }
             fs::write(&path, bytes).unwrap();
             if boundary != "output" {
-                let mut ledger = store::LockedLedger::open(&path, 1).unwrap();
+                let mut ledger = store::LockedLedger::open(&path, schema::READER_VERSION).unwrap();
                 let mut binding = engine::ValidationBinding {
                     thread: session.into(),
                     worker: session.into(),
@@ -10102,7 +10116,7 @@ mod tests {
                 }
             }
             if queued {
-                let mut ledger = store::LockedLedger::open(&path, 1).unwrap();
+                let mut ledger = store::LockedLedger::open(&path, schema::READER_VERSION).unwrap();
                 let raw = json!({"v":1,"seq":ledger.next_seq(),"kind":"input","ts":"2026-08-28T00:00:05.000Z",
                 "content":[{"type":"text","text":"重试"}],"origin_key":"queued-second",
                 "origin_tuple":{"principal":"test","client":"test","target":session,"op":"submit","key":"queued-second"}});
@@ -11364,7 +11378,7 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let session = "018f0000-0000-7000-8000-0000000000a6";
         let (host, streams, ledger) = held_host(root.path(), session, "");
-        let stale = scan_valid_prefix(&fs::read(&ledger).expect("ledger"), 1)
+        let stale = scan_valid_prefix(&fs::read(&ledger).expect("ledger"), schema::READER_VERSION)
             .projection
             .expect("stale projection");
         assert_eq!(stale.last_seq, 9);
@@ -11567,7 +11581,7 @@ mod tests {
             bytes.extend_from_slice(&event.canonical_bytes().expect("canonical event"));
             bytes.push(b'\n');
         }
-        schema::validate_ledger(&bytes, 1).expect("test ledger validates");
+        schema::validate_ledger(&bytes, schema::READER_VERSION).expect("test ledger validates");
         fs::write(path, bytes).expect("test ledger");
     }
 
@@ -11637,7 +11651,7 @@ mod tests {
             bytes.extend_from_slice(&event.canonical_bytes().expect("canonical event"));
             bytes.push(b'\n');
         }
-        schema::validate_ledger(&bytes, 1).expect("grown ledger validates");
+        schema::validate_ledger(&bytes, schema::READER_VERSION).expect("grown ledger validates");
         fs::write(path, bytes).expect("grown ledger");
     }
 
@@ -11825,7 +11839,8 @@ mod tests {
         )
         .expect("ephemeral ledger");
         let (host, _streams) = open_host(root.path());
-        let holder = store::LockedLedger::open(ledger.clone(), 1).expect("a lock holder");
+        let holder = store::LockedLedger::open(ledger.clone(), schema::READER_VERSION)
+            .expect("a lock holder");
         host.cleanup_stale_ephemeral();
         assert_eq!(host.stale_ephemeral_busy.load(Ordering::Acquire), 1);
         assert!(folder.exists(), "a busy scratch thread is left alone");

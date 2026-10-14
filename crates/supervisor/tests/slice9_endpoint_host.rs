@@ -491,6 +491,98 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
 }
 
 #[test]
+fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
+    let root = tempfile::tempdir().expect("root");
+    let project = root.path().join("project");
+    std::fs::create_dir(&project).expect("project directory");
+    let assembly = ProductionEndpointAssembly::open_with_clock(
+        root.path(),
+        description(),
+        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
+    )
+    .expect("assembly");
+    let created_workspace = block_on_ready(assembly.dispatch(request(
+        "rpc-create-workspace-for-preset",
+        "workspace.create",
+        &format!(
+            r#"{{"path":{}}}"#,
+            serde_json::to_string(project.to_str().unwrap()).unwrap()
+        ),
+    )))
+    .expect("workspace create");
+    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
+        .as_str()
+        .expect("workspace id")
+        .to_owned();
+    let error = |rpc: &str, payload: String| {
+        let response = block_on_ready(assembly.dispatch(request(rpc, "session.create", &payload)))
+            .expect("response");
+        let error = response.result.error.expect("error");
+        let details: Value =
+            serde_json::from_slice(&error.details.canonical_bytes().unwrap()).unwrap();
+        (error.code, details)
+    };
+    let (code, _) = error(
+        "rpc-preset-and-profile",
+        format!(r#"{{"workspaceId":"{workspace_id}","identityProfile":"coding","preset":{{}}}}"#),
+    );
+    assert_eq!(code, "bad-request");
+    let (code, details) = error(
+        "rpc-preset-unknown-layer",
+        format!(
+            r#"{{"workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"video"}}]}}}}"#
+        ),
+    );
+    assert_eq!(code, "preset-invalid");
+    assert_eq!(
+        details,
+        serde_json::json!({"reason":"unknown-kernel-layer","layer":"video","field":"preset.layers[0].id"})
+    );
+    let (code, details) = error(
+        "rpc-preset-mcp-definition",
+        format!(
+            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"pdf","env":{{"K":"v"}}}}]}}}}"#
+        ),
+    );
+    assert_eq!(code, "preset-invalid");
+    assert_eq!(details["reason"], "secret-in-preset");
+    assert!(!root.path().join("threads").join(SESSION).exists());
+
+    let created = block_on_ready(assembly.dispatch(request(
+        "rpc-preset-create",
+        "session.create",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer the DXF tools."}}]}}}}"#
+        ),
+    )))
+    .expect("session create");
+    assert_eq!(value(&created), serde_json::json!({"sessionId":SESSION}));
+    let ledger =
+        std::fs::read_to_string(root.path().join("threads").join(SESSION).join("main.jsonl"))
+            .expect("session ledger");
+    let genesis: Value = serde_json::from_str(ledger.lines().next().unwrap()).expect("genesis");
+    assert!(genesis.get("identity_profile").is_none());
+    assert_eq!(genesis["min_reader"], 2);
+    assert_eq!(genesis["preset"]["base"], "general");
+    let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("genesis preset");
+    assert!(
+        preset
+            .render("m", None, "")
+            .ends_with("Prefer the DXF tools.")
+    );
+    let inventory = endpoint::NativeEndpoint::open(root.path())
+        .expect("inventory endpoint")
+        .list_sessions(&std::collections::HashSet::new())
+        .expect("inventory");
+    let item = inventory
+        .iter()
+        .find(|item| item.session_id == SESSION)
+        .unwrap();
+    assert_eq!(item.identity_profile, None);
+    assert_eq!(item.preset, Some(preset.summary()));
+}
+
+#[test]
 fn secondary_folder_session_binding_survives_create_and_path_move() {
     let root = tempfile::tempdir().expect("root");
     let first = root.path().join("project-primary");
@@ -907,7 +999,7 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
             .extend_from_slice(&serde_json_canonicalizer::to_vec(&event).expect("canonical event"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("running ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("running ledger");
     std::fs::write(&ledger, &bytes).expect("running ledger write");
     let selected_during_turn = block_on_ready(assembly.dispatch(request(
         "rpc-model-select-during-turn",
@@ -928,7 +1020,7 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
         .expect("canonical settle"),
     );
     bytes.push(b'\n');
-    schema::validate_ledger(&bytes, 1).expect("settled ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("settled ledger");
     std::fs::write(&ledger, bytes).expect("settled ledger write");
 
     let before = block_on_ready(assembly.dispatch(request(
@@ -1351,7 +1443,7 @@ fn append_turn(root: &std::path::Path, session: &str, first_seq: u64, settled: b
         bytes.extend_from_slice(&serde_json_canonicalizer::to_vec(event).expect("canonical event"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("valid ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("valid ledger");
     std::fs::write(&ledger, &bytes).expect("ledger write");
     first_seq + events.len() as u64
 }
@@ -1408,7 +1500,8 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
     let genesis: Value = serde_json::from_str(genesis.lines().next().expect("genesis")).unwrap();
     assert_eq!(genesis["ephemeral"], Value::Bool(true));
     let copied = std::fs::read(folder.join("main.jsonl")).expect("forked ledger");
-    let projection = schema::validate_ledger(&copied, 1).expect("forked ledger validates");
+    let projection =
+        schema::validate_ledger(&copied, schema::READER_VERSION).expect("forked ledger validates");
     assert_eq!(
         projection.lifecycle.latest_turn,
         Some(1),

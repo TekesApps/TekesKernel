@@ -260,16 +260,15 @@ fn run_provider_turn_inner(
     ))?;
     let tools_digest = format!("{:x}", Sha256::digest(tool_catalog.canonical_bytes()?));
     let consumed = current_turn_inputs(ledger, turn)?;
-    // The root prompt is the runtime-owned identity, profile text and working
-    // directory followed by the AGENTS.md scopes (spec builtin-tools
-    // §Model-facing tool guidance). The validator
+    // The root prompt is the runtime-owned identity, the session preset's text
+    // and working directory followed by the AGENTS.md scopes (spec
+    // builtin-tools §Model-facing tool guidance). The validator
     // keeps its own judge prompt.
     let system = if profile.validator {
         validation_runtime::JUDGE_SYSTEM.to_owned()
     } else {
-        let identity = identity::resolve(ledger, &options.event_timestamp(), turn)?;
-        let root = tools::root_system_instructions(
-            identity,
+        let preset = identity::resolve_preset(ledger, &options.event_timestamp(), turn)?;
+        let root = preset.render(
             resolved_profile.wire_model(),
             profile.config.execution_cwd(),
             &effective_system(&profile.instruction),

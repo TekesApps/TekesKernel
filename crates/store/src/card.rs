@@ -97,6 +97,9 @@ pub struct CardSummary {
     pub updated_ms: u64,
     pub title: Option<String>,
     pub identity_profile: Option<String>,
+    /// Summary of a genesis preset (`{base, layers, digest}`), when present.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preset: Option<serde_json::Value>,
     pub ephemeral: bool,
     pub blank: bool,
 }

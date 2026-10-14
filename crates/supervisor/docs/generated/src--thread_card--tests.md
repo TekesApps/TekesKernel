@@ -89,7 +89,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `doorbells_inside_the_window_converge_to_the_newest_state_without_preparing` | `folder.clone` | [88](../../src/thread_card/tests.rs#L88) | receiver-type-required |
 | `doorbells_inside_the_window_converge_to_the_newest_state_without_preparing` | `writer.shutdown` | [91](../../src/thread_card/tests.rs#L91) | receiver-type-required |
 | `doorbells_inside_the_window_converge_to_the_newest_state_without_preparing` | `store::card::read_card(&folder).expect` | [92](../../src/thread_card/tests.rs#L92) | receiver-type-required |
-| `doorbells_inside_the_window_converge_to_the_newest_state_without_preparing` | `store::card::read_card` | [92](../../src/thread_card/tests.rs#L92) | [store::card::read_card](../../../store/src/card.rs#L172) |
+| `doorbells_inside_the_window_converge_to_the_newest_state_without_preparing` | `store::card::read_card` | [92](../../src/thread_card/tests.rs#L92) | [store::card::read_card](../../../store/src/card.rs#L175) |
 | `writes_are_paced_to_the_global_cap` | `Arc::new` | [105](../../src/thread_card/tests.rs#L105), [110](../../src/thread_card/tests.rs#L110), [111](../../src/thread_card/tests.rs#L111) | external-constructor-callback-or-unresolved |
 | `writes_are_paced_to_the_global_cap` | `Mutex::new` | [105](../../src/thread_card/tests.rs#L105) | external-constructor-callback-or-unresolved |
 | `writes_are_paced_to_the_global_cap` | `Vec::<Instant>::new` | [105](../../src/thread_card/tests.rs#L105) | external-constructor-callback-or-unresolved |
@@ -137,7 +137,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `children_are_folded_on_the_writer_thread_not_by_prepare` | `writer.submit` | [183](../../src/thread_card/tests.rs#L183) | receiver-type-required |
 | `children_are_folded_on_the_writer_thread_not_by_prepare` | `writer.shutdown` | [184](../../src/thread_card/tests.rs#L184) | receiver-type-required |
 | `children_are_folded_on_the_writer_thread_not_by_prepare` | `store::card::read_card(&folder).expect` | [185](../../src/thread_card/tests.rs#L185) | receiver-type-required |
-| `children_are_folded_on_the_writer_thread_not_by_prepare` | `store::card::read_card` | [185](../../src/thread_card/tests.rs#L185) | [store::card::read_card](../../../store/src/card.rs#L172) |
+| `children_are_folded_on_the_writer_thread_not_by_prepare` | `store::card::read_card` | [185](../../src/thread_card/tests.rs#L185) | [store::card::read_card](../../../store/src/card.rs#L175) |
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `folder_with` | [197](../../src/thread_card/tests.rs#L197) | [tekes-supervisor::thread_card::tests::folder_with](../../src/thread_card/tests.rs#L18) |
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `folder.join` | [198](../../src/thread_card/tests.rs#L198) | receiver-type-required |
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `std::fs::read(&ledger).unwrap` | [199](../../src/thread_card/tests.rs#L199) | receiver-type-required |
@@ -161,7 +161,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `Duration::from_secs` | [215](../../src/thread_card/tests.rs#L215) | external-constructor-callback-or-unresolved |
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `writer.shutdown` | [218](../../src/thread_card/tests.rs#L218) | receiver-type-required |
 | `a_torn_refold_is_retried_until_the_tail_is_whole` | `store::card::read_card(&folder).expect` | [219](../../src/thread_card/tests.rs#L219) | receiver-type-required |
-| `a_torn_refold_is_retried_until_the_tail_is_whole` | `store::card::read_card` | [219](../../src/thread_card/tests.rs#L219) | [store::card::read_card](../../../store/src/card.rs#L172) |
+| `a_torn_refold_is_retried_until_the_tail_is_whole` | `store::card::read_card` | [219](../../src/thread_card/tests.rs#L219) | [store::card::read_card](../../../store/src/card.rs#L175) |
 | `one_governor_counts_fsyncs_for_the_writer_and_the_hydrator` | `SyncGovernor::new` | [226](../../src/thread_card/tests.rs#L226), [238](../../src/thread_card/tests.rs#L238) | external-constructor-callback-or-unresolved |
 | `one_governor_counts_fsyncs_for_the_writer_and_the_hydrator` | `governor.charge` | [228](../../src/thread_card/tests.rs#L228), [231](../../src/thread_card/tests.rs#L231), [235](../../src/thread_card/tests.rs#L235) | receiver-type-required |
 | `one_governor_counts_fsyncs_for_the_writer_and_the_hydrator` | `governor.delay` | [229](../../src/thread_card/tests.rs#L229) | receiver-type-required |

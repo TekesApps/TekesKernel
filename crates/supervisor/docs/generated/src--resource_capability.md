@@ -315,7 +315,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_extension_payload` | `bad_request` | [310](../../src/resource_capability.rs#L310) | [tekes-supervisor::resource_capability::bad_request](../../src/resource_capability.rs#L672) |
 | `extension_failure_is_exact` | `base_failure_is_exact` | [320](../../src/resource_capability.rs#L320), [322](../../src/resource_capability.rs#L322) | [tekes-supervisor::resource_capability::base_failure_is_exact](../../src/resource_capability.rs#L651) |
 | `extension_failure_is_exact` | `resource_failure_is_exact` | [323](../../src/resource_capability.rs#L323) | [tekes-supervisor::resource_capability::resource_failure_is_exact](../../src/resource_capability.rs#L628) |
-| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1878) |
+| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1885) |
 | `execute` | `request.operation.as_str` | [333](../../src/resource_capability.rs#L333) | receiver-type-required |
 | `execute` | `encode_result` | [334](../../src/resource_capability.rs#L334), [335](../../src/resource_capability.rs#L335), [352](../../src/resource_capability.rs#L352) | [tekes-supervisor::resource_capability::encode_result](../../src/resource_capability.rs#L593) |
 | `execute` | `self.skills_list` | [334](../../src/resource_capability.rs#L334) | receiver-type-required |

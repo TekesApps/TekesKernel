@@ -10,13 +10,16 @@ where it lives, and why it is there. The exact contract is
 
 ## Order
 
-`tools::root_system_instructions` ([guidance.rs](../../crates/tools/src/guidance.rs))
-joins the sections with blank lines, in this order:
+`ResolvedPreset::render` ([preset.rs](../../crates/tools/src/preset.rs)) joins the
+sections with blank lines, in this order. A session without a genesis preset
+renders its identity profile as the equivalent preset (general base, plus the
+`coding` layer for coding), which is byte-for-byte the same text as
+`tools::root_system_instructions`.
 
 | Order | Text | Kind | Source |
 |---|---|---|---|
 | 1 | `You are an AI agent powered by Tekes Kernel.` | Shared | constant `HARNESS_IDENTITY` in `guidance.rs` |
-| 2 | Profile text: identity line, general rules, then the profile's own rules; `{model}` replaced by the request's wire model id | Per profile | [`crates/tools/prompts/`](../../crates/tools/prompts/) |
+| 2 | Preset text: the chosen identity line, the base rules, then each layer's duty; `{model}` replaced by the request's wire model id | Per session preset | [`crates/tools/prompts/`](../../crates/tools/prompts/), inline layers from `session.create {preset}` |
 | 3 | `Your working directory is {cwd}.` (only when a cwd is bound) | Shared | constant `WORKING_DIRECTORY` in `guidance.rs` |
 | 4 | The instruction snapshot's `AGENTS.md` scopes, trimmed, when nonempty | User and project | workspace files |
 | 5 | Subagent delivery sentence, or the active session goal | Appended by the worker when applicable | [worker](../../crates/worker/src/main.rs) |
@@ -86,6 +89,16 @@ on deepseek-flash this cut the cost of a non-coding general session by 27%
 | Project rules | `AGENTS.md` (section 4 above) | Owned by the user and the project |
 | Automatic title prompt | `AUTOMATIC_THREAD_TITLE_SYSTEM` in [process_host.rs](../../crates/supervisor/src/process_host.rs) | Separate request; reasoning is always disabled (`reasoning_disabled`) and output is capped (`title_max_output_tokens` = 64) |
 | Validator prompt | `JUDGE_SYSTEM` (validation runtime) | Separate request with its own judge prompt |
+
+## Session presets
+
+A client can open a session with an explicit preset: the workspace's base
+(`general` or `blank`) plus ordered layers, either Kernel layers such as
+`coding` or inline layers with their own identity line and duty text. An
+inline identity is the primary role and wins over the coding identity; the base
+rules always stay. `session.presets.resolve` returns the exact text a preset
+renders to before any session exists. Contract:
+[session-endpoint § Session presets](../../spec/session-endpoint.md#session-presets).
 
 ## Profile selection
 

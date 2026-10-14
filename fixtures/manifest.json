@@ -634,7 +634,8 @@
    "builtin-tool-schemas.canonical.json",
    "builtin-tools.canonical.json",
    "builtin-tools.digest.canonical.json",
-   "first-party-tools.canonical.json"
+   "first-party-tools.canonical.json",
+   "session-preset-render.canonical.json"
   ],
   "torn": [
    "EXPECTED.md",

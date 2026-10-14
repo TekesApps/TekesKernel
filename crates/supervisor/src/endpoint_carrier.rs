@@ -2767,6 +2767,7 @@ fn inventory_row(
         projections,
         permission_mode: Some(session.permission_mode),
         identity_profile: session.identity_profile,
+        preset: session.preset,
     })
 }
 
@@ -2805,7 +2806,7 @@ fn semantic_line_projection_mode(
         return Err(internal("actionable ledger must be a regular file"));
     }
     let bytes = fs::read(path).map_err(internal)?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     if scan.needs_repair() && !tolerant {
         return Err(HostFailure::Internal(
             "respond semantic ledger requires tail recovery".to_owned(),
@@ -3281,7 +3282,7 @@ mod question_cancellation_tests {
                 bytes.extend(serde_json_canonicalizer::to_vec(&event).expect("canonical"));
                 bytes.push(b'\n');
             }
-            schema::validate_ledger(&bytes, 1).expect("valid ledger")
+            schema::validate_ledger(&bytes, schema::READER_VERSION).expect("valid ledger")
         };
         let cancelled = ledger(
             json!({"v":1,"turn":1,"kind":"approval_response","ts":ts,"call":"c1","grant":false,"origin_key":"r/response","origin_tuple":{"principal":"p","client":"endpoint","target":thread,"op":"respond","key":"r/response"}}),

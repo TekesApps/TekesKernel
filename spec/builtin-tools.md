@@ -199,6 +199,10 @@ owned and composed per request, in this order, joined by blank lines:
      by the {model} model.`), then the general rules.
 
    The identity line stays first. The profile is frozen in session genesis.
+   A session with a genesis preset renders that preset instead: the chosen
+   identity line, the base rules, then each layer's duty
+   ([session-endpoint § Session presets](session-endpoint.md#session-presets));
+   the identity-profile sugar renders identically to the profile text.
 3. `Your working directory is {cwd}.` with the execution cwd, when one is
    bound.
 4. The instruction snapshot's `AGENTS.md` scopes, trimmed, when nonempty.

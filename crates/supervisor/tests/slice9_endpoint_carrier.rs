@@ -576,7 +576,9 @@ fn production_create_history_then_stream_append_is_durable_and_live() {
     // doorbell path does.
     let folder = root.path().join("threads").join(SESSION);
     {
-        let mut ledger = store::LockedLedger::open(folder.join("main.jsonl"), 1).expect("ledger");
+        let mut ledger =
+            store::LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)
+                .expect("ledger");
         let input_seq = ledger.next_seq() - 1;
         for line in [
             format!(
@@ -596,7 +598,8 @@ fn production_create_history_then_stream_append_is_durable_and_live() {
     }
     let journal = EndpointJournal::open(&folder).expect("endpoint journal");
     let ledger = std::fs::read(folder.join("main.jsonl")).expect("ledger bytes");
-    let projection = schema::validate_ledger(&ledger, 1).expect("held session ledger");
+    let projection =
+        schema::validate_ledger(&ledger, schema::READER_VERSION).expect("held session ledger");
     let mut projected = endpoint::Projector::default()
         .reconcile(&projection.events, &journal)
         .expect("project held session");

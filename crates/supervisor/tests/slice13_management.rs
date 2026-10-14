@@ -21,8 +21,8 @@ use tekes_supervisor::client_admin::{WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
     HOST_FILE_METHODS, INITIAL_PRESET_METHODS, PLUGIN_METHODS, RECOVERY_METHODS, RESOURCE_METHODS,
-    SCHEDULE_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS, THREAD_SEARCH_METHODS, TOOL_METHODS,
-    USAGE_METHODS,
+    SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS,
+    THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS,
 };
 use tekes_supervisor::endpoint_host::TEKES_UNARY_ROUTES;
 use tekes_supervisor::host_runtime::assemble_application_endpoint_host;
@@ -79,6 +79,7 @@ async fn slice13_gate_91_production_assembly_mounts_and_executes_management() {
             [
                 RESOURCE_METHODS.as_slice(),
                 INITIAL_PRESET_METHODS.as_slice(),
+                SESSION_PRESET_METHODS.as_slice(),
                 RECOVERY_METHODS.as_slice(),
                 ATTACHMENT_METHODS.as_slice(),
                 APPROVAL_METHODS.as_slice(),

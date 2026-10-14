@@ -206,8 +206,11 @@ fn handshake_precedes_lock_and_runnable_input_opens_turn() {
         .as_bytes()
     );
 
-    let projection = validate_ledger(&fs::read(&ledger).expect("worker ledger"), 1)
-        .expect("worker append validates");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("worker ledger"),
+        schema::READER_VERSION,
+    )
+    .expect("worker append validates");
     assert!(matches!(projection.events[9].kind(), EventKind::RunStart));
     assert!(matches!(projection.events[10].kind(), EventKind::TurnOpen));
     assert_eq!(projection.events[10].turn(), Some(2));
@@ -313,8 +316,11 @@ fn queue_transaction_startup_runs_before_ordinary_turn_work() {
         WorkerMessage::Appended(appended) if appended.seq == 5
     ));
     assert!(lines.next().is_none());
-    let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-        .expect("queue transaction ledger");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("queue transaction ledger");
     assert_eq!(projection.events.len(), 5);
     assert!(matches!(projection.events[2].kind(), EventKind::RunStart));
     assert!(matches!(projection.events[3].kind(), EventKind::QueueEdit));
@@ -383,8 +389,11 @@ fn post_turn_worker_drains_reached_deliveries_then_exits() {
         .read_to_string(&mut stdout)
         .expect("worker stdout");
     assert!(stdout.starts_with("{\"hello\":{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}\n"));
-    let projection =
-        validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1).expect("ledger validates");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("ledger validates");
     assert!(matches!(projection.events[10].kind(), EventKind::TurnOpen));
     let late_appended = projection
         .events
@@ -541,8 +550,11 @@ fn supervisor_passes_immutable_profile_descriptors() {
         "{}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-        .expect("profile-attributed ledger");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("profile-attributed ledger");
     let run_start = &projection.events[9];
     assert!(matches!(run_start.kind(), EventKind::RunStart));
     assert_eq!(
@@ -816,7 +828,8 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
         protocol.push(line.clone());
         if line.contains("\"lease_request\"") {
             assert!(commentary, "unexpected extra response");
-            let projection = validate_ledger(&fs::read(&ledger).unwrap(), 1).unwrap();
+            let projection =
+                validate_ledger(&fs::read(&ledger).unwrap(), schema::READER_VERSION).unwrap();
             assert!(
                 !projection
                     .events
@@ -838,7 +851,8 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
             saw_attempt_settled = true;
         }
         if line.contains("\"appended\"") {
-            let state = validate_ledger(&fs::read(&ledger).unwrap(), 1).unwrap();
+            let state =
+                validate_ledger(&fs::read(&ledger).unwrap(), schema::READER_VERSION).unwrap();
             if state
                 .events
                 .last()
@@ -866,7 +880,7 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
         protocol.last().is_some_and(|line| line.contains(&format!(
             "\"appended\":{{\"seq\":{}}}",
             if manual {
-                validate_ledger(&fs::read(&ledger).unwrap(), 1)
+                validate_ledger(&fs::read(&ledger).unwrap(), schema::READER_VERSION)
                     .unwrap()
                     .last_seq
             } else if commentary {
@@ -877,8 +891,11 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
         ))),
         "the post-turn doorbell must cover the final settle: {protocol:?}"
     );
-    let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-        .expect("provider ledger validates");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("provider ledger validates");
     if manual {
         server.join().unwrap();
         let requests = captured.lock().unwrap();
@@ -930,7 +947,10 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
                 .any(|line| line.contains("\"delivery\":\"manual-live\"")
                     && line.contains("\"receipt\""))
         );
-        drop(store::LockedLedger::open(&ledger, 1).expect("exited worker released its line lock"));
+        drop(
+            store::LockedLedger::open(&ledger, schema::READER_VERSION)
+                .expect("exited worker released its line lock"),
+        );
         launched
             .credential_broker
             .take()
@@ -1213,8 +1233,11 @@ fn slice7_ordinary_recovery_closes_old_attempt_before_resend() {
     drop(launched.child.stdin.take());
     assert!(launched.child.wait().expect("worker exit").success());
     server.join().expect("join provider");
-    let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-        .expect("ordinary recovery ledger validates");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("ordinary recovery ledger validates");
     let old_error = projection
         .events
         .iter()
@@ -1291,8 +1314,11 @@ fn slice7_provider_reconcile_closes_unpaired_attempt() {
             "{}",
             String::from_utf8_lossy(&output.stdout)
         );
-        let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-            .expect("recovery ledger validates");
+        let projection = validate_ledger(
+            &fs::read(&ledger).expect("ledger bytes"),
+            schema::READER_VERSION,
+        )
+        .expect("recovery ledger validates");
         let recovery = projection
             .events
             .iter()
@@ -1375,8 +1401,11 @@ fn slice7_provider_reconcile_completes_adopt_from_asset_only() {
         String::from_utf8_lossy(&output.stderr)
     );
     assert!(String::from_utf8_lossy(&output.stdout).contains("\"attempt_settled\""));
-    let projection = validate_ledger(&fs::read(&ledger).expect("ledger bytes"), 1)
-        .expect("adopt ledger validates");
+    let projection = validate_ledger(
+        &fs::read(&ledger).expect("ledger bytes"),
+        schema::READER_VERSION,
+    )
+    .expect("adopt ledger validates");
     let appended = projection.events.iter().skip(8).collect::<Vec<_>>();
     assert_eq!(
         appended
@@ -1480,7 +1509,7 @@ fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
         bytes.push(b'\n');
         let mut bytes = String::from_utf8(bytes)
             .unwrap()
-            .replace(&format!("\"{gate}\":1"), &format!("\"{gate}\":2"))
+            .replace(&format!("\"{gate}\":1"), &format!("\"{gate}\":3"))
             .into_bytes();
         bytes.extend_from_slice(b"unrecognized-new-format-tail");
         fs::write(&ledger, &bytes).expect("ledger");
@@ -1768,7 +1797,7 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
     assert_eq!(control.call_id, "call-eager-kill");
     assert_eq!(control.name, "context_get");
     let first_attempt = first_attempt.expect("lease was requested");
-    let before_kill = validate_ledger(&fs::read(&ledger).unwrap(), 1)
+    let before_kill = validate_ledger(&fs::read(&ledger).unwrap(), schema::READER_VERSION)
         .expect("ledger validates at the kill point");
     assert!(
         before_kill
@@ -1875,7 +1904,8 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
         bytes.starts_with(&killed_bytes),
         "recovery preserves every byte written before the kill"
     );
-    let projection = validate_ledger(&bytes, 1).expect("recovered ledger validates");
+    let projection =
+        validate_ledger(&bytes, schema::READER_VERSION).expect("recovered ledger validates");
     let events = &projection.events;
     assert_eq!(
         events

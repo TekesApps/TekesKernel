@@ -764,11 +764,11 @@ fn read_source_ledgers(folder: &Path) -> Result<BTreeMap<String, Vec<u8>>, Store
             continue;
         }
         let bytes = fs::read(entry.path())?;
-        let projection = validate_ledger(&bytes, 1)?;
+        let projection = validate_ledger(&bytes, schema::READER_VERSION)?;
         if projection.last_seq == 0 {
             return Err(StoreError::Corruption("empty rewrite ledger".to_owned()));
         }
-        crate::tail::check_write_versions(&projection.events, 1)?;
+        crate::tail::check_write_versions(&projection.events, schema::READER_VERSION)?;
         ledgers.insert(name, bytes);
     }
     if !ledgers.contains_key("main.jsonl") {
@@ -856,7 +856,8 @@ fn encoded_prefix(events: &[Event], anchor: u64) -> Result<Vec<u8>, StoreError> 
         bytes.extend_from_slice(&event.canonical_bytes()?);
         bytes.push(b'\n');
     }
-    validate_ledger(&bytes, 1).map_err(|_| StoreError::InvalidForkAnchor(anchor))?;
+    validate_ledger(&bytes, schema::READER_VERSION)
+        .map_err(|_| StoreError::InvalidForkAnchor(anchor))?;
     Ok(bytes)
 }
 
@@ -866,7 +867,7 @@ fn validate_terminal_source(ledgers: &BTreeMap<String, Vec<u8>>) -> Result<(), S
         .map(|(name, bytes)| Ok((name.clone(), decode_events(bytes)?)))
         .collect::<Result<BTreeMap<_, _>, StoreError>>()?;
     for (name, bytes) in ledgers {
-        let projection = validate_ledger(bytes, 1)?;
+        let projection = validate_ledger(bytes, schema::READER_VERSION)?;
         let Some(turn) = projection.lifecycle.latest_turn else {
             if name != "main.jsonl" {
                 return Err(StoreError::RewriteSourceNotTerminal(format!(
@@ -1574,7 +1575,7 @@ fn project_file(
             materialize_epoch(epoch, next_seq, operation, source_file)?,
         )?;
     }
-    validate_ledger(&out, 1)?;
+    validate_ledger(&out, schema::READER_VERSION)?;
     Ok(BuiltFile {
         bytes: out,
         seq_map,
@@ -1626,6 +1627,15 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
     }
     if let Some(identity) = object.get("identity_profile") {
         target.insert("identity_profile".to_owned(), identity.clone());
+    }
+    // A preset genesis needs reader 2 whatever the copied minima say.
+    if let Some(preset) = object.get("preset") {
+        target.insert("preset".to_owned(), preset.clone());
+        let reader = target
+            .get("min_reader")
+            .and_then(Value::as_u64)
+            .unwrap_or(1);
+        target.insert("min_reader".to_owned(), json!(reader.max(2)));
     }
     if let Some(seed) = object.get("seed")
         && !value_references_any(seed, context.poisoned_assets)
@@ -2149,8 +2159,8 @@ fn validate_payload(
     }
     for file in &operation.files {
         let bytes = fs::read(payload.join(&file.dest))?;
-        let projection = validate_ledger(&bytes, 1)?;
-        crate::tail::check_write_versions(&projection.events, 1)?;
+        let projection = validate_ledger(&bytes, schema::READER_VERSION)?;
+        crate::tail::check_write_versions(&projection.events, schema::READER_VERSION)?;
         let genesis = projection.events.first().ok_or_else(|| {
             StoreError::Corruption(format!("rewritten file {} is empty", file.dest))
         })?;
@@ -2285,7 +2295,7 @@ mod tests {
             );
             bytes.push(b'\n');
         }
-        validate_ledger(&bytes, 1).expect("valid test ledger");
+        validate_ledger(&bytes, schema::READER_VERSION).expect("valid test ledger");
         fs::write(path, bytes).expect("write ledger");
     }
 
@@ -2704,8 +2714,11 @@ mod tests {
             .expect("begin fork");
         store.recover_rewrites().expect("publish fork");
         let destination = store.root().join("threads").join(destination_id);
-        let projected = validate_ledger(&fs::read(destination.join("main.jsonl")).unwrap(), 1)
-            .expect("fork ledger");
+        let projected = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("fork ledger");
         assert_eq!(
             projected.events[0].string_field("identity_profile"),
             Some("auto")
@@ -2718,6 +2731,46 @@ mod tests {
         assert_eq!(choice.effective_visibility(), Visibility::Runtime);
         let raw = serde_json::to_value(choice.raw()).unwrap();
         assert_eq!(raw["payload"]["profile"], "general");
+    }
+
+    #[test]
+    fn fork_keeps_the_genesis_preset_and_reader_two() {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let store = ThreadStore::open(directory.path()).expect("thread store");
+        let source_id = "018f0000-0000-7000-8000-000000000003";
+        let destination_id = "018f0000-0000-7000-8000-000000000004";
+        let source = store.root().join("threads").join(source_id);
+        fs::create_dir(&source).expect("source folder");
+        let baseline = include_bytes!("../../../fixtures/invalid/_valid-baseline.jsonl");
+        let mut events = baseline
+            .split(|byte| *byte == b'\n')
+            .filter(|line| !line.is_empty())
+            .map(|line| serde_json::from_slice::<Value>(line).expect("baseline event"))
+            .collect::<Vec<_>>();
+        let preset = json!({"format":1,"base":"general","layers":[{"kind":"kernel","id":"coding","version":"1"}],"digest":"sha256-fixture"});
+        let genesis = events[0].as_object_mut().unwrap();
+        genesis.insert("preset".to_owned(), preset.clone());
+        genesis.insert("min_reader".to_owned(), json!(2));
+        write_canonical_events(&source.join("main.jsonl"), &events);
+        store
+            .begin_fork(
+                "fork-preset",
+                source_id,
+                destination_id,
+                "2026-09-27T00:00:00.000Z",
+            )
+            .expect("begin fork");
+        store.recover_rewrites().expect("publish fork");
+        let destination = store.root().join("threads").join(destination_id);
+        let projected = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("fork ledger");
+        let raw = serde_json::to_value(projected.events[0].raw()).unwrap();
+        assert_eq!(raw["preset"], preset);
+        assert_eq!(raw["min_reader"], 2);
+        assert!(raw.get("identity_profile").is_none());
     }
 
     #[test]
@@ -2805,10 +2858,16 @@ mod tests {
         let mapped_child = operation.files[1].clone();
         store.recover_rewrites().expect("publish child fork");
         let destination = store.root().join("threads").join(destination_id);
-        let parent = validate_ledger(&fs::read(destination.join("main.jsonl")).unwrap(), 1)
-            .expect("mapped parent");
-        let child = validate_ledger(&fs::read(destination.join(&mapped_child.dest)).unwrap(), 1)
-            .expect("mapped child");
+        let parent = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("mapped parent");
+        let child = validate_ledger(
+            &fs::read(destination.join(&mapped_child.dest)).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("mapped child");
         let spawn = parent
             .events
             .iter()

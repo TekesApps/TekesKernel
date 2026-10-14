@@ -1129,7 +1129,7 @@ arm requires a versioned Client authority change and new fixtures.
 | `workspace.archiveSession` | `{sessionId:uuid}` | `{archivedSessionIds:[uuid]}` |
 | `workspace.unarchiveSession` | `{sessionId:uuid}` | `{sessionId:uuid}` |
 | `session.list` | `{cursor?:str}` | `{items:[SessionSummary]}` |
-| `session.create` | `{workspaceId?:str,cwd?:str,sessionId?:uuid,agentPreset?:str,identityProfile?:"coding"|"general"}` | `{sessionId:uuid}` |
+| `session.create` | `{workspaceId?:str,cwd?:str,sessionId?:uuid,agentPreset?:str,identityProfile?:"coding"|"general",preset?:Preset}` | `{sessionId:uuid}` |
 | `session.history` | `{sessionId:uuid,beforeSeq?:int,maxMessages?:int>=1}` | imported `SessionHistoryPage` |
 | `session.prompt` | `{sessionId:uuid,mode:"queue"|"steer",content:[PromptPart],clientTimeZone?:str}` | `{accepted:true,command?:{kind:"success",text?:str}}` |
 | `session.updateQueue` | `{sessionId:uuid,itemId:str,action:QueueAction}` | `{accepted:true}` |
@@ -1152,6 +1152,7 @@ Workspace = {
 SessionSummary = {
   sessionId:uuid, updatedAt:number, running:bool, tail:str, blank:bool,
   parentSessionId?:uuid, origin?:str, ephemeral?:bool, cwd?:str, agentPreset?:str,
+  identityProfile?:"coding"|"general", preset?:PresetSummary,
   projections?:SessionProjectionsBlock,
   permissionMode?:"read-only"|"workspace-write"|"danger-full-access"
 }
@@ -1214,6 +1215,7 @@ dynamic identifiers belong only in details.
 | `steer-unavailable` | `Current turn no longer accepts steering` | `{itemId}` |
 | `attachment-error` | `Image attachment is unavailable` | `{reason}` |
 | `model-unavailable` | `Model is unavailable` | `{provider,model}` |
+| `preset-invalid` | `Session preset is invalid` | `{reason,layer?,field?}` |
 | `title-invalid` | `Session title is invalid` | `{sessionId}` |
 | `accepted-but-not-confirmed` | `Mutation was accepted but its receipt was not confirmed` | `{rpcId,operation}` |
 | `internal` | `Endpoint operation failed` | `{}` |
@@ -1230,7 +1232,7 @@ errors are separate):
 | `workspace.archiveSession` | `session-not-found`, `session-running`, `idempotency-conflict`, `internal` |
 | `workspace.unarchiveSession` | `session-not-found`, `not-archived`, `active-session-limit`, `idempotency-conflict`, `internal` |
 | `session.list` | `invalid-cursor`, `internal` |
-| `session.create` | `bad-request`, `workspace-not-found`, `workspace-invalid-path`, `workspace-ambiguous`, `session-conflict`, `active-session-limit`, `unsupported-capability`, `idempotency-conflict`, `internal` |
+| `session.create` | `bad-request`, `workspace-not-found`, `workspace-invalid-path`, `workspace-ambiguous`, `session-conflict`, `active-session-limit`, `unsupported-capability`, `preset-invalid`, `idempotency-conflict`, `internal` |
 | `session.history` | `session-not-found`, `archived`, `internal` |
 | `session.prompt` | `session-not-found`, `archived`, `steer-unavailable`, `attachment-error`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
 | `session.updateQueue` | `session-not-found`, `archived`, `queue-item-not-found`, `steer-unavailable`, `attachment-error`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
@@ -1517,6 +1519,13 @@ operation timestamp and therefore stable across retry.
    The identity cannot change within a session. Older genesis records without
    this field read as `coding`. Forks retain the selection event, and
    delegated child sessions inherit the resolved identity.
+6. `preset` and `identityProfile` are exclusive (`bad-request`). A `preset` is
+   resolved once under the workspace base (§Session presets); a malformed one
+   is `bad-request` and a refused one is `preset-invalid
+   {reason,layer?,field?}`. The resolved preset replaces `identity_profile` in
+   genesis. Without `preset`, a workspace whose base is `blank` freezes the
+   `identityProfile` sugar under that base; a `general` workspace keeps the
+   identity-profile genesis above.
 
 It then allocates
 or validates the requested UUID, and stages the complete folder. It resolves
@@ -1871,6 +1880,8 @@ no hidden page because `SessionList` has no next-cursor result field.
 - `ephemeral` is present as `true` exactly when the genesis carries the flag
   (§Ephemeral sessions), otherwise omitted;
 - `agentPreset` is omitted natively because nonempty presets are rejected;
+- `preset` is the genesis preset's summary `{base, layers:[{kind,id,version}],
+  digest}` when the session has one; `identityProfile` is then omitted;
 - `projections` is omitted unless a title projection exists. The only native
   inventory projection is
   `{asOfSeq:endpoint-seq,values:{sessionTitle:{title:str}}}`, derived from the
@@ -2120,22 +2131,72 @@ Swift client implements the settings, settings-update, settings-invalidation and
 settings-document protocols with these methods; opening the document is an AppKit
 action on the returned path.
 
-### Agent presets
+### Session presets
 
-The Kernel exposes immutable initial identity presets through the additive
-`initialPresets.v1` capability: `session.initialPresets {}` returns
-`{presets:[{id,title,configurationText}],defaultID:null}`. Coding and General
-carry the profile text composed from `crates/tools/prompts/` (identity line,
-general rules, then the profile's own rules); `{model}` remains unresolved in
-the catalog. A missing choice retains automatic
-selection from the first user input. `session.create {identityProfile:"coding"|"general"}`
-selects explicitly and stores the identity in genesis. Inventory exposes the
-resolved `identityProfile`, absent while an automatic choice is pending. Follow-up
-requests and restart retain the identity; no preset mutation operation is exposed.
+A session preset is everything runtime-owned that opens a session's root
+system prompt: a **base** chosen by the workspace, then ordered domain
+**layers** chosen per session. It is resolved once at `session.create`,
+frozen in genesis and never changes for the session.
 
-These initial identity presets do not restore the retired `agentPresets.v1` or
-`session-presets` subsystem. `session.create {agentPreset}` remains unsupported.
-User instructions still come from the instruction snapshot's `AGENTS.md` scopes.
+```text
+Preset = { layers?:[Layer] }                       // tools, mcp, skills: reserved
+Layer  = { kind:"kernel", id:str }
+       | { kind:"inline", id:str, version:str, identity?:str, duty?:str }
+PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str }
+```
+
+- **Base.** `WorkspacePolicy.base` is `general` (the default when omitted) or
+  `blank`. `general` contributes the general identity line and the general
+  efficiency rules; `blank` contributes neither. A session cannot override the
+  base.
+- **Kernel layers.** `coding` (version `1`) contributes the coding identity
+  line and the coding rules. `session.presets.describe` publishes every Kernel
+  layer's full text.
+- **Inline layers.** A client sends its own `id` (`[a-z0-9-]`, at most 64
+  bytes, starting with a letter or digit), `version` (1–32 visible ASCII
+  bytes), an optional one-line `identity` (at most 512 bytes) and an optional
+  `duty` (at most 16 KiB). At most 8 layers; layer ids are unique.
+- **Identity.** At most one inline layer declares an `identity`; it is the
+  session's primary role. Otherwise the first Kernel layer's identity applies,
+  otherwise the base's. The chosen identity replaces only the identity line,
+  never the base rules.
+- **Render order.** Harness identity; the chosen identity line; the base
+  rules; each layer's duty in layer order; the working directory; the
+  `AGENTS.md` scopes. `{model}` in preset-owned text becomes the request's wire
+  model id. The preset-owned text (identity, base rules, duties) is at most
+  32 KiB.
+- **Sugar.** `identityProfile:"coding"` is the base plus `[coding]`;
+  `"general"` is the base with no layers; omission keeps automatic selection
+  on a `general` base and selects no layer on a `blank` base. On the `general`
+  base the sugar renders byte-for-byte like the identity profile, so those
+  sessions keep their identity-profile genesis.
+- **Refusals.** `preset-invalid` `reason` is one of `multiple-identity`,
+  `unknown-kernel-layer`, `duplicate-layer`, `too-many-layers`, `invalid-id`,
+  `invalid-identity`, `text-too-large`, `secret-in-preset` and
+  `unsupported-field`; `layer` names the layer (`#<index>` when its id is
+  unusable) and `field` is the member path, such as `preset.layers[1].duty`.
+  A preset only references registered resources, so a member that carries an
+  MCP definition or credential (`command`, `env`, `url`, `headers`,
+  `transport`, `oauth`, `token`, `apiKey`, `password`, `secret`, ...) or text
+  that looks like a credential is `secret-in-preset`. `tools`, `mcp`,
+  `skills` and layer `defaults` are reserved and refused as
+  `unsupported-field` until the Kernel applies them.
+- **Genesis.** The resolved preset is `preset:{format:1, base, layers,
+  digest}`, where `digest` is `sha256-` over the RFC 8785 bytes of `{format,
+  base, layers}`. Such a genesis carries no `identity_profile` and sets
+  `min_reader` 2 (spec event §Genesis). Forks and delegated children copy it
+  verbatim.
+- **Catalog.** The additive `sessionPresets.v1` capability serves
+  `session.presets.describe {}` and the read-only dry run
+  `session.presets.resolve {workspaceId, preset}` (spec client-extensions
+  §Session presets).
+
+`initialPresets.v1` remains: `session.initialPresets {}` returns
+`{presets:[{id,title,configurationText}],defaultID:null}`, where Coding and
+General carry the composed sugar profile text with `{model}` unresolved. The
+retired `agentPresets.v1` and `session-presets` routes stay retired, and
+`session.create {agentPreset}` remains unsupported. Project rules still come
+from the instruction snapshot's `AGENTS.md` scopes.
 
 ### Goals
 

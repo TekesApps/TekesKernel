@@ -252,7 +252,7 @@ fn run_real_validator_process(repair: bool) {
         event["ts"] = json!("2026-09-04T00:00:00.000Z");
     }
     write_test_events(&path, events);
-    let mut ledger = store::LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = store::LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     let binding = engine::ValidationBinding {
         thread: session.into(),
         worker: session.into(),
@@ -624,7 +624,7 @@ exit 0
             "the fallback requires the confirmed process exit"
         );
         let bytes = fs::read(folder.join("main.jsonl")).unwrap();
-        let projection = scan_valid_prefix(&bytes, 1).projection.unwrap();
+        let projection = scan_valid_prefix(&bytes, schema::READER_VERSION).projection.unwrap();
         let stops = projection
             .events
             .iter()
@@ -1438,7 +1438,7 @@ fn real_public_flow_case() {
         assert!(refs.iter().all(|r| covered.contains(&r.as_u64().unwrap())), "every evidence ref is inside the bundle");
         let summary_is_model = compact["summary"].as_str().map(|summary| summary.starts_with("[compacted history]\n") && !summary.starts_with("[compacted history]\nseq "));
         if let Some(inline) = summary_is_model { assert!(inline, "the admitted continuation is the summary: {}", compact["summary"]); }
-        let typed = schema::validate_ledger(&fs::read(&path).unwrap(), 1).unwrap();
+        let typed = schema::validate_ledger(&fs::read(&path).unwrap(), schema::READER_VERSION).unwrap();
         assert!(typed.events.iter().any(|e| *e.kind()==schema::EventKind::Compact), "the compact with its summary request validates");
         fs::write(root.join("compaction-summary.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap()).unwrap();
     }
@@ -1452,7 +1452,7 @@ fn real_public_flow_case() {
         let epoch = events.iter().find(|e| e["kind"]=="epoch" && e["seq"].as_u64().unwrap() > compact_seq).expect("epoch after the manual compact");
         assert_eq!(epoch["reason"], "compaction", "the next generation is the compaction epoch");
         let post_input = events.iter().find(|e| e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect("post-compact input")["seq"].as_u64().unwrap();
-        let typed = schema::validate_ledger(&fs::read(&path).unwrap(), 1).unwrap();
+        let typed = schema::validate_ledger(&fs::read(&path).unwrap(), schema::READER_VERSION).unwrap();
         let gate = engine::first_post_compact_attempt(&typed.events, &origin_key, &[post_input]).expect("first post-compact attempt admits the POST input");
         let attempt = events.iter().find(|e| e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str().unwrap().to_owned();
         let pre_calls: Vec<String> = events.iter().filter(|e| e["kind"]=="tool_call" && e["seq"].as_u64().unwrap() < compact_seq).filter_map(|e| e["call"].as_str().map(str::to_owned)).collect();

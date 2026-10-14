@@ -36,7 +36,7 @@ fn queue_ledger() -> (tempfile::TempDir, LockedLedger) {
     let mut bytes = serde_json_canonicalizer::to_vec(&genesis).expect("genesis bytes");
     bytes.push(b'\n');
     fs::write(&path, bytes).expect("genesis ledger");
-    let mut ledger = LockedLedger::open(&path, 1).expect("queue ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("queue ledger");
     let input = make_event(json!({
         "v":1,"seq":2,"kind":"input","ts":"2026-08-28T09:00:01.000Z",
         "origin_key":"input-1","origin_tuple":{
@@ -1504,7 +1504,7 @@ fn manual_compact_is_durable_receipted_and_idempotent_across_reopen() {
                 + "\n";
             drop(ledger);
             fs::write(&path, prefix).unwrap();
-            ledger = LockedLedger::open(&path, 1).unwrap();
+            ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         }
         let options = test_options(&ledger);
         let before = fs::read(&path).unwrap();
@@ -1536,7 +1536,7 @@ fn manual_compact_is_durable_receipted_and_idempotent_across_reopen() {
             "manual compaction closes the old epoch"
         );
         drop(ledger);
-        let mut ledger = LockedLedger::open(&path, 1).unwrap();
+        let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         let mut repeated = Vec::new();
         handle_delivery(
             &mut ledger,
@@ -2239,7 +2239,8 @@ fn production_task_creates_launches_waits_and_pairs_child_once() {
     let child_writer = std::thread::spawn(move || {
         for _ in 0..400 {
             if child_file.exists() {
-                let mut child_ledger = match LockedLedger::open(&child_file, 1) {
+                let mut child_ledger = match LockedLedger::open(&child_file, schema::READER_VERSION)
+                {
                     Ok(ledger) => ledger,
                     Err(StoreError::Busy) => {
                         std::thread::sleep(Duration::from_millis(5));
@@ -3284,9 +3285,10 @@ fn context_ledger(adapter: &str, continuation: bool) -> (tempfile::TempDir, Lock
             .replace("__CONTINUATION__", continuation)
             .replace("__FRAGMENTS__", fragments);
     let path = folder.join("main.jsonl");
-    schema::validate_ledger(bytes.as_bytes(), 1).expect("schema-valid context ledger");
+    schema::validate_ledger(bytes.as_bytes(), schema::READER_VERSION)
+        .expect("schema-valid context ledger");
     fs::write(&path, bytes).expect("ledger bytes");
-    let ledger = LockedLedger::open(&path, 1).expect("locked ledger");
+    let ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("locked ledger");
     (directory, ledger)
 }
 
@@ -3320,7 +3322,7 @@ fn goal_final_opens_next_turn_only_while_active_and_under_budget() {
             .unwrap(),
         )
         .unwrap();
-        let mut ledger = LockedLedger::open(&path, 1).unwrap();
+        let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         let options = test_options(&ledger);
         let mut profile = tool_profile(root.path(), &["set_goal_state"]);
         profile.bindings = LaunchBindings::bind(
@@ -3510,7 +3512,7 @@ fn appending_visible_state_preserves_context_prefix_and_recovery_bytes() {
         assert_eq!(&after_bytes[..before_bytes.len()], &before_bytes);
         assert!(fs::read(&path).unwrap().starts_with(&original));
         drop(ledger);
-        let recovered = LockedLedger::open(&path, 1).unwrap();
+        let recovered = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         let replay = project_provider_context(&recovered, "e1", dialect, 2).unwrap();
         assert_eq!(
             replay
@@ -3723,7 +3725,7 @@ fn child_seed_snapshot_projects_normalized_payload_without_parent_baseline() {
     bytes.push(b'\n');
     let path = folder.join("main.jsonl");
     fs::write(&path, bytes).expect("ledger");
-    let ledger = LockedLedger::open(&path, 1).expect("seeded ledger");
+    let ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("seeded ledger");
     let items = seed_provider_items(&ledger).expect("seed projection");
     assert_eq!(items.len(), 3);
     let first = serde_json::to_value(&items[0]).expect("first item");
@@ -4260,7 +4262,7 @@ fn quoted_null_ready_terminal_and_reopen_keep_one_normalized_call() {
         );
         let path = ledger.path().to_owned();
         drop(ledger);
-        let reopened = LockedLedger::open(&path, 1).unwrap();
+        let reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         validate_adopted_calls(&reopened, "glm-null", &[ready]).unwrap();
     }
 }
@@ -4475,7 +4477,7 @@ fn completed_wire_call_id_gets_a_local_identity_and_keeps_native_result_pairing(
         validate_adopted_calls(&ledger, "next-id", std::slice::from_ref(&local_call)).unwrap();
         let path = ledger.path().to_owned();
         drop(ledger);
-        let reopened = LockedLedger::open(&path, 1).unwrap();
+        let reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         assert_eq!(
             local_provider_call_id(&reopened, "next-id", "shell_1").unwrap(),
             local_id
@@ -4665,7 +4667,7 @@ fn tracked_approved_head_is_unstarted_until_the_execution_barrier() {
         }
         let path = ledger.path().to_owned();
         drop(ledger);
-        let mut ledger = LockedLedger::open(path, 1).unwrap();
+        let mut ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
         let pending = pending_tool_calls(&ledger).unwrap();
         assert!(pending[0].execution_tracked);
         assert_eq!(pending[0].execution_started, started);
@@ -5036,7 +5038,7 @@ fn preflight_trim_epoch_reentry_compaction_preserves_the_open_turn_and_saved_wir
     server.join().unwrap();
     let path = ledger.path().to_owned();
     drop(ledger);
-    let ledger = LockedLedger::open(path, 1).unwrap();
+    let ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
     let events = &ledger.projection().unwrap().events;
     let trim = events
         .iter()
@@ -7683,7 +7685,8 @@ fn run_spawned_child_to_completion(
     let child_writer = std::thread::spawn(move || {
         for _ in 0..400 {
             if child_file.exists() {
-                let mut child_ledger = match LockedLedger::open(&child_file, 1) {
+                let mut child_ledger = match LockedLedger::open(&child_file, schema::READER_VERSION)
+                {
                     Ok(ledger) => ledger,
                     Err(StoreError::Busy) => {
                         std::thread::sleep(Duration::from_millis(5));
@@ -7794,8 +7797,11 @@ fn assert_spawned_child_completion_keeps_next_request_paired(call: provider::Too
     );
 
     // The assignment reaches the child through its seed snapshot.
-    let child_ledger = LockedLedger::open(ledger.path().parent().unwrap().join(child_file), 1)
-        .expect("child ledger");
+    let child_ledger = LockedLedger::open(
+        ledger.path().parent().unwrap().join(child_file),
+        schema::READER_VERSION,
+    )
+    .expect("child ledger");
     let seed = seed_provider_items(&child_ledger).expect("child seed");
     assert_eq!(seed.len(), 1);
     let assignment = serde_json::to_value(&seed[0]).unwrap();

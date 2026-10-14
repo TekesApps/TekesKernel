@@ -6,6 +6,30 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- Session presets (`session.create {preset}`): the workspace base (`general`,
+  the default, or `blank` via `WorkspacePolicy.base`) plus ordered layers,
+  either Kernel layers (`coding`) or inline layers with their own identity line
+  and duty text. The resolved preset is frozen in genesis, copied by forks and
+  delegated children, and reported in inventory as `preset {base, layers,
+  digest}`. Contract: `spec/session-endpoint.md` ("Session presets").
+  - New capability `sessionPresets.v1`: `session.presets.describe` publishes
+    bases, Kernel layers, limits and refusal reasons;
+    `session.presets.resolve {workspaceId, preset}` is a read-only dry run that
+    returns the rendered preset text and digest.
+  - New closed error `preset-invalid {reason, layer?, field?}` on
+    `session.create`. Members that carry MCP definitions or credentials are
+    refused as `secret-in-preset`; `tools`, `mcp`, `skills` and layer
+    `defaults` are reserved (`unsupported-field`).
+  - `identityProfile` stays as sugar and renders byte-for-byte as before;
+    sessions without a preset keep their identity-profile genesis.
+
+### Changed
+- The ledger reader version is 2 (`schema::READER_VERSION`). A genesis that
+  carries a preset sets `min_reader` 2, so an older Kernel opens such a session
+  read-only instead of rendering it with the wrong prompt. Ledgers with
+  `min_reader` 1 read and write exactly as before.
+
 ## 0.6.0 — 2026-10-14
 
 The system prompt is now an identity line, shared general efficiency rules and
