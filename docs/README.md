@@ -83,7 +83,7 @@ understand ordering, and the linked source to check a specific branch. The
 | What context does the model receive? | [Context projection](data/context.md) |
 | Where are the Client and Web boundaries? | [Client](interfaces/client.md), [Web](interfaces/web.md), [Exact contracts](../spec/README.md) |
 | Where should I enter the source? | [Code architecture](architecture/README.md) → [Crate map](architecture/crates.md) → each crate's docs |
-| Which behaviors have been verified? | [Verification entry point](verification/README.md), [DeepSeek cost benchmark](benchmarks/deepseek-cost-2026-10.md) |
+| Which behaviors have been verified? | [Verification entry point](verification/README.md), [DeepSeek cost benchmark](benchmarks/deepseek-cost-2026-10.md), [general rules A/B](benchmarks/general-rules-2026-10.md) |
 | How is the Kernel launched and integrated? | [Built-in launch](builtin-launch.md), [Workspace service endpoint](workspace-service-wse.md), [Workspace Client integration](workspace-client-integration.md) (response compatibility verified; Client endpoint adaptation and UI acceptance remain open) |
 | Why was it designed this way? | [History and decisions](history/README.md) |
 

@@ -228,7 +228,9 @@ deepseek-flash cost by 55% on the batch-ledger-bugfix corpus without lowering
 test quality (`docs/benchmarks/deepseek-cost-2026-10.md` §The coding profile rules).
 Format 5 (2026-10) moved the two domain-neutral rules (stop when done, be
 concise) from the coding profile into the shared general rules, so `general`
-sessions carry them too.
+sessions carry them too; on deepseek-flash that cut a non-coding general
+session's cost by 27% with coding cost unchanged
+(`docs/benchmarks/general-rules-2026-10.md`).
 
 ### Complete schema oracle
 

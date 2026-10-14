@@ -14,6 +14,9 @@ workspace version in `Cargo.toml`.
   coding-only rules (done when the requested tests pass, no extra fuzz scripts,
   check results by running tests) stay in `coding`. The identity line stays
   first. Contract: `spec/builtin-tools.md` ("Model-facing tool guidance").
+  Measured on deepseek-flash (6 vs 6 runs per corpus): a non-coding general
+  session costs 27% less (p = 0.0065); coding cost shows no significant change
+  (`docs/benchmarks/general-rules-2026-10.md`).
   - Prompt files under `crates/tools/prompts/` are now `general-identity.md`,
     `general-rules.md`, `coding-identity.md` and `coding-rules.md`;
     `fixtures/tools/builtin-tool-guidance.canonical.json` moves to format 5 with
@@ -25,6 +28,13 @@ workspace version in `Cargo.toml`.
   - `tools::CODING_PROFILE` and `tools::GENERAL_PROFILE` are replaced by
     `CODING_IDENTITY`, `CODING_RULES`, `GENERAL_IDENTITY`, `GENERAL_RULES` and
     `IdentityProfile::profile_text`.
+
+### Added
+- `scripts/bench/run_ab.sh`: interleaved Kernel-vs-Kernel A/B runs of two
+  checkouts through the recording proxy (`scripts/bench/README.md`).
+- `research-brief` live corpus: a three-turn non-coding task with a hidden
+  acceptance check (`scripts/research_brief_acceptance.py`), and
+  `run-public-flow.py --identity-profile` to run a corpus under a chosen profile.
 
 ## 0.5.0 — 2026-10-14
 

@@ -73,7 +73,10 @@ significant) and did not lower quality. Details:
 
 G1 and G2 were moved out of the coding profile in format 5 because they do not
 mention code or tests; G1 was reworded from "requested change ... requested
-tests pass" to "requested work", with the test condition kept as C1.
+tests pass" to "requested work", with the test condition kept as C1. In an A/B
+on deepseek-flash this cut the cost of a non-coding general session by 27%
+(p = 0.0065) and left coding cost unchanged
+([general rules benchmark](../benchmarks/general-rules-2026-10.md)).
 
 ## What is not in the system prompt
 
