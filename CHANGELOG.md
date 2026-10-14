@@ -6,6 +6,15 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Fixed
+- A session preset's `skills` were validated against the instruction
+  snapshot's per-file resource keys (`<package>/SKILL.md`) while the worker
+  narrows its skill catalog by package name, so a preset naming a package was
+  refused as `unknown-skill`, and one naming its `SKILL.md` path passed
+  creation but lost the package at launch without a notice. `session.create`,
+  `session.presets.resolve` and the launch's `preset_skill` notice now all use
+  package names (`ResourceCatalog::skill_package_names`), as the spec states.
+
 ### Changed
 - Automatic identity selection treats `script`/`脚本` as a code signal only when
   the first request carries no creative-writing signal (screenplay, episode,

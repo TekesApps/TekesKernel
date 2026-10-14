@@ -2197,8 +2197,11 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
     `unknown-mcp-server` and a tool name that does not project to
     `mcp__<server>__<tool>` is `unknown-mcp-tool`. The definition itself,
     including its credentials, never enters the preset.
-  - `skills` names skill packages of the instruction snapshot; an unknown
-    name is `unknown-skill`.
+  - `skills` names skill packages of the instruction snapshot by package
+    name: the directory under `skills/` that holds a `SKILL.md`, the name
+    `skill_explorer` and `skill` show. A resource path such as
+    `<package>/SKILL.md` and a flat `skills/<name>.md` file are not packages;
+    an unknown name is `unknown-skill`.
   - A selected fixed or MCP tool that the instruction policy's
     `allowed_tools` excludes is `tool-not-permitted`. At most 256 fixed
     tools, 32 servers, 256 tools per server and 256 skills
