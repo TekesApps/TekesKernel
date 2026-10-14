@@ -24,16 +24,19 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tools::builtin::BuiltinManifest::catalog_digest](../../src/builtin.rs#L465) | `pub` | no resolved direct caller |
 | [tools::builtin::BuiltinError](../../src/builtin.rs#L504) | `pub` | not a function |
 | [tools::builtin::index_by_name](../../src/builtin.rs#L513) | `pub` | no resolved direct caller |
-| [tools::guidance::HARNESS_IDENTITY](../../src/guidance.rs#L18) | `pub` | not a function |
-| [tools::guidance::CODING_PROFILE](../../src/guidance.rs#L22) | `pub` | not a function |
-| [tools::guidance::GENERAL_PROFILE](../../src/guidance.rs#L25) | `pub` | not a function |
-| [tools::guidance::IdentityProfile](../../src/guidance.rs#L31) | `pub` | not a function |
-| [tools::guidance::IdentityProfile::as_str](../../src/guidance.rs#L39) | `pub` | no resolved direct caller |
-| [tools::guidance::IdentityProfile::parse](../../src/guidance.rs#L47) | `pub` | [tekes-supervisor::endpoint_host::ProductionEndpointHost::create_session](../../../supervisor/src/endpoint_host.rs#L988) |
-| [tools::guidance::WORKING_DIRECTORY](../../src/guidance.rs#L57) | `pub` | not a function |
-| [tools::guidance::root_system_instructions](../../src/guidance.rs#L63) | `pub` | [tekes-worker::identity::tests::selection_is_durable_and_runtime_only](../../../worker/src/identity.rs#L275); [tekes-worker::provider_turn::run_provider_turn_inner](../../../worker/src/provider_turn.rs#L108) |
-| [tools::guidance::guidance_oracle_value](../../src/guidance.rs#L89) | `pub` | [tools::guidance::canonical_guidance_oracle_bytes](../../src/guidance.rs#L109) |
-| [tools::guidance::canonical_guidance_oracle_bytes](../../src/guidance.rs#L109) | `pub` | no resolved direct caller |
+| [tools::guidance::HARNESS_IDENTITY](../../src/guidance.rs#L20) | `pub` | not a function |
+| [tools::guidance::GENERAL_IDENTITY](../../src/guidance.rs#L23) | `pub` | not a function |
+| [tools::guidance::GENERAL_RULES](../../src/guidance.rs#L26) | `pub` | not a function |
+| [tools::guidance::CODING_IDENTITY](../../src/guidance.rs#L29) | `pub` | not a function |
+| [tools::guidance::CODING_RULES](../../src/guidance.rs#L32) | `pub` | not a function |
+| [tools::guidance::IdentityProfile](../../src/guidance.rs#L38) | `pub` | not a function |
+| [tools::guidance::IdentityProfile::as_str](../../src/guidance.rs#L46) | `pub` | no resolved direct caller |
+| [tools::guidance::IdentityProfile::parse](../../src/guidance.rs#L54) | `pub` | [tekes-supervisor::endpoint_host::ProductionEndpointHost::create_session](../../../supervisor/src/endpoint_host.rs#L988) |
+| [tools::guidance::IdentityProfile::profile_text](../../src/guidance.rs#L65) | `pub` | no resolved direct caller |
+| [tools::guidance::WORKING_DIRECTORY](../../src/guidance.rs#L79) | `pub` | not a function |
+| [tools::guidance::root_system_instructions](../../src/guidance.rs#L85) | `pub` | [tekes-worker::identity::tests::selection_is_durable_and_runtime_only](../../../worker/src/identity.rs#L275); [tekes-worker::provider_turn::run_provider_turn_inner](../../../worker/src/provider_turn.rs#L108) |
+| [tools::guidance::guidance_oracle_value](../../src/guidance.rs#L107) | `pub` | [tools::guidance::canonical_guidance_oracle_bytes](../../src/guidance.rs#L131) |
+| [tools::guidance::canonical_guidance_oracle_bytes](../../src/guidance.rs#L131) | `pub` | no resolved direct caller |
 | [tools::helper::native_grep::search](../../src/helper/native_grep.rs#L8) | `pub(super)` | [tools::helper::HelperServer::execute_inner](../../src/helper.rs#L441) |
 | [tools::helper::HELPER_PROTOCOL](../../src/helper.rs#L32) | `pub` | not a function |
 | [tools::helper::HELPER_VERSION](../../src/helper.rs#L33) | `pub` | not a function |

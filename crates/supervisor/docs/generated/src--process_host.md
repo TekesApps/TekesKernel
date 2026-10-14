@@ -355,26 +355,27 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::process_host::tests::a_stale_projection_cannot_overwrite_a_newer_published_actionable_set](../../src/process_host.rs#L11363) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
 | [tekes-supervisor::process_host::tests::publish_appended_with_a_torn_tail_keeps_the_previous_error_path](../../src/process_host.rs#L11395) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
 | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11450) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11473) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11532) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11555) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::CHILD_TS](../../src/process_host.rs#L11568) | const_item | `private` | test; #[cfg(test)] #[cfg_attr(not(target_os = "macos"), allow(dead_code))] |
-| [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11573) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::child_request_event](../../src/process_host.rs#L11614) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::child_response_event](../../src/process_host.rs#L11619) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11625) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::child_rpc_id](../../src/process_host.rs#L11638) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered](../../src/process_host.rs#L11653) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::a_child_exit_announces_a_hold_no_doorbell_announced](../../src/process_host.rs#L11694) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold](../../src/process_host.rs#L11719) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::actionables_recomputes_do_not_reread_unchanged_child_files](../../src/process_host.rs#L11771) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::a_busy_stale_scratch_thread_is_removed_by_the_retry](../../src/process_host.rs#L11809) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::hydration_removes_a_dead_processs_card_temporary](../../src/process_host.rs#L11835) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11853) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::process_host::tests::damage_is_decided_under_the_line_lock](../../src/process_host.rs#L11867) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::process_host::tests::provider_admission_waits_fairly_and_drain_denies_waiter](../../src/process_host.rs#L11922) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::write_test_genesis_with_identity](../../src/process_host.rs#L11416) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11457) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11480) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11539) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11562) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::CHILD_TS](../../src/process_host.rs#L11575) | const_item | `private` | test; #[cfg(test)] #[cfg_attr(not(target_os = "macos"), allow(dead_code))] |
+| [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11580) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::child_request_event](../../src/process_host.rs#L11621) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::child_response_event](../../src/process_host.rs#L11626) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11632) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::child_rpc_id](../../src/process_host.rs#L11645) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered](../../src/process_host.rs#L11660) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::a_child_exit_announces_a_hold_no_doorbell_announced](../../src/process_host.rs#L11701) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold](../../src/process_host.rs#L11726) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::actionables_recomputes_do_not_reread_unchanged_child_files](../../src/process_host.rs#L11778) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::a_busy_stale_scratch_thread_is_removed_by_the_retry](../../src/process_host.rs#L11816) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::hydration_removes_a_dead_processs_card_temporary](../../src/process_host.rs#L11842) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11860) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::damage_is_decided_under_the_line_lock](../../src/process_host.rs#L11874) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::provider_admission_waits_fairly_and_drain_denies_waiter](../../src/process_host.rs#L11929) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -4831,7 +4832,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `fs::create_dir_all` | [7894](../../src/process_host.rs#L7894) | external-constructor-callback-or-unresolved |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `folder.join` | [7894](../../src/process_host.rs#L7894), [7895](../../src/process_host.rs#L7895), [7896](../../src/process_host.rs#L7896), [7914](../../src/process_host.rs#L7914) | receiver-type-required |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `write_test_genesis` | [7895](../../src/process_host.rs#L7895) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
-| `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `append_test_input` | [7896](../../src/process_host.rs#L7896) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `append_test_input` | [7896](../../src/process_host.rs#L7896) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [7908](../../src/process_host.rs#L7908) | receiver-type-required |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `schema::Event::decode` | [7908](../../src/process_host.rs#L7908) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `serde_json::to_vec(&value).expect` | [7908](../../src/process_host.rs#L7908) | receiver-type-required |
@@ -5220,7 +5221,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `check_sweep_recovery` | `fs::create_dir_all(folder.join("assets")).expect` | [8791](../../src/process_host.rs#L8791) | receiver-type-required |
 | `check_sweep_recovery` | `folder.join` | [8791](../../src/process_host.rs#L8791), [8792](../../src/process_host.rs#L8792), [8793](../../src/process_host.rs#L8793) | receiver-type-required |
 | `check_sweep_recovery` | `write_test_genesis` | [8792](../../src/process_host.rs#L8792) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
-| `check_sweep_recovery` | `append_test_input` | [8793](../../src/process_host.rs#L8793) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `check_sweep_recovery` | `append_test_input` | [8793](../../src/process_host.rs#L8793) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `check_sweep_recovery` | `host.boot_sweep().expect` | [8797](../../src/process_host.rs#L8797) | receiver-type-required |
 | `check_sweep_recovery` | `host.boot_sweep` | [8797](../../src/process_host.rs#L8797) | receiver-type-required |
 | `check_sweep_recovery` | `host.recover_client_sessions(&[session.to_owned()])                 .expect` | [8803](../../src/process_host.rs#L8803), [8812](../../src/process_host.rs#L8812) | receiver-type-required |
@@ -5262,7 +5263,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_scans_a_ledger_once_per_file_identity` | `write_test_genesis` | [8868](../../src/process_host.rs#L8868) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
 | `sweep_scans_a_ledger_once_per_file_identity` | `host.sweep_ledger_scan(&ledger).expect` | [8870](../../src/process_host.rs#L8870), [8871](../../src/process_host.rs#L8871), [8877](../../src/process_host.rs#L8877) | receiver-type-required |
 | `sweep_scans_a_ledger_once_per_file_identity` | `host.sweep_ledger_scan` | [8870](../../src/process_host.rs#L8870), [8871](../../src/process_host.rs#L8871), [8877](../../src/process_host.rs#L8877) | receiver-type-required |
-| `sweep_scans_a_ledger_once_per_file_identity` | `append_test_input` | [8876](../../src/process_host.rs#L8876) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `sweep_scans_a_ledger_once_per_file_identity` | `append_test_input` | [8876](../../src/process_host.rs#L8876) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `sweep_scans_a_ledger_once_per_file_identity` | `fs::write(&ledger, b"corrupt\n").expect` | [8884](../../src/process_host.rs#L8884) | receiver-type-required |
 | `sweep_scans_a_ledger_once_per_file_identity` | `host.shutdown` | [8890](../../src/process_host.rs#L8890) | receiver-type-required |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `tempfile::tempdir().expect` | [8896](../../src/process_host.rs#L8896) | receiver-type-required |
@@ -5286,7 +5287,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `fs::create_dir_all(folder.join("assets")).expect` | [8923](../../src/process_host.rs#L8923) | receiver-type-required |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `folder.join` | [8923](../../src/process_host.rs#L8923), [8924](../../src/process_host.rs#L8924) | receiver-type-required |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `write_test_genesis` | [8925](../../src/process_host.rs#L8925) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
-| `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `append_test_input` | [8926](../../src/process_host.rs#L8926) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `append_test_input` | [8926](../../src/process_host.rs#L8926) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `LockedLedger::open(&ledger, 1).expect` | [8927](../../src/process_host.rs#L8927) | receiver-type-required |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `LockedLedger::open` | [8927](../../src/process_host.rs#L8927) | external-constructor-callback-or-unresolved |
 | `sweep_quarantines_busy_unknown_until_the_file_lock_is_free` | `ProductionProcessHost::open(             root.path(),             &bin,             "test",             root.path().join("missing-agent-home"),         )         .expect` | [8928](../../src/process_host.rs#L8928) | receiver-type-required |
@@ -5560,10 +5561,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `root.path().join("threads").join` | [9599](../../src/process_host.rs#L9599) | receiver-type-required |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `fs::create_dir_all(folder.join("assets")).expect` | [9600](../../src/process_host.rs#L9600) | receiver-type-required |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `folder.join` | [9600](../../src/process_host.rs#L9600), [9601](../../src/process_host.rs#L9601), [9602](../../src/process_host.rs#L9602), [9603](../../src/process_host.rs#L9603) | receiver-type-required |
-| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `write_test_spawn_line` | [9604](../../src/process_host.rs#L9604), [9605](../../src/process_host.rs#L9605) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11473) |
+| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `write_test_spawn_line` | [9604](../../src/process_host.rs#L9604), [9605](../../src/process_host.rs#L9605) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11480) |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `Some` | [9610](../../src/process_host.rs#L9610) | external-constructor-callback-or-unresolved |
-| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `write_test_child_genesis` | [9614](../../src/process_host.rs#L9614) | [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11532) |
-| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `append_test_stop` | [9621](../../src/process_host.rs#L9621) | [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11450) |
+| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `write_test_child_genesis` | [9614](../../src/process_host.rs#L9614) | [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11539) |
+| `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `append_test_stop` | [9621](../../src/process_host.rs#L9621) | [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11457) |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `ProductionProcessHost::open(             root.path(),             &bin,             "test",             root.path().join("missing-agent-home"),         )         .expect` | [9623](../../src/process_host.rs#L9623) | receiver-type-required |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `ProductionProcessHost::open` | [9623](../../src/process_host.rs#L9623) | external-constructor-callback-or-unresolved |
 | `sweep_propagates_a_durable_root_stop_before_descendant_triage` | `host.release_for_test` | [9630](../../src/process_host.rs#L9630) | receiver-type-required |
@@ -5594,9 +5595,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `exercise_stop_cascade` | `root.path().join("threads").join` | [9683](../../src/process_host.rs#L9683) | receiver-type-required |
 | `exercise_stop_cascade` | `fs::create_dir_all(folder.join("assets")).expect` | [9684](../../src/process_host.rs#L9684) | receiver-type-required |
 | `exercise_stop_cascade` | `folder.join` | [9684](../../src/process_host.rs#L9684), [9685](../../src/process_host.rs#L9685), [9686](../../src/process_host.rs#L9686), [9687](../../src/process_host.rs#L9687) | receiver-type-required |
-| `exercise_stop_cascade` | `write_test_spawn_line` | [9688](../../src/process_host.rs#L9688), [9689](../../src/process_host.rs#L9689) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11473) |
+| `exercise_stop_cascade` | `write_test_spawn_line` | [9688](../../src/process_host.rs#L9688), [9689](../../src/process_host.rs#L9689) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11480) |
 | `exercise_stop_cascade` | `Some` | [9694](../../src/process_host.rs#L9694), [9714](../../src/process_host.rs#L9714) | external-constructor-callback-or-unresolved |
-| `exercise_stop_cascade` | `write_test_child_genesis` | [9698](../../src/process_host.rs#L9698) | [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11532) |
+| `exercise_stop_cascade` | `write_test_child_genesis` | [9698](../../src/process_host.rs#L9698) | [tekes-supervisor::process_host::tests::write_test_child_genesis](../../src/process_host.rs#L11539) |
 | `exercise_stop_cascade` | `ProductionProcessHost::open(             root.path(),             &bin,             "test",             root.path().join("missing-agent-home"),         )         .expect` | [9706](../../src/process_host.rs#L9706) | receiver-type-required |
 | `exercise_stop_cascade` | `ProductionProcessHost::open` | [9706](../../src/process_host.rs#L9706) | external-constructor-callback-or-unresolved |
 | `exercise_stop_cascade` | `host.schedule_worker_at(session, session, main.clone())                     .expect("schedule root")                     .expect` | [9715](../../src/process_host.rs#L9715) | receiver-type-required |
@@ -5648,7 +5649,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `host.schedule_worker_at(session, session, folder.join("main.jsonl"))             .expect("parent schedule")             .expect` | [9819](../../src/process_host.rs#L9819) | receiver-type-required |
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `host.schedule_worker_at(session, session, folder.join("main.jsonl"))             .expect` | [9819](../../src/process_host.rs#L9819) | receiver-type-required |
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `host.schedule_worker_at` | [9819](../../src/process_host.rs#L9819) | receiver-type-required |
-| `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `append_test_input` | [9839](../../src/process_host.rs#L9839) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `append_test_input` | [9839](../../src/process_host.rs#L9839) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `fs::read(&parent_path).unwrap` | [9840](../../src/process_host.rs#L9840) | receiver-type-required |
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `fs::read` | [9840](../../src/process_host.rs#L9840), [9851](../../src/process_host.rs#L9851) | external-constructor-callback-or-unresolved |
 | `max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work` | `Event::decode(&serde_json::to_vec(&value).unwrap()).unwrap` | [9845](../../src/process_host.rs#L9845) | receiver-type-required |
@@ -5746,7 +5747,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `fs::create_dir_all(folder.join("assets")).unwrap` | [10043](../../src/process_host.rs#L10043) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `folder.join` | [10043](../../src/process_host.rs#L10043), [10044](../../src/process_host.rs#L10044), [10047](../../src/process_host.rs#L10047), [10244](../../src/process_host.rs#L10244) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `write_test_genesis` | [10045](../../src/process_host.rs#L10045) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
-| `real_worker_recovers_final_before_settlement_with_resume_never` | `append_test_input` | [10046](../../src/process_host.rs#L10046) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `real_worker_recovers_final_before_settlement_with_resume_never` | `append_test_input` | [10046](../../src/process_host.rs#L10046) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `AssetStore::new(folder.join("assets"))                 .unwrap()                 .publish(b"{}")                 .unwrap` | [10047](../../src/process_host.rs#L10047) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `AssetStore::new(folder.join("assets"))                 .unwrap()                 .publish` | [10047](../../src/process_host.rs#L10047) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `AssetStore::new(folder.join("assets"))                 .unwrap` | [10047](../../src/process_host.rs#L10047) | receiver-type-required |
@@ -5972,13 +5973,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::create_dir_all` | [10555](../../src/process_host.rs#L10555), [10561](../../src/process_host.rs#L10561), [10578](../../src/process_host.rs#L10578), [10588](../../src/process_host.rs#L10588) | external-constructor-callback-or-unresolved |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `folder.join` | [10555](../../src/process_host.rs#L10555), [10556](../../src/process_host.rs#L10556), [10561](../../src/process_host.rs#L10561), [10562](../../src/process_host.rs#L10562), [10563](../../src/process_host.rs#L10563), [10568](../../src/process_host.rs#L10568), [10570](../../src/process_host.rs#L10570), [10578](../../src/process_host.rs#L10578), [10579](../../src/process_host.rs#L10579), [10580](../../src/process_host.rs#L10580), [10581](../../src/process_host.rs#L10581) | receiver-type-required |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `write_test_genesis` | [10556](../../src/process_host.rs#L10556), [10562](../../src/process_host.rs#L10562), [10579](../../src/process_host.rs#L10579) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L11410) |
-| `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `append_test_input` | [10563](../../src/process_host.rs#L10563), [10580](../../src/process_host.rs#L10580) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `append_test_input` | [10563](../../src/process_host.rs#L10563), [10580](../../src/process_host.rs#L10580) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::read_to_string(folder.join("main.jsonl")).expect` | [10568](../../src/process_host.rs#L10568) | receiver-type-required |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::read_to_string` | [10568](../../src/process_host.rs#L10568) | external-constructor-callback-or-unresolved |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::write(                         folder.join("main.jsonl"),                         text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),                     )                     .expect` | [10569](../../src/process_host.rs#L10569) | receiver-type-required |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::write` | [10569](../../src/process_host.rs#L10569) | external-constructor-callback-or-unresolved |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `text.replacen` | [10571](../../src/process_host.rs#L10571) | receiver-type-required |
-| `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `append_test_stop` | [10581](../../src/process_host.rs#L10581) | [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11450) |
+| `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `append_test_stop` | [10581](../../src/process_host.rs#L10581) | [tekes-supervisor::process_host::tests::append_test_stop](../../src/process_host.rs#L11457) |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `fs::create_dir_all(root.path().join("archive")).expect` | [10588](../../src/process_host.rs#L10588) | receiver-type-required |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `store::move_thread_folder(             &archived_folder,             &root.path().join("archive").join(archived),         )         .expect` | [10589](../../src/process_host.rs#L10589) | receiver-type-required |
 | `the_catalog_list_equals_the_scan_list_and_a_late_thread_is_a_placeholder` | `store::move_thread_folder` | [10589](../../src/process_host.rs#L10589) | [store::folder::move_thread_folder](../../../store/src/folder.rs#L980) |
@@ -6157,7 +6158,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `fs::OpenOptions::new()             .read(true)             .append(true)             .open` | [10918](../../src/process_host.rs#L10918) | receiver-type-required |
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `fs::OpenOptions::new()             .read(true)             .append` | [10918](../../src/process_host.rs#L10918) | receiver-type-required |
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `fs::OpenOptions::new()             .read` | [10918](../../src/process_host.rs#L10918) | receiver-type-required |
-| `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `hold_line_lock` | [10923](../../src/process_host.rs#L10923) | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11853) |
+| `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `hold_line_lock` | [10923](../../src/process_host.rs#L10923) | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11860) |
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `host.hydrate` | [10924](../../src/process_host.rs#L10924), [10939](../../src/process_host.rs#L10939) | receiver-type-required |
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `drop` | [10932](../../src/process_host.rs#L10932) | external-constructor-callback-or-unresolved |
 | `damage_in_a_held_ledger_is_deferred_until_the_lock_is_free` | `host.shutdown` | [10933](../../src/process_host.rs#L10933), [10940](../../src/process_host.rs#L10940) | receiver-type-required |
@@ -6231,7 +6232,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `open_host` | [11073](../../src/process_host.rs#L11073) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `host.publish_appended(session).expect` | [11074](../../src/process_host.rs#L11074), [11079](../../src/process_host.rs#L11079), [11117](../../src/process_host.rs#L11117) | receiver-type-required |
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `host.publish_appended` | [11074](../../src/process_host.rs#L11074), [11079](../../src/process_host.rs#L11079), [11117](../../src/process_host.rs#L11117) | receiver-type-required |
-| `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `append_test_input` | [11078](../../src/process_host.rs#L11078) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11427) |
+| `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `append_test_input` | [11078](../../src/process_host.rs#L11078) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L11434) |
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `host.catalog.get(session).expect` | [11085](../../src/process_host.rs#L11085), [11119](../../src/process_host.rs#L11119) | receiver-type-required |
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `host.catalog.get` | [11085](../../src/process_host.rs#L11085), [11119](../../src/process_host.rs#L11119) | receiver-type-required |
 | `a_fold_between_card_writes_does_not_rebuild_the_card_view` | `entry             .view             .as_ref()             .and_then(&#124;view&#124; view.main())             .expect` | [11086](../../src/process_host.rs#L11086) | receiver-type-required |
@@ -6420,212 +6421,213 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_appended_with_a_torn_tail_keeps_the_previous_error_path` | `host             .publish_appended(session)             .expect_err` | [11399](../../src/process_host.rs#L11399) | receiver-type-required |
 | `publish_appended_with_a_torn_tail_keeps_the_previous_error_path` | `host             .publish_appended` | [11399](../../src/process_host.rs#L11399) | receiver-type-required |
 | `publish_appended_with_a_torn_tail_keeps_the_previous_error_path` | `host.shutdown` | [11407](../../src/process_host.rs#L11407) | receiver-type-required |
-| `write_test_genesis` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",                 "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",                 "origin_key":format!("create-{thread}"),                 "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},                 "resume":"never","config":{"digest":"test"}             }))             .expect("genesis JSON"),         )         .expect` | [11411](../../src/process_host.rs#L11411) | receiver-type-required |
-| `write_test_genesis` | `schema::Event::decode` | [11411](../../src/process_host.rs#L11411) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
-| `write_test_genesis` | `serde_json::to_vec(&json!({                 "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",                 "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",                 "origin_key":format!("create-{thread}"),                 "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},                 "resume":"never","config":{"digest":"test"}             }))             .expect` | [11412](../../src/process_host.rs#L11412) | receiver-type-required |
-| `write_test_genesis` | `serde_json::to_vec` | [11412](../../src/process_host.rs#L11412) | external-constructor-callback-or-unresolved |
-| `write_test_genesis` | `event.canonical_bytes().expect` | [11422](../../src/process_host.rs#L11422) | receiver-type-required |
-| `write_test_genesis` | `event.canonical_bytes` | [11422](../../src/process_host.rs#L11422) | receiver-type-required |
-| `write_test_genesis` | `bytes.push` | [11423](../../src/process_host.rs#L11423) | receiver-type-required |
-| `write_test_genesis` | `fs::write(path, bytes).expect` | [11424](../../src/process_host.rs#L11424) | receiver-type-required |
-| `write_test_genesis` | `fs::write` | [11424](../../src/process_host.rs#L11424) | external-constructor-callback-or-unresolved |
-| `append_test_input` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect("input JSON"),         )         .expect` | [11428](../../src/process_host.rs#L11428) | receiver-type-required |
-| `append_test_input` | `schema::Event::decode` | [11428](../../src/process_host.rs#L11428) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
-| `append_test_input` | `serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect` | [11429](../../src/process_host.rs#L11429) | receiver-type-required |
-| `append_test_input` | `serde_json::to_vec` | [11429](../../src/process_host.rs#L11429) | external-constructor-callback-or-unresolved |
-| `append_test_input` | `event.canonical_bytes().expect` | [11439](../../src/process_host.rs#L11439) | receiver-type-required |
-| `append_test_input` | `event.canonical_bytes` | [11439](../../src/process_host.rs#L11439) | receiver-type-required |
-| `append_test_input` | `bytes.push` | [11440](../../src/process_host.rs#L11440) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all(&bytes)             .expect` | [11441](../../src/process_host.rs#L11441) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all` | [11441](../../src/process_host.rs#L11441) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect` | [11441](../../src/process_host.rs#L11441) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open` | [11441](../../src/process_host.rs#L11441) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new()             .append` | [11441](../../src/process_host.rs#L11441) | receiver-type-required |
-| `append_test_input` | `fs::OpenOptions::new` | [11441](../../src/process_host.rs#L11441) | external-constructor-callback-or-unresolved |
-| `append_test_stop` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect("stop JSON"),         )         .expect` | [11451](../../src/process_host.rs#L11451) | receiver-type-required |
-| `append_test_stop` | `schema::Event::decode` | [11451](../../src/process_host.rs#L11451) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
-| `append_test_stop` | `serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect` | [11452](../../src/process_host.rs#L11452) | receiver-type-required |
-| `append_test_stop` | `serde_json::to_vec` | [11452](../../src/process_host.rs#L11452) | external-constructor-callback-or-unresolved |
-| `append_test_stop` | `event.canonical_bytes().expect` | [11462](../../src/process_host.rs#L11462) | receiver-type-required |
-| `append_test_stop` | `event.canonical_bytes` | [11462](../../src/process_host.rs#L11462) | receiver-type-required |
-| `append_test_stop` | `bytes.push` | [11463](../../src/process_host.rs#L11463) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all(&bytes)             .expect` | [11464](../../src/process_host.rs#L11464) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all` | [11464](../../src/process_host.rs#L11464) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect` | [11464](../../src/process_host.rs#L11464) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open` | [11464](../../src/process_host.rs#L11464) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new()             .append` | [11464](../../src/process_host.rs#L11464) | receiver-type-required |
-| `append_test_stop` | `fs::OpenOptions::new` | [11464](../../src/process_host.rs#L11464) | external-constructor-callback-or-unresolved |
-| `write_test_spawn_line` | `parent.is_none` | [11499](../../src/process_host.rs#L11499) | receiver-type-required |
-| `write_test_spawn_line` | `events.extend` | [11500](../../src/process_host.rs#L11500) | receiver-type-required |
-| `write_test_spawn_line` | `events.push` | [11518](../../src/process_host.rs#L11518), [11523](../../src/process_host.rs#L11523) | receiver-type-required |
-| `write_test_spawn_line` | `write_test_events` | [11528](../../src/process_host.rs#L11528) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11555) |
-| `write_test_child_genesis` | `write_test_events` | [11539](../../src/process_host.rs#L11539) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11555) |
-| `write_test_events` | `Vec::new` | [11556](../../src/process_host.rs#L11556) | external-constructor-callback-or-unresolved |
-| `write_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11558](../../src/process_host.rs#L11558) | receiver-type-required |
-| `write_test_events` | `schema::Event::decode` | [11558](../../src/process_host.rs#L11558) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
-| `write_test_events` | `serde_json::to_vec(&value).expect` | [11558](../../src/process_host.rs#L11558) | receiver-type-required |
-| `write_test_events` | `serde_json::to_vec` | [11558](../../src/process_host.rs#L11558) | external-constructor-callback-or-unresolved |
-| `write_test_events` | `bytes.extend_from_slice` | [11560](../../src/process_host.rs#L11560) | receiver-type-required |
-| `write_test_events` | `event.canonical_bytes().expect` | [11560](../../src/process_host.rs#L11560) | receiver-type-required |
-| `write_test_events` | `event.canonical_bytes` | [11560](../../src/process_host.rs#L11560) | receiver-type-required |
-| `write_test_events` | `bytes.push` | [11561](../../src/process_host.rs#L11561) | receiver-type-required |
-| `write_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11563](../../src/process_host.rs#L11563) | receiver-type-required |
-| `write_test_events` | `schema::validate_ledger` | [11563](../../src/process_host.rs#L11563) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
-| `write_test_events` | `fs::write(path, bytes).expect` | [11564](../../src/process_host.rs#L11564) | receiver-type-required |
-| `write_test_events` | `fs::write` | [11564](../../src/process_host.rs#L11564) | external-constructor-callback-or-unresolved |
-| `write_thread_with_child` | `root.join("threads").join` | [11574](../../src/process_host.rs#L11574) | receiver-type-required |
-| `write_thread_with_child` | `root.join` | [11574](../../src/process_host.rs#L11574) | receiver-type-required |
-| `write_thread_with_child` | `fs::create_dir_all(folder.join("assets")).expect` | [11575](../../src/process_host.rs#L11575) | receiver-type-required |
-| `write_thread_with_child` | `fs::create_dir_all` | [11575](../../src/process_host.rs#L11575) | external-constructor-callback-or-unresolved |
-| `write_thread_with_child` | `folder.join` | [11575](../../src/process_host.rs#L11575), [11577](../../src/process_host.rs#L11577), [11608](../../src/process_host.rs#L11608) | receiver-type-required |
-| `write_thread_with_child` | `write_test_spawn_line` | [11576](../../src/process_host.rs#L11576) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11473) |
-| `write_thread_with_child` | `events.push` | [11606](../../src/process_host.rs#L11606) | receiver-type-required |
-| `write_thread_with_child` | `child_request_event` | [11606](../../src/process_host.rs#L11606) | [tekes-supervisor::process_host::tests::child_request_event](../../src/process_host.rs#L11614) |
-| `write_thread_with_child` | `write_test_events` | [11609](../../src/process_host.rs#L11609) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11555) |
-| `append_test_events` | `fs::read(path).expect` | [11626](../../src/process_host.rs#L11626) | receiver-type-required |
-| `append_test_events` | `fs::read` | [11626](../../src/process_host.rs#L11626) | external-constructor-callback-or-unresolved |
-| `append_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11628](../../src/process_host.rs#L11628) | receiver-type-required |
-| `append_test_events` | `schema::Event::decode` | [11628](../../src/process_host.rs#L11628) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
-| `append_test_events` | `serde_json::to_vec(&value).expect` | [11628](../../src/process_host.rs#L11628) | receiver-type-required |
-| `append_test_events` | `serde_json::to_vec` | [11628](../../src/process_host.rs#L11628) | external-constructor-callback-or-unresolved |
-| `append_test_events` | `bytes.extend_from_slice` | [11630](../../src/process_host.rs#L11630) | receiver-type-required |
-| `append_test_events` | `event.canonical_bytes().expect` | [11630](../../src/process_host.rs#L11630) | receiver-type-required |
-| `append_test_events` | `event.canonical_bytes` | [11630](../../src/process_host.rs#L11630) | receiver-type-required |
-| `append_test_events` | `bytes.push` | [11631](../../src/process_host.rs#L11631) | receiver-type-required |
-| `append_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11633](../../src/process_host.rs#L11633) | receiver-type-required |
-| `append_test_events` | `schema::validate_ledger` | [11633](../../src/process_host.rs#L11633) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
-| `append_test_events` | `fs::write(path, bytes).expect` | [11634](../../src/process_host.rs#L11634) | receiver-type-required |
-| `append_test_events` | `fs::write` | [11634](../../src/process_host.rs#L11634) | external-constructor-callback-or-unresolved |
-| `child_rpc_id` | `endpoint::derive_line_request_rpc_id` | [11639](../../src/process_host.rs#L11639) | [endpoint::requests::derive_line_request_rpc_id](../../../endpoint/src/requests.rs#L128) |
-| `child_rpc_id` | `Some` | [11641](../../src/process_host.rs#L11641) | external-constructor-callback-or-unresolved |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `tempfile::tempdir().expect` | [11654](../../src/process_host.rs#L11654) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `tempfile::tempdir` | [11654](../../src/process_host.rs#L11654) | external-constructor-callback-or-unresolved |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `write_thread_with_child` | [11657](../../src/process_host.rs#L11657) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11573) |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `root.path` | [11657](../../src/process_host.rs#L11657), [11658](../../src/process_host.rs#L11658) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `open_host` | [11658](../../src/process_host.rs#L11658) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.hydrate(session).expect` | [11659](../../src/process_host.rs#L11659) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.hydrate` | [11659](../../src/process_host.rs#L11659) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get(session)             .and_then(&#124;entry&#124; entry.view)             .expect` | [11660](../../src/process_host.rs#L11660) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get(session)             .and_then` | [11660](../../src/process_host.rs#L11660) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get` | [11660](../../src/process_host.rs#L11660) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `append_test_events` | [11669](../../src/process_host.rs#L11669), [11679](../../src/process_host.rs#L11679) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11625) |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `streams             .reconcile_actionables(session, Some(&line))             .expect` | [11671](../../src/process_host.rs#L11671), [11680](../../src/process_host.rs#L11680) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `streams             .reconcile_actionables` | [11671](../../src/process_host.rs#L11671), [11680](../../src/process_host.rs#L11680) | receiver-type-required |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `Some` | [11672](../../src/process_host.rs#L11672), [11681](../../src/process_host.rs#L11681) | external-constructor-callback-or-unresolved |
-| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.shutdown` | [11687](../../src/process_host.rs#L11687) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `tempfile::tempdir().expect` | [11695](../../src/process_host.rs#L11695) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `tempfile::tempdir` | [11695](../../src/process_host.rs#L11695) | external-constructor-callback-or-unresolved |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `write_thread_with_child` | [11698](../../src/process_host.rs#L11698) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11573) |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `root.path` | [11698](../../src/process_host.rs#L11698), [11699](../../src/process_host.rs#L11699) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `open_host` | [11699](../../src/process_host.rs#L11699) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.hydrate(session).expect` | [11700](../../src/process_host.rs#L11700) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.hydrate` | [11700](../../src/process_host.rs#L11700) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `append_test_events` | [11701](../../src/process_host.rs#L11701) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11625) |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.reconcile_child_line` | [11706](../../src/process_host.rs#L11706) | receiver-type-required |
-| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.shutdown` | [11711](../../src/process_host.rs#L11711) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `tempfile::tempdir().expect` | [11720](../../src/process_host.rs#L11720) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `tempfile::tempdir` | [11720](../../src/process_host.rs#L11720) | external-constructor-callback-or-unresolved |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `write_thread_with_child` | [11723](../../src/process_host.rs#L11723) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11573) |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `root.path` | [11723](../../src/process_host.rs#L11723), [11724](../../src/process_host.rs#L11724) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `open_host` | [11724](../../src/process_host.rs#L11724) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.hydrate(session).expect` | [11725](../../src/process_host.rs#L11725) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.hydrate` | [11725](../../src/process_host.rs#L11725) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `append_test_events` | [11741](../../src/process_host.rs#L11741) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11625) |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.publish_appended(session).expect` | [11742](../../src/process_host.rs#L11742) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.publish_appended` | [11742](../../src/process_host.rs#L11742) | receiver-type-required |
-| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.shutdown` | [11763](../../src/process_host.rs#L11763) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `tempfile::tempdir().expect` | [11772](../../src/process_host.rs#L11772) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `tempfile::tempdir` | [11772](../../src/process_host.rs#L11772) | external-constructor-callback-or-unresolved |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `write_thread_with_child` | [11775](../../src/process_host.rs#L11775) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11573) |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `root.path` | [11775](../../src/process_host.rs#L11775), [11776](../../src/process_host.rs#L11776) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `open_host` | [11776](../../src/process_host.rs#L11776) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.hydrate(session).expect` | [11777](../../src/process_host.rs#L11777) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.hydrate` | [11777](../../src/process_host.rs#L11777) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.publish_appended(session).expect` | [11778](../../src/process_host.rs#L11778) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.publish_appended` | [11778](../../src/process_host.rs#L11778) | receiver-type-required |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `append_test_events` | [11794](../../src/process_host.rs#L11794) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11625) |
-| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.shutdown` | [11801](../../src/process_host.rs#L11801) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `tempfile::tempdir().expect` | [11810](../../src/process_host.rs#L11810) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `tempfile::tempdir` | [11810](../../src/process_host.rs#L11810) | external-constructor-callback-or-unresolved |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `held_thread_on_disk` | [11812](../../src/process_host.rs#L11812) | [tekes-supervisor::process_host::tests::held_thread_on_disk](../../src/process_host.rs#L10524) |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `root.path` | [11812](../../src/process_host.rs#L11812), [11820](../../src/process_host.rs#L11820) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `folder.join` | [11813](../../src/process_host.rs#L11813) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::read_to_string(&ledger).expect` | [11814](../../src/process_host.rs#L11814) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::read_to_string` | [11814](../../src/process_host.rs#L11814) | external-constructor-callback-or-unresolved |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::write(             &ledger,             text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),         )         .expect` | [11815](../../src/process_host.rs#L11815) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::write` | [11815](../../src/process_host.rs#L11815) | external-constructor-callback-or-unresolved |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `text.replacen` | [11817](../../src/process_host.rs#L11817) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `open_host` | [11820](../../src/process_host.rs#L11820) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `store::LockedLedger::open(ledger.clone(), 1).expect` | [11821](../../src/process_host.rs#L11821) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `store::LockedLedger::open` | [11821](../../src/process_host.rs#L11821) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `ledger.clone` | [11821](../../src/process_host.rs#L11821) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `host.cleanup_stale_ephemeral` | [11822](../../src/process_host.rs#L11822), [11826](../../src/process_host.rs#L11826) | receiver-type-required |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `drop` | [11825](../../src/process_host.rs#L11825) | external-constructor-callback-or-unresolved |
-| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `host.shutdown` | [11829](../../src/process_host.rs#L11829) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `tempfile::tempdir().expect` | [11836](../../src/process_host.rs#L11836) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `tempfile::tempdir` | [11836](../../src/process_host.rs#L11836) | external-constructor-callback-or-unresolved |
-| `hydration_removes_a_dead_processs_card_temporary` | `held_thread_on_disk` | [11838](../../src/process_host.rs#L11838) | [tekes-supervisor::process_host::tests::held_thread_on_disk](../../src/process_host.rs#L10524) |
-| `hydration_removes_a_dead_processs_card_temporary` | `root.path` | [11838](../../src/process_host.rs#L11838), [11844](../../src/process_host.rs#L11844) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new("true").spawn().expect` | [11839](../../src/process_host.rs#L11839) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new("true").spawn` | [11839](../../src/process_host.rs#L11839) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new` | [11839](../../src/process_host.rs#L11839) | external-constructor-callback-or-unresolved |
-| `hydration_removes_a_dead_processs_card_temporary` | `gone.id` | [11840](../../src/process_host.rs#L11840) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `gone.wait().expect` | [11841](../../src/process_host.rs#L11841) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `gone.wait` | [11841](../../src/process_host.rs#L11841) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `folder.join` | [11842](../../src/process_host.rs#L11842) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `fs::write(&stale, b"half a card").expect` | [11843](../../src/process_host.rs#L11843) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `fs::write` | [11843](../../src/process_host.rs#L11843) | external-constructor-callback-or-unresolved |
-| `hydration_removes_a_dead_processs_card_temporary` | `open_host` | [11844](../../src/process_host.rs#L11844) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
-| `hydration_removes_a_dead_processs_card_temporary` | `host.hydrate(session).expect` | [11845](../../src/process_host.rs#L11845) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `host.hydrate` | [11845](../../src/process_host.rs#L11845) | receiver-type-required |
-| `hydration_removes_a_dead_processs_card_temporary` | `host.shutdown` | [11847](../../src/process_host.rs#L11847) | receiver-type-required |
-| `hold_line_lock` | `libc::flock` | [11856](../../src/process_host.rs#L11856) | external-constructor-callback-or-unresolved |
-| `hold_line_lock` | `holder.as_raw_fd` | [11856](../../src/process_host.rs#L11856) | receiver-type-required |
-| `hold_line_lock` | `std::thread::sleep` | [11859](../../src/process_host.rs#L11859) | external-constructor-callback-or-unresolved |
-| `hold_line_lock` | `Duration::from_millis` | [11859](../../src/process_host.rs#L11859) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `damage_under_lock` | [11872](../../src/process_host.rs#L11872) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `std::thread::sleep` | [11876](../../src/process_host.rs#L11876) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `Duration::from_millis` | [11876](../../src/process_host.rs#L11876) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `tempfile::tempdir().expect` | [11880](../../src/process_host.rs#L11880) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `tempfile::tempdir` | [11880](../../src/process_host.rs#L11880) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `dir.path().join` | [11881](../../src/process_host.rs#L11881) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `dir.path` | [11881](../../src/process_host.rs#L11881) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::write(&path, &good).expect` | [11886](../../src/process_host.rs#L11886) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::write` | [11886](../../src/process_host.rs#L11886), [11894](../../src/process_host.rs#L11894) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `fs::write(&path, &damaged).expect` | [11894](../../src/process_host.rs#L11894) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `ledger_damage(damaged.as_bytes()).expect` | [11895](../../src/process_host.rs#L11895) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `ledger_damage` | [11895](../../src/process_host.rs#L11895) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `damaged.as_bytes` | [11895](../../src/process_host.rs#L11895) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append(true)             .open(&path)             .expect` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append(true)             .open` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
-| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new` | [11902](../../src/process_host.rs#L11902) | external-constructor-callback-or-unresolved |
-| `damage_is_decided_under_the_line_lock` | `hold_line_lock` | [11907](../../src/process_host.rs#L11907) | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11853) |
-| `damage_is_decided_under_the_line_lock` | `drop` | [11909](../../src/process_host.rs#L11909) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir().expect` | [11923](../../src/process_host.rs#L11923) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir` | [11923](../../src/process_host.rs#L11923) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open(             root.path(),             std::env::current_exe().expect("test executable"),             "test-build",             root.path().join("missing-agent-home"),         )         .expect` | [11924](../../src/process_host.rs#L11924) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open` | [11924](../../src/process_host.rs#L11924) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path` | [11925](../../src/process_host.rs#L11925), [11928](../../src/process_host.rs#L11928) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe().expect` | [11926](../../src/process_host.rs#L11926) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe` | [11926](../../src/process_host.rs#L11926) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path().join` | [11928](../../src/process_host.rs#L11928) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.max_provider_leases.store` | [11931](../../src/process_host.rs#L11931) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `mpsc::channel` | [11937](../../src/process_host.rs#L11937), [11962](../../src/process_host.rs#L11962) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `Arc::clone` | [11938](../../src/process_host.rs#L11938), [11963](../../src/process_host.rs#L11963) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::thread::spawn` | [11939](../../src/process_host.rs#L11939), [11964](../../src/process_host.rs#L11964) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-b".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11940](../../src/process_host.rs#L11940) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send` | [11940](../../src/process_host.rs#L11940), [11965](../../src/process_host.rs#L11965) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `waiter.request_provider_lease` | [11940](../../src/process_host.rs#L11940), [11965](../../src/process_host.rs#L11965) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-b".to_owned` | [11941](../../src/process_host.rs#L11941) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"provider".to_owned` | [11942](../../src/process_host.rs#L11942), [11967](../../src/process_host.rs#L11967) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .settle` | [11950](../../src/process_host.rs#L11950) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else` | [11950](../../src/process_host.rs#L11950) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock` | [11950](../../src/process_host.rs#L11950) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission_changed.notify_all` | [11954](../../src/process_host.rs#L11954), [11973](../../src/process_host.rs#L11973) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join().expect` | [11960](../../src/process_host.rs#L11960), [11979](../../src/process_host.rs#L11979) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join` | [11960](../../src/process_host.rs#L11960), [11979](../../src/process_host.rs#L11979) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-c".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11965](../../src/process_host.rs#L11965) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-c".to_owned` | [11966](../../src/process_host.rs#L11966) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.draining.store` | [11972](../../src/process_host.rs#L11972) | receiver-type-required |
+| `write_test_genesis` | `write_test_genesis_with_identity` | [11411](../../src/process_host.rs#L11411) | [tekes-supervisor::process_host::tests::write_test_genesis_with_identity](../../src/process_host.rs#L11416) |
+| `write_test_genesis_with_identity` | `schema::Event::decode(&serde_json::to_vec(&genesis).expect("genesis JSON"))             .expect` | [11427](../../src/process_host.rs#L11427) | receiver-type-required |
+| `write_test_genesis_with_identity` | `schema::Event::decode` | [11427](../../src/process_host.rs#L11427) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `write_test_genesis_with_identity` | `serde_json::to_vec(&genesis).expect` | [11427](../../src/process_host.rs#L11427) | receiver-type-required |
+| `write_test_genesis_with_identity` | `serde_json::to_vec` | [11427](../../src/process_host.rs#L11427) | external-constructor-callback-or-unresolved |
+| `write_test_genesis_with_identity` | `event.canonical_bytes().expect` | [11429](../../src/process_host.rs#L11429) | receiver-type-required |
+| `write_test_genesis_with_identity` | `event.canonical_bytes` | [11429](../../src/process_host.rs#L11429) | receiver-type-required |
+| `write_test_genesis_with_identity` | `bytes.push` | [11430](../../src/process_host.rs#L11430) | receiver-type-required |
+| `write_test_genesis_with_identity` | `fs::write(path, bytes).expect` | [11431](../../src/process_host.rs#L11431) | receiver-type-required |
+| `write_test_genesis_with_identity` | `fs::write` | [11431](../../src/process_host.rs#L11431) | external-constructor-callback-or-unresolved |
+| `append_test_input` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect("input JSON"),         )         .expect` | [11435](../../src/process_host.rs#L11435) | receiver-type-required |
+| `append_test_input` | `schema::Event::decode` | [11435](../../src/process_host.rs#L11435) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_input` | `serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect` | [11436](../../src/process_host.rs#L11436) | receiver-type-required |
+| `append_test_input` | `serde_json::to_vec` | [11436](../../src/process_host.rs#L11436) | external-constructor-callback-or-unresolved |
+| `append_test_input` | `event.canonical_bytes().expect` | [11446](../../src/process_host.rs#L11446) | receiver-type-required |
+| `append_test_input` | `event.canonical_bytes` | [11446](../../src/process_host.rs#L11446) | receiver-type-required |
+| `append_test_input` | `bytes.push` | [11447](../../src/process_host.rs#L11447) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all(&bytes)             .expect` | [11448](../../src/process_host.rs#L11448) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all` | [11448](../../src/process_host.rs#L11448) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect` | [11448](../../src/process_host.rs#L11448) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new()             .append(true)             .open` | [11448](../../src/process_host.rs#L11448) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new()             .append` | [11448](../../src/process_host.rs#L11448) | receiver-type-required |
+| `append_test_input` | `fs::OpenOptions::new` | [11448](../../src/process_host.rs#L11448) | external-constructor-callback-or-unresolved |
+| `append_test_stop` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect("stop JSON"),         )         .expect` | [11458](../../src/process_host.rs#L11458) | receiver-type-required |
+| `append_test_stop` | `schema::Event::decode` | [11458](../../src/process_host.rs#L11458) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_stop` | `serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect` | [11459](../../src/process_host.rs#L11459) | receiver-type-required |
+| `append_test_stop` | `serde_json::to_vec` | [11459](../../src/process_host.rs#L11459) | external-constructor-callback-or-unresolved |
+| `append_test_stop` | `event.canonical_bytes().expect` | [11469](../../src/process_host.rs#L11469) | receiver-type-required |
+| `append_test_stop` | `event.canonical_bytes` | [11469](../../src/process_host.rs#L11469) | receiver-type-required |
+| `append_test_stop` | `bytes.push` | [11470](../../src/process_host.rs#L11470) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all(&bytes)             .expect` | [11471](../../src/process_host.rs#L11471) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect("open ledger")             .write_all` | [11471](../../src/process_host.rs#L11471) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open(path)             .expect` | [11471](../../src/process_host.rs#L11471) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new()             .append(true)             .open` | [11471](../../src/process_host.rs#L11471) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new()             .append` | [11471](../../src/process_host.rs#L11471) | receiver-type-required |
+| `append_test_stop` | `fs::OpenOptions::new` | [11471](../../src/process_host.rs#L11471) | external-constructor-callback-or-unresolved |
+| `write_test_spawn_line` | `parent.is_none` | [11506](../../src/process_host.rs#L11506) | receiver-type-required |
+| `write_test_spawn_line` | `events.extend` | [11507](../../src/process_host.rs#L11507) | receiver-type-required |
+| `write_test_spawn_line` | `events.push` | [11525](../../src/process_host.rs#L11525), [11530](../../src/process_host.rs#L11530) | receiver-type-required |
+| `write_test_spawn_line` | `write_test_events` | [11535](../../src/process_host.rs#L11535) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11562) |
+| `write_test_child_genesis` | `write_test_events` | [11546](../../src/process_host.rs#L11546) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11562) |
+| `write_test_events` | `Vec::new` | [11563](../../src/process_host.rs#L11563) | external-constructor-callback-or-unresolved |
+| `write_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11565](../../src/process_host.rs#L11565) | receiver-type-required |
+| `write_test_events` | `schema::Event::decode` | [11565](../../src/process_host.rs#L11565) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `write_test_events` | `serde_json::to_vec(&value).expect` | [11565](../../src/process_host.rs#L11565) | receiver-type-required |
+| `write_test_events` | `serde_json::to_vec` | [11565](../../src/process_host.rs#L11565) | external-constructor-callback-or-unresolved |
+| `write_test_events` | `bytes.extend_from_slice` | [11567](../../src/process_host.rs#L11567) | receiver-type-required |
+| `write_test_events` | `event.canonical_bytes().expect` | [11567](../../src/process_host.rs#L11567) | receiver-type-required |
+| `write_test_events` | `event.canonical_bytes` | [11567](../../src/process_host.rs#L11567) | receiver-type-required |
+| `write_test_events` | `bytes.push` | [11568](../../src/process_host.rs#L11568) | receiver-type-required |
+| `write_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11570](../../src/process_host.rs#L11570) | receiver-type-required |
+| `write_test_events` | `schema::validate_ledger` | [11570](../../src/process_host.rs#L11570) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `write_test_events` | `fs::write(path, bytes).expect` | [11571](../../src/process_host.rs#L11571) | receiver-type-required |
+| `write_test_events` | `fs::write` | [11571](../../src/process_host.rs#L11571) | external-constructor-callback-or-unresolved |
+| `write_thread_with_child` | `root.join("threads").join` | [11581](../../src/process_host.rs#L11581) | receiver-type-required |
+| `write_thread_with_child` | `root.join` | [11581](../../src/process_host.rs#L11581) | receiver-type-required |
+| `write_thread_with_child` | `fs::create_dir_all(folder.join("assets")).expect` | [11582](../../src/process_host.rs#L11582) | receiver-type-required |
+| `write_thread_with_child` | `fs::create_dir_all` | [11582](../../src/process_host.rs#L11582) | external-constructor-callback-or-unresolved |
+| `write_thread_with_child` | `folder.join` | [11582](../../src/process_host.rs#L11582), [11584](../../src/process_host.rs#L11584), [11615](../../src/process_host.rs#L11615) | receiver-type-required |
+| `write_thread_with_child` | `write_test_spawn_line` | [11583](../../src/process_host.rs#L11583) | [tekes-supervisor::process_host::tests::write_test_spawn_line](../../src/process_host.rs#L11480) |
+| `write_thread_with_child` | `events.push` | [11613](../../src/process_host.rs#L11613) | receiver-type-required |
+| `write_thread_with_child` | `child_request_event` | [11613](../../src/process_host.rs#L11613) | [tekes-supervisor::process_host::tests::child_request_event](../../src/process_host.rs#L11621) |
+| `write_thread_with_child` | `write_test_events` | [11616](../../src/process_host.rs#L11616) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11562) |
+| `append_test_events` | `fs::read(path).expect` | [11633](../../src/process_host.rs#L11633) | receiver-type-required |
+| `append_test_events` | `fs::read` | [11633](../../src/process_host.rs#L11633) | external-constructor-callback-or-unresolved |
+| `append_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11635](../../src/process_host.rs#L11635) | receiver-type-required |
+| `append_test_events` | `schema::Event::decode` | [11635](../../src/process_host.rs#L11635) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_events` | `serde_json::to_vec(&value).expect` | [11635](../../src/process_host.rs#L11635) | receiver-type-required |
+| `append_test_events` | `serde_json::to_vec` | [11635](../../src/process_host.rs#L11635) | external-constructor-callback-or-unresolved |
+| `append_test_events` | `bytes.extend_from_slice` | [11637](../../src/process_host.rs#L11637) | receiver-type-required |
+| `append_test_events` | `event.canonical_bytes().expect` | [11637](../../src/process_host.rs#L11637) | receiver-type-required |
+| `append_test_events` | `event.canonical_bytes` | [11637](../../src/process_host.rs#L11637) | receiver-type-required |
+| `append_test_events` | `bytes.push` | [11638](../../src/process_host.rs#L11638) | receiver-type-required |
+| `append_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11640](../../src/process_host.rs#L11640) | receiver-type-required |
+| `append_test_events` | `schema::validate_ledger` | [11640](../../src/process_host.rs#L11640) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `append_test_events` | `fs::write(path, bytes).expect` | [11641](../../src/process_host.rs#L11641) | receiver-type-required |
+| `append_test_events` | `fs::write` | [11641](../../src/process_host.rs#L11641) | external-constructor-callback-or-unresolved |
+| `child_rpc_id` | `endpoint::derive_line_request_rpc_id` | [11646](../../src/process_host.rs#L11646) | [endpoint::requests::derive_line_request_rpc_id](../../../endpoint/src/requests.rs#L128) |
+| `child_rpc_id` | `Some` | [11648](../../src/process_host.rs#L11648) | external-constructor-callback-or-unresolved |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `tempfile::tempdir().expect` | [11661](../../src/process_host.rs#L11661) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `tempfile::tempdir` | [11661](../../src/process_host.rs#L11661) | external-constructor-callback-or-unresolved |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `write_thread_with_child` | [11664](../../src/process_host.rs#L11664) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11580) |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `root.path` | [11664](../../src/process_host.rs#L11664), [11665](../../src/process_host.rs#L11665) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `open_host` | [11665](../../src/process_host.rs#L11665) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.hydrate(session).expect` | [11666](../../src/process_host.rs#L11666) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.hydrate` | [11666](../../src/process_host.rs#L11666) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get(session)             .and_then(&#124;entry&#124; entry.view)             .expect` | [11667](../../src/process_host.rs#L11667) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get(session)             .and_then` | [11667](../../src/process_host.rs#L11667) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host             .catalog             .get` | [11667](../../src/process_host.rs#L11667) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `append_test_events` | [11676](../../src/process_host.rs#L11676), [11686](../../src/process_host.rs#L11686) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11632) |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `streams             .reconcile_actionables(session, Some(&line))             .expect` | [11678](../../src/process_host.rs#L11678), [11687](../../src/process_host.rs#L11687) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `streams             .reconcile_actionables` | [11678](../../src/process_host.rs#L11678), [11687](../../src/process_host.rs#L11687) | receiver-type-required |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `Some` | [11679](../../src/process_host.rs#L11679), [11688](../../src/process_host.rs#L11688) | external-constructor-callback-or-unresolved |
+| `a_live_child_hold_is_in_the_baseline_of_a_verified_thread_until_it_is_answered` | `host.shutdown` | [11694](../../src/process_host.rs#L11694) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `tempfile::tempdir().expect` | [11702](../../src/process_host.rs#L11702) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `tempfile::tempdir` | [11702](../../src/process_host.rs#L11702) | external-constructor-callback-or-unresolved |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `write_thread_with_child` | [11705](../../src/process_host.rs#L11705) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11580) |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `root.path` | [11705](../../src/process_host.rs#L11705), [11706](../../src/process_host.rs#L11706) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `open_host` | [11706](../../src/process_host.rs#L11706) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.hydrate(session).expect` | [11707](../../src/process_host.rs#L11707) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.hydrate` | [11707](../../src/process_host.rs#L11707) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `append_test_events` | [11708](../../src/process_host.rs#L11708) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11632) |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.reconcile_child_line` | [11713](../../src/process_host.rs#L11713) | receiver-type-required |
+| `a_child_exit_announces_a_hold_no_doorbell_announced` | `host.shutdown` | [11718](../../src/process_host.rs#L11718) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `tempfile::tempdir().expect` | [11727](../../src/process_host.rs#L11727) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `tempfile::tempdir` | [11727](../../src/process_host.rs#L11727) | external-constructor-callback-or-unresolved |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `write_thread_with_child` | [11730](../../src/process_host.rs#L11730) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11580) |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `root.path` | [11730](../../src/process_host.rs#L11730), [11731](../../src/process_host.rs#L11731) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `open_host` | [11731](../../src/process_host.rs#L11731) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.hydrate(session).expect` | [11732](../../src/process_host.rs#L11732) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.hydrate` | [11732](../../src/process_host.rs#L11732) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `append_test_events` | [11748](../../src/process_host.rs#L11748) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11632) |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.publish_appended(session).expect` | [11749](../../src/process_host.rs#L11749) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.publish_appended` | [11749](../../src/process_host.rs#L11749) | receiver-type-required |
+| `a_doorbell_fold_clears_child_exactness_and_the_prefilter_finds_the_new_hold` | `host.shutdown` | [11770](../../src/process_host.rs#L11770) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `tempfile::tempdir().expect` | [11779](../../src/process_host.rs#L11779) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `tempfile::tempdir` | [11779](../../src/process_host.rs#L11779) | external-constructor-callback-or-unresolved |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `write_thread_with_child` | [11782](../../src/process_host.rs#L11782) | [tekes-supervisor::process_host::tests::write_thread_with_child](../../src/process_host.rs#L11580) |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `root.path` | [11782](../../src/process_host.rs#L11782), [11783](../../src/process_host.rs#L11783) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `open_host` | [11783](../../src/process_host.rs#L11783) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.hydrate(session).expect` | [11784](../../src/process_host.rs#L11784) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.hydrate` | [11784](../../src/process_host.rs#L11784) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.publish_appended(session).expect` | [11785](../../src/process_host.rs#L11785) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.publish_appended` | [11785](../../src/process_host.rs#L11785) | receiver-type-required |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `append_test_events` | [11801](../../src/process_host.rs#L11801) | [tekes-supervisor::process_host::tests::append_test_events](../../src/process_host.rs#L11632) |
+| `actionables_recomputes_do_not_reread_unchanged_child_files` | `host.shutdown` | [11808](../../src/process_host.rs#L11808) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `tempfile::tempdir().expect` | [11817](../../src/process_host.rs#L11817) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `tempfile::tempdir` | [11817](../../src/process_host.rs#L11817) | external-constructor-callback-or-unresolved |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `held_thread_on_disk` | [11819](../../src/process_host.rs#L11819) | [tekes-supervisor::process_host::tests::held_thread_on_disk](../../src/process_host.rs#L10524) |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `root.path` | [11819](../../src/process_host.rs#L11819), [11827](../../src/process_host.rs#L11827) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `folder.join` | [11820](../../src/process_host.rs#L11820) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::read_to_string(&ledger).expect` | [11821](../../src/process_host.rs#L11821) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::read_to_string` | [11821](../../src/process_host.rs#L11821) | external-constructor-callback-or-unresolved |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::write(             &ledger,             text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),         )         .expect` | [11822](../../src/process_host.rs#L11822) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `fs::write` | [11822](../../src/process_host.rs#L11822) | external-constructor-callback-or-unresolved |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `text.replacen` | [11824](../../src/process_host.rs#L11824) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `open_host` | [11827](../../src/process_host.rs#L11827) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `store::LockedLedger::open(ledger.clone(), 1).expect` | [11828](../../src/process_host.rs#L11828) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `store::LockedLedger::open` | [11828](../../src/process_host.rs#L11828) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `ledger.clone` | [11828](../../src/process_host.rs#L11828) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `host.cleanup_stale_ephemeral` | [11829](../../src/process_host.rs#L11829), [11833](../../src/process_host.rs#L11833) | receiver-type-required |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `drop` | [11832](../../src/process_host.rs#L11832) | external-constructor-callback-or-unresolved |
+| `a_busy_stale_scratch_thread_is_removed_by_the_retry` | `host.shutdown` | [11836](../../src/process_host.rs#L11836) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `tempfile::tempdir().expect` | [11843](../../src/process_host.rs#L11843) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `tempfile::tempdir` | [11843](../../src/process_host.rs#L11843) | external-constructor-callback-or-unresolved |
+| `hydration_removes_a_dead_processs_card_temporary` | `held_thread_on_disk` | [11845](../../src/process_host.rs#L11845) | [tekes-supervisor::process_host::tests::held_thread_on_disk](../../src/process_host.rs#L10524) |
+| `hydration_removes_a_dead_processs_card_temporary` | `root.path` | [11845](../../src/process_host.rs#L11845), [11851](../../src/process_host.rs#L11851) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new("true").spawn().expect` | [11846](../../src/process_host.rs#L11846) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new("true").spawn` | [11846](../../src/process_host.rs#L11846) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `std::process::Command::new` | [11846](../../src/process_host.rs#L11846) | external-constructor-callback-or-unresolved |
+| `hydration_removes_a_dead_processs_card_temporary` | `gone.id` | [11847](../../src/process_host.rs#L11847) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `gone.wait().expect` | [11848](../../src/process_host.rs#L11848) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `gone.wait` | [11848](../../src/process_host.rs#L11848) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `folder.join` | [11849](../../src/process_host.rs#L11849) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `fs::write(&stale, b"half a card").expect` | [11850](../../src/process_host.rs#L11850) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `fs::write` | [11850](../../src/process_host.rs#L11850) | external-constructor-callback-or-unresolved |
+| `hydration_removes_a_dead_processs_card_temporary` | `open_host` | [11851](../../src/process_host.rs#L11851) | [tekes-supervisor::process_host::tests::open_host](../../src/process_host.rs#L10692) |
+| `hydration_removes_a_dead_processs_card_temporary` | `host.hydrate(session).expect` | [11852](../../src/process_host.rs#L11852) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `host.hydrate` | [11852](../../src/process_host.rs#L11852) | receiver-type-required |
+| `hydration_removes_a_dead_processs_card_temporary` | `host.shutdown` | [11854](../../src/process_host.rs#L11854) | receiver-type-required |
+| `hold_line_lock` | `libc::flock` | [11863](../../src/process_host.rs#L11863) | external-constructor-callback-or-unresolved |
+| `hold_line_lock` | `holder.as_raw_fd` | [11863](../../src/process_host.rs#L11863) | receiver-type-required |
+| `hold_line_lock` | `std::thread::sleep` | [11866](../../src/process_host.rs#L11866) | external-constructor-callback-or-unresolved |
+| `hold_line_lock` | `Duration::from_millis` | [11866](../../src/process_host.rs#L11866) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `damage_under_lock` | [11879](../../src/process_host.rs#L11879) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `std::thread::sleep` | [11883](../../src/process_host.rs#L11883) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `Duration::from_millis` | [11883](../../src/process_host.rs#L11883) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `tempfile::tempdir().expect` | [11887](../../src/process_host.rs#L11887) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `tempfile::tempdir` | [11887](../../src/process_host.rs#L11887) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `dir.path().join` | [11888](../../src/process_host.rs#L11888) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `dir.path` | [11888](../../src/process_host.rs#L11888) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::write(&path, &good).expect` | [11893](../../src/process_host.rs#L11893) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::write` | [11893](../../src/process_host.rs#L11893), [11901](../../src/process_host.rs#L11901) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `fs::write(&path, &damaged).expect` | [11901](../../src/process_host.rs#L11901) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `ledger_damage(damaged.as_bytes()).expect` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `ledger_damage` | [11902](../../src/process_host.rs#L11902) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `damaged.as_bytes` | [11902](../../src/process_host.rs#L11902) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append(true)             .open(&path)             .expect` | [11909](../../src/process_host.rs#L11909) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append(true)             .open` | [11909](../../src/process_host.rs#L11909) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read(true)             .append` | [11909](../../src/process_host.rs#L11909) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new()             .read` | [11909](../../src/process_host.rs#L11909) | receiver-type-required |
+| `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new` | [11909](../../src/process_host.rs#L11909) | external-constructor-callback-or-unresolved |
+| `damage_is_decided_under_the_line_lock` | `hold_line_lock` | [11914](../../src/process_host.rs#L11914) | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11860) |
+| `damage_is_decided_under_the_line_lock` | `drop` | [11916](../../src/process_host.rs#L11916) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir().expect` | [11930](../../src/process_host.rs#L11930) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir` | [11930](../../src/process_host.rs#L11930) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open(             root.path(),             std::env::current_exe().expect("test executable"),             "test-build",             root.path().join("missing-agent-home"),         )         .expect` | [11931](../../src/process_host.rs#L11931) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open` | [11931](../../src/process_host.rs#L11931) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path` | [11932](../../src/process_host.rs#L11932), [11935](../../src/process_host.rs#L11935) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe().expect` | [11933](../../src/process_host.rs#L11933) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe` | [11933](../../src/process_host.rs#L11933) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path().join` | [11935](../../src/process_host.rs#L11935) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.max_provider_leases.store` | [11938](../../src/process_host.rs#L11938) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `mpsc::channel` | [11944](../../src/process_host.rs#L11944), [11969](../../src/process_host.rs#L11969) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `Arc::clone` | [11945](../../src/process_host.rs#L11945), [11970](../../src/process_host.rs#L11970) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::thread::spawn` | [11946](../../src/process_host.rs#L11946), [11971](../../src/process_host.rs#L11971) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-b".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11947](../../src/process_host.rs#L11947) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send` | [11947](../../src/process_host.rs#L11947), [11972](../../src/process_host.rs#L11972) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `waiter.request_provider_lease` | [11947](../../src/process_host.rs#L11947), [11972](../../src/process_host.rs#L11972) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-b".to_owned` | [11948](../../src/process_host.rs#L11948) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"provider".to_owned` | [11949](../../src/process_host.rs#L11949), [11974](../../src/process_host.rs#L11974) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .settle` | [11957](../../src/process_host.rs#L11957) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else` | [11957](../../src/process_host.rs#L11957) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock` | [11957](../../src/process_host.rs#L11957) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission_changed.notify_all` | [11961](../../src/process_host.rs#L11961), [11980](../../src/process_host.rs#L11980) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join().expect` | [11967](../../src/process_host.rs#L11967), [11986](../../src/process_host.rs#L11986) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join` | [11967](../../src/process_host.rs#L11967), [11986](../../src/process_host.rs#L11986) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-c".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11972](../../src/process_host.rs#L11972) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-c".to_owned` | [11973](../../src/process_host.rs#L11973) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.draining.store` | [11979](../../src/process_host.rs#L11979) | receiver-type-required |

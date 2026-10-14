@@ -36,7 +36,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/bin/tekes-helper.rs](../../src/bin/tekes-helper.rs) | 2 | 31 | [Symbols and calls](src--bin--tekes-helper.md) |
 | [crates/tools/src/bubblewrap_sandbox.rs](../../src/bubblewrap_sandbox.rs) | 21 | 263 | [Symbols and calls](src--bubblewrap_sandbox.md) |
 | [crates/tools/src/builtin.rs](../../src/builtin.rs) | 22 | 103 | [Symbols and calls](src--builtin.md) |
-| [crates/tools/src/guidance.rs](../../src/guidance.rs) | 11 | 22 | [Symbols and calls](src--guidance.md) |
+| [crates/tools/src/guidance.rs](../../src/guidance.rs) | 15 | 26 | [Symbols and calls](src--guidance.md) |
 | [crates/tools/src/helper/native_grep.rs](../../src/helper/native_grep.rs) | 2 | 181 | [Symbols and calls](src--helper--native_grep.md) |
 | [crates/tools/src/helper.rs](../../src/helper.rs) | 84 | 738 | [Symbols and calls](src--helper.md) |
 | [crates/tools/src/hook.rs](../../src/hook.rs) | 25 | 154 | [Symbols and calls](src--hook.md) |

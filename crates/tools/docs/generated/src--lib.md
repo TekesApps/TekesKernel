@@ -23,8 +23,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `CatalogRole` | `builtin::CatalogRole` | `pub` |
 | `Effect` | `builtin::Effect` | `pub` |
 | `index_by_name` | `builtin::index_by_name` | `pub` |
-| `CODING_PROFILE` | `guidance::CODING_PROFILE` | `pub` |
-| `GENERAL_PROFILE` | `guidance::GENERAL_PROFILE` | `pub` |
+| `CODING_IDENTITY` | `guidance::CODING_IDENTITY` | `pub` |
+| `CODING_RULES` | `guidance::CODING_RULES` | `pub` |
+| `GENERAL_IDENTITY` | `guidance::GENERAL_IDENTITY` | `pub` |
+| `GENERAL_RULES` | `guidance::GENERAL_RULES` | `pub` |
 | `HARNESS_IDENTITY` | `guidance::HARNESS_IDENTITY` | `pub` |
 | `IdentityProfile` | `guidance::IdentityProfile` | `pub` |
 | `WORKING_DIRECTORY` | `guidance::WORKING_DIRECTORY` | `pub` |

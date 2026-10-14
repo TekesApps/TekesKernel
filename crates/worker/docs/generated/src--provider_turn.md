@@ -190,7 +190,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_provider_turn_inner` | `current_turn_inputs` | [262](../../src/provider_turn.rs#L262) | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1522) |
 | `run_provider_turn_inner` | `validation_runtime::JUDGE_SYSTEM.to_owned` | [268](../../src/provider_turn.rs#L268) | receiver-type-required |
 | `run_provider_turn_inner` | `identity::resolve` | [270](../../src/provider_turn.rs#L270) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `tools::root_system_instructions` | [271](../../src/provider_turn.rs#L271) | [tools::guidance::root_system_instructions](../../../tools/src/guidance.rs#L63) |
+| `run_provider_turn_inner` | `tools::root_system_instructions` | [271](../../src/provider_turn.rs#L271) | [tools::guidance::root_system_instructions](../../../tools/src/guidance.rs#L85) |
 | `run_provider_turn_inner` | `resolved_profile.wire_model` | [273](../../src/provider_turn.rs#L273) | receiver-type-required |
 | `run_provider_turn_inner` | `profile.config.execution_cwd` | [274](../../src/provider_turn.rs#L274) | receiver-type-required |
 | `run_provider_turn_inner` | `effective_system` | [275](../../src/provider_turn.rs#L275) | external-constructor-callback-or-unresolved |

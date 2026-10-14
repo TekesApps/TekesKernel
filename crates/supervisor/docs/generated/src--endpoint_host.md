@@ -1022,7 +1022,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_session` | `optional_string(payload, "identityProfile")?             .map(&#124;value&#124; {                 tools::IdentityProfile::parse(value)                     .ok_or_else(&#124;&#124; invalid("identityProfile must be coding or general"))             })             .transpose` | [1014](../../src/endpoint_host.rs#L1014) | receiver-type-required |
 | `create_session` | `optional_string(payload, "identityProfile")?             .map` | [1014](../../src/endpoint_host.rs#L1014) | receiver-type-required |
 | `create_session` | `tools::IdentityProfile::parse(value)                     .ok_or_else` | [1016](../../src/endpoint_host.rs#L1016) | receiver-type-required |
-| `create_session` | `tools::IdentityProfile::parse` | [1016](../../src/endpoint_host.rs#L1016) | [tools::guidance::IdentityProfile::parse](../../../tools/src/guidance.rs#L47) |
+| `create_session` | `tools::IdentityProfile::parse` | [1016](../../src/endpoint_host.rs#L1016) | [tools::guidance::IdentityProfile::parse](../../../tools/src/guidance.rs#L54) |
 | `create_session` | `invalid` | [1017](../../src/endpoint_host.rs#L1017) | [tekes-supervisor::endpoint_host::invalid](../../src/endpoint_host.rs#L2554) |
 | `create_session` | `(self.clock)().map_err` | [1020](../../src/endpoint_host.rs#L1020) | receiver-type-required |
 | `create_session` | `(self.clock)` | [1020](../../src/endpoint_host.rs#L1020) | external-constructor-callback-or-unresolved |
