@@ -8573,3 +8573,156 @@ fn direct_input_paths_are_never_rewritten() {
     assert_eq!(raw["payload"]["resolved_inputs"], json!([]));
     assert_eq!(raw["payload"]["invocation"], direct.arguments);
 }
+
+#[test]
+fn reexecuted_task_names_resolve_to_the_latest_preceding_delegation() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let profile = tool_profile(directory.path(), &["task"]);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "task-attempt");
+    for version in ["v1", "v2"] {
+        let task = start_named_task(
+            &mut ledger,
+            &options,
+            &profile,
+            &format!("outline-{version}"),
+            "outline",
+            &format!("outline-{version}.md"),
+        );
+        finish_named_task(&mut ledger, &options, &task, "completed");
+    }
+    append_downstream_call(&mut ledger, "after-v2", &[]);
+    // A newer version recorded after the call is not a preceding delegation.
+    let v3 = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-v3",
+        "outline",
+        "outline-v3.md",
+    );
+    let resolved =
+        resolve_completed_task_inputs(&ledger, &json!({"input_sources":["outline"]}), "after-v2")
+            .unwrap();
+    assert_eq!(resolved[0]["path"], "outline-v2.md");
+    assert_eq!(
+        resolved[0]["delegation_seq"],
+        delegation_seq_of(&ledger, "outline-v2")
+    );
+    assert_eq!(resolved[0]["summary"], "outline-v2 completed");
+
+    // An unfinished latest version never falls back to an older completion.
+    append_downstream_call(&mut ledger, "during-v3", &[]);
+    assert_task_input_rejected(&ledger, &["outline"], "during-v3");
+    finish_named_task(&mut ledger, &options, &v3, "failed");
+    append_downstream_call(&mut ledger, "after-failed-v3", &[]);
+    assert_task_input_rejected(&ledger, &["outline"], "after-failed-v3");
+
+    let v4 = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-v4",
+        "outline",
+        "outline-v4.md",
+    );
+    finish_named_task(&mut ledger, &options, &v4, "completed");
+    append_downstream_call(&mut ledger, "after-v4", &[]);
+    let resolved =
+        resolve_completed_task_inputs(&ledger, &json!({"input_sources":["outline"]}), "after-v4")
+            .unwrap();
+    assert_eq!(resolved[0]["path"], "outline-v4.md");
+    assert_eq!(
+        resolved[0]["completion_seq"],
+        event_seq_of(&ledger, EventKind::ChildResult, "outline-v4")
+    );
+}
+
+#[test]
+fn existing_delegation_seeds_resume_without_re_resolution() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let profile = tool_profile(directory.path(), &["task"]);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "task-attempt");
+    let outline = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-v1",
+        "outline",
+        "outline-v1.md",
+    );
+    finish_named_task(&mut ledger, &options, &outline, "completed");
+    let downstream = append_downstream_call(&mut ledger, "summary-call", &["outline"]);
+    let effective = ijson(downstream.arguments.clone()).unwrap();
+    let seed = ensure_delegation_state(&mut ledger, &options, &downstream, &effective).unwrap();
+    // Re-executing the source leaves an unfinished latest version, so a
+    // fresh resolution would now reject.
+    start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-v2",
+        "outline",
+        "outline-v2.md",
+    );
+    append_downstream_call(&mut ledger, "during-v2", &[]);
+    assert_task_input_rejected(&ledger, &["outline"], "during-v2");
+    let resumed = ensure_delegation_state(&mut ledger, &options, &downstream, &effective)
+        .expect("existing seed resumes");
+    assert_eq!(resumed.seq(), seed.seq());
+    assert_eq!(
+        resumed.canonical_bytes().unwrap(),
+        seed.canonical_bytes().unwrap()
+    );
+    let spawn = ensure_durable_child(&mut ledger, &options, &profile, &downstream, &effective)
+        .expect("spawn from the existing seed");
+    assert_child_seed_is(&ledger, &spawn, &seed);
+    assert_eq!(
+        serde_json::to_value(seed.raw()).unwrap()["payload"]["resolved_inputs"][0]["path"],
+        "outline-v1.md"
+    );
+
+    // A legacy seed written before mappings existed resumes as written, even
+    // though its named source is unfinished now.
+    let legacy = append_downstream_call(&mut ledger, "legacy-call", &["outline"]);
+    let legacy_effective = ijson(legacy.arguments.clone()).unwrap();
+    let legacy_seed = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"state",
+        "ts":options.timestamp,"subkind":"delegation",
+        "payload":{"call":legacy.call_id,"name":legacy.name,"invocation":legacy.arguments}
+    }))
+    .unwrap();
+    ledger
+        .append_contract(legacy_seed.clone(), BarrierContext::default())
+        .unwrap();
+    assert_task_input_rejected(&ledger, &["outline"], "legacy-call");
+    let resumed = ensure_delegation_state(&mut ledger, &options, &legacy, &legacy_effective)
+        .expect("legacy seed resumes");
+    assert_eq!(resumed.seq(), legacy_seed.seq());
+    assert!(
+        serde_json::to_value(resumed.raw()).unwrap()["payload"]
+            .get("resolved_inputs")
+            .is_none()
+    );
+    let spawn = ensure_durable_child(&mut ledger, &options, &profile, &legacy, &legacy_effective)
+        .expect("spawn from the legacy seed");
+    assert_child_seed_is(&ledger, &spawn, &legacy_seed);
+}
+
+/// The child genesis snapshot must be the durable seed's exact bytes.
+fn assert_child_seed_is(ledger: &LockedLedger, spawn: &DurableChildSpawn, seed: &Event) {
+    let folder = ledger.path().parent().unwrap();
+    let child = read_child_projection(&folder.join(&spawn.child_file)).unwrap();
+    let genesis = serde_json::to_value(child.events[0].raw()).unwrap();
+    let asset = genesis["seed"]["snapshot"]["asset"].as_str().unwrap();
+    let mut expected = seed.canonical_bytes().unwrap();
+    expected.push(b'\n');
+    assert_eq!(
+        store::AssetStore::new(folder.join("assets"))
+            .unwrap()
+            .read_verified(asset)
+            .unwrap(),
+        expected
+    );
+}
