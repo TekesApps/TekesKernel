@@ -347,6 +347,82 @@ impl McpRuntime {
         }
     }
 
+    /// Advisory check of a preset's MCP references against the catalog a launch
+    /// in this workspace would bind now (the same preparation `tools/list` uses).
+    /// `session.create` does not start servers, so a missing tool otherwise shows
+    /// only when a session launches (`invalid_reference`).
+    pub fn preset_readiness(
+        &self,
+        workspace_id: &str,
+        preset: &tools::ResolvedPreset,
+    ) -> serde_json::Value {
+        let binding = match self.prepare_workspace(workspace_id) {
+            Ok(binding) => binding,
+            Err(_) => {
+                return serde_json::Value::Array(
+                    preset
+                        .mcp
+                        .iter()
+                        .map(|reference| serde_json::json!({"server":reference.server,"status":"unavailable"}))
+                        .collect(),
+                );
+            }
+        };
+        let catalog = binding
+            .catalog
+            .tools
+            .iter()
+            .map(|tool| tool.name.as_str())
+            .collect::<std::collections::BTreeSet<_>>();
+        serde_json::Value::Array(
+            preset
+                .mcp
+                .iter()
+                .map(|reference| {
+                    if let Some(failure) = binding
+                        .failures
+                        .iter()
+                        .find(|failure| failure.server.name == reference.server)
+                    {
+                        return serde_json::json!({"server":reference.server,"status":"failed","code":failure.code});
+                    }
+                    let refused = binding
+                        .tool_refusals
+                        .iter()
+                        .filter(|refused| {
+                            refused.server.name == reference.server
+                                && reference.tools.contains(&refused.refusal.tool)
+                        })
+                        .map(|refused| serde_json::json!({"tool":refused.refusal.tool,"code":refused.refusal.code}))
+                        .collect::<Vec<_>>();
+                    let missing = reference
+                        .tools
+                        .iter()
+                        .filter(|tool| {
+                            !mcp::project_name(&reference.server, tool)
+                                .is_ok_and(|name| catalog.contains(name.as_str()))
+                                && !binding.tool_refusals.iter().any(|refused| {
+                                    refused.server.name == reference.server
+                                        && &refused.refusal.tool == *tool
+                                })
+                        })
+                        .collect::<Vec<_>>();
+                    let mut entry = serde_json::json!({
+                        "server": reference.server,
+                        "status": if missing.is_empty() && refused.is_empty() { "ready" } else { "incomplete" },
+                    });
+                    if !missing.is_empty() {
+                        entry["missingTools"] = serde_json::json!(missing);
+                    }
+                    if !refused.is_empty() {
+                        entry["refusedTools"] = serde_json::Value::Array(refused);
+                    }
+                    entry
+                })
+                .collect(),
+        )
+    }
+
     /// Definition digest (`sha256:` over the canonical config) of the server a
     /// session preset names, preferring a project entry over a user entry and
     /// a user entry over a plugin one.
@@ -3855,6 +3931,70 @@ done
     /// contract) is excluded by itself. Its server stays healthy and keeps its
     /// other tools; every refusal names server, tool, JSON pointer, keyword and
     /// reason, and a second preparation (a cache hit) reports the same.
+    #[test]
+    fn preset_readiness_reports_missing_refused_and_failed_references() {
+        let root = tempfile::tempdir().unwrap();
+        let good = root.path().join("good-server");
+        let bad = root.path().join("bad-server");
+        write_stdio_catalog_server(
+            &good,
+            r#"[{"name":"greet","description":"Greeting","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{},"required":[],"additionalProperties":false}}]"#,
+        );
+        write_stdio_catalog_server(
+            &bad,
+            r#"[{"name":"get_entities","description":"Read entities","annotations":{"readOnlyHint":true},"inputSchema":{"type":"object","properties":{"layout":{"type":"string","not":{"const":"model"}}},"required":[],"additionalProperties":false}}]"#,
+        );
+        let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
+        for (name, script) in [
+            ("good", good.clone()),
+            ("bad", bad.clone()),
+            ("gone", root.path().join("missing-server")),
+        ] {
+            runtime
+                .mutate(
+                    &format!("save-{name}"),
+                    &McpManagementMutation::Save {
+                        server: stdio_user_server(name, &script),
+                        credential_fields: BTreeMap::new(),
+                    },
+                )
+                .unwrap();
+        }
+        let reference = |server: &str, tools: &[&str]| tools::PresetMcpRef {
+            server: server.to_owned(),
+            digest: "sha256:x".to_owned(),
+            tools: tools.iter().map(|tool| (*tool).to_owned()).collect(),
+        };
+        let preset = tools::ResolvedPreset {
+            format: 1,
+            base: tools::PresetBase::General,
+            layers: Vec::new(),
+            tools: None,
+            mcp: vec![
+                reference("good", &["greet"]),
+                reference("good", &["greet", "wave"]),
+                reference("bad", &["get_entities"]),
+                reference("gone", &["anything"]),
+            ],
+            skills: None,
+            digest: "sha256:x".to_owned(),
+        };
+        let readiness = runtime.preset_readiness("ws", &preset);
+        assert_eq!(
+            readiness[0],
+            serde_json::json!({"server":"good","status":"ready"})
+        );
+        assert_eq!(
+            readiness[1],
+            serde_json::json!({"server":"good","status":"incomplete","missingTools":["wave"]})
+        );
+        assert_eq!(readiness[2]["status"], "incomplete");
+        assert_eq!(readiness[2]["refusedTools"][0]["tool"], "get_entities");
+        assert!(readiness[2].get("missingTools").is_none());
+        assert_eq!(readiness[3]["status"], "failed");
+        assert!(readiness[3]["code"].is_string());
+    }
+
     #[test]
     fn prepare_workspace_refuses_only_the_tool_whose_schema_fails_projection() {
         let root = tempfile::tempdir().unwrap();

@@ -11,15 +11,17 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::identity::SELECTED_SUBKIND](../../src/identity.rs#L3) | const_item | `private` |  |
 | [tekes-worker::identity::selected](../../src/identity.rs#L7) | function_item | `pub(super)` |  |
 | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) | function_item | `pub(super)` |  |
-| [tekes-worker::identity::resolve_preset](../../src/identity.rs#L56) | function_item | `pub(super)` |  |
-| [tekes-worker::identity::resolve](../../src/identity.rs#L71) | function_item | `pub(super)` |  |
-| [tekes-worker::identity::classify](../../src/identity.rs#L121) | function_item | `private` |  |
-| [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L240) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L244) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::identity::tests::a_genesis_preset_renders_without_classifying](../../src/identity.rs#L284) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::identity::tests::classifies_first_user_request_without_model_work](../../src/identity.rs#L317) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::identity::tests::selection_is_durable_and_runtime_only](../../src/identity.rs#L350) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::identity::tests::explicit_identity_is_stable_without_a_selection_event](../../src/identity.rs#L394) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::inherited_opening](../../src/identity.rs#L57) | function_item | `pub(super)` |  |
+| [tekes-worker::identity::resolve_preset](../../src/identity.rs#L72) | function_item | `pub(super)` |  |
+| [tekes-worker::identity::resolve](../../src/identity.rs#L87) | function_item | `pub(super)` |  |
+| [tekes-worker::identity::classify](../../src/identity.rs#L137) | function_item | `private` |  |
+| [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L256) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L260) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::a_genesis_preset_renders_without_classifying](../../src/identity.rs#L300) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::a_delegated_child_inherits_the_parent_opening](../../src/identity.rs#L333) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::classifies_first_user_request_without_model_work](../../src/identity.rs#L358) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::selection_is_durable_and_runtime_only](../../src/identity.rs#L391) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::identity::tests::explicit_identity_is_stable_without_a_selection_event](../../src/identity.rs#L435) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -38,7 +40,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–5: 6 direct edges</summary>
+<details><summary>Functions 1–6: 8 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -46,15 +48,18 @@ flowchart TD
   n1["tools::preset::ResolvedPreset::from_genesis"]
   n2["tekes-worker::identity::classify"]
   n3["tekes-worker::identity::genesis_preset"]
-  n4["tekes-worker::identity::resolve_preset"]
-  n5["tekes-worker::identity::resolve"]
+  n4["tekes-worker::identity::inherited_opening"]
+  n5["tekes-worker::identity::resolve_preset"]
   n6["tekes-worker::identity::selected"]
+  n7["tekes-worker::identity::resolve"]
   n3 --> n1
-  n4 --> n0
   n4 --> n3
-  n4 --> n5
-  n5 --> n2
-  n5 --> n6
+  n4 --> n6
+  n5 --> n0
+  n5 --> n3
+  n5 --> n7
+  n7 --> n2
+  n7 --> n6
 ```
 
 </details>
@@ -97,118 +102,133 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `genesis_preset` | `raw.get` | [49](../../src/identity.rs#L49) | receiver-type-required |
 | `genesis_preset` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [50](../../src/identity.rs#L50) | receiver-type-required |
 | `genesis_preset` | `tools::ResolvedPreset::from_genesis` | [50](../../src/identity.rs#L50) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
-| `resolve_preset` | `genesis_preset` | [61](../../src/identity.rs#L61) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
-| `resolve_preset` | `Ok` | [62](../../src/identity.rs#L62), [65](../../src/identity.rs#L65) | external-constructor-callback-or-unresolved |
-| `resolve_preset` | `resolve` | [64](../../src/identity.rs#L64) | [tekes-worker::identity::resolve](../../src/identity.rs#L71) |
-| `resolve_preset` | `tools::ResolvedPreset::from_identity` | [65](../../src/identity.rs#L65) | [tools::preset::ResolvedPreset::from_identity](../../../tools/src/preset.rs#L699) |
-| `resolve_preset` | `Some` | [66](../../src/identity.rs#L66) | external-constructor-callback-or-unresolved |
-| `resolve` | `selected` | [76](../../src/identity.rs#L76) | [tekes-worker::identity::selected](../../src/identity.rs#L7) |
-| `resolve` | `Ok` | [77](../../src/identity.rs#L77), [115](../../src/identity.rs#L115) | external-constructor-callback-or-unresolved |
-| `resolve` | `current_turn_inputs(ledger, turn)?         .first()         .ok_or` | [79](../../src/identity.rs#L79) | receiver-type-required |
-| `resolve` | `current_turn_inputs(ledger, turn)?         .first` | [79](../../src/identity.rs#L79) | receiver-type-required |
-| `resolve` | `current_turn_inputs` | [79](../../src/identity.rs#L79) | external-constructor-callback-or-unresolved |
-| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .find(&#124;event&#124; event.kind() == &EventKind::Input && event.seq() == input_seq)         .ok_or` | [82](../../src/identity.rs#L82) | receiver-type-required |
-| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .find` | [82](../../src/identity.rs#L82) | receiver-type-required |
-| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter` | [82](../../src/identity.rs#L82) | receiver-type-required |
-| `resolve` | `ledger         .projection()         .ok_or` | [82](../../src/identity.rs#L82) | receiver-type-required |
-| `resolve` | `ledger         .projection` | [82](../../src/identity.rs#L82) | receiver-type-required |
-| `resolve` | `event.kind` | [87](../../src/identity.rs#L87) | receiver-type-required |
-| `resolve` | `event.seq` | [87](../../src/identity.rs#L87) | receiver-type-required |
-| `resolve` | `serde_json::to_value` | [89](../../src/identity.rs#L89) | external-constructor-callback-or-unresolved |
-| `resolve` | `first_input.raw` | [89](../../src/identity.rs#L89) | receiver-type-required |
-| `resolve` | `materialize_json` | [90](../../src/identity.rs#L90) | external-constructor-callback-or-unresolved |
-| `resolve` | `raw.get("content").ok_or` | [92](../../src/identity.rs#L92) | receiver-type-required |
-| `resolve` | `raw.get` | [92](../../src/identity.rs#L92) | receiver-type-required |
-| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map(&#124;block&#124; {             (block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten()         })         .collect::<Vec<_>>()         .join` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map(&#124;block&#124; {             (block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten()         })         .collect::<Vec<_>>` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `content         .as_array()         .ok_or` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `content         .as_array` | [94](../../src/identity.rs#L94) | receiver-type-required |
-| `resolve` | `(block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten` | [99](../../src/identity.rs#L99) | receiver-type-required |
-| `resolve` | `(block.get("type").and_then(Value::as_str) == Some("text"))                 .then` | [99](../../src/identity.rs#L99) | receiver-type-required |
-| `resolve` | `block.get("type").and_then` | [99](../../src/identity.rs#L99) | receiver-type-required |
-| `resolve` | `block.get` | [99](../../src/identity.rs#L99), [100](../../src/identity.rs#L100) | receiver-type-required |
-| `resolve` | `Some` | [99](../../src/identity.rs#L99) | external-constructor-callback-or-unresolved |
-| `resolve` | `block.get("text").and_then` | [100](../../src/identity.rs#L100) | receiver-type-required |
-| `resolve` | `classify` | [105](../../src/identity.rs#L105) | [tekes-worker::identity::classify](../../src/identity.rs#L121) |
-| `resolve` | `ledger.next_seq` | [106](../../src/identity.rs#L106) | receiver-type-required |
-| `resolve` | `ledger.append_contract` | [107](../../src/identity.rs#L107) | receiver-type-required |
-| `resolve` | `make_event` | [108](../../src/identity.rs#L108) | external-constructor-callback-or-unresolved |
-| `resolve` | `BarrierContext::default` | [113](../../src/identity.rs#L113) | external-constructor-callback-or-unresolved |
-| `classify` | `text.to_lowercase` | [122](../../src/identity.rs#L122) | receiver-type-required |
-| `classify` | `lower         .split(&#124;ch: char&#124; !ch.is_ascii_alphanumeric() && ch != '_')         .filter(&#124;word&#124; !word.is_empty())         .collect::<Vec<_>>` | [123](../../src/identity.rs#L123) | receiver-type-required |
-| `classify` | `lower         .split(&#124;ch: char&#124; !ch.is_ascii_alphanumeric() && ch != '_')         .filter` | [123](../../src/identity.rs#L123) | receiver-type-required |
-| `classify` | `lower         .split` | [123](../../src/identity.rs#L123) | receiver-type-required |
-| `classify` | `ch.is_ascii_alphanumeric` | [124](../../src/identity.rs#L124) | receiver-type-required |
-| `classify` | `word.is_empty` | [125](../../src/identity.rs#L125) | receiver-type-required |
-| `classify` | `words.iter().any` | [183](../../src/identity.rs#L183), [227](../../src/identity.rs#L227) | receiver-type-required |
-| `classify` | `words.iter` | [183](../../src/identity.rs#L183), [227](../../src/identity.rs#L227) | receiver-type-required |
-| `classify` | `code_words.contains` | [183](../../src/identity.rs#L183) | receiver-type-required |
-| `classify` | `code_han.iter().any` | [184](../../src/identity.rs#L184) | receiver-type-required |
-| `classify` | `code_han.iter` | [184](../../src/identity.rs#L184) | receiver-type-required |
-| `classify` | `lower.contains` | [184](../../src/identity.rs#L184), [185](../../src/identity.rs#L185), [186](../../src/identity.rs#L186), [228](../../src/identity.rs#L228) | receiver-type-required |
-| `classify` | `code_suffixes.iter().any` | [185](../../src/identity.rs#L185) | receiver-type-required |
-| `classify` | `code_suffixes.iter` | [185](../../src/identity.rs#L185) | receiver-type-required |
-| `classify` | `general_words.contains` | [227](../../src/identity.rs#L227) | receiver-type-required |
-| `classify` | `general_han.iter().any` | [228](../../src/identity.rs#L228) | receiver-type-required |
-| `classify` | `general_han.iter` | [228](../../src/identity.rs#L228) | receiver-type-required |
-| `auto_ledger` | `ledger_with` | [241](../../src/identity.rs#L241) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L244) |
-| `ledger_with` | `tempfile::tempdir().unwrap` | [245](../../src/identity.rs#L245) | receiver-type-required |
-| `ledger_with` | `tempfile::tempdir` | [245](../../src/identity.rs#L245) | external-constructor-callback-or-unresolved |
-| `ledger_with` | `directory.path().join` | [246](../../src/identity.rs#L246) | receiver-type-required |
-| `ledger_with` | `directory.path` | [246](../../src/identity.rs#L246) | receiver-type-required |
-| `ledger_with` | `genesis             .as_object_mut()             .unwrap()             .extend` | [253](../../src/identity.rs#L253) | receiver-type-required |
-| `ledger_with` | `genesis             .as_object_mut()             .unwrap` | [253](../../src/identity.rs#L253) | receiver-type-required |
-| `ledger_with` | `genesis             .as_object_mut` | [253](../../src/identity.rs#L253) | receiver-type-required |
-| `ledger_with` | `opening.as_object().unwrap().clone` | [256](../../src/identity.rs#L256) | receiver-type-required |
-| `ledger_with` | `opening.as_object().unwrap` | [256](../../src/identity.rs#L256) | receiver-type-required |
-| `ledger_with` | `opening.as_object` | [256](../../src/identity.rs#L256) | receiver-type-required |
-| `ledger_with` | `Vec::new` | [270](../../src/identity.rs#L270) | external-constructor-callback-or-unresolved |
-| `ledger_with` | `make_event(event).unwrap` | [272](../../src/identity.rs#L272) | receiver-type-required |
-| `ledger_with` | `make_event` | [272](../../src/identity.rs#L272) | external-constructor-callback-or-unresolved |
-| `ledger_with` | `bytes.extend` | [273](../../src/identity.rs#L273) | receiver-type-required |
-| `ledger_with` | `event.canonical_bytes().unwrap` | [273](../../src/identity.rs#L273) | receiver-type-required |
-| `ledger_with` | `event.canonical_bytes` | [273](../../src/identity.rs#L273) | receiver-type-required |
-| `ledger_with` | `bytes.push` | [274](../../src/identity.rs#L274) | receiver-type-required |
-| `ledger_with` | `std::fs::write(&path, bytes).unwrap` | [276](../../src/identity.rs#L276) | receiver-type-required |
-| `ledger_with` | `std::fs::write` | [276](../../src/identity.rs#L276) | external-constructor-callback-or-unresolved |
-| `ledger_with` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [279](../../src/identity.rs#L279) | receiver-type-required |
-| `ledger_with` | `LockedLedger::open` | [279](../../src/identity.rs#L279) | external-constructor-callback-or-unresolved |
-| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request(             &json!({"layers":[{"kind":"inline","id":"creator","version":"1",                 "identity":"You are a story writing agent powered by the {model} model."}]}),             tools::PresetBase::General,             &tools::NoPresetEnvironment,         )         .unwrap` | [285](../../src/identity.rs#L285) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request` | [285](../../src/identity.rs#L285) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
-| `a_genesis_preset_renders_without_classifying` | `ledger_with` | [292](../../src/identity.rs#L292), [306](../../src/identity.rs#L306) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L244) |
-| `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap().events.len` | [296](../../src/identity.rs#L296) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap` | [296](../../src/identity.rs#L296) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `ledger.projection` | [296](../../src/identity.rs#L296) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `resolve_preset(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap` | [297](../../src/identity.rs#L297) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `resolve_preset` | [297](../../src/identity.rs#L297) | external-constructor-callback-or-unresolved |
-| `selection_is_durable_and_runtime_only` | `auto_ledger` | [351](../../src/identity.rs#L351) | [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L240) |
-| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.len` | [357](../../src/identity.rs#L357) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap` | [357](../../src/identity.rs#L357), [363](../../src/identity.rs#L363) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `ledger.projection` | [357](../../src/identity.rs#L357), [363](../../src/identity.rs#L363) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.last().unwrap` | [363](../../src/identity.rs#L363) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.last` | [363](../../src/identity.rs#L363) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `tools::root_system_instructions` | [369](../../src/identity.rs#L369) | [tools::guidance::root_system_instructions](../../../tools/src/guidance.rs#L85) |
-| `selection_is_durable_and_runtime_only` | `selected(&ledger).unwrap().unwrap` | [370](../../src/identity.rs#L370) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `selected(&ledger).unwrap` | [370](../../src/identity.rs#L370) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `selected` | [370](../../src/identity.rs#L370) | external-constructor-callback-or-unresolved |
-| `selection_is_durable_and_runtime_only` | `Some` | [372](../../src/identity.rs#L372) | external-constructor-callback-or-unresolved |
-| `selection_is_durable_and_runtime_only` | `ledger.path().to_owned` | [375](../../src/identity.rs#L375) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `ledger.path` | [375](../../src/identity.rs#L375) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `drop` | [376](../../src/identity.rs#L376) | external-constructor-callback-or-unresolved |
-| `selection_is_durable_and_runtime_only` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [377](../../src/identity.rs#L377) | receiver-type-required |
-| `selection_is_durable_and_runtime_only` | `LockedLedger::open` | [377](../../src/identity.rs#L377) | external-constructor-callback-or-unresolved |
-| `explicit_identity_is_stable_without_a_selection_event` | `auto_ledger` | [395](../../src/identity.rs#L395) | [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L240) |
-| `explicit_identity_is_stable_without_a_selection_event` | `ledger.path().to_owned` | [397](../../src/identity.rs#L397) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `ledger.path` | [397](../../src/identity.rs#L397) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `drop` | [398](../../src/identity.rs#L398) | external-constructor-callback-or-unresolved |
-| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::read(&path).unwrap` | [399](../../src/identity.rs#L399) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::read` | [399](../../src/identity.rs#L399) | external-constructor-callback-or-unresolved |
-| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8(bytes).unwrap().replace` | [400](../../src/identity.rs#L400) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8(bytes).unwrap` | [400](../../src/identity.rs#L400) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8` | [400](../../src/identity.rs#L400) | external-constructor-callback-or-unresolved |
-| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::write(&path, text).unwrap` | [404](../../src/identity.rs#L404) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::write` | [404](../../src/identity.rs#L404) | external-constructor-callback-or-unresolved |
-| `explicit_identity_is_stable_without_a_selection_event` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [405](../../src/identity.rs#L405) | receiver-type-required |
-| `explicit_identity_is_stable_without_a_selection_event` | `LockedLedger::open` | [405](../../src/identity.rs#L405) | external-constructor-callback-or-unresolved |
+| `inherited_opening` | `serde_json::Map::new` | [60](../../src/identity.rs#L60) | external-constructor-callback-or-unresolved |
+| `inherited_opening` | `genesis_preset` | [61](../../src/identity.rs#L61) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
+| `inherited_opening` | `opening.insert` | [62](../../src/identity.rs#L62), [63](../../src/identity.rs#L63), [65](../../src/identity.rs#L65) | receiver-type-required |
+| `inherited_opening` | `"min_reader".to_owned` | [62](../../src/identity.rs#L62) | receiver-type-required |
+| `inherited_opening` | `"preset".to_owned` | [63](../../src/identity.rs#L63) | receiver-type-required |
+| `inherited_opening` | `serde_json::to_value` | [63](../../src/identity.rs#L63) | external-constructor-callback-or-unresolved |
+| `inherited_opening` | `selected` | [64](../../src/identity.rs#L64) | [tekes-worker::identity::selected](../../src/identity.rs#L7) |
+| `inherited_opening` | `"identity_profile".to_owned` | [65](../../src/identity.rs#L65) | receiver-type-required |
+| `inherited_opening` | `Ok` | [67](../../src/identity.rs#L67) | external-constructor-callback-or-unresolved |
+| `resolve_preset` | `genesis_preset` | [77](../../src/identity.rs#L77) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
+| `resolve_preset` | `Ok` | [78](../../src/identity.rs#L78), [81](../../src/identity.rs#L81) | external-constructor-callback-or-unresolved |
+| `resolve_preset` | `resolve` | [80](../../src/identity.rs#L80) | [tekes-worker::identity::resolve](../../src/identity.rs#L87) |
+| `resolve_preset` | `tools::ResolvedPreset::from_identity` | [81](../../src/identity.rs#L81) | [tools::preset::ResolvedPreset::from_identity](../../../tools/src/preset.rs#L699) |
+| `resolve_preset` | `Some` | [82](../../src/identity.rs#L82) | external-constructor-callback-or-unresolved |
+| `resolve` | `selected` | [92](../../src/identity.rs#L92) | [tekes-worker::identity::selected](../../src/identity.rs#L7) |
+| `resolve` | `Ok` | [93](../../src/identity.rs#L93), [131](../../src/identity.rs#L131) | external-constructor-callback-or-unresolved |
+| `resolve` | `current_turn_inputs(ledger, turn)?         .first()         .ok_or` | [95](../../src/identity.rs#L95) | receiver-type-required |
+| `resolve` | `current_turn_inputs(ledger, turn)?         .first` | [95](../../src/identity.rs#L95) | receiver-type-required |
+| `resolve` | `current_turn_inputs` | [95](../../src/identity.rs#L95) | external-constructor-callback-or-unresolved |
+| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .find(&#124;event&#124; event.kind() == &EventKind::Input && event.seq() == input_seq)         .ok_or` | [98](../../src/identity.rs#L98) | receiver-type-required |
+| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .find` | [98](../../src/identity.rs#L98) | receiver-type-required |
+| `resolve` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter` | [98](../../src/identity.rs#L98) | receiver-type-required |
+| `resolve` | `ledger         .projection()         .ok_or` | [98](../../src/identity.rs#L98) | receiver-type-required |
+| `resolve` | `ledger         .projection` | [98](../../src/identity.rs#L98) | receiver-type-required |
+| `resolve` | `event.kind` | [103](../../src/identity.rs#L103) | receiver-type-required |
+| `resolve` | `event.seq` | [103](../../src/identity.rs#L103) | receiver-type-required |
+| `resolve` | `serde_json::to_value` | [105](../../src/identity.rs#L105) | external-constructor-callback-or-unresolved |
+| `resolve` | `first_input.raw` | [105](../../src/identity.rs#L105) | receiver-type-required |
+| `resolve` | `materialize_json` | [106](../../src/identity.rs#L106) | external-constructor-callback-or-unresolved |
+| `resolve` | `raw.get("content").ok_or` | [108](../../src/identity.rs#L108) | receiver-type-required |
+| `resolve` | `raw.get` | [108](../../src/identity.rs#L108) | receiver-type-required |
+| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map(&#124;block&#124; {             (block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten()         })         .collect::<Vec<_>>()         .join` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map(&#124;block&#124; {             (block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten()         })         .collect::<Vec<_>>` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter()         .filter_map` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `content         .as_array()         .ok_or("first input content is not an array")?         .iter` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `content         .as_array()         .ok_or` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `content         .as_array` | [110](../../src/identity.rs#L110) | receiver-type-required |
+| `resolve` | `(block.get("type").and_then(Value::as_str) == Some("text"))                 .then(&#124;&#124; block.get("text").and_then(Value::as_str))                 .flatten` | [115](../../src/identity.rs#L115) | receiver-type-required |
+| `resolve` | `(block.get("type").and_then(Value::as_str) == Some("text"))                 .then` | [115](../../src/identity.rs#L115) | receiver-type-required |
+| `resolve` | `block.get("type").and_then` | [115](../../src/identity.rs#L115) | receiver-type-required |
+| `resolve` | `block.get` | [115](../../src/identity.rs#L115), [116](../../src/identity.rs#L116) | receiver-type-required |
+| `resolve` | `Some` | [115](../../src/identity.rs#L115) | external-constructor-callback-or-unresolved |
+| `resolve` | `block.get("text").and_then` | [116](../../src/identity.rs#L116) | receiver-type-required |
+| `resolve` | `classify` | [121](../../src/identity.rs#L121) | [tekes-worker::identity::classify](../../src/identity.rs#L137) |
+| `resolve` | `ledger.next_seq` | [122](../../src/identity.rs#L122) | receiver-type-required |
+| `resolve` | `ledger.append_contract` | [123](../../src/identity.rs#L123) | receiver-type-required |
+| `resolve` | `make_event` | [124](../../src/identity.rs#L124) | external-constructor-callback-or-unresolved |
+| `resolve` | `BarrierContext::default` | [129](../../src/identity.rs#L129) | external-constructor-callback-or-unresolved |
+| `classify` | `text.to_lowercase` | [138](../../src/identity.rs#L138) | receiver-type-required |
+| `classify` | `lower         .split(&#124;ch: char&#124; !ch.is_ascii_alphanumeric() && ch != '_')         .filter(&#124;word&#124; !word.is_empty())         .collect::<Vec<_>>` | [139](../../src/identity.rs#L139) | receiver-type-required |
+| `classify` | `lower         .split(&#124;ch: char&#124; !ch.is_ascii_alphanumeric() && ch != '_')         .filter` | [139](../../src/identity.rs#L139) | receiver-type-required |
+| `classify` | `lower         .split` | [139](../../src/identity.rs#L139) | receiver-type-required |
+| `classify` | `ch.is_ascii_alphanumeric` | [140](../../src/identity.rs#L140) | receiver-type-required |
+| `classify` | `word.is_empty` | [141](../../src/identity.rs#L141) | receiver-type-required |
+| `classify` | `words.iter().any` | [199](../../src/identity.rs#L199), [243](../../src/identity.rs#L243) | receiver-type-required |
+| `classify` | `words.iter` | [199](../../src/identity.rs#L199), [243](../../src/identity.rs#L243) | receiver-type-required |
+| `classify` | `code_words.contains` | [199](../../src/identity.rs#L199) | receiver-type-required |
+| `classify` | `code_han.iter().any` | [200](../../src/identity.rs#L200) | receiver-type-required |
+| `classify` | `code_han.iter` | [200](../../src/identity.rs#L200) | receiver-type-required |
+| `classify` | `lower.contains` | [200](../../src/identity.rs#L200), [201](../../src/identity.rs#L201), [202](../../src/identity.rs#L202), [244](../../src/identity.rs#L244) | receiver-type-required |
+| `classify` | `code_suffixes.iter().any` | [201](../../src/identity.rs#L201) | receiver-type-required |
+| `classify` | `code_suffixes.iter` | [201](../../src/identity.rs#L201) | receiver-type-required |
+| `classify` | `general_words.contains` | [243](../../src/identity.rs#L243) | receiver-type-required |
+| `classify` | `general_han.iter().any` | [244](../../src/identity.rs#L244) | receiver-type-required |
+| `classify` | `general_han.iter` | [244](../../src/identity.rs#L244) | receiver-type-required |
+| `auto_ledger` | `ledger_with` | [257](../../src/identity.rs#L257) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L260) |
+| `ledger_with` | `tempfile::tempdir().unwrap` | [261](../../src/identity.rs#L261) | receiver-type-required |
+| `ledger_with` | `tempfile::tempdir` | [261](../../src/identity.rs#L261) | external-constructor-callback-or-unresolved |
+| `ledger_with` | `directory.path().join` | [262](../../src/identity.rs#L262) | receiver-type-required |
+| `ledger_with` | `directory.path` | [262](../../src/identity.rs#L262) | receiver-type-required |
+| `ledger_with` | `genesis             .as_object_mut()             .unwrap()             .extend` | [269](../../src/identity.rs#L269) | receiver-type-required |
+| `ledger_with` | `genesis             .as_object_mut()             .unwrap` | [269](../../src/identity.rs#L269) | receiver-type-required |
+| `ledger_with` | `genesis             .as_object_mut` | [269](../../src/identity.rs#L269) | receiver-type-required |
+| `ledger_with` | `opening.as_object().unwrap().clone` | [272](../../src/identity.rs#L272) | receiver-type-required |
+| `ledger_with` | `opening.as_object().unwrap` | [272](../../src/identity.rs#L272) | receiver-type-required |
+| `ledger_with` | `opening.as_object` | [272](../../src/identity.rs#L272) | receiver-type-required |
+| `ledger_with` | `Vec::new` | [286](../../src/identity.rs#L286) | external-constructor-callback-or-unresolved |
+| `ledger_with` | `make_event(event).unwrap` | [288](../../src/identity.rs#L288) | receiver-type-required |
+| `ledger_with` | `make_event` | [288](../../src/identity.rs#L288) | external-constructor-callback-or-unresolved |
+| `ledger_with` | `bytes.extend` | [289](../../src/identity.rs#L289) | receiver-type-required |
+| `ledger_with` | `event.canonical_bytes().unwrap` | [289](../../src/identity.rs#L289) | receiver-type-required |
+| `ledger_with` | `event.canonical_bytes` | [289](../../src/identity.rs#L289) | receiver-type-required |
+| `ledger_with` | `bytes.push` | [290](../../src/identity.rs#L290) | receiver-type-required |
+| `ledger_with` | `std::fs::write(&path, bytes).unwrap` | [292](../../src/identity.rs#L292) | receiver-type-required |
+| `ledger_with` | `std::fs::write` | [292](../../src/identity.rs#L292) | external-constructor-callback-or-unresolved |
+| `ledger_with` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [295](../../src/identity.rs#L295) | receiver-type-required |
+| `ledger_with` | `LockedLedger::open` | [295](../../src/identity.rs#L295) | external-constructor-callback-or-unresolved |
+| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request(             &json!({"layers":[{"kind":"inline","id":"creator","version":"1",                 "identity":"You are a story writing agent powered by the {model} model."}]}),             tools::PresetBase::General,             &tools::NoPresetEnvironment,         )         .unwrap` | [301](../../src/identity.rs#L301) | receiver-type-required |
+| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request` | [301](../../src/identity.rs#L301) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
+| `a_genesis_preset_renders_without_classifying` | `ledger_with` | [308](../../src/identity.rs#L308), [322](../../src/identity.rs#L322) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L260) |
+| `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap().events.len` | [312](../../src/identity.rs#L312) | receiver-type-required |
+| `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap` | [312](../../src/identity.rs#L312) | receiver-type-required |
+| `a_genesis_preset_renders_without_classifying` | `ledger.projection` | [312](../../src/identity.rs#L312) | receiver-type-required |
+| `a_genesis_preset_renders_without_classifying` | `resolve_preset(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap` | [313](../../src/identity.rs#L313) | receiver-type-required |
+| `a_genesis_preset_renders_without_classifying` | `resolve_preset` | [313](../../src/identity.rs#L313) | external-constructor-callback-or-unresolved |
+| `a_delegated_child_inherits_the_parent_opening` | `tools::ResolvedPreset::resolve_request(             &json!({"layers":[{"kind":"kernel","id":"coding"}],"tools":["read"]}),             tools::PresetBase::General,             &tools::NoPresetEnvironment,         )         .unwrap` | [334](../../src/identity.rs#L334) | receiver-type-required |
+| `a_delegated_child_inherits_the_parent_opening` | `tools::ResolvedPreset::resolve_request` | [334](../../src/identity.rs#L334) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
+| `a_delegated_child_inherits_the_parent_opening` | `ledger_with` | [341](../../src/identity.rs#L341), [347](../../src/identity.rs#L347) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L260) |
+| `a_delegated_child_inherits_the_parent_opening` | `inherited_opening(&with_preset).unwrap` | [342](../../src/identity.rs#L342) | receiver-type-required |
+| `a_delegated_child_inherits_the_parent_opening` | `inherited_opening` | [342](../../src/identity.rs#L342) | external-constructor-callback-or-unresolved |
+| `a_delegated_child_inherits_the_parent_opening` | `auto_ledger` | [353](../../src/identity.rs#L353) | [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L256) |
+| `selection_is_durable_and_runtime_only` | `auto_ledger` | [392](../../src/identity.rs#L392) | [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L256) |
+| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.len` | [398](../../src/identity.rs#L398) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap` | [398](../../src/identity.rs#L398), [404](../../src/identity.rs#L404) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `ledger.projection` | [398](../../src/identity.rs#L398), [404](../../src/identity.rs#L404) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.last().unwrap` | [404](../../src/identity.rs#L404) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `ledger.projection().unwrap().events.last` | [404](../../src/identity.rs#L404) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `tools::root_system_instructions` | [410](../../src/identity.rs#L410) | [tools::guidance::root_system_instructions](../../../tools/src/guidance.rs#L85) |
+| `selection_is_durable_and_runtime_only` | `selected(&ledger).unwrap().unwrap` | [411](../../src/identity.rs#L411) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `selected(&ledger).unwrap` | [411](../../src/identity.rs#L411) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `selected` | [411](../../src/identity.rs#L411) | external-constructor-callback-or-unresolved |
+| `selection_is_durable_and_runtime_only` | `Some` | [413](../../src/identity.rs#L413) | external-constructor-callback-or-unresolved |
+| `selection_is_durable_and_runtime_only` | `ledger.path().to_owned` | [416](../../src/identity.rs#L416) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `ledger.path` | [416](../../src/identity.rs#L416) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `drop` | [417](../../src/identity.rs#L417) | external-constructor-callback-or-unresolved |
+| `selection_is_durable_and_runtime_only` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [418](../../src/identity.rs#L418) | receiver-type-required |
+| `selection_is_durable_and_runtime_only` | `LockedLedger::open` | [418](../../src/identity.rs#L418) | external-constructor-callback-or-unresolved |
+| `explicit_identity_is_stable_without_a_selection_event` | `auto_ledger` | [436](../../src/identity.rs#L436) | [tekes-worker::identity::tests::auto_ledger](../../src/identity.rs#L256) |
+| `explicit_identity_is_stable_without_a_selection_event` | `ledger.path().to_owned` | [438](../../src/identity.rs#L438) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `ledger.path` | [438](../../src/identity.rs#L438) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `drop` | [439](../../src/identity.rs#L439) | external-constructor-callback-or-unresolved |
+| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::read(&path).unwrap` | [440](../../src/identity.rs#L440) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::read` | [440](../../src/identity.rs#L440) | external-constructor-callback-or-unresolved |
+| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8(bytes).unwrap().replace` | [441](../../src/identity.rs#L441) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8(bytes).unwrap` | [441](../../src/identity.rs#L441) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `String::from_utf8` | [441](../../src/identity.rs#L441) | external-constructor-callback-or-unresolved |
+| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::write(&path, text).unwrap` | [445](../../src/identity.rs#L445) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `std::fs::write` | [445](../../src/identity.rs#L445) | external-constructor-callback-or-unresolved |
+| `explicit_identity_is_stable_without_a_selection_event` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [446](../../src/identity.rs#L446) | receiver-type-required |
+| `explicit_identity_is_stable_without_a_selection_event` | `LockedLedger::open` | [446](../../src/identity.rs#L446) | external-constructor-callback-or-unresolved |

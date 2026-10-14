@@ -83,15 +83,24 @@ session or writes configuration. The preset model, limits and render order are
 
 | method | request | result |
 |---|---|---|
-| `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes,maxTools,maxMcpServers,maxMcpToolsPerServer,maxSkills}, invalidReasons:[str]}` |
-| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str]}` |
+| `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes,maxTools,maxMcpServers,maxMcpToolsPerServer,maxSkills}, invalidReasons:[str], selectableTools:[str]}` |
+| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str], mcpReadiness?:[McpReadiness]}` |
 
 `session.presets.resolve` resolves the preset exactly as `session.create`
 would under that workspace's base, instruction snapshot and MCP registry, and
 returns the same digest and selection the session's genesis would record. `presetText` is the harness identity and the
 preset-owned text with `{model}` unresolved; the working directory and the
 `AGENTS.md` scopes follow it in a session. A client can run it in its own build
-or tests to prove its presets before shipping them. Additional errors:
+or tests to prove its presets before shipping them. `selectableTools` lists
+the fixed tools a preset's `tools` may name.
+
+When the preset references MCP servers, `mcpReadiness` reports each reference
+against the catalog a launch in that workspace would bind now (the preparation
+`tools/list` uses): `{server, status:"ready"|"incomplete"|"failed"|"unavailable",
+code?, missingTools?:[str], refusedTools?:[{tool,code}]}`. It is advisory: it
+never refuses the preset, and the digest is the one `session.create` records.
+`session.create` itself does not start servers, so without this check a
+missing tool shows only when a session launches (`invalid_reference`). Additional errors:
 `workspace-not-found {workspaceId}` and `preset-invalid {reason,layer?,field?}`;
 a malformed preset is `bad-request`.
 
