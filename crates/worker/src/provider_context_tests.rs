@@ -8220,3 +8220,356 @@ fn steer_outside_a_pending_call_keeps_its_chronological_position() {
         input.len() - 1
     );
 }
+
+/// Records a `task` call with its durable delegation and spawn. The task stays
+/// unfinished until `finish_named_task` appends its `child_result`.
+fn start_named_task(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    profile: &RuntimeProfile,
+    call_id: &str,
+    task_name: &str,
+    path: &str,
+) -> (provider::ToolCall, DurableChildSpawn) {
+    let call = provider::ToolCall {
+        call_id: call_id.to_owned(),
+        name: "task".to_owned(),
+        arguments: json!({
+            "task_name":task_name,"goal":"write","instructions":"write it",
+            "input_sources":[],"output":file_output(task_name, path)
+        }),
+    };
+    append_test_call(
+        ledger,
+        "task-attempt",
+        &call.call_id,
+        &call.name,
+        call.arguments.clone(),
+    );
+    let spawn = ensure_durable_child(
+        ledger,
+        options,
+        profile,
+        &call,
+        &ijson(call.arguments.clone()).unwrap(),
+    )
+    .expect("named task spawn");
+    (call, spawn)
+}
+
+fn finish_named_task(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    (call, spawn): &(provider::ToolCall, DurableChildSpawn),
+    outcome: &str,
+) {
+    append_child_result_once(
+        ledger,
+        options,
+        2,
+        call,
+        spawn,
+        &ChildTerminal {
+            outcome: outcome.to_owned(),
+            summary: Some(format!("{} {outcome}", call.call_id)),
+        },
+    )
+    .expect("named task child_result");
+}
+
+fn file_output(name: &str, path: &str) -> Value {
+    json!({"mode":"file","format":"markdown","name":name,"path":path,"contract":"a document"})
+}
+
+/// Records a downstream `task` call that names `sources` as its inputs.
+fn append_downstream_call(
+    ledger: &mut LockedLedger,
+    call_id: &str,
+    sources: &[&str],
+) -> provider::ToolCall {
+    let call = provider::ToolCall {
+        call_id: call_id.to_owned(),
+        name: "task".to_owned(),
+        arguments: json!({
+            "task_name":"summary","goal":"summarize","instructions":"read the inputs",
+            "input_sources":sources,"output":file_output("summary", "summary.md")
+        }),
+    };
+    append_test_call(
+        ledger,
+        "task-attempt",
+        &call.call_id,
+        &call.name,
+        call.arguments.clone(),
+    );
+    call
+}
+
+fn event_seq_of(ledger: &LockedLedger, kind: EventKind, call: &str) -> u64 {
+    ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .find(|event| event.kind() == &kind && event.string_field("call") == Some(call))
+        .map(Event::seq)
+        .unwrap_or_else(|| panic!("{kind:?} for {call} is missing"))
+}
+
+fn delegation_seq_of(ledger: &LockedLedger, call: &str) -> u64 {
+    ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .find(|event| {
+            event.kind() == &EventKind::State
+                && event.string_field("subkind") == Some("delegation")
+                && serde_json::to_value(event.raw()).unwrap()["payload"]["call"] == call
+        })
+        .map(Event::seq)
+        .unwrap_or_else(|| panic!("delegation for {call} is missing"))
+}
+
+fn assert_task_input_rejected(ledger: &LockedLedger, sources: &[&str], call: &str) {
+    let error = resolve_completed_task_inputs(ledger, &json!({"input_sources":sources}), call)
+        .expect_err("named source must be rejected");
+    assert!(
+        error.downcast_ref::<TaskInputError>().is_some(),
+        "rejection must be a typed task input error: {error}"
+    );
+    assert!(
+        error.to_string().contains("is not completed"),
+        "unexpected rejection: {error}"
+    );
+}
+
+#[test]
+fn named_task_inputs_map_only_from_earlier_completed_tasks() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let profile = tool_profile(directory.path(), &["task"]);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "task-attempt");
+    let outline = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-call",
+        "outline",
+        "drafts/outline.md",
+    );
+    finish_named_task(&mut ledger, &options, &outline, "completed");
+    // Delegated before the downstream call, completed only after it.
+    let late = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "late-call",
+        "late",
+        "drafts/late.md",
+    );
+    let downstream = append_downstream_call(&mut ledger, "summary-call", &["outline"]);
+    finish_named_task(&mut ledger, &options, &late, "completed");
+    // Delegated and completed after the downstream call.
+    let after = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "after-call",
+        "after",
+        "drafts/after.md",
+    );
+    finish_named_task(&mut ledger, &options, &after, "completed");
+
+    let seed = ensure_delegation_state(
+        &mut ledger,
+        &options,
+        &downstream,
+        &ijson(downstream.arguments.clone()).unwrap(),
+    )
+    .expect("downstream delegation");
+    let raw = serde_json::to_value(seed.raw()).unwrap();
+    let downstream_seq = event_seq_of(&ledger, EventKind::ToolCall, "summary-call");
+    let delegation_seq = delegation_seq_of(&ledger, "outline-call");
+    let completion_seq = event_seq_of(&ledger, EventKind::ChildResult, "outline-call");
+    assert!(delegation_seq < completion_seq && completion_seq < downstream_seq);
+    assert_eq!(
+        raw["payload"]["resolved_inputs"],
+        json!([{
+            "source":"outline","path":"drafts/outline.md",
+            "output":file_output("outline", "drafts/outline.md"),
+            "summary":"outline-call completed",
+            "delegation_seq":delegation_seq,"completion_seq":completion_seq
+        }])
+    );
+
+    // A completion recorded after the call does not count as earlier.
+    assert_task_input_rejected(&ledger, &["late"], "summary-call");
+    // A task first delegated after the call supplies no mapping at all.
+    assert_eq!(
+        resolve_completed_task_inputs(&ledger, &json!({"input_sources":["after"]}), "summary-call")
+            .unwrap(),
+        json!([])
+    );
+}
+
+#[test]
+fn unfinished_named_task_inputs_are_typed_recoverable_rejections() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let profile = tool_profile(directory.path(), &["task"]);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "task-attempt");
+    start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-call",
+        "outline",
+        "outline.md",
+    );
+    for outcome in ["failed", "interrupted", "error"] {
+        let task = start_named_task(
+            &mut ledger,
+            &options,
+            &profile,
+            &format!("{outcome}-call"),
+            outcome,
+            &format!("{outcome}.md"),
+        );
+        finish_named_task(&mut ledger, &options, &task, outcome);
+    }
+    let probe = append_downstream_call(&mut ledger, "probe-call", &[]);
+    for source in ["outline", "failed", "interrupted", "error"] {
+        assert_task_input_rejected(&ledger, &[source], &probe.call_id);
+    }
+
+    // The rejection authors nothing: no delegation seed, spawn or child file.
+    let downstream = append_downstream_call(&mut ledger, "summary-call", &["outline"]);
+    let before = ledger.next_seq();
+    let error = ensure_durable_child(
+        &mut ledger,
+        &options,
+        &profile,
+        &downstream,
+        &ijson(downstream.arguments.clone()).unwrap(),
+    )
+    .expect_err("unfinished source rejects the spawn");
+    assert!(error.downcast_ref::<TaskInputError>().is_some());
+    assert_eq!(ledger.next_seq(), before);
+
+    // Through the production tool path the call is paired with a validation
+    // tool_result and the worker keeps running.
+    let approval = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"approval_request",
+        "ts":options.timestamp,"call":downstream.call_id,"scope":"destructive",
+        "question":{"tool":"task"}
+    }))
+    .unwrap();
+    ledger
+        .append_contract(approval, BarrierContext::default())
+        .unwrap();
+    let answer = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"approval_response",
+        "ts":options.timestamp,"call":downstream.call_id,"grant":true,
+        "origin_key":"approve-summary","origin_tuple":{
+            "principal":"p","client":"cli","target":"t",
+            "op":"answer","key":"approve-summary"
+        }
+    }))
+    .unwrap();
+    ledger
+        .append_contract(answer, BarrierContext::default())
+        .unwrap();
+    let mut no_replies = std::iter::empty();
+    let mut output = Vec::new();
+    let parked = execute_child_spawn_tool(
+        &mut ledger,
+        ChildSpawnExecution {
+            options: &options,
+            profile: &profile,
+            selected: Selected { version: 2 },
+            attempt: "task-attempt",
+            turn: 2,
+            call: &downstream,
+            hooks: &[],
+            manifest: &BuiltinManifest::compiled(),
+            cancellation: &RuntimeCancellation::default(),
+        },
+        &mut no_replies,
+        &mut output,
+    )
+    .expect("an unfinished input source is not a process failure");
+    assert!(!parked);
+    assert!(output.is_empty(), "no child launch is requested");
+    let events = &ledger.projection().unwrap().events;
+    let result = events
+        .iter()
+        .find(|event| {
+            event.kind() == &EventKind::ToolResult
+                && event.string_field("call") == Some("summary-call")
+        })
+        .expect("validation tool_result");
+    let raw = serde_json::to_value(result.raw()).unwrap();
+    assert_eq!(raw["outcome"], "error");
+    assert_eq!(raw["meta"]["classification"], "validation");
+    assert!(
+        raw["content"][0]["text"]
+            .as_str()
+            .unwrap()
+            .contains("\"outline\" is not completed")
+    );
+    assert!(!events.iter().any(|event| {
+        event.kind() == &EventKind::Spawn && event.string_field("call") == Some("summary-call")
+    }));
+}
+
+#[test]
+fn direct_input_paths_are_never_rewritten() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let profile = tool_profile(directory.path(), &["task"]);
+    let options = test_options(&ledger);
+    append_test_attempt(&mut ledger, "task-attempt");
+    let outline = start_named_task(
+        &mut ledger,
+        &options,
+        &profile,
+        "outline-call",
+        "outline",
+        "outline.md",
+    );
+    finish_named_task(&mut ledger, &options, &outline, "completed");
+    // Direct paths, including the completed task's own output path and a
+    // path whose stem equals the task name, stay ordinary paths.
+    let downstream = append_downstream_call(
+        &mut ledger,
+        "summary-call",
+        &["notes/source.md", "outline.md", "outline/", "outline"],
+    );
+    let seed = ensure_delegation_state(
+        &mut ledger,
+        &options,
+        &downstream,
+        &ijson(downstream.arguments.clone()).unwrap(),
+    )
+    .unwrap();
+    let raw = serde_json::to_value(seed.raw()).unwrap();
+    assert_eq!(
+        raw["payload"]["invocation"], downstream.arguments,
+        "the effective invocation keeps every source as written"
+    );
+    let inputs = raw["payload"]["resolved_inputs"].as_array().unwrap();
+    assert_eq!(inputs.len(), 1, "only the task name is resolved");
+    assert_eq!(inputs[0]["source"], "outline");
+
+    let direct = append_downstream_call(&mut ledger, "direct-call", &["notes/source.md"]);
+    let seed = ensure_delegation_state(
+        &mut ledger,
+        &options,
+        &direct,
+        &ijson(direct.arguments.clone()).unwrap(),
+    )
+    .unwrap();
+    let raw = serde_json::to_value(seed.raw()).unwrap();
+    assert_eq!(raw["payload"]["resolved_inputs"], json!([]));
+    assert_eq!(raw["payload"]["invocation"], direct.arguments);
+}
