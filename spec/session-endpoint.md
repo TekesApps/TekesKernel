@@ -1135,7 +1135,7 @@ arm requires a versioned Client authority change and new fixtures.
 | `session.updateQueue` | `{sessionId:uuid,itemId:str,action:QueueAction}` | `{accepted:true}` |
 | `session.cancel` | `{sessionId:uuid}` | `{accepted:true}` |
 | `session.rename` | `{sessionId:uuid,title:str}` | `{title:str,seq:int}` |
-| `session.fork` | `{sessionId:uuid,atSeq?:int,ephemeral?:bool}` | `{sessionId:uuid}` |
+| `session.fork` | `{sessionId:uuid,atSeq?:int,ephemeral?:bool,preset?:Preset}` | `{sessionId:uuid}` |
 | `session.discard` | `{sessionId:uuid}` | `{sessionId:uuid}` |
 | `session.attachment` | `{sessionId:uuid,attachmentId:str}` | `ImageAttachment` |
 | `session.models` | `{sessionId:uuid}` | imported `SessionModels` |
@@ -1238,7 +1238,7 @@ errors are separate):
 | `session.updateQueue` | `session-not-found`, `archived`, `queue-item-not-found`, `steer-unavailable`, `attachment-error`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
 | `session.cancel` | `session-not-found`, `archived`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
 | `session.rename` | `session-not-found`, `archived`, `title-invalid`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
-| `session.fork` | `session-not-found`, `archived`, `invalid-at-seq`, `active-session-limit`, `idempotency-conflict`, `internal` |
+| `session.fork` | `bad-request`, `session-not-found`, `archived`, `invalid-at-seq`, `active-session-limit`, `preset-invalid`, `idempotency-conflict`, `internal` |
 | `session.discard` | `session-not-found`, `archived`, `not-ephemeral`, `session-running`, `idempotency-conflict`, `internal` |
 | `session.attachment` | `session-not-found`, `archived`, `attachment-error`, `internal` |
 | `session.models` | `session-not-found`, `archived`, `internal` |
@@ -2215,9 +2215,15 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   workspace `allowed_tools` and every skill.
 - **Genesis.** The resolved preset is `preset:{format:1, base, layers,
   tools?, mcp?:[{server,digest,tools}], skills?, digest}`, where `digest` is
-  `sha256-` over the RFC 8785 bytes of the preset without `digest`. Such a genesis carries no `identity_profile` and sets
-  `min_reader` 2 (spec event §Genesis). Forks and delegated children copy it
-  verbatim.
+  `sha256:` over the RFC 8785 bytes of the preset without `digest`; the colon
+  keeps it apart from asset names (`sha256-<hex>`), which ledger rewrites
+  resolve. MCP definition digests use the same `sha256:` form. Such a genesis
+  carries no `identity_profile` and sets `min_reader` 2 (spec event §Genesis).
+  Delegated children copy it verbatim. `session.fork` copies the source's
+  opening (identity profile or preset) unless the request carries `preset`,
+  which is resolved under the source session's workspace exactly as at
+  `session.create` and replaces it in the destination; a refused one is
+  `preset-invalid`, and the source keeps its own.
 - **Catalog.** The additive `sessionPresets.v1` capability serves
   `session.presets.describe {}` and the read-only dry run
   `session.presets.resolve {workspaceId, preset}` (spec client-extensions

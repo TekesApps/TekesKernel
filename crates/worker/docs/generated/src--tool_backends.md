@@ -266,7 +266,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_skill_catalog` | `serde_json::to_value` | [506](../../src/tool_backends.rs#L506) | external-constructor-callback-or-unresolved |
 | `preset_skill_catalog` | `genesis.raw` | [506](../../src/tool_backends.rs#L506) | receiver-type-required |
 | `preset_skill_catalog` | `raw.get` | [507](../../src/tool_backends.rs#L507) | receiver-type-required |
-| `preset_skill_catalog` | `tools::ResolvedPreset::from_genesis` | [510](../../src/tool_backends.rs#L510) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L781) |
+| `preset_skill_catalog` | `tools::ResolvedPreset::from_genesis` | [510](../../src/tool_backends.rs#L510) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
 | `preset_skill_catalog` | `catalog.retain` | [511](../../src/tool_backends.rs#L511) | receiver-type-required |
 | `preset_skill_catalog` | `skills.contains` | [511](../../src/tool_backends.rs#L511) | receiver-type-required |
 | `invocation_write_roots` | `PathBuf::from` | [520](../../src/tool_backends.rs#L520), [583](../../src/tool_backends.rs#L583) | external-constructor-callback-or-unresolved |

@@ -96,7 +96,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `genesis_preset` | `raw.get("preset")         .map` | [49](../../src/identity.rs#L49) | receiver-type-required |
 | `genesis_preset` | `raw.get` | [49](../../src/identity.rs#L49) | receiver-type-required |
 | `genesis_preset` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [50](../../src/identity.rs#L50) | receiver-type-required |
-| `genesis_preset` | `tools::ResolvedPreset::from_genesis` | [50](../../src/identity.rs#L50) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L781) |
+| `genesis_preset` | `tools::ResolvedPreset::from_genesis` | [50](../../src/identity.rs#L50) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
 | `resolve_preset` | `genesis_preset` | [61](../../src/identity.rs#L61) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
 | `resolve_preset` | `Ok` | [62](../../src/identity.rs#L62), [65](../../src/identity.rs#L65) | external-constructor-callback-or-unresolved |
 | `resolve_preset` | `resolve` | [64](../../src/identity.rs#L64) | [tekes-worker::identity::resolve](../../src/identity.rs#L71) |

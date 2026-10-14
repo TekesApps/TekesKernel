@@ -67,31 +67,31 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tools::preset::ResolvedPreset::from_identity](../../src/preset.rs#L699) | function_item | `pub` |  |
 | [tools::preset::ResolvedPreset::from_parts](../../src/preset.rs#L710) | function_item | `private` |  |
 | [tools::preset::ResolvedPreset::compute_digest](../../src/preset.rs#L769) | function_item | `private` |  |
-| [tools::preset::ResolvedPreset::from_genesis](../../src/preset.rs#L781) | function_item | `pub` |  |
-| [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L808) | function_item | `private` |  |
-| [tools::preset::ResolvedPreset::preset_text](../../src/preset.rs#L830) | function_item | `pub` |  |
-| [tools::preset::ResolvedPreset::render](../../src/preset.rs#L841) | function_item | `pub` |  |
-| [tools::preset::ResolvedPreset::summary](../../src/preset.rs#L860) | function_item | `pub` |  |
-| [tools::preset::PresetReason](../../src/preset.rs#L871) | type_item | `private` |  |
-| [tools::preset::resolve_layer](../../src/preset.rs#L873) | function_item | `private` |  |
-| [tools::preset::describe_value](../../src/preset.rs#L989) | function_item | `pub` |  |
-| [tools::preset::tests::resolve](../../src/preset.rs#L1022) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::Fixture](../../src/preset.rs#L1026) | struct_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::Fixture::permitted_tools](../../src/preset.rs#L1031) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::Fixture::mcp_server_digest](../../src/preset.rs#L1034) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::Fixture::mcp_tool_name](../../src/preset.rs#L1037) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::Fixture::skill_known](../../src/preset.rs#L1040) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::resolve_in](../../src/preset.rs#L1045) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::invalid](../../src/preset.rs#L1059) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::sugar_renders_exactly_like_the_identity_profile](../../src/preset.rs#L1067) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::blank_base_drops_identity_and_rules](../../src/preset.rs#L1085) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::inline_identity_replaces_the_base_identity_but_not_its_rules](../../src/preset.rs#L1103) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::inline_identity_wins_over_a_kernel_layer_identity](../../src/preset.rs#L1130) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::refusals_name_reason_layer_and_field](../../src/preset.rs#L1146) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::tools_mcp_and_skills_resolve_against_the_environment](../../src/preset.rs#L1199) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::secrets_and_definitions_are_refused_before_shape_checks](../../src/preset.rs#L1309) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::shape_errors_are_bad_requests](../../src/preset.rs#L1324) | function_item | `private` | test; #[cfg(test)] |
-| [tools::preset::tests::genesis_round_trip_checks_digest_and_layers](../../src/preset.rs#L1342) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::ResolvedPreset::from_genesis](../../src/preset.rs#L783) | function_item | `pub` |  |
+| [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L810) | function_item | `private` |  |
+| [tools::preset::ResolvedPreset::preset_text](../../src/preset.rs#L832) | function_item | `pub` |  |
+| [tools::preset::ResolvedPreset::render](../../src/preset.rs#L843) | function_item | `pub` |  |
+| [tools::preset::ResolvedPreset::summary](../../src/preset.rs#L862) | function_item | `pub` |  |
+| [tools::preset::PresetReason](../../src/preset.rs#L873) | type_item | `private` |  |
+| [tools::preset::resolve_layer](../../src/preset.rs#L875) | function_item | `private` |  |
+| [tools::preset::describe_value](../../src/preset.rs#L991) | function_item | `pub` |  |
+| [tools::preset::tests::resolve](../../src/preset.rs#L1024) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::Fixture](../../src/preset.rs#L1028) | struct_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::Fixture::permitted_tools](../../src/preset.rs#L1033) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::Fixture::mcp_server_digest](../../src/preset.rs#L1036) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::Fixture::mcp_tool_name](../../src/preset.rs#L1039) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::Fixture::skill_known](../../src/preset.rs#L1042) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::resolve_in](../../src/preset.rs#L1047) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::invalid](../../src/preset.rs#L1061) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::sugar_renders_exactly_like_the_identity_profile](../../src/preset.rs#L1069) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::blank_base_drops_identity_and_rules](../../src/preset.rs#L1087) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::inline_identity_replaces_the_base_identity_but_not_its_rules](../../src/preset.rs#L1105) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::inline_identity_wins_over_a_kernel_layer_identity](../../src/preset.rs#L1132) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::refusals_name_reason_layer_and_field](../../src/preset.rs#L1148) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::tools_mcp_and_skills_resolve_against_the_environment](../../src/preset.rs#L1201) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::secrets_and_definitions_are_refused_before_shape_checks](../../src/preset.rs#L1311) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::shape_errors_are_bad_requests](../../src/preset.rs#L1326) | function_item | `private` | test; #[cfg(test)] |
+| [tools::preset::tests::genesis_round_trip_checks_digest_and_layers](../../src/preset.rs#L1344) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -408,7 +408,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_request` | `Vec::with_capacity` | [680](../../src/preset.rs#L680) | external-constructor-callback-or-unresolved |
 | `resolve_request` | `requested.iter().enumerate` | [681](../../src/preset.rs#L681) | receiver-type-required |
 | `resolve_request` | `requested.iter` | [681](../../src/preset.rs#L681) | receiver-type-required |
-| `resolve_request` | `resolve_layer` | [682](../../src/preset.rs#L682) | [tools::preset::resolve_layer](../../src/preset.rs#L873) |
+| `resolve_request` | `resolve_layer` | [682](../../src/preset.rs#L682) | [tools::preset::resolve_layer](../../src/preset.rs#L875) |
 | `resolve_request` | `layer.as_object` | [683](../../src/preset.rs#L683) | receiver-type-required |
 | `resolve_request` | `Some` | [684](../../src/preset.rs#L684) | external-constructor-callback-or-unresolved |
 | `resolve_request` | `layers.push` | [686](../../src/preset.rs#L686) | receiver-type-required |
@@ -447,136 +447,136 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `compute_digest` | `preimage             .as_object_mut` | [771](../../src/preset.rs#L771) | receiver-type-required |
 | `compute_digest` | `serde_json_canonicalizer::to_vec(&preimage).expect` | [775](../../src/preset.rs#L775) | receiver-type-required |
 | `compute_digest` | `serde_json_canonicalizer::to_vec` | [775](../../src/preset.rs#L775) | external-constructor-callback-or-unresolved |
-| `from_genesis` | `serde_json::from_value(value.clone())             .map_err` | [782](../../src/preset.rs#L782) | receiver-type-required |
-| `from_genesis` | `serde_json::from_value` | [782](../../src/preset.rs#L782) | external-constructor-callback-or-unresolved |
-| `from_genesis` | `value.clone` | [782](../../src/preset.rs#L782) | receiver-type-required |
-| `from_genesis` | `Err` | [785](../../src/preset.rs#L785), [790](../../src/preset.rs#L790), [801](../../src/preset.rs#L801) | external-constructor-callback-or-unresolved |
-| `from_genesis` | `preset.layers.iter().find` | [787](../../src/preset.rs#L787) | receiver-type-required |
-| `from_genesis` | `preset.layers.iter` | [787](../../src/preset.rs#L787) | receiver-type-required |
-| `from_genesis` | `Self::from_parts(             preset.base,             preset.layers.clone(),             preset.tools.clone(),             preset.mcp.clone(),             preset.skills.clone(),         )         .map_err` | [792](../../src/preset.rs#L792) | receiver-type-required |
-| `from_genesis` | `Self::from_parts` | [792](../../src/preset.rs#L792) | [tools::preset::ResolvedPreset::from_parts](../../src/preset.rs#L710) |
-| `from_genesis` | `preset.layers.clone` | [794](../../src/preset.rs#L794) | receiver-type-required |
-| `from_genesis` | `preset.tools.clone` | [795](../../src/preset.rs#L795) | receiver-type-required |
-| `from_genesis` | `preset.mcp.clone` | [796](../../src/preset.rs#L796) | receiver-type-required |
-| `from_genesis` | `preset.skills.clone` | [797](../../src/preset.rs#L797) | receiver-type-required |
-| `from_genesis` | `"genesis preset digest mismatch".to_owned` | [801](../../src/preset.rs#L801) | receiver-type-required |
-| `from_genesis` | `Ok` | [803](../../src/preset.rs#L803) | external-constructor-callback-or-unresolved |
-| `owned_sections` | `self.layers.iter().find_map` | [811](../../src/preset.rs#L811), [816](../../src/preset.rs#L816) | receiver-type-required |
-| `owned_sections` | `self.layers.iter` | [811](../../src/preset.rs#L811), [816](../../src/preset.rs#L816), [821](../../src/preset.rs#L821) | receiver-type-required |
-| `owned_sections` | `identity.as_deref` | [812](../../src/preset.rs#L812) | receiver-type-required |
-| `owned_sections` | `inline             .or_else(&#124;&#124; self.layers.iter().find_map(PresetLayer::identity))             .or_else` | [815](../../src/preset.rs#L815) | receiver-type-required |
-| `owned_sections` | `inline             .or_else` | [815](../../src/preset.rs#L815) | receiver-type-required |
-| `owned_sections` | `self.base.identity` | [817](../../src/preset.rs#L817) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map(str::trim)             .filter(&#124;text&#124; !text.is_empty())             .collect` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map(str::trim)             .filter` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter()             .chain` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `identity             .into_iter` | [818](../../src/preset.rs#L818) | receiver-type-required |
-| `owned_sections` | `self.base.rules` | [820](../../src/preset.rs#L820) | receiver-type-required |
-| `owned_sections` | `self.layers.iter().filter_map` | [821](../../src/preset.rs#L821) | receiver-type-required |
-| `owned_sections` | `text.is_empty` | [823](../../src/preset.rs#L823) | receiver-type-required |
-| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain(self.owned_sections())             .collect::<Vec<_>>()             .join` | [831](../../src/preset.rs#L831) | receiver-type-required |
-| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain(self.owned_sections())             .collect::<Vec<_>>` | [831](../../src/preset.rs#L831) | receiver-type-required |
-| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain` | [831](../../src/preset.rs#L831) | receiver-type-required |
-| `preset_text` | `std::iter::once` | [831](../../src/preset.rs#L831) | external-constructor-callback-or-unresolved |
-| `preset_text` | `self.owned_sections` | [832](../../src/preset.rs#L832) | [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L808) |
-| `render` | `sections.extend` | [843](../../src/preset.rs#L843) | receiver-type-required |
-| `render` | `self.owned_sections()                 .into_iter()                 .map` | [844](../../src/preset.rs#L844) | receiver-type-required |
-| `render` | `self.owned_sections()                 .into_iter` | [844](../../src/preset.rs#L844) | receiver-type-required |
-| `render` | `self.owned_sections` | [844](../../src/preset.rs#L844) | [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L808) |
-| `render` | `text.replace` | [846](../../src/preset.rs#L846) | receiver-type-required |
-| `render` | `sections.push` | [849](../../src/preset.rs#L849), [853](../../src/preset.rs#L853) | receiver-type-required |
-| `render` | `WORKING_DIRECTORY.replace` | [849](../../src/preset.rs#L849) | receiver-type-required |
-| `render` | `instruction_text.trim` | [851](../../src/preset.rs#L851) | receiver-type-required |
-| `render` | `instruction_text.is_empty` | [852](../../src/preset.rs#L852) | receiver-type-required |
-| `render` | `instruction_text.to_owned` | [853](../../src/preset.rs#L853) | receiver-type-required |
-| `render` | `sections.join` | [855](../../src/preset.rs#L855) | receiver-type-required |
-| `resolve_layer` | `layer         .as_object()         .and_then(&#124;object&#124; object.get("kind"))         .and_then(Value::as_str)         .ok_or_else` | [875](../../src/preset.rs#L875) | receiver-type-required |
-| `resolve_layer` | `layer         .as_object()         .and_then(&#124;object&#124; object.get("kind"))         .and_then` | [875](../../src/preset.rs#L875) | receiver-type-required |
-| `resolve_layer` | `layer         .as_object()         .and_then` | [875](../../src/preset.rs#L875) | receiver-type-required |
-| `resolve_layer` | `layer         .as_object` | [875](../../src/preset.rs#L875) | receiver-type-required |
-| `resolve_layer` | `object.get` | [877](../../src/preset.rs#L877) | receiver-type-required |
-| `resolve_layer` | `PresetError::BadRequest` | [879](../../src/preset.rs#L879), [884](../../src/preset.rs#L884), [907](../../src/preset.rs#L907), [924](../../src/preset.rs#L924), [981](../../src/preset.rs#L981) | external-constructor-callback-or-unresolved |
-| `resolve_layer` | `object_members` | [882](../../src/preset.rs#L882), [898](../../src/preset.rs#L898) | [tools::preset::object_members](../../src/preset.rs#L421) |
-| `resolve_layer` | `string_member(object, "id", &path)?                 .ok_or_else` | [883](../../src/preset.rs#L883), [906](../../src/preset.rs#L906) | receiver-type-required |
-| `resolve_layer` | `string_member` | [883](../../src/preset.rs#L883), [906](../../src/preset.rs#L906), [923](../../src/preset.rs#L923), [944](../../src/preset.rs#L944), [963](../../src/preset.rs#L963) | [tools::preset::string_member](../../src/preset.rs#L437) |
-| `resolve_layer` | `kernel_layer(id).ok_or_else` | [885](../../src/preset.rs#L885) | receiver-type-required |
-| `resolve_layer` | `kernel_layer` | [885](../../src/preset.rs#L885) | [tools::preset::kernel_layer](../../src/preset.rs#L104) |
-| `resolve_layer` | `PresetInvalid::new` | [886](../../src/preset.rs#L886), [916](../../src/preset.rs#L916), [926](../../src/preset.rs#L926), [937](../../src/preset.rs#L937), [947](../../src/preset.rs#L947), [955](../../src/preset.rs#L955), [965](../../src/preset.rs#L965) | [tools::preset::PresetInvalid::new](../../src/preset.rs#L295) |
-| `resolve_layer` | `Some` | [888](../../src/preset.rs#L888), [909](../../src/preset.rs#L909) | external-constructor-callback-or-unresolved |
-| `resolve_layer` | `id.to_owned` | [888](../../src/preset.rs#L888), [910](../../src/preset.rs#L910), [973](../../src/preset.rs#L973) | receiver-type-required |
-| `resolve_layer` | `Ok` | [892](../../src/preset.rs#L892), [972](../../src/preset.rs#L972) | external-constructor-callback-or-unresolved |
-| `resolve_layer` | `known.id.to_owned` | [893](../../src/preset.rs#L893) | receiver-type-required |
-| `resolve_layer` | `known.version.to_owned` | [894](../../src/preset.rs#L894) | receiver-type-required |
-| `resolve_layer` | `valid_id` | [909](../../src/preset.rs#L909), [915](../../src/preset.rs#L915) | [tools::preset::valid_id](../../src/preset.rs#L406) |
-| `resolve_layer` | `Err` | [916](../../src/preset.rs#L916), [926](../../src/preset.rs#L926), [937](../../src/preset.rs#L937), [947](../../src/preset.rs#L947), [955](../../src/preset.rs#L955), [965](../../src/preset.rs#L965), [981](../../src/preset.rs#L981) | external-constructor-callback-or-unresolved |
-| `resolve_layer` | `PresetInvalid::new(                     PresetReason::InvalidId,                     label(),                     format!("{path}.id"),                 )                 .into` | [916](../../src/preset.rs#L916) | receiver-type-required |
-| `resolve_layer` | `label` | [918](../../src/preset.rs#L918), [928](../../src/preset.rs#L928), [939](../../src/preset.rs#L939), [949](../../src/preset.rs#L949), [957](../../src/preset.rs#L957), [967](../../src/preset.rs#L967) | external-constructor-callback-or-unresolved |
-| `resolve_layer` | `string_member(object, "version", &path)?                 .ok_or_else` | [923](../../src/preset.rs#L923) | receiver-type-required |
-| `resolve_layer` | `valid_version` | [925](../../src/preset.rs#L925) | [tools::preset::valid_version](../../src/preset.rs#L415) |
-| `resolve_layer` | `PresetInvalid::new(                     PresetReason::InvalidId,                     label(),                     format!("{path}.version"),                 )                 .into` | [926](../../src/preset.rs#L926) | receiver-type-required |
-| `resolve_layer` | `RESERVED_MEMBERS                 .iter()                 .find` | [933](../../src/preset.rs#L933) | receiver-type-required |
-| `resolve_layer` | `RESERVED_MEMBERS                 .iter` | [933](../../src/preset.rs#L933) | receiver-type-required |
-| `resolve_layer` | `object.contains_key` | [935](../../src/preset.rs#L935) | receiver-type-required |
-| `resolve_layer` | `PresetInvalid::new(                     PresetReason::UnsupportedField,                     label(),                     format!("{path}.{reserved}"),                 )                 .into` | [937](../../src/preset.rs#L937) | receiver-type-required |
-| `resolve_layer` | `identity.len` | [946](../../src/preset.rs#L946) | receiver-type-required |
-| `resolve_layer` | `PresetInvalid::new(                         PresetReason::TextTooLarge,                         label(),                         format!("{path}.identity"),                     )                     .into` | [947](../../src/preset.rs#L947) | receiver-type-required |
-| `resolve_layer` | `identity.trim().is_empty` | [954](../../src/preset.rs#L954) | receiver-type-required |
-| `resolve_layer` | `identity.trim` | [954](../../src/preset.rs#L954) | receiver-type-required |
-| `resolve_layer` | `identity.trim().contains` | [954](../../src/preset.rs#L954) | receiver-type-required |
-| `resolve_layer` | `PresetInvalid::new(                         PresetReason::InvalidIdentity,                         label(),                         format!("{path}.identity"),                     )                     .into` | [955](../../src/preset.rs#L955) | receiver-type-required |
-| `resolve_layer` | `duty.is_some_and` | [964](../../src/preset.rs#L964) | receiver-type-required |
-| `resolve_layer` | `duty.len` | [964](../../src/preset.rs#L964) | receiver-type-required |
-| `resolve_layer` | `PresetInvalid::new(                     PresetReason::TextTooLarge,                     label(),                     format!("{path}.duty"),                 )                 .into` | [965](../../src/preset.rs#L965) | receiver-type-required |
-| `resolve_layer` | `version.to_owned` | [974](../../src/preset.rs#L974) | receiver-type-required |
-| `resolve_layer` | `identity.map` | [975](../../src/preset.rs#L975) | receiver-type-required |
-| `resolve_layer` | `text.trim().to_owned` | [975](../../src/preset.rs#L975), [977](../../src/preset.rs#L977) | receiver-type-required |
-| `resolve_layer` | `text.trim` | [975](../../src/preset.rs#L975), [977](../../src/preset.rs#L977) | receiver-type-required |
-| `resolve_layer` | `duty                     .map(&#124;text&#124; text.trim().to_owned())                     .filter` | [976](../../src/preset.rs#L976) | receiver-type-required |
-| `resolve_layer` | `duty                     .map` | [976](../../src/preset.rs#L976) | receiver-type-required |
-| `resolve_layer` | `text.is_empty` | [978](../../src/preset.rs#L978) | receiver-type-required |
-| `resolve` | `ResolvedPreset::resolve_request` | [1023](../../src/preset.rs#L1023) | external-constructor-callback-or-unresolved |
-| `permitted_tools` | `self.permitted.as_ref` | [1032](../../src/preset.rs#L1032) | receiver-type-required |
-| `mcp_server_digest` | `(server == "dxf").then` | [1035](../../src/preset.rs#L1035) | receiver-type-required |
-| `mcp_server_digest` | `"sha256-dxf".to_owned` | [1035](../../src/preset.rs#L1035) | receiver-type-required |
-| `mcp_tool_name` | `(!tool.contains('/')).then` | [1038](../../src/preset.rs#L1038) | receiver-type-required |
-| `mcp_tool_name` | `tool.contains` | [1038](../../src/preset.rs#L1038) | receiver-type-required |
-| `resolve_in` | `ResolvedPreset::resolve_request` | [1049](../../src/preset.rs#L1049) | external-constructor-callback-or-unresolved |
-| `resolve_in` | `permitted                     .map` | [1053](../../src/preset.rs#L1053) | receiver-type-required |
-| `resolve_in` | `names.iter().map(&#124;name&#124; (*name).to_owned()).collect` | [1054](../../src/preset.rs#L1054) | receiver-type-required |
-| `resolve_in` | `names.iter().map` | [1054](../../src/preset.rs#L1054) | receiver-type-required |
-| `resolve_in` | `names.iter` | [1054](../../src/preset.rs#L1054) | receiver-type-required |
-| `resolve_in` | `(*name).to_owned` | [1054](../../src/preset.rs#L1054) | receiver-type-required |
-| `invalid` | `resolve` | [1060](../../src/preset.rs#L1060) | [tools::preset::tests::resolve](../../src/preset.rs#L1022) |
-| `sugar_renders_exactly_like_the_identity_profile` | `Some` | [1069](../../src/preset.rs#L1069), [1070](../../src/preset.rs#L1070) | external-constructor-callback-or-unresolved |
-| `sugar_renders_exactly_like_the_identity_profile` | `ResolvedPreset::from_identity` | [1070](../../src/preset.rs#L1070) | external-constructor-callback-or-unresolved |
-| `sugar_renders_exactly_like_the_identity_profile` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"}]})).unwrap` | [1077](../../src/preset.rs#L1077) | receiver-type-required |
-| `sugar_renders_exactly_like_the_identity_profile` | `resolve` | [1077](../../src/preset.rs#L1077) | [tools::preset::tests::resolve](../../src/preset.rs#L1022) |
-| `blank_base_drops_identity_and_rules` | `ResolvedPreset::from_identity` | [1086](../../src/preset.rs#L1086), [1092](../../src/preset.rs#L1092) | external-constructor-callback-or-unresolved |
-| `blank_base_drops_identity_and_rules` | `Some` | [1092](../../src/preset.rs#L1092) | external-constructor-callback-or-unresolved |
-| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve(json!({"layers":[             {"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad-expert","version":"3","duty":"Prefer DXF tools."}         ]}))         .unwrap` | [1104](../../src/preset.rs#L1104) | receiver-type-required |
-| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve` | [1104](../../src/preset.rs#L1104), [1110](../../src/preset.rs#L1110) | [tools::preset::tests::resolve](../../src/preset.rs#L1022) |
-| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve(json!({"layers":[{"kind":"inline","id":"cad-expert","version":"3",             "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))         .unwrap` | [1110](../../src/preset.rs#L1110) | receiver-type-required |
-| `inline_identity_wins_over_a_kernel_layer_identity` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad-expert","version":"1",              "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))         .unwrap` | [1131](../../src/preset.rs#L1131) | receiver-type-required |
-| `inline_identity_wins_over_a_kernel_layer_identity` | `resolve` | [1131](../../src/preset.rs#L1131) | [tools::preset::tests::resolve](../../src/preset.rs#L1022) |
-| `refusals_name_reason_layer_and_field` | `invalid` | [1147](../../src/preset.rs#L1147), [1152](../../src/preset.rs#L1152), [1160](../../src/preset.rs#L1160) | [tools::preset::tests::invalid](../../src/preset.rs#L1059) |
-| `refusals_name_reason_layer_and_field` | `(0..9)             .map(&#124;index&#124; json!({"kind":"inline","id":format!("l{index}"),"version":"1"}))             .collect::<Vec<_>>` | [1172](../../src/preset.rs#L1172) | receiver-type-required |
-| `refusals_name_reason_layer_and_field` | `(0..9)             .map` | [1172](../../src/preset.rs#L1172) | receiver-type-required |
-| `refusals_name_reason_layer_and_field` | `"x".repeat` | [1179](../../src/preset.rs#L1179) | receiver-type-required |
-| `refusals_name_reason_layer_and_field` | `(0..3)             .map(&#124;index&#124; json!({"kind":"inline","id":format!("l{index}"),"version":"1","duty":"y".repeat(MAX_PRESET_DUTY_BYTES)}))             .collect::<Vec<_>>` | [1184](../../src/preset.rs#L1184) | receiver-type-required |
-| `refusals_name_reason_layer_and_field` | `(0..3)             .map` | [1184](../../src/preset.rs#L1184) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in(             json!({"tools":["read"],"layers":[{"kind":"inline","id":"cad","version":"1",                 "tools":["grep"],"mcp":[{"server":"dxf","tools":["open","draw"]}],                 "skills":["drama-scene-revise"]}]}),             None,         )         .unwrap` | [1200](../../src/preset.rs#L1200) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in` | [1200](../../src/preset.rs#L1200), [1230](../../src/preset.rs#L1230), [1246](../../src/preset.rs#L1246) | [tools::preset::tests::resolve_in](../../src/preset.rs#L1045) |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `serde_json::to_value(&preset).unwrap` | [1225](../../src/preset.rs#L1225) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `serde_json::to_value` | [1225](../../src/preset.rs#L1225) | external-constructor-callback-or-unresolved |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in(json!({"mcp":[{"server":"dxf","tools":["open"]}]}), None).unwrap` | [1230](../../src/preset.rs#L1230) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `mcp_only.tools.unwrap` | [1231](../../src/preset.rs#L1231) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `(0..=MAX_PRESET_MCP_SERVERS)             .map(&#124;index&#124; json!({"server":format!("s{index}"),"tools":["t"]}))             .collect::<Vec<_>>` | [1285](../../src/preset.rs#L1285) | receiver-type-required |
-| `tools_mcp_and_skills_resolve_against_the_environment` | `(0..=MAX_PRESET_MCP_SERVERS)             .map` | [1285](../../src/preset.rs#L1285) | receiver-type-required |
-| `secrets_and_definitions_are_refused_before_shape_checks` | `invalid` | [1310](../../src/preset.rs#L1310), [1313](../../src/preset.rs#L1313) | [tools::preset::tests::invalid](../../src/preset.rs#L1059) |
-| `genesis_round_trip_checks_digest_and_layers` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad","version":"1","duty":"DXF."}]}))         .unwrap` | [1343](../../src/preset.rs#L1343) | receiver-type-required |
-| `genesis_round_trip_checks_digest_and_layers` | `resolve` | [1343](../../src/preset.rs#L1343) | [tools::preset::tests::resolve](../../src/preset.rs#L1022) |
-| `genesis_round_trip_checks_digest_and_layers` | `serde_json::to_value(&preset).unwrap` | [1346](../../src/preset.rs#L1346) | receiver-type-required |
-| `genesis_round_trip_checks_digest_and_layers` | `serde_json::to_value` | [1346](../../src/preset.rs#L1346) | external-constructor-callback-or-unresolved |
-| `genesis_round_trip_checks_digest_and_layers` | `value.clone` | [1348](../../src/preset.rs#L1348) | receiver-type-required |
+| `from_genesis` | `serde_json::from_value(value.clone())             .map_err` | [784](../../src/preset.rs#L784) | receiver-type-required |
+| `from_genesis` | `serde_json::from_value` | [784](../../src/preset.rs#L784) | external-constructor-callback-or-unresolved |
+| `from_genesis` | `value.clone` | [784](../../src/preset.rs#L784) | receiver-type-required |
+| `from_genesis` | `Err` | [787](../../src/preset.rs#L787), [792](../../src/preset.rs#L792), [803](../../src/preset.rs#L803) | external-constructor-callback-or-unresolved |
+| `from_genesis` | `preset.layers.iter().find` | [789](../../src/preset.rs#L789) | receiver-type-required |
+| `from_genesis` | `preset.layers.iter` | [789](../../src/preset.rs#L789) | receiver-type-required |
+| `from_genesis` | `Self::from_parts(             preset.base,             preset.layers.clone(),             preset.tools.clone(),             preset.mcp.clone(),             preset.skills.clone(),         )         .map_err` | [794](../../src/preset.rs#L794) | receiver-type-required |
+| `from_genesis` | `Self::from_parts` | [794](../../src/preset.rs#L794) | [tools::preset::ResolvedPreset::from_parts](../../src/preset.rs#L710) |
+| `from_genesis` | `preset.layers.clone` | [796](../../src/preset.rs#L796) | receiver-type-required |
+| `from_genesis` | `preset.tools.clone` | [797](../../src/preset.rs#L797) | receiver-type-required |
+| `from_genesis` | `preset.mcp.clone` | [798](../../src/preset.rs#L798) | receiver-type-required |
+| `from_genesis` | `preset.skills.clone` | [799](../../src/preset.rs#L799) | receiver-type-required |
+| `from_genesis` | `"genesis preset digest mismatch".to_owned` | [803](../../src/preset.rs#L803) | receiver-type-required |
+| `from_genesis` | `Ok` | [805](../../src/preset.rs#L805) | external-constructor-callback-or-unresolved |
+| `owned_sections` | `self.layers.iter().find_map` | [813](../../src/preset.rs#L813), [818](../../src/preset.rs#L818) | receiver-type-required |
+| `owned_sections` | `self.layers.iter` | [813](../../src/preset.rs#L813), [818](../../src/preset.rs#L818), [823](../../src/preset.rs#L823) | receiver-type-required |
+| `owned_sections` | `identity.as_deref` | [814](../../src/preset.rs#L814) | receiver-type-required |
+| `owned_sections` | `inline             .or_else(&#124;&#124; self.layers.iter().find_map(PresetLayer::identity))             .or_else` | [817](../../src/preset.rs#L817) | receiver-type-required |
+| `owned_sections` | `inline             .or_else` | [817](../../src/preset.rs#L817) | receiver-type-required |
+| `owned_sections` | `self.base.identity` | [819](../../src/preset.rs#L819) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map(str::trim)             .filter(&#124;text&#124; !text.is_empty())             .collect` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map(str::trim)             .filter` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain(self.layers.iter().filter_map(PresetLayer::duty))             .map` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter()             .chain(self.base.rules())             .chain` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter()             .chain` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `identity             .into_iter` | [820](../../src/preset.rs#L820) | receiver-type-required |
+| `owned_sections` | `self.base.rules` | [822](../../src/preset.rs#L822) | receiver-type-required |
+| `owned_sections` | `self.layers.iter().filter_map` | [823](../../src/preset.rs#L823) | receiver-type-required |
+| `owned_sections` | `text.is_empty` | [825](../../src/preset.rs#L825) | receiver-type-required |
+| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain(self.owned_sections())             .collect::<Vec<_>>()             .join` | [833](../../src/preset.rs#L833) | receiver-type-required |
+| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain(self.owned_sections())             .collect::<Vec<_>>` | [833](../../src/preset.rs#L833) | receiver-type-required |
+| `preset_text` | `std::iter::once(HARNESS_IDENTITY)             .chain` | [833](../../src/preset.rs#L833) | receiver-type-required |
+| `preset_text` | `std::iter::once` | [833](../../src/preset.rs#L833) | external-constructor-callback-or-unresolved |
+| `preset_text` | `self.owned_sections` | [834](../../src/preset.rs#L834) | [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L810) |
+| `render` | `sections.extend` | [845](../../src/preset.rs#L845) | receiver-type-required |
+| `render` | `self.owned_sections()                 .into_iter()                 .map` | [846](../../src/preset.rs#L846) | receiver-type-required |
+| `render` | `self.owned_sections()                 .into_iter` | [846](../../src/preset.rs#L846) | receiver-type-required |
+| `render` | `self.owned_sections` | [846](../../src/preset.rs#L846) | [tools::preset::ResolvedPreset::owned_sections](../../src/preset.rs#L810) |
+| `render` | `text.replace` | [848](../../src/preset.rs#L848) | receiver-type-required |
+| `render` | `sections.push` | [851](../../src/preset.rs#L851), [855](../../src/preset.rs#L855) | receiver-type-required |
+| `render` | `WORKING_DIRECTORY.replace` | [851](../../src/preset.rs#L851) | receiver-type-required |
+| `render` | `instruction_text.trim` | [853](../../src/preset.rs#L853) | receiver-type-required |
+| `render` | `instruction_text.is_empty` | [854](../../src/preset.rs#L854) | receiver-type-required |
+| `render` | `instruction_text.to_owned` | [855](../../src/preset.rs#L855) | receiver-type-required |
+| `render` | `sections.join` | [857](../../src/preset.rs#L857) | receiver-type-required |
+| `resolve_layer` | `layer         .as_object()         .and_then(&#124;object&#124; object.get("kind"))         .and_then(Value::as_str)         .ok_or_else` | [877](../../src/preset.rs#L877) | receiver-type-required |
+| `resolve_layer` | `layer         .as_object()         .and_then(&#124;object&#124; object.get("kind"))         .and_then` | [877](../../src/preset.rs#L877) | receiver-type-required |
+| `resolve_layer` | `layer         .as_object()         .and_then` | [877](../../src/preset.rs#L877) | receiver-type-required |
+| `resolve_layer` | `layer         .as_object` | [877](../../src/preset.rs#L877) | receiver-type-required |
+| `resolve_layer` | `object.get` | [879](../../src/preset.rs#L879) | receiver-type-required |
+| `resolve_layer` | `PresetError::BadRequest` | [881](../../src/preset.rs#L881), [886](../../src/preset.rs#L886), [909](../../src/preset.rs#L909), [926](../../src/preset.rs#L926), [983](../../src/preset.rs#L983) | external-constructor-callback-or-unresolved |
+| `resolve_layer` | `object_members` | [884](../../src/preset.rs#L884), [900](../../src/preset.rs#L900) | [tools::preset::object_members](../../src/preset.rs#L421) |
+| `resolve_layer` | `string_member(object, "id", &path)?                 .ok_or_else` | [885](../../src/preset.rs#L885), [908](../../src/preset.rs#L908) | receiver-type-required |
+| `resolve_layer` | `string_member` | [885](../../src/preset.rs#L885), [908](../../src/preset.rs#L908), [925](../../src/preset.rs#L925), [946](../../src/preset.rs#L946), [965](../../src/preset.rs#L965) | [tools::preset::string_member](../../src/preset.rs#L437) |
+| `resolve_layer` | `kernel_layer(id).ok_or_else` | [887](../../src/preset.rs#L887) | receiver-type-required |
+| `resolve_layer` | `kernel_layer` | [887](../../src/preset.rs#L887) | [tools::preset::kernel_layer](../../src/preset.rs#L104) |
+| `resolve_layer` | `PresetInvalid::new` | [888](../../src/preset.rs#L888), [918](../../src/preset.rs#L918), [928](../../src/preset.rs#L928), [939](../../src/preset.rs#L939), [949](../../src/preset.rs#L949), [957](../../src/preset.rs#L957), [967](../../src/preset.rs#L967) | [tools::preset::PresetInvalid::new](../../src/preset.rs#L295) |
+| `resolve_layer` | `Some` | [890](../../src/preset.rs#L890), [911](../../src/preset.rs#L911) | external-constructor-callback-or-unresolved |
+| `resolve_layer` | `id.to_owned` | [890](../../src/preset.rs#L890), [912](../../src/preset.rs#L912), [975](../../src/preset.rs#L975) | receiver-type-required |
+| `resolve_layer` | `Ok` | [894](../../src/preset.rs#L894), [974](../../src/preset.rs#L974) | external-constructor-callback-or-unresolved |
+| `resolve_layer` | `known.id.to_owned` | [895](../../src/preset.rs#L895) | receiver-type-required |
+| `resolve_layer` | `known.version.to_owned` | [896](../../src/preset.rs#L896) | receiver-type-required |
+| `resolve_layer` | `valid_id` | [911](../../src/preset.rs#L911), [917](../../src/preset.rs#L917) | [tools::preset::valid_id](../../src/preset.rs#L406) |
+| `resolve_layer` | `Err` | [918](../../src/preset.rs#L918), [928](../../src/preset.rs#L928), [939](../../src/preset.rs#L939), [949](../../src/preset.rs#L949), [957](../../src/preset.rs#L957), [967](../../src/preset.rs#L967), [983](../../src/preset.rs#L983) | external-constructor-callback-or-unresolved |
+| `resolve_layer` | `PresetInvalid::new(                     PresetReason::InvalidId,                     label(),                     format!("{path}.id"),                 )                 .into` | [918](../../src/preset.rs#L918) | receiver-type-required |
+| `resolve_layer` | `label` | [920](../../src/preset.rs#L920), [930](../../src/preset.rs#L930), [941](../../src/preset.rs#L941), [951](../../src/preset.rs#L951), [959](../../src/preset.rs#L959), [969](../../src/preset.rs#L969) | external-constructor-callback-or-unresolved |
+| `resolve_layer` | `string_member(object, "version", &path)?                 .ok_or_else` | [925](../../src/preset.rs#L925) | receiver-type-required |
+| `resolve_layer` | `valid_version` | [927](../../src/preset.rs#L927) | [tools::preset::valid_version](../../src/preset.rs#L415) |
+| `resolve_layer` | `PresetInvalid::new(                     PresetReason::InvalidId,                     label(),                     format!("{path}.version"),                 )                 .into` | [928](../../src/preset.rs#L928) | receiver-type-required |
+| `resolve_layer` | `RESERVED_MEMBERS                 .iter()                 .find` | [935](../../src/preset.rs#L935) | receiver-type-required |
+| `resolve_layer` | `RESERVED_MEMBERS                 .iter` | [935](../../src/preset.rs#L935) | receiver-type-required |
+| `resolve_layer` | `object.contains_key` | [937](../../src/preset.rs#L937) | receiver-type-required |
+| `resolve_layer` | `PresetInvalid::new(                     PresetReason::UnsupportedField,                     label(),                     format!("{path}.{reserved}"),                 )                 .into` | [939](../../src/preset.rs#L939) | receiver-type-required |
+| `resolve_layer` | `identity.len` | [948](../../src/preset.rs#L948) | receiver-type-required |
+| `resolve_layer` | `PresetInvalid::new(                         PresetReason::TextTooLarge,                         label(),                         format!("{path}.identity"),                     )                     .into` | [949](../../src/preset.rs#L949) | receiver-type-required |
+| `resolve_layer` | `identity.trim().is_empty` | [956](../../src/preset.rs#L956) | receiver-type-required |
+| `resolve_layer` | `identity.trim` | [956](../../src/preset.rs#L956) | receiver-type-required |
+| `resolve_layer` | `identity.trim().contains` | [956](../../src/preset.rs#L956) | receiver-type-required |
+| `resolve_layer` | `PresetInvalid::new(                         PresetReason::InvalidIdentity,                         label(),                         format!("{path}.identity"),                     )                     .into` | [957](../../src/preset.rs#L957) | receiver-type-required |
+| `resolve_layer` | `duty.is_some_and` | [966](../../src/preset.rs#L966) | receiver-type-required |
+| `resolve_layer` | `duty.len` | [966](../../src/preset.rs#L966) | receiver-type-required |
+| `resolve_layer` | `PresetInvalid::new(                     PresetReason::TextTooLarge,                     label(),                     format!("{path}.duty"),                 )                 .into` | [967](../../src/preset.rs#L967) | receiver-type-required |
+| `resolve_layer` | `version.to_owned` | [976](../../src/preset.rs#L976) | receiver-type-required |
+| `resolve_layer` | `identity.map` | [977](../../src/preset.rs#L977) | receiver-type-required |
+| `resolve_layer` | `text.trim().to_owned` | [977](../../src/preset.rs#L977), [979](../../src/preset.rs#L979) | receiver-type-required |
+| `resolve_layer` | `text.trim` | [977](../../src/preset.rs#L977), [979](../../src/preset.rs#L979) | receiver-type-required |
+| `resolve_layer` | `duty                     .map(&#124;text&#124; text.trim().to_owned())                     .filter` | [978](../../src/preset.rs#L978) | receiver-type-required |
+| `resolve_layer` | `duty                     .map` | [978](../../src/preset.rs#L978) | receiver-type-required |
+| `resolve_layer` | `text.is_empty` | [980](../../src/preset.rs#L980) | receiver-type-required |
+| `resolve` | `ResolvedPreset::resolve_request` | [1025](../../src/preset.rs#L1025) | external-constructor-callback-or-unresolved |
+| `permitted_tools` | `self.permitted.as_ref` | [1034](../../src/preset.rs#L1034) | receiver-type-required |
+| `mcp_server_digest` | `(server == "dxf").then` | [1037](../../src/preset.rs#L1037) | receiver-type-required |
+| `mcp_server_digest` | `"sha256:dxf".to_owned` | [1037](../../src/preset.rs#L1037) | receiver-type-required |
+| `mcp_tool_name` | `(!tool.contains('/')).then` | [1040](../../src/preset.rs#L1040) | receiver-type-required |
+| `mcp_tool_name` | `tool.contains` | [1040](../../src/preset.rs#L1040) | receiver-type-required |
+| `resolve_in` | `ResolvedPreset::resolve_request` | [1051](../../src/preset.rs#L1051) | external-constructor-callback-or-unresolved |
+| `resolve_in` | `permitted                     .map` | [1055](../../src/preset.rs#L1055) | receiver-type-required |
+| `resolve_in` | `names.iter().map(&#124;name&#124; (*name).to_owned()).collect` | [1056](../../src/preset.rs#L1056) | receiver-type-required |
+| `resolve_in` | `names.iter().map` | [1056](../../src/preset.rs#L1056) | receiver-type-required |
+| `resolve_in` | `names.iter` | [1056](../../src/preset.rs#L1056) | receiver-type-required |
+| `resolve_in` | `(*name).to_owned` | [1056](../../src/preset.rs#L1056) | receiver-type-required |
+| `invalid` | `resolve` | [1062](../../src/preset.rs#L1062) | [tools::preset::tests::resolve](../../src/preset.rs#L1024) |
+| `sugar_renders_exactly_like_the_identity_profile` | `Some` | [1071](../../src/preset.rs#L1071), [1072](../../src/preset.rs#L1072) | external-constructor-callback-or-unresolved |
+| `sugar_renders_exactly_like_the_identity_profile` | `ResolvedPreset::from_identity` | [1072](../../src/preset.rs#L1072) | external-constructor-callback-or-unresolved |
+| `sugar_renders_exactly_like_the_identity_profile` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"}]})).unwrap` | [1079](../../src/preset.rs#L1079) | receiver-type-required |
+| `sugar_renders_exactly_like_the_identity_profile` | `resolve` | [1079](../../src/preset.rs#L1079) | [tools::preset::tests::resolve](../../src/preset.rs#L1024) |
+| `blank_base_drops_identity_and_rules` | `ResolvedPreset::from_identity` | [1088](../../src/preset.rs#L1088), [1094](../../src/preset.rs#L1094) | external-constructor-callback-or-unresolved |
+| `blank_base_drops_identity_and_rules` | `Some` | [1094](../../src/preset.rs#L1094) | external-constructor-callback-or-unresolved |
+| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve(json!({"layers":[             {"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad-expert","version":"3","duty":"Prefer DXF tools."}         ]}))         .unwrap` | [1106](../../src/preset.rs#L1106) | receiver-type-required |
+| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve` | [1106](../../src/preset.rs#L1106), [1112](../../src/preset.rs#L1112) | [tools::preset::tests::resolve](../../src/preset.rs#L1024) |
+| `inline_identity_replaces_the_base_identity_but_not_its_rules` | `resolve(json!({"layers":[{"kind":"inline","id":"cad-expert","version":"3",             "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))         .unwrap` | [1112](../../src/preset.rs#L1112) | receiver-type-required |
+| `inline_identity_wins_over_a_kernel_layer_identity` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad-expert","version":"1",              "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))         .unwrap` | [1133](../../src/preset.rs#L1133) | receiver-type-required |
+| `inline_identity_wins_over_a_kernel_layer_identity` | `resolve` | [1133](../../src/preset.rs#L1133) | [tools::preset::tests::resolve](../../src/preset.rs#L1024) |
+| `refusals_name_reason_layer_and_field` | `invalid` | [1149](../../src/preset.rs#L1149), [1154](../../src/preset.rs#L1154), [1162](../../src/preset.rs#L1162) | [tools::preset::tests::invalid](../../src/preset.rs#L1061) |
+| `refusals_name_reason_layer_and_field` | `(0..9)             .map(&#124;index&#124; json!({"kind":"inline","id":format!("l{index}"),"version":"1"}))             .collect::<Vec<_>>` | [1174](../../src/preset.rs#L1174) | receiver-type-required |
+| `refusals_name_reason_layer_and_field` | `(0..9)             .map` | [1174](../../src/preset.rs#L1174) | receiver-type-required |
+| `refusals_name_reason_layer_and_field` | `"x".repeat` | [1181](../../src/preset.rs#L1181) | receiver-type-required |
+| `refusals_name_reason_layer_and_field` | `(0..3)             .map(&#124;index&#124; json!({"kind":"inline","id":format!("l{index}"),"version":"1","duty":"y".repeat(MAX_PRESET_DUTY_BYTES)}))             .collect::<Vec<_>>` | [1186](../../src/preset.rs#L1186) | receiver-type-required |
+| `refusals_name_reason_layer_and_field` | `(0..3)             .map` | [1186](../../src/preset.rs#L1186) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in(             json!({"tools":["read"],"layers":[{"kind":"inline","id":"cad","version":"1",                 "tools":["grep"],"mcp":[{"server":"dxf","tools":["open","draw"]}],                 "skills":["drama-scene-revise"]}]}),             None,         )         .unwrap` | [1202](../../src/preset.rs#L1202) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in` | [1202](../../src/preset.rs#L1202), [1232](../../src/preset.rs#L1232), [1248](../../src/preset.rs#L1248) | [tools::preset::tests::resolve_in](../../src/preset.rs#L1047) |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `serde_json::to_value(&preset).unwrap` | [1227](../../src/preset.rs#L1227) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `serde_json::to_value` | [1227](../../src/preset.rs#L1227) | external-constructor-callback-or-unresolved |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `resolve_in(json!({"mcp":[{"server":"dxf","tools":["open"]}]}), None).unwrap` | [1232](../../src/preset.rs#L1232) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `mcp_only.tools.unwrap` | [1233](../../src/preset.rs#L1233) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `(0..=MAX_PRESET_MCP_SERVERS)             .map(&#124;index&#124; json!({"server":format!("s{index}"),"tools":["t"]}))             .collect::<Vec<_>>` | [1287](../../src/preset.rs#L1287) | receiver-type-required |
+| `tools_mcp_and_skills_resolve_against_the_environment` | `(0..=MAX_PRESET_MCP_SERVERS)             .map` | [1287](../../src/preset.rs#L1287) | receiver-type-required |
+| `secrets_and_definitions_are_refused_before_shape_checks` | `invalid` | [1312](../../src/preset.rs#L1312), [1315](../../src/preset.rs#L1315) | [tools::preset::tests::invalid](../../src/preset.rs#L1061) |
+| `genesis_round_trip_checks_digest_and_layers` | `resolve(json!({"layers":[{"kind":"kernel","id":"coding"},             {"kind":"inline","id":"cad","version":"1","duty":"DXF."}]}))         .unwrap` | [1345](../../src/preset.rs#L1345) | receiver-type-required |
+| `genesis_round_trip_checks_digest_and_layers` | `resolve` | [1345](../../src/preset.rs#L1345) | [tools::preset::tests::resolve](../../src/preset.rs#L1024) |
+| `genesis_round_trip_checks_digest_and_layers` | `serde_json::to_value(&preset).unwrap` | [1348](../../src/preset.rs#L1348) | receiver-type-required |
+| `genesis_round_trip_checks_digest_and_layers` | `serde_json::to_value` | [1348](../../src/preset.rs#L1348) | external-constructor-callback-or-unresolved |
+| `genesis_round_trip_checks_digest_and_layers` | `value.clone` | [1350](../../src/preset.rs#L1350) | receiver-type-required |

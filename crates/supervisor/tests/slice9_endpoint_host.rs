@@ -1472,6 +1472,113 @@ fn append_turn(root: &std::path::Path, session: &str, first_seq: u64, settled: b
 }
 
 #[test]
+fn fork_can_replace_the_preset_of_its_destination() {
+    let root = tempfile::tempdir().expect("root");
+    let project = root.path().join("project");
+    std::fs::create_dir(&project).expect("project directory");
+    let assembly = ProductionEndpointAssembly::open_with_clock(
+        root.path(),
+        description(),
+        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
+    )
+    .expect("assembly");
+    let created_workspace = block_on_ready(assembly.dispatch(request(
+        "rpc-fork-preset-workspace",
+        "workspace.create",
+        &format!(
+            r#"{{"path":{}}}"#,
+            serde_json::to_string(project.to_str().unwrap()).unwrap()
+        ),
+    )))
+    .expect("workspace create");
+    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
+        .as_str()
+        .expect("workspace id")
+        .to_owned();
+    block_on_ready(assembly.dispatch(request(
+        "rpc-fork-preset-source",
+        "session.create",
+        &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","identityProfile":"coding"}}"#),
+    )))
+    .expect("session create");
+    append_turn(root.path(), SESSION, 2, true);
+    let genesis_of = |session: &str| -> Value {
+        let ledger =
+            std::fs::read_to_string(root.path().join("threads").join(session).join("main.jsonl"))
+                .expect("ledger");
+        serde_json::from_str(ledger.lines().next().unwrap()).unwrap()
+    };
+
+    let refused = block_on_ready(assembly.dispatch(request(
+        "rpc-fork-preset-invalid",
+        "session.fork",
+        &format!(r#"{{"sessionId":"{SESSION}","preset":{{"layers":[{{"kind":"kernel","id":"video"}}]}}}}"#),
+    )))
+    .expect("refused fork");
+    assert_eq!(refused.result.error.expect("error").code, "preset-invalid");
+
+    let plain = block_on_ready(assembly.dispatch(request(
+        "rpc-fork-plain",
+        "session.fork",
+        &format!(r#"{{"sessionId":"{SESSION}"}}"#),
+    )))
+    .expect("plain fork");
+    let plain = value(&plain)["sessionId"].as_str().unwrap().to_owned();
+    assert_eq!(genesis_of(&plain)["identity_profile"], "coding");
+    assert!(genesis_of(&plain).get("preset").is_none());
+
+    let replaced = block_on_ready(assembly.dispatch(request(
+        "rpc-fork-preset",
+        "session.fork",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","preset":{{"layers":[{{"kind":"inline","id":"reviewer","version":"1","identity":"You are a code review agent powered by the {{model}} model."}}],"tools":["read","grep"]}}}}"#
+        ),
+    )))
+    .expect("preset fork");
+    if let Some(error) = replaced.result.error.as_ref() {
+        panic!("fork failed: {} {}", error.code, error.message);
+    }
+    let replaced = value(&replaced)["sessionId"].as_str().unwrap().to_owned();
+    let genesis = genesis_of(&replaced);
+    assert!(genesis.get("identity_profile").is_none());
+    assert_eq!(genesis["min_reader"], 2);
+    let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("fork preset");
+    assert_eq!(preset.layers[0].id(), "reviewer");
+    assert_eq!(
+        preset.tools,
+        Some(vec!["grep".to_owned(), "read".to_owned()])
+    );
+    let copied = std::fs::read(
+        root.path()
+            .join("threads")
+            .join(&replaced)
+            .join("main.jsonl"),
+    )
+    .expect("forked ledger");
+    assert_eq!(
+        schema::validate_ledger(&copied, schema::READER_VERSION)
+            .expect("forked ledger validates")
+            .lifecycle
+            .latest_turn,
+        Some(1)
+    );
+    // The source keeps its own opening, and a fork of the preset session
+    // copies its preset (a real digest is not mistaken for an asset).
+    assert_eq!(genesis_of(SESSION)["identity_profile"], "coding");
+    let copy = block_on_ready(assembly.dispatch(request(
+        "rpc-fork-of-preset",
+        "session.fork",
+        &format!(r#"{{"sessionId":"{replaced}"}}"#),
+    )))
+    .expect("fork of a preset session");
+    if let Some(error) = copy.result.error.as_ref() {
+        panic!("fork failed: {} {}", error.code, error.message);
+    }
+    let copy = value(&copy)["sessionId"].as_str().unwrap().to_owned();
+    assert_eq!(genesis_of(&copy)["preset"], genesis["preset"]);
+}
+
+#[test]
 fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
     let root = tempfile::tempdir().expect("root");
     let project = root.path().join("project");

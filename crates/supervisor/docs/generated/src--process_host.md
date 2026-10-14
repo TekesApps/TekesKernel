@@ -2015,7 +2015,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_schedule_claim` | `String::with_capacity` | [1459](../../src/process_host.rs#L1459) | external-constructor-callback-or-unresolved |
 | `execute_schedule_claim` | `write!(output, "{byte:02x}").expect` | [1461](../../src/process_host.rs#L1461) | receiver-type-required |
 | `execute_schedule_claim` | `ManagementStore::open_light_at(&self.root, &timestamp)             .map_err` | [1465](../../src/process_host.rs#L1465) | receiver-type-required |
-| `execute_schedule_claim` | `ManagementStore::open_light_at` | [1465](../../src/process_host.rs#L1465) | [endpoint::management::ManagementStore::open_light_at](../../../endpoint/src/management.rs#L493) |
+| `execute_schedule_claim` | `ManagementStore::open_light_at` | [1465](../../src/process_host.rs#L1465) | [endpoint::management::ManagementStore::open_light_at](../../../endpoint/src/management.rs#L502) |
 | `execute_schedule_claim` | `management             .create_session(SessionCreateOperation {                 rpc_id: &claim.claim_id,                 request_sha256: &request_sha256,                 requested_session_id: None,                 workspace_id: Some(&claim.definition.workspace_id),                 cwd: None,                 identity_profile: None,                 preset: None,                 preset_mcp: None,                 user_agent_dir: &self.user_agent_dir,                 started_at: &timestamp,                 principal: "schedule",             })             .map_err` | [1467](../../src/process_host.rs#L1467) | receiver-type-required |
 | `execute_schedule_claim` | `management             .create_session` | [1467](../../src/process_host.rs#L1467) | receiver-type-required |
 | `execute_schedule_claim` | `Some` | [1472](../../src/process_host.rs#L1472) | external-constructor-callback-or-unresolved |
@@ -6196,7 +6196,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `host.arm_admission` | [11021](../../src/process_host.rs#L11021) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `host.catalog.ensure_loaded` | [11022](../../src/process_host.rs#L11022) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light(root.path()).expect` | [11024](../../src/process_host.rs#L11024) | receiver-type-required |
-| `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light` | [11024](../../src/process_host.rs#L11024) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L489) |
+| `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light` | [11024](../../src/process_host.rs#L11024) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L498) |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `"a".repeat` | [11025](../../src/process_host.rs#L11025) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `management             .archive_session("rpc-archive-1", &sha, session, "2026-10-12T00:00:00.000Z")             .expect` | [11026](../../src/process_host.rs#L11026) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `management             .archive_session` | [11026](../../src/process_host.rs#L11026) | receiver-type-required |

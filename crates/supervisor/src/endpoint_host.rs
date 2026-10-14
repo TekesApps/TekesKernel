@@ -1418,7 +1418,7 @@ impl ProductionEndpointHost {
     ) -> Result<IJsonValue, EndpointRpcFailure> {
         require_object_fields(
             payload,
-            &["sessionId", "atSeq", "ephemeral"],
+            &["sessionId", "atSeq", "ephemeral", "preset"],
             &["sessionId"],
         )?;
         let session_id = required_string(payload, "sessionId")?;
@@ -1436,6 +1436,12 @@ impl ProductionEndpointHost {
                 started_at: &timestamp,
                 principal: &self.principal,
                 ephemeral,
+                preset: payload.get("preset"),
+                preset_mcp: self
+                    .preset_mcp
+                    .as_deref()
+                    .map(|source| source as &dyn endpoint::PresetMcpSource),
+                user_agent_dir: &self.user_agent_dir,
             })
             .map_err(map_management)?;
         mark_management_handoff(request)?;
@@ -2128,10 +2134,12 @@ fn route_allows_error(operation: &str, code: &str) -> bool {
         ),
         "session.fork" => matches!(
             code,
-            "session-not-found"
+            "bad-request"
+                | "session-not-found"
                 | "archived"
                 | "invalid-at-seq"
                 | "active-session-limit"
+                | "preset-invalid"
                 | "idempotency-conflict"
         ),
         "session.selectModel" => matches!(
@@ -2554,7 +2562,10 @@ fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), En
             &["sessionId", "itemId", "action"],
         ),
         "session.rename" => (&["sessionId", "title"], &["sessionId", "title"]),
-        "session.fork" => (&["sessionId", "atSeq", "ephemeral"], &["sessionId"]),
+        "session.fork" => (
+            &["sessionId", "atSeq", "ephemeral", "preset"],
+            &["sessionId"],
+        ),
         "session.discard" => (&["sessionId"], &["sessionId"]),
         "session.selectModel" => (
             &["sessionId", "provider", "model", "reasoningEffort"],
