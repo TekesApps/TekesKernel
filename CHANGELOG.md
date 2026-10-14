@@ -6,6 +6,13 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.7.2 — 2026-10-15
+
+A session preset's `skills` now resolve by package name end to end; automatic
+identity selection no longer reads a screenplay request as coding; consumer
+specific test data and the consumer live scenario are removed from the
+repository.
+
 ### Fixed
 - A session preset's `skills` were validated against the instruction
   snapshot's per-file resource keys (`<package>/SKILL.md`) while the worker
