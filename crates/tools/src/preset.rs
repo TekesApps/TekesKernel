@@ -1037,13 +1037,13 @@ mod tests {
             self.permitted.as_ref()
         }
         fn mcp_server_digest(&self, server: &str) -> Option<String> {
-            (server == "dxf").then(|| "sha256:dxf".to_owned())
+            (server == "docs").then(|| "sha256:docs".to_owned())
         }
         fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
             (!tool.contains('/')).then(|| format!("mcp__{server}__{tool}"))
         }
         fn skill_known(&self, name: &str) -> bool {
-            name == "drama-scene-revise"
+            name == "style-guide"
         }
     }
 
@@ -1108,24 +1108,28 @@ mod tests {
     fn inline_identity_replaces_the_base_identity_but_not_its_rules() {
         let preset = resolve(json!({"layers":[
             {"kind":"kernel","id":"coding"},
-            {"kind":"inline","id":"cad-expert","version":"3","duty":"Prefer DXF tools."}
+            {"kind":"inline","id":"domain-expert","version":"3","duty":"Prefer the domain tools."}
         ]}))
         .unwrap();
-        assert!(preset.render("m", None, "").ends_with("Prefer DXF tools."));
-        let cad = resolve(json!({"layers":[{"kind":"inline","id":"cad-expert","version":"3",
-            "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))
+        assert!(
+            preset
+                .render("m", None, "")
+                .ends_with("Prefer the domain tools.")
+        );
+        let expert = resolve(json!({"layers":[{"kind":"inline","id":"domain-expert","version":"3",
+            "identity":"You are a domain expert agent powered by the {model} model.","duty":"Prefer the domain tools."}]}))
         .unwrap();
         assert_eq!(
-            cad.render("m", None, ""),
+            expert.render("m", None, ""),
             format!(
-                "{HARNESS_IDENTITY}\n\nYou are a CAD expert agent powered by the m model.\n\n{}\n\nPrefer DXF tools.",
+                "{HARNESS_IDENTITY}\n\nYou are a domain expert agent powered by the m model.\n\n{}\n\nPrefer the domain tools.",
                 GENERAL_RULES.trim()
             )
         );
         assert_eq!(
-            cad.preset_text(),
+            expert.preset_text(),
             format!(
-                "{HARNESS_IDENTITY}\n\nYou are a CAD expert agent powered by the {{model}} model.\n\n{}\n\nPrefer DXF tools.",
+                "{HARNESS_IDENTITY}\n\nYou are a domain expert agent powered by the {{model}} model.\n\n{}\n\nPrefer the domain tools.",
                 GENERAL_RULES.trim()
             )
         );
@@ -1134,13 +1138,13 @@ mod tests {
     #[test]
     fn inline_identity_wins_over_a_kernel_layer_identity() {
         let preset = resolve(json!({"layers":[{"kind":"kernel","id":"coding"},
-            {"kind":"inline","id":"cad-expert","version":"1",
-             "identity":"You are a CAD expert agent powered by the {model} model.","duty":"Prefer DXF tools."}]}))
+            {"kind":"inline","id":"domain-expert","version":"1",
+             "identity":"You are a domain expert agent powered by the {model} model.","duty":"Prefer the domain tools."}]}))
         .unwrap();
         assert_eq!(
             preset.render("m", None, ""),
             format!(
-                "{HARNESS_IDENTITY}\n\nYou are a CAD expert agent powered by the m model.\n\n{}\n\n{}\n\nPrefer DXF tools.",
+                "{HARNESS_IDENTITY}\n\nYou are a domain expert agent powered by the m model.\n\n{}\n\n{}\n\nPrefer the domain tools.",
                 GENERAL_RULES.trim(),
                 CODING_RULES.trim()
             )
@@ -1150,7 +1154,7 @@ mod tests {
     #[test]
     fn refusals_name_reason_layer_and_field() {
         let two = invalid(json!({"layers":[
-            {"kind":"inline","id":"cad","version":"1","identity":"You are a CAD agent."},
+            {"kind":"inline","id":"expert","version":"1","identity":"You are a domain agent."},
             {"kind":"inline","id":"video","version":"1","identity":"You are a video agent."}]}));
         assert_eq!(two.reason, PresetReason::MultipleIdentity);
         assert_eq!(two.layer.as_deref(), Some("video"));
@@ -1162,7 +1166,7 @@ mod tests {
             invalid(json!({"layers":[{"kind":"kernel","id":"video"}]})).reason,
             PresetReason::UnknownKernelLayer
         );
-        let bad_id = invalid(json!({"layers":[{"kind":"inline","id":"CAD","version":"1"}]}));
+        let bad_id = invalid(json!({"layers":[{"kind":"inline","id":"Expert","version":"1"}]}));
         assert_eq!(
             (bad_id.reason, bad_id.layer.as_deref()),
             (PresetReason::InvalidId, Some("#0"))
@@ -1203,9 +1207,9 @@ mod tests {
     #[test]
     fn tools_mcp_and_skills_resolve_against_the_environment() {
         let preset = resolve_in(
-            json!({"tools":["read"],"layers":[{"kind":"inline","id":"cad","version":"1",
-                "tools":["grep"],"mcp":[{"server":"dxf","tools":["open","draw"]}],
-                "skills":["drama-scene-revise"]}]}),
+            json!({"tools":["read"],"layers":[{"kind":"inline","id":"expert","version":"1",
+                "tools":["grep"],"mcp":[{"server":"docs","tools":["open","draw"]}],
+                "skills":["style-guide"]}]}),
             None,
         )
         .unwrap();
@@ -1213,29 +1217,29 @@ mod tests {
             preset.tools,
             Some(vec![
                 "grep".to_owned(),
-                "mcp__dxf__draw".to_owned(),
-                "mcp__dxf__open".to_owned(),
+                "mcp__docs__draw".to_owned(),
+                "mcp__docs__open".to_owned(),
                 "read".to_owned()
             ])
         );
         assert_eq!(
             preset.mcp,
             vec![PresetMcpRef {
-                server: "dxf".to_owned(),
-                digest: "sha256:dxf".to_owned(),
+                server: "docs".to_owned(),
+                digest: "sha256:docs".to_owned(),
                 tools: vec!["draw".to_owned(), "open".to_owned()],
             }]
         );
-        assert_eq!(preset.skills, Some(vec!["drama-scene-revise".to_owned()]));
+        assert_eq!(preset.skills, Some(vec!["style-guide".to_owned()]));
         let value = serde_json::to_value(&preset).unwrap();
         assert_eq!(ResolvedPreset::from_genesis(&value).unwrap(), preset);
 
         // MCP alone keeps the interactive fixed tools; no selection keeps the workspace's.
         let mcp_only =
-            resolve_in(json!({"mcp":[{"server":"dxf","tools":["open"]}]}), None).unwrap();
+            resolve_in(json!({"mcp":[{"server":"docs","tools":["open"]}]}), None).unwrap();
         let tools = mcp_only.tools.unwrap();
         assert!(
-            tools.contains(&"shell".to_owned()) && tools.contains(&"mcp__dxf__open".to_owned())
+            tools.contains(&"shell".to_owned()) && tools.contains(&"mcp__docs__open".to_owned())
         );
         assert_eq!(resolve_in(json!({"layers":[]}), None).unwrap().tools, None);
         // A preset without selections keeps the digest it had before selections existed.
@@ -1272,12 +1276,12 @@ mod tests {
             )
         );
         assert_eq!(
-            reason(json!({"mcp":[{"server":"dxf","tools":["a/b"]}]}), None).0,
+            reason(json!({"mcp":[{"server":"docs","tools":["a/b"]}]}), None).0,
             PresetReason::UnknownMcpTool
         );
         assert_eq!(
             reason(
-                json!({"mcp":[{"server":"dxf","tools":["open"]}]}),
+                json!({"mcp":[{"server":"docs","tools":["open"]}]}),
                 Some(&["read"])
             )
             .0,
@@ -1296,8 +1300,8 @@ mod tests {
         );
         for request in [
             json!({"tools":"read"}),
-            json!({"mcp":[{"server":"dxf"}]}),
-            json!({"mcp":[{"server":"dxf","tools":[]}]}),
+            json!({"mcp":[{"server":"docs"}]}),
+            json!({"mcp":[{"server":"docs","tools":[]}]}),
             json!({"layers":[{"kind":"kernel","id":"coding","tools":["read"]}]}),
         ] {
             assert!(
@@ -1346,7 +1350,7 @@ mod tests {
     #[test]
     fn genesis_round_trip_checks_digest_and_layers() {
         let preset = resolve(json!({"layers":[{"kind":"kernel","id":"coding"},
-            {"kind":"inline","id":"cad","version":"1","duty":"DXF."}]}))
+            {"kind":"inline","id":"expert","version":"1","duty":"Domain."}]}))
         .unwrap();
         let value = serde_json::to_value(&preset).unwrap();
         assert_eq!(ResolvedPreset::from_genesis(&value).unwrap(), preset);
@@ -1360,7 +1364,7 @@ mod tests {
             preset.summary(),
             json!({"base":"general","layers":[
                 {"kind":"kernel","id":"coding","version":"1"},
-                {"kind":"inline","id":"cad","version":"1"}],"digest":preset.digest})
+                {"kind":"inline","id":"expert","version":"1"}],"digest":preset.digest})
         );
     }
 }

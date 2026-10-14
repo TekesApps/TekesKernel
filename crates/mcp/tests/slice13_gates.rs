@@ -1063,7 +1063,7 @@ fn slice13_gate_90_catalog_projection_and_collision() {
     assert_eq!(destructive.tools[0].effect, DynamicToolEffect::Destructive);
 }
 
-/// A real pydantic/FastMCP `tools/list` result (`dxf-editor-mcp`): `title`
+/// A real pydantic/FastMCP `tools/list` result (a drawing-editor server): `title`
 /// on every node, `anyOf` with `null` for optionals, `default`, nested
 /// arrays. Every tool projects; the frozen bytes are the regression oracle
 /// for the dynamic-schema keyword contract.
@@ -1082,7 +1082,7 @@ fn pydantic_generated_catalog_projects_every_tool() {
     let listed: ToolsList = serde_json::from_slice(&bytes).expect("tools/list result");
     assert_eq!(listed.tools.len(), 6);
     let catalog =
-        project_catalog("dxf-editor", &listed.tools, false).expect("pydantic catalog projects");
+        project_catalog("drawing-editor", &listed.tools, false).expect("pydantic catalog projects");
     assert_eq!(
         catalog
             .tools
@@ -1097,7 +1097,7 @@ fn pydantic_generated_catalog_projects_every_tool() {
             "set_text",
             "validate"
         ]
-        .map(|name| format!("mcp__dxf_2deditor__{name}"))
+        .map(|name| format!("mcp__drawing_2deditor__{name}"))
     );
     // The projected parameters are the remote bytes, `title`/`anyOf` intact.
     let entities = catalog
@@ -1118,7 +1118,7 @@ fn pydantic_generated_catalog_projects_every_tool() {
         r#"{"properties":{"layout":{"not":{"const":"model"},"type":"string"}},"type":"object"}"#,
     )
     .unwrap();
-    let error = project_catalog("dxf-editor", std::slice::from_ref(&refused), false)
+    let error = project_catalog("drawing-editor", std::slice::from_ref(&refused), false)
         .expect_err("unsupported keyword is refused")
         .to_string();
     assert!(error.contains("tool get_entities"), "{error}");
@@ -2152,14 +2152,14 @@ fn registry_file_keeps_the_last_entry_for_a_repeated_reference_and_saves_it_once
         plugin_component: None,
         project_trusted: false,
     };
-    // Hand-written: `memory` twice (older first), `dxf-editor` twice, unsorted.
+    // Hand-written: `memory` twice (older first), `drawing-editor` twice, unsorted.
     let registry = McpRegistry {
         format: 1,
         servers: vec![
             server("memory", "/usr/bin/true", true),
-            server("dxf-editor", "/usr/bin/false", true),
+            server("drawing-editor", "/usr/bin/false", true),
             server("memory", "/usr/bin/env", false),
-            server("dxf-editor", "/usr/bin/true", true),
+            server("drawing-editor", "/usr/bin/true", true),
         ],
     };
     let mut bytes = serde_json_canonicalizer::to_vec(&registry).expect("canonical");
@@ -2170,7 +2170,7 @@ fn registry_file_keeps_the_last_entry_for_a_repeated_reference_and_saves_it_once
     assert_eq!(
         loaded.servers,
         vec![
-            server("dxf-editor", "/usr/bin/true", true),
+            server("drawing-editor", "/usr/bin/true", true),
             server("memory", "/usr/bin/env", false),
         ]
     );

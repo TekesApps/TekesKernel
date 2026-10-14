@@ -125,8 +125,8 @@ Per-run data: [research-brief](data/2026-10-general-rules/research-brief.analysi
 ## Not tested
 
 - Models other than DeepSeek Flash.
-- Creative or domain workflows beyond the research brief (for example the drama
-  skill workflow), and sessions with subagents.
+- Creative or domain workflows beyond the research brief (for example
+  multi-step skill workflows), and sessions with subagents.
 - Whether the general rules change quality on open-ended writing, where "done"
   is less clear than in a fact-checked brief.
 

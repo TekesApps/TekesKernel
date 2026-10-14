@@ -397,52 +397,31 @@ instead has `source`, `canonical_user_goal`, `retained_items` and
 It has no V2 atom resolver or effective-completion rule. This gate remains open
 as a versioned contract gap, not a provider failure or a passing semantic port.
 
-## Chinese drama workflow gate
+## Multi-task skill workflow gate
 
-The raw original prompt and seeded skill are preserved under
-`fixtures/live/drama/`. The Kernel skill port changes only the retired write
-API references to `apply_patch` and full workspace paths. The three literal
-task names, dependency names, paths, length bounds and final-delivery contract
-remain intact. The production process fixture uses public approval responses;
-`audit-live-drama.py` checks the saved deliverables and promoted answer in
-addition to the existing frozen-artifact validation audit. Live execution is
-not considered passed until all those checks succeed.
+A three-task delegated skill workflow (dependent named tasks, a validator and
+public approvals) exercised named task inputs end to end. It exposed two Kernel
+defects, both fixed:
 
-The first drama run exposes a dependency-source gap: the final child attempts
-`read("story_brief")` and `read("episode_map")` rather than their completed
-artifact paths, then drafts unrelated characters. The worker seeds the effective
-task invocation but does not resolve named task inputs to completed outputs.
-This is not a passing result even though all three files exist. The independent
-final-outline audit also checks the final episode paragraph lengths; verifying
-only the intermediate episode map would miss a contract violation.
+- A dependent child read a named upstream task (`read("<task name>")`) instead of
+  its completed artifact path. New durable delegation seeds now carry
+  host-authored `resolved_inputs`: only earlier completed tasks supply
+  mappings, ambiguous or unfinished named sources reject, direct paths are
+  unchanged, and existing seeds resume without re-resolution.
+- Repeated task names during repair were rejected as ambiguous before a tool
+  result was emitted, exhausting the supervisor restart limit. Resolution now
+  selects the latest preceding delegation for each name; an unfinished latest
+  version cannot fall back to an older completed one and is a typed,
+  recoverable tool validation error rather than a process failure.
 
-The first drama run ultimately passes at root settle 122 after one real
-validator rejection and same-turn repair. The promoted final body equals the
-saved 2519-character outline, all 12 episode paragraphs are 101–112 characters,
-and all 12 public approvals bind to the owning parent/child ledgers. Evidence:
-`/tmp/tekes-public-drama-20260904-1/{drama-audit,validation-audit,public-approval-audit}.json`.
+After both fixes the workflow completed with every dependent child reading the
+resolved upstream paths and every public approval bound to its owning ledger.
+The consumer-specific live fixture and its audit script were removed on
+2026-10-15. The named-input resolution itself remains in the worker
+(`resolve_completed_task_inputs` in `crates/worker/src/child_agents.rs`); no live
+gate exercises it any longer.
 
-The named-input fix keeps effective invocations byte-for-byte intact and adds
-host-authored `resolved_inputs` to new durable delegation seeds. Only earlier
-completed tasks can supply mappings; ambiguous or unfinished named sources
-reject, while direct paths remain unchanged. Existing seeds are reused without
-re-resolution, including legacy seeds without mappings. A fresh second drama
-run is required to verify the corrected seed reaches real child workers.
-
-The second drama run confirms real children read both mapped upstream paths,
-but exposes a repair/recovery defect: repeated task names were rejected as
-ambiguous before emitting a tool result, exhausting the supervisor restart
-limit. The stopped run and its repeated `run_start` evidence are retained in
-`/tmp/tekes-public-drama-20260904-2/stopped-recovery-loop.json`.
-
-Resolution now selects the latest preceding delegation for each task name.
-An unfinished latest version cannot fall back to an older completed version;
-that condition is a typed, recoverable tool validation error, not a process
-failure. Existing immutable seeds still resume unchanged. All 80 worker unit
-tests pass in `/tmp/tekes-task-input-recovery-tests2.log`, including the stale
-completion regression. The drama audit permits re-execution of the same three
-registered task names during repair while preserving each task's dependency
-contract, completed upstream order, resolved path reads and final artifacts.
+### Ollama local inference
 
 Ollama environment preparation now uses the official 0.33.3 macOS standalone
 release, verified against its published checksum
@@ -450,19 +429,6 @@ release, verified against its published checksum
 The binary and model cache reside under Kernel `target/live-deps`; the loopback
 service disables cloud inference. The original `gemma4:12b` model is being
 pulled. No Ollama live gate is marked passed before actual workflow execution.
-
-The third drama runtime completes at settle 82 with no validation feedback.
-All dependent children successfully read the resolved upstream paths; nine
-public approvals bind correctly. The final answer contains all saved prose,
-with only leading/trailing line whitespace and spaces following bold Markdown
-labels differing. The original byte-equality audit was stricter than the
-complete-prose requirement. The corrected audit ignores only those layout
-spaces, while explicit guard checks still reject missing headings, changed
-words/punctuation, or removed paragraph boundaries. All runtime, frozen-artifact,
-approval and drama audits pass in
-`/tmp/tekes-public-drama-20260904-3/reviewed-result.json`. The original driver
-failure log is retained. Final episode paragraphs are 80–90 characters, the
-saved outline has 2219 characters, and the delivered answer has 2214.
 
 The original Ollama model is now downloaded, digest
 `4eb23ef187e2c5462566d6a1d3bbbc2f1346d0b4327cbb66d58fffbcc9b2b05c`,
@@ -1738,8 +1704,8 @@ AppServer store (`~/Library/Application Support/TekesUI/AppServer/appserver.sqli
 45,648 records, 723 sessions, 10 workspaces), snapshotted with `VACUUM INTO`
 into the session scratchpad and opened immutable. `scripts/replay-legacy-sqlite.py`
 (`/tmp/tekes-legacy-replay-20260905-1/report.json`) proved integrity, every
-lineage kind under the legacy grammar (`task.repair(pdf2dxf.py)` ×2,
-`task.repair(pdf2dwg.py)` ×2, `branch.repair.coordinator` ×2 among 700), zero
+lineage kind under the legacy grammar (`task.repair(<script>.py)` ×4,
+`branch.repair.coordinator` ×2 among 700), zero
 reserved candidates, and exported 60 root threads. The Kernel import test
 (`kernel-replay-receipt.json`) rebuilt 1,051 events, projected 960 journal
 records, paged 158 turns / 158 user messages / 145 turn ends / 93 assistant

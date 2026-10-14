@@ -353,10 +353,10 @@ fn agents_directory_is_primary_for_all_project_resources() {
 
 #[test]
 fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
-    struct Dxf;
-    impl tools::PresetEnvironment for Dxf {
+    struct Docs;
+    impl tools::PresetEnvironment for Docs {
         fn mcp_server_digest(&self, _server: &str) -> Option<String> {
-            Some("sha256-dxf".to_owned())
+            Some("sha256:docs".to_owned())
         }
         fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
             Some(format!("mcp__{server}__{tool}"))
@@ -408,9 +408,9 @@ fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
     assert_eq!(legacy.workspace.policy.allowed_tools, ["read", "shell"]);
 
     let preset = tools::ResolvedPreset::resolve_request(
-        &serde_json::json!({"tools":["read"],"mcp":[{"server":"dxf","tools":["open"]}]}),
+        &serde_json::json!({"tools":["read"],"mcp":[{"server":"docs","tools":["open"]}]}),
         tools::PresetBase::General,
-        &Dxf,
+        &Docs,
     )
     .expect("preset");
     genesis(serde_json::json!({"min_reader":2,"preset":preset}));
@@ -419,7 +419,7 @@ fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
         .expect("preset session");
     assert_eq!(
         selected.workspace.policy.allowed_tools,
-        ["mcp__dxf__open", "read"]
+        ["mcp__docs__open", "read"]
     );
     // A workspace-wide resolution keeps the workspace selection.
     assert_eq!(
