@@ -249,7 +249,9 @@ pub trait PresetMcpSource {
 pub struct SessionPresetEnvironment<'a> {
     workspace_id: &'a str,
     permitted: Option<std::collections::BTreeSet<String>>,
-    skills: &'a std::collections::BTreeMap<String, u64>,
+    /// Skill package names (`ResourceCatalog`), the names the worker's skill
+    /// catalog uses; not the snapshot's per-file resource keys.
+    skills: std::collections::BTreeSet<String>,
     mcp: Option<&'a dyn PresetMcpSource>,
 }
 
@@ -268,7 +270,7 @@ impl<'a> SessionPresetEnvironment<'a> {
                 .allowed_tools
                 .as_ref()
                 .map(|tools| tools.iter().cloned().collect()),
-            skills: &instruction.effective.skills,
+            skills: profile::ResourceCatalog::skill_package_names(instruction),
             mcp,
         }
     }
@@ -288,7 +290,7 @@ impl tools::PresetEnvironment for SessionPresetEnvironment<'_> {
     }
 
     fn skill_known(&self, name: &str) -> bool {
-        self.skills.contains_key(name)
+        self.skills.contains(name)
     }
 }
 
@@ -4186,7 +4188,7 @@ mod tests {
             key: "create".to_owned(),
         };
         let request = json!({"layers":[{"kind":"kernel","id":"coding"},
-            {"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer DXF tools."}]});
+            {"kind":"inline","id":"domain-expert","version":"1","duty":"Prefer the domain tools."}]});
         let preset = session_preset(
             Some(&request),
             None,
@@ -4260,6 +4262,40 @@ mod tests {
                 &tools::NoPresetEnvironment
             ),
             Err(ManagementError::PresetBadRequest(_))
+        ));
+    }
+
+    #[test]
+    fn preset_skills_resolve_against_package_names() {
+        let manifest = "---\nname: review\ndescription: Review a change\n---\nBody\n";
+        let snapshot = profile::InstructionSnapshot {
+            format: 1,
+            sources: vec![profile::InstructionSource {
+                origin: profile::InstructionOrigin::User,
+                path: "skills/review/SKILL.md".to_owned(),
+                kind: profile::InstructionKind::Skill,
+                content: manifest.to_owned(),
+                content_sha256: super::hex_digest(manifest.as_bytes()),
+            }],
+            effective: profile::EffectiveInstructions::default(),
+        };
+        let environment = super::SessionPresetEnvironment::new("ws", &snapshot, None);
+        let resolve = |skills: Value| {
+            session_preset(
+                Some(&json!({"skills": skills})),
+                None,
+                tools::PresetBase::General,
+                &environment,
+            )
+        };
+        let preset = resolve(json!(["review"])).unwrap().expect("preset");
+        assert_eq!(preset.skills, Some(vec!["review".to_owned()]));
+        assert!(matches!(
+            resolve(json!(["review/SKILL.md"])),
+            Err(ManagementError::PresetInvalid(tools::PresetInvalid {
+                reason: tools::PresetInvalidReason::UnknownSkill,
+                ..
+            }))
         ));
     }
 

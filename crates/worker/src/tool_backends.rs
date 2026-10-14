@@ -682,7 +682,7 @@ mod preset_skill_tests {
     #[test]
     fn a_preset_narrows_the_skill_catalog() {
         let folder = tempfile::tempdir().unwrap();
-        let catalog = || vec![entry("drama-scene-revise"), entry("drama-story-plan")];
+        let catalog = || vec![entry("style-guide"), entry("release-notes")];
         write_genesis(folder.path(), json!({"identity_profile":"general"}));
         assert_eq!(
             preset_skill_catalog(catalog(), folder.path())
@@ -691,7 +691,7 @@ mod preset_skill_tests {
             2
         );
         let preset = tools::ResolvedPreset::resolve_request(
-            &json!({"skills":["drama-scene-revise","removed-later"]}),
+            &json!({"skills":["style-guide","removed-later"]}),
             tools::PresetBase::General,
             &Skills,
         )
@@ -703,7 +703,7 @@ mod preset_skill_tests {
                 .iter()
                 .map(|entry| entry.name.as_str())
                 .collect::<Vec<_>>(),
-            ["drama-scene-revise"]
+            ["style-guide"]
         );
     }
 }

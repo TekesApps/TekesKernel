@@ -2898,7 +2898,7 @@ mod tests {
             "018f0000-0000-7000-8000-000000000002",
             1,
             "call-1",
-            "mcp__pdf2cad__create_run",
+            "mcp__converter__create_run",
             IJsonValue::parse_str("{}").unwrap(),
         )
         .unwrap();
@@ -3582,7 +3582,7 @@ for line in sys.stdin:
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope,
-                name: "dxf".into(),
+                name: "docs".into(),
             },
             transport: McpTransportConfig::Stdio {
                 command: vec![command.into()],
@@ -3602,8 +3602,8 @@ for line in sys.stdin:
                 Sha256::digest(serde_json_canonicalizer::to_vec(config).unwrap())
             )
         };
-        assert_eq!(runtime.server_digest("ws", "dxf"), None);
-        let user = server(McpScope::User, "/usr/bin/user-dxf");
+        assert_eq!(runtime.server_digest("ws", "docs"), None);
+        let user = server(McpScope::User, "/usr/bin/user-docs");
         runtime
             .mutate(
                 "save-user",
@@ -3613,8 +3613,8 @@ for line in sys.stdin:
                 },
             )
             .unwrap();
-        assert_eq!(runtime.server_digest("ws", "dxf"), Some(digest(&user)));
-        let project = server(McpScope::Project, "/usr/bin/project-dxf");
+        assert_eq!(runtime.server_digest("ws", "docs"), Some(digest(&user)));
+        let project = server(McpScope::Project, "/usr/bin/project-docs");
         runtime
             .mutate(
                 "save-project",
@@ -3624,11 +3624,11 @@ for line in sys.stdin:
                 },
             )
             .unwrap();
-        assert_eq!(runtime.server_digest("ws", "dxf"), Some(digest(&project)));
-        assert_eq!(runtime.server_digest("other", "dxf"), None);
+        assert_eq!(runtime.server_digest("ws", "docs"), Some(digest(&project)));
+        assert_eq!(runtime.server_digest("other", "docs"), None);
         assert_eq!(
-            runtime.tool_name("dxf", "open-file").as_deref(),
-            Some("mcp__dxf__open_2dfile")
+            runtime.tool_name("docs", "open-file").as_deref(),
+            Some("mcp__docs__open_2dfile")
         );
     }
 

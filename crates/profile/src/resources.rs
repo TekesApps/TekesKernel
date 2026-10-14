@@ -101,6 +101,19 @@ impl ResourceCatalog {
         Ok(Self { skills, commands })
     }
 
+    /// Names of the skill packages `snapshot` exposes, the names
+    /// `skill_explorer` and `skill` use; a session preset's `skills` select
+    /// from these. A flat `skills/<name>.md` file is not a package. A snapshot
+    /// whose packages fail to resolve exposes none.
+    #[must_use]
+    pub fn skill_package_names(
+        snapshot: &InstructionSnapshot,
+    ) -> std::collections::BTreeSet<String> {
+        Self::from_snapshot(snapshot)
+            .map(|catalog| catalog.skills.into_keys().collect())
+            .unwrap_or_default()
+    }
+
     #[must_use]
     pub fn skill_summaries(&self) -> Vec<SkillSummary> {
         self.skills

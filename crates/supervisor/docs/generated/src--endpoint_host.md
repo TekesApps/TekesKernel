@@ -751,7 +751,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover_pending_management` | `ManagementError::QueueRecoveryFailed` | [203](../../src/endpoint_host.rs#L203) | external-constructor-callback-or-unresolved |
 | `recover_pending_management` | `error.to_string` | [203](../../src/endpoint_host.rs#L203) | receiver-type-required |
 | `recover_pending_management` | `ManagementStore::open_recovering_again(         root,         &started_at,         Some(&QueueRecoveryAdapter { authority }),         validated,     )     .map` | [204](../../src/endpoint_host.rs#L204) | receiver-type-required |
-| `recover_pending_management` | `ManagementStore::open_recovering_again` | [204](../../src/endpoint_host.rs#L204) | [endpoint::management::ManagementStore::open_recovering_again](../../../endpoint/src/management.rs#L449) |
+| `recover_pending_management` | `ManagementStore::open_recovering_again` | [204](../../src/endpoint_host.rs#L204) | [endpoint::management::ManagementStore::open_recovering_again](../../../endpoint/src/management.rs#L451) |
 | `recover_pending_management` | `Some` | [207](../../src/endpoint_host.rs#L207) | external-constructor-callback-or-unresolved |
 | `execute` | `serde_json::from_slice(&pending.action.canonical_bytes()?)             .map_err` | [222](../../src/endpoint_host.rs#L222) | receiver-type-required |
 | `execute` | `serde_json::from_slice` | [222](../../src/endpoint_host.rs#L222) | external-constructor-callback-or-unresolved |
@@ -897,7 +897,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_route_ownership` | `PathBuf::from` | [732](../../src/endpoint_host.rs#L732) | external-constructor-callback-or-unresolved |
 | `open_with_route_ownership` | `queue_authority             .as_deref()             .map` | [733](../../src/endpoint_host.rs#L733) | receiver-type-required |
 | `open_with_route_ownership` | `queue_authority             .as_deref` | [733](../../src/endpoint_host.rs#L733) | receiver-type-required |
-| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [736](../../src/endpoint_host.rs#L736) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L438) |
+| `open_with_route_ownership` | `ManagementStore::open_at_with_queue_driver` | [736](../../src/endpoint_host.rs#L736) | [endpoint::management::ManagementStore::open_at_with_queue_driver](../../../endpoint/src/management.rs#L440) |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref()                 .map` | [739](../../src/endpoint_host.rs#L739) | receiver-type-required |
 | `open_with_route_ownership` | `queue_recovery                 .as_ref` | [739](../../src/endpoint_host.rs#L739) | receiver-type-required |
 | `open_with_route_ownership` | `Ok` | [745](../../src/endpoint_host.rs#L745) | external-constructor-callback-or-unresolved |
@@ -982,7 +982,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `required_string` | [928](../../src/endpoint_host.rs#L928), [929](../../src/endpoint_host.rs#L929), [930](../../src/endpoint_host.rs#L930) | [tekes-supervisor::endpoint_host::required_string](../../src/endpoint_host.rs#L2173) |
 | `relocate_workspace` | `store::NamedLock::try_exclusive(             crate::process_host::workspace_quiescence_lock_path(&self.storage_root, workspace_id),         )         .map_err` | [933](../../src/endpoint_host.rs#L933) | receiver-type-required |
 | `relocate_workspace` | `store::NamedLock::try_exclusive` | [933](../../src/endpoint_host.rs#L933) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [934](../../src/endpoint_host.rs#L934) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6407) |
+| `relocate_workspace` | `crate::process_host::workspace_quiescence_lock_path` | [934](../../src/endpoint_host.rs#L934) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6408) |
 | `relocate_workspace` | `EndpointRpcFailure::new` | [937](../../src/endpoint_host.rs#L937) | [tekes-supervisor::endpoint_host::EndpointRpcFailure::new](../../src/endpoint_host.rs#L2746) |
 | `relocate_workspace` | `internal_failure` | [942](../../src/endpoint_host.rs#L942) | [tekes-supervisor::endpoint_host::internal_failure](../../src/endpoint_host.rs#L2157) |
 | `relocate_workspace` | `(self.clock)().map_err` | [944](../../src/endpoint_host.rs#L944) | receiver-type-required |

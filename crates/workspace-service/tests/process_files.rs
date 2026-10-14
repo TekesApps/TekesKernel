@@ -238,13 +238,13 @@ async fn complete_file_crosses_preview_and_helper_output_limits() {
     use sha2::{Digest, Sha256};
     let root = tempfile::tempdir().unwrap();
     let bytes = vec![b'x'; 7 * 1024 * 1024];
-    std::fs::write(root.path().join("large.dxf"), &bytes).unwrap();
+    std::fs::write(root.path().join("large.bin"), &bytes).unwrap();
     // Exercises the parent pipe too: base64 for this file exceeds the old 8 MiB stdout cap.
     let envelope = workspace_service::process::invoke(
         std::path::Path::new(env!("CARGO_BIN_EXE_tekes-workspace-service")),
         root.path(),
         "filesRead",
-        json!({"workspaceId":"w", "path":"large.dxf", "maxBytes":0}),
+        json!({"workspaceId":"w", "path":"large.bin", "maxBytes":0}),
         std::time::Duration::from_secs(20),
     )
     .await

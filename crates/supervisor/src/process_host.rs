@@ -4532,9 +4532,10 @@ fn missing_preset_skill_notice(
     selected: Option<&[String]>,
     instruction: &profile::InstructionSnapshot,
 ) -> Option<SessionNotice> {
+    let packages = profile::ResourceCatalog::skill_package_names(instruction);
     let missing = selected?
         .iter()
-        .filter(|name| !instruction.effective.skills.contains_key(name.as_str()))
+        .filter(|name| !packages.contains(name.as_str()))
         .map(String::as_str)
         .collect::<Vec<_>>();
     (!missing.is_empty()).then(|| SessionNotice {
@@ -7251,25 +7252,25 @@ mod tests {
 
     #[test]
     fn a_missing_preset_skill_is_one_warning() {
-        let mut instruction = profile::InstructionSnapshot {
+        let manifest = "---\nname: style-guide\ndescription: House style\n---\nBody\n";
+        let instruction = profile::InstructionSnapshot {
             format: 1,
-            sources: Vec::new(),
+            sources: vec![profile::InstructionSource {
+                origin: profile::InstructionOrigin::User,
+                path: "skills/style-guide/SKILL.md".to_owned(),
+                kind: profile::InstructionKind::Skill,
+                content: manifest.to_owned(),
+                content_sha256: format!("{:x}", Sha256::digest(manifest.as_bytes())),
+            }],
             effective: profile::EffectiveInstructions::default(),
         };
-        instruction
-            .effective
-            .skills
-            .insert("drama-scene-revise".to_owned(), 0);
-        let selected = vec![
-            "drama-scene-revise".to_owned(),
-            "drama-story-plan".to_owned(),
-        ];
+        let selected = vec!["style-guide".to_owned(), "release-notes".to_owned()];
         let notice = missing_preset_skill_notice(Some(&selected), &instruction).expect("notice");
         assert_eq!(notice.severity, SessionNoticeSeverity::Warning);
         assert_eq!(notice.classification, "preset_skill");
         assert_eq!(
             notice.message,
-            "Preset skills are unavailable for this run: drama-story-plan"
+            "Preset skills are unavailable for this run: release-notes"
         );
         assert_eq!(
             missing_preset_skill_notice(Some(&selected[..1]), &instruction),
@@ -7283,7 +7284,7 @@ mod tests {
         let reference = mcp::McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: mcp::McpScope::User,
-            name: "dxf-editor".to_owned(),
+            name: "drawing-editor".to_owned(),
         };
         let notices = mcp_launch_notices(
             None,
@@ -7312,7 +7313,7 @@ mod tests {
         assert_eq!(notices[0].classification, "mcp_server");
         assert_eq!(
             notices[0].message,
-            "MCP server dxf-editor was skipped for this run: MCP schema projection failed: tool get_entities: unsupported keyword"
+            "MCP server drawing-editor was skipped for this run: MCP schema projection failed: tool get_entities: unsupported keyword"
         );
         assert_eq!(
             notices[1].message,
