@@ -19,11 +19,11 @@ def prompts(scenario):
 
 
 def seed_files(scenario):
-    if scenario != 'batch-ledger-bugfix':
+    if scenario not in ('batch-ledger-bugfix', 'research-brief'):
         return {}
     directory = _CORPUS.parent / scenario
-    return {path.name: path.read_text() for path in sorted(directory.iterdir())
-            if path.is_file()}
+    return {path.relative_to(directory).as_posix(): path.read_text()
+            for path in sorted(directory.rglob('*')) if path.is_file()}
 
 
 def require_successful_root_completion(outcome, turn_index):

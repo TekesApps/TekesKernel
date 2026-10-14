@@ -11408,17 +11408,24 @@ mod tests {
     }
 
     fn write_test_genesis(path: &Path, thread: &str) {
-        let event = schema::Event::decode(
-            &serde_json::to_vec(&json!({
-                "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",
-                "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
-                "origin_key":format!("create-{thread}"),
-                "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},
-                "resume":"never","config":{"digest":"test"}
-            }))
-            .expect("genesis JSON"),
-        )
-        .expect("genesis event");
+        write_test_genesis_with_identity(path, thread, None);
+    }
+
+    /// Genesis with an explicit `identity_profile`; `None` writes the legacy
+    /// record without the field, which reads as `coding`.
+    fn write_test_genesis_with_identity(path: &Path, thread: &str, identity: Option<&str>) {
+        let mut genesis = json!({
+            "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",
+            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+            "origin_key":format!("create-{thread}"),
+            "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},
+            "resume":"never","config":{"digest":"test"}
+        });
+        if let Some(identity) = identity {
+            genesis["identity_profile"] = json!(identity);
+        }
+        let event = schema::Event::decode(&serde_json::to_vec(&genesis).expect("genesis JSON"))
+            .expect("genesis event");
         let mut bytes = event.canonical_bytes().expect("canonical genesis");
         bytes.push(b'\n');
         fs::write(path, bytes).expect("genesis ledger");
