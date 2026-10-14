@@ -845,13 +845,6 @@ fn real_legacy_simple_task() {
     write_canonical_test_json(&root.join("config/providers.json"), json!({"format":1,"revision":1,"providers":[provider.clone()]}));
     write_canonical_test_json(&root.join("config/settings.json"), json!({"format":1,"revision":1,"limits":{"max_workers":8,"max_provider_leases":8}}));
     write_canonical_test_json(&root.join("workspaces/ws/workspace.json"), json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["task","read","apply_patch"],"network":false,"writable_roots":[workspace],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":120}}));
-    let drama = std::env::var("TEKES_LEGACY_TASK_SCENARIO").as_deref() == Ok("drama");
-    if drama {
-        fs::create_dir_all(workspace.join("docs/drama")).unwrap();
-        fs::create_dir_all(workspace.join(".agent/skills/chinese-short-drama")).unwrap();
-        fs::write(workspace.join(".agent/skills/chinese-short-drama/SKILL.md"),include_str!("../../../fixtures/live/drama/kernel-skill.md")).unwrap();
-        write_canonical_test_json(&root.join("workspaces/ws/workspace.json"),json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["task","read","apply_patch","skill_explorer","skill"],"network":false,"writable_roots":[workspace],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":600}}));
-    }
     let session = "018f0000-0000-7000-8000-000000000128";
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
@@ -878,9 +871,7 @@ fn real_legacy_simple_task() {
         fs::write(workspace.join("src/2.py"), "import importlib\ndef make_capital_sentence():\n    country, capital = importlib.import_module('src.1').get_country_and_capital()\n    return 'Beijing is the capital of China.'\n").unwrap();
         fs::write(workspace.join("src/3.py"), "import importlib\ndef make_capital_report():\n    country, capital = importlib.import_module('src.1').get_country_and_capital()\n    sentence = importlib.import_module('src.2').make_capital_sentence()\n    return 'China / Beijing: ' + sentence\n").unwrap();
     }
-    let prompt = if drama {
-        include_str!("../../../fixtures/live/drama/prompt.txt")
-    } else if update_code {
+    let prompt = if update_code {
         "source artifact:\n- src/1.py\ndependent artifacts:\n- src/2.py\n- src/3.py\n\n1. understand the replationship and dependency among files: 1.py, 2.py, 3.py.\n2. 1.py has been changed, update corresponding contents of 2.py and 3.py."
     } else if scenario == "update-files-hint" {
         "source artifact:\n- markdown/1.md : named a country's capital\ndependent artifacts:\n- markdown/2.md : states the capitcal's population\n- markdown/3.md : states the 60+ population of the capital(assuming 20% of the population)\n\nnow, 1.md has been changed, update corresponding contents of 2.md and 3.md."
@@ -925,7 +916,7 @@ fn real_legacy_simple_task() {
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         host.schedule_main(session).unwrap().expect("real root worker");
         host.start_periodic_sweep();
-        let deadline = Instant::now()+Duration::from_secs(if drama { 900 } else if markdown || python { 300 } else { 150 });
+        let deadline = Instant::now()+Duration::from_secs(if markdown || python { 300 } else { 150 });
         loop {
             let events: Vec<Value> = fs::read_to_string(&path).unwrap().lines().filter_map(|line| serde_json::from_str(line).ok()).collect();
             for entry in fs::read_dir(&folder).unwrap() {
@@ -963,14 +954,12 @@ fn real_legacy_simple_task() {
     }
     assert!(events.iter().any(|e|e["kind"]=="spawn"),"no delegated process");
     assert!(events.iter().any(|e|e["kind"]=="settle" && e["outcome"]=="completed"));
-    let paths = if drama { vec!["docs/drama/story_brief.md","docs/drama/episode_map.md","docs/drama/final_outline.md"] } else if python { vec!["src/1.py", "src/2.py", "src/3.py"] } else if markdown || update { vec!["markdown/1.md", "markdown/2.md", "markdown/3.md"] } else { vec!["docs/0.md"] };
+    let paths = if python { vec!["src/1.py", "src/2.py", "src/3.py"] } else if markdown || update { vec!["markdown/1.md", "markdown/2.md", "markdown/3.md"] } else { vec!["docs/0.md"] };
     let mut artifacts = serde_json::Map::new();
     for relative in &paths {
         let body = fs::read_to_string(workspace.join(relative)).expect("task deliverable");
         assert!(!body.trim().is_empty(), "empty deliverable {relative}");
-        if drama {
-            assert!(body.chars().any(|c| ('\u{4e00}'..='\u{9fff}').contains(&c)), "drama artifact is not Chinese");
-        } else if python {
+        if python {
             if update_code && *relative == "src/1.py" { assert_eq!(body, python_source, "Python source changed"); }
             let function = match *relative { "src/1.py" => "get_country_and_capital", "src/2.py" => "make_capital_sentence", _ => "make_capital_report" };
             assert!(body.contains(&format!("def {function}(")), "missing requested function {relative}");

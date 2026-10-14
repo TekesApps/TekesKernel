@@ -7259,17 +7259,14 @@ mod tests {
         instruction
             .effective
             .skills
-            .insert("drama-scene-revise".to_owned(), 0);
-        let selected = vec![
-            "drama-scene-revise".to_owned(),
-            "drama-story-plan".to_owned(),
-        ];
+            .insert("style-guide".to_owned(), 0);
+        let selected = vec!["style-guide".to_owned(), "release-notes".to_owned()];
         let notice = missing_preset_skill_notice(Some(&selected), &instruction).expect("notice");
         assert_eq!(notice.severity, SessionNoticeSeverity::Warning);
         assert_eq!(notice.classification, "preset_skill");
         assert_eq!(
             notice.message,
-            "Preset skills are unavailable for this run: drama-story-plan"
+            "Preset skills are unavailable for this run: release-notes"
         );
         assert_eq!(
             missing_preset_skill_notice(Some(&selected[..1]), &instruction),
@@ -7283,7 +7280,7 @@ mod tests {
         let reference = mcp::McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: mcp::McpScope::User,
-            name: "dxf-editor".to_owned(),
+            name: "drawing-editor".to_owned(),
         };
         let notices = mcp_launch_notices(
             None,
@@ -7312,7 +7309,7 @@ mod tests {
         assert_eq!(notices[0].classification, "mcp_server");
         assert_eq!(
             notices[0].message,
-            "MCP server dxf-editor was skipped for this run: MCP schema projection failed: tool get_entities: unsupported keyword"
+            "MCP server drawing-editor was skipped for this run: MCP schema projection failed: tool get_entities: unsupported keyword"
         );
         assert_eq!(
             notices[1].message,
