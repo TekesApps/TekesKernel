@@ -1516,6 +1516,10 @@ operation timestamp and therefore stable across retry.
    the first model call, the worker classifies the first admitted user text as
    `coding` or `general` and records the selection in a runtime-only state
    event. Code signals take precedence; ambiguous requests use `coding`.
+   `script`/`脚本` count as a code signal only when the request carries no
+   creative-writing signal (screenplay, episode, scene, character, dialogue,
+   剧本, 剧情, 分集, 角色, 台词, ...); a creative-writing signal alone selects
+   `general`.
    The identity cannot change within a session. Older genesis records without
    this field read as `coding`. Forks retain the selection event, and
    delegated child sessions inherit the resolved identity.
