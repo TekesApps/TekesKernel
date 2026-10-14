@@ -560,7 +560,7 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     let (code, details) = error(
         "rpc-preset-unknown-server",
         format!(
-            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"pdf2cad","tools":["convert"]}}]}}}}"#
+            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"converter","tools":["convert"]}}]}}}}"#
         ),
     );
     assert_eq!(code, "preset-invalid");
@@ -571,7 +571,7 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
         "rpc-preset-create",
         "session.create",
         &format!(
-            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer the DXF tools.","tools":["read","grep"]}}]}}}}"#
+            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"domain-expert","version":"1","duty":"Prefer the domain tools.","tools":["read","grep"]}}]}}}}"#
         ),
     )))
     .expect("session create");
@@ -591,7 +591,7 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     assert!(
         preset
             .render("m", None, "")
-            .ends_with("Prefer the DXF tools.")
+            .ends_with("Prefer the domain tools.")
     );
     let inventory = endpoint::NativeEndpoint::open(root.path())
         .expect("inventory endpoint")

@@ -4186,7 +4186,7 @@ mod tests {
             key: "create".to_owned(),
         };
         let request = json!({"layers":[{"kind":"kernel","id":"coding"},
-            {"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer DXF tools."}]});
+            {"kind":"inline","id":"domain-expert","version":"1","duty":"Prefer the domain tools."}]});
         let preset = session_preset(
             Some(&request),
             None,
