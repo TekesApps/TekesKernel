@@ -30,6 +30,15 @@ workspace version in `Cargo.toml`.
   read-only instead of rendering it with the wrong prompt. Ledgers with
   `min_reader` 1 read and write exactly as before.
 
+## 0.6.0 — 2026-10-14
+
+The system prompt is now an identity line, shared general efficiency rules and
+profile-specific rules. General sessions gain the two domain-neutral rules
+(stop when done, be concise); on deepseek-flash a non-coding general session
+costs 27% less, and coding cost is unchanged. `session.initialPresets` keeps its
+shape, but `configurationText` is now the composed profile text, and the
+guidance fixture moves to format 5.
+
 ### Changed
 - The root system prompt splits each profile into an identity line, shared
   general efficiency rules, and profile-specific rules. The two domain-neutral
