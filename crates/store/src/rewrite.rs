@@ -764,7 +764,7 @@ fn read_source_ledgers(folder: &Path) -> Result<BTreeMap<String, Vec<u8>>, Store
             continue;
         }
         let bytes = fs::read(entry.path())?;
-        let projection = validate_ledger(&bytes, 1)?;
+        let projection = validate_ledger(&bytes, schema::READER_VERSION)?;
         if projection.last_seq == 0 {
             return Err(StoreError::Corruption("empty rewrite ledger".to_owned()));
         }
@@ -856,7 +856,8 @@ fn encoded_prefix(events: &[Event], anchor: u64) -> Result<Vec<u8>, StoreError> 
         bytes.extend_from_slice(&event.canonical_bytes()?);
         bytes.push(b'\n');
     }
-    validate_ledger(&bytes, 1).map_err(|_| StoreError::InvalidForkAnchor(anchor))?;
+    validate_ledger(&bytes, schema::READER_VERSION)
+        .map_err(|_| StoreError::InvalidForkAnchor(anchor))?;
     Ok(bytes)
 }
 
@@ -866,7 +867,7 @@ fn validate_terminal_source(ledgers: &BTreeMap<String, Vec<u8>>) -> Result<(), S
         .map(|(name, bytes)| Ok((name.clone(), decode_events(bytes)?)))
         .collect::<Result<BTreeMap<_, _>, StoreError>>()?;
     for (name, bytes) in ledgers {
-        let projection = validate_ledger(bytes, 1)?;
+        let projection = validate_ledger(bytes, schema::READER_VERSION)?;
         let Some(turn) = projection.lifecycle.latest_turn else {
             if name != "main.jsonl" {
                 return Err(StoreError::RewriteSourceNotTerminal(format!(
@@ -1574,7 +1575,7 @@ fn project_file(
             materialize_epoch(epoch, next_seq, operation, source_file)?,
         )?;
     }
-    validate_ledger(&out, 1)?;
+    validate_ledger(&out, schema::READER_VERSION)?;
     Ok(BuiltFile {
         bytes: out,
         seq_map,
@@ -2149,7 +2150,7 @@ fn validate_payload(
     }
     for file in &operation.files {
         let bytes = fs::read(payload.join(&file.dest))?;
-        let projection = validate_ledger(&bytes, 1)?;
+        let projection = validate_ledger(&bytes, schema::READER_VERSION)?;
         crate::tail::check_write_versions(&projection.events, 1)?;
         let genesis = projection.events.first().ok_or_else(|| {
             StoreError::Corruption(format!("rewritten file {} is empty", file.dest))
@@ -2285,7 +2286,7 @@ mod tests {
             );
             bytes.push(b'\n');
         }
-        validate_ledger(&bytes, 1).expect("valid test ledger");
+        validate_ledger(&bytes, schema::READER_VERSION).expect("valid test ledger");
         fs::write(path, bytes).expect("write ledger");
     }
 
@@ -2704,8 +2705,11 @@ mod tests {
             .expect("begin fork");
         store.recover_rewrites().expect("publish fork");
         let destination = store.root().join("threads").join(destination_id);
-        let projected = validate_ledger(&fs::read(destination.join("main.jsonl")).unwrap(), 1)
-            .expect("fork ledger");
+        let projected = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("fork ledger");
         assert_eq!(
             projected.events[0].string_field("identity_profile"),
             Some("auto")
@@ -2805,10 +2809,16 @@ mod tests {
         let mapped_child = operation.files[1].clone();
         store.recover_rewrites().expect("publish child fork");
         let destination = store.root().join("threads").join(destination_id);
-        let parent = validate_ledger(&fs::read(destination.join("main.jsonl")).unwrap(), 1)
-            .expect("mapped parent");
-        let child = validate_ledger(&fs::read(destination.join(&mapped_child.dest)).unwrap(), 1)
-            .expect("mapped child");
+        let parent = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("mapped parent");
+        let child = validate_ledger(
+            &fs::read(destination.join(&mapped_child.dest)).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("mapped child");
         let spawn = parent
             .events
             .iter()

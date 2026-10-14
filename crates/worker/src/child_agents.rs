@@ -643,7 +643,7 @@ pub(crate) fn read_child_projection(
     path: &std::path::Path,
 ) -> Result<schema::LedgerProjection, Box<dyn std::error::Error>> {
     let bytes = fs::read(path)?;
-    scan_valid_prefix(&bytes, 1)
+    scan_valid_prefix(&bytes, schema::READER_VERSION)
         .projection
         .ok_or_else(|| "child ledger has no projection".into())
 }

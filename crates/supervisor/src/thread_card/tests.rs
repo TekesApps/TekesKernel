@@ -29,7 +29,7 @@ fn folder_with(events: u64) -> (tempfile::TempDir, PathBuf) {
 
 fn fold(folder: &std::path::Path, session: &str) -> PreparedCard {
     let bytes = std::fs::read(folder.join("main.jsonl")).unwrap();
-    let scan = store::scan_valid_prefix(&bytes, 1);
+    let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
     let valid = scan.valid_bytes as usize;
     let projection = scan.projection.unwrap();
     prepare(
@@ -262,7 +262,7 @@ fn card_view_cost_against_fold_cost() {
             continue;
         };
         let started = Instant::now();
-        let scan = store::scan_valid_prefix(&bytes, 1);
+        let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
         let scan_time = started.elapsed();
         let valid = usize::try_from(scan.valid_bytes).unwrap();
         let Some(projection) = scan.projection else {

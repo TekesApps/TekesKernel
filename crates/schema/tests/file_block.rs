@@ -38,8 +38,11 @@ fn file_block_round_trips_through_the_typed_block_and_the_validator() {
         serde_json::to_value(&block).expect("serialize"),
         file_block()
     );
-    validate_ledger(&ledger_with_input(json!([file_block()])), 1)
-        .expect("file block is a legal input block");
+    validate_ledger(
+        &ledger_with_input(json!([file_block()])),
+        schema::READER_VERSION,
+    )
+    .expect("file block is a legal input block");
     validate_ledger(
         &ledger_with_input(json!([{"type":"tool-result","call":"c1","content":[file_block()]}])),
         1,
@@ -100,7 +103,7 @@ fn file_block_rejects_missing_or_malformed_fields() {
         ),
     ];
     for (label, block) in cases {
-        validate_ledger(&ledger_with_input(json!([block])), 1)
+        validate_ledger(&ledger_with_input(json!([block])), schema::READER_VERSION)
             .expect_err(&format!("{label} must be rejected"));
     }
     validate_ledger(

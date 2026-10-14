@@ -434,7 +434,7 @@ mod version_gate_tests {
     fn creation_and_rewrite_cannot_bypass_writer_gate() {
         let source = "018f0000-0000-7000-8000-000000000003";
         let destination = "018f0000-0000-7000-8000-000000000004";
-        for (reader, writer) in [(2, 1), (1, 2)] {
+        for (reader, writer) in [(schema::READER_VERSION + 1, 1), (1, 2)] {
             let dir = tempfile::tempdir().unwrap();
             let store = crate::ThreadStore::open(dir.path()).unwrap();
             let newer_genesis = genesis(reader, writer);
@@ -651,7 +651,7 @@ pub struct TailRepair {
 pub fn read_ledger_repaired(path: impl AsRef<Path>) -> Result<(Vec<u8>, TailScan), StoreError> {
     let path = path.as_ref();
     let bytes = std::fs::read(path)?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     if !scan.needs_repair() || scan.projection.is_none() {
         return Ok((bytes, scan));
     }
@@ -659,13 +659,13 @@ pub fn read_ledger_repaired(path: impl AsRef<Path>) -> Result<(Vec<u8>, TailScan
     if suffix.contains(&b'\n') {
         return Ok((bytes, scan));
     }
-    match LockedLedger::open(path, 1) {
+    match LockedLedger::open(path, schema::READER_VERSION) {
         Ok(locked) => drop(locked),
         Err(StoreError::Busy) => return Ok((bytes, scan)),
         Err(error) => return Err(error),
     }
     let bytes = std::fs::read(path)?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     Ok((bytes, scan))
 }
 

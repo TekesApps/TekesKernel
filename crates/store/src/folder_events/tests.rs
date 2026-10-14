@@ -109,8 +109,11 @@ fn cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones() {
         store.create_thread(id, genesis(id, true)).unwrap();
     }
     store.create_thread(A, genesis(A, false)).unwrap();
-    let _worker =
-        crate::LockedLedger::open(root.join("threads").join(held).join("main.jsonl"), 1).unwrap();
+    let _worker = crate::LockedLedger::open(
+        root.join("threads").join(held).join("main.jsonl"),
+        schema::READER_VERSION,
+    )
+    .unwrap();
     let report = store.cleanup_stale_ephemeral(&|id| id == owned).unwrap();
     assert_eq!(report.removed, vec![stale.to_owned()]);
     assert_eq!(report.busy, vec![held.to_owned()]);

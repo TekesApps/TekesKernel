@@ -39,9 +39,11 @@ impl ThreadSearchAuthority {
                 .and_then(|text| matching_snippet(text, &query));
             if snippet.is_none() {
                 let bytes = fs::read(source.folder.join("main.jsonl"))?;
-                let projection = scan_valid_prefix(&bytes, 1).projection.ok_or_else(|| {
-                    SearchError::SourceCorrupt("Conversation has no valid prefix".into())
-                })?;
+                let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
+                    .projection
+                    .ok_or_else(|| {
+                        SearchError::SourceCorrupt("Conversation has no valid prefix".into())
+                    })?;
                 // Appends may continue during a search. Use the catalog's captured sequence.
                 let events: Vec<_> = projection
                     .events

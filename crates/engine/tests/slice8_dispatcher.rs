@@ -51,7 +51,7 @@ fn provider_catalog_omits_visible_tools_without_an_executable_backend() {
 fn dispatcher_derives_catalog_schema_and_backend_from_fixed_entry() {
     let directory = ledger_with_call("think", json!({"thought":"inspect"}));
     let path = directory.path().join("main.jsonl");
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let manifest = BuiltinManifest::compiled();
     manifest.validate().expect("compiled manifest");
@@ -87,7 +87,7 @@ fn dispatcher_rejects_unadvertised_invalid_and_non_durable_calls() {
     let manifest = BuiltinManifest::compiled();
     let context = CatalogContext::default();
     let dispatcher = ToolDispatcher::new(&manifest, &context);
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let mut backend = FakeToolBackend::default();
     let error = dispatcher
@@ -108,7 +108,7 @@ fn dispatcher_rejects_unadvertised_invalid_and_non_durable_calls() {
         ..CatalogContext::default()
     };
     let dispatcher = ToolDispatcher::new(&manifest, &context);
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let error = dispatcher
         .dispatch(
@@ -139,7 +139,9 @@ fn generic_policy_runs_after_effective_argument_validation() {
     }
 
     let directory = ledger_with_call("think", json!({"thought":"inspect"}));
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let manifest = BuiltinManifest::compiled();
     let context = CatalogContext {
@@ -208,7 +210,7 @@ fn production_policy_durably_parks_workspace_edits_before_backend_execution() {
     });
     let directory = ledger_with_call("apply_patch", arguments.clone());
     let path = directory.path().join("main.jsonl");
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let manifest = BuiltinManifest::compiled();
     let mut backend = FakeToolBackend::default();
@@ -280,7 +282,7 @@ fn granted_approval_resumes_durable_effective_invocation_exactly_once() {
     let call = invocation("think", original);
     let mut backend = RecordingBackend::default();
     let first = {
-        let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+        let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
         dispatcher
             .dispatch(
                 &mut ToolPipeline::new(&mut ledger, assets.clone(), SecretScanner::default()),
@@ -298,7 +300,7 @@ fn granted_approval_resumes_durable_effective_invocation_exactly_once() {
         effective
     );
 
-    let mut ledger = LockedLedger::open(&path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("ledger");
     let second = dispatcher
         .dispatch(
             &mut ToolPipeline::new(&mut ledger, assets, SecretScanner::default()),
@@ -323,7 +325,8 @@ fn pending_and_denied_approvals_never_execute_the_backend() {
     let original = json!({"thought":"inspect"});
 
     let pending = ledger_with_approval("think", original.clone(), None, None, "execute");
-    let mut ledger = LockedLedger::open(pending.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger = LockedLedger::open(pending.path().join("main.jsonl"), schema::READER_VERSION)
+        .expect("ledger");
     let assets = AssetStore::new(pending.path().join("assets")).expect("assets");
     let mut backend = FakeToolBackend::default();
     let decision = dispatcher
@@ -340,7 +343,7 @@ fn pending_and_denied_approvals_never_execute_the_backend() {
 
     let denied = ledger_with_approval("think", original.clone(), None, Some(false), "execute");
     let denied_path = denied.path().join("main.jsonl");
-    let mut ledger = LockedLedger::open(&denied_path, 1).expect("ledger");
+    let mut ledger = LockedLedger::open(&denied_path, schema::READER_VERSION).expect("ledger");
     let assets = AssetStore::new(denied.path().join("assets")).expect("assets");
     let decision = dispatcher
         .dispatch(
@@ -364,7 +367,9 @@ fn pending_and_denied_approvals_never_execute_the_backend() {
         Some(true),
         "edit",
     );
-    let mut ledger = LockedLedger::open(mismatched.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(mismatched.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(mismatched.path().join("assets")).expect("assets");
     let error = dispatcher
         .dispatch(
@@ -382,7 +387,9 @@ fn pending_and_denied_approvals_never_execute_the_backend() {
 #[test]
 fn skill_consumption_requires_a_prior_durable_offer_in_the_same_turn() {
     let directory = ledger_with_skill_offer(true);
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let manifest = BuiltinManifest::compiled();
     let context = CatalogContext {
@@ -412,7 +419,9 @@ fn skill_consumption_requires_a_prior_durable_offer_in_the_same_turn() {
     assert_eq!(decision, PipelineDecision::Completed { result_seq: 12 });
 
     let directory = ledger_with_skill_offer(false);
-    let mut ledger = LockedLedger::open(directory.path().join("main.jsonl"), 1).expect("ledger");
+    let mut ledger =
+        LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+            .expect("ledger");
     let assets = AssetStore::new(directory.path().join("assets")).expect("assets");
     let error = ToolDispatcher::new(&manifest, &context)
         .dispatch(

@@ -1200,7 +1200,7 @@ impl ManagementStore {
 
         let folder = active_session_folder(&self.storage_root, request.session_id)?;
         let bytes = fs::read(folder.join("main.jsonl"))?;
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         let projection = scan.projection.ok_or_else(|| {
             ManagementError::CorruptOperation(
                 "queue target has no valid semantic ledger prefix".to_owned(),
@@ -1702,9 +1702,11 @@ impl ManagementStore {
                     Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
                     Err(error) => return Err(error.into()),
                 }
-                let projection = scan_valid_prefix(&bytes, 1).projection.ok_or_else(|| {
-                    ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
-                })?;
+                let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
+                    .projection
+                    .ok_or_else(|| {
+                        ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
+                    })?;
                 let genesis = projection.events.first().ok_or_else(|| {
                     ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
                 })?;

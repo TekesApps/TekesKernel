@@ -312,7 +312,7 @@ impl NativeEndpoint {
                     continue;
                 }
                 let bytes = fs::read(entry.path().join("main.jsonl"))?;
-                let scan = scan_valid_prefix(&bytes, 1);
+                let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
                 let projection = scan.projection.ok_or_else(|| {
                     NativeEndpointError::Store(store::StoreError::Corruption(format!(
                         "session {session_id} has no valid genesis prefix"
@@ -491,7 +491,7 @@ impl NativeEndpoint {
         let Ok(bytes) = fs::read(folder.join("main.jsonl")) else {
             return;
         };
-        let Some(projection) = scan_valid_prefix(&bytes, 1).projection else {
+        let Some(projection) = scan_valid_prefix(&bytes, schema::READER_VERSION).projection else {
             return;
         };
         let Ok(assets) = store::AssetStore::new(folder.join("assets")) else {
@@ -1001,7 +1001,7 @@ impl NativeEndpoint {
     fn reconciled_journal(&self, session_id: &str) -> Result<EndpointJournal, NativeEndpointError> {
         let folder = self.active_folder(session_id)?;
         let bytes = fs::read(folder.join("main.jsonl"))?;
-        let scan = scan_valid_prefix(&bytes, 1);
+        let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         let ledger = scan.projection.ok_or_else(|| {
             NativeEndpointError::Store(store::StoreError::Corruption(
                 "thread ledger has no valid genesis prefix".to_owned(),

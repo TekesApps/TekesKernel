@@ -442,7 +442,7 @@ fn write_bound_request(root: &Path, call_id: &str, name: &str, arguments: Value)
         bytes.extend(serde_json_canonicalizer::to_vec(&event).expect("canonical event"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("valid bound ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("valid bound ledger");
     fs::write(thread_folder.join("main.jsonl"), bytes).expect("ledger");
     ToolControl::new(
         SESSION,

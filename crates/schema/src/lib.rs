@@ -11,6 +11,12 @@ pub use fold::{LedgerProjection, LedgerValidator, LifecycleFacts, RunRange, vali
 pub use ijson::IJsonValue;
 pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 
+/// Ledger reader version this build understands. Version 2 adds the genesis
+/// `preset` field: a genesis that carries one sets `min_reader` 2, so an older
+/// reader opens the session read-only instead of rendering it with the wrong
+/// prompt (spec event §Genesis).
+pub const READER_VERSION: u64 = 2;
+
 use thiserror::Error;
 
 #[derive(Debug, Error)]

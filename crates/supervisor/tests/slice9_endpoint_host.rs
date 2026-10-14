@@ -907,7 +907,7 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
             .extend_from_slice(&serde_json_canonicalizer::to_vec(&event).expect("canonical event"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("running ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("running ledger");
     std::fs::write(&ledger, &bytes).expect("running ledger write");
     let selected_during_turn = block_on_ready(assembly.dispatch(request(
         "rpc-model-select-during-turn",
@@ -928,7 +928,7 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
         .expect("canonical settle"),
     );
     bytes.push(b'\n');
-    schema::validate_ledger(&bytes, 1).expect("settled ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("settled ledger");
     std::fs::write(&ledger, bytes).expect("settled ledger write");
 
     let before = block_on_ready(assembly.dispatch(request(
@@ -1351,7 +1351,7 @@ fn append_turn(root: &std::path::Path, session: &str, first_seq: u64, settled: b
         bytes.extend_from_slice(&serde_json_canonicalizer::to_vec(event).expect("canonical event"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("valid ledger");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("valid ledger");
     std::fs::write(&ledger, &bytes).expect("ledger write");
     first_seq + events.len() as u64
 }
@@ -1408,7 +1408,8 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
     let genesis: Value = serde_json::from_str(genesis.lines().next().expect("genesis")).unwrap();
     assert_eq!(genesis["ephemeral"], Value::Bool(true));
     let copied = std::fs::read(folder.join("main.jsonl")).expect("forked ledger");
-    let projection = schema::validate_ledger(&copied, 1).expect("forked ledger validates");
+    let projection =
+        schema::validate_ledger(&copied, schema::READER_VERSION).expect("forked ledger validates");
     assert_eq!(
         projection.lifecycle.latest_turn,
         Some(1),

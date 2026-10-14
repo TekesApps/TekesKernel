@@ -61,7 +61,7 @@ fn thread_with(titles: &[&str]) -> (tempfile::TempDir, std::path::PathBuf) {
 /// Folds `main.jsonl` and writes its card (like the supervisor does after a decode).
 fn write_for(folder: &Path) -> WriteOutcome {
     let bytes = std::fs::read(folder.join("main.jsonl")).unwrap();
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     let projection = scan.projection.clone().unwrap();
     let input = CardInput {
         thread: THREAD,
@@ -250,7 +250,7 @@ fn writer_skips_instead_of_claiming_bytes_it_cannot_pin() {
     let (_root, folder) = thread_with(&["a", "b"]);
     let ledger = folder.join("main.jsonl");
     let bytes = std::fs::read(&ledger).unwrap();
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     let projection = scan.projection.clone().unwrap();
     let build = |prefix| input_for(prefix, &projection);
     // the file was rewritten after the fold: the pinned descriptor no longer matches
@@ -295,7 +295,7 @@ fn journal_identity_is_classified_without_parsing_rows() {
     let rows = b"{\"row\":0,\"pad\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}\n{\"row\":1,\"pad\":\"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb\"}\n";
     std::fs::write(&journal, rows).unwrap();
     let bytes = std::fs::read(folder.join("main.jsonl")).unwrap();
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     let projection = scan.projection.clone().unwrap();
     let input = CardInput {
         thread: THREAD,
@@ -379,7 +379,8 @@ fn card_writes_never_disturb_a_worker_appending_under_the_flock() {
             // The worker owns the flock for its whole life; a card writer that tried to lock
             // would make this `open` of a later writer fail, and any lock taken by the card
             // module would be visible here as a failed `append`.
-            let mut writer = LockedLedger::open(&ledger, 1).expect("worker lock");
+            let mut writer =
+                LockedLedger::open(&ledger, schema::READER_VERSION).expect("worker lock");
             for seq in 2..=400_u64 {
                 writer
                     .append(title(&format!("event-{seq}"), seq), seq % 7 == 0)
@@ -506,7 +507,7 @@ fn card_line_names_are_plain_jsonl_names() {
     card.lines[0].file = "../escape.jsonl".into();
     assert!(ThreadCard::decode(&card.encode().unwrap()).is_none());
     let bytes = std::fs::read(folder.join("main.jsonl")).unwrap();
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     let projection = scan.projection.unwrap();
     let mut input = input_for(&bytes, &projection);
     input.lines[0].file = "../escape.jsonl";

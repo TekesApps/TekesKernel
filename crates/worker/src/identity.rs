@@ -235,7 +235,10 @@ mod tests {
             bytes.push(b'\n');
         }
         std::fs::write(&path, bytes).unwrap();
-        (directory, LockedLedger::open(&path, 1).unwrap())
+        (
+            directory,
+            LockedLedger::open(&path, schema::READER_VERSION).unwrap(),
+        )
     }
 
     #[test]
@@ -299,7 +302,7 @@ mod tests {
         );
         let path = ledger.path().to_owned();
         drop(ledger);
-        let reopened = LockedLedger::open(&path, 1).unwrap();
+        let reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         assert_eq!(
             selected(&reopened).unwrap(),
             Some(tools::IdentityProfile::General)
@@ -327,7 +330,7 @@ mod tests {
             "\"identity_profile\":\"coding\"",
         );
         std::fs::write(&path, text).unwrap();
-        ledger = LockedLedger::open(&path, 1).unwrap();
+        ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         assert_eq!(
             resolve(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap(),
             tools::IdentityProfile::Coding

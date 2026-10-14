@@ -369,7 +369,7 @@ fn scan_session(
     archived: bool,
 ) -> Result<IndexEntry, SearchError> {
     let bytes = fs::read(folder.join("main.jsonl"))?;
-    let scan = scan_valid_prefix(&bytes, 1);
+    let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
     let valid_len = usize::try_from(scan.valid_bytes)
         .map_err(|_| SearchError::SourceCorrupt("valid prefix is too large".to_owned()))?;
     if bytes

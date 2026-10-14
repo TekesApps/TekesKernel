@@ -1084,7 +1084,7 @@ fn canonical_lines(events: Vec<serde_json::Value>) -> Vec<u8> {
         bytes.extend_from_slice(&event.canonical_bytes().expect("canonical"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("ledger validates");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("ledger validates");
     bytes
 }
 
@@ -1167,7 +1167,7 @@ fn append_child_events(
         bytes.extend_from_slice(&event.canonical_bytes().expect("canonical"));
         bytes.push(b'\n');
     }
-    schema::validate_ledger(&bytes, 1).expect("grown child ledger validates");
+    schema::validate_ledger(&bytes, schema::READER_VERSION).expect("grown child ledger validates");
     let mut file = std::fs::OpenOptions::new()
         .write(true)
         .truncate(true)

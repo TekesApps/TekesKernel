@@ -154,7 +154,7 @@ async fn publish_one_durable_live_event(
             // first projected row (projecting it now if the doorbell has not).
             let journal = EndpointJournal::open(&folder)?;
             let ledger = std::fs::read(folder.join("main.jsonl"))?;
-            let projection = schema::validate_ledger(&ledger, 1)?;
+            let projection = schema::validate_ledger(&ledger, schema::READER_VERSION)?;
             let mut projected =
                 endpoint::Projector::default().reconcile(&projection.events, &journal)?;
             let event = match projected.is_empty() {

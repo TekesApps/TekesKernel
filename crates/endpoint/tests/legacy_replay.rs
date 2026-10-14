@@ -57,7 +57,7 @@ fn legacy_corpus_export_imports_and_projects_through_kernel() {
             bytes.push(b'\n');
         }
         fs::write(folder.path().join("main.jsonl"), &bytes).unwrap();
-        let projection = validate_ledger(&bytes, 1)
+        let projection = validate_ledger(&bytes, schema::READER_VERSION)
             .unwrap_or_else(|error| panic!("{session}: imported ledger invalid: {error}"));
         assert_eq!(
             projection.events.len(),

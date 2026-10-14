@@ -48,7 +48,7 @@ fn slice3_gate_42_checkpoint_marker_barrier() {
             .is_none()
     );
     drop(ledger);
-    let reopened = LockedLedger::open(directory.path().join("main.jsonl"), 1)
+    let reopened = LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
         .expect("checkpoint reopen folds from genesis");
     assert_eq!(reopened.next_seq(), seq + 1);
     let reopened_checkpoint: Event = reopened

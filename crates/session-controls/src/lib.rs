@@ -518,7 +518,7 @@ pub fn subagent_catalog(
     session_id: &str,
     archived: bool,
 ) -> Result<Value, Failure> {
-    let projection = schema::validate_ledger(ledger_bytes, 1)
+    let projection = schema::validate_ledger(ledger_bytes, schema::READER_VERSION)
         .map_err(|error| Failure::LedgerCorrupt(error.to_string()))?;
     let mut labels: BTreeMap<String, String> = BTreeMap::new();
     let mut children: Vec<(String, String)> = Vec::new();

@@ -449,7 +449,7 @@ impl AttachmentAuthority {
         let ledger = fs::read(folder.join("main.jsonl")).map_err(|error| {
             AttachmentReadError::Ledger(format!("cannot read main.jsonl: {error}"))
         })?;
-        let scan = scan_valid_prefix(&ledger, 1);
+        let scan = scan_valid_prefix(&ledger, schema::READER_VERSION);
         let projection = scan.projection.ok_or_else(|| {
             AttachmentReadError::Ledger("main.jsonl has no valid ledger prefix".to_owned())
         })?;
@@ -533,7 +533,7 @@ impl AttachmentAuthority {
         let ledger = fs::read(folder.join("main.jsonl")).map_err(|error| {
             AttachmentReadError::Ledger(format!("cannot read main.jsonl: {error}"))
         })?;
-        let scan = scan_valid_prefix(&ledger, 1);
+        let scan = scan_valid_prefix(&ledger, schema::READER_VERSION);
         let projection = scan.projection.ok_or_else(|| {
             AttachmentReadError::Ledger("main.jsonl has no valid ledger prefix".to_owned())
         })?;

@@ -2522,7 +2522,7 @@ impl ProductionClientExtensions {
                 serde_json::json!({}),
             )
         })?;
-        let scan = store::scan_valid_prefix(&bytes, 1);
+        let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
         // A torn tail (a partial append, not yet repaired) is ignored: the valid prefix is the
         // ledger. A complete line that does not validate is damage, and the source is corrupt.
         let valid_len = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);

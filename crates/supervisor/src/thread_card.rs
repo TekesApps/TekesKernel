@@ -211,7 +211,7 @@ fn fold_children(session: &str, folder: &std::path::Path) -> Vec<PreparedLine> {
         let Ok(mut prefix) = std::fs::read(folder.join(&name)) else {
             continue;
         };
-        let scan = store::scan_valid_prefix(&prefix, 1);
+        let scan = store::scan_valid_prefix(&prefix, schema::READER_VERSION);
         let Ok(valid) = usize::try_from(scan.valid_bytes) else {
             continue;
         };
@@ -252,7 +252,7 @@ fn fold_children(session: &str, folder: &std::path::Path) -> Vec<PreparedLine> {
 /// debounce window was open. `None` when the file has a torn tail or cannot be described.
 fn refold(session: &str, folder: PathBuf, journal: Option<JournalInput>) -> Option<PreparedCard> {
     let bytes = std::fs::read(folder.join("main.jsonl")).ok()?;
-    let scan = store::scan_valid_prefix(&bytes, 1);
+    let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
     if scan.needs_repair() {
         return None;
     }

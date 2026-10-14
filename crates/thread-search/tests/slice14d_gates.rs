@@ -469,7 +469,7 @@ fn append_superseding_title(
     superseded_seq: u64,
 ) {
     let path = root.join("threads").join(id).join("main.jsonl");
-    let mut ledger = LockedLedger::open(path, 1).expect("open ledger");
+    let mut ledger = LockedLedger::open(path, schema::READER_VERSION).expect("open ledger");
     let seq = ledger.next_seq();
     ledger
         .append_contract(
@@ -489,7 +489,7 @@ fn append_title(root: &std::path::Path, id: &str, title: &str, timestamp: &str) 
         "archive"
     };
     let path = root.join(area).join(id).join("main.jsonl");
-    let mut ledger = LockedLedger::open(path, 1).expect("open ledger");
+    let mut ledger = LockedLedger::open(path, schema::READER_VERSION).expect("open ledger");
     let seq = ledger.next_seq();
     ledger
         .append_contract(
@@ -519,8 +519,11 @@ fn fixture_path(name: &str) -> std::path::PathBuf {
 fn host_search_matches_content_across_workspaces_and_archive() {
     let root = fixture_catalog();
     for (id, area) in [(A, "threads"), (D, "threads"), (C, "archive")] {
-        let mut ledger =
-            LockedLedger::open(root.path().join(area).join(id).join("main.jsonl"), 1).unwrap();
+        let mut ledger = LockedLedger::open(
+            root.path().join(area).join(id).join("main.jsonl"),
+            schema::READER_VERSION,
+        )
+        .unwrap();
         let seq = ledger.next_seq();
         ledger.append_contract(event(json!({
             "v":1,"seq":seq,"kind":"input","ts":"2026-08-26T10:00:00.000Z",

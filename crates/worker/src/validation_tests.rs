@@ -55,7 +55,7 @@ fn validation_candidate_and_decision_survive_reopen_without_second_writes() {
     let next = ledger.next_seq();
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut reopened = LockedLedger::open(&path, 1).unwrap();
+    let mut reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     assert_eq!(
         engine::begin_validation(&mut reopened, timestamp, &binding).unwrap(),
         candidate
@@ -133,7 +133,7 @@ fn validation_obligation_survives_resume_never_without_reopening_settled_turn() 
     assert!(validation_runtime::has_pending_validation(&ledger).unwrap());
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     assert!(validation_runtime::has_pending_validation(&ledger).unwrap());
     let timestamp = "2026-08-27T09:00:02.000Z";
     let candidate = engine::begin_validation(&mut ledger, timestamp, &binding).unwrap();
@@ -155,7 +155,7 @@ fn long_provider_reasoning_and_answer_survive_spill_and_reopen() {
         server_managed:false, turn:2, attempt:"long-response" }, terminal).unwrap();
     let path = ledger.path().to_owned();
     drop(ledger);
-    let ledger = LockedLedger::open(path,1).unwrap();
+    let ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
     let events = &ledger.projection().unwrap().events;
     let reasoning = events.iter().rev().find(|e| e.kind()==&EventKind::Reasoning).unwrap();
     let raw = serde_json::to_value(reasoning.raw()).unwrap();
@@ -191,7 +191,7 @@ fn validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap() {
     assert_eq!(value["payload"]["decision"]["ordinal"], 1);
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut ledger = LockedLedger::open(path, 1).unwrap();
+    let mut ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
     let next = ledger.next_seq();
     assert_eq!(
         engine::commit_validation_decision(&mut ledger, timestamp, candidate, verdict_seq).unwrap(),
@@ -261,7 +261,7 @@ fn direct_final_recovery_settles_once_without_validator() {
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Ordinary).unwrap(), None);
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     let profile = tool_profile(directory.path(), &[]);
     let options = test_options(&ledger);
     let run = ProviderRunContext { options: &options, profile: &profile,
@@ -276,11 +276,11 @@ fn direct_final_recovery_settles_once_without_validator() {
         event.string_field("subkind") == Some("validation.candidate")));
     let next = ledger.next_seq();
     drop(ledger);
-    let ledger = LockedLedger::open(&path, 1).unwrap();
+    let ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     assert!(!validation_runtime::has_pending_validation(&ledger).unwrap());
     assert_eq!(ledger.next_seq(), next);
     drop(ledger);
-    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Ordinary).unwrap(), Some(3));
     assert_eq!(current_turn_inputs(&ledger, 3).unwrap(), vec![input_seq]);
 }
@@ -299,7 +299,7 @@ fn settlement_recovery_rejects_a_foreign_candidate_binding_without_writes() {
     records.iter_mut().find(|e| e["seq"] == candidate).unwrap()["payload"]["binding"]["worker"] = json!("foreign-worker");
     let changed = records.iter().fold(String::new(), |mut acc, e| { acc.push_str(&serde_json_canonicalizer::to_string(e).unwrap()); acc.push('\n'); acc });
     fs::write(&path, &changed).unwrap();
-    let mut reopened = LockedLedger::open(&path, 1).unwrap();
+    let mut reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     assert!(engine::materialize_validation_settlement(&mut reopened, timestamp, decision).is_err());
     assert_eq!(fs::read_to_string(&path).unwrap(), changed);
 }
@@ -319,7 +319,7 @@ fn failed_decision_recovery_delivers_feedback_once_to_the_same_worker() {
     let decision = engine::commit_validation_decision(&mut ledger,timestamp,candidate,source).unwrap();
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut ledger = LockedLedger::open(&path,1).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     let profile = tool_profile(directory.path(),&[]);
     let options = test_options(&ledger);
     let selected = Selected { version: 2 };
@@ -327,7 +327,7 @@ fn failed_decision_recovery_delivers_feedback_once_to_the_same_worker() {
         let run = ProviderRunContext { options:&options,profile:&profile,selected:&selected };
         assert!(!validation_runtime::advance(&mut ledger,run,&mut std::iter::empty(),&mut Vec::new(),&RuntimeCancellation::default()).unwrap());
         drop(ledger);
-        ledger = LockedLedger::open(&path,1).unwrap();
+        ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     }
     let events = &ledger.projection().unwrap().events;
     let feedback = events.iter().filter(|e| e.string_field("subkind")==Some("validation.feedback")).collect::<Vec<_>>();
@@ -432,7 +432,7 @@ fn queued_retry_body_waits_for_validation_settlement_then_opens_once() {
     assert_eq!(current_turn_inputs(&ledger, 2).unwrap(), vec![9]);
     let path = ledger.path().to_owned();
     drop(ledger);
-    let mut ledger = LockedLedger::open(path, 1).unwrap();
+    let mut ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Ordinary).unwrap(), None);
     engine::materialize_validation_settlement(&mut ledger, timestamp, decision).unwrap();
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Reconcile).unwrap(), None);
@@ -453,7 +453,7 @@ fn first_root_input_opens_after_run_start_without_prior_settlement() {
     let prefix = fs::read_to_string(&path).unwrap().lines().take(3)
         .fold(String::new(), |mut acc, line| { acc.push_str(&format!("{line}\n")); acc });
     fs::write(&path, prefix).unwrap();
-    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
     let timestamp = "2026-09-04T00:00:00.000Z";
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Reconcile).unwrap(), None);
     assert_eq!(open_ready_turn(&mut ledger, timestamp, RunMode::Ordinary).unwrap(), Some(1));
@@ -517,7 +517,7 @@ fn validator_mandate_counts_verify_attempts_not_progress_outputs() {
         validation_test_candidate(&mut ledger, true);
         let path = ledger.path().to_owned();
         drop(ledger);
-        ledger = LockedLedger::open(&path, 1).unwrap();
+        ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
         let projection = ledger.projection().unwrap();
         assert!(!validation_runtime::validator_mandate_exhausted(&projection.events, 2));
         assert!(!projection.terminal_tail, "mandate exhaustion must be settled by the owning execution path");
