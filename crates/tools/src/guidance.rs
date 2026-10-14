@@ -1,13 +1,15 @@
 //! Runtime-owned opening of the root system instructions.
 //!
 //! The harness identity, the session profile text, and the working directory
-//! precede the instruction snapshot's `AGENTS.md` scopes. Each profile's text
-//! lives in one file under `crates/tools/prompts/` (`coding.md`, `general.md`)
-//! and is pinned byte-for-byte by `fixtures/tools/builtin-tool-guidance.canonical.json`
-//! (spec builtin-tools §Model-facing tool guidance). A sentence ablation on
-//! the weighted-ttl corpus found the identity lines carry the
-//! trajectory-length effect for deepseek-v4-flash; per-tool usage paragraphs
-//! carried none of it and were removed. The coding behavior rules and their
+//! precede the instruction snapshot's `AGENTS.md` scopes. A profile is its
+//! identity line, the general efficiency rules every profile shares, then the
+//! profile's own rules. Each part lives in one file under
+//! `crates/tools/prompts/` and is pinned byte-for-byte by
+//! `fixtures/tools/builtin-tool-guidance.canonical.json` (spec builtin-tools
+//! §Model-facing tool guidance). A sentence ablation on the weighted-ttl corpus
+//! found the identity lines carry the trajectory-length effect for
+//! deepseek-v4-flash, so the identity line stays first; per-tool usage
+//! paragraphs carried none of it and were removed. The behavior rules and their
 //! measured effect are described in docs/benchmarks/deepseek-cost-2026-10.md.
 
 use serde::{Deserialize, Serialize};
@@ -17,12 +19,17 @@ use sha2::{Digest, Sha256};
 /// Fixed opener, before the model line.
 pub const HARNESS_IDENTITY: &str = "You are an AI agent powered by Tekes Kernel.";
 
-/// Coding profile text: model identity and coding behavior rules. `{model}` is
-/// the wire model id of the request.
-pub const CODING_PROFILE: &str = include_str!("../prompts/coding.md");
+/// General identity line. `{model}` is the wire model id of the request.
+pub const GENERAL_IDENTITY: &str = include_str!("../prompts/general-identity.md");
 
-/// Neutral profile text for sessions that are not primarily coding work.
-pub const GENERAL_PROFILE: &str = include_str!("../prompts/general.md");
+/// Domain-neutral efficiency rules shared by every profile.
+pub const GENERAL_RULES: &str = include_str!("../prompts/general-rules.md");
+
+/// Coding identity line. `{model}` is the wire model id of the request.
+pub const CODING_IDENTITY: &str = include_str!("../prompts/coding-identity.md");
+
+/// Coding-only behavior rules, after the general rules.
+pub const CODING_RULES: &str = include_str!("../prompts/coding-rules.md");
 
 /// Resolved session identity. Legacy genesis without an identity stays coding;
 /// new sessions may defer selection until the first user request.
@@ -51,6 +58,21 @@ impl IdentityProfile {
             _ => None,
         }
     }
+
+    /// The profile text with `{model}` unresolved: the identity line, the
+    /// general rules, then the profile's own rules, joined by blank lines.
+    #[must_use]
+    pub fn profile_text(self) -> String {
+        let parts: &[&str] = match self {
+            Self::Coding => &[CODING_IDENTITY, GENERAL_RULES, CODING_RULES],
+            Self::General => &[GENERAL_IDENTITY, GENERAL_RULES],
+        };
+        parts
+            .iter()
+            .map(|part| part.trim())
+            .collect::<Vec<_>>()
+            .join("\n\n")
+    }
 }
 
 /// Working-directory line template; `{cwd}` is the execution cwd.
@@ -66,13 +88,9 @@ pub fn root_system_instructions(
     cwd: Option<&str>,
     instruction_text: &str,
 ) -> String {
-    let profile = match identity {
-        IdentityProfile::Coding => CODING_PROFILE,
-        IdentityProfile::General => GENERAL_PROFILE,
-    };
     let mut sections = vec![
         HARNESS_IDENTITY.to_owned(),
-        profile.trim().replace("{model}", model),
+        identity.profile_text().replace("{model}", model),
     ];
     if let Some(cwd) = cwd {
         sections.push(WORKING_DIRECTORY.replace("{cwd}", cwd));
@@ -89,17 +107,21 @@ pub fn root_system_instructions(
 pub fn guidance_oracle_value() -> Value {
     let preimage = json!({
         "harness_identity": HARNESS_IDENTITY,
-        "coding_profile": CODING_PROFILE,
-        "general_profile": GENERAL_PROFILE,
+        "general_identity": GENERAL_IDENTITY,
+        "general_rules": GENERAL_RULES,
+        "coding_identity": CODING_IDENTITY,
+        "coding_rules": CODING_RULES,
         "working_directory": WORKING_DIRECTORY,
     });
     let canonical = serde_json_canonicalizer::to_vec(&preimage).expect("guidance oracle is JSON");
     json!({
-        "format": 4,
+        "format": 5,
         "digest": format!("sha256-{:x}", Sha256::digest(canonical)),
         "harness_identity": HARNESS_IDENTITY,
-        "coding_profile": CODING_PROFILE,
-        "general_profile": GENERAL_PROFILE,
+        "general_identity": GENERAL_IDENTITY,
+        "general_rules": GENERAL_RULES,
+        "coding_identity": CODING_IDENTITY,
+        "coding_rules": CODING_RULES,
         "working_directory": WORKING_DIRECTORY,
     })
 }
@@ -119,11 +141,10 @@ mod tests {
 
     #[test]
     fn root_instructions_are_identity_profile_cwd_then_agents_text() {
-        let coding = CODING_PROFILE.trim().replace("{model}", "deepseek-flash");
-        assert!(
-            coding.starts_with("You are a coding agent powered by the deepseek-flash model.\n\n")
+        let general_rules = "When the requested work is done, stop and report. If you find no problem, say so instead of continuing to search for one.\n\nBe concise. Do not narrate before each tool call.";
+        let coding = format!(
+            "You are a coding agent powered by the deepseek-flash model.\n\n{general_rules}\n\nTreat a change as done when the requested tests pass.\n\nDo not write extra fuzz, randomized, or differential test scripts unless the user asks for them.\n\nCheck expected results by writing and running tests, not by working out program output at length in your reasoning."
         );
-        assert!(coding.contains("stop and report"));
         let text = root_system_instructions(
             IdentityProfile::Coding,
             "deepseek-flash",
@@ -141,15 +162,33 @@ mod tests {
             bare,
             format!(
                 "{HARNESS_IDENTITY}\n\n{}",
-                CODING_PROFILE.trim().replace("{model}", "m")
+                IdentityProfile::Coding
+                    .profile_text()
+                    .replace("{model}", "m")
             )
         );
         let general = root_system_instructions(IdentityProfile::General, "m", Some("/work"), "");
         assert_eq!(
             general,
             format!(
-                "{HARNESS_IDENTITY}\n\nYou are a general-purpose agent powered by the m model.\n\nYour working directory is /work."
+                "{HARNESS_IDENTITY}\n\nYou are a general-purpose agent powered by the m model.\n\n{general_rules}\n\nYour working directory is /work."
             )
+        );
+    }
+
+    #[test]
+    fn profile_text_keeps_model_placeholder_and_identity_first() {
+        for profile in [IdentityProfile::Coding, IdentityProfile::General] {
+            let text = profile.profile_text();
+            assert!(text.contains("{model}"));
+            assert!(text.starts_with("You are a "));
+            assert_eq!(text.matches("You are a").count(), 1);
+            assert!(text.contains(GENERAL_RULES.trim()));
+        }
+        assert!(
+            !IdentityProfile::General
+                .profile_text()
+                .contains(CODING_RULES.trim())
         );
     }
 }

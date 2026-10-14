@@ -6,6 +6,26 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Changed
+- The root system prompt splits each profile into an identity line, shared
+  general efficiency rules, and profile-specific rules. The two domain-neutral
+  coding rules (stop and report when the requested work is done; be concise, no
+  narration before each tool call) now apply to `general` sessions too; the
+  coding-only rules (done when the requested tests pass, no extra fuzz scripts,
+  check results by running tests) stay in `coding`. The identity line stays
+  first. Contract: `spec/builtin-tools.md` ("Model-facing tool guidance").
+  - Prompt files under `crates/tools/prompts/` are now `general-identity.md`,
+    `general-rules.md`, `coding-identity.md` and `coding-rules.md`;
+    `fixtures/tools/builtin-tool-guidance.canonical.json` moves to format 5 with
+    one key per file. The new digest opens a `system_change` epoch for existing
+    sessions.
+  - `session.initialPresets` `configurationText` is now the composed profile
+    text (`IdentityProfile::profile_text`), still with `{model}` unresolved; it
+    is no longer the raw content of a single file.
+  - `tools::CODING_PROFILE` and `tools::GENERAL_PROFILE` are replaced by
+    `CODING_IDENTITY`, `CODING_RULES`, `GENERAL_IDENTITY`, `GENERAL_RULES` and
+    `IdentityProfile::profile_text`.
+
 ## 0.5.0 — 2026-10-14
 
 Toolchain moves to Rust 1.95.0. The MCP client additionally speaks the tasks

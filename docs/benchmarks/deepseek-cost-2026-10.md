@@ -121,7 +121,7 @@ differential checks against its own reference.
 
 ## The coding profile rules
 
-Kernel's coding profile ([crates/tools/prompts/coding.md](../../crates/tools/prompts/coding.md))
+Kernel's coding profile at the time (now split into general and coding rules; see [System prompt](../runtime/system-prompt.md))
 adds four sentences after the identity line:
 
 1. When the requested change is done and the requested tests pass, stop and

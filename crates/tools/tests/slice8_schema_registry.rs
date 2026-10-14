@@ -373,15 +373,17 @@ fn canonical_guidance_oracle_matches_registry_bytes() {
         .expect("guidance oracle fixture");
     assert_eq!(fixture_bytes, tools::canonical_guidance_oracle_bytes());
     let decoded: Value = serde_json::from_slice(&fixture_bytes).unwrap();
-    assert_eq!(decoded["format"], 4);
+    assert_eq!(decoded["format"], 5);
     assert!(
         decoded.get("guidance").is_none(),
-        "format 4 carries no per-tool paragraphs"
+        "format 5 carries no per-tool paragraphs"
     );
     let preimage = json!({
         "harness_identity": decoded["harness_identity"],
-        "coding_profile": decoded["coding_profile"],
-        "general_profile": decoded["general_profile"],
+        "general_identity": decoded["general_identity"],
+        "general_rules": decoded["general_rules"],
+        "coding_identity": decoded["coding_identity"],
+        "coding_rules": decoded["coding_rules"],
         "working_directory": decoded["working_directory"],
     });
     let canonical = serde_json_canonicalizer::to_vec(&preimage).unwrap();
@@ -390,8 +392,10 @@ fn canonical_guidance_oracle_matches_registry_bytes() {
         format!("sha256-{:x}", Sha256::digest(canonical))
     );
     assert_eq!(decoded["harness_identity"], tools::HARNESS_IDENTITY);
-    assert_eq!(decoded["coding_profile"], tools::CODING_PROFILE);
-    assert_eq!(decoded["general_profile"], tools::GENERAL_PROFILE);
+    assert_eq!(decoded["general_identity"], tools::GENERAL_IDENTITY);
+    assert_eq!(decoded["general_rules"], tools::GENERAL_RULES);
+    assert_eq!(decoded["coding_identity"], tools::CODING_IDENTITY);
+    assert_eq!(decoded["coding_rules"], tools::CODING_RULES);
     assert_eq!(decoded["working_directory"], tools::WORKING_DIRECTORY);
 }
 
