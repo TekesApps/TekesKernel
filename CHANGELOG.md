@@ -6,6 +6,13 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.5.0 — 2026-10-14
+
+Toolchain moves to Rust 1.95.0. The MCP client additionally speaks the tasks
+extension (SEP-2663) used by the official Rust SDK; every handshake now
+declares it. No existing wire field changes meaning; SEP-1686 servers are
+unaffected.
+
 ### Changed
 - The pinned Rust toolchain moves from 1.85.1 to 1.95.0 (`rust-toolchain.toml`,
   workspace `rust-version`). Behavior is unchanged; the new compiler's lints are
