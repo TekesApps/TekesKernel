@@ -50,9 +50,9 @@ pub use preset::{
     KERNEL_LAYERS, KernelLayer, MAX_PRESET_DUTY_BYTES, MAX_PRESET_ID_BYTES,
     MAX_PRESET_IDENTITY_BYTES, MAX_PRESET_LAYERS, MAX_PRESET_MCP_SERVERS, MAX_PRESET_MCP_TOOLS,
     MAX_PRESET_SKILLS, MAX_PRESET_TEXT_BYTES, MAX_PRESET_TOOLS, MAX_PRESET_VERSION_BYTES,
-    NoPresetEnvironment, PRESET_FORMAT, PRESET_RENDER_VERSION, PresetBase, PresetEnvironment,
-    PresetError, PresetInvalid, PresetInvalidReason, PresetLayer, PresetMcpRef, ResolvedPreset,
-    describe_value as describe_presets,
+    NoPresetEnvironment, PRESET_FORMAT, PRESET_RENDER_VERSION, PresetBase, PresetDefaults,
+    PresetEnvironment, PresetError, PresetInvalid, PresetInvalidReason, PresetLayer, PresetMcpRef,
+    ResolvedPreset, describe_value as describe_presets,
 };
 pub use runtime_backends::*;
 pub use sandbox::{

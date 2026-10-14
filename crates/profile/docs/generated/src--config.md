@@ -1118,7 +1118,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_preset_tools` | `error.to_string` | [1570](../../src/config.rs#L1570) | receiver-type-required |
 | `session_preset_tools` | `raw.get` | [1572](../../src/config.rs#L1572) | receiver-type-required |
 | `session_preset_tools` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [1575](../../src/config.rs#L1575) | receiver-type-required |
-| `session_preset_tools` | `tools::ResolvedPreset::from_genesis` | [1575](../../src/config.rs#L1575) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
+| `session_preset_tools` | `tools::ResolvedPreset::from_genesis` | [1575](../../src/config.rs#L1575) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
 | `resolve_workspace` | `Vec::new` | [1588](../../src/config.rs#L1588), [1597](../../src/config.rs#L1597), [1611](../../src/config.rs#L1611) | external-constructor-callback-or-unresolved |
 | `resolve_workspace` | `value.folder_paths` | [1589](../../src/config.rs#L1589) | receiver-type-required |
 | `resolve_workspace` | `canonical_directory` | [1590](../../src/config.rs#L1590), [1599](../../src/config.rs#L1599), [1613](../../src/config.rs#L1613) | [profile::config::canonical_directory](../../src/config.rs#L1776) |

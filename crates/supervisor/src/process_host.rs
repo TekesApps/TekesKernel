@@ -1474,6 +1474,7 @@ impl ProductionProcessHost {
                 identity_profile: None,
                 preset: None,
                 preset_mcp: None,
+                preset_models: None,
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: "schedule",

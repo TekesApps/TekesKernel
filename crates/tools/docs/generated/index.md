@@ -44,7 +44,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
 | [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 67 | 241 | [Symbols and calls](src--linux_sandbox.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
-| [crates/tools/src/preset.rs](../../src/preset.rs) | 84 | 472 | [Symbols and calls](src--preset.md) |
+| [crates/tools/src/preset.rs](../../src/preset.rs) | 87 | 498 | [Symbols and calls](src--preset.md) |
 | [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 146 | 1468 | [Symbols and calls](src--runtime_backends.md) |
 | [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 33 | 237 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |

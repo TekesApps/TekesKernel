@@ -93,6 +93,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `PRESET_FORMAT` | `preset::PRESET_FORMAT` | `pub` |
 | `PRESET_RENDER_VERSION` | `preset::PRESET_RENDER_VERSION` | `pub` |
 | `PresetBase` | `preset::PresetBase` | `pub` |
+| `PresetDefaults` | `preset::PresetDefaults` | `pub` |
 | `PresetEnvironment` | `preset::PresetEnvironment` | `pub` |
 | `PresetError` | `preset::PresetError` | `pub` |
 | `PresetInvalid` | `preset::PresetInvalid` | `pub` |

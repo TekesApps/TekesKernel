@@ -1773,6 +1773,12 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                     workspace_id,
                     &instruction,
                     Some(self.mcp.as_ref() as &dyn endpoint::PresetMcpSource),
+                )
+                .with_models(
+                    &snapshot,
+                    Some(
+                        &crate::endpoint_host::ConfiguredModels as &dyn endpoint::PresetModelSource,
+                    ),
                 );
                 let base = profile::ConfigRepository::open(&self.root)
                     .and_then(|repository| repository.workspace(workspace_id))
@@ -1819,6 +1825,14 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                 }
                 if let Some(skills) = &preset.skills {
                     result["skills"] = serde_json::json!(skills);
+                }
+                if let Some(defaults) = &preset.defaults {
+                    let mut value =
+                        serde_json::json!({"provider":defaults.provider,"model":defaults.model});
+                    if let Some(effort) = &defaults.reasoning_effort {
+                        value["reasoningEffort"] = serde_json::json!(effort);
+                    }
+                    result["defaults"] = value;
                 }
                 if !preset.mcp.is_empty() {
                     result["mcpReadiness"] = self.mcp.preset_readiness(workspace_id, &preset);

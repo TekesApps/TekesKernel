@@ -84,7 +84,7 @@ session or writes configuration. The preset model, limits and render order are
 | method | request | result |
 |---|---|---|
 | `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes,maxTools,maxMcpServers,maxMcpToolsPerServer,maxSkills}, invalidReasons:[str], selectableTools:[str]}` |
-| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str], mcpReadiness?:[McpReadiness]}` |
+| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str], defaults?:{provider,model,reasoningEffort?}, mcpReadiness?:[McpReadiness]}` |
 
 `session.presets.resolve` resolves the preset exactly as `session.create`
 would under that workspace's base, instruction snapshot and MCP registry, and

@@ -180,7 +180,22 @@ pub struct ResolvedPreset {
     /// Skill packages the session may discover and load; absent keeps all.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub skills: Option<Vec<String>>,
+    /// Model the session starts with; written as its session settings when the
+    /// session is created. `session.selectModel` changes it later as usual.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub defaults: Option<PresetDefaults>,
     pub digest: String,
+}
+
+/// A preset's starting model: a configured, enabled provider model and
+/// optionally one of its reasoning efforts.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PresetDefaults {
+    pub provider: String,
+    pub model: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reasoning_effort: Option<String>,
 }
 
 /// One referenced MCP server. The definition stays in the MCP registry.
@@ -211,6 +226,11 @@ pub trait PresetEnvironment {
     fn skill_known(&self, _name: &str) -> bool {
         false
     }
+    /// Whether `provider`/`model` is configured and enabled and, when given,
+    /// `effort` is one of its reasoning efforts.
+    fn model_available(&self, _provider: &str, _model: &str, _effort: Option<&str>) -> bool {
+        false
+    }
 }
 
 /// The environment without a ceiling, MCP servers or skills.
@@ -237,6 +257,7 @@ pub enum PresetInvalidReason {
     UnknownMcpTool,
     UnknownSkill,
     TooManyEntries,
+    UnknownModel,
 }
 
 impl PresetInvalidReason {
@@ -259,10 +280,11 @@ impl PresetInvalidReason {
             Self::UnknownMcpTool => "unknown-mcp-tool",
             Self::UnknownSkill => "unknown-skill",
             Self::TooManyEntries => "too-many-entries",
+            Self::UnknownModel => "unknown-model",
         }
     }
 
-    pub const ALL: [Self; 16] = [
+    pub const ALL: [Self; 17] = [
         Self::MultipleIdentity,
         Self::UnknownKernelLayer,
         Self::DuplicateLayer,
@@ -279,6 +301,7 @@ impl PresetInvalidReason {
         Self::UnknownMcpTool,
         Self::UnknownSkill,
         Self::TooManyEntries,
+        Self::UnknownModel,
     ];
 }
 
@@ -448,17 +471,17 @@ fn string_member<'a>(
     }
 }
 
-/// Layer members reserved for model defaults; refused as `unsupported-field`
-/// until the Kernel applies them.
-const RESERVED_MEMBERS: [&str; 1] = ["defaults"];
-
-/// Tools, MCP references and skills declared across the request and its layers.
+/// Tools, MCP references, skills and model defaults declared across the
+/// request and its layers.
 #[derive(Default)]
 struct Selection {
     builtins: Option<BTreeSet<String>>,
     /// Server name to raw tool names, plus the path of its first mention.
     mcp: BTreeMap<String, (BTreeSet<String>, String, Option<String>)>,
     skills: Option<BTreeMap<String, (String, Option<String>)>>,
+    /// The winning `defaults`: the top level's, else the last layer's.
+    defaults: Option<(PresetDefaults, String, Option<String>)>,
+    defaults_from_top: bool,
 }
 
 fn string_array<'a>(value: &'a Value, path: &str) -> Result<Vec<&'a str>, PresetError> {
@@ -536,6 +559,27 @@ impl Selection {
                     .or_insert_with(|| (format!("{path}.skills[{index}]"), label()));
             }
         }
+        if let Some(defaults) = object.get("defaults") {
+            let field = format!("{path}.defaults");
+            let entry =
+                object_members(defaults, &field, &["provider", "model", "reasoningEffort"])?;
+            let required = |key: &str| {
+                string_member(entry, key, &field)?
+                    .filter(|value| !value.is_empty())
+                    .map(str::to_owned)
+                    .ok_or_else(|| PresetError::BadRequest(format!("{field}.{key} is required")))
+            };
+            let value = PresetDefaults {
+                provider: required("provider")?,
+                model: required("model")?,
+                reasoning_effort: string_member(entry, "reasoningEffort", &field)?
+                    .map(str::to_owned),
+            };
+            if layer.is_none() || !self.defaults_from_top {
+                self.defaults = Some((value, field, label()));
+                self.defaults_from_top = layer.is_none();
+            }
+        }
         Ok(())
     }
 
@@ -543,7 +587,15 @@ impl Selection {
     fn finish(
         self,
         environment: &dyn PresetEnvironment,
-    ) -> Result<(Option<Vec<String>>, Vec<PresetMcpRef>, Option<Vec<String>>), PresetError> {
+    ) -> Result<
+        (
+            Option<Vec<String>>,
+            Vec<PresetMcpRef>,
+            Option<Vec<String>>,
+            Option<PresetDefaults>,
+        ),
+        PresetError,
+    > {
         let too_many = |field: &str| {
             PresetError::from(PresetInvalid::new(
                 PresetReason::TooManyEntries,
@@ -641,10 +693,24 @@ impl Selection {
                 Some(skills.into_keys().collect())
             }
         };
+        let defaults = match self.defaults {
+            Some((defaults, field, layer)) => {
+                if !environment.model_available(
+                    &defaults.provider,
+                    &defaults.model,
+                    defaults.reasoning_effort.as_deref(),
+                ) {
+                    return Err(PresetInvalid::new(PresetReason::UnknownModel, layer, field).into());
+                }
+                Some(defaults)
+            }
+            None => None,
+        };
         Ok((
             tools.map(|tools| tools.into_iter().collect()),
             references,
             skills,
+            defaults,
         ))
     }
 }
@@ -660,7 +726,11 @@ impl ResolvedPreset {
         if let Some(field) = find_secret(request, "preset") {
             return Err(PresetInvalid::new(PresetReason::SecretInPreset, None, field).into());
         }
-        let object = object_members(request, "preset", &["layers", "tools", "mcp", "skills"])?;
+        let object = object_members(
+            request,
+            "preset",
+            &["layers", "tools", "mcp", "skills", "defaults"],
+        )?;
         let mut selection = Selection::default();
         selection.collect(object, "preset", None)?;
         let requested = match object.get("layers") {
@@ -686,10 +756,11 @@ impl ResolvedPreset {
             layers.push(resolved);
         }
         let mut preset = Self::from_parts(base, layers, None, Vec::new(), None)?;
-        let (tools, mcp, skills) = selection.finish(environment)?;
+        let (tools, mcp, skills, defaults) = selection.finish(environment)?;
         preset.tools = tools;
         preset.mcp = mcp;
         preset.skills = skills;
+        preset.defaults = defaults;
         preset.digest = preset.compute_digest();
         Ok(preset)
     }
@@ -750,6 +821,7 @@ impl ResolvedPreset {
             tools,
             mcp,
             skills,
+            defaults: None,
             digest: String::new(),
         };
         if preset
@@ -799,6 +871,9 @@ impl ResolvedPreset {
             preset.skills.clone(),
         )
         .map_err(|error| format!("invalid genesis preset: {error:?}"))?;
+        let mut check = check;
+        check.defaults = preset.defaults.clone();
+        check.digest = check.compute_digest();
         if check.digest != preset.digest {
             return Err("genesis preset digest mismatch".to_owned());
         }
@@ -932,17 +1007,6 @@ fn resolve_layer(layer: &Value, index: usize) -> Result<PresetLayer, PresetError
                 )
                 .into());
             }
-            if let Some(reserved) = RESERVED_MEMBERS
-                .iter()
-                .find(|key| object.contains_key(**key))
-            {
-                return Err(PresetInvalid::new(
-                    PresetReason::UnsupportedField,
-                    label(),
-                    format!("{path}.{reserved}"),
-                )
-                .into());
-            }
             let identity = string_member(object, "identity", &path)?;
             if let Some(identity) = identity {
                 if identity.len() > MAX_PRESET_IDENTITY_BYTES {
@@ -1044,6 +1108,11 @@ mod tests {
         }
         fn skill_known(&self, name: &str) -> bool {
             name == "style-guide"
+        }
+        fn model_available(&self, provider: &str, model: &str, effort: Option<&str>) -> bool {
+            provider == "main"
+                && ["fast", "deep"].contains(&model)
+                && effort.is_none_or(|e| e == "high")
         }
     }
 
@@ -1197,11 +1266,10 @@ mod tests {
             invalid(json!({"layers":total})).reason,
             PresetReason::TextTooLarge
         );
-        assert_eq!(
-            invalid(json!({"layers":[{"kind":"inline","id":"a","version":"1","defaults":{}}]}))
-                .reason,
-            PresetReason::UnsupportedField
-        );
+        assert!(matches!(
+            resolve(json!({"layers":[{"kind":"inline","id":"a","version":"1","defaults":{}}]})),
+            Err(PresetError::BadRequest(_))
+        ));
     }
 
     #[test]
@@ -1303,6 +1371,72 @@ mod tests {
             json!({"mcp":[{"server":"docs"}]}),
             json!({"mcp":[{"server":"docs","tools":[]}]}),
             json!({"layers":[{"kind":"kernel","id":"coding","tools":["read"]}]}),
+        ] {
+            assert!(
+                matches!(
+                    resolve_in(request.clone(), None),
+                    Err(PresetError::BadRequest(_))
+                ),
+                "{request}"
+            );
+        }
+    }
+
+    #[test]
+    fn model_defaults_resolve_with_top_level_then_last_layer_precedence() {
+        let layer = |id: &str, model: &str| json!({"kind":"inline","id":id,"version":"1","defaults":{"provider":"main","model":model}});
+        let defaults = |request: Value| resolve_in(request, None).unwrap().defaults;
+        assert_eq!(defaults(json!({"layers":[]})), None);
+        assert_eq!(
+            defaults(json!({"layers":[layer("a", "fast"), layer("b", "deep")]})),
+            Some(PresetDefaults {
+                provider: "main".to_owned(),
+                model: "deep".to_owned(),
+                reasoning_effort: None
+            })
+        );
+        assert_eq!(
+            defaults(
+                json!({"defaults":{"provider":"main","model":"fast","reasoningEffort":"high"},
+                "layers":[layer("a", "deep")]})
+            ),
+            Some(PresetDefaults {
+                provider: "main".to_owned(),
+                model: "fast".to_owned(),
+                reasoning_effort: Some("high".to_owned())
+            })
+        );
+        let preset = resolve_in(json!({"layers":[layer("a", "deep")]}), None).unwrap();
+        let value = serde_json::to_value(&preset).unwrap();
+        assert_eq!(value["defaults"], json!({"provider":"main","model":"deep"}));
+        assert_eq!(ResolvedPreset::from_genesis(&value).unwrap(), preset);
+        assert_ne!(
+            preset.digest,
+            resolve_in(json!({"layers":[layer("a", "fast")]}), None)
+                .unwrap()
+                .digest
+        );
+        let refused = |request: Value| match resolve_in(request, None) {
+            Err(PresetError::Invalid(invalid)) => (invalid.reason, invalid.layer, invalid.field),
+            other => panic!("expected preset-invalid, got {other:?}"),
+        };
+        assert_eq!(
+            refused(json!({"layers":[layer("a", "retired")]})),
+            (
+                PresetReason::UnknownModel,
+                Some("a".to_owned()),
+                Some("preset.layers[0].defaults".to_owned())
+            )
+        );
+        assert_eq!(
+            refused(json!({"defaults":{"provider":"main","model":"fast","reasoningEffort":"max"}}))
+                .0,
+            PresetReason::UnknownModel
+        );
+        for request in [
+            json!({"defaults":{"model":"fast"}}),
+            json!({"defaults":{"provider":"main","model":"fast","temperature":1}}),
+            json!({"defaults":"fast"}),
         ] {
             assert!(
                 matches!(

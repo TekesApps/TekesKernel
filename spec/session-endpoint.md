@@ -2146,7 +2146,8 @@ frozen in genesis and never changes for the session.
 Preset    = { layers?:[Layer], ...Selection }
 Layer     = { kind:"kernel", id:str }
           | { kind:"inline", id:str, version:str, identity?:str, duty?:str, ...Selection }
-Selection = { tools?:[str], mcp?:[{server:str, tools:[str]}], skills?:[str] }
+Selection = { tools?:[str], mcp?:[{server:str, tools:[str]}], skills?:[str],
+              defaults?:{provider:str, model:str, reasoningEffort?:str} }
 PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str }
 ```
 
@@ -2179,14 +2180,22 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   `unknown-kernel-layer`, `duplicate-layer`, `too-many-layers`, `invalid-id`,
   `invalid-identity`, `text-too-large`, `secret-in-preset` and
   `unsupported-field`, `unknown-tool`, `role-tool`, `tool-not-permitted`,
-  `unknown-mcp-server`, `unknown-mcp-tool`, `unknown-skill` and
-  `too-many-entries`; `layer` names the layer (`#<index>` when its id is
+  `unknown-mcp-server`, `unknown-mcp-tool`, `unknown-skill`,
+  `too-many-entries` and `unknown-model`; `layer` names the layer (`#<index>` when its id is
   unusable) and `field` is the member path, such as `preset.layers[1].duty`.
   A preset only references registered resources, so a member that carries an
   MCP definition or credential (`command`, `env`, `url`, `headers`,
   `transport`, `oauth`, `token`, `apiKey`, `password`, `secret`, ...) or text
-  that looks like a credential is `secret-in-preset`. Layer `defaults` is
-  reserved and refused as `unsupported-field` until the Kernel applies it.
+  that looks like a credential is `secret-in-preset`. `unsupported-field` is
+  kept for members a later preset format reserves; no member uses it today.
+- **Model defaults.** `defaults` names the model the session starts with,
+  exactly as `session.selectModel` accepts it: a configured, enabled
+  `provider`/`model` and optionally one of its reasoning efforts; anything
+  else is `unknown-model`. The top level's `defaults` wins over every layer's,
+  and a later layer's over an earlier one's. `session.create` writes them as
+  the session's settings (revision 1) before it reports the session, and a
+  `session.fork {preset}` whose preset has them writes them for the
+  destination; `session.selectModel` changes the model later as usual.
 - **Selection.** `tools`, `mcp` and `skills` may appear at the top level and
   in inline layers; the preset's selection is their union.
   - `tools` names fixed tools a session may select on its own (the fixed
@@ -2222,7 +2231,8 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   session notice (`classification:"preset_skill"`) naming it. A preset without a selection keeps the
   workspace `allowed_tools` and every skill.
 - **Genesis.** The resolved preset is `preset:{format:1, base, layers,
-  tools?, mcp?:[{server,digest,tools}], skills?, digest}`, where `digest` is
+  tools?, mcp?:[{server,digest,tools}], skills?, defaults?:{provider, model,
+  reasoning_effort?}, digest}`, where `digest` is
   `sha256:` over the RFC 8785 bytes of the preset without `digest`; the colon
   keeps it apart from asset names (`sha256-<hex>`), which ledger rewrites
   resolve. MCP definition digests use the same `sha256:` form. Such a genesis

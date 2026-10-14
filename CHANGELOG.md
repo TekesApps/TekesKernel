@@ -6,6 +6,15 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- Session preset `defaults {provider, model, reasoningEffort?}` (top level or
+  inline layer): the model a session starts with. It is checked exactly as
+  `session.selectModel` checks a model (`unknown-model` otherwise), frozen in
+  the genesis preset, and written as the session's settings at
+  `session.create` (and for a `session.fork {preset}` destination). The top
+  level wins over layers, and a later layer over an earlier one.
+  `session.presets.resolve` returns the resolved `defaults`.
+
 ## 0.7.2 — 2026-10-15
 
 A session preset's `skills` now resolve by package name end to end; automatic
