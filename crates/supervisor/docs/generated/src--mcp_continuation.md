@@ -100,7 +100,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_task` | `initial["taskId"]         .as_str` | [39](../../src/mcp_continuation.rs#L39) | receiver-type-required |
 | `resolve_task` | `id.is_empty` | [41](../../src/mcp_continuation.rs#L41) | receiver-type-required |
 | `resolve_task` | `McpTask::validate_result(&binding.initial_state, task_id)         .map_err` | [43](../../src/mcp_continuation.rs#L43) | receiver-type-required |
-| `resolve_task` | `McpTask::validate_result` | [43](../../src/mcp_continuation.rs#L43) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L556) |
+| `resolve_task` | `McpTask::validate_result` | [43](../../src/mcp_continuation.rs#L43) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L564) |
 | `resolve_task` | `e.to_string` | [44](../../src/mcp_continuation.rs#L44), [56](../../src/mcp_continuation.rs#L56), [71](../../src/mcp_continuation.rs#L71), [81](../../src/mcp_continuation.rs#L81) | receiver-type-required |
 | `resolve_task` | `broker             .task_operation_cancellable(                 key.clone(),                 "tasks/get",                 value(json!({"taskId":task_id}))?,                 cancellation.clone(),             )             .map_err` | [49](../../src/mcp_continuation.rs#L49) | receiver-type-required |
 | `resolve_task` | `broker             .task_operation_cancellable` | [49](../../src/mcp_continuation.rs#L49) | receiver-type-required |
@@ -114,7 +114,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_task` | `task_response` | [84](../../src/mcp_continuation.rs#L84), [87](../../src/mcp_continuation.rs#L87) | [tekes-supervisor::mcp_continuation::task_response](../../src/mcp_continuation.rs#L97) |
 | `resolve_task` | `query` | [84](../../src/mcp_continuation.rs#L84), [90](../../src/mcp_continuation.rs#L90) | external-constructor-callback-or-unresolved |
 | `task_response` | `McpTask::validate_result(&state, expected_id).map_err` | [103](../../src/mcp_continuation.rs#L103) | receiver-type-required |
-| `task_response` | `McpTask::validate_result` | [103](../../src/mcp_continuation.rs#L103) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L556) |
+| `task_response` | `McpTask::validate_result` | [103](../../src/mcp_continuation.rs#L103) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L564) |
 | `task_response` | `error` | [103](../../src/mcp_continuation.rs#L103), [107](../../src/mcp_continuation.rs#L107), [139](../../src/mcp_continuation.rs#L139) | [tekes-supervisor::mcp_continuation::error](../../src/mcp_continuation.rs#L14) |
 | `task_response` | `e.to_string` | [103](../../src/mcp_continuation.rs#L103) | receiver-type-required |
 | `task_response` | `serde_json::to_value` | [104](../../src/mcp_continuation.rs#L104) | external-constructor-callback-or-unresolved |

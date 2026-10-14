@@ -156,6 +156,8 @@ pub enum ProviderFailure {
     Cancelled,
 }
 
+// The terminal variant is the common one; boxing it would change every consumer.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, PartialEq)]
 pub enum ProviderCompletion {
     Terminal(ProviderTerminal),
@@ -1529,10 +1531,9 @@ impl StreamAccumulator {
             if dialect == Some(DialectId::KimiChatV1)
                 && choice.get("index").and_then(Value::as_u64) == Some(0)
                 && usage_from_any(value.get("usage")).is_none()
+                && let Some(usage) = usage_from_any(choice.get("usage"))
             {
-                if let Some(usage) = usage_from_any(choice.get("usage")) {
-                    self.usage = Some(usage);
-                }
+                self.usage = Some(usage);
             }
             if let Some(delta) = choice.get("delta") {
                 let delta_object = delta
@@ -2224,15 +2225,15 @@ fn normalize_legacy_result(bytes: &[u8], value: &Value) -> Result<ProviderTermin
         });
     }
     let mut content = Vec::new();
-    if let Some(reasoning) = value.get("reasoningData").and_then(Value::as_str) {
-        if !reasoning.is_empty() {
-            content.push(ContentBlock::Reasoning(reasoning.to_owned()));
-        }
+    if let Some(reasoning) = value.get("reasoningData").and_then(Value::as_str)
+        && !reasoning.is_empty()
+    {
+        content.push(ContentBlock::Reasoning(reasoning.to_owned()));
     }
-    if let Some(text) = value.get("text").and_then(Value::as_str) {
-        if !text.is_empty() {
-            content.push(ContentBlock::Text(text.to_owned()));
-        }
+    if let Some(text) = value.get("text").and_then(Value::as_str)
+        && !text.is_empty()
+    {
+        content.push(ContentBlock::Text(text.to_owned()));
     }
     let tool_calls = value
         .get("functionCalls")
@@ -2422,10 +2423,10 @@ fn normalize_anthropic(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, 
         match part.get("type").and_then(Value::as_str) {
             Some("text") => content.push(ContentBlock::Text(required_string(part, "text")?)),
             Some("thinking") => {
-                if let Some(thinking) = part.get("thinking").and_then(Value::as_str) {
-                    if !thinking.is_empty() {
-                        content.push(ContentBlock::Reasoning(thinking.to_owned()));
-                    }
+                if let Some(thinking) = part.get("thinking").and_then(Value::as_str)
+                    && !thinking.is_empty()
+                {
+                    content.push(ContentBlock::Reasoning(thinking.to_owned()));
                 }
             }
             Some("tool_use") => calls.push(ToolCall {
@@ -2483,10 +2484,10 @@ fn normalize_chat(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, Strin
     if let Some(reasoning) = message.get("reasoning_content").and_then(Value::as_str) {
         content.push(ContentBlock::Reasoning(reasoning.to_owned()));
     }
-    if let Some(text) = message.get("content").and_then(Value::as_str) {
-        if !text.is_empty() {
-            content.push(ContentBlock::Text(text.to_owned()));
-        }
+    if let Some(text) = message.get("content").and_then(Value::as_str)
+        && !text.is_empty()
+    {
+        content.push(ContentBlock::Text(text.to_owned()));
     }
     let calls = message
         .get("tool_calls")

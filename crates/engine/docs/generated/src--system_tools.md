@@ -55,45 +55,45 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [engine::system_tools::SystemToolBackend::web_fetch](../../src/system_tools.rs#L888) | function_item | `private` |  |
 | [engine::system_tools::SystemToolBackend::web_search](../../src/system_tools.rs#L909) | function_item | `private` |  |
 | [engine::system_tools::SystemToolBackend::apply_patch](../../src/system_tools.rs#L953) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::write](../../src/system_tools.rs#L1161) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::edit](../../src/system_tools.rs#L1171) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1210) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1309) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::artifact_identity](../../src/system_tools.rs#L1339) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::allowed_roots_sentence](../../src/system_tools.rs#L1361) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::resolve_path](../../src/system_tools.rs#L1373) | function_item | `private` |  |
-| [engine::system_tools::web_fetch_result_value](../../src/system_tools.rs#L1411) | function_item | `pub` |  |
-| [engine::system_tools::SystemToolBackend::supports](../../src/system_tools.rs#L1427) | function_item | `private` |  |
-| [engine::system_tools::SystemToolBackend::execute](../../src/system_tools.rs#L1442) | function_item | `private` |  |
-| [engine::system_tools::terminal](../../src/system_tools.rs#L1454) | function_item | `private` |  |
-| [engine::system_tools::unavailable](../../src/system_tools.rs#L1477) | function_item | `private` |  |
-| [engine::system_tools::failure_code](../../src/system_tools.rs#L1485) | function_item | `private` |  |
-| [engine::system_tools::helper_failure](../../src/system_tools.rs#L1502) | function_item | `private` |  |
-| [engine::system_tools::backend_io](../../src/system_tools.rs#L1520) | function_item | `private` |  |
-| [engine::system_tools::backend_store](../../src/system_tools.rs#L1524) | function_item | `private` |  |
-| [engine::system_tools::json_to_ijson](../../src/system_tools.rs#L1528) | function_item | `private` |  |
-| [engine::system_tools::required_str](../../src/system_tools.rs#L1533) | function_item | `private` |  |
-| [engine::system_tools::optional_str](../../src/system_tools.rs#L1540) | function_item | `private` |  |
-| [engine::system_tools::optional_bool](../../src/system_tools.rs#L1548) | function_item | `private` |  |
-| [engine::system_tools::optional_u64](../../src/system_tools.rs#L1556) | function_item | `private` |  |
-| [engine::system_tools::string_array](../../src/system_tools.rs#L1567) | function_item | `private` |  |
-| [engine::system_tools::parse_steps](../../src/system_tools.rs#L1586) | function_item | `private` |  |
-| [engine::system_tools::parse_artifacts](../../src/system_tools.rs#L1635) | function_item | `private` |  |
-| [engine::system_tools::normalized_relative](../../src/system_tools.rs#L1678) | function_item | `private` |  |
-| [engine::system_tools::exec_json](../../src/system_tools.rs#L1694) | function_item | `private` |  |
-| [engine::system_tools::retype](../../src/system_tools.rs#L1707) | function_item | `private` |  |
-| [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) | function_item | `private` |  |
-| [engine::system_tools::truncate_utf8](../../src/system_tools.rs#L1722) | function_item | `private` |  |
-| [engine::system_tools::PatchResult](../../src/system_tools.rs#L1734) | struct_item | `private` |  |
-| [engine::system_tools::PatchResult::create](../../src/system_tools.rs#L1742) | function_item | `private` |  |
-| [engine::system_tools::PatchResult::update](../../src/system_tools.rs#L1763) | function_item | `private` |  |
-| [engine::system_tools::find_anchor](../../src/system_tools.rs#L1890) | function_item | `private` |  |
-| [engine::system_tools::find_context](../../src/system_tools.rs#L1912) | function_item | `private` |  |
-| [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1959) | function_item | `private` |  |
-| [engine::system_tools::detected_newline](../../src/system_tools.rs#L1970) | function_item | `private` |  |
-| [engine::system_tools::forbidden_boundary](../../src/system_tools.rs#L1977) | function_item | `private` |  |
-| [engine::system_tools::logical_lines](../../src/system_tools.rs#L1983) | function_item | `private` |  |
-| [engine::system_tools::patch_result_json](../../src/system_tools.rs#L1991) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::write](../../src/system_tools.rs#L1159) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::edit](../../src/system_tools.rs#L1169) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1208) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1306) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::artifact_identity](../../src/system_tools.rs#L1336) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::allowed_roots_sentence](../../src/system_tools.rs#L1358) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::resolve_path](../../src/system_tools.rs#L1370) | function_item | `private` |  |
+| [engine::system_tools::web_fetch_result_value](../../src/system_tools.rs#L1408) | function_item | `pub` |  |
+| [engine::system_tools::SystemToolBackend::supports](../../src/system_tools.rs#L1424) | function_item | `private` |  |
+| [engine::system_tools::SystemToolBackend::execute](../../src/system_tools.rs#L1439) | function_item | `private` |  |
+| [engine::system_tools::terminal](../../src/system_tools.rs#L1451) | function_item | `private` |  |
+| [engine::system_tools::unavailable](../../src/system_tools.rs#L1474) | function_item | `private` |  |
+| [engine::system_tools::failure_code](../../src/system_tools.rs#L1482) | function_item | `private` |  |
+| [engine::system_tools::helper_failure](../../src/system_tools.rs#L1499) | function_item | `private` |  |
+| [engine::system_tools::backend_io](../../src/system_tools.rs#L1517) | function_item | `private` |  |
+| [engine::system_tools::backend_store](../../src/system_tools.rs#L1521) | function_item | `private` |  |
+| [engine::system_tools::json_to_ijson](../../src/system_tools.rs#L1525) | function_item | `private` |  |
+| [engine::system_tools::required_str](../../src/system_tools.rs#L1530) | function_item | `private` |  |
+| [engine::system_tools::optional_str](../../src/system_tools.rs#L1537) | function_item | `private` |  |
+| [engine::system_tools::optional_bool](../../src/system_tools.rs#L1545) | function_item | `private` |  |
+| [engine::system_tools::optional_u64](../../src/system_tools.rs#L1553) | function_item | `private` |  |
+| [engine::system_tools::string_array](../../src/system_tools.rs#L1564) | function_item | `private` |  |
+| [engine::system_tools::parse_steps](../../src/system_tools.rs#L1583) | function_item | `private` |  |
+| [engine::system_tools::parse_artifacts](../../src/system_tools.rs#L1632) | function_item | `private` |  |
+| [engine::system_tools::normalized_relative](../../src/system_tools.rs#L1675) | function_item | `private` |  |
+| [engine::system_tools::exec_json](../../src/system_tools.rs#L1691) | function_item | `private` |  |
+| [engine::system_tools::retype](../../src/system_tools.rs#L1704) | function_item | `private` |  |
+| [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) | function_item | `private` |  |
+| [engine::system_tools::truncate_utf8](../../src/system_tools.rs#L1719) | function_item | `private` |  |
+| [engine::system_tools::PatchResult](../../src/system_tools.rs#L1731) | struct_item | `private` |  |
+| [engine::system_tools::PatchResult::create](../../src/system_tools.rs#L1739) | function_item | `private` |  |
+| [engine::system_tools::PatchResult::update](../../src/system_tools.rs#L1760) | function_item | `private` |  |
+| [engine::system_tools::find_anchor](../../src/system_tools.rs#L1887) | function_item | `private` |  |
+| [engine::system_tools::find_context](../../src/system_tools.rs#L1909) | function_item | `private` |  |
+| [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1956) | function_item | `private` |  |
+| [engine::system_tools::detected_newline](../../src/system_tools.rs#L1967) | function_item | `private` |  |
+| [engine::system_tools::forbidden_boundary](../../src/system_tools.rs#L1974) | function_item | `private` |  |
+| [engine::system_tools::logical_lines](../../src/system_tools.rs#L1980) | function_item | `private` |  |
+| [engine::system_tools::patch_result_json](../../src/system_tools.rs#L1988) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -489,22 +489,22 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `with_edit_recorder` | `Some` | [500](../../src/system_tools.rs#L500) | external-constructor-callback-or-unresolved |
 | `execute_inner` | `execution.name.as_str` | [505](../../src/system_tools.rs#L505) | receiver-type-required |
 | `execute_inner` | `self.apply_patch` | [506](../../src/system_tools.rs#L506) | [engine::system_tools::SystemToolBackend::apply_patch](../../src/system_tools.rs#L953) |
-| `execute_inner` | `self.edit` | [507](../../src/system_tools.rs#L507) | [engine::system_tools::SystemToolBackend::edit](../../src/system_tools.rs#L1171) |
-| `execute_inner` | `self.write` | [508](../../src/system_tools.rs#L508) | [engine::system_tools::SystemToolBackend::write](../../src/system_tools.rs#L1161) |
+| `execute_inner` | `self.edit` | [507](../../src/system_tools.rs#L507) | [engine::system_tools::SystemToolBackend::edit](../../src/system_tools.rs#L1169) |
+| `execute_inner` | `self.write` | [508](../../src/system_tools.rs#L508) | [engine::system_tools::SystemToolBackend::write](../../src/system_tools.rs#L1159) |
 | `execute_inner` | `self.read` | [509](../../src/system_tools.rs#L509) | [engine::system_tools::SystemToolBackend::read](../../src/system_tools.rs#L550) |
 | `execute_inner` | `self.glob` | [510](../../src/system_tools.rs#L510) | [engine::system_tools::SystemToolBackend::glob](../../src/system_tools.rs#L611) |
 | `execute_inner` | `self.grep` | [511](../../src/system_tools.rs#L511) | [engine::system_tools::SystemToolBackend::grep](../../src/system_tools.rs#L635) |
 | `execute_inner` | `self.shell` | [512](../../src/system_tools.rs#L512) | [engine::system_tools::SystemToolBackend::shell](../../src/system_tools.rs#L729) |
 | `execute_inner` | `self.web_fetch` | [513](../../src/system_tools.rs#L513) | [engine::system_tools::SystemToolBackend::web_fetch](../../src/system_tools.rs#L888) |
 | `execute_inner` | `self.web_search` | [514](../../src/system_tools.rs#L514) | [engine::system_tools::SystemToolBackend::web_search](../../src/system_tools.rs#L909) |
-| `execute_inner` | `unavailable` | [516](../../src/system_tools.rs#L516) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1477) |
-| `execute_inner` | `terminal` | [523](../../src/system_tools.rs#L523) | [engine::system_tools::terminal](../../src/system_tools.rs#L1454) |
+| `execute_inner` | `unavailable` | [516](../../src/system_tools.rs#L516) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1474) |
+| `execute_inner` | `terminal` | [523](../../src/system_tools.rs#L523) | [engine::system_tools::terminal](../../src/system_tools.rs#L1451) |
 | `invoke_helper` | `self.helper.invoke` | [527](../../src/system_tools.rs#L527) | receiver-type-required |
 | `invoke_helper` | `call.to_owned` | [529](../../src/system_tools.rs#L529) | receiver-type-required |
 | `invoke_helper` | `BackendOutcome::Completed` | [536](../../src/system_tools.rs#L536), [539](../../src/system_tools.rs#L539), [541](../../src/system_tools.rs#L541), [544](../../src/system_tools.rs#L544) | external-constructor-callback-or-unresolved |
 | `invoke_helper` | `Ok` | [536](../../src/system_tools.rs#L536) | external-constructor-callback-or-unresolved |
 | `invoke_helper` | `Err` | [539](../../src/system_tools.rs#L539), [541](../../src/system_tools.rs#L541), [544](../../src/system_tools.rs#L544) | external-constructor-callback-or-unresolved |
-| `invoke_helper` | `helper_failure` | [539](../../src/system_tools.rs#L539) | [engine::system_tools::helper_failure](../../src/system_tools.rs#L1502) |
+| `invoke_helper` | `helper_failure` | [539](../../src/system_tools.rs#L539) | [engine::system_tools::helper_failure](../../src/system_tools.rs#L1499) |
 | `invoke_helper` | `BackendFailure::Protocol` | [542](../../src/system_tools.rs#L542) | external-constructor-callback-or-unresolved |
 | `invoke_helper` | `"helper response id did not match call id".to_owned` | [542](../../src/system_tools.rs#L542) | receiver-type-required |
 | `invoke_helper` | `BackendOutcome::Hold` | [545](../../src/system_tools.rs#L545) | external-constructor-callback-or-unresolved |
@@ -512,7 +512,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `outcome_try!(optional_u64(args, "offset")).unwrap_or` | [552](../../src/system_tools.rs#L552) | receiver-type-required |
 | `read` | `outcome_try!(optional_u64(args, "limit")).unwrap_or` | [553](../../src/system_tools.rs#L553) | receiver-type-required |
 | `read` | `self.invoke_helper` | [556](../../src/system_tools.rs#L556) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
-| `read` | `retype` | [565](../../src/system_tools.rs#L565) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
+| `read` | `retype` | [565](../../src/system_tools.rs#L565) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
 | `read` | `BackendOutcome::Unavailable` | [573](../../src/system_tools.rs#L573) | external-constructor-callback-or-unresolved |
 | `read` | `"artifact-version-authority".to_owned` | [574](../../src/system_tools.rs#L574) | receiver-type-required |
 | `read` | `"durable artifact version authority is not configured".to_owned` | [575](../../src/system_tools.rs#L575) | receiver-type-required |
@@ -524,7 +524,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `all             .iter()             .enumerate()             .skip` | [588](../../src/system_tools.rs#L588) | receiver-type-required |
 | `read` | `all             .iter()             .enumerate` | [588](../../src/system_tools.rs#L588) | receiver-type-required |
 | `read` | `all             .iter` | [588](../../src/system_tools.rs#L588) | receiver-type-required |
-| `read` | `truncate_utf8` | [594](../../src/system_tools.rs#L594) | [engine::system_tools::truncate_utf8](../../src/system_tools.rs#L1722) |
+| `read` | `truncate_utf8` | [594](../../src/system_tools.rs#L594) | [engine::system_tools::truncate_utf8](../../src/system_tools.rs#L1719) |
 | `read` | `BackendOutcome::Completed` | [598](../../src/system_tools.rs#L598) | external-constructor-callback-or-unresolved |
 | `read` | `Ok` | [598](../../src/system_tools.rs#L598) | external-constructor-callback-or-unresolved |
 | `glob` | `outcome_try!(optional_str(args, "path")).unwrap_or` | [613](../../src/system_tools.rs#L613) | receiver-type-required |
@@ -533,7 +533,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `glob` | `self.invoke_helper` | [620](../../src/system_tools.rs#L620) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
 | `glob` | `BackendOutcome::Completed` | [629](../../src/system_tools.rs#L629) | external-constructor-callback-or-unresolved |
 | `glob` | `Ok` | [629](../../src/system_tools.rs#L629) | external-constructor-callback-or-unresolved |
-| `glob` | `retype` | [631](../../src/system_tools.rs#L631) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
+| `glob` | `retype` | [631](../../src/system_tools.rs#L631) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
 | `grep` | `outcome_try!(optional_str(args, "path")).unwrap_or` | [637](../../src/system_tools.rs#L637) | receiver-type-required |
 | `grep` | `outcome_try!(optional_str(args, "output_mode")).unwrap_or` | [638](../../src/system_tools.rs#L638) | receiver-type-required |
 | `grep` | `outcome_try!(optional_bool(args, "case_insensitive")).unwrap_or` | [640](../../src/system_tools.rs#L640) | receiver-type-required |
@@ -544,7 +544,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `grep` | `argv.push` | [653](../../src/system_tools.rs#L653), [654](../../src/system_tools.rs#L654), [658](../../src/system_tools.rs#L658) | receiver-type-required |
 | `grep` | `"--files-with-matches".to_owned` | [653](../../src/system_tools.rs#L653) | receiver-type-required |
 | `grep` | `"--count".to_owned` | [654](../../src/system_tools.rs#L654) | receiver-type-required |
-| `grep` | `invalid_outcome` | [655](../../src/system_tools.rs#L655) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) |
+| `grep` | `invalid_outcome` | [655](../../src/system_tools.rs#L655) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) |
 | `grep` | `"--ignore-case".to_owned` | [658](../../src/system_tools.rs#L658) | receiver-type-required |
 | `grep` | `"--context".to_owned` | [661](../../src/system_tools.rs#L661) | receiver-type-required |
 | `grep` | `context.to_string` | [661](../../src/system_tools.rs#L661) | receiver-type-required |
@@ -555,7 +555,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `grep` | `relative.clone` | [672](../../src/system_tools.rs#L672) | receiver-type-required |
 | `grep` | `"--".to_owned` | [674](../../src/system_tools.rs#L674) | receiver-type-required |
 | `grep` | `pattern.to_owned` | [674](../../src/system_tools.rs#L674), [694](../../src/system_tools.rs#L694) | receiver-type-required |
-| `grep` | `self.exec_helper` | [675](../../src/system_tools.rs#L675) | [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1309) |
+| `grep` | `self.exec_helper` | [675](../../src/system_tools.rs#L675) | [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1306) |
 | `grep` | `String::new` | [679](../../src/system_tools.rs#L679) | external-constructor-callback-or-unresolved |
 | `grep` | `Some` | [681](../../src/system_tools.rs#L681) | external-constructor-callback-or-unresolved |
 | `grep` | `self.invoke_helper` | [689](../../src/system_tools.rs#L689) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
@@ -563,9 +563,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `grep` | `output_mode.to_owned` | [696](../../src/system_tools.rs#L696) | receiver-type-required |
 | `grep` | `BackendOutcome::Completed` | [704](../../src/system_tools.rs#L704), [714](../../src/system_tools.rs#L714), [722](../../src/system_tools.rs#L722) | external-constructor-callback-or-unresolved |
 | `grep` | `Ok` | [704](../../src/system_tools.rs#L704) | external-constructor-callback-or-unresolved |
-| `grep` | `retype` | [706](../../src/system_tools.rs#L706), [725](../../src/system_tools.rs#L725) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
+| `grep` | `retype` | [706](../../src/system_tools.rs#L706), [725](../../src/system_tools.rs#L725) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
 | `grep` | `exec_json(value, true).map` | [714](../../src/system_tools.rs#L714) | receiver-type-required |
-| `grep` | `exec_json` | [714](../../src/system_tools.rs#L714) | [engine::system_tools::exec_json](../../src/system_tools.rs#L1694) |
+| `grep` | `exec_json` | [714](../../src/system_tools.rs#L714) | [engine::system_tools::exec_json](../../src/system_tools.rs#L1691) |
 | `grep` | `result                         .as_object_mut()                         .expect("exec result is an object")                         .insert` | [715](../../src/system_tools.rs#L715) | receiver-type-required |
 | `grep` | `result                         .as_object_mut()                         .expect` | [715](../../src/system_tools.rs#L715) | receiver-type-required |
 | `grep` | `result                         .as_object_mut` | [715](../../src/system_tools.rs#L715) | receiver-type-required |
@@ -584,7 +584,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `shell` | `tokens.saturating_mul` | [742](../../src/system_tools.rs#L742) | receiver-type-required |
 | `shell` | `stdout_bytes.min` | [744](../../src/system_tools.rs#L744) | receiver-type-required |
 | `shell` | `outcome_try!(optional_str(args, "failure_policy")).unwrap_or` | [746](../../src/system_tools.rs#L746) | receiver-type-required |
-| `shell` | `invalid_outcome` | [748](../../src/system_tools.rs#L748), [762](../../src/system_tools.rs#L762), [766](../../src/system_tools.rs#L766) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) |
+| `shell` | `invalid_outcome` | [748](../../src/system_tools.rs#L748), [762](../../src/system_tools.rs#L762), [766](../../src/system_tools.rs#L766) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) |
 | `shell` | `Vec::new` | [750](../../src/system_tools.rs#L750) | external-constructor-callback-or-unresolved |
 | `shell` | `commands.push` | [752](../../src/system_tools.rs#L752), [760](../../src/system_tools.rs#L760) | receiver-type-required |
 | `shell` | `argv.extend` | [759](../../src/system_tools.rs#L759) | receiver-type-required |
@@ -603,14 +603,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `shell` | `started.elapsed` | [782](../../src/system_tools.rs#L782) | receiver-type-required |
 | `shell` | `budget.checked_sub(elapsed).filter` | [783](../../src/system_tools.rs#L783) | receiver-type-required |
 | `shell` | `budget.checked_sub` | [783](../../src/system_tools.rs#L783) | receiver-type-required |
-| `shell` | `self.exec_helper` | [796](../../src/system_tools.rs#L796) | [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1309) |
+| `shell` | `self.exec_helper` | [796](../../src/system_tools.rs#L796) | [engine::system_tools::SystemToolBackend::exec_helper](../../src/system_tools.rs#L1306) |
 | `shell` | `argv.clone` | [798](../../src/system_tools.rs#L798) | receiver-type-required |
 | `shell` | `root.clone` | [799](../../src/system_tools.rs#L799) | receiver-type-required |
 | `shell` | `relative.clone` | [800](../../src/system_tools.rs#L800) | receiver-type-required |
 | `shell` | `Some` | [802](../../src/system_tools.rs#L802) | external-constructor-callback-or-unresolved |
-| `shell` | `retype` | [826](../../src/system_tools.rs#L826), [875](../../src/system_tools.rs#L875) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
+| `shell` | `retype` | [826](../../src/system_tools.rs#L826), [875](../../src/system_tools.rs#L875) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
 | `shell` | `exec_json(exec, step_succeeded)                 .unwrap_or_else` | [830](../../src/system_tools.rs#L830) | receiver-type-required |
-| `shell` | `exec_json` | [830](../../src/system_tools.rs#L830) | [engine::system_tools::exec_json](../../src/system_tools.rs#L1694) |
+| `shell` | `exec_json` | [830](../../src/system_tools.rs#L830) | [engine::system_tools::exec_json](../../src/system_tools.rs#L1691) |
 | `shell` | `value.as_object_mut` | [832](../../src/system_tools.rs#L832) | receiver-type-required |
 | `shell` | `object.insert` | [833](../../src/system_tools.rs#L833), [834](../../src/system_tools.rs#L834) | receiver-type-required |
 | `shell` | `"index".to_owned` | [833](../../src/system_tools.rs#L833) | receiver-type-required |
@@ -634,14 +634,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `web_fetch` | `http.fetch` | [895](../../src/system_tools.rs#L895) | receiver-type-required |
 | `web_fetch` | `BackendOutcome::Completed` | [901](../../src/system_tools.rs#L901), [903](../../src/system_tools.rs#L903) | external-constructor-callback-or-unresolved |
 | `web_fetch` | `Ok` | [901](../../src/system_tools.rs#L901) | external-constructor-callback-or-unresolved |
-| `web_fetch` | `web_fetch_result_value` | [901](../../src/system_tools.rs#L901) | [engine::system_tools::web_fetch_result_value](../../src/system_tools.rs#L1411) |
+| `web_fetch` | `web_fetch_result_value` | [901](../../src/system_tools.rs#L901) | [engine::system_tools::web_fetch_result_value](../../src/system_tools.rs#L1408) |
 | `web_fetch` | `Err` | [903](../../src/system_tools.rs#L903) | external-constructor-callback-or-unresolved |
 | `web_fetch` | `BackendOutcome::Hold` | [904](../../src/system_tools.rs#L904) | external-constructor-callback-or-unresolved |
 | `web_search` | `BackendOutcome::Unavailable` | [911](../../src/system_tools.rs#L911), [949](../../src/system_tools.rs#L949) | external-constructor-callback-or-unresolved |
 | `web_search` | `"http-client".to_owned` | [912](../../src/system_tools.rs#L912) | receiver-type-required |
 | `web_search` | `"bounded HTTP client is not configured".to_owned` | [913](../../src/system_tools.rs#L913) | receiver-type-required |
 | `web_search` | `outcome_try!(optional_str(args, "topic")).unwrap_or` | [916](../../src/system_tools.rs#L916) | receiver-type-required |
-| `web_search` | `invalid_outcome` | [919](../../src/system_tools.rs#L919) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) |
+| `web_search` | `invalid_outcome` | [919](../../src/system_tools.rs#L919) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) |
 | `web_search` | `outcome_try!(optional_u64(args, "max_results")).unwrap_or` | [921](../../src/system_tools.rs#L921) | receiver-type-required |
 | `web_search` | `execution.call.clone` | [927](../../src/system_tools.rs#L927) | receiver-type-required |
 | `web_search` | `outcome_try!(required_str(args, "query")).to_owned` | [928](../../src/system_tools.rs#L928) | receiver-type-required |
@@ -660,364 +660,364 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_patch` | `"durable artifact version authority is not configured".to_owned` | [968](../../src/system_tools.rs#L968) | receiver-type-required |
 | `apply_patch` | `args.get("operation").and_then` | [972](../../src/system_tools.rs#L972) | receiver-type-required |
 | `apply_patch` | `args.get` | [972](../../src/system_tools.rs#L972) | receiver-type-required |
-| `apply_patch` | `self.invoke_helper` | [975](../../src/system_tools.rs#L975), [992](../../src/system_tools.rs#L992), [1026](../../src/system_tools.rs#L1026), [1076](../../src/system_tools.rs#L1076), [1107](../../src/system_tools.rs#L1107) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
-| `apply_patch` | `root.clone` | [978](../../src/system_tools.rs#L978), [995](../../src/system_tools.rs#L995), [1079](../../src/system_tools.rs#L1079) | receiver-type-required |
-| `apply_patch` | `relative.clone` | [979](../../src/system_tools.rs#L979), [996](../../src/system_tools.rs#L996), [1080](../../src/system_tools.rs#L1080) | receiver-type-required |
-| `apply_patch` | `retype` | [986](../../src/system_tools.rs#L986), [1007](../../src/system_tools.rs#L1007), [1071](../../src/system_tools.rs#L1071), [1085](../../src/system_tools.rs#L1085), [1153](../../src/system_tools.rs#L1153) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
-| `apply_patch` | `BackendOutcome::Completed` | [1003](../../src/system_tools.rs#L1003), [1050](../../src/system_tools.rs#L1050), [1132](../../src/system_tools.rs#L1132) | external-constructor-callback-or-unresolved |
+| `apply_patch` | `self.invoke_helper` | [975](../../src/system_tools.rs#L975), [992](../../src/system_tools.rs#L992), [1026](../../src/system_tools.rs#L1026), [1075](../../src/system_tools.rs#L1075), [1106](../../src/system_tools.rs#L1106) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
+| `apply_patch` | `root.clone` | [978](../../src/system_tools.rs#L978), [995](../../src/system_tools.rs#L995), [1078](../../src/system_tools.rs#L1078) | receiver-type-required |
+| `apply_patch` | `relative.clone` | [979](../../src/system_tools.rs#L979), [996](../../src/system_tools.rs#L996), [1079](../../src/system_tools.rs#L1079) | receiver-type-required |
+| `apply_patch` | `retype` | [986](../../src/system_tools.rs#L986), [1007](../../src/system_tools.rs#L1007), [1070](../../src/system_tools.rs#L1070), [1084](../../src/system_tools.rs#L1084), [1151](../../src/system_tools.rs#L1151) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
+| `apply_patch` | `BackendOutcome::Completed` | [1003](../../src/system_tools.rs#L1003), [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | external-constructor-callback-or-unresolved |
 | `apply_patch` | `Err` | [1003](../../src/system_tools.rs#L1003) | external-constructor-callback-or-unresolved |
 | `apply_patch` | `BackendFailure::Conflict` | [1003](../../src/system_tools.rs#L1003) | external-constructor-callback-or-unresolved |
-| `apply_patch` | `ByteString::from_bytes` | [1031](../../src/system_tools.rs#L1031), [1113](../../src/system_tools.rs#L1113) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
-| `apply_patch` | `patch.content.as_bytes` | [1031](../../src/system_tools.rs#L1031), [1113](../../src/system_tools.rs#L1113) | receiver-type-required |
-| `apply_patch` | `Ok` | [1050](../../src/system_tools.rs#L1050), [1132](../../src/system_tools.rs#L1132) | external-constructor-callback-or-unresolved |
-| `apply_patch` | `patch_result_json` | [1050](../../src/system_tools.rs#L1050), [1132](../../src/system_tools.rs#L1132) | [engine::system_tools::patch_result_json](../../src/system_tools.rs#L1991) |
-| `apply_patch` | `invalid_outcome` | [1157](../../src/system_tools.rs#L1157) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) |
-| `write` | `self.write_content` | [1168](../../src/system_tools.rs#L1168) | [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1210) |
-| `edit` | `self.invoke_helper` | [1180](../../src/system_tools.rs#L1180) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
-| `edit` | `retype` | [1189](../../src/system_tools.rs#L1189) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
-| `edit` | `original.match_indices` | [1196](../../src/system_tools.rs#L1196) | receiver-type-required |
-| `edit` | `matches.next` | [1197](../../src/system_tools.rs#L1197), [1200](../../src/system_tools.rs#L1200) | receiver-type-required |
-| `edit` | `invalid_outcome` | [1198](../../src/system_tools.rs#L1198), [1201](../../src/system_tools.rs#L1201) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1718) |
-| `edit` | `matches.next().is_some` | [1200](../../src/system_tools.rs#L1200) | receiver-type-required |
-| `edit` | `String::with_capacity` | [1203](../../src/system_tools.rs#L1203) | external-constructor-callback-or-unresolved |
-| `edit` | `original.len` | [1203](../../src/system_tools.rs#L1203) | receiver-type-required |
-| `edit` | `old.len` | [1203](../../src/system_tools.rs#L1203), [1206](../../src/system_tools.rs#L1206) | receiver-type-required |
-| `edit` | `new.len` | [1203](../../src/system_tools.rs#L1203) | receiver-type-required |
-| `edit` | `replacement.push_str` | [1204](../../src/system_tools.rs#L1204), [1205](../../src/system_tools.rs#L1205), [1206](../../src/system_tools.rs#L1206) | receiver-type-required |
-| `edit` | `self.write_content` | [1207](../../src/system_tools.rs#L1207) | [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1210) |
-| `edit` | `Some` | [1207](../../src/system_tools.rs#L1207) | external-constructor-callback-or-unresolved |
-| `write_content` | `BackendOutcome::Unavailable` | [1220](../../src/system_tools.rs#L1220) | external-constructor-callback-or-unresolved |
-| `write_content` | `"artifact-version-authority".to_owned` | [1221](../../src/system_tools.rs#L1221) | receiver-type-required |
-| `write_content` | `"durable artifact version authority is not configured".to_owned` | [1222](../../src/system_tools.rs#L1222) | receiver-type-required |
-| `write_content` | `self.invoke_helper` | [1225](../../src/system_tools.rs#L1225), [1272](../../src/system_tools.rs#L1272) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
-| `write_content` | `root.clone` | [1228](../../src/system_tools.rs#L1228) | receiver-type-required |
-| `write_content` | `relative.clone` | [1229](../../src/system_tools.rs#L1229) | receiver-type-required |
-| `write_content` | `Some` | [1233](../../src/system_tools.rs#L1233) | external-constructor-callback-or-unresolved |
-| `write_content` | `retype` | [1235](../../src/system_tools.rs#L1235), [1304](../../src/system_tools.rs#L1304) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
-| `write_content` | `existing             .as_ref()             .map_or` | [1237](../../src/system_tools.rs#L1237) | receiver-type-required |
-| `write_content` | `existing             .as_ref` | [1237](../../src/system_tools.rs#L1237), [1245](../../src/system_tools.rs#L1245) | receiver-type-required |
-| `write_content` | `value.sha256.as_str` | [1239](../../src/system_tools.rs#L1239) | receiver-type-required |
-| `write_content` | `expected_sha.is_some_and` | [1240](../../src/system_tools.rs#L1240) | receiver-type-required |
-| `write_content` | `BackendOutcome::Completed` | [1241](../../src/system_tools.rs#L1241), [1285](../../src/system_tools.rs#L1285) | external-constructor-callback-or-unresolved |
-| `write_content` | `Err` | [1241](../../src/system_tools.rs#L1241) | external-constructor-callback-or-unresolved |
-| `write_content` | `BackendFailure::Conflict` | [1241](../../src/system_tools.rs#L1241) | external-constructor-callback-or-unresolved |
-| `write_content` | `"file changed since edit read".to_owned` | [1242](../../src/system_tools.rs#L1242) | receiver-type-required |
-| `write_content` | `existing             .as_ref()             .map(&#124;value&#124; value.content.decode().map_err(helper_failure))             .transpose` | [1245](../../src/system_tools.rs#L1245) | receiver-type-required |
-| `write_content` | `existing             .as_ref()             .map` | [1245](../../src/system_tools.rs#L1245) | receiver-type-required |
-| `write_content` | `value.content.decode().map_err` | [1247](../../src/system_tools.rs#L1247) | receiver-type-required |
-| `write_content` | `value.content.decode` | [1247](../../src/system_tools.rs#L1247) | receiver-type-required |
-| `write_content` | `before_bytes             .as_deref()             .and_then` | [1250](../../src/system_tools.rs#L1250) | receiver-type-required |
-| `write_content` | `before_bytes             .as_deref` | [1250](../../src/system_tools.rs#L1250) | receiver-type-required |
-| `write_content` | `std::str::from_utf8(bytes).ok` | [1252](../../src/system_tools.rs#L1252) | receiver-type-required |
-| `write_content` | `std::str::from_utf8` | [1252](../../src/system_tools.rs#L1252) | external-constructor-callback-or-unresolved |
-| `write_content` | `ByteString::from_bytes` | [1263](../../src/system_tools.rs#L1263), [1268](../../src/system_tools.rs#L1268) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
-| `write_content` | `content.as_bytes` | [1263](../../src/system_tools.rs#L1263), [1268](../../src/system_tools.rs#L1268) | receiver-type-required |
-| `write_content` | `Ok` | [1285](../../src/system_tools.rs#L1285) | external-constructor-callback-or-unresolved |
-| `exec_helper` | `self.invoke_helper` | [1317](../../src/system_tools.rs#L1317) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
-| `exec_helper` | `HelperOperation::Exec` | [1319](../../src/system_tools.rs#L1319) | external-constructor-callback-or-unresolved |
-| `exec_helper` | `Some` | [1322](../../src/system_tools.rs#L1322) | external-constructor-callback-or-unresolved |
-| `exec_helper` | `self.config.environment.clone` | [1326](../../src/system_tools.rs#L1326) | receiver-type-required |
-| `exec_helper` | `BackendOutcome::Completed` | [1333](../../src/system_tools.rs#L1333) | external-constructor-callback-or-unresolved |
-| `exec_helper` | `Ok` | [1333](../../src/system_tools.rs#L1333) | external-constructor-callback-or-unresolved |
-| `exec_helper` | `retype` | [1335](../../src/system_tools.rs#L1335) | [engine::system_tools::retype](../../src/system_tools.rs#L1707) |
-| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .find(&#124;mount&#124; mount.name == root)             .ok_or_else` | [1340](../../src/system_tools.rs#L1340) | receiver-type-required |
-| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .find` | [1340](../../src/system_tools.rs#L1340) | receiver-type-required |
-| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain` | [1340](../../src/system_tools.rs#L1340) | receiver-type-required |
-| `artifact_identity` | `std::iter::once` | [1340](../../src/system_tools.rs#L1340) | external-constructor-callback-or-unresolved |
-| `artifact_identity` | `self.config.extra_roots.iter` | [1341](../../src/system_tools.rs#L1341) | receiver-type-required |
-| `artifact_identity` | `BackendFailure::Protocol` | [1344](../../src/system_tools.rs#L1344) | external-constructor-callback-or-unresolved |
-| `artifact_identity` | `"resolved artifact mount disappeared".to_owned` | [1344](../../src/system_tools.rs#L1344) | receiver-type-required |
-| `artifact_identity` | `mount.path.is_absolute` | [1346](../../src/system_tools.rs#L1346) | receiver-type-required |
-| `artifact_identity` | `Err` | [1347](../../src/system_tools.rs#L1347) | external-constructor-callback-or-unresolved |
-| `artifact_identity` | `BackendFailure::Invalid` | [1347](../../src/system_tools.rs#L1347), [1356](../../src/system_tools.rs#L1356) | external-constructor-callback-or-unresolved |
-| `artifact_identity` | `"artifact mount must be absolute".to_owned` | [1348](../../src/system_tools.rs#L1348) | receiver-type-required |
-| `artifact_identity` | `mount             .path             .join(relative)             .to_str()             .map(ToOwned::to_owned)             .ok_or_else` | [1351](../../src/system_tools.rs#L1351) | receiver-type-required |
-| `artifact_identity` | `mount             .path             .join(relative)             .to_str()             .map` | [1351](../../src/system_tools.rs#L1351) | receiver-type-required |
-| `artifact_identity` | `mount             .path             .join(relative)             .to_str` | [1351](../../src/system_tools.rs#L1351) | receiver-type-required |
-| `artifact_identity` | `mount             .path             .join` | [1351](../../src/system_tools.rs#L1351) | receiver-type-required |
-| `artifact_identity` | `"artifact path is not UTF-8".to_owned` | [1356](../../src/system_tools.rs#L1356) | receiver-type-required |
-| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .map(&#124;mount&#124; mount.path.display().to_string())             .collect::<Vec<_>>` | [1362](../../src/system_tools.rs#L1362) | receiver-type-required |
-| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .map` | [1362](../../src/system_tools.rs#L1362) | receiver-type-required |
-| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain` | [1362](../../src/system_tools.rs#L1362) | receiver-type-required |
-| `allowed_roots_sentence` | `std::iter::once` | [1362](../../src/system_tools.rs#L1362) | external-constructor-callback-or-unresolved |
-| `allowed_roots_sentence` | `self.config.extra_roots.iter` | [1363](../../src/system_tools.rs#L1363) | receiver-type-required |
-| `allowed_roots_sentence` | `mount.path.display().to_string` | [1364](../../src/system_tools.rs#L1364) | receiver-type-required |
-| `allowed_roots_sentence` | `mount.path.display` | [1364](../../src/system_tools.rs#L1364) | receiver-type-required |
-| `allowed_roots_sentence` | `roots.split_last` | [1366](../../src/system_tools.rs#L1366) | receiver-type-required |
-| `allowed_roots_sentence` | `"(no configured root)".to_owned` | [1367](../../src/system_tools.rs#L1367) | receiver-type-required |
-| `allowed_roots_sentence` | `last.clone` | [1368](../../src/system_tools.rs#L1368) | receiver-type-required |
-| `resolve_path` | `Path::new` | [1378](../../src/system_tools.rs#L1378) | external-constructor-callback-or-unresolved |
-| `resolve_path` | `raw.is_empty` | [1378](../../src/system_tools.rs#L1378) | receiver-type-required |
-| `resolve_path` | `path.is_absolute` | [1379](../../src/system_tools.rs#L1379) | receiver-type-required |
-| `resolve_path` | `path.starts_with` | [1380](../../src/system_tools.rs#L1380) | receiver-type-required |
-| `resolve_path` | `Err` | [1381](../../src/system_tools.rs#L1381), [1396](../../src/system_tools.rs#L1396) | external-constructor-callback-or-unresolved |
-| `resolve_path` | `BackendFailure::Denied` | [1381](../../src/system_tools.rs#L1381), [1396](../../src/system_tools.rs#L1396) | external-constructor-callback-or-unresolved |
-| `resolve_path` | `std::iter::once(&self.config.workspace).chain` | [1387](../../src/system_tools.rs#L1387) | receiver-type-required |
-| `resolve_path` | `std::iter::once` | [1387](../../src/system_tools.rs#L1387) | external-constructor-callback-or-unresolved |
-| `resolve_path` | `self.config.extra_roots.iter` | [1387](../../src/system_tools.rs#L1387) | receiver-type-required |
-| `resolve_path` | `path.strip_prefix` | [1389](../../src/system_tools.rs#L1389) | receiver-type-required |
-| `resolve_path` | `Ok` | [1390](../../src/system_tools.rs#L1390), [1401](../../src/system_tools.rs#L1401) | external-constructor-callback-or-unresolved |
-| `resolve_path` | `mount.name.clone` | [1390](../../src/system_tools.rs#L1390) | receiver-type-required |
-| `resolve_path` | `normalized_relative` | [1390](../../src/system_tools.rs#L1390), [1403](../../src/system_tools.rs#L1403) | [engine::system_tools::normalized_relative](../../src/system_tools.rs#L1678) |
-| `resolve_path` | `self.config.workspace.name.clone` | [1402](../../src/system_tools.rs#L1402) | receiver-type-required |
-| `supports` | `self.artifact_versions.is_some` | [1430](../../src/system_tools.rs#L1430) | receiver-type-required |
-| `supports` | `self.http.is_some` | [1436](../../src/system_tools.rs#L1436), [1437](../../src/system_tools.rs#L1437) | receiver-type-required |
-| `supports` | `self.search.is_some` | [1437](../../src/system_tools.rs#L1437) | receiver-type-required |
-| `execute` | `serde_json::to_value` | [1443](../../src/system_tools.rs#L1443) | external-constructor-callback-or-unresolved |
-| `execute` | `unavailable` | [1445](../../src/system_tools.rs#L1445), [1448](../../src/system_tools.rs#L1448) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1477) |
-| `execute` | `error.to_string` | [1445](../../src/system_tools.rs#L1445), [1448](../../src/system_tools.rs#L1448) | receiver-type-required |
-| `execute` | `validate_fixed_arguments` | [1447](../../src/system_tools.rs#L1447) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1231) |
-| `execute` | `self.execute_inner` | [1450](../../src/system_tools.rs#L1450) | receiver-type-required |
-| `terminal` | `json_to_ijson` | [1456](../../src/system_tools.rs#L1456), [1469](../../src/system_tools.rs#L1469) | [engine::system_tools::json_to_ijson](../../src/system_tools.rs#L1528) |
-| `terminal` | `BackendTerminal::Completed` | [1457](../../src/system_tools.rs#L1457) | external-constructor-callback-or-unresolved |
-| `terminal` | `unavailable` | [1458](../../src/system_tools.rs#L1458), [1465](../../src/system_tools.rs#L1465), [1472](../../src/system_tools.rs#L1472) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1477) |
-| `terminal` | `failure_code` | [1465](../../src/system_tools.rs#L1465) | [engine::system_tools::failure_code](../../src/system_tools.rs#L1485) |
-| `terminal` | `error.to_string` | [1465](../../src/system_tools.rs#L1465) | receiver-type-required |
-| `terminal` | `json_to_ijson(&json!({"reason": reason})).expect` | [1469](../../src/system_tools.rs#L1469) | receiver-type-required |
-| `unavailable` | `code.to_owned` | [1479](../../src/system_tools.rs#L1479) | receiver-type-required |
-| `unavailable` | `message.into` | [1480](../../src/system_tools.rs#L1480) | receiver-type-required |
-| `helper_failure` | `BackendFailure::Invalid` | [1505](../../src/system_tools.rs#L1505), [1510](../../src/system_tools.rs#L1510) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Unavailable` | [1507](../../src/system_tools.rs#L1507) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Denied` | [1509](../../src/system_tools.rs#L1509) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Conflict` | [1511](../../src/system_tools.rs#L1511) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::NotFound` | [1512](../../src/system_tools.rs#L1512) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Limit` | [1513](../../src/system_tools.rs#L1513) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Io` | [1515](../../src/system_tools.rs#L1515) | external-constructor-callback-or-unresolved |
-| `helper_failure` | `BackendFailure::Protocol` | [1516](../../src/system_tools.rs#L1516) | external-constructor-callback-or-unresolved |
-| `backend_io` | `BackendFailure::Io` | [1521](../../src/system_tools.rs#L1521) | external-constructor-callback-or-unresolved |
-| `backend_io` | `error.to_string` | [1521](../../src/system_tools.rs#L1521) | receiver-type-required |
-| `backend_store` | `BackendFailure::Io` | [1525](../../src/system_tools.rs#L1525) | external-constructor-callback-or-unresolved |
-| `backend_store` | `error.to_string` | [1525](../../src/system_tools.rs#L1525) | receiver-type-required |
-| `json_to_ijson` | `IJsonValue::parse(&serde_json::to_vec(value).map_err(&#124;error&#124; error.to_string())?)         .map_err` | [1529](../../src/system_tools.rs#L1529) | receiver-type-required |
-| `json_to_ijson` | `IJsonValue::parse` | [1529](../../src/system_tools.rs#L1529) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `json_to_ijson` | `serde_json::to_vec(value).map_err` | [1529](../../src/system_tools.rs#L1529) | receiver-type-required |
-| `json_to_ijson` | `serde_json::to_vec` | [1529](../../src/system_tools.rs#L1529) | external-constructor-callback-or-unresolved |
-| `json_to_ijson` | `error.to_string` | [1529](../../src/system_tools.rs#L1529), [1530](../../src/system_tools.rs#L1530) | receiver-type-required |
-| `required_str` | `args.get(key)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .ok_or_else` | [1534](../../src/system_tools.rs#L1534) | receiver-type-required |
-| `required_str` | `args.get(key)         .and_then(Value::as_str)         .filter` | [1534](../../src/system_tools.rs#L1534) | receiver-type-required |
-| `required_str` | `args.get(key)         .and_then` | [1534](../../src/system_tools.rs#L1534) | receiver-type-required |
-| `required_str` | `args.get` | [1534](../../src/system_tools.rs#L1534) | receiver-type-required |
-| `required_str` | `value.is_empty` | [1536](../../src/system_tools.rs#L1536) | receiver-type-required |
-| `required_str` | `BackendFailure::Invalid` | [1537](../../src/system_tools.rs#L1537) | external-constructor-callback-or-unresolved |
-| `optional_str` | `args.get` | [1541](../../src/system_tools.rs#L1541) | receiver-type-required |
-| `optional_str` | `Ok` | [1542](../../src/system_tools.rs#L1542), [1543](../../src/system_tools.rs#L1543) | external-constructor-callback-or-unresolved |
-| `optional_str` | `Some` | [1543](../../src/system_tools.rs#L1543) | external-constructor-callback-or-unresolved |
-| `optional_str` | `Err` | [1544](../../src/system_tools.rs#L1544) | external-constructor-callback-or-unresolved |
-| `optional_str` | `BackendFailure::Invalid` | [1544](../../src/system_tools.rs#L1544) | external-constructor-callback-or-unresolved |
-| `optional_bool` | `args.get` | [1549](../../src/system_tools.rs#L1549) | receiver-type-required |
-| `optional_bool` | `Ok` | [1550](../../src/system_tools.rs#L1550), [1551](../../src/system_tools.rs#L1551) | external-constructor-callback-or-unresolved |
-| `optional_bool` | `Some` | [1551](../../src/system_tools.rs#L1551) | external-constructor-callback-or-unresolved |
-| `optional_bool` | `Err` | [1552](../../src/system_tools.rs#L1552) | external-constructor-callback-or-unresolved |
-| `optional_bool` | `BackendFailure::Invalid` | [1552](../../src/system_tools.rs#L1552) | external-constructor-callback-or-unresolved |
-| `optional_u64` | `args.get` | [1557](../../src/system_tools.rs#L1557) | receiver-type-required |
-| `optional_u64` | `Ok` | [1558](../../src/system_tools.rs#L1558) | external-constructor-callback-or-unresolved |
-| `optional_u64` | `value             .as_u64()             .map(Some)             .ok_or_else` | [1559](../../src/system_tools.rs#L1559) | receiver-type-required |
-| `optional_u64` | `value             .as_u64()             .map` | [1559](../../src/system_tools.rs#L1559) | receiver-type-required |
-| `optional_u64` | `value             .as_u64` | [1559](../../src/system_tools.rs#L1559) | receiver-type-required |
-| `optional_u64` | `BackendFailure::Invalid` | [1562](../../src/system_tools.rs#L1562), [1563](../../src/system_tools.rs#L1563) | external-constructor-callback-or-unresolved |
-| `optional_u64` | `Err` | [1563](../../src/system_tools.rs#L1563) | external-constructor-callback-or-unresolved |
-| `string_array` | `args.get` | [1568](../../src/system_tools.rs#L1568) | receiver-type-required |
-| `string_array` | `Ok` | [1569](../../src/system_tools.rs#L1569) | external-constructor-callback-or-unresolved |
-| `string_array` | `items             .iter()             .map(&#124;item&#124; {                 item.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     BackendFailure::Invalid(format!("{key} must contain only strings"))                 })             })             .collect::<Result<Vec<_>, _>>()             .map` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
-| `string_array` | `items             .iter()             .map(&#124;item&#124; {                 item.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     BackendFailure::Invalid(format!("{key} must contain only strings"))                 })             })             .collect::<Result<Vec<_>, _>>` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
-| `string_array` | `items             .iter()             .map` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
-| `string_array` | `items             .iter` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
-| `string_array` | `item.as_str().map(ToOwned::to_owned).ok_or_else` | [1573](../../src/system_tools.rs#L1573) | receiver-type-required |
-| `string_array` | `item.as_str().map` | [1573](../../src/system_tools.rs#L1573) | receiver-type-required |
-| `string_array` | `item.as_str` | [1573](../../src/system_tools.rs#L1573) | receiver-type-required |
-| `string_array` | `BackendFailure::Invalid` | [1574](../../src/system_tools.rs#L1574), [1579](../../src/system_tools.rs#L1579) | external-constructor-callback-or-unresolved |
-| `string_array` | `Err` | [1579](../../src/system_tools.rs#L1579) | external-constructor-callback-or-unresolved |
-| `parse_steps` | `args.get` | [1587](../../src/system_tools.rs#L1587) | receiver-type-required |
-| `parse_steps` | `Ok` | [1588](../../src/system_tools.rs#L1588), [1628](../../src/system_tools.rs#L1628) | external-constructor-callback-or-unresolved |
-| `parse_steps` | `Vec::new` | [1588](../../src/system_tools.rs#L1588) | external-constructor-callback-or-unresolved |
-| `parse_steps` | `value             .as_array()             .ok_or_else` | [1589](../../src/system_tools.rs#L1589) | receiver-type-required |
-| `parse_steps` | `value             .as_array` | [1589](../../src/system_tools.rs#L1589) | receiver-type-required |
-| `parse_steps` | `BackendFailure::Invalid` | [1591](../../src/system_tools.rs#L1591), [1598](../../src/system_tools.rs#L1598), [1603](../../src/system_tools.rs#L1603), [1612](../../src/system_tools.rs#L1612), [1617](../../src/system_tools.rs#L1617), [1623](../../src/system_tools.rs#L1623) | external-constructor-callback-or-unresolved |
-| `parse_steps` | `"steps must be an array".to_owned` | [1591](../../src/system_tools.rs#L1591) | receiver-type-required |
-| `parse_steps` | `steps         .iter()         .map(&#124;step&#124; {             let object = step                 .as_object()                 .ok_or_else(&#124;&#124; BackendFailure::Invalid("each step must be an object".to_owned()))?;             if object                 .keys()                 .any(&#124;key&#124; !matches!(key.as_str(), "program" &#124; "args"))             {                 return Err(BackendFailure::Invalid(                     "step contains an unknown property".to_owned(),                 ));             }             let program = object                 .get("program")                 .and_then(Value::as_str)                 .filter(&#124;value&#124; !value.is_empty())                 .ok_or_else(&#124;&#124; {                     BackendFailure::Invalid("step program must be nonempty".to_owned())                 })?;             let items = object                 .get("args")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; BackendFailure::Invalid("step args must be an array".to_owned()))?;             let mut argv = vec![program.to_owned()];             for item in items {                 argv.push(                     item.as_str()                         .ok_or_else(&#124;&#124; {                             BackendFailure::Invalid("step args must be strings".to_owned())                         })?                         .to_owned(),                 );             }             Ok(argv)         })         .collect` | [1593](../../src/system_tools.rs#L1593) | receiver-type-required |
-| `parse_steps` | `steps         .iter()         .map` | [1593](../../src/system_tools.rs#L1593) | receiver-type-required |
-| `parse_steps` | `steps         .iter` | [1593](../../src/system_tools.rs#L1593) | receiver-type-required |
-| `parse_steps` | `step                 .as_object()                 .ok_or_else` | [1596](../../src/system_tools.rs#L1596) | receiver-type-required |
-| `parse_steps` | `step                 .as_object` | [1596](../../src/system_tools.rs#L1596) | receiver-type-required |
-| `parse_steps` | `"each step must be an object".to_owned` | [1598](../../src/system_tools.rs#L1598) | receiver-type-required |
-| `parse_steps` | `object                 .keys()                 .any` | [1599](../../src/system_tools.rs#L1599) | receiver-type-required |
-| `parse_steps` | `object                 .keys` | [1599](../../src/system_tools.rs#L1599) | receiver-type-required |
-| `parse_steps` | `Err` | [1603](../../src/system_tools.rs#L1603) | external-constructor-callback-or-unresolved |
-| `parse_steps` | `"step contains an unknown property".to_owned` | [1604](../../src/system_tools.rs#L1604) | receiver-type-required |
-| `parse_steps` | `object                 .get("program")                 .and_then(Value::as_str)                 .filter(&#124;value&#124; !value.is_empty())                 .ok_or_else` | [1607](../../src/system_tools.rs#L1607) | receiver-type-required |
-| `parse_steps` | `object                 .get("program")                 .and_then(Value::as_str)                 .filter` | [1607](../../src/system_tools.rs#L1607) | receiver-type-required |
-| `parse_steps` | `object                 .get("program")                 .and_then` | [1607](../../src/system_tools.rs#L1607) | receiver-type-required |
-| `parse_steps` | `object                 .get` | [1607](../../src/system_tools.rs#L1607), [1614](../../src/system_tools.rs#L1614) | receiver-type-required |
-| `parse_steps` | `value.is_empty` | [1610](../../src/system_tools.rs#L1610) | receiver-type-required |
-| `parse_steps` | `"step program must be nonempty".to_owned` | [1612](../../src/system_tools.rs#L1612) | receiver-type-required |
-| `parse_steps` | `object                 .get("args")                 .and_then(Value::as_array)                 .ok_or_else` | [1614](../../src/system_tools.rs#L1614) | receiver-type-required |
-| `parse_steps` | `object                 .get("args")                 .and_then` | [1614](../../src/system_tools.rs#L1614) | receiver-type-required |
-| `parse_steps` | `"step args must be an array".to_owned` | [1617](../../src/system_tools.rs#L1617) | receiver-type-required |
-| `parse_steps` | `argv.push` | [1620](../../src/system_tools.rs#L1620) | receiver-type-required |
-| `parse_steps` | `item.as_str()                         .ok_or_else(&#124;&#124; {                             BackendFailure::Invalid("step args must be strings".to_owned())                         })?                         .to_owned` | [1621](../../src/system_tools.rs#L1621) | receiver-type-required |
-| `parse_steps` | `item.as_str()                         .ok_or_else` | [1621](../../src/system_tools.rs#L1621) | receiver-type-required |
-| `parse_steps` | `item.as_str` | [1621](../../src/system_tools.rs#L1621) | receiver-type-required |
-| `parse_steps` | `"step args must be strings".to_owned` | [1623](../../src/system_tools.rs#L1623) | receiver-type-required |
-| `parse_artifacts` | `args.get` | [1636](../../src/system_tools.rs#L1636) | receiver-type-required |
-| `parse_artifacts` | `Ok` | [1637](../../src/system_tools.rs#L1637), [1675](../../src/system_tools.rs#L1675) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `Vec::new` | [1637](../../src/system_tools.rs#L1637) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `value.as_array().ok_or_else` | [1638](../../src/system_tools.rs#L1638) | receiver-type-required |
-| `parse_artifacts` | `value.as_array` | [1638](../../src/system_tools.rs#L1638) | receiver-type-required |
-| `parse_artifacts` | `BackendFailure::Invalid` | [1639](../../src/system_tools.rs#L1639), [1650](../../src/system_tools.rs#L1650), [1653](../../src/system_tools.rs#L1653), [1660](../../src/system_tools.rs#L1660), [1670](../../src/system_tools.rs#L1670) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `"artifact_outputs must be an array".to_owned` | [1639](../../src/system_tools.rs#L1639) | receiver-type-required |
-| `parse_artifacts` | `items.len` | [1642](../../src/system_tools.rs#L1642) | receiver-type-required |
-| `parse_artifacts` | `Err` | [1643](../../src/system_tools.rs#L1643), [1653](../../src/system_tools.rs#L1653), [1665](../../src/system_tools.rs#L1665), [1670](../../src/system_tools.rs#L1670) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `BackendFailure::Limit` | [1643](../../src/system_tools.rs#L1643) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `"at most 64 artifact outputs are allowed".to_owned` | [1644](../../src/system_tools.rs#L1644) | receiver-type-required |
-| `parse_artifacts` | `BTreeSet::new` | [1647](../../src/system_tools.rs#L1647) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `item.as_object().ok_or_else` | [1649](../../src/system_tools.rs#L1649) | receiver-type-required |
-| `parse_artifacts` | `item.as_object` | [1649](../../src/system_tools.rs#L1649) | receiver-type-required |
-| `parse_artifacts` | `"artifact output must be an object".to_owned` | [1650](../../src/system_tools.rs#L1650) | receiver-type-required |
-| `parse_artifacts` | `object.len` | [1652](../../src/system_tools.rs#L1652) | receiver-type-required |
-| `parse_artifacts` | `object.contains_key` | [1652](../../src/system_tools.rs#L1652) | receiver-type-required |
-| `parse_artifacts` | `"artifact output must contain only path".to_owned` | [1654](../../src/system_tools.rs#L1654) | receiver-type-required |
-| `parse_artifacts` | `object["path"]             .as_str()             .filter(&#124;value&#124; !value.is_empty())             .ok_or_else` | [1657](../../src/system_tools.rs#L1657) | receiver-type-required |
-| `parse_artifacts` | `object["path"]             .as_str()             .filter` | [1657](../../src/system_tools.rs#L1657) | receiver-type-required |
-| `parse_artifacts` | `object["path"]             .as_str` | [1657](../../src/system_tools.rs#L1657) | receiver-type-required |
-| `parse_artifacts` | `value.is_empty` | [1659](../../src/system_tools.rs#L1659) | receiver-type-required |
-| `parse_artifacts` | `"artifact path must be nonempty".to_owned` | [1660](../../src/system_tools.rs#L1660) | receiver-type-required |
-| `parse_artifacts` | `Path::new(path).is_absolute` | [1661](../../src/system_tools.rs#L1661) | receiver-type-required |
-| `parse_artifacts` | `Path::new` | [1661](../../src/system_tools.rs#L1661) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `path.split('/').any` | [1662](../../src/system_tools.rs#L1662) | receiver-type-required |
-| `parse_artifacts` | `path.split` | [1662](../../src/system_tools.rs#L1662) | receiver-type-required |
-| `parse_artifacts` | `path.to_ascii_lowercase().starts_with` | [1663](../../src/system_tools.rs#L1663) | receiver-type-required |
-| `parse_artifacts` | `path.to_ascii_lowercase` | [1663](../../src/system_tools.rs#L1663) | receiver-type-required |
-| `parse_artifacts` | `BackendFailure::Denied` | [1665](../../src/system_tools.rs#L1665) | external-constructor-callback-or-unresolved |
-| `parse_artifacts` | `seen.insert` | [1669](../../src/system_tools.rs#L1669) | receiver-type-required |
-| `parse_artifacts` | `path.to_owned` | [1669](../../src/system_tools.rs#L1669) | receiver-type-required |
-| `parse_artifacts` | `seen.into_iter().collect` | [1675](../../src/system_tools.rs#L1675) | receiver-type-required |
-| `parse_artifacts` | `seen.into_iter` | [1675](../../src/system_tools.rs#L1675) | receiver-type-required |
-| `normalized_relative` | `Vec::new` | [1679](../../src/system_tools.rs#L1679) | external-constructor-callback-or-unresolved |
-| `normalized_relative` | `path.components` | [1680](../../src/system_tools.rs#L1680) | receiver-type-required |
-| `normalized_relative` | `parts.push` | [1682](../../src/system_tools.rs#L1682) | receiver-type-required |
-| `normalized_relative` | `value.to_string_lossy().into_owned` | [1682](../../src/system_tools.rs#L1682) | receiver-type-required |
-| `normalized_relative` | `value.to_string_lossy` | [1682](../../src/system_tools.rs#L1682) | receiver-type-required |
-| `normalized_relative` | `Err` | [1685](../../src/system_tools.rs#L1685) | external-constructor-callback-or-unresolved |
-| `normalized_relative` | `BackendFailure::Denied` | [1685](../../src/system_tools.rs#L1685) | external-constructor-callback-or-unresolved |
-| `normalized_relative` | `"path escapes its helper root".to_owned` | [1686](../../src/system_tools.rs#L1686) | receiver-type-required |
-| `normalized_relative` | `Ok` | [1691](../../src/system_tools.rs#L1691) | external-constructor-callback-or-unresolved |
-| `normalized_relative` | `parts.join` | [1691](../../src/system_tools.rs#L1691) | receiver-type-required |
-| `exec_json` | `value.stdout.decode().map_err` | [1695](../../src/system_tools.rs#L1695) | receiver-type-required |
-| `exec_json` | `value.stdout.decode` | [1695](../../src/system_tools.rs#L1695) | receiver-type-required |
-| `exec_json` | `value.stderr.decode().map_err` | [1696](../../src/system_tools.rs#L1696) | receiver-type-required |
-| `exec_json` | `value.stderr.decode` | [1696](../../src/system_tools.rs#L1696) | receiver-type-required |
-| `exec_json` | `Ok` | [1697](../../src/system_tools.rs#L1697) | external-constructor-callback-or-unresolved |
-| `retype` | `BackendOutcome::Completed` | [1710](../../src/system_tools.rs#L1710), [1712](../../src/system_tools.rs#L1712) | external-constructor-callback-or-unresolved |
-| `retype` | `Err` | [1710](../../src/system_tools.rs#L1710), [1712](../../src/system_tools.rs#L1712) | external-constructor-callback-or-unresolved |
-| `retype` | `BackendFailure::Protocol` | [1710](../../src/system_tools.rs#L1710) | external-constructor-callback-or-unresolved |
-| `retype` | `message.to_owned` | [1710](../../src/system_tools.rs#L1710) | receiver-type-required |
-| `retype` | `BackendOutcome::Hold` | [1713](../../src/system_tools.rs#L1713) | external-constructor-callback-or-unresolved |
-| `retype` | `BackendOutcome::Unavailable` | [1714](../../src/system_tools.rs#L1714) | external-constructor-callback-or-unresolved |
-| `invalid_outcome` | `BackendOutcome::Completed` | [1719](../../src/system_tools.rs#L1719) | external-constructor-callback-or-unresolved |
-| `invalid_outcome` | `Err` | [1719](../../src/system_tools.rs#L1719) | external-constructor-callback-or-unresolved |
-| `invalid_outcome` | `BackendFailure::Invalid` | [1719](../../src/system_tools.rs#L1719) | external-constructor-callback-or-unresolved |
-| `invalid_outcome` | `message.to_owned` | [1719](../../src/system_tools.rs#L1719) | receiver-type-required |
-| `truncate_utf8` | `value.len` | [1723](../../src/system_tools.rs#L1723) | receiver-type-required |
-| `truncate_utf8` | `value.is_char_boundary` | [1727](../../src/system_tools.rs#L1727) | receiver-type-required |
-| `create` | `detected_newline` | [1743](../../src/system_tools.rs#L1743) | [engine::system_tools::detected_newline](../../src/system_tools.rs#L1970) |
-| `create` | `normalized_lines` | [1744](../../src/system_tools.rs#L1744) | [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1959) |
-| `create` | `Vec::with_capacity` | [1745](../../src/system_tools.rs#L1745) | external-constructor-callback-or-unresolved |
-| `create` | `lines.len` | [1745](../../src/system_tools.rs#L1745) | receiver-type-required |
-| `create` | `lines.drain` | [1746](../../src/system_tools.rs#L1746) | receiver-type-required |
-| `create` | `line.strip_prefix` | [1747](../../src/system_tools.rs#L1747) | receiver-type-required |
-| `create` | `Err` | [1748](../../src/system_tools.rs#L1748) | external-constructor-callback-or-unresolved |
-| `create` | `BackendFailure::Invalid` | [1748](../../src/system_tools.rs#L1748) | external-constructor-callback-or-unresolved |
-| `create` | `"create_file expects only content lines prefixed with '+' (for example +hello); omit ---/+++ file headers and @@ hunks".to_owned` | [1749](../../src/system_tools.rs#L1749) | receiver-type-required |
-| `create` | `output.push` | [1752](../../src/system_tools.rs#L1752) | receiver-type-required |
-| `create` | `content.to_owned` | [1752](../../src/system_tools.rs#L1752) | receiver-type-required |
-| `create` | `output.join` | [1754](../../src/system_tools.rs#L1754) | receiver-type-required |
-| `create` | `Ok` | [1755](../../src/system_tools.rs#L1755) | external-constructor-callback-or-unresolved |
-| `create` | `logical_lines` | [1756](../../src/system_tools.rs#L1756) | [engine::system_tools::logical_lines](../../src/system_tools.rs#L1983) |
-| `update` | `input.contains` | [1764](../../src/system_tools.rs#L1764) | receiver-type-required |
-| `update` | `detected_newline` | [1765](../../src/system_tools.rs#L1765), [1767](../../src/system_tools.rs#L1767) | [engine::system_tools::detected_newline](../../src/system_tools.rs#L1970) |
-| `update` | `input.replace` | [1769](../../src/system_tools.rs#L1769) | receiver-type-required |
-| `update` | `normalized.is_empty` | [1770](../../src/system_tools.rs#L1770) | receiver-type-required |
-| `update` | `Vec::new` | [1771](../../src/system_tools.rs#L1771), [1781](../../src/system_tools.rs#L1781), [1806](../../src/system_tools.rs#L1806), [1807](../../src/system_tools.rs#L1807), [1868](../../src/system_tools.rs#L1868) | external-constructor-callback-or-unresolved |
-| `update` | `normalized.split('\n').map(ToOwned::to_owned).collect` | [1773](../../src/system_tools.rs#L1773) | receiver-type-required |
-| `update` | `normalized.split('\n').map` | [1773](../../src/system_tools.rs#L1773) | receiver-type-required |
-| `update` | `normalized.split` | [1773](../../src/system_tools.rs#L1773) | receiver-type-required |
-| `update` | `normalized_lines` | [1775](../../src/system_tools.rs#L1775) | [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1959) |
-| `update` | `lines.is_empty` | [1776](../../src/system_tools.rs#L1776) | receiver-type-required |
-| `update` | `Err` | [1777](../../src/system_tools.rs#L1777), [1789](../../src/system_tools.rs#L1789), [1801](../../src/system_tools.rs#L1801), [1816](../../src/system_tools.rs#L1816), [1840](../../src/system_tools.rs#L1840), [1848](../../src/system_tools.rs#L1848), [1858](../../src/system_tools.rs#L1858), [1864](../../src/system_tools.rs#L1864), [1872](../../src/system_tools.rs#L1872) | external-constructor-callback-or-unresolved |
-| `update` | `BackendFailure::Invalid` | [1777](../../src/system_tools.rs#L1777), [1789](../../src/system_tools.rs#L1789), [1801](../../src/system_tools.rs#L1801), [1816](../../src/system_tools.rs#L1816), [1840](../../src/system_tools.rs#L1840), [1848](../../src/system_tools.rs#L1848), [1858](../../src/system_tools.rs#L1858), [1864](../../src/system_tools.rs#L1864), [1872](../../src/system_tools.rs#L1872) | external-constructor-callback-or-unresolved |
-| `update` | `"update_file diff must contain a hunk".to_owned` | [1778](../../src/system_tools.rs#L1778) | receiver-type-required |
-| `update` | `lines.len` | [1787](../../src/system_tools.rs#L1787), [1809](../../src/system_tools.rs#L1809), [1857](../../src/system_tools.rs#L1857) | receiver-type-required |
-| `update` | `forbidden_boundary` | [1788](../../src/system_tools.rs#L1788), [1815](../../src/system_tools.rs#L1815) | [engine::system_tools::forbidden_boundary](../../src/system_tools.rs#L1977) |
-| `update` | `"diff must be V4A patch body only".to_owned` | [1790](../../src/system_tools.rs#L1790) | receiver-type-required |
-| `update` | `lines[index].strip_prefix` | [1793](../../src/system_tools.rs#L1793) | receiver-type-required |
-| `update` | `find_anchor` | [1794](../../src/system_tools.rs#L1794) | [engine::system_tools::find_anchor](../../src/system_tools.rs#L1890) |
-| `update` | `"each patch section after the first must start with '@@'".to_owned` | [1802](../../src/system_tools.rs#L1802) | receiver-type-required |
-| `update` | `lines[index].starts_with` | [1809](../../src/system_tools.rs#L1809), [1815](../../src/system_tools.rs#L1815) | receiver-type-required |
-| `update` | `"invalid V4A patch boundary".to_owned` | [1817](../../src/system_tools.rs#L1817) | receiver-type-required |
-| `update` | `lines[index].is_empty` | [1820](../../src/system_tools.rs#L1820) | receiver-type-required |
-| `update` | `raw.split_at` | [1825](../../src/system_tools.rs#L1825) | receiver-type-required |
-| `update` | `old.push` | [1828](../../src/system_tools.rs#L1828), [1832](../../src/system_tools.rs#L1832) | receiver-type-required |
-| `update` | `content.to_owned` | [1828](../../src/system_tools.rs#L1828), [1829](../../src/system_tools.rs#L1829), [1832](../../src/system_tools.rs#L1832), [1836](../../src/system_tools.rs#L1836) | receiver-type-required |
-| `update` | `new.push` | [1829](../../src/system_tools.rs#L1829), [1836](../../src/system_tools.rs#L1836) | receiver-type-required |
-| `update` | `"patch lines must start with space, '+', or '-'".to_owned` | [1841](../../src/system_tools.rs#L1841) | receiver-type-required |
-| `update` | `"update hunk is empty".to_owned` | [1848](../../src/system_tools.rs#L1848) | receiver-type-required |
-| `update` | `find_context(&input_lines, &old, search_from, eof)                 .ok_or_else` | [1850](../../src/system_tools.rs#L1850) | receiver-type-required |
-| `update` | `find_context` | [1850](../../src/system_tools.rs#L1850) | [engine::system_tools::find_context](../../src/system_tools.rs#L1912) |
-| `update` | `BackendFailure::Conflict` | [1852](../../src/system_tools.rs#L1852) | external-constructor-callback-or-unresolved |
-| `update` | `"patch context did not match current file".to_owned` | [1852](../../src/system_tools.rs#L1852) | receiver-type-required |
-| `update` | `old.len` | [1855](../../src/system_tools.rs#L1855), [1856](../../src/system_tools.rs#L1856) | receiver-type-required |
-| `update` | `replacements.push` | [1856](../../src/system_tools.rs#L1856) | receiver-type-required |
-| `update` | `"End of File must terminate diff".to_owned` | [1859](../../src/system_tools.rs#L1859) | receiver-type-required |
-| `update` | `"patch contains no additions or deletions".to_owned` | [1865](../../src/system_tools.rs#L1865) | receiver-type-required |
-| `update` | `position.saturating_add` | [1871](../../src/system_tools.rs#L1871) | receiver-type-required |
-| `update` | `input_lines.len` | [1871](../../src/system_tools.rs#L1871) | receiver-type-required |
-| `update` | `"patch contains overlapping or out-of-range hunks".to_owned` | [1873](../../src/system_tools.rs#L1873) | receiver-type-required |
-| `update` | `destination.extend_from_slice` | [1876](../../src/system_tools.rs#L1876), [1880](../../src/system_tools.rs#L1880) | receiver-type-required |
-| `update` | `destination.extend` | [1877](../../src/system_tools.rs#L1877) | receiver-type-required |
-| `update` | `Ok` | [1881](../../src/system_tools.rs#L1881) | external-constructor-callback-or-unresolved |
-| `update` | `destination.join` | [1882](../../src/system_tools.rs#L1882) | receiver-type-required |
-| `find_anchor` | `lines         .iter()         .enumerate()         .skip(start)         .find_map` | [1895](../../src/system_tools.rs#L1895), [1904](../../src/system_tools.rs#L1904) | receiver-type-required |
-| `find_anchor` | `lines         .iter()         .enumerate()         .skip` | [1895](../../src/system_tools.rs#L1895), [1904](../../src/system_tools.rs#L1904) | receiver-type-required |
-| `find_anchor` | `lines         .iter()         .enumerate` | [1895](../../src/system_tools.rs#L1895), [1904](../../src/system_tools.rs#L1904) | receiver-type-required |
-| `find_anchor` | `lines         .iter` | [1895](../../src/system_tools.rs#L1895), [1904](../../src/system_tools.rs#L1904) | receiver-type-required |
-| `find_anchor` | `(line == anchor).then_some` | [1899](../../src/system_tools.rs#L1899) | receiver-type-required |
-| `find_anchor` | `Ok` | [1901](../../src/system_tools.rs#L1901) | external-constructor-callback-or-unresolved |
-| `find_anchor` | `anchor.trim_matches` | [1903](../../src/system_tools.rs#L1903) | receiver-type-required |
-| `find_anchor` | `lines         .iter()         .enumerate()         .skip(start)         .find_map(&#124;(index, line)&#124; (line.trim_matches([' ', '\t']) == trimmed).then_some((index, 1)))         .ok_or_else` | [1904](../../src/system_tools.rs#L1904) | receiver-type-required |
-| `find_anchor` | `(line.trim_matches([' ', '\t']) == trimmed).then_some` | [1908](../../src/system_tools.rs#L1908) | receiver-type-required |
-| `find_anchor` | `line.trim_matches` | [1908](../../src/system_tools.rs#L1908) | receiver-type-required |
-| `find_anchor` | `BackendFailure::Conflict` | [1909](../../src/system_tools.rs#L1909) | external-constructor-callback-or-unresolved |
-| `find_context` | `context.is_empty` | [1918](../../src/system_tools.rs#L1918) | receiver-type-required |
-| `find_context` | `Some` | [1919](../../src/system_tools.rs#L1919), [1948](../../src/system_tools.rs#L1948) | external-constructor-callback-or-unresolved |
-| `find_context` | `lines.len` | [1921](../../src/system_tools.rs#L1921), [1923](../../src/system_tools.rs#L1923), [1929](../../src/system_tools.rs#L1929), [1934](../../src/system_tools.rs#L1934) | receiver-type-required |
-| `find_context` | `start.min` | [1923](../../src/system_tools.rs#L1923) | receiver-type-required |
-| `find_context` | `lines.len().saturating_sub` | [1929](../../src/system_tools.rs#L1929), [1934](../../src/system_tools.rs#L1934) | receiver-type-required |
-| `find_context` | `context.len` | [1929](../../src/system_tools.rs#L1929), [1934](../../src/system_tools.rs#L1934), [1936](../../src/system_tools.rs#L1936) | receiver-type-required |
-| `find_context` | `lines[index..index + context.len()]                     .iter()                     .zip(context)                     .all` | [1936](../../src/system_tools.rs#L1936) | receiver-type-required |
-| `find_context` | `lines[index..index + context.len()]                     .iter()                     .zip` | [1936](../../src/system_tools.rs#L1936) | receiver-type-required |
-| `find_context` | `lines[index..index + context.len()]                     .iter` | [1936](../../src/system_tools.rs#L1936) | receiver-type-required |
-| `find_context` | `left.trim_end_matches` | [1942](../../src/system_tools.rs#L1942) | receiver-type-required |
-| `find_context` | `right.trim_end_matches` | [1943](../../src/system_tools.rs#L1943) | receiver-type-required |
-| `find_context` | `left.trim_matches` | [1945](../../src/system_tools.rs#L1945) | receiver-type-required |
-| `find_context` | `right.trim_matches` | [1945](../../src/system_tools.rs#L1945) | receiver-type-required |
-| `find_context` | `find_context(lines, context, start, false).map` | [1953](../../src/system_tools.rs#L1953) | receiver-type-required |
-| `find_context` | `find_context` | [1953](../../src/system_tools.rs#L1953) | [engine::system_tools::find_context](../../src/system_tools.rs#L1912) |
-| `normalized_lines` | `text         .split('\n')         .map(&#124;line&#124; line.strip_suffix('\r').unwrap_or(line).to_owned())         .collect` | [1960](../../src/system_tools.rs#L1960) | receiver-type-required |
-| `normalized_lines` | `text         .split('\n')         .map` | [1960](../../src/system_tools.rs#L1960) | receiver-type-required |
-| `normalized_lines` | `text         .split` | [1960](../../src/system_tools.rs#L1960) | receiver-type-required |
-| `normalized_lines` | `line.strip_suffix('\r').unwrap_or(line).to_owned` | [1962](../../src/system_tools.rs#L1962) | receiver-type-required |
-| `normalized_lines` | `line.strip_suffix('\r').unwrap_or` | [1962](../../src/system_tools.rs#L1962) | receiver-type-required |
-| `normalized_lines` | `line.strip_suffix` | [1962](../../src/system_tools.rs#L1962) | receiver-type-required |
-| `normalized_lines` | `lines.last().is_some_and` | [1964](../../src/system_tools.rs#L1964) | receiver-type-required |
-| `normalized_lines` | `lines.last` | [1964](../../src/system_tools.rs#L1964) | receiver-type-required |
-| `normalized_lines` | `lines.pop` | [1965](../../src/system_tools.rs#L1965) | receiver-type-required |
-| `detected_newline` | `text.as_bytes().windows(2).any` | [1971](../../src/system_tools.rs#L1971) | receiver-type-required |
-| `detected_newline` | `text.as_bytes().windows` | [1971](../../src/system_tools.rs#L1971) | receiver-type-required |
-| `detected_newline` | `text.as_bytes` | [1971](../../src/system_tools.rs#L1971) | receiver-type-required |
-| `forbidden_boundary` | `line.starts_with` | [1979](../../src/system_tools.rs#L1979), [1980](../../src/system_tools.rs#L1980), [1981](../../src/system_tools.rs#L1981) | receiver-type-required |
-| `logical_lines` | `text.is_empty` | [1984](../../src/system_tools.rs#L1984) | receiver-type-required |
-| `logical_lines` | `text.bytes().filter(&#124;byte&#124; *byte == b'\n').count` | [1987](../../src/system_tools.rs#L1987) | receiver-type-required |
-| `logical_lines` | `text.bytes().filter` | [1987](../../src/system_tools.rs#L1987) | receiver-type-required |
-| `logical_lines` | `text.bytes` | [1987](../../src/system_tools.rs#L1987) | receiver-type-required |
-| `logical_lines` | `usize::from` | [1987](../../src/system_tools.rs#L1987) | external-constructor-callback-or-unresolved |
-| `logical_lines` | `text.ends_with` | [1987](../../src/system_tools.rs#L1987) | receiver-type-required |
+| `apply_patch` | `ByteString::from_bytes` | [1031](../../src/system_tools.rs#L1031), [1112](../../src/system_tools.rs#L1112) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
+| `apply_patch` | `patch.content.as_bytes` | [1031](../../src/system_tools.rs#L1031), [1112](../../src/system_tools.rs#L1112) | receiver-type-required |
+| `apply_patch` | `Ok` | [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | external-constructor-callback-or-unresolved |
+| `apply_patch` | `patch_result_json` | [1050](../../src/system_tools.rs#L1050), [1131](../../src/system_tools.rs#L1131) | [engine::system_tools::patch_result_json](../../src/system_tools.rs#L1988) |
+| `apply_patch` | `invalid_outcome` | [1155](../../src/system_tools.rs#L1155) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) |
+| `write` | `self.write_content` | [1166](../../src/system_tools.rs#L1166) | [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1208) |
+| `edit` | `self.invoke_helper` | [1178](../../src/system_tools.rs#L1178) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
+| `edit` | `retype` | [1187](../../src/system_tools.rs#L1187) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
+| `edit` | `original.match_indices` | [1194](../../src/system_tools.rs#L1194) | receiver-type-required |
+| `edit` | `matches.next` | [1195](../../src/system_tools.rs#L1195), [1198](../../src/system_tools.rs#L1198) | receiver-type-required |
+| `edit` | `invalid_outcome` | [1196](../../src/system_tools.rs#L1196), [1199](../../src/system_tools.rs#L1199) | [engine::system_tools::invalid_outcome](../../src/system_tools.rs#L1715) |
+| `edit` | `matches.next().is_some` | [1198](../../src/system_tools.rs#L1198) | receiver-type-required |
+| `edit` | `String::with_capacity` | [1201](../../src/system_tools.rs#L1201) | external-constructor-callback-or-unresolved |
+| `edit` | `original.len` | [1201](../../src/system_tools.rs#L1201) | receiver-type-required |
+| `edit` | `old.len` | [1201](../../src/system_tools.rs#L1201), [1204](../../src/system_tools.rs#L1204) | receiver-type-required |
+| `edit` | `new.len` | [1201](../../src/system_tools.rs#L1201) | receiver-type-required |
+| `edit` | `replacement.push_str` | [1202](../../src/system_tools.rs#L1202), [1203](../../src/system_tools.rs#L1203), [1204](../../src/system_tools.rs#L1204) | receiver-type-required |
+| `edit` | `self.write_content` | [1205](../../src/system_tools.rs#L1205) | [engine::system_tools::SystemToolBackend::write_content](../../src/system_tools.rs#L1208) |
+| `edit` | `Some` | [1205](../../src/system_tools.rs#L1205) | external-constructor-callback-or-unresolved |
+| `write_content` | `BackendOutcome::Unavailable` | [1218](../../src/system_tools.rs#L1218) | external-constructor-callback-or-unresolved |
+| `write_content` | `"artifact-version-authority".to_owned` | [1219](../../src/system_tools.rs#L1219) | receiver-type-required |
+| `write_content` | `"durable artifact version authority is not configured".to_owned` | [1220](../../src/system_tools.rs#L1220) | receiver-type-required |
+| `write_content` | `self.invoke_helper` | [1223](../../src/system_tools.rs#L1223), [1270](../../src/system_tools.rs#L1270) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
+| `write_content` | `root.clone` | [1226](../../src/system_tools.rs#L1226) | receiver-type-required |
+| `write_content` | `relative.clone` | [1227](../../src/system_tools.rs#L1227) | receiver-type-required |
+| `write_content` | `Some` | [1231](../../src/system_tools.rs#L1231) | external-constructor-callback-or-unresolved |
+| `write_content` | `retype` | [1233](../../src/system_tools.rs#L1233), [1301](../../src/system_tools.rs#L1301) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
+| `write_content` | `existing             .as_ref()             .map_or` | [1235](../../src/system_tools.rs#L1235) | receiver-type-required |
+| `write_content` | `existing             .as_ref` | [1235](../../src/system_tools.rs#L1235), [1243](../../src/system_tools.rs#L1243) | receiver-type-required |
+| `write_content` | `value.sha256.as_str` | [1237](../../src/system_tools.rs#L1237) | receiver-type-required |
+| `write_content` | `expected_sha.is_some_and` | [1238](../../src/system_tools.rs#L1238) | receiver-type-required |
+| `write_content` | `BackendOutcome::Completed` | [1239](../../src/system_tools.rs#L1239), [1283](../../src/system_tools.rs#L1283) | external-constructor-callback-or-unresolved |
+| `write_content` | `Err` | [1239](../../src/system_tools.rs#L1239) | external-constructor-callback-or-unresolved |
+| `write_content` | `BackendFailure::Conflict` | [1239](../../src/system_tools.rs#L1239) | external-constructor-callback-or-unresolved |
+| `write_content` | `"file changed since edit read".to_owned` | [1240](../../src/system_tools.rs#L1240) | receiver-type-required |
+| `write_content` | `existing             .as_ref()             .map(&#124;value&#124; value.content.decode().map_err(helper_failure))             .transpose` | [1243](../../src/system_tools.rs#L1243) | receiver-type-required |
+| `write_content` | `existing             .as_ref()             .map` | [1243](../../src/system_tools.rs#L1243) | receiver-type-required |
+| `write_content` | `value.content.decode().map_err` | [1245](../../src/system_tools.rs#L1245) | receiver-type-required |
+| `write_content` | `value.content.decode` | [1245](../../src/system_tools.rs#L1245) | receiver-type-required |
+| `write_content` | `before_bytes             .as_deref()             .and_then` | [1248](../../src/system_tools.rs#L1248) | receiver-type-required |
+| `write_content` | `before_bytes             .as_deref` | [1248](../../src/system_tools.rs#L1248) | receiver-type-required |
+| `write_content` | `std::str::from_utf8(bytes).ok` | [1250](../../src/system_tools.rs#L1250) | receiver-type-required |
+| `write_content` | `std::str::from_utf8` | [1250](../../src/system_tools.rs#L1250) | external-constructor-callback-or-unresolved |
+| `write_content` | `ByteString::from_bytes` | [1261](../../src/system_tools.rs#L1261), [1266](../../src/system_tools.rs#L1266) | [tools::helper::ByteString::from_bytes](../../../tools/src/helper.rs#L61) |
+| `write_content` | `content.as_bytes` | [1261](../../src/system_tools.rs#L1261), [1266](../../src/system_tools.rs#L1266) | receiver-type-required |
+| `write_content` | `Ok` | [1283](../../src/system_tools.rs#L1283) | external-constructor-callback-or-unresolved |
+| `exec_helper` | `self.invoke_helper` | [1314](../../src/system_tools.rs#L1314) | [engine::system_tools::SystemToolBackend::invoke_helper](../../src/system_tools.rs#L526) |
+| `exec_helper` | `HelperOperation::Exec` | [1316](../../src/system_tools.rs#L1316) | external-constructor-callback-or-unresolved |
+| `exec_helper` | `Some` | [1319](../../src/system_tools.rs#L1319) | external-constructor-callback-or-unresolved |
+| `exec_helper` | `self.config.environment.clone` | [1323](../../src/system_tools.rs#L1323) | receiver-type-required |
+| `exec_helper` | `BackendOutcome::Completed` | [1330](../../src/system_tools.rs#L1330) | external-constructor-callback-or-unresolved |
+| `exec_helper` | `Ok` | [1330](../../src/system_tools.rs#L1330) | external-constructor-callback-or-unresolved |
+| `exec_helper` | `retype` | [1332](../../src/system_tools.rs#L1332) | [engine::system_tools::retype](../../src/system_tools.rs#L1704) |
+| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .find(&#124;mount&#124; mount.name == root)             .ok_or_else` | [1337](../../src/system_tools.rs#L1337) | receiver-type-required |
+| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .find` | [1337](../../src/system_tools.rs#L1337) | receiver-type-required |
+| `artifact_identity` | `std::iter::once(&self.config.workspace)             .chain` | [1337](../../src/system_tools.rs#L1337) | receiver-type-required |
+| `artifact_identity` | `std::iter::once` | [1337](../../src/system_tools.rs#L1337) | external-constructor-callback-or-unresolved |
+| `artifact_identity` | `self.config.extra_roots.iter` | [1338](../../src/system_tools.rs#L1338) | receiver-type-required |
+| `artifact_identity` | `BackendFailure::Protocol` | [1341](../../src/system_tools.rs#L1341) | external-constructor-callback-or-unresolved |
+| `artifact_identity` | `"resolved artifact mount disappeared".to_owned` | [1341](../../src/system_tools.rs#L1341) | receiver-type-required |
+| `artifact_identity` | `mount.path.is_absolute` | [1343](../../src/system_tools.rs#L1343) | receiver-type-required |
+| `artifact_identity` | `Err` | [1344](../../src/system_tools.rs#L1344) | external-constructor-callback-or-unresolved |
+| `artifact_identity` | `BackendFailure::Invalid` | [1344](../../src/system_tools.rs#L1344), [1353](../../src/system_tools.rs#L1353) | external-constructor-callback-or-unresolved |
+| `artifact_identity` | `"artifact mount must be absolute".to_owned` | [1345](../../src/system_tools.rs#L1345) | receiver-type-required |
+| `artifact_identity` | `mount             .path             .join(relative)             .to_str()             .map(ToOwned::to_owned)             .ok_or_else` | [1348](../../src/system_tools.rs#L1348) | receiver-type-required |
+| `artifact_identity` | `mount             .path             .join(relative)             .to_str()             .map` | [1348](../../src/system_tools.rs#L1348) | receiver-type-required |
+| `artifact_identity` | `mount             .path             .join(relative)             .to_str` | [1348](../../src/system_tools.rs#L1348) | receiver-type-required |
+| `artifact_identity` | `mount             .path             .join` | [1348](../../src/system_tools.rs#L1348) | receiver-type-required |
+| `artifact_identity` | `"artifact path is not UTF-8".to_owned` | [1353](../../src/system_tools.rs#L1353) | receiver-type-required |
+| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .map(&#124;mount&#124; mount.path.display().to_string())             .collect::<Vec<_>>` | [1359](../../src/system_tools.rs#L1359) | receiver-type-required |
+| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain(self.config.extra_roots.iter())             .map` | [1359](../../src/system_tools.rs#L1359) | receiver-type-required |
+| `allowed_roots_sentence` | `std::iter::once(&self.config.workspace)             .chain` | [1359](../../src/system_tools.rs#L1359) | receiver-type-required |
+| `allowed_roots_sentence` | `std::iter::once` | [1359](../../src/system_tools.rs#L1359) | external-constructor-callback-or-unresolved |
+| `allowed_roots_sentence` | `self.config.extra_roots.iter` | [1360](../../src/system_tools.rs#L1360) | receiver-type-required |
+| `allowed_roots_sentence` | `mount.path.display().to_string` | [1361](../../src/system_tools.rs#L1361) | receiver-type-required |
+| `allowed_roots_sentence` | `mount.path.display` | [1361](../../src/system_tools.rs#L1361) | receiver-type-required |
+| `allowed_roots_sentence` | `roots.split_last` | [1363](../../src/system_tools.rs#L1363) | receiver-type-required |
+| `allowed_roots_sentence` | `"(no configured root)".to_owned` | [1364](../../src/system_tools.rs#L1364) | receiver-type-required |
+| `allowed_roots_sentence` | `last.clone` | [1365](../../src/system_tools.rs#L1365) | receiver-type-required |
+| `resolve_path` | `Path::new` | [1375](../../src/system_tools.rs#L1375) | external-constructor-callback-or-unresolved |
+| `resolve_path` | `raw.is_empty` | [1375](../../src/system_tools.rs#L1375) | receiver-type-required |
+| `resolve_path` | `path.is_absolute` | [1376](../../src/system_tools.rs#L1376) | receiver-type-required |
+| `resolve_path` | `path.starts_with` | [1377](../../src/system_tools.rs#L1377) | receiver-type-required |
+| `resolve_path` | `Err` | [1378](../../src/system_tools.rs#L1378), [1393](../../src/system_tools.rs#L1393) | external-constructor-callback-or-unresolved |
+| `resolve_path` | `BackendFailure::Denied` | [1378](../../src/system_tools.rs#L1378), [1393](../../src/system_tools.rs#L1393) | external-constructor-callback-or-unresolved |
+| `resolve_path` | `std::iter::once(&self.config.workspace).chain` | [1384](../../src/system_tools.rs#L1384) | receiver-type-required |
+| `resolve_path` | `std::iter::once` | [1384](../../src/system_tools.rs#L1384) | external-constructor-callback-or-unresolved |
+| `resolve_path` | `self.config.extra_roots.iter` | [1384](../../src/system_tools.rs#L1384) | receiver-type-required |
+| `resolve_path` | `path.strip_prefix` | [1386](../../src/system_tools.rs#L1386) | receiver-type-required |
+| `resolve_path` | `Ok` | [1387](../../src/system_tools.rs#L1387), [1398](../../src/system_tools.rs#L1398) | external-constructor-callback-or-unresolved |
+| `resolve_path` | `mount.name.clone` | [1387](../../src/system_tools.rs#L1387) | receiver-type-required |
+| `resolve_path` | `normalized_relative` | [1387](../../src/system_tools.rs#L1387), [1400](../../src/system_tools.rs#L1400) | [engine::system_tools::normalized_relative](../../src/system_tools.rs#L1675) |
+| `resolve_path` | `self.config.workspace.name.clone` | [1399](../../src/system_tools.rs#L1399) | receiver-type-required |
+| `supports` | `self.artifact_versions.is_some` | [1427](../../src/system_tools.rs#L1427) | receiver-type-required |
+| `supports` | `self.http.is_some` | [1433](../../src/system_tools.rs#L1433), [1434](../../src/system_tools.rs#L1434) | receiver-type-required |
+| `supports` | `self.search.is_some` | [1434](../../src/system_tools.rs#L1434) | receiver-type-required |
+| `execute` | `serde_json::to_value` | [1440](../../src/system_tools.rs#L1440) | external-constructor-callback-or-unresolved |
+| `execute` | `unavailable` | [1442](../../src/system_tools.rs#L1442), [1445](../../src/system_tools.rs#L1445) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1474) |
+| `execute` | `error.to_string` | [1442](../../src/system_tools.rs#L1442), [1445](../../src/system_tools.rs#L1445) | receiver-type-required |
+| `execute` | `validate_fixed_arguments` | [1444](../../src/system_tools.rs#L1444) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1231) |
+| `execute` | `self.execute_inner` | [1447](../../src/system_tools.rs#L1447) | receiver-type-required |
+| `terminal` | `json_to_ijson` | [1453](../../src/system_tools.rs#L1453), [1466](../../src/system_tools.rs#L1466) | [engine::system_tools::json_to_ijson](../../src/system_tools.rs#L1525) |
+| `terminal` | `BackendTerminal::Completed` | [1454](../../src/system_tools.rs#L1454) | external-constructor-callback-or-unresolved |
+| `terminal` | `unavailable` | [1455](../../src/system_tools.rs#L1455), [1462](../../src/system_tools.rs#L1462), [1469](../../src/system_tools.rs#L1469) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1474) |
+| `terminal` | `failure_code` | [1462](../../src/system_tools.rs#L1462) | [engine::system_tools::failure_code](../../src/system_tools.rs#L1482) |
+| `terminal` | `error.to_string` | [1462](../../src/system_tools.rs#L1462) | receiver-type-required |
+| `terminal` | `json_to_ijson(&json!({"reason": reason})).expect` | [1466](../../src/system_tools.rs#L1466) | receiver-type-required |
+| `unavailable` | `code.to_owned` | [1476](../../src/system_tools.rs#L1476) | receiver-type-required |
+| `unavailable` | `message.into` | [1477](../../src/system_tools.rs#L1477) | receiver-type-required |
+| `helper_failure` | `BackendFailure::Invalid` | [1502](../../src/system_tools.rs#L1502), [1507](../../src/system_tools.rs#L1507) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Unavailable` | [1504](../../src/system_tools.rs#L1504) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Denied` | [1506](../../src/system_tools.rs#L1506) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Conflict` | [1508](../../src/system_tools.rs#L1508) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::NotFound` | [1509](../../src/system_tools.rs#L1509) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Limit` | [1510](../../src/system_tools.rs#L1510) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Io` | [1512](../../src/system_tools.rs#L1512) | external-constructor-callback-or-unresolved |
+| `helper_failure` | `BackendFailure::Protocol` | [1513](../../src/system_tools.rs#L1513) | external-constructor-callback-or-unresolved |
+| `backend_io` | `BackendFailure::Io` | [1518](../../src/system_tools.rs#L1518) | external-constructor-callback-or-unresolved |
+| `backend_io` | `error.to_string` | [1518](../../src/system_tools.rs#L1518) | receiver-type-required |
+| `backend_store` | `BackendFailure::Io` | [1522](../../src/system_tools.rs#L1522) | external-constructor-callback-or-unresolved |
+| `backend_store` | `error.to_string` | [1522](../../src/system_tools.rs#L1522) | receiver-type-required |
+| `json_to_ijson` | `IJsonValue::parse(&serde_json::to_vec(value).map_err(&#124;error&#124; error.to_string())?)         .map_err` | [1526](../../src/system_tools.rs#L1526) | receiver-type-required |
+| `json_to_ijson` | `IJsonValue::parse` | [1526](../../src/system_tools.rs#L1526) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `json_to_ijson` | `serde_json::to_vec(value).map_err` | [1526](../../src/system_tools.rs#L1526) | receiver-type-required |
+| `json_to_ijson` | `serde_json::to_vec` | [1526](../../src/system_tools.rs#L1526) | external-constructor-callback-or-unresolved |
+| `json_to_ijson` | `error.to_string` | [1526](../../src/system_tools.rs#L1526), [1527](../../src/system_tools.rs#L1527) | receiver-type-required |
+| `required_str` | `args.get(key)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .ok_or_else` | [1531](../../src/system_tools.rs#L1531) | receiver-type-required |
+| `required_str` | `args.get(key)         .and_then(Value::as_str)         .filter` | [1531](../../src/system_tools.rs#L1531) | receiver-type-required |
+| `required_str` | `args.get(key)         .and_then` | [1531](../../src/system_tools.rs#L1531) | receiver-type-required |
+| `required_str` | `args.get` | [1531](../../src/system_tools.rs#L1531) | receiver-type-required |
+| `required_str` | `value.is_empty` | [1533](../../src/system_tools.rs#L1533) | receiver-type-required |
+| `required_str` | `BackendFailure::Invalid` | [1534](../../src/system_tools.rs#L1534) | external-constructor-callback-or-unresolved |
+| `optional_str` | `args.get` | [1538](../../src/system_tools.rs#L1538) | receiver-type-required |
+| `optional_str` | `Ok` | [1539](../../src/system_tools.rs#L1539), [1540](../../src/system_tools.rs#L1540) | external-constructor-callback-or-unresolved |
+| `optional_str` | `Some` | [1540](../../src/system_tools.rs#L1540) | external-constructor-callback-or-unresolved |
+| `optional_str` | `Err` | [1541](../../src/system_tools.rs#L1541) | external-constructor-callback-or-unresolved |
+| `optional_str` | `BackendFailure::Invalid` | [1541](../../src/system_tools.rs#L1541) | external-constructor-callback-or-unresolved |
+| `optional_bool` | `args.get` | [1546](../../src/system_tools.rs#L1546) | receiver-type-required |
+| `optional_bool` | `Ok` | [1547](../../src/system_tools.rs#L1547), [1548](../../src/system_tools.rs#L1548) | external-constructor-callback-or-unresolved |
+| `optional_bool` | `Some` | [1548](../../src/system_tools.rs#L1548) | external-constructor-callback-or-unresolved |
+| `optional_bool` | `Err` | [1549](../../src/system_tools.rs#L1549) | external-constructor-callback-or-unresolved |
+| `optional_bool` | `BackendFailure::Invalid` | [1549](../../src/system_tools.rs#L1549) | external-constructor-callback-or-unresolved |
+| `optional_u64` | `args.get` | [1554](../../src/system_tools.rs#L1554) | receiver-type-required |
+| `optional_u64` | `Ok` | [1555](../../src/system_tools.rs#L1555) | external-constructor-callback-or-unresolved |
+| `optional_u64` | `value             .as_u64()             .map(Some)             .ok_or_else` | [1556](../../src/system_tools.rs#L1556) | receiver-type-required |
+| `optional_u64` | `value             .as_u64()             .map` | [1556](../../src/system_tools.rs#L1556) | receiver-type-required |
+| `optional_u64` | `value             .as_u64` | [1556](../../src/system_tools.rs#L1556) | receiver-type-required |
+| `optional_u64` | `BackendFailure::Invalid` | [1559](../../src/system_tools.rs#L1559), [1560](../../src/system_tools.rs#L1560) | external-constructor-callback-or-unresolved |
+| `optional_u64` | `Err` | [1560](../../src/system_tools.rs#L1560) | external-constructor-callback-or-unresolved |
+| `string_array` | `args.get` | [1565](../../src/system_tools.rs#L1565) | receiver-type-required |
+| `string_array` | `Ok` | [1566](../../src/system_tools.rs#L1566) | external-constructor-callback-or-unresolved |
+| `string_array` | `items             .iter()             .map(&#124;item&#124; {                 item.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     BackendFailure::Invalid(format!("{key} must contain only strings"))                 })             })             .collect::<Result<Vec<_>, _>>()             .map` | [1567](../../src/system_tools.rs#L1567) | receiver-type-required |
+| `string_array` | `items             .iter()             .map(&#124;item&#124; {                 item.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     BackendFailure::Invalid(format!("{key} must contain only strings"))                 })             })             .collect::<Result<Vec<_>, _>>` | [1567](../../src/system_tools.rs#L1567) | receiver-type-required |
+| `string_array` | `items             .iter()             .map` | [1567](../../src/system_tools.rs#L1567) | receiver-type-required |
+| `string_array` | `items             .iter` | [1567](../../src/system_tools.rs#L1567) | receiver-type-required |
+| `string_array` | `item.as_str().map(ToOwned::to_owned).ok_or_else` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
+| `string_array` | `item.as_str().map` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
+| `string_array` | `item.as_str` | [1570](../../src/system_tools.rs#L1570) | receiver-type-required |
+| `string_array` | `BackendFailure::Invalid` | [1571](../../src/system_tools.rs#L1571), [1576](../../src/system_tools.rs#L1576) | external-constructor-callback-or-unresolved |
+| `string_array` | `Err` | [1576](../../src/system_tools.rs#L1576) | external-constructor-callback-or-unresolved |
+| `parse_steps` | `args.get` | [1584](../../src/system_tools.rs#L1584) | receiver-type-required |
+| `parse_steps` | `Ok` | [1585](../../src/system_tools.rs#L1585), [1625](../../src/system_tools.rs#L1625) | external-constructor-callback-or-unresolved |
+| `parse_steps` | `Vec::new` | [1585](../../src/system_tools.rs#L1585) | external-constructor-callback-or-unresolved |
+| `parse_steps` | `value             .as_array()             .ok_or_else` | [1586](../../src/system_tools.rs#L1586) | receiver-type-required |
+| `parse_steps` | `value             .as_array` | [1586](../../src/system_tools.rs#L1586) | receiver-type-required |
+| `parse_steps` | `BackendFailure::Invalid` | [1588](../../src/system_tools.rs#L1588), [1595](../../src/system_tools.rs#L1595), [1600](../../src/system_tools.rs#L1600), [1609](../../src/system_tools.rs#L1609), [1614](../../src/system_tools.rs#L1614), [1620](../../src/system_tools.rs#L1620) | external-constructor-callback-or-unresolved |
+| `parse_steps` | `"steps must be an array".to_owned` | [1588](../../src/system_tools.rs#L1588) | receiver-type-required |
+| `parse_steps` | `steps         .iter()         .map(&#124;step&#124; {             let object = step                 .as_object()                 .ok_or_else(&#124;&#124; BackendFailure::Invalid("each step must be an object".to_owned()))?;             if object                 .keys()                 .any(&#124;key&#124; !matches!(key.as_str(), "program" &#124; "args"))             {                 return Err(BackendFailure::Invalid(                     "step contains an unknown property".to_owned(),                 ));             }             let program = object                 .get("program")                 .and_then(Value::as_str)                 .filter(&#124;value&#124; !value.is_empty())                 .ok_or_else(&#124;&#124; {                     BackendFailure::Invalid("step program must be nonempty".to_owned())                 })?;             let items = object                 .get("args")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; BackendFailure::Invalid("step args must be an array".to_owned()))?;             let mut argv = vec![program.to_owned()];             for item in items {                 argv.push(                     item.as_str()                         .ok_or_else(&#124;&#124; {                             BackendFailure::Invalid("step args must be strings".to_owned())                         })?                         .to_owned(),                 );             }             Ok(argv)         })         .collect` | [1590](../../src/system_tools.rs#L1590) | receiver-type-required |
+| `parse_steps` | `steps         .iter()         .map` | [1590](../../src/system_tools.rs#L1590) | receiver-type-required |
+| `parse_steps` | `steps         .iter` | [1590](../../src/system_tools.rs#L1590) | receiver-type-required |
+| `parse_steps` | `step                 .as_object()                 .ok_or_else` | [1593](../../src/system_tools.rs#L1593) | receiver-type-required |
+| `parse_steps` | `step                 .as_object` | [1593](../../src/system_tools.rs#L1593) | receiver-type-required |
+| `parse_steps` | `"each step must be an object".to_owned` | [1595](../../src/system_tools.rs#L1595) | receiver-type-required |
+| `parse_steps` | `object                 .keys()                 .any` | [1596](../../src/system_tools.rs#L1596) | receiver-type-required |
+| `parse_steps` | `object                 .keys` | [1596](../../src/system_tools.rs#L1596) | receiver-type-required |
+| `parse_steps` | `Err` | [1600](../../src/system_tools.rs#L1600) | external-constructor-callback-or-unresolved |
+| `parse_steps` | `"step contains an unknown property".to_owned` | [1601](../../src/system_tools.rs#L1601) | receiver-type-required |
+| `parse_steps` | `object                 .get("program")                 .and_then(Value::as_str)                 .filter(&#124;value&#124; !value.is_empty())                 .ok_or_else` | [1604](../../src/system_tools.rs#L1604) | receiver-type-required |
+| `parse_steps` | `object                 .get("program")                 .and_then(Value::as_str)                 .filter` | [1604](../../src/system_tools.rs#L1604) | receiver-type-required |
+| `parse_steps` | `object                 .get("program")                 .and_then` | [1604](../../src/system_tools.rs#L1604) | receiver-type-required |
+| `parse_steps` | `object                 .get` | [1604](../../src/system_tools.rs#L1604), [1611](../../src/system_tools.rs#L1611) | receiver-type-required |
+| `parse_steps` | `value.is_empty` | [1607](../../src/system_tools.rs#L1607) | receiver-type-required |
+| `parse_steps` | `"step program must be nonempty".to_owned` | [1609](../../src/system_tools.rs#L1609) | receiver-type-required |
+| `parse_steps` | `object                 .get("args")                 .and_then(Value::as_array)                 .ok_or_else` | [1611](../../src/system_tools.rs#L1611) | receiver-type-required |
+| `parse_steps` | `object                 .get("args")                 .and_then` | [1611](../../src/system_tools.rs#L1611) | receiver-type-required |
+| `parse_steps` | `"step args must be an array".to_owned` | [1614](../../src/system_tools.rs#L1614) | receiver-type-required |
+| `parse_steps` | `argv.push` | [1617](../../src/system_tools.rs#L1617) | receiver-type-required |
+| `parse_steps` | `item.as_str()                         .ok_or_else(&#124;&#124; {                             BackendFailure::Invalid("step args must be strings".to_owned())                         })?                         .to_owned` | [1618](../../src/system_tools.rs#L1618) | receiver-type-required |
+| `parse_steps` | `item.as_str()                         .ok_or_else` | [1618](../../src/system_tools.rs#L1618) | receiver-type-required |
+| `parse_steps` | `item.as_str` | [1618](../../src/system_tools.rs#L1618) | receiver-type-required |
+| `parse_steps` | `"step args must be strings".to_owned` | [1620](../../src/system_tools.rs#L1620) | receiver-type-required |
+| `parse_artifacts` | `args.get` | [1633](../../src/system_tools.rs#L1633) | receiver-type-required |
+| `parse_artifacts` | `Ok` | [1634](../../src/system_tools.rs#L1634), [1672](../../src/system_tools.rs#L1672) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `Vec::new` | [1634](../../src/system_tools.rs#L1634) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `value.as_array().ok_or_else` | [1635](../../src/system_tools.rs#L1635) | receiver-type-required |
+| `parse_artifacts` | `value.as_array` | [1635](../../src/system_tools.rs#L1635) | receiver-type-required |
+| `parse_artifacts` | `BackendFailure::Invalid` | [1636](../../src/system_tools.rs#L1636), [1647](../../src/system_tools.rs#L1647), [1650](../../src/system_tools.rs#L1650), [1657](../../src/system_tools.rs#L1657), [1667](../../src/system_tools.rs#L1667) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `"artifact_outputs must be an array".to_owned` | [1636](../../src/system_tools.rs#L1636) | receiver-type-required |
+| `parse_artifacts` | `items.len` | [1639](../../src/system_tools.rs#L1639) | receiver-type-required |
+| `parse_artifacts` | `Err` | [1640](../../src/system_tools.rs#L1640), [1650](../../src/system_tools.rs#L1650), [1662](../../src/system_tools.rs#L1662), [1667](../../src/system_tools.rs#L1667) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `BackendFailure::Limit` | [1640](../../src/system_tools.rs#L1640) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `"at most 64 artifact outputs are allowed".to_owned` | [1641](../../src/system_tools.rs#L1641) | receiver-type-required |
+| `parse_artifacts` | `BTreeSet::new` | [1644](../../src/system_tools.rs#L1644) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `item.as_object().ok_or_else` | [1646](../../src/system_tools.rs#L1646) | receiver-type-required |
+| `parse_artifacts` | `item.as_object` | [1646](../../src/system_tools.rs#L1646) | receiver-type-required |
+| `parse_artifacts` | `"artifact output must be an object".to_owned` | [1647](../../src/system_tools.rs#L1647) | receiver-type-required |
+| `parse_artifacts` | `object.len` | [1649](../../src/system_tools.rs#L1649) | receiver-type-required |
+| `parse_artifacts` | `object.contains_key` | [1649](../../src/system_tools.rs#L1649) | receiver-type-required |
+| `parse_artifacts` | `"artifact output must contain only path".to_owned` | [1651](../../src/system_tools.rs#L1651) | receiver-type-required |
+| `parse_artifacts` | `object["path"]             .as_str()             .filter(&#124;value&#124; !value.is_empty())             .ok_or_else` | [1654](../../src/system_tools.rs#L1654) | receiver-type-required |
+| `parse_artifacts` | `object["path"]             .as_str()             .filter` | [1654](../../src/system_tools.rs#L1654) | receiver-type-required |
+| `parse_artifacts` | `object["path"]             .as_str` | [1654](../../src/system_tools.rs#L1654) | receiver-type-required |
+| `parse_artifacts` | `value.is_empty` | [1656](../../src/system_tools.rs#L1656) | receiver-type-required |
+| `parse_artifacts` | `"artifact path must be nonempty".to_owned` | [1657](../../src/system_tools.rs#L1657) | receiver-type-required |
+| `parse_artifacts` | `Path::new(path).is_absolute` | [1658](../../src/system_tools.rs#L1658) | receiver-type-required |
+| `parse_artifacts` | `Path::new` | [1658](../../src/system_tools.rs#L1658) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `path.split('/').any` | [1659](../../src/system_tools.rs#L1659) | receiver-type-required |
+| `parse_artifacts` | `path.split` | [1659](../../src/system_tools.rs#L1659) | receiver-type-required |
+| `parse_artifacts` | `path.to_ascii_lowercase().starts_with` | [1660](../../src/system_tools.rs#L1660) | receiver-type-required |
+| `parse_artifacts` | `path.to_ascii_lowercase` | [1660](../../src/system_tools.rs#L1660) | receiver-type-required |
+| `parse_artifacts` | `BackendFailure::Denied` | [1662](../../src/system_tools.rs#L1662) | external-constructor-callback-or-unresolved |
+| `parse_artifacts` | `seen.insert` | [1666](../../src/system_tools.rs#L1666) | receiver-type-required |
+| `parse_artifacts` | `path.to_owned` | [1666](../../src/system_tools.rs#L1666) | receiver-type-required |
+| `parse_artifacts` | `seen.into_iter().collect` | [1672](../../src/system_tools.rs#L1672) | receiver-type-required |
+| `parse_artifacts` | `seen.into_iter` | [1672](../../src/system_tools.rs#L1672) | receiver-type-required |
+| `normalized_relative` | `Vec::new` | [1676](../../src/system_tools.rs#L1676) | external-constructor-callback-or-unresolved |
+| `normalized_relative` | `path.components` | [1677](../../src/system_tools.rs#L1677) | receiver-type-required |
+| `normalized_relative` | `parts.push` | [1679](../../src/system_tools.rs#L1679) | receiver-type-required |
+| `normalized_relative` | `value.to_string_lossy().into_owned` | [1679](../../src/system_tools.rs#L1679) | receiver-type-required |
+| `normalized_relative` | `value.to_string_lossy` | [1679](../../src/system_tools.rs#L1679) | receiver-type-required |
+| `normalized_relative` | `Err` | [1682](../../src/system_tools.rs#L1682) | external-constructor-callback-or-unresolved |
+| `normalized_relative` | `BackendFailure::Denied` | [1682](../../src/system_tools.rs#L1682) | external-constructor-callback-or-unresolved |
+| `normalized_relative` | `"path escapes its helper root".to_owned` | [1683](../../src/system_tools.rs#L1683) | receiver-type-required |
+| `normalized_relative` | `Ok` | [1688](../../src/system_tools.rs#L1688) | external-constructor-callback-or-unresolved |
+| `normalized_relative` | `parts.join` | [1688](../../src/system_tools.rs#L1688) | receiver-type-required |
+| `exec_json` | `value.stdout.decode().map_err` | [1692](../../src/system_tools.rs#L1692) | receiver-type-required |
+| `exec_json` | `value.stdout.decode` | [1692](../../src/system_tools.rs#L1692) | receiver-type-required |
+| `exec_json` | `value.stderr.decode().map_err` | [1693](../../src/system_tools.rs#L1693) | receiver-type-required |
+| `exec_json` | `value.stderr.decode` | [1693](../../src/system_tools.rs#L1693) | receiver-type-required |
+| `exec_json` | `Ok` | [1694](../../src/system_tools.rs#L1694) | external-constructor-callback-or-unresolved |
+| `retype` | `BackendOutcome::Completed` | [1707](../../src/system_tools.rs#L1707), [1709](../../src/system_tools.rs#L1709) | external-constructor-callback-or-unresolved |
+| `retype` | `Err` | [1707](../../src/system_tools.rs#L1707), [1709](../../src/system_tools.rs#L1709) | external-constructor-callback-or-unresolved |
+| `retype` | `BackendFailure::Protocol` | [1707](../../src/system_tools.rs#L1707) | external-constructor-callback-or-unresolved |
+| `retype` | `message.to_owned` | [1707](../../src/system_tools.rs#L1707) | receiver-type-required |
+| `retype` | `BackendOutcome::Hold` | [1710](../../src/system_tools.rs#L1710) | external-constructor-callback-or-unresolved |
+| `retype` | `BackendOutcome::Unavailable` | [1711](../../src/system_tools.rs#L1711) | external-constructor-callback-or-unresolved |
+| `invalid_outcome` | `BackendOutcome::Completed` | [1716](../../src/system_tools.rs#L1716) | external-constructor-callback-or-unresolved |
+| `invalid_outcome` | `Err` | [1716](../../src/system_tools.rs#L1716) | external-constructor-callback-or-unresolved |
+| `invalid_outcome` | `BackendFailure::Invalid` | [1716](../../src/system_tools.rs#L1716) | external-constructor-callback-or-unresolved |
+| `invalid_outcome` | `message.to_owned` | [1716](../../src/system_tools.rs#L1716) | receiver-type-required |
+| `truncate_utf8` | `value.len` | [1720](../../src/system_tools.rs#L1720) | receiver-type-required |
+| `truncate_utf8` | `value.is_char_boundary` | [1724](../../src/system_tools.rs#L1724) | receiver-type-required |
+| `create` | `detected_newline` | [1740](../../src/system_tools.rs#L1740) | [engine::system_tools::detected_newline](../../src/system_tools.rs#L1967) |
+| `create` | `normalized_lines` | [1741](../../src/system_tools.rs#L1741) | [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1956) |
+| `create` | `Vec::with_capacity` | [1742](../../src/system_tools.rs#L1742) | external-constructor-callback-or-unresolved |
+| `create` | `lines.len` | [1742](../../src/system_tools.rs#L1742) | receiver-type-required |
+| `create` | `lines.drain` | [1743](../../src/system_tools.rs#L1743) | receiver-type-required |
+| `create` | `line.strip_prefix` | [1744](../../src/system_tools.rs#L1744) | receiver-type-required |
+| `create` | `Err` | [1745](../../src/system_tools.rs#L1745) | external-constructor-callback-or-unresolved |
+| `create` | `BackendFailure::Invalid` | [1745](../../src/system_tools.rs#L1745) | external-constructor-callback-or-unresolved |
+| `create` | `"create_file expects only content lines prefixed with '+' (for example +hello); omit ---/+++ file headers and @@ hunks".to_owned` | [1746](../../src/system_tools.rs#L1746) | receiver-type-required |
+| `create` | `output.push` | [1749](../../src/system_tools.rs#L1749) | receiver-type-required |
+| `create` | `content.to_owned` | [1749](../../src/system_tools.rs#L1749) | receiver-type-required |
+| `create` | `output.join` | [1751](../../src/system_tools.rs#L1751) | receiver-type-required |
+| `create` | `Ok` | [1752](../../src/system_tools.rs#L1752) | external-constructor-callback-or-unresolved |
+| `create` | `logical_lines` | [1753](../../src/system_tools.rs#L1753) | [engine::system_tools::logical_lines](../../src/system_tools.rs#L1980) |
+| `update` | `input.contains` | [1761](../../src/system_tools.rs#L1761) | receiver-type-required |
+| `update` | `detected_newline` | [1762](../../src/system_tools.rs#L1762), [1764](../../src/system_tools.rs#L1764) | [engine::system_tools::detected_newline](../../src/system_tools.rs#L1967) |
+| `update` | `input.replace` | [1766](../../src/system_tools.rs#L1766) | receiver-type-required |
+| `update` | `normalized.is_empty` | [1767](../../src/system_tools.rs#L1767) | receiver-type-required |
+| `update` | `Vec::new` | [1768](../../src/system_tools.rs#L1768), [1778](../../src/system_tools.rs#L1778), [1803](../../src/system_tools.rs#L1803), [1804](../../src/system_tools.rs#L1804), [1865](../../src/system_tools.rs#L1865) | external-constructor-callback-or-unresolved |
+| `update` | `normalized.split('\n').map(ToOwned::to_owned).collect` | [1770](../../src/system_tools.rs#L1770) | receiver-type-required |
+| `update` | `normalized.split('\n').map` | [1770](../../src/system_tools.rs#L1770) | receiver-type-required |
+| `update` | `normalized.split` | [1770](../../src/system_tools.rs#L1770) | receiver-type-required |
+| `update` | `normalized_lines` | [1772](../../src/system_tools.rs#L1772) | [engine::system_tools::normalized_lines](../../src/system_tools.rs#L1956) |
+| `update` | `lines.is_empty` | [1773](../../src/system_tools.rs#L1773) | receiver-type-required |
+| `update` | `Err` | [1774](../../src/system_tools.rs#L1774), [1786](../../src/system_tools.rs#L1786), [1798](../../src/system_tools.rs#L1798), [1813](../../src/system_tools.rs#L1813), [1837](../../src/system_tools.rs#L1837), [1845](../../src/system_tools.rs#L1845), [1855](../../src/system_tools.rs#L1855), [1861](../../src/system_tools.rs#L1861), [1869](../../src/system_tools.rs#L1869) | external-constructor-callback-or-unresolved |
+| `update` | `BackendFailure::Invalid` | [1774](../../src/system_tools.rs#L1774), [1786](../../src/system_tools.rs#L1786), [1798](../../src/system_tools.rs#L1798), [1813](../../src/system_tools.rs#L1813), [1837](../../src/system_tools.rs#L1837), [1845](../../src/system_tools.rs#L1845), [1855](../../src/system_tools.rs#L1855), [1861](../../src/system_tools.rs#L1861), [1869](../../src/system_tools.rs#L1869) | external-constructor-callback-or-unresolved |
+| `update` | `"update_file diff must contain a hunk".to_owned` | [1775](../../src/system_tools.rs#L1775) | receiver-type-required |
+| `update` | `lines.len` | [1784](../../src/system_tools.rs#L1784), [1806](../../src/system_tools.rs#L1806), [1854](../../src/system_tools.rs#L1854) | receiver-type-required |
+| `update` | `forbidden_boundary` | [1785](../../src/system_tools.rs#L1785), [1812](../../src/system_tools.rs#L1812) | [engine::system_tools::forbidden_boundary](../../src/system_tools.rs#L1974) |
+| `update` | `"diff must be V4A patch body only".to_owned` | [1787](../../src/system_tools.rs#L1787) | receiver-type-required |
+| `update` | `lines[index].strip_prefix` | [1790](../../src/system_tools.rs#L1790) | receiver-type-required |
+| `update` | `find_anchor` | [1791](../../src/system_tools.rs#L1791) | [engine::system_tools::find_anchor](../../src/system_tools.rs#L1887) |
+| `update` | `"each patch section after the first must start with '@@'".to_owned` | [1799](../../src/system_tools.rs#L1799) | receiver-type-required |
+| `update` | `lines[index].starts_with` | [1806](../../src/system_tools.rs#L1806), [1812](../../src/system_tools.rs#L1812) | receiver-type-required |
+| `update` | `"invalid V4A patch boundary".to_owned` | [1814](../../src/system_tools.rs#L1814) | receiver-type-required |
+| `update` | `lines[index].is_empty` | [1817](../../src/system_tools.rs#L1817) | receiver-type-required |
+| `update` | `raw.split_at` | [1822](../../src/system_tools.rs#L1822) | receiver-type-required |
+| `update` | `old.push` | [1825](../../src/system_tools.rs#L1825), [1829](../../src/system_tools.rs#L1829) | receiver-type-required |
+| `update` | `content.to_owned` | [1825](../../src/system_tools.rs#L1825), [1826](../../src/system_tools.rs#L1826), [1829](../../src/system_tools.rs#L1829), [1833](../../src/system_tools.rs#L1833) | receiver-type-required |
+| `update` | `new.push` | [1826](../../src/system_tools.rs#L1826), [1833](../../src/system_tools.rs#L1833) | receiver-type-required |
+| `update` | `"patch lines must start with space, '+', or '-'".to_owned` | [1838](../../src/system_tools.rs#L1838) | receiver-type-required |
+| `update` | `"update hunk is empty".to_owned` | [1845](../../src/system_tools.rs#L1845) | receiver-type-required |
+| `update` | `find_context(&input_lines, &old, search_from, eof)                 .ok_or_else` | [1847](../../src/system_tools.rs#L1847) | receiver-type-required |
+| `update` | `find_context` | [1847](../../src/system_tools.rs#L1847) | [engine::system_tools::find_context](../../src/system_tools.rs#L1909) |
+| `update` | `BackendFailure::Conflict` | [1849](../../src/system_tools.rs#L1849) | external-constructor-callback-or-unresolved |
+| `update` | `"patch context did not match current file".to_owned` | [1849](../../src/system_tools.rs#L1849) | receiver-type-required |
+| `update` | `old.len` | [1852](../../src/system_tools.rs#L1852), [1853](../../src/system_tools.rs#L1853) | receiver-type-required |
+| `update` | `replacements.push` | [1853](../../src/system_tools.rs#L1853) | receiver-type-required |
+| `update` | `"End of File must terminate diff".to_owned` | [1856](../../src/system_tools.rs#L1856) | receiver-type-required |
+| `update` | `"patch contains no additions or deletions".to_owned` | [1862](../../src/system_tools.rs#L1862) | receiver-type-required |
+| `update` | `position.saturating_add` | [1868](../../src/system_tools.rs#L1868) | receiver-type-required |
+| `update` | `input_lines.len` | [1868](../../src/system_tools.rs#L1868) | receiver-type-required |
+| `update` | `"patch contains overlapping or out-of-range hunks".to_owned` | [1870](../../src/system_tools.rs#L1870) | receiver-type-required |
+| `update` | `destination.extend_from_slice` | [1873](../../src/system_tools.rs#L1873), [1877](../../src/system_tools.rs#L1877) | receiver-type-required |
+| `update` | `destination.extend` | [1874](../../src/system_tools.rs#L1874) | receiver-type-required |
+| `update` | `Ok` | [1878](../../src/system_tools.rs#L1878) | external-constructor-callback-or-unresolved |
+| `update` | `destination.join` | [1879](../../src/system_tools.rs#L1879) | receiver-type-required |
+| `find_anchor` | `lines         .iter()         .enumerate()         .skip(start)         .find_map` | [1892](../../src/system_tools.rs#L1892), [1901](../../src/system_tools.rs#L1901) | receiver-type-required |
+| `find_anchor` | `lines         .iter()         .enumerate()         .skip` | [1892](../../src/system_tools.rs#L1892), [1901](../../src/system_tools.rs#L1901) | receiver-type-required |
+| `find_anchor` | `lines         .iter()         .enumerate` | [1892](../../src/system_tools.rs#L1892), [1901](../../src/system_tools.rs#L1901) | receiver-type-required |
+| `find_anchor` | `lines         .iter` | [1892](../../src/system_tools.rs#L1892), [1901](../../src/system_tools.rs#L1901) | receiver-type-required |
+| `find_anchor` | `(line == anchor).then_some` | [1896](../../src/system_tools.rs#L1896) | receiver-type-required |
+| `find_anchor` | `Ok` | [1898](../../src/system_tools.rs#L1898) | external-constructor-callback-or-unresolved |
+| `find_anchor` | `anchor.trim_matches` | [1900](../../src/system_tools.rs#L1900) | receiver-type-required |
+| `find_anchor` | `lines         .iter()         .enumerate()         .skip(start)         .find_map(&#124;(index, line)&#124; (line.trim_matches([' ', '\t']) == trimmed).then_some((index, 1)))         .ok_or_else` | [1901](../../src/system_tools.rs#L1901) | receiver-type-required |
+| `find_anchor` | `(line.trim_matches([' ', '\t']) == trimmed).then_some` | [1905](../../src/system_tools.rs#L1905) | receiver-type-required |
+| `find_anchor` | `line.trim_matches` | [1905](../../src/system_tools.rs#L1905) | receiver-type-required |
+| `find_anchor` | `BackendFailure::Conflict` | [1906](../../src/system_tools.rs#L1906) | external-constructor-callback-or-unresolved |
+| `find_context` | `context.is_empty` | [1915](../../src/system_tools.rs#L1915) | receiver-type-required |
+| `find_context` | `Some` | [1916](../../src/system_tools.rs#L1916), [1945](../../src/system_tools.rs#L1945) | external-constructor-callback-or-unresolved |
+| `find_context` | `lines.len` | [1918](../../src/system_tools.rs#L1918), [1920](../../src/system_tools.rs#L1920), [1926](../../src/system_tools.rs#L1926), [1931](../../src/system_tools.rs#L1931) | receiver-type-required |
+| `find_context` | `start.min` | [1920](../../src/system_tools.rs#L1920) | receiver-type-required |
+| `find_context` | `lines.len().saturating_sub` | [1926](../../src/system_tools.rs#L1926), [1931](../../src/system_tools.rs#L1931) | receiver-type-required |
+| `find_context` | `context.len` | [1926](../../src/system_tools.rs#L1926), [1931](../../src/system_tools.rs#L1931), [1933](../../src/system_tools.rs#L1933) | receiver-type-required |
+| `find_context` | `lines[index..index + context.len()]                     .iter()                     .zip(context)                     .all` | [1933](../../src/system_tools.rs#L1933) | receiver-type-required |
+| `find_context` | `lines[index..index + context.len()]                     .iter()                     .zip` | [1933](../../src/system_tools.rs#L1933) | receiver-type-required |
+| `find_context` | `lines[index..index + context.len()]                     .iter` | [1933](../../src/system_tools.rs#L1933) | receiver-type-required |
+| `find_context` | `left.trim_end_matches` | [1939](../../src/system_tools.rs#L1939) | receiver-type-required |
+| `find_context` | `right.trim_end_matches` | [1940](../../src/system_tools.rs#L1940) | receiver-type-required |
+| `find_context` | `left.trim_matches` | [1942](../../src/system_tools.rs#L1942) | receiver-type-required |
+| `find_context` | `right.trim_matches` | [1942](../../src/system_tools.rs#L1942) | receiver-type-required |
+| `find_context` | `find_context(lines, context, start, false).map` | [1950](../../src/system_tools.rs#L1950) | receiver-type-required |
+| `find_context` | `find_context` | [1950](../../src/system_tools.rs#L1950) | [engine::system_tools::find_context](../../src/system_tools.rs#L1909) |
+| `normalized_lines` | `text         .split('\n')         .map(&#124;line&#124; line.strip_suffix('\r').unwrap_or(line).to_owned())         .collect` | [1957](../../src/system_tools.rs#L1957) | receiver-type-required |
+| `normalized_lines` | `text         .split('\n')         .map` | [1957](../../src/system_tools.rs#L1957) | receiver-type-required |
+| `normalized_lines` | `text         .split` | [1957](../../src/system_tools.rs#L1957) | receiver-type-required |
+| `normalized_lines` | `line.strip_suffix('\r').unwrap_or(line).to_owned` | [1959](../../src/system_tools.rs#L1959) | receiver-type-required |
+| `normalized_lines` | `line.strip_suffix('\r').unwrap_or` | [1959](../../src/system_tools.rs#L1959) | receiver-type-required |
+| `normalized_lines` | `line.strip_suffix` | [1959](../../src/system_tools.rs#L1959) | receiver-type-required |
+| `normalized_lines` | `lines.last().is_some_and` | [1961](../../src/system_tools.rs#L1961) | receiver-type-required |
+| `normalized_lines` | `lines.last` | [1961](../../src/system_tools.rs#L1961) | receiver-type-required |
+| `normalized_lines` | `lines.pop` | [1962](../../src/system_tools.rs#L1962) | receiver-type-required |
+| `detected_newline` | `text.as_bytes().windows(2).any` | [1968](../../src/system_tools.rs#L1968) | receiver-type-required |
+| `detected_newline` | `text.as_bytes().windows` | [1968](../../src/system_tools.rs#L1968) | receiver-type-required |
+| `detected_newline` | `text.as_bytes` | [1968](../../src/system_tools.rs#L1968) | receiver-type-required |
+| `forbidden_boundary` | `line.starts_with` | [1976](../../src/system_tools.rs#L1976), [1977](../../src/system_tools.rs#L1977), [1978](../../src/system_tools.rs#L1978) | receiver-type-required |
+| `logical_lines` | `text.is_empty` | [1981](../../src/system_tools.rs#L1981) | receiver-type-required |
+| `logical_lines` | `text.bytes().filter(&#124;byte&#124; *byte == b'\n').count` | [1984](../../src/system_tools.rs#L1984) | receiver-type-required |
+| `logical_lines` | `text.bytes().filter` | [1984](../../src/system_tools.rs#L1984) | receiver-type-required |
+| `logical_lines` | `text.bytes` | [1984](../../src/system_tools.rs#L1984) | receiver-type-required |
+| `logical_lines` | `usize::from` | [1984](../../src/system_tools.rs#L1984) | external-constructor-callback-or-unresolved |
+| `logical_lines` | `text.ends_with` | [1984](../../src/system_tools.rs#L1984) | receiver-type-required |

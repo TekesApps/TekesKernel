@@ -306,7 +306,7 @@ impl<T: McpTransport> McpClient<T> {
         }
         let params = value(json!({
             "protocolVersion": crate::LEGACY_PROTOCOL_VERSION,
-            "capabilities": {},
+            "capabilities": client_capabilities(),
             "clientInfo": {"name":"TekesKernel","version":env!("CARGO_PKG_VERSION")}
         }))?;
         let result: InitializeResult = self
@@ -532,7 +532,7 @@ impl<T: McpTransport> McpClient<T> {
         );
         metadata.insert(
             "io.modelcontextprotocol/clientCapabilities".to_owned(),
-            json!({}),
+            client_capabilities(),
         );
         Ok(Some(value(json_value)?))
     }
@@ -651,6 +651,7 @@ impl<T: McpTransport> McpClient<T> {
             "requestState": to_json(continuation.request_state)?,
             "inputResponses": to_json(continuation.input_responses)?
         }))?;
+        let tasks = self.capabilities.supports_tasks();
         self.call_raw_cancellable(
             "tools/call",
             Some(params),
@@ -658,6 +659,7 @@ impl<T: McpTransport> McpClient<T> {
             &cancellation,
         )
         .await
+        .and_then(|result| adopt_task_creation(result, tasks))
         .map_err(tool_mutation_error)
     }
 
@@ -673,7 +675,11 @@ impl<T: McpTransport> McpClient<T> {
     ) -> Result<IJsonValue, McpError> {
         let mut task = to_json(raw)?;
         adopt_official_task_shape(&mut task);
-        let needs_result = task["status"] == "completed" && !task["result"].is_object();
+        // `tasks/result` exists only in SEP-1686; the tasks extension returns the
+        // payload inline, so a bare completed poll from an extension-only peer
+        // stays invalid instead of triggering a method that peer lacks.
+        let needs_result =
+            self.capabilities.tasks && task["status"] == "completed" && !task["result"].is_object();
         if needs_result {
             let task_id = task["taskId"]
                 .as_str()
@@ -789,6 +795,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
             Ok(prepared) => prepared,
             Err(error) => return Some(Box::pin(async move { Err(error) })),
         };
+        let tasks = self.capabilities.supports_tasks();
         let generation = self.catalog_generation.clone();
         let observer = std::sync::Arc::new(move |method: &str| {
             if matches!(
@@ -819,7 +826,10 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 }
             })?;
             response.validate_for(id).map_err(tool_mutation_error)?;
-            response.into_result().map_err(tool_mutation_error)
+            response
+                .into_result()
+                .and_then(|result| adopt_task_creation(result, tasks))
+                .map_err(tool_mutation_error)
         }))
     }
 
@@ -941,6 +951,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 return Err(McpError::Unsupported("tools".to_owned()));
             }
             let params = value(json!({"name":name,"arguments":to_json(arguments)?}))?;
+            let tasks = self.capabilities.supports_tasks();
             self.call_raw_cancellable(
                 "tools/call",
                 Some(params),
@@ -948,6 +959,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 &cancellation,
             )
             .await
+            .and_then(|result| adopt_task_creation(result, tasks))
             .map_err(tool_mutation_error)
         })
     }
@@ -987,6 +999,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 "arguments":to_json(arguments)?,
                 "_meta":{"io.tekes/idempotencyKey":context.idempotency_key}
             }))?;
+            let tasks = self.capabilities.supports_tasks();
             self.call_raw_cancellable(
                 "tools/call",
                 Some(params),
@@ -994,6 +1007,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 &cancellation,
             )
             .await
+            .and_then(|result| adopt_task_creation(result, tasks))
             .map_err(tool_mutation_error)
         })
     }
@@ -1022,8 +1036,13 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
             if cancellation.is_cancelled() {
                 return Err(McpError::Cancelled);
             }
-            let mut params =
-                json!({"name":name,"arguments":to_json(arguments)?,"task":{"ttl":task_ttl_ms}});
+            let mut params = json!({"name":name,"arguments":to_json(arguments)?});
+            // `task: {ttl}` is SEP-1686 request-side augmentation. A peer that
+            // only advertises the tasks extension decides on its own, and the
+            // declared handshake capability is the whole trigger for it.
+            if self.capabilities.tasks {
+                params["task"] = json!({"ttl":task_ttl_ms});
+            }
             if let Some(context) = context {
                 if context.idempotency_key.len() != 64
                     || !context
@@ -1038,6 +1057,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 }
                 params["_meta"] = json!({"io.tekes/idempotencyKey":context.idempotency_key});
             }
+            let tasks = self.capabilities.supports_tasks();
             let mut created = to_json(
                 self.call_raw_cancellable(
                     "tools/call",
@@ -1046,6 +1066,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                     &cancellation,
                 )
                 .await
+                .and_then(|result| adopt_task_creation(result, tasks))
                 .map_err(tool_mutation_error)?,
             )?;
             if let Some(task) = created.get_mut("task") {
@@ -1179,33 +1200,33 @@ fn page<T: DeserializeOwned>(value: IJsonValue, key: &str) -> Result<Page<T>, Mc
         .map(serde_json::from_value)
         .transpose()
         .map_err(|error| McpError::Protocol(error.to_string()))?;
-    if let Some(result_type) = object.remove("resultType") {
-        if result_type.as_str() != Some("complete") {
-            return Err(McpError::Protocol(
-                "modern catalog page is not complete".to_owned(),
-            ));
-        }
+    if let Some(result_type) = object.remove("resultType")
+        && result_type.as_str() != Some("complete")
+    {
+        return Err(McpError::Protocol(
+            "modern catalog page is not complete".to_owned(),
+        ));
     }
-    if let Some(ttl) = object.remove("ttlMs") {
-        if ttl.as_u64().is_none() {
-            return Err(McpError::Protocol(
-                "modern catalog ttlMs is invalid".to_owned(),
-            ));
-        }
+    if let Some(ttl) = object.remove("ttlMs")
+        && ttl.as_u64().is_none()
+    {
+        return Err(McpError::Protocol(
+            "modern catalog ttlMs is invalid".to_owned(),
+        ));
     }
-    if let Some(scope) = object.remove("cacheScope") {
-        if !matches!(scope.as_str(), Some("private" | "public" | "none")) {
-            return Err(McpError::Protocol(
-                "modern catalog cacheScope is invalid".to_owned(),
-            ));
-        }
+    if let Some(scope) = object.remove("cacheScope")
+        && !matches!(scope.as_str(), Some("private" | "public" | "none"))
+    {
+        return Err(McpError::Protocol(
+            "modern catalog cacheScope is invalid".to_owned(),
+        ));
     }
-    if let Some(metadata) = object.remove("_meta") {
-        if !metadata.is_object() {
-            return Err(McpError::Protocol(
-                "catalog _meta must be an object".to_owned(),
-            ));
-        }
+    if let Some(metadata) = object.remove("_meta")
+        && !metadata.is_object()
+    {
+        return Err(McpError::Protocol(
+            "catalog _meta must be an object".to_owned(),
+        ));
     }
     if !object.is_empty() {
         return Err(McpError::Protocol(
@@ -1215,19 +1236,59 @@ fn page<T: DeserializeOwned>(value: IJsonValue, key: &str) -> Result<Page<T>, Mc
     Ok(Page { items, next_cursor })
 }
 
+/// The client capabilities every handshake declares. The Kernel installs the
+/// durable task continuation handler for MCP tool calls, so it declares the tasks
+/// extension (SEP-2663); a server must not create a task without it.
+fn client_capabilities() -> serde_json::Value {
+    json!({"extensions": {crate::TASKS_EXTENSION: {}}})
+}
+
+/// A tasks-extension `tools/call` result (`resultType:"task"` with the flat task
+/// object at the top level) becomes the Kernel creation shape `{"task":{...}}`
+/// that SEP-1686 peers already produce, so the supervisor binds one vocabulary.
+/// Any other result is returned untouched. A task from a peer that advertised no
+/// task capability, or a result that mixes both shapes, is a protocol violation.
+fn adopt_task_creation(result: IJsonValue, tasks_advertised: bool) -> Result<IJsonValue, McpError> {
+    let mut raw =
+        serde_json::to_value(&result).map_err(|error| McpError::Protocol(error.to_string()))?;
+    if raw.get("resultType").and_then(serde_json::Value::as_str) != Some("task") {
+        return Ok(result);
+    }
+    if !tasks_advertised {
+        return Err(McpError::Protocol(
+            "MCP task result from a peer that advertised no task capability".to_owned(),
+        ));
+    }
+    if raw.get("task").is_some() {
+        return Err(McpError::Protocol(
+            "MCP task result mixes the flat and nested task shapes".to_owned(),
+        ));
+    }
+    adopt_official_task_shape(&mut raw);
+    value(json!({ "task": raw }))
+}
+
 /// Official SEP-1686 task shapes (protocol 2025-11-25, the shipped SDKs) map
 /// onto the Kernel task vocabulary: `pollInterval` → `pollIntervalMs` and
-/// `ttl` → `ttlMs`. Kernel keys win when both are present; nothing else is
-/// rewritten, so a peer that already speaks the Kernel shape is untouched.
+/// `ttl` → `ttlMs`. Kernel keys win when both are present. The tasks extension
+/// already uses the Kernel keys; its `resultType` discriminator is dropped.
+/// Nothing else is rewritten, so a peer that already speaks the Kernel shape is
+/// untouched.
 fn adopt_official_task_shape(task: &mut serde_json::Value) {
     let Some(object) = task.as_object_mut() else {
         return;
     };
+    if matches!(
+        object.get("resultType").and_then(serde_json::Value::as_str),
+        Some("task" | "complete")
+    ) {
+        object.remove("resultType");
+    }
     for (official, kernel) in [("pollInterval", "pollIntervalMs"), ("ttl", "ttlMs")] {
-        if !object.contains_key(kernel) {
-            if let Some(value) = object.get(official).cloned() {
-                object.insert(kernel.to_owned(), value);
-            }
+        if !object.contains_key(kernel)
+            && let Some(value) = object.get(official).cloned()
+        {
+            object.insert(kernel.to_owned(), value);
         }
     }
 }

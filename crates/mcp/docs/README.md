@@ -40,8 +40,17 @@ interval, then completed).
 The client adopts the official SEP-1686 task shape (protocol 2025-11-25:
 `ttl`, `pollInterval`, status-only `tasks/get`, payload via `tasks/result`)
 into the Kernel vocabulary (`ttlMs`, `pollIntervalMs`, inline `result`) on
-every task object it returns, so supervisor and worker see one shape. The
-public-tunnel gates against the official TypeScript SDK live in
+every task object it returns, so supervisor and worker see one shape.
+
+The client also speaks the tasks extension (SEP-2663) that the official Rust SDK
+`rmcp` 3.x implements. Every handshake declares
+`extensions["io.modelcontextprotocol/tasks"]`; a flat `resultType:"task"`
+`tools/call` result is rewritten to the same `{"task":{...}}` creation shape, the
+flat `tasks/get` payload (inline `result`/`error`/`inputRequests`) needs no
+`tasks/result`, and a peer that advertises only the extension never receives a
+`task` request member. `tests/tasks_extension.rs` replays
+`fixtures/mcp-runtime/tasks-extension-*.jsonl`; `tests/rmcp_interop.rs` drives a
+real `rmcp` 3.5.1 stdio server (legacy and modern protocol). The public-tunnel gates against the official TypeScript SDK live in
 `tests/live_official_sdk_tunnel.rs` (`scripts/run-live-mcp-official-sdk.py`,
 `scripts/mcp-official-sdk`).
 

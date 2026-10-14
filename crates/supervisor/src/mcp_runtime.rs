@@ -1916,12 +1916,11 @@ pub(crate) fn current_operating_system_version() -> String {
     if let Ok(output) = std::process::Command::new("/usr/bin/sw_vers")
         .arg("-productVersion")
         .output()
+        && output.status.success()
     {
-        if output.status.success() {
-            let value = String::from_utf8_lossy(&output.stdout).trim().to_owned();
-            if !value.is_empty() {
-                return value;
-            }
+        let value = String::from_utf8_lossy(&output.stdout).trim().to_owned();
+        if !value.is_empty() {
+            return value;
         }
     }
     "0".to_owned()
@@ -2343,10 +2342,11 @@ impl DynamicSupervisorAuthority for McpDynamicSupervisorAuthority {
         terminal_tool_value(raw)
     }
 
-    /// `tools/call` whose result is a task (the MCP tasks extension's
-    /// `CreateTaskResult`) binds a durable continuation instead of returning a
-    /// value: the worker will drive it through `continue_task`. Any other
-    /// result keeps the synchronous mapping.
+    /// `tools/call` whose result is a task binds a durable continuation instead
+    /// of returning a value: the worker will drive it through `continue_task`.
+    /// The peer already maps both dialects (SEP-1686 `{"task":...}` and the
+    /// tasks extension's flat `resultType:"task"`) onto the `task` member read
+    /// here. Any other result keeps the synchronous mapping.
     fn execute_outcome(
         &self,
         tool: &DynamicTool,
@@ -4966,6 +4966,178 @@ done
             "the initial side effect ran exactly once"
         );
         assert_eq!(cancels.load(Ordering::Acquire), 0);
+        drop(authority);
+        drop(broker);
+    }
+    /// A server that speaks only the tasks extension (the official Rust SDK
+    /// `rmcp` 3.x): no top-level `tasks`, no `execution.taskSupport`, no
+    /// `tasks/result`. The handshake declares the extension, `tools/call`
+    /// carries no `task` member, the flat `resultType:"task"` answer binds a
+    /// durable continuation, and polling completes with the inline result.
+    #[test]
+    fn extension_task_result_binds_continuation_through_a_real_client() {
+        let root = tempfile::tempdir().expect("root");
+        let log = root.path().join("calls.jsonl");
+        let script = r#"
+import sys,json
+polls=0
+task={'taskId':'task-ext','createdAt':'2026-10-14T00:00:00Z','lastUpdatedAt':'2026-10-14T00:00:00Z','ttlMs':300000,'pollIntervalMs':50}
+for line in sys.stdin:
+ r=json.loads(line)
+ if 'id' not in r: continue
+ method=r['method']
+ with open(sys.argv[1],'a') as f: f.write(method+'\n')
+ if method=='initialize':
+  assert r['params']['capabilities']=={'extensions':{'io.modelcontextprotocol/tasks':{}}}, r
+  result={'protocolVersion':'2025-11-25','capabilities':{'extensions':{'io.modelcontextprotocol/tasks':{}},'tools':{}},'serverInfo':{'name':'rmcp-like','version':'1'}}
+ elif method=='tools/call':
+  assert 'task' not in r['params'], r
+  result=dict(task,status='working',resultType='task')
+ elif method=='tasks/get':
+  assert r['params']['taskId']=='task-ext'
+  polls+=1
+  result=dict(task,resultType='complete',status='working' if polls==1 else 'completed')
+  if polls>1: result['result']={'content':[{'type':'text','text':'extension done'}],'isError':False}
+ else: raise AssertionError(method)
+ print(json.dumps({'jsonrpc':'2.0','id':r['id'],'result':result}),flush=True)
+"#;
+        let transport = mcp::StdioTransport::spawn(
+            &[
+                "/usr/bin/python3".into(),
+                "-u".into(),
+                "-c".into(),
+                script.into(),
+                log.to_string_lossy().into_owned(),
+            ],
+            None,
+            &BTreeMap::new(),
+        )
+        .expect("spawn extension-only server");
+        let mut client = mcp::McpClient::new("rotation", transport);
+        tokio::runtime::Builder::new_current_thread()
+            .enable_all()
+            .build()
+            .expect("runtime")
+            .block_on(client.connect(ProtocolMode::Legacy))
+            .expect("legacy handshake");
+        let registry = McpRegistryStore::new(root.path());
+        let mut server = resource_test_server();
+        server.reference.name = "rotation".to_owned();
+        registry
+            .mutate_idempotent(
+                "save-extension",
+                &McpManagementMutation::Save {
+                    server: server.clone(),
+                    credential_fields: BTreeMap::new(),
+                },
+            )
+            .expect("publish server");
+        let key = McpPoolKey {
+            workspace: "ws".to_owned(),
+            scope: "user".to_owned(),
+            server: "rotation".to_owned(),
+            config_digest: "rotation-config".to_owned(),
+            authorization_identity: "anonymous".to_owned(),
+            protocol_mode: "legacy".to_owned(),
+            plugin_generation: None,
+        };
+        let broker = McpBroker::start().expect("broker");
+        let handle = broker.handle();
+        handle
+            .register(key.clone(), Box::new(client), false)
+            .expect("register peer");
+        let tool = cancellation_rotation_tool("mcp__rotation__ext_2frun", false);
+        // No execution declaration: the server cannot make one.
+        let contract = cancellation_route_contract("ext/run", None);
+        assert!(!contract.effect_tool.requires_task());
+        let routes = BTreeMap::from([(
+            tool.name.clone(),
+            McpRoute {
+                key: key.clone(),
+                remote_name: "ext/run".to_owned(),
+                credential_floors: Vec::new(),
+                server,
+                plugin_generation: None,
+                contract,
+            },
+        )]);
+        let authority = McpDynamicSupervisorAuthority::new(
+            handle,
+            routes,
+            SecretAccess::read_only(Arc::new(MemorySecretStore::new())),
+            registry,
+            None,
+        );
+        let request = ToolControl::new(
+            "018f0000-0000-7000-8000-000000000002",
+            "018f0000-0000-7000-8000-000000000002",
+            1,
+            "call-extension",
+            tool.name.clone(),
+            json_to_ijson(&json!({})).expect("arguments"),
+        )
+        .expect("request");
+        let continuation_root = root.path().join("continuations");
+        let DynamicExecutionOutcome::Pending {
+            continuation_id,
+            state,
+        } = authority
+            .execute_outcome(&tool, &request, &continuation_root)
+            .expect("initial execution")
+        else {
+            panic!("a flat task result must bind a continuation")
+        };
+        let state: Value = serde_json::from_slice(&state.canonical_bytes().unwrap()).unwrap();
+        assert_eq!(state["taskId"], "task-ext");
+        assert!(state.get("resultType").is_none(), "{state}");
+        assert_eq!(
+            continuation_identity(&request.request_id, "task-ext"),
+            continuation_id
+        );
+        let step = |n: u64| {
+            ToolContinuationRequest::new(
+                request.clone(),
+                continuation_id.clone(),
+                n,
+                ContinuationOperation::Query,
+            )
+            .expect("step request")
+        };
+        let first = authority
+            .continue_task(&tool, &step(1), &continuation_root)
+            .expect("first poll");
+        assert!(matches!(
+            &first.result,
+            ToolContinuationOutcome::Pending { next_step: 2, .. }
+        ));
+        let done = authority
+            .continue_task(&tool, &step(2), &continuation_root)
+            .expect("second poll");
+        let ToolContinuationOutcome::Completed { value } = &done.result else {
+            panic!("the completed poll yields the inline result")
+        };
+        let value: Value = serde_json::from_slice(&value.canonical_bytes().unwrap()).unwrap();
+        assert_eq!(value["content"][0]["text"], "extension done");
+        assert_eq!(
+            authority
+                .continue_task(&tool, &step(2), &continuation_root)
+                .expect("replay"),
+            done,
+            "a committed step replays its receipt"
+        );
+        let methods = fs::read_to_string(&log).expect("server log");
+        assert_eq!(
+            methods.lines().collect::<Vec<_>>(),
+            [
+                "initialize",
+                "tools/call",
+                // One tasks/get per query; the replay and the bare create add none,
+                // and there is no tasks/result.
+                "tasks/get",
+                "tasks/get",
+            ],
+            "{methods}"
+        );
         drop(authority);
         drop(broker);
     }

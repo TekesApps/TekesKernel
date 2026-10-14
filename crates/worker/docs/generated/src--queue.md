@@ -70,14 +70,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_queue_transaction` | `projection.origin_tuples.get` | [25](../../src/queue.rs#L25) | receiver-type-required |
 | `execute_queue_transaction` | `replacement_seq.is_some` | [27](../../src/queue.rs#L27) | receiver-type-required |
 | `execute_queue_transaction` | `retract_seq.is_none` | [27](../../src/queue.rs#L27), [36](../../src/queue.rs#L36) | receiver-type-required |
-| `execute_queue_transaction` | `Err` | [28](../../src/queue.rs#L28), [44](../../src/queue.rs#L44), [55](../../src/queue.rs#L55), [75](../../src/queue.rs#L75), [91](../../src/queue.rs#L91) | external-constructor-callback-or-unresolved |
+| `execute_queue_transaction` | `Err` | [28](../../src/queue.rs#L28), [44](../../src/queue.rs#L44), [55](../../src/queue.rs#L55), [75](../../src/queue.rs#L75), [92](../../src/queue.rs#L92) | external-constructor-callback-or-unresolved |
 | `execute_queue_transaction` | `StoreError::Corruption(             "queue transaction replacement exists without its retraction".to_owned(),         )         .into` | [28](../../src/queue.rs#L28) | receiver-type-required |
-| `execute_queue_transaction` | `StoreError::Corruption` | [28](../../src/queue.rs#L28), [44](../../src/queue.rs#L44), [55](../../src/queue.rs#L55), [75](../../src/queue.rs#L75), [91](../../src/queue.rs#L91) | external-constructor-callback-or-unresolved |
+| `execute_queue_transaction` | `StoreError::Corruption` | [28](../../src/queue.rs#L28), [44](../../src/queue.rs#L44), [55](../../src/queue.rs#L55), [75](../../src/queue.rs#L75), [92](../../src/queue.rs#L92) | external-constructor-callback-or-unresolved |
 | `execute_queue_transaction` | `"queue transaction replacement exists without its retraction".to_owned` | [29](../../src/queue.rs#L29) | receiver-type-required |
 | `execute_queue_transaction` | `queue_target` | [34](../../src/queue.rs#L34) | [tekes-worker::queue::queue_target](../../src/queue.rs#L172) |
-| `execute_queue_transaction` | `retract_seq.is_some` | [34](../../src/queue.rs#L34), [54](../../src/queue.rs#L54), [90](../../src/queue.rs#L90), [111](../../src/queue.rs#L111) | receiver-type-required |
-| `execute_queue_transaction` | `Ok` | [37](../../src/queue.rs#L37), [60](../../src/queue.rs#L60), [96](../../src/queue.rs#L96), [151](../../src/queue.rs#L151) | external-constructor-callback-or-unresolved |
-| `execute_queue_transaction` | `queue_rejected` | [37](../../src/queue.rs#L37), [60](../../src/queue.rs#L60), [96](../../src/queue.rs#L96) | [tekes-worker::queue::queue_rejected](../../src/queue.rs#L161) |
+| `execute_queue_transaction` | `retract_seq.is_some` | [34](../../src/queue.rs#L34), [54](../../src/queue.rs#L54), [91](../../src/queue.rs#L91), [111](../../src/queue.rs#L111) | receiver-type-required |
+| `execute_queue_transaction` | `Ok` | [37](../../src/queue.rs#L37), [60](../../src/queue.rs#L60), [97](../../src/queue.rs#L97), [151](../../src/queue.rs#L151) | external-constructor-callback-or-unresolved |
+| `execute_queue_transaction` | `queue_rejected` | [37](../../src/queue.rs#L37), [60](../../src/queue.rs#L60), [97](../../src/queue.rs#L97) | [tekes-worker::queue::queue_rejected](../../src/queue.rs#L161) |
 | `execute_queue_transaction` | `StoreError::Corruption(                 "durable queue retraction no longer has a validator-checkable target".to_owned(),             )             .into` | [44](../../src/queue.rs#L44) | receiver-type-required |
 | `execute_queue_transaction` | `"durable queue retraction no longer has a validator-checkable target".to_owned` | [45](../../src/queue.rs#L45) | receiver-type-required |
 | `execute_queue_transaction` | `queue_steer_window_open` | [52](../../src/queue.rs#L52) | [tekes-worker::queue::queue_steer_window_open](../../src/queue.rs#L266) |
@@ -85,7 +85,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_queue_transaction` | `"durable queue retraction belongs to an invalid steer transaction".to_owned` | [56](../../src/queue.rs#L56) | receiver-type-required |
 | `execute_queue_transaction` | `StoreError::Corruption(                     "queue edit steer bit does not match its target".to_owned(),                 )                 .into` | [75](../../src/queue.rs#L75) | receiver-type-required |
 | `execute_queue_transaction` | `"queue edit steer bit does not match its target".to_owned` | [76](../../src/queue.rs#L76) | receiver-type-required |
-| `execute_queue_transaction` | `Some` | [80](../../src/queue.rs#L80), [84](../../src/queue.rs#L84), [99](../../src/queue.rs#L99) | external-constructor-callback-or-unresolved |
+| `execute_queue_transaction` | `Some` | [80](../../src/queue.rs#L80), [84](../../src/queue.rs#L84), [100](../../src/queue.rs#L100) | external-constructor-callback-or-unresolved |
 | `execute_queue_transaction` | `content.clone` | [80](../../src/queue.rs#L80) | receiver-type-required |
 | `execute_queue_transaction` | `assets.clone` | [80](../../src/queue.rs#L80) | receiver-type-required |
 | `execute_queue_transaction` | `target.content.clone` | [84](../../src/queue.rs#L84) | receiver-type-required |
@@ -93,8 +93,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_queue_transaction` | `verify_queue_assets` | [89](../../src/queue.rs#L89) | [tekes-worker::queue::verify_queue_assets](../../src/queue.rs#L275) |
 | `execute_queue_transaction` | `assets.as_deref().unwrap_or_default` | [89](../../src/queue.rs#L89) | receiver-type-required |
 | `execute_queue_transaction` | `assets.as_deref` | [89](../../src/queue.rs#L89) | receiver-type-required |
-| `execute_queue_transaction` | `StoreError::Corruption(format!(                     "queue replacement asset became invalid after retraction: {error}"                 ))                 .into` | [91](../../src/queue.rs#L91) | receiver-type-required |
-| `execute_queue_transaction` | `"CORRUPT".to_owned` | [99](../../src/queue.rs#L99) | receiver-type-required |
+| `execute_queue_transaction` | `StoreError::Corruption(format!(                 "queue replacement asset became invalid after retraction: {error}"             ))             .into` | [92](../../src/queue.rs#L92) | receiver-type-required |
+| `execute_queue_transaction` | `"CORRUPT".to_owned` | [100](../../src/queue.rs#L100) | receiver-type-required |
 | `execute_queue_transaction` | `validate_existing_retraction` | [105](../../src/queue.rs#L105) | [tekes-worker::queue::validate_existing_retraction](../../src/queue.rs#L291) |
 | `execute_queue_transaction` | `replacement.as_ref` | [107](../../src/queue.rs#L107) | receiver-type-required |
 | `execute_queue_transaction` | `validate_existing_replacement` | [108](../../src/queue.rs#L108) | [tekes-worker::queue::validate_existing_replacement](../../src/queue.rs#L310) |

@@ -468,7 +468,7 @@ pub(crate) fn install_termination_handler() -> Result<(), DaemonError> {
     // lock-free process-global flag observed by the shutdown watcher.
     unsafe {
         let mut action = std::mem::zeroed::<libc::sigaction>();
-        action.sa_sigaction = request_termination as usize;
+        action.sa_sigaction = request_termination as *const () as usize;
         action.sa_flags = 0;
         libc::sigemptyset(&mut action.sa_mask);
         if libc::sigaction(libc::SIGTERM, &action, std::ptr::null_mut()) != 0 {

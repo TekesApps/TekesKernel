@@ -160,7 +160,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_tool_continuation` | `profile         .bindings         .dynamic_catalog         .tools         .iter()         .find(&#124;tool&#124; tool.name == name)         .is_none_or` | [230](../../src/continuation.rs#L230) | receiver-type-required |
 | `wait_tool_continuation` | `profile         .bindings         .dynamic_catalog         .tools         .iter()         .find` | [230](../../src/continuation.rs#L230) | receiver-type-required |
 | `wait_tool_continuation` | `profile         .bindings         .dynamic_catalog         .tools         .iter` | [230](../../src/continuation.rs#L230) | receiver-type-required |
-| `wait_tool_continuation` | `engine::dynamic_side_effectful` | [236](../../src/continuation.rs#L236) | [engine::dynamic_catalog::dynamic_side_effectful](../../../engine/src/dynamic_catalog.rs#L508) |
+| `wait_tool_continuation` | `engine::dynamic_side_effectful` | [236](../../src/continuation.rs#L236) | [engine::dynamic_catalog::dynamic_side_effectful](../../../engine/src/dynamic_catalog.rs#L506) |
 | `wait_tool_continuation` | `call.to_owned` | [239](../../src/continuation.rs#L239) | receiver-type-required |
 | `wait_tool_continuation` | `options.event_timestamp().clone` | [245](../../src/continuation.rs#L245) | receiver-type-required |
 | `wait_tool_continuation` | `options.event_timestamp` | [245](../../src/continuation.rs#L245) | receiver-type-required |

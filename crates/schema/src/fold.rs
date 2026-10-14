@@ -374,12 +374,12 @@ impl LedgerValidator {
         if let Some(version) = event.min_reader() {
             self.required_reader = self.required_reader.max(version);
         }
-        if matches!(event.kind(), EventKind::Meta) {
-            if let Some(upgrade) = object.get("upgrade").and_then(Value::as_object) {
-                self.required_reader =
-                    self.required_reader
-                        .max(value_u64(upgrade, "min_reader", event.seq())?);
-            }
+        if matches!(event.kind(), EventKind::Meta)
+            && let Some(upgrade) = object.get("upgrade").and_then(Value::as_object)
+        {
+            self.required_reader =
+                self.required_reader
+                    .max(value_u64(upgrade, "min_reader", event.seq())?);
         }
         if self.required_reader > self.reader_version {
             self.read_only = true;
@@ -464,14 +464,14 @@ impl LedgerValidator {
                 }
             }
             EventKind::TurnOpen => {
-                if let Some(inputs) = trigger_inputs(object, seq)? {
-                    if inputs.iter().any(|value| *value >= seq) {
-                        return Err(SchemaError::constraint(
-                            7,
-                            seq,
-                            "turn_open inputs must point backward",
-                        ));
-                    }
+                if let Some(inputs) = trigger_inputs(object, seq)?
+                    && inputs.iter().any(|value| *value >= seq)
+                {
+                    return Err(SchemaError::constraint(
+                        7,
+                        seq,
+                        "turn_open inputs must point backward",
+                    ));
                 }
             }
             _ => {}
@@ -493,14 +493,14 @@ impl LedgerValidator {
                     format!("turn_open must open turn {expected}"),
                 ));
             }
-            if let Some(previous) = self.latest_turn {
-                if !self.settled_turns.contains(&previous) {
-                    return Err(SchemaError::constraint(
-                        8,
-                        seq,
-                        "next turn opened before prior settle",
-                    ));
-                }
+            if let Some(previous) = self.latest_turn
+                && !self.settled_turns.contains(&previous)
+            {
+                return Err(SchemaError::constraint(
+                    8,
+                    seq,
+                    "next turn opened before prior settle",
+                ));
             }
             self.validate_turn_trigger(event)?;
             self.latest_turn = Some(turn);
@@ -809,15 +809,14 @@ impl LedgerValidator {
                     == Some("tool_continuation") =>
             {
                 if let Some(payload) = object.get("payload").and_then(serde_json::Value::as_object)
+                    && let Some(call) = payload.get("call").and_then(serde_json::Value::as_str)
                 {
-                    if let Some(call) = payload.get("call").and_then(serde_json::Value::as_str) {
-                        let poll_after = payload
-                            .get("poll_after")
-                            .and_then(serde_json::Value::as_str)
-                            .map(str::to_owned);
-                        self.continuations
-                            .insert(call.to_owned(), ContinuationFold { poll_after });
-                    }
+                    let poll_after = payload
+                        .get("poll_after")
+                        .and_then(serde_json::Value::as_str)
+                        .map(str::to_owned);
+                    self.continuations
+                        .insert(call.to_owned(), ContinuationFold { poll_after });
                 }
             }
             EventKind::ApprovalRequest => {
@@ -864,10 +863,10 @@ impl LedgerValidator {
                         "turn has multiple final settles",
                     ));
                 }
-                if let Some(stop) = self.latest_stop.as_mut() {
-                    if stop.closure_point.is_none() {
-                        stop.closure_point = Some(seq);
-                    }
+                if let Some(stop) = self.latest_stop.as_mut()
+                    && stop.closure_point.is_none()
+                {
+                    stop.closure_point = Some(seq);
                 }
                 self.reconcile_since_settle = 0;
             }

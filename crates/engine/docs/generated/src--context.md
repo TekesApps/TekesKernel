@@ -111,9 +111,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `compaction_anchor_sequences` | `seqs_from_ranges` | [23](../../src/context.rs#L23) | [engine::context::seqs_from_ranges](../../src/context.rs#L541) |
 | `compaction_anchor_sequences` | `row.get` | [23](../../src/context.rs#L23) | receiver-type-required |
 | `compaction_anchor_sequences` | `row["trigger"]["inputs"].as_array` | [25](../../src/context.rs#L25) | receiver-type-required |
-| `compaction_anchor_sequences` | `admitted_inputs.extend` | [26](../../src/context.rs#L26) | receiver-type-required |
-| `compaction_anchor_sequences` | `inputs.iter().filter_map` | [26](../../src/context.rs#L26) | receiver-type-required |
-| `compaction_anchor_sequences` | `inputs.iter` | [26](../../src/context.rs#L26) | receiver-type-required |
+| `compaction_anchor_sequences` | `admitted_inputs.extend` | [27](../../src/context.rs#L27) | receiver-type-required |
+| `compaction_anchor_sequences` | `inputs.iter().filter_map` | [27](../../src/context.rs#L27) | receiver-type-required |
+| `compaction_anchor_sequences` | `inputs.iter` | [27](../../src/context.rs#L27) | receiver-type-required |
 | `compaction_anchor_sequences` | `rows         .iter()         .filter` | [30](../../src/context.rs#L30) | receiver-type-required |
 | `compaction_anchor_sequences` | `rows         .iter` | [30](../../src/context.rs#L30) | receiver-type-required |
 | `compaction_anchor_sequences` | `superseded.contains` | [32](../../src/context.rs#L32) | receiver-type-required |
@@ -138,7 +138,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `compaction_anchor_sequences` | `live         .clone` | [70](../../src/context.rs#L70) | receiver-type-required |
 | `compaction_anchor_sequences` | `anchors.contains` | [72](../../src/context.rs#L72) | receiver-type-required |
 | `compaction_anchor_sequences` | `row["attempt"].as_str` | [74](../../src/context.rs#L74) | receiver-type-required |
-| `compaction_anchor_sequences` | `attempts.insert` | [75](../../src/context.rs#L75), [79](../../src/context.rs#L79) | receiver-type-required |
+| `compaction_anchor_sequences` | `attempts.insert` | [75](../../src/context.rs#L75), [80](../../src/context.rs#L80) | receiver-type-required |
 | `compaction_anchor_sequences` | `call["attempt"].as_str` | [78](../../src/context.rs#L78) | receiver-type-required |
 | `compaction_anchor_sequences` | `calls         .iter()         .filter_map(&#124;(id, row)&#124; {             row["attempt"]                 .as_str()                 .is_some_and(&#124;attempt&#124; attempts.contains(attempt))                 .then_some(*id)         })         .collect::<std::collections::BTreeSet<_>>` | [83](../../src/context.rs#L83) | receiver-type-required |
 | `compaction_anchor_sequences` | `calls         .iter()         .filter_map` | [83](../../src/context.rs#L83) | receiver-type-required |

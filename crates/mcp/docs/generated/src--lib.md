@@ -79,6 +79,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `McpToolContinuation` | `types::McpToolContinuation` | `pub` |
 | `McpToolExecution` | `types::McpToolExecution` | `pub` |
 | `ProtocolMode` | `types::ProtocolMode` | `pub` |
+| `TASKS_EXTENSION` | `types::TASKS_EXTENSION` | `pub` |
 | `TransportKind` | `types::TransportKind` | `pub` |
 | `McpBroker` | `broker::McpBroker` | `pub` |
 | `McpBrokerHandle` | `broker::McpBrokerHandle` | `pub` |

@@ -6,6 +6,40 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Changed
+- The pinned Rust toolchain moves from 1.85.1 to 1.95.0 (`rust-toolchain.toml`,
+  workspace `rust-version`). Behavior is unchanged; the new compiler's lints are
+  fixed in place (let chains for collapsible `if`s, a few rewrites, and
+  `#[allow]`s with a stated reason where reshaping a public type or giving up a
+  deliberate non-short-circuit would change behavior). `Cargo.lock` gains only
+  the dev-dependency tree of the official Rust MCP SDK (see "Added").
+
+### Added
+- MCP tasks extension (SEP-2663, `io.modelcontextprotocol/tasks`), as implemented
+  by the official Rust SDK `rmcp` 3.x, alongside the existing SEP-1686 support
+  (no change for SEP-1686 servers). Contract: `spec/mcp-runtime.md` ("Tasks
+  extension shapes").
+  - Every MCP client handshake now declares
+    `extensions["io.modelcontextprotocol/tasks"]: {}` (`initialize`
+    capabilities, and the `clientCapabilities` request metadata of modern
+    peers). A server that creates tasks only for declaring clients, such as
+    `rmcp`, now returns them; before, such a server never created a task and
+    answered `-32021` to task methods.
+  - A flat `resultType:"task"` `tools/call` result becomes the Kernel creation
+    shape `{"task":{...}}` and binds the durable continuation exactly like a
+    SEP-1686 task. Flat `tasks/get` payloads (`ttlMs`, `pollIntervalMs`, inline
+    `result`, `error`, `inputRequests`) are accepted; `tasks/result` is sent only
+    to peers advertising the top-level `tasks` capability.
+  - Task augmentation does not require `execution.taskSupport`: a peer that
+    advertises only the extension has no request-side `task` member (the server
+    decides per call), and any non-terminal task answer binds a continuation. A
+    task from a peer that advertised no task capability fails closed
+    (`unknown_effect`). `-32021` from a server that lost the declaration is a
+    typed remote error and is not retried.
+  - Fixtures `fixtures/mcp-runtime/tasks-extension-*.jsonl` (replayed byte for
+    byte), and `crates/mcp/tests/rmcp_interop.rs`, which runs a real `rmcp`
+    3.5.1 server (dev-dependency) over stdio in the legacy and modern protocols.
+
 ## 0.4.6 — 2026-10-13
 
 Additive wire changes only (see "Wire" below); no existing field changes meaning.

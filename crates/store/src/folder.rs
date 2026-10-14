@@ -963,10 +963,10 @@ pub(crate) fn park_stale_tombstone(root: &Path, thread_id: &str) -> Result<(), S
     let spawned = std::thread::Builder::new()
         .name("tombstone-delete".to_owned())
         .spawn(move || {
-            if remove_tree_if_present(&private).is_ok() {
-                if let Ok(directory) = File::open(&trash_dir) {
-                    let _ = directory.sync_all();
-                }
+            if remove_tree_if_present(&private).is_ok()
+                && let Ok(directory) = File::open(&trash_dir)
+            {
+                let _ = directory.sync_all();
             }
         });
     // If no thread could be started the private tombstone stays for the cleanup.

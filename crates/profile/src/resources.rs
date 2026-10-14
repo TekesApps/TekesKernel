@@ -344,12 +344,12 @@ struct ParsedSkill {
 fn parse_skill_manifest(content: &str) -> Result<ParsedSkill, ResourceError> {
     let parsed = parse_front_matter(content, true)
         .map_err(|error| ResourceError::InvalidSkill(error.to_string()))?;
-    if let Some(version) = parsed.fields.get("schema_version") {
-        if version != "1" {
-            return Err(ResourceError::InvalidSkill(
-                "schema_version must be 1".to_owned(),
-            ));
-        }
+    if let Some(version) = parsed.fields.get("schema_version")
+        && version != "1"
+    {
+        return Err(ResourceError::InvalidSkill(
+            "schema_version must be 1".to_owned(),
+        ));
     }
     let name = parsed
         .fields

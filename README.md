@@ -118,7 +118,7 @@ input. See [identity selection](crates/worker/src/identity.rs) and the
 ## Quick start
 
 The toolchain is pinned in [rust-toolchain.toml](rust-toolchain.toml)
-(Rust 1.85.1). Build the four executables and run the launch smoke test, which
+(Rust 1.95.0). Build the four executables and run the launch smoke test, which
 starts a supervisor with a synthetic provider, creates a workspace and a
 session, and checks every stream baseline:
 

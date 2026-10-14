@@ -62,19 +62,19 @@ fn provider_server_with_capture(
             loop {
                 let count = stream.read(&mut buffer).expect("provider request read");
                 request.extend_from_slice(&buffer[..count]);
-                if expected.is_none() {
-                    if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
-                        let headers = String::from_utf8_lossy(&request[..end + 4]);
-                        let length = headers
-                            .lines()
-                            .find_map(|line| {
-                                line.strip_prefix("content-length: ")
-                                    .or_else(|| line.strip_prefix("Content-Length: "))
-                            })
-                            .and_then(|value| value.parse::<usize>().ok())
-                            .unwrap_or(0);
-                        expected = Some(end + 4 + length);
-                    }
+                if expected.is_none()
+                    && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n")
+                {
+                    let headers = String::from_utf8_lossy(&request[..end + 4]);
+                    let length = headers
+                        .lines()
+                        .find_map(|line| {
+                            line.strip_prefix("content-length: ")
+                                .or_else(|| line.strip_prefix("Content-Length: "))
+                        })
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .unwrap_or(0);
+                    expected = Some(end + 4 + length);
                 }
                 if count == 0 || expected.is_some_and(|length| request.len() >= length) {
                     break;
@@ -1572,20 +1572,20 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
             loop {
                 let count = stream.read(&mut buffer).expect("provider request read");
                 request.extend_from_slice(&buffer[..count]);
-                if expected.is_none() {
-                    if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
-                        let headers = String::from_utf8_lossy(&request[..end + 4]);
-                        let length = headers
-                            .lines()
-                            .find_map(|line| {
-                                let (name, value) = line.split_once(':')?;
-                                name.eq_ignore_ascii_case("content-length")
-                                    .then(|| value.trim().parse::<usize>().ok())
-                                    .flatten()
-                            })
-                            .unwrap_or(0);
-                        expected = Some(end + 4 + length);
-                    }
+                if expected.is_none()
+                    && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n")
+                {
+                    let headers = String::from_utf8_lossy(&request[..end + 4]);
+                    let length = headers
+                        .lines()
+                        .find_map(|line| {
+                            let (name, value) = line.split_once(':')?;
+                            name.eq_ignore_ascii_case("content-length")
+                                .then(|| value.trim().parse::<usize>().ok())
+                                .flatten()
+                        })
+                        .unwrap_or(0);
+                    expected = Some(end + 4 + length);
                 }
                 if count == 0 || expected.is_some_and(|length| request.len() >= length) {
                     break;

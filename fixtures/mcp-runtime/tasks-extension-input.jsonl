@@ -1,0 +1,8 @@
+{"id":2,"jsonrpc":"2.0","method":"tools/call","params":{"_meta":{"io.tekes/idempotencyKey":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"arguments":{"a":2,"b":3},"name":"sum"}}
+{"id":2,"jsonrpc":"2.0","result":{"createdAt":"2026-10-14T00:00:00Z","lastUpdatedAt":"2026-10-14T00:00:00Z","pollIntervalMs":50,"resultType":"task","status":"working","taskId":"task-ext-2","ttlMs":300000}}
+{"id":3,"jsonrpc":"2.0","method":"tasks/get","params":{"taskId":"task-ext-2"}}
+{"id":3,"jsonrpc":"2.0","result":{"createdAt":"2026-10-14T00:00:00Z","inputRequests":{"confirm":{"method":"elicitation/create","params":{"message":"Proceed?","mode":"form","requestedSchema":{"properties":{},"type":"object"}}}},"lastUpdatedAt":"2026-10-14T00:00:01Z","pollIntervalMs":50,"resultType":"complete","status":"input_required","taskId":"task-ext-2","ttlMs":300000}}
+{"id":4,"jsonrpc":"2.0","method":"tasks/update","params":{"inputResponses":{"confirm":{"action":"accept"}},"taskId":"task-ext-2"}}
+{"id":4,"jsonrpc":"2.0","result":{"resultType":"complete"}}
+{"id":5,"jsonrpc":"2.0","method":"tasks/get","params":{"taskId":"task-ext-2"}}
+{"id":5,"jsonrpc":"2.0","result":{"createdAt":"2026-10-14T00:00:00Z","lastUpdatedAt":"2026-10-14T00:00:01Z","pollIntervalMs":50,"result":{"content":[{"text":"5","type":"text"}],"isError":false},"resultType":"complete","status":"completed","taskId":"task-ext-2","ttlMs":300000}}

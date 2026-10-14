@@ -644,8 +644,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `recover` | `registry                 .plugins                 .iter` | [644](../../src/store.rs#L644) | receiver-type-required |
 | `recover` | `operation.next.as_ref` | [648](../../src/store.rs#L648), [651](../../src/store.rs#L651) | receiver-type-required |
 | `recover` | `operation.next.as_ref().is_none_or` | [651](../../src/store.rs#L651) | receiver-type-required |
-| `recover` | `remove_tree` | [654](../../src/store.rs#L654), [658](../../src/store.rs#L658), [664](../../src/store.rs#L664) | [plugins::store::remove_tree](../../src/store.rs#L1365) |
-| `recover` | `self.root.join` | [654](../../src/store.rs#L654), [664](../../src/store.rs#L664) | receiver-type-required |
+| `recover` | `remove_tree` | [655](../../src/store.rs#L655), [658](../../src/store.rs#L658), [665](../../src/store.rs#L665) | [plugins::store::remove_tree](../../src/store.rs#L1365) |
+| `recover` | `self.root.join` | [655](../../src/store.rs#L655), [665](../../src/store.rs#L665) | receiver-type-required |
 | `recover` | `operation.next.is_none` | [657](../../src/store.rs#L657) | receiver-type-required |
 | `recover` | `self.data_root().join` | [658](../../src/store.rs#L658) | receiver-type-required |
 | `recover` | `self.data_root` | [658](../../src/store.rs#L658) | [plugins::store::PluginStore::data_root](../../src/store.rs#L996) |

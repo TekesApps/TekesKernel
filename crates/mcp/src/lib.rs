@@ -33,7 +33,7 @@ pub use types::{
     JsonRpcError, JsonRpcRequest, JsonRpcResponse, McpCancellationToken, McpCapabilities,
     McpContent, McpError, McpIcon, McpIconTheme, McpImplementation, McpPrompt, McpResource,
     McpTask, McpTaskSupport, McpTool, McpToolAnnotations, McpToolCallContext, McpToolContinuation,
-    McpToolExecution, ProtocolMode, TransportKind,
+    McpToolExecution, ProtocolMode, TASKS_EXTENSION, TransportKind,
 };
 
 pub const LEGACY_PROTOCOL_VERSION: &str = "2025-11-25";

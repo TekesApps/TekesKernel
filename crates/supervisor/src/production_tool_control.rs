@@ -1121,10 +1121,9 @@ fn session_lines(
         let path = entry.path();
         if path.extension().and_then(|value| value.to_str()) == Some("jsonl")
             && path.file_name().and_then(|value| value.to_str()) != Some(endpoint::JOURNAL_FILE)
+            && let Ok(projection) = read_projection(&path)
         {
-            if let Ok(projection) = read_projection(&path) {
-                lines.push((path, projection));
-            }
+            lines.push((path, projection));
         }
     }
     lines.sort_by(|left, right| left.0.as_os_str().cmp(right.0.as_os_str()));

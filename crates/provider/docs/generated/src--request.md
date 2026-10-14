@@ -56,30 +56,30 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [provider::request::strict_optional_tests::unique_items_in_nullable_array_preserves_constraints_without_strict_mode](../../src/request.rs#L1565) | function_item | `private` | test; #[cfg(test)] |
 | [provider::request::strict_optional_tests::optional_fields_keep_their_schema_and_disable_strict_mode](../../src/request.rs#L1582) | function_item | `private` | test; #[cfg(test)] |
 | [provider::request::validate_tool_schema](../../src/request.rs#L1607) | function_item | `private` |  |
-| [provider::request::item_role](../../src/request.rs#L1651) | function_item | `private` |  |
-| [provider::request::sealed_fragments](../../src/request.rs#L1658) | function_item | `private` |  |
-| [provider::request::sealed_fragment_value](../../src/request.rs#L1669) | function_item | `private` |  |
-| [provider::request::DEGRADED_FILE_TEXT_LIMIT](../../src/request.rs#L1684) | const_item | `private` |  |
-| [provider::request::degraded_file_text](../../src/request.rs#L1691) | function_item | `private` |  |
-| [provider::request::data_url](../../src/request.rs#L1720) | function_item | `private` |  |
-| [provider::request::item_content](../../src/request.rs#L1728) | function_item | `private` |  |
-| [provider::request::block_type](../../src/request.rs#L1735) | function_item | `private` |  |
-| [provider::request::required_text](../../src/request.rs#L1742) | function_item | `private` |  |
-| [provider::request::required_value](../../src/request.rs#L1751) | function_item | `private` |  |
-| [provider::request::tool_result_text](../../src/request.rs#L1761) | function_item | `private` |  |
-| [provider::request::canonical_argument_string](../../src/request.rs#L1773) | function_item | `private` |  |
-| [provider::request::invalid](../../src/request.rs#L1779) | function_item | `private` |  |
-| [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::pdf_on_anthropic_is_still_a_document](../../src/request.rs#L1800) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::text_file_on_anthropic_degrades_to_fenced_text](../../src/request.rs#L1814) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::binary_file_on_chat_completions_degrades_to_the_stub](../../src/request.rs#L1827) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::oversized_utf8_file_degrades_to_the_stub](../../src/request.rs#L1845) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::text_file_on_responses_is_delivered_as_input_file](../../src/request.rs#L1873) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::google_and_interactions_degrade_in_their_native_text_forms](../../src/request.rs#L1898) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::file_degradation_tests::image_files_are_never_degraded](../../src/request.rs#L1921) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::anthropic_tool_adjacency_tests::a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim](../../src/request.rs#L1945) | function_item | `private` | test; #[cfg(test)] |
-| [provider::request::anthropic_tool_adjacency_tests::host_state_between_call_and_result_does_not_break_anthropic_adjacency](../../src/request.rs#L1984) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::item_role](../../src/request.rs#L1650) | function_item | `private` |  |
+| [provider::request::sealed_fragments](../../src/request.rs#L1657) | function_item | `private` |  |
+| [provider::request::sealed_fragment_value](../../src/request.rs#L1668) | function_item | `private` |  |
+| [provider::request::DEGRADED_FILE_TEXT_LIMIT](../../src/request.rs#L1683) | const_item | `private` |  |
+| [provider::request::degraded_file_text](../../src/request.rs#L1690) | function_item | `private` |  |
+| [provider::request::data_url](../../src/request.rs#L1719) | function_item | `private` |  |
+| [provider::request::item_content](../../src/request.rs#L1727) | function_item | `private` |  |
+| [provider::request::block_type](../../src/request.rs#L1734) | function_item | `private` |  |
+| [provider::request::required_text](../../src/request.rs#L1741) | function_item | `private` |  |
+| [provider::request::required_value](../../src/request.rs#L1750) | function_item | `private` |  |
+| [provider::request::tool_result_text](../../src/request.rs#L1760) | function_item | `private` |  |
+| [provider::request::canonical_argument_string](../../src/request.rs#L1771) | function_item | `private` |  |
+| [provider::request::invalid](../../src/request.rs#L1777) | function_item | `private` |  |
+| [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::pdf_on_anthropic_is_still_a_document](../../src/request.rs#L1798) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::text_file_on_anthropic_degrades_to_fenced_text](../../src/request.rs#L1812) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::binary_file_on_chat_completions_degrades_to_the_stub](../../src/request.rs#L1825) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::oversized_utf8_file_degrades_to_the_stub](../../src/request.rs#L1843) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::text_file_on_responses_is_delivered_as_input_file](../../src/request.rs#L1871) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::google_and_interactions_degrade_in_their_native_text_forms](../../src/request.rs#L1896) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::file_degradation_tests::image_files_are_never_degraded](../../src/request.rs#L1919) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::anthropic_tool_adjacency_tests::a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim](../../src/request.rs#L1943) | function_item | `private` | test; #[cfg(test)] |
+| [provider::request::anthropic_tool_adjacency_tests::host_state_between_call_and_result_does_not_break_anthropic_adjacency](../../src/request.rs#L1982) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -330,7 +330,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_inner` | `profile         .get("controls")         .and_then` | [190](../../src/request.rs#L190) | receiver-type-required |
 | `prepare_inner` | `values` | [195](../../src/request.rs#L195) | [provider::request::values](../../src/request.rs#L534) |
 | `prepare_inner` | `controls.remove` | [197](../../src/request.rs#L197), [198](../../src/request.rs#L198) | receiver-type-required |
-| `prepare_inner` | `invalid` | [201](../../src/request.rs#L201), [211](../../src/request.rs#L211), [308](../../src/request.rs#L308), [337](../../src/request.rs#L337), [358](../../src/request.rs#L358) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `prepare_inner` | `invalid` | [201](../../src/request.rs#L201), [211](../../src/request.rs#L211), [308](../../src/request.rs#L308), [337](../../src/request.rs#L337), [358](../../src/request.rs#L358) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `prepare_inner` | `controls         .remove("title_max_output_tokens")         .map(&#124;value&#124; {             value                 .as_u64()                 .filter(&#124;cap&#124; *cap > 0)                 .ok_or_else(&#124;&#124; invalid("title_max_output_tokens must be a positive integer"))         })         .transpose` | [205](../../src/request.rs#L205) | receiver-type-required |
 | `prepare_inner` | `controls         .remove("title_max_output_tokens")         .map` | [205](../../src/request.rs#L205) | receiver-type-required |
 | `prepare_inner` | `controls         .remove` | [205](../../src/request.rs#L205) | receiver-type-required |
@@ -338,7 +338,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_inner` | `value                 .as_u64()                 .filter` | [208](../../src/request.rs#L208) | receiver-type-required |
 | `prepare_inner` | `value                 .as_u64` | [208](../../src/request.rs#L208) | receiver-type-required |
 | `prepare_inner` | `apply_dialect_controls` | [214](../../src/request.rs#L214) | [provider::request::apply_dialect_controls](../../src/request.rs#L554) |
-| `prepare_inner` | `Value::from` | [220](../../src/request.rs#L220), [259](../../src/request.rs#L259) | external-constructor-callback-or-unresolved |
+| `prepare_inner` | `Value::from` | [220](../../src/request.rs#L220), [260](../../src/request.rs#L260) | external-constructor-callback-or-unresolved |
 | `prepare_inner` | `anthropic_max_tokens` | [220](../../src/request.rs#L220) | external-constructor-callback-or-unresolved |
 | `prepare_inner` | `input.continuation_id.is_some` | [221](../../src/request.rs#L221) | receiver-type-required |
 | `prepare_inner` | `dialect.server_managed` | [221](../../src/request.rs#L221) | receiver-type-required |
@@ -348,12 +348,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_inner` | `"/interactions".to_owned` | [247](../../src/request.rs#L247) | receiver-type-required |
 | `prepare_inner` | `"/chat/completions".to_owned` | [251](../../src/request.rs#L251) | receiver-type-required |
 | `prepare_inner` | `resolved.max_output_tokens` | [256](../../src/request.rs#L256) | receiver-type-required |
-| `prepare_inner` | `body.as_object_mut()                 .expect("chat body is an object")                 .insert` | [257](../../src/request.rs#L257) | receiver-type-required |
-| `prepare_inner` | `body.as_object_mut()                 .expect` | [257](../../src/request.rs#L257) | receiver-type-required |
-| `prepare_inner` | `body.as_object_mut` | [257](../../src/request.rs#L257), [263](../../src/request.rs#L263), [268](../../src/request.rs#L268), [274](../../src/request.rs#L274), [287](../../src/request.rs#L287) | receiver-type-required |
-| `prepare_inner` | `"max_tokens".to_owned` | [259](../../src/request.rs#L259) | receiver-type-required |
-| `prepare_inner` | `body.as_object_mut()             .expect("chat body is an object")             .insert` | [263](../../src/request.rs#L263) | receiver-type-required |
-| `prepare_inner` | `body.as_object_mut()             .expect` | [263](../../src/request.rs#L263), [268](../../src/request.rs#L268), [287](../../src/request.rs#L287) | receiver-type-required |
+| `prepare_inner` | `body.as_object_mut()             .expect("chat body is an object")             .insert` | [258](../../src/request.rs#L258), [263](../../src/request.rs#L263) | receiver-type-required |
+| `prepare_inner` | `body.as_object_mut()             .expect` | [258](../../src/request.rs#L258), [263](../../src/request.rs#L263), [268](../../src/request.rs#L268), [287](../../src/request.rs#L287) | receiver-type-required |
+| `prepare_inner` | `body.as_object_mut` | [258](../../src/request.rs#L258), [263](../../src/request.rs#L263), [268](../../src/request.rs#L268), [274](../../src/request.rs#L274), [287](../../src/request.rs#L287) | receiver-type-required |
+| `prepare_inner` | `"max_tokens".to_owned` | [260](../../src/request.rs#L260) | receiver-type-required |
 | `prepare_inner` | `"stream_options".to_owned` | [265](../../src/request.rs#L265) | receiver-type-required |
 | `prepare_inner` | `body.as_object_mut()             .expect("Responses body is an object")             .insert` | [268](../../src/request.rs#L268) | receiver-type-required |
 | `prepare_inner` | `"store".to_owned` | [270](../../src/request.rs#L270) | receiver-type-required |
@@ -412,7 +410,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encode_request_body` | `error.to_string` | [430](../../src/request.rs#L430), [465](../../src/request.rs#L465), [470](../../src/request.rs#L470) | receiver-type-required |
 | `encode_request_body` | `body         .as_object()         .ok_or_else` | [432](../../src/request.rs#L432) | receiver-type-required |
 | `encode_request_body` | `body         .as_object` | [432](../../src/request.rs#L432) | receiver-type-required |
-| `encode_request_body` | `invalid` | [434](../../src/request.rs#L434), [448](../../src/request.rs#L448) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `encode_request_body` | `invalid` | [434](../../src/request.rs#L434), [448](../../src/request.rs#L448) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `encode_request_body` | `object.keys().any` | [447](../../src/request.rs#L447) | receiver-type-required |
 | `encode_request_body` | `object.keys` | [447](../../src/request.rs#L447) | receiver-type-required |
 | `encode_request_body` | `order.contains` | [447](../../src/request.rs#L447) | receiver-type-required |
@@ -462,7 +460,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_dialect_controls` | `reasoning_effort         .as_ref` | [570](../../src/request.rs#L570) | receiver-type-required |
 | `apply_dialect_controls` | `value                 .as_str()                 .ok_or_else` | [573](../../src/request.rs#L573) | receiver-type-required |
 | `apply_dialect_controls` | `value                 .as_str` | [573](../../src/request.rs#L573) | receiver-type-required |
-| `apply_dialect_controls` | `invalid` | [575](../../src/request.rs#L575), [582](../../src/request.rs#L582), [641](../../src/request.rs#L641) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `apply_dialect_controls` | `invalid` | [575](../../src/request.rs#L575), [582](../../src/request.rs#L582), [641](../../src/request.rs#L641) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `apply_dialect_controls` | `profile                 .reasoning_efforts()                 .iter()                 .any(&#124;item&#124; item == value)                 .then_some(value)                 .ok_or_else` | [576](../../src/request.rs#L576) | receiver-type-required |
 | `apply_dialect_controls` | `profile                 .reasoning_efforts()                 .iter()                 .any(&#124;item&#124; item == value)                 .then_some` | [576](../../src/request.rs#L576) | receiver-type-required |
 | `apply_dialect_controls` | `profile                 .reasoning_efforts()                 .iter()                 .any` | [576](../../src/request.rs#L576) | receiver-type-required |
@@ -483,14 +481,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_dialect_controls` | `controls.entry` | [661](../../src/request.rs#L661) | receiver-type-required |
 | `apply_dialect_controls` | `Ok` | [663](../../src/request.rs#L663) | external-constructor-callback-or-unresolved |
 | `apply_reasoning_disabled` | `Err` | [677](../../src/request.rs#L677), [689](../../src/request.rs#L689) | external-constructor-callback-or-unresolved |
-| `apply_reasoning_disabled` | `invalid` | [677](../../src/request.rs#L677), [689](../../src/request.rs#L689) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `apply_reasoning_disabled` | `invalid` | [677](../../src/request.rs#L677), [689](../../src/request.rs#L689) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `apply_reasoning_disabled` | `controls.insert` | [683](../../src/request.rs#L683), [686](../../src/request.rs#L686) | receiver-type-required |
 | `apply_reasoning_disabled` | `"reasoning".to_owned` | [683](../../src/request.rs#L683) | receiver-type-required |
 | `apply_reasoning_disabled` | `"thinking".to_owned` | [686](../../src/request.rs#L686) | receiver-type-required |
 | `apply_reasoning_disabled` | `Ok` | [695](../../src/request.rs#L695) | external-constructor-callback-or-unresolved |
 | `apply_title_output_cap` | `body         .as_object_mut()         .ok_or_else` | [708](../../src/request.rs#L708) | receiver-type-required |
 | `apply_title_output_cap` | `body         .as_object_mut` | [708](../../src/request.rs#L708) | receiver-type-required |
-| `apply_title_output_cap` | `invalid` | [710](../../src/request.rs#L710), [723](../../src/request.rs#L723) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `apply_title_output_cap` | `invalid` | [710](../../src/request.rs#L710), [723](../../src/request.rs#L723) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `apply_title_output_cap` | `object.insert` | [713](../../src/request.rs#L713), [720](../../src/request.rs#L720) | receiver-type-required |
 | `apply_title_output_cap` | `"max_output_tokens".to_owned` | [713](../../src/request.rs#L713) | receiver-type-required |
 | `apply_title_output_cap` | `Value::from` | [713](../../src/request.rs#L713), [720](../../src/request.rs#L720) | external-constructor-callback-or-unresolved |
@@ -502,7 +500,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `apply_title_output_cap` | `Err` | [723](../../src/request.rs#L723) | external-constructor-callback-or-unresolved |
 | `apply_title_output_cap` | `Ok` | [729](../../src/request.rs#L729) | external-constructor-callback-or-unresolved |
 | `unsupported_controls` | `Err` | [736](../../src/request.rs#L736) | external-constructor-callback-or-unresolved |
-| `unsupported_controls` | `invalid` | [736](../../src/request.rs#L736) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `unsupported_controls` | `invalid` | [736](../../src/request.rs#L736) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `attach_anthropic_breakpoints` | `body         .get_mut("tools")         .and_then(Value::as_array_mut)         .and_then` | [757](../../src/request.rs#L757) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `body         .get_mut("tools")         .and_then` | [757](../../src/request.rs#L757) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `body         .get_mut` | [757](../../src/request.rs#L757), [766](../../src/request.rs#L766) | receiver-type-required |
@@ -510,7 +508,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `attach_anthropic_breakpoints` | `tool.as_object_mut()             .ok_or_else(&#124;&#124; invalid("tool declaration must be an object"))?             .insert` | [762](../../src/request.rs#L762) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `tool.as_object_mut()             .ok_or_else` | [762](../../src/request.rs#L762) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `tool.as_object_mut` | [762](../../src/request.rs#L762) | receiver-type-required |
-| `attach_anthropic_breakpoints` | `invalid` | [763](../../src/request.rs#L763), [781](../../src/request.rs#L781) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `attach_anthropic_breakpoints` | `invalid` | [763](../../src/request.rs#L763), [781](../../src/request.rs#L781) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `attach_anthropic_breakpoints` | `"cache_control".to_owned` | [764](../../src/request.rs#L764), [782](../../src/request.rs#L782) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `marker.clone` | [764](../../src/request.rs#L764) | receiver-type-required |
 | `attach_anthropic_breakpoints` | `body         .get_mut("messages")         .and_then(Value::as_array_mut)         .and_then(&#124;messages&#124; messages.last_mut())         .and_then(&#124;message&#124; message.get_mut("content"))         .and_then(Value::as_array_mut)         .and_then` | [766](../../src/request.rs#L766) | receiver-type-required |
@@ -534,32 +532,32 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `merge_controls` | `object.insert` | [801](../../src/request.rs#L801) | receiver-type-required |
 | `merge_controls` | `Ok` | [803](../../src/request.rs#L803) | external-constructor-callback-or-unresolved |
 | `render_responses` | `Vec::new` | [807](../../src/request.rs#L807), [815](../../src/request.rs#L815) | external-constructor-callback-or-unresolved |
-| `render_responses` | `sealed_fragments` | [809](../../src/request.rs#L809) | [provider::request::sealed_fragments](../../src/request.rs#L1658) |
+| `render_responses` | `sealed_fragments` | [809](../../src/request.rs#L809) | [provider::request::sealed_fragments](../../src/request.rs#L1657) |
 | `render_responses` | `output.extend` | [810](../../src/request.rs#L810) | receiver-type-required |
-| `render_responses` | `item_role` | [813](../../src/request.rs#L813) | [provider::request::item_role](../../src/request.rs#L1651) |
-| `render_responses` | `item_content` | [814](../../src/request.rs#L814) | [provider::request::item_content](../../src/request.rs#L1728) |
-| `render_responses` | `block_type` | [817](../../src/request.rs#L817) | [provider::request::block_type](../../src/request.rs#L1735) |
+| `render_responses` | `item_role` | [813](../../src/request.rs#L813) | [provider::request::item_role](../../src/request.rs#L1650) |
+| `render_responses` | `item_content` | [814](../../src/request.rs#L814) | [provider::request::item_content](../../src/request.rs#L1727) |
+| `render_responses` | `block_type` | [817](../../src/request.rs#L817) | [provider::request::block_type](../../src/request.rs#L1734) |
 | `render_responses` | `blocks.push` | [818](../../src/request.rs#L818), [833](../../src/request.rs#L833), [841](../../src/request.rs#L841), [846](../../src/request.rs#L846), [852](../../src/request.rs#L852) | receiver-type-required |
 | `render_responses` | `output.push` | [822](../../src/request.rs#L822), [828](../../src/request.rs#L828), [860](../../src/request.rs#L860) | receiver-type-required |
 | `render_responses` | `required_text(block, "mime")?.starts_with` | [838](../../src/request.rs#L838) | receiver-type-required |
-| `render_responses` | `required_text` | [838](../../src/request.rs#L838) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_responses` | `required_text` | [838](../../src/request.rs#L838) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_responses` | `dialect.input_blocks().contains` | [839](../../src/request.rs#L839), [846](../../src/request.rs#L846) | receiver-type-required |
 | `render_responses` | `dialect.input_blocks` | [839](../../src/request.rs#L839), [846](../../src/request.rs#L846) | receiver-type-required |
 | `render_responses` | `Err` | [856](../../src/request.rs#L856) | external-constructor-callback-or-unresolved |
-| `render_responses` | `invalid` | [856](../../src/request.rs#L856) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `render_responses` | `invalid` | [856](../../src/request.rs#L856) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `render_responses` | `blocks.is_empty` | [859](../../src/request.rs#L859) | receiver-type-required |
 | `render_responses` | `Ok` | [863](../../src/request.rs#L863) | external-constructor-callback-or-unresolved |
 | `render_anthropic` | `Vec::new` | [867](../../src/request.rs#L867), [874](../../src/request.rs#L874), [937](../../src/request.rs#L937) | external-constructor-callback-or-unresolved |
-| `render_anthropic` | `sealed_fragments` | [869](../../src/request.rs#L869) | [provider::request::sealed_fragments](../../src/request.rs#L1658) |
+| `render_anthropic` | `sealed_fragments` | [869](../../src/request.rs#L869) | [provider::request::sealed_fragments](../../src/request.rs#L1657) |
 | `render_anthropic` | `messages.push` | [870](../../src/request.rs#L870), [931](../../src/request.rs#L931) | receiver-type-required |
-| `render_anthropic` | `item_role` | [873](../../src/request.rs#L873) | [provider::request::item_role](../../src/request.rs#L1651) |
-| `render_anthropic` | `item_content` | [875](../../src/request.rs#L875) | [provider::request::item_content](../../src/request.rs#L1728) |
-| `render_anthropic` | `block_type` | [876](../../src/request.rs#L876) | [provider::request::block_type](../../src/request.rs#L1735) |
+| `render_anthropic` | `item_role` | [873](../../src/request.rs#L873) | [provider::request::item_role](../../src/request.rs#L1650) |
+| `render_anthropic` | `item_content` | [875](../../src/request.rs#L875) | [provider::request::item_content](../../src/request.rs#L1727) |
+| `render_anthropic` | `block_type` | [876](../../src/request.rs#L876) | [provider::request::block_type](../../src/request.rs#L1734) |
 | `render_anthropic` | `blocks.push` | [878](../../src/request.rs#L878), [880](../../src/request.rs#L880), [898](../../src/request.rs#L898), [904](../../src/request.rs#L904), [909](../../src/request.rs#L909), [915](../../src/request.rs#L915), [921](../../src/request.rs#L921) | receiver-type-required |
 | `render_anthropic` | `dialect.supports_reasoning_blocks` | [880](../../src/request.rs#L880) | receiver-type-required |
 | `render_anthropic` | `Err` | [884](../../src/request.rs#L884), [893](../../src/request.rs#L893), [927](../../src/request.rs#L927) | external-constructor-callback-or-unresolved |
-| `render_anthropic` | `invalid` | [884](../../src/request.rs#L884), [893](../../src/request.rs#L893), [927](../../src/request.rs#L927) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `render_anthropic` | `required_text` | [890](../../src/request.rs#L890) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_anthropic` | `invalid` | [884](../../src/request.rs#L884), [893](../../src/request.rs#L893), [927](../../src/request.rs#L927) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `render_anthropic` | `required_text` | [890](../../src/request.rs#L890) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_anthropic` | `mime.starts_with` | [891](../../src/request.rs#L891) | receiver-type-required |
 | `render_anthropic` | `dialect.input_blocks().contains` | [892](../../src/request.rs#L892), [902](../../src/request.rs#L902) | receiver-type-required |
 | `render_anthropic` | `dialect.input_blocks` | [892](../../src/request.rs#L892), [902](../../src/request.rs#L902) | receiver-type-required |
@@ -582,9 +580,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `render_chat` | `Vec::new` | [964](../../src/request.rs#L964) | external-constructor-callback-or-unresolved |
 | `render_chat` | `system.is_empty` | [965](../../src/request.rs#L965) | receiver-type-required |
 | `render_chat` | `messages.push` | [966](../../src/request.rs#L966), [970](../../src/request.rs#L970), [1007](../../src/request.rs#L1007), [1013](../../src/request.rs#L1013), [1015](../../src/request.rs#L1015), [1023](../../src/request.rs#L1023), [1026](../../src/request.rs#L1026), [1029](../../src/request.rs#L1029), [1041](../../src/request.rs#L1041) | receiver-type-required |
-| `render_chat` | `sealed_fragment_value` | [969](../../src/request.rs#L969) | [provider::request::sealed_fragment_value](../../src/request.rs#L1669) |
-| `render_chat` | `item_role` | [973](../../src/request.rs#L973) | [provider::request::item_role](../../src/request.rs#L1651) |
-| `render_chat` | `item_content` | [974](../../src/request.rs#L974) | [provider::request::item_content](../../src/request.rs#L1728) |
+| `render_chat` | `sealed_fragment_value` | [969](../../src/request.rs#L969) | [provider::request::sealed_fragment_value](../../src/request.rs#L1668) |
+| `render_chat` | `item_role` | [973](../../src/request.rs#L973) | [provider::request::item_role](../../src/request.rs#L1650) |
+| `render_chat` | `item_content` | [974](../../src/request.rs#L974) | [provider::request::item_content](../../src/request.rs#L1727) |
 | `render_chat` | `content             .iter()             .all` | [975](../../src/request.rs#L975) | receiver-type-required |
 | `render_chat` | `content             .iter` | [975](../../src/request.rs#L975) | receiver-type-required |
 | `render_chat` | `content                 .iter()                 .filter(&#124;block&#124; block_type(block).ok() == Some("text"))                 .map(&#124;block&#124; required_text(block, "text"))                 .collect::<Result<Vec<_>, _>>()?                 .join` | [979](../../src/request.rs#L979) | receiver-type-required |
@@ -593,16 +591,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `render_chat` | `content                 .iter()                 .filter` | [979](../../src/request.rs#L979), [985](../../src/request.rs#L985) | receiver-type-required |
 | `render_chat` | `content                 .iter` | [979](../../src/request.rs#L979), [985](../../src/request.rs#L985) | receiver-type-required |
 | `render_chat` | `block_type(block).ok` | [981](../../src/request.rs#L981), [987](../../src/request.rs#L987) | receiver-type-required |
-| `render_chat` | `block_type` | [981](../../src/request.rs#L981), [987](../../src/request.rs#L987), [1011](../../src/request.rs#L1011) | [provider::request::block_type](../../src/request.rs#L1735) |
+| `render_chat` | `block_type` | [981](../../src/request.rs#L981), [987](../../src/request.rs#L987), [1011](../../src/request.rs#L1011) | [provider::request::block_type](../../src/request.rs#L1734) |
 | `render_chat` | `Some` | [981](../../src/request.rs#L981), [987](../../src/request.rs#L987) | external-constructor-callback-or-unresolved |
-| `render_chat` | `required_text` | [982](../../src/request.rs#L982), [988](../../src/request.rs#L988), [1022](../../src/request.rs#L1022) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_chat` | `required_text` | [982](../../src/request.rs#L982), [988](../../src/request.rs#L988), [1022](../../src/request.rs#L1022) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_chat` | `content                 .iter()                 .filter(&#124;block&#124; block_type(block).ok() == Some("reasoning"))                 .map(&#124;block&#124; required_text(block, "text"))                 .collect::<Result<Vec<_>, _>>()?                 .join` | [985](../../src/request.rs#L985) | receiver-type-required |
 | `render_chat` | `content                 .iter()                 .filter(&#124;block&#124; block_type(block).ok() == Some("reasoning"))                 .map(&#124;block&#124; required_text(block, "text"))                 .collect::<Result<Vec<_>, _>>` | [985](../../src/request.rs#L985) | receiver-type-required |
 | `render_chat` | `content                 .iter()                 .filter(&#124;block&#124; block_type(block).ok() == Some("reasoning"))                 .map` | [985](../../src/request.rs#L985) | receiver-type-required |
 | `render_chat` | `reasoning.is_empty` | [992](../../src/request.rs#L992) | receiver-type-required |
 | `render_chat` | `dialect.supports_reasoning_blocks` | [993](../../src/request.rs#L993), [1015](../../src/request.rs#L1015) | receiver-type-required |
 | `render_chat` | `Err` | [994](../../src/request.rs#L994), [1000](../../src/request.rs#L1000), [1018](../../src/request.rs#L1018), [1046](../../src/request.rs#L1046) | external-constructor-callback-or-unresolved |
-| `render_chat` | `invalid` | [994](../../src/request.rs#L994), [1000](../../src/request.rs#L1000), [1018](../../src/request.rs#L1018), [1046](../../src/request.rs#L1046) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `render_chat` | `invalid` | [994](../../src/request.rs#L994), [1000](../../src/request.rs#L1000), [1018](../../src/request.rs#L1018), [1046](../../src/request.rs#L1046) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `render_chat` | `message                     .as_object_mut()                     .expect("chat message object")                     .insert` | [1002](../../src/request.rs#L1002) | receiver-type-required |
 | `render_chat` | `message                     .as_object_mut()                     .expect` | [1002](../../src/request.rs#L1002) | receiver-type-required |
 | `render_chat` | `message                     .as_object_mut` | [1002](../../src/request.rs#L1002) | receiver-type-required |
@@ -613,16 +611,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `render_chat` | `dialect.input_blocks` | [1023](../../src/request.rs#L1023) | receiver-type-required |
 | `render_chat` | `Ok` | [1050](../../src/request.rs#L1050) | external-constructor-callback-or-unresolved |
 | `render_google` | `Vec::new` | [1054](../../src/request.rs#L1054), [1061](../../src/request.rs#L1061) | external-constructor-callback-or-unresolved |
-| `render_google` | `sealed_fragment_value` | [1056](../../src/request.rs#L1056) | [provider::request::sealed_fragment_value](../../src/request.rs#L1669) |
+| `render_google` | `sealed_fragment_value` | [1056](../../src/request.rs#L1056) | [provider::request::sealed_fragment_value](../../src/request.rs#L1668) |
 | `render_google` | `contents.push` | [1057](../../src/request.rs#L1057), [1106](../../src/request.rs#L1106) | receiver-type-required |
-| `render_google` | `item_role` | [1060](../../src/request.rs#L1060) | [provider::request::item_role](../../src/request.rs#L1651) |
-| `render_google` | `item_content` | [1062](../../src/request.rs#L1062) | [provider::request::item_content](../../src/request.rs#L1728) |
-| `render_google` | `block_type` | [1063](../../src/request.rs#L1063) | [provider::request::block_type](../../src/request.rs#L1735) |
+| `render_google` | `item_role` | [1060](../../src/request.rs#L1060) | [provider::request::item_role](../../src/request.rs#L1650) |
+| `render_google` | `item_content` | [1062](../../src/request.rs#L1062) | [provider::request::item_content](../../src/request.rs#L1727) |
+| `render_google` | `block_type` | [1063](../../src/request.rs#L1063) | [provider::request::block_type](../../src/request.rs#L1734) |
 | `render_google` | `parts.push` | [1065](../../src/request.rs#L1065), [1068](../../src/request.rs#L1068), [1084](../../src/request.rs#L1084), [1086](../../src/request.rs#L1086), [1088](../../src/request.rs#L1088), [1093](../../src/request.rs#L1093), [1098](../../src/request.rs#L1098) | receiver-type-required |
 | `render_google` | `dialect.supports_reasoning_blocks` | [1067](../../src/request.rs#L1067) | receiver-type-required |
 | `render_google` | `Err` | [1071](../../src/request.rs#L1071), [1103](../../src/request.rs#L1103) | external-constructor-callback-or-unresolved |
-| `render_google` | `invalid` | [1071](../../src/request.rs#L1071), [1103](../../src/request.rs#L1103) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `render_google` | `required_text` | [1077](../../src/request.rs#L1077) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_google` | `invalid` | [1071](../../src/request.rs#L1071), [1103](../../src/request.rs#L1103) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `render_google` | `required_text` | [1077](../../src/request.rs#L1077) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_google` | `mime.starts_with` | [1078](../../src/request.rs#L1078) | receiver-type-required |
 | `render_google` | `dialect.input_blocks().contains` | [1079](../../src/request.rs#L1079), [1081](../../src/request.rs#L1081) | receiver-type-required |
 | `render_google` | `dialect.input_blocks` | [1079](../../src/request.rs#L1079), [1081](../../src/request.rs#L1081) | receiver-type-required |
@@ -631,20 +629,20 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `render_google` | `Ok` | [1110](../../src/request.rs#L1110) | external-constructor-callback-or-unresolved |
 | `google_function_response` | `result.is_object` | [1114](../../src/request.rs#L1114) | receiver-type-required |
 | `render_interactions` | `Vec::new` | [1135](../../src/request.rs#L1135) | external-constructor-callback-or-unresolved |
-| `render_interactions` | `sealed_fragments` | [1137](../../src/request.rs#L1137) | [provider::request::sealed_fragments](../../src/request.rs#L1658) |
+| `render_interactions` | `sealed_fragments` | [1137](../../src/request.rs#L1137) | [provider::request::sealed_fragments](../../src/request.rs#L1657) |
 | `render_interactions` | `steps.extend` | [1138](../../src/request.rs#L1138) | receiver-type-required |
-| `render_interactions` | `item_role` | [1141](../../src/request.rs#L1141) | [provider::request::item_role](../../src/request.rs#L1651) |
-| `render_interactions` | `item_content` | [1142](../../src/request.rs#L1142) | [provider::request::item_content](../../src/request.rs#L1728) |
-| `render_interactions` | `block_type` | [1143](../../src/request.rs#L1143) | [provider::request::block_type](../../src/request.rs#L1735) |
+| `render_interactions` | `item_role` | [1141](../../src/request.rs#L1141) | [provider::request::item_role](../../src/request.rs#L1650) |
+| `render_interactions` | `item_content` | [1142](../../src/request.rs#L1142) | [provider::request::item_content](../../src/request.rs#L1727) |
+| `render_interactions` | `block_type` | [1143](../../src/request.rs#L1143) | [provider::request::block_type](../../src/request.rs#L1734) |
 | `render_interactions` | `steps.push` | [1146](../../src/request.rs#L1146), [1150](../../src/request.rs#L1150), [1155](../../src/request.rs#L1155), [1165](../../src/request.rs#L1165), [1170](../../src/request.rs#L1170), [1178](../../src/request.rs#L1178) | receiver-type-required |
 | `render_interactions` | `dialect.supports_reasoning_blocks` | [1155](../../src/request.rs#L1155) | receiver-type-required |
 | `render_interactions` | `Err` | [1160](../../src/request.rs#L1160), [1187](../../src/request.rs#L1187), [1203](../../src/request.rs#L1203) | external-constructor-callback-or-unresolved |
-| `render_interactions` | `invalid` | [1160](../../src/request.rs#L1160), [1187](../../src/request.rs#L1187), [1203](../../src/request.rs#L1203) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `render_interactions` | `invalid` | [1160](../../src/request.rs#L1160), [1187](../../src/request.rs#L1187), [1203](../../src/request.rs#L1203) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `render_interactions` | `steps             .iter()             .filter(&#124;step&#124; step["type"] == "function_call")             .map(&#124;step&#124; required_text(step, "id"))             .collect::<Result<std::collections::BTreeSet<_>, _>>` | [1192](../../src/request.rs#L1192) | receiver-type-required |
 | `render_interactions` | `steps             .iter()             .filter(&#124;step&#124; step["type"] == "function_call")             .map` | [1192](../../src/request.rs#L1192) | receiver-type-required |
 | `render_interactions` | `steps             .iter()             .filter` | [1192](../../src/request.rs#L1192), [1197](../../src/request.rs#L1197) | receiver-type-required |
 | `render_interactions` | `steps             .iter` | [1192](../../src/request.rs#L1192), [1197](../../src/request.rs#L1197) | receiver-type-required |
-| `render_interactions` | `required_text` | [1195](../../src/request.rs#L1195), [1200](../../src/request.rs#L1200) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_interactions` | `required_text` | [1195](../../src/request.rs#L1195), [1200](../../src/request.rs#L1200) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_interactions` | `steps             .iter()             .filter(&#124;step&#124; step["type"] == "function_result")             .map(&#124;step&#124; required_text(step, "call_id"))             .collect::<Result<std::collections::BTreeSet<_>, _>>` | [1197](../../src/request.rs#L1197) | receiver-type-required |
 | `render_interactions` | `steps             .iter()             .filter(&#124;step&#124; step["type"] == "function_result")             .map` | [1197](../../src/request.rs#L1197) | receiver-type-required |
 | `render_interactions` | `step["type"].as_str` | [1208](../../src/request.rs#L1208) | receiver-type-required |
@@ -652,11 +650,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `render_tools` | `dialect.family` | [1233](../../src/request.rs#L1233) | receiver-type-required |
 | `render_tools` | `tools         .as_array()         .ok_or_else` | [1234](../../src/request.rs#L1234) | receiver-type-required |
 | `render_tools` | `tools         .as_array` | [1234](../../src/request.rs#L1234) | receiver-type-required |
-| `render_tools` | `invalid` | [1236](../../src/request.rs#L1236) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `render_tools` | `invalid` | [1236](../../src/request.rs#L1236) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `render_tools` | `Vec::new` | [1237](../../src/request.rs#L1237) | external-constructor-callback-or-unresolved |
-| `render_tools` | `required_text` | [1239](../../src/request.rs#L1239), [1240](../../src/request.rs#L1240) | [provider::request::required_text](../../src/request.rs#L1742) |
+| `render_tools` | `required_text` | [1239](../../src/request.rs#L1239), [1240](../../src/request.rs#L1240) | [provider::request::required_text](../../src/request.rs#L1741) |
 | `render_tools` | `normalize_tool_parameters` | [1241](../../src/request.rs#L1241) | [provider::request::normalize_tool_parameters](../../src/request.rs#L1282) |
-| `render_tools` | `required_value` | [1241](../../src/request.rs#L1241) | [provider::request::required_value](../../src/request.rs#L1751) |
+| `render_tools` | `required_value` | [1241](../../src/request.rs#L1241) | [provider::request::required_value](../../src/request.rs#L1750) |
 | `render_tools` | `kimi_nullable_constraints` | [1243](../../src/request.rs#L1243) | [provider::request::kimi_nullable_constraints](../../src/request.rs#L1377) |
 | `render_tools` | `validate_tool_schema` | [1247](../../src/request.rs#L1247) | [provider::request::validate_tool_schema](../../src/request.rs#L1607) |
 | `render_tools` | `contains_composition_constraints` | [1251](../../src/request.rs#L1251) | [provider::request::contains_composition_constraints](../../src/request.rs#L1494) |
@@ -729,7 +727,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `kimi_nullable_constraints` | `keys.iter` | [1425](../../src/request.rs#L1425) | receiver-type-required |
 | `kimi_nullable_constraints` | `object.contains_key` | [1425](../../src/request.rs#L1425), [1426](../../src/request.rs#L1426) | receiver-type-required |
 | `kimi_nullable_constraints` | `Err` | [1427](../../src/request.rs#L1427) | external-constructor-callback-or-unresolved |
-| `kimi_nullable_constraints` | `invalid` | [1427](../../src/request.rs#L1427) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `kimi_nullable_constraints` | `invalid` | [1427](../../src/request.rs#L1427) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `kimi_nullable_constraints` | `serde_json::Map::new` | [1431](../../src/request.rs#L1431) | external-constructor-callback-or-unresolved |
 | `kimi_nullable_constraints` | `branch.insert` | [1432](../../src/request.rs#L1432), [1435](../../src/request.rs#L1435) | receiver-type-required |
 | `kimi_nullable_constraints` | `"type".into` | [1432](../../src/request.rs#L1432) | receiver-type-required |
@@ -782,7 +780,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `optional_fields_keep_their_schema_and_disable_strict_mode` | `optional.clone` | [1599](../../src/request.rs#L1599) | receiver-type-required |
 | `validate_tool_schema` | `schema         .as_object()         .ok_or_else` | [1608](../../src/request.rs#L1608) | receiver-type-required |
 | `validate_tool_schema` | `schema         .as_object` | [1608](../../src/request.rs#L1608) | receiver-type-required |
-| `validate_tool_schema` | `invalid` | [1610](../../src/request.rs#L1610), [1612](../../src/request.rs#L1612), [1617](../../src/request.rs#L1617), [1621](../../src/request.rs#L1621), [1626](../../src/request.rs#L1626), [1636](../../src/request.rs#L1636), [1643](../../src/request.rs#L1643) | [provider::request::invalid](../../src/request.rs#L1779) |
+| `validate_tool_schema` | `invalid` | [1610](../../src/request.rs#L1610), [1612](../../src/request.rs#L1612), [1617](../../src/request.rs#L1617), [1621](../../src/request.rs#L1621), [1626](../../src/request.rs#L1626), [1636](../../src/request.rs#L1636), [1643](../../src/request.rs#L1643) | [provider::request::invalid](../../src/request.rs#L1777) |
 | `validate_tool_schema` | `object.get("type").and_then` | [1611](../../src/request.rs#L1611) | receiver-type-required |
 | `validate_tool_schema` | `object.get` | [1611](../../src/request.rs#L1611), [1638](../../src/request.rs#L1638) | receiver-type-required |
 | `validate_tool_schema` | `Some` | [1611](../../src/request.rs#L1611) | external-constructor-callback-or-unresolved |
@@ -805,116 +803,116 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_tool_schema` | `rules.is_empty` | [1641](../../src/request.rs#L1641) | receiver-type-required |
 | `validate_tool_schema` | `rules.iter().all` | [1641](../../src/request.rs#L1641) | receiver-type-required |
 | `validate_tool_schema` | `rules.iter` | [1641](../../src/request.rs#L1641) | receiver-type-required |
-| `validate_tool_schema` | `Ok` | [1648](../../src/request.rs#L1648) | external-constructor-callback-or-unresolved |
-| `item_role` | `item.get("role")         .and_then(Value::as_str)         .filter(&#124;role&#124; matches!(*role, "user" &#124; "assistant" &#124; "tool"))         .ok_or_else` | [1652](../../src/request.rs#L1652) | receiver-type-required |
-| `item_role` | `item.get("role")         .and_then(Value::as_str)         .filter` | [1652](../../src/request.rs#L1652) | receiver-type-required |
-| `item_role` | `item.get("role")         .and_then` | [1652](../../src/request.rs#L1652) | receiver-type-required |
-| `item_role` | `item.get` | [1652](../../src/request.rs#L1652) | receiver-type-required |
-| `item_role` | `invalid` | [1655](../../src/request.rs#L1655) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `sealed_fragments` | `sealed_fragment_value` | [1659](../../src/request.rs#L1659) | [provider::request::sealed_fragment_value](../../src/request.rs#L1669) |
-| `sealed_fragments` | `Ok` | [1660](../../src/request.rs#L1660) | external-constructor-callback-or-unresolved |
-| `sealed_fragments` | `value         .as_array()         .cloned()         .map(Some)         .ok_or_else` | [1662](../../src/request.rs#L1662) | receiver-type-required |
-| `sealed_fragments` | `value         .as_array()         .cloned()         .map` | [1662](../../src/request.rs#L1662) | receiver-type-required |
-| `sealed_fragments` | `value         .as_array()         .cloned` | [1662](../../src/request.rs#L1662) | receiver-type-required |
-| `sealed_fragments` | `value         .as_array` | [1662](../../src/request.rs#L1662) | receiver-type-required |
-| `sealed_fragments` | `invalid` | [1666](../../src/request.rs#L1666) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `sealed_fragment_value` | `item.get("role").and_then` | [1670](../../src/request.rs#L1670) | receiver-type-required |
-| `sealed_fragment_value` | `item.get` | [1670](../../src/request.rs#L1670), [1673](../../src/request.rs#L1673), [1676](../../src/request.rs#L1676) | receiver-type-required |
-| `sealed_fragment_value` | `Some` | [1670](../../src/request.rs#L1670), [1673](../../src/request.rs#L1673) | external-constructor-callback-or-unresolved |
-| `sealed_fragment_value` | `Ok` | [1671](../../src/request.rs#L1671) | external-constructor-callback-or-unresolved |
-| `sealed_fragment_value` | `item.get("adapter").and_then` | [1673](../../src/request.rs#L1673) | receiver-type-required |
-| `sealed_fragment_value` | `dialect.as_str` | [1673](../../src/request.rs#L1673) | receiver-type-required |
-| `sealed_fragment_value` | `Err` | [1674](../../src/request.rs#L1674) | external-constructor-callback-or-unresolved |
-| `sealed_fragment_value` | `invalid` | [1674](../../src/request.rs#L1674), [1679](../../src/request.rs#L1679) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `sealed_fragment_value` | `item.get("fragments")         .cloned()         .map(Some)         .ok_or_else` | [1676](../../src/request.rs#L1676) | receiver-type-required |
-| `sealed_fragment_value` | `item.get("fragments")         .cloned()         .map` | [1676](../../src/request.rs#L1676) | receiver-type-required |
-| `sealed_fragment_value` | `item.get("fragments")         .cloned` | [1676](../../src/request.rs#L1676) | receiver-type-required |
-| `degraded_file_text` | `required_text` | [1693](../../src/request.rs#L1693), [1700](../../src/request.rs#L1700), [1702](../../src/request.rs#L1702) | [provider::request::required_text](../../src/request.rs#L1742) |
-| `degraded_file_text` | `mime.starts_with` | [1694](../../src/request.rs#L1694) | receiver-type-required |
-| `degraded_file_text` | `Err` | [1695](../../src/request.rs#L1695) | external-constructor-callback-or-unresolved |
-| `degraded_file_text` | `invalid` | [1695](../../src/request.rs#L1695), [1703](../../src/request.rs#L1703) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `degraded_file_text` | `required_text(block, "name").unwrap_or_else` | [1700](../../src/request.rs#L1700) | receiver-type-required |
-| `degraded_file_text` | `"attachment".to_owned` | [1700](../../src/request.rs#L1700) | receiver-type-required |
-| `degraded_file_text` | `base64::engine::general_purpose::STANDARD         .decode(required_text(block, "data")?)         .map_err` | [1701](../../src/request.rs#L1701) | receiver-type-required |
-| `degraded_file_text` | `base64::engine::general_purpose::STANDARD         .decode` | [1701](../../src/request.rs#L1701) | receiver-type-required |
-| `degraded_file_text` | `block         .get("bytes")         .and_then(Value::as_u64)         .unwrap_or` | [1704](../../src/request.rs#L1704) | receiver-type-required |
-| `degraded_file_text` | `block         .get("bytes")         .and_then` | [1704](../../src/request.rs#L1704) | receiver-type-required |
-| `degraded_file_text` | `block         .get` | [1704](../../src/request.rs#L1704) | receiver-type-required |
-| `degraded_file_text` | `decoded.len` | [1707](../../src/request.rs#L1707), [1708](../../src/request.rs#L1708) | receiver-type-required |
-| `degraded_file_text` | `std::str::from_utf8` | [1709](../../src/request.rs#L1709) | external-constructor-callback-or-unresolved |
-| `degraded_file_text` | `Ok` | [1710](../../src/request.rs#L1710), [1715](../../src/request.rs#L1715) | external-constructor-callback-or-unresolved |
-| `data_url` | `Ok` | [1721](../../src/request.rs#L1721) | external-constructor-callback-or-unresolved |
-| `item_content` | `item.get("content")         .and_then(Value::as_array)         .map(Vec::as_slice)         .ok_or_else` | [1729](../../src/request.rs#L1729) | receiver-type-required |
-| `item_content` | `item.get("content")         .and_then(Value::as_array)         .map` | [1729](../../src/request.rs#L1729) | receiver-type-required |
-| `item_content` | `item.get("content")         .and_then` | [1729](../../src/request.rs#L1729) | receiver-type-required |
-| `item_content` | `item.get` | [1729](../../src/request.rs#L1729) | receiver-type-required |
-| `item_content` | `invalid` | [1732](../../src/request.rs#L1732) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `block_type` | `block         .get("type")         .and_then(Value::as_str)         .ok_or_else` | [1736](../../src/request.rs#L1736) | receiver-type-required |
-| `block_type` | `block         .get("type")         .and_then` | [1736](../../src/request.rs#L1736) | receiver-type-required |
-| `block_type` | `block         .get` | [1736](../../src/request.rs#L1736) | receiver-type-required |
-| `block_type` | `invalid` | [1739](../../src/request.rs#L1739) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .map(str::to_owned)         .ok_or_else` | [1743](../../src/request.rs#L1743) | receiver-type-required |
-| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .map` | [1743](../../src/request.rs#L1743) | receiver-type-required |
-| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter` | [1743](../../src/request.rs#L1743) | receiver-type-required |
-| `required_text` | `value         .get(field)         .and_then` | [1743](../../src/request.rs#L1743) | receiver-type-required |
-| `required_text` | `value         .get` | [1743](../../src/request.rs#L1743) | receiver-type-required |
-| `required_text` | `value.is_empty` | [1746](../../src/request.rs#L1746) | receiver-type-required |
-| `required_text` | `invalid` | [1748](../../src/request.rs#L1748) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `required_value` | `value         .get(field)         .cloned()         .ok_or_else` | [1752](../../src/request.rs#L1752) | receiver-type-required |
-| `required_value` | `value         .get(field)         .cloned` | [1752](../../src/request.rs#L1752) | receiver-type-required |
-| `required_value` | `value         .get` | [1752](../../src/request.rs#L1752) | receiver-type-required |
-| `required_value` | `invalid` | [1755](../../src/request.rs#L1755) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `tool_result_text` | `block.get` | [1762](../../src/request.rs#L1762) | receiver-type-required |
-| `tool_result_text` | `result.and_then(Value::as_array).map` | [1763](../../src/request.rs#L1763) | receiver-type-required |
-| `tool_result_text` | `result.and_then` | [1763](../../src/request.rs#L1763) | receiver-type-required |
-| `tool_result_text` | `only.get("type").and_then` | [1764](../../src/request.rs#L1764) | receiver-type-required |
-| `tool_result_text` | `only.get` | [1764](../../src/request.rs#L1764), [1765](../../src/request.rs#L1765) | receiver-type-required |
-| `tool_result_text` | `Some` | [1764](../../src/request.rs#L1764) | external-constructor-callback-or-unresolved |
-| `tool_result_text` | `only.get("text").and_then` | [1765](../../src/request.rs#L1765) | receiver-type-required |
+| `validate_tool_schema` | `Ok` | [1647](../../src/request.rs#L1647) | external-constructor-callback-or-unresolved |
+| `item_role` | `item.get("role")         .and_then(Value::as_str)         .filter(&#124;role&#124; matches!(*role, "user" &#124; "assistant" &#124; "tool"))         .ok_or_else` | [1651](../../src/request.rs#L1651) | receiver-type-required |
+| `item_role` | `item.get("role")         .and_then(Value::as_str)         .filter` | [1651](../../src/request.rs#L1651) | receiver-type-required |
+| `item_role` | `item.get("role")         .and_then` | [1651](../../src/request.rs#L1651) | receiver-type-required |
+| `item_role` | `item.get` | [1651](../../src/request.rs#L1651) | receiver-type-required |
+| `item_role` | `invalid` | [1654](../../src/request.rs#L1654) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `sealed_fragments` | `sealed_fragment_value` | [1658](../../src/request.rs#L1658) | [provider::request::sealed_fragment_value](../../src/request.rs#L1668) |
+| `sealed_fragments` | `Ok` | [1659](../../src/request.rs#L1659) | external-constructor-callback-or-unresolved |
+| `sealed_fragments` | `value         .as_array()         .cloned()         .map(Some)         .ok_or_else` | [1661](../../src/request.rs#L1661) | receiver-type-required |
+| `sealed_fragments` | `value         .as_array()         .cloned()         .map` | [1661](../../src/request.rs#L1661) | receiver-type-required |
+| `sealed_fragments` | `value         .as_array()         .cloned` | [1661](../../src/request.rs#L1661) | receiver-type-required |
+| `sealed_fragments` | `value         .as_array` | [1661](../../src/request.rs#L1661) | receiver-type-required |
+| `sealed_fragments` | `invalid` | [1665](../../src/request.rs#L1665) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `sealed_fragment_value` | `item.get("role").and_then` | [1669](../../src/request.rs#L1669) | receiver-type-required |
+| `sealed_fragment_value` | `item.get` | [1669](../../src/request.rs#L1669), [1672](../../src/request.rs#L1672), [1675](../../src/request.rs#L1675) | receiver-type-required |
+| `sealed_fragment_value` | `Some` | [1669](../../src/request.rs#L1669), [1672](../../src/request.rs#L1672) | external-constructor-callback-or-unresolved |
+| `sealed_fragment_value` | `Ok` | [1670](../../src/request.rs#L1670) | external-constructor-callback-or-unresolved |
+| `sealed_fragment_value` | `item.get("adapter").and_then` | [1672](../../src/request.rs#L1672) | receiver-type-required |
+| `sealed_fragment_value` | `dialect.as_str` | [1672](../../src/request.rs#L1672) | receiver-type-required |
+| `sealed_fragment_value` | `Err` | [1673](../../src/request.rs#L1673) | external-constructor-callback-or-unresolved |
+| `sealed_fragment_value` | `invalid` | [1673](../../src/request.rs#L1673), [1678](../../src/request.rs#L1678) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `sealed_fragment_value` | `item.get("fragments")         .cloned()         .map(Some)         .ok_or_else` | [1675](../../src/request.rs#L1675) | receiver-type-required |
+| `sealed_fragment_value` | `item.get("fragments")         .cloned()         .map` | [1675](../../src/request.rs#L1675) | receiver-type-required |
+| `sealed_fragment_value` | `item.get("fragments")         .cloned` | [1675](../../src/request.rs#L1675) | receiver-type-required |
+| `degraded_file_text` | `required_text` | [1692](../../src/request.rs#L1692), [1699](../../src/request.rs#L1699), [1701](../../src/request.rs#L1701) | [provider::request::required_text](../../src/request.rs#L1741) |
+| `degraded_file_text` | `mime.starts_with` | [1693](../../src/request.rs#L1693) | receiver-type-required |
+| `degraded_file_text` | `Err` | [1694](../../src/request.rs#L1694) | external-constructor-callback-or-unresolved |
+| `degraded_file_text` | `invalid` | [1694](../../src/request.rs#L1694), [1702](../../src/request.rs#L1702) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `degraded_file_text` | `required_text(block, "name").unwrap_or_else` | [1699](../../src/request.rs#L1699) | receiver-type-required |
+| `degraded_file_text` | `"attachment".to_owned` | [1699](../../src/request.rs#L1699) | receiver-type-required |
+| `degraded_file_text` | `base64::engine::general_purpose::STANDARD         .decode(required_text(block, "data")?)         .map_err` | [1700](../../src/request.rs#L1700) | receiver-type-required |
+| `degraded_file_text` | `base64::engine::general_purpose::STANDARD         .decode` | [1700](../../src/request.rs#L1700) | receiver-type-required |
+| `degraded_file_text` | `block         .get("bytes")         .and_then(Value::as_u64)         .unwrap_or` | [1703](../../src/request.rs#L1703) | receiver-type-required |
+| `degraded_file_text` | `block         .get("bytes")         .and_then` | [1703](../../src/request.rs#L1703) | receiver-type-required |
+| `degraded_file_text` | `block         .get` | [1703](../../src/request.rs#L1703) | receiver-type-required |
+| `degraded_file_text` | `decoded.len` | [1706](../../src/request.rs#L1706), [1707](../../src/request.rs#L1707) | receiver-type-required |
+| `degraded_file_text` | `std::str::from_utf8` | [1708](../../src/request.rs#L1708) | external-constructor-callback-or-unresolved |
+| `degraded_file_text` | `Ok` | [1710](../../src/request.rs#L1710), [1714](../../src/request.rs#L1714) | external-constructor-callback-or-unresolved |
+| `data_url` | `Ok` | [1720](../../src/request.rs#L1720) | external-constructor-callback-or-unresolved |
+| `item_content` | `item.get("content")         .and_then(Value::as_array)         .map(Vec::as_slice)         .ok_or_else` | [1728](../../src/request.rs#L1728) | receiver-type-required |
+| `item_content` | `item.get("content")         .and_then(Value::as_array)         .map` | [1728](../../src/request.rs#L1728) | receiver-type-required |
+| `item_content` | `item.get("content")         .and_then` | [1728](../../src/request.rs#L1728) | receiver-type-required |
+| `item_content` | `item.get` | [1728](../../src/request.rs#L1728) | receiver-type-required |
+| `item_content` | `invalid` | [1731](../../src/request.rs#L1731) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `block_type` | `block         .get("type")         .and_then(Value::as_str)         .ok_or_else` | [1735](../../src/request.rs#L1735) | receiver-type-required |
+| `block_type` | `block         .get("type")         .and_then` | [1735](../../src/request.rs#L1735) | receiver-type-required |
+| `block_type` | `block         .get` | [1735](../../src/request.rs#L1735) | receiver-type-required |
+| `block_type` | `invalid` | [1738](../../src/request.rs#L1738) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .map(str::to_owned)         .ok_or_else` | [1742](../../src/request.rs#L1742) | receiver-type-required |
+| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .map` | [1742](../../src/request.rs#L1742) | receiver-type-required |
+| `required_text` | `value         .get(field)         .and_then(Value::as_str)         .filter` | [1742](../../src/request.rs#L1742) | receiver-type-required |
+| `required_text` | `value         .get(field)         .and_then` | [1742](../../src/request.rs#L1742) | receiver-type-required |
+| `required_text` | `value         .get` | [1742](../../src/request.rs#L1742) | receiver-type-required |
+| `required_text` | `value.is_empty` | [1745](../../src/request.rs#L1745) | receiver-type-required |
+| `required_text` | `invalid` | [1747](../../src/request.rs#L1747) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `required_value` | `value         .get(field)         .cloned()         .ok_or_else` | [1751](../../src/request.rs#L1751) | receiver-type-required |
+| `required_value` | `value         .get(field)         .cloned` | [1751](../../src/request.rs#L1751) | receiver-type-required |
+| `required_value` | `value         .get` | [1751](../../src/request.rs#L1751) | receiver-type-required |
+| `required_value` | `invalid` | [1754](../../src/request.rs#L1754) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `tool_result_text` | `block.get` | [1761](../../src/request.rs#L1761) | receiver-type-required |
+| `tool_result_text` | `result.and_then(Value::as_array).map` | [1762](../../src/request.rs#L1762) | receiver-type-required |
+| `tool_result_text` | `result.and_then` | [1762](../../src/request.rs#L1762) | receiver-type-required |
+| `tool_result_text` | `only.get("type").and_then` | [1763](../../src/request.rs#L1763) | receiver-type-required |
+| `tool_result_text` | `only.get` | [1763](../../src/request.rs#L1763), [1764](../../src/request.rs#L1764) | receiver-type-required |
+| `tool_result_text` | `Some` | [1763](../../src/request.rs#L1763) | external-constructor-callback-or-unresolved |
+| `tool_result_text` | `only.get("text").and_then` | [1764](../../src/request.rs#L1764) | receiver-type-required |
 | `tool_result_text` | `Ok` | [1766](../../src/request.rs#L1766) | external-constructor-callback-or-unresolved |
 | `tool_result_text` | `text.to_owned` | [1766](../../src/request.rs#L1766) | receiver-type-required |
-| `tool_result_text` | `canonical_argument_string` | [1770](../../src/request.rs#L1770) | [provider::request::canonical_argument_string](../../src/request.rs#L1773) |
-| `canonical_argument_string` | `value.ok_or_else` | [1774](../../src/request.rs#L1774) | receiver-type-required |
-| `canonical_argument_string` | `invalid` | [1774](../../src/request.rs#L1774) | [provider::request::invalid](../../src/request.rs#L1779) |
-| `canonical_argument_string` | `serde_json_canonicalizer::to_string(value)         .map_err` | [1775](../../src/request.rs#L1775) | receiver-type-required |
-| `canonical_argument_string` | `serde_json_canonicalizer::to_string` | [1775](../../src/request.rs#L1775) | external-constructor-callback-or-unresolved |
-| `canonical_argument_string` | `PrepareError::InvalidJson` | [1776](../../src/request.rs#L1776) | external-constructor-callback-or-unresolved |
-| `canonical_argument_string` | `error.to_string` | [1776](../../src/request.rs#L1776) | receiver-type-required |
-| `invalid` | `PrepareError::InvalidJson` | [1780](../../src/request.rs#L1780) | external-constructor-callback-or-unresolved |
-| `invalid` | `message.into` | [1780](../../src/request.rs#L1780) | receiver-type-required |
-| `pdf_on_anthropic_is_still_a_document` | `render_anthropic(             &user(file("application/pdf", "x.pdf", b"%PDF")),             DialectId::AnthropicMessagesV1,         )         .unwrap` | [1801](../../src/request.rs#L1801) | receiver-type-required |
-| `pdf_on_anthropic_is_still_a_document` | `render_anthropic` | [1801](../../src/request.rs#L1801) | external-constructor-callback-or-unresolved |
-| `pdf_on_anthropic_is_still_a_document` | `user` | [1802](../../src/request.rs#L1802) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `pdf_on_anthropic_is_still_a_document` | `file` | [1802](../../src/request.rs#L1802) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `text_file_on_anthropic_degrades_to_fenced_text` | `render_anthropic(             &user(file("text/plain", "notes.txt", b"line one\nline two")),             DialectId::AnthropicMessagesV1,         )         .unwrap` | [1815](../../src/request.rs#L1815) | receiver-type-required |
-| `text_file_on_anthropic_degrades_to_fenced_text` | `render_anthropic` | [1815](../../src/request.rs#L1815) | external-constructor-callback-or-unresolved |
-| `text_file_on_anthropic_degrades_to_fenced_text` | `user` | [1816](../../src/request.rs#L1816) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `text_file_on_anthropic_degrades_to_fenced_text` | `file` | [1816](../../src/request.rs#L1816) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `binary_file_on_chat_completions_degrades_to_the_stub` | `render_chat(             &user(file(                 "application/octet-stream",                 "blob.bin",                 &[0xff, 0xfe, 0x00],             )),             "",             DialectId::OpenaiChatV1,         )         .unwrap` | [1828](../../src/request.rs#L1828) | receiver-type-required |
-| `binary_file_on_chat_completions_degrades_to_the_stub` | `render_chat` | [1828](../../src/request.rs#L1828) | external-constructor-callback-or-unresolved |
-| `binary_file_on_chat_completions_degrades_to_the_stub` | `user` | [1829](../../src/request.rs#L1829) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `binary_file_on_chat_completions_degrades_to_the_stub` | `file` | [1829](../../src/request.rs#L1829) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `oversized_utf8_file_degrades_to_the_stub` | `render_chat(             &user(file("text/plain", "big.txt", &big)),             "",             DialectId::DeepseekChatV1,         )         .unwrap` | [1847](../../src/request.rs#L1847) | receiver-type-required |
-| `oversized_utf8_file_degrades_to_the_stub` | `render_chat` | [1847](../../src/request.rs#L1847), [1858](../../src/request.rs#L1858) | external-constructor-callback-or-unresolved |
-| `oversized_utf8_file_degrades_to_the_stub` | `user` | [1848](../../src/request.rs#L1848), [1859](../../src/request.rs#L1859) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `oversized_utf8_file_degrades_to_the_stub` | `file` | [1848](../../src/request.rs#L1848), [1859](../../src/request.rs#L1859) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `oversized_utf8_file_degrades_to_the_stub` | `render_chat(             &user(file("text/plain", "max.txt", &exact)),             "",             DialectId::DeepseekChatV1,         )         .unwrap` | [1858](../../src/request.rs#L1858) | receiver-type-required |
-| `text_file_on_responses_is_delivered_as_input_file` | `render_responses(             &user(file("text/plain", "notes.txt", b"hi")),             DialectId::OpenaiResponsesV1,         )         .unwrap` | [1874](../../src/request.rs#L1874) | receiver-type-required |
-| `text_file_on_responses_is_delivered_as_input_file` | `render_responses` | [1874](../../src/request.rs#L1874), [1886](../../src/request.rs#L1886) | external-constructor-callback-or-unresolved |
-| `text_file_on_responses_is_delivered_as_input_file` | `user` | [1875](../../src/request.rs#L1875), [1887](../../src/request.rs#L1887) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `text_file_on_responses_is_delivered_as_input_file` | `file` | [1875](../../src/request.rs#L1875), [1887](../../src/request.rs#L1887) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `text_file_on_responses_is_delivered_as_input_file` | `render_responses(             &user(file("text/plain", "notes.txt", b"hi")),             DialectId::DeepseekResponsesV1,         )         .unwrap` | [1886](../../src/request.rs#L1886) | receiver-type-required |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `render_google(             &user(file("text/csv", "t.csv", b"a,b")),             DialectId::GoogleGenerationV1,         )         .unwrap` | [1899](../../src/request.rs#L1899) | receiver-type-required |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `render_google` | [1899](../../src/request.rs#L1899) | external-constructor-callback-or-unresolved |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `user` | [1900](../../src/request.rs#L1900), [1909](../../src/request.rs#L1909) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `file` | [1900](../../src/request.rs#L1900), [1909](../../src/request.rs#L1909) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `render_interactions(             &user(file("text/csv", "t.csv", b"a,b")),             DialectId::GoogleInteractionsV1,             true,         )         .unwrap` | [1908](../../src/request.rs#L1908) | receiver-type-required |
-| `google_and_interactions_degrade_in_their_native_text_forms` | `render_interactions` | [1908](../../src/request.rs#L1908) | external-constructor-callback-or-unresolved |
-| `image_files_are_never_degraded` | `render_chat(             &user(file("image/png", "p.png", b"\x89PNG")),             "",             DialectId::DeepseekChatV1,         )         .unwrap_err` | [1922](../../src/request.rs#L1922) | receiver-type-required |
-| `image_files_are_never_degraded` | `render_chat` | [1922](../../src/request.rs#L1922) | external-constructor-callback-or-unresolved |
-| `image_files_are_never_degraded` | `user` | [1923](../../src/request.rs#L1923) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1788) |
-| `image_files_are_never_degraded` | `file` | [1923](../../src/request.rs#L1923) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1792) |
-| `a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim` | `render_tools(             DialectId::AnthropicMessagesV1,             &json!([                 {"name":"apply_patch","description":"d","parameters":bounded},                 {"name":"think","description":"d","parameters":plain}             ]),         )         .expect` | [1964](../../src/request.rs#L1964) | receiver-type-required |
-| `a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim` | `render_tools` | [1964](../../src/request.rs#L1964) | external-constructor-callback-or-unresolved |
-| `host_state_between_call_and_result_does_not_break_anthropic_adjacency` | `render_anthropic(&[             json!({"role":"assistant","content":[{"type":"tool_call","call_id":"task-1","name":"task","arguments":{}}]}),             json!({"role":"user","content":[{"type":"text","text":"delegation state"}]}),             json!({"role":"tool","content":[{"type":"tool_result","call_id":"task-1","result":{"outcome":"completed"}}]}),             json!({"role":"assistant","content":[{"type":"text","text":"done"}]}),             json!({"role":"user","content":[{"type":"text","text":"next turn"}]}),         ], DialectId::AnthropicMessagesV1).unwrap` | [1985](../../src/request.rs#L1985) | receiver-type-required |
-| `host_state_between_call_and_result_does_not_break_anthropic_adjacency` | `render_anthropic` | [1985](../../src/request.rs#L1985) | external-constructor-callback-or-unresolved |
+| `tool_result_text` | `canonical_argument_string` | [1768](../../src/request.rs#L1768) | [provider::request::canonical_argument_string](../../src/request.rs#L1771) |
+| `canonical_argument_string` | `value.ok_or_else` | [1772](../../src/request.rs#L1772) | receiver-type-required |
+| `canonical_argument_string` | `invalid` | [1772](../../src/request.rs#L1772) | [provider::request::invalid](../../src/request.rs#L1777) |
+| `canonical_argument_string` | `serde_json_canonicalizer::to_string(value)         .map_err` | [1773](../../src/request.rs#L1773) | receiver-type-required |
+| `canonical_argument_string` | `serde_json_canonicalizer::to_string` | [1773](../../src/request.rs#L1773) | external-constructor-callback-or-unresolved |
+| `canonical_argument_string` | `PrepareError::InvalidJson` | [1774](../../src/request.rs#L1774) | external-constructor-callback-or-unresolved |
+| `canonical_argument_string` | `error.to_string` | [1774](../../src/request.rs#L1774) | receiver-type-required |
+| `invalid` | `PrepareError::InvalidJson` | [1778](../../src/request.rs#L1778) | external-constructor-callback-or-unresolved |
+| `invalid` | `message.into` | [1778](../../src/request.rs#L1778) | receiver-type-required |
+| `pdf_on_anthropic_is_still_a_document` | `render_anthropic(             &user(file("application/pdf", "x.pdf", b"%PDF")),             DialectId::AnthropicMessagesV1,         )         .unwrap` | [1799](../../src/request.rs#L1799) | receiver-type-required |
+| `pdf_on_anthropic_is_still_a_document` | `render_anthropic` | [1799](../../src/request.rs#L1799) | external-constructor-callback-or-unresolved |
+| `pdf_on_anthropic_is_still_a_document` | `user` | [1800](../../src/request.rs#L1800) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `pdf_on_anthropic_is_still_a_document` | `file` | [1800](../../src/request.rs#L1800) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `text_file_on_anthropic_degrades_to_fenced_text` | `render_anthropic(             &user(file("text/plain", "notes.txt", b"line one\nline two")),             DialectId::AnthropicMessagesV1,         )         .unwrap` | [1813](../../src/request.rs#L1813) | receiver-type-required |
+| `text_file_on_anthropic_degrades_to_fenced_text` | `render_anthropic` | [1813](../../src/request.rs#L1813) | external-constructor-callback-or-unresolved |
+| `text_file_on_anthropic_degrades_to_fenced_text` | `user` | [1814](../../src/request.rs#L1814) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `text_file_on_anthropic_degrades_to_fenced_text` | `file` | [1814](../../src/request.rs#L1814) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `binary_file_on_chat_completions_degrades_to_the_stub` | `render_chat(             &user(file(                 "application/octet-stream",                 "blob.bin",                 &[0xff, 0xfe, 0x00],             )),             "",             DialectId::OpenaiChatV1,         )         .unwrap` | [1826](../../src/request.rs#L1826) | receiver-type-required |
+| `binary_file_on_chat_completions_degrades_to_the_stub` | `render_chat` | [1826](../../src/request.rs#L1826) | external-constructor-callback-or-unresolved |
+| `binary_file_on_chat_completions_degrades_to_the_stub` | `user` | [1827](../../src/request.rs#L1827) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `binary_file_on_chat_completions_degrades_to_the_stub` | `file` | [1827](../../src/request.rs#L1827) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `oversized_utf8_file_degrades_to_the_stub` | `render_chat(             &user(file("text/plain", "big.txt", &big)),             "",             DialectId::DeepseekChatV1,         )         .unwrap` | [1845](../../src/request.rs#L1845) | receiver-type-required |
+| `oversized_utf8_file_degrades_to_the_stub` | `render_chat` | [1845](../../src/request.rs#L1845), [1856](../../src/request.rs#L1856) | external-constructor-callback-or-unresolved |
+| `oversized_utf8_file_degrades_to_the_stub` | `user` | [1846](../../src/request.rs#L1846), [1857](../../src/request.rs#L1857) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `oversized_utf8_file_degrades_to_the_stub` | `file` | [1846](../../src/request.rs#L1846), [1857](../../src/request.rs#L1857) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `oversized_utf8_file_degrades_to_the_stub` | `render_chat(             &user(file("text/plain", "max.txt", &exact)),             "",             DialectId::DeepseekChatV1,         )         .unwrap` | [1856](../../src/request.rs#L1856) | receiver-type-required |
+| `text_file_on_responses_is_delivered_as_input_file` | `render_responses(             &user(file("text/plain", "notes.txt", b"hi")),             DialectId::OpenaiResponsesV1,         )         .unwrap` | [1872](../../src/request.rs#L1872) | receiver-type-required |
+| `text_file_on_responses_is_delivered_as_input_file` | `render_responses` | [1872](../../src/request.rs#L1872), [1884](../../src/request.rs#L1884) | external-constructor-callback-or-unresolved |
+| `text_file_on_responses_is_delivered_as_input_file` | `user` | [1873](../../src/request.rs#L1873), [1885](../../src/request.rs#L1885) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `text_file_on_responses_is_delivered_as_input_file` | `file` | [1873](../../src/request.rs#L1873), [1885](../../src/request.rs#L1885) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `text_file_on_responses_is_delivered_as_input_file` | `render_responses(             &user(file("text/plain", "notes.txt", b"hi")),             DialectId::DeepseekResponsesV1,         )         .unwrap` | [1884](../../src/request.rs#L1884) | receiver-type-required |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `render_google(             &user(file("text/csv", "t.csv", b"a,b")),             DialectId::GoogleGenerationV1,         )         .unwrap` | [1897](../../src/request.rs#L1897) | receiver-type-required |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `render_google` | [1897](../../src/request.rs#L1897) | external-constructor-callback-or-unresolved |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `user` | [1898](../../src/request.rs#L1898), [1907](../../src/request.rs#L1907) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `file` | [1898](../../src/request.rs#L1898), [1907](../../src/request.rs#L1907) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `render_interactions(             &user(file("text/csv", "t.csv", b"a,b")),             DialectId::GoogleInteractionsV1,             true,         )         .unwrap` | [1906](../../src/request.rs#L1906) | receiver-type-required |
+| `google_and_interactions_degrade_in_their_native_text_forms` | `render_interactions` | [1906](../../src/request.rs#L1906) | external-constructor-callback-or-unresolved |
+| `image_files_are_never_degraded` | `render_chat(             &user(file("image/png", "p.png", b"\x89PNG")),             "",             DialectId::DeepseekChatV1,         )         .unwrap_err` | [1920](../../src/request.rs#L1920) | receiver-type-required |
+| `image_files_are_never_degraded` | `render_chat` | [1920](../../src/request.rs#L1920) | external-constructor-callback-or-unresolved |
+| `image_files_are_never_degraded` | `user` | [1921](../../src/request.rs#L1921) | [provider::request::file_degradation_tests::user](../../src/request.rs#L1786) |
+| `image_files_are_never_degraded` | `file` | [1921](../../src/request.rs#L1921) | [provider::request::file_degradation_tests::file](../../src/request.rs#L1790) |
+| `a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim` | `render_tools(             DialectId::AnthropicMessagesV1,             &json!([                 {"name":"apply_patch","description":"d","parameters":bounded},                 {"name":"think","description":"d","parameters":plain}             ]),         )         .expect` | [1962](../../src/request.rs#L1962) | receiver-type-required |
+| `a_bounded_schema_is_offered_to_anthropic_without_the_strict_claim` | `render_tools` | [1962](../../src/request.rs#L1962) | external-constructor-callback-or-unresolved |
+| `host_state_between_call_and_result_does_not_break_anthropic_adjacency` | `render_anthropic(&[             json!({"role":"assistant","content":[{"type":"tool_call","call_id":"task-1","name":"task","arguments":{}}]}),             json!({"role":"user","content":[{"type":"text","text":"delegation state"}]}),             json!({"role":"tool","content":[{"type":"tool_result","call_id":"task-1","result":{"outcome":"completed"}}]}),             json!({"role":"assistant","content":[{"type":"text","text":"done"}]}),             json!({"role":"user","content":[{"type":"text","text":"next turn"}]}),         ], DialectId::AnthropicMessagesV1).unwrap` | [1983](../../src/request.rs#L1983) | receiver-type-required |
+| `host_state_between_call_and_result_does_not_break_anthropic_adjacency` | `render_anthropic` | [1983](../../src/request.rs#L1983) | external-constructor-callback-or-unresolved |

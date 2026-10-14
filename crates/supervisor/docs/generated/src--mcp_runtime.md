@@ -90,34 +90,34 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::mcp_runtime::http_request_authorization](../../src/mcp_runtime.rs#L1851) | function_item | `private` |  |
 | [tekes-supervisor::mcp_runtime::credential_fields](../../src/mcp_runtime.rs#L1890) | function_item | `private` |  |
 | [tekes-supervisor::mcp_runtime::current_operating_system_version](../../src/mcp_runtime.rs#L1914) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::mcp_runtime::current_plugin_architecture](../../src/mcp_runtime.rs#L1930) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::SecretMaterial](../../src/mcp_runtime.rs#L1938) | struct_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1944) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::SecretMaterial::zeroize](../../src/mcp_runtime.rs#L1967) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1974) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::authorization_identity](../../src/mcp_runtime.rs#L1994) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::scope_name](../../src/mcp_runtime.rs#L2009) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::protocol_name](../../src/mcp_runtime.rs#L2017) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::SecretAccess](../../src/mcp_runtime.rs#L2028) | struct_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::SecretAccess::read_only](../../src/mcp_runtime.rs#L2035) | function_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority](../../src/mcp_runtime.rs#L2044) | struct_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::McpRoute](../../src/mcp_runtime.rs#L2054) | struct_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::McpRouteContract](../../src/mcp_runtime.rs#L2064) | struct_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2074) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::route_contract_digest](../../src/mcp_runtime.rs#L2102) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::RoutePeerError](../../src/mcp_runtime.rs#L2127) | enum_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::route_preparation_error](../../src/mcp_runtime.rs#L2132) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::validate_reconnected_contract](../../src/mcp_runtime.rs#L2141) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::new](../../src/mcp_runtime.rs#L2180) | function_item | `pub` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::drop](../../src/mcp_runtime.rs#L2199) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::prepare_route](../../src/mcp_runtime.rs#L2214) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::call_route](../../src/mcp_runtime.rs#L2257) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::REQUIRED_TASK_TTL_MS](../../src/mcp_runtime.rs#L2301) | const_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::continuation_identity](../../src/mcp_runtime.rs#L2304) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::map_journal_error](../../src/mcp_runtime.rs#L2313) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2320) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::supports](../../src/mcp_runtime.rs#L2333) | function_item | `private` |  |
-| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::execute](../../src/mcp_runtime.rs#L2337) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::current_plugin_architecture](../../src/mcp_runtime.rs#L1929) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::SecretMaterial](../../src/mcp_runtime.rs#L1937) | struct_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1943) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::SecretMaterial::zeroize](../../src/mcp_runtime.rs#L1966) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1973) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::authorization_identity](../../src/mcp_runtime.rs#L1993) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::scope_name](../../src/mcp_runtime.rs#L2008) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::protocol_name](../../src/mcp_runtime.rs#L2016) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::SecretAccess](../../src/mcp_runtime.rs#L2027) | struct_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::SecretAccess::read_only](../../src/mcp_runtime.rs#L2034) | function_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority](../../src/mcp_runtime.rs#L2043) | struct_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::McpRoute](../../src/mcp_runtime.rs#L2053) | struct_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::McpRouteContract](../../src/mcp_runtime.rs#L2063) | struct_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2073) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::route_contract_digest](../../src/mcp_runtime.rs#L2101) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::RoutePeerError](../../src/mcp_runtime.rs#L2126) | enum_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::route_preparation_error](../../src/mcp_runtime.rs#L2131) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::validate_reconnected_contract](../../src/mcp_runtime.rs#L2140) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::new](../../src/mcp_runtime.rs#L2179) | function_item | `pub` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::drop](../../src/mcp_runtime.rs#L2198) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::prepare_route](../../src/mcp_runtime.rs#L2213) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::call_route](../../src/mcp_runtime.rs#L2256) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::REQUIRED_TASK_TTL_MS](../../src/mcp_runtime.rs#L2300) | const_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::continuation_identity](../../src/mcp_runtime.rs#L2303) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::map_journal_error](../../src/mcp_runtime.rs#L2312) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2319) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::supports](../../src/mcp_runtime.rs#L2332) | function_item | `private` |  |
+| [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::execute](../../src/mcp_runtime.rs#L2336) | function_item | `private` |  |
 | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::execute_outcome](../../src/mcp_runtime.rs#L2350) | function_item | `private` |  |
 | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::continue_task](../../src/mcp_runtime.rs#L2403) | function_item | `private` |  |
 | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::reconcile](../../src/mcp_runtime.rs#L2415) | function_item | `private` |  |
@@ -200,6 +200,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::mcp_runtime::tests::AsyncTaskPeer::task_operation](../../src/mcp_runtime.rs#L4685) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::mcp_runtime::tests::AsyncTaskPeer::close](../../src/mcp_runtime.rs#L4728) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::mcp_runtime::tests::task_result_binds_continuation_and_steps_reach_one_terminal](../../src/mcp_runtime.rs#L4739) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::mcp_runtime::tests::extension_task_result_binds_continuation_through_a_real_client](../../src/mcp_runtime.rs#L4978) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -663,7 +664,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_production_authorities_with_mutation` | `PluginStore::open(             plugin_root,             HostEnvironment {                 host_version,                 operating_system,                 operating_system_version: current_operating_system_version(),                 architecture: current_plugin_architecture(),             },             SignaturePolicy {                 allow_unsigned_local: true,                 trusted_publishers: BTreeMap::new(),             },             MacOsNativeHelperVerifier,         )         .map_err` | [314](../../src/mcp_runtime.rs#L314) | receiver-type-required |
 | `open_production_authorities_with_mutation` | `PluginStore::open` | [314](../../src/mcp_runtime.rs#L314) | external-constructor-callback-or-unresolved |
 | `open_production_authorities_with_mutation` | `current_operating_system_version` | [319](../../src/mcp_runtime.rs#L319) | [tekes-supervisor::mcp_runtime::current_operating_system_version](../../src/mcp_runtime.rs#L1914) |
-| `open_production_authorities_with_mutation` | `current_plugin_architecture` | [320](../../src/mcp_runtime.rs#L320) | [tekes-supervisor::mcp_runtime::current_plugin_architecture](../../src/mcp_runtime.rs#L1930) |
+| `open_production_authorities_with_mutation` | `current_plugin_architecture` | [320](../../src/mcp_runtime.rs#L320) | [tekes-supervisor::mcp_runtime::current_plugin_architecture](../../src/mcp_runtime.rs#L1929) |
 | `open_production_authorities_with_mutation` | `BTreeMap::new` | [324](../../src/mcp_runtime.rs#L324) | external-constructor-callback-or-unresolved |
 | `open_production_authorities_with_mutation` | `McpError::Conflict` | [329](../../src/mcp_runtime.rs#L329) | external-constructor-callback-or-unresolved |
 | `open_production_authorities_with_mutation` | `Arc::new` | [331](../../src/mcp_runtime.rs#L331), [336](../../src/mcp_runtime.rs#L336) | external-constructor-callback-or-unresolved |
@@ -782,7 +783,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_workspace` | `binding.authority.upgrade().unwrap_or_else` | [562](../../src/mcp_runtime.rs#L562) | receiver-type-required |
 | `prepare_workspace` | `binding.authority.upgrade` | [562](../../src/mcp_runtime.rs#L562) | receiver-type-required |
 | `prepare_workspace` | `Arc::new` | [563](../../src/mcp_runtime.rs#L563), [692](../../src/mcp_runtime.rs#L692) | external-constructor-callback-or-unresolved |
-| `prepare_workspace` | `McpDynamicSupervisorAuthority::new` | [563](../../src/mcp_runtime.rs#L563), [692](../../src/mcp_runtime.rs#L692) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::new](../../src/mcp_runtime.rs#L2180) |
+| `prepare_workspace` | `McpDynamicSupervisorAuthority::new` | [563](../../src/mcp_runtime.rs#L563), [692](../../src/mcp_runtime.rs#L692) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::new](../../src/mcp_runtime.rs#L2179) |
 | `prepare_workspace` | `self.broker.handle` | [564](../../src/mcp_runtime.rs#L564), [589](../../src/mcp_runtime.rs#L589), [693](../../src/mcp_runtime.rs#L693) | receiver-type-required |
 | `prepare_workspace` | `binding.routes.clone` | [565](../../src/mcp_runtime.rs#L565) | receiver-type-required |
 | `prepare_workspace` | `self.secret_access` | [566](../../src/mcp_runtime.rs#L566), [621](../../src/mcp_runtime.rs#L621), [695](../../src/mcp_runtime.rs#L695) | [tekes-supervisor::mcp_runtime::McpRuntime::secret_access](../../src/mcp_runtime.rs#L343) |
@@ -872,7 +873,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bind_prepared_server` | `prepared                         .tools                         .iter()                         .find(&#124;tool&#124; tool.name == binding.reconcile_tool)                         .cloned` | [786](../../src/mcp_runtime.rs#L786) | receiver-type-required |
 | `bind_prepared_server` | `prepared                         .tools                         .iter()                         .find` | [786](../../src/mcp_runtime.rs#L786) | receiver-type-required |
 | `bind_prepared_server` | `prepared                         .tools                         .iter` | [786](../../src/mcp_runtime.rs#L786) | receiver-type-required |
-| `bind_prepared_server` | `McpRouteContract::capture` | [799](../../src/mcp_runtime.rs#L799) | [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2074) |
+| `bind_prepared_server` | `McpRouteContract::capture` | [799](../../src/mcp_runtime.rs#L799) | [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2073) |
 | `bind_prepared_server` | `prepared.peer.as_ref` | [800](../../src/mcp_runtime.rs#L800) | receiver-type-required |
 | `bind_prepared_server` | `effect_tool.clone` | [801](../../src/mcp_runtime.rs#L801) | receiver-type-required |
 | `bind_prepared_server` | `existing_routes.contains_key` | [804](../../src/mcp_runtime.rs#L804) | receiver-type-required |
@@ -1192,7 +1193,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_server_cancellable` | `serde_json_canonicalizer::to_vec` | [1718](../../src/mcp_runtime.rs#L1718) | external-constructor-callback-or-unresolved |
 | `prepare_server_cancellable` | `McpError::Protocol` | [1719](../../src/mcp_runtime.rs#L1719) | external-constructor-callback-or-unresolved |
 | `prepare_server_cancellable` | `error.to_string` | [1719](../../src/mcp_runtime.rs#L1719), [1783](../../src/mcp_runtime.rs#L1783) | receiver-type-required |
-| `prepare_server_cancellable` | `SecretMaterial::resolve_map` | [1729](../../src/mcp_runtime.rs#L1729), [1751](../../src/mcp_runtime.rs#L1751) | [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1944) |
+| `prepare_server_cancellable` | `SecretMaterial::resolve_map` | [1729](../../src/mcp_runtime.rs#L1729), [1751](../../src/mcp_runtime.rs#L1751) | [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1943) |
 | `prepare_server_cancellable` | `secrets.store.as_ref` | [1729](../../src/mcp_runtime.rs#L1729), [1751](../../src/mcp_runtime.rs#L1751), [1761](../../src/mcp_runtime.rs#L1761) | receiver-type-required |
 | `prepare_server_cancellable` | `plugin.data_path.clone` | [1734](../../src/mcp_runtime.rs#L1734) | receiver-type-required |
 | `prepare_server_cancellable` | `Some` | [1735](../../src/mcp_runtime.rs#L1735), [1771](../../src/mcp_runtime.rs#L1771) | external-constructor-callback-or-unresolved |
@@ -1207,7 +1208,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_server_cancellable` | `cancellation.clone` | [1743](../../src/mcp_runtime.rs#L1743), [1804](../../src/mcp_runtime.rs#L1804) | receiver-type-required |
 | `prepare_server_cancellable` | `Box::new` | [1744](../../src/mcp_runtime.rs#L1744), [1817](../../src/mcp_runtime.rs#L1817) | external-constructor-callback-or-unresolved |
 | `prepare_server_cancellable` | `material.authority.clone` | [1752](../../src/mcp_runtime.rs#L1752) | receiver-type-required |
-| `prepare_server_cancellable` | `resolve_secret` | [1761](../../src/mcp_runtime.rs#L1761) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1974) |
+| `prepare_server_cancellable` | `resolve_secret` | [1761](../../src/mcp_runtime.rs#L1761) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1973) |
 | `prepare_server_cancellable` | `provider::OAuthGrant::decode_material(&transient).is_some` | [1762](../../src/mcp_runtime.rs#L1762) | receiver-type-required |
 | `prepare_server_cancellable` | `provider::OAuthGrant::decode_material` | [1762](../../src/mcp_runtime.rs#L1762) | [provider::oauth::OAuthGrant::decode_material](../../../provider/src/oauth.rs#L97) |
 | `prepare_server_cancellable` | `transient.zeroize` | [1763](../../src/mcp_runtime.rs#L1763) | receiver-type-required |
@@ -1241,13 +1242,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_server_cancellable` | `authorization_identity` | [1833](../../src/mcp_runtime.rs#L1833) | external-constructor-callback-or-unresolved |
 | `prepare_server_cancellable` | `config.reference.workspace_id.clone` | [1835](../../src/mcp_runtime.rs#L1835) | receiver-type-required |
 | `prepare_server_cancellable` | `scope_name(config.reference.scope).to_owned` | [1836](../../src/mcp_runtime.rs#L1836) | receiver-type-required |
-| `prepare_server_cancellable` | `scope_name` | [1836](../../src/mcp_runtime.rs#L1836) | [tekes-supervisor::mcp_runtime::scope_name](../../src/mcp_runtime.rs#L2009) |
+| `prepare_server_cancellable` | `scope_name` | [1836](../../src/mcp_runtime.rs#L1836) | [tekes-supervisor::mcp_runtime::scope_name](../../src/mcp_runtime.rs#L2008) |
 | `prepare_server_cancellable` | `protocol_name(config.protocol_mode).to_owned` | [1840](../../src/mcp_runtime.rs#L1840) | receiver-type-required |
-| `prepare_server_cancellable` | `protocol_name` | [1840](../../src/mcp_runtime.rs#L1840) | [tekes-supervisor::mcp_runtime::protocol_name](../../src/mcp_runtime.rs#L2017) |
+| `prepare_server_cancellable` | `protocol_name` | [1840](../../src/mcp_runtime.rs#L1840) | [tekes-supervisor::mcp_runtime::protocol_name](../../src/mcp_runtime.rs#L2016) |
 | `prepare_server_cancellable` | `plugin.map` | [1841](../../src/mcp_runtime.rs#L1841) | receiver-type-required |
 | `prepare_server_cancellable` | `value.plugin_generation.clone` | [1841](../../src/mcp_runtime.rs#L1841) | receiver-type-required |
 | `prepare_server_cancellable` | `Ok` | [1843](../../src/mcp_runtime.rs#L1843) | external-constructor-callback-or-unresolved |
-| `http_request_authorization` | `SecretMaterial::resolve_map` | [1857](../../src/mcp_runtime.rs#L1857) | [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1944) |
+| `http_request_authorization` | `SecretMaterial::resolve_map` | [1857](../../src/mcp_runtime.rs#L1857) | [tekes-supervisor::mcp_runtime::SecretMaterial::resolve_map](../../src/mcp_runtime.rs#L1943) |
 | `http_request_authorization` | `material.authority.clone` | [1858](../../src/mcp_runtime.rs#L1858) | receiver-type-required |
 | `http_request_authorization` | `exchange                     .bearer()                     .map_err` | [1867](../../src/mcp_runtime.rs#L1867) | receiver-type-required |
 | `http_request_authorization` | `exchange                     .bearer` | [1867](../../src/mcp_runtime.rs#L1867) | receiver-type-required |
@@ -1256,12 +1257,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `http_request_authorization` | `authority.push` | [1870](../../src/mcp_runtime.rs#L1870), [1876](../../src/mcp_runtime.rs#L1876) | receiver-type-required |
 | `http_request_authorization` | `credential.to_owned` | [1870](../../src/mcp_runtime.rs#L1870), [1876](../../src/mcp_runtime.rs#L1876) | receiver-type-required |
 | `http_request_authorization` | `Some` | [1871](../../src/mcp_runtime.rs#L1871), [1872](../../src/mcp_runtime.rs#L1872), [1877](../../src/mcp_runtime.rs#L1877) | external-constructor-callback-or-unresolved |
-| `http_request_authorization` | `resolve_secret` | [1875](../../src/mcp_runtime.rs#L1875) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1974) |
+| `http_request_authorization` | `resolve_secret` | [1875](../../src/mcp_runtime.rs#L1875) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1973) |
 | `http_request_authorization` | `authority.sort` | [1881](../../src/mcp_runtime.rs#L1881) | receiver-type-required |
 | `http_request_authorization` | `authority.dedup` | [1882](../../src/mcp_runtime.rs#L1882) | receiver-type-required |
 | `http_request_authorization` | `Ok` | [1883](../../src/mcp_runtime.rs#L1883) | external-constructor-callback-or-unresolved |
 | `http_request_authorization` | `oauth_identity.unwrap_or_else` | [1884](../../src/mcp_runtime.rs#L1884) | receiver-type-required |
-| `http_request_authorization` | `authorization_identity` | [1884](../../src/mcp_runtime.rs#L1884) | [tekes-supervisor::mcp_runtime::authorization_identity](../../src/mcp_runtime.rs#L1994) |
+| `http_request_authorization` | `authorization_identity` | [1884](../../src/mcp_runtime.rs#L1884) | [tekes-supervisor::mcp_runtime::authorization_identity](../../src/mcp_runtime.rs#L1993) |
 | `http_request_authorization` | `std::mem::take` | [1885](../../src/mcp_runtime.rs#L1885) | external-constructor-callback-or-unresolved |
 | `credential_fields` | `BTreeMap::new` | [1891](../../src/mcp_runtime.rs#L1891) | external-constructor-callback-or-unresolved |
 | `credential_fields` | `fields.insert` | [1896](../../src/mcp_runtime.rs#L1896), [1903](../../src/mcp_runtime.rs#L1903), [1907](../../src/mcp_runtime.rs#L1907) | receiver-type-required |
@@ -1270,130 +1271,130 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `current_operating_system_version` | `std::process::Command::new("/usr/bin/sw_vers")         .arg("-productVersion")         .output` | [1916](../../src/mcp_runtime.rs#L1916) | receiver-type-required |
 | `current_operating_system_version` | `std::process::Command::new("/usr/bin/sw_vers")         .arg` | [1916](../../src/mcp_runtime.rs#L1916) | receiver-type-required |
 | `current_operating_system_version` | `std::process::Command::new` | [1916](../../src/mcp_runtime.rs#L1916) | external-constructor-callback-or-unresolved |
-| `current_operating_system_version` | `output.status.success` | [1920](../../src/mcp_runtime.rs#L1920) | receiver-type-required |
+| `current_operating_system_version` | `output.status.success` | [1919](../../src/mcp_runtime.rs#L1919) | receiver-type-required |
 | `current_operating_system_version` | `String::from_utf8_lossy(&output.stdout).trim().to_owned` | [1921](../../src/mcp_runtime.rs#L1921) | receiver-type-required |
 | `current_operating_system_version` | `String::from_utf8_lossy(&output.stdout).trim` | [1921](../../src/mcp_runtime.rs#L1921) | receiver-type-required |
 | `current_operating_system_version` | `String::from_utf8_lossy` | [1921](../../src/mcp_runtime.rs#L1921) | external-constructor-callback-or-unresolved |
 | `current_operating_system_version` | `value.is_empty` | [1922](../../src/mcp_runtime.rs#L1922) | receiver-type-required |
-| `current_operating_system_version` | `"0".to_owned` | [1927](../../src/mcp_runtime.rs#L1927) | receiver-type-required |
-| `current_plugin_architecture` | `"arm64".to_owned` | [1932](../../src/mcp_runtime.rs#L1932) | receiver-type-required |
-| `current_plugin_architecture` | `std::env::consts::ARCH.to_owned` | [1934](../../src/mcp_runtime.rs#L1934) | receiver-type-required |
-| `resolve_map` | `BTreeMap::new` | [1948](../../src/mcp_runtime.rs#L1948) | external-constructor-callback-or-unresolved |
-| `resolve_map` | `Vec::new` | [1949](../../src/mcp_runtime.rs#L1949) | external-constructor-callback-or-unresolved |
-| `resolve_map` | `values.insert` | [1953](../../src/mcp_runtime.rs#L1953), [1957](../../src/mcp_runtime.rs#L1957) | receiver-type-required |
-| `resolve_map` | `name.clone` | [1953](../../src/mcp_runtime.rs#L1953), [1957](../../src/mcp_runtime.rs#L1957) | receiver-type-required |
-| `resolve_map` | `literal.clone` | [1953](../../src/mcp_runtime.rs#L1953) | receiver-type-required |
-| `resolve_map` | `resolve_secret` | [1956](../../src/mcp_runtime.rs#L1956) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1974) |
-| `resolve_map` | `authority.push` | [1958](../../src/mcp_runtime.rs#L1958) | receiver-type-required |
-| `resolve_map` | `credential.clone` | [1958](../../src/mcp_runtime.rs#L1958) | receiver-type-required |
-| `resolve_map` | `authority.sort` | [1962](../../src/mcp_runtime.rs#L1962) | receiver-type-required |
-| `resolve_map` | `authority.dedup` | [1963](../../src/mcp_runtime.rs#L1963) | receiver-type-required |
-| `resolve_map` | `Ok` | [1964](../../src/mcp_runtime.rs#L1964) | external-constructor-callback-or-unresolved |
-| `zeroize` | `self.values.values_mut` | [1968](../../src/mcp_runtime.rs#L1968) | receiver-type-required |
-| `zeroize` | `value.zeroize` | [1969](../../src/mcp_runtime.rs#L1969) | receiver-type-required |
-| `resolve_secret` | `secrets         .resolve(credential)         .map_err` | [1975](../../src/mcp_runtime.rs#L1975) | receiver-type-required |
-| `resolve_secret` | `secrets         .resolve` | [1975](../../src/mcp_runtime.rs#L1975) | receiver-type-required |
-| `resolve_secret` | `McpError::Transport` | [1977](../../src/mcp_runtime.rs#L1977), [1988](../../src/mcp_runtime.rs#L1988) | external-constructor-callback-or-unresolved |
-| `resolve_secret` | `"MCP credential store unavailable".to_owned` | [1977](../../src/mcp_runtime.rs#L1977) | receiver-type-required |
-| `resolve_secret` | `Ok` | [1983](../../src/mcp_runtime.rs#L1983) | external-constructor-callback-or-unresolved |
-| `resolve_secret` | `material.clone` | [1983](../../src/mcp_runtime.rs#L1983) | receiver-type-required |
-| `resolve_secret` | `Err` | [1988](../../src/mcp_runtime.rs#L1988) | external-constructor-callback-or-unresolved |
-| `authorization_identity` | `parts.is_empty` | [1995](../../src/mcp_runtime.rs#L1995) | receiver-type-required |
-| `authorization_identity` | `"anonymous".to_owned` | [1996](../../src/mcp_runtime.rs#L1996) | receiver-type-required |
-| `authorization_identity` | `Sha256::new` | [1998](../../src/mcp_runtime.rs#L1998) | external-constructor-callback-or-unresolved |
-| `authorization_identity` | `hasher.update` | [1999](../../src/mcp_runtime.rs#L1999), [2001](../../src/mcp_runtime.rs#L2001), [2002](../../src/mcp_runtime.rs#L2002), [2003](../../src/mcp_runtime.rs#L2003), [2004](../../src/mcp_runtime.rs#L2004) | receiver-type-required |
-| `authorization_identity` | `credential.as_bytes` | [2001](../../src/mcp_runtime.rs#L2001) | receiver-type-required |
-| `authorization_identity` | `generation.to_be_bytes` | [2003](../../src/mcp_runtime.rs#L2003) | receiver-type-required |
-| `capture` | `peer.protocol_version().to_owned` | [2079](../../src/mcp_runtime.rs#L2079) | receiver-type-required |
-| `capture` | `peer.protocol_version` | [2079](../../src/mcp_runtime.rs#L2079) | receiver-type-required |
-| `capture` | `peer.server_identity().cloned().ok_or_else` | [2080](../../src/mcp_runtime.rs#L2080) | receiver-type-required |
-| `capture` | `peer.server_identity().cloned` | [2080](../../src/mcp_runtime.rs#L2080) | receiver-type-required |
-| `capture` | `peer.server_identity` | [2080](../../src/mcp_runtime.rs#L2080) | receiver-type-required |
-| `capture` | `McpError::Protocol` | [2081](../../src/mcp_runtime.rs#L2081) | external-constructor-callback-or-unresolved |
-| `capture` | `"MCP handshake omitted server identity".to_owned` | [2081](../../src/mcp_runtime.rs#L2081) | receiver-type-required |
-| `capture` | `peer.catalog_generation` | [2083](../../src/mcp_runtime.rs#L2083) | receiver-type-required |
-| `capture` | `route_contract_digest` | [2084](../../src/mcp_runtime.rs#L2084) | [tekes-supervisor::mcp_runtime::route_contract_digest](../../src/mcp_runtime.rs#L2102) |
-| `capture` | `reconcile_tool.as_ref` | [2089](../../src/mcp_runtime.rs#L2089) | receiver-type-required |
-| `capture` | `Ok` | [2091](../../src/mcp_runtime.rs#L2091) | external-constructor-callback-or-unresolved |
-| `route_contract_digest` | `Ok` | [2117](../../src/mcp_runtime.rs#L2117) | external-constructor-callback-or-unresolved |
-| `route_preparation_error` | `RoutePeerError::Unavailable` | [2135](../../src/mcp_runtime.rs#L2135) | external-constructor-callback-or-unresolved |
-| `route_preparation_error` | `RoutePeerError::ContractChanged` | [2137](../../src/mcp_runtime.rs#L2137) | external-constructor-callback-or-unresolved |
-| `route_preparation_error` | `other.to_string` | [2137](../../src/mcp_runtime.rs#L2137) | receiver-type-required |
-| `validate_reconnected_contract` | `Err` | [2146](../../src/mcp_runtime.rs#L2146), [2151](../../src/mcp_runtime.rs#L2151), [2156](../../src/mcp_runtime.rs#L2156), [2161](../../src/mcp_runtime.rs#L2161), [2166](../../src/mcp_runtime.rs#L2166), [2171](../../src/mcp_runtime.rs#L2171) | external-constructor-callback-or-unresolved |
-| `validate_reconnected_contract` | `RoutePeerError::ContractChanged` | [2146](../../src/mcp_runtime.rs#L2146), [2151](../../src/mcp_runtime.rs#L2151), [2156](../../src/mcp_runtime.rs#L2156), [2161](../../src/mcp_runtime.rs#L2161), [2166](../../src/mcp_runtime.rs#L2166), [2171](../../src/mcp_runtime.rs#L2171) | external-constructor-callback-or-unresolved |
-| `validate_reconnected_contract` | `"negotiated protocol version changed".to_owned` | [2147](../../src/mcp_runtime.rs#L2147) | receiver-type-required |
-| `validate_reconnected_contract` | `"negotiated server identity changed".to_owned` | [2152](../../src/mcp_runtime.rs#L2152) | receiver-type-required |
-| `validate_reconnected_contract` | `"catalog generation changed during reconnect".to_owned` | [2157](../../src/mcp_runtime.rs#L2157) | receiver-type-required |
-| `validate_reconnected_contract` | `"effect tool canonical contract changed".to_owned` | [2162](../../src/mcp_runtime.rs#L2162) | receiver-type-required |
-| `validate_reconnected_contract` | `"reconciliation tool canonical contract changed".to_owned` | [2167](../../src/mcp_runtime.rs#L2167) | receiver-type-required |
-| `validate_reconnected_contract` | `"MCP route contract digest changed".to_owned` | [2172](../../src/mcp_runtime.rs#L2172) | receiver-type-required |
-| `validate_reconnected_contract` | `Ok` | [2175](../../src/mcp_runtime.rs#L2175) | external-constructor-callback-or-unresolved |
-| `new` | `Arc::new` | [2193](../../src/mcp_runtime.rs#L2193) | external-constructor-callback-or-unresolved |
-| `new` | `Mutex::new` | [2193](../../src/mcp_runtime.rs#L2193) | external-constructor-callback-or-unresolved |
-| `new` | `McpCancellationToken::default` | [2193](../../src/mcp_runtime.rs#L2193) | external-constructor-callback-or-unresolved |
-| `drop` | `self             .routes             .values()             .map(&#124;route&#124; route.key.clone())             .collect::<std::collections::BTreeSet<_>>` | [2200](../../src/mcp_runtime.rs#L2200) | receiver-type-required |
-| `drop` | `self             .routes             .values()             .map` | [2200](../../src/mcp_runtime.rs#L2200) | receiver-type-required |
-| `drop` | `self             .routes             .values` | [2200](../../src/mcp_runtime.rs#L2200) | receiver-type-required |
-| `drop` | `route.key.clone` | [2203](../../src/mcp_runtime.rs#L2203) | receiver-type-required |
-| `drop` | `self.broker.release` | [2206](../../src/mcp_runtime.rs#L2206) | receiver-type-required |
-| `prepare_route` | `self.routes.get(&tool.name).ok_or_else` | [2218](../../src/mcp_runtime.rs#L2218) | receiver-type-required |
-| `prepare_route` | `self.routes.get` | [2218](../../src/mcp_runtime.rs#L2218) | receiver-type-required |
-| `prepare_route` | `SupervisorOperationError::Unsupported` | [2219](../../src/mcp_runtime.rs#L2219) | external-constructor-callback-or-unresolved |
-| `prepare_route` | `self.current_cancellation` | [2221](../../src/mcp_runtime.rs#L2221) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::current_cancellation](../../src/mcp_runtime.rs#L2474) |
-| `prepare_route` | `self.ensure_route_peer` | [2222](../../src/mcp_runtime.rs#L2222) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::ensure_route_peer](../../src/mcp_runtime.rs#L2481) |
-| `prepare_route` | `cancellation.clone` | [2222](../../src/mcp_runtime.rs#L2222) | receiver-type-required |
-| `prepare_route` | `self.broker.remove` | [2223](../../src/mcp_runtime.rs#L2223), [2248](../../src/mcp_runtime.rs#L2248) | receiver-type-required |
-| `prepare_route` | `route.key.clone` | [2223](../../src/mcp_runtime.rs#L2223), [2248](../../src/mcp_runtime.rs#L2248) | receiver-type-required |
-| `prepare_route` | `Err` | [2224](../../src/mcp_runtime.rs#L2224), [2249](../../src/mcp_runtime.rs#L2249) | external-constructor-callback-or-unresolved |
-| `prepare_route` | `SupervisorOperationError::Unavailable` | [2225](../../src/mcp_runtime.rs#L2225), [2240](../../src/mcp_runtime.rs#L2240), [2249](../../src/mcp_runtime.rs#L2249) | external-constructor-callback-or-unresolved |
-| `prepare_route` | `tool.external_effect.is_some` | [2228](../../src/mcp_runtime.rs#L2228) | receiver-type-required |
-| `prepare_route` | `SupervisorOperationError::EffectConflicted` | [2229](../../src/mcp_runtime.rs#L2229) | external-constructor-callback-or-unresolved |
-| `prepare_route` | `SupervisorOperationError::Conflict` | [2233](../../src/mcp_runtime.rs#L2233) | external-constructor-callback-or-unresolved |
-| `prepare_route` | `self.secrets.store.resolve(credential).map_err` | [2239](../../src/mcp_runtime.rs#L2239) | receiver-type-required |
-| `prepare_route` | `self.secrets.store.resolve` | [2239](../../src/mcp_runtime.rs#L2239) | receiver-type-required |
-| `prepare_route` | `"MCP credential store unavailable".to_owned` | [2240](../../src/mcp_runtime.rs#L2240) | receiver-type-required |
-| `prepare_route` | `Ok` | [2254](../../src/mcp_runtime.rs#L2254) | external-constructor-callback-or-unresolved |
-| `call_route` | `self.prepare_route` | [2262](../../src/mcp_runtime.rs#L2262) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::prepare_route](../../src/mcp_runtime.rs#L2214) |
-| `call_route` | `route.contract.effect_tool.requires_task` | [2265](../../src/mcp_runtime.rs#L2265) | receiver-type-required |
-| `call_route` | `self.broker.call_tool_augmented` | [2266](../../src/mcp_runtime.rs#L2266) | receiver-type-required |
-| `call_route` | `route.key.clone` | [2267](../../src/mcp_runtime.rs#L2267), [2278](../../src/mcp_runtime.rs#L2278), [2288](../../src/mcp_runtime.rs#L2288) | receiver-type-required |
-| `call_route` | `route.remote_name.clone` | [2268](../../src/mcp_runtime.rs#L2268), [2279](../../src/mcp_runtime.rs#L2279), [2289](../../src/mcp_runtime.rs#L2289) | receiver-type-required |
-| `call_route` | `request.arguments.clone` | [2269](../../src/mcp_runtime.rs#L2269), [2280](../../src/mcp_runtime.rs#L2280), [2290](../../src/mcp_runtime.rs#L2290) | receiver-type-required |
-| `call_route` | `tool.external_effect.as_ref().map` | [2270](../../src/mcp_runtime.rs#L2270) | receiver-type-required |
-| `call_route` | `tool.external_effect.as_ref` | [2270](../../src/mcp_runtime.rs#L2270) | receiver-type-required |
-| `call_route` | `request.request_id.clone` | [2271](../../src/mcp_runtime.rs#L2271), [2282](../../src/mcp_runtime.rs#L2282) | receiver-type-required |
-| `call_route` | `tool.external_effect.is_some` | [2276](../../src/mcp_runtime.rs#L2276) | receiver-type-required |
-| `call_route` | `self.broker.call_tool_with_context` | [2277](../../src/mcp_runtime.rs#L2277) | receiver-type-required |
-| `call_route` | `self.broker.call_tool` | [2287](../../src/mcp_runtime.rs#L2287) | receiver-type-required |
-| `call_route` | `result.map_err` | [2294](../../src/mcp_runtime.rs#L2294) | receiver-type-required |
-| `call_route` | `serde_json::to_value(&result)             .map_err` | [2295](../../src/mcp_runtime.rs#L2295) | receiver-type-required |
-| `call_route` | `serde_json::to_value` | [2295](../../src/mcp_runtime.rs#L2295) | external-constructor-callback-or-unresolved |
-| `call_route` | `SupervisorOperationError::Protocol` | [2296](../../src/mcp_runtime.rs#L2296) | external-constructor-callback-or-unresolved |
-| `call_route` | `error.to_string` | [2296](../../src/mcp_runtime.rs#L2296) | receiver-type-required |
-| `continuation_identity` | `Sha256::new` | [2305](../../src/mcp_runtime.rs#L2305) | external-constructor-callback-or-unresolved |
-| `continuation_identity` | `digest.update` | [2306](../../src/mcp_runtime.rs#L2306), [2307](../../src/mcp_runtime.rs#L2307), [2308](../../src/mcp_runtime.rs#L2308), [2309](../../src/mcp_runtime.rs#L2309) | receiver-type-required |
-| `continuation_identity` | `request_id.as_bytes` | [2307](../../src/mcp_runtime.rs#L2307) | receiver-type-required |
-| `continuation_identity` | `task_id.as_bytes` | [2309](../../src/mcp_runtime.rs#L2309) | receiver-type-required |
-| `map_journal_error` | `SupervisorOperationError::Conflict` | [2315](../../src/mcp_runtime.rs#L2315) | external-constructor-callback-or-unresolved |
-| `map_journal_error` | `SupervisorOperationError::Unavailable` | [2316](../../src/mcp_runtime.rs#L2316) | external-constructor-callback-or-unresolved |
-| `map_journal_error` | `other.to_string` | [2316](../../src/mcp_runtime.rs#L2316) | receiver-type-required |
-| `terminal_tool_value` | `raw.get` | [2321](../../src/mcp_runtime.rs#L2321) | receiver-type-required |
-| `terminal_tool_value` | `Err` | [2322](../../src/mcp_runtime.rs#L2322), [2326](../../src/mcp_runtime.rs#L2326) | external-constructor-callback-or-unresolved |
-| `terminal_tool_value` | `SupervisorOperationError::ToolFailed` | [2322](../../src/mcp_runtime.rs#L2322) | external-constructor-callback-or-unresolved |
-| `terminal_tool_value` | `raw.to_string` | [2322](../../src/mcp_runtime.rs#L2322) | receiver-type-required |
-| `terminal_tool_value` | `json_to_ijson(&raw).map_err` | [2324](../../src/mcp_runtime.rs#L2324) | receiver-type-required |
-| `terminal_tool_value` | `json_to_ijson` | [2324](../../src/mcp_runtime.rs#L2324) | [tekes-supervisor::mcp_runtime::json_to_ijson](../../src/mcp_runtime.rs#L1540) |
-| `terminal_tool_value` | `SupervisorOperationError::Protocol` | [2326](../../src/mcp_runtime.rs#L2326) | external-constructor-callback-or-unresolved |
-| `terminal_tool_value` | `"MCP tool result isError must be boolean".into` | [2327](../../src/mcp_runtime.rs#L2327) | receiver-type-required |
-| `supports` | `self.routes.contains_key` | [2334](../../src/mcp_runtime.rs#L2334) | receiver-type-required |
-| `execute` | `self.call_route` | [2342](../../src/mcp_runtime.rs#L2342) | receiver-type-required |
-| `execute` | `terminal_tool_value` | [2343](../../src/mcp_runtime.rs#L2343) | [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2320) |
+| `current_operating_system_version` | `"0".to_owned` | [1926](../../src/mcp_runtime.rs#L1926) | receiver-type-required |
+| `current_plugin_architecture` | `"arm64".to_owned` | [1931](../../src/mcp_runtime.rs#L1931) | receiver-type-required |
+| `current_plugin_architecture` | `std::env::consts::ARCH.to_owned` | [1933](../../src/mcp_runtime.rs#L1933) | receiver-type-required |
+| `resolve_map` | `BTreeMap::new` | [1947](../../src/mcp_runtime.rs#L1947) | external-constructor-callback-or-unresolved |
+| `resolve_map` | `Vec::new` | [1948](../../src/mcp_runtime.rs#L1948) | external-constructor-callback-or-unresolved |
+| `resolve_map` | `values.insert` | [1952](../../src/mcp_runtime.rs#L1952), [1956](../../src/mcp_runtime.rs#L1956) | receiver-type-required |
+| `resolve_map` | `name.clone` | [1952](../../src/mcp_runtime.rs#L1952), [1956](../../src/mcp_runtime.rs#L1956) | receiver-type-required |
+| `resolve_map` | `literal.clone` | [1952](../../src/mcp_runtime.rs#L1952) | receiver-type-required |
+| `resolve_map` | `resolve_secret` | [1955](../../src/mcp_runtime.rs#L1955) | [tekes-supervisor::mcp_runtime::resolve_secret](../../src/mcp_runtime.rs#L1973) |
+| `resolve_map` | `authority.push` | [1957](../../src/mcp_runtime.rs#L1957) | receiver-type-required |
+| `resolve_map` | `credential.clone` | [1957](../../src/mcp_runtime.rs#L1957) | receiver-type-required |
+| `resolve_map` | `authority.sort` | [1961](../../src/mcp_runtime.rs#L1961) | receiver-type-required |
+| `resolve_map` | `authority.dedup` | [1962](../../src/mcp_runtime.rs#L1962) | receiver-type-required |
+| `resolve_map` | `Ok` | [1963](../../src/mcp_runtime.rs#L1963) | external-constructor-callback-or-unresolved |
+| `zeroize` | `self.values.values_mut` | [1967](../../src/mcp_runtime.rs#L1967) | receiver-type-required |
+| `zeroize` | `value.zeroize` | [1968](../../src/mcp_runtime.rs#L1968) | receiver-type-required |
+| `resolve_secret` | `secrets         .resolve(credential)         .map_err` | [1974](../../src/mcp_runtime.rs#L1974) | receiver-type-required |
+| `resolve_secret` | `secrets         .resolve` | [1974](../../src/mcp_runtime.rs#L1974) | receiver-type-required |
+| `resolve_secret` | `McpError::Transport` | [1976](../../src/mcp_runtime.rs#L1976), [1987](../../src/mcp_runtime.rs#L1987) | external-constructor-callback-or-unresolved |
+| `resolve_secret` | `"MCP credential store unavailable".to_owned` | [1976](../../src/mcp_runtime.rs#L1976) | receiver-type-required |
+| `resolve_secret` | `Ok` | [1982](../../src/mcp_runtime.rs#L1982) | external-constructor-callback-or-unresolved |
+| `resolve_secret` | `material.clone` | [1982](../../src/mcp_runtime.rs#L1982) | receiver-type-required |
+| `resolve_secret` | `Err` | [1987](../../src/mcp_runtime.rs#L1987) | external-constructor-callback-or-unresolved |
+| `authorization_identity` | `parts.is_empty` | [1994](../../src/mcp_runtime.rs#L1994) | receiver-type-required |
+| `authorization_identity` | `"anonymous".to_owned` | [1995](../../src/mcp_runtime.rs#L1995) | receiver-type-required |
+| `authorization_identity` | `Sha256::new` | [1997](../../src/mcp_runtime.rs#L1997) | external-constructor-callback-or-unresolved |
+| `authorization_identity` | `hasher.update` | [1998](../../src/mcp_runtime.rs#L1998), [2000](../../src/mcp_runtime.rs#L2000), [2001](../../src/mcp_runtime.rs#L2001), [2002](../../src/mcp_runtime.rs#L2002), [2003](../../src/mcp_runtime.rs#L2003) | receiver-type-required |
+| `authorization_identity` | `credential.as_bytes` | [2000](../../src/mcp_runtime.rs#L2000) | receiver-type-required |
+| `authorization_identity` | `generation.to_be_bytes` | [2002](../../src/mcp_runtime.rs#L2002) | receiver-type-required |
+| `capture` | `peer.protocol_version().to_owned` | [2078](../../src/mcp_runtime.rs#L2078) | receiver-type-required |
+| `capture` | `peer.protocol_version` | [2078](../../src/mcp_runtime.rs#L2078) | receiver-type-required |
+| `capture` | `peer.server_identity().cloned().ok_or_else` | [2079](../../src/mcp_runtime.rs#L2079) | receiver-type-required |
+| `capture` | `peer.server_identity().cloned` | [2079](../../src/mcp_runtime.rs#L2079) | receiver-type-required |
+| `capture` | `peer.server_identity` | [2079](../../src/mcp_runtime.rs#L2079) | receiver-type-required |
+| `capture` | `McpError::Protocol` | [2080](../../src/mcp_runtime.rs#L2080) | external-constructor-callback-or-unresolved |
+| `capture` | `"MCP handshake omitted server identity".to_owned` | [2080](../../src/mcp_runtime.rs#L2080) | receiver-type-required |
+| `capture` | `peer.catalog_generation` | [2082](../../src/mcp_runtime.rs#L2082) | receiver-type-required |
+| `capture` | `route_contract_digest` | [2083](../../src/mcp_runtime.rs#L2083) | [tekes-supervisor::mcp_runtime::route_contract_digest](../../src/mcp_runtime.rs#L2101) |
+| `capture` | `reconcile_tool.as_ref` | [2088](../../src/mcp_runtime.rs#L2088) | receiver-type-required |
+| `capture` | `Ok` | [2090](../../src/mcp_runtime.rs#L2090) | external-constructor-callback-or-unresolved |
+| `route_contract_digest` | `Ok` | [2116](../../src/mcp_runtime.rs#L2116) | external-constructor-callback-or-unresolved |
+| `route_preparation_error` | `RoutePeerError::Unavailable` | [2134](../../src/mcp_runtime.rs#L2134) | external-constructor-callback-or-unresolved |
+| `route_preparation_error` | `RoutePeerError::ContractChanged` | [2136](../../src/mcp_runtime.rs#L2136) | external-constructor-callback-or-unresolved |
+| `route_preparation_error` | `other.to_string` | [2136](../../src/mcp_runtime.rs#L2136) | receiver-type-required |
+| `validate_reconnected_contract` | `Err` | [2145](../../src/mcp_runtime.rs#L2145), [2150](../../src/mcp_runtime.rs#L2150), [2155](../../src/mcp_runtime.rs#L2155), [2160](../../src/mcp_runtime.rs#L2160), [2165](../../src/mcp_runtime.rs#L2165), [2170](../../src/mcp_runtime.rs#L2170) | external-constructor-callback-or-unresolved |
+| `validate_reconnected_contract` | `RoutePeerError::ContractChanged` | [2145](../../src/mcp_runtime.rs#L2145), [2150](../../src/mcp_runtime.rs#L2150), [2155](../../src/mcp_runtime.rs#L2155), [2160](../../src/mcp_runtime.rs#L2160), [2165](../../src/mcp_runtime.rs#L2165), [2170](../../src/mcp_runtime.rs#L2170) | external-constructor-callback-or-unresolved |
+| `validate_reconnected_contract` | `"negotiated protocol version changed".to_owned` | [2146](../../src/mcp_runtime.rs#L2146) | receiver-type-required |
+| `validate_reconnected_contract` | `"negotiated server identity changed".to_owned` | [2151](../../src/mcp_runtime.rs#L2151) | receiver-type-required |
+| `validate_reconnected_contract` | `"catalog generation changed during reconnect".to_owned` | [2156](../../src/mcp_runtime.rs#L2156) | receiver-type-required |
+| `validate_reconnected_contract` | `"effect tool canonical contract changed".to_owned` | [2161](../../src/mcp_runtime.rs#L2161) | receiver-type-required |
+| `validate_reconnected_contract` | `"reconciliation tool canonical contract changed".to_owned` | [2166](../../src/mcp_runtime.rs#L2166) | receiver-type-required |
+| `validate_reconnected_contract` | `"MCP route contract digest changed".to_owned` | [2171](../../src/mcp_runtime.rs#L2171) | receiver-type-required |
+| `validate_reconnected_contract` | `Ok` | [2174](../../src/mcp_runtime.rs#L2174) | external-constructor-callback-or-unresolved |
+| `new` | `Arc::new` | [2192](../../src/mcp_runtime.rs#L2192) | external-constructor-callback-or-unresolved |
+| `new` | `Mutex::new` | [2192](../../src/mcp_runtime.rs#L2192) | external-constructor-callback-or-unresolved |
+| `new` | `McpCancellationToken::default` | [2192](../../src/mcp_runtime.rs#L2192) | external-constructor-callback-or-unresolved |
+| `drop` | `self             .routes             .values()             .map(&#124;route&#124; route.key.clone())             .collect::<std::collections::BTreeSet<_>>` | [2199](../../src/mcp_runtime.rs#L2199) | receiver-type-required |
+| `drop` | `self             .routes             .values()             .map` | [2199](../../src/mcp_runtime.rs#L2199) | receiver-type-required |
+| `drop` | `self             .routes             .values` | [2199](../../src/mcp_runtime.rs#L2199) | receiver-type-required |
+| `drop` | `route.key.clone` | [2202](../../src/mcp_runtime.rs#L2202) | receiver-type-required |
+| `drop` | `self.broker.release` | [2205](../../src/mcp_runtime.rs#L2205) | receiver-type-required |
+| `prepare_route` | `self.routes.get(&tool.name).ok_or_else` | [2217](../../src/mcp_runtime.rs#L2217) | receiver-type-required |
+| `prepare_route` | `self.routes.get` | [2217](../../src/mcp_runtime.rs#L2217) | receiver-type-required |
+| `prepare_route` | `SupervisorOperationError::Unsupported` | [2218](../../src/mcp_runtime.rs#L2218) | external-constructor-callback-or-unresolved |
+| `prepare_route` | `self.current_cancellation` | [2220](../../src/mcp_runtime.rs#L2220) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::current_cancellation](../../src/mcp_runtime.rs#L2474) |
+| `prepare_route` | `self.ensure_route_peer` | [2221](../../src/mcp_runtime.rs#L2221) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::ensure_route_peer](../../src/mcp_runtime.rs#L2481) |
+| `prepare_route` | `cancellation.clone` | [2221](../../src/mcp_runtime.rs#L2221) | receiver-type-required |
+| `prepare_route` | `self.broker.remove` | [2222](../../src/mcp_runtime.rs#L2222), [2247](../../src/mcp_runtime.rs#L2247) | receiver-type-required |
+| `prepare_route` | `route.key.clone` | [2222](../../src/mcp_runtime.rs#L2222), [2247](../../src/mcp_runtime.rs#L2247) | receiver-type-required |
+| `prepare_route` | `Err` | [2223](../../src/mcp_runtime.rs#L2223), [2248](../../src/mcp_runtime.rs#L2248) | external-constructor-callback-or-unresolved |
+| `prepare_route` | `SupervisorOperationError::Unavailable` | [2224](../../src/mcp_runtime.rs#L2224), [2239](../../src/mcp_runtime.rs#L2239), [2248](../../src/mcp_runtime.rs#L2248) | external-constructor-callback-or-unresolved |
+| `prepare_route` | `tool.external_effect.is_some` | [2227](../../src/mcp_runtime.rs#L2227) | receiver-type-required |
+| `prepare_route` | `SupervisorOperationError::EffectConflicted` | [2228](../../src/mcp_runtime.rs#L2228) | external-constructor-callback-or-unresolved |
+| `prepare_route` | `SupervisorOperationError::Conflict` | [2232](../../src/mcp_runtime.rs#L2232) | external-constructor-callback-or-unresolved |
+| `prepare_route` | `self.secrets.store.resolve(credential).map_err` | [2238](../../src/mcp_runtime.rs#L2238) | receiver-type-required |
+| `prepare_route` | `self.secrets.store.resolve` | [2238](../../src/mcp_runtime.rs#L2238) | receiver-type-required |
+| `prepare_route` | `"MCP credential store unavailable".to_owned` | [2239](../../src/mcp_runtime.rs#L2239) | receiver-type-required |
+| `prepare_route` | `Ok` | [2253](../../src/mcp_runtime.rs#L2253) | external-constructor-callback-or-unresolved |
+| `call_route` | `self.prepare_route` | [2261](../../src/mcp_runtime.rs#L2261) | [tekes-supervisor::mcp_runtime::McpDynamicSupervisorAuthority::prepare_route](../../src/mcp_runtime.rs#L2213) |
+| `call_route` | `route.contract.effect_tool.requires_task` | [2264](../../src/mcp_runtime.rs#L2264) | receiver-type-required |
+| `call_route` | `self.broker.call_tool_augmented` | [2265](../../src/mcp_runtime.rs#L2265) | receiver-type-required |
+| `call_route` | `route.key.clone` | [2266](../../src/mcp_runtime.rs#L2266), [2277](../../src/mcp_runtime.rs#L2277), [2287](../../src/mcp_runtime.rs#L2287) | receiver-type-required |
+| `call_route` | `route.remote_name.clone` | [2267](../../src/mcp_runtime.rs#L2267), [2278](../../src/mcp_runtime.rs#L2278), [2288](../../src/mcp_runtime.rs#L2288) | receiver-type-required |
+| `call_route` | `request.arguments.clone` | [2268](../../src/mcp_runtime.rs#L2268), [2279](../../src/mcp_runtime.rs#L2279), [2289](../../src/mcp_runtime.rs#L2289) | receiver-type-required |
+| `call_route` | `tool.external_effect.as_ref().map` | [2269](../../src/mcp_runtime.rs#L2269) | receiver-type-required |
+| `call_route` | `tool.external_effect.as_ref` | [2269](../../src/mcp_runtime.rs#L2269) | receiver-type-required |
+| `call_route` | `request.request_id.clone` | [2270](../../src/mcp_runtime.rs#L2270), [2281](../../src/mcp_runtime.rs#L2281) | receiver-type-required |
+| `call_route` | `tool.external_effect.is_some` | [2275](../../src/mcp_runtime.rs#L2275) | receiver-type-required |
+| `call_route` | `self.broker.call_tool_with_context` | [2276](../../src/mcp_runtime.rs#L2276) | receiver-type-required |
+| `call_route` | `self.broker.call_tool` | [2286](../../src/mcp_runtime.rs#L2286) | receiver-type-required |
+| `call_route` | `result.map_err` | [2293](../../src/mcp_runtime.rs#L2293) | receiver-type-required |
+| `call_route` | `serde_json::to_value(&result)             .map_err` | [2294](../../src/mcp_runtime.rs#L2294) | receiver-type-required |
+| `call_route` | `serde_json::to_value` | [2294](../../src/mcp_runtime.rs#L2294) | external-constructor-callback-or-unresolved |
+| `call_route` | `SupervisorOperationError::Protocol` | [2295](../../src/mcp_runtime.rs#L2295) | external-constructor-callback-or-unresolved |
+| `call_route` | `error.to_string` | [2295](../../src/mcp_runtime.rs#L2295) | receiver-type-required |
+| `continuation_identity` | `Sha256::new` | [2304](../../src/mcp_runtime.rs#L2304) | external-constructor-callback-or-unresolved |
+| `continuation_identity` | `digest.update` | [2305](../../src/mcp_runtime.rs#L2305), [2306](../../src/mcp_runtime.rs#L2306), [2307](../../src/mcp_runtime.rs#L2307), [2308](../../src/mcp_runtime.rs#L2308) | receiver-type-required |
+| `continuation_identity` | `request_id.as_bytes` | [2306](../../src/mcp_runtime.rs#L2306) | receiver-type-required |
+| `continuation_identity` | `task_id.as_bytes` | [2308](../../src/mcp_runtime.rs#L2308) | receiver-type-required |
+| `map_journal_error` | `SupervisorOperationError::Conflict` | [2314](../../src/mcp_runtime.rs#L2314) | external-constructor-callback-or-unresolved |
+| `map_journal_error` | `SupervisorOperationError::Unavailable` | [2315](../../src/mcp_runtime.rs#L2315) | external-constructor-callback-or-unresolved |
+| `map_journal_error` | `other.to_string` | [2315](../../src/mcp_runtime.rs#L2315) | receiver-type-required |
+| `terminal_tool_value` | `raw.get` | [2320](../../src/mcp_runtime.rs#L2320) | receiver-type-required |
+| `terminal_tool_value` | `Err` | [2321](../../src/mcp_runtime.rs#L2321), [2325](../../src/mcp_runtime.rs#L2325) | external-constructor-callback-or-unresolved |
+| `terminal_tool_value` | `SupervisorOperationError::ToolFailed` | [2321](../../src/mcp_runtime.rs#L2321) | external-constructor-callback-or-unresolved |
+| `terminal_tool_value` | `raw.to_string` | [2321](../../src/mcp_runtime.rs#L2321) | receiver-type-required |
+| `terminal_tool_value` | `json_to_ijson(&raw).map_err` | [2323](../../src/mcp_runtime.rs#L2323) | receiver-type-required |
+| `terminal_tool_value` | `json_to_ijson` | [2323](../../src/mcp_runtime.rs#L2323) | [tekes-supervisor::mcp_runtime::json_to_ijson](../../src/mcp_runtime.rs#L1540) |
+| `terminal_tool_value` | `SupervisorOperationError::Protocol` | [2325](../../src/mcp_runtime.rs#L2325) | external-constructor-callback-or-unresolved |
+| `terminal_tool_value` | `"MCP tool result isError must be boolean".into` | [2326](../../src/mcp_runtime.rs#L2326) | receiver-type-required |
+| `supports` | `self.routes.contains_key` | [2333](../../src/mcp_runtime.rs#L2333) | receiver-type-required |
+| `execute` | `self.call_route` | [2341](../../src/mcp_runtime.rs#L2341) | receiver-type-required |
+| `execute` | `terminal_tool_value` | [2342](../../src/mcp_runtime.rs#L2342) | [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2319) |
 | `execute_outcome` | `self.call_route` | [2356](../../src/mcp_runtime.rs#L2356) | receiver-type-required |
 | `execute_outcome` | `raw.get("task").filter` | [2357](../../src/mcp_runtime.rs#L2357) | receiver-type-required |
 | `execute_outcome` | `raw.get` | [2357](../../src/mcp_runtime.rs#L2357) | receiver-type-required |
 | `execute_outcome` | `task.is_object` | [2357](../../src/mcp_runtime.rs#L2357) | receiver-type-required |
 | `execute_outcome` | `terminal_tool_value(raw).map` | [2358](../../src/mcp_runtime.rs#L2358) | receiver-type-required |
-| `execute_outcome` | `terminal_tool_value` | [2358](../../src/mcp_runtime.rs#L2358), [2372](../../src/mcp_runtime.rs#L2372) | [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2320) |
+| `execute_outcome` | `terminal_tool_value` | [2358](../../src/mcp_runtime.rs#L2358), [2372](../../src/mcp_runtime.rs#L2372) | [tekes-supervisor::mcp_runtime::terminal_tool_value](../../src/mcp_runtime.rs#L2319) |
 | `execute_outcome` | `task["taskId"]             .as_str()             .filter(&#124;id&#124; !id.is_empty())             .ok_or_else` | [2360](../../src/mcp_runtime.rs#L2360) | receiver-type-required |
 | `execute_outcome` | `task["taskId"]             .as_str()             .filter` | [2360](../../src/mcp_runtime.rs#L2360) | receiver-type-required |
 | `execute_outcome` | `task["taskId"]             .as_str` | [2360](../../src/mcp_runtime.rs#L2360) | receiver-type-required |
@@ -1403,7 +1404,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_outcome` | `json_to_ijson(task).map_err` | [2366](../../src/mcp_runtime.rs#L2366) | receiver-type-required |
 | `execute_outcome` | `json_to_ijson` | [2366](../../src/mcp_runtime.rs#L2366) | [tekes-supervisor::mcp_runtime::json_to_ijson](../../src/mcp_runtime.rs#L1540) |
 | `execute_outcome` | `mcp::McpTask::validate_result(&task_value, task_id)             .map_err` | [2367](../../src/mcp_runtime.rs#L2367) | receiver-type-required |
-| `execute_outcome` | `mcp::McpTask::validate_result` | [2367](../../src/mcp_runtime.rs#L2367) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L556) |
+| `execute_outcome` | `mcp::McpTask::validate_result` | [2367](../../src/mcp_runtime.rs#L2367) | [mcp::types::McpTask::validate_result](../../../mcp/src/types.rs#L564) |
 | `execute_outcome` | `error.to_string` | [2368](../../src/mcp_runtime.rs#L2368) | receiver-type-required |
 | `execute_outcome` | `validated.status.as_str` | [2369](../../src/mcp_runtime.rs#L2369) | receiver-type-required |
 | `execute_outcome` | `terminal_tool_value(task["result"].clone())                     .map` | [2372](../../src/mcp_runtime.rs#L2372) | receiver-type-required |
@@ -1413,7 +1414,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_outcome` | `self.routes.get(&tool.name).ok_or_else` | [2384](../../src/mcp_runtime.rs#L2384) | receiver-type-required |
 | `execute_outcome` | `self.routes.get` | [2384](../../src/mcp_runtime.rs#L2384) | receiver-type-required |
 | `execute_outcome` | `SupervisorOperationError::Unsupported` | [2385](../../src/mcp_runtime.rs#L2385) | external-constructor-callback-or-unresolved |
-| `execute_outcome` | `continuation_identity` | [2387](../../src/mcp_runtime.rs#L2387) | [tekes-supervisor::mcp_runtime::continuation_identity](../../src/mcp_runtime.rs#L2304) |
+| `execute_outcome` | `continuation_identity` | [2387](../../src/mcp_runtime.rs#L2387) | [tekes-supervisor::mcp_runtime::continuation_identity](../../src/mcp_runtime.rs#L2303) |
 | `execute_outcome` | `ContinuationJournal::open(continuation_root).map_err` | [2388](../../src/mcp_runtime.rs#L2388) | receiver-type-required |
 | `execute_outcome` | `ContinuationJournal::open` | [2388](../../src/mcp_runtime.rs#L2388) | [tekes-supervisor::continuation_journal::ContinuationJournal::open](../../src/continuation_journal.rs#L49) |
 | `execute_outcome` | `journal             .bind(&ContinuationBinding {                 original: request.clone(),                 continuation_id: continuation_id.clone(),                 authority: task_authority(&route.key).map_err(map_journal_error)?,                 initial_state: task_value.clone(),             })             .map_err` | [2389](../../src/mcp_runtime.rs#L2389) | receiver-type-required |
@@ -1489,9 +1490,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ensure_route_peer` | `prepared                     .tools                     .iter` | [2555](../../src/mcp_runtime.rs#L2555) | receiver-type-required |
 | `ensure_route_peer` | `"reconnected MCP catalog lost the reconciliation tool".to_owned` | [2562](../../src/mcp_runtime.rs#L2562) | receiver-type-required |
 | `ensure_route_peer` | `McpRouteContract::capture(prepared.peer.as_ref(), effect_tool, reconcile_tool)                 .map_err` | [2568](../../src/mcp_runtime.rs#L2568) | receiver-type-required |
-| `ensure_route_peer` | `McpRouteContract::capture` | [2568](../../src/mcp_runtime.rs#L2568) | [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2074) |
+| `ensure_route_peer` | `McpRouteContract::capture` | [2568](../../src/mcp_runtime.rs#L2568) | [tekes-supervisor::mcp_runtime::McpRouteContract::capture](../../src/mcp_runtime.rs#L2073) |
 | `ensure_route_peer` | `prepared.peer.as_ref` | [2568](../../src/mcp_runtime.rs#L2568) | receiver-type-required |
-| `ensure_route_peer` | `validate_reconnected_contract` | [2570](../../src/mcp_runtime.rs#L2570) | [tekes-supervisor::mcp_runtime::validate_reconnected_contract](../../src/mcp_runtime.rs#L2141) |
+| `ensure_route_peer` | `validate_reconnected_contract` | [2570](../../src/mcp_runtime.rs#L2570) | [tekes-supervisor::mcp_runtime::validate_reconnected_contract](../../src/mcp_runtime.rs#L2140) |
 | `ensure_route_peer` | `project_catalog_partial(             &route.server.reference.name,             &prepared.tools,             route.server.always_on,         )         .map_err` | [2574](../../src/mcp_runtime.rs#L2574) | receiver-type-required |
 | `ensure_route_peer` | `project_catalog_partial` | [2574](../../src/mcp_runtime.rs#L2574) | [mcp::projection::project_catalog_partial](../../../mcp/src/projection.rs#L115) |
 | `ensure_route_peer` | `projected             .tools             .iter()             .find(&#124;tool&#124; tool.name == expected_tool.name)             .ok_or_else` | [2581](../../src/mcp_runtime.rs#L2581) | receiver-type-required |
@@ -2291,3 +2292,76 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `task_result_binds_continuation_and_steps_reach_one_terminal` | `value.canonical_bytes` | [4923](../../src/mcp_runtime.rs#L4923) | receiver-type-required |
 | `task_result_binds_continuation_and_steps_reach_one_terminal` | `gets.load` | [4926](../../src/mcp_runtime.rs#L4926) | receiver-type-required |
 | `task_result_binds_continuation_and_steps_reach_one_terminal` | `drop` | [4969](../../src/mcp_runtime.rs#L4969), [4970](../../src/mcp_runtime.rs#L4970) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tempfile::tempdir().expect` | [4979](../../src/mcp_runtime.rs#L4979) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tempfile::tempdir` | [4979](../../src/mcp_runtime.rs#L4979) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `root.path().join` | [4980](../../src/mcp_runtime.rs#L4980), [5080](../../src/mcp_runtime.rs#L5080) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `root.path` | [4980](../../src/mcp_runtime.rs#L4980), [5023](../../src/mcp_runtime.rs#L5023), [5080](../../src/mcp_runtime.rs#L5080) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `mcp::StdioTransport::spawn(             &[                 "/usr/bin/python3".into(),                 "-u".into(),                 "-c".into(),                 script.into(),                 log.to_string_lossy().into_owned(),             ],             None,             &BTreeMap::new(),         )         .expect` | [5004](../../src/mcp_runtime.rs#L5004) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `mcp::StdioTransport::spawn` | [5004](../../src/mcp_runtime.rs#L5004) | [mcp::transport::StdioTransport::spawn](../../../mcp/src/transport.rs#L136) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"/usr/bin/python3".into` | [5006](../../src/mcp_runtime.rs#L5006) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"-u".into` | [5007](../../src/mcp_runtime.rs#L5007) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"-c".into` | [5008](../../src/mcp_runtime.rs#L5008) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `script.into` | [5009](../../src/mcp_runtime.rs#L5009) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `log.to_string_lossy().into_owned` | [5010](../../src/mcp_runtime.rs#L5010) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `log.to_string_lossy` | [5010](../../src/mcp_runtime.rs#L5010) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `BTreeMap::new` | [5013](../../src/mcp_runtime.rs#L5013), [5031](../../src/mcp_runtime.rs#L5031) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `mcp::McpClient::new` | [5016](../../src/mcp_runtime.rs#L5016) | [mcp::client::McpClient::new](../../../mcp/src/client.rs#L140) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .expect("runtime")             .block_on(client.connect(ProtocolMode::Legacy))             .expect` | [5017](../../src/mcp_runtime.rs#L5017) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .expect("runtime")             .block_on` | [5017](../../src/mcp_runtime.rs#L5017) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .expect` | [5017](../../src/mcp_runtime.rs#L5017) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build` | [5017](../../src/mcp_runtime.rs#L5017) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread()             .enable_all` | [5017](../../src/mcp_runtime.rs#L5017) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tokio::runtime::Builder::new_current_thread` | [5017](../../src/mcp_runtime.rs#L5017) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `client.connect` | [5021](../../src/mcp_runtime.rs#L5021) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `McpRegistryStore::new` | [5023](../../src/mcp_runtime.rs#L5023) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `resource_test_server` | [5024](../../src/mcp_runtime.rs#L5024) | [tekes-supervisor::mcp_runtime::tests::resource_test_server](../../src/mcp_runtime.rs#L3257) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"rotation".to_owned` | [5025](../../src/mcp_runtime.rs#L5025), [5038](../../src/mcp_runtime.rs#L5038) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `registry             .mutate_idempotent(                 "save-extension",                 &McpManagementMutation::Save {                     server: server.clone(),                     credential_fields: BTreeMap::new(),                 },             )             .expect` | [5026](../../src/mcp_runtime.rs#L5026) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `registry             .mutate_idempotent` | [5026](../../src/mcp_runtime.rs#L5026) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `server.clone` | [5030](../../src/mcp_runtime.rs#L5030) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"ws".to_owned` | [5036](../../src/mcp_runtime.rs#L5036) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"user".to_owned` | [5037](../../src/mcp_runtime.rs#L5037) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"rotation-config".to_owned` | [5039](../../src/mcp_runtime.rs#L5039) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"anonymous".to_owned` | [5040](../../src/mcp_runtime.rs#L5040) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"legacy".to_owned` | [5041](../../src/mcp_runtime.rs#L5041) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `McpBroker::start().expect` | [5044](../../src/mcp_runtime.rs#L5044) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `McpBroker::start` | [5044](../../src/mcp_runtime.rs#L5044) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `broker.handle` | [5045](../../src/mcp_runtime.rs#L5045) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `handle             .register(key.clone(), Box::new(client), false)             .expect` | [5046](../../src/mcp_runtime.rs#L5046) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `handle             .register` | [5046](../../src/mcp_runtime.rs#L5046) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `key.clone` | [5047](../../src/mcp_runtime.rs#L5047), [5056](../../src/mcp_runtime.rs#L5056) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `Box::new` | [5047](../../src/mcp_runtime.rs#L5047) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `cancellation_rotation_tool` | [5049](../../src/mcp_runtime.rs#L5049) | [tekes-supervisor::mcp_runtime::tests::cancellation_rotation_tool](../../src/mcp_runtime.rs#L3320) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `cancellation_route_contract` | [5051](../../src/mcp_runtime.rs#L5051) | [tekes-supervisor::mcp_runtime::tests::cancellation_route_contract](../../src/mcp_runtime.rs#L3356) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `BTreeMap::from` | [5053](../../src/mcp_runtime.rs#L5053) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `tool.name.clone` | [5054](../../src/mcp_runtime.rs#L5054), [5076](../../src/mcp_runtime.rs#L5076) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `"ext/run".to_owned` | [5057](../../src/mcp_runtime.rs#L5057) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `Vec::new` | [5058](../../src/mcp_runtime.rs#L5058) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `McpDynamicSupervisorAuthority::new` | [5064](../../src/mcp_runtime.rs#L5064) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `SecretAccess::read_only` | [5067](../../src/mcp_runtime.rs#L5067) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `Arc::new` | [5067](../../src/mcp_runtime.rs#L5067) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `MemorySecretStore::new` | [5067](../../src/mcp_runtime.rs#L5067) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
+| `extension_task_result_binds_continuation_through_a_real_client` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000002",             "018f0000-0000-7000-8000-000000000002",             1,             "call-extension",             tool.name.clone(),             json_to_ijson(&json!({})).expect("arguments"),         )         .expect` | [5071](../../src/mcp_runtime.rs#L5071) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `ToolControl::new` | [5071](../../src/mcp_runtime.rs#L5071) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `json_to_ijson(&json!({})).expect` | [5077](../../src/mcp_runtime.rs#L5077) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `json_to_ijson` | [5077](../../src/mcp_runtime.rs#L5077) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `authority             .execute_outcome(&tool, &request, &continuation_root)             .expect` | [5084](../../src/mcp_runtime.rs#L5084) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `authority             .execute_outcome` | [5084](../../src/mcp_runtime.rs#L5084) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `serde_json::from_slice(&state.canonical_bytes().unwrap()).unwrap` | [5090](../../src/mcp_runtime.rs#L5090) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `serde_json::from_slice` | [5090](../../src/mcp_runtime.rs#L5090), [5119](../../src/mcp_runtime.rs#L5119) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `state.canonical_bytes().unwrap` | [5090](../../src/mcp_runtime.rs#L5090) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `state.canonical_bytes` | [5090](../../src/mcp_runtime.rs#L5090) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `ToolContinuationRequest::new(                 request.clone(),                 continuation_id.clone(),                 n,                 ContinuationOperation::Query,             )             .expect` | [5098](../../src/mcp_runtime.rs#L5098) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `ToolContinuationRequest::new` | [5098](../../src/mcp_runtime.rs#L5098) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `request.clone` | [5099](../../src/mcp_runtime.rs#L5099) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `continuation_id.clone` | [5100](../../src/mcp_runtime.rs#L5100) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `authority             .continue_task(&tool, &step(1), &continuation_root)             .expect` | [5106](../../src/mcp_runtime.rs#L5106) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `authority             .continue_task` | [5106](../../src/mcp_runtime.rs#L5106), [5113](../../src/mcp_runtime.rs#L5113) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `step` | [5107](../../src/mcp_runtime.rs#L5107), [5114](../../src/mcp_runtime.rs#L5114) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `authority             .continue_task(&tool, &step(2), &continuation_root)             .expect` | [5113](../../src/mcp_runtime.rs#L5113) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `serde_json::from_slice(&value.canonical_bytes().unwrap()).unwrap` | [5119](../../src/mcp_runtime.rs#L5119) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `value.canonical_bytes().unwrap` | [5119](../../src/mcp_runtime.rs#L5119) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `value.canonical_bytes` | [5119](../../src/mcp_runtime.rs#L5119) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `fs::read_to_string(&log).expect` | [5128](../../src/mcp_runtime.rs#L5128) | receiver-type-required |
+| `extension_task_result_binds_continuation_through_a_real_client` | `fs::read_to_string` | [5128](../../src/mcp_runtime.rs#L5128) | external-constructor-callback-or-unresolved |
+| `extension_task_result_binds_continuation_through_a_real_client` | `drop` | [5141](../../src/mcp_runtime.rs#L5141), [5142](../../src/mcp_runtime.rs#L5142) | external-constructor-callback-or-unresolved |

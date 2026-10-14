@@ -189,13 +189,12 @@ impl FileLeases {
     }
 
     pub fn release(&self, principal: &str, id: &str) {
-        if let Ok(mut leases) = self.0.lock() {
-            if leases
+        if let Ok(mut leases) = self.0.lock()
+            && leases
                 .get(id)
                 .is_some_and(|value| value.principal == principal)
-            {
-                leases.remove(id);
-            }
+        {
+            leases.remove(id);
         }
     }
 }

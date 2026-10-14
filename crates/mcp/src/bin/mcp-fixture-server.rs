@@ -7,10 +7,10 @@ use serde_json::{Value, json};
 fn main() {
     let mut arguments = std::env::args().skip(1);
     let scenario = arguments.next().unwrap_or_default();
-    if scenario == "descendant-inherits-stderr" {
-        if let Some(pid_path) = arguments.next() {
-            std::fs::write(pid_path, std::process::id().to_string()).expect("write fixture pid");
-        }
+    if scenario == "descendant-inherits-stderr"
+        && let Some(pid_path) = arguments.next()
+    {
+        std::fs::write(pid_path, std::process::id().to_string()).expect("write fixture pid");
     }
     let _inherited_stderr = (scenario == "descendant-inherits-stderr").then(|| {
         Command::new("/bin/sh")

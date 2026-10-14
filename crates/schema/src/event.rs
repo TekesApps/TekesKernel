@@ -469,10 +469,10 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
     if object.contains_key("folder_binding") {
         required_id(object, "folder_binding", seq)?;
     }
-    if let Some(identity) = object.get("identity_profile") {
-        if !matches!(identity.as_str(), Some("auto" | "coding" | "general")) {
-            return Err(SchemaError::event(Some(seq), "invalid identity_profile"));
-        }
+    if let Some(identity) = object.get("identity_profile")
+        && !matches!(identity.as_str(), Some("auto" | "coding" | "general"))
+    {
+        return Err(SchemaError::event(Some(seq), "invalid identity_profile"));
     }
     // An ephemeral session is a scratch ledger: it is swept at startup and
     // discarded when its client closes it. Readers that predate the flag see
@@ -818,17 +818,16 @@ fn validate_error(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaErr
 }
 
 fn validate_settle(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
-    if let Some(output) = optional_u64(object, "promoted_output_seq", seq)? {
-        if object.get("outcome").and_then(Value::as_str) != Some("completed")
+    if let Some(output) = optional_u64(object, "promoted_output_seq", seq)?
+        && (object.get("outcome").and_then(Value::as_str) != Some("completed")
             || object.contains_key("validation")
             || output == 0
-            || output >= seq
-        {
-            return Err(SchemaError::event(
-                Some(seq),
-                "direct final settlement has invalid output reference",
-            ));
-        }
+            || output >= seq)
+    {
+        return Err(SchemaError::event(
+            Some(seq),
+            "direct final settlement has invalid output reference",
+        ));
     }
     if let Some(validation) = optional_object(object, "validation", seq)? {
         if object.get("outcome").and_then(Value::as_str) != Some("completed") {
@@ -1010,13 +1009,13 @@ fn validate_blocks(values: &[Value], seq: u64) -> Result<(), SchemaError> {
             "image" => {
                 required_str(object, "asset", Some(seq))?;
                 required_str(object, "mime", Some(seq))?;
-                if let Some(name) = optional_str(object, "name", seq)? {
-                    if name.is_empty() || name.len() > 255 || name.chars().any(char::is_control) {
-                        return Err(SchemaError::event(
-                            Some(seq),
-                            "image name must be 1..255 UTF-8 bytes without control scalars",
-                        ));
-                    }
+                if let Some(name) = optional_str(object, "name", seq)?
+                    && (name.is_empty() || name.len() > 255 || name.chars().any(char::is_control))
+                {
+                    return Err(SchemaError::event(
+                        Some(seq),
+                        "image name must be 1..255 UTF-8 bytes without control scalars",
+                    ));
                 }
             }
             "file" => {

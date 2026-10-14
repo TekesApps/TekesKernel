@@ -305,12 +305,11 @@ impl NativeEndpoint {
                 let is_running = !archived
                     && (running.contains(&session_id)
                         || self.store.session_has_live_line_holder(&session_id)?);
-                if prefer_cards {
-                    if let Some(item) = card_item(&entry.path(), &session_id, archived, is_running)
-                    {
-                        items.push(item);
-                        continue;
-                    }
+                if prefer_cards
+                    && let Some(item) = card_item(&entry.path(), &session_id, archived, is_running)
+                {
+                    items.push(item);
+                    continue;
                 }
                 let bytes = fs::read(entry.path().join("main.jsonl"))?;
                 let scan = scan_valid_prefix(&bytes, 1);
@@ -570,10 +569,10 @@ impl NativeEndpoint {
                 continue;
             };
             data["submission"] = value;
-            if let Ok(bytes) = serde_json::to_vec(&data) {
-                if let Ok(value) = IJsonValue::parse(&bytes) {
-                    entry.event.data = value;
-                }
+            if let Ok(bytes) = serde_json::to_vec(&data)
+                && let Ok(value) = IJsonValue::parse(&bytes)
+            {
+                entry.event.data = value;
             }
         }
     }

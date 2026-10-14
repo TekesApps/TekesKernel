@@ -221,6 +221,8 @@ fn slice14a_gate_120_stop_restart_crash_recovery_and_no_special_cases() {
 
 #[test]
 #[ignore = "requires explicit signed macOS MCP executables; never requests TCC consent"]
+// The ignored test must fail loudly on a non-macOS host; a const block would not compile there.
+#[allow(clippy::assertions_on_constants)]
 fn slice14a_real_reference_mcp_safe_preflight() {
     assert!(cfg!(target_os = "macos"));
     assert_eq!(
@@ -452,10 +454,10 @@ fn write_tcc_state(data_path: &Path, granted: bool) {
 fn wait_for_pid(data_path: &Path) -> u32 {
     let deadline = Instant::now() + Duration::from_secs(5);
     loop {
-        if let Ok(value) = fs::read_to_string(data_path.join("server.pid")) {
-            if let Ok(pid) = value.trim().parse() {
-                return pid;
-            }
+        if let Ok(value) = fs::read_to_string(data_path.join("server.pid"))
+            && let Ok(pid) = value.trim().parse()
+        {
+            return pid;
         }
         assert!(Instant::now() < deadline, "reference process did not start");
         thread::sleep(Duration::from_millis(20));

@@ -469,6 +469,12 @@
    "recovery-matrix.canonical.json",
    "registry.canonical.json",
    "resources.canonical.json",
+   "tasks-extension-cancel.jsonl",
+   "tasks-extension-handshake.jsonl",
+   "tasks-extension-input.jsonl",
+   "tasks-extension-missing-capability.jsonl",
+   "tasks-extension-modern.jsonl",
+   "tasks-extension-tool-call.jsonl",
    "tool-call.jsonl",
    "tools-list.canonical.json"
   ],

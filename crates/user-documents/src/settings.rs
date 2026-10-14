@@ -307,11 +307,11 @@ fn check_namespace(payload: &Value) -> Result<(), Failure> {
 }
 
 fn check_revision(payload: &Value, state: &State) -> Result<(), Failure> {
-    if let Some(expected) = payload.get("expectedRevision").and_then(Value::as_u64) {
-        if expected != state.revision {
-            return Err(Failure::new("stale-revision", "settings revision is stale")
-                .with_details(json!({ "current": state.revision })));
-        }
+    if let Some(expected) = payload.get("expectedRevision").and_then(Value::as_u64)
+        && expected != state.revision
+    {
+        return Err(Failure::new("stale-revision", "settings revision is stale")
+            .with_details(json!({ "current": state.revision })));
     }
     Ok(())
 }

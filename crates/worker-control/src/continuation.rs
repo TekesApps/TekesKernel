@@ -193,13 +193,11 @@ impl ToolContinuationResponse {
             next_step,
             ..
         } = &self.result
-        {
-            if continuation_id != &request.continuation_id
+            && (continuation_id != &request.continuation_id
                 || *next_step > MAX_SAFE_INTEGER
-                || *next_step != request.step + 1
-            {
-                return Err("pending continuation identity or sequence mismatch".into());
-            }
+                || *next_step != request.step + 1)
+        {
+            return Err("pending continuation identity or sequence mismatch".into());
         }
         Ok(())
     }

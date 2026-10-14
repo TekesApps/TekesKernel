@@ -887,19 +887,18 @@ impl HttpTransport {
                 );
             }
         }
-        if request.method == "tools/call" && map.contains_key("mcp-protocol-version") {
-            if let Some(projection) = request_value["params"]["name"]
+        if request.method == "tools/call"
+            && map.contains_key("mcp-protocol-version")
+            && let Some(projection) = request_value["params"]["name"]
                 .as_str()
                 .and_then(|name| self.parameter_headers.get(name))
-            {
-                for (name, value) in projection.project(&request_value["params"]["arguments"])? {
-                    map.insert(
-                        HeaderName::from_bytes(name.as_bytes())
-                            .map_err(|e| McpError::Protocol(e.to_string()))?,
-                        HeaderValue::from_str(&value)
-                            .map_err(|e| McpError::Protocol(e.to_string()))?,
-                    );
-                }
+        {
+            for (name, value) in projection.project(&request_value["params"]["arguments"])? {
+                map.insert(
+                    HeaderName::from_bytes(name.as_bytes())
+                        .map_err(|e| McpError::Protocol(e.to_string()))?,
+                    HeaderValue::from_str(&value).map_err(|e| McpError::Protocol(e.to_string()))?,
+                );
             }
         }
         Ok(map)
@@ -993,12 +992,11 @@ impl McpTransport for HttpTransport {
                         }
                         bytes.extend_from_slice(&chunk);
                     }
-                    if let Ok(rpc) = serde_json::from_slice::<JsonRpcResponse>(&bytes) {
-                        if rpc.error.is_some()
-                            && request.id.is_some_and(|id| rpc.validate_for(id).is_ok())
-                        {
-                            return Ok(rpc);
-                        }
+                    if let Ok(rpc) = serde_json::from_slice::<JsonRpcResponse>(&bytes)
+                        && rpc.error.is_some()
+                        && request.id.is_some_and(|id| rpc.validate_for(id).is_ok())
+                    {
+                        return Ok(rpc);
                     }
                     // A protocol-version rejection is legitimate legacy
                     // evidence even when the server answers with a

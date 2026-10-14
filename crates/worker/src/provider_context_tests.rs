@@ -1274,7 +1274,7 @@ fn adopted_response_must_preserve_durable_call_arguments_and_name() {
         arguments: args,
     };
     let before = fs::read(ledger.path()).unwrap();
-    validate_adopted_calls(&ledger, "adopt-attempt", &[original.clone()]).unwrap();
+    validate_adopted_calls(&ledger, "adopt-attempt", std::slice::from_ref(&original)).unwrap();
     let mut renamed = original.clone();
     renamed.name = "shell".into();
     let mut changed = original.clone();
@@ -2814,8 +2814,8 @@ fn production_provider_ignores_tool_network_policy_and_continues_after_tool_resu
                 loop {
                     let count = stream.read(&mut chunk).expect("provider request");
                     request.extend_from_slice(&chunk[..count]);
-                    if expected.is_none() {
-                        if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
+                    if expected.is_none()
+                        && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
                             let headers = String::from_utf8_lossy(&request[..end + 4]);
                             let length = headers.lines().find_map(|line| {
                                 line.strip_prefix("content-length: ")
@@ -2823,7 +2823,6 @@ fn production_provider_ignores_tool_network_policy_and_continues_after_tool_resu
                             }).and_then(|value| value.parse::<usize>().ok()).unwrap_or(0);
                             expected = Some(end + 4 + length);
                         }
-                    }
                     if count == 0 || expected.is_some_and(|length| request.len() >= length) { break; }
                 }
                 write!(stream, "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n", response.len()).expect("provider header");
@@ -2999,8 +2998,8 @@ fn assert_production_turn_continuation(real_memory_enabled: bool) {
                 loop {
                     let count = stream.read(&mut chunk).expect("provider request");
                     request.extend_from_slice(&chunk[..count]);
-                    if expected.is_none() {
-                        if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
+                    if expected.is_none()
+                        && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
                             let headers = String::from_utf8_lossy(&request[..end + 4]);
                             let length = headers.lines().find_map(|line| {
                                 line.strip_prefix("content-length: ")
@@ -3008,7 +3007,6 @@ fn assert_production_turn_continuation(real_memory_enabled: bool) {
                             }).and_then(|value| value.parse::<usize>().ok()).unwrap_or(0);
                             expected = Some(end + 4 + length);
                         }
-                    }
                     if count == 0 || expected.is_some_and(|length| request.len() >= length) { break; }
                 }
                 assert!(String::from_utf8_lossy(&request).contains("LIFECYCLE_CONTEXT_MARKER"));
@@ -3258,9 +3256,11 @@ fn context_ledger(adapter: &str, continuation: bool) -> (tempfile::TempDir, Lock
         .expect("asset store")
         .publish(b"{}")
         .expect("profile asset");
-    let continuation = continuation
-        .then_some(",\"continuation\":{\"id\":\"response-1\"}")
-        .unwrap_or_default();
+    let continuation = if continuation {
+        ",\"continuation\":{\"id\":\"response-1\"}"
+    } else {
+        Default::default()
+    };
     let fragments = if adapter == "deepseek_responses_v1" {
         r#"[{\"content\":[{\"text\":\"answer\",\"type\":\"output_text\"}],\"role\":\"assistant\",\"type\":\"message\"}]"#
     } else {
@@ -3764,19 +3764,19 @@ fn scripted_provider_server(
             loop {
                 let count = stream.read(&mut chunk).expect("provider request");
                 request.extend_from_slice(&chunk[..count]);
-                if expected.is_none() {
-                    if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
-                        let headers = String::from_utf8_lossy(&request[..end + 4]);
-                        let length = headers
-                            .lines()
-                            .find_map(|line| {
-                                line.strip_prefix("content-length: ")
-                                    .or_else(|| line.strip_prefix("Content-Length: "))
-                            })
-                            .and_then(|value| value.parse::<usize>().ok())
-                            .unwrap_or(0);
-                        expected = Some(end + 4 + length);
-                    }
+                if expected.is_none()
+                    && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n")
+                {
+                    let headers = String::from_utf8_lossy(&request[..end + 4]);
+                    let length = headers
+                        .lines()
+                        .find_map(|line| {
+                            line.strip_prefix("content-length: ")
+                                .or_else(|| line.strip_prefix("Content-Length: "))
+                        })
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .unwrap_or(0);
+                    expected = Some(end + 4 + length);
                 }
                 if count == 0 || expected.is_some_and(|length| request.len() >= length) {
                     break;
@@ -4151,8 +4151,7 @@ fn context_overflow_writes_the_admitted_model_summary() {
     assert_eq!(
         events
             .iter()
-            .filter(|event| event["kind"] == "settle")
-            .last()
+            .rfind(|event| event["kind"] == "settle")
             .unwrap()["outcome"],
         "completed"
     );
@@ -5536,20 +5535,20 @@ fn read_http_request(stream: &mut std::net::TcpStream) -> Vec<u8> {
     loop {
         let count = stream.read(&mut chunk).expect("provider request");
         request.extend_from_slice(&chunk[..count]);
-        if expected.is_none() {
-            if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
-                let headers = String::from_utf8_lossy(&request[..end + 4]);
-                let length = headers
-                    .lines()
-                    .find_map(|line| {
-                        let (name, value) = line.split_once(':')?;
-                        name.eq_ignore_ascii_case("content-length")
-                            .then(|| value.trim().parse::<usize>().ok())
-                            .flatten()
-                    })
-                    .unwrap_or(0);
-                expected = Some(end + 4 + length);
-            }
+        if expected.is_none()
+            && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n")
+        {
+            let headers = String::from_utf8_lossy(&request[..end + 4]);
+            let length = headers
+                .lines()
+                .find_map(|line| {
+                    let (name, value) = line.split_once(':')?;
+                    name.eq_ignore_ascii_case("content-length")
+                        .then(|| value.trim().parse::<usize>().ok())
+                        .flatten()
+                })
+                .unwrap_or(0);
+            expected = Some(end + 4 + length);
         }
         if count == 0 || expected.is_some_and(|length| request.len() >= length) {
             break;

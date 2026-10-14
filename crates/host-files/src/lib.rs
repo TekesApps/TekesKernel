@@ -665,14 +665,14 @@ mod tests {
     #[test]
     fn file_references_match_case_insensitively_and_skip_directories() {
         let (_dir, root) = workspace();
-        let rows = paths(&file_references(&[root.clone()], "MAIN").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "MAIN").unwrap());
         assert_eq!(rows, vec![("src/main.rs".to_owned(), "file".to_owned())]);
-        let rows = paths(&file_references(&[root.clone()], "helper").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "helper").unwrap());
         assert_eq!(
             rows,
             vec![("src/nested/Helper.swift".to_owned(), "file".to_owned())]
         );
-        let rows = paths(&file_references(&[root.clone()], "nested").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "nested").unwrap());
         assert_eq!(
             rows,
             vec![
@@ -680,8 +680,8 @@ mod tests {
                 ("src/nested/Helper.swift".to_owned(), "file".to_owned()),
             ]
         );
-        assert!(paths(&file_references(&[root.clone()], "HEAD").unwrap()).is_empty());
-        assert!(paths(&file_references(&[root.clone()], "env").unwrap()).is_empty());
+        assert!(paths(&file_references(std::slice::from_ref(&root), "HEAD").unwrap()).is_empty());
+        assert!(paths(&file_references(std::slice::from_ref(&root), "env").unwrap()).is_empty());
         let rows = paths(&file_references(&[root], ".env").unwrap());
         assert_eq!(rows, vec![(".env".to_owned(), "file".to_owned())]);
     }
@@ -694,11 +694,11 @@ mod tests {
         fs::write(outside.join("secret.txt"), "").unwrap();
         symlink(&outside, root.join("escape")).unwrap();
         symlink(root.join("src"), root.join("inside")).unwrap();
-        let rows = paths(&file_references(&[root.clone()], "secret").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "secret").unwrap());
         assert!(rows.is_empty());
-        let rows = paths(&file_references(&[root.clone()], "escape").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "escape").unwrap());
         assert!(rows.is_empty());
-        let rows = paths(&file_references(&[root.clone()], "inside").unwrap());
+        let rows = paths(&file_references(std::slice::from_ref(&root), "inside").unwrap());
         assert_eq!(rows[0], ("inside".to_owned(), "directory".to_owned()));
         // A second root makes the escape followable.
         let rows = paths(&file_references(&[root, outside], "secret").unwrap());

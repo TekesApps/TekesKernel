@@ -704,7 +704,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `park_stale_tombstone` | `remove_tree_if_present(&private).is_ok` | [966](../../src/folder.rs#L966) | receiver-type-required |
 | `park_stale_tombstone` | `remove_tree_if_present` | [966](../../src/folder.rs#L966) | [store::folder::remove_tree_if_present](../../src/folder.rs#L919) |
 | `park_stale_tombstone` | `File::open` | [967](../../src/folder.rs#L967) | external-constructor-callback-or-unresolved |
-| `park_stale_tombstone` | `directory.sync_all` | [968](../../src/folder.rs#L968) | receiver-type-required |
+| `park_stale_tombstone` | `directory.sync_all` | [969](../../src/folder.rs#L969) | receiver-type-required |
 | `park_stale_tombstone` | `drop` | [973](../../src/folder.rs#L973) | external-constructor-callback-or-unresolved |
 | `move_thread_folder` | `StoreError::Corruption` | [991](../../src/folder.rs#L991) | external-constructor-callback-or-unresolved |
 | `move_thread_folder` | `source         .parent()         .ok_or_else` | [992](../../src/folder.rs#L992) | receiver-type-required |

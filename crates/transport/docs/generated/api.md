@@ -42,7 +42,7 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [transport::server::TransportServer::serve](../../src/server.rs#L400) | `pub` | no resolved direct caller |
 | [transport::server::WebClientService::router](../../src/server.rs#L569) | `pub` | [transport::server::WebClientService::serve](../../src/server.rs#L584) |
 | [transport::server::WebClientService::serve](../../src/server.rs#L584) | `pub` | no resolved direct caller |
-| [transport::server::TransportConfigError](../../src/server.rs#L1402) | `pub` | not a function |
+| [transport::server::TransportConfigError](../../src/server.rs#L1404) | `pub` | not a function |
 | [transport::web::INDEX_HTML](../../src/web.rs#L11) | `pub(crate)` | not a function |
 | [transport::web::APP_CSS](../../src/web.rs#L12) | `pub(crate)` | not a function |
 | [transport::web::APP_JS](../../src/web.rs#L13) | `pub(crate)` | not a function |

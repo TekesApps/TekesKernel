@@ -252,12 +252,12 @@ fn prepare_inner(
             json!({"messages": render_chat(&items, system, dialect)?, "model": model, "stream": input.stream, "tools": render_tools(dialect, &tools)?}),
         ),
     };
-    if adapter == AdapterId::ChatCompletion {
-        if let Some(ceiling) = resolved.max_output_tokens() {
-            body.as_object_mut()
-                .expect("chat body is an object")
-                .insert("max_tokens".to_owned(), Value::from(ceiling));
-        }
+    if adapter == AdapterId::ChatCompletion
+        && let Some(ceiling) = resolved.max_output_tokens()
+    {
+        body.as_object_mut()
+            .expect("chat body is an object")
+            .insert("max_tokens".to_owned(), Value::from(ceiling));
     }
     if dialect == DialectId::OllamaChatV1 && input.stream {
         body.as_object_mut()
@@ -1635,15 +1635,14 @@ fn validate_tool_schema(schema: &Value) -> Result<(), PrepareError> {
     }) {
         return Err(invalid("tool object schema contains an unproved keyword"));
     }
-    if let Some(rules) = object.get("allOf") {
-        if !rules
+    if let Some(rules) = object.get("allOf")
+        && !rules
             .as_array()
             .is_some_and(|rules| !rules.is_empty() && rules.iter().all(Value::is_object))
-        {
-            return Err(invalid(
-                "tool allOf must be a nonempty array of object schemas",
-            ));
-        }
+    {
+        return Err(invalid(
+            "tool allOf must be a nonempty array of object schemas",
+        ));
     }
     Ok(())
 }
@@ -1705,12 +1704,12 @@ fn degraded_file_text(block: &Value, dialect: DialectId) -> Result<String, Prepa
         .get("bytes")
         .and_then(Value::as_u64)
         .unwrap_or(decoded.len() as u64);
-    if decoded.len() <= DEGRADED_FILE_TEXT_LIMIT {
-        if let Ok(content) = std::str::from_utf8(&decoded) {
-            return Ok(format!(
-                "Attached file {name} ({mime}, {bytes} bytes):\n```\n{content}\n```"
-            ));
-        }
+    if decoded.len() <= DEGRADED_FILE_TEXT_LIMIT
+        && let Ok(content) = std::str::from_utf8(&decoded)
+    {
+        return Ok(format!(
+            "Attached file {name} ({mime}, {bytes} bytes):\n```\n{content}\n```"
+        ));
     }
     Ok(format!(
         "Attached file {name} ({mime}, {bytes} bytes) could not be delivered to this model."
@@ -1760,12 +1759,11 @@ fn required_value(value: &Value, field: &str) -> Result<Value, PrepareError> {
 /// blocks, files, a bare outcome object) is sent as canonical JSON.
 fn tool_result_text(block: &Value) -> Result<String, PrepareError> {
     let result = block.get("result");
-    if let Some([only]) = result.and_then(Value::as_array).map(Vec::as_slice) {
-        if only.get("type").and_then(Value::as_str) == Some("text") {
-            if let Some(text) = only.get("text").and_then(Value::as_str) {
-                return Ok(text.to_owned());
-            }
-        }
+    if let Some([only]) = result.and_then(Value::as_array).map(Vec::as_slice)
+        && only.get("type").and_then(Value::as_str) == Some("text")
+        && let Some(text) = only.get("text").and_then(Value::as_str)
+    {
+        return Ok(text.to_owned());
     }
     canonical_argument_string(result)
 }

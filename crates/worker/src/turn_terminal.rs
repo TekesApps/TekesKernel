@@ -158,13 +158,11 @@ pub(crate) fn append_terminal(
         "final_answer":terminal.is_final_answer(),"usage":usage_object(terminal.usage.as_ref()),
         "sealed":{"version":1,"adapter":dialect.as_str(),"fragments":fragments}
     });
-    if server_managed {
-        if let Some(identity) = terminal.response_identity.as_deref() {
-            output
-                .as_object_mut()
-                .expect("output object")
-                .insert("continuation".to_owned(), json!({"id":identity}));
-        }
+    if server_managed && let Some(identity) = terminal.response_identity.as_deref() {
+        output
+            .as_object_mut()
+            .expect("output object")
+            .insert("continuation".to_owned(), json!({"id":identity}));
     }
     let event = make_event(output)?;
     let outcome_seq = event.seq();
@@ -368,13 +366,12 @@ pub(crate) fn append_provider_failure(
         partial_fragments: Some(partial),
         ..
     } = &failure
+        && let Some(sealed) = partial_carrier_for_eager_calls(ledger, dialect, eager, partial)?
     {
-        if let Some(sealed) = partial_carrier_for_eager_calls(ledger, dialect, eager, partial)? {
-            error
-                .as_object_mut()
-                .expect("error object")
-                .insert("sealed".to_owned(), sealed);
-        }
+        error
+            .as_object_mut()
+            .expect("error object")
+            .insert("sealed".to_owned(), sealed);
     }
     let event = make_event(error)?;
     let outcome_seq = event.seq();

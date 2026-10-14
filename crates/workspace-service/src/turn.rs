@@ -420,10 +420,10 @@ pub fn execute_with_roots(
             deletions += deleted;
             let mut summary =
                 json!({"path":path,"additions":added,"deletions":deleted,"state":"available"});
-            if request.include_diff {
-                if let Some(patch) = unified_diff(&path, before.as_deref(), after.as_deref()) {
-                    summary["unifiedDiff"] = json!(patch);
-                }
+            if request.include_diff
+                && let Some(patch) = unified_diff(&path, before.as_deref(), after.as_deref())
+            {
+                summary["unifiedDiff"] = json!(patch);
             }
             summaries.push(summary);
         } else {

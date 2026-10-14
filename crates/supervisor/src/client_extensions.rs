@@ -1312,17 +1312,16 @@ fn canonical_cost(value: &str) -> Result<String, ProductionRouteFailure> {
         None => (value, None),
     };
     canonical_unsigned(integer)?;
-    if let Some(fraction) = fraction {
-        if fraction.is_empty()
+    if let Some(fraction) = fraction
+        && (fraction.is_empty()
             || !fraction.bytes().all(|byte| byte.is_ascii_digit())
-            || fraction.ends_with('0')
-        {
-            return Err(failure(
-                "source-corrupt",
-                "Usage cost is not canonical decimal",
-                serde_json::json!({}),
-            ));
-        }
+            || fraction.ends_with('0'))
+    {
+        return Err(failure(
+            "source-corrupt",
+            "Usage cost is not canonical decimal",
+            serde_json::json!({}),
+        ));
     }
     if integer == "0" && fraction.is_some_and(|digits| digits.bytes().all(|byte| byte == b'0')) {
         return Err(failure(

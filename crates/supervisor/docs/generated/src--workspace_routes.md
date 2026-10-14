@@ -115,7 +115,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `Ok` | [46](../../src/workspace_routes.rs#L46) | external-constructor-callback-or-unresolved |
 | `open` | `root.to_owned` | [47](../../src/workspace_routes.rs#L47) | receiver-type-required |
 | `open` | `ManagementStore::open_light(root)                 .map_err` | [49](../../src/workspace_routes.rs#L49) | receiver-type-required |
-| `open` | `ManagementStore::open_light` | [49](../../src/workspace_routes.rs#L49) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L422) |
+| `open` | `ManagementStore::open_light` | [49](../../src/workspace_routes.rs#L49) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
 | `open` | `e.to_string` | [50](../../src/workspace_routes.rs#L50) | receiver-type-required |
 | `authority` | `self.root.join` | [56](../../src/workspace_routes.rs#L56) | receiver-type-required |
 | `authority` | `std::fs::read` | [57](../../src/workspace_routes.rs#L57) | external-constructor-callback-or-unresolved |

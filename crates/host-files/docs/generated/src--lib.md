@@ -405,11 +405,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `file_references_empty_query_lists_top_level_without_hidden` | `file_references` | [654](../../src/lib.rs#L654) | external-constructor-callback-or-unresolved |
 | `file_references_match_case_insensitively_and_skip_directories` | `workspace` | [667](../../src/lib.rs#L667) | [host-files::tests::workspace](../../src/lib.rs#L622) |
 | `file_references_match_case_insensitively_and_skip_directories` | `paths` | [668](../../src/lib.rs#L668), [670](../../src/lib.rs#L670), [675](../../src/lib.rs#L675), [685](../../src/lib.rs#L685) | [host-files::tests::paths](../../src/lib.rs#L637) |
-| `file_references_match_case_insensitively_and_skip_directories` | `file_references(&[root.clone()], "MAIN").unwrap` | [668](../../src/lib.rs#L668) | receiver-type-required |
+| `file_references_match_case_insensitively_and_skip_directories` | `file_references(std::slice::from_ref(&root), "MAIN").unwrap` | [668](../../src/lib.rs#L668) | receiver-type-required |
 | `file_references_match_case_insensitively_and_skip_directories` | `file_references` | [668](../../src/lib.rs#L668), [670](../../src/lib.rs#L670), [675](../../src/lib.rs#L675), [685](../../src/lib.rs#L685) | external-constructor-callback-or-unresolved |
-| `file_references_match_case_insensitively_and_skip_directories` | `root.clone` | [668](../../src/lib.rs#L668), [670](../../src/lib.rs#L670), [675](../../src/lib.rs#L675) | receiver-type-required |
-| `file_references_match_case_insensitively_and_skip_directories` | `file_references(&[root.clone()], "helper").unwrap` | [670](../../src/lib.rs#L670) | receiver-type-required |
-| `file_references_match_case_insensitively_and_skip_directories` | `file_references(&[root.clone()], "nested").unwrap` | [675](../../src/lib.rs#L675) | receiver-type-required |
+| `file_references_match_case_insensitively_and_skip_directories` | `std::slice::from_ref` | [668](../../src/lib.rs#L668), [670](../../src/lib.rs#L670), [675](../../src/lib.rs#L675) | external-constructor-callback-or-unresolved |
+| `file_references_match_case_insensitively_and_skip_directories` | `file_references(std::slice::from_ref(&root), "helper").unwrap` | [670](../../src/lib.rs#L670) | receiver-type-required |
+| `file_references_match_case_insensitively_and_skip_directories` | `file_references(std::slice::from_ref(&root), "nested").unwrap` | [675](../../src/lib.rs#L675) | receiver-type-required |
 | `file_references_match_case_insensitively_and_skip_directories` | `file_references(&[root], ".env").unwrap` | [685](../../src/lib.rs#L685) | receiver-type-required |
 | `file_references_never_follow_symlinks_outside_roots` | `workspace` | [691](../../src/lib.rs#L691) | [host-files::tests::workspace](../../src/lib.rs#L622) |
 | `file_references_never_follow_symlinks_outside_roots` | `dir.path().join` | [692](../../src/lib.rs#L692) | receiver-type-required |
@@ -424,11 +424,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `file_references_never_follow_symlinks_outside_roots` | `root.join` | [695](../../src/lib.rs#L695), [696](../../src/lib.rs#L696) | receiver-type-required |
 | `file_references_never_follow_symlinks_outside_roots` | `symlink(root.join("src"), root.join("inside")).unwrap` | [696](../../src/lib.rs#L696) | receiver-type-required |
 | `file_references_never_follow_symlinks_outside_roots` | `paths` | [697](../../src/lib.rs#L697), [699](../../src/lib.rs#L699), [701](../../src/lib.rs#L701), [704](../../src/lib.rs#L704) | [host-files::tests::paths](../../src/lib.rs#L637) |
-| `file_references_never_follow_symlinks_outside_roots` | `file_references(&[root.clone()], "secret").unwrap` | [697](../../src/lib.rs#L697) | receiver-type-required |
+| `file_references_never_follow_symlinks_outside_roots` | `file_references(std::slice::from_ref(&root), "secret").unwrap` | [697](../../src/lib.rs#L697) | receiver-type-required |
 | `file_references_never_follow_symlinks_outside_roots` | `file_references` | [697](../../src/lib.rs#L697), [699](../../src/lib.rs#L699), [701](../../src/lib.rs#L701), [704](../../src/lib.rs#L704) | external-constructor-callback-or-unresolved |
-| `file_references_never_follow_symlinks_outside_roots` | `root.clone` | [697](../../src/lib.rs#L697), [699](../../src/lib.rs#L699), [701](../../src/lib.rs#L701) | receiver-type-required |
-| `file_references_never_follow_symlinks_outside_roots` | `file_references(&[root.clone()], "escape").unwrap` | [699](../../src/lib.rs#L699) | receiver-type-required |
-| `file_references_never_follow_symlinks_outside_roots` | `file_references(&[root.clone()], "inside").unwrap` | [701](../../src/lib.rs#L701) | receiver-type-required |
+| `file_references_never_follow_symlinks_outside_roots` | `std::slice::from_ref` | [697](../../src/lib.rs#L697), [699](../../src/lib.rs#L699), [701](../../src/lib.rs#L701) | external-constructor-callback-or-unresolved |
+| `file_references_never_follow_symlinks_outside_roots` | `file_references(std::slice::from_ref(&root), "escape").unwrap` | [699](../../src/lib.rs#L699) | receiver-type-required |
+| `file_references_never_follow_symlinks_outside_roots` | `file_references(std::slice::from_ref(&root), "inside").unwrap` | [701](../../src/lib.rs#L701) | receiver-type-required |
 | `file_references_never_follow_symlinks_outside_roots` | `file_references(&[root, outside], "secret").unwrap` | [704](../../src/lib.rs#L704) | receiver-type-required |
 | `file_references_are_bounded` | `tmp` | [713](../../src/lib.rs#L713) | [host-files::tests::tmp](../../src/lib.rs#L467) |
 | `file_references_are_bounded` | `fs::write(dir.path().join(format!("match{i}.txt")), "").unwrap` | [715](../../src/lib.rs#L715) | receiver-type-required |

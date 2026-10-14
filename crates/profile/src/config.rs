@@ -1530,14 +1530,13 @@ fn validate_references(
                 path: path.to_path_buf(),
                 reason: format!("unknown provider {provider_id}"),
             })?;
-        if let Some(model_id) = model {
-            if !provider
+        if let Some(model_id) = model
+            && !provider
                 .models
                 .iter()
                 .any(|value| value.id == model_id && value.enabled)
-            {
-                return invalid_reference(path, "model is absent or disabled");
-            }
+        {
+            return invalid_reference(path, "model is absent or disabled");
         }
     }
     Ok(())

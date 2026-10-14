@@ -3385,12 +3385,12 @@ impl ProductionProcessHost {
             let source = owner
                 .first_root_input(&session_id)
                 .unwrap_or(submitted_source);
-            if owner.wait_and_seed_automatic_title(&session_id, &timestamp, &source) {
-                if let Err(error) = owner.refine_automatic_title(&session_id, &source) {
-                    eprintln!(
-                        "process-host-automatic-title-refinement-failed: session={session_id} error={error}"
-                    );
-                }
+            if owner.wait_and_seed_automatic_title(&session_id, &timestamp, &source)
+                && let Err(error) = owner.refine_automatic_title(&session_id, &source)
+            {
+                eprintln!(
+                    "process-host-automatic-title-refinement-failed: session={session_id} error={error}"
+                );
             }
         });
     }
@@ -4953,26 +4953,24 @@ fn worker_reader(
                 }
             }
             Ok(WorkerMessage::Appended(_)) => {
-                if process_key != session_id {
-                    if let Some(owner) = owner.upgrade() {
-                        owner.reconcile_child_line(&session_id, &ledger);
-                    }
+                if process_key != session_id
+                    && let Some(owner) = owner.upgrade()
+                {
+                    owner.reconcile_child_line(&session_id, &ledger);
                 }
-                if process_key == session_id {
-                    if let Some(owner) = owner.upgrade() {
-                        if let Err(error) = owner.publish_appended(&session_id) {
-                            eprintln!("process-host-publish-appended-failed: {error}");
-                        }
-                    }
+                if process_key == session_id
+                    && let Some(owner) = owner.upgrade()
+                    && let Err(error) = owner.publish_appended(&session_id)
+                {
+                    eprintln!("process-host-publish-appended-failed: {error}");
                 }
             }
             Ok(WorkerMessage::Frame(frame)) => {
-                if process_key == session_id {
-                    if let Some(owner) = owner.upgrade() {
-                        if let Err(error) = owner.publish_frame(&session_id, frame) {
-                            eprintln!("process-host-publish-frame-failed: {error}");
-                        }
-                    }
+                if process_key == session_id
+                    && let Some(owner) = owner.upgrade()
+                    && let Err(error) = owner.publish_frame(&session_id, frame)
+                {
+                    eprintln!("process-host-publish-frame-failed: {error}");
                 }
             }
             Ok(WorkerMessage::LaunchChild(child)) => {
@@ -5612,10 +5610,10 @@ fn child_ledger_damage(folder: &Path) -> Option<String> {
         if bytes.is_empty() {
             continue;
         }
-        if ledger_damage(&bytes).is_some() {
-            if let DamageVerdict::Damaged(offset) = damage_under_lock(&entry.path()) {
-                return Some(format!("{name}: no valid record at byte {offset}"));
-            }
+        if ledger_damage(&bytes).is_some()
+            && let DamageVerdict::Damaged(offset) = damage_under_lock(&entry.path())
+        {
+            return Some(format!("{name}: no valid record at byte {offset}"));
         }
     }
     None
@@ -6538,7 +6536,9 @@ fn read_worker_hello(
             let remaining = deadline - now;
             remaining
                 .as_millis()
-                .saturating_add(u128::from(remaining.subsec_nanos() % 1_000_000 != 0))
+                .saturating_add(u128::from(
+                    !remaining.subsec_nanos().is_multiple_of(1_000_000),
+                ))
                 .clamp(1, i32::MAX as u128) as i32
         };
         let mut descriptor = libc::pollfd {
@@ -6744,19 +6744,19 @@ mod tests {
                     break;
                 }
                 request.extend_from_slice(&chunk[..count]);
-                if expected.is_none() {
-                    if let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n") {
-                        let headers = String::from_utf8_lossy(&request[..end + 4]);
-                        let length = headers
-                            .lines()
-                            .find_map(|line| {
-                                line.strip_prefix("content-length: ")
-                                    .or_else(|| line.strip_prefix("Content-Length: "))
-                            })
-                            .and_then(|value| value.parse::<usize>().ok())
-                            .unwrap_or(0);
-                        expected = Some(end + 4 + length);
-                    }
+                if expected.is_none()
+                    && let Some(end) = request.windows(4).position(|bytes| bytes == b"\r\n\r\n")
+                {
+                    let headers = String::from_utf8_lossy(&request[..end + 4]);
+                    let length = headers
+                        .lines()
+                        .find_map(|line| {
+                            line.strip_prefix("content-length: ")
+                                .or_else(|| line.strip_prefix("Content-Length: "))
+                        })
+                        .and_then(|value| value.parse::<usize>().ok())
+                        .unwrap_or(0);
+                    expected = Some(end + 4 + length);
                 }
                 if expected.is_some_and(|length| request.len() >= length) {
                     break;

@@ -130,13 +130,17 @@ complete matching response event; it does not wait for stream EOF.
 Legacy peers perform, in order:
 
 1. `initialize` with the newest supported legacy version, client identity,
-   and only the client capabilities whose handlers are installed;
+   and only the client capabilities whose handlers are installed. The Kernel
+   installs the durable task continuation handler for every MCP tool call, so
+   it always declares `extensions["io.modelcontextprotocol/tasks"]: {}` and no
+   other capability (see "Tasks extension shapes");
 2. validate a mutually supported response version and closed capability map;
 3. send `notifications/initialized`;
 4. only then issue catalog or invocation requests.
 
 Modern peers first issue `server/discover`, select the newest mutual version,
-and attach the selected protocol metadata to every request. An unsupported
+and attach the selected protocol metadata to every request, including the same
+client capability declaration in `_meta["io.modelcontextprotocol/clientCapabilities"]`. An unsupported
 version or required capability is terminal for that configuration generation;
 the Kernel does not advertise the server.
 
@@ -283,7 +287,7 @@ strings use the protocol base64 header representation. Transport configuration
 cannot override these reserved headers. Scoped HTTP requests retain their catalog
 projection; transports without HTTP header support reject such catalogs.
 
-### Official task shapes
+### Official task shapes (SEP-1686)
 
 The released official SDKs implement SEP-1686 as shipped in protocol
 2025-11-25: a task carries `ttl` and `pollInterval` (milliseconds), `tasks/get`
@@ -296,6 +300,52 @@ and completes a `completed` poll that lacks an inline `result` with exactly one
 therefore see one vocabulary regardless of the server's SDK. A peer that
 already speaks the Kernel shape is untouched.
 
+### Tasks extension shapes (SEP-2663)
+
+Servers built on the official Rust SDK (`rmcp` 3.x) implement the tasks
+extension instead of SEP-1686. The two dialects differ on the wire; the Kernel
+accepts both and maps both onto the one Kernel vocabulary above.
+
+- Negotiation. The server advertises an object-valued
+  `capabilities.extensions["io.modelcontextprotocol/tasks"]`; it has no
+  top-level `tasks` capability and cannot declare `execution.taskSupport` on its
+  tools. The client declares the same extension key (value `{}`) in every
+  handshake. A server that does not see the declaration must not create a task:
+  a `tools/call` that would create one, `tasks/get`, `tasks/update` and `tasks/cancel`
+  fail with JSON-RPC error `-32021` (Missing Required Client Capability). The Kernel
+  surfaces it as the typed remote error `Remote{code:-32021}` and never retries
+  it; because the handshake always declares the extension, it indicates a
+  server that lost the declaration.
+- The server decides. A tools/call never carries a `task` member for such a
+  peer; the server answers either a standard result or a task. Task creation is
+  therefore not requested but accepted (see "Task results bind a continuation").
+- Flat task object: `taskId`, `status` (`working | input_required | completed |
+  failed | cancelled`), `createdAt`, `lastUpdatedAt`, `ttlMs` (integer or
+  `null` for unlimited), optional `pollIntervalMs` and `statusMessage`. There
+  are no `ttl` or `pollInterval` keys. These are already the Kernel keys.
+- A task-creating `tools/call` result is the task object at the top level plus
+  `resultType:"task"` (and optionally `_meta`), not `{"task":{...}}`. The peer
+  rewrites it to `{"task":{<task fields>}}`, dropping `resultType`, so the
+  supervisor sees the same creation shape as for SEP-1686. A result that has
+  both `resultType:"task"` and a `task` member is a protocol violation, as is a
+  `resultType:"task"` result from a peer that advertised neither the extension
+  nor a top-level `tasks` capability; after dispatch both yield `unknown_effect`
+  like any other malformed tool-call answer.
+- `tasks/get` returns the task with `resultType:"complete"` and the payload
+  inline: `inputRequests` when `input_required`, `result` when `completed`
+  (`isError:true` is still a completed task), `error` (a JSON-RPC error object)
+  when `failed`. The peer drops `resultType`. There is no `tasks/result`: the
+  Kernel sends it only to a peer that advertises the top-level `tasks`
+  capability, so a `completed` poll without an inline `result` from an
+  extension-only peer fails validation instead of triggering another request.
+  There is no `tasks/list`, and the Kernel never sends it.
+- `tasks/update` `{taskId, inputResponses}` and `tasks/cancel` `{taskId}` are
+  acknowledged by an empty result with `resultType:"complete"`; neither returns
+  task state, and cancellation is cooperative, so a cancelled request may end as
+  `completed` or `failed`. The Kernel follows every mutation with `tasks/get`
+  and only the polled state is authoritative (this is already the continuation
+  rule below).
+
 ### Task extension capability
 
 Kernel preserves advertised `extensions` in capability snapshots. Task methods
@@ -303,7 +353,10 @@ are enabled by either the legacy top-level `tasks` object or an object-valued
 `extensions["io.modelcontextprotocol/tasks"]`. An unrelated extension or a
 non-object task extension does not enable task execution. Serialization retains
 the original advertisement location rather than inventing a top-level tasks
-capability from the extension.
+capability from the extension. The advertisement location also selects the
+dialect-specific behavior: `task: {ttl}` augmentation and the `tasks/result`
+completion fetch belong to the top-level `tasks` capability (SEP-1686) only; the
+flat shapes are recognized by their content on any task-capable peer.
 
 ### Subscription capability details
 
@@ -342,8 +395,9 @@ not by itself turn task state into a durable Kernel hold or promote its result.
 
 ### Task results bind a continuation
 
-A `tools/call` whose result carries a `task` object (the tasks extension's
-`CreateTaskResult`) with status `working` or `input_required` does not
+A `tools/call` whose result carries a `task` object (SEP-1686's creation shape,
+or the flat `resultType:"task"` result of the tasks extension after the peer
+rewrote it) with status `working` or `input_required` does not
 complete the call. The supervisor validates the task (identity, status,
 timestamps), binds an immutable continuation journal entry under the
 session's `continuations/` directory (original tool-control request,
@@ -356,12 +410,27 @@ checks as the initial call; `completed` yields the embedded tool result
 (`isError=true` is a failure), `failed`/`cancelled` is a failure, and a
 `completed` task returned directly by `tools/call` yields its `result`.
 Kernel requests task augmentation only for tools whose `tools/list` entry
-declares `execution.taskSupport = "required"` (`McpTool::requires_task`): the
+declares `execution.taskSupport = "required"` (`McpTool::requires_task`) on a
+peer that advertises the top-level `tasks` capability (SEP-1686): the
 `tools/call` then carries `task: {ttl: 600000}` (plus the idempotency `_meta`
-for external-effect tools) and the returned `CreateTaskResult` binds the
-continuation as above. `optional` tools stay synchronous; `forbidden` or
-undeclared tools never carry `task`. A server that returns a task for an
-ordinary call is still honored.
+for external-effect tools) and the returned task binds the continuation as
+above. `optional` tools stay synchronous; `forbidden` or undeclared tools never
+carry `task`. A server that returns a task for an ordinary call is still
+honored.
+
+A peer that advertises only the tasks extension has no request-side
+augmentation and cannot declare `execution.taskSupport`, so the trigger is the
+handshake declaration alone: no `tools/call` carries `task` for it (a
+`requires_task` tool is called like any other, with its idempotency `_meta` for
+external-effect tools), and the Kernel binds a continuation whenever the answer
+is a non-terminal task, whether or not the tool declares anything about tasks.
+A task that is already `completed` when created yields its inline `result`;
+`failed` and `cancelled` are failures, exactly as for SEP-1686. The durable
+rules do not depend on the dialect: the continuation id is derived from the
+Kernel request id and the server's `taskId`, `tasks/update` and `tasks/cancel`
+are never resent after loss (the continuation reconnects and polls `tasks/get`
+for the same `taskId`), and the idempotency key travels in `_meta` of the
+creating `tools/call` only.
 
 Broker task operations expose cooperative cancellation. Before dispatch,
 cancellation returns cancelled without a request. Once a task query is in
@@ -583,7 +652,10 @@ transcripts, config/management values, catalog projection, recovery matrices,
 and rejection cases. Secrets use sentinel references only.
 
 - Gate 86: protocol handshake, framing, bounds, and capability negotiation.
-- Gate 87: tool/resource/prompt/task operation shapes and cancellation.
+- Gate 87: tool/resource/prompt/task operation shapes and cancellation,
+  including the SEP-1686 and tasks-extension dialects
+  (`fixtures/mcp-runtime/tasks-extension-*.jsonl` are replayed byte-for-byte
+  against the client in `crates/mcp/tests/tasks_extension.rs`).
 - Gate 88: stdio child lifecycle and supervisor daemon-pool ownership.
 - Gate 89: HTTP/OAuth credential isolation, reconnect, and authorization cache
   partitioning.

@@ -216,8 +216,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `send_async` | `redacted.as_slice` | [318](../../src/http.rs#L318) | receiver-type-required |
 | `send_async` | `failure_body.as_slice` | [320](../../src/http.rs#L320) | receiver-type-required |
 | `send_async` | `dialect.map_or_else` | [322](../../src/http.rs#L322), [370](../../src/http.rs#L370), [493](../../src/http.rs#L493) | receiver-type-required |
-| `send_async` | `normalize_response` | [323](../../src/http.rs#L323), [494](../../src/http.rs#L494) | [provider::normalize::normalize_response](../../src/normalize.rs#L182) |
-| `send_async` | `normalize_dialect_response` | [324](../../src/http.rs#L324), [495](../../src/http.rs#L495) | [provider::normalize::normalize_dialect_response](../../src/normalize.rs#L216) |
+| `send_async` | `normalize_response` | [323](../../src/http.rs#L323), [494](../../src/http.rs#L494) | [provider::normalize::normalize_response](../../src/normalize.rs#L184) |
+| `send_async` | `normalize_dialect_response` | [324](../../src/http.rs#L324), [495](../../src/http.rs#L495) | [provider::normalize::normalize_dialect_response](../../src/normalize.rs#L218) |
 | `send_async` | `Some` | [328](../../src/http.rs#L328), [350](../../src/http.rs#L350), [368](../../src/http.rs#L368) | external-constructor-callback-or-unresolved |
 | `send_async` | `ProviderCompletion::Terminal` | [337](../../src/http.rs#L337), [491](../../src/http.rs#L491), [498](../../src/http.rs#L498) | external-constructor-callback-or-unresolved |
 | `send_async` | `response             .headers()             .get(reqwest::header::CONTENT_TYPE)             .and_then(&#124;value&#124; value.to_str().ok())             .is_some_and` | [364](../../src/http.rs#L364) | receiver-type-required |
@@ -227,7 +227,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `send_async` | `value.split(';').next` | [368](../../src/http.rs#L368) | receiver-type-required |
 | `send_async` | `value.split` | [368](../../src/http.rs#L368) | receiver-type-required |
 | `send_async` | `is_sse.then` | [369](../../src/http.rs#L369) | receiver-type-required |
-| `send_async` | `ProviderStreamDecoder::new` | [371](../../src/http.rs#L371) | [provider::normalize::ProviderStreamDecoder::new](../../src/normalize.rs#L641) |
+| `send_async` | `ProviderStreamDecoder::new` | [371](../../src/http.rs#L371) | [provider::normalize::ProviderStreamDecoder::new](../../src/normalize.rs#L643) |
 | `send_async` | `Instant::now` | [376](../../src/http.rs#L376), [467](../../src/http.rs#L467) | external-constructor-callback-or-unresolved |
 | `send_async` | `RESPONSE_IDLE.saturating_sub` | [384](../../src/http.rs#L384) | receiver-type-required |
 | `send_async` | `since_frame.elapsed` | [384](../../src/http.rs#L384) | receiver-type-required |

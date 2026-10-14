@@ -1,0 +1,4 @@
+{"id":2,"jsonrpc":"2.0","method":"tools/call","params":{"_meta":{"io.tekes/idempotencyKey":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},"arguments":{"a":2,"b":3},"name":"sum"}}
+{"error":{"code":-32021,"data":{"requiredCapabilities":{"extensions":{"io.modelcontextprotocol/tasks":{}}}},"message":"Missing required client capability"},"id":2,"jsonrpc":"2.0"}
+{"id":3,"jsonrpc":"2.0","method":"tasks/get","params":{"taskId":"task-ext-1"}}
+{"error":{"code":-32021,"data":{"requiredCapabilities":{"extensions":{"io.modelcontextprotocol/tasks":{}}}},"message":"Missing required client capability"},"id":3,"jsonrpc":"2.0"}

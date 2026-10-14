@@ -1058,15 +1058,14 @@ impl SystemToolBackend {
                                 | BackendFailure::Denied(_)
                                 | BackendFailure::Invalid(_)
                                 | BackendFailure::NotFound(_)))
-                        ) {
-                            if let Some(recorder) = &self.edit_recorder {
-                                outcome_try!(recorder.abort(
-                                    execution,
-                                    &identity,
-                                    None,
-                                    Some(&patch.content)
-                                ));
-                            }
+                        ) && let Some(recorder) = &self.edit_recorder
+                        {
+                            outcome_try!(recorder.abort(
+                                execution,
+                                &identity,
+                                None,
+                                Some(&patch.content)
+                            ));
                         }
                         retype(other, "write helper returned the wrong value")
                     }
@@ -1140,15 +1139,14 @@ impl SystemToolBackend {
                                 | BackendFailure::Denied(_)
                                 | BackendFailure::Invalid(_)
                                 | BackendFailure::NotFound(_)))
-                        ) {
-                            if let Some(recorder) = &self.edit_recorder {
-                                outcome_try!(recorder.abort(
-                                    execution,
-                                    &identity,
-                                    Some(original),
-                                    Some(&patch.content)
-                                ));
-                            }
+                        ) && let Some(recorder) = &self.edit_recorder
+                        {
+                            outcome_try!(recorder.abort(
+                                execution,
+                                &identity,
+                                Some(original),
+                                Some(&patch.content)
+                            ));
                         }
                         retype(other, "patch helper returned the wrong value")
                     }
@@ -1296,10 +1294,9 @@ impl SystemToolBackend {
                         | BackendFailure::Denied(_)
                         | BackendFailure::Invalid(_)
                         | BackendFailure::NotFound(_)))
-                ) {
-                    if let Some(recorder) = &self.edit_recorder {
-                        outcome_try!(recorder.abort(execution, &identity, before, Some(content)));
-                    }
+                ) && let Some(recorder) = &self.edit_recorder
+                {
+                    outcome_try!(recorder.abort(execution, &identity, before, Some(content)));
                 }
                 retype(other, "write helper returned the wrong value")
             }

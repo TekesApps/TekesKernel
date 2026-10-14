@@ -1028,6 +1028,9 @@ fn offer_content_names(content: &Value, offered_name: &str) -> bool {
     })
 }
 
+// `fold` is deliberate: every element must be redacted, whereas `any` would stop
+// at the first change and leave later secrets in place.
+#[allow(clippy::unnecessary_fold)]
 fn redact_value(value: &mut Value) -> bool {
     match value {
         Value::String(text) => {

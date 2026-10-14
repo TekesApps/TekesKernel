@@ -906,13 +906,13 @@ fn validate_snapshot(snapshot: &InstructionSnapshot) -> Result<(), ProfileError>
             });
         }
         validate_source_path(source)?;
-        if let InstructionOrigin::Project { workspace_index } = source.origin {
-            if workspace_index > MAX_SAFE_INTEGER {
-                return Err(ProfileError::InvalidSchema {
-                    path: path.to_path_buf(),
-                    reason: format!("source {index} workspace_index exceeds safe integer"),
-                });
-            }
+        if let InstructionOrigin::Project { workspace_index } = source.origin
+            && workspace_index > MAX_SAFE_INTEGER
+        {
+            return Err(ProfileError::InvalidSchema {
+                path: path.to_path_buf(),
+                reason: format!("source {index} workspace_index exceeds safe integer"),
+            });
         }
         let key = source_order_key(source);
         if previous_key

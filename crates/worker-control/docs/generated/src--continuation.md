@@ -22,14 +22,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [worker-control::continuation::ToolContinuationOutcome](../../src/continuation.rs#L163) | enum_item | `pub` |  |
 | [worker-control::continuation::ToolContinuationResponse](../../src/continuation.rs#L179) | struct_item | `pub` |  |
 | [worker-control::continuation::ToolContinuationResponse::validate_for](../../src/continuation.rs#L186) | function_item | `pub` |  |
-| [worker-control::continuation::outcome_tests::pending_outcomes_bind_identity_and_advance_exactly_one_step](../../src/continuation.rs#L212) | function_item | `private` | test; #[cfg(test)] |
-| [worker-control::continuation::TOOL_CONTINUATION_KEY](../../src/continuation.rs#L266) | const_item | `pub` |  |
-| [worker-control::continuation::TOOL_CONTINUATION_RESULT_KEY](../../src/continuation.rs#L268) | const_item | `pub` |  |
-| [worker-control::continuation::encode_tool_continuation](../../src/continuation.rs#L270) | function_item | `pub` |  |
-| [worker-control::continuation::decode_tool_continuation](../../src/continuation.rs#L279) | function_item | `pub` |  |
-| [worker-control::continuation::encode_tool_continuation_result](../../src/continuation.rs#L289) | function_item | `pub` |  |
-| [worker-control::continuation::decode_tool_continuation_result](../../src/continuation.rs#L295) | function_item | `pub` |  |
-| [worker-control::continuation::wire_tests::continuation_wire_pair_round_trips_and_rejects_foreign_keys](../../src/continuation.rs#L305) | function_item | `private` | test; #[cfg(test)] |
+| [worker-control::continuation::outcome_tests::pending_outcomes_bind_identity_and_advance_exactly_one_step](../../src/continuation.rs#L210) | function_item | `private` | test; #[cfg(test)] |
+| [worker-control::continuation::TOOL_CONTINUATION_KEY](../../src/continuation.rs#L264) | const_item | `pub` |  |
+| [worker-control::continuation::TOOL_CONTINUATION_RESULT_KEY](../../src/continuation.rs#L266) | const_item | `pub` |  |
+| [worker-control::continuation::encode_tool_continuation](../../src/continuation.rs#L268) | function_item | `pub` |  |
+| [worker-control::continuation::decode_tool_continuation](../../src/continuation.rs#L277) | function_item | `pub` |  |
+| [worker-control::continuation::encode_tool_continuation_result](../../src/continuation.rs#L287) | function_item | `pub` |  |
+| [worker-control::continuation::decode_tool_continuation_result](../../src/continuation.rs#L293) | function_item | `pub` |  |
+| [worker-control::continuation::wire_tests::continuation_wire_pair_round_trips_and_rejects_foreign_keys](../../src/continuation.rs#L303) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -138,50 +138,50 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `step_identity_is_stable_but_changed_action_is_not_an_exact_retry` | `IJsonValue::parse_str(r#"{"changed":true}"#).unwrap` | [141](../../src/continuation.rs#L141) | receiver-type-required |
 | `step_identity_is_stable_but_changed_action_is_not_an_exact_retry` | `IJsonValue::parse_str` | [141](../../src/continuation.rs#L141) | external-constructor-callback-or-unresolved |
 | `validate_for` | `request.validate` | [187](../../src/continuation.rs#L187) | receiver-type-required |
-| `validate_for` | `Err` | [189](../../src/continuation.rs#L189), [201](../../src/continuation.rs#L201) | external-constructor-callback-or-unresolved |
+| `validate_for` | `Err` | [189](../../src/continuation.rs#L189), [200](../../src/continuation.rs#L200) | external-constructor-callback-or-unresolved |
 | `validate_for` | `"continuation response binding mismatch".into` | [189](../../src/continuation.rs#L189) | receiver-type-required |
-| `validate_for` | `"pending continuation identity or sequence mismatch".into` | [201](../../src/continuation.rs#L201) | receiver-type-required |
-| `validate_for` | `Ok` | [204](../../src/continuation.rs#L204) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__test__task",             IJsonValue::parse_str("{}").unwrap(),         )         .unwrap` | [213](../../src/continuation.rs#L213) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolControl::new` | [213](../../src/continuation.rs#L213) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str("{}").unwrap` | [219](../../src/continuation.rs#L219) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str` | [219](../../src/continuation.rs#L219), [231](../../src/continuation.rs#L231) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolContinuationRequest::new(original, "a".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [223](../../src/continuation.rs#L223) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolContinuationRequest::new` | [223](../../src/continuation.rs#L223) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"a".repeat` | [223](../../src/continuation.rs#L223), [241](../../src/continuation.rs#L241), [242](../../src/continuation.rs#L242) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.request_id.clone` | [226](../../src/continuation.rs#L226) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.original.call_id.clone` | [227](../../src/continuation.rs#L227) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.continuation_id.clone` | [229](../../src/continuation.rs#L229) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str(r#"{"taskId":"remote-1","status":"working"}"#)                     .unwrap` | [231](../../src/continuation.rs#L231) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.validate_for(&request).unwrap` | [235](../../src/continuation.rs#L235) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.validate_for` | [235](../../src/continuation.rs#L235) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::to_vec(&response).unwrap` | [236](../../src/continuation.rs#L236) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::to_vec` | [236](../../src/continuation.rs#L236) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::from_slice(&bytes).unwrap` | [237](../../src/continuation.rs#L237), [259](../../src/continuation.rs#L259) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::from_slice` | [237](../../src/continuation.rs#L237), [259](../../src/continuation.rs#L259) | external-constructor-callback-or-unresolved |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"b".repeat` | [240](../../src/continuation.rs#L240) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.clone` | [244](../../src/continuation.rs#L244), [256](../../src/continuation.rs#L256) | receiver-type-required |
-| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"other".into` | [257](../../src/continuation.rs#L257) | receiver-type-required |
-| `encode_tool_continuation` | `request         .validate()         .map_err` | [273](../../src/continuation.rs#L273) | receiver-type-required |
-| `encode_tool_continuation` | `request         .validate` | [273](../../src/continuation.rs#L273) | receiver-type-required |
-| `encode_tool_continuation` | `crate::encode_line` | [276](../../src/continuation.rs#L276) | [worker-control::encode_line](../../src/lib.rs#L359) |
-| `decode_tool_continuation` | `crate::decode_named` | [282](../../src/continuation.rs#L282) | [worker-control::decode_named](../../src/lib.rs#L367) |
-| `decode_tool_continuation` | `request         .validate()         .map_err` | [283](../../src/continuation.rs#L283) | receiver-type-required |
-| `decode_tool_continuation` | `request         .validate` | [283](../../src/continuation.rs#L283) | receiver-type-required |
-| `decode_tool_continuation` | `Ok` | [286](../../src/continuation.rs#L286) | external-constructor-callback-or-unresolved |
-| `encode_tool_continuation_result` | `crate::encode_line` | [292](../../src/continuation.rs#L292) | [worker-control::encode_line](../../src/lib.rs#L359) |
-| `decode_tool_continuation_result` | `crate::decode_named` | [298](../../src/continuation.rs#L298) | [worker-control::decode_named](../../src/lib.rs#L367) |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__test__task",             IJsonValue::parse_str("{}").unwrap(),         )         .unwrap` | [306](../../src/continuation.rs#L306) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new` | [306](../../src/continuation.rs#L306) | external-constructor-callback-or-unresolved |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str("{}").unwrap` | [312](../../src/continuation.rs#L312) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str` | [312](../../src/continuation.rs#L312), [329](../../src/continuation.rs#L329) | external-constructor-callback-or-unresolved |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolContinuationRequest::new(original, "a".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [316](../../src/continuation.rs#L316) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolContinuationRequest::new` | [316](../../src/continuation.rs#L316) | external-constructor-callback-or-unresolved |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `"a".repeat` | [316](../../src/continuation.rs#L316) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation(&request).unwrap` | [318](../../src/continuation.rs#L318) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation` | [318](../../src/continuation.rs#L318) | external-constructor-callback-or-unresolved |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `request.request_id.clone` | [326](../../src/continuation.rs#L326) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `"call-1".into` | [327](../../src/continuation.rs#L327) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str(r#"{"content":[]}"#).unwrap` | [329](../../src/continuation.rs#L329) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation_result(&response).unwrap` | [332](../../src/continuation.rs#L332) | receiver-type-required |
-| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation_result` | [332](../../src/continuation.rs#L332) | external-constructor-callback-or-unresolved |
+| `validate_for` | `"pending continuation identity or sequence mismatch".into` | [200](../../src/continuation.rs#L200) | receiver-type-required |
+| `validate_for` | `Ok` | [202](../../src/continuation.rs#L202) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__test__task",             IJsonValue::parse_str("{}").unwrap(),         )         .unwrap` | [211](../../src/continuation.rs#L211) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolControl::new` | [211](../../src/continuation.rs#L211) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str("{}").unwrap` | [217](../../src/continuation.rs#L217) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str` | [217](../../src/continuation.rs#L217), [229](../../src/continuation.rs#L229) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolContinuationRequest::new(original, "a".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [221](../../src/continuation.rs#L221) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `ToolContinuationRequest::new` | [221](../../src/continuation.rs#L221) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"a".repeat` | [221](../../src/continuation.rs#L221), [239](../../src/continuation.rs#L239), [240](../../src/continuation.rs#L240) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.request_id.clone` | [224](../../src/continuation.rs#L224) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.original.call_id.clone` | [225](../../src/continuation.rs#L225) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `request.continuation_id.clone` | [227](../../src/continuation.rs#L227) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `IJsonValue::parse_str(r#"{"taskId":"remote-1","status":"working"}"#)                     .unwrap` | [229](../../src/continuation.rs#L229) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.validate_for(&request).unwrap` | [233](../../src/continuation.rs#L233) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.validate_for` | [233](../../src/continuation.rs#L233) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::to_vec(&response).unwrap` | [234](../../src/continuation.rs#L234) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::to_vec` | [234](../../src/continuation.rs#L234) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::from_slice(&bytes).unwrap` | [235](../../src/continuation.rs#L235), [257](../../src/continuation.rs#L257) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `serde_json::from_slice` | [235](../../src/continuation.rs#L235), [257](../../src/continuation.rs#L257) | external-constructor-callback-or-unresolved |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"b".repeat` | [238](../../src/continuation.rs#L238) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `response.clone` | [242](../../src/continuation.rs#L242), [254](../../src/continuation.rs#L254) | receiver-type-required |
+| `pending_outcomes_bind_identity_and_advance_exactly_one_step` | `"other".into` | [255](../../src/continuation.rs#L255) | receiver-type-required |
+| `encode_tool_continuation` | `request         .validate()         .map_err` | [271](../../src/continuation.rs#L271) | receiver-type-required |
+| `encode_tool_continuation` | `request         .validate` | [271](../../src/continuation.rs#L271) | receiver-type-required |
+| `encode_tool_continuation` | `crate::encode_line` | [274](../../src/continuation.rs#L274) | [worker-control::encode_line](../../src/lib.rs#L359) |
+| `decode_tool_continuation` | `crate::decode_named` | [280](../../src/continuation.rs#L280) | [worker-control::decode_named](../../src/lib.rs#L367) |
+| `decode_tool_continuation` | `request         .validate()         .map_err` | [281](../../src/continuation.rs#L281) | receiver-type-required |
+| `decode_tool_continuation` | `request         .validate` | [281](../../src/continuation.rs#L281) | receiver-type-required |
+| `decode_tool_continuation` | `Ok` | [284](../../src/continuation.rs#L284) | external-constructor-callback-or-unresolved |
+| `encode_tool_continuation_result` | `crate::encode_line` | [290](../../src/continuation.rs#L290) | [worker-control::encode_line](../../src/lib.rs#L359) |
+| `decode_tool_continuation_result` | `crate::decode_named` | [296](../../src/continuation.rs#L296) | [worker-control::decode_named](../../src/lib.rs#L367) |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__test__task",             IJsonValue::parse_str("{}").unwrap(),         )         .unwrap` | [304](../../src/continuation.rs#L304) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolControl::new` | [304](../../src/continuation.rs#L304) | external-constructor-callback-or-unresolved |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str("{}").unwrap` | [310](../../src/continuation.rs#L310) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str` | [310](../../src/continuation.rs#L310), [327](../../src/continuation.rs#L327) | external-constructor-callback-or-unresolved |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolContinuationRequest::new(original, "a".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [314](../../src/continuation.rs#L314) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `ToolContinuationRequest::new` | [314](../../src/continuation.rs#L314) | external-constructor-callback-or-unresolved |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `"a".repeat` | [314](../../src/continuation.rs#L314) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation(&request).unwrap` | [316](../../src/continuation.rs#L316) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation` | [316](../../src/continuation.rs#L316) | external-constructor-callback-or-unresolved |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `request.request_id.clone` | [324](../../src/continuation.rs#L324) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `"call-1".into` | [325](../../src/continuation.rs#L325) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `IJsonValue::parse_str(r#"{"content":[]}"#).unwrap` | [327](../../src/continuation.rs#L327) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation_result(&response).unwrap` | [330](../../src/continuation.rs#L330) | receiver-type-required |
+| `continuation_wire_pair_round_trips_and_rejects_foreign_keys` | `encode_tool_continuation_result` | [330](../../src/continuation.rs#L330) | external-constructor-callback-or-unresolved |

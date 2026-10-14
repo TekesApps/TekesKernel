@@ -1520,11 +1520,11 @@ fn project_file(
         }
     }
 
-    if !effective_meta.is_empty() {
-        if let Some(value) = materialize_meta(effective_meta, next_seq) {
-            push_event(&mut out, value)?;
-            next_seq += 1;
-        }
+    if !effective_meta.is_empty()
+        && let Some(value) = materialize_meta(effective_meta, next_seq)
+    {
+        push_event(&mut out, value)?;
+        next_seq += 1;
     }
     if !compact_summaries.is_empty() {
         let key = format!("rewrite:{}:{source_file}:compact", operation.id);
@@ -1627,10 +1627,10 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
     if let Some(identity) = object.get("identity_profile") {
         target.insert("identity_profile".to_owned(), identity.clone());
     }
-    if let Some(seed) = object.get("seed") {
-        if !value_references_any(seed, context.poisoned_assets) {
-            target.insert("seed".to_owned(), seed.clone());
-        }
+    if let Some(seed) = object.get("seed")
+        && !value_references_any(seed, context.poisoned_assets)
+    {
+        target.insert("seed".to_owned(), seed.clone());
     }
     if let Some(parent) = object.get("parent").and_then(Value::as_object) {
         let parent_file = parent
@@ -2033,13 +2033,12 @@ fn collect_launch_binding_asset_name(value: &Value, output: &mut BTreeSet<String
     let Some(object) = value.as_object() else {
         return;
     };
-    if object.get("kind").and_then(Value::as_str) == Some("run_start") {
-        if let Some(asset) = object
+    if object.get("kind").and_then(Value::as_str) == Some("run_start")
+        && let Some(asset) = object
             .get("launch_bindings_digest")
             .and_then(raw_digest_asset)
-        {
-            output.insert(asset);
-        }
+    {
+        output.insert(asset);
     }
 }
 

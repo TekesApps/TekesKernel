@@ -31,11 +31,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [engine::dynamic_catalog::schema_value](../../src/dynamic_catalog.rs#L355) | function_item | `private` |  |
 | [engine::dynamic_catalog::validate_dynamic_arguments](../../src/dynamic_catalog.rs#L359) | function_item | `private` |  |
 | [engine::dynamic_catalog::validate_schema_value](../../src/dynamic_catalog.rs#L380) | function_item | `private` |  |
-| [engine::dynamic_catalog::dynamic_side_effectful](../../src/dynamic_catalog.rs#L508) | function_item | `pub` |  |
-| [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L513) | function_item | `pub` |  |
-| [engine::dynamic_catalog::dynamic_approval_scope](../../src/dynamic_catalog.rs#L526) | function_item | `private` |  |
-| [engine::dynamic_catalog::DynamicDispatchError](../../src/dynamic_catalog.rs#L537) | enum_item | `pub` |  |
-| [engine::dynamic_catalog::mcp_schema_defaults_tests::remote_open_and_closed_objects_keep_their_argument_semantics](../../src/dynamic_catalog.rs#L561) | function_item | `private` | test; #[cfg(test)] |
+| [engine::dynamic_catalog::dynamic_side_effectful](../../src/dynamic_catalog.rs#L506) | function_item | `pub` |  |
+| [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L511) | function_item | `pub` |  |
+| [engine::dynamic_catalog::dynamic_approval_scope](../../src/dynamic_catalog.rs#L524) | function_item | `private` |  |
+| [engine::dynamic_catalog::DynamicDispatchError](../../src/dynamic_catalog.rs#L535) | enum_item | `pub` |  |
+| [engine::dynamic_catalog::mcp_schema_defaults_tests::remote_open_and_closed_objects_keep_their_argument_semantics](../../src/dynamic_catalog.rs#L559) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -213,7 +213,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `dispatch` | `invocation.call.clone` | [254](../../src/dynamic_catalog.rs#L254) | receiver-type-required |
 | `dispatch` | `invocation.attempt.clone` | [256](../../src/dynamic_catalog.rs#L256) | receiver-type-required |
 | `dispatch` | `invocation.arguments.clone` | [257](../../src/dynamic_catalog.rs#L257) | receiver-type-required |
-| `dispatch` | `dynamic_side_effectful` | [258](../../src/dynamic_catalog.rs#L258) | [engine::dynamic_catalog::dynamic_side_effectful](../../src/dynamic_catalog.rs#L508) |
+| `dispatch` | `dynamic_side_effectful` | [258](../../src/dynamic_catalog.rs#L258) | [engine::dynamic_catalog::dynamic_side_effectful](../../src/dynamic_catalog.rs#L506) |
 | `dispatch` | `invocation.timestamp.clone` | [260](../../src/dynamic_catalog.rs#L260) | receiver-type-required |
 | `dispatch` | `pipeline.verify_durable_execution` | [262](../../src/dynamic_catalog.rs#L262) | receiver-type-required |
 | `dispatch` | `pipeline.verify_causal_offer` | [264](../../src/dynamic_catalog.rs#L264) | receiver-type-required |
@@ -222,9 +222,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `dispatch` | `pipeline             .execute_terminal_with_gate` | [268](../../src/dynamic_catalog.rs#L268) | receiver-type-required |
 | `dispatch` | `tools::ApprovalGate::Deny` | [274](../../src/dynamic_catalog.rs#L274), [285](../../src/dynamic_catalog.rs#L285) | external-constructor-callback-or-unresolved |
 | `dispatch` | `policy.decide` | [278](../../src/dynamic_catalog.rs#L278) | receiver-type-required |
-| `dispatch` | `dynamic_approval_class` | [279](../../src/dynamic_catalog.rs#L279) | [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L513) |
+| `dispatch` | `dynamic_approval_class` | [279](../../src/dynamic_catalog.rs#L279) | [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L511) |
 | `dispatch` | `dynamic_approval_scope(tool.effect).to_owned` | [287](../../src/dynamic_catalog.rs#L287) | receiver-type-required |
-| `dispatch` | `dynamic_approval_scope` | [287](../../src/dynamic_catalog.rs#L287) | [engine::dynamic_catalog::dynamic_approval_scope](../../src/dynamic_catalog.rs#L526) |
+| `dispatch` | `dynamic_approval_scope` | [287](../../src/dynamic_catalog.rs#L287) | [engine::dynamic_catalog::dynamic_approval_scope](../../src/dynamic_catalog.rs#L524) |
 | `dispatch` | `backend.execute` | [292](../../src/dynamic_catalog.rs#L292) | receiver-type-required |
 | `dynamic_workflow_backend` | `WorkflowBackend::new(         root,         workspace,         goal_id,         skills,         catalog.deferred_search_entries(backend)?,     )     .map_err` | [308](../../src/dynamic_catalog.rs#L308) | receiver-type-required |
 | `dynamic_workflow_backend` | `WorkflowBackend::new` | [308](../../src/dynamic_catalog.rs#L308) | [engine::workflow_tools::WorkflowBackend::new](../../src/workflow_tools.rs#L60) |
@@ -259,66 +259,66 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_dynamic_arguments` | `validate_schema_value` | [372](../../src/dynamic_catalog.rs#L372) | [engine::dynamic_catalog::validate_schema_value](../../src/dynamic_catalog.rs#L380) |
 | `validate_schema_value` | `schema         .as_object()         .ok_or_else` | [381](../../src/dynamic_catalog.rs#L381) | receiver-type-required |
 | `validate_schema_value` | `schema         .as_object` | [381](../../src/dynamic_catalog.rs#L381) | receiver-type-required |
-| `validate_schema_value` | `object.get` | [385](../../src/dynamic_catalog.rs#L385), [390](../../src/dynamic_catalog.rs#L390), [395](../../src/dynamic_catalog.rs#L395), [400](../../src/dynamic_catalog.rs#L400), [408](../../src/dynamic_catalog.rs#L408), [421](../../src/dynamic_catalog.rs#L421), [443](../../src/dynamic_catalog.rs#L443), [450](../../src/dynamic_catalog.rs#L450), [464](../../src/dynamic_catalog.rs#L464), [469](../../src/dynamic_catalog.rs#L469), [474](../../src/dynamic_catalog.rs#L474), [481](../../src/dynamic_catalog.rs#L481), [486](../../src/dynamic_catalog.rs#L486), [493](../../src/dynamic_catalog.rs#L493), [498](../../src/dynamic_catalog.rs#L498) | receiver-type-required |
-| `validate_schema_value` | `Err` | [387](../../src/dynamic_catalog.rs#L387), [392](../../src/dynamic_catalog.rs#L392), [405](../../src/dynamic_catalog.rs#L405), [415](../../src/dynamic_catalog.rs#L415), [430](../../src/dynamic_catalog.rs#L430), [433](../../src/dynamic_catalog.rs#L433), [446](../../src/dynamic_catalog.rs#L446), [453](../../src/dynamic_catalog.rs#L453), [466](../../src/dynamic_catalog.rs#L466), [471](../../src/dynamic_catalog.rs#L471), [483](../../src/dynamic_catalog.rs#L483), [488](../../src/dynamic_catalog.rs#L488), [495](../../src/dynamic_catalog.rs#L495), [500](../../src/dynamic_catalog.rs#L500) | external-constructor-callback-or-unresolved |
+| `validate_schema_value` | `object.get` | [385](../../src/dynamic_catalog.rs#L385), [390](../../src/dynamic_catalog.rs#L390), [395](../../src/dynamic_catalog.rs#L395), [400](../../src/dynamic_catalog.rs#L400), [407](../../src/dynamic_catalog.rs#L407), [419](../../src/dynamic_catalog.rs#L419), [441](../../src/dynamic_catalog.rs#L441), [448](../../src/dynamic_catalog.rs#L448), [462](../../src/dynamic_catalog.rs#L462), [467](../../src/dynamic_catalog.rs#L467), [472](../../src/dynamic_catalog.rs#L472), [479](../../src/dynamic_catalog.rs#L479), [484](../../src/dynamic_catalog.rs#L484), [491](../../src/dynamic_catalog.rs#L491), [496](../../src/dynamic_catalog.rs#L496) | receiver-type-required |
+| `validate_schema_value` | `Err` | [388](../../src/dynamic_catalog.rs#L388), [393](../../src/dynamic_catalog.rs#L393), [405](../../src/dynamic_catalog.rs#L405), [414](../../src/dynamic_catalog.rs#L414), [428](../../src/dynamic_catalog.rs#L428), [431](../../src/dynamic_catalog.rs#L431), [444](../../src/dynamic_catalog.rs#L444), [451](../../src/dynamic_catalog.rs#L451), [465](../../src/dynamic_catalog.rs#L465), [470](../../src/dynamic_catalog.rs#L470), [482](../../src/dynamic_catalog.rs#L482), [487](../../src/dynamic_catalog.rs#L487), [494](../../src/dynamic_catalog.rs#L494), [499](../../src/dynamic_catalog.rs#L499) | external-constructor-callback-or-unresolved |
 | `validate_schema_value` | `object.get("enum").and_then` | [390](../../src/dynamic_catalog.rs#L390) | receiver-type-required |
 | `validate_schema_value` | `values.contains` | [391](../../src/dynamic_catalog.rs#L391) | receiver-type-required |
 | `validate_schema_value` | `object.get("allOf").and_then` | [395](../../src/dynamic_catalog.rs#L395) | receiver-type-required |
-| `validate_schema_value` | `validate_schema_value` | [397](../../src/dynamic_catalog.rs#L397), [403](../../src/dynamic_catalog.rs#L403), [411](../../src/dynamic_catalog.rs#L411), [459](../../src/dynamic_catalog.rs#L459), [476](../../src/dynamic_catalog.rs#L476) | [engine::dynamic_catalog::validate_schema_value](../../src/dynamic_catalog.rs#L380) |
+| `validate_schema_value` | `validate_schema_value` | [397](../../src/dynamic_catalog.rs#L397), [403](../../src/dynamic_catalog.rs#L403), [410](../../src/dynamic_catalog.rs#L410), [457](../../src/dynamic_catalog.rs#L457), [474](../../src/dynamic_catalog.rs#L474) | [engine::dynamic_catalog::validate_schema_value](../../src/dynamic_catalog.rs#L380) |
 | `validate_schema_value` | `object.get("anyOf").and_then` | [400](../../src/dynamic_catalog.rs#L400) | receiver-type-required |
 | `validate_schema_value` | `branches             .iter()             .any` | [401](../../src/dynamic_catalog.rs#L401) | receiver-type-required |
-| `validate_schema_value` | `branches             .iter` | [401](../../src/dynamic_catalog.rs#L401), [409](../../src/dynamic_catalog.rs#L409) | receiver-type-required |
-| `validate_schema_value` | `validate_schema_value(branch, value, path).is_ok` | [403](../../src/dynamic_catalog.rs#L403), [411](../../src/dynamic_catalog.rs#L411) | receiver-type-required |
-| `validate_schema_value` | `object.get("oneOf").and_then` | [408](../../src/dynamic_catalog.rs#L408) | receiver-type-required |
-| `validate_schema_value` | `branches             .iter()             .filter(&#124;branch&#124; validate_schema_value(branch, value, path).is_ok())             .count` | [409](../../src/dynamic_catalog.rs#L409) | receiver-type-required |
-| `validate_schema_value` | `branches             .iter()             .filter` | [409](../../src/dynamic_catalog.rs#L409) | receiver-type-required |
-| `validate_schema_value` | `object.get("type").and_then` | [421](../../src/dynamic_catalog.rs#L421) | receiver-type-required |
-| `validate_schema_value` | `value.is_object` | [423](../../src/dynamic_catalog.rs#L423) | receiver-type-required |
-| `validate_schema_value` | `value.is_array` | [424](../../src/dynamic_catalog.rs#L424) | receiver-type-required |
-| `validate_schema_value` | `value.is_string` | [425](../../src/dynamic_catalog.rs#L425) | receiver-type-required |
-| `validate_schema_value` | `value.as_i64().is_some` | [426](../../src/dynamic_catalog.rs#L426) | receiver-type-required |
-| `validate_schema_value` | `value.as_i64` | [426](../../src/dynamic_catalog.rs#L426) | receiver-type-required |
-| `validate_schema_value` | `value.as_u64().is_some` | [426](../../src/dynamic_catalog.rs#L426) | receiver-type-required |
-| `validate_schema_value` | `value.as_u64` | [426](../../src/dynamic_catalog.rs#L426) | receiver-type-required |
-| `validate_schema_value` | `value.is_number` | [427](../../src/dynamic_catalog.rs#L427) | receiver-type-required |
-| `validate_schema_value` | `value.is_boolean` | [428](../../src/dynamic_catalog.rs#L428) | receiver-type-required |
-| `validate_schema_value` | `value.is_null` | [429](../../src/dynamic_catalog.rs#L429) | receiver-type-required |
-| `validate_schema_value` | `value.as_object` | [437](../../src/dynamic_catalog.rs#L437) | receiver-type-required |
-| `validate_schema_value` | `object             .get("properties")             .and_then(Value::as_object)             .cloned()             .unwrap_or_default` | [438](../../src/dynamic_catalog.rs#L438) | receiver-type-required |
-| `validate_schema_value` | `object             .get("properties")             .and_then(Value::as_object)             .cloned` | [438](../../src/dynamic_catalog.rs#L438) | receiver-type-required |
-| `validate_schema_value` | `object             .get("properties")             .and_then` | [438](../../src/dynamic_catalog.rs#L438) | receiver-type-required |
-| `validate_schema_value` | `object             .get` | [438](../../src/dynamic_catalog.rs#L438) | receiver-type-required |
-| `validate_schema_value` | `object.get("required").and_then` | [443](../../src/dynamic_catalog.rs#L443) | receiver-type-required |
-| `validate_schema_value` | `required.iter().filter_map` | [444](../../src/dynamic_catalog.rs#L444) | receiver-type-required |
-| `validate_schema_value` | `required.iter` | [444](../../src/dynamic_catalog.rs#L444) | receiver-type-required |
-| `validate_schema_value` | `map.contains_key` | [445](../../src/dynamic_catalog.rs#L445) | receiver-type-required |
-| `validate_schema_value` | `object.get("additionalProperties").and_then` | [450](../../src/dynamic_catalog.rs#L450) | receiver-type-required |
-| `validate_schema_value` | `Some` | [450](../../src/dynamic_catalog.rs#L450) | external-constructor-callback-or-unresolved |
-| `validate_schema_value` | `map.keys` | [451](../../src/dynamic_catalog.rs#L451) | receiver-type-required |
-| `validate_schema_value` | `properties.contains_key` | [452](../../src/dynamic_catalog.rs#L452) | receiver-type-required |
-| `validate_schema_value` | `map.get` | [458](../../src/dynamic_catalog.rs#L458) | receiver-type-required |
-| `validate_schema_value` | `value.as_array` | [463](../../src/dynamic_catalog.rs#L463) | receiver-type-required |
-| `validate_schema_value` | `object.get("minItems").and_then` | [464](../../src/dynamic_catalog.rs#L464) | receiver-type-required |
-| `validate_schema_value` | `items.len` | [465](../../src/dynamic_catalog.rs#L465), [470](../../src/dynamic_catalog.rs#L470) | receiver-type-required |
-| `validate_schema_value` | `object.get("maxItems").and_then` | [469](../../src/dynamic_catalog.rs#L469) | receiver-type-required |
-| `validate_schema_value` | `items.iter().enumerate` | [475](../../src/dynamic_catalog.rs#L475) | receiver-type-required |
-| `validate_schema_value` | `items.iter` | [475](../../src/dynamic_catalog.rs#L475) | receiver-type-required |
-| `validate_schema_value` | `value.as_str` | [480](../../src/dynamic_catalog.rs#L480) | receiver-type-required |
-| `validate_schema_value` | `object.get("minLength").and_then` | [481](../../src/dynamic_catalog.rs#L481) | receiver-type-required |
-| `validate_schema_value` | `text.chars().count` | [482](../../src/dynamic_catalog.rs#L482), [487](../../src/dynamic_catalog.rs#L487) | receiver-type-required |
-| `validate_schema_value` | `text.chars` | [482](../../src/dynamic_catalog.rs#L482), [487](../../src/dynamic_catalog.rs#L487) | receiver-type-required |
-| `validate_schema_value` | `object.get("maxLength").and_then` | [486](../../src/dynamic_catalog.rs#L486) | receiver-type-required |
-| `validate_schema_value` | `value.as_f64` | [492](../../src/dynamic_catalog.rs#L492) | receiver-type-required |
-| `validate_schema_value` | `object.get("minimum").and_then` | [493](../../src/dynamic_catalog.rs#L493) | receiver-type-required |
-| `validate_schema_value` | `object.get("maximum").and_then` | [498](../../src/dynamic_catalog.rs#L498) | receiver-type-required |
-| `validate_schema_value` | `Ok` | [504](../../src/dynamic_catalog.rs#L504) | external-constructor-callback-or-unresolved |
-| `dynamic_approval_scope` | `dynamic_approval_class` | [527](../../src/dynamic_catalog.rs#L527) | [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L513) |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap` | [562](../../src/dynamic_catalog.rs#L562) | receiver-type-required |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `IJsonValue::parse` | [562](../../src/dynamic_catalog.rs#L562) | external-constructor-callback-or-unresolved |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `serde_json::to_vec(&value).unwrap` | [562](../../src/dynamic_catalog.rs#L562) | receiver-type-required |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `serde_json::to_vec` | [562](../../src/dynamic_catalog.rs#L562) | external-constructor-callback-or-unresolved |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared("mcp__remote__search", DynamicToolSource {                 kind: DynamicToolSourceKind::Mcp, id:"remote".into(),             }, DynamicToolEffect::ReadOnly,                 false, vec![], ijson(json!({"name":"mcp__remote__search","description":"Search","parameters":parameters}))).unwrap` | [569](../../src/dynamic_catalog.rs#L569) | receiver-type-required |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared` | [569](../../src/dynamic_catalog.rs#L569), [582](../../src/dynamic_catalog.rs#L582) | external-constructor-callback-or-unresolved |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `"remote".into` | [570](../../src/dynamic_catalog.rs#L570), [583](../../src/dynamic_catalog.rs#L583) | receiver-type-required |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `ijson` | [572](../../src/dynamic_catalog.rs#L572), [585](../../src/dynamic_catalog.rs#L585) | external-constructor-callback-or-unresolved |
-| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared("mcp__remote__guide", DynamicToolSource {             kind: DynamicToolSourceKind::Mcp, id:"remote".into(),         }, DynamicToolEffect::ReadOnly, false, vec![],             ijson(json!({"name":"mcp__remote__guide","description":"Guide","parameters":{"type":"object","properties":{}}}))).unwrap` | [582](../../src/dynamic_catalog.rs#L582) | receiver-type-required |
+| `validate_schema_value` | `branches             .iter` | [401](../../src/dynamic_catalog.rs#L401), [408](../../src/dynamic_catalog.rs#L408) | receiver-type-required |
+| `validate_schema_value` | `validate_schema_value(branch, value, path).is_ok` | [403](../../src/dynamic_catalog.rs#L403), [410](../../src/dynamic_catalog.rs#L410) | receiver-type-required |
+| `validate_schema_value` | `object.get("oneOf").and_then` | [407](../../src/dynamic_catalog.rs#L407) | receiver-type-required |
+| `validate_schema_value` | `branches             .iter()             .filter(&#124;branch&#124; validate_schema_value(branch, value, path).is_ok())             .count` | [408](../../src/dynamic_catalog.rs#L408) | receiver-type-required |
+| `validate_schema_value` | `branches             .iter()             .filter` | [408](../../src/dynamic_catalog.rs#L408) | receiver-type-required |
+| `validate_schema_value` | `object.get("type").and_then` | [419](../../src/dynamic_catalog.rs#L419) | receiver-type-required |
+| `validate_schema_value` | `value.is_object` | [421](../../src/dynamic_catalog.rs#L421) | receiver-type-required |
+| `validate_schema_value` | `value.is_array` | [422](../../src/dynamic_catalog.rs#L422) | receiver-type-required |
+| `validate_schema_value` | `value.is_string` | [423](../../src/dynamic_catalog.rs#L423) | receiver-type-required |
+| `validate_schema_value` | `value.as_i64().is_some` | [424](../../src/dynamic_catalog.rs#L424) | receiver-type-required |
+| `validate_schema_value` | `value.as_i64` | [424](../../src/dynamic_catalog.rs#L424) | receiver-type-required |
+| `validate_schema_value` | `value.as_u64().is_some` | [424](../../src/dynamic_catalog.rs#L424) | receiver-type-required |
+| `validate_schema_value` | `value.as_u64` | [424](../../src/dynamic_catalog.rs#L424) | receiver-type-required |
+| `validate_schema_value` | `value.is_number` | [425](../../src/dynamic_catalog.rs#L425) | receiver-type-required |
+| `validate_schema_value` | `value.is_boolean` | [426](../../src/dynamic_catalog.rs#L426) | receiver-type-required |
+| `validate_schema_value` | `value.is_null` | [427](../../src/dynamic_catalog.rs#L427) | receiver-type-required |
+| `validate_schema_value` | `value.as_object` | [435](../../src/dynamic_catalog.rs#L435) | receiver-type-required |
+| `validate_schema_value` | `object             .get("properties")             .and_then(Value::as_object)             .cloned()             .unwrap_or_default` | [436](../../src/dynamic_catalog.rs#L436) | receiver-type-required |
+| `validate_schema_value` | `object             .get("properties")             .and_then(Value::as_object)             .cloned` | [436](../../src/dynamic_catalog.rs#L436) | receiver-type-required |
+| `validate_schema_value` | `object             .get("properties")             .and_then` | [436](../../src/dynamic_catalog.rs#L436) | receiver-type-required |
+| `validate_schema_value` | `object             .get` | [436](../../src/dynamic_catalog.rs#L436) | receiver-type-required |
+| `validate_schema_value` | `object.get("required").and_then` | [441](../../src/dynamic_catalog.rs#L441) | receiver-type-required |
+| `validate_schema_value` | `required.iter().filter_map` | [442](../../src/dynamic_catalog.rs#L442) | receiver-type-required |
+| `validate_schema_value` | `required.iter` | [442](../../src/dynamic_catalog.rs#L442) | receiver-type-required |
+| `validate_schema_value` | `map.contains_key` | [443](../../src/dynamic_catalog.rs#L443) | receiver-type-required |
+| `validate_schema_value` | `object.get("additionalProperties").and_then` | [448](../../src/dynamic_catalog.rs#L448) | receiver-type-required |
+| `validate_schema_value` | `Some` | [448](../../src/dynamic_catalog.rs#L448) | external-constructor-callback-or-unresolved |
+| `validate_schema_value` | `map.keys` | [449](../../src/dynamic_catalog.rs#L449) | receiver-type-required |
+| `validate_schema_value` | `properties.contains_key` | [450](../../src/dynamic_catalog.rs#L450) | receiver-type-required |
+| `validate_schema_value` | `map.get` | [456](../../src/dynamic_catalog.rs#L456) | receiver-type-required |
+| `validate_schema_value` | `value.as_array` | [461](../../src/dynamic_catalog.rs#L461) | receiver-type-required |
+| `validate_schema_value` | `object.get("minItems").and_then` | [462](../../src/dynamic_catalog.rs#L462) | receiver-type-required |
+| `validate_schema_value` | `items.len` | [463](../../src/dynamic_catalog.rs#L463), [468](../../src/dynamic_catalog.rs#L468) | receiver-type-required |
+| `validate_schema_value` | `object.get("maxItems").and_then` | [467](../../src/dynamic_catalog.rs#L467) | receiver-type-required |
+| `validate_schema_value` | `items.iter().enumerate` | [473](../../src/dynamic_catalog.rs#L473) | receiver-type-required |
+| `validate_schema_value` | `items.iter` | [473](../../src/dynamic_catalog.rs#L473) | receiver-type-required |
+| `validate_schema_value` | `value.as_str` | [478](../../src/dynamic_catalog.rs#L478) | receiver-type-required |
+| `validate_schema_value` | `object.get("minLength").and_then` | [479](../../src/dynamic_catalog.rs#L479) | receiver-type-required |
+| `validate_schema_value` | `text.chars().count` | [480](../../src/dynamic_catalog.rs#L480), [485](../../src/dynamic_catalog.rs#L485) | receiver-type-required |
+| `validate_schema_value` | `text.chars` | [480](../../src/dynamic_catalog.rs#L480), [485](../../src/dynamic_catalog.rs#L485) | receiver-type-required |
+| `validate_schema_value` | `object.get("maxLength").and_then` | [484](../../src/dynamic_catalog.rs#L484) | receiver-type-required |
+| `validate_schema_value` | `value.as_f64` | [490](../../src/dynamic_catalog.rs#L490) | receiver-type-required |
+| `validate_schema_value` | `object.get("minimum").and_then` | [491](../../src/dynamic_catalog.rs#L491) | receiver-type-required |
+| `validate_schema_value` | `object.get("maximum").and_then` | [496](../../src/dynamic_catalog.rs#L496) | receiver-type-required |
+| `validate_schema_value` | `Ok` | [502](../../src/dynamic_catalog.rs#L502) | external-constructor-callback-or-unresolved |
+| `dynamic_approval_scope` | `dynamic_approval_class` | [525](../../src/dynamic_catalog.rs#L525) | [engine::dynamic_catalog::dynamic_approval_class](../../src/dynamic_catalog.rs#L511) |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap` | [560](../../src/dynamic_catalog.rs#L560) | receiver-type-required |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `IJsonValue::parse` | [560](../../src/dynamic_catalog.rs#L560) | external-constructor-callback-or-unresolved |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `serde_json::to_vec(&value).unwrap` | [560](../../src/dynamic_catalog.rs#L560) | receiver-type-required |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `serde_json::to_vec` | [560](../../src/dynamic_catalog.rs#L560) | external-constructor-callback-or-unresolved |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared("mcp__remote__search", DynamicToolSource {                 kind: DynamicToolSourceKind::Mcp, id:"remote".into(),             }, DynamicToolEffect::ReadOnly,                 false, vec![], ijson(json!({"name":"mcp__remote__search","description":"Search","parameters":parameters}))).unwrap` | [567](../../src/dynamic_catalog.rs#L567) | receiver-type-required |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared` | [567](../../src/dynamic_catalog.rs#L567), [580](../../src/dynamic_catalog.rs#L580) | external-constructor-callback-or-unresolved |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `"remote".into` | [568](../../src/dynamic_catalog.rs#L568), [581](../../src/dynamic_catalog.rs#L581) | receiver-type-required |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `ijson` | [570](../../src/dynamic_catalog.rs#L570), [583](../../src/dynamic_catalog.rs#L583) | external-constructor-callback-or-unresolved |
+| `remote_open_and_closed_objects_keep_their_argument_semantics` | `DynamicTool::declared("mcp__remote__guide", DynamicToolSource {             kind: DynamicToolSourceKind::Mcp, id:"remote".into(),         }, DynamicToolEffect::ReadOnly, false, vec![],             ijson(json!({"name":"mcp__remote__guide","description":"Guide","parameters":{"type":"object","properties":{}}}))).unwrap` | [580](../../src/dynamic_catalog.rs#L580) | receiver-type-required |

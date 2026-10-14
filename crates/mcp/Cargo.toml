@@ -26,7 +26,16 @@ unicode-normalization.workspace = true
 url.workspace = true
 
 [dev-dependencies]
+# The official Rust SDK, used only as the server in tests/rmcp_interop.rs. It
+# speaks the tasks extension (SEP-2663) the Kernel's own fixtures only imitate.
+rmcp = { version = "=3.5.1", default-features = false, features = ["server", "transport-io"] }
 tempfile.workspace = true
+
+[[test]]
+name = "rmcp_interop"
+# The test binary is both the driver and the rmcp stdio server it spawns, so it
+# owns stdout: libtest output would corrupt the JSON-RPC stream.
+harness = false
 
 [lints]
 workspace = true

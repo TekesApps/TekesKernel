@@ -1371,9 +1371,7 @@ fn provider_dialect_gate_95_recovery_and_mismatch() {
     }
 
     for stream in [
-        concat!(
-            "data: {\"response\":{\"id\":\"r\",\"status\":\"completed\"},\"type\":\"response.done\"}\n\n"
-        ),
+        "data: {\"response\":{\"id\":\"r\",\"status\":\"completed\"},\"type\":\"response.done\"}\n\n",
         concat!(
             "data: {\"type\":\"response.reasoning_summary_text.done\"}\n\n",
             "data: {\"response\":{\"id\":\"r\",\"status\":\"completed\"},\"type\":\"response.completed\"}\n\n"

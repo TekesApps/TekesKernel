@@ -25,9 +25,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::file_leases::FileLeases::insert](../../src/file_leases.rs#L145) | function_item | `pub` |  |
 | [tekes-supervisor::file_leases::FileLeases::read](../../src/file_leases.rs#L182) | function_item | `pub` |  |
 | [tekes-supervisor::file_leases::FileLeases::release](../../src/file_leases.rs#L191) | function_item | `pub` |  |
-| [tekes-supervisor::file_leases::tests::attachment_transfer_preserves_metadata_and_requires_session_reference](../../src/file_leases.rs#L209) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::file_leases::tests::attachment_transfer_serves_uploaded_files_through_the_same_path](../../src/file_leases.rs#L264) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::file_leases::tests::lease_identity_owner_release_and_expiry](../../src/file_leases.rs#L299) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::file_leases::tests::attachment_transfer_preserves_metadata_and_requires_session_reference](../../src/file_leases.rs#L208) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::file_leases::tests::attachment_transfer_serves_uploaded_files_through_the_same_path](../../src/file_leases.rs#L263) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::file_leases::tests::lease_identity_owner_release_and_expiry](../../src/file_leases.rs#L298) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -85,7 +85,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `TTL` | `Duration::from_secs` | [11](../../src/file_leases.rs#L11) | external-constructor-callback-or-unresolved |
 | `open` | `Ok` | [30](../../src/file_leases.rs#L30) | external-constructor-callback-or-unresolved |
 | `open` | `endpoint::ManagementStore::open_light(root)                 .map_err` | [31](../../src/file_leases.rs#L31) | receiver-type-required |
-| `open` | `endpoint::ManagementStore::open_light` | [31](../../src/file_leases.rs#L31) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L422) |
+| `open` | `endpoint::ManagementStore::open_light` | [31](../../src/file_leases.rs#L31) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
 | `open` | `error.to_string` | [32](../../src/file_leases.rs#L32) | receiver-type-required |
 | `open` | `endpoint::AttachmentAuthority::open` | [33](../../src/file_leases.rs#L33) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
 | `open` | `FileLeases::default` | [34](../../src/file_leases.rs#L34) | external-constructor-callback-or-unresolved |
@@ -148,69 +148,69 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `release` | `leases                 .get(id)                 .is_some_and` | [193](../../src/file_leases.rs#L193) | receiver-type-required |
 | `release` | `leases                 .get` | [193](../../src/file_leases.rs#L193) | receiver-type-required |
 | `release` | `leases.remove` | [197](../../src/file_leases.rs#L197) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `tempfile::tempdir().unwrap` | [211](../../src/file_leases.rs#L211) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `tempfile::tempdir` | [211](../../src/file_leases.rs#L211) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path().join("threads").join` | [213](../../src/file_leases.rs#L213) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path().join` | [213](../../src/file_leases.rs#L213) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path` | [213](../../src/file_leases.rs#L213), [222](../../src/file_leases.rs#L222), [233](../../src/file_leases.rs#L233) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::create_dir_all(folder.join("assets")).unwrap` | [214](../../src/file_leases.rs#L214) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::create_dir_all` | [214](../../src/file_leases.rs#L214) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `folder.join` | [214](../../src/file_leases.rs#L214), [220](../../src/file_leases.rs#L220), [242](../../src/file_leases.rs#L242) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec(&genesis).unwrap` | [218](../../src/file_leases.rs#L218) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec` | [218](../../src/file_leases.rs#L218), [240](../../src/file_leases.rs#L240) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `ledger.push` | [219](../../src/file_leases.rs#L219), [241](../../src/file_leases.rs#L241) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [220](../../src/file_leases.rs#L220) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write` | [220](../../src/file_leases.rs#L220), [242](../../src/file_leases.rs#L242) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `endpoint::AttachmentAuthority::open` | [222](../../src/file_leases.rs#L222) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `authority             .materialize_prompt_parts(                 session,                 &[endpoint::PromptPart::Image {                     media_type: endpoint::ImageMediaType::Png,                     data: data.into(),                     name: None,                 }],             )             .unwrap` | [223](../../src/file_leases.rs#L223) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `authority             .materialize_prompt_parts` | [223](../../src/file_leases.rs#L223) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `data.into` | [228](../../src/file_leases.rs#L228) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `WorkspaceFileTransfer::open(root.path()).unwrap` | [233](../../src/file_leases.rs#L233) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `WorkspaceFileTransfer::open` | [233](../../src/file_leases.rs#L233) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `ledger.extend` | [240](../../src/file_leases.rs#L240) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec(&input).unwrap` | [240](../../src/file_leases.rs#L240) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write(folder.join("main.jsonl"), ledger).unwrap` | [242](../../src/file_leases.rs#L242) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.prepare(request.clone()).unwrap` | [243](../../src/file_leases.rs#L243) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.prepare` | [243](../../src/file_leases.rs#L243) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `request.clone` | [243](../../src/file_leases.rs#L243) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `descriptor["lease"].as_str().unwrap` | [247](../../src/file_leases.rs#L247) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `descriptor["lease"].as_str` | [247](../../src/file_leases.rs#L247) | receiver-type-required |
-| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.release` | [257](../../src/file_leases.rs#L257) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `tempfile::tempdir().unwrap` | [266](../../src/file_leases.rs#L266) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `tempfile::tempdir` | [266](../../src/file_leases.rs#L266) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path().join("threads").join` | [268](../../src/file_leases.rs#L268) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path().join` | [268](../../src/file_leases.rs#L268) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path` | [268](../../src/file_leases.rs#L268), [276](../../src/file_leases.rs#L276), [277](../../src/file_leases.rs#L277) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::create_dir_all(folder.join("assets")).unwrap` | [269](../../src/file_leases.rs#L269) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::create_dir_all` | [269](../../src/file_leases.rs#L269) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `folder.join` | [269](../../src/file_leases.rs#L269), [275](../../src/file_leases.rs#L275) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `serde_json_canonicalizer::to_vec(&genesis).unwrap` | [273](../../src/file_leases.rs#L273) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `serde_json_canonicalizer::to_vec` | [273](../../src/file_leases.rs#L273) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `ledger.push` | [274](../../src/file_leases.rs#L274) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [275](../../src/file_leases.rs#L275) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::write` | [275](../../src/file_leases.rs#L275) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `WorkspaceFileTransfer::open(root.path()).unwrap` | [276](../../src/file_leases.rs#L276) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `WorkspaceFileTransfer::open` | [276](../../src/file_leases.rs#L276) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `endpoint::AttachmentAuthority::open` | [277](../../src/file_leases.rs#L277) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `authority             .upload_file(session, "notes.txt", Some("text/plain"), "aGVsbG8gZmlsZQ==")             .unwrap` | [278](../../src/file_leases.rs#L278) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `authority             .upload_file` | [278](../../src/file_leases.rs#L278) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `Some` | [279](../../src/file_leases.rs#L279) | external-constructor-callback-or-unresolved |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.prepare(request.clone()).unwrap` | [283](../../src/file_leases.rs#L283) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.prepare` | [283](../../src/file_leases.rs#L283) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `request.clone` | [283](../../src/file_leases.rs#L283) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `descriptor["lease"].as_str().unwrap` | [289](../../src/file_leases.rs#L289) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `descriptor["lease"].as_str` | [289](../../src/file_leases.rs#L289) | receiver-type-required |
-| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.release` | [294](../../src/file_leases.rs#L294) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `FileLeases::default` | [300](../../src/file_leases.rs#L300) | external-constructor-callback-or-unresolved |
-| `lease_identity_owner_release_and_expiry` | `leases.insert("owner", b"snapshot".to_vec()).unwrap` | [301](../../src/file_leases.rs#L301) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.insert` | [301](../../src/file_leases.rs#L301), [311](../../src/file_leases.rs#L311) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `b"snapshot".to_vec` | [301](../../src/file_leases.rs#L301) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `descriptor["lease"].as_str().unwrap` | [302](../../src/file_leases.rs#L302), [312](../../src/file_leases.rs#L312) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `descriptor["lease"].as_str` | [302](../../src/file_leases.rs#L302), [312](../../src/file_leases.rs#L312) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.release` | [307](../../src/file_leases.rs#L307), [309](../../src/file_leases.rs#L309) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.insert("owner", vec![]).unwrap` | [311](../../src/file_leases.rs#L311) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap().get_mut(id).unwrap` | [313](../../src/file_leases.rs#L313) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap().get_mut` | [313](../../src/file_leases.rs#L313) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap` | [313](../../src/file_leases.rs#L313) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `leases.0.lock` | [313](../../src/file_leases.rs#L313) | receiver-type-required |
-| `lease_identity_owner_release_and_expiry` | `Instant::now` | [313](../../src/file_leases.rs#L313) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `tempfile::tempdir().unwrap` | [210](../../src/file_leases.rs#L210) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `tempfile::tempdir` | [210](../../src/file_leases.rs#L210) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path().join("threads").join` | [212](../../src/file_leases.rs#L212) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path().join` | [212](../../src/file_leases.rs#L212) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `root.path` | [212](../../src/file_leases.rs#L212), [221](../../src/file_leases.rs#L221), [232](../../src/file_leases.rs#L232) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::create_dir_all(folder.join("assets")).unwrap` | [213](../../src/file_leases.rs#L213) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::create_dir_all` | [213](../../src/file_leases.rs#L213) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `folder.join` | [213](../../src/file_leases.rs#L213), [219](../../src/file_leases.rs#L219), [241](../../src/file_leases.rs#L241) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec(&genesis).unwrap` | [217](../../src/file_leases.rs#L217) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec` | [217](../../src/file_leases.rs#L217), [239](../../src/file_leases.rs#L239) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `ledger.push` | [218](../../src/file_leases.rs#L218), [240](../../src/file_leases.rs#L240) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [219](../../src/file_leases.rs#L219) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write` | [219](../../src/file_leases.rs#L219), [241](../../src/file_leases.rs#L241) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `endpoint::AttachmentAuthority::open` | [221](../../src/file_leases.rs#L221) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `authority             .materialize_prompt_parts(                 session,                 &[endpoint::PromptPart::Image {                     media_type: endpoint::ImageMediaType::Png,                     data: data.into(),                     name: None,                 }],             )             .unwrap` | [222](../../src/file_leases.rs#L222) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `authority             .materialize_prompt_parts` | [222](../../src/file_leases.rs#L222) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `data.into` | [227](../../src/file_leases.rs#L227) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `WorkspaceFileTransfer::open(root.path()).unwrap` | [232](../../src/file_leases.rs#L232) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `WorkspaceFileTransfer::open` | [232](../../src/file_leases.rs#L232) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `ledger.extend` | [239](../../src/file_leases.rs#L239) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `serde_json_canonicalizer::to_vec(&input).unwrap` | [239](../../src/file_leases.rs#L239) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `std::fs::write(folder.join("main.jsonl"), ledger).unwrap` | [241](../../src/file_leases.rs#L241) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.prepare(request.clone()).unwrap` | [242](../../src/file_leases.rs#L242) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.prepare` | [242](../../src/file_leases.rs#L242) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `request.clone` | [242](../../src/file_leases.rs#L242) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `descriptor["lease"].as_str().unwrap` | [246](../../src/file_leases.rs#L246) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `descriptor["lease"].as_str` | [246](../../src/file_leases.rs#L246) | receiver-type-required |
+| `attachment_transfer_preserves_metadata_and_requires_session_reference` | `transfer.release` | [256](../../src/file_leases.rs#L256) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `tempfile::tempdir().unwrap` | [265](../../src/file_leases.rs#L265) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `tempfile::tempdir` | [265](../../src/file_leases.rs#L265) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path().join("threads").join` | [267](../../src/file_leases.rs#L267) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path().join` | [267](../../src/file_leases.rs#L267) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `root.path` | [267](../../src/file_leases.rs#L267), [275](../../src/file_leases.rs#L275), [276](../../src/file_leases.rs#L276) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::create_dir_all(folder.join("assets")).unwrap` | [268](../../src/file_leases.rs#L268) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::create_dir_all` | [268](../../src/file_leases.rs#L268) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `folder.join` | [268](../../src/file_leases.rs#L268), [274](../../src/file_leases.rs#L274) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `serde_json_canonicalizer::to_vec(&genesis).unwrap` | [272](../../src/file_leases.rs#L272) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `serde_json_canonicalizer::to_vec` | [272](../../src/file_leases.rs#L272) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `ledger.push` | [273](../../src/file_leases.rs#L273) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [274](../../src/file_leases.rs#L274) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `std::fs::write` | [274](../../src/file_leases.rs#L274) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `WorkspaceFileTransfer::open(root.path()).unwrap` | [275](../../src/file_leases.rs#L275) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `WorkspaceFileTransfer::open` | [275](../../src/file_leases.rs#L275) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `endpoint::AttachmentAuthority::open` | [276](../../src/file_leases.rs#L276) | [endpoint::attachment::AttachmentAuthority::open](../../../endpoint/src/attachment.rs#L242) |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `authority             .upload_file(session, "notes.txt", Some("text/plain"), "aGVsbG8gZmlsZQ==")             .unwrap` | [277](../../src/file_leases.rs#L277) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `authority             .upload_file` | [277](../../src/file_leases.rs#L277) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `Some` | [278](../../src/file_leases.rs#L278) | external-constructor-callback-or-unresolved |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.prepare(request.clone()).unwrap` | [282](../../src/file_leases.rs#L282) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.prepare` | [282](../../src/file_leases.rs#L282) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `request.clone` | [282](../../src/file_leases.rs#L282) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `descriptor["lease"].as_str().unwrap` | [288](../../src/file_leases.rs#L288) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `descriptor["lease"].as_str` | [288](../../src/file_leases.rs#L288) | receiver-type-required |
+| `attachment_transfer_serves_uploaded_files_through_the_same_path` | `transfer.release` | [293](../../src/file_leases.rs#L293) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `FileLeases::default` | [299](../../src/file_leases.rs#L299) | external-constructor-callback-or-unresolved |
+| `lease_identity_owner_release_and_expiry` | `leases.insert("owner", b"snapshot".to_vec()).unwrap` | [300](../../src/file_leases.rs#L300) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.insert` | [300](../../src/file_leases.rs#L300), [310](../../src/file_leases.rs#L310) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `b"snapshot".to_vec` | [300](../../src/file_leases.rs#L300) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `descriptor["lease"].as_str().unwrap` | [301](../../src/file_leases.rs#L301), [311](../../src/file_leases.rs#L311) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `descriptor["lease"].as_str` | [301](../../src/file_leases.rs#L301), [311](../../src/file_leases.rs#L311) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.release` | [306](../../src/file_leases.rs#L306), [308](../../src/file_leases.rs#L308) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.insert("owner", vec![]).unwrap` | [310](../../src/file_leases.rs#L310) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap().get_mut(id).unwrap` | [312](../../src/file_leases.rs#L312) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap().get_mut` | [312](../../src/file_leases.rs#L312) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.0.lock().unwrap` | [312](../../src/file_leases.rs#L312) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `leases.0.lock` | [312](../../src/file_leases.rs#L312) | receiver-type-required |
+| `lease_identity_owner_release_and_expiry` | `Instant::now` | [312](../../src/file_leases.rs#L312) | external-constructor-callback-or-unresolved |

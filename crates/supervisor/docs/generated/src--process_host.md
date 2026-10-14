@@ -185,61 +185,61 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::process_host::WorkerHandle::receipt](../../src/process_host.rs#L4819) | function_item | `private` |  |
 | [tekes-supervisor::process_host::WorkerHandle::queue_result](../../src/process_host.rs#L4844) | function_item | `private` |  |
 | [tekes-supervisor::process_host::worker_reader](../../src/process_host.rs#L4873) | function_item | `private` |  |
-| [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) | function_item | `private` |  |
-| [tekes-supervisor::process_host::fail_worker](../../src/process_host.rs#L5157) | function_item | `private` |  |
-| [tekes-supervisor::process_host::worker_stderr_reader](../../src/process_host.rs#L5181) | function_item | `private` |  |
-| [tekes-supervisor::process_host::worker_stderr_reader::MAX_STDERR_TAIL](../../src/process_host.rs#L5182) | const_item | `private` |  |
-| [tekes-supervisor::process_host::preserve_first_failure](../../src/process_host.rs#L5201) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::session_metadata_changed](../../src/process_host.rs#L5208) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::prompt](../../src/process_host.rs#L5212) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::compact](../../src/process_host.rs#L5275) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::cancel](../../src/process_host.rs#L5314) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::rename](../../src/process_host.rs#L5398) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::deliver_if_live](../../src/process_host.rs#L5435) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::ensure_after_locked_append](../../src/process_host.rs#L5459) | function_item | `private` |  |
-| [tekes-supervisor::process_host::cancel_stage_failure](../../src/process_host.rs#L5473) | function_item | `private` |  |
-| [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5492) | function_item | `private` |  |
-| [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5514) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5537) | function_item | `private` |  |
-| [tekes-supervisor::process_host::DamageVerdict](../../src/process_host.rs#L5547) | enum_item | `private` |  |
-| [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5563) | function_item | `private` |  |
-| [tekes-supervisor::process_host::child_ledger_damage](../../src/process_host.rs#L5599) | function_item | `private` |  |
-| [tekes-supervisor::process_host::is_single_line_ledger](../../src/process_host.rs#L5625) | function_item | `private` |  |
-| [tekes-supervisor::process_host::HYDRATE_RETRY](../../src/process_host.rs#L5638) | const_item | `private` |  |
-| [tekes-supervisor::process_host::DEFAULT_LIST_WAIT](../../src/process_host.rs#L5640) | const_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::list_wait](../../src/process_host.rs#L5643) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::is_running](../../src/process_host.rs#L5658) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::catalog_item](../../src/process_host.rs#L5668) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::verify_within](../../src/process_host.rs#L5741) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::build_inventory](../../src/process_host.rs#L5806) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::inventory_items](../../src/process_host.rs#L5860) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::ensure_verified](../../src/process_host.rs#L5870) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::has_catalog](../../src/process_host.rs#L5885) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::hold_catalog](../../src/process_host.rs#L5889) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::inventory_item](../../src/process_host.rs#L5945) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::live_sessions](../../src/process_host.rs#L5974) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::reconcile_projection](../../src/process_host.rs#L5984) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::execute](../../src/process_host.rs#L5994) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::readiness](../../src/process_host.rs#L6022) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProductionProcessHost::config_mutation_succeeded](../../src/process_host.rs#L6099) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::host](../../src/process_host.rs#L6123) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::ensure_running](../../src/process_host.rs#L6131) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::deliver_input](../../src/process_host.rs#L6142) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::interrupt](../../src/process_host.rs#L6178) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::ensure_child](../../src/process_host.rs#L6202) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ProcessToolRuntime::deliver_report](../../src/process_host.rs#L6216) | function_item | `private` |  |
-| [tekes-supervisor::process_host::unresolved_parent_dependency](../../src/process_host.rs#L6238) | function_item | `private` |  |
-| [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6313) | function_item | `private` |  |
-| [tekes-supervisor::process_host::operation_unavailable](../../src/process_host.rs#L6349) | function_item | `private` |  |
-| [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) | function_item | `private` |  |
-| [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6361) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::process_host::workspace_id](../../src/process_host.rs#L6366) | function_item | `private` |  |
-| [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6370) | function_item | `private` |  |
-| [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) | function_item | `private` |  |
-| [tekes-supervisor::process_host::ledger_needs_worker](../../src/process_host.rs#L6427) | function_item | `private` |  |
-| [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6445) | function_item | `private` |  |
-| [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) | function_item | `private` |  |
-| [tekes-supervisor::process_host::read_worker_hello](../../src/process_host.rs#L6523) | function_item | `private` |  |
+| [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) | function_item | `private` |  |
+| [tekes-supervisor::process_host::fail_worker](../../src/process_host.rs#L5155) | function_item | `private` |  |
+| [tekes-supervisor::process_host::worker_stderr_reader](../../src/process_host.rs#L5179) | function_item | `private` |  |
+| [tekes-supervisor::process_host::worker_stderr_reader::MAX_STDERR_TAIL](../../src/process_host.rs#L5180) | const_item | `private` |  |
+| [tekes-supervisor::process_host::preserve_first_failure](../../src/process_host.rs#L5199) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::session_metadata_changed](../../src/process_host.rs#L5206) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::prompt](../../src/process_host.rs#L5210) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::compact](../../src/process_host.rs#L5273) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::cancel](../../src/process_host.rs#L5312) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::rename](../../src/process_host.rs#L5396) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::deliver_if_live](../../src/process_host.rs#L5433) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::ensure_after_locked_append](../../src/process_host.rs#L5457) | function_item | `private` |  |
+| [tekes-supervisor::process_host::cancel_stage_failure](../../src/process_host.rs#L5471) | function_item | `private` |  |
+| [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5490) | function_item | `private` |  |
+| [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5512) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5535) | function_item | `private` |  |
+| [tekes-supervisor::process_host::DamageVerdict](../../src/process_host.rs#L5545) | enum_item | `private` |  |
+| [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5561) | function_item | `private` |  |
+| [tekes-supervisor::process_host::child_ledger_damage](../../src/process_host.rs#L5597) | function_item | `private` |  |
+| [tekes-supervisor::process_host::is_single_line_ledger](../../src/process_host.rs#L5623) | function_item | `private` |  |
+| [tekes-supervisor::process_host::HYDRATE_RETRY](../../src/process_host.rs#L5636) | const_item | `private` |  |
+| [tekes-supervisor::process_host::DEFAULT_LIST_WAIT](../../src/process_host.rs#L5638) | const_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::list_wait](../../src/process_host.rs#L5641) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::is_running](../../src/process_host.rs#L5656) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::catalog_item](../../src/process_host.rs#L5666) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::verify_within](../../src/process_host.rs#L5739) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::build_inventory](../../src/process_host.rs#L5804) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::inventory_items](../../src/process_host.rs#L5858) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::ensure_verified](../../src/process_host.rs#L5868) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::has_catalog](../../src/process_host.rs#L5883) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::hold_catalog](../../src/process_host.rs#L5887) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::inventory_item](../../src/process_host.rs#L5943) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::live_sessions](../../src/process_host.rs#L5972) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::reconcile_projection](../../src/process_host.rs#L5982) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::execute](../../src/process_host.rs#L5992) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::readiness](../../src/process_host.rs#L6020) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProductionProcessHost::config_mutation_succeeded](../../src/process_host.rs#L6097) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::host](../../src/process_host.rs#L6121) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::ensure_running](../../src/process_host.rs#L6129) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::deliver_input](../../src/process_host.rs#L6140) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::interrupt](../../src/process_host.rs#L6176) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::ensure_child](../../src/process_host.rs#L6200) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ProcessToolRuntime::deliver_report](../../src/process_host.rs#L6214) | function_item | `private` |  |
+| [tekes-supervisor::process_host::unresolved_parent_dependency](../../src/process_host.rs#L6236) | function_item | `private` |  |
+| [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6311) | function_item | `private` |  |
+| [tekes-supervisor::process_host::operation_unavailable](../../src/process_host.rs#L6347) | function_item | `private` |  |
+| [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) | function_item | `private` |  |
+| [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6359) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::process_host::workspace_id](../../src/process_host.rs#L6364) | function_item | `private` |  |
+| [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6368) | function_item | `private` |  |
+| [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) | function_item | `private` |  |
+| [tekes-supervisor::process_host::ledger_needs_worker](../../src/process_host.rs#L6425) | function_item | `private` |  |
+| [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6443) | function_item | `private` |  |
+| [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) | function_item | `private` |  |
+| [tekes-supervisor::process_host::read_worker_hello](../../src/process_host.rs#L6521) | function_item | `private` |  |
 | [tekes-supervisor::process_host::next_stop_generation](../../src/process_host.rs#L6593) | function_item | `private` |  |
 | [tekes-supervisor::process_host::validate_worker_binary](../../src/process_host.rs#L6612) | function_item | `private` |  |
 | [tekes-supervisor::process_host::failure](../../src/process_host.rs#L6624) | function_item | `private` |  |
@@ -1807,7 +1807,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspace_policy_published` | `self                 .workers                 .lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .values` | [1050](../../src/process_host.rs#L1050) | receiver-type-required |
 | `workspace_policy_published` | `self                 .workers                 .lock()                 .unwrap_or_else` | [1050](../../src/process_host.rs#L1050) | receiver-type-required |
 | `workspace_policy_published` | `self                 .workers                 .lock` | [1050](../../src/process_host.rs#L1050) | receiver-type-required |
-| `workspace_policy_published` | `terminate_worker` | [1059](../../src/process_host.rs#L1059) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
+| `workspace_policy_published` | `terminate_worker` | [1059](../../src/process_host.rs#L1059) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
 | `workspace_policy_published` | `Ok` | [1062](../../src/process_host.rs#L1062) | external-constructor-callback-or-unresolved |
 | `workspace_policy_recovered` | `self             .workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .values()             .filter(&#124;worker&#124; worker.config_snapshot.workspace.id == workspace_id)             .cloned()             .collect::<Vec<_>>` | [1070](../../src/process_host.rs#L1070) | receiver-type-required |
 | `workspace_policy_recovered` | `self             .workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .values()             .filter(&#124;worker&#124; worker.config_snapshot.workspace.id == workspace_id)             .cloned` | [1070](../../src/process_host.rs#L1070) | receiver-type-required |
@@ -1815,7 +1815,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspace_policy_recovered` | `self             .workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .values` | [1070](../../src/process_host.rs#L1070) | receiver-type-required |
 | `workspace_policy_recovered` | `self             .workers             .lock()             .unwrap_or_else` | [1070](../../src/process_host.rs#L1070) | receiver-type-required |
 | `workspace_policy_recovered` | `self             .workers             .lock` | [1070](../../src/process_host.rs#L1070) | receiver-type-required |
-| `workspace_policy_recovered` | `terminate_worker` | [1079](../../src/process_host.rs#L1079) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
+| `workspace_policy_recovered` | `terminate_worker` | [1079](../../src/process_host.rs#L1079) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
 | `plugin_store` | `self.plugin_store.clone` | [1087](../../src/process_host.rs#L1087) | receiver-type-required |
 | `client_file_changes` | `endpoint::validate_session_id(session_id)             .map_err` | [1094](../../src/process_host.rs#L1094) | receiver-type-required |
 | `client_file_changes` | `endpoint::validate_session_id` | [1094](../../src/process_host.rs#L1094) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
@@ -1827,7 +1827,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_file_changes` | `self.root.join(area).join` | [1098](../../src/process_host.rs#L1098) | receiver-type-required |
 | `client_file_changes` | `self.root.join` | [1098](../../src/process_host.rs#L1098) | receiver-type-required |
 | `client_file_changes` | `path.is_dir` | [1099](../../src/process_host.rs#L1099) | receiver-type-required |
-| `client_file_changes` | `session_workspace_binding` | [1101](../../src/process_host.rs#L1101) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `client_file_changes` | `session_workspace_binding` | [1101](../../src/process_host.rs#L1101) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `client_file_changes` | `folder.join` | [1101](../../src/process_host.rs#L1101) | receiver-type-required |
 | `client_file_changes` | `self.repository.clone` | [1102](../../src/process_host.rs#L1102) | receiver-type-required |
 | `client_file_changes` | `match &binding {                 Some(binding) => {                     repository.resolve_for_session_binding(&workspace, &folder, binding)                 }                 None => repository.resolve_for_session(&workspace, &folder),             }             .map(&#124;config&#124; config.workspace)             .map_err` | [1104](../../src/process_host.rs#L1104) | receiver-type-required |
@@ -1853,13 +1853,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_file_page` | `self.root.join(area).join` | [1140](../../src/process_host.rs#L1140) | receiver-type-required |
 | `client_file_page` | `self.root.join` | [1140](../../src/process_host.rs#L1140) | receiver-type-required |
 | `client_file_page` | `path.is_dir` | [1141](../../src/process_host.rs#L1141) | receiver-type-required |
-| `client_file_page` | `session_workspace_binding` | [1143](../../src/process_host.rs#L1143) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `client_file_page` | `session_workspace_binding` | [1143](../../src/process_host.rs#L1143) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `client_file_page` | `folder.join` | [1143](../../src/process_host.rs#L1143) | receiver-type-required |
 | `client_file_page` | `match binding {             Some(binding) => self                 .repository                 .resolve_for_session_binding(&workspace, &folder, &binding),             None => self.repository.resolve_for_session(&workspace, &folder),         }         .map_err` | [1144](../../src/process_host.rs#L1144) | receiver-type-required |
 | `client_file_page` | `self                 .repository                 .resolve_for_session_binding` | [1145](../../src/process_host.rs#L1145) | receiver-type-required |
 | `client_file_page` | `self.repository.resolve_for_session` | [1148](../../src/process_host.rs#L1148) | receiver-type-required |
 | `client_file_page` | `error.to_string` | [1150](../../src/process_host.rs#L1150) | receiver-type-required |
-| `client_file_page` | `scoped_client_file_path` | [1151](../../src/process_host.rs#L1151) | [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6370) |
+| `client_file_page` | `scoped_client_file_path` | [1151](../../src/process_host.rs#L1151) | [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6368) |
 | `client_file_page` | `self.file_observations             .register(session_id, &root, &relative)             .map_err` | [1152](../../src/process_host.rs#L1152) | receiver-type-required |
 | `client_file_page` | `self.file_observations             .register` | [1152](../../src/process_host.rs#L1152) | receiver-type-required |
 | `client_file_page` | `usize::try_from(offset)                 .map_err` | [1156](../../src/process_host.rs#L1156) | receiver-type-required |
@@ -1877,7 +1877,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_session_roots` | `self.root.join(area).join` | [1179](../../src/process_host.rs#L1179) | receiver-type-required |
 | `client_session_roots` | `self.root.join` | [1179](../../src/process_host.rs#L1179) | receiver-type-required |
 | `client_session_roots` | `path.is_dir` | [1180](../../src/process_host.rs#L1180) | receiver-type-required |
-| `client_session_roots` | `session_workspace_binding` | [1182](../../src/process_host.rs#L1182) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `client_session_roots` | `session_workspace_binding` | [1182](../../src/process_host.rs#L1182) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `client_session_roots` | `folder.join` | [1182](../../src/process_host.rs#L1182) | receiver-type-required |
 | `client_session_roots` | `match binding {             Some(binding) => self                 .repository                 .resolve_for_session_binding(&workspace, &folder, &binding),             None => self.repository.resolve_for_session(&workspace, &folder),         }         .map_err` | [1183](../../src/process_host.rs#L1183) | receiver-type-required |
 | `client_session_roots` | `self                 .repository                 .resolve_for_session_binding` | [1184](../../src/process_host.rs#L1184) | receiver-type-required |
@@ -1906,7 +1906,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_resource_catalog` | `self.root.join(area).join` | [1219](../../src/process_host.rs#L1219) | receiver-type-required |
 | `client_resource_catalog` | `self.root.join` | [1219](../../src/process_host.rs#L1219), [1232](../../src/process_host.rs#L1232) | receiver-type-required |
 | `client_resource_catalog` | `path.is_dir` | [1220](../../src/process_host.rs#L1220) | receiver-type-required |
-| `client_resource_catalog` | `session_workspace_binding` | [1222](../../src/process_host.rs#L1222) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `client_resource_catalog` | `session_workspace_binding` | [1222](../../src/process_host.rs#L1222) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `client_resource_catalog` | `folder.join` | [1222](../../src/process_host.rs#L1222) | receiver-type-required |
 | `client_resource_catalog` | `match binding {             Some(binding) => self                 .repository                 .resolve_for_session_binding(&workspace, &folder, &binding),             None => self.repository.resolve_for_session(&workspace, &folder),         }         .map_err` | [1223](../../src/process_host.rs#L1223) | receiver-type-required |
 | `client_resource_catalog` | `self                 .repository                 .resolve_for_session_binding` | [1224](../../src/process_host.rs#L1224) | receiver-type-required |
@@ -1931,7 +1931,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_tool_catalog` | `self.root.join("threads").join` | [1258](../../src/process_host.rs#L1258) | receiver-type-required |
 | `client_tool_catalog` | `"session folder does not exist".to_owned` | [1259](../../src/process_host.rs#L1259) | receiver-type-required |
 | `client_tool_catalog` | `session_workspace_binding(&folder.join("main.jsonl"))                         .map_err` | [1261](../../src/process_host.rs#L1261) | receiver-type-required |
-| `client_tool_catalog` | `session_workspace_binding` | [1261](../../src/process_host.rs#L1261) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `client_tool_catalog` | `session_workspace_binding` | [1261](../../src/process_host.rs#L1261) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `client_tool_catalog` | `folder.join` | [1261](../../src/process_host.rs#L1261), [1263](../../src/process_host.rs#L1263) | receiver-type-required |
 | `client_tool_catalog` | `error.to_string` | [1264](../../src/process_host.rs#L1264), [1276](../../src/process_host.rs#L1276), [1283](../../src/process_host.rs#L1283), [1287](../../src/process_host.rs#L1287), [1301](../../src/process_host.rs#L1301) | receiver-type-required |
 | `client_tool_catalog` | `self.repository.resolve_for_session_binding` | [1267](../../src/process_host.rs#L1267) | receiver-type-required |
@@ -2012,7 +2012,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_schedule_claim` | `String::with_capacity` | [1459](../../src/process_host.rs#L1459) | external-constructor-callback-or-unresolved |
 | `execute_schedule_claim` | `write!(output, "{byte:02x}").expect` | [1461](../../src/process_host.rs#L1461) | receiver-type-required |
 | `execute_schedule_claim` | `ManagementStore::open_light_at(&self.root, &timestamp)             .map_err` | [1465](../../src/process_host.rs#L1465) | receiver-type-required |
-| `execute_schedule_claim` | `ManagementStore::open_light_at` | [1465](../../src/process_host.rs#L1465) | [endpoint::management::ManagementStore::open_light_at](../../../endpoint/src/management.rs#L426) |
+| `execute_schedule_claim` | `ManagementStore::open_light_at` | [1465](../../src/process_host.rs#L1465) | [endpoint::management::ManagementStore::open_light_at](../../../endpoint/src/management.rs#L428) |
 | `execute_schedule_claim` | `management             .create_session(SessionCreateOperation {                 rpc_id: &claim.claim_id,                 request_sha256: &request_sha256,                 requested_session_id: None,                 workspace_id: Some(&claim.definition.workspace_id),                 cwd: None,                 identity_profile: None,                 user_agent_dir: &self.user_agent_dir,                 started_at: &timestamp,                 principal: "schedule",             })             .map_err` | [1467](../../src/process_host.rs#L1467) | receiver-type-required |
 | `execute_schedule_claim` | `management             .create_session` | [1467](../../src/process_host.rs#L1467) | receiver-type-required |
 | `execute_schedule_claim` | `Some` | [1472](../../src/process_host.rs#L1472) | external-constructor-callback-or-unresolved |
@@ -2046,7 +2046,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_schedule_statuses` | `scan                 .projection                 .ok_or_else` | [1539](../../src/process_host.rs#L1539) | receiver-type-required |
 | `reconcile_schedule_statuses` | `self.live_worker(session_id).is_some` | [1542](../../src/process_host.rs#L1542) | receiver-type-required |
 | `reconcile_schedule_statuses` | `self.live_worker` | [1542](../../src/process_host.rs#L1542) | [tekes-supervisor::process_host::ProductionProcessHost::live_worker](../../src/process_host.rs#L2496) |
-| `reconcile_schedule_statuses` | `probe_line_lock` | [1543](../../src/process_host.rs#L1543) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) |
+| `reconcile_schedule_statuses` | `probe_line_lock` | [1543](../../src/process_host.rs#L1543) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) |
 | `reconcile_schedule_statuses` | `classify` | [1549](../../src/process_host.rs#L1549) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
 | `reconcile_schedule_statuses` | `projection                         .events                         .iter()                         .rev()                         .find(&#124;event&#124; matches!(event.kind(), EventKind::Settle))                         .ok_or_else` | [1553](../../src/process_host.rs#L1553) | receiver-type-required |
 | `reconcile_schedule_statuses` | `projection                         .events                         .iter()                         .rev()                         .find` | [1553](../../src/process_host.rs#L1553) | receiver-type-required |
@@ -2178,7 +2178,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_worker_credentials` | `worker             .credential_bindings             .lock` | [1902](../../src/process_host.rs#L1902) | receiver-type-required |
 | `refresh_worker_credentials` | `prior.as_ref` | [1906](../../src/process_host.rs#L1906) | receiver-type-required |
 | `refresh_worker_credentials` | `current.availability.is_empty` | [1907](../../src/process_host.rs#L1907) | receiver-type-required |
-| `refresh_worker_credentials` | `terminate_worker` | [1908](../../src/process_host.rs#L1908), [1918](../../src/process_host.rs#L1918), [1925](../../src/process_host.rs#L1925) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
+| `refresh_worker_credentials` | `terminate_worker` | [1908](../../src/process_host.rs#L1908), [1918](../../src/process_host.rs#L1918), [1925](../../src/process_host.rs#L1925) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
 | `refresh_worker_credentials` | `Err` | [1909](../../src/process_host.rs#L1909), [1919](../../src/process_host.rs#L1919) | external-constructor-callback-or-unresolved |
 | `refresh_worker_credentials` | `Some` | [1913](../../src/process_host.rs#L1913), [1924](../../src/process_host.rs#L1924), [1928](../../src/process_host.rs#L1928) | external-constructor-callback-or-unresolved |
 | `refresh_worker_credentials` | `Ok` | [1914](../../src/process_host.rs#L1914), [1926](../../src/process_host.rs#L1926), [1929](../../src/process_host.rs#L1929) | external-constructor-callback-or-unresolved |
@@ -2244,7 +2244,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `hydrate_unrecorded` | `store::repair_thread_tails` | [2072](../../src/process_host.rs#L2072) | [store::tail::repair_thread_tails](../../../store/src/tail.rs#L676) |
 | `hydrate_unrecorded` | `report             .corrupt             .iter()             .find` | [2076](../../src/process_host.rs#L2076) | receiver-type-required |
 | `hydrate_unrecorded` | `report             .corrupt             .iter` | [2076](../../src/process_host.rs#L2076) | receiver-type-required |
-| `hydrate_unrecorded` | `damage_under_lock` | [2079](../../src/process_host.rs#L2079) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5563) |
+| `hydrate_unrecorded` | `damage_under_lock` | [2079](../../src/process_host.rs#L2079) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5561) |
 | `hydrate_unrecorded` | `folder.join` | [2079](../../src/process_host.rs#L2079) | receiver-type-required |
 | `hydrate_unrecorded` | `self.catalog.mark_corrupt` | [2092](../../src/process_host.rs#L2092), [2117](../../src/process_host.rs#L2117) | receiver-type-required |
 | `hydrate_unrecorded` | `self.card_writer.governor().charge` | [2102](../../src/process_host.rs#L2102) | receiver-type-required |
@@ -2253,7 +2253,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `hydrate_unrecorded` | `self.card_writer.reset_window` | [2110](../../src/process_host.rs#L2110) | receiver-type-required |
 | `hydrate_unrecorded` | `self.hydrate_runs.fetch_add` | [2112](../../src/process_host.rs#L2112) | receiver-type-required |
 | `hydrate_unrecorded` | `self.publish_appended_with` | [2113](../../src/process_host.rs#L2113) | [tekes-supervisor::process_host::ProductionProcessHost::publish_appended_with](../../src/process_host.rs#L3717) |
-| `hydrate_unrecorded` | `child_ledger_damage` | [2115](../../src/process_host.rs#L2115) | [tekes-supervisor::process_host::child_ledger_damage](../../src/process_host.rs#L5599) |
+| `hydrate_unrecorded` | `child_ledger_damage` | [2115](../../src/process_host.rs#L2115) | [tekes-supervisor::process_host::child_ledger_damage](../../src/process_host.rs#L5597) |
 | `hydrate_unrecorded` | `self.catalog.set_children` | [2122](../../src/process_host.rs#L2122) | receiver-type-required |
 | `hydrate_unrecorded` | `crate::thread_card::fold_child_views` | [2124](../../src/process_host.rs#L2124) | [tekes-supervisor::thread_card::fold_child_views](../../src/thread_card.rs#L184) |
 | `repair_main_projection` | `self             .projection_cache             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .get(session_id)             .map` | [2136](../../src/process_host.rs#L2136) | receiver-type-required |
@@ -2379,11 +2379,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `sweep_session` | `self                 .workers                 .lock` | [2367](../../src/process_host.rs#L2367) | receiver-type-required |
 | `sweep_session` | `worker.alive.load` | [2372](../../src/process_host.rs#L2372) | receiver-type-required |
 | `sweep_session` | `self.repair_main_projection` | [2374](../../src/process_host.rs#L2374) | [tekes-supervisor::process_host::ProductionProcessHost::repair_main_projection](../../src/process_host.rs#L2135) |
-| `sweep_session` | `probe_line_lock` | [2376](../../src/process_host.rs#L2376) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) |
+| `sweep_session` | `probe_line_lock` | [2376](../../src/process_host.rs#L2376) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) |
 | `sweep_session` | `classify` | [2381](../../src/process_host.rs#L2381) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
 | `sweep_session` | `ensure_action_at` | [2382](../../src/process_host.rs#L2382) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
 | `sweep_session` | `now_rfc3339` | [2382](../../src/process_host.rs#L2382) | [tekes-supervisor::process_host::now_rfc3339](../../src/process_host.rs#L170) |
-| `sweep_session` | `goal_continuation_due` | [2383](../../src/process_host.rs#L2383) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6445) |
+| `sweep_session` | `goal_continuation_due` | [2383](../../src/process_host.rs#L2383) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6443) |
 | `sweep_session` | `self.restart_is_due` | [2387](../../src/process_host.rs#L2387) | [tekes-supervisor::process_host::ProductionProcessHost::restart_is_due](../../src/process_host.rs#L4396) |
 | `sweep_session` | `self.refresh_limits` | [2390](../../src/process_host.rs#L2390) | [tekes-supervisor::process_host::ProductionProcessHost::refresh_limits](../../src/process_host.rs#L2758) |
 | `sweep_session` | `self.schedule_worker_at` | [2391](../../src/process_host.rs#L2391) | [tekes-supervisor::process_host::ProductionProcessHost::schedule_worker_at](../../src/process_host.rs#L2864) |
@@ -2461,10 +2461,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `self             .protocol_quarantine             .lock` | [2531](../../src/process_host.rs#L2531) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `Err` | [2538](../../src/process_host.rs#L2538), [2580](../../src/process_host.rs#L2580), [2678](../../src/process_host.rs#L2678), [2680](../../src/process_host.rs#L2680) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `DaemonError::protocol` | [2538](../../src/process_host.rs#L2538), [2641](../../src/process_host.rs#L2641), [2646](../../src/process_host.rs#L2646), [2651](../../src/process_host.rs#L2651), [2678](../../src/process_host.rs#L2678), [2680](../../src/process_host.rs#L2680), [2695](../../src/process_host.rs#L2695) | [tekes-supervisor::host_runtime::DaemonError::protocol](../../src/host_runtime.rs#L536) |
-| `spawn_worker_at_with_handshake_timeout` | `session_workspace_binding` | [2542](../../src/process_host.rs#L2542) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
+| `spawn_worker_at_with_handshake_timeout` | `session_workspace_binding` | [2542](../../src/process_host.rs#L2542) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
 | `spawn_worker_at_with_handshake_timeout` | `store::NamedLock::shared(workspace_quiescence_lock_path(&self.root, &workspace_id))                 .map_err` | [2544](../../src/process_host.rs#L2544) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `store::NamedLock::shared` | [2544](../../src/process_host.rs#L2544) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
-| `spawn_worker_at_with_handshake_timeout` | `workspace_quiescence_lock_path` | [2544](../../src/process_host.rs#L2544) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6361) |
+| `spawn_worker_at_with_handshake_timeout` | `workspace_quiescence_lock_path` | [2544](../../src/process_host.rs#L2544) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6359) |
 | `spawn_worker_at_with_handshake_timeout` | `Arc::new` | [2546](../../src/process_host.rs#L2546), [2558](../../src/process_host.rs#L2558), [2711](../../src/process_host.rs#L2711) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `Mutex::new` | [2546](../../src/process_host.rs#L2546), [2558](../../src/process_host.rs#L2558), [2713](../../src/process_host.rs#L2713), [2714](../../src/process_host.rs#L2714), [2715](../../src/process_host.rs#L2715), [2716](../../src/process_host.rs#L2716), [2721](../../src/process_host.rs#L2721), [2722](../../src/process_host.rs#L2722), [2723](../../src/process_host.rs#L2723) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `Arc::clone` | [2549](../../src/process_host.rs#L2549), [2559](../../src/process_host.rs#L2559), [2729](../../src/process_host.rs#L2729), [2744](../../src/process_host.rs#L2744) | external-constructor-callback-or-unresolved |
@@ -2519,7 +2519,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `guard             .child_mut()             .stderr             .take()             .ok_or_else` | [2647](../../src/process_host.rs#L2647) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `guard             .child_mut()             .stderr             .take` | [2647](../../src/process_host.rs#L2647) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `BufReader::new` | [2652](../../src/process_host.rs#L2652), [2745](../../src/process_host.rs#L2745) | external-constructor-callback-or-unresolved |
-| `spawn_worker_at_with_handshake_timeout` | `read_worker_hello` | [2653](../../src/process_host.rs#L2653) | [tekes-supervisor::process_host::read_worker_hello](../../src/process_host.rs#L6523) |
+| `spawn_worker_at_with_handshake_timeout` | `read_worker_hello` | [2653](../../src/process_host.rs#L2653) | [tekes-supervisor::process_host::read_worker_hello](../../src/process_host.rs#L6521) |
 | `spawn_worker_at_with_handshake_timeout` | `worker_control::negotiate` | [2654](../../src/process_host.rs#L2654) | [worker-control::negotiate](../../../worker-control/src/lib.rs#L276) |
 | `spawn_worker_at_with_handshake_timeout` | `self.protocol_quarantine                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner)                     .insert` | [2661](../../src/process_host.rs#L2661) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `self.protocol_quarantine                     .lock()                     .unwrap_or_else` | [2661](../../src/process_host.rs#L2661) | receiver-type-required |
@@ -2558,14 +2558,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `spawn_worker_at_with_handshake_timeout` | `process_key.to_owned` | [2732](../../src/process_host.rs#L2732) | receiver-type-required |
 | `spawn_worker_at_with_handshake_timeout` | `std::thread::spawn` | [2734](../../src/process_host.rs#L2734), [2745](../../src/process_host.rs#L2745) | external-constructor-callback-or-unresolved |
 | `spawn_worker_at_with_handshake_timeout` | `worker_reader` | [2735](../../src/process_host.rs#L2735) | [tekes-supervisor::process_host::worker_reader](../../src/process_host.rs#L4873) |
-| `spawn_worker_at_with_handshake_timeout` | `worker_stderr_reader` | [2745](../../src/process_host.rs#L2745) | [tekes-supervisor::process_host::worker_stderr_reader](../../src/process_host.rs#L5181) |
+| `spawn_worker_at_with_handshake_timeout` | `worker_stderr_reader` | [2745](../../src/process_host.rs#L2745) | [tekes-supervisor::process_host::worker_stderr_reader](../../src/process_host.rs#L5179) |
 | `workspace_service_binary` | `self.worker_binary.with_file_name` | [2750](../../src/process_host.rs#L2750) | receiver-type-required |
 | `worker_binary_digest` | `fs::read(&self.worker_binary).map_err` | [2754](../../src/process_host.rs#L2754) | receiver-type-required |
 | `worker_binary_digest` | `fs::read` | [2754](../../src/process_host.rs#L2754) | external-constructor-callback-or-unresolved |
 | `worker_binary_digest` | `Ok` | [2755](../../src/process_host.rs#L2755) | external-constructor-callback-or-unresolved |
 | `worker_binary_digest` | `Sha256::digest(bytes).into` | [2755](../../src/process_host.rs#L2755) | receiver-type-required |
 | `worker_binary_digest` | `Sha256::digest` | [2755](../../src/process_host.rs#L2755) | external-constructor-callback-or-unresolved |
-| `refresh_limits` | `workspace_id` | [2759](../../src/process_host.rs#L2759) | [tekes-supervisor::process_host::workspace_id](../../src/process_host.rs#L6366) |
+| `refresh_limits` | `workspace_id` | [2759](../../src/process_host.rs#L2759) | [tekes-supervisor::process_host::workspace_id](../../src/process_host.rs#L6364) |
 | `refresh_limits` | `self             .repository             .resolve(&workspace)             .map_err` | [2760](../../src/process_host.rs#L2760) | receiver-type-required |
 | `refresh_limits` | `self             .repository             .resolve` | [2760](../../src/process_host.rs#L2760) | receiver-type-required |
 | `refresh_limits` | `DaemonError::invalid_config` | [2763](../../src/process_host.rs#L2763) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L578) |
@@ -2620,8 +2620,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `schedule_main` | `self.root                 .join("threads")                 .join(session_id)                 .join` | [2841](../../src/process_host.rs#L2841) | receiver-type-required |
 | `schedule_main` | `self.root                 .join("threads")                 .join` | [2841](../../src/process_host.rs#L2841) | receiver-type-required |
 | `schedule_main` | `self.root                 .join` | [2841](../../src/process_host.rs#L2841) | receiver-type-required |
-| `schedule_line` | `line_schedule_target` | [2855](../../src/process_host.rs#L2855) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6313) |
-| `schedule_line` | `unresolved_parent_dependency` | [2857](../../src/process_host.rs#L2857) | [tekes-supervisor::process_host::unresolved_parent_dependency](../../src/process_host.rs#L6238) |
+| `schedule_line` | `line_schedule_target` | [2855](../../src/process_host.rs#L2855) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6311) |
+| `schedule_line` | `unresolved_parent_dependency` | [2857](../../src/process_host.rs#L2857) | [tekes-supervisor::process_host::unresolved_parent_dependency](../../src/process_host.rs#L6236) |
 | `schedule_line` | `self.schedule_child_from_parent` | [2859](../../src/process_host.rs#L2859) | [tekes-supervisor::process_host::ProductionProcessHost::schedule_child_from_parent](../../src/process_host.rs#L2962) |
 | `schedule_line` | `self.schedule_worker_at` | [2861](../../src/process_host.rs#L2861) | [tekes-supervisor::process_host::ProductionProcessHost::schedule_worker_at](../../src/process_host.rs#L2864) |
 | `schedule_worker_at` | `Ok` | [2870](../../src/process_host.rs#L2870) | external-constructor-callback-or-unresolved |
@@ -2721,7 +2721,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `start_pending_workers` | `pending.get(&key).cloned` | [3058](../../src/process_host.rs#L3058) | receiver-type-required |
 | `start_pending_workers` | `pending.get` | [3058](../../src/process_host.rs#L3058) | receiver-type-required |
 | `start_pending_workers` | `pending.startup.is_some` | [3063](../../src/process_host.rs#L3063) | receiver-type-required |
-| `start_pending_workers` | `ledger_needs_worker` | [3066](../../src/process_host.rs#L3066) | [tekes-supervisor::process_host::ledger_needs_worker](../../src/process_host.rs#L6427) |
+| `start_pending_workers` | `ledger_needs_worker` | [3066](../../src/process_host.rs#L3066) | [tekes-supervisor::process_host::ledger_needs_worker](../../src/process_host.rs#L6425) |
 | `start_pending_workers` | `self.pending_workers                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner)                     .remove` | [3075](../../src/process_host.rs#L3075) | receiver-type-required |
 | `start_pending_workers` | `self.pending_workers                     .lock()                     .unwrap_or_else` | [3075](../../src/process_host.rs#L3075) | receiver-type-required |
 | `start_pending_workers` | `self.pending_workers                     .lock` | [3075](../../src/process_host.rs#L3075) | receiver-type-required |
@@ -2982,7 +2982,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_control` | `session             .handle_line` | [3648](../../src/process_host.rs#L3648) | receiver-type-required |
 | `handle_tool_control` | `DaemonError::protocol` | [3650](../../src/process_host.rs#L3650) | [tekes-supervisor::host_runtime::DaemonError::protocol](../../src/host_runtime.rs#L536) |
 | `handle_tool_continuation` | `worker_control::continuation::decode_tool_continuation(line)             .map_err` | [3661](../../src/process_host.rs#L3661) | receiver-type-required |
-| `handle_tool_continuation` | `worker_control::continuation::decode_tool_continuation` | [3661](../../src/process_host.rs#L3661) | [worker-control::continuation::decode_tool_continuation](../../../worker-control/src/continuation.rs#L279) |
+| `handle_tool_continuation` | `worker_control::continuation::decode_tool_continuation` | [3661](../../src/process_host.rs#L3661) | [worker-control::continuation::decode_tool_continuation](../../../worker-control/src/continuation.rs#L277) |
 | `handle_tool_continuation` | `DaemonError::protocol` | [3662](../../src/process_host.rs#L3662), [3665](../../src/process_host.rs#L3665), [3667](../../src/process_host.rs#L3667), [3691](../../src/process_host.rs#L3691) | [tekes-supervisor::host_runtime::DaemonError::protocol](../../src/host_runtime.rs#L536) |
 | `handle_tool_continuation` | `error.to_string` | [3662](../../src/process_host.rs#L3662), [3678](../../src/process_host.rs#L3678), [3691](../../src/process_host.rs#L3691) | receiver-type-required |
 | `handle_tool_continuation` | `self.root.join("threads").join` | [3663](../../src/process_host.rs#L3663) | receiver-type-required |
@@ -3010,7 +3010,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_continuation` | `ProductionToolControlPolicy::new` | [3688](../../src/process_host.rs#L3688) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L875) |
 | `handle_tool_continuation` | `tools::SecretScanner::default` | [3688](../../src/process_host.rs#L3688) | external-constructor-callback-or-unresolved |
 | `handle_tool_continuation` | `worker_control::continuation::encode_tool_continuation_result(&response)             .map_err` | [3690](../../src/process_host.rs#L3690) | receiver-type-required |
-| `handle_tool_continuation` | `worker_control::continuation::encode_tool_continuation_result` | [3690](../../src/process_host.rs#L3690) | [worker-control::continuation::encode_tool_continuation_result](../../../worker-control/src/continuation.rs#L289) |
+| `handle_tool_continuation` | `worker_control::continuation::encode_tool_continuation_result` | [3690](../../src/process_host.rs#L3690) | [worker-control::continuation::encode_tool_continuation_result](../../../worker-control/src/continuation.rs#L287) |
 | `validate_child_proof` | `self             .root             .join("threads")             .join(&proof.session)             .join` | [3695](../../src/process_host.rs#L3695) | receiver-type-required |
 | `validate_child_proof` | `self             .root             .join("threads")             .join` | [3695](../../src/process_host.rs#L3695) | receiver-type-required |
 | `validate_child_proof` | `self             .root             .join` | [3695](../../src/process_host.rs#L3695) | receiver-type-required |
@@ -3034,8 +3034,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_appended_with` | `fs::read` | [3732](../../src/process_host.rs#L3732), [3750](../../src/process_host.rs#L3750) | external-constructor-callback-or-unresolved |
 | `publish_appended_with` | `scan_valid_prefix` | [3733](../../src/process_host.rs#L3733), [3751](../../src/process_host.rs#L3751) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
 | `publish_appended_with` | `ledger_damage(&bytes).is_some` | [3740](../../src/process_host.rs#L3740) | receiver-type-required |
-| `publish_appended_with` | `ledger_damage` | [3740](../../src/process_host.rs#L3740) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5537) |
-| `publish_appended_with` | `damage_under_lock` | [3741](../../src/process_host.rs#L3741) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5563) |
+| `publish_appended_with` | `ledger_damage` | [3740](../../src/process_host.rs#L3740) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5535) |
+| `publish_appended_with` | `damage_under_lock` | [3741](../../src/process_host.rs#L3741) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5561) |
 | `publish_appended_with` | `self.catalog.mark_corrupt` | [3745](../../src/process_host.rs#L3745) | receiver-type-required |
 | `publish_appended_with` | `Err` | [3746](../../src/process_host.rs#L3746), [3823](../../src/process_host.rs#L3823) | external-constructor-callback-or-unresolved |
 | `publish_appended_with` | `DaemonError::corrupt` | [3746](../../src/process_host.rs#L3746), [3763](../../src/process_host.rs#L3763), [3797](../../src/process_host.rs#L3797), [3801](../../src/process_host.rs#L3801) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
@@ -3205,7 +3205,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_child` | `self                 .workers                 .lock()                 .unwrap_or_else` | [4117](../../src/process_host.rs#L4117) | receiver-type-required |
 | `launch_child` | `self                 .workers                 .lock` | [4117](../../src/process_host.rs#L4117) | receiver-type-required |
 | `launch_child` | `worker.alive.load` | [4122](../../src/process_host.rs#L4122) | receiver-type-required |
-| `launch_child` | `probe_line_lock` | [4123](../../src/process_host.rs#L4123) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) |
+| `launch_child` | `probe_line_lock` | [4123](../../src/process_host.rs#L4123) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) |
 | `launch_child` | `ensure_action_at` | [4128](../../src/process_host.rs#L4128) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
 | `launch_child` | `classify` | [4128](../../src/process_host.rs#L4128) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
 | `launch_child` | `now_rfc3339` | [4128](../../src/process_host.rs#L4128) | [tekes-supervisor::process_host::now_rfc3339](../../src/process_host.rs#L170) |
@@ -3303,14 +3303,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `cascade_stop_from` | `child_projection                 .events                 .first()                 .and_then(&#124;event&#124; event.string_field("thread"))                 .ok_or_else` | [4288](../../src/process_host.rs#L4288) | receiver-type-required |
 | `cascade_stop_from` | `child_projection                 .events                 .first()                 .and_then` | [4288](../../src/process_host.rs#L4288) | receiver-type-required |
 | `cascade_stop_from` | `child_projection                 .events                 .first` | [4288](../../src/process_host.rs#L4288) | receiver-type-required |
-| `cascade_stop_from` | `line_schedule_target` | [4294](../../src/process_host.rs#L4294) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6313) |
+| `cascade_stop_from` | `line_schedule_target` | [4294](../../src/process_host.rs#L4294) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6311) |
 | `cascade_stop_from` | `self.propagate_parent_stop` | [4300](../../src/process_host.rs#L4300) | [tekes-supervisor::process_host::ProductionProcessHost::propagate_parent_stop](../../src/process_host.rs#L4148) |
 | `cascade_stop_from` | `self.cascade_stop_from` | [4301](../../src/process_host.rs#L4301) | [tekes-supervisor::process_host::ProductionProcessHost::cascade_stop_from](../../src/process_host.rs#L4240) |
 | `cascade_stop_from` | `self                 .workers                 .lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .get(&child_key)                 .cloned` | [4302](../../src/process_host.rs#L4302) | receiver-type-required |
 | `cascade_stop_from` | `self                 .workers                 .lock()                 .unwrap_or_else(std::sync::PoisonError::into_inner)                 .get` | [4302](../../src/process_host.rs#L4302) | receiver-type-required |
 | `cascade_stop_from` | `self                 .workers                 .lock()                 .unwrap_or_else` | [4302](../../src/process_host.rs#L4302) | receiver-type-required |
 | `cascade_stop_from` | `self                 .workers                 .lock` | [4302](../../src/process_host.rs#L4302) | receiver-type-required |
-| `cascade_stop_from` | `terminate_worker` | [4309](../../src/process_host.rs#L4309) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
+| `cascade_stop_from` | `terminate_worker` | [4309](../../src/process_host.rs#L4309) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
 | `cascade_stop_from` | `self.schedule_child_from_parent` | [4311](../../src/process_host.rs#L4311) | [tekes-supervisor::process_host::ProductionProcessHost::schedule_child_from_parent](../../src/process_host.rs#L2962) |
 | `cascade_stop_from` | `Ok` | [4319](../../src/process_host.rs#L4319) | external-constructor-callback-or-unresolved |
 | `reconcile_after_exit` | `self.draining.load` | [4333](../../src/process_host.rs#L4333) | receiver-type-required |
@@ -3322,12 +3322,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `reconcile_after_exit` | `scan_valid_prefix(&bytes, 1)                 .projection                 .ok_or_else` | [4342](../../src/process_host.rs#L4342) | receiver-type-required |
 | `reconcile_after_exit` | `scan_valid_prefix` | [4342](../../src/process_host.rs#L4342) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
 | `reconcile_after_exit` | `DaemonError::corrupt` | [4344](../../src/process_host.rs#L4344) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `reconcile_after_exit` | `probe_line_lock` | [4346](../../src/process_host.rs#L4346) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) |
+| `reconcile_after_exit` | `probe_line_lock` | [4346](../../src/process_host.rs#L4346) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) |
 | `reconcile_after_exit` | `classify` | [4351](../../src/process_host.rs#L4351) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
 | `reconcile_after_exit` | `ensure_action_at` | [4352](../../src/process_host.rs#L4352) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
 | `reconcile_after_exit` | `Some` | [4352](../../src/process_host.rs#L4352) | external-constructor-callback-or-unresolved |
 | `reconcile_after_exit` | `now_rfc3339` | [4352](../../src/process_host.rs#L4352) | [tekes-supervisor::process_host::now_rfc3339](../../src/process_host.rs#L170) |
-| `reconcile_after_exit` | `goal_continuation_due` | [4353](../../src/process_host.rs#L4353) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6445) |
+| `reconcile_after_exit` | `goal_continuation_due` | [4353](../../src/process_host.rs#L4353) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6443) |
 | `reconcile_after_exit` | `self.reset_restart_backoff` | [4355](../../src/process_host.rs#L4355), [4369](../../src/process_host.rs#L4369) | [tekes-supervisor::process_host::ProductionProcessHost::reset_restart_backoff](../../src/process_host.rs#L4389) |
 | `reconcile_after_exit` | `Ok` | [4356](../../src/process_host.rs#L4356), [4362](../../src/process_host.rs#L4362), [4366](../../src/process_host.rs#L4366) | external-constructor-callback-or-unresolved |
 | `reconcile_after_exit` | `self.note_restart_failure` | [4360](../../src/process_host.rs#L4360), [4375](../../src/process_host.rs#L4375) | [tekes-supervisor::process_host::ProductionProcessHost::note_restart_failure](../../src/process_host.rs#L4404) |
@@ -3513,10 +3513,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `worker_reader` | `String::new` | [4881](../../src/process_host.rs#L4881) | external-constructor-callback-or-unresolved |
 | `worker_reader` | `line.clear` | [4884](../../src/process_host.rs#L4884) | receiver-type-required |
 | `worker_reader` | `reader.read_line` | [4885](../../src/process_host.rs#L4885) | receiver-type-required |
-| `worker_reader` | `fail_worker` | [4889](../../src/process_host.rs#L4889), [5001](../../src/process_host.rs#L5001), [5026](../../src/process_host.rs#L5026), [5035](../../src/process_host.rs#L5035), [5042](../../src/process_host.rs#L5042) | [tekes-supervisor::process_host::fail_worker](../../src/process_host.rs#L5157) |
-| `worker_reader` | `error.to_string` | [4889](../../src/process_host.rs#L4889), [4996](../../src/process_host.rs#L4996), [5001](../../src/process_host.rs#L5001), [5026](../../src/process_host.rs#L5026), [5035](../../src/process_host.rs#L5035) | receiver-type-required |
+| `worker_reader` | `fail_worker` | [4889](../../src/process_host.rs#L4889), [4999](../../src/process_host.rs#L4999), [5024](../../src/process_host.rs#L5024), [5033](../../src/process_host.rs#L5033), [5040](../../src/process_host.rs#L5040) | [tekes-supervisor::process_host::fail_worker](../../src/process_host.rs#L5155) |
+| `worker_reader` | `error.to_string` | [4889](../../src/process_host.rs#L4889), [4994](../../src/process_host.rs#L4994), [4999](../../src/process_host.rs#L4999), [5024](../../src/process_host.rs#L5024), [5033](../../src/process_host.rs#L5033) | receiver-type-required |
 | `worker_reader` | `decode_worker` | [4894](../../src/process_host.rs#L4894) | [worker-control::decode_worker](../../../worker-control/src/lib.rs#L330) |
-| `worker_reader` | `line.as_bytes` | [4894](../../src/process_host.rs#L4894), [5008](../../src/process_host.rs#L5008), [5010](../../src/process_host.rs#L5010), [5018](../../src/process_host.rs#L5018), [5020](../../src/process_host.rs#L5020) | receiver-type-required |
+| `worker_reader` | `line.as_bytes` | [4894](../../src/process_host.rs#L4894), [5006](../../src/process_host.rs#L5006), [5008](../../src/process_host.rs#L5008), [5016](../../src/process_host.rs#L5016), [5018](../../src/process_host.rs#L5018) | receiver-type-required |
 | `worker_reader` | `handle                     .state                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner)                     .receipts                     .insert` | [4896](../../src/process_host.rs#L4896) | receiver-type-required |
 | `worker_reader` | `handle                     .state                     .lock()                     .unwrap_or_else` | [4896](../../src/process_host.rs#L4896), [4905](../../src/process_host.rs#L4905) | receiver-type-required |
 | `worker_reader` | `handle                     .state                     .lock` | [4896](../../src/process_host.rs#L4896), [4905](../../src/process_host.rs#L4905) | receiver-type-required |
@@ -3525,763 +3525,764 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `worker_reader` | `handle                     .state                     .lock()                     .unwrap_or_else(std::sync::PoisonError::into_inner)                     .queue_results                     .insert` | [4905](../../src/process_host.rs#L4905) | receiver-type-required |
 | `worker_reader` | `result.delivery.clone` | [4910](../../src/process_host.rs#L4910) | receiver-type-required |
 | `worker_reader` | `owner.upgrade().is_some_and` | [4914](../../src/process_host.rs#L4914) | receiver-type-required |
-| `worker_reader` | `owner.upgrade` | [4914](../../src/process_host.rs#L4914), [4940](../../src/process_host.rs#L4940), [4957](../../src/process_host.rs#L4957), [4962](../../src/process_host.rs#L4962), [4971](../../src/process_host.rs#L4971), [5073](../../src/process_host.rs#L5073) | receiver-type-required |
+| `worker_reader` | `owner.upgrade` | [4914](../../src/process_host.rs#L4914), [4940](../../src/process_host.rs#L4940), [4957](../../src/process_host.rs#L4957), [4962](../../src/process_host.rs#L4962), [4970](../../src/process_host.rs#L4970), [5071](../../src/process_host.rs#L5071) | receiver-type-required |
 | `worker_reader` | `owner.request_provider_lease` | [4915](../../src/process_host.rs#L4915) | receiver-type-required |
 | `worker_reader` | `request.attempt.clone` | [4916](../../src/process_host.rs#L4916), [4926](../../src/process_host.rs#L4926) | receiver-type-required |
 | `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .held_attempts                         .insert` | [4921](../../src/process_host.rs#L4921) | receiver-type-required |
-| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else` | [4921](../../src/process_host.rs#L4921), [4941](../../src/process_host.rs#L4941), [5111](../../src/process_host.rs#L5111) | receiver-type-required |
-| `worker_reader` | `handle                         .state                         .lock` | [4921](../../src/process_host.rs#L4921), [4941](../../src/process_host.rs#L4941), [5111](../../src/process_host.rs#L5111) | receiver-type-required |
-| `worker_reader` | `handle.write` | [4928](../../src/process_host.rs#L4928), [4995](../../src/process_host.rs#L4995), [5023](../../src/process_host.rs#L5023) | receiver-type-required |
+| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else` | [4921](../../src/process_host.rs#L4921), [4941](../../src/process_host.rs#L4941), [5109](../../src/process_host.rs#L5109) | receiver-type-required |
+| `worker_reader` | `handle                         .state                         .lock` | [4921](../../src/process_host.rs#L4921), [4941](../../src/process_host.rs#L4941), [5109](../../src/process_host.rs#L5109) | receiver-type-required |
+| `worker_reader` | `handle.write` | [4928](../../src/process_host.rs#L4928), [4993](../../src/process_host.rs#L4993), [5021](../../src/process_host.rs#L5021) | receiver-type-required |
 | `worker_reader` | `encode_line(                         "lease",                         &Lease {                             attempt: request.attempt,                             granted,                         },                     )                     .unwrap_or_default` | [4929](../../src/process_host.rs#L4929) | receiver-type-required |
-| `worker_reader` | `encode_line` | [4929](../../src/process_host.rs#L4929), [4994](../../src/process_host.rs#L4994) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `worker_reader` | `encode_line` | [4929](../../src/process_host.rs#L4929), [4992](../../src/process_host.rs#L4992) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
 | `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .held_attempts                         .remove` | [4941](../../src/process_host.rs#L4941) | receiver-type-required |
 | `worker_reader` | `owner                         .admission                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .settle` | [4947](../../src/process_host.rs#L4947) | receiver-type-required |
 | `worker_reader` | `owner                         .admission                         .lock()                         .unwrap_or_else` | [4947](../../src/process_host.rs#L4947) | receiver-type-required |
 | `worker_reader` | `owner                         .admission                         .lock` | [4947](../../src/process_host.rs#L4947) | receiver-type-required |
-| `worker_reader` | `owner.admission_changed.notify_all` | [4952](../../src/process_host.rs#L4952), [5086](../../src/process_host.rs#L5086) | receiver-type-required |
-| `worker_reader` | `owner.reconcile_child_line` | [4958](../../src/process_host.rs#L4958), [5103](../../src/process_host.rs#L5103) | receiver-type-required |
+| `worker_reader` | `owner.admission_changed.notify_all` | [4952](../../src/process_host.rs#L4952), [5084](../../src/process_host.rs#L5084) | receiver-type-required |
+| `worker_reader` | `owner.reconcile_child_line` | [4959](../../src/process_host.rs#L4959), [5101](../../src/process_host.rs#L5101) | receiver-type-required |
 | `worker_reader` | `owner.publish_appended` | [4963](../../src/process_host.rs#L4963) | receiver-type-required |
-| `worker_reader` | `owner.publish_frame` | [4972](../../src/process_host.rs#L4972) | receiver-type-required |
-| `worker_reader` | `owner                     .upgrade()                     .ok_or_else(&#124;&#124; DaemonError::protocol("process host was dropped"))                     .and_then` | [4979](../../src/process_host.rs#L4979) | receiver-type-required |
-| `worker_reader` | `owner                     .upgrade()                     .ok_or_else` | [4979](../../src/process_host.rs#L4979) | receiver-type-required |
-| `worker_reader` | `owner                     .upgrade` | [4979](../../src/process_host.rs#L4979) | receiver-type-required |
-| `worker_reader` | `DaemonError::protocol` | [4981](../../src/process_host.rs#L4981), [5015](../../src/process_host.rs#L5015) | [tekes-supervisor::host_runtime::DaemonError::protocol](../../src/host_runtime.rs#L536) |
-| `worker_reader` | `owner.launch_child` | [4983](../../src/process_host.rs#L4983) | receiver-type-required |
-| `worker_reader` | `Some` | [4991](../../src/process_host.rs#L4991), [5110](../../src/process_host.rs#L5110) | external-constructor-callback-or-unresolved |
-| `worker_reader` | `error.bootstrap_code().to_owned` | [4991](../../src/process_host.rs#L4991) | receiver-type-required |
-| `worker_reader` | `error.bootstrap_code` | [4991](../../src/process_host.rs#L4991) | receiver-type-required |
-| `worker_reader` | `encode_line("launch_result", &result).and_then` | [4994](../../src/process_host.rs#L4994) | receiver-type-required |
-| `worker_reader` | `handle.write(&bytes).map_err` | [4995](../../src/process_host.rs#L4995) | receiver-type-required |
-| `worker_reader` | `worker_control::ProtocolError::InvalidDurableControl` | [4996](../../src/process_host.rs#L4996) | external-constructor-callback-or-unresolved |
-| `worker_reader` | `decode_tool_control(line.as_bytes()).is_ok` | [5008](../../src/process_host.rs#L5008) | receiver-type-required |
-| `worker_reader` | `decode_tool_control` | [5008](../../src/process_host.rs#L5008) | [worker-control::durable::decode_tool_control](../../../worker-control/src/durable.rs#L474) |
-| `worker_reader` | `worker_control::continuation::decode_tool_continuation(line.as_bytes())                         .is_ok` | [5010](../../src/process_host.rs#L5010) | receiver-type-required |
-| `worker_reader` | `worker_control::continuation::decode_tool_continuation` | [5010](../../src/process_host.rs#L5010) | [worker-control::continuation::decode_tool_continuation](../../../worker-control/src/continuation.rs#L279) |
-| `worker_reader` | `owner                         .upgrade()                         .ok_or_else(&#124;&#124; DaemonError::protocol("process host was dropped"))                         .and_then` | [5013](../../src/process_host.rs#L5013) | receiver-type-required |
-| `worker_reader` | `owner                         .upgrade()                         .ok_or_else` | [5013](../../src/process_host.rs#L5013) | receiver-type-required |
-| `worker_reader` | `owner                         .upgrade` | [5013](../../src/process_host.rs#L5013) | receiver-type-required |
-| `worker_reader` | `owner.handle_tool_control` | [5018](../../src/process_host.rs#L5018) | receiver-type-required |
-| `worker_reader` | `owner.handle_tool_continuation` | [5020](../../src/process_host.rs#L5020) | receiver-type-required |
-| `worker_reader` | `result.and_then` | [5023](../../src/process_host.rs#L5023) | receiver-type-required |
-| `worker_reader` | `handle.alive.store` | [5041](../../src/process_host.rs#L5041) | receiver-type-required |
-| `worker_reader` | `"worker exited".to_owned` | [5042](../../src/process_host.rs#L5042) | receiver-type-required |
-| `worker_reader` | `terminate_worker` | [5044](../../src/process_host.rs#L5044) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
-| `worker_reader` | `handle         .child         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .wait` | [5046](../../src/process_host.rs#L5046) | receiver-type-required |
-| `worker_reader` | `handle         .child         .lock()         .unwrap_or_else` | [5046](../../src/process_host.rs#L5046) | receiver-type-required |
-| `worker_reader` | `handle         .child         .lock` | [5046](../../src/process_host.rs#L5046) | receiver-type-required |
-| `worker_reader` | `exit_status             .as_ref()             .is_ok_and` | [5055](../../src/process_host.rs#L5055) | receiver-type-required |
-| `worker_reader` | `exit_status             .as_ref` | [5055](../../src/process_host.rs#L5055) | receiver-type-required |
-| `worker_reader` | `drop` | [5058](../../src/process_host.rs#L5058), [5097](../../src/process_host.rs#L5097) | external-constructor-callback-or-unresolved |
-| `worker_reader` | `handle             .credential_control             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .take` | [5059](../../src/process_host.rs#L5059) | receiver-type-required |
-| `worker_reader` | `handle             .credential_control             .lock()             .unwrap_or_else` | [5059](../../src/process_host.rs#L5059) | receiver-type-required |
-| `worker_reader` | `handle             .credential_control             .lock` | [5059](../../src/process_host.rs#L5059) | receiver-type-required |
-| `worker_reader` | `handle         .credential_broker         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .take` | [5065](../../src/process_host.rs#L5065) | receiver-type-required |
-| `worker_reader` | `handle         .credential_broker         .lock()         .unwrap_or_else` | [5065](../../src/process_host.rs#L5065) | receiver-type-required |
-| `worker_reader` | `handle         .credential_broker         .lock` | [5065](../../src/process_host.rs#L5065) | receiver-type-required |
-| `worker_reader` | `join.join` | [5071](../../src/process_host.rs#L5071) | receiver-type-required |
-| `worker_reader` | `std::mem::take` | [5074](../../src/process_host.rs#L5074) | external-constructor-callback-or-unresolved |
-| `worker_reader` | `handle                 .state                 .lock()                 .unwrap_or_else` | [5075](../../src/process_host.rs#L5075) | receiver-type-required |
-| `worker_reader` | `handle                 .state                 .lock` | [5075](../../src/process_host.rs#L5075) | receiver-type-required |
-| `worker_reader` | `owner             .admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .reap` | [5081](../../src/process_host.rs#L5081) | receiver-type-required |
-| `worker_reader` | `owner             .admission             .lock()             .unwrap_or_else` | [5081](../../src/process_host.rs#L5081) | receiver-type-required |
-| `worker_reader` | `owner             .admission             .lock` | [5081](../../src/process_host.rs#L5081) | receiver-type-required |
-| `worker_reader` | `owner             .workers             .lock()             .unwrap_or_else` | [5087](../../src/process_host.rs#L5087) | receiver-type-required |
-| `worker_reader` | `owner             .workers             .lock` | [5087](../../src/process_host.rs#L5087) | receiver-type-required |
-| `worker_reader` | `workers             .get(&process_key)             .is_some_and` | [5091](../../src/process_host.rs#L5091) | receiver-type-required |
-| `worker_reader` | `workers             .get` | [5091](../../src/process_host.rs#L5091) | receiver-type-required |
-| `worker_reader` | `Arc::ptr_eq` | [5093](../../src/process_host.rs#L5093) | external-constructor-callback-or-unresolved |
-| `worker_reader` | `workers.remove` | [5095](../../src/process_host.rs#L5095) | receiver-type-required |
-| `worker_reader` | `owner.workers_changed.notify_all` | [5098](../../src/process_host.rs#L5098) | receiver-type-required |
-| `worker_reader` | `owner.publish_session_status` | [5099](../../src/process_host.rs#L5099) | receiver-type-required |
-| `worker_reader` | `owner.start_pending_workers` | [5105](../../src/process_host.rs#L5105) | receiver-type-required |
-| `worker_reader` | `owner.draining.load` | [5106](../../src/process_host.rs#L5106) | receiver-type-required |
-| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .failure                         .clone()                         .unwrap_or_else` | [5111](../../src/process_host.rs#L5111) | receiver-type-required |
-| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .failure                         .clone` | [5111](../../src/process_host.rs#L5111) | receiver-type-required |
-| `worker_reader` | `"worker-exit".to_owned` | [5117](../../src/process_host.rs#L5117) | receiver-type-required |
-| `worker_reader` | `owner.reconcile_after_exit` | [5120](../../src/process_host.rs#L5120) | receiver-type-required |
-| `worker_reader` | `failure.as_deref().map` | [5124](../../src/process_host.rs#L5124) | receiver-type-required |
-| `worker_reader` | `failure.as_deref` | [5124](../../src/process_host.rs#L5124) | receiver-type-required |
-| `terminate_worker` | `handle.tool_cancellation.cancel` | [5131](../../src/process_host.rs#L5131) | receiver-type-required |
-| `terminate_worker` | `handle.dynamic_authority.as_ref` | [5132](../../src/process_host.rs#L5132) | receiver-type-required |
-| `terminate_worker` | `authority.cancel_inflight` | [5133](../../src/process_host.rs#L5133) | receiver-type-required |
-| `terminate_worker` | `handle         .child         .lock()         .unwrap_or_else` | [5135](../../src/process_host.rs#L5135) | receiver-type-required |
-| `terminate_worker` | `handle         .child         .lock` | [5135](../../src/process_host.rs#L5135) | receiver-type-required |
-| `terminate_worker` | `child.id` | [5139](../../src/process_host.rs#L5139) | receiver-type-required |
-| `terminate_worker` | `libc::kill` | [5141](../../src/process_host.rs#L5141) | external-constructor-callback-or-unresolved |
-| `terminate_worker` | `Instant::now` | [5142](../../src/process_host.rs#L5142), [5146](../../src/process_host.rs#L5146) | external-constructor-callback-or-unresolved |
-| `terminate_worker` | `Duration::from_secs` | [5142](../../src/process_host.rs#L5142) | external-constructor-callback-or-unresolved |
-| `terminate_worker` | `child.try_wait` | [5144](../../src/process_host.rs#L5144) | receiver-type-required |
-| `terminate_worker` | `std::thread::sleep` | [5147](../../src/process_host.rs#L5147) | external-constructor-callback-or-unresolved |
-| `terminate_worker` | `Duration::from_millis` | [5147](../../src/process_host.rs#L5147) | external-constructor-callback-or-unresolved |
-| `terminate_worker` | `child.kill` | [5150](../../src/process_host.rs#L5150) | receiver-type-required |
-| `fail_worker` | `handle.tool_cancellation.cancel` | [5158](../../src/process_host.rs#L5158) | receiver-type-required |
-| `fail_worker` | `handle.dynamic_authority.as_ref` | [5159](../../src/process_host.rs#L5159) | receiver-type-required |
-| `fail_worker` | `authority.cancel_inflight` | [5160](../../src/process_host.rs#L5160) | receiver-type-required |
-| `fail_worker` | `handle.alive.store` | [5162](../../src/process_host.rs#L5162) | receiver-type-required |
-| `fail_worker` | `handle         .state         .lock()         .unwrap_or_else` | [5163](../../src/process_host.rs#L5163) | receiver-type-required |
-| `fail_worker` | `handle         .state         .lock` | [5163](../../src/process_host.rs#L5163) | receiver-type-required |
-| `fail_worker` | `handle         .stderr_tail         .lock()         .unwrap_or_else` | [5167](../../src/process_host.rs#L5167) | receiver-type-required |
-| `fail_worker` | `handle         .stderr_tail         .lock` | [5167](../../src/process_host.rs#L5167) | receiver-type-required |
-| `fail_worker` | `stderr.is_empty` | [5171](../../src/process_host.rs#L5171) | receiver-type-required |
-| `fail_worker` | `preserve_first_failure` | [5176](../../src/process_host.rs#L5176) | [tekes-supervisor::process_host::preserve_first_failure](../../src/process_host.rs#L5201) |
-| `fail_worker` | `drop` | [5177](../../src/process_host.rs#L5177) | external-constructor-callback-or-unresolved |
-| `fail_worker` | `handle.changed.notify_all` | [5178](../../src/process_host.rs#L5178) | receiver-type-required |
-| `worker_stderr_reader` | `reader.read` | [5185](../../src/process_host.rs#L5185) | receiver-type-required |
-| `worker_stderr_reader` | `handle             .stderr_tail             .lock()             .unwrap_or_else` | [5189](../../src/process_host.rs#L5189) | receiver-type-required |
-| `worker_stderr_reader` | `handle             .stderr_tail             .lock` | [5189](../../src/process_host.rs#L5189) | receiver-type-required |
-| `worker_stderr_reader` | `tail.extend_from_slice` | [5193](../../src/process_host.rs#L5193) | receiver-type-required |
-| `worker_stderr_reader` | `tail.len` | [5194](../../src/process_host.rs#L5194), [5195](../../src/process_host.rs#L5195) | receiver-type-required |
-| `worker_stderr_reader` | `tail.drain` | [5196](../../src/process_host.rs#L5196) | receiver-type-required |
-| `preserve_first_failure` | `failure.is_none` | [5202](../../src/process_host.rs#L5202) | receiver-type-required |
-| `preserve_first_failure` | `Some` | [5203](../../src/process_host.rs#L5203) | external-constructor-callback-or-unresolved |
-| `session_metadata_changed` | `self.publish_session_status` | [5209](../../src/process_host.rs#L5209) | receiver-type-required |
-| `prompt` | `self.reset_restart_backoff` | [5220](../../src/process_host.rs#L5220) | receiver-type-required |
-| `prompt` | `self.live_worker` | [5221](../../src/process_host.rs#L5221) | receiver-type-required |
-| `prompt` | `origin.key.clone` | [5222](../../src/process_host.rs#L5222) | receiver-type-required |
-| `prompt` | `worker                 .write(                     &encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err(internal)?,                 )                 .map_err(internal)                 .and_then` | [5223](../../src/process_host.rs#L5223) | receiver-type-required |
-| `prompt` | `worker                 .write(                     &encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5223](../../src/process_host.rs#L5223) | receiver-type-required |
-| `prompt` | `worker                 .write` | [5223](../../src/process_host.rs#L5223) | receiver-type-required |
-| `prompt` | `encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err` | [5225](../../src/process_host.rs#L5225) | receiver-type-required |
-| `prompt` | `encode_line` | [5225](../../src/process_host.rs#L5225) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `prompt` | `delivery.clone` | [5228](../../src/process_host.rs#L5228) | receiver-type-required |
-| `prompt` | `origin.clone` | [5229](../../src/process_host.rs#L5229) | receiver-type-required |
-| `prompt` | `prompt.blocks.clone` | [5230](../../src/process_host.rs#L5230) | receiver-type-required |
-| `prompt` | `Some` | [5231](../../src/process_host.rs#L5231), [5236](../../src/process_host.rs#L5236) | external-constructor-callback-or-unresolved |
-| `prompt` | `self.endpoint                                     .submission_snapshot(session_id)                                     .map_err` | [5232](../../src/process_host.rs#L5232) | receiver-type-required |
-| `prompt` | `self.endpoint                                     .submission_snapshot` | [5232](../../src/process_host.rs#L5232) | receiver-type-required |
-| `prompt` | `(!prompt.attachments.is_empty()).then` | [5237](../../src/process_host.rs#L5237) | receiver-type-required |
-| `prompt` | `prompt.attachments.is_empty` | [5237](../../src/process_host.rs#L5237) | receiver-type-required |
-| `prompt` | `prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect` | [5238](../../src/process_host.rs#L5238) | receiver-type-required |
-| `prompt` | `prompt                                     .attachments                                     .iter()                                     .map` | [5238](../../src/process_host.rs#L5238) | receiver-type-required |
-| `prompt` | `prompt                                     .attachments                                     .iter` | [5238](../../src/process_host.rs#L5238) | receiver-type-required |
-| `prompt` | `attachment.attachment_id.clone` | [5242](../../src/process_host.rs#L5242) | receiver-type-required |
-| `prompt` | `attachment.media_type.as_str().to_owned` | [5243](../../src/process_host.rs#L5243) | receiver-type-required |
-| `prompt` | `attachment.media_type.as_str` | [5243](../../src/process_host.rs#L5243) | receiver-type-required |
-| `prompt` | `worker.receipt` | [5252](../../src/process_host.rs#L5252) | receiver-type-required |
-| `prompt` | `self.spawn_automatic_title_seed_and_refinement` | [5254](../../src/process_host.rs#L5254) | receiver-type-required |
-| `prompt` | `session_id.to_owned` | [5255](../../src/process_host.rs#L5255) | receiver-type-required |
-| `prompt` | `timestamp.to_owned` | [5256](../../src/process_host.rs#L5256) | receiver-type-required |
-| `prompt` | `prompt_text` | [5257](../../src/process_host.rs#L5257) | [tekes-supervisor::process_host::prompt_text](../../src/process_host.rs#L228) |
-| `prompt` | `Ok` | [5259](../../src/process_host.rs#L5259) | external-constructor-callback-or-unresolved |
-| `prompt` | `child_exited_within` | [5267](../../src/process_host.rs#L5267) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5492) |
-| `prompt` | `Duration::from_secs` | [5267](../../src/process_host.rs#L5267) | external-constructor-callback-or-unresolved |
-| `prompt` | `Err` | [5268](../../src/process_host.rs#L5268) | external-constructor-callback-or-unresolved |
-| `prompt` | `delivered.unwrap_err` | [5268](../../src/process_host.rs#L5268) | receiver-type-required |
-| `prompt` | `worker.alive.store` | [5270](../../src/process_host.rs#L5270) | receiver-type-required |
-| `prompt` | `self.locked_prompt` | [5272](../../src/process_host.rs#L5272) | receiver-type-required |
-| `compact` | `self.reset_restart_backoff` | [5281](../../src/process_host.rs#L5281) | receiver-type-required |
-| `compact` | `self.live_worker` | [5282](../../src/process_host.rs#L5282) | receiver-type-required |
-| `compact` | `origin.key.clone` | [5283](../../src/process_host.rs#L5283) | receiver-type-required |
-| `compact` | `worker                 .write(                     &encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err(internal)?,                 )                 .map_err(internal)                 .and_then` | [5284](../../src/process_host.rs#L5284) | receiver-type-required |
-| `compact` | `worker                 .write(                     &encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5284](../../src/process_host.rs#L5284) | receiver-type-required |
-| `compact` | `worker                 .write` | [5284](../../src/process_host.rs#L5284) | receiver-type-required |
-| `compact` | `encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err` | [5286](../../src/process_host.rs#L5286) | receiver-type-required |
-| `compact` | `encode_line` | [5286](../../src/process_host.rs#L5286) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `compact` | `delivery.clone` | [5289](../../src/process_host.rs#L5289) | receiver-type-required |
-| `compact` | `origin.clone` | [5290](../../src/process_host.rs#L5290) | receiver-type-required |
-| `compact` | `worker.receipt` | [5296](../../src/process_host.rs#L5296) | receiver-type-required |
-| `compact` | `Ok` | [5298](../../src/process_host.rs#L5298) | external-constructor-callback-or-unresolved |
-| `compact` | `child_exited_within` | [5306](../../src/process_host.rs#L5306) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5492) |
-| `compact` | `Duration::from_secs` | [5306](../../src/process_host.rs#L5306) | external-constructor-callback-or-unresolved |
-| `compact` | `Err` | [5307](../../src/process_host.rs#L5307) | external-constructor-callback-or-unresolved |
-| `compact` | `delivered.unwrap_err` | [5307](../../src/process_host.rs#L5307) | receiver-type-required |
-| `compact` | `worker.alive.store` | [5309](../../src/process_host.rs#L5309) | receiver-type-required |
-| `compact` | `self.locked_compact` | [5311](../../src/process_host.rs#L5311) | receiver-type-required |
-| `cancel` | `self.reset_restart_backoff` | [5320](../../src/process_host.rs#L5320) | receiver-type-required |
-| `cancel` | `Instant::now` | [5321](../../src/process_host.rs#L5321) | external-constructor-callback-or-unresolved |
-| `cancel` | `self.live_worker` | [5322](../../src/process_host.rs#L5322) | receiver-type-required |
-| `cancel` | `worker.tool_cancellation.cancel` | [5323](../../src/process_host.rs#L5323) | receiver-type-required |
-| `cancel` | `worker.dynamic_authority.as_ref` | [5324](../../src/process_host.rs#L5324) | receiver-type-required |
-| `cancel` | `authority.cancel_inflight` | [5325](../../src/process_host.rs#L5325) | receiver-type-required |
-| `cancel` | `origin.key.clone` | [5327](../../src/process_host.rs#L5327) | receiver-type-required |
-| `cancel` | `next_stop_generation` | [5328](../../src/process_host.rs#L5328) | [tekes-supervisor::process_host::next_stop_generation](../../src/process_host.rs#L6593) |
-| `cancel` | `encode_line(                 "stop",                 &Stop {                     delivery: delivery.clone(),                     origin: origin.clone(),                     generation,                 },             )             .map_err` | [5329](../../src/process_host.rs#L5329) | receiver-type-required |
-| `cancel` | `encode_line` | [5329](../../src/process_host.rs#L5329) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `cancel` | `delivery.clone` | [5332](../../src/process_host.rs#L5332) | receiver-type-required |
-| `cancel` | `origin.clone` | [5333](../../src/process_host.rs#L5333) | receiver-type-required |
-| `cancel` | `worker                 .write(&stop)                 .map_err(&#124;error&#124; ("stop-write", internal(error)))                 .and_then` | [5338](../../src/process_host.rs#L5338) | receiver-type-required |
-| `cancel` | `worker                 .write(&stop)                 .map_err` | [5338](../../src/process_host.rs#L5338) | receiver-type-required |
-| `cancel` | `worker                 .write` | [5338](../../src/process_host.rs#L5338) | receiver-type-required |
-| `cancel` | `internal` | [5340](../../src/process_host.rs#L5340), [5355](../../src/process_host.rs#L5355) | [tekes-supervisor::process_host::internal](../../src/process_host.rs#L6632) |
-| `cancel` | `worker                         .receipt(&delivery)                         .map_err` | [5342](../../src/process_host.rs#L5342) | receiver-type-required |
-| `cancel` | `worker                         .receipt` | [5342](../../src/process_host.rs#L5342) | receiver-type-required |
-| `cancel` | `self                         .root                         .join("threads")                         .join(session_id)                         .join` | [5348](../../src/process_host.rs#L5348) | receiver-type-required |
-| `cancel` | `self                         .root                         .join("threads")                         .join` | [5348](../../src/process_host.rs#L5348) | receiver-type-required |
-| `cancel` | `self                         .root                         .join` | [5348](../../src/process_host.rs#L5348) | receiver-type-required |
-| `cancel` | `self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())                         .map_err` | [5353](../../src/process_host.rs#L5353) | receiver-type-required |
-| `cancel` | `self.cascade_stop_from` | [5353](../../src/process_host.rs#L5353), [5390](../../src/process_host.rs#L5390) | receiver-type-required |
-| `cancel` | `HashSet::new` | [5353](../../src/process_host.rs#L5353), [5390](../../src/process_host.rs#L5390) | external-constructor-callback-or-unresolved |
-| `cancel` | `cancel_stage_failure` | [5355](../../src/process_host.rs#L5355), [5371](../../src/process_host.rs#L5371) | [tekes-supervisor::process_host::cancel_stage_failure](../../src/process_host.rs#L5473) |
-| `cancel` | `terminate_worker` | [5357](../../src/process_host.rs#L5357) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5130) |
-| `cancel` | `Ok` | [5358](../../src/process_host.rs#L5358), [5395](../../src/process_host.rs#L5395) | external-constructor-callback-or-unresolved |
-| `cancel` | `child_exited_within` | [5370](../../src/process_host.rs#L5370) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5492) |
-| `cancel` | `Duration::from_secs` | [5370](../../src/process_host.rs#L5370) | external-constructor-callback-or-unresolved |
-| `cancel` | `Err` | [5371](../../src/process_host.rs#L5371) | external-constructor-callback-or-unresolved |
-| `cancel` | `worker.alive.store` | [5373](../../src/process_host.rs#L5373) | receiver-type-required |
-| `cancel` | `self             .endpoint             .cancel_for_endpoint(session_id, timestamp, origin)             .map_err` | [5381](../../src/process_host.rs#L5381) | receiver-type-required |
-| `cancel` | `self             .endpoint             .cancel_for_endpoint` | [5381](../../src/process_host.rs#L5381) | receiver-type-required |
-| `cancel` | `self             .root             .join("threads")             .join(session_id)             .join` | [5385](../../src/process_host.rs#L5385) | receiver-type-required |
-| `cancel` | `self             .root             .join("threads")             .join` | [5385](../../src/process_host.rs#L5385) | receiver-type-required |
-| `cancel` | `self             .root             .join` | [5385](../../src/process_host.rs#L5385) | receiver-type-required |
-| `cancel` | `self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())             .map_err` | [5390](../../src/process_host.rs#L5390) | receiver-type-required |
-| `cancel` | `self.schedule_main` | [5392](../../src/process_host.rs#L5392) | receiver-type-required |
-| `cancel` | `self.record_spawn_failure` | [5393](../../src/process_host.rs#L5393) | receiver-type-required |
-| `rename` | `self.reset_restart_backoff` | [5405](../../src/process_host.rs#L5405) | receiver-type-required |
-| `rename` | `self.live_worker` | [5406](../../src/process_host.rs#L5406) | receiver-type-required |
-| `rename` | `origin.key.clone` | [5407](../../src/process_host.rs#L5407) | receiver-type-required |
-| `rename` | `worker                 .write(                     &encode_line(                         "meta",                         &Meta {                             delivery: delivery.clone(),                             origin: origin.clone(),                             title: Some(title.to_owned()),                             labels: None,                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5408](../../src/process_host.rs#L5408) | receiver-type-required |
-| `rename` | `worker                 .write` | [5408](../../src/process_host.rs#L5408) | receiver-type-required |
-| `rename` | `encode_line(                         "meta",                         &Meta {                             delivery: delivery.clone(),                             origin: origin.clone(),                             title: Some(title.to_owned()),                             labels: None,                         },                     )                     .map_err` | [5410](../../src/process_host.rs#L5410) | receiver-type-required |
-| `rename` | `encode_line` | [5410](../../src/process_host.rs#L5410) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `rename` | `delivery.clone` | [5413](../../src/process_host.rs#L5413) | receiver-type-required |
-| `rename` | `origin.clone` | [5414](../../src/process_host.rs#L5414) | receiver-type-required |
-| `rename` | `Some` | [5415](../../src/process_host.rs#L5415) | external-constructor-callback-or-unresolved |
-| `rename` | `title.to_owned` | [5415](../../src/process_host.rs#L5415) | receiver-type-required |
-| `rename` | `worker.receipt` | [5422](../../src/process_host.rs#L5422) | receiver-type-required |
-| `rename` | `Ok` | [5423](../../src/process_host.rs#L5423) | external-constructor-callback-or-unresolved |
-| `rename` | `self.endpoint             .rename_session_for_endpoint(session_id, timestamp, origin, title)             .map_err` | [5428](../../src/process_host.rs#L5428) | receiver-type-required |
-| `rename` | `self.endpoint             .rename_session_for_endpoint` | [5428](../../src/process_host.rs#L5428) | receiver-type-required |
-| `deliver_if_live` | `self.live_worker` | [5440](../../src/process_host.rs#L5440) | receiver-type-required |
-| `deliver_if_live` | `Ok` | [5441](../../src/process_host.rs#L5441), [5454](../../src/process_host.rs#L5454) | external-constructor-callback-or-unresolved |
-| `deliver_if_live` | `encode_line("approval_response", response).map_err` | [5443](../../src/process_host.rs#L5443) | receiver-type-required |
-| `deliver_if_live` | `encode_line` | [5443](../../src/process_host.rs#L5443) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `deliver_if_live` | `worker             .write(&bytes)             .map_err(internal)             .and_then(&#124;()&#124; worker.receipt(&response.delivery))             .map` | [5444](../../src/process_host.rs#L5444) | receiver-type-required |
-| `deliver_if_live` | `worker             .write(&bytes)             .map_err(internal)             .and_then` | [5444](../../src/process_host.rs#L5444) | receiver-type-required |
-| `deliver_if_live` | `worker             .write(&bytes)             .map_err` | [5444](../../src/process_host.rs#L5444) | receiver-type-required |
-| `deliver_if_live` | `worker             .write` | [5444](../../src/process_host.rs#L5444) | receiver-type-required |
-| `deliver_if_live` | `worker.receipt` | [5447](../../src/process_host.rs#L5447) | receiver-type-required |
-| `deliver_if_live` | `result.is_err` | [5449](../../src/process_host.rs#L5449) | receiver-type-required |
-| `deliver_if_live` | `child_exited_within` | [5449](../../src/process_host.rs#L5449) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5492) |
-| `deliver_if_live` | `Duration::from_secs` | [5449](../../src/process_host.rs#L5449) | external-constructor-callback-or-unresolved |
-| `ensure_after_locked_append` | `session_id.split_once` | [5460](../../src/process_host.rs#L5460) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_line(session, child, &format!("{child}.jsonl"))                 .map(&#124;_&#124; ())                 .map_err` | [5461](../../src/process_host.rs#L5461) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_line(session, child, &format!("{child}.jsonl"))                 .map` | [5461](../../src/process_host.rs#L5461) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_line` | [5461](../../src/process_host.rs#L5461) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_main(session_id).map(&#124;_&#124; ()).map_err` | [5465](../../src/process_host.rs#L5465) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_main(session_id).map` | [5465](../../src/process_host.rs#L5465) | receiver-type-required |
-| `ensure_after_locked_append` | `self.schedule_main` | [5465](../../src/process_host.rs#L5465) | receiver-type-required |
-| `cancel_stage_failure` | `ProductionRouteFailure::new` | [5481](../../src/process_host.rs#L5481) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L513) |
-| `child_exited_within` | `Instant::now` | [5493](../../src/process_host.rs#L5493), [5504](../../src/process_host.rs#L5504) | external-constructor-callback-or-unresolved |
-| `child_exited_within` | `child.try_lock` | [5495](../../src/process_host.rs#L5495) | receiver-type-required |
-| `child_exited_within` | `child.try_wait` | [5496](../../src/process_host.rs#L5496) | receiver-type-required |
-| `child_exited_within` | `std::thread::sleep` | [5507](../../src/process_host.rs#L5507) | external-constructor-callback-or-unresolved |
-| `child_exited_within` | `Duration::from_millis` | [5507](../../src/process_host.rs#L5507) | external-constructor-callback-or-unresolved |
-| `neutral_lifecycle` | `Vec::new` | [5522](../../src/process_host.rs#L5522), [5523](../../src/process_host.rs#L5523), [5524](../../src/process_host.rs#L5524) | external-constructor-callback-or-unresolved |
-| `ledger_damage` | `scan_valid_prefix` | [5538](../../src/process_host.rs#L5538) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `ledger_damage` | `usize::try_from(scan.valid_bytes).unwrap_or` | [5539](../../src/process_host.rs#L5539) | receiver-type-required |
-| `ledger_damage` | `usize::try_from` | [5539](../../src/process_host.rs#L5539) | external-constructor-callback-or-unresolved |
-| `ledger_damage` | `(scan.projection.is_none()         &#124;&#124; (scan.needs_repair() && bytes.get(valid..).is_some_and(&#124;tail&#124; tail.contains(&b'\n'))))     .then` | [5540](../../src/process_host.rs#L5540) | receiver-type-required |
-| `ledger_damage` | `scan.projection.is_none` | [5540](../../src/process_host.rs#L5540) | receiver-type-required |
-| `ledger_damage` | `scan.needs_repair` | [5541](../../src/process_host.rs#L5541) | receiver-type-required |
-| `ledger_damage` | `bytes.get(valid..).is_some_and` | [5541](../../src/process_host.rs#L5541) | receiver-type-required |
-| `ledger_damage` | `bytes.get` | [5541](../../src/process_host.rs#L5541) | receiver-type-required |
-| `ledger_damage` | `tail.contains` | [5541](../../src/process_host.rs#L5541) | receiver-type-required |
-| `ledger_damage` | `scan.first_invalid_offset.unwrap_or` | [5542](../../src/process_host.rs#L5542) | receiver-type-required |
-| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [5564](../../src/process_host.rs#L5564) | receiver-type-required |
-| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags` | [5564](../../src/process_host.rs#L5564) | receiver-type-required |
-| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append` | [5564](../../src/process_host.rs#L5564) | receiver-type-required |
-| `damage_under_lock` | `fs::OpenOptions::new()         .read` | [5564](../../src/process_host.rs#L5564) | receiver-type-required |
-| `damage_under_lock` | `fs::OpenOptions::new` | [5564](../../src/process_host.rs#L5564) | external-constructor-callback-or-unresolved |
-| `damage_under_lock` | `libc::flock` | [5574](../../src/process_host.rs#L5574) | external-constructor-callback-or-unresolved |
-| `damage_under_lock` | `file.as_raw_fd` | [5574](../../src/process_host.rs#L5574) | receiver-type-required |
-| `damage_under_lock` | `std::io::Error::last_os_error().kind` | [5577](../../src/process_host.rs#L5577) | receiver-type-required |
-| `damage_under_lock` | `std::io::Error::last_os_error` | [5577](../../src/process_host.rs#L5577) | external-constructor-callback-or-unresolved |
-| `damage_under_lock` | `file.metadata` | [5583](../../src/process_host.rs#L5583) | receiver-type-required |
-| `damage_under_lock` | `fs::metadata` | [5583](../../src/process_host.rs#L5583) | external-constructor-callback-or-unresolved |
-| `damage_under_lock` | `descriptor.dev` | [5586](../../src/process_host.rs#L5586) | receiver-type-required |
-| `damage_under_lock` | `pathname.dev` | [5586](../../src/process_host.rs#L5586) | receiver-type-required |
-| `damage_under_lock` | `descriptor.ino` | [5586](../../src/process_host.rs#L5586) | receiver-type-required |
-| `damage_under_lock` | `pathname.ino` | [5586](../../src/process_host.rs#L5586) | receiver-type-required |
-| `damage_under_lock` | `fs::read` | [5589](../../src/process_host.rs#L5589) | external-constructor-callback-or-unresolved |
-| `damage_under_lock` | `ledger_damage(&bytes).map_or` | [5590](../../src/process_host.rs#L5590) | receiver-type-required |
-| `damage_under_lock` | `ledger_damage` | [5590](../../src/process_host.rs#L5590) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5537) |
-| `child_ledger_damage` | `fs::read_dir(folder).ok` | [5600](../../src/process_host.rs#L5600) | receiver-type-required |
-| `child_ledger_damage` | `fs::read_dir` | [5600](../../src/process_host.rs#L5600) | external-constructor-callback-or-unresolved |
-| `child_ledger_damage` | `entries.flatten` | [5601](../../src/process_host.rs#L5601) | receiver-type-required |
-| `child_ledger_damage` | `entry.file_name().to_string_lossy().into_owned` | [5602](../../src/process_host.rs#L5602) | receiver-type-required |
-| `child_ledger_damage` | `entry.file_name().to_string_lossy` | [5602](../../src/process_host.rs#L5602) | receiver-type-required |
-| `child_ledger_damage` | `entry.file_name` | [5602](../../src/process_host.rs#L5602) | receiver-type-required |
-| `child_ledger_damage` | `store::card::valid_line_name` | [5604](../../src/process_host.rs#L5604) | [store::card::valid_line_name](../../../store/src/card.rs#L252) |
-| `child_ledger_damage` | `entry.file_type().is_ok_and` | [5605](../../src/process_host.rs#L5605) | receiver-type-required |
-| `child_ledger_damage` | `entry.file_type` | [5605](../../src/process_host.rs#L5605) | receiver-type-required |
-| `child_ledger_damage` | `kind.is_file` | [5605](../../src/process_host.rs#L5605) | receiver-type-required |
-| `child_ledger_damage` | `fs::read` | [5609](../../src/process_host.rs#L5609) | external-constructor-callback-or-unresolved |
-| `child_ledger_damage` | `entry.path` | [5609](../../src/process_host.rs#L5609), [5616](../../src/process_host.rs#L5616) | receiver-type-required |
-| `child_ledger_damage` | `bytes.is_empty` | [5612](../../src/process_host.rs#L5612) | receiver-type-required |
-| `child_ledger_damage` | `ledger_damage(&bytes).is_some` | [5615](../../src/process_host.rs#L5615) | receiver-type-required |
-| `child_ledger_damage` | `ledger_damage` | [5615](../../src/process_host.rs#L5615) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5537) |
-| `child_ledger_damage` | `damage_under_lock` | [5616](../../src/process_host.rs#L5616) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5563) |
-| `child_ledger_damage` | `Some` | [5617](../../src/process_host.rs#L5617) | external-constructor-callback-or-unresolved |
-| `is_single_line_ledger` | `fs::File::open` | [5626](../../src/process_host.rs#L5626) | external-constructor-callback-or-unresolved |
-| `is_single_line_ledger` | `BufReader::new` | [5629](../../src/process_host.rs#L5629) | external-constructor-callback-or-unresolved |
-| `is_single_line_ledger` | `Vec::new` | [5630](../../src/process_host.rs#L5630) | external-constructor-callback-or-unresolved |
-| `is_single_line_ledger` | `reader.read_until(b'\n', &mut first).is_err` | [5631](../../src/process_host.rs#L5631) | receiver-type-required |
-| `is_single_line_ledger` | `reader.read_until` | [5631](../../src/process_host.rs#L5631) | receiver-type-required |
-| `is_single_line_ledger` | `first.last` | [5631](../../src/process_host.rs#L5631) | receiver-type-required |
-| `is_single_line_ledger` | `Some` | [5631](../../src/process_host.rs#L5631) | external-constructor-callback-or-unresolved |
-| `is_single_line_ledger` | `reader.fill_buf().is_ok_and` | [5634](../../src/process_host.rs#L5634) | receiver-type-required |
-| `is_single_line_ledger` | `reader.fill_buf` | [5634](../../src/process_host.rs#L5634) | receiver-type-required |
-| `HYDRATE_RETRY` | `Duration::from_secs` | [5638](../../src/process_host.rs#L5638) | external-constructor-callback-or-unresolved |
-| `DEFAULT_LIST_WAIT` | `Duration::from_millis` | [5640](../../src/process_host.rs#L5640) | external-constructor-callback-or-unresolved |
-| `list_wait` | `self             .list_wait_override             .lock()             .unwrap_or_else` | [5645](../../src/process_host.rs#L5645) | receiver-type-required |
-| `list_wait` | `self             .list_wait_override             .lock` | [5645](../../src/process_host.rs#L5645) | receiver-type-required |
-| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok()             .and_then(&#124;value&#124; value.parse::<u64>().ok())             .map_or` | [5652](../../src/process_host.rs#L5652) | receiver-type-required |
-| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok()             .and_then` | [5652](../../src/process_host.rs#L5652) | receiver-type-required |
-| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok` | [5652](../../src/process_host.rs#L5652) | receiver-type-required |
-| `list_wait` | `std::env::var` | [5652](../../src/process_host.rs#L5652) | external-constructor-callback-or-unresolved |
-| `list_wait` | `value.parse::<u64>().ok` | [5654](../../src/process_host.rs#L5654) | receiver-type-required |
-| `list_wait` | `value.parse::<u64>` | [5654](../../src/process_host.rs#L5654) | receiver-type-required |
-| `is_running` | `live.contains` | [5659](../../src/process_host.rs#L5659) | receiver-type-required |
-| `is_running` | `self                 .threads                 .session_has_live_line_holder(session_id)                 .unwrap_or` | [5660](../../src/process_host.rs#L5660) | receiver-type-required |
-| `is_running` | `self                 .threads                 .session_has_live_line_holder` | [5660](../../src/process_host.rs#L5660) | receiver-type-required |
-| `catalog_item` | `self.root.join("threads").join` | [5674](../../src/process_host.rs#L5674) | receiver-type-required |
-| `catalog_item` | `self.root.join` | [5674](../../src/process_host.rs#L5674) | receiver-type-required |
-| `catalog_item` | `self.is_running` | [5675](../../src/process_host.rs#L5675) | [tekes-supervisor::process_host::ProductionProcessHost::is_running](../../src/process_host.rs#L5658) |
-| `catalog_item` | `entry             .view             .as_ref()             .filter` | [5676](../../src/process_host.rs#L5676) | receiver-type-required |
-| `catalog_item` | `entry             .view             .as_ref` | [5676](../../src/process_host.rs#L5676) | receiver-type-required |
-| `catalog_item` | `view.main` | [5681](../../src/process_host.rs#L5681) | receiver-type-required |
-| `catalog_item` | `self.is_stale_ephemeral` | [5682](../../src/process_host.rs#L5682), [5704](../../src/process_host.rs#L5704) | [tekes-supervisor::process_host::ProductionProcessHost::is_stale_ephemeral](../../src/process_host.rs#L1715) |
-| `catalog_item` | `Some` | [5685](../../src/process_host.rs#L5685), [5718](../../src/process_host.rs#L5718), [5730](../../src/process_host.rs#L5730), [5731](../../src/process_host.rs#L5731) | external-constructor-callback-or-unresolved |
-| `catalog_item` | `session_id.to_owned` | [5686](../../src/process_host.rs#L5686), [5719](../../src/process_host.rs#L5719) | receiver-type-required |
-| `catalog_item` | `view.summary.workspace.clone` | [5687](../../src/process_host.rs#L5687) | receiver-type-required |
-| `catalog_item` | `view.summary.title.clone` | [5688](../../src/process_host.rs#L5688) | receiver-type-required |
-| `catalog_item` | `main.facts.clone` | [5694](../../src/process_host.rs#L5694) | receiver-type-required |
-| `catalog_item` | `endpoint::permission_mode_of` | [5695](../../src/process_host.rs#L5695), [5728](../../src/process_host.rs#L5728) | [endpoint::service::permission_mode_of](../../../endpoint/src/service.rs#L99) |
-| `catalog_item` | `view.summary.identity_profile.clone` | [5696](../../src/process_host.rs#L5696) | receiver-type-required |
-| `catalog_item` | `store::read_genesis(folder.join("main.jsonl")).ok` | [5702](../../src/process_host.rs#L5702) | receiver-type-required |
-| `catalog_item` | `store::read_genesis` | [5702](../../src/process_host.rs#L5702) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `catalog_item` | `folder.join` | [5702](../../src/process_host.rs#L5702), [5708](../../src/process_host.rs#L5708), [5710](../../src/process_host.rs#L5710), [5725](../../src/process_host.rs#L5725) | receiver-type-required |
-| `catalog_item` | `genesis.is_ephemeral_genesis` | [5703](../../src/process_host.rs#L5703) | receiver-type-required |
-| `catalog_item` | `endpoint::last_record_updated_ms(&folder.join("main.jsonl"))             .unwrap_or_else` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
-| `catalog_item` | `endpoint::last_record_updated_ms` | [5708](../../src/process_host.rs#L5708) | [endpoint::service::last_record_updated_ms](../../../endpoint/src/service.rs#L163) |
-| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok()                     .and_then(&#124;time&#124; time.duration_since(UNIX_EPOCH).ok())                     .map_or` | [5710](../../src/process_host.rs#L5710) | receiver-type-required |
-| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok()                     .and_then` | [5710](../../src/process_host.rs#L5710) | receiver-type-required |
-| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok` | [5710](../../src/process_host.rs#L5710) | receiver-type-required |
-| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then` | [5710](../../src/process_host.rs#L5710) | receiver-type-required |
-| `catalog_item` | `fs::metadata` | [5710](../../src/process_host.rs#L5710) | external-constructor-callback-or-unresolved |
-| `catalog_item` | `metadata.modified` | [5711](../../src/process_host.rs#L5711) | receiver-type-required |
-| `catalog_item` | `time.duration_since(UNIX_EPOCH).ok` | [5713](../../src/process_host.rs#L5713) | receiver-type-required |
-| `catalog_item` | `time.duration_since` | [5713](../../src/process_host.rs#L5713) | receiver-type-required |
-| `catalog_item` | `u64::try_from(duration.as_millis()).unwrap_or` | [5715](../../src/process_host.rs#L5715) | receiver-type-required |
-| `catalog_item` | `u64::try_from` | [5715](../../src/process_host.rs#L5715) | external-constructor-callback-or-unresolved |
-| `catalog_item` | `duration.as_millis` | [5715](../../src/process_host.rs#L5715) | receiver-type-required |
-| `catalog_item` | `genesis.string_field("workspace")?.to_owned` | [5720](../../src/process_host.rs#L5720) | receiver-type-required |
-| `catalog_item` | `genesis.string_field` | [5720](../../src/process_host.rs#L5720), [5729](../../src/process_host.rs#L5729) | receiver-type-required |
-| `catalog_item` | `is_single_line_ledger` | [5725](../../src/process_host.rs#L5725) | [tekes-supervisor::process_host::is_single_line_ledger](../../src/process_host.rs#L5625) |
-| `catalog_item` | `neutral_lifecycle` | [5727](../../src/process_host.rs#L5727) | [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5514) |
-| `catalog_item` | `"coding".to_owned` | [5730](../../src/process_host.rs#L5730) | receiver-type-required |
-| `catalog_item` | `profile.to_owned` | [5731](../../src/process_host.rs#L5731) | receiver-type-required |
-| `verify_within` | `ids.is_empty` | [5742](../../src/process_host.rs#L5742) | receiver-type-required |
-| `verify_within` | `self.self_weak.upgrade` | [5745](../../src/process_host.rs#L5745) | receiver-type-required |
-| `verify_within` | `ids.len` | [5748](../../src/process_host.rs#L5748) | receiver-type-required |
-| `verify_within` | `Arc::new` | [5749](../../src/process_host.rs#L5749), [5750](../../src/process_host.rs#L5750) | external-constructor-callback-or-unresolved |
-| `verify_within` | `Mutex::new` | [5749](../../src/process_host.rs#L5749), [5750](../../src/process_host.rs#L5750) | external-constructor-callback-or-unresolved |
-| `verify_within` | `ids.into_iter().collect::<VecDeque<_>>` | [5749](../../src/process_host.rs#L5749) | receiver-type-required |
-| `verify_within` | `ids.into_iter` | [5749](../../src/process_host.rs#L5749) | receiver-type-required |
-| `verify_within` | `Condvar::new` | [5750](../../src/process_host.rs#L5750) | external-constructor-callback-or-unresolved |
-| `verify_within` | `std::thread::available_parallelism()             .map_or(2, std::num::NonZeroUsize::get)             .min(8)             .min` | [5751](../../src/process_host.rs#L5751) | receiver-type-required |
-| `verify_within` | `std::thread::available_parallelism()             .map_or(2, std::num::NonZeroUsize::get)             .min` | [5751](../../src/process_host.rs#L5751) | receiver-type-required |
-| `verify_within` | `std::thread::available_parallelism()             .map_or` | [5751](../../src/process_host.rs#L5751) | receiver-type-required |
-| `verify_within` | `std::thread::available_parallelism` | [5751](../../src/process_host.rs#L5751) | external-constructor-callback-or-unresolved |
-| `verify_within` | `Arc::clone` | [5757](../../src/process_host.rs#L5757) | external-constructor-callback-or-unresolved |
-| `verify_within` | `std::thread::spawn` | [5758](../../src/process_host.rs#L5758) | external-constructor-callback-or-unresolved |
-| `verify_within` | `queue                             .lock()                             .unwrap_or_else` | [5761](../../src/process_host.rs#L5761) | receiver-type-required |
-| `verify_within` | `queue                             .lock` | [5761](../../src/process_host.rs#L5761) | receiver-type-required |
-| `verify_within` | `queue.pop_front` | [5764](../../src/process_host.rs#L5764) | receiver-type-required |
-| `verify_within` | `host.verify_order                                 .lock()                                 .unwrap_or_else(std::sync::PoisonError::into_inner)                                 .push` | [5768](../../src/process_host.rs#L5768) | receiver-type-required |
-| `verify_within` | `host.verify_order                                 .lock()                                 .unwrap_or_else` | [5768](../../src/process_host.rs#L5768) | receiver-type-required |
-| `verify_within` | `host.verify_order                                 .lock` | [5768](../../src/process_host.rs#L5768) | receiver-type-required |
-| `verify_within` | `id.clone` | [5771](../../src/process_host.rs#L5771) | receiver-type-required |
-| `verify_within` | `host.hydrate` | [5778](../../src/process_host.rs#L5778) | receiver-type-required |
-| `verify_within` | `host.publish_session_status` | [5781](../../src/process_host.rs#L5781) | receiver-type-required |
-| `verify_within` | `count                         .lock()                         .unwrap_or_else` | [5783](../../src/process_host.rs#L5783) | receiver-type-required |
-| `verify_within` | `count                         .lock` | [5783](../../src/process_host.rs#L5783) | receiver-type-required |
-| `verify_within` | `changed.notify_all` | [5786](../../src/process_host.rs#L5786) | receiver-type-required |
-| `verify_within` | `Instant::now` | [5791](../../src/process_host.rs#L5791), [5796](../../src/process_host.rs#L5796) | external-constructor-callback-or-unresolved |
-| `verify_within` | `count             .lock()             .unwrap_or_else` | [5792](../../src/process_host.rs#L5792) | receiver-type-required |
-| `verify_within` | `count             .lock` | [5792](../../src/process_host.rs#L5792) | receiver-type-required |
-| `verify_within` | `deadline.checked_duration_since` | [5796](../../src/process_host.rs#L5796) | receiver-type-required |
-| `verify_within` | `changed                 .wait_timeout(done, remaining)                 .unwrap_or_else` | [5799](../../src/process_host.rs#L5799) | receiver-type-required |
-| `verify_within` | `changed                 .wait_timeout` | [5799](../../src/process_host.rs#L5799) | receiver-type-required |
-| `build_inventory` | `self.live_sessions` | [5811](../../src/process_host.rs#L5811) | receiver-type-required |
-| `build_inventory` | `self.catalog.ensure_loaded` | [5812](../../src/process_host.rs#L5812) | receiver-type-required |
-| `build_inventory` | `store::folder_events::admitted_ids` | [5813](../../src/process_host.rs#L5813) | [store::folder_events::admitted_ids](../../../store/src/folder_events.rs#L158) |
-| `build_inventory` | `self.catalog.get` | [5814](../../src/process_host.rs#L5814) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .unverified()             .into_iter()             .filter(&#124;id&#124; !self.recently_failed(id))             .collect::<Vec<_>>` | [5817](../../src/process_host.rs#L5817) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .unverified()             .into_iter()             .filter` | [5817](../../src/process_host.rs#L5817) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .unverified()             .into_iter` | [5817](../../src/process_host.rs#L5817) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .unverified` | [5817](../../src/process_host.rs#L5817) | receiver-type-required |
-| `build_inventory` | `self.recently_failed` | [5821](../../src/process_host.rs#L5821) | [tekes-supervisor::process_host::ProductionProcessHost::recently_failed](../../src/process_host.rs#L2038) |
-| `build_inventory` | `self.verify_within` | [5823](../../src/process_host.rs#L5823) | [tekes-supervisor::process_host::ProductionProcessHost::verify_within](../../src/process_host.rs#L5741) |
-| `build_inventory` | `self             .catalog             .entries_now()             .into_iter()             .filter_map(&#124;(id, entry)&#124; self.catalog_item(&id, &entry, &live))             .collect::<Vec<_>>` | [5824](../../src/process_host.rs#L5824) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .entries_now()             .into_iter()             .filter_map` | [5824](../../src/process_host.rs#L5824) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .entries_now()             .into_iter` | [5824](../../src/process_host.rs#L5824) | receiver-type-required |
-| `build_inventory` | `self             .catalog             .entries_now` | [5824](../../src/process_host.rs#L5824) | receiver-type-required |
-| `build_inventory` | `self.catalog_item` | [5828](../../src/process_host.rs#L5828) | [tekes-supervisor::process_host::ProductionProcessHost::catalog_item](../../src/process_host.rs#L5668) |
-| `build_inventory` | `fs::read_dir(self.root.join("archive")).map_err` | [5831](../../src/process_host.rs#L5831) | receiver-type-required |
-| `build_inventory` | `fs::read_dir` | [5831](../../src/process_host.rs#L5831) | external-constructor-callback-or-unresolved |
-| `build_inventory` | `self.root.join` | [5831](../../src/process_host.rs#L5831) | receiver-type-required |
-| `build_inventory` | `entry.map_err` | [5832](../../src/process_host.rs#L5832) | receiver-type-required |
-| `build_inventory` | `entry.file_name().to_string_lossy().into_owned` | [5833](../../src/process_host.rs#L5833) | receiver-type-required |
-| `build_inventory` | `entry.file_name().to_string_lossy` | [5833](../../src/process_host.rs#L5833) | receiver-type-required |
-| `build_inventory` | `entry.file_name` | [5833](../../src/process_host.rs#L5833) | receiver-type-required |
-| `build_inventory` | `entry.file_type().map_err(DaemonError::io)?.is_dir` | [5834](../../src/process_host.rs#L5834) | receiver-type-required |
-| `build_inventory` | `entry.file_type().map_err` | [5834](../../src/process_host.rs#L5834) | receiver-type-required |
-| `build_inventory` | `entry.file_type` | [5834](../../src/process_host.rs#L5834) | receiver-type-required |
-| `build_inventory` | `endpoint::validate_session_id(&id).is_ok` | [5835](../../src/process_host.rs#L5835) | receiver-type-required |
-| `build_inventory` | `endpoint::validate_session_id` | [5835](../../src/process_host.rs#L5835) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `build_inventory` | `items.push` | [5837](../../src/process_host.rs#L5837) | receiver-type-required |
-| `build_inventory` | `String::new` | [5839](../../src/process_host.rs#L5839), [5847](../../src/process_host.rs#L5847) | external-constructor-callback-or-unresolved |
-| `build_inventory` | `neutral_lifecycle` | [5846](../../src/process_host.rs#L5846) | [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5514) |
-| `build_inventory` | `items.sort_by` | [5854](../../src/process_host.rs#L5854) | receiver-type-required |
-| `build_inventory` | `left.session_id.as_bytes().cmp` | [5854](../../src/process_host.rs#L5854) | receiver-type-required |
-| `build_inventory` | `left.session_id.as_bytes` | [5854](../../src/process_host.rs#L5854) | receiver-type-required |
-| `build_inventory` | `right.session_id.as_bytes` | [5854](../../src/process_host.rs#L5854) | receiver-type-required |
-| `build_inventory` | `Ok` | [5855](../../src/process_host.rs#L5855) | external-constructor-callback-or-unresolved |
-| `inventory_items` | `Some` | [5864](../../src/process_host.rs#L5864) | external-constructor-callback-or-unresolved |
-| `inventory_items` | `self.build_inventory(include_archived, self.list_wait())                 .map_err` | [5865](../../src/process_host.rs#L5865) | receiver-type-required |
-| `inventory_items` | `self.build_inventory` | [5865](../../src/process_host.rs#L5865) | receiver-type-required |
-| `inventory_items` | `self.list_wait` | [5865](../../src/process_host.rs#L5865) | receiver-type-required |
-| `inventory_items` | `error.to_string` | [5866](../../src/process_host.rs#L5866) | receiver-type-required |
-| `ensure_verified` | `self.live_worker(session_id).is_some` | [5872](../../src/process_host.rs#L5872) | receiver-type-required |
-| `ensure_verified` | `self.live_worker` | [5872](../../src/process_host.rs#L5872) | receiver-type-required |
-| `ensure_verified` | `Ok` | [5873](../../src/process_host.rs#L5873) | external-constructor-callback-or-unresolved |
-| `ensure_verified` | `ProductionProcessHost::ensure_verified(self, session_id).map_err` | [5875](../../src/process_host.rs#L5875) | receiver-type-required |
-| `ensure_verified` | `ProductionProcessHost::ensure_verified` | [5875](../../src/process_host.rs#L5875) | [tekes-supervisor::process_host::ProductionProcessHost::ensure_verified](../../src/process_host.rs#L1997) |
-| `ensure_verified` | `error.to_string` | [5876](../../src/process_host.rs#L5876) | receiver-type-required |
-| `ensure_verified` | `message.contains` | [5877](../../src/process_host.rs#L5877) | receiver-type-required |
-| `ensure_verified` | `SessionGateError::Quarantined` | [5878](../../src/process_host.rs#L5878) | external-constructor-callback-or-unresolved |
-| `ensure_verified` | `SessionGateError::Failed` | [5880](../../src/process_host.rs#L5880) | external-constructor-callback-or-unresolved |
-| `hold_catalog` | `self.catalog.ensure_loaded` | [5891](../../src/process_host.rs#L5891) | receiver-type-required |
-| `hold_catalog` | `HoldCatalog::default` | [5892](../../src/process_host.rs#L5892) | external-constructor-callback-or-unresolved |
-| `hold_catalog` | `self.catalog.entries_now` | [5893](../../src/process_host.rs#L5893) | receiver-type-required |
-| `hold_catalog` | `entry                 .view                 .as_ref()                 .map(&#124;view&#124; {                     view.lines                         .iter()                         .flat_map(&#124;line&#124; {                             line.holds.iter().map(&#124;hold&#124; HoldRef {                                 line: (line.file != "main.jsonl").then(&#124;&#124; line.file.clone()),                                 hold_seq: hold.hold_seq,                                 kind: if hold.kind == "question" {                                     endpoint::RequestFrameType::Question                                 } else {                                     endpoint::RequestFrameType::Approval                                 },                                 resolved: hold.resolved.is_some(),                             })                         })                         .collect::<Vec<_>>()                 })                 .unwrap_or_default` | [5894](../../src/process_host.rs#L5894) | receiver-type-required |
-| `hold_catalog` | `entry                 .view                 .as_ref()                 .map` | [5894](../../src/process_host.rs#L5894) | receiver-type-required |
-| `hold_catalog` | `entry                 .view                 .as_ref` | [5894](../../src/process_host.rs#L5894) | receiver-type-required |
-| `hold_catalog` | `view.lines                         .iter()                         .flat_map(&#124;line&#124; {                             line.holds.iter().map(&#124;hold&#124; HoldRef {                                 line: (line.file != "main.jsonl").then(&#124;&#124; line.file.clone()),                                 hold_seq: hold.hold_seq,                                 kind: if hold.kind == "question" {                                     endpoint::RequestFrameType::Question                                 } else {                                     endpoint::RequestFrameType::Approval                                 },                                 resolved: hold.resolved.is_some(),                             })                         })                         .collect::<Vec<_>>` | [5898](../../src/process_host.rs#L5898) | receiver-type-required |
-| `hold_catalog` | `view.lines                         .iter()                         .flat_map` | [5898](../../src/process_host.rs#L5898) | receiver-type-required |
-| `hold_catalog` | `view.lines                         .iter` | [5898](../../src/process_host.rs#L5898) | receiver-type-required |
-| `hold_catalog` | `line.holds.iter().map` | [5901](../../src/process_host.rs#L5901) | receiver-type-required |
-| `hold_catalog` | `line.holds.iter` | [5901](../../src/process_host.rs#L5901) | receiver-type-required |
-| `hold_catalog` | `(line.file != "main.jsonl").then` | [5902](../../src/process_host.rs#L5902) | receiver-type-required |
-| `hold_catalog` | `line.file.clone` | [5902](../../src/process_host.rs#L5902) | receiver-type-required |
-| `hold_catalog` | `hold.resolved.is_some` | [5909](../../src/process_host.rs#L5909) | receiver-type-required |
-| `hold_catalog` | `entry.view.as_ref().is_some_and` | [5917](../../src/process_host.rs#L5917) | receiver-type-required |
-| `hold_catalog` | `entry.view.as_ref` | [5917](../../src/process_host.rs#L5917) | receiver-type-required |
-| `hold_catalog` | `result.children_unverified.push` | [5918](../../src/process_host.rs#L5918) | receiver-type-required |
-| `hold_catalog` | `session.clone` | [5918](../../src/process_host.rs#L5918), [5933](../../src/process_host.rs#L5933) | receiver-type-required |
-| `hold_catalog` | `result.verified.push` | [5920](../../src/process_host.rs#L5920), [5926](../../src/process_host.rs#L5926), [5932](../../src/process_host.rs#L5932) | receiver-type-required |
-| `hold_catalog` | `result.unverified.push` | [5937](../../src/process_host.rs#L5937), [5939](../../src/process_host.rs#L5939) | receiver-type-required |
-| `hold_catalog` | `Some` | [5942](../../src/process_host.rs#L5942) | external-constructor-callback-or-unresolved |
-| `inventory_item` | `self.live_sessions` | [5949](../../src/process_host.rs#L5949) | receiver-type-required |
-| `inventory_item` | `self.catalog.get` | [5950](../../src/process_host.rs#L5950), [5967](../../src/process_host.rs#L5967) | receiver-type-required |
-| `inventory_item` | `entry.as_ref().is_some_and` | [5955](../../src/process_host.rs#L5955) | receiver-type-required |
-| `inventory_item` | `entry.as_ref` | [5955](../../src/process_host.rs#L5955) | receiver-type-required |
-| `inventory_item` | `self.live_worker(session_id).is_none` | [5960](../../src/process_host.rs#L5960) | receiver-type-required |
-| `inventory_item` | `self.live_worker` | [5960](../../src/process_host.rs#L5960) | receiver-type-required |
-| `inventory_item` | `self.hydrate` | [5962](../../src/process_host.rs#L5962) | receiver-type-required |
-| `inventory_item` | `Some` | [5969](../../src/process_host.rs#L5969) | external-constructor-callback-or-unresolved |
-| `inventory_item` | `Ok` | [5969](../../src/process_host.rs#L5969) | external-constructor-callback-or-unresolved |
-| `inventory_item` | `entry.and_then` | [5969](../../src/process_host.rs#L5969) | receiver-type-required |
-| `inventory_item` | `self.catalog_item` | [5970](../../src/process_host.rs#L5970) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter(&#124;(_, worker)&#124; worker.alive.load(Ordering::Acquire))             .map(&#124;(key, _)&#124; key.split(':').next().unwrap_or(key).to_owned())             .collect` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter(&#124;(_, worker)&#124; worker.alive.load(Ordering::Acquire))             .map` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock()             .unwrap_or_else` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `self.workers             .lock` | [5975](../../src/process_host.rs#L5975) | receiver-type-required |
-| `live_sessions` | `worker.alive.load` | [5979](../../src/process_host.rs#L5979) | receiver-type-required |
-| `live_sessions` | `key.split(':').next().unwrap_or(key).to_owned` | [5980](../../src/process_host.rs#L5980) | receiver-type-required |
-| `live_sessions` | `key.split(':').next().unwrap_or` | [5980](../../src/process_host.rs#L5980) | receiver-type-required |
-| `live_sessions` | `key.split(':').next` | [5980](../../src/process_host.rs#L5980) | receiver-type-required |
-| `live_sessions` | `key.split` | [5980](../../src/process_host.rs#L5980) | receiver-type-required |
-| `reconcile_projection` | `self.live_worker(session_id).is_some` | [5985](../../src/process_host.rs#L5985) | receiver-type-required |
-| `reconcile_projection` | `self.live_worker` | [5985](../../src/process_host.rs#L5985) | receiver-type-required |
-| `reconcile_projection` | `Ok` | [5986](../../src/process_host.rs#L5986) | external-constructor-callback-or-unresolved |
-| `reconcile_projection` | `self.publish_appended(session_id)             .map_err` | [5988](../../src/process_host.rs#L5988) | receiver-type-required |
-| `reconcile_projection` | `self.publish_appended` | [5988](../../src/process_host.rs#L5988) | receiver-type-required |
-| `reconcile_projection` | `error.to_string` | [5989](../../src/process_host.rs#L5989) | receiver-type-required |
-| `execute` | `self.reset_restart_backoff` | [5999](../../src/process_host.rs#L5999) | receiver-type-required |
-| `execute` | `self             .root             .join("threads")             .join(session_id)             .join` | [6000](../../src/process_host.rs#L6000) | receiver-type-required |
-| `execute` | `self             .root             .join("threads")             .join` | [6000](../../src/process_host.rs#L6000) | receiver-type-required |
-| `execute` | `self             .root             .join` | [6000](../../src/process_host.rs#L6000) | receiver-type-required |
-| `execute` | `self             .schedule_worker_at_with_startup(session_id, session_id, ledger, Some(transaction))             .map_err` | [6005](../../src/process_host.rs#L6005) | receiver-type-required |
-| `execute` | `self             .schedule_worker_at_with_startup` | [6005](../../src/process_host.rs#L6005) | receiver-type-required |
-| `execute` | `Some` | [6006](../../src/process_host.rs#L6006) | external-constructor-callback-or-unresolved |
-| `execute` | `self.wait_for_worker(session_id).map_err` | [6010](../../src/process_host.rs#L6010) | receiver-type-required |
-| `execute` | `self.wait_for_worker` | [6010](../../src/process_host.rs#L6010) | receiver-type-required |
-| `execute` | `worker                 .write(&encode_queue_transaction(transaction).map_err(internal)?)                 .map_err` | [6013](../../src/process_host.rs#L6013) | receiver-type-required |
-| `execute` | `worker                 .write` | [6013](../../src/process_host.rs#L6013) | receiver-type-required |
-| `execute` | `encode_queue_transaction(transaction).map_err` | [6014](../../src/process_host.rs#L6014) | receiver-type-required |
-| `execute` | `encode_queue_transaction` | [6014](../../src/process_host.rs#L6014) | [worker-control::durable::encode_queue_transaction](../../../worker-control/src/durable.rs#L499) |
-| `execute` | `worker.queue_result` | [6017](../../src/process_host.rs#L6017) | receiver-type-required |
-| `readiness` | `provider::resolve_config_credentials(config, self.secret_store.as_ref())             .map_err` | [6027](../../src/process_host.rs#L6027) | receiver-type-required |
-| `readiness` | `provider::resolve_config_credentials` | [6027](../../src/process_host.rs#L6027) | [provider::secret_store::resolve_config_credentials](../../../provider/src/secret_store.rs#L294) |
-| `readiness` | `self.secret_store.as_ref` | [6027](../../src/process_host.rs#L6027) | receiver-type-required |
-| `readiness` | `Ok` | [6029](../../src/process_host.rs#L6029) | external-constructor-callback-or-unresolved |
-| `readiness` | `config             .providers             .providers             .iter()             .map(&#124;configured&#124; {                 let route_misconfigured = provider::validate_provider(configured).is_err();                 let resolved_models = configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map(&#124;model&#124; {                         provider::resolve_profile(configured, model)                             .ok()                             .map(&#124;profile&#124; (model, profile))                     })                     .collect::<Vec<_>>();                 let status = if route_misconfigured                     &#124;&#124; provider::endpoint_origin(&configured.endpoint).is_err()                     &#124;&#124; resolved_models.is_empty()                 {                     RuntimeProviderStatus::Failed {                         failure: RuntimeProviderFailure::Misconfigured,                     }                 } else if let Some(credential_id) = &configured.credential_key {                     match credentials.availability.get(credential_id) {                         Some(provider::CredentialAvailability::Active { .. }) => {                             RuntimeProviderStatus::Ready                         }                         Some(provider::CredentialAvailability::Unavailable) => {                             RuntimeProviderStatus::Failed {                                 failure: RuntimeProviderFailure::Unavailable,                             }                         }                         Some(                             provider::CredentialAvailability::Revoked { .. }                             &#124; provider::CredentialAvailability::NotFound,                         )                         &#124; None => RuntimeProviderStatus::Failed {                             failure: RuntimeProviderFailure::InvalidCredential,                         },                     }                 } else {                     RuntimeProviderStatus::Ready                 };                 RuntimeProviderReadiness {                     provider: configured.id.clone(),                     models: if status == RuntimeProviderStatus::Ready {                         resolved_models                             .into_iter()                             .map(&#124;(model, profile)&#124; RuntimeModelReadiness {                                 id: model.id.clone(),                                 efforts: profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect(),                                 default_effort: profile                                     .default_reasoning_effort()                                     .map(str::to_owned),                             })                             .collect()                     } else {                         Vec::new()                     },                     status,                 }             })             .collect` | [6029](../../src/process_host.rs#L6029) | receiver-type-required |
-| `readiness` | `config             .providers             .providers             .iter()             .map` | [6029](../../src/process_host.rs#L6029) | receiver-type-required |
-| `readiness` | `config             .providers             .providers             .iter` | [6029](../../src/process_host.rs#L6029) | receiver-type-required |
-| `readiness` | `provider::validate_provider(configured).is_err` | [6034](../../src/process_host.rs#L6034) | receiver-type-required |
-| `readiness` | `provider::validate_provider` | [6034](../../src/process_host.rs#L6034) | [provider::dialect::validate_provider](../../../provider/src/dialect.rs#L683) |
-| `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map(&#124;model&#124; {                         provider::resolve_profile(configured, model)                             .ok()                             .map(&#124;profile&#124; (model, profile))                     })                     .collect::<Vec<_>>` | [6035](../../src/process_host.rs#L6035) | receiver-type-required |
-| `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map` | [6035](../../src/process_host.rs#L6035) | receiver-type-required |
-| `readiness` | `configured                     .models                     .iter()                     .filter` | [6035](../../src/process_host.rs#L6035) | receiver-type-required |
-| `readiness` | `configured                     .models                     .iter` | [6035](../../src/process_host.rs#L6035) | receiver-type-required |
-| `readiness` | `provider::resolve_profile(configured, model)                             .ok()                             .map` | [6040](../../src/process_host.rs#L6040) | receiver-type-required |
-| `readiness` | `provider::resolve_profile(configured, model)                             .ok` | [6040](../../src/process_host.rs#L6040) | receiver-type-required |
-| `readiness` | `provider::resolve_profile` | [6040](../../src/process_host.rs#L6040) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
-| `readiness` | `provider::endpoint_origin(&configured.endpoint).is_err` | [6046](../../src/process_host.rs#L6046) | receiver-type-required |
-| `readiness` | `provider::endpoint_origin` | [6046](../../src/process_host.rs#L6046) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
-| `readiness` | `resolved_models.is_empty` | [6047](../../src/process_host.rs#L6047) | receiver-type-required |
-| `readiness` | `credentials.availability.get` | [6053](../../src/process_host.rs#L6053) | receiver-type-required |
-| `readiness` | `configured.id.clone` | [6074](../../src/process_host.rs#L6074) | receiver-type-required |
-| `readiness` | `resolved_models                             .into_iter()                             .map(&#124;(model, profile)&#124; RuntimeModelReadiness {                                 id: model.id.clone(),                                 efforts: profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect(),                                 default_effort: profile                                     .default_reasoning_effort()                                     .map(str::to_owned),                             })                             .collect` | [6076](../../src/process_host.rs#L6076) | receiver-type-required |
-| `readiness` | `resolved_models                             .into_iter()                             .map` | [6076](../../src/process_host.rs#L6076) | receiver-type-required |
-| `readiness` | `resolved_models                             .into_iter` | [6076](../../src/process_host.rs#L6076) | receiver-type-required |
-| `readiness` | `model.id.clone` | [6079](../../src/process_host.rs#L6079) | receiver-type-required |
-| `readiness` | `profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect` | [6080](../../src/process_host.rs#L6080) | receiver-type-required |
-| `readiness` | `profile                                     .reasoning_efforts()                                     .iter()                                     .map` | [6080](../../src/process_host.rs#L6080) | receiver-type-required |
-| `readiness` | `profile                                     .reasoning_efforts()                                     .iter` | [6080](../../src/process_host.rs#L6080) | receiver-type-required |
-| `readiness` | `profile                                     .reasoning_efforts` | [6080](../../src/process_host.rs#L6080) | receiver-type-required |
-| `readiness` | `(*value).to_owned` | [6083](../../src/process_host.rs#L6083) | receiver-type-required |
-| `readiness` | `profile                                     .default_reasoning_effort()                                     .map` | [6085](../../src/process_host.rs#L6085) | receiver-type-required |
-| `readiness` | `profile                                     .default_reasoning_effort` | [6085](../../src/process_host.rs#L6085) | receiver-type-required |
-| `readiness` | `Vec::new` | [6091](../../src/process_host.rs#L6091) | external-constructor-callback-or-unresolved |
-| `config_mutation_succeeded` | `self.refresh_live_credentials().map_err` | [6100](../../src/process_host.rs#L6100) | receiver-type-required |
-| `config_mutation_succeeded` | `self.refresh_live_credentials` | [6100](../../src/process_host.rs#L6100) | receiver-type-required |
-| `config_mutation_succeeded` | `self             .streams             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .clone` | [6101](../../src/process_host.rs#L6101) | receiver-type-required |
-| `config_mutation_succeeded` | `self             .streams             .lock()             .unwrap_or_else` | [6101](../../src/process_host.rs#L6101) | receiver-type-required |
-| `config_mutation_succeeded` | `self             .streams             .lock` | [6101](../../src/process_host.rs#L6101) | receiver-type-required |
-| `config_mutation_succeeded` | `session_id.is_empty` | [6107](../../src/process_host.rs#L6107) | receiver-type-required |
-| `config_mutation_succeeded` | `streams.refresh_all_context_projections` | [6108](../../src/process_host.rs#L6108) | receiver-type-required |
-| `config_mutation_succeeded` | `streams.refresh_context_projection` | [6110](../../src/process_host.rs#L6110) | receiver-type-required |
-| `config_mutation_succeeded` | `Ok` | [6118](../../src/process_host.rs#L6118) | external-constructor-callback-or-unresolved |
-| `host` | `self.host.upgrade().ok_or_else` | [6124](../../src/process_host.rs#L6124) | receiver-type-required |
-| `host` | `self.host.upgrade` | [6124](../../src/process_host.rs#L6124) | receiver-type-required |
-| `host` | `SupervisorOperationError::Unavailable` | [6125](../../src/process_host.rs#L6125) | external-constructor-callback-or-unresolved |
-| `host` | `"production process host was dropped".into` | [6125](../../src/process_host.rs#L6125) | receiver-type-required |
-| `ensure_running` | `self.host()?             .ensure_running(session)             .map_err` | [6136](../../src/process_host.rs#L6136) | receiver-type-required |
-| `ensure_running` | `self.host()?             .ensure_running` | [6136](../../src/process_host.rs#L6136) | receiver-type-required |
-| `ensure_running` | `self.host` | [6136](../../src/process_host.rs#L6136) | receiver-type-required |
-| `ensure_running` | `operation_value` | [6139](../../src/process_host.rs#L6139) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) |
-| `deliver_input` | `self.host` | [6146](../../src/process_host.rs#L6146) | receiver-type-required |
-| `deliver_input` | `crate::host_runtime::system_timestamp().map_err` | [6148](../../src/process_host.rs#L6148) | receiver-type-required |
-| `deliver_input` | `crate::host_runtime::system_timestamp` | [6148](../../src/process_host.rs#L6148) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
-| `deliver_input` | `"kernel-worker".into` | [6150](../../src/process_host.rs#L6150) | receiver-type-required |
-| `deliver_input` | `"context".into` | [6151](../../src/process_host.rs#L6151) | receiver-type-required |
-| `deliver_input` | `request.target_session.clone` | [6152](../../src/process_host.rs#L6152) | receiver-type-required |
-| `deliver_input` | `"prompt".into` | [6153](../../src/process_host.rs#L6153) | receiver-type-required |
-| `deliver_input` | `request.request_id.clone` | [6154](../../src/process_host.rs#L6154) | receiver-type-required |
-| `deliver_input` | `host             .locked_prompt(                 &request.target_session,                 &timestamp,                 &origin,                 &MaterializedPrompt {                     blocks: vec![Block::Text {                         text: request.message.clone(),                     }],                     attachments: Vec::new(),                     files: Vec::new(),                 },                 false,             )             .map_err` | [6156](../../src/process_host.rs#L6156) | receiver-type-required |
-| `deliver_input` | `host             .locked_prompt` | [6156](../../src/process_host.rs#L6156) | receiver-type-required |
-| `deliver_input` | `Vec::new` | [6165](../../src/process_host.rs#L6165), [6166](../../src/process_host.rs#L6166) | external-constructor-callback-or-unresolved |
-| `deliver_input` | `SupervisorOperationError::Unavailable` | [6170](../../src/process_host.rs#L6170) | external-constructor-callback-or-unresolved |
-| `deliver_input` | `operation_value` | [6171](../../src/process_host.rs#L6171) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) |
-| `interrupt` | `self.host` | [6182](../../src/process_host.rs#L6182) | receiver-type-required |
-| `interrupt` | `crate::host_runtime::system_timestamp().map_err` | [6184](../../src/process_host.rs#L6184) | receiver-type-required |
-| `interrupt` | `crate::host_runtime::system_timestamp` | [6184](../../src/process_host.rs#L6184) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
-| `interrupt` | `"kernel-worker".into` | [6186](../../src/process_host.rs#L6186) | receiver-type-required |
-| `interrupt` | `"context".into` | [6187](../../src/process_host.rs#L6187) | receiver-type-required |
-| `interrupt` | `request.target_session.clone` | [6188](../../src/process_host.rs#L6188) | receiver-type-required |
-| `interrupt` | `"cancel".into` | [6189](../../src/process_host.rs#L6189) | receiver-type-required |
-| `interrupt` | `request.request_id.clone` | [6190](../../src/process_host.rs#L6190) | receiver-type-required |
-| `interrupt` | `host             .cancel(&request.target_session, &timestamp, &origin)             .map_err` | [6192](../../src/process_host.rs#L6192) | receiver-type-required |
-| `interrupt` | `host             .cancel` | [6192](../../src/process_host.rs#L6192) | receiver-type-required |
-| `interrupt` | `SupervisorOperationError::Unavailable` | [6194](../../src/process_host.rs#L6194) | external-constructor-callback-or-unresolved |
-| `interrupt` | `operation_value` | [6195](../../src/process_host.rs#L6195) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) |
-| `ensure_child` | `self.host()?             .validate_child_proof(proof)             .map_err` | [6206](../../src/process_host.rs#L6206) | receiver-type-required |
-| `ensure_child` | `self.host()?             .validate_child_proof` | [6206](../../src/process_host.rs#L6206) | receiver-type-required |
-| `ensure_child` | `self.host` | [6206](../../src/process_host.rs#L6206) | receiver-type-required |
-| `ensure_child` | `operation_value` | [6209](../../src/process_host.rs#L6209) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) |
-| `deliver_report` | `self.host()?             .schedule_line(&proof.session, &proof.parent_line, &proof.parent_file)             .map_err` | [6224](../../src/process_host.rs#L6224) | receiver-type-required |
-| `deliver_report` | `self.host()?             .schedule_line` | [6224](../../src/process_host.rs#L6224) | receiver-type-required |
-| `deliver_report` | `self.host` | [6224](../../src/process_host.rs#L6224) | receiver-type-required |
-| `deliver_report` | `operation_value` | [6227](../../src/process_host.rs#L6227) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6353) |
-| `unresolved_parent_dependency` | `scan_valid_prefix(&fs::read(path).map_err(DaemonError::io)?, 1)             .projection             .ok_or_else` | [6245](../../src/process_host.rs#L6245) | receiver-type-required |
-| `unresolved_parent_dependency` | `scan_valid_prefix` | [6245](../../src/process_host.rs#L6245) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `unresolved_parent_dependency` | `fs::read(path).map_err` | [6245](../../src/process_host.rs#L6245) | receiver-type-required |
-| `unresolved_parent_dependency` | `fs::read` | [6245](../../src/process_host.rs#L6245) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `DaemonError::corrupt` | [6247](../../src/process_host.rs#L6247), [6253](../../src/process_host.rs#L6253), [6255](../../src/process_host.rs#L6255), [6258](../../src/process_host.rs#L6258), [6264](../../src/process_host.rs#L6264), [6269](../../src/process_host.rs#L6269), [6273](../../src/process_host.rs#L6273), [6282](../../src/process_host.rs#L6282), [6286](../../src/process_host.rs#L6286), [6289](../../src/process_host.rs#L6289), [6294](../../src/process_host.rs#L6294), [6298](../../src/process_host.rs#L6298) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `unresolved_parent_dependency` | `read` | [6249](../../src/process_host.rs#L6249), [6275](../../src/process_host.rs#L6275) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `child         .events         .first()         .ok_or_else` | [6250](../../src/process_host.rs#L6250) | receiver-type-required |
-| `unresolved_parent_dependency` | `child         .events         .first` | [6250](../../src/process_host.rs#L6250) | receiver-type-required |
-| `unresolved_parent_dependency` | `genesis.string_field` | [6254](../../src/process_host.rs#L6254) | receiver-type-required |
-| `unresolved_parent_dependency` | `Some` | [6254](../../src/process_host.rs#L6254), [6280](../../src/process_host.rs#L6280), [6296](../../src/process_host.rs#L6296), [6304](../../src/process_host.rs#L6304), [6310](../../src/process_host.rs#L6310) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `Err` | [6255](../../src/process_host.rs#L6255), [6273](../../src/process_host.rs#L6273), [6282](../../src/process_host.rs#L6282), [6298](../../src/process_host.rs#L6298) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `serde_json::to_value(genesis.raw()).map_err` | [6258](../../src/process_host.rs#L6258) | receiver-type-required |
-| `unresolved_parent_dependency` | `serde_json::to_value` | [6258](../../src/process_host.rs#L6258) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `genesis.raw` | [6258](../../src/process_host.rs#L6258) | receiver-type-required |
-| `unresolved_parent_dependency` | `e.to_string` | [6258](../../src/process_host.rs#L6258) | receiver-type-required |
-| `unresolved_parent_dependency` | `raw.get` | [6259](../../src/process_host.rs#L6259) | receiver-type-required |
-| `unresolved_parent_dependency` | `Ok` | [6260](../../src/process_host.rs#L6260), [6308](../../src/process_host.rs#L6308), [6310](../../src/process_host.rs#L6310) | external-constructor-callback-or-unresolved |
-| `unresolved_parent_dependency` | `parent["file"]         .as_str()         .ok_or_else` | [6262](../../src/process_host.rs#L6262) | receiver-type-required |
-| `unresolved_parent_dependency` | `parent["file"]         .as_str` | [6262](../../src/process_host.rs#L6262) | receiver-type-required |
-| `unresolved_parent_dependency` | `file.strip_suffix(".jsonl")             .ok_or_else` | [6268](../../src/process_host.rs#L6268) | receiver-type-required |
-| `unresolved_parent_dependency` | `file.strip_suffix` | [6268](../../src/process_host.rs#L6268) | receiver-type-required |
-| `unresolved_parent_dependency` | `line_schedule_target` | [6271](../../src/process_host.rs#L6271) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6313) |
-| `unresolved_parent_dependency` | `projection         .events         .first()         .and_then` | [6276](../../src/process_host.rs#L6276) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection         .events         .first` | [6276](../../src/process_host.rs#L6276) | receiver-type-required |
-| `unresolved_parent_dependency` | `e.string_field` | [6279](../../src/process_host.rs#L6279), [6304](../../src/process_host.rs#L6304) | receiver-type-required |
-| `unresolved_parent_dependency` | `parent["seq"]         .as_u64()         .ok_or_else` | [6284](../../src/process_host.rs#L6284) | receiver-type-required |
-| `unresolved_parent_dependency` | `parent["seq"]         .as_u64` | [6284](../../src/process_host.rs#L6284) | receiver-type-required |
-| `unresolved_parent_dependency` | `parent["spawn_id"]         .as_str()         .ok_or_else` | [6287](../../src/process_host.rs#L6287) | receiver-type-required |
-| `unresolved_parent_dependency` | `parent["spawn_id"]         .as_str` | [6287](../../src/process_host.rs#L6287) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection         .events         .iter()         .find(&#124;e&#124; e.seq() == seq && e.kind() == &EventKind::Spawn)         .ok_or_else` | [6290](../../src/process_host.rs#L6290) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection         .events         .iter()         .find` | [6290](../../src/process_host.rs#L6290) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection         .events         .iter` | [6290](../../src/process_host.rs#L6290) | receiver-type-required |
-| `unresolved_parent_dependency` | `e.seq` | [6293](../../src/process_host.rs#L6293), [6302](../../src/process_host.rs#L6302) | receiver-type-required |
-| `unresolved_parent_dependency` | `e.kind` | [6293](../../src/process_host.rs#L6293), [6303](../../src/process_host.rs#L6303), [6305](../../src/process_host.rs#L6305) | receiver-type-required |
-| `unresolved_parent_dependency` | `spawn.string_field` | [6295](../../src/process_host.rs#L6295), [6296](../../src/process_host.rs#L6296) | receiver-type-required |
-| `unresolved_parent_dependency` | `child_path.file_name().and_then` | [6295](../../src/process_host.rs#L6295) | receiver-type-required |
-| `unresolved_parent_dependency` | `child_path.file_name` | [6295](../../src/process_host.rs#L6295) | receiver-type-required |
-| `unresolved_parent_dependency` | `n.to_str` | [6295](../../src/process_host.rs#L6295) | receiver-type-required |
-| `unresolved_parent_dependency` | `spawn.turn` | [6300](../../src/process_host.rs#L6300), [6305](../../src/process_host.rs#L6305) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection.events.iter().any` | [6301](../../src/process_host.rs#L6301) | receiver-type-required |
-| `unresolved_parent_dependency` | `projection.events.iter` | [6301](../../src/process_host.rs#L6301) | receiver-type-required |
-| `unresolved_parent_dependency` | `e.turn` | [6305](../../src/process_host.rs#L6305) | receiver-type-required |
-| `line_schedule_target` | `Path::new` | [6319](../../src/process_host.rs#L6319) | external-constructor-callback-or-unresolved |
-| `line_schedule_target` | `file_path.file_name().and_then` | [6320](../../src/process_host.rs#L6320) | receiver-type-required |
-| `line_schedule_target` | `file_path.file_name` | [6320](../../src/process_host.rs#L6320) | receiver-type-required |
-| `line_schedule_target` | `name.to_str` | [6320](../../src/process_host.rs#L6320) | receiver-type-required |
-| `line_schedule_target` | `Some` | [6320](../../src/process_host.rs#L6320), [6324](../../src/process_host.rs#L6324) | external-constructor-callback-or-unresolved |
-| `line_schedule_target` | `file_path             .extension()             .and_then` | [6321](../../src/process_host.rs#L6321) | receiver-type-required |
-| `line_schedule_target` | `file_path             .extension` | [6321](../../src/process_host.rs#L6321) | receiver-type-required |
-| `line_schedule_target` | `extension.to_str` | [6323](../../src/process_host.rs#L6323) | receiver-type-required |
-| `line_schedule_target` | `Err` | [6326](../../src/process_host.rs#L6326), [6330](../../src/process_host.rs#L6330), [6337](../../src/process_host.rs#L6337) | external-constructor-callback-or-unresolved |
-| `line_schedule_target` | `DaemonError::corrupt` | [6326](../../src/process_host.rs#L6326), [6330](../../src/process_host.rs#L6330), [6337](../../src/process_host.rs#L6337) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `line_schedule_target` | `session_id.to_owned` | [6334](../../src/process_host.rs#L6334) | receiver-type-required |
-| `line_schedule_target` | `Ok` | [6343](../../src/process_host.rs#L6343) | external-constructor-callback-or-unresolved |
-| `line_schedule_target` | `root.join("threads").join(session_id).join` | [6345](../../src/process_host.rs#L6345) | receiver-type-required |
-| `line_schedule_target` | `root.join("threads").join` | [6345](../../src/process_host.rs#L6345) | receiver-type-required |
-| `line_schedule_target` | `root.join` | [6345](../../src/process_host.rs#L6345) | receiver-type-required |
-| `operation_unavailable` | `SupervisorOperationError::Unavailable` | [6350](../../src/process_host.rs#L6350) | external-constructor-callback-or-unresolved |
-| `operation_unavailable` | `error.to_string` | [6350](../../src/process_host.rs#L6350) | receiver-type-required |
-| `operation_value` | `IJsonValue::parse(         &serde_json::to_vec(&value)             .map_err(&#124;error&#124; SupervisorOperationError::Protocol(error.to_string()))?,     )     .map_err` | [6354](../../src/process_host.rs#L6354) | receiver-type-required |
-| `operation_value` | `IJsonValue::parse` | [6354](../../src/process_host.rs#L6354) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `operation_value` | `serde_json::to_vec(&value)             .map_err` | [6355](../../src/process_host.rs#L6355) | receiver-type-required |
-| `operation_value` | `serde_json::to_vec` | [6355](../../src/process_host.rs#L6355) | external-constructor-callback-or-unresolved |
-| `operation_value` | `SupervisorOperationError::Protocol` | [6356](../../src/process_host.rs#L6356), [6358](../../src/process_host.rs#L6358) | external-constructor-callback-or-unresolved |
-| `operation_value` | `error.to_string` | [6356](../../src/process_host.rs#L6356), [6358](../../src/process_host.rs#L6358) | receiver-type-required |
-| `workspace_quiescence_lock_path` | `Sha256::digest` | [6362](../../src/process_host.rs#L6362) | external-constructor-callback-or-unresolved |
-| `workspace_quiescence_lock_path` | `workspace_id.as_bytes` | [6362](../../src/process_host.rs#L6362) | receiver-type-required |
-| `workspace_quiescence_lock_path` | `root.join` | [6363](../../src/process_host.rs#L6363) | receiver-type-required |
-| `workspace_id` | `session_workspace_binding(ledger).map` | [6367](../../src/process_host.rs#L6367) | receiver-type-required |
-| `workspace_id` | `session_workspace_binding` | [6367](../../src/process_host.rs#L6367) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6413) |
-| `scoped_client_file_path` | `Path::new` | [6374](../../src/process_host.rs#L6374), [6386](../../src/process_host.rs#L6386), [6396](../../src/process_host.rs#L6396) | external-constructor-callback-or-unresolved |
-| `scoped_client_file_path` | `path.is_empty` | [6375](../../src/process_host.rs#L6375) | receiver-type-required |
-| `scoped_client_file_path` | `path.contains` | [6376](../../src/process_host.rs#L6376) | receiver-type-required |
-| `scoped_client_file_path` | `requested             .components()             .any` | [6377](../../src/process_host.rs#L6377) | receiver-type-required |
-| `scoped_client_file_path` | `requested             .components` | [6377](../../src/process_host.rs#L6377) | receiver-type-required |
-| `scoped_client_file_path` | `Err` | [6381](../../src/process_host.rs#L6381) | external-constructor-callback-or-unresolved |
-| `scoped_client_file_path` | `DaemonError::invalid_config` | [6381](../../src/process_host.rs#L6381), [6395](../../src/process_host.rs#L6395), [6403](../../src/process_host.rs#L6403), [6408](../../src/process_host.rs#L6408) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L578) |
-| `scoped_client_file_path` | `workspace         .cwd         .iter()         .map(&#124;root&#124; Path::new(root).canonicalize().map_err(DaemonError::io))         .collect::<Result<Vec<_>, _>>` | [6383](../../src/process_host.rs#L6383) | receiver-type-required |
-| `scoped_client_file_path` | `workspace         .cwd         .iter()         .map` | [6383](../../src/process_host.rs#L6383) | receiver-type-required |
-| `scoped_client_file_path` | `workspace         .cwd         .iter` | [6383](../../src/process_host.rs#L6383) | receiver-type-required |
-| `scoped_client_file_path` | `Path::new(root).canonicalize().map_err` | [6386](../../src/process_host.rs#L6386) | receiver-type-required |
-| `scoped_client_file_path` | `Path::new(root).canonicalize` | [6386](../../src/process_host.rs#L6386) | receiver-type-required |
-| `scoped_client_file_path` | `if requested.is_absolute() {         requested.to_owned()     } else {         let selected = workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else(&#124;&#124; DaemonError::invalid_config("session has no directory"))?;         Path::new(selected).join(requested)     }     .canonicalize()     .map_err` | [6388](../../src/process_host.rs#L6388) | receiver-type-required |
-| `scoped_client_file_path` | `if requested.is_absolute() {         requested.to_owned()     } else {         let selected = workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else(&#124;&#124; DaemonError::invalid_config("session has no directory"))?;         Path::new(selected).join(requested)     }     .canonicalize` | [6388](../../src/process_host.rs#L6388) | receiver-type-required |
-| `scoped_client_file_path` | `requested.is_absolute` | [6388](../../src/process_host.rs#L6388) | receiver-type-required |
-| `scoped_client_file_path` | `requested.to_owned` | [6389](../../src/process_host.rs#L6389) | receiver-type-required |
-| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else` | [6391](../../src/process_host.rs#L6391) | receiver-type-required |
-| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref()             .or_else` | [6391](../../src/process_host.rs#L6391) | receiver-type-required |
-| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref` | [6391](../../src/process_host.rs#L6391) | receiver-type-required |
-| `scoped_client_file_path` | `workspace.cwd.first().map` | [6394](../../src/process_host.rs#L6394) | receiver-type-required |
-| `scoped_client_file_path` | `workspace.cwd.first` | [6394](../../src/process_host.rs#L6394) | receiver-type-required |
-| `scoped_client_file_path` | `Path::new(selected).join` | [6396](../../src/process_host.rs#L6396) | receiver-type-required |
-| `scoped_client_file_path` | `roots         .into_iter()         .find(&#124;root&#124; target.starts_with(root))         .ok_or_else` | [6400](../../src/process_host.rs#L6400) | receiver-type-required |
-| `scoped_client_file_path` | `roots         .into_iter()         .find` | [6400](../../src/process_host.rs#L6400) | receiver-type-required |
-| `scoped_client_file_path` | `roots         .into_iter` | [6400](../../src/process_host.rs#L6400) | receiver-type-required |
-| `scoped_client_file_path` | `target.starts_with` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
-| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str()         .ok_or_else(&#124;&#124; DaemonError::invalid_config("file path is not UTF-8"))?         .to_owned` | [6404](../../src/process_host.rs#L6404) | receiver-type-required |
-| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str()         .ok_or_else` | [6404](../../src/process_host.rs#L6404) | receiver-type-required |
-| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str` | [6404](../../src/process_host.rs#L6404) | receiver-type-required |
-| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap` | [6404](../../src/process_host.rs#L6404) | receiver-type-required |
-| `scoped_client_file_path` | `target         .strip_prefix` | [6404](../../src/process_host.rs#L6404) | receiver-type-required |
-| `scoped_client_file_path` | `Ok` | [6410](../../src/process_host.rs#L6410) | external-constructor-callback-or-unresolved |
-| `session_workspace_binding` | `store::read_genesis(ledger)         .map_err(DaemonError::store)?         .ok_or_else` | [6415](../../src/process_host.rs#L6415) | receiver-type-required |
-| `session_workspace_binding` | `store::read_genesis(ledger)         .map_err` | [6415](../../src/process_host.rs#L6415) | receiver-type-required |
-| `session_workspace_binding` | `store::read_genesis` | [6415](../../src/process_host.rs#L6415) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `session_workspace_binding` | `DaemonError::corrupt` | [6417](../../src/process_host.rs#L6417), [6422](../../src/process_host.rs#L6422) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `session_workspace_binding` | `genesis         .string_field("workspace")         .map(str::to_owned)         .ok_or_else` | [6419](../../src/process_host.rs#L6419) | receiver-type-required |
-| `session_workspace_binding` | `genesis         .string_field("workspace")         .map` | [6419](../../src/process_host.rs#L6419) | receiver-type-required |
-| `session_workspace_binding` | `genesis         .string_field` | [6419](../../src/process_host.rs#L6419) | receiver-type-required |
-| `session_workspace_binding` | `genesis.string_field("folder_binding").map` | [6423](../../src/process_host.rs#L6423) | receiver-type-required |
-| `session_workspace_binding` | `genesis.string_field` | [6423](../../src/process_host.rs#L6423) | receiver-type-required |
-| `session_workspace_binding` | `Ok` | [6424](../../src/process_host.rs#L6424) | external-constructor-callback-or-unresolved |
-| `ledger_needs_worker` | `fs::read(ledger).map_err` | [6428](../../src/process_host.rs#L6428) | receiver-type-required |
-| `ledger_needs_worker` | `fs::read` | [6428](../../src/process_host.rs#L6428) | external-constructor-callback-or-unresolved |
-| `ledger_needs_worker` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [6429](../../src/process_host.rs#L6429) | receiver-type-required |
-| `ledger_needs_worker` | `scan_valid_prefix` | [6429](../../src/process_host.rs#L6429) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `ledger_needs_worker` | `DaemonError::corrupt` | [6431](../../src/process_host.rs#L6431) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `ledger_needs_worker` | `probe_line_lock` | [6433](../../src/process_host.rs#L6433) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6489) |
-| `ledger_needs_worker` | `Ok` | [6438](../../src/process_host.rs#L6438) | external-constructor-callback-or-unresolved |
-| `ledger_needs_worker` | `ensure_action_at` | [6439](../../src/process_host.rs#L6439) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
-| `ledger_needs_worker` | `classify` | [6439](../../src/process_host.rs#L6439) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
-| `ledger_needs_worker` | `Some` | [6439](../../src/process_host.rs#L6439) | external-constructor-callback-or-unresolved |
-| `ledger_needs_worker` | `now_rfc3339` | [6439](../../src/process_host.rs#L6439) | [tekes-supervisor::process_host::now_rfc3339](../../src/process_host.rs#L170) |
-| `ledger_needs_worker` | `goal_continuation_due` | [6441](../../src/process_host.rs#L6441) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6445) |
-| `goal_continuation_due` | `ledger.file_name` | [6446](../../src/process_host.rs#L6446) | receiver-type-required |
-| `goal_continuation_due` | `Some` | [6446](../../src/process_host.rs#L6446), [6485](../../src/process_host.rs#L6485) | external-constructor-callback-or-unresolved |
-| `goal_continuation_due` | `std::ffi::OsStr::new` | [6446](../../src/process_host.rs#L6446) | external-constructor-callback-or-unresolved |
-| `goal_continuation_due` | `Ok` | [6447](../../src/process_host.rs#L6447), [6463](../../src/process_host.rs#L6463), [6466](../../src/process_host.rs#L6466), [6474](../../src/process_host.rs#L6474), [6477](../../src/process_host.rs#L6477), [6479](../../src/process_host.rs#L6479) | external-constructor-callback-or-unresolved |
-| `goal_continuation_due` | `ledger         .parent()         .ok_or_else` | [6449](../../src/process_host.rs#L6449) | receiver-type-required |
-| `goal_continuation_due` | `ledger         .parent` | [6449](../../src/process_host.rs#L6449) | receiver-type-required |
-| `goal_continuation_due` | `DaemonError::corrupt` | [6451](../../src/process_host.rs#L6451), [6455](../../src/process_host.rs#L6455), [6459](../../src/process_host.rs#L6459), [6471](../../src/process_host.rs#L6471) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `goal_continuation_due` | `folder         .file_name()         .and_then(&#124;name&#124; name.to_str())         .ok_or_else` | [6452](../../src/process_host.rs#L6452) | receiver-type-required |
-| `goal_continuation_due` | `folder         .file_name()         .and_then` | [6452](../../src/process_host.rs#L6452) | receiver-type-required |
-| `goal_continuation_due` | `folder         .file_name` | [6452](../../src/process_host.rs#L6452) | receiver-type-required |
-| `goal_continuation_due` | `name.to_str` | [6454](../../src/process_host.rs#L6454) | receiver-type-required |
-| `goal_continuation_due` | `folder         .parent()         .and_then(Path::parent)         .ok_or_else` | [6456](../../src/process_host.rs#L6456) | receiver-type-required |
-| `goal_continuation_due` | `folder         .parent()         .and_then` | [6456](../../src/process_host.rs#L6456) | receiver-type-required |
-| `goal_continuation_due` | `folder         .parent` | [6456](../../src/process_host.rs#L6456) | receiver-type-required |
-| `goal_continuation_due` | `session_controls::read_goal(root, session)         .map_err` | [6460](../../src/process_host.rs#L6460) | receiver-type-required |
-| `goal_continuation_due` | `session_controls::read_goal` | [6460](../../src/process_host.rs#L6460) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
-| `goal_continuation_due` | `DaemonError::invalid_config` | [6461](../../src/process_host.rs#L6461) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L578) |
-| `goal_continuation_due` | `error.to_string` | [6461](../../src/process_host.rs#L6461) | receiver-type-required |
-| `goal_continuation_due` | `fs::read(ledger).map_err` | [6468](../../src/process_host.rs#L6468) | receiver-type-required |
-| `goal_continuation_due` | `fs::read` | [6468](../../src/process_host.rs#L6468) | external-constructor-callback-or-unresolved |
-| `goal_continuation_due` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [6469](../../src/process_host.rs#L6469) | receiver-type-required |
-| `goal_continuation_due` | `scan_valid_prefix` | [6469](../../src/process_host.rs#L6469) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `goal_continuation_due` | `facts.turn_open_inputs.is_empty` | [6473](../../src/process_host.rs#L6473) | receiver-type-required |
-| `goal_continuation_due` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; event.kind() == &schema::EventKind::Settle)         .is_some_and` | [6479](../../src/process_host.rs#L6479) | receiver-type-required |
-| `goal_continuation_due` | `projection         .events         .iter()         .rev()         .find` | [6479](../../src/process_host.rs#L6479) | receiver-type-required |
-| `goal_continuation_due` | `projection         .events         .iter()         .rev` | [6479](../../src/process_host.rs#L6479) | receiver-type-required |
-| `goal_continuation_due` | `projection         .events         .iter` | [6479](../../src/process_host.rs#L6479) | receiver-type-required |
-| `goal_continuation_due` | `event.kind` | [6483](../../src/process_host.rs#L6483) | receiver-type-required |
-| `goal_continuation_due` | `event.turn` | [6485](../../src/process_host.rs#L6485) | receiver-type-required |
-| `goal_continuation_due` | `event.string_field` | [6485](../../src/process_host.rs#L6485) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open(path)         .map_err` | [6490](../../src/process_host.rs#L6490) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [6490](../../src/process_host.rs#L6490) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags` | [6490](../../src/process_host.rs#L6490) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append` | [6490](../../src/process_host.rs#L6490) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new()         .read` | [6490](../../src/process_host.rs#L6490) | receiver-type-required |
-| `probe_line_lock` | `fs::OpenOptions::new` | [6490](../../src/process_host.rs#L6490) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `libc::flock` | [6498](../../src/process_host.rs#L6498), [6507](../../src/process_host.rs#L6507) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `file.as_raw_fd` | [6498](../../src/process_host.rs#L6498), [6507](../../src/process_host.rs#L6507) | receiver-type-required |
-| `probe_line_lock` | `file.metadata().map_err` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
-| `probe_line_lock` | `file.metadata` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
-| `probe_line_lock` | `fs::metadata(path).map_err` | [6500](../../src/process_host.rs#L6500) | receiver-type-required |
-| `probe_line_lock` | `fs::metadata` | [6500](../../src/process_host.rs#L6500) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `descriptor.dev` | [6501](../../src/process_host.rs#L6501) | receiver-type-required |
-| `probe_line_lock` | `pathname.dev` | [6501](../../src/process_host.rs#L6501) | receiver-type-required |
-| `probe_line_lock` | `descriptor.ino` | [6501](../../src/process_host.rs#L6501) | receiver-type-required |
-| `probe_line_lock` | `pathname.ino` | [6501](../../src/process_host.rs#L6501) | receiver-type-required |
-| `probe_line_lock` | `Err` | [6502](../../src/process_host.rs#L6502), [6508](../../src/process_host.rs#L6508), [6518](../../src/process_host.rs#L6518) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `DaemonError::corrupt` | [6502](../../src/process_host.rs#L6502) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
-| `probe_line_lock` | `DaemonError::io` | [6508](../../src/process_host.rs#L6508), [6518](../../src/process_host.rs#L6518) | [tekes-supervisor::host_runtime::DaemonError::io](../../src/host_runtime.rs#L540) |
-| `probe_line_lock` | `std::io::Error::last_os_error` | [6508](../../src/process_host.rs#L6508), [6512](../../src/process_host.rs#L6512) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `Ok` | [6510](../../src/process_host.rs#L6510), [6515](../../src/process_host.rs#L6515) | external-constructor-callback-or-unresolved |
-| `probe_line_lock` | `error.raw_os_error` | [6513](../../src/process_host.rs#L6513) | receiver-type-required |
-| `probe_line_lock` | `error.kind` | [6517](../../src/process_host.rs#L6517) | receiver-type-required |
-| `read_worker_hello` | `Vec::new` | [6527](../../src/process_host.rs#L6527) | external-constructor-callback-or-unresolved |
-| `read_worker_hello` | `Instant::now` | [6529](../../src/process_host.rs#L6529) | external-constructor-callback-or-unresolved |
-| `read_worker_hello` | `remaining                 .as_millis()                 .saturating_add(u128::from(remaining.subsec_nanos() % 1_000_000 != 0))                 .clamp` | [6539](../../src/process_host.rs#L6539) | receiver-type-required |
-| `read_worker_hello` | `remaining                 .as_millis()                 .saturating_add` | [6539](../../src/process_host.rs#L6539) | receiver-type-required |
-| `read_worker_hello` | `remaining                 .as_millis` | [6539](../../src/process_host.rs#L6539) | receiver-type-required |
-| `read_worker_hello` | `u128::from` | [6541](../../src/process_host.rs#L6541) | external-constructor-callback-or-unresolved |
-| `read_worker_hello` | `remaining.subsec_nanos` | [6541](../../src/process_host.rs#L6541) | receiver-type-required |
+| `worker_reader` | `owner.publish_frame` | [4971](../../src/process_host.rs#L4971) | receiver-type-required |
+| `worker_reader` | `owner                     .upgrade()                     .ok_or_else(&#124;&#124; DaemonError::protocol("process host was dropped"))                     .and_then` | [4977](../../src/process_host.rs#L4977) | receiver-type-required |
+| `worker_reader` | `owner                     .upgrade()                     .ok_or_else` | [4977](../../src/process_host.rs#L4977) | receiver-type-required |
+| `worker_reader` | `owner                     .upgrade` | [4977](../../src/process_host.rs#L4977) | receiver-type-required |
+| `worker_reader` | `DaemonError::protocol` | [4979](../../src/process_host.rs#L4979), [5013](../../src/process_host.rs#L5013) | [tekes-supervisor::host_runtime::DaemonError::protocol](../../src/host_runtime.rs#L536) |
+| `worker_reader` | `owner.launch_child` | [4981](../../src/process_host.rs#L4981) | receiver-type-required |
+| `worker_reader` | `Some` | [4989](../../src/process_host.rs#L4989), [5108](../../src/process_host.rs#L5108) | external-constructor-callback-or-unresolved |
+| `worker_reader` | `error.bootstrap_code().to_owned` | [4989](../../src/process_host.rs#L4989) | receiver-type-required |
+| `worker_reader` | `error.bootstrap_code` | [4989](../../src/process_host.rs#L4989) | receiver-type-required |
+| `worker_reader` | `encode_line("launch_result", &result).and_then` | [4992](../../src/process_host.rs#L4992) | receiver-type-required |
+| `worker_reader` | `handle.write(&bytes).map_err` | [4993](../../src/process_host.rs#L4993) | receiver-type-required |
+| `worker_reader` | `worker_control::ProtocolError::InvalidDurableControl` | [4994](../../src/process_host.rs#L4994) | external-constructor-callback-or-unresolved |
+| `worker_reader` | `decode_tool_control(line.as_bytes()).is_ok` | [5006](../../src/process_host.rs#L5006) | receiver-type-required |
+| `worker_reader` | `decode_tool_control` | [5006](../../src/process_host.rs#L5006) | [worker-control::durable::decode_tool_control](../../../worker-control/src/durable.rs#L474) |
+| `worker_reader` | `worker_control::continuation::decode_tool_continuation(line.as_bytes())                         .is_ok` | [5008](../../src/process_host.rs#L5008) | receiver-type-required |
+| `worker_reader` | `worker_control::continuation::decode_tool_continuation` | [5008](../../src/process_host.rs#L5008) | [worker-control::continuation::decode_tool_continuation](../../../worker-control/src/continuation.rs#L277) |
+| `worker_reader` | `owner                         .upgrade()                         .ok_or_else(&#124;&#124; DaemonError::protocol("process host was dropped"))                         .and_then` | [5011](../../src/process_host.rs#L5011) | receiver-type-required |
+| `worker_reader` | `owner                         .upgrade()                         .ok_or_else` | [5011](../../src/process_host.rs#L5011) | receiver-type-required |
+| `worker_reader` | `owner                         .upgrade` | [5011](../../src/process_host.rs#L5011) | receiver-type-required |
+| `worker_reader` | `owner.handle_tool_control` | [5016](../../src/process_host.rs#L5016) | receiver-type-required |
+| `worker_reader` | `owner.handle_tool_continuation` | [5018](../../src/process_host.rs#L5018) | receiver-type-required |
+| `worker_reader` | `result.and_then` | [5021](../../src/process_host.rs#L5021) | receiver-type-required |
+| `worker_reader` | `handle.alive.store` | [5039](../../src/process_host.rs#L5039) | receiver-type-required |
+| `worker_reader` | `"worker exited".to_owned` | [5040](../../src/process_host.rs#L5040) | receiver-type-required |
+| `worker_reader` | `terminate_worker` | [5042](../../src/process_host.rs#L5042) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
+| `worker_reader` | `handle         .child         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .wait` | [5044](../../src/process_host.rs#L5044) | receiver-type-required |
+| `worker_reader` | `handle         .child         .lock()         .unwrap_or_else` | [5044](../../src/process_host.rs#L5044) | receiver-type-required |
+| `worker_reader` | `handle         .child         .lock` | [5044](../../src/process_host.rs#L5044) | receiver-type-required |
+| `worker_reader` | `exit_status             .as_ref()             .is_ok_and` | [5053](../../src/process_host.rs#L5053) | receiver-type-required |
+| `worker_reader` | `exit_status             .as_ref` | [5053](../../src/process_host.rs#L5053) | receiver-type-required |
+| `worker_reader` | `drop` | [5056](../../src/process_host.rs#L5056), [5095](../../src/process_host.rs#L5095) | external-constructor-callback-or-unresolved |
+| `worker_reader` | `handle             .credential_control             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .take` | [5057](../../src/process_host.rs#L5057) | receiver-type-required |
+| `worker_reader` | `handle             .credential_control             .lock()             .unwrap_or_else` | [5057](../../src/process_host.rs#L5057) | receiver-type-required |
+| `worker_reader` | `handle             .credential_control             .lock` | [5057](../../src/process_host.rs#L5057) | receiver-type-required |
+| `worker_reader` | `handle         .credential_broker         .lock()         .unwrap_or_else(std::sync::PoisonError::into_inner)         .take` | [5063](../../src/process_host.rs#L5063) | receiver-type-required |
+| `worker_reader` | `handle         .credential_broker         .lock()         .unwrap_or_else` | [5063](../../src/process_host.rs#L5063) | receiver-type-required |
+| `worker_reader` | `handle         .credential_broker         .lock` | [5063](../../src/process_host.rs#L5063) | receiver-type-required |
+| `worker_reader` | `join.join` | [5069](../../src/process_host.rs#L5069) | receiver-type-required |
+| `worker_reader` | `std::mem::take` | [5072](../../src/process_host.rs#L5072) | external-constructor-callback-or-unresolved |
+| `worker_reader` | `handle                 .state                 .lock()                 .unwrap_or_else` | [5073](../../src/process_host.rs#L5073) | receiver-type-required |
+| `worker_reader` | `handle                 .state                 .lock` | [5073](../../src/process_host.rs#L5073) | receiver-type-required |
+| `worker_reader` | `owner             .admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .reap` | [5079](../../src/process_host.rs#L5079) | receiver-type-required |
+| `worker_reader` | `owner             .admission             .lock()             .unwrap_or_else` | [5079](../../src/process_host.rs#L5079) | receiver-type-required |
+| `worker_reader` | `owner             .admission             .lock` | [5079](../../src/process_host.rs#L5079) | receiver-type-required |
+| `worker_reader` | `owner             .workers             .lock()             .unwrap_or_else` | [5085](../../src/process_host.rs#L5085) | receiver-type-required |
+| `worker_reader` | `owner             .workers             .lock` | [5085](../../src/process_host.rs#L5085) | receiver-type-required |
+| `worker_reader` | `workers             .get(&process_key)             .is_some_and` | [5089](../../src/process_host.rs#L5089) | receiver-type-required |
+| `worker_reader` | `workers             .get` | [5089](../../src/process_host.rs#L5089) | receiver-type-required |
+| `worker_reader` | `Arc::ptr_eq` | [5091](../../src/process_host.rs#L5091) | external-constructor-callback-or-unresolved |
+| `worker_reader` | `workers.remove` | [5093](../../src/process_host.rs#L5093) | receiver-type-required |
+| `worker_reader` | `owner.workers_changed.notify_all` | [5096](../../src/process_host.rs#L5096) | receiver-type-required |
+| `worker_reader` | `owner.publish_session_status` | [5097](../../src/process_host.rs#L5097) | receiver-type-required |
+| `worker_reader` | `owner.start_pending_workers` | [5103](../../src/process_host.rs#L5103) | receiver-type-required |
+| `worker_reader` | `owner.draining.load` | [5104](../../src/process_host.rs#L5104) | receiver-type-required |
+| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .failure                         .clone()                         .unwrap_or_else` | [5109](../../src/process_host.rs#L5109) | receiver-type-required |
+| `worker_reader` | `handle                         .state                         .lock()                         .unwrap_or_else(std::sync::PoisonError::into_inner)                         .failure                         .clone` | [5109](../../src/process_host.rs#L5109) | receiver-type-required |
+| `worker_reader` | `"worker-exit".to_owned` | [5115](../../src/process_host.rs#L5115) | receiver-type-required |
+| `worker_reader` | `owner.reconcile_after_exit` | [5118](../../src/process_host.rs#L5118) | receiver-type-required |
+| `worker_reader` | `failure.as_deref().map` | [5122](../../src/process_host.rs#L5122) | receiver-type-required |
+| `worker_reader` | `failure.as_deref` | [5122](../../src/process_host.rs#L5122) | receiver-type-required |
+| `terminate_worker` | `handle.tool_cancellation.cancel` | [5129](../../src/process_host.rs#L5129) | receiver-type-required |
+| `terminate_worker` | `handle.dynamic_authority.as_ref` | [5130](../../src/process_host.rs#L5130) | receiver-type-required |
+| `terminate_worker` | `authority.cancel_inflight` | [5131](../../src/process_host.rs#L5131) | receiver-type-required |
+| `terminate_worker` | `handle         .child         .lock()         .unwrap_or_else` | [5133](../../src/process_host.rs#L5133) | receiver-type-required |
+| `terminate_worker` | `handle         .child         .lock` | [5133](../../src/process_host.rs#L5133) | receiver-type-required |
+| `terminate_worker` | `child.id` | [5137](../../src/process_host.rs#L5137) | receiver-type-required |
+| `terminate_worker` | `libc::kill` | [5139](../../src/process_host.rs#L5139) | external-constructor-callback-or-unresolved |
+| `terminate_worker` | `Instant::now` | [5140](../../src/process_host.rs#L5140), [5144](../../src/process_host.rs#L5144) | external-constructor-callback-or-unresolved |
+| `terminate_worker` | `Duration::from_secs` | [5140](../../src/process_host.rs#L5140) | external-constructor-callback-or-unresolved |
+| `terminate_worker` | `child.try_wait` | [5142](../../src/process_host.rs#L5142) | receiver-type-required |
+| `terminate_worker` | `std::thread::sleep` | [5145](../../src/process_host.rs#L5145) | external-constructor-callback-or-unresolved |
+| `terminate_worker` | `Duration::from_millis` | [5145](../../src/process_host.rs#L5145) | external-constructor-callback-or-unresolved |
+| `terminate_worker` | `child.kill` | [5148](../../src/process_host.rs#L5148) | receiver-type-required |
+| `fail_worker` | `handle.tool_cancellation.cancel` | [5156](../../src/process_host.rs#L5156) | receiver-type-required |
+| `fail_worker` | `handle.dynamic_authority.as_ref` | [5157](../../src/process_host.rs#L5157) | receiver-type-required |
+| `fail_worker` | `authority.cancel_inflight` | [5158](../../src/process_host.rs#L5158) | receiver-type-required |
+| `fail_worker` | `handle.alive.store` | [5160](../../src/process_host.rs#L5160) | receiver-type-required |
+| `fail_worker` | `handle         .state         .lock()         .unwrap_or_else` | [5161](../../src/process_host.rs#L5161) | receiver-type-required |
+| `fail_worker` | `handle         .state         .lock` | [5161](../../src/process_host.rs#L5161) | receiver-type-required |
+| `fail_worker` | `handle         .stderr_tail         .lock()         .unwrap_or_else` | [5165](../../src/process_host.rs#L5165) | receiver-type-required |
+| `fail_worker` | `handle         .stderr_tail         .lock` | [5165](../../src/process_host.rs#L5165) | receiver-type-required |
+| `fail_worker` | `stderr.is_empty` | [5169](../../src/process_host.rs#L5169) | receiver-type-required |
+| `fail_worker` | `preserve_first_failure` | [5174](../../src/process_host.rs#L5174) | [tekes-supervisor::process_host::preserve_first_failure](../../src/process_host.rs#L5199) |
+| `fail_worker` | `drop` | [5175](../../src/process_host.rs#L5175) | external-constructor-callback-or-unresolved |
+| `fail_worker` | `handle.changed.notify_all` | [5176](../../src/process_host.rs#L5176) | receiver-type-required |
+| `worker_stderr_reader` | `reader.read` | [5183](../../src/process_host.rs#L5183) | receiver-type-required |
+| `worker_stderr_reader` | `handle             .stderr_tail             .lock()             .unwrap_or_else` | [5187](../../src/process_host.rs#L5187) | receiver-type-required |
+| `worker_stderr_reader` | `handle             .stderr_tail             .lock` | [5187](../../src/process_host.rs#L5187) | receiver-type-required |
+| `worker_stderr_reader` | `tail.extend_from_slice` | [5191](../../src/process_host.rs#L5191) | receiver-type-required |
+| `worker_stderr_reader` | `tail.len` | [5192](../../src/process_host.rs#L5192), [5193](../../src/process_host.rs#L5193) | receiver-type-required |
+| `worker_stderr_reader` | `tail.drain` | [5194](../../src/process_host.rs#L5194) | receiver-type-required |
+| `preserve_first_failure` | `failure.is_none` | [5200](../../src/process_host.rs#L5200) | receiver-type-required |
+| `preserve_first_failure` | `Some` | [5201](../../src/process_host.rs#L5201) | external-constructor-callback-or-unresolved |
+| `session_metadata_changed` | `self.publish_session_status` | [5207](../../src/process_host.rs#L5207) | receiver-type-required |
+| `prompt` | `self.reset_restart_backoff` | [5218](../../src/process_host.rs#L5218) | receiver-type-required |
+| `prompt` | `self.live_worker` | [5219](../../src/process_host.rs#L5219) | receiver-type-required |
+| `prompt` | `origin.key.clone` | [5220](../../src/process_host.rs#L5220) | receiver-type-required |
+| `prompt` | `worker                 .write(                     &encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err(internal)?,                 )                 .map_err(internal)                 .and_then` | [5221](../../src/process_host.rs#L5221) | receiver-type-required |
+| `prompt` | `worker                 .write(                     &encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5221](../../src/process_host.rs#L5221) | receiver-type-required |
+| `prompt` | `worker                 .write` | [5221](../../src/process_host.rs#L5221) | receiver-type-required |
+| `prompt` | `encode_line(                         "input",                         &Input {                             delivery: delivery.clone(),                             origin: origin.clone(),                             content: prompt.blocks.clone(),                             submission: Some(                                 self.endpoint                                     .submission_snapshot(session_id)                                     .map_err(internal)?,                             ),                             steer: Some(steer),                             assets: (!prompt.attachments.is_empty()).then(&#124;&#124; {                                 prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect()                             }),                         },                     )                     .map_err` | [5223](../../src/process_host.rs#L5223) | receiver-type-required |
+| `prompt` | `encode_line` | [5223](../../src/process_host.rs#L5223) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `prompt` | `delivery.clone` | [5226](../../src/process_host.rs#L5226) | receiver-type-required |
+| `prompt` | `origin.clone` | [5227](../../src/process_host.rs#L5227) | receiver-type-required |
+| `prompt` | `prompt.blocks.clone` | [5228](../../src/process_host.rs#L5228) | receiver-type-required |
+| `prompt` | `Some` | [5229](../../src/process_host.rs#L5229), [5234](../../src/process_host.rs#L5234) | external-constructor-callback-or-unresolved |
+| `prompt` | `self.endpoint                                     .submission_snapshot(session_id)                                     .map_err` | [5230](../../src/process_host.rs#L5230) | receiver-type-required |
+| `prompt` | `self.endpoint                                     .submission_snapshot` | [5230](../../src/process_host.rs#L5230) | receiver-type-required |
+| `prompt` | `(!prompt.attachments.is_empty()).then` | [5235](../../src/process_host.rs#L5235) | receiver-type-required |
+| `prompt` | `prompt.attachments.is_empty` | [5235](../../src/process_host.rs#L5235) | receiver-type-required |
+| `prompt` | `prompt                                     .attachments                                     .iter()                                     .map(&#124;attachment&#124; worker_control::AssetRef {                                         asset: attachment.attachment_id.clone(),                                         mime: attachment.media_type.as_str().to_owned(),                                     })                                     .collect` | [5236](../../src/process_host.rs#L5236) | receiver-type-required |
+| `prompt` | `prompt                                     .attachments                                     .iter()                                     .map` | [5236](../../src/process_host.rs#L5236) | receiver-type-required |
+| `prompt` | `prompt                                     .attachments                                     .iter` | [5236](../../src/process_host.rs#L5236) | receiver-type-required |
+| `prompt` | `attachment.attachment_id.clone` | [5240](../../src/process_host.rs#L5240) | receiver-type-required |
+| `prompt` | `attachment.media_type.as_str().to_owned` | [5241](../../src/process_host.rs#L5241) | receiver-type-required |
+| `prompt` | `attachment.media_type.as_str` | [5241](../../src/process_host.rs#L5241) | receiver-type-required |
+| `prompt` | `worker.receipt` | [5250](../../src/process_host.rs#L5250) | receiver-type-required |
+| `prompt` | `self.spawn_automatic_title_seed_and_refinement` | [5252](../../src/process_host.rs#L5252) | receiver-type-required |
+| `prompt` | `session_id.to_owned` | [5253](../../src/process_host.rs#L5253) | receiver-type-required |
+| `prompt` | `timestamp.to_owned` | [5254](../../src/process_host.rs#L5254) | receiver-type-required |
+| `prompt` | `prompt_text` | [5255](../../src/process_host.rs#L5255) | [tekes-supervisor::process_host::prompt_text](../../src/process_host.rs#L228) |
+| `prompt` | `Ok` | [5257](../../src/process_host.rs#L5257) | external-constructor-callback-or-unresolved |
+| `prompt` | `child_exited_within` | [5265](../../src/process_host.rs#L5265) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5490) |
+| `prompt` | `Duration::from_secs` | [5265](../../src/process_host.rs#L5265) | external-constructor-callback-or-unresolved |
+| `prompt` | `Err` | [5266](../../src/process_host.rs#L5266) | external-constructor-callback-or-unresolved |
+| `prompt` | `delivered.unwrap_err` | [5266](../../src/process_host.rs#L5266) | receiver-type-required |
+| `prompt` | `worker.alive.store` | [5268](../../src/process_host.rs#L5268) | receiver-type-required |
+| `prompt` | `self.locked_prompt` | [5270](../../src/process_host.rs#L5270) | receiver-type-required |
+| `compact` | `self.reset_restart_backoff` | [5279](../../src/process_host.rs#L5279) | receiver-type-required |
+| `compact` | `self.live_worker` | [5280](../../src/process_host.rs#L5280) | receiver-type-required |
+| `compact` | `origin.key.clone` | [5281](../../src/process_host.rs#L5281) | receiver-type-required |
+| `compact` | `worker                 .write(                     &encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err(internal)?,                 )                 .map_err(internal)                 .and_then` | [5282](../../src/process_host.rs#L5282) | receiver-type-required |
+| `compact` | `worker                 .write(                     &encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5282](../../src/process_host.rs#L5282) | receiver-type-required |
+| `compact` | `worker                 .write` | [5282](../../src/process_host.rs#L5282) | receiver-type-required |
+| `compact` | `encode_line(                         "compact",                         &worker_control::Compact {                             delivery: delivery.clone(),                             origin: origin.clone(),                         },                     )                     .map_err` | [5284](../../src/process_host.rs#L5284) | receiver-type-required |
+| `compact` | `encode_line` | [5284](../../src/process_host.rs#L5284) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `compact` | `delivery.clone` | [5287](../../src/process_host.rs#L5287) | receiver-type-required |
+| `compact` | `origin.clone` | [5288](../../src/process_host.rs#L5288) | receiver-type-required |
+| `compact` | `worker.receipt` | [5294](../../src/process_host.rs#L5294) | receiver-type-required |
+| `compact` | `Ok` | [5296](../../src/process_host.rs#L5296) | external-constructor-callback-or-unresolved |
+| `compact` | `child_exited_within` | [5304](../../src/process_host.rs#L5304) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5490) |
+| `compact` | `Duration::from_secs` | [5304](../../src/process_host.rs#L5304) | external-constructor-callback-or-unresolved |
+| `compact` | `Err` | [5305](../../src/process_host.rs#L5305) | external-constructor-callback-or-unresolved |
+| `compact` | `delivered.unwrap_err` | [5305](../../src/process_host.rs#L5305) | receiver-type-required |
+| `compact` | `worker.alive.store` | [5307](../../src/process_host.rs#L5307) | receiver-type-required |
+| `compact` | `self.locked_compact` | [5309](../../src/process_host.rs#L5309) | receiver-type-required |
+| `cancel` | `self.reset_restart_backoff` | [5318](../../src/process_host.rs#L5318) | receiver-type-required |
+| `cancel` | `Instant::now` | [5319](../../src/process_host.rs#L5319) | external-constructor-callback-or-unresolved |
+| `cancel` | `self.live_worker` | [5320](../../src/process_host.rs#L5320) | receiver-type-required |
+| `cancel` | `worker.tool_cancellation.cancel` | [5321](../../src/process_host.rs#L5321) | receiver-type-required |
+| `cancel` | `worker.dynamic_authority.as_ref` | [5322](../../src/process_host.rs#L5322) | receiver-type-required |
+| `cancel` | `authority.cancel_inflight` | [5323](../../src/process_host.rs#L5323) | receiver-type-required |
+| `cancel` | `origin.key.clone` | [5325](../../src/process_host.rs#L5325) | receiver-type-required |
+| `cancel` | `next_stop_generation` | [5326](../../src/process_host.rs#L5326) | [tekes-supervisor::process_host::next_stop_generation](../../src/process_host.rs#L6593) |
+| `cancel` | `encode_line(                 "stop",                 &Stop {                     delivery: delivery.clone(),                     origin: origin.clone(),                     generation,                 },             )             .map_err` | [5327](../../src/process_host.rs#L5327) | receiver-type-required |
+| `cancel` | `encode_line` | [5327](../../src/process_host.rs#L5327) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `cancel` | `delivery.clone` | [5330](../../src/process_host.rs#L5330) | receiver-type-required |
+| `cancel` | `origin.clone` | [5331](../../src/process_host.rs#L5331) | receiver-type-required |
+| `cancel` | `worker                 .write(&stop)                 .map_err(&#124;error&#124; ("stop-write", internal(error)))                 .and_then` | [5336](../../src/process_host.rs#L5336) | receiver-type-required |
+| `cancel` | `worker                 .write(&stop)                 .map_err` | [5336](../../src/process_host.rs#L5336) | receiver-type-required |
+| `cancel` | `worker                 .write` | [5336](../../src/process_host.rs#L5336) | receiver-type-required |
+| `cancel` | `internal` | [5338](../../src/process_host.rs#L5338), [5353](../../src/process_host.rs#L5353) | [tekes-supervisor::process_host::internal](../../src/process_host.rs#L6632) |
+| `cancel` | `worker                         .receipt(&delivery)                         .map_err` | [5340](../../src/process_host.rs#L5340) | receiver-type-required |
+| `cancel` | `worker                         .receipt` | [5340](../../src/process_host.rs#L5340) | receiver-type-required |
+| `cancel` | `self                         .root                         .join("threads")                         .join(session_id)                         .join` | [5346](../../src/process_host.rs#L5346) | receiver-type-required |
+| `cancel` | `self                         .root                         .join("threads")                         .join` | [5346](../../src/process_host.rs#L5346) | receiver-type-required |
+| `cancel` | `self                         .root                         .join` | [5346](../../src/process_host.rs#L5346) | receiver-type-required |
+| `cancel` | `self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())                         .map_err` | [5351](../../src/process_host.rs#L5351) | receiver-type-required |
+| `cancel` | `self.cascade_stop_from` | [5351](../../src/process_host.rs#L5351), [5388](../../src/process_host.rs#L5388) | receiver-type-required |
+| `cancel` | `HashSet::new` | [5351](../../src/process_host.rs#L5351), [5388](../../src/process_host.rs#L5388) | external-constructor-callback-or-unresolved |
+| `cancel` | `cancel_stage_failure` | [5353](../../src/process_host.rs#L5353), [5369](../../src/process_host.rs#L5369) | [tekes-supervisor::process_host::cancel_stage_failure](../../src/process_host.rs#L5471) |
+| `cancel` | `terminate_worker` | [5355](../../src/process_host.rs#L5355) | [tekes-supervisor::process_host::terminate_worker](../../src/process_host.rs#L5128) |
+| `cancel` | `Ok` | [5356](../../src/process_host.rs#L5356), [5393](../../src/process_host.rs#L5393) | external-constructor-callback-or-unresolved |
+| `cancel` | `child_exited_within` | [5368](../../src/process_host.rs#L5368) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5490) |
+| `cancel` | `Duration::from_secs` | [5368](../../src/process_host.rs#L5368) | external-constructor-callback-or-unresolved |
+| `cancel` | `Err` | [5369](../../src/process_host.rs#L5369) | external-constructor-callback-or-unresolved |
+| `cancel` | `worker.alive.store` | [5371](../../src/process_host.rs#L5371) | receiver-type-required |
+| `cancel` | `self             .endpoint             .cancel_for_endpoint(session_id, timestamp, origin)             .map_err` | [5379](../../src/process_host.rs#L5379) | receiver-type-required |
+| `cancel` | `self             .endpoint             .cancel_for_endpoint` | [5379](../../src/process_host.rs#L5379) | receiver-type-required |
+| `cancel` | `self             .root             .join("threads")             .join(session_id)             .join` | [5383](../../src/process_host.rs#L5383) | receiver-type-required |
+| `cancel` | `self             .root             .join("threads")             .join` | [5383](../../src/process_host.rs#L5383) | receiver-type-required |
+| `cancel` | `self             .root             .join` | [5383](../../src/process_host.rs#L5383) | receiver-type-required |
+| `cancel` | `self.cascade_stop_from(session_id, session_id, &ledger, &mut HashSet::new())             .map_err` | [5388](../../src/process_host.rs#L5388) | receiver-type-required |
+| `cancel` | `self.schedule_main` | [5390](../../src/process_host.rs#L5390) | receiver-type-required |
+| `cancel` | `self.record_spawn_failure` | [5391](../../src/process_host.rs#L5391) | receiver-type-required |
+| `rename` | `self.reset_restart_backoff` | [5403](../../src/process_host.rs#L5403) | receiver-type-required |
+| `rename` | `self.live_worker` | [5404](../../src/process_host.rs#L5404) | receiver-type-required |
+| `rename` | `origin.key.clone` | [5405](../../src/process_host.rs#L5405) | receiver-type-required |
+| `rename` | `worker                 .write(                     &encode_line(                         "meta",                         &Meta {                             delivery: delivery.clone(),                             origin: origin.clone(),                             title: Some(title.to_owned()),                             labels: None,                         },                     )                     .map_err(internal)?,                 )                 .map_err` | [5406](../../src/process_host.rs#L5406) | receiver-type-required |
+| `rename` | `worker                 .write` | [5406](../../src/process_host.rs#L5406) | receiver-type-required |
+| `rename` | `encode_line(                         "meta",                         &Meta {                             delivery: delivery.clone(),                             origin: origin.clone(),                             title: Some(title.to_owned()),                             labels: None,                         },                     )                     .map_err` | [5408](../../src/process_host.rs#L5408) | receiver-type-required |
+| `rename` | `encode_line` | [5408](../../src/process_host.rs#L5408) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `rename` | `delivery.clone` | [5411](../../src/process_host.rs#L5411) | receiver-type-required |
+| `rename` | `origin.clone` | [5412](../../src/process_host.rs#L5412) | receiver-type-required |
+| `rename` | `Some` | [5413](../../src/process_host.rs#L5413) | external-constructor-callback-or-unresolved |
+| `rename` | `title.to_owned` | [5413](../../src/process_host.rs#L5413) | receiver-type-required |
+| `rename` | `worker.receipt` | [5420](../../src/process_host.rs#L5420) | receiver-type-required |
+| `rename` | `Ok` | [5421](../../src/process_host.rs#L5421) | external-constructor-callback-or-unresolved |
+| `rename` | `self.endpoint             .rename_session_for_endpoint(session_id, timestamp, origin, title)             .map_err` | [5426](../../src/process_host.rs#L5426) | receiver-type-required |
+| `rename` | `self.endpoint             .rename_session_for_endpoint` | [5426](../../src/process_host.rs#L5426) | receiver-type-required |
+| `deliver_if_live` | `self.live_worker` | [5438](../../src/process_host.rs#L5438) | receiver-type-required |
+| `deliver_if_live` | `Ok` | [5439](../../src/process_host.rs#L5439), [5452](../../src/process_host.rs#L5452) | external-constructor-callback-or-unresolved |
+| `deliver_if_live` | `encode_line("approval_response", response).map_err` | [5441](../../src/process_host.rs#L5441) | receiver-type-required |
+| `deliver_if_live` | `encode_line` | [5441](../../src/process_host.rs#L5441) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `deliver_if_live` | `worker             .write(&bytes)             .map_err(internal)             .and_then(&#124;()&#124; worker.receipt(&response.delivery))             .map` | [5442](../../src/process_host.rs#L5442) | receiver-type-required |
+| `deliver_if_live` | `worker             .write(&bytes)             .map_err(internal)             .and_then` | [5442](../../src/process_host.rs#L5442) | receiver-type-required |
+| `deliver_if_live` | `worker             .write(&bytes)             .map_err` | [5442](../../src/process_host.rs#L5442) | receiver-type-required |
+| `deliver_if_live` | `worker             .write` | [5442](../../src/process_host.rs#L5442) | receiver-type-required |
+| `deliver_if_live` | `worker.receipt` | [5445](../../src/process_host.rs#L5445) | receiver-type-required |
+| `deliver_if_live` | `result.is_err` | [5447](../../src/process_host.rs#L5447) | receiver-type-required |
+| `deliver_if_live` | `child_exited_within` | [5447](../../src/process_host.rs#L5447) | [tekes-supervisor::process_host::child_exited_within](../../src/process_host.rs#L5490) |
+| `deliver_if_live` | `Duration::from_secs` | [5447](../../src/process_host.rs#L5447) | external-constructor-callback-or-unresolved |
+| `ensure_after_locked_append` | `session_id.split_once` | [5458](../../src/process_host.rs#L5458) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_line(session, child, &format!("{child}.jsonl"))                 .map(&#124;_&#124; ())                 .map_err` | [5459](../../src/process_host.rs#L5459) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_line(session, child, &format!("{child}.jsonl"))                 .map` | [5459](../../src/process_host.rs#L5459) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_line` | [5459](../../src/process_host.rs#L5459) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_main(session_id).map(&#124;_&#124; ()).map_err` | [5463](../../src/process_host.rs#L5463) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_main(session_id).map` | [5463](../../src/process_host.rs#L5463) | receiver-type-required |
+| `ensure_after_locked_append` | `self.schedule_main` | [5463](../../src/process_host.rs#L5463) | receiver-type-required |
+| `cancel_stage_failure` | `ProductionRouteFailure::new` | [5479](../../src/process_host.rs#L5479) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L513) |
+| `child_exited_within` | `Instant::now` | [5491](../../src/process_host.rs#L5491), [5502](../../src/process_host.rs#L5502) | external-constructor-callback-or-unresolved |
+| `child_exited_within` | `child.try_lock` | [5493](../../src/process_host.rs#L5493) | receiver-type-required |
+| `child_exited_within` | `child.try_wait` | [5494](../../src/process_host.rs#L5494) | receiver-type-required |
+| `child_exited_within` | `std::thread::sleep` | [5505](../../src/process_host.rs#L5505) | external-constructor-callback-or-unresolved |
+| `child_exited_within` | `Duration::from_millis` | [5505](../../src/process_host.rs#L5505) | external-constructor-callback-or-unresolved |
+| `neutral_lifecycle` | `Vec::new` | [5520](../../src/process_host.rs#L5520), [5521](../../src/process_host.rs#L5521), [5522](../../src/process_host.rs#L5522) | external-constructor-callback-or-unresolved |
+| `ledger_damage` | `scan_valid_prefix` | [5536](../../src/process_host.rs#L5536) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `ledger_damage` | `usize::try_from(scan.valid_bytes).unwrap_or` | [5537](../../src/process_host.rs#L5537) | receiver-type-required |
+| `ledger_damage` | `usize::try_from` | [5537](../../src/process_host.rs#L5537) | external-constructor-callback-or-unresolved |
+| `ledger_damage` | `(scan.projection.is_none()         &#124;&#124; (scan.needs_repair() && bytes.get(valid..).is_some_and(&#124;tail&#124; tail.contains(&b'\n'))))     .then` | [5538](../../src/process_host.rs#L5538) | receiver-type-required |
+| `ledger_damage` | `scan.projection.is_none` | [5538](../../src/process_host.rs#L5538) | receiver-type-required |
+| `ledger_damage` | `scan.needs_repair` | [5539](../../src/process_host.rs#L5539) | receiver-type-required |
+| `ledger_damage` | `bytes.get(valid..).is_some_and` | [5539](../../src/process_host.rs#L5539) | receiver-type-required |
+| `ledger_damage` | `bytes.get` | [5539](../../src/process_host.rs#L5539) | receiver-type-required |
+| `ledger_damage` | `tail.contains` | [5539](../../src/process_host.rs#L5539) | receiver-type-required |
+| `ledger_damage` | `scan.first_invalid_offset.unwrap_or` | [5540](../../src/process_host.rs#L5540) | receiver-type-required |
+| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [5562](../../src/process_host.rs#L5562) | receiver-type-required |
+| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags` | [5562](../../src/process_host.rs#L5562) | receiver-type-required |
+| `damage_under_lock` | `fs::OpenOptions::new()         .read(true)         .append` | [5562](../../src/process_host.rs#L5562) | receiver-type-required |
+| `damage_under_lock` | `fs::OpenOptions::new()         .read` | [5562](../../src/process_host.rs#L5562) | receiver-type-required |
+| `damage_under_lock` | `fs::OpenOptions::new` | [5562](../../src/process_host.rs#L5562) | external-constructor-callback-or-unresolved |
+| `damage_under_lock` | `libc::flock` | [5572](../../src/process_host.rs#L5572) | external-constructor-callback-or-unresolved |
+| `damage_under_lock` | `file.as_raw_fd` | [5572](../../src/process_host.rs#L5572) | receiver-type-required |
+| `damage_under_lock` | `std::io::Error::last_os_error().kind` | [5575](../../src/process_host.rs#L5575) | receiver-type-required |
+| `damage_under_lock` | `std::io::Error::last_os_error` | [5575](../../src/process_host.rs#L5575) | external-constructor-callback-or-unresolved |
+| `damage_under_lock` | `file.metadata` | [5581](../../src/process_host.rs#L5581) | receiver-type-required |
+| `damage_under_lock` | `fs::metadata` | [5581](../../src/process_host.rs#L5581) | external-constructor-callback-or-unresolved |
+| `damage_under_lock` | `descriptor.dev` | [5584](../../src/process_host.rs#L5584) | receiver-type-required |
+| `damage_under_lock` | `pathname.dev` | [5584](../../src/process_host.rs#L5584) | receiver-type-required |
+| `damage_under_lock` | `descriptor.ino` | [5584](../../src/process_host.rs#L5584) | receiver-type-required |
+| `damage_under_lock` | `pathname.ino` | [5584](../../src/process_host.rs#L5584) | receiver-type-required |
+| `damage_under_lock` | `fs::read` | [5587](../../src/process_host.rs#L5587) | external-constructor-callback-or-unresolved |
+| `damage_under_lock` | `ledger_damage(&bytes).map_or` | [5588](../../src/process_host.rs#L5588) | receiver-type-required |
+| `damage_under_lock` | `ledger_damage` | [5588](../../src/process_host.rs#L5588) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5535) |
+| `child_ledger_damage` | `fs::read_dir(folder).ok` | [5598](../../src/process_host.rs#L5598) | receiver-type-required |
+| `child_ledger_damage` | `fs::read_dir` | [5598](../../src/process_host.rs#L5598) | external-constructor-callback-or-unresolved |
+| `child_ledger_damage` | `entries.flatten` | [5599](../../src/process_host.rs#L5599) | receiver-type-required |
+| `child_ledger_damage` | `entry.file_name().to_string_lossy().into_owned` | [5600](../../src/process_host.rs#L5600) | receiver-type-required |
+| `child_ledger_damage` | `entry.file_name().to_string_lossy` | [5600](../../src/process_host.rs#L5600) | receiver-type-required |
+| `child_ledger_damage` | `entry.file_name` | [5600](../../src/process_host.rs#L5600) | receiver-type-required |
+| `child_ledger_damage` | `store::card::valid_line_name` | [5602](../../src/process_host.rs#L5602) | [store::card::valid_line_name](../../../store/src/card.rs#L252) |
+| `child_ledger_damage` | `entry.file_type().is_ok_and` | [5603](../../src/process_host.rs#L5603) | receiver-type-required |
+| `child_ledger_damage` | `entry.file_type` | [5603](../../src/process_host.rs#L5603) | receiver-type-required |
+| `child_ledger_damage` | `kind.is_file` | [5603](../../src/process_host.rs#L5603) | receiver-type-required |
+| `child_ledger_damage` | `fs::read` | [5607](../../src/process_host.rs#L5607) | external-constructor-callback-or-unresolved |
+| `child_ledger_damage` | `entry.path` | [5607](../../src/process_host.rs#L5607), [5614](../../src/process_host.rs#L5614) | receiver-type-required |
+| `child_ledger_damage` | `bytes.is_empty` | [5610](../../src/process_host.rs#L5610) | receiver-type-required |
+| `child_ledger_damage` | `ledger_damage(&bytes).is_some` | [5613](../../src/process_host.rs#L5613) | receiver-type-required |
+| `child_ledger_damage` | `ledger_damage` | [5613](../../src/process_host.rs#L5613) | [tekes-supervisor::process_host::ledger_damage](../../src/process_host.rs#L5535) |
+| `child_ledger_damage` | `damage_under_lock` | [5614](../../src/process_host.rs#L5614) | [tekes-supervisor::process_host::damage_under_lock](../../src/process_host.rs#L5561) |
+| `child_ledger_damage` | `Some` | [5616](../../src/process_host.rs#L5616) | external-constructor-callback-or-unresolved |
+| `is_single_line_ledger` | `fs::File::open` | [5624](../../src/process_host.rs#L5624) | external-constructor-callback-or-unresolved |
+| `is_single_line_ledger` | `BufReader::new` | [5627](../../src/process_host.rs#L5627) | external-constructor-callback-or-unresolved |
+| `is_single_line_ledger` | `Vec::new` | [5628](../../src/process_host.rs#L5628) | external-constructor-callback-or-unresolved |
+| `is_single_line_ledger` | `reader.read_until(b'\n', &mut first).is_err` | [5629](../../src/process_host.rs#L5629) | receiver-type-required |
+| `is_single_line_ledger` | `reader.read_until` | [5629](../../src/process_host.rs#L5629) | receiver-type-required |
+| `is_single_line_ledger` | `first.last` | [5629](../../src/process_host.rs#L5629) | receiver-type-required |
+| `is_single_line_ledger` | `Some` | [5629](../../src/process_host.rs#L5629) | external-constructor-callback-or-unresolved |
+| `is_single_line_ledger` | `reader.fill_buf().is_ok_and` | [5632](../../src/process_host.rs#L5632) | receiver-type-required |
+| `is_single_line_ledger` | `reader.fill_buf` | [5632](../../src/process_host.rs#L5632) | receiver-type-required |
+| `HYDRATE_RETRY` | `Duration::from_secs` | [5636](../../src/process_host.rs#L5636) | external-constructor-callback-or-unresolved |
+| `DEFAULT_LIST_WAIT` | `Duration::from_millis` | [5638](../../src/process_host.rs#L5638) | external-constructor-callback-or-unresolved |
+| `list_wait` | `self             .list_wait_override             .lock()             .unwrap_or_else` | [5643](../../src/process_host.rs#L5643) | receiver-type-required |
+| `list_wait` | `self             .list_wait_override             .lock` | [5643](../../src/process_host.rs#L5643) | receiver-type-required |
+| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok()             .and_then(&#124;value&#124; value.parse::<u64>().ok())             .map_or` | [5650](../../src/process_host.rs#L5650) | receiver-type-required |
+| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok()             .and_then` | [5650](../../src/process_host.rs#L5650) | receiver-type-required |
+| `list_wait` | `std::env::var("TEKES_KERNEL_LIST_COLD_WAIT_MS")             .ok` | [5650](../../src/process_host.rs#L5650) | receiver-type-required |
+| `list_wait` | `std::env::var` | [5650](../../src/process_host.rs#L5650) | external-constructor-callback-or-unresolved |
+| `list_wait` | `value.parse::<u64>().ok` | [5652](../../src/process_host.rs#L5652) | receiver-type-required |
+| `list_wait` | `value.parse::<u64>` | [5652](../../src/process_host.rs#L5652) | receiver-type-required |
+| `is_running` | `live.contains` | [5657](../../src/process_host.rs#L5657) | receiver-type-required |
+| `is_running` | `self                 .threads                 .session_has_live_line_holder(session_id)                 .unwrap_or` | [5658](../../src/process_host.rs#L5658) | receiver-type-required |
+| `is_running` | `self                 .threads                 .session_has_live_line_holder` | [5658](../../src/process_host.rs#L5658) | receiver-type-required |
+| `catalog_item` | `self.root.join("threads").join` | [5672](../../src/process_host.rs#L5672) | receiver-type-required |
+| `catalog_item` | `self.root.join` | [5672](../../src/process_host.rs#L5672) | receiver-type-required |
+| `catalog_item` | `self.is_running` | [5673](../../src/process_host.rs#L5673) | [tekes-supervisor::process_host::ProductionProcessHost::is_running](../../src/process_host.rs#L5656) |
+| `catalog_item` | `entry             .view             .as_ref()             .filter` | [5674](../../src/process_host.rs#L5674) | receiver-type-required |
+| `catalog_item` | `entry             .view             .as_ref` | [5674](../../src/process_host.rs#L5674) | receiver-type-required |
+| `catalog_item` | `view.main` | [5679](../../src/process_host.rs#L5679) | receiver-type-required |
+| `catalog_item` | `self.is_stale_ephemeral` | [5680](../../src/process_host.rs#L5680), [5702](../../src/process_host.rs#L5702) | [tekes-supervisor::process_host::ProductionProcessHost::is_stale_ephemeral](../../src/process_host.rs#L1715) |
+| `catalog_item` | `Some` | [5683](../../src/process_host.rs#L5683), [5716](../../src/process_host.rs#L5716), [5728](../../src/process_host.rs#L5728), [5729](../../src/process_host.rs#L5729) | external-constructor-callback-or-unresolved |
+| `catalog_item` | `session_id.to_owned` | [5684](../../src/process_host.rs#L5684), [5717](../../src/process_host.rs#L5717) | receiver-type-required |
+| `catalog_item` | `view.summary.workspace.clone` | [5685](../../src/process_host.rs#L5685) | receiver-type-required |
+| `catalog_item` | `view.summary.title.clone` | [5686](../../src/process_host.rs#L5686) | receiver-type-required |
+| `catalog_item` | `main.facts.clone` | [5692](../../src/process_host.rs#L5692) | receiver-type-required |
+| `catalog_item` | `endpoint::permission_mode_of` | [5693](../../src/process_host.rs#L5693), [5726](../../src/process_host.rs#L5726) | [endpoint::service::permission_mode_of](../../../endpoint/src/service.rs#L99) |
+| `catalog_item` | `view.summary.identity_profile.clone` | [5694](../../src/process_host.rs#L5694) | receiver-type-required |
+| `catalog_item` | `store::read_genesis(folder.join("main.jsonl")).ok` | [5700](../../src/process_host.rs#L5700) | receiver-type-required |
+| `catalog_item` | `store::read_genesis` | [5700](../../src/process_host.rs#L5700) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `catalog_item` | `folder.join` | [5700](../../src/process_host.rs#L5700), [5706](../../src/process_host.rs#L5706), [5708](../../src/process_host.rs#L5708), [5723](../../src/process_host.rs#L5723) | receiver-type-required |
+| `catalog_item` | `genesis.is_ephemeral_genesis` | [5701](../../src/process_host.rs#L5701) | receiver-type-required |
+| `catalog_item` | `endpoint::last_record_updated_ms(&folder.join("main.jsonl"))             .unwrap_or_else` | [5706](../../src/process_host.rs#L5706) | receiver-type-required |
+| `catalog_item` | `endpoint::last_record_updated_ms` | [5706](../../src/process_host.rs#L5706) | [endpoint::service::last_record_updated_ms](../../../endpoint/src/service.rs#L163) |
+| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok()                     .and_then(&#124;time&#124; time.duration_since(UNIX_EPOCH).ok())                     .map_or` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
+| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok()                     .and_then` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
+| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then(&#124;metadata&#124; metadata.modified())                     .ok` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
+| `catalog_item` | `fs::metadata(folder.join("main.jsonl"))                     .and_then` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
+| `catalog_item` | `fs::metadata` | [5708](../../src/process_host.rs#L5708) | external-constructor-callback-or-unresolved |
+| `catalog_item` | `metadata.modified` | [5709](../../src/process_host.rs#L5709) | receiver-type-required |
+| `catalog_item` | `time.duration_since(UNIX_EPOCH).ok` | [5711](../../src/process_host.rs#L5711) | receiver-type-required |
+| `catalog_item` | `time.duration_since` | [5711](../../src/process_host.rs#L5711) | receiver-type-required |
+| `catalog_item` | `u64::try_from(duration.as_millis()).unwrap_or` | [5713](../../src/process_host.rs#L5713) | receiver-type-required |
+| `catalog_item` | `u64::try_from` | [5713](../../src/process_host.rs#L5713) | external-constructor-callback-or-unresolved |
+| `catalog_item` | `duration.as_millis` | [5713](../../src/process_host.rs#L5713) | receiver-type-required |
+| `catalog_item` | `genesis.string_field("workspace")?.to_owned` | [5718](../../src/process_host.rs#L5718) | receiver-type-required |
+| `catalog_item` | `genesis.string_field` | [5718](../../src/process_host.rs#L5718), [5727](../../src/process_host.rs#L5727) | receiver-type-required |
+| `catalog_item` | `is_single_line_ledger` | [5723](../../src/process_host.rs#L5723) | [tekes-supervisor::process_host::is_single_line_ledger](../../src/process_host.rs#L5623) |
+| `catalog_item` | `neutral_lifecycle` | [5725](../../src/process_host.rs#L5725) | [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5512) |
+| `catalog_item` | `"coding".to_owned` | [5728](../../src/process_host.rs#L5728) | receiver-type-required |
+| `catalog_item` | `profile.to_owned` | [5729](../../src/process_host.rs#L5729) | receiver-type-required |
+| `verify_within` | `ids.is_empty` | [5740](../../src/process_host.rs#L5740) | receiver-type-required |
+| `verify_within` | `self.self_weak.upgrade` | [5743](../../src/process_host.rs#L5743) | receiver-type-required |
+| `verify_within` | `ids.len` | [5746](../../src/process_host.rs#L5746) | receiver-type-required |
+| `verify_within` | `Arc::new` | [5747](../../src/process_host.rs#L5747), [5748](../../src/process_host.rs#L5748) | external-constructor-callback-or-unresolved |
+| `verify_within` | `Mutex::new` | [5747](../../src/process_host.rs#L5747), [5748](../../src/process_host.rs#L5748) | external-constructor-callback-or-unresolved |
+| `verify_within` | `ids.into_iter().collect::<VecDeque<_>>` | [5747](../../src/process_host.rs#L5747) | receiver-type-required |
+| `verify_within` | `ids.into_iter` | [5747](../../src/process_host.rs#L5747) | receiver-type-required |
+| `verify_within` | `Condvar::new` | [5748](../../src/process_host.rs#L5748) | external-constructor-callback-or-unresolved |
+| `verify_within` | `std::thread::available_parallelism()             .map_or(2, std::num::NonZeroUsize::get)             .min(8)             .min` | [5749](../../src/process_host.rs#L5749) | receiver-type-required |
+| `verify_within` | `std::thread::available_parallelism()             .map_or(2, std::num::NonZeroUsize::get)             .min` | [5749](../../src/process_host.rs#L5749) | receiver-type-required |
+| `verify_within` | `std::thread::available_parallelism()             .map_or` | [5749](../../src/process_host.rs#L5749) | receiver-type-required |
+| `verify_within` | `std::thread::available_parallelism` | [5749](../../src/process_host.rs#L5749) | external-constructor-callback-or-unresolved |
+| `verify_within` | `Arc::clone` | [5755](../../src/process_host.rs#L5755) | external-constructor-callback-or-unresolved |
+| `verify_within` | `std::thread::spawn` | [5756](../../src/process_host.rs#L5756) | external-constructor-callback-or-unresolved |
+| `verify_within` | `queue                             .lock()                             .unwrap_or_else` | [5759](../../src/process_host.rs#L5759) | receiver-type-required |
+| `verify_within` | `queue                             .lock` | [5759](../../src/process_host.rs#L5759) | receiver-type-required |
+| `verify_within` | `queue.pop_front` | [5762](../../src/process_host.rs#L5762) | receiver-type-required |
+| `verify_within` | `host.verify_order                                 .lock()                                 .unwrap_or_else(std::sync::PoisonError::into_inner)                                 .push` | [5766](../../src/process_host.rs#L5766) | receiver-type-required |
+| `verify_within` | `host.verify_order                                 .lock()                                 .unwrap_or_else` | [5766](../../src/process_host.rs#L5766) | receiver-type-required |
+| `verify_within` | `host.verify_order                                 .lock` | [5766](../../src/process_host.rs#L5766) | receiver-type-required |
+| `verify_within` | `id.clone` | [5769](../../src/process_host.rs#L5769) | receiver-type-required |
+| `verify_within` | `host.hydrate` | [5776](../../src/process_host.rs#L5776) | receiver-type-required |
+| `verify_within` | `host.publish_session_status` | [5779](../../src/process_host.rs#L5779) | receiver-type-required |
+| `verify_within` | `count                         .lock()                         .unwrap_or_else` | [5781](../../src/process_host.rs#L5781) | receiver-type-required |
+| `verify_within` | `count                         .lock` | [5781](../../src/process_host.rs#L5781) | receiver-type-required |
+| `verify_within` | `changed.notify_all` | [5784](../../src/process_host.rs#L5784) | receiver-type-required |
+| `verify_within` | `Instant::now` | [5789](../../src/process_host.rs#L5789), [5794](../../src/process_host.rs#L5794) | external-constructor-callback-or-unresolved |
+| `verify_within` | `count             .lock()             .unwrap_or_else` | [5790](../../src/process_host.rs#L5790) | receiver-type-required |
+| `verify_within` | `count             .lock` | [5790](../../src/process_host.rs#L5790) | receiver-type-required |
+| `verify_within` | `deadline.checked_duration_since` | [5794](../../src/process_host.rs#L5794) | receiver-type-required |
+| `verify_within` | `changed                 .wait_timeout(done, remaining)                 .unwrap_or_else` | [5797](../../src/process_host.rs#L5797) | receiver-type-required |
+| `verify_within` | `changed                 .wait_timeout` | [5797](../../src/process_host.rs#L5797) | receiver-type-required |
+| `build_inventory` | `self.live_sessions` | [5809](../../src/process_host.rs#L5809) | receiver-type-required |
+| `build_inventory` | `self.catalog.ensure_loaded` | [5810](../../src/process_host.rs#L5810) | receiver-type-required |
+| `build_inventory` | `store::folder_events::admitted_ids` | [5811](../../src/process_host.rs#L5811) | [store::folder_events::admitted_ids](../../../store/src/folder_events.rs#L158) |
+| `build_inventory` | `self.catalog.get` | [5812](../../src/process_host.rs#L5812) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .unverified()             .into_iter()             .filter(&#124;id&#124; !self.recently_failed(id))             .collect::<Vec<_>>` | [5815](../../src/process_host.rs#L5815) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .unverified()             .into_iter()             .filter` | [5815](../../src/process_host.rs#L5815) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .unverified()             .into_iter` | [5815](../../src/process_host.rs#L5815) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .unverified` | [5815](../../src/process_host.rs#L5815) | receiver-type-required |
+| `build_inventory` | `self.recently_failed` | [5819](../../src/process_host.rs#L5819) | [tekes-supervisor::process_host::ProductionProcessHost::recently_failed](../../src/process_host.rs#L2038) |
+| `build_inventory` | `self.verify_within` | [5821](../../src/process_host.rs#L5821) | [tekes-supervisor::process_host::ProductionProcessHost::verify_within](../../src/process_host.rs#L5739) |
+| `build_inventory` | `self             .catalog             .entries_now()             .into_iter()             .filter_map(&#124;(id, entry)&#124; self.catalog_item(&id, &entry, &live))             .collect::<Vec<_>>` | [5822](../../src/process_host.rs#L5822) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .entries_now()             .into_iter()             .filter_map` | [5822](../../src/process_host.rs#L5822) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .entries_now()             .into_iter` | [5822](../../src/process_host.rs#L5822) | receiver-type-required |
+| `build_inventory` | `self             .catalog             .entries_now` | [5822](../../src/process_host.rs#L5822) | receiver-type-required |
+| `build_inventory` | `self.catalog_item` | [5826](../../src/process_host.rs#L5826) | [tekes-supervisor::process_host::ProductionProcessHost::catalog_item](../../src/process_host.rs#L5666) |
+| `build_inventory` | `fs::read_dir(self.root.join("archive")).map_err` | [5829](../../src/process_host.rs#L5829) | receiver-type-required |
+| `build_inventory` | `fs::read_dir` | [5829](../../src/process_host.rs#L5829) | external-constructor-callback-or-unresolved |
+| `build_inventory` | `self.root.join` | [5829](../../src/process_host.rs#L5829) | receiver-type-required |
+| `build_inventory` | `entry.map_err` | [5830](../../src/process_host.rs#L5830) | receiver-type-required |
+| `build_inventory` | `entry.file_name().to_string_lossy().into_owned` | [5831](../../src/process_host.rs#L5831) | receiver-type-required |
+| `build_inventory` | `entry.file_name().to_string_lossy` | [5831](../../src/process_host.rs#L5831) | receiver-type-required |
+| `build_inventory` | `entry.file_name` | [5831](../../src/process_host.rs#L5831) | receiver-type-required |
+| `build_inventory` | `entry.file_type().map_err(DaemonError::io)?.is_dir` | [5832](../../src/process_host.rs#L5832) | receiver-type-required |
+| `build_inventory` | `entry.file_type().map_err` | [5832](../../src/process_host.rs#L5832) | receiver-type-required |
+| `build_inventory` | `entry.file_type` | [5832](../../src/process_host.rs#L5832) | receiver-type-required |
+| `build_inventory` | `endpoint::validate_session_id(&id).is_ok` | [5833](../../src/process_host.rs#L5833) | receiver-type-required |
+| `build_inventory` | `endpoint::validate_session_id` | [5833](../../src/process_host.rs#L5833) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `build_inventory` | `items.push` | [5835](../../src/process_host.rs#L5835) | receiver-type-required |
+| `build_inventory` | `String::new` | [5837](../../src/process_host.rs#L5837), [5845](../../src/process_host.rs#L5845) | external-constructor-callback-or-unresolved |
+| `build_inventory` | `neutral_lifecycle` | [5844](../../src/process_host.rs#L5844) | [tekes-supervisor::process_host::neutral_lifecycle](../../src/process_host.rs#L5512) |
+| `build_inventory` | `items.sort_by` | [5852](../../src/process_host.rs#L5852) | receiver-type-required |
+| `build_inventory` | `left.session_id.as_bytes().cmp` | [5852](../../src/process_host.rs#L5852) | receiver-type-required |
+| `build_inventory` | `left.session_id.as_bytes` | [5852](../../src/process_host.rs#L5852) | receiver-type-required |
+| `build_inventory` | `right.session_id.as_bytes` | [5852](../../src/process_host.rs#L5852) | receiver-type-required |
+| `build_inventory` | `Ok` | [5853](../../src/process_host.rs#L5853) | external-constructor-callback-or-unresolved |
+| `inventory_items` | `Some` | [5862](../../src/process_host.rs#L5862) | external-constructor-callback-or-unresolved |
+| `inventory_items` | `self.build_inventory(include_archived, self.list_wait())                 .map_err` | [5863](../../src/process_host.rs#L5863) | receiver-type-required |
+| `inventory_items` | `self.build_inventory` | [5863](../../src/process_host.rs#L5863) | receiver-type-required |
+| `inventory_items` | `self.list_wait` | [5863](../../src/process_host.rs#L5863) | receiver-type-required |
+| `inventory_items` | `error.to_string` | [5864](../../src/process_host.rs#L5864) | receiver-type-required |
+| `ensure_verified` | `self.live_worker(session_id).is_some` | [5870](../../src/process_host.rs#L5870) | receiver-type-required |
+| `ensure_verified` | `self.live_worker` | [5870](../../src/process_host.rs#L5870) | receiver-type-required |
+| `ensure_verified` | `Ok` | [5871](../../src/process_host.rs#L5871) | external-constructor-callback-or-unresolved |
+| `ensure_verified` | `ProductionProcessHost::ensure_verified(self, session_id).map_err` | [5873](../../src/process_host.rs#L5873) | receiver-type-required |
+| `ensure_verified` | `ProductionProcessHost::ensure_verified` | [5873](../../src/process_host.rs#L5873) | [tekes-supervisor::process_host::ProductionProcessHost::ensure_verified](../../src/process_host.rs#L1997) |
+| `ensure_verified` | `error.to_string` | [5874](../../src/process_host.rs#L5874) | receiver-type-required |
+| `ensure_verified` | `message.contains` | [5875](../../src/process_host.rs#L5875) | receiver-type-required |
+| `ensure_verified` | `SessionGateError::Quarantined` | [5876](../../src/process_host.rs#L5876) | external-constructor-callback-or-unresolved |
+| `ensure_verified` | `SessionGateError::Failed` | [5878](../../src/process_host.rs#L5878) | external-constructor-callback-or-unresolved |
+| `hold_catalog` | `self.catalog.ensure_loaded` | [5889](../../src/process_host.rs#L5889) | receiver-type-required |
+| `hold_catalog` | `HoldCatalog::default` | [5890](../../src/process_host.rs#L5890) | external-constructor-callback-or-unresolved |
+| `hold_catalog` | `self.catalog.entries_now` | [5891](../../src/process_host.rs#L5891) | receiver-type-required |
+| `hold_catalog` | `entry                 .view                 .as_ref()                 .map(&#124;view&#124; {                     view.lines                         .iter()                         .flat_map(&#124;line&#124; {                             line.holds.iter().map(&#124;hold&#124; HoldRef {                                 line: (line.file != "main.jsonl").then(&#124;&#124; line.file.clone()),                                 hold_seq: hold.hold_seq,                                 kind: if hold.kind == "question" {                                     endpoint::RequestFrameType::Question                                 } else {                                     endpoint::RequestFrameType::Approval                                 },                                 resolved: hold.resolved.is_some(),                             })                         })                         .collect::<Vec<_>>()                 })                 .unwrap_or_default` | [5892](../../src/process_host.rs#L5892) | receiver-type-required |
+| `hold_catalog` | `entry                 .view                 .as_ref()                 .map` | [5892](../../src/process_host.rs#L5892) | receiver-type-required |
+| `hold_catalog` | `entry                 .view                 .as_ref` | [5892](../../src/process_host.rs#L5892) | receiver-type-required |
+| `hold_catalog` | `view.lines                         .iter()                         .flat_map(&#124;line&#124; {                             line.holds.iter().map(&#124;hold&#124; HoldRef {                                 line: (line.file != "main.jsonl").then(&#124;&#124; line.file.clone()),                                 hold_seq: hold.hold_seq,                                 kind: if hold.kind == "question" {                                     endpoint::RequestFrameType::Question                                 } else {                                     endpoint::RequestFrameType::Approval                                 },                                 resolved: hold.resolved.is_some(),                             })                         })                         .collect::<Vec<_>>` | [5896](../../src/process_host.rs#L5896) | receiver-type-required |
+| `hold_catalog` | `view.lines                         .iter()                         .flat_map` | [5896](../../src/process_host.rs#L5896) | receiver-type-required |
+| `hold_catalog` | `view.lines                         .iter` | [5896](../../src/process_host.rs#L5896) | receiver-type-required |
+| `hold_catalog` | `line.holds.iter().map` | [5899](../../src/process_host.rs#L5899) | receiver-type-required |
+| `hold_catalog` | `line.holds.iter` | [5899](../../src/process_host.rs#L5899) | receiver-type-required |
+| `hold_catalog` | `(line.file != "main.jsonl").then` | [5900](../../src/process_host.rs#L5900) | receiver-type-required |
+| `hold_catalog` | `line.file.clone` | [5900](../../src/process_host.rs#L5900) | receiver-type-required |
+| `hold_catalog` | `hold.resolved.is_some` | [5907](../../src/process_host.rs#L5907) | receiver-type-required |
+| `hold_catalog` | `entry.view.as_ref().is_some_and` | [5915](../../src/process_host.rs#L5915) | receiver-type-required |
+| `hold_catalog` | `entry.view.as_ref` | [5915](../../src/process_host.rs#L5915) | receiver-type-required |
+| `hold_catalog` | `result.children_unverified.push` | [5916](../../src/process_host.rs#L5916) | receiver-type-required |
+| `hold_catalog` | `session.clone` | [5916](../../src/process_host.rs#L5916), [5931](../../src/process_host.rs#L5931) | receiver-type-required |
+| `hold_catalog` | `result.verified.push` | [5918](../../src/process_host.rs#L5918), [5924](../../src/process_host.rs#L5924), [5930](../../src/process_host.rs#L5930) | receiver-type-required |
+| `hold_catalog` | `result.unverified.push` | [5935](../../src/process_host.rs#L5935), [5937](../../src/process_host.rs#L5937) | receiver-type-required |
+| `hold_catalog` | `Some` | [5940](../../src/process_host.rs#L5940) | external-constructor-callback-or-unresolved |
+| `inventory_item` | `self.live_sessions` | [5947](../../src/process_host.rs#L5947) | receiver-type-required |
+| `inventory_item` | `self.catalog.get` | [5948](../../src/process_host.rs#L5948), [5965](../../src/process_host.rs#L5965) | receiver-type-required |
+| `inventory_item` | `entry.as_ref().is_some_and` | [5953](../../src/process_host.rs#L5953) | receiver-type-required |
+| `inventory_item` | `entry.as_ref` | [5953](../../src/process_host.rs#L5953) | receiver-type-required |
+| `inventory_item` | `self.live_worker(session_id).is_none` | [5958](../../src/process_host.rs#L5958) | receiver-type-required |
+| `inventory_item` | `self.live_worker` | [5958](../../src/process_host.rs#L5958) | receiver-type-required |
+| `inventory_item` | `self.hydrate` | [5960](../../src/process_host.rs#L5960) | receiver-type-required |
+| `inventory_item` | `Some` | [5967](../../src/process_host.rs#L5967) | external-constructor-callback-or-unresolved |
+| `inventory_item` | `Ok` | [5967](../../src/process_host.rs#L5967) | external-constructor-callback-or-unresolved |
+| `inventory_item` | `entry.and_then` | [5967](../../src/process_host.rs#L5967) | receiver-type-required |
+| `inventory_item` | `self.catalog_item` | [5968](../../src/process_host.rs#L5968) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter(&#124;(_, worker)&#124; worker.alive.load(Ordering::Acquire))             .map(&#124;(key, _)&#124; key.split(':').next().unwrap_or(key).to_owned())             .collect` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter(&#124;(_, worker)&#124; worker.alive.load(Ordering::Acquire))             .map` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter()             .filter` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .iter` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock()             .unwrap_or_else` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `self.workers             .lock` | [5973](../../src/process_host.rs#L5973) | receiver-type-required |
+| `live_sessions` | `worker.alive.load` | [5977](../../src/process_host.rs#L5977) | receiver-type-required |
+| `live_sessions` | `key.split(':').next().unwrap_or(key).to_owned` | [5978](../../src/process_host.rs#L5978) | receiver-type-required |
+| `live_sessions` | `key.split(':').next().unwrap_or` | [5978](../../src/process_host.rs#L5978) | receiver-type-required |
+| `live_sessions` | `key.split(':').next` | [5978](../../src/process_host.rs#L5978) | receiver-type-required |
+| `live_sessions` | `key.split` | [5978](../../src/process_host.rs#L5978) | receiver-type-required |
+| `reconcile_projection` | `self.live_worker(session_id).is_some` | [5983](../../src/process_host.rs#L5983) | receiver-type-required |
+| `reconcile_projection` | `self.live_worker` | [5983](../../src/process_host.rs#L5983) | receiver-type-required |
+| `reconcile_projection` | `Ok` | [5984](../../src/process_host.rs#L5984) | external-constructor-callback-or-unresolved |
+| `reconcile_projection` | `self.publish_appended(session_id)             .map_err` | [5986](../../src/process_host.rs#L5986) | receiver-type-required |
+| `reconcile_projection` | `self.publish_appended` | [5986](../../src/process_host.rs#L5986) | receiver-type-required |
+| `reconcile_projection` | `error.to_string` | [5987](../../src/process_host.rs#L5987) | receiver-type-required |
+| `execute` | `self.reset_restart_backoff` | [5997](../../src/process_host.rs#L5997) | receiver-type-required |
+| `execute` | `self             .root             .join("threads")             .join(session_id)             .join` | [5998](../../src/process_host.rs#L5998) | receiver-type-required |
+| `execute` | `self             .root             .join("threads")             .join` | [5998](../../src/process_host.rs#L5998) | receiver-type-required |
+| `execute` | `self             .root             .join` | [5998](../../src/process_host.rs#L5998) | receiver-type-required |
+| `execute` | `self             .schedule_worker_at_with_startup(session_id, session_id, ledger, Some(transaction))             .map_err` | [6003](../../src/process_host.rs#L6003) | receiver-type-required |
+| `execute` | `self             .schedule_worker_at_with_startup` | [6003](../../src/process_host.rs#L6003) | receiver-type-required |
+| `execute` | `Some` | [6004](../../src/process_host.rs#L6004) | external-constructor-callback-or-unresolved |
+| `execute` | `self.wait_for_worker(session_id).map_err` | [6008](../../src/process_host.rs#L6008) | receiver-type-required |
+| `execute` | `self.wait_for_worker` | [6008](../../src/process_host.rs#L6008) | receiver-type-required |
+| `execute` | `worker                 .write(&encode_queue_transaction(transaction).map_err(internal)?)                 .map_err` | [6011](../../src/process_host.rs#L6011) | receiver-type-required |
+| `execute` | `worker                 .write` | [6011](../../src/process_host.rs#L6011) | receiver-type-required |
+| `execute` | `encode_queue_transaction(transaction).map_err` | [6012](../../src/process_host.rs#L6012) | receiver-type-required |
+| `execute` | `encode_queue_transaction` | [6012](../../src/process_host.rs#L6012) | [worker-control::durable::encode_queue_transaction](../../../worker-control/src/durable.rs#L499) |
+| `execute` | `worker.queue_result` | [6015](../../src/process_host.rs#L6015) | receiver-type-required |
+| `readiness` | `provider::resolve_config_credentials(config, self.secret_store.as_ref())             .map_err` | [6025](../../src/process_host.rs#L6025) | receiver-type-required |
+| `readiness` | `provider::resolve_config_credentials` | [6025](../../src/process_host.rs#L6025) | [provider::secret_store::resolve_config_credentials](../../../provider/src/secret_store.rs#L294) |
+| `readiness` | `self.secret_store.as_ref` | [6025](../../src/process_host.rs#L6025) | receiver-type-required |
+| `readiness` | `Ok` | [6027](../../src/process_host.rs#L6027) | external-constructor-callback-or-unresolved |
+| `readiness` | `config             .providers             .providers             .iter()             .map(&#124;configured&#124; {                 let route_misconfigured = provider::validate_provider(configured).is_err();                 let resolved_models = configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map(&#124;model&#124; {                         provider::resolve_profile(configured, model)                             .ok()                             .map(&#124;profile&#124; (model, profile))                     })                     .collect::<Vec<_>>();                 let status = if route_misconfigured                     &#124;&#124; provider::endpoint_origin(&configured.endpoint).is_err()                     &#124;&#124; resolved_models.is_empty()                 {                     RuntimeProviderStatus::Failed {                         failure: RuntimeProviderFailure::Misconfigured,                     }                 } else if let Some(credential_id) = &configured.credential_key {                     match credentials.availability.get(credential_id) {                         Some(provider::CredentialAvailability::Active { .. }) => {                             RuntimeProviderStatus::Ready                         }                         Some(provider::CredentialAvailability::Unavailable) => {                             RuntimeProviderStatus::Failed {                                 failure: RuntimeProviderFailure::Unavailable,                             }                         }                         Some(                             provider::CredentialAvailability::Revoked { .. }                             &#124; provider::CredentialAvailability::NotFound,                         )                         &#124; None => RuntimeProviderStatus::Failed {                             failure: RuntimeProviderFailure::InvalidCredential,                         },                     }                 } else {                     RuntimeProviderStatus::Ready                 };                 RuntimeProviderReadiness {                     provider: configured.id.clone(),                     models: if status == RuntimeProviderStatus::Ready {                         resolved_models                             .into_iter()                             .map(&#124;(model, profile)&#124; RuntimeModelReadiness {                                 id: model.id.clone(),                                 efforts: profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect(),                                 default_effort: profile                                     .default_reasoning_effort()                                     .map(str::to_owned),                             })                             .collect()                     } else {                         Vec::new()                     },                     status,                 }             })             .collect` | [6027](../../src/process_host.rs#L6027) | receiver-type-required |
+| `readiness` | `config             .providers             .providers             .iter()             .map` | [6027](../../src/process_host.rs#L6027) | receiver-type-required |
+| `readiness` | `config             .providers             .providers             .iter` | [6027](../../src/process_host.rs#L6027) | receiver-type-required |
+| `readiness` | `provider::validate_provider(configured).is_err` | [6032](../../src/process_host.rs#L6032) | receiver-type-required |
+| `readiness` | `provider::validate_provider` | [6032](../../src/process_host.rs#L6032) | [provider::dialect::validate_provider](../../../provider/src/dialect.rs#L683) |
+| `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map(&#124;model&#124; {                         provider::resolve_profile(configured, model)                             .ok()                             .map(&#124;profile&#124; (model, profile))                     })                     .collect::<Vec<_>>` | [6033](../../src/process_host.rs#L6033) | receiver-type-required |
+| `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map` | [6033](../../src/process_host.rs#L6033) | receiver-type-required |
+| `readiness` | `configured                     .models                     .iter()                     .filter` | [6033](../../src/process_host.rs#L6033) | receiver-type-required |
+| `readiness` | `configured                     .models                     .iter` | [6033](../../src/process_host.rs#L6033) | receiver-type-required |
+| `readiness` | `provider::resolve_profile(configured, model)                             .ok()                             .map` | [6038](../../src/process_host.rs#L6038) | receiver-type-required |
+| `readiness` | `provider::resolve_profile(configured, model)                             .ok` | [6038](../../src/process_host.rs#L6038) | receiver-type-required |
+| `readiness` | `provider::resolve_profile` | [6038](../../src/process_host.rs#L6038) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `readiness` | `provider::endpoint_origin(&configured.endpoint).is_err` | [6044](../../src/process_host.rs#L6044) | receiver-type-required |
+| `readiness` | `provider::endpoint_origin` | [6044](../../src/process_host.rs#L6044) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
+| `readiness` | `resolved_models.is_empty` | [6045](../../src/process_host.rs#L6045) | receiver-type-required |
+| `readiness` | `credentials.availability.get` | [6051](../../src/process_host.rs#L6051) | receiver-type-required |
+| `readiness` | `configured.id.clone` | [6072](../../src/process_host.rs#L6072) | receiver-type-required |
+| `readiness` | `resolved_models                             .into_iter()                             .map(&#124;(model, profile)&#124; RuntimeModelReadiness {                                 id: model.id.clone(),                                 efforts: profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect(),                                 default_effort: profile                                     .default_reasoning_effort()                                     .map(str::to_owned),                             })                             .collect` | [6074](../../src/process_host.rs#L6074) | receiver-type-required |
+| `readiness` | `resolved_models                             .into_iter()                             .map` | [6074](../../src/process_host.rs#L6074) | receiver-type-required |
+| `readiness` | `resolved_models                             .into_iter` | [6074](../../src/process_host.rs#L6074) | receiver-type-required |
+| `readiness` | `model.id.clone` | [6077](../../src/process_host.rs#L6077) | receiver-type-required |
+| `readiness` | `profile                                     .reasoning_efforts()                                     .iter()                                     .map(&#124;value&#124; (*value).to_owned())                                     .collect` | [6078](../../src/process_host.rs#L6078) | receiver-type-required |
+| `readiness` | `profile                                     .reasoning_efforts()                                     .iter()                                     .map` | [6078](../../src/process_host.rs#L6078) | receiver-type-required |
+| `readiness` | `profile                                     .reasoning_efforts()                                     .iter` | [6078](../../src/process_host.rs#L6078) | receiver-type-required |
+| `readiness` | `profile                                     .reasoning_efforts` | [6078](../../src/process_host.rs#L6078) | receiver-type-required |
+| `readiness` | `(*value).to_owned` | [6081](../../src/process_host.rs#L6081) | receiver-type-required |
+| `readiness` | `profile                                     .default_reasoning_effort()                                     .map` | [6083](../../src/process_host.rs#L6083) | receiver-type-required |
+| `readiness` | `profile                                     .default_reasoning_effort` | [6083](../../src/process_host.rs#L6083) | receiver-type-required |
+| `readiness` | `Vec::new` | [6089](../../src/process_host.rs#L6089) | external-constructor-callback-or-unresolved |
+| `config_mutation_succeeded` | `self.refresh_live_credentials().map_err` | [6098](../../src/process_host.rs#L6098) | receiver-type-required |
+| `config_mutation_succeeded` | `self.refresh_live_credentials` | [6098](../../src/process_host.rs#L6098) | receiver-type-required |
+| `config_mutation_succeeded` | `self             .streams             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .clone` | [6099](../../src/process_host.rs#L6099) | receiver-type-required |
+| `config_mutation_succeeded` | `self             .streams             .lock()             .unwrap_or_else` | [6099](../../src/process_host.rs#L6099) | receiver-type-required |
+| `config_mutation_succeeded` | `self             .streams             .lock` | [6099](../../src/process_host.rs#L6099) | receiver-type-required |
+| `config_mutation_succeeded` | `session_id.is_empty` | [6105](../../src/process_host.rs#L6105) | receiver-type-required |
+| `config_mutation_succeeded` | `streams.refresh_all_context_projections` | [6106](../../src/process_host.rs#L6106) | receiver-type-required |
+| `config_mutation_succeeded` | `streams.refresh_context_projection` | [6108](../../src/process_host.rs#L6108) | receiver-type-required |
+| `config_mutation_succeeded` | `Ok` | [6116](../../src/process_host.rs#L6116) | external-constructor-callback-or-unresolved |
+| `host` | `self.host.upgrade().ok_or_else` | [6122](../../src/process_host.rs#L6122) | receiver-type-required |
+| `host` | `self.host.upgrade` | [6122](../../src/process_host.rs#L6122) | receiver-type-required |
+| `host` | `SupervisorOperationError::Unavailable` | [6123](../../src/process_host.rs#L6123) | external-constructor-callback-or-unresolved |
+| `host` | `"production process host was dropped".into` | [6123](../../src/process_host.rs#L6123) | receiver-type-required |
+| `ensure_running` | `self.host()?             .ensure_running(session)             .map_err` | [6134](../../src/process_host.rs#L6134) | receiver-type-required |
+| `ensure_running` | `self.host()?             .ensure_running` | [6134](../../src/process_host.rs#L6134) | receiver-type-required |
+| `ensure_running` | `self.host` | [6134](../../src/process_host.rs#L6134) | receiver-type-required |
+| `ensure_running` | `operation_value` | [6137](../../src/process_host.rs#L6137) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) |
+| `deliver_input` | `self.host` | [6144](../../src/process_host.rs#L6144) | receiver-type-required |
+| `deliver_input` | `crate::host_runtime::system_timestamp().map_err` | [6146](../../src/process_host.rs#L6146) | receiver-type-required |
+| `deliver_input` | `crate::host_runtime::system_timestamp` | [6146](../../src/process_host.rs#L6146) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
+| `deliver_input` | `"kernel-worker".into` | [6148](../../src/process_host.rs#L6148) | receiver-type-required |
+| `deliver_input` | `"context".into` | [6149](../../src/process_host.rs#L6149) | receiver-type-required |
+| `deliver_input` | `request.target_session.clone` | [6150](../../src/process_host.rs#L6150) | receiver-type-required |
+| `deliver_input` | `"prompt".into` | [6151](../../src/process_host.rs#L6151) | receiver-type-required |
+| `deliver_input` | `request.request_id.clone` | [6152](../../src/process_host.rs#L6152) | receiver-type-required |
+| `deliver_input` | `host             .locked_prompt(                 &request.target_session,                 &timestamp,                 &origin,                 &MaterializedPrompt {                     blocks: vec![Block::Text {                         text: request.message.clone(),                     }],                     attachments: Vec::new(),                     files: Vec::new(),                 },                 false,             )             .map_err` | [6154](../../src/process_host.rs#L6154) | receiver-type-required |
+| `deliver_input` | `host             .locked_prompt` | [6154](../../src/process_host.rs#L6154) | receiver-type-required |
+| `deliver_input` | `Vec::new` | [6163](../../src/process_host.rs#L6163), [6164](../../src/process_host.rs#L6164) | external-constructor-callback-or-unresolved |
+| `deliver_input` | `SupervisorOperationError::Unavailable` | [6168](../../src/process_host.rs#L6168) | external-constructor-callback-or-unresolved |
+| `deliver_input` | `operation_value` | [6169](../../src/process_host.rs#L6169) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) |
+| `interrupt` | `self.host` | [6180](../../src/process_host.rs#L6180) | receiver-type-required |
+| `interrupt` | `crate::host_runtime::system_timestamp().map_err` | [6182](../../src/process_host.rs#L6182) | receiver-type-required |
+| `interrupt` | `crate::host_runtime::system_timestamp` | [6182](../../src/process_host.rs#L6182) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L495) |
+| `interrupt` | `"kernel-worker".into` | [6184](../../src/process_host.rs#L6184) | receiver-type-required |
+| `interrupt` | `"context".into` | [6185](../../src/process_host.rs#L6185) | receiver-type-required |
+| `interrupt` | `request.target_session.clone` | [6186](../../src/process_host.rs#L6186) | receiver-type-required |
+| `interrupt` | `"cancel".into` | [6187](../../src/process_host.rs#L6187) | receiver-type-required |
+| `interrupt` | `request.request_id.clone` | [6188](../../src/process_host.rs#L6188) | receiver-type-required |
+| `interrupt` | `host             .cancel(&request.target_session, &timestamp, &origin)             .map_err` | [6190](../../src/process_host.rs#L6190) | receiver-type-required |
+| `interrupt` | `host             .cancel` | [6190](../../src/process_host.rs#L6190) | receiver-type-required |
+| `interrupt` | `SupervisorOperationError::Unavailable` | [6192](../../src/process_host.rs#L6192) | external-constructor-callback-or-unresolved |
+| `interrupt` | `operation_value` | [6193](../../src/process_host.rs#L6193) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) |
+| `ensure_child` | `self.host()?             .validate_child_proof(proof)             .map_err` | [6204](../../src/process_host.rs#L6204) | receiver-type-required |
+| `ensure_child` | `self.host()?             .validate_child_proof` | [6204](../../src/process_host.rs#L6204) | receiver-type-required |
+| `ensure_child` | `self.host` | [6204](../../src/process_host.rs#L6204) | receiver-type-required |
+| `ensure_child` | `operation_value` | [6207](../../src/process_host.rs#L6207) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) |
+| `deliver_report` | `self.host()?             .schedule_line(&proof.session, &proof.parent_line, &proof.parent_file)             .map_err` | [6222](../../src/process_host.rs#L6222) | receiver-type-required |
+| `deliver_report` | `self.host()?             .schedule_line` | [6222](../../src/process_host.rs#L6222) | receiver-type-required |
+| `deliver_report` | `self.host` | [6222](../../src/process_host.rs#L6222) | receiver-type-required |
+| `deliver_report` | `operation_value` | [6225](../../src/process_host.rs#L6225) | [tekes-supervisor::process_host::operation_value](../../src/process_host.rs#L6351) |
+| `unresolved_parent_dependency` | `scan_valid_prefix(&fs::read(path).map_err(DaemonError::io)?, 1)             .projection             .ok_or_else` | [6243](../../src/process_host.rs#L6243) | receiver-type-required |
+| `unresolved_parent_dependency` | `scan_valid_prefix` | [6243](../../src/process_host.rs#L6243) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `unresolved_parent_dependency` | `fs::read(path).map_err` | [6243](../../src/process_host.rs#L6243) | receiver-type-required |
+| `unresolved_parent_dependency` | `fs::read` | [6243](../../src/process_host.rs#L6243) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `DaemonError::corrupt` | [6245](../../src/process_host.rs#L6245), [6251](../../src/process_host.rs#L6251), [6253](../../src/process_host.rs#L6253), [6256](../../src/process_host.rs#L6256), [6262](../../src/process_host.rs#L6262), [6267](../../src/process_host.rs#L6267), [6271](../../src/process_host.rs#L6271), [6280](../../src/process_host.rs#L6280), [6284](../../src/process_host.rs#L6284), [6287](../../src/process_host.rs#L6287), [6292](../../src/process_host.rs#L6292), [6296](../../src/process_host.rs#L6296) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `unresolved_parent_dependency` | `read` | [6247](../../src/process_host.rs#L6247), [6273](../../src/process_host.rs#L6273) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `child         .events         .first()         .ok_or_else` | [6248](../../src/process_host.rs#L6248) | receiver-type-required |
+| `unresolved_parent_dependency` | `child         .events         .first` | [6248](../../src/process_host.rs#L6248) | receiver-type-required |
+| `unresolved_parent_dependency` | `genesis.string_field` | [6252](../../src/process_host.rs#L6252) | receiver-type-required |
+| `unresolved_parent_dependency` | `Some` | [6252](../../src/process_host.rs#L6252), [6278](../../src/process_host.rs#L6278), [6294](../../src/process_host.rs#L6294), [6302](../../src/process_host.rs#L6302), [6308](../../src/process_host.rs#L6308) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `Err` | [6253](../../src/process_host.rs#L6253), [6271](../../src/process_host.rs#L6271), [6280](../../src/process_host.rs#L6280), [6296](../../src/process_host.rs#L6296) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `serde_json::to_value(genesis.raw()).map_err` | [6256](../../src/process_host.rs#L6256) | receiver-type-required |
+| `unresolved_parent_dependency` | `serde_json::to_value` | [6256](../../src/process_host.rs#L6256) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `genesis.raw` | [6256](../../src/process_host.rs#L6256) | receiver-type-required |
+| `unresolved_parent_dependency` | `e.to_string` | [6256](../../src/process_host.rs#L6256) | receiver-type-required |
+| `unresolved_parent_dependency` | `raw.get` | [6257](../../src/process_host.rs#L6257) | receiver-type-required |
+| `unresolved_parent_dependency` | `Ok` | [6258](../../src/process_host.rs#L6258), [6306](../../src/process_host.rs#L6306), [6308](../../src/process_host.rs#L6308) | external-constructor-callback-or-unresolved |
+| `unresolved_parent_dependency` | `parent["file"]         .as_str()         .ok_or_else` | [6260](../../src/process_host.rs#L6260) | receiver-type-required |
+| `unresolved_parent_dependency` | `parent["file"]         .as_str` | [6260](../../src/process_host.rs#L6260) | receiver-type-required |
+| `unresolved_parent_dependency` | `file.strip_suffix(".jsonl")             .ok_or_else` | [6266](../../src/process_host.rs#L6266) | receiver-type-required |
+| `unresolved_parent_dependency` | `file.strip_suffix` | [6266](../../src/process_host.rs#L6266) | receiver-type-required |
+| `unresolved_parent_dependency` | `line_schedule_target` | [6269](../../src/process_host.rs#L6269) | [tekes-supervisor::process_host::line_schedule_target](../../src/process_host.rs#L6311) |
+| `unresolved_parent_dependency` | `projection         .events         .first()         .and_then` | [6274](../../src/process_host.rs#L6274) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection         .events         .first` | [6274](../../src/process_host.rs#L6274) | receiver-type-required |
+| `unresolved_parent_dependency` | `e.string_field` | [6277](../../src/process_host.rs#L6277), [6302](../../src/process_host.rs#L6302) | receiver-type-required |
+| `unresolved_parent_dependency` | `parent["seq"]         .as_u64()         .ok_or_else` | [6282](../../src/process_host.rs#L6282) | receiver-type-required |
+| `unresolved_parent_dependency` | `parent["seq"]         .as_u64` | [6282](../../src/process_host.rs#L6282) | receiver-type-required |
+| `unresolved_parent_dependency` | `parent["spawn_id"]         .as_str()         .ok_or_else` | [6285](../../src/process_host.rs#L6285) | receiver-type-required |
+| `unresolved_parent_dependency` | `parent["spawn_id"]         .as_str` | [6285](../../src/process_host.rs#L6285) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection         .events         .iter()         .find(&#124;e&#124; e.seq() == seq && e.kind() == &EventKind::Spawn)         .ok_or_else` | [6288](../../src/process_host.rs#L6288) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection         .events         .iter()         .find` | [6288](../../src/process_host.rs#L6288) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection         .events         .iter` | [6288](../../src/process_host.rs#L6288) | receiver-type-required |
+| `unresolved_parent_dependency` | `e.seq` | [6291](../../src/process_host.rs#L6291), [6300](../../src/process_host.rs#L6300) | receiver-type-required |
+| `unresolved_parent_dependency` | `e.kind` | [6291](../../src/process_host.rs#L6291), [6301](../../src/process_host.rs#L6301), [6303](../../src/process_host.rs#L6303) | receiver-type-required |
+| `unresolved_parent_dependency` | `spawn.string_field` | [6293](../../src/process_host.rs#L6293), [6294](../../src/process_host.rs#L6294) | receiver-type-required |
+| `unresolved_parent_dependency` | `child_path.file_name().and_then` | [6293](../../src/process_host.rs#L6293) | receiver-type-required |
+| `unresolved_parent_dependency` | `child_path.file_name` | [6293](../../src/process_host.rs#L6293) | receiver-type-required |
+| `unresolved_parent_dependency` | `n.to_str` | [6293](../../src/process_host.rs#L6293) | receiver-type-required |
+| `unresolved_parent_dependency` | `spawn.turn` | [6298](../../src/process_host.rs#L6298), [6303](../../src/process_host.rs#L6303) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection.events.iter().any` | [6299](../../src/process_host.rs#L6299) | receiver-type-required |
+| `unresolved_parent_dependency` | `projection.events.iter` | [6299](../../src/process_host.rs#L6299) | receiver-type-required |
+| `unresolved_parent_dependency` | `e.turn` | [6303](../../src/process_host.rs#L6303) | receiver-type-required |
+| `line_schedule_target` | `Path::new` | [6317](../../src/process_host.rs#L6317) | external-constructor-callback-or-unresolved |
+| `line_schedule_target` | `file_path.file_name().and_then` | [6318](../../src/process_host.rs#L6318) | receiver-type-required |
+| `line_schedule_target` | `file_path.file_name` | [6318](../../src/process_host.rs#L6318) | receiver-type-required |
+| `line_schedule_target` | `name.to_str` | [6318](../../src/process_host.rs#L6318) | receiver-type-required |
+| `line_schedule_target` | `Some` | [6318](../../src/process_host.rs#L6318), [6322](../../src/process_host.rs#L6322) | external-constructor-callback-or-unresolved |
+| `line_schedule_target` | `file_path             .extension()             .and_then` | [6319](../../src/process_host.rs#L6319) | receiver-type-required |
+| `line_schedule_target` | `file_path             .extension` | [6319](../../src/process_host.rs#L6319) | receiver-type-required |
+| `line_schedule_target` | `extension.to_str` | [6321](../../src/process_host.rs#L6321) | receiver-type-required |
+| `line_schedule_target` | `Err` | [6324](../../src/process_host.rs#L6324), [6328](../../src/process_host.rs#L6328), [6335](../../src/process_host.rs#L6335) | external-constructor-callback-or-unresolved |
+| `line_schedule_target` | `DaemonError::corrupt` | [6324](../../src/process_host.rs#L6324), [6328](../../src/process_host.rs#L6328), [6335](../../src/process_host.rs#L6335) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `line_schedule_target` | `session_id.to_owned` | [6332](../../src/process_host.rs#L6332) | receiver-type-required |
+| `line_schedule_target` | `Ok` | [6341](../../src/process_host.rs#L6341) | external-constructor-callback-or-unresolved |
+| `line_schedule_target` | `root.join("threads").join(session_id).join` | [6343](../../src/process_host.rs#L6343) | receiver-type-required |
+| `line_schedule_target` | `root.join("threads").join` | [6343](../../src/process_host.rs#L6343) | receiver-type-required |
+| `line_schedule_target` | `root.join` | [6343](../../src/process_host.rs#L6343) | receiver-type-required |
+| `operation_unavailable` | `SupervisorOperationError::Unavailable` | [6348](../../src/process_host.rs#L6348) | external-constructor-callback-or-unresolved |
+| `operation_unavailable` | `error.to_string` | [6348](../../src/process_host.rs#L6348) | receiver-type-required |
+| `operation_value` | `IJsonValue::parse(         &serde_json::to_vec(&value)             .map_err(&#124;error&#124; SupervisorOperationError::Protocol(error.to_string()))?,     )     .map_err` | [6352](../../src/process_host.rs#L6352) | receiver-type-required |
+| `operation_value` | `IJsonValue::parse` | [6352](../../src/process_host.rs#L6352) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `operation_value` | `serde_json::to_vec(&value)             .map_err` | [6353](../../src/process_host.rs#L6353) | receiver-type-required |
+| `operation_value` | `serde_json::to_vec` | [6353](../../src/process_host.rs#L6353) | external-constructor-callback-or-unresolved |
+| `operation_value` | `SupervisorOperationError::Protocol` | [6354](../../src/process_host.rs#L6354), [6356](../../src/process_host.rs#L6356) | external-constructor-callback-or-unresolved |
+| `operation_value` | `error.to_string` | [6354](../../src/process_host.rs#L6354), [6356](../../src/process_host.rs#L6356) | receiver-type-required |
+| `workspace_quiescence_lock_path` | `Sha256::digest` | [6360](../../src/process_host.rs#L6360) | external-constructor-callback-or-unresolved |
+| `workspace_quiescence_lock_path` | `workspace_id.as_bytes` | [6360](../../src/process_host.rs#L6360) | receiver-type-required |
+| `workspace_quiescence_lock_path` | `root.join` | [6361](../../src/process_host.rs#L6361) | receiver-type-required |
+| `workspace_id` | `session_workspace_binding(ledger).map` | [6365](../../src/process_host.rs#L6365) | receiver-type-required |
+| `workspace_id` | `session_workspace_binding` | [6365](../../src/process_host.rs#L6365) | [tekes-supervisor::process_host::session_workspace_binding](../../src/process_host.rs#L6411) |
+| `scoped_client_file_path` | `Path::new` | [6372](../../src/process_host.rs#L6372), [6384](../../src/process_host.rs#L6384), [6394](../../src/process_host.rs#L6394) | external-constructor-callback-or-unresolved |
+| `scoped_client_file_path` | `path.is_empty` | [6373](../../src/process_host.rs#L6373) | receiver-type-required |
+| `scoped_client_file_path` | `path.contains` | [6374](../../src/process_host.rs#L6374) | receiver-type-required |
+| `scoped_client_file_path` | `requested             .components()             .any` | [6375](../../src/process_host.rs#L6375) | receiver-type-required |
+| `scoped_client_file_path` | `requested             .components` | [6375](../../src/process_host.rs#L6375) | receiver-type-required |
+| `scoped_client_file_path` | `Err` | [6379](../../src/process_host.rs#L6379) | external-constructor-callback-or-unresolved |
+| `scoped_client_file_path` | `DaemonError::invalid_config` | [6379](../../src/process_host.rs#L6379), [6393](../../src/process_host.rs#L6393), [6401](../../src/process_host.rs#L6401), [6406](../../src/process_host.rs#L6406) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L578) |
+| `scoped_client_file_path` | `workspace         .cwd         .iter()         .map(&#124;root&#124; Path::new(root).canonicalize().map_err(DaemonError::io))         .collect::<Result<Vec<_>, _>>` | [6381](../../src/process_host.rs#L6381) | receiver-type-required |
+| `scoped_client_file_path` | `workspace         .cwd         .iter()         .map` | [6381](../../src/process_host.rs#L6381) | receiver-type-required |
+| `scoped_client_file_path` | `workspace         .cwd         .iter` | [6381](../../src/process_host.rs#L6381) | receiver-type-required |
+| `scoped_client_file_path` | `Path::new(root).canonicalize().map_err` | [6384](../../src/process_host.rs#L6384) | receiver-type-required |
+| `scoped_client_file_path` | `Path::new(root).canonicalize` | [6384](../../src/process_host.rs#L6384) | receiver-type-required |
+| `scoped_client_file_path` | `if requested.is_absolute() {         requested.to_owned()     } else {         let selected = workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else(&#124;&#124; DaemonError::invalid_config("session has no directory"))?;         Path::new(selected).join(requested)     }     .canonicalize()     .map_err` | [6386](../../src/process_host.rs#L6386) | receiver-type-required |
+| `scoped_client_file_path` | `if requested.is_absolute() {         requested.to_owned()     } else {         let selected = workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else(&#124;&#124; DaemonError::invalid_config("session has no directory"))?;         Path::new(selected).join(requested)     }     .canonicalize` | [6386](../../src/process_host.rs#L6386) | receiver-type-required |
+| `scoped_client_file_path` | `requested.is_absolute` | [6386](../../src/process_host.rs#L6386) | receiver-type-required |
+| `scoped_client_file_path` | `requested.to_owned` | [6387](../../src/process_host.rs#L6387) | receiver-type-required |
+| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref()             .or_else(&#124;&#124; workspace.cwd.first().map(String::as_str))             .ok_or_else` | [6389](../../src/process_host.rs#L6389) | receiver-type-required |
+| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref()             .or_else` | [6389](../../src/process_host.rs#L6389) | receiver-type-required |
+| `scoped_client_file_path` | `workspace             .selected_cwd             .as_deref` | [6389](../../src/process_host.rs#L6389) | receiver-type-required |
+| `scoped_client_file_path` | `workspace.cwd.first().map` | [6392](../../src/process_host.rs#L6392) | receiver-type-required |
+| `scoped_client_file_path` | `workspace.cwd.first` | [6392](../../src/process_host.rs#L6392) | receiver-type-required |
+| `scoped_client_file_path` | `Path::new(selected).join` | [6394](../../src/process_host.rs#L6394) | receiver-type-required |
+| `scoped_client_file_path` | `roots         .into_iter()         .find(&#124;root&#124; target.starts_with(root))         .ok_or_else` | [6398](../../src/process_host.rs#L6398) | receiver-type-required |
+| `scoped_client_file_path` | `roots         .into_iter()         .find` | [6398](../../src/process_host.rs#L6398) | receiver-type-required |
+| `scoped_client_file_path` | `roots         .into_iter` | [6398](../../src/process_host.rs#L6398) | receiver-type-required |
+| `scoped_client_file_path` | `target.starts_with` | [6400](../../src/process_host.rs#L6400) | receiver-type-required |
+| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str()         .ok_or_else(&#124;&#124; DaemonError::invalid_config("file path is not UTF-8"))?         .to_owned` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
+| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str()         .ok_or_else` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
+| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap()         .to_str` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
+| `scoped_client_file_path` | `target         .strip_prefix(&root)         .unwrap` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
+| `scoped_client_file_path` | `target         .strip_prefix` | [6402](../../src/process_host.rs#L6402) | receiver-type-required |
+| `scoped_client_file_path` | `Ok` | [6408](../../src/process_host.rs#L6408) | external-constructor-callback-or-unresolved |
+| `session_workspace_binding` | `store::read_genesis(ledger)         .map_err(DaemonError::store)?         .ok_or_else` | [6413](../../src/process_host.rs#L6413) | receiver-type-required |
+| `session_workspace_binding` | `store::read_genesis(ledger)         .map_err` | [6413](../../src/process_host.rs#L6413) | receiver-type-required |
+| `session_workspace_binding` | `store::read_genesis` | [6413](../../src/process_host.rs#L6413) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `session_workspace_binding` | `DaemonError::corrupt` | [6415](../../src/process_host.rs#L6415), [6420](../../src/process_host.rs#L6420) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `session_workspace_binding` | `genesis         .string_field("workspace")         .map(str::to_owned)         .ok_or_else` | [6417](../../src/process_host.rs#L6417) | receiver-type-required |
+| `session_workspace_binding` | `genesis         .string_field("workspace")         .map` | [6417](../../src/process_host.rs#L6417) | receiver-type-required |
+| `session_workspace_binding` | `genesis         .string_field` | [6417](../../src/process_host.rs#L6417) | receiver-type-required |
+| `session_workspace_binding` | `genesis.string_field("folder_binding").map` | [6421](../../src/process_host.rs#L6421) | receiver-type-required |
+| `session_workspace_binding` | `genesis.string_field` | [6421](../../src/process_host.rs#L6421) | receiver-type-required |
+| `session_workspace_binding` | `Ok` | [6422](../../src/process_host.rs#L6422) | external-constructor-callback-or-unresolved |
+| `ledger_needs_worker` | `fs::read(ledger).map_err` | [6426](../../src/process_host.rs#L6426) | receiver-type-required |
+| `ledger_needs_worker` | `fs::read` | [6426](../../src/process_host.rs#L6426) | external-constructor-callback-or-unresolved |
+| `ledger_needs_worker` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [6427](../../src/process_host.rs#L6427) | receiver-type-required |
+| `ledger_needs_worker` | `scan_valid_prefix` | [6427](../../src/process_host.rs#L6427) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `ledger_needs_worker` | `DaemonError::corrupt` | [6429](../../src/process_host.rs#L6429) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `ledger_needs_worker` | `probe_line_lock` | [6431](../../src/process_host.rs#L6431) | [tekes-supervisor::process_host::probe_line_lock](../../src/process_host.rs#L6487) |
+| `ledger_needs_worker` | `Ok` | [6436](../../src/process_host.rs#L6436) | external-constructor-callback-or-unresolved |
+| `ledger_needs_worker` | `ensure_action_at` | [6437](../../src/process_host.rs#L6437) | [engine::lifecycle::ensure_action_at](../../../engine/src/lifecycle.rs#L116) |
+| `ledger_needs_worker` | `classify` | [6437](../../src/process_host.rs#L6437) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
+| `ledger_needs_worker` | `Some` | [6437](../../src/process_host.rs#L6437) | external-constructor-callback-or-unresolved |
+| `ledger_needs_worker` | `now_rfc3339` | [6437](../../src/process_host.rs#L6437) | [tekes-supervisor::process_host::now_rfc3339](../../src/process_host.rs#L170) |
+| `ledger_needs_worker` | `goal_continuation_due` | [6439](../../src/process_host.rs#L6439) | [tekes-supervisor::process_host::goal_continuation_due](../../src/process_host.rs#L6443) |
+| `goal_continuation_due` | `ledger.file_name` | [6444](../../src/process_host.rs#L6444) | receiver-type-required |
+| `goal_continuation_due` | `Some` | [6444](../../src/process_host.rs#L6444), [6483](../../src/process_host.rs#L6483) | external-constructor-callback-or-unresolved |
+| `goal_continuation_due` | `std::ffi::OsStr::new` | [6444](../../src/process_host.rs#L6444) | external-constructor-callback-or-unresolved |
+| `goal_continuation_due` | `Ok` | [6445](../../src/process_host.rs#L6445), [6461](../../src/process_host.rs#L6461), [6464](../../src/process_host.rs#L6464), [6472](../../src/process_host.rs#L6472), [6475](../../src/process_host.rs#L6475), [6477](../../src/process_host.rs#L6477) | external-constructor-callback-or-unresolved |
+| `goal_continuation_due` | `ledger         .parent()         .ok_or_else` | [6447](../../src/process_host.rs#L6447) | receiver-type-required |
+| `goal_continuation_due` | `ledger         .parent` | [6447](../../src/process_host.rs#L6447) | receiver-type-required |
+| `goal_continuation_due` | `DaemonError::corrupt` | [6449](../../src/process_host.rs#L6449), [6453](../../src/process_host.rs#L6453), [6457](../../src/process_host.rs#L6457), [6469](../../src/process_host.rs#L6469) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `goal_continuation_due` | `folder         .file_name()         .and_then(&#124;name&#124; name.to_str())         .ok_or_else` | [6450](../../src/process_host.rs#L6450) | receiver-type-required |
+| `goal_continuation_due` | `folder         .file_name()         .and_then` | [6450](../../src/process_host.rs#L6450) | receiver-type-required |
+| `goal_continuation_due` | `folder         .file_name` | [6450](../../src/process_host.rs#L6450) | receiver-type-required |
+| `goal_continuation_due` | `name.to_str` | [6452](../../src/process_host.rs#L6452) | receiver-type-required |
+| `goal_continuation_due` | `folder         .parent()         .and_then(Path::parent)         .ok_or_else` | [6454](../../src/process_host.rs#L6454) | receiver-type-required |
+| `goal_continuation_due` | `folder         .parent()         .and_then` | [6454](../../src/process_host.rs#L6454) | receiver-type-required |
+| `goal_continuation_due` | `folder         .parent` | [6454](../../src/process_host.rs#L6454) | receiver-type-required |
+| `goal_continuation_due` | `session_controls::read_goal(root, session)         .map_err` | [6458](../../src/process_host.rs#L6458) | receiver-type-required |
+| `goal_continuation_due` | `session_controls::read_goal` | [6458](../../src/process_host.rs#L6458) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
+| `goal_continuation_due` | `DaemonError::invalid_config` | [6459](../../src/process_host.rs#L6459) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L578) |
+| `goal_continuation_due` | `error.to_string` | [6459](../../src/process_host.rs#L6459) | receiver-type-required |
+| `goal_continuation_due` | `fs::read(ledger).map_err` | [6466](../../src/process_host.rs#L6466) | receiver-type-required |
+| `goal_continuation_due` | `fs::read` | [6466](../../src/process_host.rs#L6466) | external-constructor-callback-or-unresolved |
+| `goal_continuation_due` | `scan_valid_prefix(&bytes, 1)         .projection         .ok_or_else` | [6467](../../src/process_host.rs#L6467) | receiver-type-required |
+| `goal_continuation_due` | `scan_valid_prefix` | [6467](../../src/process_host.rs#L6467) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `goal_continuation_due` | `facts.turn_open_inputs.is_empty` | [6471](../../src/process_host.rs#L6471) | receiver-type-required |
+| `goal_continuation_due` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; event.kind() == &schema::EventKind::Settle)         .is_some_and` | [6477](../../src/process_host.rs#L6477) | receiver-type-required |
+| `goal_continuation_due` | `projection         .events         .iter()         .rev()         .find` | [6477](../../src/process_host.rs#L6477) | receiver-type-required |
+| `goal_continuation_due` | `projection         .events         .iter()         .rev` | [6477](../../src/process_host.rs#L6477) | receiver-type-required |
+| `goal_continuation_due` | `projection         .events         .iter` | [6477](../../src/process_host.rs#L6477) | receiver-type-required |
+| `goal_continuation_due` | `event.kind` | [6481](../../src/process_host.rs#L6481) | receiver-type-required |
+| `goal_continuation_due` | `event.turn` | [6483](../../src/process_host.rs#L6483) | receiver-type-required |
+| `goal_continuation_due` | `event.string_field` | [6483](../../src/process_host.rs#L6483) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open(path)         .map_err` | [6488](../../src/process_host.rs#L6488) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [6488](../../src/process_host.rs#L6488) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append(true)         .custom_flags` | [6488](../../src/process_host.rs#L6488) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new()         .read(true)         .append` | [6488](../../src/process_host.rs#L6488) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new()         .read` | [6488](../../src/process_host.rs#L6488) | receiver-type-required |
+| `probe_line_lock` | `fs::OpenOptions::new` | [6488](../../src/process_host.rs#L6488) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `libc::flock` | [6496](../../src/process_host.rs#L6496), [6505](../../src/process_host.rs#L6505) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `file.as_raw_fd` | [6496](../../src/process_host.rs#L6496), [6505](../../src/process_host.rs#L6505) | receiver-type-required |
+| `probe_line_lock` | `file.metadata().map_err` | [6497](../../src/process_host.rs#L6497) | receiver-type-required |
+| `probe_line_lock` | `file.metadata` | [6497](../../src/process_host.rs#L6497) | receiver-type-required |
+| `probe_line_lock` | `fs::metadata(path).map_err` | [6498](../../src/process_host.rs#L6498) | receiver-type-required |
+| `probe_line_lock` | `fs::metadata` | [6498](../../src/process_host.rs#L6498) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `descriptor.dev` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
+| `probe_line_lock` | `pathname.dev` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
+| `probe_line_lock` | `descriptor.ino` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
+| `probe_line_lock` | `pathname.ino` | [6499](../../src/process_host.rs#L6499) | receiver-type-required |
+| `probe_line_lock` | `Err` | [6500](../../src/process_host.rs#L6500), [6506](../../src/process_host.rs#L6506), [6516](../../src/process_host.rs#L6516) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `DaemonError::corrupt` | [6500](../../src/process_host.rs#L6500) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L582) |
+| `probe_line_lock` | `DaemonError::io` | [6506](../../src/process_host.rs#L6506), [6516](../../src/process_host.rs#L6516) | [tekes-supervisor::host_runtime::DaemonError::io](../../src/host_runtime.rs#L540) |
+| `probe_line_lock` | `std::io::Error::last_os_error` | [6506](../../src/process_host.rs#L6506), [6510](../../src/process_host.rs#L6510) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `Ok` | [6508](../../src/process_host.rs#L6508), [6513](../../src/process_host.rs#L6513) | external-constructor-callback-or-unresolved |
+| `probe_line_lock` | `error.raw_os_error` | [6511](../../src/process_host.rs#L6511) | receiver-type-required |
+| `probe_line_lock` | `error.kind` | [6515](../../src/process_host.rs#L6515) | receiver-type-required |
+| `read_worker_hello` | `Vec::new` | [6525](../../src/process_host.rs#L6525) | external-constructor-callback-or-unresolved |
+| `read_worker_hello` | `Instant::now` | [6527](../../src/process_host.rs#L6527) | external-constructor-callback-or-unresolved |
+| `read_worker_hello` | `remaining                 .as_millis()                 .saturating_add(u128::from(                     !remaining.subsec_nanos().is_multiple_of(1_000_000),                 ))                 .clamp` | [6537](../../src/process_host.rs#L6537) | receiver-type-required |
+| `read_worker_hello` | `remaining                 .as_millis()                 .saturating_add` | [6537](../../src/process_host.rs#L6537) | receiver-type-required |
+| `read_worker_hello` | `remaining                 .as_millis` | [6537](../../src/process_host.rs#L6537) | receiver-type-required |
+| `read_worker_hello` | `u128::from` | [6539](../../src/process_host.rs#L6539) | external-constructor-callback-or-unresolved |
+| `read_worker_hello` | `remaining.subsec_nanos().is_multiple_of` | [6540](../../src/process_host.rs#L6540) | receiver-type-required |
+| `read_worker_hello` | `remaining.subsec_nanos` | [6540](../../src/process_host.rs#L6540) | receiver-type-required |
 | `read_worker_hello` | `reader.get_ref().as_raw_fd` | [6545](../../src/process_host.rs#L6545) | receiver-type-required |
 | `read_worker_hello` | `reader.get_ref` | [6545](../../src/process_host.rs#L6545) | receiver-type-required |
 | `read_worker_hello` | `libc::poll` | [6550](../../src/process_host.rs#L6550) | external-constructor-callback-or-unresolved |
@@ -4349,7 +4350,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `serde_json::from_value(serde_json::json!({             "format":1,"revision":1,"id":"w","name":"w","selected_cwd":selected.path(),             "cwd":[first.path(),selected.path()],"policy":{}         }))         .unwrap` | [6652](../../src/process_host.rs#L6652) | receiver-type-required |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `serde_json::from_value` | [6652](../../src/process_host.rs#L6652) | external-constructor-callback-or-unresolved |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `super::scoped_client_file_path(&workspace, "file").unwrap` | [6657](../../src/process_host.rs#L6657) | receiver-type-required |
-| `client_file_scope_uses_selected_directory_and_rejects_escape` | `super::scoped_client_file_path` | [6657](../../src/process_host.rs#L6657) | [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6370) |
+| `client_file_scope_uses_selected_directory_and_rejects_escape` | `super::scoped_client_file_path` | [6657](../../src/process_host.rs#L6657) | [tekes-supervisor::process_host::scoped_client_file_path](../../src/process_host.rs#L6368) |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `std::os::unix::fs::symlink(outside.path().join("file"), selected.path().join("escape"))             .unwrap` | [6672](../../src/process_host.rs#L6672) | receiver-type-required |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `std::os::unix::fs::symlink` | [6672](../../src/process_host.rs#L6672) | external-constructor-callback-or-unresolved |
 | `client_file_scope_uses_selected_directory_and_rejects_escape` | `outside.path().join` | [6672](../../src/process_host.rs#L6672) | receiver-type-required |
@@ -4376,7 +4377,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `serve_title_response` | `listener.accept` | [6734](../../src/process_host.rs#L6734) | receiver-type-required |
 | `serve_title_response` | `stream                 .set_read_timeout(Some(Duration::from_secs(2)))                 .expect` | [6735](../../src/process_host.rs#L6735) | receiver-type-required |
 | `serve_title_response` | `stream                 .set_read_timeout` | [6735](../../src/process_host.rs#L6735) | receiver-type-required |
-| `serve_title_response` | `Some` | [6736](../../src/process_host.rs#L6736), [6758](../../src/process_host.rs#L6758) | external-constructor-callback-or-unresolved |
+| `serve_title_response` | `Some` | [6736](../../src/process_host.rs#L6736), [6759](../../src/process_host.rs#L6759) | external-constructor-callback-or-unresolved |
 | `serve_title_response` | `Duration::from_secs` | [6736](../../src/process_host.rs#L6736) | external-constructor-callback-or-unresolved |
 | `serve_title_response` | `Vec::new` | [6738](../../src/process_host.rs#L6738) | external-constructor-callback-or-unresolved |
 | `serve_title_response` | `stream.read(&mut chunk).expect` | [6742](../../src/process_host.rs#L6742) | receiver-type-required |
@@ -4385,15 +4386,15 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `serve_title_response` | `expected.is_none` | [6747](../../src/process_host.rs#L6747) | receiver-type-required |
 | `serve_title_response` | `request.windows(4).position` | [6748](../../src/process_host.rs#L6748) | receiver-type-required |
 | `serve_title_response` | `request.windows` | [6748](../../src/process_host.rs#L6748) | receiver-type-required |
-| `serve_title_response` | `String::from_utf8_lossy` | [6749](../../src/process_host.rs#L6749) | external-constructor-callback-or-unresolved |
-| `serve_title_response` | `headers                             .lines()                             .find_map(&#124;line&#124; {                                 line.strip_prefix("content-length: ")                                     .or_else(&#124;&#124; line.strip_prefix("Content-Length: "))                             })                             .and_then(&#124;value&#124; value.parse::<usize>().ok())                             .unwrap_or` | [6750](../../src/process_host.rs#L6750) | receiver-type-required |
-| `serve_title_response` | `headers                             .lines()                             .find_map(&#124;line&#124; {                                 line.strip_prefix("content-length: ")                                     .or_else(&#124;&#124; line.strip_prefix("Content-Length: "))                             })                             .and_then` | [6750](../../src/process_host.rs#L6750) | receiver-type-required |
-| `serve_title_response` | `headers                             .lines()                             .find_map` | [6750](../../src/process_host.rs#L6750) | receiver-type-required |
-| `serve_title_response` | `headers                             .lines` | [6750](../../src/process_host.rs#L6750) | receiver-type-required |
-| `serve_title_response` | `line.strip_prefix("content-length: ")                                     .or_else` | [6753](../../src/process_host.rs#L6753) | receiver-type-required |
-| `serve_title_response` | `line.strip_prefix` | [6753](../../src/process_host.rs#L6753), [6754](../../src/process_host.rs#L6754) | receiver-type-required |
-| `serve_title_response` | `value.parse::<usize>().ok` | [6756](../../src/process_host.rs#L6756) | receiver-type-required |
-| `serve_title_response` | `value.parse::<usize>` | [6756](../../src/process_host.rs#L6756) | receiver-type-required |
+| `serve_title_response` | `String::from_utf8_lossy` | [6750](../../src/process_host.rs#L6750) | external-constructor-callback-or-unresolved |
+| `serve_title_response` | `headers                         .lines()                         .find_map(&#124;line&#124; {                             line.strip_prefix("content-length: ")                                 .or_else(&#124;&#124; line.strip_prefix("Content-Length: "))                         })                         .and_then(&#124;value&#124; value.parse::<usize>().ok())                         .unwrap_or` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
+| `serve_title_response` | `headers                         .lines()                         .find_map(&#124;line&#124; {                             line.strip_prefix("content-length: ")                                 .or_else(&#124;&#124; line.strip_prefix("Content-Length: "))                         })                         .and_then` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
+| `serve_title_response` | `headers                         .lines()                         .find_map` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
+| `serve_title_response` | `headers                         .lines` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
+| `serve_title_response` | `line.strip_prefix("content-length: ")                                 .or_else` | [6754](../../src/process_host.rs#L6754) | receiver-type-required |
+| `serve_title_response` | `line.strip_prefix` | [6754](../../src/process_host.rs#L6754), [6755](../../src/process_host.rs#L6755) | receiver-type-required |
+| `serve_title_response` | `value.parse::<usize>().ok` | [6757](../../src/process_host.rs#L6757) | receiver-type-required |
+| `serve_title_response` | `value.parse::<usize>` | [6757](../../src/process_host.rs#L6757) | receiver-type-required |
 | `serve_title_response` | `expected.is_some_and` | [6761](../../src/process_host.rs#L6761) | receiver-type-required |
 | `serve_title_response` | `request.len` | [6761](../../src/process_host.rs#L6761) | receiver-type-required |
 | `serve_title_response` | `stream                 .write_all(header.as_bytes())                 .expect` | [6769](../../src/process_host.rs#L6769) | receiver-type-required |
@@ -4516,7 +4517,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `events             .iter` | [7070](../../src/process_host.rs#L7070) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `host             .locked_compact(session, "2026-09-05T00:00:04.000Z", &origin)             .expect` | [7090](../../src/process_host.rs#L7090) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger(ledger.as_bytes(), 1).expect` | [7101](../../src/process_host.rs#L7101) | receiver-type-required |
-| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger` | [7101](../../src/process_host.rs#L7101) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1054) |
+| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger` | [7101](../../src/process_host.rs#L7101) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `ledger.as_bytes` | [7101](../../src/process_host.rs#L7101) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `host.shutdown` | [7108](../../src/process_host.rs#L7108) | receiver-type-required |
 | `worker_failure_preserves_first_root_cause` | `preserve_first_failure` | [7115](../../src/process_host.rs#L7115), [7116](../../src/process_host.rs#L7116) | external-constructor-callback-or-unresolved |
@@ -6189,7 +6190,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `host.arm_admission` | [11006](../../src/process_host.rs#L11006) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `host.catalog.ensure_loaded` | [11007](../../src/process_host.rs#L11007) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light(root.path()).expect` | [11009](../../src/process_host.rs#L11009) | receiver-type-required |
-| `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light` | [11009](../../src/process_host.rs#L11009) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L422) |
+| `a_client_unarchive_admits_the_thread_and_lists_it_again` | `endpoint::ManagementStore::open_light` | [11009](../../src/process_host.rs#L11009) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L424) |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `"a".repeat` | [11010](../../src/process_host.rs#L11010) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `management             .archive_session("rpc-archive-1", &sha, session, "2026-10-12T00:00:00.000Z")             .expect` | [11011](../../src/process_host.rs#L11011) | receiver-type-required |
 | `a_client_unarchive_admits_the_thread_and_lists_it_again` | `management             .archive_session` | [11011](../../src/process_host.rs#L11011) | receiver-type-required |
@@ -6469,7 +6470,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_test_events` | `event.canonical_bytes` | [11560](../../src/process_host.rs#L11560) | receiver-type-required |
 | `write_test_events` | `bytes.push` | [11561](../../src/process_host.rs#L11561) | receiver-type-required |
 | `write_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11563](../../src/process_host.rs#L11563) | receiver-type-required |
-| `write_test_events` | `schema::validate_ledger` | [11563](../../src/process_host.rs#L11563) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1054) |
+| `write_test_events` | `schema::validate_ledger` | [11563](../../src/process_host.rs#L11563) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
 | `write_test_events` | `fs::write(path, bytes).expect` | [11564](../../src/process_host.rs#L11564) | receiver-type-required |
 | `write_test_events` | `fs::write` | [11564](../../src/process_host.rs#L11564) | external-constructor-callback-or-unresolved |
 | `write_thread_with_child` | `root.join("threads").join` | [11574](../../src/process_host.rs#L11574) | receiver-type-required |
@@ -6492,7 +6493,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_test_events` | `event.canonical_bytes` | [11630](../../src/process_host.rs#L11630) | receiver-type-required |
 | `append_test_events` | `bytes.push` | [11631](../../src/process_host.rs#L11631) | receiver-type-required |
 | `append_test_events` | `schema::validate_ledger(&bytes, 1).expect` | [11633](../../src/process_host.rs#L11633) | receiver-type-required |
-| `append_test_events` | `schema::validate_ledger` | [11633](../../src/process_host.rs#L11633) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1054) |
+| `append_test_events` | `schema::validate_ledger` | [11633](../../src/process_host.rs#L11633) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
 | `append_test_events` | `fs::write(path, bytes).expect` | [11634](../../src/process_host.rs#L11634) | receiver-type-required |
 | `append_test_events` | `fs::write` | [11634](../../src/process_host.rs#L11634) | external-constructor-callback-or-unresolved |
 | `child_rpc_id` | `endpoint::derive_line_request_rpc_id` | [11639](../../src/process_host.rs#L11639) | [endpoint::requests::derive_line_request_rpc_id](../../../endpoint/src/requests.rs#L128) |
