@@ -432,3 +432,28 @@ fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
         ["read", "shell"]
     );
 }
+
+#[test]
+fn preset_skills_name_packages_not_resource_files() {
+    let root = tempfile::tempdir().expect("root");
+    let user = root.path().join("agent");
+    let project = root.path().join("project");
+    fs::create_dir_all(user.join("skills/review/scripts")).expect("package");
+    fs::create_dir_all(&project).expect("project");
+    fs::write(
+        user.join("skills/review/SKILL.md"),
+        "---\nname: review\ndescription: Review a change\n---\nBody\n",
+    )
+    .expect("manifest");
+    fs::write(user.join("skills/review/scripts/check.sh"), "true\n").expect("companion");
+    fs::write(user.join("skills/notes.md"), "Loose notes\n").expect("flat file");
+    let snapshot = InstructionResolver::new(&user, [&project])
+        .capture()
+        .expect("snapshot");
+    // The snapshot keys every resource file; the package catalog names packages.
+    assert!(snapshot.effective.skills.contains_key("review/SKILL.md"));
+    assert_eq!(
+        ResourceCatalog::skill_package_names(&snapshot),
+        ["review".to_owned()].into_iter().collect()
+    );
+}

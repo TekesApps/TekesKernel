@@ -4532,9 +4532,10 @@ fn missing_preset_skill_notice(
     selected: Option<&[String]>,
     instruction: &profile::InstructionSnapshot,
 ) -> Option<SessionNotice> {
+    let packages = profile::ResourceCatalog::skill_package_names(instruction);
     let missing = selected?
         .iter()
-        .filter(|name| !instruction.effective.skills.contains_key(name.as_str()))
+        .filter(|name| !packages.contains(name.as_str()))
         .map(String::as_str)
         .collect::<Vec<_>>();
     (!missing.is_empty()).then(|| SessionNotice {
@@ -7251,15 +7252,18 @@ mod tests {
 
     #[test]
     fn a_missing_preset_skill_is_one_warning() {
-        let mut instruction = profile::InstructionSnapshot {
+        let manifest = "---\nname: style-guide\ndescription: House style\n---\nBody\n";
+        let instruction = profile::InstructionSnapshot {
             format: 1,
-            sources: Vec::new(),
+            sources: vec![profile::InstructionSource {
+                origin: profile::InstructionOrigin::User,
+                path: "skills/style-guide/SKILL.md".to_owned(),
+                kind: profile::InstructionKind::Skill,
+                content: manifest.to_owned(),
+                content_sha256: format!("{:x}", Sha256::digest(manifest.as_bytes())),
+            }],
             effective: profile::EffectiveInstructions::default(),
         };
-        instruction
-            .effective
-            .skills
-            .insert("style-guide".to_owned(), 0);
         let selected = vec!["style-guide".to_owned(), "release-notes".to_owned()];
         let notice = missing_preset_skill_notice(Some(&selected), &instruction).expect("notice");
         assert_eq!(notice.severity, SessionNoticeSeverity::Warning);

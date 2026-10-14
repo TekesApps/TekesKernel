@@ -6,6 +6,22 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.7.2 — 2026-10-15
+
+A session preset's `skills` now resolve by package name end to end; automatic
+identity selection no longer reads a screenplay request as coding; consumer
+specific test data and the consumer live scenario are removed from the
+repository.
+
+### Fixed
+- A session preset's `skills` were validated against the instruction
+  snapshot's per-file resource keys (`<package>/SKILL.md`) while the worker
+  narrows its skill catalog by package name, so a preset naming a package was
+  refused as `unknown-skill`, and one naming its `SKILL.md` path passed
+  creation but lost the package at launch without a notice. `session.create`,
+  `session.presets.resolve` and the launch's `preset_skill` notice now all use
+  package names (`ResourceCatalog::skill_package_names`), as the spec states.
+
 ### Changed
 - Automatic identity selection treats `script`/`脚本` as a code signal only when
   the first request carries no creative-writing signal (screenplay, episode,
