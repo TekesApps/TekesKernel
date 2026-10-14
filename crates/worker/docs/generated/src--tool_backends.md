@@ -266,7 +266,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_skill_catalog` | `serde_json::to_value` | [506](../../src/tool_backends.rs#L506) | external-constructor-callback-or-unresolved |
 | `preset_skill_catalog` | `genesis.raw` | [506](../../src/tool_backends.rs#L506) | receiver-type-required |
 | `preset_skill_catalog` | `raw.get` | [507](../../src/tool_backends.rs#L507) | receiver-type-required |
-| `preset_skill_catalog` | `tools::ResolvedPreset::from_genesis` | [510](../../src/tool_backends.rs#L510) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
+| `preset_skill_catalog` | `tools::ResolvedPreset::from_genesis` | [510](../../src/tool_backends.rs#L510) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
 | `preset_skill_catalog` | `catalog.retain` | [511](../../src/tool_backends.rs#L511) | receiver-type-required |
 | `preset_skill_catalog` | `skills.contains` | [511](../../src/tool_backends.rs#L511) | receiver-type-required |
 | `invocation_write_roots` | `PathBuf::from` | [520](../../src/tool_backends.rs#L520), [583](../../src/tool_backends.rs#L583) | external-constructor-callback-or-unresolved |
@@ -357,7 +357,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_preset_narrows_the_skill_catalog` | `write_genesis` | [686](../../src/tool_backends.rs#L686), [699](../../src/tool_backends.rs#L699) | [tekes-worker::tool_backends::preset_skill_tests::write_genesis](../../src/tool_backends.rs#L666) |
 | `a_preset_narrows_the_skill_catalog` | `folder.path` | [686](../../src/tool_backends.rs#L686), [699](../../src/tool_backends.rs#L699), [700](../../src/tool_backends.rs#L700) | receiver-type-required |
 | `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request(             &json!({"skills":["style-guide","removed-later"]}),             tools::PresetBase::General,             &Skills,         )         .unwrap` | [693](../../src/tool_backends.rs#L693) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request` | [693](../../src/tool_backends.rs#L693) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
+| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request` | [693](../../src/tool_backends.rs#L693) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
 | `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog(catalog(), folder.path()).unwrap` | [700](../../src/tool_backends.rs#L700) | receiver-type-required |
 | `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog` | [700](../../src/tool_backends.rs#L700) | external-constructor-callback-or-unresolved |
 | `a_preset_narrows_the_skill_catalog` | `catalog` | [700](../../src/tool_backends.rs#L700) | external-constructor-callback-or-unresolved |

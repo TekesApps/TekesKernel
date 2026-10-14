@@ -109,6 +109,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `ORIGIN_CLIENT` | `management::ORIGIN_CLIENT` | `pub` |
 | `PendingQueueTransaction` | `management::PendingQueueTransaction` | `pub` |
 | `PresetMcpSource` | `management::PresetMcpSource` | `pub` |
+| `PresetModelSource` | `management::PresetModelSource` | `pub` |
 | `QueueRecoveryDriver` | `management::QueueRecoveryDriver` | `pub` |
 | `QueueTransactionCompletion` | `management::QueueTransactionCompletion` | `pub` |
 | `QueueTransactionDecision` | `management::QueueTransactionDecision` | `pub` |

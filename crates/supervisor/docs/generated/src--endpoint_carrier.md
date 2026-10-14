@@ -1276,13 +1276,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_items` | `endpoint             .list_sessions` | [1455](../../src/endpoint_carrier.rs#L1455) | receiver-type-required |
 | `session_items` | `self.live_sessions` | [1456](../../src/endpoint_carrier.rs#L1456) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::live_sessions](../../src/endpoint_carrier.rs#L876) |
 | `workspace_baseline` | `self.session_items` | [1466](../../src/endpoint_carrier.rs#L1466) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::session_items](../../src/endpoint_carrier.rs#L1445) |
-| `workspace_baseline` | `endpoint::ManagementStore::open_light` | [1467](../../src/endpoint_carrier.rs#L1467) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L500) |
+| `workspace_baseline` | `endpoint::ManagementStore::open_light` | [1467](../../src/endpoint_carrier.rs#L1467) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L535) |
 | `workspace_baseline` | `management.list_workspaces` | [1468](../../src/endpoint_carrier.rs#L1468) | receiver-type-required |
 | `workspace_baseline` | `Ok` | [1469](../../src/endpoint_carrier.rs#L1469) | external-constructor-callback-or-unresolved |
 | `workspace_baseline` | `list                     .items                     .into_iter()                     .map(&#124;workspace&#124; WorkspaceSummary {                         id: workspace.workspace_id,                         path: workspace.path,                         title: workspace.title,                         session_ids: workspace.session_ids,                         created_at: workspace.created_at,                         updated_at: workspace.updated_at,                     })                     .collect` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
 | `workspace_baseline` | `list                     .items                     .into_iter()                     .map` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
 | `workspace_baseline` | `list                     .items                     .into_iter` | [1472](../../src/endpoint_carrier.rs#L1472) | receiver-type-required |
-| `inventory_baseline` | `endpoint::ManagementStore::open_light` | [1493](../../src/endpoint_carrier.rs#L1493) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L500) |
+| `inventory_baseline` | `endpoint::ManagementStore::open_light` | [1493](../../src/endpoint_carrier.rs#L1493) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L535) |
 | `inventory_baseline` | `management.completed_fork_lineage` | [1494](../../src/endpoint_carrier.rs#L1494) | receiver-type-required |
 | `inventory_baseline` | `management.workspace_paths` | [1495](../../src/endpoint_carrier.rs#L1495) | receiver-type-required |
 | `inventory_baseline` | `self             .session_items(false)?             .into_iter()             .filter(&#124;session&#124; !session.archived)             .map(&#124;session&#124; inventory_row(session, &paths, &lineage))             .collect::<Result<Vec<_>, endpoint::ManagementError>>` | [1496](../../src/endpoint_carrier.rs#L1496) | receiver-type-required |
@@ -1301,7 +1301,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `inventory_row` | `authority.inventory_item` | [1523](../../src/endpoint_carrier.rs#L1523) | receiver-type-required |
 | `inventory_row` | `item.map_err` | [1526](../../src/endpoint_carrier.rs#L1526) | receiver-type-required |
 | `inventory_row` | `Some` | [1527](../../src/endpoint_carrier.rs#L1527), [1532](../../src/endpoint_carrier.rs#L1532) | external-constructor-callback-or-unresolved |
-| `inventory_row` | `endpoint::ManagementStore::open_light` | [1529](../../src/endpoint_carrier.rs#L1529) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L500) |
+| `inventory_row` | `endpoint::ManagementStore::open_light` | [1529](../../src/endpoint_carrier.rs#L1529) | [endpoint::management::ManagementStore::open_light](../../../endpoint/src/management.rs#L535) |
 | `inventory_row` | `management.completed_fork_lineage` | [1530](../../src/endpoint_carrier.rs#L1530) | receiver-type-required |
 | `inventory_row` | `management.workspace_paths` | [1531](../../src/endpoint_carrier.rs#L1531) | receiver-type-required |
 | `inventory_row` | `inventory_row` | [1532](../../src/endpoint_carrier.rs#L1532) | [tekes-supervisor::endpoint_carrier::inventory_row](../../src/endpoint_carrier.rs#L2730) |

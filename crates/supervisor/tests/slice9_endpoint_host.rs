@@ -1472,6 +1472,116 @@ fn append_turn(root: &std::path::Path, session: &str, first_seq: u64, settled: b
 }
 
 #[test]
+fn preset_defaults_become_the_new_session_model() {
+    let root = tempfile::tempdir().expect("root");
+    let project = root.path().join("project");
+    std::fs::create_dir(&project).expect("project directory");
+    let provider = profile::Provider {
+        id: "fixture".to_owned(),
+        name: None,
+        adapter: "responses".to_owned(),
+        dialect: "openai_responses_v1".to_owned(),
+        endpoint_owner: "openai".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision: "openai-2026-08-01".to_owned(),
+        endpoint: "https://api.openai.com/v1".to_owned(),
+        credential_key: Some("fixture-key".to_owned()),
+        models: vec![profile::Model {
+            id: "gpt-5".to_owned(),
+            profile: "openai_responses_v1:gpt-5".to_owned(),
+            enabled: true,
+            context_window_tokens: 32_000,
+            compact_trigger_tokens: 24_000,
+        }],
+    };
+    let effort = provider::resolve_profile(&provider, &provider.models[0])
+        .expect("model profile")
+        .reasoning_efforts()
+        .first()
+        .cloned()
+        .expect("a reasoning effort");
+    profile::ConfigRepository::open(root.path())
+        .expect("config repository")
+        .publish_providers(
+            0,
+            &profile::ProvidersConfig {
+                format: 1,
+                revision: 1,
+                providers: vec![provider],
+                web_search: None,
+            },
+        )
+        .expect("provider config");
+    let assembly = ProductionEndpointAssembly::open_with_clock(
+        root.path(),
+        description(),
+        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
+    )
+    .expect("assembly");
+    let created_workspace = block_on_ready(assembly.dispatch(request(
+        "rpc-defaults-workspace",
+        "workspace.create",
+        &format!(
+            r#"{{"path":{}}}"#,
+            serde_json::to_string(project.to_str().unwrap()).unwrap()
+        ),
+    )))
+    .expect("workspace create");
+    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
+        .as_str()
+        .expect("workspace id")
+        .to_owned();
+    let refused = block_on_ready(assembly.dispatch(request(
+        "rpc-defaults-unknown",
+        "session.create",
+        &format!(
+            r#"{{"workspaceId":"{workspace_id}","preset":{{"defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"not-an-effort"}}}}}}"#
+        ),
+    )))
+    .expect("refused create");
+    let error = refused.result.error.expect("error");
+    assert_eq!(error.code, "preset-invalid");
+    let details: Value = serde_json::from_slice(&error.details.canonical_bytes().unwrap()).unwrap();
+    assert_eq!(details["reason"], "unknown-model");
+
+    let created = block_on_ready(assembly.dispatch(request(
+        "rpc-defaults-create",
+        "session.create",
+        &format!(
+            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"inline","id":"reviewer","version":"1","defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"{effort}"}}}}]}}}}"#
+        ),
+    )))
+    .expect("session create");
+    if let Some(error) = created.result.error.as_ref() {
+        panic!("create failed: {} {}", error.code, error.message);
+    }
+    let folder = root.path().join("threads").join(SESSION);
+    let settings = profile::ConfigRepository::open(root.path())
+        .unwrap()
+        .session_settings(&folder)
+        .unwrap()
+        .expect("session settings written at create");
+    assert_eq!(
+        (
+            settings.revision,
+            settings.provider.as_str(),
+            settings.model.as_str()
+        ),
+        (1, "fixture", "gpt-5")
+    );
+    assert_eq!(settings.reasoning_effort.as_deref(), Some(effort.as_str()));
+    let genesis: Value = serde_json::from_str(
+        std::fs::read_to_string(folder.join("main.jsonl"))
+            .unwrap()
+            .lines()
+            .next()
+            .unwrap(),
+    )
+    .unwrap();
+    assert_eq!(genesis["preset"]["defaults"]["model"], "gpt-5");
+}
+
+#[test]
 fn fork_can_replace_the_preset_of_its_destination() {
     let root = tempfile::tempdir().expect("root");
     let project = root.path().join("project");

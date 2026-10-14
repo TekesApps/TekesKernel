@@ -101,7 +101,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `genesis_preset` | `raw.get("preset")         .map` | [49](../../src/identity.rs#L49) | receiver-type-required |
 | `genesis_preset` | `raw.get` | [49](../../src/identity.rs#L49) | receiver-type-required |
 | `genesis_preset` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [50](../../src/identity.rs#L50) | receiver-type-required |
-| `genesis_preset` | `tools::ResolvedPreset::from_genesis` | [50](../../src/identity.rs#L50) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L783) |
+| `genesis_preset` | `tools::ResolvedPreset::from_genesis` | [50](../../src/identity.rs#L50) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
 | `inherited_opening` | `serde_json::Map::new` | [60](../../src/identity.rs#L60) | external-constructor-callback-or-unresolved |
 | `inherited_opening` | `genesis_preset` | [61](../../src/identity.rs#L61) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
 | `inherited_opening` | `opening.insert` | [62](../../src/identity.rs#L62), [63](../../src/identity.rs#L63), [65](../../src/identity.rs#L65) | receiver-type-required |
@@ -114,7 +114,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_preset` | `genesis_preset` | [77](../../src/identity.rs#L77) | [tekes-worker::identity::genesis_preset](../../src/identity.rs#L43) |
 | `resolve_preset` | `Ok` | [78](../../src/identity.rs#L78), [81](../../src/identity.rs#L81) | external-constructor-callback-or-unresolved |
 | `resolve_preset` | `resolve` | [80](../../src/identity.rs#L80) | [tekes-worker::identity::resolve](../../src/identity.rs#L87) |
-| `resolve_preset` | `tools::ResolvedPreset::from_identity` | [81](../../src/identity.rs#L81) | [tools::preset::ResolvedPreset::from_identity](../../../tools/src/preset.rs#L699) |
+| `resolve_preset` | `tools::ResolvedPreset::from_identity` | [81](../../src/identity.rs#L81) | [tools::preset::ResolvedPreset::from_identity](../../../tools/src/preset.rs#L770) |
 | `resolve_preset` | `Some` | [82](../../src/identity.rs#L82) | external-constructor-callback-or-unresolved |
 | `resolve` | `selected` | [92](../../src/identity.rs#L92) | [tekes-worker::identity::selected](../../src/identity.rs#L7) |
 | `resolve` | `Ok` | [93](../../src/identity.rs#L93), [131](../../src/identity.rs#L131) | external-constructor-callback-or-unresolved |
@@ -196,7 +196,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ledger_with` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [323](../../src/identity.rs#L323) | receiver-type-required |
 | `ledger_with` | `LockedLedger::open` | [323](../../src/identity.rs#L323) | external-constructor-callback-or-unresolved |
 | `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request(             &json!({"layers":[{"kind":"inline","id":"creator","version":"1",                 "identity":"You are a story writing agent powered by the {model} model."}]}),             tools::PresetBase::General,             &tools::NoPresetEnvironment,         )         .unwrap` | [329](../../src/identity.rs#L329) | receiver-type-required |
-| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request` | [329](../../src/identity.rs#L329) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
+| `a_genesis_preset_renders_without_classifying` | `tools::ResolvedPreset::resolve_request` | [329](../../src/identity.rs#L329) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
 | `a_genesis_preset_renders_without_classifying` | `ledger_with` | [336](../../src/identity.rs#L336), [350](../../src/identity.rs#L350) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L288) |
 | `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap().events.len` | [340](../../src/identity.rs#L340) | receiver-type-required |
 | `a_genesis_preset_renders_without_classifying` | `ledger.projection().unwrap` | [340](../../src/identity.rs#L340) | receiver-type-required |
@@ -204,7 +204,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_genesis_preset_renders_without_classifying` | `resolve_preset(&mut ledger, "2026-09-27T00:00:04.000Z", 1).unwrap` | [341](../../src/identity.rs#L341) | receiver-type-required |
 | `a_genesis_preset_renders_without_classifying` | `resolve_preset` | [341](../../src/identity.rs#L341) | external-constructor-callback-or-unresolved |
 | `a_delegated_child_inherits_the_parent_opening` | `tools::ResolvedPreset::resolve_request(             &json!({"layers":[{"kind":"kernel","id":"coding"}],"tools":["read"]}),             tools::PresetBase::General,             &tools::NoPresetEnvironment,         )         .unwrap` | [362](../../src/identity.rs#L362) | receiver-type-required |
-| `a_delegated_child_inherits_the_parent_opening` | `tools::ResolvedPreset::resolve_request` | [362](../../src/identity.rs#L362) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L655) |
+| `a_delegated_child_inherits_the_parent_opening` | `tools::ResolvedPreset::resolve_request` | [362](../../src/identity.rs#L362) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
 | `a_delegated_child_inherits_the_parent_opening` | `ledger_with` | [369](../../src/identity.rs#L369), [375](../../src/identity.rs#L375) | [tekes-worker::identity::tests::ledger_with](../../src/identity.rs#L288) |
 | `a_delegated_child_inherits_the_parent_opening` | `inherited_opening(&with_preset).unwrap` | [370](../../src/identity.rs#L370) | receiver-type-required |
 | `a_delegated_child_inherits_the_parent_opening` | `inherited_opening` | [370](../../src/identity.rs#L370) | external-constructor-callback-or-unresolved |

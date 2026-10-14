@@ -3977,6 +3977,7 @@ done
                 reference("gone", &["anything"]),
             ],
             skills: None,
+            defaults: None,
             digest: "sha256:x".to_owned(),
         };
         let readiness = runtime.preset_readiness("ws", &preset);

@@ -243,6 +243,20 @@ pub trait PresetMcpSource {
     fn tool_name(&self, server: &str, tool: &str) -> Option<String>;
 }
 
+/// Model availability for preset `defaults`; the supervisor owns the provider
+/// profiles that list each model's reasoning efforts.
+pub trait PresetModelSource {
+    /// Whether `provider`/`model` is configured and enabled in `config` and,
+    /// when given, `effort` is one of its reasoning efforts.
+    fn model_available(
+        &self,
+        config: &profile::ConfigSnapshot,
+        provider: &str,
+        model: &str,
+        effort: Option<&str>,
+    ) -> bool;
+}
+
 /// The environment a preset resolves in: the instruction snapshot's tool
 /// ceiling and skills, and the workspace's MCP registry. `session.create` and
 /// `session.presets.resolve` use the same one.
@@ -253,6 +267,7 @@ pub struct SessionPresetEnvironment<'a> {
     /// catalog uses; not the snapshot's per-file resource keys.
     skills: std::collections::BTreeSet<String>,
     mcp: Option<&'a dyn PresetMcpSource>,
+    models: Option<(&'a profile::ConfigSnapshot, &'a dyn PresetModelSource)>,
 }
 
 impl<'a> SessionPresetEnvironment<'a> {
@@ -272,7 +287,19 @@ impl<'a> SessionPresetEnvironment<'a> {
                 .map(|tools| tools.iter().cloned().collect()),
             skills: profile::ResourceCatalog::skill_package_names(instruction),
             mcp,
+            models: None,
         }
+    }
+
+    /// Lets the preset's `defaults` name the models `config` provides.
+    #[must_use]
+    pub fn with_models(
+        mut self,
+        config: &'a profile::ConfigSnapshot,
+        models: Option<&'a dyn PresetModelSource>,
+    ) -> Self {
+        self.models = models.map(|models| (config, models));
+        self
     }
 }
 
@@ -292,6 +319,11 @@ impl tools::PresetEnvironment for SessionPresetEnvironment<'_> {
     fn skill_known(&self, name: &str) -> bool {
         self.skills.contains(name)
     }
+
+    fn model_available(&self, provider: &str, model: &str, effort: Option<&str>) -> bool {
+        self.models
+            .is_some_and(|(config, models)| models.model_available(config, provider, model, effort))
+    }
 }
 
 pub struct SessionCreateOperation<'a> {
@@ -305,6 +337,8 @@ pub struct SessionCreateOperation<'a> {
     pub preset: Option<&'a Value>,
     /// MCP registry lookups a preset's `mcp` references resolve against.
     pub preset_mcp: Option<&'a dyn PresetMcpSource>,
+    /// Model checks a preset's `defaults` resolve against.
+    pub preset_models: Option<&'a dyn PresetModelSource>,
     pub user_agent_dir: &'a Path,
     pub started_at: &'a str,
     pub principal: &'a str,
@@ -333,6 +367,7 @@ pub struct ForkSessionOperation<'a> {
     /// destination, resolved under the source workspace.
     pub preset: Option<&'a Value>,
     pub preset_mcp: Option<&'a dyn PresetMcpSource>,
+    pub preset_models: Option<&'a dyn PresetModelSource>,
     pub user_agent_dir: &'a Path,
 }
 
@@ -995,7 +1030,8 @@ impl ManagementStore {
         .capture()?;
         instruction.validate_against_config(&config)?;
         let environment =
-            SessionPresetEnvironment::new(&workspace.id, &instruction, request.preset_mcp);
+            SessionPresetEnvironment::new(&workspace.id, &instruction, request.preset_mcp)
+                .with_models(&config, request.preset_models);
         let preset = session_preset(
             request.preset,
             request.identity_profile,
@@ -1215,6 +1251,7 @@ impl ManagementStore {
                     raw,
                     request.user_agent_dir,
                     request.preset_mcp,
+                    request.preset_models,
                 )
             })
             .transpose()?;
@@ -1246,6 +1283,36 @@ impl ManagementStore {
         fork_id_from_response(response)
     }
 
+    /// Writes a preset's starting model as the session's settings, as
+    /// `session.selectModel` would. A retry that finds them written is done.
+    fn apply_preset_defaults(
+        &self,
+        folder: &Path,
+        defaults: &tools::PresetDefaults,
+    ) -> Result<(), ManagementError> {
+        let current = self.config.session_settings(folder)?;
+        if current.as_ref().is_some_and(|current| {
+            current.provider == defaults.provider
+                && current.model == defaults.model
+                && current.reasoning_effort == defaults.reasoning_effort
+        }) {
+            return Ok(());
+        }
+        let revision = current.as_ref().map_or(0, |current| current.revision);
+        self.config.publish_session_settings(
+            folder,
+            revision,
+            &profile::SessionSettings {
+                format: 1,
+                revision: revision + 1,
+                provider: defaults.provider.clone(),
+                model: defaults.model.clone(),
+                reasoning_effort: defaults.reasoning_effort.clone(),
+            },
+        )?;
+        Ok(())
+    }
+
     /// Resolves a `session.fork {preset}` under the source session's workspace
     /// base, instruction snapshot and MCP registry, exactly as `session.create`.
     fn resolve_fork_preset(
@@ -1254,6 +1321,7 @@ impl ManagementStore {
         raw: &Value,
         user_agent_dir: &Path,
         mcp: Option<&dyn PresetMcpSource>,
+        models: Option<&dyn PresetModelSource>,
     ) -> Result<tools::ResolvedPreset, ManagementError> {
         let genesis = store::read_genesis(source_folder.join("main.jsonl"))?.ok_or_else(|| {
             ManagementError::CorruptOperation("fork source has no genesis".to_owned())
@@ -1276,7 +1344,8 @@ impl ManagementStore {
             config.workspace.cwd.iter().map(Path::new),
         )
         .capture()?;
-        let environment = SessionPresetEnvironment::new(&workspace_id, &instruction, mcp);
+        let environment = SessionPresetEnvironment::new(&workspace_id, &instruction, mcp)
+            .with_models(&config, models);
         session_preset(
             Some(raw),
             None,
@@ -2481,6 +2550,7 @@ impl ManagementStore {
         }
         let genesis = read_canonical_event(&payload.join("genesis.json"))?;
         verify_session_create_genesis(&genesis, &record, &intent)?;
+        let defaults = genesis_preset_defaults(&genesis)?;
 
         if record.phase == OperationPhase::Prepared {
             record.phase = OperationPhase::Carriers;
@@ -2496,6 +2566,12 @@ impl ManagementStore {
             publish_canonical(operation_path, &record)?;
         }
         if record.phase == OperationPhase::Semantic {
+            if let Some(defaults) = &defaults {
+                self.apply_preset_defaults(
+                    &self.storage_root.join("threads").join(&intent.session_id),
+                    defaults,
+                )?;
+            }
             let mut metadata = self.read_metadata(&intent.workspace_id)?;
             metadata.metadata_updated_at = record.started_at.clone();
             publish_canonical(&self.metadata_path(&intent.workspace_id), &metadata)?;
@@ -2687,6 +2763,13 @@ impl ManagementStore {
             publish_canonical(operation_path, &record)?;
         }
         if record.phase == OperationPhase::Semantic {
+            if let Some(defaults) = intent
+                .preset
+                .as_ref()
+                .and_then(|preset| preset.defaults.as_ref())
+            {
+                self.apply_preset_defaults(&destination, defaults)?;
+            }
             // A scratch ledger is not workspace membership: nothing durable
             // about the workspace changed.
             if !intent.ephemeral {
@@ -3094,6 +3177,19 @@ fn session_preset(
         ))),
         None => Ok(None),
     }
+}
+
+/// The `defaults` of a genesis preset, when the session has one.
+fn genesis_preset_defaults(
+    genesis: &Event,
+) -> Result<Option<tools::PresetDefaults>, ManagementError> {
+    let value: Value = serde_json::from_slice(&genesis.canonical_bytes()?)?;
+    let Some(preset) = value.get("preset") else {
+        return Ok(None);
+    };
+    tools::ResolvedPreset::from_genesis(preset)
+        .map(|preset| preset.defaults)
+        .map_err(ManagementError::CorruptOperation)
 }
 
 #[allow(clippy::too_many_arguments)]

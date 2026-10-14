@@ -1052,6 +1052,7 @@ impl ProductionEndpointHost {
                     .preset_mcp
                     .as_deref()
                     .map(|source| source as &dyn endpoint::PresetMcpSource),
+                preset_models: Some(&ConfiguredModels),
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: &self.principal,
@@ -1441,6 +1442,7 @@ impl ProductionEndpointHost {
                     .preset_mcp
                     .as_deref()
                     .map(|source| source as &dyn endpoint::PresetMcpSource),
+                preset_models: Some(&ConfiguredModels),
                 user_agent_dir: &self.user_agent_dir,
             })
             .map_err(map_management)?;
@@ -1821,6 +1823,21 @@ fn model_projection(
         "groups":groups,
         "failures":failures,
     }))
+}
+
+/// Preset `defaults` name models exactly as `session.selectModel` accepts them.
+pub struct ConfiguredModels;
+
+impl endpoint::PresetModelSource for ConfiguredModels {
+    fn model_available(
+        &self,
+        config: &profile::ConfigSnapshot,
+        provider: &str,
+        model: &str,
+        effort: Option<&str>,
+    ) -> bool {
+        model_is_configured(config, provider, model, effort)
+    }
 }
 
 fn model_is_configured(
