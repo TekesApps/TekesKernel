@@ -6,6 +6,11 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.7.1 — 2026-10-15
+
+Session preset conveniences for clients aligning to 0.7.0. Additive only:
+no existing field changes meaning.
+
 ### Added
 - `session.presets.describe` publishes `selectableTools`, the fixed tools a
   preset's `tools` may name.
