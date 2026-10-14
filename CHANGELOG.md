@@ -6,6 +6,16 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.7.0 — 2026-10-15
+
+Session presets: a session opens with the workspace base plus ordered domain
+layers, and may select its own fixed tools, MCP servers (by name) and skills.
+The preset is resolved once at `session.create` (or `session.fork`), frozen in
+genesis and enforced by the protocol: a closed refusal set (`preset-invalid`),
+a byte-exact render oracle and the dry run `session.presets.resolve`. Sessions
+without a preset render and behave exactly as in 0.6.0. The ledger reader
+version is 2; an older Kernel opens a preset session read-only.
+
 ### Added
 - Session presets (`session.create {preset}`): the workspace base (`general`,
   the default, or `blank` via `WorkspacePolicy.base`) plus ordered layers,
