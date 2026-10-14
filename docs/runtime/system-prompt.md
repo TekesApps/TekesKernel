@@ -103,7 +103,9 @@ renders to before any session exists. Contract:
 ## Profile selection
 
 New sessions choose `coding` or `general` from the first user request, before
-the first provider call; an ambiguous request selects `coding`. The choice is
+the first provider call; an ambiguous request selects `coding`. "Script" and
+脚本 also name a screenplay, so they count as code only when the request has no
+creative-writing signal; such a signal alone selects `general`. The choice is
 durable for the session and is inherited by forks and delegated children. See
 [identity selection](../../crates/worker/src/identity.rs).
 

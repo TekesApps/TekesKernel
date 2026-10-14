@@ -6,6 +6,14 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Changed
+- Automatic identity selection treats `script`/`脚本` as a code signal only when
+  the first request carries no creative-writing signal (screenplay, episode,
+  scene, character, dialogue, 剧本, 剧情, 分集, 角色, 台词, ...), and a
+  creative-writing signal alone now selects `general`. A request to write a
+  screenplay that mentions a shooting script no longer opens as coding. Explicit
+  `identityProfile` and presets are unaffected.
+
 ## 0.7.1 — 2026-10-15
 
 Session preset conveniences for clients aligning to 0.7.0. Additive only:

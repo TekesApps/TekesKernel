@@ -150,7 +150,6 @@ fn classify(text: &str) -> tools::IdentityProfile {
         "tests",
         "compile",
         "build",
-        "script",
         "function",
         "api",
         "rust",
@@ -178,7 +177,6 @@ fn classify(text: &str) -> tools::IdentityProfile {
         "编译",
         "测试",
         "仓库",
-        "脚本",
         "函数",
         "接口",
         "报错",
@@ -196,12 +194,42 @@ fn classify(text: &str) -> tools::IdentityProfile {
         ".rs", ".py", ".swift", ".ts", ".tsx", ".js", ".jsx", ".go", ".sh", ".html", ".css",
         ".json", ".toml", ".yaml",
     ];
+    // `script` and 脚本 also name a screenplay or a shooting script, so they
+    // signal code only in a request without any creative-writing signal.
+    let ambiguous_words = ["script", "scripts"];
+    let ambiguous_han = ["脚本"];
+    let creative_words = [
+        "screenplay",
+        "scene",
+        "scenes",
+        "episode",
+        "episodes",
+        "novel",
+        "chapter",
+        "character",
+        "characters",
+        "dialogue",
+        "plot",
+        "storyline",
+        "lyrics",
+    ];
+    let creative_han = [
+        "剧本", "剧情", "分集", "小说", "章节", "角色", "台词", "对白", "镜头", "编剧", "分镜",
+    ];
+    let creative = words.iter().any(|word| creative_words.contains(word))
+        || creative_han.iter().any(|term| lower.contains(term));
+    let ambiguous = words.iter().any(|word| ambiguous_words.contains(word))
+        || ambiguous_han.iter().any(|term| lower.contains(term));
     if words.iter().any(|word| code_words.contains(word))
         || code_han.iter().any(|term| lower.contains(term))
         || code_suffixes.iter().any(|suffix| lower.contains(suffix))
         || lower.contains("```")
+        || (ambiguous && !creative)
     {
         return tools::IdentityProfile::Coding;
+    }
+    if creative {
+        return tools::IdentityProfile::General;
     }
     let general_words = [
         "translate",
@@ -384,6 +412,31 @@ mod tests {
             classify("Please take care of this"),
             tools::IdentityProfile::Coding
         );
+        // `script` / 脚本 are code only without a creative-writing signal.
+        for request in [
+            "Write a bash script that renames the files",
+            "写一个脚本批量重命名文件",
+            "修复这个剧本生成脚本的报错",
+            "Write a Python script for the screenplay word count",
+        ] {
+            assert_eq!(
+                classify(request),
+                tools::IdentityProfile::Coding,
+                "{request}"
+            );
+        }
+        for request in [
+            "写一部电视剧的分集剧情，不要扩写镜头脚本",
+            "Draft the screenplay for episode 3; skip the shooting script",
+            "按角色和台词写出第一章的剧本",
+            "Write the dialogue for the next scene",
+        ] {
+            assert_eq!(
+                classify(request),
+                tools::IdentityProfile::General,
+                "{request}"
+            );
+        }
         assert_eq!(classify(""), tools::IdentityProfile::Coding);
     }
 
