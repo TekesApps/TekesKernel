@@ -998,6 +998,7 @@ impl ProductionEndpointHost {
                 "sessionId",
                 "agentPreset",
                 "identityProfile",
+                "preset",
             ],
             &[],
         )?;
@@ -1017,6 +1018,11 @@ impl ProductionEndpointHost {
                     .ok_or_else(|| invalid("identityProfile must be coding or general"))
             })
             .transpose()?;
+        // `identityProfile` is sugar for a preset; a request carries one or the other.
+        let preset = payload.get("preset");
+        if preset.is_some() && identity_profile.is_some() {
+            return Err(invalid("preset and identityProfile are exclusive"));
+        }
         let timestamp = (self.clock)().map_err(internal_assembly)?;
         let hash = request_hash(request)?;
         let session_id = self
@@ -1028,6 +1034,7 @@ impl ProductionEndpointHost {
                 workspace_id,
                 cwd,
                 identity_profile,
+                preset,
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: &self.principal,
@@ -1950,6 +1957,17 @@ fn route_error_is_exact(error: &ProductionRouteFailure) -> bool {
                     })
         }
         "model-unavailable" => exact_string_fields(&details, &["provider", "model"], &[]),
+        "preset-invalid" => {
+            exact_string_fields(&details, &["reason"], &["layer", "field"])
+                && details
+                    .get("reason")
+                    .and_then(Value::as_str)
+                    .is_some_and(|reason| {
+                        tools::PresetInvalidReason::ALL
+                            .iter()
+                            .any(|known| known.as_str() == reason)
+                    })
+        }
         _ => false,
     }
 }
@@ -1977,6 +1995,7 @@ fn route_error_message(code: &str) -> Option<&'static str> {
         "steer-unavailable" => "Current turn no longer accepts steering",
         "attachment-error" => "Image attachment is unavailable",
         "model-unavailable" => "Model is unavailable",
+        "preset-invalid" => "Session preset is invalid",
         "title-invalid" => "Session title is invalid",
         "accepted-but-not-confirmed" => "Mutation was accepted but its receipt was not confirmed",
         "internal" => "Endpoint operation failed",
@@ -2049,6 +2068,7 @@ fn route_allows_error(operation: &str, code: &str) -> bool {
                 | "session-conflict"
                 | "active-session-limit"
                 | "unsupported-capability"
+                | "preset-invalid"
                 | "idempotency-conflict"
         ),
         "session.models" | "session.attachment" => {
@@ -2504,6 +2524,7 @@ fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), En
                 "sessionId",
                 "agentPreset",
                 "identityProfile",
+                "preset",
             ],
             &[],
         ),
@@ -2599,9 +2620,14 @@ fn map_management(error: ManagementError) -> EndpointRpcFailure {
             "Workspace path matches more than one workspace",
             json!({"path":path}),
         ),
-        ManagementError::InvalidCreateSelection => {
+        ManagementError::InvalidCreateSelection | ManagementError::PresetBadRequest(_) => {
             EndpointRpcFailure::new("bad-request", "Request payload is invalid", json!({}))
         }
+        ManagementError::PresetInvalid(invalid) => EndpointRpcFailure::new(
+            "preset-invalid",
+            "Session preset is invalid",
+            invalid.detail(),
+        ),
         ManagementError::IdempotencyConflict { rpc_id, operation } => EndpointRpcFailure::new(
             "idempotency-conflict",
             "rpcId was already used for another request",

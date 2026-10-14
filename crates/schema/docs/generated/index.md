@@ -30,10 +30,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/schema/src/event.rs](../../src/event.rs) | 84 | 849 | [Symbols and calls](src--event.md) |
+| [crates/schema/src/event.rs](../../src/event.rs) | 84 | 870 | [Symbols and calls](src--event.md) |
 | [crates/schema/src/fold.rs](../../src/fold.rs) | 33 | 552 | [Symbols and calls](src--fold.md) |
 | [crates/schema/src/ijson.rs](../../src/ijson.rs) | 26 | 61 | [Symbols and calls](src--ijson.md) |
-| [crates/schema/src/lib.rs](../../src/lib.rs) | 4 | 3 | [Symbols and calls](src--lib.md) |
+| [crates/schema/src/lib.rs](../../src/lib.rs) | 5 | 3 | [Symbols and calls](src--lib.md) |
 | [crates/schema/src/metrics.rs](../../src/metrics.rs) | 10 | 21 | [Symbols and calls](src--metrics.md) |
 | [crates/schema/src/types.rs](../../src/types.rs) | 9 | 13 | [Symbols and calls](src--types.md) |
 | [crates/schema/tests/approval_batch_wait.rs](../../tests/approval_batch_wait.rs) | 3 | 30 | `inventory.json` |
@@ -57,7 +57,7 @@ flowchart LR
   m3["lib.rs"]
   m4["metrics.rs"]
   m0 -->|"1"| m2
-  m0 -->|"74"| m3
+  m0 -->|"78"| m3
   m0 -->|"1"| m4
   m1 -->|"7"| m0
   m1 -->|"62"| m3

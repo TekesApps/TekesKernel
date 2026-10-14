@@ -40,6 +40,7 @@ fn summary() -> CardSummary {
         updated_ms: 1,
         title: None,
         identity_profile: Some("coding".into()),
+        preset: None,
         ephemeral: false,
         blank: true,
     }

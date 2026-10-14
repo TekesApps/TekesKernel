@@ -1472,6 +1472,7 @@ impl ProductionProcessHost {
                 workspace_id: Some(&claim.definition.workspace_id),
                 cwd: None,
                 identity_profile: None,
+                preset: None,
                 user_agent_dir: &self.user_agent_dir,
                 started_at: &timestamp,
                 principal: "schedule",
@@ -5693,6 +5694,7 @@ impl ProductionProcessHost {
                 lifecycle: main.facts.clone(),
                 permission_mode: endpoint::permission_mode_of(&folder),
                 identity_profile: view.summary.identity_profile.clone(),
+                preset: view.summary.preset.clone(),
                 ephemeral: view.summary.ephemeral,
             });
         }
@@ -5725,7 +5727,9 @@ impl ProductionProcessHost {
             as_of_seq: 0,
             lifecycle: neutral_lifecycle(),
             permission_mode: endpoint::permission_mode_of(&folder),
+            preset: endpoint::genesis_preset_summary(&genesis),
             identity_profile: match genesis.string_field("identity_profile") {
+                None if endpoint::genesis_preset_summary(&genesis).is_some() => None,
                 None => Some("coding".to_owned()),
                 Some(profile @ ("coding" | "general")) => Some(profile.to_owned()),
                 _ => None,
@@ -5845,6 +5849,7 @@ impl ProductionProcessHost {
                         lifecycle: neutral_lifecycle(),
                         permission_mode: String::new(),
                         identity_profile: None,
+                        preset: None,
                         ephemeral: false,
                     });
                 }

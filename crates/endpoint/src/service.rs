@@ -84,6 +84,8 @@ pub struct SessionInventoryItem {
     /// the default mode when the record is absent or unreadable.
     pub permission_mode: String,
     pub identity_profile: Option<String>,
+    /// Summary of the session's genesis preset, when it has one.
+    pub preset: Option<Value>,
     /// Genesis `ephemeral: true`: a scratch ledger that never joins a
     /// workspace, cannot be archived, and disappears on discard or restart.
     pub ephemeral: bool,
@@ -96,6 +98,15 @@ const DEFAULT_PERMISSION_MODE: &str = "workspace-write";
 
 /// The mode a session folder declares, or the default when the record is
 /// absent or malformed (the worker applies the same fallback).
+/// Inventory summary of a genesis preset (`{base, layers, digest}`); `None`
+/// for an identity-profile session or an unreadable preset.
+#[must_use]
+pub fn genesis_preset_summary(genesis: &schema::Event) -> Option<Value> {
+    let raw = serde_json::to_value(genesis.raw()).ok()?;
+    let preset = tools::ResolvedPreset::from_genesis(raw.get("preset")?).ok()?;
+    Some(preset.summary())
+}
+
 pub fn permission_mode_of(folder: &Path) -> String {
     let Ok(bytes) = fs::read(folder.join(PERMISSION_MODE_FILE)) else {
         return DEFAULT_PERMISSION_MODE.to_owned();
@@ -140,6 +151,7 @@ fn card_item(
         lifecycle: main.facts.clone(),
         permission_mode: permission_mode_of(folder),
         identity_profile: card.summary.identity_profile.clone(),
+        preset: card.summary.preset.clone(),
         ephemeral: card.summary.ephemeral,
     })
 }
@@ -198,7 +210,9 @@ pub fn card_summary(
         .find_map(|event| event.string_field("title"))
         .map(str::to_owned);
     let updated_ms = card_updated_ms(projection)?;
+    let preset = genesis_preset_summary(genesis);
     let identity_profile = match genesis.string_field("identity_profile") {
+        None if preset.is_some() => None,
         None => Some("coding".to_owned()),
         Some("coding" | "general") => genesis.string_field("identity_profile").map(str::to_owned),
         _ => projection.events.iter().find_map(|event| {
@@ -225,6 +239,7 @@ pub fn card_summary(
         updated_ms,
         title,
         identity_profile,
+        preset,
         ephemeral: genesis.is_ephemeral_genesis(),
         blank: projection.lifecycle.latest_turn.is_none(),
     })
@@ -329,6 +344,7 @@ impl NativeEndpoint {
                 items.push(SessionInventoryItem {
                     permission_mode: permission_mode_of(&entry.path()),
                     identity_profile: summary.identity_profile,
+                    preset: summary.preset,
                     ephemeral: summary.ephemeral,
                     workspace_id: summary.workspace,
                     title: summary.title,

@@ -303,7 +303,12 @@ pub(crate) fn ensure_durable_child(
         "resume":resume,
         "config":{"digest":options.config_digest}
     });
-    if let Some(identity) = identity::selected(ledger)? {
+    // A child keeps its parent's preset verbatim, or its resolved identity.
+    if let Some(preset) = identity::genesis_preset(ledger)? {
+        let object = genesis.as_object_mut().expect("genesis object");
+        object.insert("min_reader".to_owned(), json!(2));
+        object.insert("preset".to_owned(), serde_json::to_value(&preset)?);
+    } else if let Some(identity) = identity::selected(ledger)? {
         genesis
             .as_object_mut()
             .expect("genesis object")

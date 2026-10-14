@@ -123,7 +123,7 @@ impl ThreadStore {
         let origin = genesis
             .origin_tuple()?
             .ok_or_else(|| StoreError::Corruption("genesis is missing origin tuple".to_owned()))?;
-        crate::tail::check_write_versions(std::iter::once(&genesis), 1)?;
+        crate::tail::check_write_versions(std::iter::once(&genesis), schema::READER_VERSION)?;
         // Membership is observed by the thread-search authority under the
         // shared form of this lock. Hold it across every active-folder
         // publication so a catalog snapshot cannot miss or duplicate a

@@ -84,7 +84,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `ledger.path().to_owned` | [56](../../src/validation_tests.rs#L56) | receiver-type-required |
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `ledger.path` | [56](../../src/validation_tests.rs#L56) | receiver-type-required |
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `drop` | [57](../../src/validation_tests.rs#L57) | external-constructor-callback-or-unresolved |
-| `validation_candidate_and_decision_survive_reopen_without_second_writes` | `LockedLedger::open(&path, 1).unwrap` | [58](../../src/validation_tests.rs#L58) | receiver-type-required |
+| `validation_candidate_and_decision_survive_reopen_without_second_writes` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [58](../../src/validation_tests.rs#L58) | receiver-type-required |
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `LockedLedger::open` | [58](../../src/validation_tests.rs#L58) | external-constructor-callback-or-unresolved |
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `serde_json::to_value(reopened.projection().unwrap().events.last().unwrap().raw()).unwrap` | [69](../../src/validation_tests.rs#L69) | receiver-type-required |
 | `validation_candidate_and_decision_survive_reopen_without_second_writes` | `serde_json::to_value` | [69](../../src/validation_tests.rs#L69) | external-constructor-callback-or-unresolved |
@@ -118,7 +118,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `ledger.path().to_owned` | [134](../../src/validation_tests.rs#L134) | receiver-type-required |
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `ledger.path` | [134](../../src/validation_tests.rs#L134) | receiver-type-required |
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `drop` | [135](../../src/validation_tests.rs#L135) | external-constructor-callback-or-unresolved |
-| `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `LockedLedger::open(&path, 1).unwrap` | [136](../../src/validation_tests.rs#L136) | receiver-type-required |
+| `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [136](../../src/validation_tests.rs#L136) | receiver-type-required |
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `LockedLedger::open` | [136](../../src/validation_tests.rs#L136) | external-constructor-callback-or-unresolved |
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `engine::begin_validation(&mut ledger, timestamp, &binding).unwrap` | [139](../../src/validation_tests.rs#L139) | receiver-type-required |
 | `validation_obligation_survives_resume_never_without_reopening_settled_turn` | `engine::begin_validation` | [139](../../src/validation_tests.rs#L139) | [engine::validation_writer::begin_validation](../../../engine/src/validation_writer.rs#L25) |
@@ -141,7 +141,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `ledger.path().to_owned` | [156](../../src/validation_tests.rs#L156) | receiver-type-required |
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `ledger.path` | [156](../../src/validation_tests.rs#L156) | receiver-type-required |
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `drop` | [157](../../src/validation_tests.rs#L157) | external-constructor-callback-or-unresolved |
-| `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `LockedLedger::open(path,1).unwrap` | [158](../../src/validation_tests.rs#L158) | receiver-type-required |
+| `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `LockedLedger::open(path, schema::READER_VERSION).unwrap` | [158](../../src/validation_tests.rs#L158) | receiver-type-required |
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `LockedLedger::open` | [158](../../src/validation_tests.rs#L158) | external-constructor-callback-or-unresolved |
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `ledger.projection().unwrap` | [159](../../src/validation_tests.rs#L159) | receiver-type-required |
 | `long_provider_reasoning_and_answer_survive_spill_and_reopen` | `ledger.projection` | [159](../../src/validation_tests.rs#L159) | receiver-type-required |
@@ -182,7 +182,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `ledger.path().to_owned` | [192](../../src/validation_tests.rs#L192) | receiver-type-required |
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `ledger.path` | [192](../../src/validation_tests.rs#L192) | receiver-type-required |
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `drop` | [193](../../src/validation_tests.rs#L193) | external-constructor-callback-or-unresolved |
-| `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `LockedLedger::open(path, 1).unwrap` | [194](../../src/validation_tests.rs#L194) | receiver-type-required |
+| `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `LockedLedger::open(path, schema::READER_VERSION).unwrap` | [194](../../src/validation_tests.rs#L194) | receiver-type-required |
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `LockedLedger::open` | [194](../../src/validation_tests.rs#L194) | external-constructor-callback-or-unresolved |
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `engine::begin_validation(&mut ledger, timestamp, &later).unwrap` | [203](../../src/validation_tests.rs#L203) | receiver-type-required |
 | `validation_changed_answer_rejudges_same_files_and_second_failure_hits_cap` | `engine::commit_validation_decision(&mut ledger, timestamp, candidate2, candidate2).unwrap` | [204](../../src/validation_tests.rs#L204) | receiver-type-required |
@@ -219,7 +219,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `direct_final_recovery_settles_once_without_validator` | `ledger.path().to_owned` | [262](../../src/validation_tests.rs#L262) | receiver-type-required |
 | `direct_final_recovery_settles_once_without_validator` | `ledger.path` | [262](../../src/validation_tests.rs#L262) | receiver-type-required |
 | `direct_final_recovery_settles_once_without_validator` | `drop` | [263](../../src/validation_tests.rs#L263), [278](../../src/validation_tests.rs#L278), [282](../../src/validation_tests.rs#L282) | external-constructor-callback-or-unresolved |
-| `direct_final_recovery_settles_once_without_validator` | `LockedLedger::open(&path, 1).unwrap` | [264](../../src/validation_tests.rs#L264), [279](../../src/validation_tests.rs#L279), [283](../../src/validation_tests.rs#L283) | receiver-type-required |
+| `direct_final_recovery_settles_once_without_validator` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [264](../../src/validation_tests.rs#L264), [279](../../src/validation_tests.rs#L279), [283](../../src/validation_tests.rs#L283) | receiver-type-required |
 | `direct_final_recovery_settles_once_without_validator` | `LockedLedger::open` | [264](../../src/validation_tests.rs#L264), [279](../../src/validation_tests.rs#L279), [283](../../src/validation_tests.rs#L283) | external-constructor-callback-or-unresolved |
 | `direct_final_recovery_settles_once_without_validator` | `tool_profile` | [265](../../src/validation_tests.rs#L265) | external-constructor-callback-or-unresolved |
 | `direct_final_recovery_settles_once_without_validator` | `directory.path` | [265](../../src/validation_tests.rs#L265) | receiver-type-required |
@@ -254,7 +254,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `acc.push` | [300](../../src/validation_tests.rs#L300) | receiver-type-required |
 | `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `fs::write(&path, &changed).unwrap` | [301](../../src/validation_tests.rs#L301) | receiver-type-required |
 | `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `fs::write` | [301](../../src/validation_tests.rs#L301) | external-constructor-callback-or-unresolved |
-| `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `LockedLedger::open(&path, 1).unwrap` | [302](../../src/validation_tests.rs#L302) | receiver-type-required |
+| `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [302](../../src/validation_tests.rs#L302) | receiver-type-required |
 | `settlement_recovery_rejects_a_foreign_candidate_binding_without_writes` | `LockedLedger::open` | [302](../../src/validation_tests.rs#L302) | external-constructor-callback-or-unresolved |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `context_ledger` | [309](../../src/validation_tests.rs#L309) | external-constructor-callback-or-unresolved |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `validation_test_candidate` | [310](../../src/validation_tests.rs#L310) | [tekes-worker::validation_tests::validation_test_candidate](../../src/validation_tests.rs#L1) |
@@ -274,7 +274,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `ledger.path().to_owned` | [320](../../src/validation_tests.rs#L320) | receiver-type-required |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `ledger.path` | [320](../../src/validation_tests.rs#L320) | receiver-type-required |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `drop` | [321](../../src/validation_tests.rs#L321), [329](../../src/validation_tests.rs#L329) | external-constructor-callback-or-unresolved |
-| `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `LockedLedger::open(&path,1).unwrap` | [322](../../src/validation_tests.rs#L322), [330](../../src/validation_tests.rs#L330) | receiver-type-required |
+| `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [322](../../src/validation_tests.rs#L322), [330](../../src/validation_tests.rs#L330) | receiver-type-required |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `LockedLedger::open` | [322](../../src/validation_tests.rs#L322), [330](../../src/validation_tests.rs#L330) | external-constructor-callback-or-unresolved |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `tool_profile` | [323](../../src/validation_tests.rs#L323) | external-constructor-callback-or-unresolved |
 | `failed_decision_recovery_delivers_feedback_once_to_the_same_worker` | `directory.path` | [323](../../src/validation_tests.rs#L323) | receiver-type-required |
@@ -356,7 +356,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `ledger.path().to_owned` | [433](../../src/validation_tests.rs#L433) | receiver-type-required |
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `ledger.path` | [433](../../src/validation_tests.rs#L433) | receiver-type-required |
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `drop` | [434](../../src/validation_tests.rs#L434) | external-constructor-callback-or-unresolved |
-| `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `LockedLedger::open(path, 1).unwrap` | [435](../../src/validation_tests.rs#L435) | receiver-type-required |
+| `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `LockedLedger::open(path, schema::READER_VERSION).unwrap` | [435](../../src/validation_tests.rs#L435) | receiver-type-required |
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `LockedLedger::open` | [435](../../src/validation_tests.rs#L435) | external-constructor-callback-or-unresolved |
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `engine::materialize_validation_settlement(&mut ledger, timestamp, decision).unwrap` | [437](../../src/validation_tests.rs#L437) | receiver-type-required |
 | `queued_retry_body_waits_for_validation_settlement_then_opens_once` | `engine::materialize_validation_settlement` | [437](../../src/validation_tests.rs#L437) | [engine::validation_writer::materialize_validation_settlement](../../../engine/src/validation_writer.rs#L248) |
@@ -375,7 +375,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `first_root_input_opens_after_run_start_without_prior_settlement` | `acc.push_str` | [454](../../src/validation_tests.rs#L454) | receiver-type-required |
 | `first_root_input_opens_after_run_start_without_prior_settlement` | `fs::write(&path, prefix).unwrap` | [455](../../src/validation_tests.rs#L455) | receiver-type-required |
 | `first_root_input_opens_after_run_start_without_prior_settlement` | `fs::write` | [455](../../src/validation_tests.rs#L455) | external-constructor-callback-or-unresolved |
-| `first_root_input_opens_after_run_start_without_prior_settlement` | `LockedLedger::open(&path, 1).unwrap` | [456](../../src/validation_tests.rs#L456) | receiver-type-required |
+| `first_root_input_opens_after_run_start_without_prior_settlement` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [456](../../src/validation_tests.rs#L456) | receiver-type-required |
 | `first_root_input_opens_after_run_start_without_prior_settlement` | `LockedLedger::open` | [456](../../src/validation_tests.rs#L456) | external-constructor-callback-or-unresolved |
 | `queued_input_replays_after_previous_tool_result_not_at_storage_position` | `context_ledger` | [466](../../src/validation_tests.rs#L466) | external-constructor-callback-or-unresolved |
 | `queued_input_replays_after_previous_tool_result_not_at_storage_position` | `append_test_attempt` | [468](../../src/validation_tests.rs#L468) | external-constructor-callback-or-unresolved |
@@ -428,7 +428,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `ledger.path().to_owned` | [518](../../src/validation_tests.rs#L518) | receiver-type-required |
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `ledger.path` | [518](../../src/validation_tests.rs#L518) | receiver-type-required |
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `drop` | [519](../../src/validation_tests.rs#L519) | external-constructor-callback-or-unresolved |
-| `validator_mandate_counts_verify_attempts_not_progress_outputs` | `LockedLedger::open(&path, 1).unwrap` | [520](../../src/validation_tests.rs#L520) | receiver-type-required |
+| `validator_mandate_counts_verify_attempts_not_progress_outputs` | `LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [520](../../src/validation_tests.rs#L520) | receiver-type-required |
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `LockedLedger::open` | [520](../../src/validation_tests.rs#L520) | external-constructor-callback-or-unresolved |
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `ledger.projection().unwrap` | [521](../../src/validation_tests.rs#L521) | receiver-type-required |
 | `validator_mandate_counts_verify_attempts_not_progress_outputs` | `ledger.projection` | [521](../../src/validation_tests.rs#L521) | receiver-type-required |

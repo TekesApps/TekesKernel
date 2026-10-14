@@ -40,6 +40,10 @@ pub const RESOURCE_METHODS: [(&str, MethodClass); 5] = [
 ];
 pub const INITIAL_PRESET_METHODS: [(&str, MethodClass); 1] =
     [("session.initialPresets", MethodClass::ReadOnly)];
+pub const SESSION_PRESET_METHODS: [(&str, MethodClass); 2] = [
+    ("session.presets.describe", MethodClass::ReadOnly),
+    ("session.presets.resolve", MethodClass::ReadOnly),
+];
 pub const RECOVERY_METHODS: [(&str, MethodClass); 1] =
     [("sessions.recover", MethodClass::Mutation)];
 pub const ATTACHMENT_METHODS: [(&str, MethodClass); 3] = [
@@ -308,6 +312,7 @@ pub fn common_capability_routes(
     [
         ("resources.v1", RESOURCE_METHODS.as_slice()),
         ("initialPresets.v1", INITIAL_PRESET_METHODS.as_slice()),
+        ("sessionPresets.v1", SESSION_PRESET_METHODS.as_slice()),
         ("recovery.v1", RECOVERY_METHODS.as_slice()),
         ("attachments.v1", ATTACHMENT_METHODS.as_slice()),
         ("approvals.v1", APPROVAL_METHODS.as_slice()),
@@ -381,6 +386,7 @@ impl ProductionClientExtensions {
         let mut groups = vec![
             ("resources.v1", RESOURCE_METHODS.as_slice()),
             ("initialPresets.v1", INITIAL_PRESET_METHODS.as_slice()),
+            ("sessionPresets.v1", SESSION_PRESET_METHODS.as_slice()),
             ("recovery.v1", RECOVERY_METHODS.as_slice()),
             ("attachments.v1", ATTACHMENT_METHODS.as_slice()),
             ("approvals.v1", APPROVAL_METHODS.as_slice()),
@@ -1743,6 +1749,46 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
         _recovering: bool,
     ) -> Result<IJsonValue, ProductionRouteFailure> {
         match operation {
+            "session.presets.describe" => encode(&tools::describe_presets()),
+            "session.presets.resolve" => {
+                let workspace_id = payload["workspaceId"].as_str().unwrap_or_default();
+                let base = profile::ConfigRepository::open(&self.root)
+                    .and_then(|repository| repository.workspace(workspace_id))
+                    .map_err(|error| match error {
+                        profile::ProfileError::Io(ref io)
+                            if io.kind() == std::io::ErrorKind::NotFound =>
+                        {
+                            failure(
+                                "workspace-not-found",
+                                "Workspace was not found",
+                                serde_json::json!({"workspaceId": workspace_id}),
+                            )
+                        }
+                        _ => failure(
+                            "internal",
+                            "Endpoint operation failed",
+                            serde_json::json!({}),
+                        ),
+                    })?
+                    .policy
+                    .and_then(|policy| policy.base)
+                    .unwrap_or_default();
+                let preset = tools::ResolvedPreset::resolve_request(&payload["preset"], base)
+                    .map_err(|error| match error {
+                        tools::PresetError::BadRequest(message) => bad_request(&message),
+                        tools::PresetError::Invalid(invalid) => failure(
+                            "preset-invalid",
+                            "Session preset is invalid",
+                            invalid.detail(),
+                        ),
+                    })?;
+                encode(&serde_json::json!({
+                    "base": preset.base,
+                    "layers": preset.summary()["layers"],
+                    "presetText": preset.preset_text(),
+                    "digest": preset.digest,
+                }))
+            }
             "session.initialPresets" => encode(&serde_json::json!({
                 "presets": [
                     {"id":"coding", "title":"Coding", "configurationText":tools::IdentityProfile::Coding.profile_text()},
@@ -2751,6 +2797,7 @@ fn error_allowed(operation: &str, class: Option<MethodClass>, code: &str) -> boo
         return true;
     }
     match operation {
+        "session.presets.resolve" => matches!(code, "workspace-not-found" | "preset-invalid"),
         "session.files.stat" | "session.files.read" | "session.files.readBytes" => {
             code == "file-unavailable"
         }
@@ -2838,6 +2885,27 @@ fn error_allowed(operation: &str, class: Option<MethodClass>, code: &str) -> boo
 
 fn validate_payload(operation: &str, payload: &Value) -> Result<(), ProductionRouteFailure> {
     match operation {
+        "session.presets.describe" => {
+            if payload.as_object().is_some_and(serde_json::Map::is_empty) {
+                Ok(())
+            } else {
+                Err(bad_request("request must be empty"))
+            }
+        }
+        "session.presets.resolve" => {
+            // The preset itself is checked by the resolver, which reports
+            // malformed members as bad-request and refusals as preset-invalid.
+            let exact = payload.as_object().is_some_and(|object| {
+                object.len() == 2
+                    && object.get("workspaceId").is_some_and(Value::is_string)
+                    && object.contains_key("preset")
+            });
+            if exact {
+                Ok(())
+            } else {
+                Err(bad_request("request is {workspaceId, preset}"))
+            }
+        }
         "session.initialPresets" => {
             if payload.as_object().is_some_and(serde_json::Map::is_empty) {
                 Ok(())
@@ -3060,6 +3128,140 @@ mod tests {
             )
             .is_err()
         );
+    }
+
+    #[test]
+    fn session_presets_describe_and_resolve_without_creating_a_session() {
+        let root = tempfile::tempdir().expect("root");
+        let (extensions, _process) = production_extensions(root.path());
+        let described = execute(
+            &extensions,
+            "session.presets.describe",
+            &serde_json::json!({}),
+            "describe",
+        )
+        .expect("describe");
+        assert_eq!(described["kernelLayers"][0]["id"], "coding");
+        assert_eq!(described["limits"]["maxLayers"], 8);
+        let project = root.path().join("project");
+        fs::create_dir_all(&project).expect("project");
+        let repository = profile::ConfigRepository::open(root.path()).expect("repository");
+        for (id, base) in [
+            ("ws-general", None),
+            ("ws-blank", Some(tools::PresetBase::Blank)),
+        ] {
+            repository
+                .publish_workspace(
+                    0,
+                    &profile::WorkspaceConfig {
+                        format: 1,
+                        revision: 1,
+                        id: id.to_owned(),
+                        name: id.to_owned(),
+                        cwd: vec![project.to_string_lossy().into_owned()],
+                        folders: Vec::new(),
+                        policy: Some(profile::WorkspacePolicy {
+                            base,
+                            ..profile::WorkspacePolicy::default()
+                        }),
+                    },
+                )
+                .expect("workspace");
+        }
+        let preset = serde_json::json!({"layers":[{"kind":"inline","id":"creator",
+            "version":"2","identity":"You are a writing agent powered by the {model} model."}]});
+        let general = execute(
+            &extensions,
+            "session.presets.resolve",
+            &serde_json::json!({"workspaceId":"ws-general","preset":preset}),
+            "resolve-general",
+        )
+        .expect("resolve");
+        let text = general["presetText"].as_str().unwrap();
+        assert!(text.contains("You are a writing agent powered by the {model} model."));
+        assert!(text.contains(tools::GENERAL_RULES.trim()));
+        let blank = execute(
+            &extensions,
+            "session.presets.resolve",
+            &serde_json::json!({"workspaceId":"ws-blank","preset":preset}),
+            "resolve-blank",
+        )
+        .expect("resolve");
+        assert_eq!(blank["base"], "blank");
+        assert!(
+            !blank["presetText"]
+                .as_str()
+                .unwrap()
+                .contains(tools::GENERAL_RULES.trim())
+        );
+        assert_ne!(general["digest"], blank["digest"]);
+        let refused = execute(
+            &extensions,
+            "session.presets.resolve",
+            &serde_json::json!({"workspaceId":"ws-general","preset":{"tools":["read"]}}),
+            "resolve-tools",
+        )
+        .expect_err("tools are not applied yet");
+        assert_eq!(refused.code, "preset-invalid");
+        let missing = execute(
+            &extensions,
+            "session.presets.resolve",
+            &serde_json::json!({"workspaceId":"absent","preset":{}}),
+            "resolve-missing",
+        )
+        .expect_err("missing workspace");
+        assert_eq!(missing.code, "workspace-not-found");
+        assert!(
+            !root.path().join("threads").exists()
+                || fs::read_dir(root.path().join("threads"))
+                    .unwrap()
+                    .next()
+                    .is_none()
+        );
+    }
+
+    #[test]
+    fn session_preset_method_cases_are_the_runtime_results() {
+        let root = tempfile::tempdir().expect("root");
+        let (extensions, _process) = production_extensions(root.path());
+        let project = root.path().join("project");
+        fs::create_dir_all(&project).expect("project");
+        profile::ConfigRepository::open(root.path())
+            .expect("repository")
+            .publish_workspace(
+                0,
+                &profile::WorkspaceConfig {
+                    format: 1,
+                    revision: 1,
+                    id: "workspace-1".to_owned(),
+                    name: "workspace-1".to_owned(),
+                    cwd: vec![project.to_string_lossy().into_owned()],
+                    folders: Vec::new(),
+                    policy: Some(profile::WorkspacePolicy::default()),
+                },
+            )
+            .expect("workspace");
+        let cases: Value = serde_json::from_slice(
+            &fs::read(
+                Path::new(env!("CARGO_MANIFEST_DIR"))
+                    .join("../../fixtures/client-extensions/method-cases.canonical.json"),
+            )
+            .expect("method cases"),
+        )
+        .expect("method cases JSON");
+        for method in ["session.presets.describe", "session.presets.resolve"] {
+            let case = cases["cases"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|case| case["method"] == method)
+                .expect("method case");
+            assert_eq!(
+                execute(&extensions, method, &case["request"], method).expect("method"),
+                case["success"],
+                "{method}"
+            );
+        }
     }
 
     fn write_plugin(root: &Path, version: &str, capabilities: &[&str]) -> PathBuf {

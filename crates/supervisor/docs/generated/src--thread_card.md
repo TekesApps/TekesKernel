@@ -200,7 +200,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fingerprint` | `self.journal.as_ref().map_or` | [82](../../src/thread_card.rs#L82) | receiver-type-required |
 | `fingerprint` | `self.journal.as_ref` | [82](../../src/thread_card.rs#L82) | receiver-type-required |
 | `holds_of` | `line_requests(session, source_line, projection).ok` | [92](../../src/thread_card.rs#L92) | receiver-type-required |
-| `holds_of` | `line_requests` | [92](../../src/thread_card.rs#L92) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2821) |
+| `holds_of` | `line_requests` | [92](../../src/thread_card.rs#L92) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2822) |
 | `holds_of` | `Some` | [93](../../src/thread_card.rs#L93) | external-constructor-callback-or-unresolved |
 | `holds_of` | `requests             .into_iter()             .map(&#124;(state, _)&#124; Hold {                 hold_seq: state.request.causal_kernel_seq,                 kind: match state.request.frame_type {                     endpoint::RequestFrameType::Approval => "approval",                     endpoint::RequestFrameType::Question => "question",                 }                 .to_owned(),                 resolved: state.resolution.map(&#124;(seq, outcome)&#124; HoldResolution {                     seq,                     // kebab-case ('allowed-once', 'rejected', 'cancelled', 'answered')                     outcome: serde_json::to_value(outcome)                         .ok()                         .and_then(&#124;value&#124; value.as_str().map(str::to_owned))                         .unwrap_or_default(),                 }),             })             .collect` | [94](../../src/thread_card.rs#L94) | receiver-type-required |
 | `holds_of` | `requests             .into_iter()             .map` | [94](../../src/thread_card.rs#L94) | receiver-type-required |
@@ -221,7 +221,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_input` | `i64::try_from` | [124](../../src/thread_card.rs#L124) | external-constructor-callback-or-unresolved |
 | `main_line` | `bytes.truncate` | [135](../../src/thread_card.rs#L135) | receiver-type-required |
 | `main_line` | `endpoint::card_summary(projection).ok` | [136](../../src/thread_card.rs#L136) | receiver-type-required |
-| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L186) |
+| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L198) |
 | `main_line` | `Some` | [137](../../src/thread_card.rs#L137) | external-constructor-callback-or-unresolved |
 | `main_line` | `"main.jsonl".to_owned` | [139](../../src/thread_card.rs#L139) | receiver-type-required |
 | `main_line` | `session.to_owned` | [142](../../src/thread_card.rs#L142) | receiver-type-required |
@@ -247,7 +247,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fold_children` | `entry.file_name().to_string_lossy` | [202](../../src/thread_card.rs#L202) | receiver-type-required |
 | `fold_children` | `entry.file_name` | [202](../../src/thread_card.rs#L202) | receiver-type-required |
 | `fold_children` | `(store::card::valid_line_name(&name)                 && name != "main.jsonl"                 && entry.file_type().is_ok_and(&#124;kind&#124; kind.is_file()))             .then_some` | [203](../../src/thread_card.rs#L203) | receiver-type-required |
-| `fold_children` | `store::card::valid_line_name` | [203](../../src/thread_card.rs#L203) | [store::card::valid_line_name](../../../store/src/card.rs#L252) |
+| `fold_children` | `store::card::valid_line_name` | [203](../../src/thread_card.rs#L203) | [store::card::valid_line_name](../../../store/src/card.rs#L255) |
 | `fold_children` | `entry.file_type().is_ok_and` | [205](../../src/thread_card.rs#L205) | receiver-type-required |
 | `fold_children` | `entry.file_type` | [205](../../src/thread_card.rs#L205) | receiver-type-required |
 | `fold_children` | `kind.is_file` | [205](../../src/thread_card.rs#L205) | receiver-type-required |
@@ -290,7 +290,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write` | `prepared.summary.clone` | [282](../../src/thread_card.rs#L282) | receiver-type-required |
 | `write` | `prepared.journal.as_ref().map` | [283](../../src/thread_card.rs#L283) | receiver-type-required |
 | `write` | `prepared.journal.as_ref` | [283](../../src/thread_card.rs#L283) | receiver-type-required |
-| `write` | `store::card::write_card` | [290](../../src/thread_card.rs#L290) | [store::card::write_card](../../../store/src/card.rs#L578) |
+| `write` | `store::card::write_card` | [290](../../src/thread_card.rs#L290) | [store::card::write_card](../../../store/src/card.rs#L581) |
 | `write` | `WriteOutcome::Skipped` | [297](../../src/thread_card.rs#L297) | external-constructor-callback-or-unresolved |
 | `new` | `Duration::from_secs` | [317](../../src/thread_card.rs#L317) | external-constructor-callback-or-unresolved |
 | `new` | `Mutex::new` | [319](../../src/thread_card.rs#L319) | external-constructor-callback-or-unresolved |

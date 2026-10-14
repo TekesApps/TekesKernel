@@ -2767,6 +2767,7 @@ fn inventory_row(
         projections,
         permission_mode: Some(session.permission_mode),
         identity_profile: session.identity_profile,
+        preset: session.preset,
     })
 }
 

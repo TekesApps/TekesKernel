@@ -494,3 +494,41 @@ fn context_memory_and_shell_nested_rules_are_executable() {
     shell.insert("artifact_outputs".to_owned(), json!([{"path":"../escape"}]));
     assert!(validate_fixed_arguments("shell", &Value::Object(shell)).is_err());
 }
+
+#[test]
+fn session_preset_render_oracle_matches_the_resolver() {
+    let oracle: Value = serde_json::from_slice(
+        &fs::read(fixture("tools/session-preset-render.canonical.json")).expect("render oracle"),
+    )
+    .unwrap();
+    assert_eq!(oracle["renderVersion"], tools::PRESET_RENDER_VERSION);
+    let cases = oracle["cases"].as_array().unwrap();
+    assert!(cases.len() >= 7);
+    for case in cases {
+        let base = tools::PresetBase::parse(case["base"].as_str().unwrap()).unwrap();
+        let preset = tools::ResolvedPreset::resolve_request(&case["preset"], base)
+            .unwrap_or_else(|error| panic!("{}: {error:?}", case["name"]));
+        assert_eq!(preset.digest, case["digest"], "{}", case["name"]);
+        assert_eq!(
+            preset.render(
+                case["model"].as_str().unwrap(),
+                case["cwd"].as_str(),
+                case["instructions"].as_str().unwrap()
+            ),
+            case["text"].as_str().unwrap(),
+            "{}",
+            case["name"]
+        );
+    }
+    // The identity-profile sugar renders exactly like the profile text.
+    let coding = &cases[0];
+    assert_eq!(
+        coding["text"],
+        tools::root_system_instructions(
+            tools::IdentityProfile::Coding,
+            "deepseek-flash",
+            Some("/work"),
+            "Project rule."
+        )
+    );
+}

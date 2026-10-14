@@ -185,7 +185,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_real_validator_process` | `events.iter_mut().enumerate` | [249](../../src/process_live_tests.rs#L249) | receiver-type-required |
 | `run_real_validator_process` | `events.iter_mut` | [249](../../src/process_live_tests.rs#L249) | receiver-type-required |
 | `run_real_validator_process` | `write_test_events` | [254](../../src/process_live_tests.rs#L254) | external-constructor-callback-or-unresolved |
-| `run_real_validator_process` | `store::LockedLedger::open(&path, 1).unwrap` | [255](../../src/process_live_tests.rs#L255) | receiver-type-required |
+| `run_real_validator_process` | `store::LockedLedger::open(&path, schema::READER_VERSION).unwrap` | [255](../../src/process_live_tests.rs#L255) | receiver-type-required |
 | `run_real_validator_process` | `store::LockedLedger::open` | [255](../../src/process_live_tests.rs#L255) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
 | `run_real_validator_process` | `session.into` | [257](../../src/process_live_tests.rs#L257), [258](../../src/process_live_tests.rs#L258), [337](../../src/process_live_tests.rs#L337) | receiver-type-required |
 | `run_real_validator_process` | `[(             artifact.to_string_lossy().into_owned(),             format!("sha256-{:x}", sha2::Sha256::digest(initial)),         )]         .into_iter()         .collect` | [261](../../src/process_live_tests.rs#L261) | receiver-type-required |
@@ -380,7 +380,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `host             .cancel` | [619](../../src/process_live_tests.rs#L619) | receiver-type-required |
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `fs::read(folder.join("main.jsonl")).unwrap` | [626](../../src/process_live_tests.rs#L626) | receiver-type-required |
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `fs::read` | [626](../../src/process_live_tests.rs#L626) | external-constructor-callback-or-unresolved |
-| `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `scan_valid_prefix(&bytes, 1).projection.unwrap` | [627](../../src/process_live_tests.rs#L627) | receiver-type-required |
+| `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `scan_valid_prefix(&bytes, schema::READER_VERSION).projection.unwrap` | [627](../../src/process_live_tests.rs#L627) | receiver-type-required |
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `scan_valid_prefix` | [627](../../src/process_live_tests.rs#L627) | external-constructor-callback-or-unresolved |
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `projection             .events             .iter()             .filter(&#124;event&#124; event.kind() == &EventKind::StopRequested)             .collect::<Vec<_>>` | [628](../../src/process_live_tests.rs#L628) | receiver-type-required |
 | `cancel_after_the_worker_closed_stdin_returns_the_durable_receipt` | `projection             .events             .iter()             .filter` | [628](../../src/process_live_tests.rs#L628) | receiver-type-required |
@@ -1197,7 +1197,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_public_flow_case` | `compact["summary"].as_str().map` | [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
 | `real_public_flow_case` | `compact["summary"].as_str` | [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
 | `real_public_flow_case` | `summary.starts_with` | [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
-| `real_public_flow_case` | `schema::validate_ledger(&fs::read(&path).unwrap(), 1).unwrap` | [1441](../../src/process_live_tests.rs#L1441), [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
+| `real_public_flow_case` | `schema::validate_ledger(&fs::read(&path).unwrap(), schema::READER_VERSION).unwrap` | [1441](../../src/process_live_tests.rs#L1441), [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
 | `real_public_flow_case` | `schema::validate_ledger` | [1441](../../src/process_live_tests.rs#L1441), [1455](../../src/process_live_tests.rs#L1455) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
 | `real_public_flow_case` | `fs::read(&path).unwrap` | [1441](../../src/process_live_tests.rs#L1441), [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
 | `real_public_flow_case` | `fs::write(root.join("compaction-summary.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap()).unwrap` | [1443](../../src/process_live_tests.rs#L1443) | receiver-type-required |

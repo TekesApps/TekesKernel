@@ -137,6 +137,8 @@ struct SessionCreateIntent {
     instruction_asset: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     identity_profile: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    preset_digest: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -234,6 +236,8 @@ pub struct SessionCreateOperation<'a> {
     pub workspace_id: Option<&'a str>,
     pub cwd: Option<&'a str>,
     pub identity_profile: Option<tools::IdentityProfile>,
+    /// Raw `session.create {preset}` request, resolved under the workspace base.
+    pub preset: Option<&'a Value>,
     pub user_agent_dir: &'a Path,
     pub started_at: &'a str,
     pub principal: &'a str,
@@ -918,6 +922,11 @@ impl ManagementStore {
         )
         .capture()?;
         instruction.validate_against_config(&config)?;
+        let preset = session_preset(
+            request.preset,
+            request.identity_profile,
+            config.workspace.policy.base.unwrap_or_default(),
+        )?;
         let config_bytes = config.canonical_bytes()?;
         let instruction_bytes = instruction.canonical_bytes()?;
         let config_digest = hex_digest(&config_bytes);
@@ -938,6 +947,7 @@ impl ManagementStore {
             &config_digest,
             &instruction_digest,
             request.identity_profile,
+            preset.as_ref(),
             request.started_at,
             &origin,
         )?;
@@ -972,12 +982,13 @@ impl ManagementStore {
                 cwd,
                 config_asset,
                 instruction_asset,
-                identity_profile: Some(
+                identity_profile: preset.is_none().then(|| {
                     request
                         .identity_profile
                         .map_or("auto", tools::IdentityProfile::as_str)
-                        .to_owned(),
-                ),
+                        .to_owned()
+                }),
+                preset_digest: preset.as_ref().map(|preset| preset.digest.clone()),
             })?,
             response: None,
         };
@@ -2927,6 +2938,31 @@ fn existing_session_cwd(
         .map(|value| value.map(str::to_owned))
 }
 
+/// The preset a new session freezes in genesis: an explicit request resolved
+/// under the workspace base, or the identity sugar when the base is `blank`.
+/// A `general` workspace without a request keeps the identity-profile genesis.
+fn session_preset(
+    request: Option<&Value>,
+    identity_profile: Option<tools::IdentityProfile>,
+    base: tools::PresetBase,
+) -> Result<Option<tools::ResolvedPreset>, ManagementError> {
+    match request {
+        Some(request) => tools::ResolvedPreset::resolve_request(request, base)
+            .map(Some)
+            .map_err(|error| match error {
+                tools::PresetError::BadRequest(message) => {
+                    ManagementError::PresetBadRequest(message)
+                }
+                tools::PresetError::Invalid(invalid) => ManagementError::PresetInvalid(invalid),
+            }),
+        None if base == tools::PresetBase::Blank => Ok(Some(tools::ResolvedPreset::from_identity(
+            identity_profile,
+            base,
+        ))),
+        None => Ok(None),
+    }
+}
+
 #[allow(clippy::too_many_arguments)]
 fn create_genesis(
     session_id: &str,
@@ -2935,10 +2971,11 @@ fn create_genesis(
     config_digest: &str,
     instruction_digest: &str,
     identity_profile: Option<tools::IdentityProfile>,
+    preset: Option<&tools::ResolvedPreset>,
     timestamp: &str,
     origin: &OriginTuple,
 ) -> Result<Event, ManagementError> {
-    let value = json!({
+    let mut value = json!({
         "v":1,
         "seq":1,
         "ts":timestamp,
@@ -2956,6 +2993,14 @@ fn create_genesis(
         "origin_key":origin.key,
         "origin_tuple":origin,
     });
+    // A preset replaces the identity profile and needs reader 2 (spec event
+    // §Genesis); a session without one keeps the reader-1 genesis bytes.
+    if let Some(preset) = preset {
+        let object = value.as_object_mut().expect("genesis object");
+        object.remove("identity_profile");
+        object.insert("min_reader".to_owned(), json!(2));
+        object.insert("preset".to_owned(), serde_json::to_value(preset)?);
+    }
     Event::from_value(IJsonValue::parse(&serde_json::to_vec(&value)?)?).map_err(Into::into)
 }
 
@@ -3009,6 +3054,11 @@ fn verify_session_create_genesis(
         || intent.identity_profile.as_ref().is_some_and(|profile| {
             genesis.string_field("identity_profile") != Some(profile.as_str())
         })
+        || intent.preset_digest.as_deref()
+            != object
+                .get("preset")
+                .and_then(|preset| preset.get("digest"))
+                .and_then(Value::as_str)
         || !is_endpoint_origin_client(&origin.client)
         || origin.target != intent.session_id
         || origin.op != "session.create"
@@ -3079,6 +3129,7 @@ pub fn default_workspace_policy(canonical_folder: &str) -> WorkspacePolicy {
         provider: None,
         model: None,
         max_wall_seconds: None,
+        base: None,
     }
 }
 
@@ -3888,6 +3939,10 @@ pub enum ManagementError {
     },
     #[error("session create requires one unambiguous workspace")]
     InvalidCreateSelection,
+    #[error("session preset is malformed: {0}")]
+    PresetBadRequest(String),
+    #[error("session preset was refused: {}", .0.reason.as_str())]
+    PresetInvalid(tools::PresetInvalid),
     #[error("rpc id was reused for another management operation: {rpc_id} ({operation})")]
     IdempotencyConflict { rpc_id: String, operation: String },
     #[error("session was not found: {0}")]
@@ -3947,7 +4002,7 @@ mod tests {
         ForkIntent, ManagementError, ManagementStore, OperationPhase, OperationRecord, VERSION,
         WorkspaceMetadata, WorkspaceOperationWrite, WorkspaceView, canonical_event_line,
         create_genesis, default_workspace_policy, folder_binding_matches_snapshot,
-        publish_canonical, read_canonical, to_ijson,
+        publish_canonical, read_canonical, session_preset, to_ijson,
     };
     use crate::SessionInventoryItem;
     use profile::{ConfigRepository, WorkspaceConfig, WorkspaceFolder};
@@ -3973,6 +4028,7 @@ mod tests {
                 "cfg",
                 "ins",
                 identity,
+                None,
                 "2026-09-27T00:00:00.000Z",
                 &origin,
             )
@@ -3987,6 +4043,70 @@ mod tests {
             genesis(Some(tools::IdentityProfile::General)).string_field("identity_profile"),
             Some("general")
         );
+    }
+
+    #[test]
+    fn preset_genesis_replaces_identity_and_needs_reader_two() {
+        let origin = schema::OriginTuple {
+            principal: "test".to_owned(),
+            client: "session-endpoint".to_owned(),
+            target: "018f0000-0000-7000-8000-000000000003".to_owned(),
+            op: "session.create".to_owned(),
+            key: "create".to_owned(),
+        };
+        let request = json!({"layers":[{"kind":"kernel","id":"coding"},
+            {"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer DXF tools."}]});
+        let preset = session_preset(Some(&request), None, tools::PresetBase::General)
+            .unwrap()
+            .expect("explicit preset");
+        let genesis = create_genesis(
+            &origin.target,
+            "ws",
+            "folder-1",
+            "cfg",
+            "ins",
+            None,
+            Some(&preset),
+            "2026-09-27T00:00:00.000Z",
+            &origin,
+        )
+        .unwrap();
+        assert_eq!(genesis.string_field("identity_profile"), None);
+        assert_eq!(genesis.min_reader(), Some(2));
+        let value: Value = serde_json::from_slice(&genesis.canonical_bytes().unwrap()).unwrap();
+        assert_eq!(
+            tools::ResolvedPreset::from_genesis(&value["preset"]).unwrap(),
+            preset
+        );
+
+        // A general workspace without a request keeps the identity genesis; a
+        // blank one freezes the sugar under the blank base, never classifying.
+        assert_eq!(
+            session_preset(None, None, tools::PresetBase::General).unwrap(),
+            None
+        );
+        assert_eq!(
+            session_preset(None, None, tools::PresetBase::Blank).unwrap(),
+            Some(tools::ResolvedPreset::from_identity(
+                None,
+                tools::PresetBase::Blank
+            ))
+        );
+        assert!(matches!(
+            session_preset(
+                Some(&json!({"layers":[{"kind":"kernel","id":"video"}]})),
+                None,
+                tools::PresetBase::General
+            ),
+            Err(ManagementError::PresetInvalid(tools::PresetInvalid {
+                reason: tools::PresetInvalidReason::UnknownKernelLayer,
+                ..
+            }))
+        ));
+        assert!(matches!(
+            session_preset(Some(&json!({"layers":7})), None, tools::PresetBase::General),
+            Err(ManagementError::PresetBadRequest(_))
+        ));
     }
 
     #[test]
@@ -4444,6 +4564,7 @@ mod tests {
             binding.unwrap_or("folder-0001"),
             &format!("sha256-{}", "a".repeat(64)),
             &format!("sha256-{}", "b".repeat(64)),
+            None,
             None,
             "2026-10-08T00:00:00.000Z",
             &origin,

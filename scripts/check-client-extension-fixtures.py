@@ -32,6 +32,7 @@ EXPECTED_CAPABILITIES = {
     "sessionFiles.v1",
     "resources.v1",
     "initialPresets.v1",
+    "sessionPresets.v1",
     "tools.v1",
     "plugins.v1",
     "mcp.v1",

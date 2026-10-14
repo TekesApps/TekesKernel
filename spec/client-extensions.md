@@ -39,8 +39,8 @@ models.list session.selectModel remote.mux
 ```
 
 The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`:
-a 17-method base and 19 capabilities with 63 extension methods. This file
-specifies eleven capabilities directly; the nine native-client capabilities are
+a 17-method base and 20 capabilities with 65 extension methods. This file
+specifies twelve capabilities directly; the nine native-client capabilities are
 specified in Session Endpoint and listed under
 [Native-client capabilities](#native-client-capabilities).
 Capability ids and versions are Client metadata, not fields added to
@@ -72,8 +72,28 @@ only in the worker's instructions.
 An explicit choice is applied in `session.create {identityProfile}`; omission
 retains automatic first-input selection. The resolved `identityProfile` is
 returned in inventory and stays fixed for the session. See
-[Session Endpoint § Agent presets](session-endpoint.md#agent-presets) for
+[Session Endpoint § Session presets](session-endpoint.md#session-presets) for
 persistence and legacy behavior.
+
+## Session presets
+
+`sessionPresets.v1` registers two read-only methods; neither creates a
+session or writes configuration. The preset model, limits and render order are
+[Session Endpoint § Session presets](session-endpoint.md#session-presets).
+
+| method | request | result |
+|---|---|---|
+| `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes}, invalidReasons:[str]}` |
+| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str}` |
+
+`session.presets.resolve` resolves the preset exactly as `session.create`
+would under that workspace's base and returns the same digest the session's
+genesis would record. `presetText` is the harness identity and the
+preset-owned text with `{model}` unresolved; the working directory and the
+`AGENTS.md` scopes follow it in a session. A client can run it in its own build
+or tests to prove its presets before shipping them. Additional errors:
+`workspace-not-found {workspaceId}` and `preset-invalid {reason,layer?,field?}`;
+a malformed preset is `bad-request`.
 
 ## Resource and tool catalogs
 
@@ -427,8 +447,9 @@ route-disposition authority for the pinned TekesAppServer/TekesRuntime
 baseline. It disposes the predecessor behavior classes as follows; a retired
 class has no Kernel v1 endpoint method:
 
-- legacy agent presets: retired; instructions come from `AGENTS.md` scopes
-  only;
+- legacy agent presets: retired; a session preset is frozen once at
+  `session.create` and described by `sessionPresets.v1`, and project rules
+  come from `AGENTS.md` scopes;
 - sidechat: replaced by `session.fork {ephemeral:true}` plus ordinary keyed
   prompt and `session.discard` (all base routes);
 - message feedback: implemented as `feedback.v1` (Kernel-durable metadata

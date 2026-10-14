@@ -9,8 +9,8 @@ use serde_json::Value;
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, ClientExtensionAuthority, FEEDBACK_METHODS, FILE_METHODS,
     GOAL_METHODS, HOST_FILE_METHODS, INITIAL_PRESET_METHODS, MCP_METHODS, PLUGIN_METHODS,
-    RECOVERY_METHODS, RESOURCE_METHODS, SCHEDULE_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS,
-    THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS, common_capability_routes,
+    RECOVERY_METHODS, RESOURCE_METHODS, SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS,
+    SUBAGENT_METHODS, THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS, common_capability_routes,
 };
 use tekes_supervisor::endpoint_host::{
     CompositeProductionEndpointRoutes, ProductionEndpointRoutes, ProductionRouteFailure,
@@ -50,7 +50,7 @@ impl ClientExtensionAuthority for RecordingAuthority {
 fn common_groups_are_atomic_complete_and_exclude_parallel_config_groups() {
     let authority = Arc::new(RecordingAuthority::default());
     let routes = common_capability_routes(authority);
-    assert_eq!(routes.len(), 16);
+    assert_eq!(routes.len(), 17);
     let composed = CompositeProductionEndpointRoutes::compose(routes).expect("compose");
     let expected = [
         RECOVERY_METHODS.as_slice(),
@@ -64,6 +64,7 @@ fn common_groups_are_atomic_complete_and_exclude_parallel_config_groups() {
         FILE_METHODS.as_slice(),
         RESOURCE_METHODS.as_slice(),
         INITIAL_PRESET_METHODS.as_slice(),
+        SESSION_PRESET_METHODS.as_slice(),
         TOOL_METHODS.as_slice(),
         PLUGIN_METHODS.as_slice(),
         SCHEDULE_METHODS.as_slice(),
@@ -92,6 +93,7 @@ fn common_groups_are_atomic_complete_and_exclude_parallel_config_groups() {
         FILE_METHODS.as_slice(),
         RESOURCE_METHODS.as_slice(),
         INITIAL_PRESET_METHODS.as_slice(),
+        SESSION_PRESET_METHODS.as_slice(),
         TOOL_METHODS.as_slice(),
         PLUGIN_METHODS.as_slice(),
         SCHEDULE_METHODS.as_slice(),
@@ -175,6 +177,7 @@ fn registry_groups_match_the_canonical_extension_catalog() {
     let expected_groups = [
         ("resources.v1", RESOURCE_METHODS.as_slice()),
         ("initialPresets.v1", INITIAL_PRESET_METHODS.as_slice()),
+        ("sessionPresets.v1", SESSION_PRESET_METHODS.as_slice()),
         ("tools.v1", TOOL_METHODS.as_slice()),
         ("plugins.v1", PLUGIN_METHODS.as_slice()),
         ("mcp.v1", MCP_METHODS.as_slice()),

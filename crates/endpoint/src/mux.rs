@@ -298,6 +298,10 @@ pub struct SessionSummary {
         skip_serializing_if = "Option::is_none"
     )]
     pub identity_profile: Option<String>,
+    /// Immutable genesis preset summary `{base, layers:[{kind,id,version}],
+    /// digest}`; absent for identity-profile sessions.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub preset: Option<serde_json::Value>,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

@@ -34,6 +34,10 @@ pub struct WorkspacePolicy {
     pub model: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub max_wall_seconds: Option<u64>,
+    /// Session preset base for sessions created in this workspace; omitted is
+    /// `general` (spec config §Workspace policy, session-endpoint §Session presets).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub base: Option<tools::PresetBase>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]

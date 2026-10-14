@@ -17,6 +17,7 @@ pub use lifecycle_hook::*;
 ))]
 mod linux_sandbox;
 mod pipeline;
+mod preset;
 mod runtime_backends;
 mod sandbox;
 mod schema_registry;
@@ -44,6 +45,12 @@ pub use hook::{
 pub use pipeline::{
     ApprovalGate, BackendTerminal, DurableApprovalResponse, PipelineDecision, SecretScan,
     SecretScanner, TOOL_CONTINUATION_SUBKIND, ToolExecution, ToolPipeline, ToolPipelineError,
+};
+pub use preset::{
+    KERNEL_LAYERS, KernelLayer, MAX_PRESET_DUTY_BYTES, MAX_PRESET_ID_BYTES,
+    MAX_PRESET_IDENTITY_BYTES, MAX_PRESET_LAYERS, MAX_PRESET_TEXT_BYTES, MAX_PRESET_VERSION_BYTES,
+    PRESET_FORMAT, PRESET_RENDER_VERSION, PresetBase, PresetError, PresetInvalid,
+    PresetInvalidReason, PresetLayer, ResolvedPreset, describe_value as describe_presets,
 };
 pub use runtime_backends::*;
 pub use sandbox::{
