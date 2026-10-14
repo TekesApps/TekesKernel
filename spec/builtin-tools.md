@@ -184,29 +184,36 @@ owned and composed per request, in this order, joined by blank lines:
 
 1. `You are an AI agent powered by Tekes Kernel.`
 2. The session profile text with `{model}` replaced by the request's wire
-   model id, trimmed. `coding` uses `crates/tools/prompts/coding.md`: the line
-   `You are a coding agent powered by the {model} model.` followed by four
-   coding behavior rules (stop and report when the requested change is done and
-   the requested tests pass; no extra fuzz, randomized, or differential test
-   scripts unless asked; check expected results by running tests rather than by
-   long reasoning; be concise). `general` uses `crates/tools/prompts/general.md`:
-   `You are a general-purpose agent powered by the {model} model.` The profile
-   is frozen in session genesis.
+   model id. A profile is its identity line, then the general efficiency
+   rules, then the profile's own rules, each part trimmed and joined by blank
+   lines. Every part is one file under `crates/tools/prompts/`:
+   - `general-rules.md`, shared by every profile: stop and report when the
+     requested work is done, and say so when no problem is found; be concise,
+     no narration before each tool call.
+   - `coding`: `coding-identity.md` (`You are a coding agent powered by the
+     {model} model.`), the general rules, then `coding-rules.md` (a change is
+     done when the requested tests pass; no extra fuzz, randomized, or
+     differential test scripts unless asked; check expected results by running
+     tests rather than by long reasoning).
+   - `general`: `general-identity.md` (`You are a general-purpose agent powered
+     by the {model} model.`), then the general rules.
+
+   The identity line stays first. The profile is frozen in session genesis.
 3. `Your working directory is {cwd}.` with the execution cwd, when one is
    bound.
 4. The instruction snapshot's `AGENTS.md` scopes, trimmed, when nonempty.
 5. For a delegated subagent, the fixed subagent delivery sentence.
 
 The text does not depend on the tool catalog; what each tool does and returns
-lives in its schema description alone. Coding-specific behavior belongs in
-`coding.md`; tool usage belongs in tool schemas; project rules belong in
-`AGENTS.md`.
+lives in its schema description alone. Domain-neutral behavior belongs in
+`general-rules.md`, coding-specific behavior in `coding-rules.md`, tool usage
+in tool schemas, and project rules in `AGENTS.md`.
 
-`fixtures/tools/builtin-tool-guidance.canonical.json` (format 4) is the byte
-authority for the harness identity, both profile files (verbatim, including
+`fixtures/tools/builtin-tool-guidance.canonical.json` (format 5) is the byte
+authority for the harness identity, the four prompt files (verbatim, including
 the final LF), and the working-directory template; its `digest` is SHA-256
-over the RFC-8785 bytes of
-`{harness_identity, coding_profile, general_profile, working_directory}`.
+over the RFC-8785 bytes of `{harness_identity, general_identity,
+general_rules, coding_identity, coding_rules, working_directory}`.
 Changing a profile file changes the digest and, through the epoch system
 profile, opens a `system_change` epoch. The validator's judge prompt is
 unchanged.
@@ -219,6 +226,11 @@ paragraphs (format 1, 2026-09-26) reproduced none of it and were removed. For
 gpt-5.6 and kimi-k3 the lines are neutral. The four coding rules cut
 deepseek-flash cost by 55% on the batch-ledger-bugfix corpus without lowering
 test quality (`docs/benchmarks/deepseek-cost-2026-10.md` §The coding profile rules).
+Format 5 (2026-10) moved the two domain-neutral rules (stop when done, be
+concise) from the coding profile into the shared general rules, so `general`
+sessions carry them too; on deepseek-flash that cut a non-coding general
+session's cost by 27% with coding cost unchanged
+(`docs/benchmarks/general-rules-2026-10.md`).
 
 ### Complete schema oracle
 

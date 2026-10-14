@@ -1745,8 +1745,8 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
         match operation {
             "session.initialPresets" => encode(&serde_json::json!({
                 "presets": [
-                    {"id":"coding", "title":"Coding", "configurationText":tools::CODING_PROFILE},
-                    {"id":"general", "title":"General", "configurationText":tools::GENERAL_PROFILE}
+                    {"id":"coding", "title":"Coding", "configurationText":tools::IdentityProfile::Coding.profile_text()},
+                    {"id":"general", "title":"General", "configurationText":tools::IdentityProfile::General.profile_text()}
                 ],
                 "defaultID": null
             })),
@@ -3020,7 +3020,7 @@ mod tests {
     }
 
     #[test]
-    fn initial_presets_disclose_source_text_without_creating_a_session() {
+    fn initial_presets_disclose_profile_text_without_creating_a_session() {
         let root = tempfile::tempdir().expect("root");
         let (extensions, _process) = production_extensions(root.path());
         let catalog = execute(
@@ -3034,11 +3034,11 @@ mod tests {
         assert_eq!(catalog["presets"][0]["id"], "coding");
         assert_eq!(
             catalog["presets"][0]["configurationText"],
-            tools::CODING_PROFILE
+            tools::IdentityProfile::Coding.profile_text()
         );
         assert_eq!(
             catalog["presets"][1]["configurationText"],
-            tools::GENERAL_PROFILE
+            tools::IdentityProfile::General.profile_text()
         );
         assert!(
             catalog["presets"][0]["configurationText"]

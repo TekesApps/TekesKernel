@@ -26,8 +26,9 @@ pub use builtin::{
     Effect, index_by_name,
 };
 pub use guidance::{
-    CODING_PROFILE, GENERAL_PROFILE, HARNESS_IDENTITY, IdentityProfile, WORKING_DIRECTORY,
-    canonical_guidance_oracle_bytes, guidance_oracle_value, root_system_instructions,
+    CODING_IDENTITY, CODING_RULES, GENERAL_IDENTITY, GENERAL_RULES, HARNESS_IDENTITY,
+    IdentityProfile, WORKING_DIRECTORY, canonical_guidance_oracle_bytes, guidance_oracle_value,
+    root_system_instructions,
 };
 pub use helper::{
     ByteString, CreateMode, EX_PROTOCOL, ExecRequest, ExecValue, HelperClient, HelperClientError,

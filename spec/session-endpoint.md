@@ -2125,8 +2125,9 @@ action on the returned path.
 The Kernel exposes immutable initial identity presets through the additive
 `initialPresets.v1` capability: `session.initialPresets {}` returns
 `{presets:[{id,title,configurationText}],defaultID:null}`. Coding and General
-are sourced byte-for-byte from `crates/tools/prompts/coding.md` and `general.md`;
-`{model}` remains unresolved in the catalog. A missing choice retains automatic
+carry the profile text composed from `crates/tools/prompts/` (identity line,
+general rules, then the profile's own rules); `{model}` remains unresolved in
+the catalog. A missing choice retains automatic
 selection from the first user input. `session.create {identityProfile:"coding"|"general"}`
 selects explicitly and stores the identity in genesis. Inventory exposes the
 resolved `identityProfile`, absent while an automatic choice is pending. Follow-up

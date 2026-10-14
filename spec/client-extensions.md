@@ -63,9 +63,12 @@ enum arms, and an error outside the method's closed set fail closed.
 
 `initialPresets.v1` registers the read-only `session.initialPresets {}` method.
 Its result is `{presets:[{id,title,configurationText}],defaultID:null}`. The two
-rows are Coding and General, with the complete raw contents of
-`crates/tools/prompts/coding.md` and `general.md`. Catalog reads create no session
-or configuration bytes. `{model}` is resolved only in the worker's instructions.
+rows are Coding and General; `configurationText` is the profile text
+(identity line, general rules, then the profile's own rules, as composed by
+`IdentityProfile::profile_text` from `crates/tools/prompts/`; see
+[Built-in Tools § Model-facing tool guidance](builtin-tools.md#model-facing-tool-guidance)).
+Catalog reads create no session or configuration bytes. `{model}` is resolved
+only in the worker's instructions.
 An explicit choice is applied in `session.create {identityProfile}`; omission
 retains automatic first-input selection. The resolved `identityProfile` is
 returned in inventory and stays fixed for the session. See

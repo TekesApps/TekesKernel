@@ -1101,7 +1101,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_public_flow_case` | `root.join("threads").join` | [1324](../../src/process_live_tests.rs#L1324) | receiver-type-required |
 | `real_public_flow_case` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1325](../../src/process_live_tests.rs#L1325) | receiver-type-required |
 | `real_public_flow_case` | `folder.join` | [1325](../../src/process_live_tests.rs#L1325), [1326](../../src/process_live_tests.rs#L1326), [1329](../../src/process_live_tests.rs#L1329), [1339](../../src/process_live_tests.rs#L1339), [1382](../../src/process_live_tests.rs#L1382) | receiver-type-required |
-| `real_public_flow_case` | `write_test_genesis` | [1327](../../src/process_live_tests.rs#L1327) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `write_test_genesis_with_identity` | [1327](../../src/process_live_tests.rs#L1327) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `case["identity_profile"].as_str` | [1327](../../src/process_live_tests.rs#L1327) | receiver-type-required |
 | `real_public_flow_case` | `fs::create_dir_all(root.join(".agent/commands")).unwrap` | [1333](../../src/process_live_tests.rs#L1333), [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
 | `real_public_flow_case` | `fs::write(root.join(".agent/commands/compact.md"), case["seed_files"][".agent/commands/compact.md"].as_str().unwrap()).unwrap` | [1334](../../src/process_live_tests.rs#L1334), [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
 | `real_public_flow_case` | `case["seed_files"][".agent/commands/compact.md"].as_str().unwrap` | [1334](../../src/process_live_tests.rs#L1334), [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |

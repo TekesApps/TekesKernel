@@ -34,6 +34,29 @@ For `weighted-ttl`, use `python3 scripts/weighted_ttl_acceptance.py
 `price-proxy-runs.py` runs the batch-ledger acceptance check, so ignore its
 acceptance column for `weighted-ttl`.
 
+## Kernel-vs-Kernel A/B
+
+To measure a change to the Kernel itself (for example a system prompt edit),
+run two checkouts against each other, interleaved:
+
+```sh
+git worktree add /tmp/kernel-base <base-commit>
+scripts/bench/run_ab.sh batch-ledger-bugfix 6 /tmp/ab-batch /tmp/kernel-base .
+python3 scripts/price-proxy-runs.py /tmp/ab-batch
+python3 scripts/bench/stats.py /tmp/ab-batch KA KB
+```
+
+Arm A (`KA<i>`) runs the first checkout, arm B (`KB<i>`) the second. Extra
+arguments go to both arms' `run-public-flow.py`. Both checkouts need the
+corpus and flags you use.
+
+The `research-brief` corpus is a non-coding task: read three short documents
+in `docs/`, write a launch brief, add a risks section, then check every number
+and date. Run it with `--identity-profile general` so the session uses the
+general profile, and check each run with `python3
+scripts/research_brief_acceptance.py <run>/workspace/brief.md`. Ignore the
+batch-ledger acceptance column of `price-proxy-runs.py` for it.
+
 ## What each step measures
 
 | Step | Output |

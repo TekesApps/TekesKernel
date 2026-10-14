@@ -23,7 +23,8 @@ parser.add_argument('--tool-ready-gate',action='store_true',help='Scripted provi
 parser.add_argument('--approval-batch-gate',action='store_true',help='Scripted write case: approve the batch head before terminal, then approve two editing siblings')
 parser.add_argument('--agent-eval',choices=['memory-recall-codename','subagent-summarize-notes'])
 parser.add_argument('--toolchain-root',type=Path,action='append',default=[],help='Explicit read-only toolchain installation; adds its bin to tool PATH')
-parser.add_argument('--corpus',choices=['hello','deepseek-responses-smoke','weighted-ttl','quota-ledger','long-session-cache','large-prefix-cache','batch-ledger-bugfix'])
+parser.add_argument('--corpus',choices=['hello','deepseek-responses-smoke','weighted-ttl','quota-ledger','long-session-cache','large-prefix-cache','batch-ledger-bugfix','research-brief'])
+parser.add_argument('--identity-profile',choices=['coding','general'],help='Corpus runs: write this identity profile into the session genesis (default: the legacy record, which reads as coding)')
 parser.add_argument('--seed-agents-md',type=Path,help='Corpus runs: seed the workspace with this file as AGENTS.md so the instruction snapshot carries it (the Kernel-owned instruction source)')
 parser.add_argument('--config', type=Path, default=os.environ.get('TEKES_PROVIDERS_CONFIG'), required='TEKES_PROVIDERS_CONFIG' not in os.environ, help='providers.json (default: $TEKES_PROVIDERS_CONFIG)')
 parser.add_argument('--keys', type=Path, default=os.environ.get('TEKES_LIVE_KEYS_FILE'), help='Key file for --live (default: $TEKES_LIVE_KEYS_FILE); TEKES_KERNEL_LIVE_KEY overrides it')
@@ -111,6 +112,8 @@ if args.corpus:
     # journal subscription. Bound that silence by the existing process limit,
     # rather than terminating a healthy corpus at the generic 180-second read.
     case['receive_timeout_seconds']=case['timeout_seconds']
+    if args.identity_profile:
+        case['identity_profile']=args.identity_profile
     if args.seed_agents_md:
         case['seed_files']['AGENTS.md']=args.seed_agents_md.read_text()
         case['agents_md_sha256']=hashlib.sha256(case['seed_files']['AGENTS.md'].encode()).hexdigest()

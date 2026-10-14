@@ -1324,7 +1324,7 @@ fn real_public_flow_case() {
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
     let path = folder.join("main.jsonl");
-    write_test_genesis(&path,session);
+    write_test_genesis_with_identity(&path,session,case["identity_profile"].as_str());
     if case["id"] == "parallel-tools" {
         write_canonical_test_json(&folder.join(store::SESSION_SETTINGS_FILE),json!({"format":1,"revision":1,"provider":provider["id"],"model":provider["models"][0]["id"],"reasoning_effort":"low"}));
     }

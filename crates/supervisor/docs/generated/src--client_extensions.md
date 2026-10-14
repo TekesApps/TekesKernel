@@ -129,7 +129,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::client_extensions::validate_payload](../../src/client_extensions.rs#L2839) | function_item | `private` |  |
 | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L2972) | function_item | `pub(crate)` |  |
 | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L2991) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::initial_presets_disclose_source_text_without_creating_a_session](../../src/client_extensions.rs#L3023) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::initial_presets_disclose_profile_text_without_creating_a_session](../../src/client_extensions.rs#L3023) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::client_extensions::tests::write_plugin](../../src/client_extensions.rs#L3065) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::client_extensions::tests::package_digest](../../src/client_extensions.rs#L3102) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::client_extensions::tests::install_payload](../../src/client_extensions.rs#L3111) | function_item | `private` | test; #[cfg(test)] |
@@ -1393,12 +1393,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `production_extensions` | `ProductionClientExtensions::open` | [3010](../../src/client_extensions.rs#L3010) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `ResourceCatalog::default` | [3012](../../src/client_extensions.rs#L3012) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `BTreeMap::new` | [3013](../../src/client_extensions.rs#L3013) | external-constructor-callback-or-unresolved |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `tempfile::tempdir().expect` | [3024](../../src/client_extensions.rs#L3024) | receiver-type-required |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `tempfile::tempdir` | [3024](../../src/client_extensions.rs#L3024) | external-constructor-callback-or-unresolved |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `production_extensions` | [3025](../../src/client_extensions.rs#L3025) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L2991) |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `root.path` | [3025](../../src/client_extensions.rs#L3025) | receiver-type-required |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `execute(             &extensions,             "session.initialPresets",             &serde_json::json!({}),             "presets",         )         .expect` | [3026](../../src/client_extensions.rs#L3026) | receiver-type-required |
-| `initial_presets_disclose_source_text_without_creating_a_session` | `execute` | [3026](../../src/client_extensions.rs#L3026) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L3122) |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir().expect` | [3024](../../src/client_extensions.rs#L3024) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir` | [3024](../../src/client_extensions.rs#L3024) | external-constructor-callback-or-unresolved |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `production_extensions` | [3025](../../src/client_extensions.rs#L3025) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L2991) |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `root.path` | [3025](../../src/client_extensions.rs#L3025) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute(             &extensions,             "session.initialPresets",             &serde_json::json!({}),             "presets",         )         .expect` | [3026](../../src/client_extensions.rs#L3026) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute` | [3026](../../src/client_extensions.rs#L3026) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L3122) |
 | `write_plugin` | `root.join` | [3066](../../src/client_extensions.rs#L3066) | receiver-type-required |
 | `write_plugin` | `fs::create_dir_all(&package).expect` | [3067](../../src/client_extensions.rs#L3067) | receiver-type-required |
 | `write_plugin` | `fs::create_dir_all` | [3067](../../src/client_extensions.rs#L3067) | external-constructor-callback-or-unresolved |

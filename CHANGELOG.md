@@ -6,6 +6,36 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Changed
+- The root system prompt splits each profile into an identity line, shared
+  general efficiency rules, and profile-specific rules. The two domain-neutral
+  coding rules (stop and report when the requested work is done; be concise, no
+  narration before each tool call) now apply to `general` sessions too; the
+  coding-only rules (done when the requested tests pass, no extra fuzz scripts,
+  check results by running tests) stay in `coding`. The identity line stays
+  first. Contract: `spec/builtin-tools.md` ("Model-facing tool guidance").
+  Measured on deepseek-flash (6 vs 6 runs per corpus): a non-coding general
+  session costs 27% less (p = 0.0065); coding cost shows no significant change
+  (`docs/benchmarks/general-rules-2026-10.md`).
+  - Prompt files under `crates/tools/prompts/` are now `general-identity.md`,
+    `general-rules.md`, `coding-identity.md` and `coding-rules.md`;
+    `fixtures/tools/builtin-tool-guidance.canonical.json` moves to format 5 with
+    one key per file. The new digest opens a `system_change` epoch for existing
+    sessions.
+  - `session.initialPresets` `configurationText` is now the composed profile
+    text (`IdentityProfile::profile_text`), still with `{model}` unresolved; it
+    is no longer the raw content of a single file.
+  - `tools::CODING_PROFILE` and `tools::GENERAL_PROFILE` are replaced by
+    `CODING_IDENTITY`, `CODING_RULES`, `GENERAL_IDENTITY`, `GENERAL_RULES` and
+    `IdentityProfile::profile_text`.
+
+### Added
+- `scripts/bench/run_ab.sh`: interleaved Kernel-vs-Kernel A/B runs of two
+  checkouts through the recording proxy (`scripts/bench/README.md`).
+- `research-brief` live corpus: a three-turn non-coding task with a hidden
+  acceptance check (`scripts/research_brief_acceptance.py`), and
+  `run-public-flow.py --identity-profile` to run a corpus under a chosen profile.
+
 ## 0.5.0 — 2026-10-14
 
 Toolchain moves to Rust 1.95.0. The MCP client additionally speaks the tasks

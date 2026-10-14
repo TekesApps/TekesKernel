@@ -1,0 +1,62 @@
+{
+  "KA1": {
+    "mutants": 27,
+    "killed": 25,
+    "score": 92.6
+  },
+  "KA2": {
+    "mutants": 35,
+    "killed": 32,
+    "score": 91.4
+  },
+  "KA3": {
+    "mutants": 47,
+    "killed": 41,
+    "score": 87.2
+  },
+  "KA4": {
+    "mutants": 32,
+    "killed": 32,
+    "score": 100.0
+  },
+  "KA5": {
+    "mutants": 31,
+    "killed": 29,
+    "score": 93.5
+  },
+  "KA6": {
+    "mutants": 33,
+    "killed": 31,
+    "score": 93.9
+  },
+  "KB1": {
+    "mutants": 45,
+    "killed": 34,
+    "score": 75.6
+  },
+  "KB2": {
+    "mutants": 40,
+    "killed": 37,
+    "score": 92.5
+  },
+  "KB3": {
+    "mutants": 31,
+    "killed": 28,
+    "score": 90.3
+  },
+  "KB4": {
+    "mutants": 58,
+    "killed": 53,
+    "score": 91.4
+  },
+  "KB5": {
+    "mutants": 30,
+    "killed": 26,
+    "score": 86.7
+  },
+  "KB6": {
+    "mutants": 33,
+    "killed": 30,
+    "score": 90.9
+  }
+}

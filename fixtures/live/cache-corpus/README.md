@@ -46,3 +46,15 @@ the result. After a run, use
 `scripts/batch_ledger_bugfix_acceptance.py <run>/workspace/ledger.py` for
 behavioral checks that were not supplied to the agent. Use
 `scripts/price-live-run.py` to price a single Kernel ledger without a DSH pair.
+
+## Non-coding research brief
+
+`research-brief` is a separate controlled fixture for the general profile, not
+part of the frozen four-scenario corpus. The runner seeds `docs/` with meeting
+notes, customer feedback and weekly metrics. Three sequential prompts ask the
+agent to write a launch brief of at most 250 words, add a risks section with
+counts (at most 300 words in total), and check every number and date before
+replying with the brief. Run it with `--identity-profile general`; after a run,
+`scripts/research_brief_acceptance.py <run>/workspace/brief.md` checks the
+source facts, the word limit and the absence of wrong figures, none of which are
+shown to the agent.

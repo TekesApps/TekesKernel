@@ -22,5 +22,10 @@
     "This repository has a known bug in consume_many. Read README.md and the existing tests, reproduce the failure, and repair the batch transaction while preserving consume and remaining behavior. Run python3.14 -m unittest -v after your edit, then report the result.",
     "Review the batch implementation against README.md. Add focused regression tests for an exact duplicate key in one batch, replay of an existing decision alongside a denied new request, and rollback across different resources. Repair any defect the tests expose. Run the full unittest suite and report its result.",
     "Perform a final review of the batch contract and code. Run python3.14 -m unittest -v, fix any remaining failure, and give a concise final summary grounded in the test output."
+  ],
+  "research-brief": [
+    "Read the three files in docs/ and write brief.md: a launch brief for the leadership team, at most 250 words, with the sections Decisions, Metrics, and Open questions. Use only facts from the files.",
+    "Add a Risks section to brief.md that lists the risks customers reported, with how many customers or tickets each came from. Keep the whole brief at most 300 words.",
+    "Final check: make sure every number and date in brief.md matches the source files, then reply with the full final brief."
   ]
 }
