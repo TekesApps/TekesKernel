@@ -51,7 +51,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/worker/src/queue.rs](../../src/queue.rs) | 8 | 223 | [Symbols and calls](src--queue.md) |
 | [crates/worker/src/recovery.rs](../../src/recovery.rs) | 11 | 351 | [Symbols and calls](src--recovery.md) |
 | [crates/worker/src/result_presentation.rs](../../src/result_presentation.rs) | 16 | 158 | [Symbols and calls](src--result_presentation.md) |
-| [crates/worker/src/tool_backends.rs](../../src/tool_backends.rs) | 21 | 281 | [Symbols and calls](src--tool_backends.md) |
+| [crates/worker/src/tool_backends.rs](../../src/tool_backends.rs) | 27 | 325 | [Symbols and calls](src--tool_backends.md) |
 | [crates/worker/src/tool_calls.rs](../../src/tool_calls.rs) | 5 | 132 | [Symbols and calls](src--tool_calls.md) |
 | [crates/worker/src/turn_terminal.rs](../../src/turn_terminal.rs) | 21 | 280 | [Symbols and calls](src--turn_terminal.md) |
 | [crates/worker/src/validation_runtime.rs](../../src/validation_runtime.rs) | 37 | 850 | [Symbols and calls](src--validation_runtime.md) |

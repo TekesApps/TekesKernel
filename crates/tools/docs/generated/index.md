@@ -44,7 +44,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
 | [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 67 | 241 | [Symbols and calls](src--linux_sandbox.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
-| [crates/tools/src/preset.rs](../../src/preset.rs) | 62 | 300 | [Symbols and calls](src--preset.md) |
+| [crates/tools/src/preset.rs](../../src/preset.rs) | 84 | 472 | [Symbols and calls](src--preset.md) |
 | [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 146 | 1468 | [Symbols and calls](src--runtime_backends.md) |
 | [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 33 | 237 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
@@ -64,23 +64,26 @@ Source files stand in for out-of-line modules; see declarations for inline modul
 flowchart LR
   m0["bin/tekes-helper.rs"]
   m1["bubblewrap_sandbox.rs"]
-  m2["helper.rs"]
-  m3["helper/native_grep.rs"]
-  m4["hook.rs"]
-  m5["lifecycle_hook.rs"]
-  m6["linux_sandbox.rs"]
-  m7["pipeline.rs"]
-  m8["runtime_backends.rs"]
-  m9["sandbox.rs"]
-  m0 -->|"3"| m2
-  m0 -->|"1"| m8
-  m1 -->|"2"| m6
-  m2 -->|"1"| m3
-  m2 -->|"3"| m9
-  m5 -->|"6"| m4
-  m7 -->|"2"| m4
-  m8 -->|"1"| m1
-  m8 -->|"1"| m9
-  m9 -->|"2"| m1
-  m9 -->|"2"| m6
+  m2["builtin.rs"]
+  m3["helper.rs"]
+  m4["helper/native_grep.rs"]
+  m5["hook.rs"]
+  m6["lifecycle_hook.rs"]
+  m7["linux_sandbox.rs"]
+  m8["pipeline.rs"]
+  m9["preset.rs"]
+  m10["runtime_backends.rs"]
+  m11["sandbox.rs"]
+  m0 -->|"3"| m3
+  m0 -->|"1"| m10
+  m1 -->|"2"| m7
+  m3 -->|"1"| m4
+  m3 -->|"3"| m11
+  m6 -->|"6"| m5
+  m8 -->|"2"| m5
+  m9 -->|"2"| m2
+  m10 -->|"1"| m1
+  m10 -->|"1"| m11
+  m11 -->|"2"| m1
+  m11 -->|"2"| m7
 ```

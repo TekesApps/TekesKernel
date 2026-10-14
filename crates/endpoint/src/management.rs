@@ -229,6 +229,65 @@ struct WorkspaceOperationWrite<'a> {
     folder: Option<(&'a str, &'a str)>,
 }
 
+/// MCP registry lookups for resolving session presets; the supervisor owns
+/// the registry and the projected tool naming (spec mcp-runtime).
+pub trait PresetMcpSource {
+    /// Canonical definition digest of the server registered under `server`
+    /// for the workspace (a project entry shadows a user entry).
+    fn server_digest(&self, workspace_id: &str, server: &str) -> Option<String>;
+    /// Model-facing `mcp__<server>__<tool>` name, `None` when it cannot project.
+    fn tool_name(&self, server: &str, tool: &str) -> Option<String>;
+}
+
+/// The environment a preset resolves in: the instruction snapshot's tool
+/// ceiling and skills, and the workspace's MCP registry. `session.create` and
+/// `session.presets.resolve` use the same one.
+pub struct SessionPresetEnvironment<'a> {
+    workspace_id: &'a str,
+    permitted: Option<std::collections::BTreeSet<String>>,
+    skills: &'a std::collections::BTreeMap<String, u64>,
+    mcp: Option<&'a dyn PresetMcpSource>,
+}
+
+impl<'a> SessionPresetEnvironment<'a> {
+    #[must_use]
+    pub fn new(
+        workspace_id: &'a str,
+        instruction: &'a profile::InstructionSnapshot,
+        mcp: Option<&'a dyn PresetMcpSource>,
+    ) -> Self {
+        Self {
+            workspace_id,
+            permitted: instruction
+                .effective
+                .policy
+                .allowed_tools
+                .as_ref()
+                .map(|tools| tools.iter().cloned().collect()),
+            skills: &instruction.effective.skills,
+            mcp,
+        }
+    }
+}
+
+impl tools::PresetEnvironment for SessionPresetEnvironment<'_> {
+    fn permitted_tools(&self) -> Option<&std::collections::BTreeSet<String>> {
+        self.permitted.as_ref()
+    }
+
+    fn mcp_server_digest(&self, server: &str) -> Option<String> {
+        self.mcp?.server_digest(self.workspace_id, server)
+    }
+
+    fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
+        self.mcp?.tool_name(server, tool)
+    }
+
+    fn skill_known(&self, name: &str) -> bool {
+        self.skills.contains_key(name)
+    }
+}
+
 pub struct SessionCreateOperation<'a> {
     pub rpc_id: &'a str,
     pub request_sha256: &'a str,
@@ -238,6 +297,8 @@ pub struct SessionCreateOperation<'a> {
     pub identity_profile: Option<tools::IdentityProfile>,
     /// Raw `session.create {preset}` request, resolved under the workspace base.
     pub preset: Option<&'a Value>,
+    /// MCP registry lookups a preset's `mcp` references resolve against.
+    pub preset_mcp: Option<&'a dyn PresetMcpSource>,
     pub user_agent_dir: &'a Path,
     pub started_at: &'a str,
     pub principal: &'a str,
@@ -922,10 +983,13 @@ impl ManagementStore {
         )
         .capture()?;
         instruction.validate_against_config(&config)?;
+        let environment =
+            SessionPresetEnvironment::new(&workspace.id, &instruction, request.preset_mcp);
         let preset = session_preset(
             request.preset,
             request.identity_profile,
             config.workspace.policy.base.unwrap_or_default(),
+            &environment,
         )?;
         let config_bytes = config.canonical_bytes()?;
         let instruction_bytes = instruction.canonical_bytes()?;
@@ -2945,9 +3009,10 @@ fn session_preset(
     request: Option<&Value>,
     identity_profile: Option<tools::IdentityProfile>,
     base: tools::PresetBase,
+    environment: &dyn tools::PresetEnvironment,
 ) -> Result<Option<tools::ResolvedPreset>, ManagementError> {
     match request {
-        Some(request) => tools::ResolvedPreset::resolve_request(request, base)
+        Some(request) => tools::ResolvedPreset::resolve_request(request, base, environment)
             .map(Some)
             .map_err(|error| match error {
                 tools::PresetError::BadRequest(message) => {
@@ -4056,9 +4121,14 @@ mod tests {
         };
         let request = json!({"layers":[{"kind":"kernel","id":"coding"},
             {"kind":"inline","id":"cad-expert","version":"1","duty":"Prefer DXF tools."}]});
-        let preset = session_preset(Some(&request), None, tools::PresetBase::General)
-            .unwrap()
-            .expect("explicit preset");
+        let preset = session_preset(
+            Some(&request),
+            None,
+            tools::PresetBase::General,
+            &tools::NoPresetEnvironment,
+        )
+        .unwrap()
+        .expect("explicit preset");
         let genesis = create_genesis(
             &origin.target,
             "ws",
@@ -4082,11 +4152,23 @@ mod tests {
         // A general workspace without a request keeps the identity genesis; a
         // blank one freezes the sugar under the blank base, never classifying.
         assert_eq!(
-            session_preset(None, None, tools::PresetBase::General).unwrap(),
+            session_preset(
+                None,
+                None,
+                tools::PresetBase::General,
+                &tools::NoPresetEnvironment
+            )
+            .unwrap(),
             None
         );
         assert_eq!(
-            session_preset(None, None, tools::PresetBase::Blank).unwrap(),
+            session_preset(
+                None,
+                None,
+                tools::PresetBase::Blank,
+                &tools::NoPresetEnvironment
+            )
+            .unwrap(),
             Some(tools::ResolvedPreset::from_identity(
                 None,
                 tools::PresetBase::Blank
@@ -4096,7 +4178,8 @@ mod tests {
             session_preset(
                 Some(&json!({"layers":[{"kind":"kernel","id":"video"}]})),
                 None,
-                tools::PresetBase::General
+                tools::PresetBase::General,
+                &tools::NoPresetEnvironment
             ),
             Err(ManagementError::PresetInvalid(tools::PresetInvalid {
                 reason: tools::PresetInvalidReason::UnknownKernelLayer,
@@ -4104,7 +4187,12 @@ mod tests {
             }))
         ));
         assert!(matches!(
-            session_preset(Some(&json!({"layers":7})), None, tools::PresetBase::General),
+            session_preset(
+                Some(&json!({"layers":7})),
+                None,
+                tools::PresetBase::General,
+                &tools::NoPresetEnvironment
+            ),
             Err(ManagementError::PresetBadRequest(_))
         ));
     }

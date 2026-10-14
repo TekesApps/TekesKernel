@@ -350,3 +350,85 @@ fn agents_directory_is_primary_for_all_project_resources() {
             .any(|source| source.path == "AGENTS.md")
     );
 }
+
+#[test]
+fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
+    struct Dxf;
+    impl tools::PresetEnvironment for Dxf {
+        fn mcp_server_digest(&self, _server: &str) -> Option<String> {
+            Some("sha256-dxf".to_owned())
+        }
+        fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
+            Some(format!("mcp__{server}__{tool}"))
+        }
+    }
+    let root = tempfile::tempdir().expect("root");
+    let project = root.path().join("project");
+    fs::create_dir(&project).expect("project");
+    let repository = ConfigRepository::open(root.path()).expect("repository");
+    repository
+        .publish_workspace(
+            0,
+            &WorkspaceConfig {
+                format: 1,
+                revision: 1,
+                id: "workspace-1".to_owned(),
+                name: "Workspace".to_owned(),
+                cwd: vec![project.display().to_string()],
+                folders: Vec::new(),
+                policy: Some(profile::WorkspacePolicy {
+                    allowed_tools: vec!["read".to_owned(), "shell".to_owned()],
+                    ..profile::WorkspacePolicy::default()
+                }),
+            },
+        )
+        .expect("publish");
+    let session = root.path().join("session");
+    fs::create_dir(&session).expect("session folder");
+    let genesis = |opening: serde_json::Value| {
+        let thread = "018f0000-0000-7000-8000-000000000003";
+        let mut value = serde_json::json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-10-14T00:00:00.000Z",
+            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"workspace-1",
+            "origin_key":"create","origin_tuple":{"principal":"p","client":"cli","target":thread,"op":"create","key":"create"},
+            "resume":"never","config":{"digest":"cfg"}});
+        value
+            .as_object_mut()
+            .unwrap()
+            .extend(opening.as_object().unwrap().clone());
+        let event = schema::Event::decode(&serde_json::to_vec(&value).unwrap()).expect("genesis");
+        let mut bytes = event.canonical_bytes().unwrap();
+        bytes.push(b'\n');
+        fs::write(session.join("main.jsonl"), bytes).expect("ledger");
+    };
+
+    genesis(serde_json::json!({"identity_profile":"coding"}));
+    let legacy = repository
+        .resolve_for_session("workspace-1", &session)
+        .expect("legacy session");
+    assert_eq!(legacy.workspace.policy.allowed_tools, ["read", "shell"]);
+
+    let preset = tools::ResolvedPreset::resolve_request(
+        &serde_json::json!({"tools":["read"],"mcp":[{"server":"dxf","tools":["open"]}]}),
+        tools::PresetBase::General,
+        &Dxf,
+    )
+    .expect("preset");
+    genesis(serde_json::json!({"min_reader":2,"preset":preset}));
+    let selected = repository
+        .resolve_for_session("workspace-1", &session)
+        .expect("preset session");
+    assert_eq!(
+        selected.workspace.policy.allowed_tools,
+        ["mcp__dxf__open", "read"]
+    );
+    // A workspace-wide resolution keeps the workspace selection.
+    assert_eq!(
+        repository
+            .resolve("workspace-1")
+            .expect("workspace")
+            .workspace
+            .policy
+            .allowed_tools,
+        ["read", "shell"]
+    );
+}

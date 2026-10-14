@@ -402,6 +402,7 @@ pub fn assemble_application_endpoint_host(
     }
     let routes = CompositeProductionEndpointRoutes::compose(extension_routes)
         .map_err(|error| DaemonError::corrupt(error.to_string()))?;
+    let preset_mcp = process_host.mcp_runtime();
     ProductionEndpointHost::open_with_full_authorities_and_session_admission(
         authority_root,
         description,
@@ -412,6 +413,7 @@ pub fn assemble_application_endpoint_host(
         Some(process_host as Arc<dyn QueueTransactionAuthority>),
         input_admission,
     )
+    .map(|host| host.with_preset_mcp(preset_mcp))
     .map_err(|error| DaemonError::corrupt(error.to_string()))
 }
 

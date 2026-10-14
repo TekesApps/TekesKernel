@@ -286,6 +286,7 @@ mod tests {
             &json!({"layers":[{"kind":"inline","id":"creator","version":"1",
                 "identity":"You are a story writing agent powered by the {model} model."}]}),
             tools::PresetBase::General,
+            &tools::NoPresetEnvironment,
         )
         .unwrap();
         let (_directory, mut ledger) = ledger_with(

@@ -2139,9 +2139,10 @@ system prompt: a **base** chosen by the workspace, then ordered domain
 frozen in genesis and never changes for the session.
 
 ```text
-Preset = { layers?:[Layer] }                       // tools, mcp, skills: reserved
-Layer  = { kind:"kernel", id:str }
-       | { kind:"inline", id:str, version:str, identity?:str, duty?:str }
+Preset    = { layers?:[Layer], ...Selection }
+Layer     = { kind:"kernel", id:str }
+          | { kind:"inline", id:str, version:str, identity?:str, duty?:str, ...Selection }
+Selection = { tools?:[str], mcp?:[{server:str, tools:[str]}], skills?:[str] }
 PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str }
 ```
 
@@ -2173,17 +2174,48 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
 - **Refusals.** `preset-invalid` `reason` is one of `multiple-identity`,
   `unknown-kernel-layer`, `duplicate-layer`, `too-many-layers`, `invalid-id`,
   `invalid-identity`, `text-too-large`, `secret-in-preset` and
-  `unsupported-field`; `layer` names the layer (`#<index>` when its id is
+  `unsupported-field`, `unknown-tool`, `role-tool`, `tool-not-permitted`,
+  `unknown-mcp-server`, `unknown-mcp-tool`, `unknown-skill` and
+  `too-many-entries`; `layer` names the layer (`#<index>` when its id is
   unusable) and `field` is the member path, such as `preset.layers[1].duty`.
   A preset only references registered resources, so a member that carries an
   MCP definition or credential (`command`, `env`, `url`, `headers`,
   `transport`, `oauth`, `token`, `apiKey`, `password`, `secret`, ...) or text
-  that looks like a credential is `secret-in-preset`. `tools`, `mcp`,
-  `skills` and layer `defaults` are reserved and refused as
-  `unsupported-field` until the Kernel applies them.
+  that looks like a credential is `secret-in-preset`. Layer `defaults` is
+  reserved and refused as `unsupported-field` until the Kernel applies it.
+- **Selection.** `tools`, `mcp` and `skills` may appear at the top level and
+  in inline layers; the preset's selection is their union.
+  - `tools` names fixed tools a session may select on its own (the fixed
+    catalog without the role tools `plan`, `report`, `summary_artifact` and
+    `verify`, which are `role-tool`); any other name is `unknown-tool`.
+  - `mcp` references servers registered for the workspace (`mcp.v1`) by
+    name, a project entry shadowing a user entry; an unregistered name is
+    `unknown-mcp-server` and a tool name that does not project to
+    `mcp__<server>__<tool>` is `unknown-mcp-tool`. The definition itself,
+    including its credentials, never enters the preset.
+  - `skills` names skill packages of the instruction snapshot; an unknown
+    name is `unknown-skill`.
+  - A selected fixed or MCP tool that the instruction policy's
+    `allowed_tools` excludes is `tool-not-permitted`. At most 256 fixed
+    tools, 32 servers, 256 tools per server and 256 skills
+    (`too-many-entries`).
+- **Applying the selection.** When the preset selects tools or MCP servers,
+  its sorted model-facing names (the selected fixed tools, or the
+  interactive fixed tools when only MCP servers are selected, plus every
+  `mcp__<server>__<tool>`) replace the workspace `allowed_tools` for that
+  session at every launch; the instruction policy still meets them, so a later
+  narrower user policy narrows the session without failing it. A launch whose
+  selection names a tool no catalog provides, such as a server removed or
+  renamed since creation, fails `invalid_reference` instead of silently
+  dropping it. The definition digest recorded per server is audit-only: a
+  changed definition that changes the tool schemas opens a
+  `tool_profile_change` epoch like any other catalog change. `skills` narrows
+  the catalog `skill_explorer` and `skill` see; a selected package the
+  snapshot no longer has is absent. A preset without a selection keeps the
+  workspace `allowed_tools` and every skill.
 - **Genesis.** The resolved preset is `preset:{format:1, base, layers,
-  digest}`, where `digest` is `sha256-` over the RFC 8785 bytes of `{format,
-  base, layers}`. Such a genesis carries no `identity_profile` and sets
+  tools?, mcp?:[{server,digest,tools}], skills?, digest}`, where `digest` is
+  `sha256-` over the RFC 8785 bytes of the preset without `digest`. Such a genesis carries no `identity_profile` and sets
   `min_reader` 2 (spec event §Genesis). Forks and delegated children copy it
   verbatim.
 - **Catalog.** The additive `sessionPresets.v1` capability serves

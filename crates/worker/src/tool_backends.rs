@@ -480,7 +480,7 @@ where
         &storage_root,
         profile.config.workspace.id.clone(),
         profile.bindings.goal_id.clone(),
-        frozen_skill_catalog(&profile.instruction)?,
+        preset_skill_catalog(frozen_skill_catalog(&profile.instruction)?, thread_folder)?,
         deferred_tools,
     )?);
     Ok((
@@ -490,6 +490,27 @@ where
         },
         dynamic,
     ))
+}
+
+/// Narrows the frozen skill catalog to the session preset's `skills` (spec
+/// session-endpoint §Session presets); a package the snapshot no longer has
+/// is simply absent. Without a preset selection every package stays.
+pub(crate) fn preset_skill_catalog(
+    mut catalog: Vec<engine::CatalogEntry>,
+    thread_folder: &std::path::Path,
+) -> Result<Vec<engine::CatalogEntry>, Box<dyn std::error::Error>> {
+    let ledger = thread_folder.join("main.jsonl");
+    let Some(genesis) = store::read_genesis(&ledger)? else {
+        return Ok(catalog);
+    };
+    let raw = serde_json::to_value(genesis.raw())?;
+    let Some(preset) = raw.get("preset") else {
+        return Ok(catalog);
+    };
+    if let Some(skills) = tools::ResolvedPreset::from_genesis(preset)?.skills {
+        catalog.retain(|entry| skills.contains(&entry.name));
+    }
+    Ok(catalog)
 }
 
 pub(crate) fn invocation_write_roots(
@@ -619,4 +640,70 @@ pub(crate) fn session_permission_policy(thread_folder: &std::path::Path) -> Perm
         eprintln!("tekes-worker: permission mode {diagnostic}");
     }
     policy
+}
+
+#[cfg(test)]
+mod preset_skill_tests {
+    use super::*;
+
+    struct Skills;
+    impl tools::PresetEnvironment for Skills {
+        fn skill_known(&self, _name: &str) -> bool {
+            true
+        }
+    }
+
+    fn entry(name: &str) -> engine::CatalogEntry {
+        engine::CatalogEntry {
+            name: name.to_owned(),
+            summary: String::new(),
+            aliases: Vec::new(),
+            schema_digest: "d".to_owned(),
+            content: IJsonValue::parse(b"{}").unwrap(),
+        }
+    }
+
+    fn write_genesis(folder: &std::path::Path, opening: Value) {
+        let thread = "018f0000-0000-7000-8000-000000000003";
+        let mut genesis = json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-10-14T00:00:00.000Z",
+            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+            "origin_key":"create","origin_tuple":{"principal":"p","client":"cli",
+                "target":thread,"op":"create","key":"create"},
+            "resume":"never","config":{"digest":"cfg"}});
+        genesis
+            .as_object_mut()
+            .unwrap()
+            .extend(opening.as_object().unwrap().clone());
+        let mut bytes = make_event(genesis).unwrap().canonical_bytes().unwrap();
+        bytes.push(b'\n');
+        std::fs::write(folder.join("main.jsonl"), bytes).unwrap();
+    }
+
+    #[test]
+    fn a_preset_narrows_the_skill_catalog() {
+        let folder = tempfile::tempdir().unwrap();
+        let catalog = || vec![entry("drama-scene-revise"), entry("drama-story-plan")];
+        write_genesis(folder.path(), json!({"identity_profile":"general"}));
+        assert_eq!(
+            preset_skill_catalog(catalog(), folder.path())
+                .unwrap()
+                .len(),
+            2
+        );
+        let preset = tools::ResolvedPreset::resolve_request(
+            &json!({"skills":["drama-scene-revise","removed-later"]}),
+            tools::PresetBase::General,
+            &Skills,
+        )
+        .unwrap();
+        write_genesis(folder.path(), json!({"min_reader":2,"preset":preset}));
+        let narrowed = preset_skill_catalog(catalog(), folder.path()).unwrap();
+        assert_eq!(
+            narrowed
+                .iter()
+                .map(|entry| entry.name.as_str())
+                .collect::<Vec<_>>(),
+            ["drama-scene-revise"]
+        );
+    }
 }

@@ -11,9 +11,13 @@
 //! the general base with `[coding]` or no layers, which renders byte-for-byte
 //! like the profile text.
 
+use std::collections::{BTreeMap, BTreeSet};
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
+
+use crate::builtin::BuiltinManifest;
 
 use crate::guidance::{
     CODING_IDENTITY, CODING_RULES, GENERAL_IDENTITY, GENERAL_RULES, HARNESS_IDENTITY,
@@ -32,6 +36,10 @@ pub const MAX_PRESET_IDENTITY_BYTES: usize = 512;
 pub const MAX_PRESET_DUTY_BYTES: usize = 16 * 1024;
 /// Bound on the preset-owned text: identity, base rules and every duty.
 pub const MAX_PRESET_TEXT_BYTES: usize = 32 * 1024;
+pub const MAX_PRESET_TOOLS: usize = 256;
+pub const MAX_PRESET_MCP_SERVERS: usize = 32;
+pub const MAX_PRESET_MCP_TOOLS: usize = 256;
+pub const MAX_PRESET_SKILLS: usize = 256;
 
 /// The workspace base under every session's layers.
 #[derive(Clone, Copy, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -160,8 +168,55 @@ pub struct ResolvedPreset {
     pub format: u64,
     pub base: PresetBase,
     pub layers: Vec<PresetLayer>,
+    /// The session's model-facing tool selection (fixed tools and projected
+    /// `mcp__<server>__<tool>` names), sorted. Absent keeps the workspace
+    /// selection. Every launch meets it with the user policy.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tools: Option<Vec<String>>,
+    /// Registered MCP servers the selection references, by name, with the
+    /// definition digest seen at creation (audit only) and the raw tool names.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub mcp: Vec<PresetMcpRef>,
+    /// Skill packages the session may discover and load; absent keeps all.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub skills: Option<Vec<String>>,
     pub digest: String,
 }
+
+/// One referenced MCP server. The definition stays in the MCP registry.
+#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PresetMcpRef {
+    pub server: String,
+    pub digest: String,
+    pub tools: Vec<String>,
+}
+
+/// What a preset may reference when it is resolved. The defaults describe an
+/// environment with no ceiling, no MCP servers and no skills.
+pub trait PresetEnvironment {
+    /// The user/deployment tool ceiling; `None` when nothing narrows it.
+    fn permitted_tools(&self) -> Option<&BTreeSet<String>> {
+        None
+    }
+    /// Definition digest of the MCP server registered under `server`.
+    fn mcp_server_digest(&self, _server: &str) -> Option<String> {
+        None
+    }
+    /// Model-facing name of an MCP tool, `None` when it cannot project.
+    fn mcp_tool_name(&self, _server: &str, _tool: &str) -> Option<String> {
+        None
+    }
+    /// Whether the instruction snapshot carries a skill package of this name.
+    fn skill_known(&self, _name: &str) -> bool {
+        false
+    }
+}
+
+/// The environment without a ceiling, MCP servers or skills.
+pub struct NoPresetEnvironment;
+
+impl PresetEnvironment for NoPresetEnvironment {}
 
 /// Why a preset was refused (`preset-invalid {reason, layer?, field?}`).
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -175,6 +230,13 @@ pub enum PresetInvalidReason {
     TextTooLarge,
     SecretInPreset,
     UnsupportedField,
+    UnknownTool,
+    RoleTool,
+    ToolNotPermitted,
+    UnknownMcpServer,
+    UnknownMcpTool,
+    UnknownSkill,
+    TooManyEntries,
 }
 
 impl PresetInvalidReason {
@@ -190,10 +252,17 @@ impl PresetInvalidReason {
             Self::TextTooLarge => "text-too-large",
             Self::SecretInPreset => "secret-in-preset",
             Self::UnsupportedField => "unsupported-field",
+            Self::UnknownTool => "unknown-tool",
+            Self::RoleTool => "role-tool",
+            Self::ToolNotPermitted => "tool-not-permitted",
+            Self::UnknownMcpServer => "unknown-mcp-server",
+            Self::UnknownMcpTool => "unknown-mcp-tool",
+            Self::UnknownSkill => "unknown-skill",
+            Self::TooManyEntries => "too-many-entries",
         }
     }
 
-    pub const ALL: [Self; 9] = [
+    pub const ALL: [Self; 16] = [
         Self::MultipleIdentity,
         Self::UnknownKernelLayer,
         Self::DuplicateLayer,
@@ -203,6 +272,13 @@ impl PresetInvalidReason {
         Self::TextTooLarge,
         Self::SecretInPreset,
         Self::UnsupportedField,
+        Self::UnknownTool,
+        Self::RoleTool,
+        Self::ToolNotPermitted,
+        Self::UnknownMcpServer,
+        Self::UnknownMcpTool,
+        Self::UnknownSkill,
+        Self::TooManyEntries,
     ];
 }
 
@@ -372,29 +448,221 @@ fn string_member<'a>(
     }
 }
 
-/// Members reserved for session-level tools, MCP references, skills and model
-/// defaults; they are refused as `unsupported-field` until the Kernel applies
-/// them.
-const RESERVED_MEMBERS: [&str; 4] = ["tools", "mcp", "skills", "defaults"];
+/// Layer members reserved for model defaults; refused as `unsupported-field`
+/// until the Kernel applies them.
+const RESERVED_MEMBERS: [&str; 1] = ["defaults"];
+
+/// Tools, MCP references and skills declared across the request and its layers.
+#[derive(Default)]
+struct Selection {
+    builtins: Option<BTreeSet<String>>,
+    /// Server name to raw tool names, plus the path of its first mention.
+    mcp: BTreeMap<String, (BTreeSet<String>, String, Option<String>)>,
+    skills: Option<BTreeMap<String, (String, Option<String>)>>,
+}
+
+fn string_array<'a>(value: &'a Value, path: &str) -> Result<Vec<&'a str>, PresetError> {
+    value
+        .as_array()
+        .and_then(|items| items.iter().map(Value::as_str).collect::<Option<Vec<_>>>())
+        .ok_or_else(|| PresetError::BadRequest(format!("{path} must be an array of strings")))
+}
+
+impl Selection {
+    fn collect(
+        &mut self,
+        object: &Map<String, Value>,
+        path: &str,
+        layer: Option<&str>,
+    ) -> Result<(), PresetError> {
+        let label = || layer.map(str::to_owned);
+        if let Some(tools) = object.get("tools") {
+            let manifest = BuiltinManifest::compiled();
+            let interactive = manifest.interactive_names();
+            let fixed = manifest.fixed_names();
+            let builtins = self.builtins.get_or_insert_with(BTreeSet::new);
+            for (index, name) in string_array(tools, &format!("{path}.tools"))?
+                .into_iter()
+                .enumerate()
+            {
+                let field = format!("{path}.tools[{index}]");
+                if interactive.iter().any(|known| known == name) {
+                    builtins.insert(name.to_owned());
+                } else if fixed.contains(name) {
+                    return Err(PresetInvalid::new(PresetReason::RoleTool, label(), field).into());
+                } else {
+                    return Err(
+                        PresetInvalid::new(PresetReason::UnknownTool, label(), field).into(),
+                    );
+                }
+            }
+        }
+        if let Some(mcp) = object.get("mcp") {
+            let items = mcp
+                .as_array()
+                .ok_or_else(|| PresetError::BadRequest(format!("{path}.mcp must be an array")))?;
+            for (index, item) in items.iter().enumerate() {
+                let item_path = format!("{path}.mcp[{index}]");
+                let entry = object_members(item, &item_path, &["server", "tools"])?;
+                let server = string_member(entry, "server", &item_path)?
+                    .filter(|server| !server.is_empty())
+                    .ok_or_else(|| {
+                        PresetError::BadRequest(format!("{item_path}.server is required"))
+                    })?;
+                let tools = string_array(
+                    entry.get("tools").unwrap_or(&Value::Null),
+                    &format!("{item_path}.tools"),
+                )?;
+                if tools.is_empty() || tools.iter().any(|tool| tool.is_empty()) {
+                    return Err(PresetError::BadRequest(format!(
+                        "{item_path}.tools must name at least one tool"
+                    )));
+                }
+                let slot = self
+                    .mcp
+                    .entry(server.to_owned())
+                    .or_insert_with(|| (BTreeSet::new(), format!("{item_path}.server"), label()));
+                slot.0.extend(tools.into_iter().map(str::to_owned));
+            }
+        }
+        if let Some(skills) = object.get("skills") {
+            let known = self.skills.get_or_insert_with(BTreeMap::new);
+            for (index, name) in string_array(skills, &format!("{path}.skills"))?
+                .into_iter()
+                .enumerate()
+            {
+                known
+                    .entry(name.to_owned())
+                    .or_insert_with(|| (format!("{path}.skills[{index}]"), label()));
+            }
+        }
+        Ok(())
+    }
+
+    #[allow(clippy::type_complexity)]
+    fn finish(
+        self,
+        environment: &dyn PresetEnvironment,
+    ) -> Result<(Option<Vec<String>>, Vec<PresetMcpRef>, Option<Vec<String>>), PresetError> {
+        let too_many = |field: &str| {
+            PresetError::from(PresetInvalid::new(
+                PresetReason::TooManyEntries,
+                None,
+                field.to_owned(),
+            ))
+        };
+        if self
+            .builtins
+            .as_ref()
+            .is_some_and(|tools| tools.len() > MAX_PRESET_TOOLS)
+        {
+            return Err(too_many("preset.tools"));
+        }
+        if self.mcp.len() > MAX_PRESET_MCP_SERVERS {
+            return Err(too_many("preset.mcp"));
+        }
+        if self
+            .skills
+            .as_ref()
+            .is_some_and(|skills| skills.len() > MAX_PRESET_SKILLS)
+        {
+            return Err(too_many("preset.skills"));
+        }
+        let permitted = environment.permitted_tools();
+        let check_permitted = |name: &str, field: &str, layer: Option<String>| {
+            if permitted.is_some_and(|permitted| !permitted.contains(name)) {
+                Err(PresetError::from(PresetInvalid::new(
+                    PresetReason::ToolNotPermitted,
+                    layer,
+                    field.to_owned(),
+                )))
+            } else {
+                Ok(())
+            }
+        };
+        let mut projected = BTreeSet::new();
+        let mut references = Vec::with_capacity(self.mcp.len());
+        for (server, (tools, field, layer)) in self.mcp {
+            if tools.len() > MAX_PRESET_MCP_TOOLS {
+                return Err(too_many(&field));
+            }
+            let digest = environment.mcp_server_digest(&server).ok_or_else(|| {
+                PresetInvalid::new(PresetReason::UnknownMcpServer, layer.clone(), field.clone())
+            })?;
+            for tool in &tools {
+                let name = environment.mcp_tool_name(&server, tool).ok_or_else(|| {
+                    PresetInvalid::new(PresetReason::UnknownMcpTool, layer.clone(), field.clone())
+                })?;
+                check_permitted(&name, &field, layer.clone())?;
+                projected.insert(name);
+            }
+            references.push(PresetMcpRef {
+                server,
+                digest,
+                tools: tools.into_iter().collect(),
+            });
+        }
+        let tools = if self.builtins.is_some() || !projected.is_empty() {
+            let builtins = match self.builtins {
+                Some(builtins) => {
+                    for name in &builtins {
+                        check_permitted(name, "preset.tools", None)?;
+                    }
+                    builtins
+                }
+                None => BuiltinManifest::compiled()
+                    .interactive_names()
+                    .into_iter()
+                    .collect(),
+            };
+            Some(
+                builtins
+                    .into_iter()
+                    .chain(projected)
+                    .collect::<BTreeSet<_>>(),
+            )
+        } else {
+            None
+        };
+        let skills = match self.skills {
+            None => None,
+            Some(skills) => {
+                if let Some((_, (field, layer))) = skills
+                    .iter()
+                    .find(|(name, _)| !environment.skill_known(name))
+                {
+                    return Err(PresetInvalid::new(
+                        PresetReason::UnknownSkill,
+                        layer.clone(),
+                        field.clone(),
+                    )
+                    .into());
+                }
+                Some(skills.into_keys().collect())
+            }
+        };
+        Ok((
+            tools.map(|tools| tools.into_iter().collect()),
+            references,
+            skills,
+        ))
+    }
+}
 
 impl ResolvedPreset {
-    /// Resolves a `session.create {preset}` request under the workspace base.
-    pub fn resolve_request(request: &Value, base: PresetBase) -> Result<Self, PresetError> {
+    /// Resolves a `session.create {preset}` request under the workspace base,
+    /// checking its references against `environment`.
+    pub fn resolve_request(
+        request: &Value,
+        base: PresetBase,
+        environment: &dyn PresetEnvironment,
+    ) -> Result<Self, PresetError> {
         if let Some(field) = find_secret(request, "preset") {
             return Err(PresetInvalid::new(PresetReason::SecretInPreset, None, field).into());
         }
         let object = object_members(request, "preset", &["layers", "tools", "mcp", "skills"])?;
-        if let Some(reserved) = RESERVED_MEMBERS
-            .iter()
-            .find(|key| object.contains_key(**key))
-        {
-            return Err(PresetInvalid::new(
-                PresetReason::UnsupportedField,
-                None,
-                format!("preset.{reserved}"),
-            )
-            .into());
-        }
+        let mut selection = Selection::default();
+        selection.collect(object, "preset", None)?;
         let requested = match object.get("layers") {
             None => &[][..],
             Some(Value::Array(items)) => items.as_slice(),
@@ -411,9 +679,19 @@ impl ResolvedPreset {
         }
         let mut layers = Vec::with_capacity(requested.len());
         for (index, layer) in requested.iter().enumerate() {
-            layers.push(resolve_layer(layer, index)?);
+            let resolved = resolve_layer(layer, index)?;
+            if let (PresetLayer::Inline { id, .. }, Some(object)) = (&resolved, layer.as_object()) {
+                selection.collect(object, &format!("preset.layers[{index}]"), Some(id))?;
+            }
+            layers.push(resolved);
         }
-        Self::from_layers(base, layers)
+        let mut preset = Self::from_parts(base, layers, None, Vec::new(), None)?;
+        let (tools, mcp, skills) = selection.finish(environment)?;
+        preset.tools = tools;
+        preset.mcp = mcp;
+        preset.skills = skills;
+        preset.digest = preset.compute_digest();
+        Ok(preset)
     }
 
     /// The sugar a session without an explicit preset resolves to.
@@ -426,10 +704,16 @@ impl ResolvedPreset {
             }],
             Some(IdentityProfile::General) | None => Vec::new(),
         };
-        Self::from_layers(base, layers).expect("sugar presets are valid")
+        Self::from_parts(base, layers, None, Vec::new(), None).expect("sugar presets are valid")
     }
 
-    fn from_layers(base: PresetBase, layers: Vec<PresetLayer>) -> Result<Self, PresetError> {
+    fn from_parts(
+        base: PresetBase,
+        layers: Vec<PresetLayer>,
+        tools: Option<Vec<String>>,
+        mcp: Vec<PresetMcpRef>,
+        skills: Option<Vec<String>>,
+    ) -> Result<Self, PresetError> {
         let mut seen = std::collections::BTreeSet::new();
         let mut identities = 0;
         for (index, layer) in layers.iter().enumerate() {
@@ -463,6 +747,9 @@ impl ResolvedPreset {
             format: PRESET_FORMAT,
             base,
             layers,
+            tools,
+            mcp,
+            skills,
             digest: String::new(),
         };
         if preset
@@ -478,8 +765,13 @@ impl ResolvedPreset {
         Ok(preset)
     }
 
+    /// `sha256-` over the RFC 8785 bytes of the preset without `digest`.
     fn compute_digest(&self) -> String {
-        let preimage = json!({"format":self.format,"base":self.base,"layers":self.layers});
+        let mut preimage = serde_json::to_value(self).expect("preset is JSON");
+        preimage
+            .as_object_mut()
+            .expect("preset object")
+            .remove("digest");
         let canonical = serde_json_canonicalizer::to_vec(&preimage).expect("preset is JSON");
         format!("sha256-{:x}", Sha256::digest(canonical))
     }
@@ -497,8 +789,14 @@ impl ResolvedPreset {
         ) {
             return Err(format!("unknown Kernel layer {}", layer.id()));
         }
-        let check = Self::from_layers(preset.base, preset.layers.clone())
-            .map_err(|error| format!("invalid genesis preset: {error:?}"))?;
+        let check = Self::from_parts(
+            preset.base,
+            preset.layers.clone(),
+            preset.tools.clone(),
+            preset.mcp.clone(),
+            preset.skills.clone(),
+        )
+        .map_err(|error| format!("invalid genesis preset: {error:?}"))?;
         if check.digest != preset.digest {
             return Err("genesis preset digest mismatch".to_owned());
         }
@@ -706,7 +1004,11 @@ pub fn describe_value() -> Value {
             "maxVersionBytes": MAX_PRESET_VERSION_BYTES,
             "maxIdentityBytes": MAX_PRESET_IDENTITY_BYTES,
             "maxDutyBytes": MAX_PRESET_DUTY_BYTES,
-            "maxTextBytes": MAX_PRESET_TEXT_BYTES
+            "maxTextBytes": MAX_PRESET_TEXT_BYTES,
+            "maxTools": MAX_PRESET_TOOLS,
+            "maxMcpServers": MAX_PRESET_MCP_SERVERS,
+            "maxMcpToolsPerServer": MAX_PRESET_MCP_TOOLS,
+            "maxSkills": MAX_PRESET_SKILLS
         },
         "invalidReasons": PresetInvalidReason::ALL.iter().map(|reason| reason.as_str()).collect::<Vec<_>>(),
     })
@@ -718,7 +1020,40 @@ mod tests {
     use crate::guidance::root_system_instructions;
 
     fn resolve(request: Value) -> Result<ResolvedPreset, PresetError> {
-        ResolvedPreset::resolve_request(&request, PresetBase::General)
+        ResolvedPreset::resolve_request(&request, PresetBase::General, &NoPresetEnvironment)
+    }
+
+    struct Fixture {
+        permitted: Option<BTreeSet<String>>,
+    }
+
+    impl PresetEnvironment for Fixture {
+        fn permitted_tools(&self) -> Option<&BTreeSet<String>> {
+            self.permitted.as_ref()
+        }
+        fn mcp_server_digest(&self, server: &str) -> Option<String> {
+            (server == "dxf").then(|| "sha256-dxf".to_owned())
+        }
+        fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
+            (!tool.contains('/')).then(|| format!("mcp__{server}__{tool}"))
+        }
+        fn skill_known(&self, name: &str) -> bool {
+            name == "drama-scene-revise"
+        }
+    }
+
+    fn resolve_in(
+        request: Value,
+        permitted: Option<&[&str]>,
+    ) -> Result<ResolvedPreset, PresetError> {
+        ResolvedPreset::resolve_request(
+            &request,
+            PresetBase::General,
+            &Fixture {
+                permitted: permitted
+                    .map(|names| names.iter().map(|name| (*name).to_owned()).collect()),
+            },
+        )
     }
 
     fn invalid(request: Value) -> PresetInvalid {
@@ -853,16 +1188,121 @@ mod tests {
             invalid(json!({"layers":total})).reason,
             PresetReason::TextTooLarge
         );
-        for reserved in ["tools", "mcp", "skills"] {
-            let refused = invalid(json!({reserved: []}));
-            assert_eq!(refused.reason, PresetReason::UnsupportedField);
-            assert_eq!(refused.field, Some(format!("preset.{reserved}")));
-        }
         assert_eq!(
             invalid(json!({"layers":[{"kind":"inline","id":"a","version":"1","defaults":{}}]}))
                 .reason,
             PresetReason::UnsupportedField
         );
+    }
+
+    #[test]
+    fn tools_mcp_and_skills_resolve_against_the_environment() {
+        let preset = resolve_in(
+            json!({"tools":["read"],"layers":[{"kind":"inline","id":"cad","version":"1",
+                "tools":["grep"],"mcp":[{"server":"dxf","tools":["open","draw"]}],
+                "skills":["drama-scene-revise"]}]}),
+            None,
+        )
+        .unwrap();
+        assert_eq!(
+            preset.tools,
+            Some(vec![
+                "grep".to_owned(),
+                "mcp__dxf__draw".to_owned(),
+                "mcp__dxf__open".to_owned(),
+                "read".to_owned()
+            ])
+        );
+        assert_eq!(
+            preset.mcp,
+            vec![PresetMcpRef {
+                server: "dxf".to_owned(),
+                digest: "sha256-dxf".to_owned(),
+                tools: vec!["draw".to_owned(), "open".to_owned()],
+            }]
+        );
+        assert_eq!(preset.skills, Some(vec!["drama-scene-revise".to_owned()]));
+        let value = serde_json::to_value(&preset).unwrap();
+        assert_eq!(ResolvedPreset::from_genesis(&value).unwrap(), preset);
+
+        // MCP alone keeps the interactive fixed tools; no selection keeps the workspace's.
+        let mcp_only =
+            resolve_in(json!({"mcp":[{"server":"dxf","tools":["open"]}]}), None).unwrap();
+        let tools = mcp_only.tools.unwrap();
+        assert!(
+            tools.contains(&"shell".to_owned()) && tools.contains(&"mcp__dxf__open".to_owned())
+        );
+        assert_eq!(resolve_in(json!({"layers":[]}), None).unwrap().tools, None);
+        // A preset without selections keeps the digest it had before selections existed.
+        assert_eq!(
+            resolve(json!({"layers":[{"kind":"kernel","id":"coding"}]}))
+                .unwrap()
+                .digest,
+            ResolvedPreset::from_identity(Some(IdentityProfile::Coding), PresetBase::General)
+                .digest
+        );
+
+        let reason =
+            |request: Value, permitted: Option<&[&str]>| match resolve_in(request, permitted) {
+                Err(PresetError::Invalid(invalid)) => (invalid.reason, invalid.field),
+                other => panic!("expected preset-invalid, got {other:?}"),
+            };
+        assert_eq!(
+            reason(json!({"tools":["teleport"]}), None).0,
+            PresetReason::UnknownTool
+        );
+        assert_eq!(
+            reason(json!({"tools":["report"]}), None),
+            (PresetReason::RoleTool, Some("preset.tools[0]".to_owned()))
+        );
+        assert_eq!(
+            reason(json!({"tools":["read","shell"]}), Some(&["read"])).0,
+            PresetReason::ToolNotPermitted
+        );
+        assert_eq!(
+            reason(json!({"mcp":[{"server":"pdf","tools":["x"]}]}), None),
+            (
+                PresetReason::UnknownMcpServer,
+                Some("preset.mcp[0].server".to_owned())
+            )
+        );
+        assert_eq!(
+            reason(json!({"mcp":[{"server":"dxf","tools":["a/b"]}]}), None).0,
+            PresetReason::UnknownMcpTool
+        );
+        assert_eq!(
+            reason(
+                json!({"mcp":[{"server":"dxf","tools":["open"]}]}),
+                Some(&["read"])
+            )
+            .0,
+            PresetReason::ToolNotPermitted
+        );
+        assert_eq!(
+            reason(json!({"skills":["nope"]}), None).0,
+            PresetReason::UnknownSkill
+        );
+        let many = (0..=MAX_PRESET_MCP_SERVERS)
+            .map(|index| json!({"server":format!("s{index}"),"tools":["t"]}))
+            .collect::<Vec<_>>();
+        assert_eq!(
+            reason(json!({"mcp":many}), None).0,
+            PresetReason::TooManyEntries
+        );
+        for request in [
+            json!({"tools":"read"}),
+            json!({"mcp":[{"server":"dxf"}]}),
+            json!({"mcp":[{"server":"dxf","tools":[]}]}),
+            json!({"layers":[{"kind":"kernel","id":"coding","tools":["read"]}]}),
+        ] {
+            assert!(
+                matches!(
+                    resolve_in(request.clone(), None),
+                    Err(PresetError::BadRequest(_))
+                ),
+                "{request}"
+            );
+        }
     }
 
     #[test]

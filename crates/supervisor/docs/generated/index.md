@@ -58,19 +58,19 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 141 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 166 | [Symbols and calls](src--catalog.md) |
 | [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 79 | 623 | [Symbols and calls](src--client_admin.md) |
-| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 139 | 1669 | [Symbols and calls](src--client_extensions.md) |
+| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 139 | 1686 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 352 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 48 | [Symbols and calls](src--dynamic_bindings.md) |
 | [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 162 | 1535 | [Symbols and calls](src--endpoint_carrier.md) |
-| [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 151 | 1040 | [Symbols and calls](src--endpoint_host.md) |
+| [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 152 | 1043 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
-| [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 45 | 363 | [Symbols and calls](src--host_runtime.md) |
+| [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 45 | 366 | [Symbols and calls](src--host_runtime.md) |
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 184 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
-| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 193 | 2156 | [Symbols and calls](src--mcp_runtime.md) |
+| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 197 | 2188 | [Symbols and calls](src--mcp_runtime.md) |
 | [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 368 | 6539 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1880 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 819 | [Symbols and calls](src--production_tool_control.md) |
@@ -90,7 +90,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 120 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
 | [crates/supervisor/tests/slice9_endpoint_carrier.rs](../../tests/slice9_endpoint_carrier.rs) | 40 | 710 | `inventory.json` |
-| [crates/supervisor/tests/slice9_endpoint_host.rs](../../tests/slice9_endpoint_host.rs) | 48 | 902 | `inventory.json` |
+| [crates/supervisor/tests/slice9_endpoint_host.rs](../../tests/slice9_endpoint_host.rs) | 48 | 904 | `inventory.json` |
 | [crates/supervisor/tests/workspace_routes.rs](../../tests/workspace_routes.rs) | 3 | 51 | `inventory.json` |
 
 ## Cross-file direct calls

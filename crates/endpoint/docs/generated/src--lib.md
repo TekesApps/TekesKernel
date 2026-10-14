@@ -108,6 +108,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `ManagementStore` | `management::ManagementStore` | `pub` |
 | `ORIGIN_CLIENT` | `management::ORIGIN_CLIENT` | `pub` |
 | `PendingQueueTransaction` | `management::PendingQueueTransaction` | `pub` |
+| `PresetMcpSource` | `management::PresetMcpSource` | `pub` |
 | `QueueRecoveryDriver` | `management::QueueRecoveryDriver` | `pub` |
 | `QueueTransactionCompletion` | `management::QueueTransactionCompletion` | `pub` |
 | `QueueTransactionDecision` | `management::QueueTransactionDecision` | `pub` |
@@ -116,6 +117,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SelectModelOperation` | `management::SelectModelOperation` | `pub` |
 | `SelectedModel` | `management::SelectedModel` | `pub` |
 | `SessionCreateOperation` | `management::SessionCreateOperation` | `pub` |
+| `SessionPresetEnvironment` | `management::SessionPresetEnvironment` | `pub` |
 | `WorkspaceFolderView` | `management::WorkspaceFolderView` | `pub` |
 | `WorkspaceFolders` | `management::WorkspaceFolders` | `pub` |
 | `WorkspaceList` | `management::WorkspaceList` | `pub` |

@@ -1117,6 +1117,16 @@ impl ConfigRepository {
             session_settings_path.as_deref().unwrap_or(&workspace_path),
         )?;
         let mut resolved = resolve_workspace(&workspace, &workspace_path)?;
+        // A session preset's tool selection replaces the workspace selection for
+        // that session; the instruction policy still meets it at every launch
+        // (spec session-endpoint §Session presets).
+        if let Some(tools) = session_folder
+            .map(session_preset_tools)
+            .transpose()?
+            .flatten()
+        {
+            resolved.policy.allowed_tools = tools;
+        }
         if let Some(binding) = folder_binding {
             validate_id(binding, "folder binding id", &workspace_path)?;
             let selected = workspace.path_for_binding(binding).ok_or_else(|| {
@@ -1544,6 +1554,31 @@ fn validate_references(
         }
     }
     Ok(())
+}
+
+/// The tool selection of the session's genesis preset, when it has one.
+fn session_preset_tools(session_folder: &Path) -> Result<Option<Vec<String>>, ProfileError> {
+    let ledger = session_folder.join("main.jsonl");
+    if !ledger.is_file() {
+        return Ok(None);
+    }
+    let Some(genesis) = store::read_genesis(&ledger)? else {
+        return Ok(None);
+    };
+    let raw = serde_json::to_value(genesis.raw()).map_err(|error| ProfileError::InvalidSchema {
+        path: ledger.clone(),
+        reason: error.to_string(),
+    })?;
+    let Some(preset) = raw.get("preset") else {
+        return Ok(None);
+    };
+    let preset = tools::ResolvedPreset::from_genesis(preset).map_err(|reason| {
+        ProfileError::InvalidSchema {
+            path: ledger,
+            reason,
+        }
+    })?;
+    Ok(preset.tools)
 }
 
 fn resolve_workspace(

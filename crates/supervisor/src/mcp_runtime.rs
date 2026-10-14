@@ -347,6 +347,24 @@ impl McpRuntime {
         }
     }
 
+    /// Definition digest (`sha256-` over the canonical config) of the server a
+    /// session preset names, preferring a project entry over a user entry and
+    /// a user entry over a plugin one.
+    pub fn preset_server_digest(&self, workspace_id: &str, server: &str) -> Option<String> {
+        let servers = self.list_servers(workspace_id).ok()?;
+        let rank = |scope: &McpScope| match scope {
+            McpScope::Project => 0,
+            McpScope::User => 1,
+            McpScope::Plugin => 2,
+        };
+        let config = servers
+            .iter()
+            .filter(|config| config.reference.name == server)
+            .min_by_key(|config| rank(&config.reference.scope))?;
+        let bytes = serde_json_canonicalizer::to_vec(config).ok()?;
+        Some(format!("sha256-{:x}", Sha256::digest(bytes)))
+    }
+
     pub fn list_servers(
         &self,
         workspace_id: &str,
@@ -2782,6 +2800,16 @@ fn parse_external_effect_resolution(
     }
 }
 
+impl endpoint::PresetMcpSource for McpRuntime {
+    fn server_digest(&self, workspace_id: &str, server: &str) -> Option<String> {
+        self.preset_server_digest(workspace_id, server)
+    }
+
+    fn tool_name(&self, server: &str, tool: &str) -> Option<String> {
+        mcp::project_name(server, tool).ok()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -3467,6 +3495,65 @@ for line in sys.stdin:
         Protocol,
         Effect,
         Reconcile,
+    }
+
+    #[test]
+    fn preset_references_resolve_by_name_with_project_over_user() {
+        use endpoint::PresetMcpSource;
+        let root = tempfile::tempdir().unwrap();
+        let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
+        let server = |scope, command: &str| McpServerConfig {
+            reference: McpServerReference {
+                workspace_id: "ws".into(),
+                scope,
+                name: "dxf".into(),
+            },
+            transport: McpTransportConfig::Stdio {
+                command: vec![command.into()],
+                cwd: None,
+                environment: BTreeMap::new(),
+            },
+            enabled: true,
+            always_on: false,
+            protocol_mode: ProtocolMode::Auto,
+            owner: None,
+            plugin_component: None,
+            project_trusted: true,
+        };
+        let digest = |config: &McpServerConfig| {
+            format!(
+                "sha256-{:x}",
+                Sha256::digest(serde_json_canonicalizer::to_vec(config).unwrap())
+            )
+        };
+        assert_eq!(runtime.server_digest("ws", "dxf"), None);
+        let user = server(McpScope::User, "/usr/bin/user-dxf");
+        runtime
+            .mutate(
+                "save-user",
+                &McpManagementMutation::Save {
+                    server: user.clone(),
+                    credential_fields: BTreeMap::new(),
+                },
+            )
+            .unwrap();
+        assert_eq!(runtime.server_digest("ws", "dxf"), Some(digest(&user)));
+        let project = server(McpScope::Project, "/usr/bin/project-dxf");
+        runtime
+            .mutate(
+                "save-project",
+                &McpManagementMutation::Save {
+                    server: project.clone(),
+                    credential_fields: BTreeMap::new(),
+                },
+            )
+            .unwrap();
+        assert_eq!(runtime.server_digest("ws", "dxf"), Some(digest(&project)));
+        assert_eq!(runtime.server_digest("other", "dxf"), None);
+        assert_eq!(
+            runtime.tool_name("dxf", "open-file").as_deref(),
+            Some("mcp__dxf__open_2dfile")
+        );
     }
 
     #[test]
