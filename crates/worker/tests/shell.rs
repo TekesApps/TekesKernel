@@ -480,18 +480,42 @@ fn supervisor_passes_immutable_profile_descriptors() {
             .contains("no stable folder binding")
     );
 
+    let spec = ProfiledWorkerLaunchSpec {
+        binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
+        ledger: ledger.clone(),
+        timestamp: "2026-08-26T09:00:01.000Z".to_owned(),
+        run_id: "profile-run".to_owned(),
+        binary_attribution: "tekes-worker-test".to_owned(),
+        workspace_id: "ws".to_owned(),
+        folder_binding: Some("secondary".to_owned()),
+        user_agent_dir: directory.path().join("missing-user-agent"),
+    };
+    // A launch spec cannot supply a binding absent from the ledger, even
+    // when that binding exists in the workspace.
+    let before = fs::read(&ledger).expect("unbound ledger");
+    let mismatch =
+        launch_profiled_worker_with_bindings(&repository, &spec, WorkerLaunchBindings::default())
+            .err()
+            .expect("launch scope must come from the ledger");
+    assert!(
+        mismatch
+            .to_string()
+            .contains("does not match the ledger genesis scope")
+    );
+    assert_eq!(fs::read(&ledger).unwrap(), before);
+
+    // Record the session's stable binding in a canonical genesis, preserving
+    // the remaining ledger bytes. The immutable descriptors must use it.
+    let end = before.iter().position(|byte| *byte == b'\n').unwrap();
+    let mut genesis: serde_json::Value = serde_json::from_slice(&before[..end]).unwrap();
+    genesis["folder_binding"] = "secondary".into();
+    let mut bound = serde_json_canonicalizer::to_vec(&genesis).unwrap();
+    bound.extend_from_slice(&before[end..]);
+    fs::write(&ledger, bound).expect("bound ledger");
+
     let mut launched = launch_profiled_worker_with_bindings(
         &repository,
-        &ProfiledWorkerLaunchSpec {
-            binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
-            ledger: ledger.clone(),
-            timestamp: "2026-08-26T09:00:01.000Z".to_owned(),
-            run_id: "profile-run".to_owned(),
-            binary_attribution: "tekes-worker-test".to_owned(),
-            workspace_id: "ws".to_owned(),
-            folder_binding: Some("secondary".to_owned()),
-            user_agent_dir: directory.path().join("missing-user-agent"),
-        },
+        &spec,
         WorkerLaunchBindings {
             goal_id: Some("goal-profile-run".to_owned()),
             dynamic_catalog: DynamicToolCatalog {
@@ -583,6 +607,120 @@ fn supervisor_passes_immutable_profile_descriptors() {
             .string_field("policy")
             .is_some_and(|value| value.starts_with("sha256-"))
     );
+}
+
+#[test]
+fn each_profiled_launch_resolves_the_environment_reference_again() {
+    let fixtures = FixtureRoot::discover().unwrap();
+    let root = tempfile::tempdir().unwrap();
+    let project = root.path().join("project");
+    let toolchain = root.path().join("toolchain");
+    fs::create_dir_all(&project).unwrap();
+    fs::create_dir_all(&toolchain).unwrap();
+    let project = project
+        .canonicalize()
+        .unwrap()
+        .to_string_lossy()
+        .into_owned();
+    let toolchain = toolchain
+        .canonicalize()
+        .unwrap()
+        .to_string_lossy()
+        .into_owned();
+    let repository = ConfigRepository::open(root.path().join("kernel")).unwrap();
+    repository
+        .publish_workspace(
+            0,
+            &WorkspaceConfig {
+                format: 1,
+                revision: 1,
+                id: "ws".into(),
+                name: "Workspace".into(),
+                cwd: Vec::new(),
+                folders: vec![profile::WorkspaceFolder {
+                    id: "primary".into(),
+                    path: project.clone(),
+                }],
+                policy: Some(WorkspacePolicy {
+                    network: true,
+                    writable_roots: vec![project.clone()],
+                    max_wall_seconds: Some(600),
+                    ..WorkspacePolicy::default()
+                }),
+            },
+        )
+        .unwrap();
+    let publish = |revision, network, cap| {
+        repository
+            .publish_environments(
+                revision - 1,
+                &profile::EnvironmentsConfig {
+                    format: 1,
+                    revision,
+                    environments: vec![profile::Environment {
+                        id: "named".into(),
+                        network,
+                        toolchain_roots: vec![toolchain.clone()],
+                        max_wall_seconds: Some(cap),
+                    }],
+                },
+            )
+            .unwrap();
+    };
+    publish(1, false, 60);
+    let folder = root.path().join("thread");
+    fs::create_dir_all(&folder).unwrap();
+    let ledger = folder.join("main.jsonl");
+    let baseline = read(&fixtures.join("invalid/_valid-baseline.jsonl")).unwrap();
+    let end = baseline.iter().position(|byte| *byte == b'\n').unwrap();
+    let mut genesis: serde_json::Value = serde_json::from_slice(&baseline[..end]).unwrap();
+    genesis["environment"] = "named".into();
+    genesis["folder_binding"] = "primary".into();
+    genesis["folders"] = serde_json::json!(["primary"]);
+    genesis["min_reader"] = schema::FOLDERS_READER.into();
+    let mut bytes = serde_json_canonicalizer::to_vec(&genesis).unwrap();
+    bytes.extend_from_slice(&baseline[end..]);
+    fs::write(&ledger, &bytes).unwrap();
+    let launch = |run: &str| {
+        let mut launched = launch_profiled_worker_with_bindings(
+            &repository,
+            &ProfiledWorkerLaunchSpec {
+                binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
+                ledger: ledger.clone(),
+                timestamp: "2026-08-26T09:00:01.000Z".into(),
+                run_id: run.into(),
+                binary_attribution: "environment-test".into(),
+                workspace_id: "ws".into(),
+                folder_binding: Some("primary".into()),
+                user_agent_dir: root.path().join("missing-agent"),
+            },
+            WorkerLaunchBindings::default(),
+        )
+        .unwrap();
+        // Descriptors have been frozen, but no protocol selection means the
+        // worker has not acquired a ledger lease or any execution authority.
+        drop(launched.child.stdin.take());
+        let output = launched.child.wait_with_output().unwrap();
+        assert_eq!(output.status.code(), Some(EX_PROTOCOL));
+        (launched.config_snapshot, launched.config_digest)
+    };
+    let (first, first_digest) = launch("first-environment");
+    let asset = folder.join("assets").join(format!("sha256-{first_digest}"));
+    let frozen = fs::read(&asset).unwrap();
+    publish(2, true, 120);
+    let (next, next_digest) = launch("next-environment");
+    assert!(!first.workspace.policy.network);
+    assert!(next.workspace.policy.network);
+    assert_eq!(first.workspace.policy.max_wall_seconds, Some(60));
+    assert_eq!(next.workspace.policy.max_wall_seconds, Some(120));
+    assert_eq!(next.revisions.environments, Some(2));
+    assert_eq!(next.workspace.environment.as_deref(), Some("named"));
+    assert_eq!(next.workspace.policy.toolchain_roots, vec![toolchain]);
+    assert_eq!(first.workspace.policy.writable_roots, vec![project.clone()]);
+    assert_eq!(next.workspace.policy.writable_roots, vec![project]);
+    assert_ne!(first_digest, next_digest);
+    assert_eq!(fs::read(asset).unwrap(), frozen);
+    assert_eq!(fs::read(ledger).unwrap(), bytes);
 }
 
 #[test]
@@ -1424,7 +1562,10 @@ fn slice7_provider_reconcile_completes_adopt_from_asset_only() {
 
 #[test]
 fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
-    for gate in ["min_reader", "min_writer"] {
+    for (gate, required) in [
+        ("min_reader", schema::READER_VERSION + 1),
+        ("min_writer", 2),
+    ] {
         let fixtures = FixtureRoot::discover().expect("fixtures");
         let listener = TcpListener::bind("127.0.0.1:0").unwrap();
         listener.set_nonblocking(true).unwrap();
@@ -1509,7 +1650,7 @@ fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
         bytes.push(b'\n');
         let mut bytes = String::from_utf8(bytes)
             .unwrap()
-            .replace(&format!("\"{gate}\":1"), &format!("\"{gate}\":3"))
+            .replace(&format!("\"{gate}\":1"), &format!("\"{gate}\":{required}"))
             .into_bytes();
         bytes.extend_from_slice(b"unrecognized-new-format-tail");
         fs::write(&ledger, &bytes).expect("ledger");

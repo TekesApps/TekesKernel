@@ -39,7 +39,7 @@ models.list session.selectModel remote.mux
 ```
 
 The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`:
-a 17-method base and 20 capabilities with 65 extension methods. This file
+a 17-method base and 21 capabilities with 67 extension methods. This file
 specifies twelve capabilities directly; the nine native-client capabilities are
 specified in Session Endpoint and listed under
 [Native-client capabilities](#native-client-capabilities).
@@ -266,6 +266,49 @@ camel-case field names:
 diagnostics are omitted. Every named internal error maps to the same
 kebab-case endpoint code. No transcript/body search is implied.
 
+## Environments
+
+`environments.v1` is an atomic optional group with two methods:
+
+| method | class | request | result |
+|---|---|---|---|
+| `environments.list` | read | `{}` | `{format:1,revision,defaultEnvironment:"local",environments:[Environment]}` |
+| `environments.save` | mutation | `{expectedRevision,environment:Environment}` | `{format:1,revision,environment:Environment}` |
+
+`Environment = {id:str,network:bool,toolchainRoots:[str],maxWallSeconds?:uint}`.
+All field sets are closed, including the nested definition. Optional fields
+are absent, never null. IDs are nonempty NFC strings of at most 512 bytes,
+without control characters. Toolchain roots are absolute paths without the
+PATH separator `:`; a present wall-time cap is positive. The definition has
+no trust, tools, credentials or writable-root grant fields.
+
+List returns effective definitions in ID order, including built-in `local`
+(network on, no extra toolchains or wall cap) unless an authored `local`
+overrides it. Missing `config/environments.json` is revision 0; reads never
+create it. Save upserts one complete definition and preserves the others;
+there is no removal method. The expected revision refers to the whole
+environments document. Successful saves increment it once and use the same
+config-admin durable intent, exact request retry, startup recovery and
+atomic config publication as workspace policy administration. Reusing an RPC
+ID with different bytes conflicts, even after later edits. Validation failure
+creates neither config bytes nor a prepared intent. Additional save errors
+are `stale-revision` (message `Configuration revision is stale`, details
+`{expected,actual}`) and `environment-invalid` (message `Environment definition
+is invalid`, details `{reason}`).
+
+Environment edits apply only at the next launch. Network and wall time meet
+the workspace policy, and toolchains add read access; choosing or editing an
+environment never grants folder trust, writable roots, secrets, or OS consent.
+Kernel-owned paths remain permanently write-protected.
+
+Clients opt in only after their driver declares the complete group. The
+server does not push new method names, change `host.describe`, add mux frames,
+or change old create results. Drivers whose catalog omits this group keep
+calling their existing methods and omit `session.create.environment` (default
+`local`); they must not try new environment calls. Kernel contract tests do
+not qualify a consumer implementation: ClientKit's typed adapter/catalog and
+host application integration are a separate acceptance step.
+
 ## Workspace administration
 
 Provider configuration is owned by the launching application, which supplies
@@ -353,7 +396,9 @@ sessions already bind to; the first edit publishes those same ids as
 
 Add canonicalizes an existing directory, appends it with the `folder-NNNN` id one
 above the highest existing one and, when the workspace has a policy, adds it to
-`writable_roots` as `workspace.create` seeds its folder. The canonical path
+`writable_roots` as `workspace.create` seeds its folder. Existing sessions
+keep the folders their genesis records (spec event §Genesis), so an added
+folder reaches only sessions created afterwards. The canonical path
 must not already be a folder of any workspace (`workspace-ambiguous`). A
 workspace that has an active, archived or in-flight session without a stable
 `folder_binding` refuses a second folder with `workspace-legacy-session`,
@@ -362,7 +407,8 @@ because such a session resolves only while its workspace has one folder.
 Remove compares `path` exactly with an authored folder path, so a folder
 whose directory no longer exists can still be removed. It refuses the last
 folder (`workspace-last-folder`) and a folder that any active, archived or
-in-flight session is bound to (`workspace-folder-in-use`, details carry the
+in-flight session is bound to or records among its genesis `folders` (an
+in-flight create records every folder) (`workspace-folder-in-use`, details carry the
 sorted `sessionIds`). Like `workspace.relocate` it requires the workspace's
 quiescence lock and otherwise fails with `workspace-busy`. Writable roots at
 or below the removed folder are dropped unless a remaining folder contains

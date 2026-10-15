@@ -630,6 +630,8 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
     let config = ConfigSnapshot {
         format: 1,
         workspace: ResolvedWorkspace {
+            environment: None,
+            folders: None,
             format: 1,
             revision: 1,
             id: "ws".to_owned(),
@@ -652,6 +654,7 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
         settings: SettingsConfig::default(),
         session_settings: None,
         revisions: RevisionVector {
+            environments: None,
             workspace: 1,
             providers: 0,
             legacy_integrations: (),
@@ -3876,6 +3879,8 @@ fn overflow_profile_with_trigger(
     let config = ConfigSnapshot {
         format: 1,
         workspace: ResolvedWorkspace {
+            environment: None,
+            folders: None,
             format: 1,
             revision: 1,
             id: "ws".to_owned(),
@@ -3923,6 +3928,7 @@ fn overflow_profile_with_trigger(
         settings: SettingsConfig::default(),
         session_settings: None,
         revisions: RevisionVector {
+            environments: None,
             workspace: 1,
             providers: 1,
             legacy_integrations: (),

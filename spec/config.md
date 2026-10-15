@@ -12,6 +12,7 @@ The authoritative files are:
 workspaces/<workspace-id>/workspace.json
 config/providers.json
 config/settings.json
+config/environments.json
 threads/<session-uuid>/session-settings.json
 ```
 
@@ -49,6 +50,15 @@ WorkspacePolicy = {
   model?: str,
   max_wall_seconds?: int>=1,
   base?: "general" | "blank"
+}
+
+Environments = {
+  format: 1, revision: int>=1, environments: [Environment, ...]
+}
+Environment = {
+  id: str, network: bool,
+  toolchain_roots?: [AbsolutePath, ...],
+  max_wall_seconds?: int>=1
 }
 
 Providers = {
@@ -215,7 +225,7 @@ ConfigSnapshot = {
   session_settings?: SessionSettings,
   revisions: {
     workspace: int, providers: int, settings: int,
-    session_settings?: int
+    session_settings?: int, environments?: int
   }
 }
 ```
@@ -225,7 +235,8 @@ A snapshot published before `config/integrations.json` was removed carries an
 and never write them.
 
 `ResolvedWorkspace` contains the canonical authored `cwd` list in the same
-order as `Workspace.folders`. A session-bound snapshot additionally contains
+order as `Workspace.folders`, narrowed to a session's recorded folders as
+[§Environments](#environments) describes. A session-bound snapshot additionally contains
 the paired optional fields `folder_binding` and `selected_cwd`; both are
 present or both absent. `folder_binding` MUST name a current stable folder id,
 and `selected_cwd` MUST be that folder's canonical path and a member of `cwd`.
@@ -274,6 +285,34 @@ with archive/fork folder operations and is read only from the selected thread
 folder; no global session-id map is a second authority. Absence means the
 workspace/global selection applies and is omitted from the snapshot.
 
+## Environments
+
+`config/environments.json` names the environments sessions run in. A missing
+file is revision 0 with no entries. Environment ids are unique, nonempty and
+free of control characters; toolchain roots are absolute and contain no
+`:`. The built-in `local` (network on, no toolchain roots, no wall-time cap)
+exists unless the file defines its own `local`, which then replaces it.
+
+A session resolves in its genesis scope
+([event §Genesis](event.md#genesis-seq-1-only-barrier)): its `environment`
+(default `local`) and, when recorded, its `folders`. In that scope:
+
+- the environment is looked up by id; an unknown id fails closed;
+- `policy.network` is the workspace value and the environment's;
+  `policy.max_wall_seconds` is the smaller of the two caps; the environment's
+  toolchain roots (canonicalized) are added to `policy.toolchain_roots`. An
+  environment never adds writable roots;
+- recorded `folders` replace `cwd` with those folders' canonical paths in
+  recorded order. Every id MUST name a current folder of the workspace, the
+  bound folder MUST be one of them, and only writable roots inside them
+  remain;
+- `ResolvedWorkspace` records `environment` and, when recorded, `folders`,
+  and `revisions.environments` records the environments revision.
+
+`session.create` freezes the snapshot it resolves in the scope it records, so
+it equals what the first launch resolves. While workspaces exist the
+environment meets the workspace policy; it does not replace it.
+
 ## Revocation
 
 After a successful config mutation, the supervisor compares affected live
@@ -314,3 +353,12 @@ execution permissions and are absent from the fixed catalog and new workspace
 seeds. Existing config bytes and snapshots are not rewritten. Remove these
 entries through the revisioned workspace policy API when editing the policy;
 see [retired Kernel memory](../docs/history/retired-kernel-memory.md).
+
+### Environment administration
+
+The optional [environments.v1](client-extensions.md#environments) client group
+reads effective definitions and upserts one authored definition with document
+revision CAS. `session.create {environment}` chooses a reference (default
+`local`); the creation intent fixes that reference, and each subsequent launch
+resolves the current definition. Save changes the next launch only, without
+changing folder trust, writable roots or running descriptors.

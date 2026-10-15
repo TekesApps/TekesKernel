@@ -7,9 +7,9 @@ mod resources;
 mod scope;
 
 pub use config::{
-    ConfigRepository, ConfigSnapshot, Limits, Model, Provider, ProvidersConfig, ResolvedWorkspace,
-    RevisionVector, SessionSettings, SettingsConfig, WebSearch, WorkspaceConfig, WorkspaceFolder,
-    WorkspacePolicy,
+    ConfigRepository, ConfigSnapshot, Environment, EnvironmentsConfig, Limits, Model, Provider,
+    ProvidersConfig, ResolvedWorkspace, RevisionVector, ScopeSelection, SessionSettings,
+    SettingsConfig, WebSearch, WorkspaceConfig, WorkspaceFolder, WorkspacePolicy,
 };
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,

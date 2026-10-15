@@ -6,6 +6,11 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+- Development toward 0.8.0: optional `environments.v1` list/save administration
+  and `session.create {environment}` select a named launch-time reference.
+  Saves use revision CAS and durable retries; running snapshots stay fixed.
+  ClientKit environment integration remains separate; legacy create defaults to `local`.
+
 ### Added
 - `session.create {cwd}` registers a `cwd` that no workspace folder matches,
   exactly as `workspace.create` would (seeded policy, metadata), instead of
@@ -13,16 +18,32 @@ workspace version in `Cargo.toml`.
   first free `name (n)`. The registration is its own durable workspace
   operation keyed by an id derived from the request's rpc id, so a retried
   create resumes it. The response is unchanged.
-
-### Added
+- `config/environments.json`: named environments sessions run in, with the
+  built-in `local` (network on, no toolchains, no wall cap). A session
+  resolves in its genesis environment (unknown fails closed). While
+  workspaces exist an environment meets the workspace policy: it can switch
+  the network off, lower the wall-time cap and add read-only toolchain roots,
+  never writable roots. `local` leaves the workspace policy as it is.
 - Genesis `environment` and `folders`: `session.create` records the
-  environment (`local`) and the stable ids of the session's folders. They are
+  environment (requested ID, default `local`) and the stable ids of the session's folders. They are
   references resolved at launch (relocation is followed), not frozen paths.
   Sessions without them read as `local` with every workspace folder
-  (`profile::SessionScope::environment` / `folders`). The fields do not take
-  effect on configuration yet.
+  (`profile::SessionScope::environment` / `folders`).
 
 ### Changed
+- A session's recorded `folders` are its folders: its cwd list, instruction
+  capture and writable roots come from them only. `workspace.addFolder`
+  reaches sessions created afterwards and no longer widens existing ones.
+  `workspace.removeFolder` refuses a folder a session records, as it already
+  refused one a session is bound to.
+- Ledger reader version 3: a genesis that records `folders` sets
+  `min_reader` 3 (fork and `context` start included), so a reader that
+  predates the field opens the session read-only instead of widening it to
+  every workspace folder. Sessions created by this build are read-only to
+  0.7 builds.
+- `session.create` freezes the snapshot it resolves in the environment and
+  folders it records, and the worker launch resolves in the ledger's own
+  genesis scope.
 - Sessions derived from another (fork, `context` start) copy one closed set
   of genesis fields (`schema::GENESIS_INHERITED_FIELDS`); fork builds that
   part of its genesis from the list, so a new field cannot be dropped

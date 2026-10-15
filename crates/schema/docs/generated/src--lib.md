@@ -8,14 +8,15 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [schema::READER_VERSION](../../src/lib.rs#L18) | const_item | `pub` |  |
-| [schema::GENESIS_INHERITED_FIELDS](../../src/lib.rs#L24) | const_item | `pub` |  |
-| [schema::GENESIS_OPERATION_FIELDS](../../src/lib.rs#L37) | const_item | `pub` |  |
-| [schema::DEFAULT_ENVIRONMENT](../../src/lib.rs#L54) | const_item | `pub` |  |
-| [schema::SchemaError](../../src/lib.rs#L59) | enum_item | `pub` |  |
-| [schema::SchemaError::event](../../src/lib.rs#L71) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::constraint](../../src/lib.rs#L78) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::rule](../../src/lib.rs#L87) | function_item | `pub` |  |
+| [schema::READER_VERSION](../../src/lib.rs#L20) | const_item | `pub` |  |
+| [schema::FOLDERS_READER](../../src/lib.rs#L23) | const_item | `pub` |  |
+| [schema::GENESIS_INHERITED_FIELDS](../../src/lib.rs#L29) | const_item | `pub` |  |
+| [schema::GENESIS_OPERATION_FIELDS](../../src/lib.rs#L42) | const_item | `pub` |  |
+| [schema::DEFAULT_ENVIRONMENT](../../src/lib.rs#L59) | const_item | `pub` |  |
+| [schema::SchemaError](../../src/lib.rs#L64) | enum_item | `pub` |  |
+| [schema::SchemaError::event](../../src/lib.rs#L76) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::constraint](../../src/lib.rs#L83) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::rule](../../src/lib.rs#L92) | function_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -67,6 +68,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `event` | `message.into` | [74](../../src/lib.rs#L74) | receiver-type-required |
-| `constraint` | `message.into` | [82](../../src/lib.rs#L82) | receiver-type-required |
-| `rule` | `Some` | [89](../../src/lib.rs#L89) | external-constructor-callback-or-unresolved |
+| `event` | `message.into` | [79](../../src/lib.rs#L79) | receiver-type-required |
+| `constraint` | `message.into` | [87](../../src/lib.rs#L87) | receiver-type-required |
+| `rule` | `Some` | [94](../../src/lib.rs#L94) | external-constructor-callback-or-unresolved |

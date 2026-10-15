@@ -59,6 +59,8 @@ mod tests {
         ConfigSnapshot {
             format: 1,
             workspace: ResolvedWorkspace {
+                environment: None,
+                folders: None,
                 format: 1,
                 revision: 1,
                 id: "ws".to_owned(),
@@ -87,6 +89,7 @@ mod tests {
             settings: SettingsConfig::default(),
             session_settings: None,
             revisions: RevisionVector {
+                environments: None,
                 workspace: 1,
                 providers: 1,
                 legacy_integrations: (),

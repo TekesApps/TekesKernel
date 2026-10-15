@@ -1022,6 +1022,7 @@ impl ProductionEndpointHost {
                 "agentPreset",
                 "identityProfile",
                 "preset",
+                "environment",
             ],
             &[],
         )?;
@@ -1034,6 +1035,7 @@ impl ProductionEndpointHost {
         }
         let workspace_id = optional_string(payload, "workspaceId")?;
         let cwd = optional_string(payload, "cwd")?;
+        let environment = optional_string(payload, "environment")?;
         let session_id = optional_string(payload, "sessionId")?;
         let identity_profile = optional_string(payload, "identityProfile")?
             .map(|value| {
@@ -1056,6 +1058,7 @@ impl ProductionEndpointHost {
                 requested_session_id: session_id,
                 workspace_id,
                 cwd,
+                environment,
                 identity_profile,
                 preset,
                 preset_mcp: self
@@ -1083,6 +1086,7 @@ impl ProductionEndpointHost {
         let config = profile::ConfigSnapshot {
             format: 1,
             revisions: profile::RevisionVector {
+                environments: None,
                 workspace: 0,
                 providers: providers.revision,
                 settings: settings.revision,
@@ -1090,6 +1094,8 @@ impl ProductionEndpointHost {
                 session_settings: None,
             },
             workspace: profile::ResolvedWorkspace {
+                environment: None,
+                folders: None,
                 format: 1,
                 revision: 0,
                 id: String::new(),
@@ -1962,6 +1968,7 @@ fn route_error_is_exact(error: &ProductionRouteFailure) -> bool {
         "session-not-found" | "session-running" | "archived" | "not-archived" | "title-invalid" => {
             exact_string_fields(&details, &["sessionId"], &[])
         }
+        "environment-not-found" => exact_string_fields(&details, &["environment"], &[]),
         "workspace-not-found" | "workspace-busy" => {
             exact_string_fields(&details, &["workspaceId"], &[])
         }
@@ -2029,6 +2036,7 @@ fn route_error_message(code: &str) -> Option<&'static str> {
         "idempotency-conflict" => "rpcId was already used for another request",
         "session-not-found" => "Session was not found",
         "workspace-not-found" => "Workspace was not found",
+        "environment-not-found" => "Environment was not found",
         "workspace-busy" => "Workspace has a running session",
         "workspace-invalid-path" => "Workspace path is invalid",
         "workspace-ambiguous" => "Workspace path matches more than one workspace",
@@ -2111,7 +2119,8 @@ fn route_allows_error(operation: &str, code: &str) -> bool {
         ),
         "session.create" => matches!(
             code,
-            "bad-request"
+            "environment-not-found"
+                | "bad-request"
                 | "workspace-not-found"
                 | "workspace-invalid-path"
                 | "workspace-ambiguous"
@@ -2577,6 +2586,7 @@ fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), En
                 "agentPreset",
                 "identityProfile",
                 "preset",
+                "environment",
             ],
             &[],
         ),
@@ -2664,6 +2674,11 @@ fn map_management(error: ManagementError) -> EndpointRpcFailure {
             "workspace-name-conflict",
             "Workspace title already exists",
             json!({"name":name}),
+        ),
+        ManagementError::EnvironmentNotFound(environment) => EndpointRpcFailure::new(
+            "environment-not-found",
+            "Environment was not found",
+            json!({"environment":environment}),
         ),
         ManagementError::WorkspaceNotFound(workspace_id) => EndpointRpcFailure::new(
             "workspace-not-found",

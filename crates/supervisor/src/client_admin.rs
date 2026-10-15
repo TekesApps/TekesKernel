@@ -1,4 +1,4 @@
-//! Production workspacePolicy.v1 and workspaceFolders.v1 endpoint routes.
+//! Production workspace and environment administration endpoint routes.
 //! Provider configuration is owned by the launching application.
 
 use std::collections::BTreeSet;
@@ -17,6 +17,11 @@ use store::{AtomicPublisher, NamedLock};
 use crate::endpoint_host::{ProductionEndpointRoutes, ProductionRouteFailure};
 use crate::mcp_runtime::{MAX_REPORTED_TOOL_REFUSALS, McpRefusedTool, refused_tool_json};
 use crate::process_host::{PolicyCandidateCause, PolicyCandidateError, ProductionProcessHost};
+
+pub const ENVIRONMENT_METHODS: [(&str, MethodClass); 2] = [
+    ("environments.list", MethodClass::ReadOnly),
+    ("environments.save", MethodClass::Mutation),
+];
 
 pub const WORKSPACE_POLICY_METHODS: [(&str, MethodClass); 2] = [
     ("workspace.policy.get", MethodClass::ReadOnly),
@@ -54,10 +59,15 @@ impl ClientAdminRoutes {
         Ok(routes)
     }
 
-    /// Returns the workspace policy and workspace folder capability groups.
+    /// Returns the atomic workspace and environment administration groups.
     #[must_use]
     pub fn routes(self: &Arc<Self>) -> Vec<Arc<dyn ProductionEndpointRoutes>> {
         vec![
+            Arc::new(AdminCapabilityRoutes::new(
+                "environments.v1",
+                &ENVIRONMENT_METHODS,
+                Arc::clone(self),
+            )),
             Arc::new(AdminCapabilityRoutes::new(
                 "workspacePolicy.v1",
                 &WORKSPACE_POLICY_METHODS,
@@ -88,6 +98,13 @@ impl ClientAdminRoutes {
                 != Some(&record.desired_sha256)
             {
                 match record.authority.as_str() {
+                    "config/environments.json" => {
+                        let desired = profile::EnvironmentsConfig::decode(&record.desired)
+                            .map_err(internal_profile)?;
+                        self.repository
+                            .publish_environments(record.expected_revision, &desired)
+                            .map_err(internal_profile)?;
+                    }
                     authority
                         if authority.starts_with("workspaces/") && authority.ends_with(".json") =>
                     {
@@ -132,6 +149,72 @@ impl ClientAdminRoutes {
             self.journal.commit_record(&record.rpc_id)?;
         }
         Ok(())
+    }
+
+    fn list_environments(&self) -> Result<IJsonValue, ProductionRouteFailure> {
+        let config = self.repository.environments().map_err(internal_profile)?;
+        let mut environments = config.environments.clone();
+        if !environments
+            .iter()
+            .any(|environment| environment.id == schema::DEFAULT_ENVIRONMENT)
+        {
+            environments.push(profile::Environment::local());
+        }
+        environments.sort_by(|left, right| left.id.cmp(&right.id));
+        to_ijson(&json!({"format":1,"revision":config.revision,
+            "defaultEnvironment":schema::DEFAULT_ENVIRONMENT,
+            "environments":environments.into_iter().map(EnvironmentView::from).collect::<Vec<_>>()}))
+    }
+
+    fn save_environment(
+        &self,
+        request: &EndpointHostCall,
+        input: EnvironmentSaveRequest,
+    ) -> Result<IJsonValue, ProductionRouteFailure> {
+        let _gate = self
+            .mutation_gate
+            .lock()
+            .map_err(|_| internal("admin mutation lock poisoned"))?;
+        self.recover_pending_intents()?;
+        if let Some(result) = self.journal.recover(request)? {
+            mark_handoff(request)?;
+            return Ok(result);
+        }
+        let mut desired = self.repository.environments().map_err(internal_profile)?;
+        if desired.revision != input.expected_revision {
+            return Err(stale(input.expected_revision, desired.revision));
+        }
+        desired.revision = next_revision(desired.revision)?;
+        let environment: profile::Environment = input.environment.into();
+        desired.environments.retain(|old| old.id != environment.id);
+        desired.environments.push(environment.clone());
+        desired
+            .environments
+            .sort_by(|left, right| left.id.cmp(&right.id));
+        // Validate before preparing any intent or touching authority bytes.
+        let bytes = desired.canonical_bytes().map_err(map_environment)?;
+        let result = to_ijson(&json!({"format":1,"revision":desired.revision,
+            "environment":EnvironmentView::from(environment)}))?;
+        self.journal.begin(
+            request,
+            "config/environments.json",
+            input.expected_revision,
+            desired.revision,
+            &bytes,
+            &result,
+        )?;
+        if let Err(error) = self
+            .repository
+            .publish_environments(input.expected_revision, &desired)
+        {
+            self.journal.abort(request)?;
+            return Err(map_environment(error));
+        }
+        // Existing workers retain immutable descriptors. The environment is
+        // a reference resolved afresh by the next ordinary launch.
+        let result = self.journal.commit(request)?;
+        mark_handoff(request)?;
+        Ok(result)
     }
 
     fn get_policy(&self, input: PolicyGetRequest) -> Result<IJsonValue, ProductionRouteFailure> {
@@ -401,6 +484,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         WORKSPACE_POLICY_METHODS
             .into_iter()
             .chain(WORKSPACE_FOLDER_METHODS)
+            .chain(ENVIRONMENT_METHODS)
             .map(|(name, _)| name.to_owned())
             .collect()
     }
@@ -409,6 +493,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         WORKSPACE_POLICY_METHODS
             .into_iter()
             .chain(WORKSPACE_FOLDER_METHODS)
+            .chain(ENVIRONMENT_METHODS)
             .find_map(|(name, class)| (name == method).then_some(class))
     }
 
@@ -418,6 +503,8 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         payload: &Value,
     ) -> Result<(), ProductionRouteFailure> {
         match operation {
+            "environments.list" => parse::<EnvironmentsListRequest>(payload).map(|_| ()),
+            "environments.save" => parse_environment_save(payload).map(|_| ()),
             "workspace.policy.get" => parse::<PolicyGetRequest>(payload).map(|_| ()),
             "workspace.policy.set" => parse::<PolicySetRequest>(payload).map(|_| ()),
             "workspace.listFolders" => parse::<FoldersGetRequest>(payload).map(|_| ()),
@@ -434,9 +521,40 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
 
     fn extension_failure_is_exact(
         &self,
-        _operation: &str,
+        operation: &str,
         failure: &ProductionRouteFailure,
     ) -> bool {
+        if operation.starts_with("environments.") {
+            if matches!(
+                failure.code.as_str(),
+                "environment-invalid" | "stale-revision"
+            ) {
+                let Ok(Value::Object(details)) = serde_json::to_value(&failure.details) else {
+                    return false;
+                };
+                return operation == "environments.save"
+                    && match failure.code.as_str() {
+                        "environment-invalid" => {
+                            failure.message == "Environment definition is invalid"
+                                && details.len() == 1
+                                && details.get("reason").is_some_and(Value::is_string)
+                        }
+                        "stale-revision" => {
+                            failure.message == "Configuration revision is stale"
+                                && details.len() == 2
+                                && ["expected", "actual"]
+                                    .iter()
+                                    .all(|key| details.get(*key).is_some_and(Value::is_u64))
+                        }
+                        _ => false,
+                    };
+            }
+            return matches!(
+                failure.code.as_str(),
+                "bad-request" | "unsupported-capability" | "internal"
+            ) || (operation == "environments.save"
+                && matches!(failure.code.as_str(), "idempotency-conflict"));
+        }
         matches!(
             failure.code.as_str(),
             "bad-request"
@@ -463,6 +581,11 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         _principal: &str,
     ) -> Result<IJsonValue, ProductionRouteFailure> {
         match request.operation.as_str() {
+            "environments.list" => {
+                let _: EnvironmentsListRequest = parse(payload)?;
+                self.list_environments()
+            }
+            "environments.save" => self.save_environment(request, parse_environment_save(payload)?),
             "workspace.policy.get" => self.get_policy(parse(payload)?),
             "workspace.policy.set" => self.set_policy(request, parse(payload)?),
             "workspace.listFolders" => self.list_folders(parse(payload)?),
@@ -474,6 +597,78 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
                 json!({"operation":request.operation}),
             )),
         }
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct EnvironmentsListRequest {}
+
+#[derive(Clone, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct EnvironmentView {
+    id: String,
+    network: bool,
+    toolchain_roots: Vec<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    max_wall_seconds: Option<u64>,
+}
+
+impl From<profile::Environment> for EnvironmentView {
+    fn from(value: profile::Environment) -> Self {
+        Self {
+            id: value.id,
+            network: value.network,
+            toolchain_roots: value.toolchain_roots,
+            max_wall_seconds: value.max_wall_seconds,
+        }
+    }
+}
+impl From<EnvironmentView> for profile::Environment {
+    fn from(value: EnvironmentView) -> Self {
+        Self {
+            id: value.id,
+            network: value.network,
+            toolchain_roots: value.toolchain_roots,
+            max_wall_seconds: value.max_wall_seconds,
+        }
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct EnvironmentSaveRequest {
+    expected_revision: u64,
+    environment: EnvironmentView,
+}
+
+fn parse_environment_save(
+    payload: &Value,
+) -> Result<EnvironmentSaveRequest, ProductionRouteFailure> {
+    if payload
+        .get("environment")
+        .and_then(|value| value.get("maxWallSeconds"))
+        .is_some_and(Value::is_null)
+    {
+        return Err(failure(
+            "bad-request",
+            "Invalid client administration request",
+            json!({"reason":"maxWallSeconds must be absent or a positive integer"}),
+        ));
+    }
+    parse(payload)
+}
+
+fn map_environment(error: profile::ProfileError) -> ProductionRouteFailure {
+    match error {
+        profile::ProfileError::StaleRevision { expected, actual } => stale(expected, actual),
+        profile::ProfileError::InvalidSchema { .. }
+        | profile::ProfileError::InvalidReference { .. } => failure(
+            "environment-invalid",
+            "Environment definition is invalid",
+            json!({"reason":error.to_string()}),
+        ),
+        other => internal_profile(other),
     }
 }
 
@@ -1065,6 +1260,350 @@ mod tests {
             payload: to_ijson(&payload).expect("payload"),
             recovering,
             handoff: DurableHandoffSignal::new(),
+        }
+    }
+
+    #[test]
+    fn environment_reads_are_pure_and_invalid_saves_publish_nothing() {
+        let (root, _host, routes) = fixture();
+        let value = serde_json::to_value(routes.list_environments().unwrap()).unwrap();
+        assert_eq!(
+            value,
+            json!({"format":1,"revision":0,"defaultEnvironment":"local",
+            "environments":[{"id":"local","network":true,"toolchainRoots":[]}]})
+        );
+        let path = root.path().join("config/environments.json");
+        assert!(!path.exists());
+        for environment in [
+            json!({"id":"","network":false,"toolchainRoots":[]}),
+            json!({"id":"offline","network":false,"toolchainRoots":["relative/bin"]}),
+            json!({"id":"offline","network":false,"toolchainRoots":[],"maxWallSeconds":0}),
+            json!({"id":"e\u{301}","network":false,"toolchainRoots":[]}),
+        ] {
+            let payload = json!({"expectedRevision":0,"environment":environment});
+            let request = call(
+                "environment-invalid",
+                "environments.save",
+                payload.clone(),
+                false,
+            );
+            let error = routes.execute(&request, &payload, "uid:1").unwrap_err();
+            assert_eq!(error.code, "environment-invalid");
+            assert!(!request.handoff.is_durable());
+            assert!(!path.exists());
+            assert!(routes.journal.records().unwrap().is_empty());
+        }
+        for environment in [
+            json!({"id":"offline","network":false,"toolchainRoots":[],"projectTrusted":true}),
+            json!({"id":"offline","network":false,"toolchainRoots":[],"writableRoots":["/"]}),
+            json!({"id":"offline","network":false,"toolchainRoots":[],"maxWallSeconds":null}),
+        ] {
+            let payload = json!({"expectedRevision":0,"environment":environment});
+            let request = call(
+                "environment-malformed",
+                "environments.save",
+                payload.clone(),
+                false,
+            );
+            assert_eq!(
+                routes
+                    .execute(&request, &payload, "uid:1")
+                    .unwrap_err()
+                    .code,
+                "bad-request"
+            );
+            assert!(!path.exists());
+            assert!(routes.journal.records().unwrap().is_empty());
+        }
+    }
+
+    #[test]
+    fn environment_save_has_cas_and_exact_retries_after_later_edits() {
+        let (_root, _host, routes) = fixture();
+        let payload = json!({"expectedRevision":0,"environment":{"id":"offline","network":false,"toolchainRoots":[],"maxWallSeconds":60}});
+        let request = call("env-first", "environments.save", payload.clone(), false);
+        let first = routes.execute(&request, &payload, "uid:1").unwrap();
+        assert!(request.handoff.is_durable());
+        let changed = json!({"expectedRevision":1,"environment":{"id":"local","network":false,"toolchainRoots":[]}});
+        let second = call("env-second", "environments.save", changed.clone(), false);
+        routes.execute(&second, &changed, "uid:1").unwrap();
+        assert_eq!(routes.execute(&request, &payload, "uid:1").unwrap(), first);
+        assert_eq!(routes.repository.environments().unwrap().revision, 2);
+        assert!(
+            routes
+                .repository
+                .environments()
+                .unwrap()
+                .environment("offline")
+                .is_some()
+        );
+        let stale_request = call("env-stale", "environments.save", payload.clone(), false);
+        assert_eq!(
+            routes
+                .execute(&stale_request, &payload, "uid:1")
+                .unwrap_err()
+                .code,
+            "stale-revision"
+        );
+        let conflict = call("env-first", "environments.save", changed.clone(), false);
+        assert_eq!(
+            routes
+                .execute(&conflict, &changed, "uid:1")
+                .unwrap_err()
+                .code,
+            "idempotency-conflict"
+        );
+        assert_eq!(routes.repository.environments().unwrap().revision, 2);
+    }
+
+    #[test]
+    fn environment_intents_recover_before_and_after_config_publication() {
+        for published in [false, true] {
+            let (root, host, routes) = fixture();
+            let environment = profile::Environment {
+                id: "offline".into(),
+                network: false,
+                toolchain_roots: Vec::new(),
+                max_wall_seconds: Some(60),
+            };
+            let desired = profile::EnvironmentsConfig {
+                format: 1,
+                revision: 1,
+                environments: vec![environment.clone()],
+            };
+            let payload = json!({"expectedRevision":0,"environment":EnvironmentView::from(environment.clone())});
+            let request = call("env-crash", "environments.save", payload, false);
+            let expected = to_ijson(
+                &json!({"format":1,"revision":1,"environment":EnvironmentView::from(environment)}),
+            )
+            .unwrap();
+            routes
+                .journal
+                .begin(
+                    &request,
+                    "config/environments.json",
+                    0,
+                    1,
+                    &desired.canonical_bytes().unwrap(),
+                    &expected,
+                )
+                .unwrap();
+            if published {
+                routes.repository.publish_environments(0, &desired).unwrap();
+            }
+            drop(routes);
+            let recovered = ClientAdminRoutes::new(root.path(), host).unwrap();
+            assert_eq!(
+                fs::read(root.path().join("config/environments.json")).unwrap(),
+                desired.canonical_bytes().unwrap()
+            );
+            let payload = serde_json::to_value(&request.payload).unwrap();
+            assert_eq!(
+                recovered.execute(&request, &payload, "uid:1").unwrap(),
+                expected
+            );
+            assert!(request.handoff.is_durable());
+            assert!(matches!(
+                recovered.journal.records().unwrap()[0].phase,
+                AdminPhase::Committed
+            ));
+            assert_eq!(recovered.repository.environments().unwrap().revision, 1);
+        }
+    }
+
+    #[test]
+    fn concurrent_environment_saves_have_one_cas_winner_and_no_loser_intent() {
+        let (_root, _host, routes) = fixture();
+        let routes = Arc::new(routes);
+        let barrier = Arc::new(std::sync::Barrier::new(3));
+        let outcomes = std::thread::scope(|scope| {
+            let tasks = ["first", "second"].map(|id| {
+                let routes = Arc::clone(&routes);
+                let barrier = Arc::clone(&barrier);
+                scope.spawn(move || {
+                    let payload = json!({"expectedRevision":0,"environment":{
+                        "id":id,"network":false,"toolchainRoots":[]}});
+                    let request = call(id, "environments.save", payload.clone(), false);
+                    barrier.wait();
+                    (id, routes.execute(&request, &payload, "uid:1"))
+                })
+            });
+            barrier.wait();
+            tasks.map(|task| task.join().unwrap())
+        });
+        let winners = outcomes
+            .iter()
+            .filter(|(_, outcome)| outcome.is_ok())
+            .collect::<Vec<_>>();
+        let losers = outcomes
+            .iter()
+            .filter(|(_, outcome)| outcome.is_err())
+            .collect::<Vec<_>>();
+        assert_eq!(winners.len(), 1);
+        assert_eq!(losers.len(), 1);
+        let error = losers[0].1.as_ref().unwrap_err();
+        assert_eq!(error.code, "stale-revision");
+        assert_eq!(
+            serde_json::to_value(&error.details).unwrap(),
+            json!({"expected":0,"actual":1})
+        );
+        let config = routes.repository.environments().unwrap();
+        assert_eq!(config.revision, 1);
+        assert_eq!(config.environments.len(), 1);
+        assert_eq!(config.environments[0].id, winners[0].0);
+        let records = routes.journal.records().unwrap();
+        assert_eq!(records.len(), 1, "the CAS loser must not prepare an intent");
+        assert_eq!(records[0].rpc_id, winners[0].0);
+        assert!(matches!(records[0].phase, AdminPhase::Committed));
+    }
+
+    #[test]
+    fn concurrent_named_environment_save_and_create_capture_one_complete_revision() {
+        for iteration in 0..8 {
+            let (root, _host, routes) = fixture();
+            let project = tempfile::tempdir().unwrap();
+            let project_path = project
+                .path()
+                .canonicalize()
+                .unwrap()
+                .to_string_lossy()
+                .into_owned();
+            let make_toolchain = |name: &str| {
+                let path = project.path().join(name);
+                fs::create_dir(&path).unwrap();
+                path.canonicalize().unwrap().to_string_lossy().into_owned()
+            };
+            let old_toolchain = make_toolchain("old-toolchain");
+            let new_toolchain = make_toolchain("new-toolchain");
+            let mut workspace = routes.repository.workspace("workspace-1").unwrap();
+            workspace.revision = 2;
+            workspace.cwd = vec![project_path.clone()];
+            workspace.policy = Some(WorkspacePolicy {
+                network: true,
+                writable_roots: vec![project_path],
+                max_wall_seconds: Some(600),
+                ..WorkspacePolicy::default()
+            });
+            routes.repository.publish_workspace(1, &workspace).unwrap();
+            routes
+                .repository
+                .publish_environments(
+                    0,
+                    &profile::EnvironmentsConfig {
+                        format: 1,
+                        revision: 1,
+                        environments: vec![profile::Environment {
+                            id: "named".into(),
+                            network: false,
+                            toolchain_roots: vec![old_toolchain.clone()],
+                            max_wall_seconds: Some(60),
+                        }],
+                    },
+                )
+                .unwrap();
+            let management = endpoint::ManagementStore::open_light(root.path()).unwrap();
+            let barrier = Arc::new(std::sync::Barrier::new(3));
+            let payload = json!({"expectedRevision":1,"environment":{
+                "id":"named","network":true,"toolchainRoots":[new_toolchain.clone()],"maxWallSeconds":120}});
+            let request = call(
+                &format!("update-race-{iteration}"),
+                "environments.save",
+                payload.clone(),
+                false,
+            );
+            let create_rpc = format!("create-race-{iteration}");
+            let agents = root.path().join("agent");
+            let (saved, created) = std::thread::scope(|scope| {
+                let save_gate = Arc::clone(&barrier);
+                let create_gate = Arc::clone(&barrier);
+                let routes_ref = &routes;
+                let request_ref = &request;
+                let payload_ref = &payload;
+                let saved = scope.spawn(move || {
+                    save_gate.wait();
+                    routes_ref.execute(request_ref, payload_ref, "uid:1")
+                });
+                let management_ref = &management;
+                let create_rpc_ref = &create_rpc;
+                let agents_ref = &agents;
+                let created = scope.spawn(move || {
+                    create_gate.wait();
+                    management_ref.create_session(endpoint::SessionCreateOperation {
+                        rpc_id: create_rpc_ref,
+                        request_sha256: &"a".repeat(64),
+                        requested_session_id: None,
+                        workspace_id: Some("workspace-1"),
+                        cwd: None,
+                        environment: Some("named"),
+                        identity_profile: None,
+                        preset: None,
+                        preset_mcp: None,
+                        preset_models: None,
+                        user_agent_dir: agents_ref,
+                        started_at: "2026-10-15T00:00:00.000Z",
+                        principal: "uid:1",
+                    })
+                });
+                barrier.wait();
+                (saved.join().unwrap(), created.join().unwrap())
+            });
+            saved.expect("racing save commits revision 2");
+            let id = created.expect("create resolves either complete environment revision");
+            let folder = root.path().join("threads").join(&id);
+            let ledger_path = folder.join("main.jsonl");
+            let ledger = fs::read(&ledger_path).unwrap();
+            let genesis = store::read_genesis(&ledger_path).unwrap().unwrap();
+            assert_eq!(genesis.string_field("environment"), Some("named"));
+            let raw = serde_json::to_value(genesis.raw()).unwrap();
+            let assets = store::AssetStore::new(folder.join("assets")).unwrap();
+            let snapshot = profile::ConfigSnapshot::decode(
+                &assets
+                    .read_verified(&format!(
+                        "sha256-{}",
+                        raw["config"]["digest"].as_str().unwrap()
+                    ))
+                    .unwrap(),
+            )
+            .unwrap();
+            let tuple = (
+                snapshot.revisions.environments.unwrap(),
+                snapshot.workspace.policy.network,
+                snapshot.workspace.policy.max_wall_seconds,
+                snapshot.workspace.policy.toolchain_roots.clone(),
+            );
+            assert!(
+                tuple == (1, false, Some(60), vec![old_toolchain])
+                    || tuple == (2, true, Some(120), vec![new_toolchain.clone()]),
+                "mixed revision: {tuple:?}"
+            );
+            let hash = sha256(create_rpc.as_bytes());
+            let operation: Value = serde_json::from_slice(
+                &fs::read(
+                    root.path()
+                        .join("endpoint-management/operations")
+                        .join(&hash[..2])
+                        .join(format!("{hash}.json")),
+                )
+                .unwrap(),
+            )
+            .unwrap();
+            assert_eq!(operation["intent"]["environment"], "named");
+            let session_scope = profile::SessionScope::locate(root.path(), &id).unwrap();
+            let next = profile::LaunchProfile::resolve_and_publish_for_scope(
+                &routes.repository,
+                &session_scope,
+                &agents,
+                &assets,
+            )
+            .unwrap();
+            assert_eq!(next.config.revisions.environments, Some(2));
+            assert!(next.config.workspace.policy.network);
+            assert_eq!(next.config.workspace.policy.max_wall_seconds, Some(120));
+            assert_eq!(
+                next.config.workspace.policy.toolchain_roots,
+                vec![new_toolchain]
+            );
+            assert_eq!(fs::read(ledger_path).unwrap(), ledger);
         }
     }
 

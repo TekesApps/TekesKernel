@@ -137,6 +137,8 @@ struct SessionCreateIntent {
     identity_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     preset_digest: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    environment: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -330,6 +332,7 @@ pub struct SessionCreateOperation<'a> {
     pub requested_session_id: Option<&'a str>,
     pub workspace_id: Option<&'a str>,
     pub cwd: Option<&'a str>,
+    pub environment: Option<&'a str>,
     pub identity_profile: Option<tools::IdentityProfile>,
     /// Raw `session.create {preset}` request, resolved under the workspace base.
     pub preset: Option<&'a Value>,
@@ -991,6 +994,20 @@ impl ManagementStore {
                 .session_id_from_response(self.drive_session_create(&operation_path, record)?);
         }
 
+        // Resolve the named reference before cwd auto-registration or any
+        // session intent/assets are created. Retries above use staged bytes.
+        let selected_environment = request.environment.unwrap_or(schema::DEFAULT_ENVIRONMENT);
+        if self
+            .config
+            .environments()?
+            .environment(selected_environment)
+            .is_none()
+        {
+            return Err(ManagementError::EnvironmentNotFound(
+                selected_environment.to_owned(),
+            ));
+        }
+
         if active_session_count(&self.storage_root)? >= 256 {
             return Err(ManagementError::ActiveSessionLimit);
         }
@@ -1019,9 +1036,18 @@ impl ManagementStore {
             });
         }
 
-        let config = self
-            .config
-            .resolve_for_binding(&workspace.id, &folder_binding)?;
+        // The snapshot frozen at create is resolved in the scope the genesis
+        // records, so it equals what the first launch resolves.
+        let folders = workspace.folder_ids();
+        let config = self.config.resolve_scoped(
+            &workspace.id,
+            None,
+            Some(&folder_binding),
+            profile::ScopeSelection {
+                environment: selected_environment,
+                folders: Some(&folders),
+            },
+        )?;
         let instruction = profile::workspace_instructions(
             &self.config,
             &workspace.id,
@@ -1056,7 +1082,8 @@ impl ManagementStore {
             &session_id,
             &workspace.id,
             &folder_binding,
-            &workspace.folder_ids(),
+            &folders,
+            selected_environment,
             &config_digest,
             &instruction_digest,
             request.identity_profile,
@@ -1102,6 +1129,7 @@ impl ManagementStore {
                         .to_owned()
                 }),
                 preset_digest: preset.as_ref().map(|preset| preset.digest.clone()),
+                environment: Some(selected_environment.to_owned()),
             })?,
             response: None,
         };
@@ -1825,8 +1853,8 @@ impl ManagementStore {
         let legacy = self
             .workspace_session_bindings(workspace_id)?
             .into_iter()
-            .filter(|(_, binding)| binding.is_none())
-            .map(|(session_id, _)| session_id)
+            .filter(|session| session.binding.is_none())
+            .map(|session| session.session_id)
             .collect::<Vec<_>>();
         if !legacy.is_empty() {
             return Err(ManagementError::LegacySessions {
@@ -1881,11 +1909,13 @@ impl ManagementStore {
         if folders.len() == 1 {
             return Err(ManagementError::LastFolder(workspace_id.to_owned()));
         }
+        // A session bound to the folder, or one that records it among its
+        // folders, would fail to resolve once it is gone.
         let bound = self
             .workspace_session_bindings(workspace_id)?
             .into_iter()
-            .filter(|(_, binding)| binding.as_deref() == Some(folder_id.as_str()))
-            .map(|(session_id, _)| session_id)
+            .filter(|session| session.uses(&folder_id))
+            .map(|session| session.session_id)
             .collect::<Vec<_>>();
         if !bound.is_empty() {
             return Err(ManagementError::FolderInUse {
@@ -1949,7 +1979,7 @@ impl ManagementStore {
     fn workspace_session_bindings(
         &self,
         workspace_id: &str,
-    ) -> Result<Vec<(String, Option<String>)>, ManagementError> {
+    ) -> Result<Vec<SessionFolderUse>, ManagementError> {
         let mut sessions = Vec::new();
         for area in ["threads", "archive"] {
             let entries = match fs::read_dir(self.storage_root.join(area)) {
@@ -1989,7 +2019,21 @@ impl ManagementStore {
                 })?;
                 if genesis.string_field("workspace") == Some(workspace_id) {
                     let binding = genesis.string_field("folder_binding").map(str::to_owned);
-                    sessions.push((session_id, binding));
+                    let recorded = serde_json::to_value(genesis.raw())?
+                        .get("folders")
+                        .and_then(Value::as_array)
+                        .map(|ids| {
+                            ids.iter()
+                                .filter_map(Value::as_str)
+                                .map(str::to_owned)
+                                .collect()
+                        });
+                    sessions.push(SessionFolderUse {
+                        session_id,
+                        binding,
+                        recorded,
+                        pending_create: false,
+                    });
                 }
             }
         }
@@ -2001,11 +2045,16 @@ impl ManagementStore {
             let intent = session_create_intent(&record)?;
             if intent.workspace_id == workspace_id {
                 let binding = (!intent.folder_binding.is_empty()).then_some(intent.folder_binding);
-                sessions.push((intent.session_id, binding));
+                sessions.push(SessionFolderUse {
+                    session_id: intent.session_id,
+                    binding,
+                    recorded: None,
+                    pending_create: true,
+                });
             }
         }
-        sessions.sort();
-        sessions.dedup();
+        sessions.sort_by(|left, right| left.session_id.cmp(&right.session_id));
+        sessions.dedup_by(|left, right| left.session_id == right.session_id);
         Ok(sessions)
     }
 
@@ -2611,6 +2660,9 @@ impl ManagementStore {
                 config.workspace.folder_binding.as_deref(),
                 &intent.folder_binding,
             )
+            || intent.environment.as_ref().is_some_and(|environment| {
+                config.workspace.environment.as_ref() != Some(environment)
+            })
             || intent.config_asset != format!("sha256-{}", config.digest()?)
             || intent.instruction_asset != format!("sha256-{}", instruction.digest()?)
         {
@@ -3268,6 +3320,7 @@ fn create_genesis(
     workspace_id: &str,
     folder_binding: &str,
     folders: &[String],
+    environment: &str,
     config_digest: &str,
     instruction_digest: &str,
     identity_profile: Option<tools::IdentityProfile>,
@@ -3283,10 +3336,13 @@ fn create_genesis(
         "thread":session_id,
         "workspace":workspace_id,
         "folder_binding":folder_binding,
-        "environment":schema::DEFAULT_ENVIRONMENT,
+        "environment":environment,
         "folders":folders,
         "format":1,
-        "min_reader":1,
+        // Recorded `folders` narrow the session's folders; a reader that
+        // predates them would widen the session to every workspace folder, so
+        // it opens the ledger read-only instead (spec event §Genesis).
+        "min_reader":3,
         "min_writer":1,
         "resume":ResumePolicy::Never,
         "config":{"digest":config_digest},
@@ -3295,12 +3351,10 @@ fn create_genesis(
         "origin_key":origin.key,
         "origin_tuple":origin,
     });
-    // A preset replaces the identity profile and needs reader 2 (spec event
-    // §Genesis); a session without one keeps the reader-1 genesis bytes.
+    // A preset replaces the identity profile (spec event §Genesis).
     if let Some(preset) = preset {
         let object = value.as_object_mut().expect("genesis object");
         object.remove("identity_profile");
-        object.insert("min_reader".to_owned(), json!(2));
         object.insert("preset".to_owned(), serde_json::to_value(preset)?);
     }
     Event::from_value(IJsonValue::parse(&serde_json::to_vec(&value)?)?).map_err(Into::into)
@@ -3350,6 +3404,10 @@ fn verify_session_create_genesis(
         || genesis.string_field("workspace") != Some(intent.workspace_id.as_str())
         || (!intent.folder_binding.is_empty()
             && genesis.string_field("folder_binding") != Some(intent.folder_binding.as_str()))
+        || intent
+            .environment
+            .as_deref()
+            .is_some_and(|environment| genesis.string_field("environment") != Some(environment))
         || genesis.string_field("ts") != Some(record.started_at.as_str())
         || config_digest != intent.config_asset.strip_prefix("sha256-")
         || instruction_digest != intent.instruction_asset.strip_prefix("sha256-")
@@ -3624,6 +3682,29 @@ fn validate_title(title: &str) -> Result<(), ManagementError> {
         return Err(ManagementError::InvalidTitle(title.to_owned()));
     }
     Ok(())
+}
+
+/// How one session of a workspace uses its folders, read from its genesis or
+/// from an in-flight `session.create`.
+struct SessionFolderUse {
+    session_id: String,
+    binding: Option<String>,
+    /// The folder ids the genesis records; `None` for a session that
+    /// predates them.
+    recorded: Option<Vec<String>>,
+    /// An in-flight create records every folder the workspace has.
+    pending_create: bool,
+}
+
+impl SessionFolderUse {
+    fn uses(&self, folder_id: &str) -> bool {
+        self.pending_create
+            || self.binding.as_deref() == Some(folder_id)
+            || self
+                .recorded
+                .as_ref()
+                .is_some_and(|ids| ids.iter().any(|id| id == folder_id))
+    }
 }
 
 /// How a created workspace gets its title.
@@ -4260,6 +4341,8 @@ pub enum ManagementError {
     NameConflict(String),
     #[error("workspace was not found: {0}")]
     WorkspaceNotFound(String),
+    #[error("environment was not found: {0}")]
+    EnvironmentNotFound(String),
     #[error("workspace path matches more than one workspace: {0}")]
     WorkspaceAmbiguous(String),
     #[error("workspace has only one folder: {0}")]
@@ -4364,6 +4447,7 @@ mod tests {
                 "ws",
                 "folder-1",
                 &["folder-1".to_owned()],
+                schema::DEFAULT_ENVIRONMENT,
                 "cfg",
                 "ins",
                 identity,
@@ -4385,7 +4469,7 @@ mod tests {
     }
 
     #[test]
-    fn preset_genesis_replaces_identity_and_needs_reader_two() {
+    fn preset_genesis_replaces_identity_and_needs_reader_three() {
         let origin = schema::OriginTuple {
             principal: "test".to_owned(),
             client: "session-endpoint".to_owned(),
@@ -4408,6 +4492,7 @@ mod tests {
             "ws",
             "folder-1",
             &["folder-1".to_owned()],
+            schema::DEFAULT_ENVIRONMENT,
             "cfg",
             "ins",
             None,
@@ -4417,7 +4502,8 @@ mod tests {
         )
         .unwrap();
         assert_eq!(genesis.string_field("identity_profile"), None);
-        assert_eq!(genesis.min_reader(), Some(2));
+        // Reader 2 for the preset, raised to 3 by the recorded folders.
+        assert_eq!(genesis.min_reader(), Some(schema::FOLDERS_READER));
         let value: Value = serde_json::from_slice(&genesis.canonical_bytes().unwrap()).unwrap();
         assert_eq!(
             tools::ResolvedPreset::from_genesis(&value["preset"]).unwrap(),
@@ -4968,6 +5054,7 @@ mod tests {
             workspace_id,
             binding.unwrap_or("folder-0001"),
             &[binding.unwrap_or("folder-0001").to_owned()],
+            schema::DEFAULT_ENVIRONMENT,
             &format!("sha256-{}", "a".repeat(64)),
             &format!("sha256-{}", "b".repeat(64)),
             None,
@@ -5250,6 +5337,7 @@ mod tests {
     fn create_in(store: &ManagementStore, rpc_id: &str, cwd: &str, agents: &Path) -> String {
         store
             .create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id,
                 request_sha256: &format!("{:0>64}", rpc_id.len()),
                 requested_session_id: None,
@@ -5358,6 +5446,7 @@ mod tests {
         let preset = json!({"skills":["review"]});
         let create = |rpc_id: &str| {
             store.create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id,
                 request_sha256: &"8".repeat(64),
                 requested_session_id: None,
@@ -5384,6 +5473,67 @@ mod tests {
         ));
         write_skill(&storage.join("workspaces").join(&view.workspace_id));
         assert!(create("skills-workspace-data").is_ok());
+    }
+
+    /// A folder added to the workspace reaches sessions created afterwards,
+    /// never an existing one, and a folder a session records cannot be removed
+    /// out from under it.
+    #[test]
+    fn session_folders_are_recorded_at_create_and_never_widened() {
+        let root = tempfile::tempdir().expect("root");
+        let storage = root.path().join("kernel");
+        let agents = root.path().join("agents");
+        let first = root.path().join("first");
+        let second = root.path().join("second");
+        fs::create_dir_all(&first).expect("first");
+        fs::create_dir_all(&second).expect("second");
+        let store = ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect("store");
+        let first_text = first.to_string_lossy();
+        let before = create_in(&store, "before", &first_text, &agents);
+        let workspace_id = store
+            .workspace_configs()
+            .expect("configs")
+            .into_keys()
+            .next()
+            .expect("workspace");
+        store
+            .add_workspace_folder(
+                "add-second",
+                &"9".repeat(64),
+                &workspace_id,
+                &second.to_string_lossy(),
+                "2026-10-15T00:00:01.000Z",
+            )
+            .expect("add folder");
+        let after = create_in(&store, "after", &first_text, &agents);
+        let repository = ConfigRepository::open(&storage).expect("repository");
+        let cwd = |session: &str| {
+            profile::SessionScope::locate(&storage, session)
+                .and_then(|scope| scope.config(&repository))
+                .expect("session config")
+                .workspace
+                .cwd
+        };
+        let canonical = |path: &Path| {
+            path.canonicalize()
+                .expect("canonical")
+                .to_string_lossy()
+                .into_owned()
+        };
+        assert_eq!(cwd(&before), vec![canonical(&first)]);
+        assert_eq!(cwd(&after), vec![canonical(&first), canonical(&second)]);
+
+        // `after` records the second folder, so it cannot be removed.
+        assert!(matches!(
+            store.remove_workspace_folder(
+                "remove-second",
+                &"a".repeat(64),
+                &workspace_id,
+                &canonical(&second),
+                "2026-10-15T00:00:02.000Z",
+            ),
+            Err(ManagementError::FolderInUse { session_ids, .. }) if session_ids == vec![after.clone()]
+        ));
     }
 
     #[test]
@@ -5416,6 +5566,7 @@ mod tests {
                 "workspace.create {path}"
             );
             let created = store.create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id: &format!("reject-session-{index}"),
                 request_sha256: &"2".repeat(64),
                 requested_session_id: None,
