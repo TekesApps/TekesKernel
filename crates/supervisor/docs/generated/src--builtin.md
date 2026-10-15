@@ -173,7 +173,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::env::var_os("HOME")         .map` | [142](../../src/builtin.rs#L142) | receiver-type-required |
 | `run` | `std::env::var_os` | [142](../../src/builtin.rs#L142) | external-constructor-callback-or-unresolved |
 | `run` | `option_env!("TEKES_SELECTED_BUILD").unwrap_or` | [146](../../src/builtin.rs#L146) | receiver-type-required |
-| `run` | `ProductionProcessHost::open_with_secret_authorities` | [147](../../src/builtin.rs#L147) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L802) |
+| `run` | `ProductionProcessHost::open_with_secret_authorities` | [147](../../src/builtin.rs#L147) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_authorities](../../src/process_host.rs#L805) |
 | `run` | `process.preflight_mandatory_authorities` | [156](../../src/builtin.rs#L156) | receiver-type-required |
 | `run` | `host_runtime::assemble_application_endpoint_host` | [158](../../src/builtin.rs#L158) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
 | `run` | `build.into` | [161](../../src/builtin.rs#L161) | receiver-type-required |

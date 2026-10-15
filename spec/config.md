@@ -296,6 +296,44 @@ with archive/fork folder operations and is read only from the selected thread
 folder; no global session-id map is a second authority. Absence means the
 workspace/global selection applies and is omitted from the snapshot.
 
+## Session authority and workspace compatibility (0.8)
+
+Session is the primary entity. `workspaceId` remains a compatibility creation
+address and inventory label. A new genesis freezes `session_scope.seed` (the
+creation policy and ordered folder bindings) and `session_scope.folder_refs`
+(binding to logical Folder id). Launch, file tools, project resources and MCP
+resolve that session seed, current `config/folders.json` paths, current
+Environment, global providers/settings and session settings. They do not read
+the mutable workspace document. `ResolvedWorkspace` is retained as a snapshot
+wire shape; its name does not confer shared authority.
+
+A path-only `session.create` selects only that path and the local interactive
+policy defaults, even when a compatibility workspace already contains it.
+An explicit `workspaceId` copies its configuration once. Workspace policy and
+folder edits are templates for future creates and cannot widen, tighten or
+stop detached sessions. Explicit workspace creates may still opt into their
+legacy instruction directory; native path creates use user and Folder
+instructions, with a protected per-session host instruction directory.
+
+Old sessions lazily read their checksum-verified original config asset when
+available. No startup ledger migration or full thread scan is performed.
+Legacy records lacking a usable creation asset retain the workspace adapter;
+if that adapter is unavailable, resolution fails closed. Old effective policy
+limits remain conservative when their original authored values are unknown.
+
+`config/folders.json` owns logical Folder identity and current paths. Old
+workspace/binding pairs are aliases only. Relocation changes the path while
+retaining the logical id; trust stays bound to the actual directory identity
+and is never transferred. The existing management journal updates a
+workspace relocation's catalog overlay before marking its semantic receipt;
+catalog-only relocations publish path and exact retry receipt atomically.
+Workers hold shared locks for their logical folders for their complete
+lifetime, preventing relocation while any of them is running.
+
+Per-session Folder edits are ledger `meta.scope_change` events, effective at
+the next launch. They never edit the compatibility workspace or another
+session. See [sessionFolders.v1](client-extensions.md#session-folder-administration).
+
 ## Environments
 
 `config/environments.json` names the environments sessions run in. A missing
@@ -309,20 +347,20 @@ A session resolves in its genesis scope
 (default `local`) and, when recorded, its `folders`. In that scope:
 
 - the environment is looked up by id; an unknown id fails closed;
-- `policy.network` is the workspace value and the environment's;
+- `policy.network` is the session creation seed value and the environment's;
   `policy.max_wall_seconds` is the smaller of the two caps; the environment's
   toolchain roots (canonicalized) are added to `policy.toolchain_roots`. An
   environment never adds writable roots;
 - recorded `folders` replace `cwd` with those folders' canonical paths in
-  recorded order. Every id MUST name a current folder of the workspace, the
+  recorded order. Every id MUST name a folder of the session seed (or the legacy adapter), the
   bound folder MUST be one of them, and only writable roots inside them
   remain;
 - `ResolvedWorkspace` records `environment` and, when recorded, `folders`,
   and `revisions.environments` records the environments revision.
 
 `session.create` freezes the snapshot it resolves in the scope it records, so
-it equals what the first launch resolves. While workspaces exist the
-environment meets the workspace policy; it does not replace it.
+it equals what the first launch resolves. The environment is re-resolved at every launch and meets the frozen
+creation seed; it does not depend on later workspace publications.
 
 ## Revocation
 

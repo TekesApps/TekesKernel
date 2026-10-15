@@ -83,42 +83,44 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [profile::config::ConfigRepository::session_settings](../../src/config.rs#L1221) | function_item | `pub` |  |
 | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1234) | function_item | `private` |  |
 | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) | function_item | `private` |  |
-| [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) | function_item | `private` |  |
-| [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) | function_item | `private` |  |
-| [profile::config::ConfigRepository::validate_all_provider_references_unlocked](../../src/config.rs#L1377) | function_item | `private` |  |
-| [profile::config::check_publication_revision](../../src/config.rs#L1425) | function_item | `private` |  |
-| [profile::config::revision_from_value](../../src/config.rs#L1447) | function_item | `private` |  |
-| [profile::config::revision_from_value::RevisionOnly](../../src/config.rs#L1449) | struct_item | `private` |  |
-| [profile::config::validate_workspace_id](../../src/config.rs#L1464) | function_item | `private` |  |
-| [profile::config::workspace_document_path](../../src/config.rs#L1481) | function_item | `private` |  |
-| [profile::config::validate_common](../../src/config.rs#L1487) | function_item | `private` |  |
-| [profile::config::validate_workspace](../../src/config.rs#L1509) | function_item | `private` |  |
-| [profile::config::validate_providers](../../src/config.rs#L1549) | function_item | `private` |  |
-| [profile::config::validate_web_search_origin](../../src/config.rs#L1611) | function_item | `private` |  |
-| [profile::config::validate_settings](../../src/config.rs#L1646) | function_item | `private` |  |
-| [profile::config::validate_session_settings](../../src/config.rs#L1668) | function_item | `private` |  |
-| [profile::config::validate_session_reference](../../src/config.rs#L1682) | function_item | `private` |  |
-| [profile::config::validate_references](../../src/config.rs#L1708) | function_item | `private` |  |
-| [profile::config::session_preset_tools](../../src/config.rs#L1757) | function_item | `private` |  |
-| [profile::config::apply_scope](../../src/config.rs#L1785) | function_item | `private` |  |
-| [profile::config::validate_environments](../../src/config.rs#L1850) | function_item | `private` |  |
-| [profile::config::resolve_workspace](../../src/config.rs#L1878) | function_item | `private` |  |
-| [profile::config::validate_snapshot](../../src/config.rs#L1932) | function_item | `private` |  |
-| [profile::config::validate_safe_integer](../../src/config.rs#L2060) | function_item | `private` |  |
-| [profile::config::is_sorted_unique](../../src/config.rs#L2071) | function_item | `private` |  |
-| [profile::config::canonical_directory](../../src/config.rs#L2075) | function_item | `private` |  |
-| [profile::config::validate_absolute](../../src/config.rs#L2096) | function_item | `private` |  |
-| [profile::config::validate_id](../../src/config.rs#L2106) | function_item | `private` |  |
-| [profile::config::validate_unique](../../src/config.rs#L2117) | function_item | `private` |  |
-| [profile::config::invalid](../../src/config.rs#L2126) | function_item | `private` |  |
-| [profile::config::invalid_reference](../../src/config.rs#L2133) | function_item | `private` |  |
-| [profile::config::removed](../../src/config.rs#L2140) | function_item | `private` |  |
-| [profile::config::lowered](../../src/config.rs#L2145) | function_item | `private` |  |
-| [profile::config::enabled_provider_models](../../src/config.rs#L2153) | function_item | `private` |  |
-| [profile::config::private_directory_tests::private_directory_rejects_wrong_owner](../../src/config.rs#L2178) | function_item | `private` | test; #[cfg(test)] |
-| [profile::config::private_directory_tests::sandbox_fallback_rejects_a_symlinked_path](../../src/config.rs#L2190) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [profile::config::toolchain_tests::toolchain_roots_are_canonical_deduplicated_and_never_writable_roots](../../src/config.rs#L2212) | function_item | `private` | test; #[cfg(test)] |
-| [profile::config::legacy_snapshot_tests::a_snapshot_published_with_the_integrations_file_still_decodes](../../src/config.rs#L2260) | function_item | `private` | test; #[cfg(test)] |
+| [profile::config::ConfigRepository::resolve_session_seed](../../src/config.rs#L1278) | function_item | `pub` |  |
+| [profile::config::ConfigRepository::resolve_seed_unlocked](../../src/config.rs#L1289) | function_item | `private` |  |
+| [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) | function_item | `private` |  |
+| [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) | function_item | `private` |  |
+| [profile::config::ConfigRepository::validate_all_provider_references_unlocked](../../src/config.rs#L1401) | function_item | `private` |  |
+| [profile::config::check_publication_revision](../../src/config.rs#L1449) | function_item | `private` |  |
+| [profile::config::revision_from_value](../../src/config.rs#L1471) | function_item | `private` |  |
+| [profile::config::revision_from_value::RevisionOnly](../../src/config.rs#L1473) | struct_item | `private` |  |
+| [profile::config::validate_workspace_id](../../src/config.rs#L1488) | function_item | `private` |  |
+| [profile::config::workspace_document_path](../../src/config.rs#L1505) | function_item | `private` |  |
+| [profile::config::validate_common](../../src/config.rs#L1511) | function_item | `private` |  |
+| [profile::config::validate_workspace](../../src/config.rs#L1533) | function_item | `private` |  |
+| [profile::config::validate_providers](../../src/config.rs#L1573) | function_item | `private` |  |
+| [profile::config::validate_web_search_origin](../../src/config.rs#L1635) | function_item | `private` |  |
+| [profile::config::validate_settings](../../src/config.rs#L1670) | function_item | `private` |  |
+| [profile::config::validate_session_settings](../../src/config.rs#L1692) | function_item | `private` |  |
+| [profile::config::validate_session_reference](../../src/config.rs#L1706) | function_item | `private` |  |
+| [profile::config::validate_references](../../src/config.rs#L1732) | function_item | `private` |  |
+| [profile::config::session_preset_tools](../../src/config.rs#L1781) | function_item | `private` |  |
+| [profile::config::apply_scope](../../src/config.rs#L1809) | function_item | `private` |  |
+| [profile::config::validate_environments](../../src/config.rs#L1874) | function_item | `private` |  |
+| [profile::config::resolve_workspace](../../src/config.rs#L1902) | function_item | `private` |  |
+| [profile::config::validate_snapshot](../../src/config.rs#L1956) | function_item | `private` |  |
+| [profile::config::validate_safe_integer](../../src/config.rs#L2084) | function_item | `private` |  |
+| [profile::config::is_sorted_unique](../../src/config.rs#L2095) | function_item | `private` |  |
+| [profile::config::canonical_directory](../../src/config.rs#L2099) | function_item | `private` |  |
+| [profile::config::validate_absolute](../../src/config.rs#L2120) | function_item | `private` |  |
+| [profile::config::validate_id](../../src/config.rs#L2130) | function_item | `private` |  |
+| [profile::config::validate_unique](../../src/config.rs#L2141) | function_item | `private` |  |
+| [profile::config::invalid](../../src/config.rs#L2150) | function_item | `private` |  |
+| [profile::config::invalid_reference](../../src/config.rs#L2157) | function_item | `private` |  |
+| [profile::config::removed](../../src/config.rs#L2164) | function_item | `private` |  |
+| [profile::config::lowered](../../src/config.rs#L2169) | function_item | `private` |  |
+| [profile::config::enabled_provider_models](../../src/config.rs#L2177) | function_item | `private` |  |
+| [profile::config::private_directory_tests::private_directory_rejects_wrong_owner](../../src/config.rs#L2202) | function_item | `private` | test; #[cfg(test)] |
+| [profile::config::private_directory_tests::sandbox_fallback_rejects_a_symlinked_path](../../src/config.rs#L2214) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [profile::config::toolchain_tests::toolchain_roots_are_canonical_deduplicated_and_never_writable_roots](../../src/config.rs#L2236) | function_item | `private` | test; #[cfg(test)] |
+| [profile::config::legacy_snapshot_tests::a_snapshot_published_with_the_integrations_file_still_decodes](../../src/config.rs#L2284) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -301,7 +303,7 @@ flowchart TD
 
 </details>
 
-<details><summary>Functions 41–60: 110 direct edges</summary>
+<details><summary>Functions 41–60: 112 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -316,148 +318,151 @@ flowchart TD
   n8["profile::config::ConfigRepository::session_settings"]
   n9["profile::config::ConfigRepository::publish_global"]
   n10["profile::config::ConfigRepository::resolve_unlocked"]
-  n11["profile::config::ConfigRepository::read_required"]
-  n12["profile::config::ConfigRepository::read_optional"]
-  n13["profile::config::ConfigRepository::validate_all_provider_references_unlocked"]
-  n14["profile::config::check_publication_revision"]
-  n15["profile::config::revision_from_value"]
-  n16["profile::config::validate_workspace_id"]
-  n17["profile::config::workspace_document_path"]
-  n18["profile::config::validate_workspace"]
-  n19["profile::config::validate_providers"]
-  n20["profile::config::validate_settings"]
-  n21["profile::config::validate_session_settings"]
-  n22["profile::config::validate_session_reference"]
-  n23["profile::config::validate_references"]
-  n24["profile::config::apply_scope"]
-  n25["profile::config::validate_environments"]
-  n26["profile::config::resolve_workspace"]
-  n27["profile::config::validate_safe_integer"]
-  n28["profile::config::canonical_directory"]
-  n29["profile::config::validate_id"]
-  n30["profile::config::invalid"]
-  n31["profile::config::prepare_workspace_directory"]
-  n32["profile::config::ConfigRepository::providers"]
-  n33["profile::config::ConfigRepository::settings"]
-  n34["profile::config::ConfigRepository::workspace"]
-  n35["profile::config::ConfigRepository::workspaces"]
-  n36["profile::canonical_line"]
-  n37["profile::parse_canonical"]
-  n38["store::atomic::AtomicPublisher::replace"]
-  n39["store::management_root::endpoint_management_root"]
-  n40["store::management_root::session_settings_path"]
-  n41["store::platform::NamedLock::exclusive"]
-  n42["store::platform::NamedLock::shared"]
-  n0 --> n11
-  n0 --> n16
-  n0 --> n17
+  n11["profile::config::ConfigRepository::resolve_session_seed"]
+  n12["profile::config::ConfigRepository::resolve_seed_unlocked"]
+  n13["profile::config::ConfigRepository::read_required"]
+  n14["profile::config::ConfigRepository::read_optional"]
+  n15["profile::config::ConfigRepository::validate_all_provider_references_unlocked"]
+  n16["profile::config::check_publication_revision"]
+  n17["profile::config::revision_from_value"]
+  n18["profile::config::validate_workspace_id"]
+  n19["profile::config::workspace_document_path"]
+  n20["profile::config::validate_workspace"]
+  n21["profile::config::validate_providers"]
+  n22["profile::config::validate_settings"]
+  n23["profile::config::validate_session_settings"]
+  n24["profile::config::validate_session_reference"]
+  n25["profile::config::validate_references"]
+  n26["profile::config::apply_scope"]
+  n27["profile::config::validate_environments"]
+  n28["profile::config::resolve_workspace"]
+  n29["profile::config::canonical_directory"]
+  n30["profile::config::validate_id"]
+  n31["profile::config::invalid"]
+  n32["profile::config::prepare_workspace_directory"]
+  n33["profile::config::ConfigRepository::providers"]
+  n34["profile::config::ConfigRepository::settings"]
+  n35["profile::config::ConfigRepository::workspace"]
+  n36["profile::config::ConfigRepository::workspaces"]
+  n37["profile::canonical_line"]
+  n38["profile::parse_canonical"]
+  n39["store::atomic::AtomicPublisher::replace"]
+  n40["store::management_root::endpoint_management_root"]
+  n41["store::management_root::session_settings_path"]
+  n42["store::platform::NamedLock::exclusive"]
+  n43["store::platform::NamedLock::shared"]
+  n0 --> n13
   n0 --> n18
-  n0 --> n26
-  n0 --> n42
-  n1 --> n12
+  n0 --> n19
+  n0 --> n20
+  n0 --> n28
+  n0 --> n43
   n1 --> n14
   n1 --> n16
-  n1 --> n17
   n1 --> n18
-  n1 --> n31
-  n1 --> n36
-  n1 --> n38
-  n1 --> n41
+  n1 --> n19
+  n1 --> n20
+  n1 --> n32
+  n1 --> n37
+  n1 --> n39
+  n1 --> n42
   n2 --> n9
-  n2 --> n19
-  n3 --> n12
-  n3 --> n13
+  n2 --> n21
   n3 --> n14
-  n3 --> n19
-  n3 --> n36
-  n3 --> n38
+  n3 --> n15
+  n3 --> n16
+  n3 --> n21
+  n3 --> n37
   n3 --> n39
-  n3 --> n41
+  n3 --> n40
   n3 --> n42
+  n3 --> n43
   n4 --> n9
-  n4 --> n20
-  n5 --> n12
+  n4 --> n22
   n5 --> n14
-  n5 --> n19
-  n5 --> n20
-  n5 --> n23
-  n5 --> n36
-  n5 --> n38
-  n5 --> n41
-  n6 --> n11
-  n6 --> n12
+  n5 --> n16
+  n5 --> n21
+  n5 --> n22
+  n5 --> n25
+  n5 --> n37
+  n5 --> n39
+  n5 --> n42
+  n6 --> n13
   n6 --> n14
   n6 --> n16
-  n6 --> n17
   n6 --> n18
   n6 --> n19
   n6 --> n20
-  n6 --> n23
-  n6 --> n36
-  n6 --> n38
-  n6 --> n41
-  n7 --> n12
+  n6 --> n21
+  n6 --> n22
+  n6 --> n25
+  n6 --> n37
+  n6 --> n39
+  n6 --> n42
   n7 --> n14
-  n7 --> n19
+  n7 --> n16
   n7 --> n21
-  n7 --> n22
-  n7 --> n36
-  n7 --> n38
-  n7 --> n40
+  n7 --> n23
+  n7 --> n24
+  n7 --> n37
+  n7 --> n39
   n7 --> n41
-  n8 --> n12
-  n8 --> n21
-  n8 --> n40
-  n8 --> n42
-  n9 --> n14
-  n9 --> n15
-  n9 --> n36
+  n7 --> n42
+  n8 --> n14
+  n8 --> n23
+  n8 --> n41
+  n8 --> n43
+  n9 --> n16
+  n9 --> n17
   n9 --> n37
   n9 --> n38
-  n9 --> n41
-  n10 --> n11
+  n9 --> n39
+  n9 --> n42
   n10 --> n12
-  n10 --> n17
-  n10 --> n18
+  n10 --> n13
   n10 --> n19
-  n10 --> n20
-  n10 --> n21
-  n10 --> n22
-  n10 --> n23
-  n10 --> n24
-  n10 --> n25
-  n10 --> n26
-  n10 --> n28
-  n10 --> n29
-  n11 --> n37
-  n12 --> n37
-  n13 --> n11
-  n13 --> n12
-  n13 --> n18
-  n13 --> n20
-  n13 --> n21
-  n13 --> n22
-  n13 --> n23
-  n13 --> n30
-  n13 --> n40
-  n14 --> n27
-  n32 --> n12
-  n32 --> n19
-  n32 --> n42
-  n33 --> n12
-  n33 --> n20
-  n33 --> n42
-  n34 --> n11
-  n34 --> n16
-  n34 --> n17
-  n34 --> n18
-  n34 --> n30
-  n34 --> n42
-  n35 --> n11
-  n35 --> n16
+  n11 --> n12
+  n11 --> n43
+  n12 --> n14
+  n12 --> n20
+  n12 --> n21
+  n12 --> n22
+  n12 --> n23
+  n12 --> n24
+  n12 --> n25
+  n12 --> n26
+  n12 --> n27
+  n12 --> n28
+  n12 --> n29
+  n12 --> n30
+  n13 --> n38
+  n14 --> n38
+  n15 --> n13
+  n15 --> n14
+  n15 --> n20
+  n15 --> n22
+  n15 --> n23
+  n15 --> n24
+  n15 --> n25
+  n15 --> n31
+  n15 --> n41
+  n33 --> n14
+  n33 --> n21
+  n33 --> n43
+  n34 --> n14
+  n34 --> n22
+  n34 --> n43
+  n35 --> n13
   n35 --> n18
-  n35 --> n30
-  n35 --> n42
+  n35 --> n19
+  n35 --> n20
+  n35 --> n31
+  n35 --> n43
+  n36 --> n13
+  n36 --> n18
+  n36 --> n20
+  n36 --> n31
+  n36 --> n43
 ```
 
 </details>
@@ -466,96 +471,101 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-  n0["profile::config::validate_workspace_id"]
-  n1["profile::config::workspace_document_path"]
-  n2["profile::config::validate_common"]
-  n3["profile::config::validate_workspace"]
-  n4["profile::config::validate_providers"]
-  n5["profile::config::validate_web_search_origin"]
-  n6["profile::config::validate_settings"]
-  n7["profile::config::validate_session_settings"]
-  n8["profile::config::validate_session_reference"]
-  n9["profile::config::validate_references"]
-  n10["profile::config::session_preset_tools"]
-  n11["profile::config::apply_scope"]
-  n12["profile::config::validate_environments"]
-  n13["profile::config::resolve_workspace"]
-  n14["profile::config::validate_snapshot"]
-  n15["profile::config::validate_safe_integer"]
-  n16["profile::config::is_sorted_unique"]
-  n17["profile::config::canonical_directory"]
-  n18["profile::config::validate_absolute"]
-  n19["profile::config::validate_id"]
-  n20["profile::config::validate_unique"]
-  n21["profile::config::invalid"]
-  n22["profile::config::invalid_reference"]
-  n23["store::tail::read_genesis"]
-  n24["tools::preset::ResolvedPreset::from_genesis"]
-  n25["tools::runtime_backends::is_public_internet_address"]
-  n2 --> n15
-  n3 --> n0
-  n3 --> n2
-  n3 --> n15
-  n3 --> n18
-  n3 --> n19
-  n3 --> n20
-  n3 --> n21
-  n4 --> n2
-  n4 --> n5
-  n4 --> n15
-  n4 --> n19
-  n4 --> n21
+  n0["profile::config::check_publication_revision"]
+  n1["profile::config::revision_from_value"]
+  n2["profile::config::validate_workspace_id"]
+  n3["profile::config::workspace_document_path"]
+  n4["profile::config::validate_common"]
+  n5["profile::config::validate_workspace"]
+  n6["profile::config::validate_providers"]
+  n7["profile::config::validate_web_search_origin"]
+  n8["profile::config::validate_settings"]
+  n9["profile::config::validate_session_settings"]
+  n10["profile::config::validate_session_reference"]
+  n11["profile::config::validate_references"]
+  n12["profile::config::session_preset_tools"]
+  n13["profile::config::apply_scope"]
+  n14["profile::config::validate_environments"]
+  n15["profile::config::resolve_workspace"]
+  n16["profile::config::validate_snapshot"]
+  n17["profile::config::validate_safe_integer"]
+  n18["profile::config::is_sorted_unique"]
+  n19["profile::config::canonical_directory"]
+  n20["profile::config::validate_absolute"]
+  n21["profile::config::validate_id"]
+  n22["profile::config::validate_unique"]
+  n23["profile::config::invalid"]
+  n24["profile::config::invalid_reference"]
+  n25["store::tail::read_genesis"]
+  n26["tools::preset::ResolvedPreset::from_genesis"]
+  n27["tools::runtime_backends::is_public_internet_address"]
+  n0 --> n17
+  n4 --> n17
+  n5 --> n2
+  n5 --> n4
+  n5 --> n17
+  n5 --> n20
   n5 --> n21
-  n5 --> n25
-  n6 --> n2
-  n6 --> n15
+  n5 --> n22
+  n5 --> n23
+  n6 --> n4
+  n6 --> n7
+  n6 --> n17
   n6 --> n21
-  n7 --> n2
-  n7 --> n19
-  n7 --> n21
-  n8 --> n22
-  n9 --> n22
-  n10 --> n23
+  n6 --> n23
+  n7 --> n23
+  n7 --> n27
+  n8 --> n4
+  n8 --> n17
+  n8 --> n23
+  n9 --> n4
+  n9 --> n21
+  n9 --> n23
   n10 --> n24
-  n11 --> n17
-  n11 --> n21
-  n12 --> n2
-  n12 --> n19
-  n12 --> n21
-  n13 --> n17
-  n13 --> n21
-  n14 --> n0
-  n14 --> n2
+  n11 --> n24
+  n12 --> n25
+  n12 --> n26
+  n13 --> n19
+  n13 --> n23
   n14 --> n4
-  n14 --> n6
-  n14 --> n7
-  n14 --> n8
-  n14 --> n9
-  n14 --> n15
-  n14 --> n16
-  n14 --> n17
-  n14 --> n18
-  n14 --> n19
-  n14 --> n20
   n14 --> n21
-  n15 --> n21
-  n17 --> n18
-  n19 --> n21
+  n14 --> n23
+  n15 --> n19
+  n15 --> n23
+  n16 --> n2
+  n16 --> n4
+  n16 --> n6
+  n16 --> n8
+  n16 --> n9
+  n16 --> n10
+  n16 --> n11
+  n16 --> n17
+  n16 --> n18
+  n16 --> n19
+  n16 --> n20
+  n16 --> n21
+  n16 --> n22
+  n16 --> n23
+  n17 --> n23
+  n19 --> n20
 ```
 
 </details>
 
-<details><summary>Functions 81–86: 1 direct edges</summary>
+<details><summary>Functions 81–88: 2 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["profile::config::validate_unique"]
-  n1["profile::config::invalid"]
-  n2["profile::config::invalid_reference"]
-  n3["profile::config::removed"]
-  n4["profile::config::lowered"]
-  n5["profile::config::enabled_provider_models"]
-  n0 --> n1
+  n0["profile::config::validate_absolute"]
+  n1["profile::config::validate_id"]
+  n2["profile::config::validate_unique"]
+  n3["profile::config::invalid"]
+  n4["profile::config::invalid_reference"]
+  n5["profile::config::removed"]
+  n6["profile::config::lowered"]
+  n7["profile::config::enabled_provider_models"]
+  n1 --> n3
+  n2 --> n3
 ```
 
 </details>
@@ -603,11 +613,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `default` | `Vec::new` | [178](../../src/config.rs#L178) | external-constructor-callback-or-unresolved |
 | `default` | `Vec::new` | [245](../../src/config.rs#L245) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `Path::new` | [253](../../src/config.rs#L253) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `validate_environments` | [254](../../src/config.rs#L254) | [profile::config::validate_environments](../../src/config.rs#L1850) |
-| `canonical_bytes` | `canonical_line` | [255](../../src/config.rs#L255) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `canonical_bytes` | `validate_environments` | [254](../../src/config.rs#L254) | [profile::config::validate_environments](../../src/config.rs#L1874) |
+| `canonical_bytes` | `canonical_line` | [255](../../src/config.rs#L255) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `decode` | `Path::new` | [260](../../src/config.rs#L260) | external-constructor-callback-or-unresolved |
-| `decode` | `parse_canonical` | [261](../../src/config.rs#L261) | [profile::parse_canonical](../../src/lib.rs#L71) |
-| `decode` | `validate_environments` | [262](../../src/config.rs#L262) | [profile::config::validate_environments](../../src/config.rs#L1850) |
+| `decode` | `parse_canonical` | [261](../../src/config.rs#L261) | [profile::parse_canonical](../../src/lib.rs#L73) |
+| `decode` | `validate_environments` | [262](../../src/config.rs#L262) | [profile::config::validate_environments](../../src/config.rs#L1874) |
 | `decode` | `Ok` | [263](../../src/config.rs#L263) | external-constructor-callback-or-unresolved |
 | `environment` | `self.environments             .iter()             .find(&#124;environment&#124; environment.id == id)             .cloned()             .or_else` | [270](../../src/config.rs#L270) | receiver-type-required |
 | `environment` | `self.environments             .iter()             .find(&#124;environment&#124; environment.id == id)             .cloned` | [270](../../src/config.rs#L270) | receiver-type-required |
@@ -627,24 +637,24 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execution_cwd` | `self.workspace             .selected_cwd             .as_deref` | [404](../../src/config.rs#L404) | receiver-type-required |
 | `execution_cwd` | `self.workspace.cwd.first().map` | [407](../../src/config.rs#L407) | receiver-type-required |
 | `execution_cwd` | `self.workspace.cwd.first` | [407](../../src/config.rs#L407) | receiver-type-required |
-| `canonical_bytes` | `validate_snapshot` | [411](../../src/config.rs#L411) | [profile::config::validate_snapshot](../../src/config.rs#L1932) |
-| `canonical_bytes` | `canonical_line` | [412](../../src/config.rs#L412) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `canonical_bytes` | `validate_snapshot` | [411](../../src/config.rs#L411) | [profile::config::validate_snapshot](../../src/config.rs#L1956) |
+| `canonical_bytes` | `canonical_line` | [412](../../src/config.rs#L412) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `digest` | `Ok` | [416](../../src/config.rs#L416) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [416](../../src/config.rs#L416) | [profile::digest](../../src/lib.rs#L130) |
+| `digest` | `digest` | [416](../../src/config.rs#L416) | [profile::digest](../../src/lib.rs#L132) |
 | `digest` | `self.canonical_bytes` | [416](../../src/config.rs#L416) | [profile::config::ConfigSnapshot::canonical_bytes](../../src/config.rs#L410) |
-| `decode` | `parse_canonical` | [420](../../src/config.rs#L420) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `decode` | `parse_canonical` | [420](../../src/config.rs#L420) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `decode` | `Err` | [422](../../src/config.rs#L422) | external-constructor-callback-or-unresolved |
 | `decode` | `PathBuf::from` | [423](../../src/config.rs#L423) | external-constructor-callback-or-unresolved |
-| `decode` | `validate_snapshot` | [427](../../src/config.rs#L427) | [profile::config::validate_snapshot](../../src/config.rs#L1932) |
+| `decode` | `validate_snapshot` | [427](../../src/config.rs#L427) | [profile::config::validate_snapshot](../../src/config.rs#L1956) |
 | `decode` | `Ok` | [428](../../src/config.rs#L428) | external-constructor-callback-or-unresolved |
 | `publish` | `self.canonical_bytes` | [432](../../src/config.rs#L432) | [profile::config::ConfigSnapshot::canonical_bytes](../../src/config.rs#L410) |
 | `publish` | `digest` | [433](../../src/config.rs#L433) | external-constructor-callback-or-unresolved |
 | `publish` | `assets.publish` | [434](../../src/config.rs#L434) | receiver-type-required |
 | `publish` | `Err` | [436](../../src/config.rs#L436) | external-constructor-callback-or-unresolved |
 | `publish` | `Ok` | [441](../../src/config.rs#L441) | external-constructor-callback-or-unresolved |
-| `requires_respawn_from` | `removed` | [449](../../src/config.rs#L449), [451](../../src/config.rs#L451) | [profile::config::removed](../../src/config.rs#L2140) |
-| `requires_respawn_from` | `lowered` | [452](../../src/config.rs#L452) | [profile::config::lowered](../../src/config.rs#L2145) |
-| `requires_respawn_from` | `enabled_provider_models` | [458](../../src/config.rs#L458), [459](../../src/config.rs#L459) | [profile::config::enabled_provider_models](../../src/config.rs#L2153) |
+| `requires_respawn_from` | `removed` | [449](../../src/config.rs#L449), [451](../../src/config.rs#L451) | [profile::config::removed](../../src/config.rs#L2164) |
+| `requires_respawn_from` | `lowered` | [452](../../src/config.rs#L452) | [profile::config::lowered](../../src/config.rs#L2169) |
+| `requires_respawn_from` | `enabled_provider_models` | [458](../../src/config.rs#L458), [459](../../src/config.rs#L459) | [profile::config::enabled_provider_models](../../src/config.rs#L2177) |
 | `requires_respawn_from` | `old_providers.is_subset` | [460](../../src/config.rs#L460) | receiver-type-required |
 | `requires_respawn_from` | `previous                 .providers                 .web_search                 .as_ref()                 .is_some_and` | [461](../../src/config.rs#L461) | receiver-type-required |
 | `requires_respawn_from` | `previous                 .providers                 .web_search                 .as_ref` | [461](../../src/config.rs#L461) | receiver-type-required |
@@ -760,7 +770,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_private_directory` | `open_private_root` | [775](../../src/config.rs#L775) | [profile::config::open_private_root](../../src/config.rs#L575) |
 | `prepare_private_directory` | `open_directory_at` | [776](../../src/config.rs#L776) | [profile::config::open_directory_at](../../src/config.rs#L541) |
 | `prepare_private_directory` | `Ok` | [777](../../src/config.rs#L777) | external-constructor-callback-or-unresolved |
-| `prepare_workspace_directory` | `validate_workspace_id` | [781](../../src/config.rs#L781) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `prepare_workspace_directory` | `validate_workspace_id` | [781](../../src/config.rs#L781) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `prepare_workspace_directory` | `root.join("workspaces").join` | [782](../../src/config.rs#L782) | receiver-type-required |
 | `prepare_workspace_directory` | `root.join` | [782](../../src/config.rs#L782) | receiver-type-required |
 | `prepare_workspace_directory` | `prepare_private_directory` | [783](../../src/config.rs#L783), [785](../../src/config.rs#L785) | [profile::config::prepare_private_directory](../../src/config.rs#L764) |
@@ -785,20 +795,20 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `prepare_repository_directories` | [816](../../src/config.rs#L816) | [profile::config::prepare_repository_directories](../../src/config.rs#L755) |
 | `open` | `prepare_existing_workspace_directories` | [817](../../src/config.rs#L817) | [profile::config::prepare_existing_workspace_directories](../../src/config.rs#L790) |
 | `open` | `Ok` | [818](../../src/config.rs#L818) | external-constructor-callback-or-unresolved |
-| `workspace_data_dir` | `validate_workspace_id` | [822](../../src/config.rs#L822) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `workspace_data_dir` | `validate_workspace_id` | [822](../../src/config.rs#L822) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `workspace_data_dir` | `Ok` | [823](../../src/config.rs#L823) | external-constructor-callback-or-unresolved |
 | `workspace_data_dir` | `self.root.join("workspaces").join` | [823](../../src/config.rs#L823) | receiver-type-required |
 | `workspace_data_dir` | `self.root.join` | [823](../../src/config.rs#L823) | receiver-type-required |
-| `resolve` | `validate_workspace_id` | [832](../../src/config.rs#L832) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `resolve` | `validate_workspace_id` | [832](../../src/config.rs#L832) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `resolve` | `NamedLock::shared` | [833](../../src/config.rs#L833) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve` | `self.root.join` | [833](../../src/config.rs#L833) | receiver-type-required |
 | `resolve` | `self.resolve_unlocked` | [834](../../src/config.rs#L834) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) |
-| `resolve_for_binding` | `validate_workspace_id` | [845](../../src/config.rs#L845) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `resolve_for_binding` | `validate_workspace_id` | [845](../../src/config.rs#L845) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `resolve_for_binding` | `NamedLock::shared` | [846](../../src/config.rs#L846) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_binding` | `self.root.join` | [846](../../src/config.rs#L846) | receiver-type-required |
 | `resolve_for_binding` | `self.resolve_unlocked` | [847](../../src/config.rs#L847) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) |
 | `resolve_for_binding` | `Some` | [847](../../src/config.rs#L847) | external-constructor-callback-or-unresolved |
-| `resolve_for_session` | `validate_workspace_id` | [855](../../src/config.rs#L855) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `resolve_for_session` | `validate_workspace_id` | [855](../../src/config.rs#L855) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `resolve_for_session` | `NamedLock::shared` | [856](../../src/config.rs#L856) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_session` | `self.root.join` | [856](../../src/config.rs#L856) | receiver-type-required |
 | `resolve_for_session` | `self.resolve_unlocked` | [858](../../src/config.rs#L858) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) |
@@ -809,13 +819,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_for_session` | `session_folder.as_ref().to_path_buf` | [861](../../src/config.rs#L861) | receiver-type-required |
 | `resolve_for_session` | `"multi-folder session has no stable folder binding".to_owned` | [862](../../src/config.rs#L862) | receiver-type-required |
 | `resolve_for_session` | `Ok` | [865](../../src/config.rs#L865) | external-constructor-callback-or-unresolved |
-| `resolve_for_session_binding` | `validate_workspace_id` | [877](../../src/config.rs#L877) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `resolve_for_session_binding` | `validate_workspace_id` | [877](../../src/config.rs#L877) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `resolve_for_session_binding` | `NamedLock::shared` | [878](../../src/config.rs#L878) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_for_session_binding` | `self.root.join` | [878](../../src/config.rs#L878) | receiver-type-required |
 | `resolve_for_session_binding` | `self.resolve_unlocked` | [879](../../src/config.rs#L879) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) |
 | `resolve_for_session_binding` | `Some` | [881](../../src/config.rs#L881), [882](../../src/config.rs#L882) | external-constructor-callback-or-unresolved |
 | `resolve_for_session_binding` | `session_folder.as_ref` | [881](../../src/config.rs#L881) | receiver-type-required |
-| `resolve_scoped` | `validate_workspace_id` | [899](../../src/config.rs#L899) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `resolve_scoped` | `validate_workspace_id` | [899](../../src/config.rs#L899) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `resolve_scoped` | `NamedLock::shared` | [900](../../src/config.rs#L900) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `resolve_scoped` | `self.root.join` | [900](../../src/config.rs#L900) | receiver-type-required |
 | `resolve_scoped` | `self.resolve_unlocked` | [902](../../src/config.rs#L902) | [profile::config::ConfigRepository::resolve_unlocked](../../src/config.rs#L1258) |
@@ -829,31 +839,31 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `environments` | `NamedLock::shared` | [918](../../src/config.rs#L918) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `environments` | `self.root.join` | [918](../../src/config.rs#L918), [919](../../src/config.rs#L919) | receiver-type-required |
 | `environments` | `self.read_optional(&path)?.unwrap_or_default` | [920](../../src/config.rs#L920) | receiver-type-required |
-| `environments` | `self.read_optional` | [920](../../src/config.rs#L920) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `environments` | `validate_environments` | [921](../../src/config.rs#L921) | [profile::config::validate_environments](../../src/config.rs#L1850) |
+| `environments` | `self.read_optional` | [920](../../src/config.rs#L920) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `environments` | `validate_environments` | [921](../../src/config.rs#L921) | [profile::config::validate_environments](../../src/config.rs#L1874) |
 | `environments` | `Ok` | [922](../../src/config.rs#L922) | external-constructor-callback-or-unresolved |
 | `publish_environments` | `self.root.join` | [930](../../src/config.rs#L930) | receiver-type-required |
 | `publish_environments` | `self.publish_global` | [931](../../src/config.rs#L931) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1234) |
-| `publish_environments` | `validate_environments` | [932](../../src/config.rs#L932) | [profile::config::validate_environments](../../src/config.rs#L1850) |
+| `publish_environments` | `validate_environments` | [932](../../src/config.rs#L932) | [profile::config::validate_environments](../../src/config.rs#L1874) |
 | `providers` | `NamedLock::shared` | [939](../../src/config.rs#L939) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `providers` | `self.root.join` | [939](../../src/config.rs#L939), [940](../../src/config.rs#L940) | receiver-type-required |
 | `providers` | `self.read_optional(&path)?.unwrap_or_default` | [941](../../src/config.rs#L941) | receiver-type-required |
-| `providers` | `self.read_optional` | [941](../../src/config.rs#L941) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `providers` | `validate_providers` | [942](../../src/config.rs#L942) | [profile::config::validate_providers](../../src/config.rs#L1549) |
+| `providers` | `self.read_optional` | [941](../../src/config.rs#L941) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `providers` | `validate_providers` | [942](../../src/config.rs#L942) | [profile::config::validate_providers](../../src/config.rs#L1573) |
 | `providers` | `Ok` | [943](../../src/config.rs#L943) | external-constructor-callback-or-unresolved |
 | `settings` | `NamedLock::shared` | [948](../../src/config.rs#L948) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `settings` | `self.root.join` | [948](../../src/config.rs#L948), [949](../../src/config.rs#L949) | receiver-type-required |
 | `settings` | `self.read_optional(&path)?.unwrap_or_default` | [950](../../src/config.rs#L950) | receiver-type-required |
-| `settings` | `self.read_optional` | [950](../../src/config.rs#L950) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `settings` | `validate_settings` | [951](../../src/config.rs#L951) | [profile::config::validate_settings](../../src/config.rs#L1646) |
+| `settings` | `self.read_optional` | [950](../../src/config.rs#L950) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `settings` | `validate_settings` | [951](../../src/config.rs#L951) | [profile::config::validate_settings](../../src/config.rs#L1670) |
 | `settings` | `Ok` | [952](../../src/config.rs#L952) | external-constructor-callback-or-unresolved |
-| `workspace` | `validate_workspace_id` | [958](../../src/config.rs#L958) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `workspace` | `validate_workspace_id` | [958](../../src/config.rs#L958) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `workspace` | `NamedLock::shared` | [959](../../src/config.rs#L959) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `workspace` | `self.root.join` | [959](../../src/config.rs#L959) | receiver-type-required |
-| `workspace` | `workspace_document_path` | [960](../../src/config.rs#L960) | [profile::config::workspace_document_path](../../src/config.rs#L1481) |
-| `workspace` | `self.read_required` | [961](../../src/config.rs#L961) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `workspace` | `validate_workspace` | [962](../../src/config.rs#L962) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
-| `workspace` | `invalid` | [964](../../src/config.rs#L964) | [profile::config::invalid](../../src/config.rs#L2126) |
+| `workspace` | `workspace_document_path` | [960](../../src/config.rs#L960) | [profile::config::workspace_document_path](../../src/config.rs#L1505) |
+| `workspace` | `self.read_required` | [961](../../src/config.rs#L961) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `workspace` | `validate_workspace` | [962](../../src/config.rs#L962) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
+| `workspace` | `invalid` | [964](../../src/config.rs#L964) | [profile::config::invalid](../../src/config.rs#L2150) |
 | `workspace` | `Ok` | [966](../../src/config.rs#L966) | external-constructor-callback-or-unresolved |
 | `workspaces` | `NamedLock::shared` | [973](../../src/config.rs#L973) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `workspaces` | `self.root.join` | [973](../../src/config.rs#L973), [975](../../src/config.rs#L975) | receiver-type-required |
@@ -866,16 +876,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `workspaces` | `entry.file_type()?.is_symlink` | [980](../../src/config.rs#L980) | receiver-type-required |
 | `workspaces` | `entry.file_type` | [980](../../src/config.rs#L980) | receiver-type-required |
 | `workspaces` | `entry.file_type()?.is_dir` | [980](../../src/config.rs#L980) | receiver-type-required |
-| `workspaces` | `invalid` | [981](../../src/config.rs#L981), [996](../../src/config.rs#L996) | [profile::config::invalid](../../src/config.rs#L2126) |
+| `workspaces` | `invalid` | [981](../../src/config.rs#L981), [996](../../src/config.rs#L996) | [profile::config::invalid](../../src/config.rs#L2150) |
 | `workspaces` | `entry                     .file_name()                     .into_string()                     .map_err` | [984](../../src/config.rs#L984) | receiver-type-required |
 | `workspaces` | `entry                     .file_name()                     .into_string` | [984](../../src/config.rs#L984) | receiver-type-required |
 | `workspaces` | `entry                     .file_name` | [984](../../src/config.rs#L984) | receiver-type-required |
 | `workspaces` | `directory.clone` | [988](../../src/config.rs#L988) | receiver-type-required |
 | `workspaces` | `"workspace authority directory must be UTF-8".to_owned` | [989](../../src/config.rs#L989) | receiver-type-required |
-| `workspaces` | `validate_workspace_id` | [991](../../src/config.rs#L991) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
+| `workspaces` | `validate_workspace_id` | [991](../../src/config.rs#L991) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
 | `workspaces` | `directory.join` | [992](../../src/config.rs#L992) | receiver-type-required |
-| `workspaces` | `self.read_required` | [993](../../src/config.rs#L993) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `workspaces` | `validate_workspace` | [994](../../src/config.rs#L994) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
+| `workspaces` | `self.read_required` | [993](../../src/config.rs#L993) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `workspaces` | `validate_workspace` | [994](../../src/config.rs#L994) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
 | `workspaces` | `values.push` | [998](../../src/config.rs#L998) | receiver-type-required |
 | `workspaces` | `Ok` | [1000](../../src/config.rs#L1000) | external-constructor-callback-or-unresolved |
 | `resource_workspace_roots` | `NamedLock::shared` | [1007](../../src/config.rs#L1007) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
@@ -895,32 +905,32 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resource_workspace_roots` | `value.to_str` | [1022](../../src/config.rs#L1022) | receiver-type-required |
 | `resource_workspace_roots` | `directory_path.clone` | [1024](../../src/config.rs#L1024) | receiver-type-required |
 | `resource_workspace_roots` | `"workspace authority directory must be UTF-8".to_owned` | [1025](../../src/config.rs#L1025) | receiver-type-required |
-| `resource_workspace_roots` | `validate_workspace_id` | [1027](../../src/config.rs#L1027) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
-| `resource_workspace_roots` | `workspace_document_path` | [1028](../../src/config.rs#L1028) | [profile::config::workspace_document_path](../../src/config.rs#L1481) |
-| `resource_workspace_roots` | `self.read_required` | [1029](../../src/config.rs#L1029) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `resource_workspace_roots` | `validate_workspace` | [1030](../../src/config.rs#L1030) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
+| `resource_workspace_roots` | `validate_workspace_id` | [1027](../../src/config.rs#L1027) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
+| `resource_workspace_roots` | `workspace_document_path` | [1028](../../src/config.rs#L1028) | [profile::config::workspace_document_path](../../src/config.rs#L1505) |
+| `resource_workspace_roots` | `self.read_required` | [1029](../../src/config.rs#L1029) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `resource_workspace_roots` | `validate_workspace` | [1030](../../src/config.rs#L1030) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
 | `resource_workspace_roots` | `"workspace id does not match filename".to_owned` | [1034](../../src/config.rs#L1034) | receiver-type-required |
 | `resource_workspace_roots` | `resolve_workspace(&workspace, &path)?                 .cwd                 .into_iter()                 .map(PathBuf::from)                 .collect::<Vec<_>>` | [1037](../../src/config.rs#L1037) | receiver-type-required |
 | `resource_workspace_roots` | `resolve_workspace(&workspace, &path)?                 .cwd                 .into_iter()                 .map` | [1037](../../src/config.rs#L1037) | receiver-type-required |
 | `resource_workspace_roots` | `resolve_workspace(&workspace, &path)?                 .cwd                 .into_iter` | [1037](../../src/config.rs#L1037) | receiver-type-required |
-| `resource_workspace_roots` | `resolve_workspace` | [1037](../../src/config.rs#L1037) | [profile::config::resolve_workspace](../../src/config.rs#L1878) |
+| `resource_workspace_roots` | `resolve_workspace` | [1037](../../src/config.rs#L1037) | [profile::config::resolve_workspace](../../src/config.rs#L1902) |
 | `resource_workspace_roots` | `workspaces.push` | [1042](../../src/config.rs#L1042) | receiver-type-required |
 | `resource_workspace_roots` | `workspace_id.to_owned` | [1042](../../src/config.rs#L1042) | receiver-type-required |
 | `resource_workspace_roots` | `Ok` | [1044](../../src/config.rs#L1044) | external-constructor-callback-or-unresolved |
-| `publish_workspace` | `validate_workspace_id` | [1052](../../src/config.rs#L1052) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
-| `publish_workspace` | `workspace_document_path` | [1053](../../src/config.rs#L1053) | [profile::config::workspace_document_path](../../src/config.rs#L1481) |
+| `publish_workspace` | `validate_workspace_id` | [1052](../../src/config.rs#L1052) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
+| `publish_workspace` | `workspace_document_path` | [1053](../../src/config.rs#L1053) | [profile::config::workspace_document_path](../../src/config.rs#L1505) |
 | `publish_workspace` | `NamedLock::exclusive` | [1054](../../src/config.rs#L1054) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_workspace` | `self.root.join` | [1054](../../src/config.rs#L1054) | receiver-type-required |
 | `publish_workspace` | `prepare_workspace_directory` | [1055](../../src/config.rs#L1055) | [profile::config::prepare_workspace_directory](../../src/config.rs#L780) |
-| `publish_workspace` | `self.read_optional::<WorkspaceConfig>` | [1056](../../src/config.rs#L1056) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_workspace` | `validate_workspace` | [1058](../../src/config.rs#L1058), [1064](../../src/config.rs#L1064) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
-| `publish_workspace` | `check_publication_revision` | [1063](../../src/config.rs#L1063) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
+| `publish_workspace` | `self.read_optional::<WorkspaceConfig>` | [1056](../../src/config.rs#L1056) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_workspace` | `validate_workspace` | [1058](../../src/config.rs#L1058), [1064](../../src/config.rs#L1064) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
+| `publish_workspace` | `check_publication_revision` | [1063](../../src/config.rs#L1063) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
 | `publish_workspace` | `AtomicPublisher::replace` | [1065](../../src/config.rs#L1065) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_workspace` | `canonical_line` | [1065](../../src/config.rs#L1065) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_workspace` | `canonical_line` | [1065](../../src/config.rs#L1065) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_workspace` | `Ok` | [1066](../../src/config.rs#L1066) | external-constructor-callback-or-unresolved |
 | `publish_providers` | `self.root.join` | [1074](../../src/config.rs#L1074) | receiver-type-required |
 | `publish_providers` | `self.publish_global` | [1075](../../src/config.rs#L1075) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1234) |
-| `publish_providers` | `validate_providers` | [1076](../../src/config.rs#L1076) | [profile::config::validate_providers](../../src/config.rs#L1549) |
+| `publish_providers` | `validate_providers` | [1076](../../src/config.rs#L1076) | [profile::config::validate_providers](../../src/config.rs#L1573) |
 | `publish_providers_checked` | `self.root.join` | [1089](../../src/config.rs#L1089), [1098](../../src/config.rs#L1098) | receiver-type-required |
 | `publish_providers_checked` | `store::endpoint_management_root(&self.root)?.join` | [1093](../../src/config.rs#L1093) | receiver-type-required |
 | `publish_providers_checked` | `store::endpoint_management_root` | [1093](../../src/config.rs#L1093) | [store::management_root::endpoint_management_root](../../../store/src/management_root.rs#L47) |
@@ -930,503 +940,509 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_providers_checked` | `NamedLock::shared` | [1096](../../src/config.rs#L1096) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `publish_providers_checked` | `NamedLock::exclusive` | [1098](../../src/config.rs#L1098) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_providers_checked` | `self             .read_optional::<ProvidersConfig>(&path)?             .unwrap_or_default` | [1099](../../src/config.rs#L1099) | receiver-type-required |
-| `publish_providers_checked` | `self             .read_optional::<ProvidersConfig>` | [1099](../../src/config.rs#L1099) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_providers_checked` | `validate_providers` | [1102](../../src/config.rs#L1102), [1104](../../src/config.rs#L1104) | [profile::config::validate_providers](../../src/config.rs#L1549) |
-| `publish_providers_checked` | `check_publication_revision` | [1103](../../src/config.rs#L1103) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
-| `publish_providers_checked` | `self.validate_all_provider_references_unlocked` | [1105](../../src/config.rs#L1105) | [profile::config::ConfigRepository::validate_all_provider_references_unlocked](../../src/config.rs#L1377) |
+| `publish_providers_checked` | `self             .read_optional::<ProvidersConfig>` | [1099](../../src/config.rs#L1099) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_providers_checked` | `validate_providers` | [1102](../../src/config.rs#L1102), [1104](../../src/config.rs#L1104) | [profile::config::validate_providers](../../src/config.rs#L1573) |
+| `publish_providers_checked` | `check_publication_revision` | [1103](../../src/config.rs#L1103) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
+| `publish_providers_checked` | `self.validate_all_provider_references_unlocked` | [1105](../../src/config.rs#L1105) | [profile::config::ConfigRepository::validate_all_provider_references_unlocked](../../src/config.rs#L1401) |
 | `publish_providers_checked` | `AtomicPublisher::replace` | [1106](../../src/config.rs#L1106) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_providers_checked` | `canonical_line` | [1106](../../src/config.rs#L1106) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_providers_checked` | `canonical_line` | [1106](../../src/config.rs#L1106) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_providers_checked` | `Ok` | [1107](../../src/config.rs#L1107) | external-constructor-callback-or-unresolved |
 | `publish_settings` | `self.root.join` | [1115](../../src/config.rs#L1115) | receiver-type-required |
 | `publish_settings` | `self.publish_global` | [1116](../../src/config.rs#L1116) | [profile::config::ConfigRepository::publish_global](../../src/config.rs#L1234) |
-| `publish_settings` | `validate_settings` | [1117](../../src/config.rs#L1117) | [profile::config::validate_settings](../../src/config.rs#L1646) |
+| `publish_settings` | `validate_settings` | [1117](../../src/config.rs#L1117) | [profile::config::validate_settings](../../src/config.rs#L1670) |
 | `publish_settings_checked` | `self.root.join` | [1128](../../src/config.rs#L1128), [1129](../../src/config.rs#L1129), [1130](../../src/config.rs#L1130) | receiver-type-required |
 | `publish_settings_checked` | `NamedLock::exclusive` | [1130](../../src/config.rs#L1130) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_settings_checked` | `self             .read_optional::<SettingsConfig>(&path)?             .unwrap_or_default` | [1131](../../src/config.rs#L1131) | receiver-type-required |
-| `publish_settings_checked` | `self             .read_optional::<SettingsConfig>` | [1131](../../src/config.rs#L1131) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_settings_checked` | `validate_settings` | [1134](../../src/config.rs#L1134), [1136](../../src/config.rs#L1136) | [profile::config::validate_settings](../../src/config.rs#L1646) |
-| `publish_settings_checked` | `check_publication_revision` | [1135](../../src/config.rs#L1135) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
+| `publish_settings_checked` | `self             .read_optional::<SettingsConfig>` | [1131](../../src/config.rs#L1131) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_settings_checked` | `validate_settings` | [1134](../../src/config.rs#L1134), [1136](../../src/config.rs#L1136) | [profile::config::validate_settings](../../src/config.rs#L1670) |
+| `publish_settings_checked` | `check_publication_revision` | [1135](../../src/config.rs#L1135) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
 | `publish_settings_checked` | `self             .read_optional::<ProvidersConfig>(&providers_path)?             .unwrap_or_default` | [1137](../../src/config.rs#L1137) | receiver-type-required |
-| `publish_settings_checked` | `self             .read_optional::<ProvidersConfig>` | [1137](../../src/config.rs#L1137) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_settings_checked` | `validate_providers` | [1140](../../src/config.rs#L1140) | [profile::config::validate_providers](../../src/config.rs#L1549) |
+| `publish_settings_checked` | `self             .read_optional::<ProvidersConfig>` | [1137](../../src/config.rs#L1137) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_settings_checked` | `validate_providers` | [1140](../../src/config.rs#L1140) | [profile::config::validate_providers](../../src/config.rs#L1573) |
 | `publish_settings_checked` | `"reference-check".to_owned` | [1144](../../src/config.rs#L1144), [1145](../../src/config.rs#L1145) | receiver-type-required |
 | `publish_settings_checked` | `Vec::new` | [1147](../../src/config.rs#L1147) | external-constructor-callback-or-unresolved |
-| `publish_settings_checked` | `validate_references` | [1150](../../src/config.rs#L1150) | [profile::config::validate_references](../../src/config.rs#L1708) |
+| `publish_settings_checked` | `validate_references` | [1150](../../src/config.rs#L1150) | [profile::config::validate_references](../../src/config.rs#L1732) |
 | `publish_settings_checked` | `AtomicPublisher::replace` | [1151](../../src/config.rs#L1151) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_settings_checked` | `canonical_line` | [1151](../../src/config.rs#L1151) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_settings_checked` | `canonical_line` | [1151](../../src/config.rs#L1151) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_settings_checked` | `Ok` | [1152](../../src/config.rs#L1152) | external-constructor-callback-or-unresolved |
-| `publish_workspace_policy` | `validate_workspace_id` | [1164](../../src/config.rs#L1164) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
-| `publish_workspace_policy` | `workspace_document_path` | [1165](../../src/config.rs#L1165) | [profile::config::workspace_document_path](../../src/config.rs#L1481) |
+| `publish_workspace_policy` | `validate_workspace_id` | [1164](../../src/config.rs#L1164) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
+| `publish_workspace_policy` | `workspace_document_path` | [1165](../../src/config.rs#L1165) | [profile::config::workspace_document_path](../../src/config.rs#L1505) |
 | `publish_workspace_policy` | `self.root.join` | [1166](../../src/config.rs#L1166), [1167](../../src/config.rs#L1167), [1168](../../src/config.rs#L1168) | receiver-type-required |
 | `publish_workspace_policy` | `NamedLock::exclusive` | [1168](../../src/config.rs#L1168) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
-| `publish_workspace_policy` | `self.read_required` | [1169](../../src/config.rs#L1169) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `publish_workspace_policy` | `validate_workspace` | [1170](../../src/config.rs#L1170), [1182](../../src/config.rs#L1182) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
+| `publish_workspace_policy` | `self.read_required` | [1169](../../src/config.rs#L1169) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `publish_workspace_policy` | `validate_workspace` | [1170](../../src/config.rs#L1170), [1182](../../src/config.rs#L1182) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
 | `publish_workspace_policy` | `value                 .revision                 .checked_add(1)                 .ok_or_else` | [1172](../../src/config.rs#L1172) | receiver-type-required |
 | `publish_workspace_policy` | `value                 .revision                 .checked_add` | [1172](../../src/config.rs#L1172) | receiver-type-required |
 | `publish_workspace_policy` | `path.clone` | [1176](../../src/config.rs#L1176) | receiver-type-required |
 | `publish_workspace_policy` | `"workspace revision overflow".to_owned` | [1177](../../src/config.rs#L1177) | receiver-type-required |
-| `publish_workspace_policy` | `check_publication_revision` | [1179](../../src/config.rs#L1179) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
+| `publish_workspace_policy` | `check_publication_revision` | [1179](../../src/config.rs#L1179) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
 | `publish_workspace_policy` | `Some` | [1181](../../src/config.rs#L1181) | external-constructor-callback-or-unresolved |
 | `publish_workspace_policy` | `self             .read_optional::<ProvidersConfig>(&providers_path)?             .unwrap_or_default` | [1183](../../src/config.rs#L1183) | receiver-type-required |
-| `publish_workspace_policy` | `self             .read_optional::<ProvidersConfig>` | [1183](../../src/config.rs#L1183) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
+| `publish_workspace_policy` | `self             .read_optional::<ProvidersConfig>` | [1183](../../src/config.rs#L1183) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
 | `publish_workspace_policy` | `self             .read_optional::<SettingsConfig>(&settings_path)?             .unwrap_or_default` | [1186](../../src/config.rs#L1186) | receiver-type-required |
-| `publish_workspace_policy` | `self             .read_optional::<SettingsConfig>` | [1186](../../src/config.rs#L1186) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_workspace_policy` | `validate_providers` | [1189](../../src/config.rs#L1189) | [profile::config::validate_providers](../../src/config.rs#L1549) |
-| `publish_workspace_policy` | `validate_settings` | [1190](../../src/config.rs#L1190) | [profile::config::validate_settings](../../src/config.rs#L1646) |
-| `publish_workspace_policy` | `validate_references` | [1191](../../src/config.rs#L1191) | [profile::config::validate_references](../../src/config.rs#L1708) |
+| `publish_workspace_policy` | `self             .read_optional::<SettingsConfig>` | [1186](../../src/config.rs#L1186) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_workspace_policy` | `validate_providers` | [1189](../../src/config.rs#L1189) | [profile::config::validate_providers](../../src/config.rs#L1573) |
+| `publish_workspace_policy` | `validate_settings` | [1190](../../src/config.rs#L1190) | [profile::config::validate_settings](../../src/config.rs#L1670) |
+| `publish_workspace_policy` | `validate_references` | [1191](../../src/config.rs#L1191) | [profile::config::validate_references](../../src/config.rs#L1732) |
 | `publish_workspace_policy` | `AtomicPublisher::replace` | [1192](../../src/config.rs#L1192) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_workspace_policy` | `canonical_line` | [1192](../../src/config.rs#L1192) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_workspace_policy` | `canonical_line` | [1192](../../src/config.rs#L1192) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_workspace_policy` | `Ok` | [1193](../../src/config.rs#L1193) | external-constructor-callback-or-unresolved |
 | `publish_session_settings` | `store::session_settings_path` | [1202](../../src/config.rs#L1202) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
 | `publish_session_settings` | `session_folder.as_ref` | [1202](../../src/config.rs#L1202) | receiver-type-required |
 | `publish_session_settings` | `NamedLock::exclusive` | [1203](../../src/config.rs#L1203) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_session_settings` | `self.root.join` | [1203](../../src/config.rs#L1203), [1213](../../src/config.rs#L1213) | receiver-type-required |
-| `publish_session_settings` | `self.read_optional::<SessionSettings>` | [1204](../../src/config.rs#L1204) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_session_settings` | `validate_session_settings` | [1206](../../src/config.rs#L1206), [1212](../../src/config.rs#L1212) | [profile::config::validate_session_settings](../../src/config.rs#L1668) |
-| `publish_session_settings` | `check_publication_revision` | [1211](../../src/config.rs#L1211) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
+| `publish_session_settings` | `self.read_optional::<SessionSettings>` | [1204](../../src/config.rs#L1204) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_session_settings` | `validate_session_settings` | [1206](../../src/config.rs#L1206), [1212](../../src/config.rs#L1212) | [profile::config::validate_session_settings](../../src/config.rs#L1692) |
+| `publish_session_settings` | `check_publication_revision` | [1211](../../src/config.rs#L1211) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
 | `publish_session_settings` | `self.read_optional(&providers_path)?.unwrap_or_default` | [1214](../../src/config.rs#L1214) | receiver-type-required |
-| `publish_session_settings` | `self.read_optional` | [1214](../../src/config.rs#L1214) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `publish_session_settings` | `validate_providers` | [1215](../../src/config.rs#L1215) | [profile::config::validate_providers](../../src/config.rs#L1549) |
-| `publish_session_settings` | `validate_session_reference` | [1216](../../src/config.rs#L1216) | [profile::config::validate_session_reference](../../src/config.rs#L1682) |
+| `publish_session_settings` | `self.read_optional` | [1214](../../src/config.rs#L1214) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `publish_session_settings` | `validate_providers` | [1215](../../src/config.rs#L1215) | [profile::config::validate_providers](../../src/config.rs#L1573) |
+| `publish_session_settings` | `validate_session_reference` | [1216](../../src/config.rs#L1216) | [profile::config::validate_session_reference](../../src/config.rs#L1706) |
 | `publish_session_settings` | `Some` | [1216](../../src/config.rs#L1216) | external-constructor-callback-or-unresolved |
 | `publish_session_settings` | `value.clone` | [1216](../../src/config.rs#L1216) | receiver-type-required |
 | `publish_session_settings` | `AtomicPublisher::replace` | [1217](../../src/config.rs#L1217) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_session_settings` | `canonical_line` | [1217](../../src/config.rs#L1217) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_session_settings` | `canonical_line` | [1217](../../src/config.rs#L1217) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_session_settings` | `Ok` | [1218](../../src/config.rs#L1218) | external-constructor-callback-or-unresolved |
 | `session_settings` | `NamedLock::shared` | [1225](../../src/config.rs#L1225) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
 | `session_settings` | `self.root.join` | [1225](../../src/config.rs#L1225) | receiver-type-required |
 | `session_settings` | `store::session_settings_path` | [1226](../../src/config.rs#L1226) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
 | `session_settings` | `session_folder.as_ref` | [1226](../../src/config.rs#L1226) | receiver-type-required |
-| `session_settings` | `self.read_optional::<SessionSettings>` | [1227](../../src/config.rs#L1227) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `session_settings` | `validate_session_settings` | [1229](../../src/config.rs#L1229) | [profile::config::validate_session_settings](../../src/config.rs#L1668) |
+| `session_settings` | `self.read_optional::<SessionSettings>` | [1227](../../src/config.rs#L1227) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `session_settings` | `validate_session_settings` | [1229](../../src/config.rs#L1229) | [profile::config::validate_session_settings](../../src/config.rs#L1692) |
 | `session_settings` | `Ok` | [1231](../../src/config.rs#L1231) | external-constructor-callback-or-unresolved |
 | `publish_global` | `NamedLock::exclusive` | [1242](../../src/config.rs#L1242) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `publish_global` | `self.root.join` | [1242](../../src/config.rs#L1242) | receiver-type-required |
 | `publish_global` | `fs::read` | [1243](../../src/config.rs#L1243) | external-constructor-callback-or-unresolved |
-| `publish_global` | `parse_canonical` | [1245](../../src/config.rs#L1245) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `publish_global` | `parse_canonical` | [1245](../../src/config.rs#L1245) | [profile::parse_canonical](../../src/lib.rs#L73) |
 | `publish_global` | `validate` | [1246](../../src/config.rs#L1246), [1253](../../src/config.rs#L1253) | external-constructor-callback-or-unresolved |
-| `publish_global` | `revision_from_value` | [1247](../../src/config.rs#L1247) | [profile::config::revision_from_value](../../src/config.rs#L1447) |
+| `publish_global` | `revision_from_value` | [1247](../../src/config.rs#L1247) | [profile::config::revision_from_value](../../src/config.rs#L1471) |
 | `publish_global` | `error.kind` | [1249](../../src/config.rs#L1249) | receiver-type-required |
 | `publish_global` | `Err` | [1250](../../src/config.rs#L1250) | external-constructor-callback-or-unresolved |
 | `publish_global` | `error.into` | [1250](../../src/config.rs#L1250) | receiver-type-required |
-| `publish_global` | `check_publication_revision` | [1252](../../src/config.rs#L1252) | [profile::config::check_publication_revision](../../src/config.rs#L1425) |
+| `publish_global` | `check_publication_revision` | [1252](../../src/config.rs#L1252) | [profile::config::check_publication_revision](../../src/config.rs#L1449) |
 | `publish_global` | `AtomicPublisher::replace` | [1254](../../src/config.rs#L1254) | [store::atomic::AtomicPublisher::replace](../../../store/src/atomic.rs#L16) |
-| `publish_global` | `canonical_line` | [1254](../../src/config.rs#L1254) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `publish_global` | `canonical_line` | [1254](../../src/config.rs#L1254) | [profile::canonical_line](../../src/lib.rs#L118) |
 | `publish_global` | `Ok` | [1255](../../src/config.rs#L1255) | external-constructor-callback-or-unresolved |
-| `resolve_unlocked` | `workspace_document_path` | [1265](../../src/config.rs#L1265) | [profile::config::workspace_document_path](../../src/config.rs#L1481) |
-| `resolve_unlocked` | `self.read_required` | [1266](../../src/config.rs#L1266) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `resolve_unlocked` | `Err` | [1268](../../src/config.rs#L1268), [1318](../../src/config.rs#L1318) | external-constructor-callback-or-unresolved |
+| `resolve_unlocked` | `workspace_document_path` | [1265](../../src/config.rs#L1265) | [profile::config::workspace_document_path](../../src/config.rs#L1505) |
+| `resolve_unlocked` | `self.read_required` | [1266](../../src/config.rs#L1266) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `resolve_unlocked` | `Err` | [1268](../../src/config.rs#L1268) | external-constructor-callback-or-unresolved |
 | `resolve_unlocked` | `"workspace id does not match filename".to_owned` | [1270](../../src/config.rs#L1270) | receiver-type-required |
-| `resolve_unlocked` | `self.root.join` | [1273](../../src/config.rs#L1273), [1274](../../src/config.rs#L1274), [1328](../../src/config.rs#L1328) | receiver-type-required |
-| `resolve_unlocked` | `self.read_optional(&providers_path)?.unwrap_or_default` | [1275](../../src/config.rs#L1275) | receiver-type-required |
-| `resolve_unlocked` | `self.read_optional` | [1275](../../src/config.rs#L1275), [1276](../../src/config.rs#L1276), [1330](../../src/config.rs#L1330) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `resolve_unlocked` | `self.read_optional(&settings_path)?.unwrap_or_default` | [1276](../../src/config.rs#L1276) | receiver-type-required |
-| `resolve_unlocked` | `session_folder             .map(store::session_settings_path)             .transpose` | [1277](../../src/config.rs#L1277) | receiver-type-required |
-| `resolve_unlocked` | `session_folder             .map` | [1277](../../src/config.rs#L1277), [1301](../../src/config.rs#L1301) | receiver-type-required |
-| `resolve_unlocked` | `session_settings_path.as_ref` | [1280](../../src/config.rs#L1280) | receiver-type-required |
-| `resolve_unlocked` | `self.read_optional::<SessionSettings>` | [1281](../../src/config.rs#L1281) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `resolve_unlocked` | `validate_workspace` | [1285](../../src/config.rs#L1285) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
-| `resolve_unlocked` | `validate_providers` | [1286](../../src/config.rs#L1286) | [profile::config::validate_providers](../../src/config.rs#L1549) |
-| `resolve_unlocked` | `validate_settings` | [1287](../../src/config.rs#L1287) | [profile::config::validate_settings](../../src/config.rs#L1646) |
-| `resolve_unlocked` | `validate_session_settings` | [1289](../../src/config.rs#L1289) | [profile::config::validate_session_settings](../../src/config.rs#L1668) |
-| `resolve_unlocked` | `validate_references` | [1291](../../src/config.rs#L1291) | [profile::config::validate_references](../../src/config.rs#L1708) |
-| `resolve_unlocked` | `validate_session_reference` | [1292](../../src/config.rs#L1292) | [profile::config::validate_session_reference](../../src/config.rs#L1682) |
-| `resolve_unlocked` | `session_settings_path.as_deref().unwrap_or` | [1295](../../src/config.rs#L1295) | receiver-type-required |
-| `resolve_unlocked` | `session_settings_path.as_deref` | [1295](../../src/config.rs#L1295) | receiver-type-required |
-| `resolve_unlocked` | `resolve_workspace` | [1297](../../src/config.rs#L1297) | [profile::config::resolve_workspace](../../src/config.rs#L1878) |
-| `resolve_unlocked` | `session_folder             .map(session_preset_tools)             .transpose()?             .flatten` | [1301](../../src/config.rs#L1301) | receiver-type-required |
-| `resolve_unlocked` | `session_folder             .map(session_preset_tools)             .transpose` | [1301](../../src/config.rs#L1301) | receiver-type-required |
-| `resolve_unlocked` | `validate_id` | [1309](../../src/config.rs#L1309) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `resolve_unlocked` | `workspace.path_for_binding(binding).ok_or_else` | [1310](../../src/config.rs#L1310) | receiver-type-required |
-| `resolve_unlocked` | `workspace.path_for_binding` | [1310](../../src/config.rs#L1310) | receiver-type-required |
-| `resolve_unlocked` | `workspace_path.clone` | [1312](../../src/config.rs#L1312), [1319](../../src/config.rs#L1319) | receiver-type-required |
-| `resolve_unlocked` | `canonical_directory` | [1316](../../src/config.rs#L1316) | [profile::config::canonical_directory](../../src/config.rs#L2075) |
-| `resolve_unlocked` | `resolved.cwd.contains` | [1317](../../src/config.rs#L1317) | receiver-type-required |
-| `resolve_unlocked` | `Some` | [1323](../../src/config.rs#L1323), [1324](../../src/config.rs#L1324), [1339](../../src/config.rs#L1339) | external-constructor-callback-or-unresolved |
-| `resolve_unlocked` | `binding.to_owned` | [1323](../../src/config.rs#L1323) | receiver-type-required |
-| `resolve_unlocked` | `self.read_optional(&path)?.unwrap_or_default` | [1330](../../src/config.rs#L1330) | receiver-type-required |
-| `resolve_unlocked` | `validate_environments` | [1331](../../src/config.rs#L1331) | [profile::config::validate_environments](../../src/config.rs#L1850) |
-| `resolve_unlocked` | `apply_scope` | [1332](../../src/config.rs#L1332) | [profile::config::apply_scope](../../src/config.rs#L1785) |
-| `resolve_unlocked` | `Ok` | [1343](../../src/config.rs#L1343) | external-constructor-callback-or-unresolved |
-| `resolve_unlocked` | `session_settings.as_ref().map` | [1350](../../src/config.rs#L1350) | receiver-type-required |
-| `resolve_unlocked` | `session_settings.as_ref` | [1350](../../src/config.rs#L1350) | receiver-type-required |
-| `read_required` | `parse_canonical` | [1363](../../src/config.rs#L1363) | [profile::parse_canonical](../../src/lib.rs#L71) |
-| `read_required` | `fs::read` | [1363](../../src/config.rs#L1363) | external-constructor-callback-or-unresolved |
-| `read_optional` | `fs::read` | [1370](../../src/config.rs#L1370) | external-constructor-callback-or-unresolved |
-| `read_optional` | `Ok` | [1371](../../src/config.rs#L1371), [1372](../../src/config.rs#L1372) | external-constructor-callback-or-unresolved |
-| `read_optional` | `Some` | [1371](../../src/config.rs#L1371) | external-constructor-callback-or-unresolved |
-| `read_optional` | `parse_canonical` | [1371](../../src/config.rs#L1371) | [profile::parse_canonical](../../src/lib.rs#L71) |
-| `read_optional` | `error.kind` | [1372](../../src/config.rs#L1372) | receiver-type-required |
-| `read_optional` | `Err` | [1373](../../src/config.rs#L1373) | external-constructor-callback-or-unresolved |
-| `read_optional` | `error.into` | [1373](../../src/config.rs#L1373) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `self.root.join` | [1381](../../src/config.rs#L1381), [1388](../../src/config.rs#L1388), [1404](../../src/config.rs#L1404) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `self             .read_optional::<SettingsConfig>(&settings_path)?             .unwrap_or_default` | [1382](../../src/config.rs#L1382) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `self             .read_optional::<SettingsConfig>` | [1382](../../src/config.rs#L1382) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `validate_all_provider_references_unlocked` | `validate_settings` | [1385](../../src/config.rs#L1385) | [profile::config::validate_settings](../../src/config.rs#L1646) |
-| `validate_all_provider_references_unlocked` | `fs::read_dir(self.root.join("workspaces"))?.collect::<Result<Vec<_>, _>>` | [1388](../../src/config.rs#L1388) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `fs::read_dir` | [1388](../../src/config.rs#L1388), [1405](../../src/config.rs#L1405) | external-constructor-callback-or-unresolved |
-| `validate_all_provider_references_unlocked` | `workspace_entries.sort_by_key` | [1389](../../src/config.rs#L1389) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `entry.file_type()?.is_dir` | [1391](../../src/config.rs#L1391), [1411](../../src/config.rs#L1411) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `entry.file_type` | [1391](../../src/config.rs#L1391), [1411](../../src/config.rs#L1411) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `invalid` | [1392](../../src/config.rs#L1392) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_all_provider_references_unlocked` | `entry.path` | [1393](../../src/config.rs#L1393), [1397](../../src/config.rs#L1397), [1414](../../src/config.rs#L1414) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `entry.path().join` | [1397](../../src/config.rs#L1397) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `self.read_required` | [1398](../../src/config.rs#L1398) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1362) |
-| `validate_all_provider_references_unlocked` | `validate_workspace` | [1399](../../src/config.rs#L1399) | [profile::config::validate_workspace](../../src/config.rs#L1509) |
-| `validate_all_provider_references_unlocked` | `validate_references` | [1400](../../src/config.rs#L1400) | [profile::config::validate_references](../../src/config.rs#L1708) |
-| `validate_all_provider_references_unlocked` | `entries.collect::<Result<Vec<_>, _>>` | [1406](../../src/config.rs#L1406) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `error.kind` | [1407](../../src/config.rs#L1407) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `Err` | [1408](../../src/config.rs#L1408) | external-constructor-callback-or-unresolved |
-| `validate_all_provider_references_unlocked` | `error.into` | [1408](../../src/config.rs#L1408) | receiver-type-required |
-| `validate_all_provider_references_unlocked` | `store::session_settings_path` | [1414](../../src/config.rs#L1414) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
-| `validate_all_provider_references_unlocked` | `self.read_optional::<SessionSettings>` | [1415](../../src/config.rs#L1415) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1366) |
-| `validate_all_provider_references_unlocked` | `validate_session_settings` | [1416](../../src/config.rs#L1416) | [profile::config::validate_session_settings](../../src/config.rs#L1668) |
-| `validate_all_provider_references_unlocked` | `validate_session_reference` | [1417](../../src/config.rs#L1417) | [profile::config::validate_session_reference](../../src/config.rs#L1682) |
-| `validate_all_provider_references_unlocked` | `Some` | [1417](../../src/config.rs#L1417) | external-constructor-callback-or-unresolved |
-| `validate_all_provider_references_unlocked` | `Ok` | [1421](../../src/config.rs#L1421) | external-constructor-callback-or-unresolved |
-| `check_publication_revision` | `validate_safe_integer` | [1426](../../src/config.rs#L1426), [1427](../../src/config.rs#L1427), [1428](../../src/config.rs#L1428) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `check_publication_revision` | `Path::new` | [1426](../../src/config.rs#L1426), [1427](../../src/config.rs#L1427), [1428](../../src/config.rs#L1428) | external-constructor-callback-or-unresolved |
-| `check_publication_revision` | `Err` | [1430](../../src/config.rs#L1430), [1439](../../src/config.rs#L1439) | external-constructor-callback-or-unresolved |
-| `check_publication_revision` | `actual         .checked_add(1)         .ok_or_else` | [1432](../../src/config.rs#L1432) | receiver-type-required |
-| `check_publication_revision` | `actual         .checked_add` | [1432](../../src/config.rs#L1432) | receiver-type-required |
-| `check_publication_revision` | `PathBuf::from` | [1435](../../src/config.rs#L1435), [1440](../../src/config.rs#L1440) | external-constructor-callback-or-unresolved |
-| `check_publication_revision` | `"revision cannot advance beyond the I-JSON safe-integer range".to_owned` | [1436](../../src/config.rs#L1436) | receiver-type-required |
-| `check_publication_revision` | `Ok` | [1444](../../src/config.rs#L1444) | external-constructor-callback-or-unresolved |
-| `revision_from_value` | `serde_json::to_value(value).map_err` | [1452](../../src/config.rs#L1452) | receiver-type-required |
-| `revision_from_value` | `serde_json::to_value` | [1452](../../src/config.rs#L1452) | external-constructor-callback-or-unresolved |
-| `revision_from_value` | `path.to_path_buf` | [1453](../../src/config.rs#L1453), [1459](../../src/config.rs#L1459) | receiver-type-required |
-| `revision_from_value` | `error.to_string` | [1454](../../src/config.rs#L1454), [1460](../../src/config.rs#L1460) | receiver-type-required |
-| `revision_from_value` | `serde_json::from_value::<RevisionOnly>(value)         .map(&#124;value&#124; value.revision)         .map_err` | [1456](../../src/config.rs#L1456) | receiver-type-required |
-| `revision_from_value` | `serde_json::from_value::<RevisionOnly>(value)         .map` | [1456](../../src/config.rs#L1456) | receiver-type-required |
-| `revision_from_value` | `serde_json::from_value::<RevisionOnly>` | [1456](../../src/config.rs#L1456) | external-constructor-callback-or-unresolved |
-| `validate_workspace_id` | `id.is_empty` | [1465](../../src/config.rs#L1465) | receiver-type-required |
-| `validate_workspace_id` | `id.len` | [1466](../../src/config.rs#L1466) | receiver-type-required |
-| `validate_workspace_id` | `id.starts_with` | [1467](../../src/config.rs#L1467) | receiver-type-required |
-| `validate_workspace_id` | `id             .bytes()             .all` | [1468](../../src/config.rs#L1468) | receiver-type-required |
-| `validate_workspace_id` | `id             .bytes` | [1468](../../src/config.rs#L1468) | receiver-type-required |
-| `validate_workspace_id` | `byte.is_ascii_alphanumeric` | [1470](../../src/config.rs#L1470) | receiver-type-required |
-| `validate_workspace_id` | `Ok` | [1472](../../src/config.rs#L1472) | external-constructor-callback-or-unresolved |
-| `validate_workspace_id` | `Err` | [1474](../../src/config.rs#L1474) | external-constructor-callback-or-unresolved |
-| `validate_workspace_id` | `PathBuf::from` | [1475](../../src/config.rs#L1475) | external-constructor-callback-or-unresolved |
-| `validate_workspace_id` | `"workspace id is outside [A-Za-z0-9._-]".to_owned` | [1476](../../src/config.rs#L1476) | receiver-type-required |
-| `workspace_document_path` | `root.join("workspaces")         .join(workspace_id)         .join` | [1482](../../src/config.rs#L1482) | receiver-type-required |
-| `workspace_document_path` | `root.join("workspaces")         .join` | [1482](../../src/config.rs#L1482) | receiver-type-required |
-| `workspace_document_path` | `root.join` | [1482](../../src/config.rs#L1482) | receiver-type-required |
-| `validate_common` | `Err` | [1494](../../src/config.rs#L1494), [1500](../../src/config.rs#L1500) | external-constructor-callback-or-unresolved |
-| `validate_common` | `path.to_path_buf` | [1495](../../src/config.rs#L1495), [1501](../../src/config.rs#L1501) | receiver-type-required |
-| `validate_common` | `"stored revision must be at least 1".to_owned` | [1502](../../src/config.rs#L1502) | receiver-type-required |
-| `validate_common` | `validate_safe_integer` | [1505](../../src/config.rs#L1505) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `validate_common` | `Ok` | [1506](../../src/config.rs#L1506) | external-constructor-callback-or-unresolved |
-| `validate_workspace` | `validate_common` | [1514](../../src/config.rs#L1514) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_workspace` | `validate_workspace_id` | [1515](../../src/config.rs#L1515) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
-| `validate_workspace` | `validate_id` | [1516](../../src/config.rs#L1516), [1525](../../src/config.rs#L1525) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `validate_workspace` | `value.cwd.is_empty` | [1517](../../src/config.rs#L1517), [1520](../../src/config.rs#L1520) | receiver-type-required |
-| `validate_workspace` | `value.folders.is_empty` | [1517](../../src/config.rs#L1517), [1520](../../src/config.rs#L1520) | receiver-type-required |
-| `validate_workspace` | `invalid` | [1518](../../src/config.rs#L1518), [1521](../../src/config.rs#L1521), [1527](../../src/config.rs#L1527), [1540](../../src/config.rs#L1540) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_workspace` | `BTreeSet::new` | [1523](../../src/config.rs#L1523) | external-constructor-callback-or-unresolved |
-| `validate_workspace` | `binding_ids.insert` | [1526](../../src/config.rs#L1526) | receiver-type-required |
-| `validate_workspace` | `folder.id.as_str` | [1526](../../src/config.rs#L1526) | receiver-type-required |
-| `validate_workspace` | `validate_absolute` | [1529](../../src/config.rs#L1529), [1532](../../src/config.rs#L1532), [1536](../../src/config.rs#L1536) | [profile::config::validate_absolute](../../src/config.rs#L2096) |
-| `validate_workspace` | `value.folder_paths` | [1531](../../src/config.rs#L1531) | receiver-type-required |
-| `validate_workspace` | `policy.writable_roots.iter().chain` | [1535](../../src/config.rs#L1535) | receiver-type-required |
-| `validate_workspace` | `policy.writable_roots.iter` | [1535](../../src/config.rs#L1535) | receiver-type-required |
-| `validate_workspace` | `validate_unique` | [1538](../../src/config.rs#L1538) | [profile::config::validate_unique](../../src/config.rs#L2117) |
-| `validate_workspace` | `Some` | [1539](../../src/config.rs#L1539) | external-constructor-callback-or-unresolved |
-| `validate_workspace` | `validate_safe_integer` | [1543](../../src/config.rs#L1543) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `validate_workspace` | `Ok` | [1546](../../src/config.rs#L1546) | external-constructor-callback-or-unresolved |
-| `validate_providers` | `validate_common` | [1554](../../src/config.rs#L1554) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_providers` | `BTreeSet::new` | [1555](../../src/config.rs#L1555), [1581](../../src/config.rs#L1581) | external-constructor-callback-or-unresolved |
-| `validate_providers` | `validate_id` | [1557](../../src/config.rs#L1557), [1559](../../src/config.rs#L1559), [1561](../../src/config.rs#L1561), [1562](../../src/config.rs#L1562), [1563](../../src/config.rs#L1563), [1564](../../src/config.rs#L1564), [1569](../../src/config.rs#L1569), [1574](../../src/config.rs#L1574), [1579](../../src/config.rs#L1579), [1583](../../src/config.rs#L1583), [1584](../../src/config.rs#L1584), [1605](../../src/config.rs#L1605) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `validate_providers` | `ids.insert` | [1575](../../src/config.rs#L1575) | receiver-type-required |
-| `validate_providers` | `provider.id.as_str` | [1575](../../src/config.rs#L1575) | receiver-type-required |
-| `validate_providers` | `invalid` | [1576](../../src/config.rs#L1576), [1591](../../src/config.rs#L1591), [1597](../../src/config.rs#L1597), [1603](../../src/config.rs#L1603) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_providers` | `validate_safe_integer` | [1585](../../src/config.rs#L1585), [1586](../../src/config.rs#L1586) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `validate_providers` | `models.insert` | [1596](../../src/config.rs#L1596) | receiver-type-required |
-| `validate_providers` | `model.id.as_str` | [1596](../../src/config.rs#L1596) | receiver-type-required |
-| `validate_providers` | `validate_web_search_origin` | [1606](../../src/config.rs#L1606) | [profile::config::validate_web_search_origin](../../src/config.rs#L1611) |
-| `validate_providers` | `Ok` | [1608](../../src/config.rs#L1608) | external-constructor-callback-or-unresolved |
-| `validate_web_search_origin` | `url::Url::parse(value).map_err` | [1612](../../src/config.rs#L1612) | receiver-type-required |
-| `validate_web_search_origin` | `url::Url::parse` | [1612](../../src/config.rs#L1612) | external-constructor-callback-or-unresolved |
-| `validate_web_search_origin` | `path.to_path_buf` | [1613](../../src/config.rs#L1613) | receiver-type-required |
-| `validate_web_search_origin` | `"web_search endpoint is not an absolute URL".to_owned` | [1614](../../src/config.rs#L1614) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.scheme` | [1616](../../src/config.rs#L1616) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.username` | [1617](../../src/config.rs#L1617) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.password().is_some` | [1618](../../src/config.rs#L1618) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.password` | [1618](../../src/config.rs#L1618) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.query().is_some` | [1619](../../src/config.rs#L1619) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.query` | [1619](../../src/config.rs#L1619) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.fragment().is_some` | [1620](../../src/config.rs#L1620) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.fragment` | [1620](../../src/config.rs#L1620) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.path` | [1621](../../src/config.rs#L1621) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.host_str().is_none` | [1622](../../src/config.rs#L1622) | receiver-type-required |
-| `validate_web_search_origin` | `parsed.host_str` | [1622](../../src/config.rs#L1622), [1630](../../src/config.rs#L1630) | receiver-type-required |
-| `validate_web_search_origin` | `value.ends_with` | [1623](../../src/config.rs#L1623) | receiver-type-required |
-| `validate_web_search_origin` | `invalid` | [1625](../../src/config.rs#L1625), [1641](../../src/config.rs#L1641) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_web_search_origin` | `parsed.host_str().expect` | [1630](../../src/config.rs#L1630) | receiver-type-required |
-| `validate_web_search_origin` | `host         .strip_prefix('[')         .and_then(&#124;value&#124; value.strip_suffix(']'))         .unwrap_or` | [1631](../../src/config.rs#L1631) | receiver-type-required |
-| `validate_web_search_origin` | `host         .strip_prefix('[')         .and_then` | [1631](../../src/config.rs#L1631) | receiver-type-required |
-| `validate_web_search_origin` | `host         .strip_prefix` | [1631](../../src/config.rs#L1631) | receiver-type-required |
-| `validate_web_search_origin` | `value.strip_suffix` | [1633](../../src/config.rs#L1633) | receiver-type-required |
-| `validate_web_search_origin` | `host.eq_ignore_ascii_case` | [1635](../../src/config.rs#L1635) | receiver-type-required |
-| `validate_web_search_origin` | `host.ends_with` | [1636](../../src/config.rs#L1636) | receiver-type-required |
-| `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>()             .is_ok_and` | [1637](../../src/config.rs#L1637) | receiver-type-required |
-| `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>` | [1637](../../src/config.rs#L1637) | receiver-type-required |
-| `validate_web_search_origin` | `tools::is_public_internet_address` | [1639](../../src/config.rs#L1639) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1689) |
-| `validate_web_search_origin` | `Ok` | [1643](../../src/config.rs#L1643) | external-constructor-callback-or-unresolved |
-| `validate_settings` | `validate_common` | [1651](../../src/config.rs#L1651) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_settings` | `Some` | [1653](../../src/config.rs#L1653) | external-constructor-callback-or-unresolved |
-| `validate_settings` | `invalid` | [1654](../../src/config.rs#L1654) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_settings` | `validate_safe_integer` | [1661](../../src/config.rs#L1661) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `validate_settings` | `Ok` | [1665](../../src/config.rs#L1665) | external-constructor-callback-or-unresolved |
-| `validate_session_settings` | `validate_common` | [1673](../../src/config.rs#L1673) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_session_settings` | `validate_id` | [1674](../../src/config.rs#L1674), [1675](../../src/config.rs#L1675) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `validate_session_settings` | `value.reasoning_effort.as_deref().is_some_and` | [1676](../../src/config.rs#L1676) | receiver-type-required |
-| `validate_session_settings` | `value.reasoning_effort.as_deref` | [1676](../../src/config.rs#L1676) | receiver-type-required |
-| `validate_session_settings` | `invalid` | [1677](../../src/config.rs#L1677) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_session_settings` | `Ok` | [1679](../../src/config.rs#L1679) | external-constructor-callback-or-unresolved |
-| `validate_session_reference` | `Ok` | [1688](../../src/config.rs#L1688), [1705](../../src/config.rs#L1705) | external-constructor-callback-or-unresolved |
-| `validate_session_reference` | `providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == settings.provider)         .ok_or_else` | [1690](../../src/config.rs#L1690) | receiver-type-required |
-| `validate_session_reference` | `providers         .providers         .iter()         .find` | [1690](../../src/config.rs#L1690) | receiver-type-required |
-| `validate_session_reference` | `providers         .providers         .iter` | [1690](../../src/config.rs#L1690) | receiver-type-required |
-| `validate_session_reference` | `path.to_path_buf` | [1695](../../src/config.rs#L1695) | receiver-type-required |
-| `validate_session_reference` | `provider         .models         .iter()         .any` | [1698](../../src/config.rs#L1698) | receiver-type-required |
-| `validate_session_reference` | `provider         .models         .iter` | [1698](../../src/config.rs#L1698) | receiver-type-required |
-| `validate_session_reference` | `invalid_reference` | [1703](../../src/config.rs#L1703) | [profile::config::invalid_reference](../../src/config.rs#L2133) |
-| `validate_references` | `settings.default_provider.as_deref` | [1716](../../src/config.rs#L1716) | receiver-type-required |
-| `validate_references` | `settings.default_model.as_deref` | [1717](../../src/config.rs#L1717) | receiver-type-required |
-| `validate_references` | `workspace                 .policy                 .as_ref()                 .and_then` | [1720](../../src/config.rs#L1720), [1724](../../src/config.rs#L1724) | receiver-type-required |
-| `validate_references` | `workspace                 .policy                 .as_ref` | [1720](../../src/config.rs#L1720), [1724](../../src/config.rs#L1724) | receiver-type-required |
-| `validate_references` | `value.provider.as_deref` | [1723](../../src/config.rs#L1723) | receiver-type-required |
-| `validate_references` | `value.model.as_deref` | [1727](../../src/config.rs#L1727) | receiver-type-required |
-| `validate_references` | `model.is_some` | [1731](../../src/config.rs#L1731) | receiver-type-required |
-| `validate_references` | `invalid_reference` | [1732](../../src/config.rs#L1732), [1750](../../src/config.rs#L1750) | [profile::config::invalid_reference](../../src/config.rs#L2133) |
-| `validate_references` | `providers             .providers             .iter()             .find(&#124;value&#124; value.id == provider_id)             .ok_or_else` | [1736](../../src/config.rs#L1736) | receiver-type-required |
-| `validate_references` | `providers             .providers             .iter()             .find` | [1736](../../src/config.rs#L1736) | receiver-type-required |
-| `validate_references` | `providers             .providers             .iter` | [1736](../../src/config.rs#L1736) | receiver-type-required |
-| `validate_references` | `path.to_path_buf` | [1741](../../src/config.rs#L1741) | receiver-type-required |
-| `validate_references` | `provider                 .models                 .iter()                 .any` | [1745](../../src/config.rs#L1745) | receiver-type-required |
-| `validate_references` | `provider                 .models                 .iter` | [1745](../../src/config.rs#L1745) | receiver-type-required |
-| `validate_references` | `Ok` | [1753](../../src/config.rs#L1753) | external-constructor-callback-or-unresolved |
-| `session_preset_tools` | `session_folder.join` | [1758](../../src/config.rs#L1758) | receiver-type-required |
-| `session_preset_tools` | `ledger.is_file` | [1759](../../src/config.rs#L1759) | receiver-type-required |
-| `session_preset_tools` | `Ok` | [1760](../../src/config.rs#L1760), [1763](../../src/config.rs#L1763), [1770](../../src/config.rs#L1770), [1778](../../src/config.rs#L1778) | external-constructor-callback-or-unresolved |
-| `session_preset_tools` | `store::read_genesis` | [1762](../../src/config.rs#L1762) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `session_preset_tools` | `serde_json::to_value(genesis.raw()).map_err` | [1765](../../src/config.rs#L1765) | receiver-type-required |
-| `session_preset_tools` | `serde_json::to_value` | [1765](../../src/config.rs#L1765) | external-constructor-callback-or-unresolved |
-| `session_preset_tools` | `genesis.raw` | [1765](../../src/config.rs#L1765) | receiver-type-required |
-| `session_preset_tools` | `ledger.clone` | [1766](../../src/config.rs#L1766) | receiver-type-required |
-| `session_preset_tools` | `error.to_string` | [1767](../../src/config.rs#L1767) | receiver-type-required |
-| `session_preset_tools` | `raw.get` | [1769](../../src/config.rs#L1769) | receiver-type-required |
-| `session_preset_tools` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [1772](../../src/config.rs#L1772) | receiver-type-required |
-| `session_preset_tools` | `tools::ResolvedPreset::from_genesis` | [1772](../../src/config.rs#L1772) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
-| `apply_scope` | `environments.environment(scope.environment).ok_or_else` | [1792](../../src/config.rs#L1792) | receiver-type-required |
-| `apply_scope` | `environments.environment` | [1792](../../src/config.rs#L1792) | receiver-type-required |
-| `apply_scope` | `path.to_path_buf` | [1794](../../src/config.rs#L1794), [1805](../../src/config.rs#L1805), [1818](../../src/config.rs#L1818) | receiver-type-required |
-| `apply_scope` | `Vec::with_capacity` | [1799](../../src/config.rs#L1799) | external-constructor-callback-or-unresolved |
-| `apply_scope` | `ids.len` | [1799](../../src/config.rs#L1799) | receiver-type-required |
-| `apply_scope` | `workspace                     .path_for_binding(id)                     .ok_or_else` | [1802](../../src/config.rs#L1802) | receiver-type-required |
-| `apply_scope` | `workspace                     .path_for_binding` | [1802](../../src/config.rs#L1802) | receiver-type-required |
-| `apply_scope` | `canonical_directory` | [1808](../../src/config.rs#L1808), [1838](../../src/config.rs#L1838) | [profile::config::canonical_directory](../../src/config.rs#L2075) |
-| `apply_scope` | `cwd.contains` | [1809](../../src/config.rs#L1809), [1815](../../src/config.rs#L1815) | receiver-type-required |
-| `apply_scope` | `invalid` | [1810](../../src/config.rs#L1810), [1840](../../src/config.rs#L1840) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `apply_scope` | `cwd.push` | [1812](../../src/config.rs#L1812) | receiver-type-required |
-| `apply_scope` | `Err` | [1817](../../src/config.rs#L1817) | external-constructor-callback-or-unresolved |
-| `apply_scope` | `"folder binding is not one of the session's folders".to_owned` | [1819](../../src/config.rs#L1819) | receiver-type-required |
-| `apply_scope` | `resolved             .policy             .writable_roots             .retain` | [1822](../../src/config.rs#L1822) | receiver-type-required |
-| `apply_scope` | `cwd.iter().any` | [1825](../../src/config.rs#L1825) | receiver-type-required |
-| `apply_scope` | `cwd.iter` | [1825](../../src/config.rs#L1825) | receiver-type-required |
-| `apply_scope` | `Path::new(root).starts_with` | [1825](../../src/config.rs#L1825) | receiver-type-required |
-| `apply_scope` | `Path::new` | [1825](../../src/config.rs#L1825) | external-constructor-callback-or-unresolved |
-| `apply_scope` | `Some` | [1827](../../src/config.rs#L1827), [1834](../../src/config.rs#L1834), [1846](../../src/config.rs#L1846) | external-constructor-callback-or-unresolved |
-| `apply_scope` | `ids.to_vec` | [1827](../../src/config.rs#L1827) | receiver-type-required |
-| `apply_scope` | `left.min` | [1834](../../src/config.rs#L1834) | receiver-type-required |
-| `apply_scope` | `left.or` | [1835](../../src/config.rs#L1835) | receiver-type-required |
-| `apply_scope` | `canonical.contains` | [1839](../../src/config.rs#L1839) | receiver-type-required |
-| `apply_scope` | `resolved.policy.toolchain_roots.push` | [1842](../../src/config.rs#L1842) | receiver-type-required |
-| `apply_scope` | `resolved.policy.toolchain_roots.sort` | [1844](../../src/config.rs#L1844) | receiver-type-required |
-| `apply_scope` | `resolved.policy.toolchain_roots.dedup` | [1845](../../src/config.rs#L1845) | receiver-type-required |
-| `apply_scope` | `Ok` | [1847](../../src/config.rs#L1847) | external-constructor-callback-or-unresolved |
-| `validate_environments` | `validate_common` | [1855](../../src/config.rs#L1855) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_environments` | `BTreeSet::new` | [1856](../../src/config.rs#L1856) | external-constructor-callback-or-unresolved |
-| `validate_environments` | `validate_id` | [1858](../../src/config.rs#L1858) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `validate_environments` | `environment.id.len` | [1859](../../src/config.rs#L1859) | receiver-type-required |
-| `validate_environments` | `environment.id.nfc().collect::<String>` | [1859](../../src/config.rs#L1859) | receiver-type-required |
-| `validate_environments` | `environment.id.nfc` | [1859](../../src/config.rs#L1859) | receiver-type-required |
-| `validate_environments` | `invalid` | [1861](../../src/config.rs#L1861), [1864](../../src/config.rs#L1864), [1868](../../src/config.rs#L1868), [1872](../../src/config.rs#L1872) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_environments` | `ids.insert` | [1863](../../src/config.rs#L1863) | receiver-type-required |
-| `validate_environments` | `environment.id.as_str` | [1863](../../src/config.rs#L1863) | receiver-type-required |
-| `validate_environments` | `Path::new(root).is_absolute` | [1867](../../src/config.rs#L1867) | receiver-type-required |
-| `validate_environments` | `Path::new` | [1867](../../src/config.rs#L1867) | external-constructor-callback-or-unresolved |
-| `validate_environments` | `root.contains` | [1867](../../src/config.rs#L1867) | receiver-type-required |
-| `validate_environments` | `Some` | [1871](../../src/config.rs#L1871) | external-constructor-callback-or-unresolved |
-| `validate_environments` | `Ok` | [1875](../../src/config.rs#L1875) | external-constructor-callback-or-unresolved |
-| `resolve_workspace` | `Vec::new` | [1882](../../src/config.rs#L1882), [1891](../../src/config.rs#L1891), [1905](../../src/config.rs#L1905) | external-constructor-callback-or-unresolved |
-| `resolve_workspace` | `value.folder_paths` | [1883](../../src/config.rs#L1883) | receiver-type-required |
-| `resolve_workspace` | `canonical_directory` | [1884](../../src/config.rs#L1884), [1893](../../src/config.rs#L1893), [1907](../../src/config.rs#L1907) | [profile::config::canonical_directory](../../src/config.rs#L2075) |
-| `resolve_workspace` | `cwd.contains` | [1885](../../src/config.rs#L1885) | receiver-type-required |
-| `resolve_workspace` | `invalid` | [1886](../../src/config.rs#L1886), [1898](../../src/config.rs#L1898), [1909](../../src/config.rs#L1909) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `resolve_workspace` | `cwd.push` | [1888](../../src/config.rs#L1888) | receiver-type-required |
-| `resolve_workspace` | `value.policy.clone().unwrap_or_default` | [1890](../../src/config.rs#L1890) | receiver-type-required |
-| `resolve_workspace` | `value.policy.clone` | [1890](../../src/config.rs#L1890) | receiver-type-required |
-| `resolve_workspace` | `cwd             .iter()             .any` | [1894](../../src/config.rs#L1894) | receiver-type-required |
-| `resolve_workspace` | `cwd             .iter` | [1894](../../src/config.rs#L1894) | receiver-type-required |
-| `resolve_workspace` | `Path::new(&resolved).starts_with` | [1896](../../src/config.rs#L1896) | receiver-type-required |
-| `resolve_workspace` | `Path::new` | [1896](../../src/config.rs#L1896) | external-constructor-callback-or-unresolved |
-| `resolve_workspace` | `roots.push` | [1900](../../src/config.rs#L1900) | receiver-type-required |
-| `resolve_workspace` | `roots.sort` | [1902](../../src/config.rs#L1902) | receiver-type-required |
-| `resolve_workspace` | `roots.dedup` | [1903](../../src/config.rs#L1903) | receiver-type-required |
-| `resolve_workspace` | `canonical.contains` | [1908](../../src/config.rs#L1908) | receiver-type-required |
-| `resolve_workspace` | `toolchains.push` | [1911](../../src/config.rs#L1911) | receiver-type-required |
-| `resolve_workspace` | `toolchains.sort` | [1913](../../src/config.rs#L1913) | receiver-type-required |
-| `resolve_workspace` | `toolchains.dedup` | [1914](../../src/config.rs#L1914) | receiver-type-required |
-| `resolve_workspace` | `policy.allowed_tools.sort` | [1916](../../src/config.rs#L1916) | receiver-type-required |
-| `resolve_workspace` | `policy.allowed_tools.dedup` | [1917](../../src/config.rs#L1917) | receiver-type-required |
-| `resolve_workspace` | `Ok` | [1918](../../src/config.rs#L1918) | external-constructor-callback-or-unresolved |
-| `resolve_workspace` | `value.id.clone` | [1921](../../src/config.rs#L1921) | receiver-type-required |
-| `resolve_workspace` | `value.name.clone` | [1922](../../src/config.rs#L1922) | receiver-type-required |
-| `validate_snapshot` | `Path::new` | [1933](../../src/config.rs#L1933), [2004](../../src/config.rs#L2004) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `validate_absolute` | [1935](../../src/config.rs#L1935), [1959](../../src/config.rs#L1959), [1975](../../src/config.rs#L1975), [1987](../../src/config.rs#L1987), [1996](../../src/config.rs#L1996) | [profile::config::validate_absolute](../../src/config.rs#L2096) |
-| `validate_snapshot` | `Err` | [1938](../../src/config.rs#L1938) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `path.to_path_buf` | [1939](../../src/config.rs#L1939) | receiver-type-required |
-| `validate_snapshot` | `validate_common` | [1943](../../src/config.rs#L1943) | [profile::config::validate_common](../../src/config.rs#L1487) |
-| `validate_snapshot` | `validate_workspace_id` | [1949](../../src/config.rs#L1949) | [profile::config::validate_workspace_id](../../src/config.rs#L1464) |
-| `validate_snapshot` | `validate_id` | [1950](../../src/config.rs#L1950), [1952](../../src/config.rs#L1952) | [profile::config::validate_id](../../src/config.rs#L2106) |
-| `validate_snapshot` | `snapshot.workspace.folder_binding.as_ref` | [1955](../../src/config.rs#L1955) | receiver-type-required |
-| `validate_snapshot` | `snapshot.workspace.selected_cwd.as_ref` | [1956](../../src/config.rs#L1956) | receiver-type-required |
-| `validate_snapshot` | `canonical_directory` | [1960](../../src/config.rs#L1960), [1976](../../src/config.rs#L1976), [1988](../../src/config.rs#L1988), [1997](../../src/config.rs#L1997) | [profile::config::canonical_directory](../../src/config.rs#L2075) |
-| `validate_snapshot` | `invalid` | [1961](../../src/config.rs#L1961), [1964](../../src/config.rs#L1964), [1968](../../src/config.rs#L1968), [1971](../../src/config.rs#L1971), [1977](../../src/config.rs#L1977), [1984](../../src/config.rs#L1984), [1989](../../src/config.rs#L1989), [1998](../../src/config.rs#L1998), [2006](../../src/config.rs#L2006), [2011](../../src/config.rs#L2011), [2021](../../src/config.rs#L2021), [2027](../../src/config.rs#L2027), [2052](../../src/config.rs#L2052) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_snapshot` | `snapshot.workspace.cwd.contains` | [1963](../../src/config.rs#L1963) | receiver-type-required |
-| `validate_snapshot` | `snapshot.workspace.cwd.is_empty` | [1970](../../src/config.rs#L1970) | receiver-type-required |
-| `validate_snapshot` | `validate_unique` | [1973](../../src/config.rs#L1973) | [profile::config::validate_unique](../../src/config.rs#L2117) |
-| `validate_snapshot` | `is_sorted_unique` | [1980](../../src/config.rs#L1980), [1981](../../src/config.rs#L1981), [1982](../../src/config.rs#L1982) | [profile::config::is_sorted_unique](../../src/config.rs#L2071) |
-| `validate_snapshot` | `root.contains` | [1988](../../src/config.rs#L1988) | receiver-type-required |
-| `validate_snapshot` | `snapshot             .workspace             .cwd             .iter()             .any` | [2000](../../src/config.rs#L2000) | receiver-type-required |
-| `validate_snapshot` | `snapshot             .workspace             .cwd             .iter` | [2000](../../src/config.rs#L2000) | receiver-type-required |
-| `validate_snapshot` | `Path::new(root).starts_with` | [2004](../../src/config.rs#L2004) | receiver-type-required |
-| `validate_snapshot` | `validate_safe_integer` | [2013](../../src/config.rs#L2013) | [profile::config::validate_safe_integer](../../src/config.rs#L2060) |
-| `validate_snapshot` | `validate_providers` | [2015](../../src/config.rs#L2015) | [profile::config::validate_providers](../../src/config.rs#L1549) |
-| `validate_snapshot` | `validate_settings` | [2016](../../src/config.rs#L2016) | [profile::config::validate_settings](../../src/config.rs#L1646) |
-| `validate_snapshot` | `validate_session_settings` | [2018](../../src/config.rs#L2018) | [profile::config::validate_session_settings](../../src/config.rs#L1668) |
-| `validate_snapshot` | `ProvidersConfig::default` | [2020](../../src/config.rs#L2020) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `SettingsConfig::default` | [2026](../../src/config.rs#L2026) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `snapshot.workspace.id.clone` | [2035](../../src/config.rs#L2035) | receiver-type-required |
-| `validate_snapshot` | `snapshot.workspace.name.clone` | [2036](../../src/config.rs#L2036) | receiver-type-required |
-| `validate_snapshot` | `snapshot.workspace.cwd.clone` | [2037](../../src/config.rs#L2037) | receiver-type-required |
-| `validate_snapshot` | `Vec::new` | [2038](../../src/config.rs#L2038) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `Some` | [2039](../../src/config.rs#L2039) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `snapshot.workspace.policy.clone` | [2039](../../src/config.rs#L2039) | receiver-type-required |
-| `validate_snapshot` | `validate_references` | [2041](../../src/config.rs#L2041) | [profile::config::validate_references](../../src/config.rs#L1708) |
-| `validate_snapshot` | `validate_session_reference` | [2042](../../src/config.rs#L2042) | [profile::config::validate_session_reference](../../src/config.rs#L1682) |
-| `validate_snapshot` | `snapshot                 .session_settings                 .as_ref()                 .map` | [2047](../../src/config.rs#L2047) | receiver-type-required |
-| `validate_snapshot` | `snapshot                 .session_settings                 .as_ref` | [2047](../../src/config.rs#L2047) | receiver-type-required |
-| `validate_snapshot` | `Ok` | [2057](../../src/config.rs#L2057) | external-constructor-callback-or-unresolved |
-| `validate_safe_integer` | `Ok` | [2062](../../src/config.rs#L2062) | external-constructor-callback-or-unresolved |
-| `validate_safe_integer` | `invalid` | [2064](../../src/config.rs#L2064) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `is_sorted_unique` | `values.windows(2).all` | [2072](../../src/config.rs#L2072) | receiver-type-required |
-| `is_sorted_unique` | `values.windows` | [2072](../../src/config.rs#L2072) | receiver-type-required |
-| `canonical_directory` | `validate_absolute` | [2076](../../src/config.rs#L2076) | [profile::config::validate_absolute](../../src/config.rs#L2096) |
-| `canonical_directory` | `fs::canonicalize(value).map_err` | [2077](../../src/config.rs#L2077) | receiver-type-required |
-| `canonical_directory` | `fs::canonicalize` | [2077](../../src/config.rs#L2077) | external-constructor-callback-or-unresolved |
-| `canonical_directory` | `PathBuf::from` | [2078](../../src/config.rs#L2078) | external-constructor-callback-or-unresolved |
-| `canonical_directory` | `error.to_string` | [2079](../../src/config.rs#L2079) | receiver-type-required |
-| `canonical_directory` | `canonical.is_dir` | [2081](../../src/config.rs#L2081) | receiver-type-required |
-| `canonical_directory` | `Err` | [2082](../../src/config.rs#L2082) | external-constructor-callback-or-unresolved |
-| `canonical_directory` | `"expected a directory".to_owned` | [2084](../../src/config.rs#L2084) | receiver-type-required |
-| `canonical_directory` | `canonical         .to_str()         .map(ToOwned::to_owned)         .ok_or_else` | [2087](../../src/config.rs#L2087) | receiver-type-required |
-| `canonical_directory` | `canonical         .to_str()         .map` | [2087](../../src/config.rs#L2087) | receiver-type-required |
-| `canonical_directory` | `canonical         .to_str` | [2087](../../src/config.rs#L2087) | receiver-type-required |
-| `canonical_directory` | `"path is not UTF-8".to_owned` | [2092](../../src/config.rs#L2092) | receiver-type-required |
-| `validate_absolute` | `value.contains` | [2097](../../src/config.rs#L2097) | receiver-type-required |
-| `validate_absolute` | `Path::new(value).is_absolute` | [2097](../../src/config.rs#L2097) | receiver-type-required |
-| `validate_absolute` | `Path::new` | [2097](../../src/config.rs#L2097) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `Err` | [2098](../../src/config.rs#L2098) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `source.to_path_buf` | [2099](../../src/config.rs#L2099) | receiver-type-required |
-| `validate_absolute` | `Ok` | [2103](../../src/config.rs#L2103) | external-constructor-callback-or-unresolved |
-| `validate_id` | `value.is_empty` | [2107](../../src/config.rs#L2107) | receiver-type-required |
-| `validate_id` | `value.chars().any` | [2107](../../src/config.rs#L2107) | receiver-type-required |
-| `validate_id` | `value.chars` | [2107](../../src/config.rs#L2107) | receiver-type-required |
-| `validate_id` | `invalid` | [2108](../../src/config.rs#L2108) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `validate_id` | `Ok` | [2113](../../src/config.rs#L2113) | external-constructor-callback-or-unresolved |
-| `validate_unique` | `values.iter().collect::<BTreeSet<_>>` | [2118](../../src/config.rs#L2118) | receiver-type-required |
-| `validate_unique` | `values.iter` | [2118](../../src/config.rs#L2118) | receiver-type-required |
-| `validate_unique` | `unique.len` | [2119](../../src/config.rs#L2119) | receiver-type-required |
-| `validate_unique` | `values.len` | [2119](../../src/config.rs#L2119) | receiver-type-required |
-| `validate_unique` | `Ok` | [2120](../../src/config.rs#L2120) | external-constructor-callback-or-unresolved |
-| `validate_unique` | `invalid` | [2122](../../src/config.rs#L2122) | [profile::config::invalid](../../src/config.rs#L2126) |
-| `invalid` | `Err` | [2127](../../src/config.rs#L2127) | external-constructor-callback-or-unresolved |
-| `invalid` | `path.to_path_buf` | [2128](../../src/config.rs#L2128) | receiver-type-required |
-| `invalid` | `reason.to_owned` | [2129](../../src/config.rs#L2129) | receiver-type-required |
-| `invalid_reference` | `Err` | [2134](../../src/config.rs#L2134) | external-constructor-callback-or-unresolved |
-| `invalid_reference` | `path.to_path_buf` | [2135](../../src/config.rs#L2135) | receiver-type-required |
-| `invalid_reference` | `reason.to_owned` | [2136](../../src/config.rs#L2136) | receiver-type-required |
-| `removed` | `current.iter().collect::<BTreeSet<_>>` | [2141](../../src/config.rs#L2141) | receiver-type-required |
-| `removed` | `current.iter` | [2141](../../src/config.rs#L2141) | receiver-type-required |
-| `removed` | `previous.iter().any` | [2142](../../src/config.rs#L2142) | receiver-type-required |
-| `removed` | `previous.iter` | [2142](../../src/config.rs#L2142) | receiver-type-required |
-| `removed` | `current.contains` | [2142](../../src/config.rs#L2142) | receiver-type-required |
-| `enabled_provider_models` | `providers         .providers         .iter()         .flat_map(&#124;provider&#124; {             provider                 .models                 .iter()                 .filter(&#124;model&#124; model.enabled)                 .map(move &#124;model&#124; (provider.id.as_str(), model.id.as_str()))         })         .collect` | [2154](../../src/config.rs#L2154) | receiver-type-required |
-| `enabled_provider_models` | `providers         .providers         .iter()         .flat_map` | [2154](../../src/config.rs#L2154) | receiver-type-required |
-| `enabled_provider_models` | `providers         .providers         .iter` | [2154](../../src/config.rs#L2154) | receiver-type-required |
-| `enabled_provider_models` | `provider                 .models                 .iter()                 .filter(&#124;model&#124; model.enabled)                 .map` | [2158](../../src/config.rs#L2158) | receiver-type-required |
-| `enabled_provider_models` | `provider                 .models                 .iter()                 .filter` | [2158](../../src/config.rs#L2158) | receiver-type-required |
-| `enabled_provider_models` | `provider                 .models                 .iter` | [2158](../../src/config.rs#L2158) | receiver-type-required |
-| `enabled_provider_models` | `provider.id.as_str` | [2162](../../src/config.rs#L2162) | receiver-type-required |
-| `enabled_provider_models` | `model.id.as_str` | [2162](../../src/config.rs#L2162) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `tempfile::tempdir().expect` | [2179](../../src/config.rs#L2179) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `tempfile::tempdir` | [2179](../../src/config.rs#L2179) | external-constructor-callback-or-unresolved |
-| `private_directory_rejects_wrong_owner` | `rustix::process::geteuid().as_raw` | [2180](../../src/config.rs#L2180) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `rustix::process::geteuid` | [2180](../../src/config.rs#L2180) | external-constructor-callback-or-unresolved |
-| `private_directory_rejects_wrong_owner` | `open_private_root(root.path(), actual_uid, false).expect` | [2181](../../src/config.rs#L2181) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `open_private_root` | [2181](../../src/config.rs#L2181) | [profile::config::open_private_root](../../src/config.rs#L575) |
-| `private_directory_rejects_wrong_owner` | `root.path` | [2181](../../src/config.rs#L2181), [2183](../../src/config.rs#L2183) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `validate_private_directory_fd(&descriptor, root.path(), actual_uid.wrapping_add(1))                 .expect_err` | [2183](../../src/config.rs#L2183) | receiver-type-required |
-| `private_directory_rejects_wrong_owner` | `validate_private_directory_fd` | [2183](../../src/config.rs#L2183) | [profile::config::validate_private_directory_fd](../../src/config.rs#L507) |
-| `private_directory_rejects_wrong_owner` | `actual_uid.wrapping_add` | [2183](../../src/config.rs#L2183) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `tempfile::tempdir().expect` | [2191](../../src/config.rs#L2191) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `tempfile::tempdir` | [2191](../../src/config.rs#L2191) | external-constructor-callback-or-unresolved |
-| `sandbox_fallback_rejects_a_symlinked_path` | `root.path().join` | [2192](../../src/config.rs#L2192), [2194](../../src/config.rs#L2194) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `root.path` | [2192](../../src/config.rs#L2192), [2194](../../src/config.rs#L2194) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `std::fs::create_dir(&directory).expect` | [2193](../../src/config.rs#L2193) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `std::fs::create_dir` | [2193](../../src/config.rs#L2193) | external-constructor-callback-or-unresolved |
-| `sandbox_fallback_rejects_a_symlinked_path` | `std::os::unix::fs::symlink(&directory, &alias).expect` | [2195](../../src/config.rs#L2195) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `std::os::unix::fs::symlink` | [2195](../../src/config.rs#L2195) | external-constructor-callback-or-unresolved |
-| `sandbox_fallback_rejects_a_symlinked_path` | `open_private_root_sandboxed(             &alias,             &alias,             OFlags::RDONLY &#124; OFlags::DIRECTORY &#124; OFlags::CLOEXEC &#124; OFlags::NOFOLLOW,             rustix::process::geteuid().as_raw(),         )         .expect_err` | [2196](../../src/config.rs#L2196) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `open_private_root_sandboxed` | [2196](../../src/config.rs#L2196) | [profile::config::open_private_root_sandboxed](../../src/config.rs#L737) |
-| `sandbox_fallback_rejects_a_symlinked_path` | `rustix::process::geteuid().as_raw` | [2200](../../src/config.rs#L2200) | receiver-type-required |
-| `sandbox_fallback_rejects_a_symlinked_path` | `rustix::process::geteuid` | [2200](../../src/config.rs#L2200) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `tempfile::tempdir().unwrap` | [2213](../../src/config.rs#L2213) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `tempfile::tempdir` | [2213](../../src/config.rs#L2213) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `root.path().join` | [2214](../../src/config.rs#L2214), [2215](../../src/config.rs#L2215), [2218](../../src/config.rs#L2218), [2247](../../src/config.rs#L2247) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `root.path` | [2214](../../src/config.rs#L2214), [2215](../../src/config.rs#L2215), [2218](../../src/config.rs#L2218), [2247](../../src/config.rs#L2247) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all(&workspace).unwrap` | [2216](../../src/config.rs#L2216) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all` | [2216](../../src/config.rs#L2216), [2217](../../src/config.rs#L2217) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all(chain.join("bin")).unwrap` | [2217](../../src/config.rs#L2217) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `chain.join` | [2217](../../src/config.rs#L2217) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `std::os::unix::fs::symlink(&chain, &alias).unwrap` | [2219](../../src/config.rs#L2219) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `std::os::unix::fs::symlink` | [2219](../../src/config.rs#L2219) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `"ws".into` | [2223](../../src/config.rs#L2223), [2224](../../src/config.rs#L2224) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Some` | [2227](../../src/config.rs#L2227) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Default::default` | [2232](../../src/config.rs#L2232) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `resolve_workspace(&config, Path::new("test.json")).unwrap` | [2235](../../src/config.rs#L2235) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `resolve_workspace` | [2235](../../src/config.rs#L2235) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Path::new` | [2235](../../src/config.rs#L2235) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir(&ambiguous).unwrap` | [2248](../../src/config.rs#L2248) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir` | [2248](../../src/config.rs#L2248) | external-constructor-callback-or-unresolved |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `config.policy.as_mut().unwrap` | [2249](../../src/config.rs#L2249) | receiver-type-required |
-| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `config.policy.as_mut` | [2249](../../src/config.rs#L2249) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `tempfile::tempdir().unwrap` | [2261](../../src/config.rs#L2261) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `tempfile::tempdir` | [2261](../../src/config.rs#L2261) | external-constructor-callback-or-unresolved |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `std::fs::canonicalize(root.path()).unwrap` | [2262](../../src/config.rs#L2262) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `std::fs::canonicalize` | [2262](../../src/config.rs#L2262) | external-constructor-callback-or-unresolved |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `root.path` | [2262](../../src/config.rs#L2262) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect("i-json")             .canonical_bytes()             .expect` | [2274](../../src/config.rs#L2274) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect("i-json")             .canonical_bytes` | [2274](../../src/config.rs#L2274) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect` | [2274](../../src/config.rs#L2274) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse` | [2274](../../src/config.rs#L2274) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `serde_json::to_vec(&legacy).unwrap` | [2274](../../src/config.rs#L2274) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `serde_json::to_vec` | [2274](../../src/config.rs#L2274) | external-constructor-callback-or-unresolved |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `bytes.push` | [2278](../../src/config.rs#L2278) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `ConfigSnapshot::decode(&bytes).expect` | [2279](../../src/config.rs#L2279) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `ConfigSnapshot::decode` | [2279](../../src/config.rs#L2279) | external-constructor-callback-or-unresolved |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `snapshot.canonical_bytes().expect` | [2280](../../src/config.rs#L2280) | receiver-type-required |
-| `a_snapshot_published_with_the_integrations_file_still_decodes` | `snapshot.canonical_bytes` | [2280](../../src/config.rs#L2280) | receiver-type-required |
+| `resolve_unlocked` | `self.resolve_seed_unlocked` | [1273](../../src/config.rs#L1273) | [profile::config::ConfigRepository::resolve_seed_unlocked](../../src/config.rs#L1289) |
+| `resolve_session_seed` | `NamedLock::shared` | [1285](../../src/config.rs#L1285) | [store::platform::NamedLock::shared](../../../store/src/platform.rs#L99) |
+| `resolve_session_seed` | `self.root.join` | [1285](../../src/config.rs#L1285) | receiver-type-required |
+| `resolve_session_seed` | `self.resolve_seed_unlocked` | [1286](../../src/config.rs#L1286) | [profile::config::ConfigRepository::resolve_seed_unlocked](../../src/config.rs#L1289) |
+| `resolve_session_seed` | `Some` | [1286](../../src/config.rs#L1286) | external-constructor-callback-or-unresolved |
+| `resolve_seed_unlocked` | `self.root.join` | [1296](../../src/config.rs#L1296), [1297](../../src/config.rs#L1297), [1298](../../src/config.rs#L1298), [1352](../../src/config.rs#L1352) | receiver-type-required |
+| `resolve_seed_unlocked` | `self.read_optional(&providers_path)?.unwrap_or_default` | [1299](../../src/config.rs#L1299) | receiver-type-required |
+| `resolve_seed_unlocked` | `self.read_optional` | [1299](../../src/config.rs#L1299), [1300](../../src/config.rs#L1300), [1354](../../src/config.rs#L1354) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `resolve_seed_unlocked` | `self.read_optional(&settings_path)?.unwrap_or_default` | [1300](../../src/config.rs#L1300) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_folder             .map(store::session_settings_path)             .transpose` | [1301](../../src/config.rs#L1301) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_folder             .map` | [1301](../../src/config.rs#L1301), [1325](../../src/config.rs#L1325) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_settings_path.as_ref` | [1304](../../src/config.rs#L1304) | receiver-type-required |
+| `resolve_seed_unlocked` | `self.read_optional::<SessionSettings>` | [1305](../../src/config.rs#L1305) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `resolve_seed_unlocked` | `validate_workspace` | [1309](../../src/config.rs#L1309) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
+| `resolve_seed_unlocked` | `validate_providers` | [1310](../../src/config.rs#L1310) | [profile::config::validate_providers](../../src/config.rs#L1573) |
+| `resolve_seed_unlocked` | `validate_settings` | [1311](../../src/config.rs#L1311) | [profile::config::validate_settings](../../src/config.rs#L1670) |
+| `resolve_seed_unlocked` | `validate_session_settings` | [1313](../../src/config.rs#L1313) | [profile::config::validate_session_settings](../../src/config.rs#L1692) |
+| `resolve_seed_unlocked` | `validate_references` | [1315](../../src/config.rs#L1315) | [profile::config::validate_references](../../src/config.rs#L1732) |
+| `resolve_seed_unlocked` | `validate_session_reference` | [1316](../../src/config.rs#L1316) | [profile::config::validate_session_reference](../../src/config.rs#L1706) |
+| `resolve_seed_unlocked` | `session_settings_path.as_deref().unwrap_or` | [1319](../../src/config.rs#L1319) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_settings_path.as_deref` | [1319](../../src/config.rs#L1319) | receiver-type-required |
+| `resolve_seed_unlocked` | `resolve_workspace` | [1321](../../src/config.rs#L1321) | [profile::config::resolve_workspace](../../src/config.rs#L1902) |
+| `resolve_seed_unlocked` | `session_folder             .map(session_preset_tools)             .transpose()?             .flatten` | [1325](../../src/config.rs#L1325) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_folder             .map(session_preset_tools)             .transpose` | [1325](../../src/config.rs#L1325) | receiver-type-required |
+| `resolve_seed_unlocked` | `validate_id` | [1333](../../src/config.rs#L1333) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `resolve_seed_unlocked` | `workspace.path_for_binding(binding).ok_or_else` | [1334](../../src/config.rs#L1334) | receiver-type-required |
+| `resolve_seed_unlocked` | `workspace.path_for_binding` | [1334](../../src/config.rs#L1334) | receiver-type-required |
+| `resolve_seed_unlocked` | `workspace_path.clone` | [1336](../../src/config.rs#L1336), [1343](../../src/config.rs#L1343) | receiver-type-required |
+| `resolve_seed_unlocked` | `canonical_directory` | [1340](../../src/config.rs#L1340) | [profile::config::canonical_directory](../../src/config.rs#L2099) |
+| `resolve_seed_unlocked` | `resolved.cwd.contains` | [1341](../../src/config.rs#L1341) | receiver-type-required |
+| `resolve_seed_unlocked` | `Err` | [1342](../../src/config.rs#L1342) | external-constructor-callback-or-unresolved |
+| `resolve_seed_unlocked` | `Some` | [1347](../../src/config.rs#L1347), [1348](../../src/config.rs#L1348), [1363](../../src/config.rs#L1363) | external-constructor-callback-or-unresolved |
+| `resolve_seed_unlocked` | `binding.to_owned` | [1347](../../src/config.rs#L1347) | receiver-type-required |
+| `resolve_seed_unlocked` | `self.read_optional(&path)?.unwrap_or_default` | [1354](../../src/config.rs#L1354) | receiver-type-required |
+| `resolve_seed_unlocked` | `validate_environments` | [1355](../../src/config.rs#L1355) | [profile::config::validate_environments](../../src/config.rs#L1874) |
+| `resolve_seed_unlocked` | `apply_scope` | [1356](../../src/config.rs#L1356) | [profile::config::apply_scope](../../src/config.rs#L1809) |
+| `resolve_seed_unlocked` | `Ok` | [1367](../../src/config.rs#L1367) | external-constructor-callback-or-unresolved |
+| `resolve_seed_unlocked` | `session_settings.as_ref().map` | [1374](../../src/config.rs#L1374) | receiver-type-required |
+| `resolve_seed_unlocked` | `session_settings.as_ref` | [1374](../../src/config.rs#L1374) | receiver-type-required |
+| `read_required` | `parse_canonical` | [1387](../../src/config.rs#L1387) | [profile::parse_canonical](../../src/lib.rs#L73) |
+| `read_required` | `fs::read` | [1387](../../src/config.rs#L1387) | external-constructor-callback-or-unresolved |
+| `read_optional` | `fs::read` | [1394](../../src/config.rs#L1394) | external-constructor-callback-or-unresolved |
+| `read_optional` | `Ok` | [1395](../../src/config.rs#L1395), [1396](../../src/config.rs#L1396) | external-constructor-callback-or-unresolved |
+| `read_optional` | `Some` | [1395](../../src/config.rs#L1395) | external-constructor-callback-or-unresolved |
+| `read_optional` | `parse_canonical` | [1395](../../src/config.rs#L1395) | [profile::parse_canonical](../../src/lib.rs#L73) |
+| `read_optional` | `error.kind` | [1396](../../src/config.rs#L1396) | receiver-type-required |
+| `read_optional` | `Err` | [1397](../../src/config.rs#L1397) | external-constructor-callback-or-unresolved |
+| `read_optional` | `error.into` | [1397](../../src/config.rs#L1397) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `self.root.join` | [1405](../../src/config.rs#L1405), [1412](../../src/config.rs#L1412), [1428](../../src/config.rs#L1428) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `self             .read_optional::<SettingsConfig>(&settings_path)?             .unwrap_or_default` | [1406](../../src/config.rs#L1406) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `self             .read_optional::<SettingsConfig>` | [1406](../../src/config.rs#L1406) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `validate_all_provider_references_unlocked` | `validate_settings` | [1409](../../src/config.rs#L1409) | [profile::config::validate_settings](../../src/config.rs#L1670) |
+| `validate_all_provider_references_unlocked` | `fs::read_dir(self.root.join("workspaces"))?.collect::<Result<Vec<_>, _>>` | [1412](../../src/config.rs#L1412) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `fs::read_dir` | [1412](../../src/config.rs#L1412), [1429](../../src/config.rs#L1429) | external-constructor-callback-or-unresolved |
+| `validate_all_provider_references_unlocked` | `workspace_entries.sort_by_key` | [1413](../../src/config.rs#L1413) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `entry.file_type()?.is_dir` | [1415](../../src/config.rs#L1415), [1435](../../src/config.rs#L1435) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `entry.file_type` | [1415](../../src/config.rs#L1415), [1435](../../src/config.rs#L1435) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `invalid` | [1416](../../src/config.rs#L1416) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_all_provider_references_unlocked` | `entry.path` | [1417](../../src/config.rs#L1417), [1421](../../src/config.rs#L1421), [1438](../../src/config.rs#L1438) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `entry.path().join` | [1421](../../src/config.rs#L1421) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `self.read_required` | [1422](../../src/config.rs#L1422) | [profile::config::ConfigRepository::read_required](../../src/config.rs#L1386) |
+| `validate_all_provider_references_unlocked` | `validate_workspace` | [1423](../../src/config.rs#L1423) | [profile::config::validate_workspace](../../src/config.rs#L1533) |
+| `validate_all_provider_references_unlocked` | `validate_references` | [1424](../../src/config.rs#L1424) | [profile::config::validate_references](../../src/config.rs#L1732) |
+| `validate_all_provider_references_unlocked` | `entries.collect::<Result<Vec<_>, _>>` | [1430](../../src/config.rs#L1430) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `error.kind` | [1431](../../src/config.rs#L1431) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `Err` | [1432](../../src/config.rs#L1432) | external-constructor-callback-or-unresolved |
+| `validate_all_provider_references_unlocked` | `error.into` | [1432](../../src/config.rs#L1432) | receiver-type-required |
+| `validate_all_provider_references_unlocked` | `store::session_settings_path` | [1438](../../src/config.rs#L1438) | [store::management_root::session_settings_path](../../../store/src/management_root.rs#L57) |
+| `validate_all_provider_references_unlocked` | `self.read_optional::<SessionSettings>` | [1439](../../src/config.rs#L1439) | [profile::config::ConfigRepository::read_optional](../../src/config.rs#L1390) |
+| `validate_all_provider_references_unlocked` | `validate_session_settings` | [1440](../../src/config.rs#L1440) | [profile::config::validate_session_settings](../../src/config.rs#L1692) |
+| `validate_all_provider_references_unlocked` | `validate_session_reference` | [1441](../../src/config.rs#L1441) | [profile::config::validate_session_reference](../../src/config.rs#L1706) |
+| `validate_all_provider_references_unlocked` | `Some` | [1441](../../src/config.rs#L1441) | external-constructor-callback-or-unresolved |
+| `validate_all_provider_references_unlocked` | `Ok` | [1445](../../src/config.rs#L1445) | external-constructor-callback-or-unresolved |
+| `check_publication_revision` | `validate_safe_integer` | [1450](../../src/config.rs#L1450), [1451](../../src/config.rs#L1451), [1452](../../src/config.rs#L1452) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `check_publication_revision` | `Path::new` | [1450](../../src/config.rs#L1450), [1451](../../src/config.rs#L1451), [1452](../../src/config.rs#L1452) | external-constructor-callback-or-unresolved |
+| `check_publication_revision` | `Err` | [1454](../../src/config.rs#L1454), [1463](../../src/config.rs#L1463) | external-constructor-callback-or-unresolved |
+| `check_publication_revision` | `actual         .checked_add(1)         .ok_or_else` | [1456](../../src/config.rs#L1456) | receiver-type-required |
+| `check_publication_revision` | `actual         .checked_add` | [1456](../../src/config.rs#L1456) | receiver-type-required |
+| `check_publication_revision` | `PathBuf::from` | [1459](../../src/config.rs#L1459), [1464](../../src/config.rs#L1464) | external-constructor-callback-or-unresolved |
+| `check_publication_revision` | `"revision cannot advance beyond the I-JSON safe-integer range".to_owned` | [1460](../../src/config.rs#L1460) | receiver-type-required |
+| `check_publication_revision` | `Ok` | [1468](../../src/config.rs#L1468) | external-constructor-callback-or-unresolved |
+| `revision_from_value` | `serde_json::to_value(value).map_err` | [1476](../../src/config.rs#L1476) | receiver-type-required |
+| `revision_from_value` | `serde_json::to_value` | [1476](../../src/config.rs#L1476) | external-constructor-callback-or-unresolved |
+| `revision_from_value` | `path.to_path_buf` | [1477](../../src/config.rs#L1477), [1483](../../src/config.rs#L1483) | receiver-type-required |
+| `revision_from_value` | `error.to_string` | [1478](../../src/config.rs#L1478), [1484](../../src/config.rs#L1484) | receiver-type-required |
+| `revision_from_value` | `serde_json::from_value::<RevisionOnly>(value)         .map(&#124;value&#124; value.revision)         .map_err` | [1480](../../src/config.rs#L1480) | receiver-type-required |
+| `revision_from_value` | `serde_json::from_value::<RevisionOnly>(value)         .map` | [1480](../../src/config.rs#L1480) | receiver-type-required |
+| `revision_from_value` | `serde_json::from_value::<RevisionOnly>` | [1480](../../src/config.rs#L1480) | external-constructor-callback-or-unresolved |
+| `validate_workspace_id` | `id.is_empty` | [1489](../../src/config.rs#L1489) | receiver-type-required |
+| `validate_workspace_id` | `id.len` | [1490](../../src/config.rs#L1490) | receiver-type-required |
+| `validate_workspace_id` | `id.starts_with` | [1491](../../src/config.rs#L1491) | receiver-type-required |
+| `validate_workspace_id` | `id             .bytes()             .all` | [1492](../../src/config.rs#L1492) | receiver-type-required |
+| `validate_workspace_id` | `id             .bytes` | [1492](../../src/config.rs#L1492) | receiver-type-required |
+| `validate_workspace_id` | `byte.is_ascii_alphanumeric` | [1494](../../src/config.rs#L1494) | receiver-type-required |
+| `validate_workspace_id` | `Ok` | [1496](../../src/config.rs#L1496) | external-constructor-callback-or-unresolved |
+| `validate_workspace_id` | `Err` | [1498](../../src/config.rs#L1498) | external-constructor-callback-or-unresolved |
+| `validate_workspace_id` | `PathBuf::from` | [1499](../../src/config.rs#L1499) | external-constructor-callback-or-unresolved |
+| `validate_workspace_id` | `"workspace id is outside [A-Za-z0-9._-]".to_owned` | [1500](../../src/config.rs#L1500) | receiver-type-required |
+| `workspace_document_path` | `root.join("workspaces")         .join(workspace_id)         .join` | [1506](../../src/config.rs#L1506) | receiver-type-required |
+| `workspace_document_path` | `root.join("workspaces")         .join` | [1506](../../src/config.rs#L1506) | receiver-type-required |
+| `workspace_document_path` | `root.join` | [1506](../../src/config.rs#L1506) | receiver-type-required |
+| `validate_common` | `Err` | [1518](../../src/config.rs#L1518), [1524](../../src/config.rs#L1524) | external-constructor-callback-or-unresolved |
+| `validate_common` | `path.to_path_buf` | [1519](../../src/config.rs#L1519), [1525](../../src/config.rs#L1525) | receiver-type-required |
+| `validate_common` | `"stored revision must be at least 1".to_owned` | [1526](../../src/config.rs#L1526) | receiver-type-required |
+| `validate_common` | `validate_safe_integer` | [1529](../../src/config.rs#L1529) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `validate_common` | `Ok` | [1530](../../src/config.rs#L1530) | external-constructor-callback-or-unresolved |
+| `validate_workspace` | `validate_common` | [1538](../../src/config.rs#L1538) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_workspace` | `validate_workspace_id` | [1539](../../src/config.rs#L1539) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
+| `validate_workspace` | `validate_id` | [1540](../../src/config.rs#L1540), [1549](../../src/config.rs#L1549) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `validate_workspace` | `value.cwd.is_empty` | [1541](../../src/config.rs#L1541), [1544](../../src/config.rs#L1544) | receiver-type-required |
+| `validate_workspace` | `value.folders.is_empty` | [1541](../../src/config.rs#L1541), [1544](../../src/config.rs#L1544) | receiver-type-required |
+| `validate_workspace` | `invalid` | [1542](../../src/config.rs#L1542), [1545](../../src/config.rs#L1545), [1551](../../src/config.rs#L1551), [1564](../../src/config.rs#L1564) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_workspace` | `BTreeSet::new` | [1547](../../src/config.rs#L1547) | external-constructor-callback-or-unresolved |
+| `validate_workspace` | `binding_ids.insert` | [1550](../../src/config.rs#L1550) | receiver-type-required |
+| `validate_workspace` | `folder.id.as_str` | [1550](../../src/config.rs#L1550) | receiver-type-required |
+| `validate_workspace` | `validate_absolute` | [1553](../../src/config.rs#L1553), [1556](../../src/config.rs#L1556), [1560](../../src/config.rs#L1560) | [profile::config::validate_absolute](../../src/config.rs#L2120) |
+| `validate_workspace` | `value.folder_paths` | [1555](../../src/config.rs#L1555) | receiver-type-required |
+| `validate_workspace` | `policy.writable_roots.iter().chain` | [1559](../../src/config.rs#L1559) | receiver-type-required |
+| `validate_workspace` | `policy.writable_roots.iter` | [1559](../../src/config.rs#L1559) | receiver-type-required |
+| `validate_workspace` | `validate_unique` | [1562](../../src/config.rs#L1562) | [profile::config::validate_unique](../../src/config.rs#L2141) |
+| `validate_workspace` | `Some` | [1563](../../src/config.rs#L1563) | external-constructor-callback-or-unresolved |
+| `validate_workspace` | `validate_safe_integer` | [1567](../../src/config.rs#L1567) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `validate_workspace` | `Ok` | [1570](../../src/config.rs#L1570) | external-constructor-callback-or-unresolved |
+| `validate_providers` | `validate_common` | [1578](../../src/config.rs#L1578) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_providers` | `BTreeSet::new` | [1579](../../src/config.rs#L1579), [1605](../../src/config.rs#L1605) | external-constructor-callback-or-unresolved |
+| `validate_providers` | `validate_id` | [1581](../../src/config.rs#L1581), [1583](../../src/config.rs#L1583), [1585](../../src/config.rs#L1585), [1586](../../src/config.rs#L1586), [1587](../../src/config.rs#L1587), [1588](../../src/config.rs#L1588), [1593](../../src/config.rs#L1593), [1598](../../src/config.rs#L1598), [1603](../../src/config.rs#L1603), [1607](../../src/config.rs#L1607), [1608](../../src/config.rs#L1608), [1629](../../src/config.rs#L1629) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `validate_providers` | `ids.insert` | [1599](../../src/config.rs#L1599) | receiver-type-required |
+| `validate_providers` | `provider.id.as_str` | [1599](../../src/config.rs#L1599) | receiver-type-required |
+| `validate_providers` | `invalid` | [1600](../../src/config.rs#L1600), [1615](../../src/config.rs#L1615), [1621](../../src/config.rs#L1621), [1627](../../src/config.rs#L1627) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_providers` | `validate_safe_integer` | [1609](../../src/config.rs#L1609), [1610](../../src/config.rs#L1610) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `validate_providers` | `models.insert` | [1620](../../src/config.rs#L1620) | receiver-type-required |
+| `validate_providers` | `model.id.as_str` | [1620](../../src/config.rs#L1620) | receiver-type-required |
+| `validate_providers` | `validate_web_search_origin` | [1630](../../src/config.rs#L1630) | [profile::config::validate_web_search_origin](../../src/config.rs#L1635) |
+| `validate_providers` | `Ok` | [1632](../../src/config.rs#L1632) | external-constructor-callback-or-unresolved |
+| `validate_web_search_origin` | `url::Url::parse(value).map_err` | [1636](../../src/config.rs#L1636) | receiver-type-required |
+| `validate_web_search_origin` | `url::Url::parse` | [1636](../../src/config.rs#L1636) | external-constructor-callback-or-unresolved |
+| `validate_web_search_origin` | `path.to_path_buf` | [1637](../../src/config.rs#L1637) | receiver-type-required |
+| `validate_web_search_origin` | `"web_search endpoint is not an absolute URL".to_owned` | [1638](../../src/config.rs#L1638) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.scheme` | [1640](../../src/config.rs#L1640) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.username` | [1641](../../src/config.rs#L1641) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.password().is_some` | [1642](../../src/config.rs#L1642) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.password` | [1642](../../src/config.rs#L1642) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.query().is_some` | [1643](../../src/config.rs#L1643) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.query` | [1643](../../src/config.rs#L1643) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.fragment().is_some` | [1644](../../src/config.rs#L1644) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.fragment` | [1644](../../src/config.rs#L1644) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.path` | [1645](../../src/config.rs#L1645) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.host_str().is_none` | [1646](../../src/config.rs#L1646) | receiver-type-required |
+| `validate_web_search_origin` | `parsed.host_str` | [1646](../../src/config.rs#L1646), [1654](../../src/config.rs#L1654) | receiver-type-required |
+| `validate_web_search_origin` | `value.ends_with` | [1647](../../src/config.rs#L1647) | receiver-type-required |
+| `validate_web_search_origin` | `invalid` | [1649](../../src/config.rs#L1649), [1665](../../src/config.rs#L1665) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_web_search_origin` | `parsed.host_str().expect` | [1654](../../src/config.rs#L1654) | receiver-type-required |
+| `validate_web_search_origin` | `host         .strip_prefix('[')         .and_then(&#124;value&#124; value.strip_suffix(']'))         .unwrap_or` | [1655](../../src/config.rs#L1655) | receiver-type-required |
+| `validate_web_search_origin` | `host         .strip_prefix('[')         .and_then` | [1655](../../src/config.rs#L1655) | receiver-type-required |
+| `validate_web_search_origin` | `host         .strip_prefix` | [1655](../../src/config.rs#L1655) | receiver-type-required |
+| `validate_web_search_origin` | `value.strip_suffix` | [1657](../../src/config.rs#L1657) | receiver-type-required |
+| `validate_web_search_origin` | `host.eq_ignore_ascii_case` | [1659](../../src/config.rs#L1659) | receiver-type-required |
+| `validate_web_search_origin` | `host.ends_with` | [1660](../../src/config.rs#L1660) | receiver-type-required |
+| `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>()             .is_ok_and` | [1661](../../src/config.rs#L1661) | receiver-type-required |
+| `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>` | [1661](../../src/config.rs#L1661) | receiver-type-required |
+| `validate_web_search_origin` | `tools::is_public_internet_address` | [1663](../../src/config.rs#L1663) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1689) |
+| `validate_web_search_origin` | `Ok` | [1667](../../src/config.rs#L1667) | external-constructor-callback-or-unresolved |
+| `validate_settings` | `validate_common` | [1675](../../src/config.rs#L1675) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_settings` | `Some` | [1677](../../src/config.rs#L1677) | external-constructor-callback-or-unresolved |
+| `validate_settings` | `invalid` | [1678](../../src/config.rs#L1678) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_settings` | `validate_safe_integer` | [1685](../../src/config.rs#L1685) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `validate_settings` | `Ok` | [1689](../../src/config.rs#L1689) | external-constructor-callback-or-unresolved |
+| `validate_session_settings` | `validate_common` | [1697](../../src/config.rs#L1697) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_session_settings` | `validate_id` | [1698](../../src/config.rs#L1698), [1699](../../src/config.rs#L1699) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `validate_session_settings` | `value.reasoning_effort.as_deref().is_some_and` | [1700](../../src/config.rs#L1700) | receiver-type-required |
+| `validate_session_settings` | `value.reasoning_effort.as_deref` | [1700](../../src/config.rs#L1700) | receiver-type-required |
+| `validate_session_settings` | `invalid` | [1701](../../src/config.rs#L1701) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_session_settings` | `Ok` | [1703](../../src/config.rs#L1703) | external-constructor-callback-or-unresolved |
+| `validate_session_reference` | `Ok` | [1712](../../src/config.rs#L1712), [1729](../../src/config.rs#L1729) | external-constructor-callback-or-unresolved |
+| `validate_session_reference` | `providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == settings.provider)         .ok_or_else` | [1714](../../src/config.rs#L1714) | receiver-type-required |
+| `validate_session_reference` | `providers         .providers         .iter()         .find` | [1714](../../src/config.rs#L1714) | receiver-type-required |
+| `validate_session_reference` | `providers         .providers         .iter` | [1714](../../src/config.rs#L1714) | receiver-type-required |
+| `validate_session_reference` | `path.to_path_buf` | [1719](../../src/config.rs#L1719) | receiver-type-required |
+| `validate_session_reference` | `provider         .models         .iter()         .any` | [1722](../../src/config.rs#L1722) | receiver-type-required |
+| `validate_session_reference` | `provider         .models         .iter` | [1722](../../src/config.rs#L1722) | receiver-type-required |
+| `validate_session_reference` | `invalid_reference` | [1727](../../src/config.rs#L1727) | [profile::config::invalid_reference](../../src/config.rs#L2157) |
+| `validate_references` | `settings.default_provider.as_deref` | [1740](../../src/config.rs#L1740) | receiver-type-required |
+| `validate_references` | `settings.default_model.as_deref` | [1741](../../src/config.rs#L1741) | receiver-type-required |
+| `validate_references` | `workspace                 .policy                 .as_ref()                 .and_then` | [1744](../../src/config.rs#L1744), [1748](../../src/config.rs#L1748) | receiver-type-required |
+| `validate_references` | `workspace                 .policy                 .as_ref` | [1744](../../src/config.rs#L1744), [1748](../../src/config.rs#L1748) | receiver-type-required |
+| `validate_references` | `value.provider.as_deref` | [1747](../../src/config.rs#L1747) | receiver-type-required |
+| `validate_references` | `value.model.as_deref` | [1751](../../src/config.rs#L1751) | receiver-type-required |
+| `validate_references` | `model.is_some` | [1755](../../src/config.rs#L1755) | receiver-type-required |
+| `validate_references` | `invalid_reference` | [1756](../../src/config.rs#L1756), [1774](../../src/config.rs#L1774) | [profile::config::invalid_reference](../../src/config.rs#L2157) |
+| `validate_references` | `providers             .providers             .iter()             .find(&#124;value&#124; value.id == provider_id)             .ok_or_else` | [1760](../../src/config.rs#L1760) | receiver-type-required |
+| `validate_references` | `providers             .providers             .iter()             .find` | [1760](../../src/config.rs#L1760) | receiver-type-required |
+| `validate_references` | `providers             .providers             .iter` | [1760](../../src/config.rs#L1760) | receiver-type-required |
+| `validate_references` | `path.to_path_buf` | [1765](../../src/config.rs#L1765) | receiver-type-required |
+| `validate_references` | `provider                 .models                 .iter()                 .any` | [1769](../../src/config.rs#L1769) | receiver-type-required |
+| `validate_references` | `provider                 .models                 .iter` | [1769](../../src/config.rs#L1769) | receiver-type-required |
+| `validate_references` | `Ok` | [1777](../../src/config.rs#L1777) | external-constructor-callback-or-unresolved |
+| `session_preset_tools` | `session_folder.join` | [1782](../../src/config.rs#L1782) | receiver-type-required |
+| `session_preset_tools` | `ledger.is_file` | [1783](../../src/config.rs#L1783) | receiver-type-required |
+| `session_preset_tools` | `Ok` | [1784](../../src/config.rs#L1784), [1787](../../src/config.rs#L1787), [1794](../../src/config.rs#L1794), [1802](../../src/config.rs#L1802) | external-constructor-callback-or-unresolved |
+| `session_preset_tools` | `store::read_genesis` | [1786](../../src/config.rs#L1786) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `session_preset_tools` | `serde_json::to_value(genesis.raw()).map_err` | [1789](../../src/config.rs#L1789) | receiver-type-required |
+| `session_preset_tools` | `serde_json::to_value` | [1789](../../src/config.rs#L1789) | external-constructor-callback-or-unresolved |
+| `session_preset_tools` | `genesis.raw` | [1789](../../src/config.rs#L1789) | receiver-type-required |
+| `session_preset_tools` | `ledger.clone` | [1790](../../src/config.rs#L1790) | receiver-type-required |
+| `session_preset_tools` | `error.to_string` | [1791](../../src/config.rs#L1791) | receiver-type-required |
+| `session_preset_tools` | `raw.get` | [1793](../../src/config.rs#L1793) | receiver-type-required |
+| `session_preset_tools` | `tools::ResolvedPreset::from_genesis(preset).map_err` | [1796](../../src/config.rs#L1796) | receiver-type-required |
+| `session_preset_tools` | `tools::ResolvedPreset::from_genesis` | [1796](../../src/config.rs#L1796) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
+| `apply_scope` | `environments.environment(scope.environment).ok_or_else` | [1816](../../src/config.rs#L1816) | receiver-type-required |
+| `apply_scope` | `environments.environment` | [1816](../../src/config.rs#L1816) | receiver-type-required |
+| `apply_scope` | `path.to_path_buf` | [1818](../../src/config.rs#L1818), [1829](../../src/config.rs#L1829), [1842](../../src/config.rs#L1842) | receiver-type-required |
+| `apply_scope` | `Vec::with_capacity` | [1823](../../src/config.rs#L1823) | external-constructor-callback-or-unresolved |
+| `apply_scope` | `ids.len` | [1823](../../src/config.rs#L1823) | receiver-type-required |
+| `apply_scope` | `workspace                     .path_for_binding(id)                     .ok_or_else` | [1826](../../src/config.rs#L1826) | receiver-type-required |
+| `apply_scope` | `workspace                     .path_for_binding` | [1826](../../src/config.rs#L1826) | receiver-type-required |
+| `apply_scope` | `canonical_directory` | [1832](../../src/config.rs#L1832), [1862](../../src/config.rs#L1862) | [profile::config::canonical_directory](../../src/config.rs#L2099) |
+| `apply_scope` | `cwd.contains` | [1833](../../src/config.rs#L1833), [1839](../../src/config.rs#L1839) | receiver-type-required |
+| `apply_scope` | `invalid` | [1834](../../src/config.rs#L1834), [1864](../../src/config.rs#L1864) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `apply_scope` | `cwd.push` | [1836](../../src/config.rs#L1836) | receiver-type-required |
+| `apply_scope` | `Err` | [1841](../../src/config.rs#L1841) | external-constructor-callback-or-unresolved |
+| `apply_scope` | `"folder binding is not one of the session's folders".to_owned` | [1843](../../src/config.rs#L1843) | receiver-type-required |
+| `apply_scope` | `resolved             .policy             .writable_roots             .retain` | [1846](../../src/config.rs#L1846) | receiver-type-required |
+| `apply_scope` | `cwd.iter().any` | [1849](../../src/config.rs#L1849) | receiver-type-required |
+| `apply_scope` | `cwd.iter` | [1849](../../src/config.rs#L1849) | receiver-type-required |
+| `apply_scope` | `Path::new(root).starts_with` | [1849](../../src/config.rs#L1849) | receiver-type-required |
+| `apply_scope` | `Path::new` | [1849](../../src/config.rs#L1849) | external-constructor-callback-or-unresolved |
+| `apply_scope` | `Some` | [1851](../../src/config.rs#L1851), [1858](../../src/config.rs#L1858), [1870](../../src/config.rs#L1870) | external-constructor-callback-or-unresolved |
+| `apply_scope` | `ids.to_vec` | [1851](../../src/config.rs#L1851) | receiver-type-required |
+| `apply_scope` | `left.min` | [1858](../../src/config.rs#L1858) | receiver-type-required |
+| `apply_scope` | `left.or` | [1859](../../src/config.rs#L1859) | receiver-type-required |
+| `apply_scope` | `canonical.contains` | [1863](../../src/config.rs#L1863) | receiver-type-required |
+| `apply_scope` | `resolved.policy.toolchain_roots.push` | [1866](../../src/config.rs#L1866) | receiver-type-required |
+| `apply_scope` | `resolved.policy.toolchain_roots.sort` | [1868](../../src/config.rs#L1868) | receiver-type-required |
+| `apply_scope` | `resolved.policy.toolchain_roots.dedup` | [1869](../../src/config.rs#L1869) | receiver-type-required |
+| `apply_scope` | `Ok` | [1871](../../src/config.rs#L1871) | external-constructor-callback-or-unresolved |
+| `validate_environments` | `validate_common` | [1879](../../src/config.rs#L1879) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_environments` | `BTreeSet::new` | [1880](../../src/config.rs#L1880) | external-constructor-callback-or-unresolved |
+| `validate_environments` | `validate_id` | [1882](../../src/config.rs#L1882) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `validate_environments` | `environment.id.len` | [1883](../../src/config.rs#L1883) | receiver-type-required |
+| `validate_environments` | `environment.id.nfc().collect::<String>` | [1883](../../src/config.rs#L1883) | receiver-type-required |
+| `validate_environments` | `environment.id.nfc` | [1883](../../src/config.rs#L1883) | receiver-type-required |
+| `validate_environments` | `invalid` | [1885](../../src/config.rs#L1885), [1888](../../src/config.rs#L1888), [1892](../../src/config.rs#L1892), [1896](../../src/config.rs#L1896) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_environments` | `ids.insert` | [1887](../../src/config.rs#L1887) | receiver-type-required |
+| `validate_environments` | `environment.id.as_str` | [1887](../../src/config.rs#L1887) | receiver-type-required |
+| `validate_environments` | `Path::new(root).is_absolute` | [1891](../../src/config.rs#L1891) | receiver-type-required |
+| `validate_environments` | `Path::new` | [1891](../../src/config.rs#L1891) | external-constructor-callback-or-unresolved |
+| `validate_environments` | `root.contains` | [1891](../../src/config.rs#L1891) | receiver-type-required |
+| `validate_environments` | `Some` | [1895](../../src/config.rs#L1895) | external-constructor-callback-or-unresolved |
+| `validate_environments` | `Ok` | [1899](../../src/config.rs#L1899) | external-constructor-callback-or-unresolved |
+| `resolve_workspace` | `Vec::new` | [1906](../../src/config.rs#L1906), [1915](../../src/config.rs#L1915), [1929](../../src/config.rs#L1929) | external-constructor-callback-or-unresolved |
+| `resolve_workspace` | `value.folder_paths` | [1907](../../src/config.rs#L1907) | receiver-type-required |
+| `resolve_workspace` | `canonical_directory` | [1908](../../src/config.rs#L1908), [1917](../../src/config.rs#L1917), [1931](../../src/config.rs#L1931) | [profile::config::canonical_directory](../../src/config.rs#L2099) |
+| `resolve_workspace` | `cwd.contains` | [1909](../../src/config.rs#L1909) | receiver-type-required |
+| `resolve_workspace` | `invalid` | [1910](../../src/config.rs#L1910), [1922](../../src/config.rs#L1922), [1933](../../src/config.rs#L1933) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `resolve_workspace` | `cwd.push` | [1912](../../src/config.rs#L1912) | receiver-type-required |
+| `resolve_workspace` | `value.policy.clone().unwrap_or_default` | [1914](../../src/config.rs#L1914) | receiver-type-required |
+| `resolve_workspace` | `value.policy.clone` | [1914](../../src/config.rs#L1914) | receiver-type-required |
+| `resolve_workspace` | `cwd             .iter()             .any` | [1918](../../src/config.rs#L1918) | receiver-type-required |
+| `resolve_workspace` | `cwd             .iter` | [1918](../../src/config.rs#L1918) | receiver-type-required |
+| `resolve_workspace` | `Path::new(&resolved).starts_with` | [1920](../../src/config.rs#L1920) | receiver-type-required |
+| `resolve_workspace` | `Path::new` | [1920](../../src/config.rs#L1920) | external-constructor-callback-or-unresolved |
+| `resolve_workspace` | `roots.push` | [1924](../../src/config.rs#L1924) | receiver-type-required |
+| `resolve_workspace` | `roots.sort` | [1926](../../src/config.rs#L1926) | receiver-type-required |
+| `resolve_workspace` | `roots.dedup` | [1927](../../src/config.rs#L1927) | receiver-type-required |
+| `resolve_workspace` | `canonical.contains` | [1932](../../src/config.rs#L1932) | receiver-type-required |
+| `resolve_workspace` | `toolchains.push` | [1935](../../src/config.rs#L1935) | receiver-type-required |
+| `resolve_workspace` | `toolchains.sort` | [1937](../../src/config.rs#L1937) | receiver-type-required |
+| `resolve_workspace` | `toolchains.dedup` | [1938](../../src/config.rs#L1938) | receiver-type-required |
+| `resolve_workspace` | `policy.allowed_tools.sort` | [1940](../../src/config.rs#L1940) | receiver-type-required |
+| `resolve_workspace` | `policy.allowed_tools.dedup` | [1941](../../src/config.rs#L1941) | receiver-type-required |
+| `resolve_workspace` | `Ok` | [1942](../../src/config.rs#L1942) | external-constructor-callback-or-unresolved |
+| `resolve_workspace` | `value.id.clone` | [1945](../../src/config.rs#L1945) | receiver-type-required |
+| `resolve_workspace` | `value.name.clone` | [1946](../../src/config.rs#L1946) | receiver-type-required |
+| `validate_snapshot` | `Path::new` | [1957](../../src/config.rs#L1957), [2028](../../src/config.rs#L2028) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `validate_absolute` | [1959](../../src/config.rs#L1959), [1983](../../src/config.rs#L1983), [1999](../../src/config.rs#L1999), [2011](../../src/config.rs#L2011), [2020](../../src/config.rs#L2020) | [profile::config::validate_absolute](../../src/config.rs#L2120) |
+| `validate_snapshot` | `Err` | [1962](../../src/config.rs#L1962) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `path.to_path_buf` | [1963](../../src/config.rs#L1963) | receiver-type-required |
+| `validate_snapshot` | `validate_common` | [1967](../../src/config.rs#L1967) | [profile::config::validate_common](../../src/config.rs#L1511) |
+| `validate_snapshot` | `validate_workspace_id` | [1973](../../src/config.rs#L1973) | [profile::config::validate_workspace_id](../../src/config.rs#L1488) |
+| `validate_snapshot` | `validate_id` | [1974](../../src/config.rs#L1974), [1976](../../src/config.rs#L1976) | [profile::config::validate_id](../../src/config.rs#L2130) |
+| `validate_snapshot` | `snapshot.workspace.folder_binding.as_ref` | [1979](../../src/config.rs#L1979) | receiver-type-required |
+| `validate_snapshot` | `snapshot.workspace.selected_cwd.as_ref` | [1980](../../src/config.rs#L1980) | receiver-type-required |
+| `validate_snapshot` | `canonical_directory` | [1984](../../src/config.rs#L1984), [2000](../../src/config.rs#L2000), [2012](../../src/config.rs#L2012), [2021](../../src/config.rs#L2021) | [profile::config::canonical_directory](../../src/config.rs#L2099) |
+| `validate_snapshot` | `invalid` | [1985](../../src/config.rs#L1985), [1988](../../src/config.rs#L1988), [1992](../../src/config.rs#L1992), [1995](../../src/config.rs#L1995), [2001](../../src/config.rs#L2001), [2008](../../src/config.rs#L2008), [2013](../../src/config.rs#L2013), [2022](../../src/config.rs#L2022), [2030](../../src/config.rs#L2030), [2035](../../src/config.rs#L2035), [2045](../../src/config.rs#L2045), [2051](../../src/config.rs#L2051), [2076](../../src/config.rs#L2076) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_snapshot` | `snapshot.workspace.cwd.contains` | [1987](../../src/config.rs#L1987) | receiver-type-required |
+| `validate_snapshot` | `snapshot.workspace.cwd.is_empty` | [1994](../../src/config.rs#L1994) | receiver-type-required |
+| `validate_snapshot` | `validate_unique` | [1997](../../src/config.rs#L1997) | [profile::config::validate_unique](../../src/config.rs#L2141) |
+| `validate_snapshot` | `is_sorted_unique` | [2004](../../src/config.rs#L2004), [2005](../../src/config.rs#L2005), [2006](../../src/config.rs#L2006) | [profile::config::is_sorted_unique](../../src/config.rs#L2095) |
+| `validate_snapshot` | `root.contains` | [2012](../../src/config.rs#L2012) | receiver-type-required |
+| `validate_snapshot` | `snapshot             .workspace             .cwd             .iter()             .any` | [2024](../../src/config.rs#L2024) | receiver-type-required |
+| `validate_snapshot` | `snapshot             .workspace             .cwd             .iter` | [2024](../../src/config.rs#L2024) | receiver-type-required |
+| `validate_snapshot` | `Path::new(root).starts_with` | [2028](../../src/config.rs#L2028) | receiver-type-required |
+| `validate_snapshot` | `validate_safe_integer` | [2037](../../src/config.rs#L2037) | [profile::config::validate_safe_integer](../../src/config.rs#L2084) |
+| `validate_snapshot` | `validate_providers` | [2039](../../src/config.rs#L2039) | [profile::config::validate_providers](../../src/config.rs#L1573) |
+| `validate_snapshot` | `validate_settings` | [2040](../../src/config.rs#L2040) | [profile::config::validate_settings](../../src/config.rs#L1670) |
+| `validate_snapshot` | `validate_session_settings` | [2042](../../src/config.rs#L2042) | [profile::config::validate_session_settings](../../src/config.rs#L1692) |
+| `validate_snapshot` | `ProvidersConfig::default` | [2044](../../src/config.rs#L2044) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `SettingsConfig::default` | [2050](../../src/config.rs#L2050) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `snapshot.workspace.id.clone` | [2059](../../src/config.rs#L2059) | receiver-type-required |
+| `validate_snapshot` | `snapshot.workspace.name.clone` | [2060](../../src/config.rs#L2060) | receiver-type-required |
+| `validate_snapshot` | `snapshot.workspace.cwd.clone` | [2061](../../src/config.rs#L2061) | receiver-type-required |
+| `validate_snapshot` | `Vec::new` | [2062](../../src/config.rs#L2062) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `Some` | [2063](../../src/config.rs#L2063) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `snapshot.workspace.policy.clone` | [2063](../../src/config.rs#L2063) | receiver-type-required |
+| `validate_snapshot` | `validate_references` | [2065](../../src/config.rs#L2065) | [profile::config::validate_references](../../src/config.rs#L1732) |
+| `validate_snapshot` | `validate_session_reference` | [2066](../../src/config.rs#L2066) | [profile::config::validate_session_reference](../../src/config.rs#L1706) |
+| `validate_snapshot` | `snapshot                 .session_settings                 .as_ref()                 .map` | [2071](../../src/config.rs#L2071) | receiver-type-required |
+| `validate_snapshot` | `snapshot                 .session_settings                 .as_ref` | [2071](../../src/config.rs#L2071) | receiver-type-required |
+| `validate_snapshot` | `Ok` | [2081](../../src/config.rs#L2081) | external-constructor-callback-or-unresolved |
+| `validate_safe_integer` | `Ok` | [2086](../../src/config.rs#L2086) | external-constructor-callback-or-unresolved |
+| `validate_safe_integer` | `invalid` | [2088](../../src/config.rs#L2088) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `is_sorted_unique` | `values.windows(2).all` | [2096](../../src/config.rs#L2096) | receiver-type-required |
+| `is_sorted_unique` | `values.windows` | [2096](../../src/config.rs#L2096) | receiver-type-required |
+| `canonical_directory` | `validate_absolute` | [2100](../../src/config.rs#L2100) | [profile::config::validate_absolute](../../src/config.rs#L2120) |
+| `canonical_directory` | `fs::canonicalize(value).map_err` | [2101](../../src/config.rs#L2101) | receiver-type-required |
+| `canonical_directory` | `fs::canonicalize` | [2101](../../src/config.rs#L2101) | external-constructor-callback-or-unresolved |
+| `canonical_directory` | `PathBuf::from` | [2102](../../src/config.rs#L2102) | external-constructor-callback-or-unresolved |
+| `canonical_directory` | `error.to_string` | [2103](../../src/config.rs#L2103) | receiver-type-required |
+| `canonical_directory` | `canonical.is_dir` | [2105](../../src/config.rs#L2105) | receiver-type-required |
+| `canonical_directory` | `Err` | [2106](../../src/config.rs#L2106) | external-constructor-callback-or-unresolved |
+| `canonical_directory` | `"expected a directory".to_owned` | [2108](../../src/config.rs#L2108) | receiver-type-required |
+| `canonical_directory` | `canonical         .to_str()         .map(ToOwned::to_owned)         .ok_or_else` | [2111](../../src/config.rs#L2111) | receiver-type-required |
+| `canonical_directory` | `canonical         .to_str()         .map` | [2111](../../src/config.rs#L2111) | receiver-type-required |
+| `canonical_directory` | `canonical         .to_str` | [2111](../../src/config.rs#L2111) | receiver-type-required |
+| `canonical_directory` | `"path is not UTF-8".to_owned` | [2116](../../src/config.rs#L2116) | receiver-type-required |
+| `validate_absolute` | `value.contains` | [2121](../../src/config.rs#L2121) | receiver-type-required |
+| `validate_absolute` | `Path::new(value).is_absolute` | [2121](../../src/config.rs#L2121) | receiver-type-required |
+| `validate_absolute` | `Path::new` | [2121](../../src/config.rs#L2121) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `Err` | [2122](../../src/config.rs#L2122) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `source.to_path_buf` | [2123](../../src/config.rs#L2123) | receiver-type-required |
+| `validate_absolute` | `Ok` | [2127](../../src/config.rs#L2127) | external-constructor-callback-or-unresolved |
+| `validate_id` | `value.is_empty` | [2131](../../src/config.rs#L2131) | receiver-type-required |
+| `validate_id` | `value.chars().any` | [2131](../../src/config.rs#L2131) | receiver-type-required |
+| `validate_id` | `value.chars` | [2131](../../src/config.rs#L2131) | receiver-type-required |
+| `validate_id` | `invalid` | [2132](../../src/config.rs#L2132) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `validate_id` | `Ok` | [2137](../../src/config.rs#L2137) | external-constructor-callback-or-unresolved |
+| `validate_unique` | `values.iter().collect::<BTreeSet<_>>` | [2142](../../src/config.rs#L2142) | receiver-type-required |
+| `validate_unique` | `values.iter` | [2142](../../src/config.rs#L2142) | receiver-type-required |
+| `validate_unique` | `unique.len` | [2143](../../src/config.rs#L2143) | receiver-type-required |
+| `validate_unique` | `values.len` | [2143](../../src/config.rs#L2143) | receiver-type-required |
+| `validate_unique` | `Ok` | [2144](../../src/config.rs#L2144) | external-constructor-callback-or-unresolved |
+| `validate_unique` | `invalid` | [2146](../../src/config.rs#L2146) | [profile::config::invalid](../../src/config.rs#L2150) |
+| `invalid` | `Err` | [2151](../../src/config.rs#L2151) | external-constructor-callback-or-unresolved |
+| `invalid` | `path.to_path_buf` | [2152](../../src/config.rs#L2152) | receiver-type-required |
+| `invalid` | `reason.to_owned` | [2153](../../src/config.rs#L2153) | receiver-type-required |
+| `invalid_reference` | `Err` | [2158](../../src/config.rs#L2158) | external-constructor-callback-or-unresolved |
+| `invalid_reference` | `path.to_path_buf` | [2159](../../src/config.rs#L2159) | receiver-type-required |
+| `invalid_reference` | `reason.to_owned` | [2160](../../src/config.rs#L2160) | receiver-type-required |
+| `removed` | `current.iter().collect::<BTreeSet<_>>` | [2165](../../src/config.rs#L2165) | receiver-type-required |
+| `removed` | `current.iter` | [2165](../../src/config.rs#L2165) | receiver-type-required |
+| `removed` | `previous.iter().any` | [2166](../../src/config.rs#L2166) | receiver-type-required |
+| `removed` | `previous.iter` | [2166](../../src/config.rs#L2166) | receiver-type-required |
+| `removed` | `current.contains` | [2166](../../src/config.rs#L2166) | receiver-type-required |
+| `enabled_provider_models` | `providers         .providers         .iter()         .flat_map(&#124;provider&#124; {             provider                 .models                 .iter()                 .filter(&#124;model&#124; model.enabled)                 .map(move &#124;model&#124; (provider.id.as_str(), model.id.as_str()))         })         .collect` | [2178](../../src/config.rs#L2178) | receiver-type-required |
+| `enabled_provider_models` | `providers         .providers         .iter()         .flat_map` | [2178](../../src/config.rs#L2178) | receiver-type-required |
+| `enabled_provider_models` | `providers         .providers         .iter` | [2178](../../src/config.rs#L2178) | receiver-type-required |
+| `enabled_provider_models` | `provider                 .models                 .iter()                 .filter(&#124;model&#124; model.enabled)                 .map` | [2182](../../src/config.rs#L2182) | receiver-type-required |
+| `enabled_provider_models` | `provider                 .models                 .iter()                 .filter` | [2182](../../src/config.rs#L2182) | receiver-type-required |
+| `enabled_provider_models` | `provider                 .models                 .iter` | [2182](../../src/config.rs#L2182) | receiver-type-required |
+| `enabled_provider_models` | `provider.id.as_str` | [2186](../../src/config.rs#L2186) | receiver-type-required |
+| `enabled_provider_models` | `model.id.as_str` | [2186](../../src/config.rs#L2186) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `tempfile::tempdir().expect` | [2203](../../src/config.rs#L2203) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `tempfile::tempdir` | [2203](../../src/config.rs#L2203) | external-constructor-callback-or-unresolved |
+| `private_directory_rejects_wrong_owner` | `rustix::process::geteuid().as_raw` | [2204](../../src/config.rs#L2204) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `rustix::process::geteuid` | [2204](../../src/config.rs#L2204) | external-constructor-callback-or-unresolved |
+| `private_directory_rejects_wrong_owner` | `open_private_root(root.path(), actual_uid, false).expect` | [2205](../../src/config.rs#L2205) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `open_private_root` | [2205](../../src/config.rs#L2205) | [profile::config::open_private_root](../../src/config.rs#L575) |
+| `private_directory_rejects_wrong_owner` | `root.path` | [2205](../../src/config.rs#L2205), [2207](../../src/config.rs#L2207) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `validate_private_directory_fd(&descriptor, root.path(), actual_uid.wrapping_add(1))                 .expect_err` | [2207](../../src/config.rs#L2207) | receiver-type-required |
+| `private_directory_rejects_wrong_owner` | `validate_private_directory_fd` | [2207](../../src/config.rs#L2207) | [profile::config::validate_private_directory_fd](../../src/config.rs#L507) |
+| `private_directory_rejects_wrong_owner` | `actual_uid.wrapping_add` | [2207](../../src/config.rs#L2207) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `tempfile::tempdir().expect` | [2215](../../src/config.rs#L2215) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `tempfile::tempdir` | [2215](../../src/config.rs#L2215) | external-constructor-callback-or-unresolved |
+| `sandbox_fallback_rejects_a_symlinked_path` | `root.path().join` | [2216](../../src/config.rs#L2216), [2218](../../src/config.rs#L2218) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `root.path` | [2216](../../src/config.rs#L2216), [2218](../../src/config.rs#L2218) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `std::fs::create_dir(&directory).expect` | [2217](../../src/config.rs#L2217) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `std::fs::create_dir` | [2217](../../src/config.rs#L2217) | external-constructor-callback-or-unresolved |
+| `sandbox_fallback_rejects_a_symlinked_path` | `std::os::unix::fs::symlink(&directory, &alias).expect` | [2219](../../src/config.rs#L2219) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `std::os::unix::fs::symlink` | [2219](../../src/config.rs#L2219) | external-constructor-callback-or-unresolved |
+| `sandbox_fallback_rejects_a_symlinked_path` | `open_private_root_sandboxed(             &alias,             &alias,             OFlags::RDONLY &#124; OFlags::DIRECTORY &#124; OFlags::CLOEXEC &#124; OFlags::NOFOLLOW,             rustix::process::geteuid().as_raw(),         )         .expect_err` | [2220](../../src/config.rs#L2220) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `open_private_root_sandboxed` | [2220](../../src/config.rs#L2220) | [profile::config::open_private_root_sandboxed](../../src/config.rs#L737) |
+| `sandbox_fallback_rejects_a_symlinked_path` | `rustix::process::geteuid().as_raw` | [2224](../../src/config.rs#L2224) | receiver-type-required |
+| `sandbox_fallback_rejects_a_symlinked_path` | `rustix::process::geteuid` | [2224](../../src/config.rs#L2224) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `tempfile::tempdir().unwrap` | [2237](../../src/config.rs#L2237) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `tempfile::tempdir` | [2237](../../src/config.rs#L2237) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `root.path().join` | [2238](../../src/config.rs#L2238), [2239](../../src/config.rs#L2239), [2242](../../src/config.rs#L2242), [2271](../../src/config.rs#L2271) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `root.path` | [2238](../../src/config.rs#L2238), [2239](../../src/config.rs#L2239), [2242](../../src/config.rs#L2242), [2271](../../src/config.rs#L2271) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all(&workspace).unwrap` | [2240](../../src/config.rs#L2240) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all` | [2240](../../src/config.rs#L2240), [2241](../../src/config.rs#L2241) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir_all(chain.join("bin")).unwrap` | [2241](../../src/config.rs#L2241) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `chain.join` | [2241](../../src/config.rs#L2241) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `std::os::unix::fs::symlink(&chain, &alias).unwrap` | [2243](../../src/config.rs#L2243) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `std::os::unix::fs::symlink` | [2243](../../src/config.rs#L2243) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `"ws".into` | [2247](../../src/config.rs#L2247), [2248](../../src/config.rs#L2248) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Some` | [2251](../../src/config.rs#L2251) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Default::default` | [2256](../../src/config.rs#L2256) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `resolve_workspace(&config, Path::new("test.json")).unwrap` | [2259](../../src/config.rs#L2259) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `resolve_workspace` | [2259](../../src/config.rs#L2259) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `Path::new` | [2259](../../src/config.rs#L2259) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir(&ambiguous).unwrap` | [2272](../../src/config.rs#L2272) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `fs::create_dir` | [2272](../../src/config.rs#L2272) | external-constructor-callback-or-unresolved |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `config.policy.as_mut().unwrap` | [2273](../../src/config.rs#L2273) | receiver-type-required |
+| `toolchain_roots_are_canonical_deduplicated_and_never_writable_roots` | `config.policy.as_mut` | [2273](../../src/config.rs#L2273) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `tempfile::tempdir().unwrap` | [2285](../../src/config.rs#L2285) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `tempfile::tempdir` | [2285](../../src/config.rs#L2285) | external-constructor-callback-or-unresolved |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `std::fs::canonicalize(root.path()).unwrap` | [2286](../../src/config.rs#L2286) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `std::fs::canonicalize` | [2286](../../src/config.rs#L2286) | external-constructor-callback-or-unresolved |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `root.path` | [2286](../../src/config.rs#L2286) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect("i-json")             .canonical_bytes()             .expect` | [2298](../../src/config.rs#L2298) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect("i-json")             .canonical_bytes` | [2298](../../src/config.rs#L2298) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())             .expect` | [2298](../../src/config.rs#L2298) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `schema::IJsonValue::parse` | [2298](../../src/config.rs#L2298) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `serde_json::to_vec(&legacy).unwrap` | [2298](../../src/config.rs#L2298) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `serde_json::to_vec` | [2298](../../src/config.rs#L2298) | external-constructor-callback-or-unresolved |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `bytes.push` | [2302](../../src/config.rs#L2302) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `ConfigSnapshot::decode(&bytes).expect` | [2303](../../src/config.rs#L2303) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `ConfigSnapshot::decode` | [2303](../../src/config.rs#L2303) | external-constructor-callback-or-unresolved |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `snapshot.canonical_bytes().expect` | [2304](../../src/config.rs#L2304) | receiver-type-required |
+| `a_snapshot_published_with_the_integrations_file_still_decodes` | `snapshot.canonical_bytes` | [2304](../../src/config.rs#L2304) | receiver-type-required |

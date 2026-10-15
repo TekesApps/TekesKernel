@@ -218,7 +218,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request` | `state.requests.insert` | [199](../../src/folder_authority.rs#L199) | receiver-type-required |
 | `request` | `operation.to_owned` | [199](../../src/folder_authority.rs#L199) | receiver-type-required |
 | `request` | `Ok` | [200](../../src/folder_authority.rs#L200) | external-constructor-callback-or-unresolved |
-| `prior_grant` | `crate::digest` | [213](../../src/folder_authority.rs#L213) | [profile::digest](../../src/lib.rs#L130) |
+| `prior_grant` | `crate::digest` | [213](../../src/folder_authority.rs#L213) | [profile::digest](../../src/lib.rs#L132) |
 | `prior_grant` | `serde_json_canonicalizer::to_vec(                 &serde_json::json!({"expected":expected,"request":{"grant":request}}),             )             .map_err` | [214](../../src/folder_authority.rs#L214) | receiver-type-required |
 | `prior_grant` | `serde_json_canonicalizer::to_vec` | [214](../../src/folder_authority.rs#L214) | external-constructor-callback-or-unresolved |
 | `prior_grant` | `self.load()?.operations.get` | [219](../../src/folder_authority.rs#L219) | receiver-type-required |
@@ -266,7 +266,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `mutate` | `self.directory().join` | [308](../../src/folder_authority.rs#L308) | receiver-type-required |
 | `mutate` | `self.directory` | [308](../../src/folder_authority.rs#L308) | [profile::folder_authority::FolderAuthorityStore::directory](../../src/folder_authority.rs#L92) |
 | `mutate` | `self.load` | [310](../../src/folder_authority.rs#L310) | [profile::folder_authority::FolderAuthorityStore::load](../../src/folder_authority.rs#L99) |
-| `mutate` | `crate::digest` | [311](../../src/folder_authority.rs#L311) | [profile::digest](../../src/lib.rs#L130) |
+| `mutate` | `crate::digest` | [311](../../src/folder_authority.rs#L311) | [profile::digest](../../src/lib.rs#L132) |
 | `mutate` | `serde_json_canonicalizer::to_vec(                 &serde_json::json!({"expected":expected,"request":request}),             )             .map_err` | [312](../../src/folder_authority.rs#L312) | receiver-type-required |
 | `mutate` | `serde_json_canonicalizer::to_vec` | [312](../../src/folder_authority.rs#L312), [354](../../src/folder_authority.rs#L354) | external-constructor-callback-or-unresolved |
 | `mutate` | `state.operations.get` | [317](../../src/folder_authority.rs#L317) | receiver-type-required |
@@ -331,7 +331,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `identify` | `path         .to_str()         .ok_or_else(&#124;&#124; invalid("non-utf8-folder"))?         .to_owned` | [414](../../src/folder_authority.rs#L414) | receiver-type-required |
 | `identify` | `path         .to_str()         .ok_or_else` | [414](../../src/folder_authority.rs#L414) | receiver-type-required |
 | `identify` | `path         .to_str` | [414](../../src/folder_authority.rs#L414) | receiver-type-required |
-| `identify` | `crate::digest` | [418](../../src/folder_authority.rs#L418) | [profile::digest](../../src/lib.rs#L130) |
+| `identify` | `crate::digest` | [418](../../src/folder_authority.rs#L418) | [profile::digest](../../src/lib.rs#L132) |
 | `identify` | `serde_json_canonicalizer::to_vec(&("folder-identity/v1", &identity))             .map_err` | [419](../../src/folder_authority.rs#L419) | receiver-type-required |
 | `identify` | `serde_json_canonicalizer::to_vec` | [419](../../src/folder_authority.rs#L419) | external-constructor-callback-or-unresolved |
 | `identify` | `Ok` | [422](../../src/folder_authority.rs#L422) | external-constructor-callback-or-unresolved |

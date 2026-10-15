@@ -422,9 +422,10 @@ request digest)` operation record under `endpoint-management/` is prepared
 before config publication and is recovered like `workspace.relocate`. An
 exact retry resumes or replays that record without rechecking preconditions.
 They also hold the same in-process gate as `workspace.policy.set`. Existing
-sessions keep their `folder_binding`; the next worker launch of any session
-in the workspace resolves the edited folder list, while a running worker keeps
-its launch snapshot. Errors are `workspace-not-found`,
+sessions keep their `folder_binding`. Detached sessions resolve their own
+creation seed and are unaffected by these template edits; old sessions without
+a usable creation asset retain the compatibility resolver. A running worker
+keeps its launch snapshot. Errors are `workspace-not-found`,
 `workspace-invalid-path`, `workspace-ambiguous`, `workspace-busy`,
 `workspace-last-folder`, `workspace-folder-in-use`, and
 `workspace-legacy-session`.
@@ -566,10 +567,11 @@ these navigation groups; grouping grants no execution or trust authority.
 
 Relocate rebinds a folder that the host has already moved on disk; Kernel does
 not move project files. `previousPath` is the exact currently configured path,
-even when that directory no longer exists. One matching compatibility binding
-is required; an unknown path is `workspace-invalid-path` and multiple owners
-are `workspace-ambiguous`. An active worker in its compatibility workspace is
-`workspace-busy`. The destination must satisfy the normal folder-entry guards.
+even when that directory no longer exists. A logical Folder or one matching
+legacy compatibility binding is required; an unknown path is
+`workspace-invalid-path` and ambiguous legacy owners are `workspace-ambiguous`.
+An active worker using the logical Folder or its legacy compatibility workspace
+is `workspace-busy`. The destination must satisfy the normal folder-entry guards.
 Successful response is `{relocated:true}`. Stable bindings and semantic ledgers
 remain unchanged; only future launch resolution and inventory paths follow
 the new directory. Existing workspace compatibility configuration and writable
@@ -587,3 +589,35 @@ error code is `folder-trust-refused`; no grant capability exists. Resource
 list/read optionally accept `sessionId` together with the compatibility
 `workspaceId`; a mismatching session/workspace is rejected and the session's
 recorded folders determine visibility.
+
+### Session folder administration
+
+`sessionFolders.v1` is an atomic optional capability:
+
+| Method | Class | Request | Success |
+| --- | --- | --- | --- |
+| `session.listFolders` | read | `{sessionId}` | `{sessionId,revision,folders:[{id,path}]}` |
+| `session.addFolder` | mutation | `{sessionId,expectedRevision,path}` | `{sessionId,revision,applies:"next-launch"}` |
+| `session.removeFolder` | mutation | `{sessionId,expectedRevision,path}` | same |
+
+Requests are closed objects. New sessions expose logical Folder ids; legacy
+adapters may still expose their old binding ids until converted. Folder revisions use the last scope-change
+ledger seq (1 before the first edit), independent of normal conversation
+traffic. Add canonicalizes an existing directory and applies the same root
+and Kernel-data guards as create; remove matches the current authored path
+exactly, including an offline folder. Removing the primary selects the first
+remaining folder. The last folder cannot be removed. Duplicate adds and
+missing removes are `bad-request`, stale revisions are `stale-revision`.
+
+The append under the lifecycle and writer locks is the durable CAS and exact
+retry receipt. Reusing an RPC id with different parameters is
+`idempotency-conflict`; successful replay returns the original revision.
+A live worker holding the line writer lock causes `workspace-busy` (the
+compatibility error code); callers retry with a new operation after it exits.
+No live worker's policy is changed in place. New folders do not gain trust.
+The session's ledger and inventory are refreshed, and other sessions' ledgers,
+folder sets and effective policies remain unchanged.
+
+Workspace administration capabilities remain supported as compatibility
+creation templates. Native session runtime authority is described in
+[config](config.md#session-authority-and-workspace-compatibility-08).

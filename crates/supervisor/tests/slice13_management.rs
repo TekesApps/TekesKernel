@@ -18,7 +18,8 @@ use plugins::{
 use provider::{MemorySecretStore, SecretRecord};
 use schema::IJsonValue;
 use tekes_supervisor::client_admin::{
-    ENVIRONMENT_METHODS, FOLDER_METHODS, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
+    ENVIRONMENT_METHODS, FOLDER_METHODS, SESSION_FOLDER_METHODS, WORKSPACE_FOLDER_METHODS,
+    WORKSPACE_POLICY_METHODS,
 };
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, FOLDER_TRUST_METHODS,
@@ -100,6 +101,7 @@ async fn slice13_gate_91_production_assembly_mounts_and_executes_management() {
                 WORKSPACE_FOLDER_METHODS.as_slice(),
                 ENVIRONMENT_METHODS.as_slice(),
                 FOLDER_METHODS.as_slice(),
+                SESSION_FOLDER_METHODS.as_slice(),
                 USAGE_METHODS.as_slice(),
             ]
             .into_iter()

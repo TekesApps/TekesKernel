@@ -2,6 +2,7 @@
 
 mod config;
 mod folder_authority;
+mod folder_catalog;
 mod instruction;
 mod launch;
 mod resources;
@@ -15,6 +16,7 @@ pub use config::{
 pub use folder_authority::{
     FolderAuthorityStore, FolderEffectLease, FolderIdentity, FolderTrust, FolderTrustReceipt,
 };
+pub use folder_catalog::{CatalogFolder, FolderCatalog, SessionConfig};
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,
     InstructionResolver, InstructionSettings, InstructionSnapshot, InstructionSource,

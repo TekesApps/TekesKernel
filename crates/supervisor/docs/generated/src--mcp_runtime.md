@@ -800,7 +800,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_server_digest` | `servers             .iter()             .find` | [436](../../src/mcp_runtime.rs#L436) | receiver-type-required |
 | `preset_server_digest` | `servers             .iter` | [436](../../src/mcp_runtime.rs#L436) | receiver-type-required |
 | `preset_server_digest` | `crate::mcp_scope::owner(config, Some(&self.registry)).ok` | [439](../../src/mcp_runtime.rs#L439) | receiver-type-required |
-| `preset_server_digest` | `crate::mcp_scope::owner` | [439](../../src/mcp_runtime.rs#L439) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L59) |
+| `preset_server_digest` | `crate::mcp_scope::owner` | [439](../../src/mcp_runtime.rs#L439) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L86) |
 | `preset_server_digest` | `Some` | [439](../../src/mcp_runtime.rs#L439), [441](../../src/mcp_runtime.rs#L441) | external-constructor-callback-or-unresolved |
 | `preset_server_digest` | `crate::mcp_scope::config_digest(config).ok` | [440](../../src/mcp_runtime.rs#L440) | receiver-type-required |
 | `preset_server_digest` | `crate::mcp_scope::config_digest` | [440](../../src/mcp_runtime.rs#L440) | [tekes-supervisor::mcp_scope::config_digest](../../src/mcp_scope.rs#L27) |
@@ -1106,7 +1106,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_plugin_servers` | `resolved.reference.clone` | [1127](../../src/mcp_runtime.rs#L1127) | receiver-type-required |
 | `scoped_servers` | `self.registry.load` | [1140](../../src/mcp_runtime.rs#L1140) | receiver-type-required |
 | `scoped_servers` | `registry                     .servers                     .retain` | [1145](../../src/mcp_runtime.rs#L1145) | receiver-type-required |
-| `scoped_servers` | `crate::mcp_scope::resolve` | [1148](../../src/mcp_runtime.rs#L1148) | [tekes-supervisor::mcp_scope::resolve](../../src/mcp_scope.rs#L103) |
+| `scoped_servers` | `crate::mcp_scope::resolve` | [1148](../../src/mcp_runtime.rs#L1148) | [tekes-supervisor::mcp_scope::resolve](../../src/mcp_scope.rs#L130) |
 | `scoped_servers` | `Vec::new` | [1150](../../src/mcp_runtime.rs#L1150), [1153](../../src/mcp_runtime.rs#L1153) | external-constructor-callback-or-unresolved |
 | `scoped_servers` | `Some` | [1150](../../src/mcp_runtime.rs#L1150), [1153](../../src/mcp_runtime.rs#L1153), [1173](../../src/mcp_runtime.rs#L1173) | external-constructor-callback-or-unresolved |
 | `scoped_servers` | `error.to_string` | [1150](../../src/mcp_runtime.rs#L1150), [1153](../../src/mcp_runtime.rs#L1153) | receiver-type-required |
@@ -1331,7 +1331,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `binding_fingerprint` | `headers.values` | [1796](../../src/mcp_runtime.rs#L1796) | receiver-type-required |
 | `binding_fingerprint` | `Sha256::new` | [1807](../../src/mcp_runtime.rs#L1807) | external-constructor-callback-or-unresolved |
 | `binding_fingerprint` | `hasher.update` | [1808](../../src/mcp_runtime.rs#L1808), [1809](../../src/mcp_runtime.rs#L1809), [1813](../../src/mcp_runtime.rs#L1813), [1820](../../src/mcp_runtime.rs#L1820), [1821](../../src/mcp_runtime.rs#L1821), [1822](../../src/mcp_runtime.rs#L1822), [1823](../../src/mcp_runtime.rs#L1823), [1826](../../src/mcp_runtime.rs#L1826), [1827](../../src/mcp_runtime.rs#L1827), [1830](../../src/mcp_runtime.rs#L1830), [1831](../../src/mcp_runtime.rs#L1831), [1834](../../src/mcp_runtime.rs#L1834), [1835](../../src/mcp_runtime.rs#L1835), [1837](../../src/mcp_runtime.rs#L1837), [1838](../../src/mcp_runtime.rs#L1838), [1840](../../src/mcp_runtime.rs#L1840) | receiver-type-required |
-| `binding_fingerprint` | `crate::mcp_scope::owner` | [1812](../../src/mcp_runtime.rs#L1812) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L59) |
+| `binding_fingerprint` | `crate::mcp_scope::owner` | [1812](../../src/mcp_runtime.rs#L1812) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L86) |
 | `binding_fingerprint` | `Some` | [1812](../../src/mcp_runtime.rs#L1812) | external-constructor-callback-or-unresolved |
 | `binding_fingerprint` | `serde_json::to_vec(&(owner, folder))                     .map_err` | [1814](../../src/mcp_runtime.rs#L1814) | receiver-type-required |
 | `binding_fingerprint` | `serde_json::to_vec` | [1814](../../src/mcp_runtime.rs#L1814) | external-constructor-callback-or-unresolved |
@@ -1772,7 +1772,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drop` | `self.broker.remove` | [3072](../../src/mcp_runtime.rs#L3072) | receiver-type-required |
 | `drop` | `self.key.clone` | [3072](../../src/mcp_runtime.rs#L3072), [3074](../../src/mcp_runtime.rs#L3074) | receiver-type-required |
 | `drop` | `self.broker.release` | [3074](../../src/mcp_runtime.rs#L3074) | receiver-type-required |
-| `server_pool_key` | `crate::mcp_scope::owner` | [3085](../../src/mcp_runtime.rs#L3085) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L59) |
+| `server_pool_key` | `crate::mcp_scope::owner` | [3085](../../src/mcp_runtime.rs#L3085) | [tekes-supervisor::mcp_scope::owner](../../src/mcp_scope.rs#L86) |
 | `server_pool_key` | `secrets.registry.as_ref` | [3085](../../src/mcp_runtime.rs#L3085) | receiver-type-required |
 | `server_pool_key` | `Vec::new` | [3086](../../src/mcp_runtime.rs#L3086) | external-constructor-callback-or-unresolved |
 | `server_pool_key` | `credential_fields(config).into_values` | [3087](../../src/mcp_runtime.rs#L3087) | receiver-type-required |

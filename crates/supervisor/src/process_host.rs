@@ -492,6 +492,8 @@ struct WorkerHandle {
     /// Held for the complete process lifetime so a workspace relocation can
     /// acquire the matching exclusive lock without a check-then-spawn race.
     _workspace_quiescence: store::NamedLock,
+    _folder_quiescence: Vec<store::NamedLock>,
+    _session_scope_quiescence: store::NamedLock,
     stdin: Mutex<ChildStdin>,
     child: Mutex<Child>,
     state: Mutex<WorkerState>,
@@ -504,6 +506,7 @@ struct WorkerHandle {
     credential_broker: Mutex<Option<std::thread::JoinHandle<Result<(), String>>>>,
     credential_bindings: Mutex<Option<provider::ResolvedCredentialBindings>>,
     config_snapshot: ConfigSnapshot,
+    detached_scope: bool,
     dynamic_catalog: DynamicToolCatalog,
     dynamic_authority: Option<Arc<dyn DynamicSupervisorAuthority>>,
     tool_cancellation: tools::CancellationToken,
@@ -1053,7 +1056,9 @@ impl ProductionProcessHost {
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                 .values()
-                .filter(|worker| worker.config_snapshot.workspace.id == workspace_id)
+                .filter(|worker| {
+                    !worker.detached_scope && worker.config_snapshot.workspace.id == workspace_id
+                })
                 .cloned()
                 .collect::<Vec<_>>();
             for worker in workers {
@@ -1073,7 +1078,9 @@ impl ProductionProcessHost {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .values()
-            .filter(|worker| worker.config_snapshot.workspace.id == workspace_id)
+            .filter(|worker| {
+                !worker.detached_scope && worker.config_snapshot.workspace.id == workspace_id
+            })
             .cloned()
             .collect::<Vec<_>>();
         for worker in workers {
@@ -1092,11 +1099,16 @@ impl ProductionProcessHost {
         &self,
         session_id: &str,
     ) -> Result<crate::file_observation::FileSubscription, DaemonError> {
-        let scope = self.session_scope(session_id)?;
+        // The observation outlives its opening scope. Re-read session-owned
+        // folder edits as well as current Environment/catalog paths, so a
+        // removed folder never remains in a live subscription's authority.
+        self.session_scope(session_id)?;
+        let root = self.root.clone();
+        let session = session_id.to_owned();
         let repository = self.repository.clone();
         let resolve = move || {
-            scope
-                .config(&repository)
+            profile::SessionScope::locate(&root, &session)
+                .and_then(|scope| scope.config(&repository))
                 .map(|config| config.workspace)
                 .map_err(|error| error.to_string())
         };
@@ -1223,14 +1235,22 @@ impl ProductionProcessHost {
         session: Option<&str>,
     ) -> Result<profile::ResourceCatalog, DaemonError> {
         let config = self.client_scope_config(workspace, session)?;
-        let snapshot = profile::workspace_instructions(
-            &self.repository,
-            workspace,
-            &self.user_agent_dir,
-            &config,
-        )
-        .and_then(|resolver| resolver.capture())
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let resolver = match session {
+            Some(session) => self.session_scope(session)?.instructions(
+                &self.repository,
+                &self.user_agent_dir,
+                &config,
+            ),
+            None => profile::workspace_instructions(
+                &self.repository,
+                workspace,
+                &self.user_agent_dir,
+                &config,
+            ),
+        };
+        let snapshot = resolver
+            .and_then(|resolver| resolver.capture())
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         profile::ResourceCatalog::from_snapshot(&snapshot)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))
     }
@@ -1261,17 +1281,21 @@ impl ProductionProcessHost {
             None => self.repository.resolve(workspace_id),
         }
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let instruction = profile::workspace_instructions(
-            &self.repository,
-            workspace_id,
-            &self.user_agent_dir,
-            &config,
-        )
-        .and_then(|resolver| resolver.capture())
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let resolver = match &scope {
+            Some(scope) => scope.instructions(&self.repository, &self.user_agent_dir, &config),
+            None => profile::workspace_instructions(
+                &self.repository,
+                workspace_id,
+                &self.user_agent_dir,
+                &config,
+            ),
+        };
+        let instruction = resolver
+            .and_then(|resolver| resolver.capture())
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let mcp = self
             .mcp_runtime
-            .prepare_workspace(workspace_id)
+            .prepare_for_config(&config)
             .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         if mcp_failure_is_required(&mcp.failures, &config.workspace.policy.allowed_tools) {
             return Err(DaemonError::required_broker(
@@ -2531,10 +2555,29 @@ impl ProductionProcessHost {
                 "worker binary protocol tuple is quarantined",
             ));
         }
+        let session_scope_quiescence = store::NamedLock::shared(workspace_quiescence_lock_path(
+            &self.root,
+            &format!("session:{session_id}"),
+        ))
+        .map_err(DaemonError::store)?;
         let (workspace_id, folder_binding) = session_workspace_binding(&ledger)?;
         let workspace_quiescence =
             store::NamedLock::shared(workspace_quiescence_lock_path(&self.root, &workspace_id))
                 .map_err(DaemonError::store)?;
+        let detached_scope = profile::SessionScope::for_ledger(&ledger)
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let mut folder_quiescence = Vec::new();
+        if let Some(config) = detached_scope.session_config() {
+            for id in config.folder_refs.values().collect::<BTreeSet<_>>() {
+                folder_quiescence.push(
+                    store::NamedLock::shared(workspace_quiescence_lock_path(
+                        &self.root,
+                        &format!("folder:{id}"),
+                    ))
+                    .map_err(DaemonError::store)?,
+                );
+            }
+        }
         let mcp_routes = Arc::new(Mutex::new(
             None::<(DynamicToolCatalog, Arc<dyn DynamicSupervisorAuthority>)>,
         ));
@@ -2708,6 +2751,8 @@ impl ProductionProcessHost {
             );
         let handle = Arc::new(WorkerHandle {
             _workspace_quiescence: workspace_quiescence,
+            _folder_quiescence: folder_quiescence,
+            _session_scope_quiescence: session_scope_quiescence,
             stdin: Mutex::new(stdin),
             child: Mutex::new(child),
             state: Mutex::new(WorkerState::default()),
@@ -2719,6 +2764,7 @@ impl ProductionProcessHost {
             credential_control: Mutex::new(credential_control),
             credential_broker: Mutex::new(credential_broker),
             credential_bindings: Mutex::new(launch.credential_bindings.take()),
+            detached_scope: detached_scope.is_detached(),
             config_snapshot: launch.config_snapshot,
             dynamic_catalog,
             dynamic_authority,
@@ -5783,7 +5829,9 @@ impl ProductionProcessHost {
             session_id: session_id.to_owned(),
             workspace_id: genesis.string_field("workspace")?.to_owned(),
             cwd: endpoint::genesis_cwd(&folder, &genesis),
-            folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
+            folder_binding: endpoint::inventory_folder_binding(
+                &serde_json::to_value(genesis.raw()).ok()?,
+            ),
             title: None,
             updated_at,
             archived: false,

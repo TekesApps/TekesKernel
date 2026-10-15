@@ -1270,6 +1270,30 @@ impl ConfigRepository {
                 reason: "workspace id does not match filename".to_owned(),
             });
         }
+        self.resolve_seed_unlocked(&workspace, session_folder, folder_binding, scope)
+    }
+
+    /// Resolves a session-owned compatibility seed against current global configuration.
+    /// The seed is ledger data; no workspace document is consulted.
+    pub fn resolve_session_seed(
+        &self,
+        seed: &WorkspaceConfig,
+        session_folder: Option<&Path>,
+        folder_binding: Option<&str>,
+        scope: ScopeSelection<'_>,
+    ) -> Result<ConfigSnapshot, ProfileError> {
+        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
+        self.resolve_seed_unlocked(seed, session_folder, folder_binding, Some(scope))
+    }
+
+    fn resolve_seed_unlocked(
+        &self,
+        workspace: &WorkspaceConfig,
+        session_folder: Option<&Path>,
+        folder_binding: Option<&str>,
+        scope: Option<ScopeSelection<'_>>,
+    ) -> Result<ConfigSnapshot, ProfileError> {
+        let workspace_path = self.root.join("<session-scope>");
         let providers_path = self.root.join("config/providers.json");
         let settings_path = self.root.join("config/settings.json");
         let providers = self.read_optional(&providers_path)?.unwrap_or_default();
@@ -1282,19 +1306,19 @@ impl ConfigRepository {
             None => None,
         };
 
-        validate_workspace(&workspace, false, &workspace_path)?;
+        validate_workspace(workspace, false, &workspace_path)?;
         validate_providers(&providers, true, &providers_path)?;
         validate_settings(&settings, true, &settings_path)?;
         if let (Some(value), Some(path)) = (&session_settings, &session_settings_path) {
             validate_session_settings(value, false, path)?;
         }
-        validate_references(&workspace, &providers, &settings, &workspace_path)?;
+        validate_references(workspace, &providers, &settings, &workspace_path)?;
         validate_session_reference(
             &session_settings,
             &providers,
             session_settings_path.as_deref().unwrap_or(&workspace_path),
         )?;
-        let mut resolved = resolve_workspace(&workspace, &workspace_path)?;
+        let mut resolved = resolve_workspace(workspace, &workspace_path)?;
         // A session preset's tool selection replaces the workspace selection for
         // that session; the instruction policy still meets it at every launch
         // (spec session-endpoint §Session presets).
@@ -1331,7 +1355,7 @@ impl ConfigRepository {
                 validate_environments(&environments, true, &path)?;
                 apply_scope(
                     &mut resolved,
-                    &workspace,
+                    workspace,
                     &environments,
                     scope,
                     &workspace_path,

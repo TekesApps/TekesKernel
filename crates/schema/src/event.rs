@@ -466,6 +466,16 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
         ));
     }
     required_str(object, "workspace", Some(seq))?;
+    if object.contains_key("session_scope") {
+        validate_session_scope(object, seq)?;
+        if required_u64(object, "min_reader", Some(seq))? < crate::SESSION_SCOPE_READER {
+            return Err(SchemaError::event(
+                Some(seq),
+                "session_scope requires reader 4",
+            ));
+        }
+    }
+
     if object.contains_key("cwd") {
         let cwd = required_str(object, "cwd", Some(seq))?;
         if !std::path::Path::new(cwd).is_absolute() || cwd.contains('\0') {
@@ -989,8 +999,55 @@ fn validate_compact(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
     Ok(())
 }
 
+fn validate_session_scope(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
+    let scope = required_object(object, "session_scope", seq)?;
+    required_object(scope, "seed", seq)?;
+    let refs = required_object(scope, "folder_refs", seq)?;
+    if refs.is_empty()
+        || refs
+            .values()
+            .any(|value| value.as_str().is_none_or(str::is_empty))
+    {
+        return Err(SchemaError::event(
+            Some(seq),
+            "session_scope requires logical folder references",
+        ));
+    }
+    Ok(())
+}
+
 fn validate_meta(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
     optional_str(object, "title", seq)?;
+    if let Some(change) = optional_object(object, "scope_change", seq)? {
+        validate_session_scope(change, seq)?;
+        required_id(change, "environment", seq)?;
+        let binding = required_id(change, "folder_binding", seq)?;
+        let folders = required_array(change, "folders", seq)?;
+        let ids = folders
+            .iter()
+            .filter_map(Value::as_str)
+            .collect::<std::collections::BTreeSet<_>>();
+        if ids.len() != folders.len() || !ids.contains(binding) {
+            return Err(SchemaError::event(
+                Some(seq),
+                "scope_change requires unique folders containing its binding",
+            ));
+        }
+        let cwd = required_str(change, "cwd", Some(seq))?;
+        if !std::path::Path::new(cwd).is_absolute() || cwd.contains('\0') {
+            return Err(SchemaError::event(
+                Some(seq),
+                "scope_change cwd must be absolute",
+            ));
+        }
+        if required_u64(object, "min_reader", Some(seq))? < crate::SESSION_SCOPE_READER {
+            return Err(SchemaError::event(
+                Some(seq),
+                "scope_change requires reader 4",
+            ));
+        }
+    }
+
     if let Some(labels) = optional_array(object, "labels", seq)? {
         for label in labels {
             if label.as_str().is_none() {
@@ -1018,7 +1075,7 @@ fn validate_meta(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaErro
     if !object.keys().any(|key| {
         matches!(
             key.as_str(),
-            "title" | "labels" | "ownership" | "upgrade" | "notice"
+            "title" | "labels" | "ownership" | "upgrade" | "notice" | "scope_change"
         )
     }) {
         return Err(SchemaError::event(Some(seq), "meta must carry a mutation"));

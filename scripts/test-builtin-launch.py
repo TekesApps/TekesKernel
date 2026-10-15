@@ -275,6 +275,33 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
         assert grouped_ledger.read_bytes()==original_ledger
         assert not call('folders.trust.status',{'path':str(moved)})['folder']['trusted']
         print('FOLDER_GROUPING_RELOCATION_AND_LEDGER_PRESERVATION_OK')
+        # The new path/session API is independent of the compatibility template.
+        native_first=base/'native-first';native_first.mkdir()
+        native_second=base/'native-second';native_second.mkdir()
+        (native_second/'session-only.txt').write_text('session folder authority\n')
+        native_session=call('session.create',{'cwd':str(native_first)})['sessionId']
+        native_peer=call('session.create',{'cwd':str(native_first)})['sessionId']
+        baseline=call('session.listFolders',{'sessionId':native_session})
+        assert baseline['revision']==1 and len(baseline['folders'])==1,baseline
+        added=call('session.addFolder',{'sessionId':native_session,'expectedRevision':1,'path':str(native_second)})
+        assert added['applies']=='next-launch',added
+        assert len(call('session.listFolders',{'sessionId':native_peer})['folders'])==1
+        removed=call('session.removeFolder',{'sessionId':native_session,'expectedRevision':added['revision'],'path':str(native_first)})
+        assert removed['revision']>added['revision'],removed
+        page=call('session.files.read',{'sessionId':native_session,'path':'session-only.txt','offset':1,'limit':1})
+        assert page['text']=='session folder authority',page
+        native_ledger=Path(root)/'threads'/native_session/'main.jsonl'
+        before_relocation=native_ledger.read_bytes()
+        native_moved=base/'native-moved';native_second.rename(native_moved)
+        assert call('folders.relocate',{'previousPath':str(native_second),'path':str(native_moved)})=={'relocated':True}
+        current=call('session.listFolders',{'sessionId':native_session})
+        assert [folder['path'] for folder in current['folders']]==[str(native_moved)],current
+        assert native_ledger.read_bytes()==before_relocation
+        assert not call('folders.trust.status',{'path':str(native_moved)})['folder']['trusted']
+        grouped=call('folders.list',{})
+        assert next(item for item in grouped['items'] if item['path']==str(native_moved))['sessionIds']==[native_session],grouped
+        assert len(call('session.listFolders',{'sessionId':native_peer})['folders'])==1
+        print('SESSION_FOLDER_SCOPE_AND_CATALOG_ONLY_RELOCATION_REAL_PROCESS_OK')
         import socket,struct
         from urllib.parse import urlparse
         url=urlparse(ready['url']); sock=socket.create_connection((url.hostname,url.port),timeout=5)

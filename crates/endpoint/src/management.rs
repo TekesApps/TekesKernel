@@ -964,7 +964,7 @@ impl ManagementStore {
     /// fallback: a legacy or orphaned session keeps its genesis cwd.
     pub fn folder_paths(&self) -> Result<BTreeMap<(String, String), String>, ManagementError> {
         let _lock = NamedLock::shared(self.root.join("lock"))?;
-        Ok(self
+        let mut paths = self
             .workspace_configs()?
             .into_values()
             .flat_map(|config| {
@@ -975,7 +975,14 @@ impl ManagementStore {
                     .map(|(id, path)| ((config.id.clone(), id), path.to_owned()))
                     .collect::<Vec<_>>()
             })
-            .collect())
+            .collect::<BTreeMap<_, _>>();
+        for folder in profile::FolderCatalog::new(&self.storage_root).folders()? {
+            paths.insert((String::new(), folder.id.clone()), folder.path.clone());
+            for alias in folder.aliases {
+                paths.insert(alias, folder.path.clone());
+            }
+        }
+        Ok(paths)
     }
 
     pub fn workspace_path(&self, workspace_id: &str) -> Result<String, ManagementError> {
@@ -1056,9 +1063,23 @@ impl ManagementStore {
 
         // The snapshot frozen at create is resolved in the scope the genesis
         // records, so it equals what the first launch resolves.
-        let folders = workspace.folder_ids();
-        let config = self.config.resolve_scoped(
-            &workspace.id,
+        // workspaceId is a legacy creation adapter. A path-only create owns
+        // one folder and local defaults, even if a compatibility workspace
+        // happens to contain the same directory.
+        let mut seed = workspace.clone();
+        if request.workspace_id.is_none() {
+            seed.cwd.clear();
+            seed.folders = vec![profile::WorkspaceFolder {
+                id: folder_binding.clone(),
+                path: cwd.clone(),
+            }];
+            seed.policy = Some(default_workspace_policy(&cwd));
+        }
+        let mut session_scope = profile::FolderCatalog::new(&self.storage_root).capture(&seed)?;
+        session_scope.compatibility_instructions = request.workspace_id.is_some();
+        let folders = seed.folder_ids();
+        let config = self.config.resolve_session_seed(
+            &seed,
             None,
             Some(&folder_binding),
             profile::ScopeSelection {
@@ -1066,12 +1087,23 @@ impl ManagementStore {
                 folders: Some(&folders),
             },
         )?;
-        let instruction = profile::workspace_instructions(
-            &self.config,
-            &workspace.id,
-            request.user_agent_dir,
-            &config,
-        )?
+        let instruction = if session_scope.compatibility_instructions {
+            profile::workspace_instructions(
+                &self.config,
+                &workspace.id,
+                request.user_agent_dir,
+                &config,
+            )?
+        } else {
+            profile::InstructionResolver::new_scoped(
+                request.user_agent_dir,
+                self.storage_root
+                    .join("session-instructions")
+                    .join(&session_id),
+                config.workspace.cwd.iter().map(Path::new),
+            )
+            .with_folder_authority(&self.storage_root)
+        }
         .capture()?;
         instruction.validate_against_config(&config)?;
         let environment =
@@ -1105,6 +1137,7 @@ impl ManagementStore {
             selected_environment,
             &config_digest,
             &instruction_digest,
+            Some(&session_scope),
             request.identity_profile,
             preset.as_ref(),
             request.started_at,
@@ -1819,6 +1852,19 @@ impl ManagementStore {
             .find(|folder| folder.path == previous_path)
             .ok_or_else(|| ManagementError::InvalidPath(previous_path.to_owned()))?;
         let relocate_folder_id = target.id.clone();
+        // Catalog-only folders also occupy paths. Reject a collision before
+        // publishing a compatibility document or preparing its journal intent.
+        let catalog = profile::FolderCatalog::new(&self.storage_root);
+        if catalog
+            .folders()?
+            .iter()
+            .any(|folder| folder.path == canonical_string && folder.path != previous_path)
+        {
+            return Err(ManagementError::WorkspaceAmbiguous(canonical_string));
+        }
+        // Seed logical identities before a legacy relocation. This is not
+        // trust and does not modify any session ledger.
+        catalog.capture(current)?;
         if configs.values().any(|config| {
             authored_folders(config).iter().any(|folder| {
                 folder.path == canonical_string
@@ -2072,6 +2118,12 @@ impl ManagementStore {
                 let genesis = projection.events.first().ok_or_else(|| {
                     ManagementError::CorruptOperation("session ledger lacks genesis".to_owned())
                 })?;
+                if serde_json::to_value(genesis.raw())?
+                    .get("session_scope")
+                    .is_some()
+                {
+                    continue;
+                }
                 if genesis.string_field("workspace") == Some(workspace_id) {
                     let binding = genesis.string_field("folder_binding").map(str::to_owned);
                     let recorded = serde_json::to_value(genesis.raw())?
@@ -2467,6 +2519,14 @@ impl ManagementStore {
             publish_canonical(operation_path, &record)?;
         }
         if record.phase == OperationPhase::Semantic {
+            if let (Some(binding), Some(previous), Some(path)) = (
+                &intent.relocate_folder_id,
+                &intent.previous_path,
+                &intent.relocated_path,
+            ) {
+                profile::FolderCatalog::new(&self.storage_root)
+                    .relocate_alias(&config.id, binding, previous, path)?;
+            }
             let created = self.operation_created(&record, &intent)?;
             let metadata = match self.read_metadata_optional(&config.id)? {
                 Some(existing) if record.operation == "workspace.create" && !created => existing,
@@ -3379,6 +3439,7 @@ fn create_genesis(
     environment: &str,
     config_digest: &str,
     instruction_digest: &str,
+    session_scope: Option<&profile::SessionConfig>,
     identity_profile: Option<tools::IdentityProfile>,
     preset: Option<&tools::ResolvedPreset>,
     timestamp: &str,
@@ -3399,7 +3460,7 @@ fn create_genesis(
         // Recorded `folders` narrow the session's folders; a reader that
         // predates them would widen the session to every workspace folder, so
         // it opens the ledger read-only instead (spec event §Genesis).
-        "min_reader":3,
+        "min_reader":if session_scope.is_some() { schema::SESSION_SCOPE_READER } else { schema::FOLDERS_READER },
         "min_writer":1,
         "resume":ResumePolicy::Never,
         "config":{"digest":config_digest},
@@ -3408,6 +3469,9 @@ fn create_genesis(
         "origin_key":origin.key,
         "origin_tuple":origin,
     });
+    if let Some(scope) = session_scope {
+        value["session_scope"] = serde_json::to_value(scope)?;
+    }
     // A preset replaces the identity profile (spec event §Genesis).
     if let Some(preset) = preset {
         let object = value.as_object_mut().expect("genesis object");
@@ -4524,6 +4588,7 @@ mod tests {
                 schema::DEFAULT_ENVIRONMENT,
                 "cfg",
                 "ins",
+                None,
                 identity,
                 None,
                 "2026-09-27T00:00:00.000Z",
@@ -4570,6 +4635,7 @@ mod tests {
             schema::DEFAULT_ENVIRONMENT,
             "cfg",
             "ins",
+            None,
             None,
             Some(&preset),
             "2026-09-27T00:00:00.000Z",
@@ -5198,6 +5264,7 @@ mod tests {
             &format!("sha256-{}", "b".repeat(64)),
             None,
             None,
+            None,
             "2026-10-08T00:00:00.000Z",
             &origin,
         )
@@ -5660,19 +5727,40 @@ mod tests {
                 .into_owned()
         };
         assert_eq!(cwd(&before), vec![canonical(&first)]);
-        assert_eq!(cwd(&after), vec![canonical(&first), canonical(&second)]);
+        assert_eq!(cwd(&after), vec![canonical(&first)]);
+        // The old explicit address remains a creation adapter; its folders
+        // are copied once and no longer owned by the template afterwards.
+        let explicit = store
+            .create_session(super::SessionCreateOperation {
+                environment: None,
+                rpc_id: "explicit",
+                request_sha256: &"b".repeat(64),
+                requested_session_id: None,
+                workspace_id: Some(&workspace_id),
+                cwd: Some(&first_text),
+                identity_profile: None,
+                preset: None,
+                preset_mcp: None,
+                preset_models: None,
+                user_agent_dir: &agents,
+                started_at: "2026-10-15T00:00:01.000Z",
+                principal: "test",
+            })
+            .unwrap();
+        assert_eq!(cwd(&explicit), vec![canonical(&first), canonical(&second)]);
 
-        // `after` records the second folder, so it cannot be removed.
-        assert!(matches!(
-            store.remove_workspace_folder(
+        // Removing a compatibility template folder leaves detached sessions intact.
+        store
+            .remove_workspace_folder(
                 "remove-second",
                 &"a".repeat(64),
                 &workspace_id,
                 &canonical(&second),
                 "2026-10-15T00:00:02.000Z",
-            ),
-            Err(ManagementError::FolderInUse { session_ids, .. }) if session_ids == vec![after.clone()]
-        ));
+            )
+            .unwrap();
+        assert_eq!(cwd(&explicit), vec![canonical(&first), canonical(&second)]);
+        assert_eq!(cwd(&after), vec![canonical(&first)]);
     }
 
     #[test]

@@ -396,7 +396,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_application_endpoint_host` | `repository.resolve` | [321](../../src/host_runtime.rs#L321) | receiver-type-required |
 | `assemble_application_endpoint_host` | `Err` | [326](../../src/host_runtime.rs#L326), [340](../../src/host_runtime.rs#L340) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `profile::workspace_instructions(                 &repository,                 &workspace_id,                 user_agent_dir,                 &resolved,             )             .and_then` | [328](../../src/host_runtime.rs#L328) | receiver-type-required |
-| `assemble_application_endpoint_host` | `profile::workspace_instructions` | [328](../../src/host_runtime.rs#L328) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L220) |
+| `assemble_application_endpoint_host` | `profile::workspace_instructions` | [328](../../src/host_runtime.rs#L328) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L403) |
 | `assemble_application_endpoint_host` | `resolver.capture` | [334](../../src/host_runtime.rs#L334) | receiver-type-required |
 | `assemble_application_endpoint_host` | `ResourceCatalog::from_snapshot(&snapshot)                 .map_err` | [342](../../src/host_runtime.rs#L342) | receiver-type-required |
 | `assemble_application_endpoint_host` | `Arc::clone` | [347](../../src/host_runtime.rs#L347), [357](../../src/host_runtime.rs#L357), [359](../../src/host_runtime.rs#L359), [361](../../src/host_runtime.rs#L361), [366](../../src/host_runtime.rs#L366), [386](../../src/host_runtime.rs#L386), [387](../../src/host_runtime.rs#L387) | external-constructor-callback-or-unresolved |
@@ -410,7 +410,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_application_endpoint_host` | `command_clock` | [358](../../src/host_runtime.rs#L358) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `DaemonError::corrupt` | [363](../../src/host_runtime.rs#L363), [379](../../src/host_runtime.rs#L379), [395](../../src/host_runtime.rs#L395) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L562) |
 | `assemble_application_endpoint_host` | `ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))             .map_err` | [366](../../src/host_runtime.rs#L366) | receiver-type-required |
-| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [366](../../src/host_runtime.rs#L366) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L51) |
+| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [366](../../src/host_runtime.rs#L366) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L54) |
 | `assemble_application_endpoint_host` | `extensions.routes` | [369](../../src/host_runtime.rs#L369) | receiver-type-required |
 | `assemble_application_endpoint_host` | `extension_routes.extend` | [370](../../src/host_runtime.rs#L370) | receiver-type-required |
 | `assemble_application_endpoint_host` | `admin_routes.routes` | [370](../../src/host_runtime.rs#L370) | receiver-type-required |

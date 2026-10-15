@@ -133,7 +133,18 @@ import Foundation
       try FileManager.default.removeItem(at: watchedURL)
       guard case .absent(let absentPath)? = try await fileFrames.next() else { throw NativeSessionEndpoint.Failure.protocolError }
       precondition(absentPath == watchedStat.absolutePath)
-      _ = try await endpoint.renameWorkspace(workspaceId: workspace.workspace.workspaceId, title: "File authority changed")
+      _ = try await endpoint.renameWorkspace(workspaceId: workspace.workspace.workspaceId, title: "Compatibility template renamed")
+      // Renaming a compatibility template no longer changes a session's file
+      // authority. Its observation stays live and still receives file updates.
+      try Data("after template rename".utf8).write(to: watchedURL)
+      guard case .changed(let afterRenamePath, _)? = try await fileFrames.next() else { throw NativeSessionEndpoint.Failure.protocolError }
+      precondition(afterRenamePath == watchedStat.absolutePath)
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
+      struct FolderChange: Decodable { let revision: Int; let applies: String }
+      let folderChange: FolderChange = try await endpoint.call("session.addFolder", [
+        "sessionId": .string(created.sessionId), "expectedRevision": .number(1),
+        "path": .string(createdDirectory)])
+      precondition(folderChange.applies == "next-launch" && folderChange.revision > 1)
       var generationEnded = false
       do { generationEnded = try await fileFrames.next() == nil } catch { generationEnded = true }
       precondition(generationEnded)

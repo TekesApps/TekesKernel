@@ -1561,7 +1561,7 @@ fn slice7_provider_reconcile_completes_adopt_from_asset_only() {
 }
 
 #[test]
-fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
+fn gated_profiled_launch_stops_before_lease_or_provider_and_preserves_log() {
     for (gate, required) in [
         ("min_reader", schema::READER_VERSION + 1),
         ("min_writer", 2),
@@ -1656,7 +1656,7 @@ fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
         fs::write(&ledger, &bytes).expect("ledger");
 
         let origin = endpoint_origin("https://api.openai.com/v1").expect("endpoint origin");
-        let mut launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
+        let launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
             &repository,
             &ProfiledWorkerLaunchSpec {
                 binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
@@ -1677,8 +1677,21 @@ fn gated_profiled_worker_exits_before_lease_or_provider_and_preserves_log() {
                 material: "provider-secret".to_owned(),
             }],
             &endpoint,
-        )
-        .expect("launch provider worker");
+        );
+        // Unknown reader semantics cannot be used to capture a session-owned
+        // launch scope. Reject in the parent before preparing any execution
+        // authority; a writer-only gate still reaches the worker handshake.
+        if gate == "min_reader" {
+            assert!(
+                matches!(launched, Err(tekes_supervisor::LaunchError::Profile(profile::ProfileError::InvalidReference { reason, .. })) if reason == "session requires a newer reader")
+            );
+            assert_eq!(fs::read(&ledger).unwrap(), bytes);
+            assert!(
+                matches!(listener.accept(),Err(error) if error.kind() == std::io::ErrorKind::WouldBlock)
+            );
+            continue;
+        }
+        let mut launched = launched.expect("launch writer-gated worker");
 
         launched
             .child
