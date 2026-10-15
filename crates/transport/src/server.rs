@@ -843,7 +843,11 @@ async fn remote_mux_loop(
         return;
     }
     let (stream_tx, mut stream_rx) = mpsc::channel(1_024);
-    let mut streams = BTreeMap::<String, JoinHandle<()>>::new();
+    // Each open gets its own token. Frames already queued in `stream_rx` when the client closes
+    // a stream (or reopens the same id) carry the old token and are dropped below instead of
+    // being validated against a stream the generation no longer knows.
+    let mut streams = BTreeMap::<String, (u64, JoinHandle<()>)>::new();
+    let mut next_stream_token = 0_u64;
     let mut drain = shared.drain.subscribe();
     loop {
         tokio::select! {
@@ -933,19 +937,21 @@ async fn remote_mux_loop(
                             ).await;
                             continue;
                         };
+                        next_stream_token += 1;
+                        let token = next_stream_token;
                         let tx = stream_tx.clone();
                         let task_stream_id = stream_id.clone();
                         let task = tokio::spawn(async move {
                             while let Some(frame) = receiver.recv().await {
-                                if tx.send((task_stream_id.clone(), frame)).await.is_err() {
+                                if tx.send((task_stream_id.clone(), token, frame)).await.is_err() {
                                     return;
                                 }
                             }
                         });
-                        streams.insert(stream_id, task);
+                        streams.insert(stream_id, (token, task));
                     }
                     SessionMuxClientFrame::Close { stream_id } => {
-                        let Some(task) = streams.remove(&stream_id) else {
+                        let Some((_, task)) = streams.remove(&stream_id) else {
                             close_mux_protocol(&mut socket, "unknown V3 stream").await;
                             return;
                         };
@@ -1021,7 +1027,10 @@ async fn remote_mux_loop(
                 }
             }
             streamed = stream_rx.recv() => {
-                let Some((stream_id, streamed)) = streamed else { return; };
+                let Some((stream_id, token, streamed)) = streamed else { return; };
+                if streams.get(&stream_id).map(|(open, _)| *open) != Some(token) {
+                    continue;
+                }
                 let frame = match streamed {
                     Ok(frame) if generation.accept(&stream_id, &frame).is_ok() => frame,
                     Ok(_) => {
@@ -1037,7 +1046,7 @@ async fn remote_mux_loop(
                             failure.code().code(),
                             "Semantic stream ended",
                         ).await;
-                        if let Some(task) = streams.remove(&stream_id) { task.abort(); }
+                        if let Some((_, task)) = streams.remove(&stream_id) { task.abort(); }
                         let _ = generation.close(&stream_id);
                         continue;
                     }

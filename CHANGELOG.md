@@ -8,8 +8,9 @@ workspace version in `Cargo.toml`.
 
 ## 0.7.3 — 2026-10-15
 
-Session presets can set the model a session starts with (`defaults`), and the
-named task input rules gain focused unit tests. Additive only.
+Session presets can set the model a session starts with (`defaults`), the
+named task input rules gain focused unit tests, and closing a mux stream no
+longer ends the whole connection.
 
 ### Added
 - Session preset `defaults {provider, model, reasoningEffort?}` (top level or
@@ -23,6 +24,15 @@ named task input rules gain focused unit tests. Additive only.
   completed tasks, typed recoverable rejections, unchanged direct paths, the
   latest preceding delegation on re-execution, and seeds resuming unchanged
   (#65).
+
+### Fixed
+- `remote.mux`: frames already queued for a stream the client closed ended the
+  whole connection with `protocol-error` ("semantic stream violated baseline
+  or sequence"), failing every other stream and pending request on it. Each
+  `open` now gets its own token, and queued frames whose stream was closed (or
+  reopened under the same id) are dropped before validation; frames of open
+  streams are validated exactly as before. Reported, diagnosed and fixed with
+  a regression test by the ClientKit integration.
 
 ## 0.7.2 — 2026-10-15
 
