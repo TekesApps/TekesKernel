@@ -488,18 +488,18 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             .ok_or_else(|| SupervisorOperationError::Invalid("context.operation missing".into()))?;
         let workspace = genesis_workspace(&resolved.projection)?;
         match operation {
-            "threads" => self.context_threads(workspace),
+            "threads" => self.context_threads(),
             "read" => {
                 let target = required_string(arguments, "thread_id")?;
-                self.context_read(workspace, target)
+                self.context_read(target)
             }
             "records" => self.context_records(resolved, arguments),
-            "search" => self.context_search(request, resolved, workspace, arguments),
+            "search" => self.context_search(request, workspace, arguments),
             "start" => self.context_start(request, resolved),
             "fork" => self.context_fork(request, resolved),
             "send" => {
                 let target = required_string(arguments, "thread_id")?;
-                require_session_in_workspace(&self.root, target, workspace)?;
+                session_folder(&self.root, target)?;
                 let message = required_string(arguments, "message")?;
                 self.runtime.deliver_input(&DeliveryRequest {
                     source_session: request.session.clone(),
@@ -515,7 +515,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             }
             "resume" => {
                 let target = required_string(arguments, "thread_id")?;
-                require_session_in_workspace(&self.root, target, workspace)?;
+                session_folder(&self.root, target)?;
                 self.runtime.ensure_running(target, &request.request_id)
             }
             "archive" => {
@@ -525,7 +525,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                         "a running worker cannot archive its containing session".into(),
                     ));
                 }
-                require_active_session_in_workspace(&self.root, target, workspace)?;
+                require_active_session(&self.root, target)?;
                 ThreadStore::open(&self.root)
                     .map_err(map_store)?
                     .archive(target)
@@ -534,7 +534,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             }
             "interrupt" => {
                 let target = required_string(arguments, "thread_id")?;
-                require_session_in_workspace(&self.root, target, workspace)?;
+                session_folder(&self.root, target)?;
                 self.runtime.interrupt(&InterruptRequest {
                     source_session: request.session.clone(),
                     source_line: request.thread.clone(),
@@ -548,7 +548,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         }
     }
 
-    fn context_threads(&self, workspace: &str) -> Result<IJsonValue, SupervisorOperationError> {
+    fn context_threads(&self) -> Result<IJsonValue, SupervisorOperationError> {
         let mut items = Vec::new();
         for (area, archived) in [("threads", false), ("archive", true)] {
             for entry in fs::read_dir(self.root.join(area)).map_err(map_io)? {
@@ -557,11 +557,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                     continue;
                 }
                 let session = entry.file_name().to_string_lossy().into_owned();
-                // Threads of other workspaces are told apart by their genesis line; only the
-                // matching ones are decoded for their title and tail.
-                if folder_workspace(&entry.path())? != workspace {
-                    continue;
-                }
+                validate_session_folder(&entry.path(), &session)?;
                 let projection = read_projection(&entry.path().join("main.jsonl"))?;
                 let genesis = projection.events.first().expect("projection has genesis");
                 let title = projection
@@ -588,23 +584,14 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         to_ijson(&json!({"threads":items}))
     }
 
-    fn context_read(
-        &self,
-        workspace: &str,
-        target: &str,
-    ) -> Result<IJsonValue, SupervisorOperationError> {
+    fn context_read(&self, target: &str) -> Result<IJsonValue, SupervisorOperationError> {
         let (folder, archived) = session_folder(&self.root, target)?;
         let projection = read_projection(&folder.join("main.jsonl"))?;
-        if genesis_workspace(&projection)? != workspace {
-            return Err(SupervisorOperationError::NotFound(
-                "thread not found in this workspace".into(),
-            ));
-        }
         let genesis = projection.events.first().expect("projection has genesis");
         to_ijson(&json!({
             "session_id":target,
             "thread_id":genesis.string_field("thread"),
-            "workspace":workspace,
+            "workspace":genesis_workspace(&projection)?,
             "archived":archived,
             "last_seq":projection.last_seq,
             "latest_turn":projection.latest_turn,
@@ -645,7 +632,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
     fn context_search(
         &self,
         request: &ToolControl,
-        resolved: &crate::tool_control::ResolvedToolControlLine,
         workspace: &str,
         arguments: &Value,
     ) -> Result<IJsonValue, SupervisorOperationError> {
@@ -659,17 +645,27 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             "current_thread" => vec![request.session.clone()],
             "thread" => {
                 let target = required_string(arguments, "thread_id")?;
-                require_session_in_workspace(&self.root, target, workspace)?;
+                session_folder(&self.root, target)?;
                 vec![target.to_owned()]
             }
-            "project" => workspace_sessions(&self.root, workspace)?,
+            "project" => visible_sessions(&self.root, Some(workspace))?,
+            "all" => visible_sessions(&self.root, None)?,
             _ => {
                 return Err(SupervisorOperationError::Invalid(
                     "invalid context.search scope".into(),
                 ));
             }
         };
-        let identity = format!("search:{workspace}:{scope}:{query}");
+        // Include the selected target/filter, not merely the scope label. Old
+        // workspace-only cursors fail closed instead of paging another session.
+        let target = match scope {
+            "current_thread" => request.session.as_str(),
+            "thread" => required_string(arguments, "thread_id")?,
+            "project" => workspace,
+            "all" => "",
+            _ => unreachable!(),
+        };
+        let identity = json!(["context-search-v2", scope, target, query]).to_string();
         let offset = decode_cursor(arguments.get("cursor"), &identity)?;
         let limit = argument_limit(arguments, DEFAULT_SEARCH_LIMIT)?;
         let mut hits = Vec::new();
@@ -714,7 +710,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             .collect::<Vec<_>>();
         let next = (offset + page.len() < hits.len())
             .then(|| encode_cursor(&identity, offset + page.len()));
-        let _ = resolved;
         to_ijson(&json!({"hits":page,"cursor":next}))
     }
 
@@ -778,11 +773,8 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         resolved: &crate::tool_control::ResolvedToolControlLine,
         arguments: &Value,
     ) -> Result<IJsonValue, SupervisorOperationError> {
-        let workspace = genesis_workspace(&resolved.projection)?;
         let projection = match arguments.get("thread_id").and_then(Value::as_str) {
-            Some(line) if line != request.thread => {
-                resolve_workspace_line(&self.root, workspace, line)?.1
-            }
+            Some(line) if line != request.thread => resolve_visible_line(&self.root, line)?.1,
             _ => resolved.projection.clone(),
         };
         let ids = arguments
@@ -1125,88 +1117,94 @@ fn session_lines(
     Ok(lines)
 }
 
-fn resolve_workspace_line(
+fn resolve_visible_line(
     root: &Path,
-    workspace: &str,
     line: &str,
 ) -> Result<(PathBuf, schema::LedgerProjection), SupervisorOperationError> {
     let mut found = None;
-    for session in workspace_sessions(root, workspace)? {
+    for session in visible_sessions(root, None)? {
         let (folder, _) = session_folder(root, &session)?;
         for candidate in session_lines(&folder)? {
             if genesis_line(&candidate.1)? == line {
                 if found.is_some() {
                     return Err(SupervisorOperationError::Corruption(
-                        "line identity is duplicated across the workspace".into(),
+                        "line identity is duplicated across sessions".into(),
                     ));
                 }
                 found = Some(candidate);
             }
         }
     }
-    found.ok_or_else(|| SupervisorOperationError::NotFound("line not found in workspace".into()))
+    found.ok_or_else(|| SupervisorOperationError::NotFound("line not found".into()))
 }
 
-fn workspace_sessions(
+fn visible_sessions(
     root: &Path,
-    workspace: &str,
+    workspace_filter: Option<&str>,
 ) -> Result<Vec<String>, SupervisorOperationError> {
-    let mut sessions = Vec::new();
+    let mut sessions = BTreeSet::new();
     for area in ["threads", "archive"] {
         for entry in fs::read_dir(root.join(area)).map_err(map_io)? {
             let entry = entry.map_err(map_io)?;
-            if entry.file_type().map_err(map_io)?.is_dir()
-                && folder_workspace(&entry.path()).is_ok_and(|candidate| candidate == workspace)
+            if !entry.file_type().map_err(map_io)?.is_dir() {
+                continue;
+            }
+            let session = entry.file_name().to_string_lossy().into_owned();
+            validate_session_folder(&entry.path(), &session)?;
+            if let Some(filter) = workspace_filter
+                && folder_workspace(&entry.path())? != filter
             {
-                sessions.push(entry.file_name().to_string_lossy().into_owned());
+                continue;
+            }
+            if !sessions.insert(session) {
+                return Err(SupervisorOperationError::Corruption(
+                    "session exists in active and archive catalogs".into(),
+                ));
             }
         }
     }
-    sessions.sort();
-    Ok(sessions)
+    Ok(sessions.into_iter().collect())
 }
 
-fn require_session_in_workspace(
-    root: &Path,
-    session: &str,
-    workspace: &str,
-) -> Result<(), SupervisorOperationError> {
-    let (folder, _) = session_folder(root, session)?;
-    if folder_workspace(&folder)? != workspace {
+fn require_active_session(root: &Path, session: &str) -> Result<(), SupervisorOperationError> {
+    let (_, archived) = session_folder(root, session)?;
+    if archived {
         return Err(SupervisorOperationError::NotFound(
-            "thread not found in this workspace".into(),
+            "active thread not found".into(),
         ));
     }
     Ok(())
 }
 
-fn require_active_session_in_workspace(
-    root: &Path,
-    session: &str,
-    workspace: &str,
-) -> Result<(), SupervisorOperationError> {
-    let folder = root.join("threads").join(session);
-    if !folder.is_dir() {
+fn validate_session_folder(folder: &Path, session: &str) -> Result<(), SupervisorOperationError> {
+    endpoint::validate_session_id(session)
+        .map_err(|_| SupervisorOperationError::Invalid("invalid session identity".into()))?;
+    let metadata = fs::symlink_metadata(folder).map_err(map_io)?;
+    if !metadata.is_dir() || metadata.file_type().is_symlink() {
         return Err(SupervisorOperationError::NotFound(
-            "active thread not found in this workspace".into(),
+            "thread not found".into(),
         ));
     }
-    if folder_workspace(&folder)? != workspace {
-        return Err(SupervisorOperationError::NotFound(
-            "active thread not found in this workspace".into(),
+    let genesis = store::read_genesis(folder.join("main.jsonl"))
+        .map_err(map_store)?
+        .ok_or_else(|| SupervisorOperationError::Corruption("genesis missing".into()))?;
+    if genesis.string_field("thread") != Some(session) {
+        return Err(SupervisorOperationError::Corruption(
+            "folder/genesis identity mismatch".into(),
         ));
     }
     Ok(())
 }
 
 fn session_folder(root: &Path, session: &str) -> Result<(PathBuf, bool), SupervisorOperationError> {
-    let active = root.join("threads").join(session);
-    if active.is_dir() {
-        return Ok((active, false));
-    }
-    let archived = root.join("archive").join(session);
-    if archived.is_dir() {
-        return Ok((archived, true));
+    endpoint::validate_session_id(session)
+        .map_err(|_| SupervisorOperationError::Invalid("invalid session identity".into()))?;
+    for (area, archived) in [("threads", false), ("archive", true)] {
+        let folder = root.join(area).join(session);
+        if fs::symlink_metadata(&folder).is_ok() {
+            validate_session_folder(&folder, session)?;
+            return Ok((folder, archived));
+        }
     }
     Err(SupervisorOperationError::NotFound(
         "thread not found".into(),
@@ -1225,7 +1223,7 @@ fn read_projection(path: &Path) -> Result<schema::LedgerProjection, SupervisorOp
 }
 
 /// The workspace a thread folder belongs to, from its genesis line only (the first line of
-/// `main.jsonl`): a membership check must not decode the whole ledger.
+/// `main.jsonl`): an explicit query filter must not decode the whole ledger.
 fn folder_workspace(folder: &Path) -> Result<String, SupervisorOperationError> {
     let genesis = store::read_genesis(folder.join("main.jsonl"))
         .map_err(map_store)?

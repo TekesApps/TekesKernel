@@ -517,7 +517,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `change_folders` | `Some` | [340](../../src/client_admin.rs#L340) | external-constructor-callback-or-unresolved |
 | `change_folders` | `NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(                     &self.root,                     &input.workspace_id,                 ))                 .map_err` | [341](../../src/client_admin.rs#L341) | receiver-type-required |
 | `change_folders` | `NamedLock::try_exclusive` | [341](../../src/client_admin.rs#L341) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [341](../../src/client_admin.rs#L341) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6365) |
+| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [341](../../src/client_admin.rs#L341) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6423) |
 | `change_folders` | `failure` | [346](../../src/client_admin.rs#L346) | [tekes-supervisor::client_admin::failure](../../src/client_admin.rs#L714) |
 | `change_folders` | `internal_store` | [351](../../src/client_admin.rs#L351) | [tekes-supervisor::client_admin::internal_store](../../src/client_admin.rs#L1121) |
 | `change_folders` | `management_request_hash` | [355](../../src/client_admin.rs#L355) | [tekes-supervisor::client_admin::management_request_hash](../../src/client_admin.rs#L1141) |

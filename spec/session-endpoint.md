@@ -2144,6 +2144,14 @@ relative to the session's primary workspace root, bounded walk, no symlink
 escape) and `session.references.sessions {sessionId, query}` ->
 `{items:[{sessionId, label, cwd?, sameWorkspace, createdAt, mention}]}` where
 `mention` is the host-authored token `@thread:<sessionId>` the model sees verbatim.
+`sameWorkspace` is display metadata, never permission to read or communicate
+with a session. Session mention candidates already span workspace boundaries.
+File mention candidates and session file reads remain constrained to that
+target session's resolved folders; cross-session visibility grants no wider
+filesystem access. `tekesWorkspace.*` continues to resolve its explicit
+workspaceId to server-owned file roots and mutation grants; turnChanges keeps
+its session/workspace journal identity check.
+
 The native Swift client implements `SessionDirectoryPickerEndpoint` (its
 `pickDirectory` is an AppKit open panel, not a Kernel method) and
 `SessionReferenceEndpoint` with these methods.

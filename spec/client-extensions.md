@@ -261,7 +261,10 @@ one-to-one from `schedule`.
 conversation text in active and archived sessions, capped at 50 results.
 `thread.search` takes the exact `thread-search` internal request with
 camel-case field names:
-`{workspaceId,query,limit,visibility,after?}`. The result is
+`{workspaceId?,query,limit,visibility,after?}`. Omitting `workspaceId` searches
+all sessions; supplying it retains an explicit legacy workspace query filter,
+not an authorization boundary. Cursors bind this complete selection and cannot
+widen a filtered query to a global query. The result is
 `{format:1,results,nextCursor?,reachedEnd,catalogDigest}`; internal index
 diagnostics are omitted. Every named internal error maps to the same
 kebab-case endpoint code. No transcript/body search is implied.

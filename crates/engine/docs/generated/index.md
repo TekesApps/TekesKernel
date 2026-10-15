@@ -57,7 +57,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/engine/src/validation_writer.rs](../../src/validation_writer.rs) | 6 | 260 | [Symbols and calls](src--validation_writer.md) |
 | [crates/engine/src/workflow_tools.rs](../../src/workflow_tools.rs) | 26 | 286 | [Symbols and calls](src--workflow_tools.md) |
 | [crates/engine/tests/slice14e_web.rs](../../tests/slice14e_web.rs) | 1 | 6 | `inventory.json` |
-| [crates/engine/tests/slice8_dispatcher.rs](../../tests/slice8_dispatcher.rs) | 25 | 318 | `inventory.json` |
+| [crates/engine/tests/slice8_dispatcher.rs](../../tests/slice8_dispatcher.rs) | 27 | 377 | `inventory.json` |
 | [crates/engine/tests/slice8_dynamic_catalog.rs](../../tests/slice8_dynamic_catalog.rs) | 25 | 252 | `inventory.json` |
 | [crates/engine/tests/slice8_supervisor_backend.rs](../../tests/slice8_supervisor_backend.rs) | 3 | 24 | `inventory.json` |
 | [crates/engine/tests/slice8_system_tools.rs](../../tests/slice8_system_tools.rs) | 33 | 363 | `inventory.json` |

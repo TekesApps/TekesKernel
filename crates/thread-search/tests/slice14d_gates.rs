@@ -418,7 +418,7 @@ fn request(
     visibility: ArchiveVisibility,
 ) -> SearchRequest {
     SearchRequest {
-        workspace_id: workspace_id.to_owned(),
+        workspace_id: Some(workspace_id.to_owned()),
         query: query.to_owned(),
         limit,
         visibility,
@@ -560,4 +560,78 @@ fn host_search_matches_content_across_workspaces_and_archive() {
     let value = serde_json::to_value(result).unwrap();
     assert_eq!(value["items"][0]["sessionId"], A);
     assert_eq!(value["hasMore"], false);
+}
+
+#[test]
+fn global_title_search_is_explicit_and_cursor_filters_cannot_be_widened() {
+    let root = fixture_catalog();
+    let authority = ThreadSearchAuthority::open(root.path()).unwrap();
+    let global = SearchRequest {
+        workspace_id: None,
+        ..request("unused", "kernel design", 1, ArchiveVisibility::All)
+    };
+    let first = authority.search(&global).unwrap();
+    let all = authority
+        .search(&SearchRequest {
+            limit: 10,
+            ..global.clone()
+        })
+        .unwrap();
+    assert_eq!(all.results.len(), 4);
+    assert!(all.results.iter().any(|row| row.workspace_id == "ws-other"));
+    let scoped = request("ws-main", "kernel design", 1, ArchiveVisibility::All);
+    let old_cursor = authority.search(&scoped).unwrap().next_cursor.unwrap();
+    assert!(matches!(
+        authority.search(&SearchRequest {
+            after: Some(old_cursor.clone()),
+            ..global.clone()
+        }),
+        Err(SearchError::CursorScope)
+    ));
+    assert!(matches!(
+        authority.search(&SearchRequest {
+            after: first.next_cursor.clone(),
+            ..scoped.clone()
+        }),
+        Err(SearchError::CursorScope)
+    ));
+    assert!(
+        authority
+            .search(&SearchRequest {
+                after: Some(old_cursor),
+                ..scoped
+            })
+            .is_ok(),
+        "existing string-filter cursor stays compatible"
+    );
+    for changed in [
+        SearchRequest {
+            workspace_id: Some("ws-other".into()),
+            ..global.clone()
+        },
+        SearchRequest {
+            visibility: ArchiveVisibility::Active,
+            ..global.clone()
+        },
+        SearchRequest {
+            query: "different".into(),
+            ..global.clone()
+        },
+    ] {
+        assert!(matches!(
+            authority.search(&SearchRequest {
+                after: first.next_cursor.clone(),
+                ..changed
+            }),
+            Err(SearchError::CursorScope)
+        ));
+    }
+    assert!(
+        authority
+            .search(&SearchRequest {
+                after: first.next_cursor.clone(),
+                ..global
+            })
+            .is_ok()
+    );
 }
