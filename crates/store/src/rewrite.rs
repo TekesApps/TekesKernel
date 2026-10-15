@@ -1640,14 +1640,15 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
     if context.operation.ephemeral && context.source_file == "main.jsonl" {
         target.insert("ephemeral".to_owned(), json!(true));
     }
-    if let Some(instruction) = object.get("instruction") {
-        target.insert("instruction".to_owned(), instruction.clone());
-    }
-    if let Some(folder_binding) = object.get("folder_binding") {
-        target.insert("folder_binding".to_owned(), folder_binding.clone());
-    }
-    if let Some(identity) = object.get("identity_profile") {
-        target.insert("identity_profile".to_owned(), identity.clone());
+    // Every inherited field the base object above does not already default is
+    // copied as is; the preset is decided below.
+    for field in schema::GENESIS_INHERITED_FIELDS {
+        if !target.contains_key(*field)
+            && *field != "preset"
+            && let Some(value) = object.get(*field)
+        {
+            target.insert((*field).to_owned(), value.clone());
+        }
     }
     // An explicit fork preset replaces the source's on the main line only;
     // a preset genesis needs reader 2 whatever the copied minima say.
@@ -2802,6 +2803,55 @@ mod tests {
         assert_eq!(raw["preset"], preset);
         assert_eq!(raw["min_reader"], 2);
         assert!(raw.get("identity_profile").is_none());
+    }
+
+    /// Fork copies every inherited genesis field, so a field added to the
+    /// genesis is never silently dropped by a fork.
+    #[test]
+    fn fork_copies_every_inherited_genesis_field() {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let store = ThreadStore::open(directory.path()).expect("thread store");
+        let source_id = "018f0000-0000-7000-8000-000000000005";
+        let destination_id = "018f0000-0000-7000-8000-000000000006";
+        let source = store.root().join("threads").join(source_id);
+        fs::create_dir(&source).expect("source folder");
+        let baseline = include_bytes!("../../../fixtures/invalid/_valid-baseline.jsonl");
+        let mut events = baseline
+            .split(|byte| *byte == b'\n')
+            .filter(|line| !line.is_empty())
+            .map(|line| serde_json::from_slice::<Value>(line).expect("baseline event"))
+            .collect::<Vec<_>>();
+        let genesis = events[0].as_object_mut().unwrap();
+        genesis.insert("folder_binding".to_owned(), json!("folder-0002"));
+        genesis.insert("environment".to_owned(), json!("sandboxed"));
+        genesis.insert("folders".to_owned(), json!(["folder-0001", "folder-0002"]));
+        genesis.insert("instruction".to_owned(), json!({"digest":"ins"}));
+        genesis.insert("identity_profile".to_owned(), json!("general"));
+        let expected = genesis.clone();
+        write_canonical_events(&source.join("main.jsonl"), &events);
+        store
+            .begin_fork(
+                "fork-fields",
+                source_id,
+                destination_id,
+                "2026-10-15T00:00:00.000Z",
+            )
+            .expect("begin fork");
+        store.recover_rewrites().expect("publish fork");
+        let destination = store.root().join("threads").join(destination_id);
+        let projected = validate_ledger(
+            &fs::read(destination.join("main.jsonl")).unwrap(),
+            schema::READER_VERSION,
+        )
+        .expect("fork ledger");
+        let raw = serde_json::to_value(projected.events[0].raw()).unwrap();
+        for field in schema::GENESIS_INHERITED_FIELDS {
+            assert_eq!(
+                raw.get(*field),
+                expected.get(*field),
+                "fork changed inherited field {field}"
+            );
+        }
     }
 
     #[test]

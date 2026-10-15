@@ -366,7 +366,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `root.as_ref` | [45](../../src/client_admin.rs#L45) | receiver-type-required |
 | `new` | `root.to_path_buf` | [47](../../src/client_admin.rs#L47) | receiver-type-required |
 | `new` | `ConfigRepository::open(root).map_err` | [48](../../src/client_admin.rs#L48) | receiver-type-required |
-| `new` | `ConfigRepository::open` | [48](../../src/client_admin.rs#L48) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `new` | `ConfigRepository::open` | [48](../../src/client_admin.rs#L48) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
 | `new` | `Mutex::new` | [50](../../src/client_admin.rs#L50) | external-constructor-callback-or-unresolved |
 | `new` | `AdminMutationJournal::open(root).map_err` | [51](../../src/client_admin.rs#L51) | receiver-type-required |
 | `new` | `AdminMutationJournal::open` | [51](../../src/client_admin.rs#L51) | [tekes-supervisor::client_admin::AdminMutationJournal::open](../../src/client_admin.rs#L689) |

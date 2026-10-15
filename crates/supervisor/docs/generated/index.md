@@ -73,7 +73,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 199 | 2250 | [Symbols and calls](src--mcp_runtime.md) |
 | [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 372 | 6506 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1866 | [Symbols and calls](src--process_live_tests.md) |
-| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 819 | [Symbols and calls](src--production_tool_control.md) |
+| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 844 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |

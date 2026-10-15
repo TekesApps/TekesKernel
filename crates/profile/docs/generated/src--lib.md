@@ -61,6 +61,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `SkillPackage` | `resources::SkillPackage` | `pub` |
 | `SkillResource` | `resources::SkillResource` | `pub` |
 | `SkillSummary` | `resources::SkillSummary` | `pub` |
+| `FolderRecord` | `scope::FolderRecord` | `pub` |
 | `SessionScope` | `scope::SessionScope` | `pub` |
 | `workspace_instructions` | `scope::workspace_instructions` | `pub` |
 | `PathBuf` | `std::path::PathBuf` | `private` |

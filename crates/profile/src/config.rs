@@ -75,6 +75,22 @@ impl WorkspaceConfig {
         }
     }
 
+    /// The stable folder ids in authored order: `folders` ids, or for a
+    /// legacy `cwd` workspace the `folder-NNNN` ids its sessions bind to.
+    #[must_use]
+    pub fn folder_ids(&self) -> Vec<String> {
+        if self.folders.is_empty() {
+            (1..=self.cwd.len())
+                .map(|index| format!("folder-{index:04}"))
+                .collect()
+        } else {
+            self.folders
+                .iter()
+                .map(|folder| folder.id.clone())
+                .collect()
+        }
+    }
+
     #[must_use]
     pub fn binding_for_path(&self, path: &str) -> Option<String> {
         self.folders

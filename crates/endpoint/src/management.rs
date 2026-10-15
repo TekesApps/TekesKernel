@@ -1056,6 +1056,7 @@ impl ManagementStore {
             &session_id,
             &workspace.id,
             &folder_binding,
+            &workspace.folder_ids(),
             &config_digest,
             &instruction_digest,
             request.identity_profile,
@@ -3266,6 +3267,7 @@ fn create_genesis(
     session_id: &str,
     workspace_id: &str,
     folder_binding: &str,
+    folders: &[String],
     config_digest: &str,
     instruction_digest: &str,
     identity_profile: Option<tools::IdentityProfile>,
@@ -3281,6 +3283,8 @@ fn create_genesis(
         "thread":session_id,
         "workspace":workspace_id,
         "folder_binding":folder_binding,
+        "environment":schema::DEFAULT_ENVIRONMENT,
+        "folders":folders,
         "format":1,
         "min_reader":1,
         "min_writer":1,
@@ -4359,6 +4363,7 @@ mod tests {
                 &origin.target,
                 "ws",
                 "folder-1",
+                &["folder-1".to_owned()],
                 "cfg",
                 "ins",
                 identity,
@@ -4402,6 +4407,7 @@ mod tests {
             &origin.target,
             "ws",
             "folder-1",
+            &["folder-1".to_owned()],
             "cfg",
             "ins",
             None,
@@ -4961,6 +4967,7 @@ mod tests {
             session_id,
             workspace_id,
             binding.unwrap_or("folder-0001"),
+            &[binding.unwrap_or("folder-0001").to_owned()],
             &format!("sha256-{}", "a".repeat(64)),
             &format!("sha256-{}", "b".repeat(64)),
             None,
@@ -4972,10 +4979,11 @@ mod tests {
         let mut value: Value =
             serde_json::from_slice(&genesis.canonical_bytes().expect("bytes")).expect("json");
         if binding.is_none() {
-            value
-                .as_object_mut()
-                .expect("object")
-                .remove("folder_binding");
+            // A legacy session predates bindings, environments and folders.
+            let object = value.as_object_mut().expect("object");
+            for field in ["folder_binding", "environment", "folders"] {
+                object.remove(field);
+            }
         }
         let event = schema::Event::from_value(
             schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect("ijson"),
@@ -5284,6 +5292,15 @@ mod tests {
             workspace.policy,
             Some(default_workspace_policy(&canonical.to_string_lossy()))
         );
+
+        // The genesis records the session's environment and folders.
+        let genesis = store::read_genesis(storage.join("threads").join(&first).join("main.jsonl"))
+            .expect("read genesis")
+            .expect("genesis");
+        assert_eq!(genesis.string_field("environment"), Some("local"));
+        let raw = serde_json::to_value(genesis.raw()).expect("raw genesis");
+        assert_eq!(raw["folders"], json!(["folder-0001"]));
+        assert_eq!(raw["folder_binding"], json!("folder-0001"));
 
         // A retried request answers the same session; a later one reuses the folder.
         assert_eq!(create_in(&store, "create-1", &alpha_text, &agents), first);

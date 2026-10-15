@@ -738,18 +738,13 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             op: "create".into(),
             key: request.request_id.clone(),
         };
-        let mut event = json!({
-            "v":1,"seq":1,"ts":timestamp,"kind":"genesis",
-            "thread":session,"workspace":genesis_workspace(&resolved.projection)?,
-            "format":1,"min_reader":1,"min_writer":1,
-            "resume":source.get("resume").cloned().unwrap_or_else(|| json!("never")),
-            "config":source.get("config").cloned().ok_or_else(|| SupervisorOperationError::Corruption("caller genesis config missing".into()))?,
-            "origin_key":origin.key,"origin_tuple":origin,
-        });
-        if let Some(instruction) = source.get("instruction") {
-            event["instruction"] = instruction.clone();
-        }
-        let event = Event::from_value(to_ijson(&event)?).map_err(map_schema)?;
+        let event = context_start_genesis(
+            &source,
+            genesis_workspace(&resolved.projection)?,
+            &session,
+            timestamp,
+            &origin,
+        )?;
         ThreadStore::open(&self.root)
             .map_err(map_store)?
             .create_thread(&session, event)
@@ -1384,6 +1379,36 @@ fn decode_cursor(value: Option<&Value>, identity: &str) -> Result<usize, Supervi
         .map_err(|_| SupervisorOperationError::Invalid("invalid cursor offset".into()))
 }
 
+/// The genesis of a session the `context` tool starts from `source`, the
+/// caller's genesis. The new session starts in the caller's scope: workspace,
+/// folders, environment, configuration and preset, exactly as a fork inherits
+/// them; a preset genesis needs reader 2.
+fn context_start_genesis(
+    source: &Value,
+    workspace: &str,
+    session: &str,
+    timestamp: &str,
+    origin: &OriginTuple,
+) -> Result<Event, SupervisorOperationError> {
+    let mut event = json!({
+        "v":1,"seq":1,"ts":timestamp,"kind":"genesis",
+        "thread":session,"workspace":workspace,
+        "format":1,"min_reader":1,"min_writer":1,
+        "resume":source.get("resume").cloned().unwrap_or_else(|| json!("never")),
+        "config":source.get("config").cloned().ok_or_else(|| SupervisorOperationError::Corruption("caller genesis config missing".into()))?,
+        "origin_key":origin.key,"origin_tuple":origin,
+    });
+    for field in schema::GENESIS_INHERITED_FIELDS {
+        if let Some(value) = source.get(*field) {
+            event[*field] = value.clone();
+        }
+    }
+    if source.get("preset").is_some() {
+        event["min_reader"] = json!(2);
+    }
+    Event::from_value(to_ijson(&event)?).map_err(map_schema)
+}
+
 fn deterministic_uuid(request_id: &str) -> String {
     let mut bytes = request_id.as_bytes()[..32].to_vec();
     bytes[12] = b'4';
@@ -1606,5 +1631,51 @@ mod continuation_policy_tests {
                 .error
                 .is_some_and(|error| error.code == ToolControlErrorCode::Denied)
         );
+    }
+}
+
+#[cfg(test)]
+mod context_start_tests {
+    use super::*;
+
+    /// A session the `context` tool starts runs in the caller's scope: every
+    /// inherited genesis field is copied, and a preset keeps reader 2.
+    #[test]
+    fn a_started_session_inherits_the_callers_scope_and_preset() {
+        let session = "018f0000-0000-7000-8000-0000000000c2";
+        let source = json!({
+            "workspace":"ws","folder_binding":"folder-0002","environment":"local",
+            "folders":["folder-0001","folder-0002"],"resume":"never",
+            "config":{"digest":"cfg"},"instruction":{"digest":"ins"},"min_reader":2,
+            "preset":{"format":1,"base":"general","layers":[],"digest":"sha256:p"},
+        });
+        let origin = OriginTuple {
+            principal: "kernel-worker".into(),
+            client: "context".into(),
+            target: session.into(),
+            op: "create".into(),
+            key: "request".into(),
+        };
+        let event =
+            context_start_genesis(&source, "ws", session, "2026-10-15T00:00:00.000Z", &origin)
+                .expect("genesis");
+        let raw = serde_json::to_value(event.raw()).unwrap();
+        for field in schema::GENESIS_INHERITED_FIELDS {
+            assert_eq!(raw.get(*field), source.get(*field), "{field}");
+        }
+        assert_eq!(raw["min_reader"], 2);
+        assert_eq!(raw["thread"], session);
+
+        // Without a preset the new session keeps the caller's identity profile.
+        let mut plain = source.clone();
+        let object = plain.as_object_mut().unwrap();
+        object.remove("preset");
+        object.insert("identity_profile".into(), json!("general"));
+        let event =
+            context_start_genesis(&plain, "ws", session, "2026-10-15T00:00:00.000Z", &origin)
+                .expect("genesis");
+        let raw = serde_json::to_value(event.raw()).unwrap();
+        assert_eq!(raw["identity_profile"], "general");
+        assert_eq!(raw["min_reader"], 1);
     }
 }

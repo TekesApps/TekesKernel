@@ -129,7 +129,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `host_runtime::ProductionRootLock::acquire` | [83](../../src/builtin.rs#L83) | [tekes-supervisor::host_runtime::ProductionRootLock::acquire](../../src/host_runtime.rs#L97) |
 | `run` | `crate::boot_trace::phase` | [84](../../src/builtin.rs#L84), [86](../../src/builtin.rs#L86), [123](../../src/builtin.rs#L123), [137](../../src/builtin.rs#L137), [139](../../src/builtin.rs#L139), [158](../../src/builtin.rs#L158), [169](../../src/builtin.rs#L169), [176](../../src/builtin.rs#L176), [194](../../src/builtin.rs#L194) | [tekes-supervisor::boot_trace::phase](../../src/boot_trace.rs#L60) |
 | `run` | `host_runtime::preflight_storage` | [85](../../src/builtin.rs#L85) | [tekes-supervisor::host_runtime::preflight_storage](../../src/host_runtime.rs#L239) |
-| `run` | `profile::ConfigRepository::open` | [87](../../src/builtin.rs#L87) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `run` | `profile::ConfigRepository::open` | [87](../../src/builtin.rs#L87) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
 | `run` | `repository.providers` | [88](../../src/builtin.rs#L88) | receiver-type-required |
 | `run` | `current         .revision         .checked_add(1)         .ok_or_else` | [90](../../src/builtin.rs#L90) | receiver-type-required |
 | `run` | `current         .revision         .checked_add` | [90](../../src/builtin.rs#L90) | receiver-type-required |
