@@ -124,10 +124,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `folder` | `self.root.join` | [115](../../src/catalog.rs#L115) | receiver-type-required |
 | `read_entry` | `self.folder` | [120](../../src/catalog.rs#L120) | [tekes-supervisor::catalog::Catalog::folder](../../src/catalog.rs#L114) |
 | `read_entry` | `folder.is_dir` | [121](../../src/catalog.rs#L121) | receiver-type-required |
-| `read_entry` | `store::card::read_card` | [124](../../src/catalog.rs#L124) | [store::card::read_card](../../../store/src/card.rs#L175) |
+| `read_entry` | `store::card::read_card` | [124](../../src/catalog.rs#L124) | [store::card::read_card](../../../store/src/card.rs#L179) |
 | `read_entry` | `Some` | [125](../../src/catalog.rs#L125), [128](../../src/catalog.rs#L128), [133](../../src/catalog.rs#L133), [135](../../src/catalog.rs#L135), [137](../../src/catalog.rs#L137) | external-constructor-callback-or-unresolved |
 | `read_entry` | `Entry::cold` | [125](../../src/catalog.rs#L125), [128](../../src/catalog.rs#L128), [133](../../src/catalog.rs#L133) | [tekes-supervisor::catalog::Entry::cold](../../src/catalog.rs#L73) |
-| `read_entry` | `store::card::classify` | [127](../../src/catalog.rs#L127) | [store::card::classify](../../../store/src/card.rs#L390) |
+| `read_entry` | `store::card::classify` | [127](../../src/catalog.rs#L127) | [store::card::classify](../../../store/src/card.rs#L394) |
 | `read_entry` | `classified.freshness` | [130](../../src/catalog.rs#L130) | receiver-type-required |
 | `read_entry` | `Arc::new` | [137](../../src/catalog.rs#L137) | external-constructor-callback-or-unresolved |
 | `read_entry` | `view_of_card` | [137](../../src/catalog.rs#L137) | [tekes-supervisor::catalog::view_of_card](../../src/catalog.rs#L423) |
@@ -216,7 +216,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_light` | `new_events.iter` | [332](../../src/catalog.rs#L332) | receiver-type-required |
 | `refresh_light` | `event.string_field("title").is_some` | [333](../../src/catalog.rs#L333) | receiver-type-required |
 | `refresh_light` | `event.string_field` | [333](../../src/catalog.rs#L333) | receiver-type-required |
-| `refresh_light` | `endpoint::card_updated_ms` | [344](../../src/catalog.rs#L344) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L160) |
+| `refresh_light` | `endpoint::card_updated_ms` | [344](../../src/catalog.rs#L344) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L216) |
 | `refresh_light` | `(**view).clone` | [347](../../src/catalog.rs#L347) | receiver-type-required |
 | `refresh_light` | `projection.lifecycle.latest_turn.is_none` | [350](../../src/catalog.rs#L350) | receiver-type-required |
 | `refresh_light` | `next.lines.first_mut` | [351](../../src/catalog.rs#L351) | receiver-type-required |

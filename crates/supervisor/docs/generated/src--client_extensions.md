@@ -1006,7 +1006,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `host_files` | `host_files::file_references(&roots, text("query")).map_err` | [1711](../../src/client_extensions.rs#L1711) | receiver-type-required |
 | `host_files` | `host_files::file_references` | [1711](../../src/client_extensions.rs#L1711) | [host-files::file_references](../../../host-files/src/lib.rs#L321) |
 | `host_files` | `endpoint::NativeEndpoint::open(&self.root)                     .map_err` | [1723](../../src/client_extensions.rs#L1723) | receiver-type-required |
-| `host_files` | `endpoint::NativeEndpoint::open` | [1723](../../src/client_extensions.rs#L1723) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
+| `host_files` | `endpoint::NativeEndpoint::open` | [1723](../../src/client_extensions.rs#L1723) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L320) |
 | `host_files` | `internal` | [1724](../../src/client_extensions.rs#L1724), [1727](../../src/client_extensions.rs#L1727), [1729](../../src/client_extensions.rs#L1729) | external-constructor-callback-or-unresolved |
 | `host_files` | `error.to_string` | [1724](../../src/client_extensions.rs#L1724), [1727](../../src/client_extensions.rs#L1727), [1729](../../src/client_extensions.rs#L1729) | receiver-type-required |
 | `host_files` | `native                     .list_sessions_cached(&HashSet::new())                     .map_err` | [1725](../../src/client_extensions.rs#L1725) | receiver-type-required |
@@ -1456,7 +1456,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `failure` | `IJsonValue::parse` | [3189](../../src/client_extensions.rs#L3189) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `failure` | `serde_json::to_vec(&details).expect` | [3190](../../src/client_extensions.rs#L3190) | receiver-type-required |
 | `failure` | `serde_json::to_vec` | [3190](../../src/client_extensions.rs#L3190) | external-constructor-callback-or-unresolved |
-| `failure` | `ProductionRouteFailure::new` | [3193](../../src/client_extensions.rs#L3193) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L513) |
+| `failure` | `ProductionRouteFailure::new` | [3193](../../src/client_extensions.rs#L3193) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
 | `production_extensions` | `root.join` | [3216](../../src/client_extensions.rs#L3216) | receiver-type-required |
 | `production_extensions` | `fs::create_dir_all(&agent).expect` | [3217](../../src/client_extensions.rs#L3217) | receiver-type-required |
 | `production_extensions` | `fs::create_dir_all` | [3217](../../src/client_extensions.rs#L3217) | external-constructor-callback-or-unresolved |
@@ -1465,7 +1465,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `production_extensions` | `std::env::current_exe().expect` | [3220](../../src/client_extensions.rs#L3220) | receiver-type-required |
 | `production_extensions` | `std::env::current_exe` | [3220](../../src/client_extensions.rs#L3220) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `Arc::new` | [3225](../../src/client_extensions.rs#L3225), [3228](../../src/client_extensions.rs#L3228), [3231](../../src/client_extensions.rs#L3231) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `SessionInputAdmissionAuthority::new` | [3225](../../src/client_extensions.rs#L3225) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L286) |
+| `production_extensions` | `SessionInputAdmissionAuthority::new` | [3225](../../src/client_extensions.rs#L3225) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L290) |
 | `production_extensions` | `root.to_path_buf` | [3225](../../src/client_extensions.rs#L3225) | receiver-type-required |
 | `production_extensions` | `EndpointCommandInputAuthority::new` | [3226](../../src/client_extensions.rs#L3226) | external-constructor-callback-or-unresolved |
 | `production_extensions` | `Arc::clone` | [3227](../../src/client_extensions.rs#L3227), [3237](../../src/client_extensions.rs#L3237) | external-constructor-callback-or-unresolved |
@@ -1752,7 +1752,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `skill_resources_never_cross_configured_workspace_catalogs` | `"2026-08-29T00:00:00.000Z".to_owned` | [3979](../../src/client_extensions.rs#L3979), [3991](../../src/client_extensions.rs#L3991) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `Arc::clone` | [3981](../../src/client_extensions.rs#L3981), [3990](../../src/client_extensions.rs#L3990), [4001](../../src/client_extensions.rs#L4001) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `EndpointCommandInputAuthority::new` | [3989](../../src/client_extensions.rs#L3989) | external-constructor-callback-or-unresolved |
-| `skill_resources_never_cross_configured_workspace_catalogs` | `SessionInputAdmissionAuthority::new` | [3992](../../src/client_extensions.rs#L3992) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L286) |
+| `skill_resources_never_cross_configured_workspace_catalogs` | `SessionInputAdmissionAuthority::new` | [3992](../../src/client_extensions.rs#L3992) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L290) |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ProductionClientExtensions::open(             root.path(),             ResourceCatalog::default(),             catalogs,             commands,             Arc::clone(&process),         )         .expect` | [3996](../../src/client_extensions.rs#L3996) | receiver-type-required |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ProductionClientExtensions::open` | [3996](../../src/client_extensions.rs#L3996) | external-constructor-callback-or-unresolved |
 | `skill_resources_never_cross_configured_workspace_catalogs` | `ResourceCatalog::default` | [3998](../../src/client_extensions.rs#L3998) | external-constructor-callback-or-unresolved |

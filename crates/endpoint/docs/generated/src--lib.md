@@ -194,6 +194,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `UnarchiveResult` | `service::UnarchiveResult` | `pub` |
 | `card_summary` | `service::card_summary` | `pub` |
 | `card_updated_ms` | `service::card_updated_ms` | `pub` |
+| `genesis_cwd` | `service::genesis_cwd` | `pub` |
 | `genesis_preset_summary` | `service::genesis_preset_summary` | `pub` |
 | `last_record_updated_ms` | `service::last_record_updated_ms` | `pub` |
 | `permission_mode_of` | `service::permission_mode_of` | `pub` |

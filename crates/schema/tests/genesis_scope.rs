@@ -7,7 +7,7 @@ fn genesis() -> Value {
         "format":1,"min_reader":1,"min_writer":1,"resume":"never",
         "config":{"digest":"cfg"},"origin_key":"create",
         "origin_tuple":{"principal":"p","client":"c","target":"018f0000-0000-7000-8000-000000000001","op":"create","key":"create"},
-        "folder_binding":"folder-0002","environment":"local",
+        "folder_binding":"folder-0002","environment":"local","cwd":"/fixture/second",
         "folders":["folder-0001","folder-0002"]})
 }
 
@@ -30,6 +30,10 @@ fn genesis_environment_and_folders_are_validated_together() {
     assert!(decodes(&legacy));
 
     for (field, value) in [
+        ("cwd", json!("relative/path")),
+        ("cwd", json!(null)),
+        ("cwd", json!(7)),
+        ("cwd", json!("/bad\0path")),
         ("environment", json!("")),
         ("environment", json!(7)),
         ("folders", json!([])),

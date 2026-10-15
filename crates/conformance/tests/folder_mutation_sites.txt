@@ -36,7 +36,7 @@ crates/plugins/src/archive.rs|expand_archive_with_hook|create_dir|1|other
 crates/plugins/src/store.rs|cleanup_temporaries|remove_file|1|other
 crates/plugins/src/store.rs|ensure_directory|create_dir|1|other
 crates/plugins/src/store.rs|install|rename|1|other
-crates/plugins/src/store.rs|recover|remove_file|1|other
+crates/plugins/src/store.rs|recover_locked|remove_file|1|other
 crates/plugins/src/store.rs|remove_empty|remove_dir|1|other
 crates/plugins/src/store.rs|remove_tree|remove_dir_all|1|other
 crates/plugins/src/store.rs|remove_tree|remove_file|1|other

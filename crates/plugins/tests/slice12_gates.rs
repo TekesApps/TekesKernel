@@ -45,6 +45,88 @@ impl NativeHelperVerifier for AcceptSignatures {
 #[derive(Clone, Copy)]
 struct RejectSignatures;
 
+#[test]
+fn concurrent_store_recovery_cannot_remove_an_active_install_stage() {
+    use std::sync::{
+        Mutex,
+        atomic::{AtomicBool, Ordering},
+        mpsc,
+    };
+    struct PausedVerifier {
+        first: AtomicBool,
+        entered: mpsc::SyncSender<()>,
+        release: Mutex<mpsc::Receiver<()>>,
+    }
+    impl NativeHelperVerifier for PausedVerifier {
+        fn verify(
+            &self,
+            executable: &Path,
+            id: &str,
+            relative: &str,
+        ) -> Result<NativeHelperIdentity, PluginError> {
+            if self.first.swap(false, Ordering::SeqCst) {
+                self.entered.send(()).unwrap();
+                self.release.lock().unwrap().recv().unwrap();
+            }
+            AcceptSignatures.verify(executable, id, relative)
+        }
+    }
+    let source = TempDir::new().unwrap();
+    write_computer_use_package(source.path());
+    let root = TempDir::new().unwrap();
+    let (entered_tx, entered_rx) = mpsc::sync_channel(1);
+    let (release_tx, release_rx) = mpsc::sync_channel(1);
+    let mut installer = open(
+        root.path(),
+        PausedVerifier {
+            first: AtomicBool::new(true),
+            entered: entered_tx,
+            release: Mutex::new(release_rx),
+        },
+    );
+    let mut reader = open(root.path(), AcceptSignatures);
+    std::thread::scope(|scope| {
+        let install = scope.spawn(|| {
+            installer.install(
+                &PluginSource::Directory(source.path().to_owned()),
+                InstallOptions::default(),
+            )
+        });
+        entered_rx
+            .recv_timeout(std::time::Duration::from_secs(10))
+            .unwrap();
+        let (started_tx, started_rx) = mpsc::sync_channel(1);
+        let (result_tx, result_rx) = mpsc::sync_channel(1);
+        let read = scope.spawn(move || {
+            started_tx.send(()).unwrap();
+            result_tx.send(reader.list()).unwrap();
+        });
+        started_rx.recv().unwrap();
+        let pending = matches!(
+            result_rx.recv_timeout(std::time::Duration::from_millis(100)),
+            Err(mpsc::RecvTimeoutError::Timeout)
+        );
+        let stage_present = fs::read_dir(root.path().join(".staging"))
+            .unwrap()
+            .next()
+            .is_some();
+        release_tx.send(()).unwrap();
+        let installed = install
+            .join()
+            .unwrap()
+            .expect("install keeps its staged files");
+        read.join().unwrap();
+        assert!(
+            pending,
+            "recovery must wait for the install publication barrier"
+        );
+        assert!(stage_present, "recovery must not collect an active stage");
+        let rows = result_rx.recv().unwrap().unwrap();
+        assert_eq!(rows.len(), 1);
+        assert_eq!(rows[0], installed);
+    });
+}
+
 impl NativeHelperVerifier for RejectSignatures {
     fn verify(
         &self,

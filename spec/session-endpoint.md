@@ -575,6 +575,14 @@ Endpoint restart changes only transport generation; durable seq never resets.
 Workspace/session inventory is derived from config plus folder metadata and
 validated semantic-ledger tails. It never reads, mutates, or clears endpoint
 transcript projection state.
+Each session's `cwd` comes from its own genesis, cached in its thread card.
+For an old genesis without the field, it comes from its verified genesis
+config asset; missing or invalid original assets leave cwd empty (unknown).
+Only an explicit `folder_binding` may resolve that cwd to the current path
+after relocation. A missing binding/config preserves the recorded cwd;
+the workspace's first folder is never used as an inventory fallback.
+Folder-based grouping and path-addressed relocation are exposed by
+[`folders.v1`](client-extensions.md#folder-inventory-and-relocation).
 Expanding a workspace yields stable ids, name/title, `updatedAt`, archived,
 running/parked metadata, and projections sufficient for selection. Transcript
 history is loaded only after session selection.

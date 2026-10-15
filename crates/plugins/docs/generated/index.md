@@ -28,8 +28,8 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/plugins/src/lib.rs](../../src/lib.rs) | 2 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/plugins/src/model.rs](../../src/model.rs) | 28 | 264 | [Symbols and calls](src--model.md) |
 | [crates/plugins/src/signature.rs](../../src/signature.rs) | 12 | 99 | [Symbols and calls](src--signature.md) |
-| [crates/plugins/src/store.rs](../../src/store.rs) | 74 | 932 | [Symbols and calls](src--store.md) |
-| [crates/plugins/tests/slice12_gates.rs](../../tests/slice12_gates.rs) | 33 | 738 | `inventory.json` |
+| [crates/plugins/src/store.rs](../../src/store.rs) | 76 | 946 | [Symbols and calls](src--store.md) |
+| [crates/plugins/tests/slice12_gates.rs](../../tests/slice12_gates.rs) | 36 | 796 | `inventory.json` |
 
 ## Cross-file direct calls
 

@@ -37,6 +37,7 @@ EXPECTED_CAPABILITIES = {
     "plugins.v1",
     "mcp.v1",
     "folderTrust.v1",
+    "folders.v1",
     "schedule.v1",
     "threadSearch.v1",
     "workspacePolicy.v1",

@@ -260,7 +260,8 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
         source: &PluginSource,
         options: InstallOptions,
     ) -> Result<PluginReceipt, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         let operation_id = operation_id();
         let stage = self.staging_root().join(&operation_id);
         source.stage(&stage)?;
@@ -380,7 +381,7 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
             phase: OperationPhase::RegistryPublished,
             ..operation
         })?;
-        self.recover()?;
+        self.recover_locked()?;
         Ok(receipt)
     }
 
@@ -465,7 +466,8 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
     }
 
     pub fn list(&mut self) -> Result<Vec<PluginReceipt>, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         Ok(self.read_registry()?.plugins)
     }
 
@@ -509,7 +511,8 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
     }
 
     pub fn remove(&mut self, plugin_id: &str) -> Result<bool, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         let mut registry = self.read_registry()?;
         let Some(previous) = registry
             .plugins
@@ -539,12 +542,13 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
             phase: OperationPhase::RegistryPublished,
             ..operation
         })?;
-        self.recover()?;
+        self.recover_locked()?;
         Ok(true)
     }
 
     pub fn components(&mut self) -> Result<Vec<ComponentProjection>, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         let mut projections = Vec::new();
         let mut owners = BTreeMap::<(ComponentKind, String), String>::new();
         for receipt in self.read_registry()?.plugins {
@@ -594,7 +598,8 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
         &mut self,
         reference: &PluginComponentReference,
     ) -> Result<Option<ResolvedPluginExecutable>, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         let registry = self.read_registry()?;
         let Some(receipt) = registry
             .plugins
@@ -631,7 +636,20 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
         }))
     }
 
+    // Independent store handles (including MCP's background admission checks)
+    // must not recover/collect another install's active staging directory.
+    fn lock_authority(&self) -> Result<store::NamedLock, PluginError> {
+        self.create_layout()?;
+        store::NamedLock::exclusive(self.root.join(".authority.lock"))
+            .map_err(|error| PluginError::Storage(error.to_string()))
+    }
+
     pub fn recover(&mut self) -> Result<(), PluginError> {
+        let _authority = self.lock_authority()?;
+        self.recover_locked()
+    }
+
+    fn recover_locked(&mut self) -> Result<(), PluginError> {
         self.create_layout()?;
         let registry = self.read_registry()?;
         for receipt in &registry.plugins {
@@ -683,7 +701,8 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
         kind: OperationKind,
         mutate: impl FnOnce(&mut PluginReceipt) -> Result<(), PluginError>,
     ) -> Result<PluginReceipt, PluginError> {
-        self.recover()?;
+        let _authority = self.lock_authority()?;
+        self.recover_locked()?;
         let mut registry = self.read_registry()?;
         let index = registry
             .plugins
@@ -714,7 +733,7 @@ impl<V: NativeHelperVerifier> PluginStore<V> {
             phase: OperationPhase::RegistryPublished,
             ..operation
         })?;
-        self.recover()?;
+        self.recover_locked()?;
         Ok(next)
     }
 

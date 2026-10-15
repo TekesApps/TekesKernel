@@ -71,6 +71,8 @@ pub struct UnarchiveResult {
 pub struct SessionInventoryItem {
     pub session_id: String,
     pub workspace_id: String,
+    pub cwd: String,
+    pub folder_binding: Option<String>,
     pub title: Option<String>,
     pub updated_at: u64,
     pub archived: bool,
@@ -91,10 +93,56 @@ pub struct SessionInventoryItem {
     pub ephemeral: bool,
 }
 
+impl SessionInventoryItem {
+    /// Follow an explicit stable binding after relocation. Legacy sessions
+    /// and missing configurations retain their own recorded cwd; inventory
+    /// never borrows another session's or workspace's primary folder.
+    #[must_use]
+    pub fn resolved_cwd(
+        &self,
+        paths: &std::collections::BTreeMap<(String, String), String>,
+    ) -> String {
+        self.folder_binding
+            .as_ref()
+            .and_then(|binding| paths.get(&(self.workspace_id.clone(), binding.clone())))
+            .cloned()
+            .unwrap_or_else(|| self.cwd.clone())
+    }
+}
+
 /// File name of the durable per-session permission mode record (owned by the
 /// engine crate; mirrored here so inventory needs no engine dependency).
 const PERMISSION_MODE_FILE: &str = "permission-mode.json";
 const DEFAULT_PERMISSION_MODE: &str = "workspace-write";
+
+/// The session's own recorded cwd. Pre-0.8 ledgers store it in the genesis
+/// config asset instead. Never read mutable launch snapshots or workspace
+/// defaults, and never create an assets directory during inventory reads.
+#[must_use]
+pub fn genesis_cwd(folder: &Path, genesis: &schema::Event) -> String {
+    use sha2::{Digest, Sha256};
+    if let Some(cwd) = genesis.string_field("cwd") {
+        return cwd.to_owned();
+    }
+    let snapshot_cwd = || -> Option<String> {
+        let raw = serde_json::to_value(genesis.raw()).ok()?;
+        let digest = raw.get("config")?.get("digest")?.as_str()?;
+        if digest.len() != 64
+            || !digest
+                .bytes()
+                .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
+        {
+            return None;
+        }
+        let bytes = fs::read(folder.join("assets").join(format!("sha256-{digest}"))).ok()?;
+        if format!("{:x}", Sha256::digest(&bytes)) != digest {
+            return None;
+        }
+        let config = profile::ConfigSnapshot::decode(&bytes).ok()?;
+        Some(config.execution_cwd()?.to_owned())
+    };
+    snapshot_cwd().unwrap_or_default()
+}
 
 /// The mode a session folder declares, or the default when the record is
 /// absent or malformed (the worker applies the same fallback).
@@ -142,6 +190,14 @@ fn card_item(
     Some(SessionInventoryItem {
         session_id: session_id.to_owned(),
         workspace_id: card.summary.workspace.clone(),
+        cwd: card.summary.cwd.clone().unwrap_or_else(|| {
+            store::read_genesis(folder.join("main.jsonl"))
+                .ok()
+                .flatten()
+                .map(|g| genesis_cwd(folder, &g))
+                .unwrap_or_default()
+        }),
+        folder_binding: card.summary.folder_binding.clone(),
         title: card.summary.title.clone(),
         updated_at: card.summary.updated_ms,
         archived,
@@ -235,6 +291,7 @@ pub fn card_summary(
             .ok_or(NativeEndpointError::InventoryWorkspace)?
             .to_owned(),
         folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
+        cwd: genesis.string_field("cwd").map(str::to_owned),
         created: genesis.string_field("ts").unwrap_or_default().to_owned(),
         updated_ms,
         title,
@@ -347,6 +404,13 @@ impl NativeEndpoint {
                     preset: summary.preset,
                     ephemeral: summary.ephemeral,
                     workspace_id: summary.workspace,
+                    cwd: summary.cwd.unwrap_or_else(|| {
+                        genesis_cwd(
+                            &entry.path(),
+                            projection.events.first().expect("validated genesis"),
+                        )
+                    }),
+                    folder_binding: summary.folder_binding,
                     title: summary.title,
                     updated_at: summary.updated_ms,
                     running: is_running,

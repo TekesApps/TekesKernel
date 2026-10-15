@@ -34,6 +34,11 @@ pub const WORKSPACE_FOLDER_METHODS: [(&str, MethodClass); 3] = [
     ("workspace.removeFolder", MethodClass::Mutation),
 ];
 
+pub const FOLDER_METHODS: [(&str, MethodClass); 2] = [
+    ("folders.list", MethodClass::ReadOnly),
+    ("folders.relocate", MethodClass::Mutation),
+];
+
 pub struct ClientAdminRoutes {
     root: PathBuf,
     repository: ConfigRepository,
@@ -63,6 +68,11 @@ impl ClientAdminRoutes {
     #[must_use]
     pub fn routes(self: &Arc<Self>) -> Vec<Arc<dyn ProductionEndpointRoutes>> {
         vec![
+            Arc::new(AdminCapabilityRoutes::new(
+                "folders.v1",
+                &FOLDER_METHODS,
+                Arc::clone(self),
+            )),
             Arc::new(AdminCapabilityRoutes::new(
                 "environments.v1",
                 &ENVIRONMENT_METHODS,
@@ -303,6 +313,88 @@ impl ClientAdminRoutes {
 }
 
 impl ClientAdminRoutes {
+    fn folder_inventory(&self) -> Result<IJsonValue, ProductionRouteFailure> {
+        use crate::endpoint_carrier::SupervisorSessionAuthority;
+        let paths = self
+            .management()?
+            .folder_paths()
+            .map_err(map_folder_management)?;
+        let mut groups = std::collections::BTreeMap::<String, Vec<String>>::new();
+        for path in paths.values() {
+            groups.entry(path.clone()).or_default();
+        }
+        let mut archived = Vec::new();
+        let sessions = self
+            .process_host
+            .inventory_items(true)
+            .ok_or_else(|| internal("session inventory unavailable"))?
+            .map_err(internal)?;
+        for session in sessions {
+            if session.archived {
+                archived.push(session.session_id);
+            } else if !session.ephemeral {
+                groups
+                    .entry(session.resolved_cwd(&paths))
+                    .or_default()
+                    .push(session.session_id);
+            }
+        }
+        archived.sort();
+        let items = groups
+            .into_iter()
+            .map(|(path, mut sessions)| {
+                sessions.sort();
+                json!({"path":path,"sessionIds":sessions})
+            })
+            .collect::<Vec<_>>();
+        to_ijson(&json!({"items":items,"archivedSessionIds":archived}))
+    }
+
+    fn relocate_folder(
+        &self,
+        request: &EndpointHostCall,
+        input: FolderRelocateRequest,
+    ) -> Result<IJsonValue, ProductionRouteFailure> {
+        let _gate = self
+            .mutation_gate
+            .lock()
+            .map_err(|_| internal("admin mutation lock poisoned"))?;
+        self.recover_pending_intents()?;
+        let hash = management_request_hash(request)?;
+        let management = self.management()?;
+        let workspace = management
+            .relocation_workspace(&request.rpc_id, &hash, &input.previous_path)
+            .map_err(map_folder_management)?;
+        let _quiescence = NamedLock::try_exclusive(
+            crate::process_host::workspace_quiescence_lock_path(&self.root, &workspace),
+        )
+        .map_err(|error| match error {
+            store::StoreError::Busy => failure(
+                "workspace-busy",
+                "Workspace has a running session",
+                json!({"workspaceId":workspace}),
+            ),
+            other => internal_store(other),
+        })?;
+        let timestamp = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
+        management
+            .relocate_workspace(
+                &request.rpc_id,
+                &hash,
+                &workspace,
+                &input.previous_path,
+                &input.path,
+                &timestamp,
+            )
+            .map_err(map_folder_management)?;
+        mark_management_handoff(request)?;
+        crate::endpoint_host::SessionDeliveryAuthority::workspace_metadata_changed(
+            self.process_host.as_ref(),
+            &workspace,
+        );
+        to_ijson(&json!({"relocated":true}))
+    }
+
     fn list_folders(&self, input: FoldersGetRequest) -> Result<IJsonValue, ProductionRouteFailure> {
         let folders = self
             .management()?
@@ -485,6 +577,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
             .into_iter()
             .chain(WORKSPACE_FOLDER_METHODS)
             .chain(ENVIRONMENT_METHODS)
+            .chain(FOLDER_METHODS)
             .map(|(name, _)| name.to_owned())
             .collect()
     }
@@ -494,6 +587,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
             .into_iter()
             .chain(WORKSPACE_FOLDER_METHODS)
             .chain(ENVIRONMENT_METHODS)
+            .chain(FOLDER_METHODS)
             .find_map(|(name, class)| (name == method).then_some(class))
     }
 
@@ -503,6 +597,8 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         payload: &Value,
     ) -> Result<(), ProductionRouteFailure> {
         match operation {
+            "folders.list" => parse::<EnvironmentsListRequest>(payload).map(|_| ()),
+            "folders.relocate" => parse::<FolderRelocateRequest>(payload).map(|_| ()),
             "environments.list" => parse::<EnvironmentsListRequest>(payload).map(|_| ()),
             "environments.save" => parse_environment_save(payload).map(|_| ()),
             "workspace.policy.get" => parse::<PolicyGetRequest>(payload).map(|_| ()),
@@ -581,6 +677,11 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         _principal: &str,
     ) -> Result<IJsonValue, ProductionRouteFailure> {
         match request.operation.as_str() {
+            "folders.list" => {
+                let _: EnvironmentsListRequest = parse(payload)?;
+                self.folder_inventory()
+            }
+            "folders.relocate" => self.relocate_folder(request, parse(payload)?),
             "environments.list" => {
                 let _: EnvironmentsListRequest = parse(payload)?;
                 self.list_environments()
@@ -681,6 +782,12 @@ struct PolicyGetRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct FoldersGetRequest {
     workspace_id: String,
+}
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct FolderRelocateRequest {
+    previous_path: String,
+    path: String,
 }
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
@@ -1261,6 +1368,258 @@ mod tests {
             recovering,
             handoff: DurableHandoffSignal::new(),
         }
+    }
+
+    #[test]
+    fn folder_inventory_groups_session_cwds_and_relocation_preserves_genesis_and_trust_boundary() {
+        use crate::endpoint_carrier::SupervisorSessionAuthority;
+        let (root, host, routes) = fixture();
+        let projects = TempDir::new().unwrap();
+        let first = projects.path().join("first");
+        let second = projects.path().join("second");
+        fs::create_dir(&first).unwrap();
+        fs::create_dir(&second).unwrap();
+        let first = fs::canonicalize(first)
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let second = fs::canonicalize(second)
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        routes
+            .repository
+            .publish_workspace(
+                1,
+                &WorkspaceConfig {
+                    format: 1,
+                    revision: 2,
+                    id: "workspace-1".into(),
+                    name: "Workspace".into(),
+                    cwd: Vec::new(),
+                    folders: vec![
+                        profile::WorkspaceFolder {
+                            id: "first".into(),
+                            path: first.clone(),
+                        },
+                        profile::WorkspaceFolder {
+                            id: "second".into(),
+                            path: second.clone(),
+                        },
+                    ],
+                    policy: Some(WorkspacePolicy::default()),
+                },
+            )
+            .unwrap();
+        let management = routes.management().unwrap();
+        let mut ids = Vec::new();
+        for (index, cwd) in [&first, &second].into_iter().enumerate() {
+            let id = management
+                .create_session(endpoint::SessionCreateOperation {
+                    rpc_id: &format!("create-folder-{index}"),
+                    request_sha256: &format!("{index}").repeat(64),
+                    requested_session_id: None,
+                    workspace_id: Some("workspace-1"),
+                    cwd: Some(cwd),
+                    environment: None,
+                    identity_profile: None,
+                    preset: None,
+                    preset_mcp: None,
+                    preset_models: None,
+                    user_agent_dir: &root.path().join("agent"),
+                    started_at: "2026-10-15T00:00:00.000Z",
+                    principal: "uid:1",
+                })
+                .unwrap();
+            host.reconcile_projection(&id).unwrap();
+            ids.push(id);
+        }
+        let native = endpoint::NativeEndpoint::open(root.path()).unwrap();
+        let scanned = native.list_sessions(&Default::default()).unwrap();
+        assert_eq!(
+            scanned,
+            native.list_sessions_cached(&Default::default()).unwrap()
+        );
+        assert_eq!(
+            scanned.iter().find(|s| s.session_id == ids[1]).unwrap().cwd,
+            second
+        );
+        let groups = serde_json::to_value(routes.folder_inventory().unwrap()).unwrap();
+        let members = |value: &Value, path: &str| {
+            value["items"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .find(|group| group["path"] == path)
+                .unwrap()["sessionIds"]
+                .clone()
+        };
+        assert_eq!(members(&groups, &first), json!([ids[0]]));
+        assert_eq!(members(&groups, &second), json!([ids[1]]));
+        let ledger_path = root.path().join("threads").join(&ids[1]).join("main.jsonl");
+        let ledger = fs::read(&ledger_path).unwrap();
+        let genesis = store::read_genesis(&ledger_path).unwrap().unwrap();
+        let mut legacy = serde_json::to_value(genesis.raw()).unwrap();
+        legacy.as_object_mut().unwrap().remove("cwd");
+        let legacy = schema::Event::decode(&serde_json::to_vec(&legacy).unwrap()).unwrap();
+        assert_eq!(
+            endpoint::genesis_cwd(ledger_path.parent().unwrap(), &legacy),
+            second
+        );
+        let missing_assets = TempDir::new().unwrap();
+        assert_eq!(endpoint::genesis_cwd(missing_assets.path(), &legacy), "");
+        assert!(!missing_assets.path().join("assets").exists());
+        let digest = serde_json::to_value(legacy.raw()).unwrap()["config"]["digest"]
+            .as_str()
+            .unwrap()
+            .to_owned();
+        fs::create_dir(missing_assets.path().join("assets")).unwrap();
+        fs::write(
+            missing_assets
+                .path()
+                .join("assets")
+                .join(format!("sha256-{digest}")),
+            b"{}",
+        )
+        .unwrap();
+        assert_eq!(endpoint::genesis_cwd(missing_assets.path(), &legacy), "");
+        let trust = profile::FolderAuthorityStore::new(root.path());
+        trust
+            .request("trust-request", 0, Path::new(&second))
+            .unwrap();
+        let granted = trust
+            .grant_from_host("trust-grant", 1, "trust-request")
+            .unwrap();
+        assert!(granted.folder.trusted);
+        let moved = projects.path().join("moved");
+        fs::rename(&second, &moved).unwrap();
+        let moved = fs::canonicalize(moved)
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let payload = json!({"previousPath":second,"path":moved});
+        let request = call("move-second", "folders.relocate", payload.clone(), false);
+        let busy = NamedLock::shared(crate::process_host::workspace_quiescence_lock_path(
+            root.path(),
+            "workspace-1",
+        ))
+        .unwrap();
+        assert_eq!(
+            routes
+                .execute(&request, &payload, "uid:1")
+                .unwrap_err()
+                .code,
+            "workspace-busy"
+        );
+        drop(busy);
+        let result = routes.execute(&request, &payload, "uid:1").unwrap();
+        assert!(request.handoff.is_durable());
+        assert_eq!(
+            serde_json::to_value(&result).unwrap(),
+            json!({"relocated":true})
+        );
+        assert_eq!(
+            result,
+            routes
+                .execute(
+                    &call("move-second", "folders.relocate", payload.clone(), true),
+                    &payload,
+                    "uid:1"
+                )
+                .unwrap()
+        );
+        let groups = serde_json::to_value(routes.folder_inventory().unwrap()).unwrap();
+        assert_eq!(members(&groups, &first), json!([ids[0]]));
+        assert_eq!(members(&groups, &moved), json!([ids[1]]));
+        assert_eq!(fs::read(ledger_path).unwrap(), ledger);
+        let current = trust.status(Path::new(&moved)).unwrap();
+        assert_eq!(current.id, granted.folder.id);
+        assert!(!current.trusted);
+        let scope = profile::SessionScope::locate(root.path(), &ids[1]).unwrap();
+        assert_eq!(
+            scope.config(&routes.repository).unwrap().execution_cwd(),
+            Some(moved.as_str())
+        );
+        let conflict = json!({"previousPath":second,"path":first});
+        assert_eq!(
+            routes
+                .execute(
+                    &call("move-second", "folders.relocate", conflict.clone(), true),
+                    &conflict,
+                    "uid:1"
+                )
+                .unwrap_err()
+                .code,
+            "idempotency-conflict"
+        );
+        host.shutdown();
+    }
+
+    #[test]
+    fn folder_relocation_refuses_root_unknown_paths_and_ambiguous_owners() {
+        let (root, host, routes) = fixture();
+        let projects = TempDir::new().unwrap();
+        let path = fs::canonicalize(projects.path())
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let mut config = routes.repository.workspace("workspace-1").unwrap();
+        config.cwd = vec![path.clone()];
+        config.revision += 1;
+        routes.repository.publish_workspace(1, &config).unwrap();
+        for (rpc, previous, target, error) in [
+            ("root", path.as_str(), "/", "workspace-invalid-path"),
+            (
+                "unknown",
+                "/missing",
+                path.as_str(),
+                "workspace-invalid-path",
+            ),
+        ] {
+            let payload = json!({"previousPath":previous,"path":target});
+            assert_eq!(
+                routes
+                    .execute(
+                        &call(rpc, "folders.relocate", payload.clone(), false),
+                        &payload,
+                        "uid:1"
+                    )
+                    .unwrap_err()
+                    .code,
+                error
+            );
+        }
+        config.id = "workspace-2".into();
+        config.revision = 1;
+        routes.repository.publish_workspace(0, &config).unwrap();
+        let payload = json!({"previousPath":path,"path":root.path()});
+        assert_eq!(
+            routes
+                .execute(
+                    &call("ambiguous", "folders.relocate", payload.clone(), false),
+                    &payload,
+                    "uid:1"
+                )
+                .unwrap_err()
+                .code,
+            "workspace-ambiguous"
+        );
+        for payload in [
+            json!({"path":path}),
+            json!({"previousPath":path,"path":"/","trusted":true}),
+        ] {
+            assert!(
+                routes
+                    .validate_extension_payload("folders.relocate", &payload)
+                    .is_err()
+            );
+        }
+        assert!(
+            routes
+                .validate_extension_payload("folders.list", &json!({"workspaceId":"workspace-1"}))
+                .is_err()
+        );
+        host.shutdown();
     }
 
     #[test]

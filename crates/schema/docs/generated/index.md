@@ -31,7 +31,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/schema/src/event.rs](../../src/event.rs) | 84 | 894 | [Symbols and calls](src--event.md) |
+| [crates/schema/src/event.rs](../../src/event.rs) | 84 | 903 | [Symbols and calls](src--event.md) |
 | [crates/schema/src/fold.rs](../../src/fold.rs) | 33 | 552 | [Symbols and calls](src--fold.md) |
 | [crates/schema/src/ijson.rs](../../src/ijson.rs) | 26 | 61 | [Symbols and calls](src--ijson.md) |
 | [crates/schema/src/lib.rs](../../src/lib.rs) | 9 | 3 | [Symbols and calls](src--lib.md) |
@@ -59,7 +59,7 @@ flowchart LR
   m3["lib.rs"]
   m4["metrics.rs"]
   m0 -->|"1"| m2
-  m0 -->|"82"| m3
+  m0 -->|"83"| m3
   m0 -->|"1"| m4
   m1 -->|"7"| m0
   m1 -->|"62"| m3

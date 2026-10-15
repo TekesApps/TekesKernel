@@ -1312,7 +1312,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `map_registry_failure` | `not_found` | [1744](../../src/mcp_runtime.rs#L1744) | [tekes-supervisor::mcp_runtime::not_found](../../src/mcp_runtime.rs#L1755) |
 | `not_found` | `route_failure` | [1756](../../src/mcp_runtime.rs#L1756) | [tekes-supervisor::mcp_runtime::route_failure](../../src/mcp_runtime.rs#L1765) |
 | `internal_failure` | `route_failure` | [1759](../../src/mcp_runtime.rs#L1759) | [tekes-supervisor::mcp_runtime::route_failure](../../src/mcp_runtime.rs#L1765) |
-| `route_failure` | `ProductionRouteFailure::new` | [1766](../../src/mcp_runtime.rs#L1766) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L513) |
+| `route_failure` | `ProductionRouteFailure::new` | [1766](../../src/mcp_runtime.rs#L1766) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
 | `route_failure` | `json_to_ijson(&details).expect` | [1769](../../src/mcp_runtime.rs#L1769) | receiver-type-required |
 | `route_failure` | `json_to_ijson` | [1769](../../src/mcp_runtime.rs#L1769) | [tekes-supervisor::mcp_runtime::json_to_ijson](../../src/mcp_runtime.rs#L1772) |
 | `json_to_ijson` | `IJsonValue::parse(&serde_json::to_vec(value).map_err(&#124;error&#124; error.to_string())?)         .map_err` | [1773](../../src/mcp_runtime.rs#L1773) | receiver-type-required |

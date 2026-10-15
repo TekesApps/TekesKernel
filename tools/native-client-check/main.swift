@@ -193,6 +193,10 @@ import Foundation
         precondition(error.code == "session-not-found")
       }
       let provider = catalog.groups[0]
+      // Goal edits above may still be draining their worker. Model selection
+      // and fork require quiescence; observe it instead of racing or replaying
+      // a mutation when a slower host still reports session-running.
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
       try await endpoint.selectModel(sessionId: created.sessionId,
         selection: .init(provider: provider.id, model: provider.models[0].id))
       var journal = endpoint.followJournal(.init(sessionId: created.sessionId, maxMessages: 7)).makeAsyncIterator()
@@ -206,6 +210,7 @@ import Foundation
       precondition(search.items.contains { $0.sessionId == created.sessionId && $0.snippet.contains("native contract") })
       precondition(!search.hasMore)
       print("NATIVE_HOST_SEARCH_OK")
+      try await waitUntilIdle(endpoint, sessionId: created.sessionId)
       let fork = try await endpoint.forkSession(sessionId: created.sessionId, atSeq: nil)
       precondition(fork.sessionId != created.sessionId)
       let archived = try await endpoint.archiveSession(sessionId: fork.sessionId)
@@ -226,6 +231,19 @@ import Foundation
       await endpoint.close()
       throw error
     }
+  }
+
+  static func waitUntilIdle(_ endpoint: NativeSessionEndpoint, sessionId: String) async throws {
+    for try await frame in endpoint.sessionInventorySyncFrames() {
+      let row: SessionSummary?
+      switch frame {
+      case .baseline(_, let snapshot): row = snapshot.items.first { $0.sessionId == sessionId }
+      case .upsert(_, let session): row = session.sessionId == sessionId ? session : nil
+      default: row = nil
+      }
+      if let row, !row.running, row.tail == "settled" || row.tail == "unstarted" { return }
+    }
+    throw NativeSessionEndpoint.Failure.protocolError
   }
 }
 
