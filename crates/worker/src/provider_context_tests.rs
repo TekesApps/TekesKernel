@@ -194,43 +194,25 @@ fn invalid_queue_attachment_rejects_before_retraction() {
 }
 
 #[test]
-fn frozen_instruction_bytes_supply_hooks_and_skill_catalog() {
+fn frozen_instruction_bytes_without_host_trust_do_not_enable_project_execution() {
     let snapshot = InstructionSnapshot::decode(include_bytes!(
         "../../../fixtures/instructions/snapshot.canonical.json"
     ))
-    .expect("instruction fixture");
-    let hooks = frozen_hook_bindings(&snapshot).expect("effective hooks");
-    assert_eq!(
-        hooks
-            .iter()
-            .map(|binding| binding.id.as_str())
-            .collect::<Vec<_>>(),
-        vec!["pre.txt"]
-    );
-    let skills = frozen_skill_catalog(&snapshot).expect("effective skills");
-    assert_eq!(
-        skills
-            .iter()
-            .map(|entry| entry.name.as_str())
-            .collect::<Vec<_>>(),
-        vec!["final.md", "shared.md"]
-    );
-    assert_eq!(skills[0].schema_digest, snapshot.sources[9].content_sha256);
-    assert_eq!(skills[0].content, IJsonValue::from("Project one skill.\n"));
-    assert_eq!(skills[1].schema_digest, snapshot.sources[7].content_sha256);
-    assert_eq!(
-        skills[1].content,
-        IJsonValue::from("Project zero shared skill.\n")
-    );
+    .unwrap();
+    assert!(frozen_hook_bindings(&snapshot).unwrap().is_empty());
+    assert!(frozen_skill_catalog(&snapshot).unwrap().is_empty());
 }
 
 #[test]
 fn package_skill_catalog_uses_same_frozen_resource_projection() {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let root = fixtures.join("resources/migration");
-    let snapshot = InstructionResolver::new(root.join("user"), [root.join("project")])
-        .capture()
-        .expect("resource instruction snapshot");
+    let snapshot = test_support::trusted_resolver(
+        InstructionResolver::new(root.join("user"), [root.join("project")]),
+        &[root.join("project")],
+    )
+    .capture()
+    .expect("resource instruction snapshot");
     let skills = frozen_skill_catalog(&snapshot).expect("package skill catalog");
     assert_eq!(
         skills
@@ -620,6 +602,30 @@ fn writable_paths_inside_kernel_owned_directories_are_refused() {
     );
 }
 
+#[test]
+fn frozen_host_user_agent_dir_is_used_by_file_write_guards() {
+    let temp = tempfile::tempdir().unwrap();
+    let home = temp.path().canonicalize().unwrap();
+    let storage = home.join("kernel-data");
+    let user = home.join("custom-user");
+    std::fs::create_dir_all(&storage).unwrap();
+    std::fs::create_dir_all(&user).unwrap();
+    std::os::unix::fs::symlink(&user, home.join("user-alias")).unwrap();
+    let mut profile = tool_profile(&home, &["shell", "write"]);
+    profile.config.user_agent_dir = Some(user.to_string_lossy().into_owned());
+    profile.config.workspace.policy.writable_roots = vec![home.to_string_lossy().into_owned()];
+    let protected = profile.config.protected_roots(&storage);
+    for path in ["custom-user/hooks/a.json", "user-alias/skills/a/SKILL.md"] {
+        let call = provider::ToolCall {
+            call_id: "call".into(),
+            name: "write".into(),
+            arguments: json!({"path":path,"content":"untrusted"}),
+        };
+        let error = invocation_write_roots(&profile, &call, &protected).unwrap_err();
+        assert!(error.to_string().contains("Kernel-owned"), "{error}");
+    }
+}
+
 fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfile {
     let mut allowed_tools = allowed_tools
         .iter()
@@ -628,6 +634,7 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
     allowed_tools.sort();
     allowed_tools.dedup();
     let config = ConfigSnapshot {
+        user_agent_dir: None,
         format: 1,
         workspace: ResolvedWorkspace {
             environment: None,
@@ -669,6 +676,7 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
         validator: false,
         subagent: false,
         instruction: InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),
@@ -3877,6 +3885,7 @@ fn overflow_profile_with_trigger(
     compact_trigger_tokens: u64,
 ) -> RuntimeProfile {
     let config = ConfigSnapshot {
+        user_agent_dir: None,
         format: 1,
         workspace: ResolvedWorkspace {
             environment: None,
@@ -3943,6 +3952,7 @@ fn overflow_profile_with_trigger(
         validator: false,
         subagent: false,
         instruction: InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),
@@ -8801,4 +8811,86 @@ fn assert_child_seed_is(ledger: &LockedLedger, spawn: &DurableChildSpawn, seed: 
             .unwrap(),
         expected
     );
+}
+
+#[test]
+fn project_lifecycle_hooks_stop_using_frozen_receipts_after_revocation() {
+    let (directory, ledger) = context_ledger("openai_responses_v1", true);
+    let mut profile = tool_profile(directory.path(), &[]);
+    let log = install_lifecycle_test_hooks(directory.path(), &mut profile);
+    for source in &mut profile.instruction.sources {
+        source.origin = profile::InstructionOrigin::Project { workspace_index: 0 };
+    }
+    assert!(
+        lifecycle_hooks::LifecycleHooks::load(&profile, &ledger)
+            .unwrap()
+            .is_none()
+    );
+    let state = tempfile::tempdir().unwrap();
+    let authority = profile::FolderAuthorityStore::new(state.path());
+    let project = directory.path().join("hook-user");
+    let request = authority.request("r", 0, &project).unwrap();
+    let grant = authority.grant_from_host("g", 1, "r").unwrap();
+    profile.instruction.folder_authority = Some(profile::FolderSnapshotAuthority {
+        storage_root: state.path().to_path_buf(),
+        folders: [(0, grant.folder)].into(),
+    });
+    let hooks = lifecycle_hooks::LifecycleHooks::load(&profile, &ledger)
+        .unwrap()
+        .unwrap();
+    assert_eq!(
+        hooks.prepare(&ledger, 2, &[]),
+        vec!["LIFECYCLE_CONTEXT_MARKER"]
+    );
+    let before = fs::read(&log).unwrap();
+    authority.revoke("revoke", 2, &request.folder.id).unwrap();
+    assert!(
+        hooks.prepare(&ledger, 2, &[]).is_empty(),
+        "cached hook context must also lose authority"
+    );
+    hooks.before_compact(&ledger, 2, &[2], false);
+    assert_eq!(fs::read(&log).unwrap(), before);
+}
+
+#[test]
+fn project_format_one_hooks_need_host_grant_and_are_filtered_on_each_dispatch() {
+    let root = tempfile::tempdir().unwrap();
+    let state = tempfile::tempdir().unwrap();
+    let project = root.path().join("project");
+    let hooks = project.join(".agents/hooks");
+    fs::create_dir_all(&hooks).unwrap();
+    let marker = root.path().join("marker");
+    let code = r#"import sys,json,os
+r=json.load(sys.stdin)
+with open(os.environ['MARKER'],'a') as f:f.write('ran\n')
+print(json.dumps(dict(format=1,hook_id=r['hook_id'],call=r['call'],verdict={'allow':{}}),sort_keys=True,separators=(',',':')))
+"#;
+    let binding = json!({"format":1,"id":"policy","argv":["/usr/bin/python3","-c",code],"phase":"pre","failure":"closed","timeout_ms":1000,"stdout_bytes":4096,"stderr_bytes":4096,"env":{"MARKER":marker}});
+    fs::write(
+        hooks.join("policy"),
+        tools::encode_hook_line(&binding).unwrap(),
+    )
+    .unwrap();
+    let resolver = InstructionResolver::new(root.path().join("user"), [&project])
+        .with_folder_authority(state.path());
+    assert!(
+        frozen_hook_bindings(&resolver.capture().unwrap())
+            .unwrap()
+            .is_empty()
+    );
+    let authority = profile::FolderAuthorityStore::new(state.path());
+    let request = authority.request("r", 0, &project).unwrap();
+    authority.grant_from_host("g", 1, "r").unwrap();
+    let snapshot = resolver.capture().unwrap();
+    let admitted = snapshot.admit_kind(profile::InstructionKind::Hook);
+    let bindings = frozen_hook_bindings(&snapshot).unwrap();
+    assert_eq!(bindings.len(), 1);
+    let request_wire: tools::HookRequest =
+        serde_json::from_slice(include_bytes!("../../../fixtures/hooks/pre-request.json")).unwrap();
+    tools::ProcessHook::run(&bindings[0], &request_wire).unwrap();
+    assert_eq!(fs::read_to_string(&marker).unwrap(), "ran\n");
+    drop(admitted);
+    authority.revoke("revoke", 2, &request.folder.id).unwrap();
+    assert!(frozen_hook_bindings(&snapshot).unwrap().is_empty());
+    assert_eq!(fs::read_to_string(&marker).unwrap(), "ran\n");
 }

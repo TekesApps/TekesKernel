@@ -57,6 +57,7 @@ mod tests {
 
     fn config(allowed_tools: Vec<String>) -> ConfigSnapshot {
         ConfigSnapshot {
+            user_agent_dir: None,
             format: 1,
             workspace: ResolvedWorkspace {
                 environment: None,
@@ -101,6 +102,7 @@ mod tests {
 
     fn instruction() -> InstructionSnapshot {
         InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),

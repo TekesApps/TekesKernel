@@ -31,40 +31,68 @@ The launch document is non-secret JSON:
 ```json
 {
   "format": 1,
+  "bootstrap_version": 1,
   "root": "/absolute/application-owned/kernel-state",
   "worker": "/absolute/bin/tekes-worker",
   "listen": "127.0.0.1:0",
   "providers": {"format": 1, "revision": 1, "providers": []},
-  "credential_bindings": {},
-  "web_listen": "127.0.0.1:0"
+  "credential_bindings": {}
 }
 ```
 
-`format` must be 1, `root` and `worker` must be absolute paths, and `listen`
-must be a loopback address. The optional `web_listen` starts the browser
-[Web Client](interfaces/web.md) on a second loopback address; omit it to keep
-the Web Client off. Unknown fields are rejected. `tekes-helper` and
+`format` and `bootstrap_version` must be 1, `root` and `worker` must be absolute
+paths, and `listen` must be a loopback address. A non-null `web_listen` is rejected
+before startup: the optional library Web Client currently checks only Host/Origin,
+which cannot authenticate a local session tool. An administrative host must not
+expose that surface. Unknown fields are rejected. `tekes-helper` and
 `tekes-workspace-service` must be in the same directory as `worker`. `HOME`
 must be set; shared user skills are read from `$HOME/.agents`.
 
 `providers` is the Kernel execution configuration generated from the application's
 selected providers and their resolved direct/router connections. It is replaced
 on startup; its persisted revision is assigned by Kernel. It contains credential
-IDs, never credential material. `credential_bindings` maps every credential ID
-referenced by that configuration to the exact environment variable containing
-its value. Extra or missing bindings fail startup. A missing or empty selected
-secret fails startup; there is no Keychain fallback. The application owns key
-editing, selection, and process restart after credential changes.
+IDs, never credential material. `credential_bindings` retains each lookup ID's
+former environment-source name for compatibility diagnostics; no value is read
+from that environment. Its IDs must exactly match all provider and web-search
+credential references, and its source names must remain syntactically valid.
+The private frame's credential keys must be exactly this same set. Missing,
+extra, duplicate or empty selected credentials fail startup. There is no
+Keychain fallback. The application owns selection and restarts after changes.
 
-Set `TEKES_KERNEL_ENDPOINT_TOKEN` to 32 random bytes encoded as 64 hexadecimal
-characters. HTTP authentication uses the same bytes encoded as unpadded URL-safe
-base64 in `Authorization: Bearer ...`. The token is process-scoped and is not
-persisted. Keep the child's stdin pipe open for its lifetime. Closing it requests
-drain and shutdown; SIGTERM also requests shutdown. Exit code 64 means a usage
-error (wrong argument count) and 74 a startup or runtime failure.
+Before waiting for readiness, write one frame to the child's private stdin pipe:
+
+```text
+ASCII "TEKES-KERNEL-BOOTSTRAP/1\n"
+4-byte unsigned big-endian payload length (1 ... 1048576)
+UTF-8 JSON {"endpointToken":"<64 hex characters>","credentials":{"<lookup ID>":"<material>"}}
+```
+
+The object is closed and rejects duplicate keys. The whole frame has a 10-second
+deadline, including short reads. Stdin must be a pipe or socket, not a regular
+file or TTY. No config is changed, listener bound or worker started until the
+complete frame and credential set validate. Exact bounded reads consume one
+frame without buffered prefetch. Explicit raw/parsed secret and token buffers
+are zeroized when released; this does not claim that every allocator/compiler
+copy is observable or erasable.
+
+Generate 32 random endpoint bytes and encode them as 64 hex characters in that
+frame only. HTTP uses those bytes as unpadded URL-safe base64 in `Authorization:
+Bearer ...`. Never put the token or selected provider material in initial argv
+or environment: macOS process-argument queries can expose a same-user process's
+initial environment even from the current tool sandbox. Presence of
+`TEKES_KERNEL_ENDPOINT_TOKEN` or any selected former source variable rejects
+startup, including an empty value. Clearing them after exec is insufficient.
+
+This is a required 0.8 launcher adaptation. Launchers using the former environment
+protocol fail closed; ClientKit must adapt before consuming 0.8. Consumer changes
+are a separate integration step.
+
+Keep the child's stdin pipe open after the frame for its lifetime. Closing it
+requests drain and shutdown; SIGTERM also requests shutdown. Exit code 64 means
+a usage error and 74 a startup or runtime failure.
 
 The first stdout line is a JSON readiness record containing `type: ready`,
-`protocolVersion: 3`, `url`, and `pid`, plus `webUrl` when `web_listen` is set.
+`protocolVersion: 3`, `bootstrapVersion: 1`, `url`, and `pid`.
 Use the reported URLs, especially when requesting an ephemeral port. Health is `/health/ready`; unary requests are
 `POST /api/{method}`, the multiplexed streams use `/api/remote.mux`, and
 file-change notifications use `GET /api/session.files.changes`. The
@@ -72,9 +100,14 @@ authoritative protocol handshake is the WebSocket `ready` frame, not the stdout
 launch notification.
 
 The smoke test uses a temporary state directory and synthetic provider key. It
-verifies readiness, the Web Client listener, workspace/session creation, model selection and routability,
+verifies private bootstrap, legacy-environment and Web Client rejection,
+readiness, workspace/session creation, model selection and routability,
 WebSocket handshake and all five stream baselines, and parent-pipe shutdown. The
-Client contract check (it needs TekesClientKit, see above) compiles the
+macOS check reads `KERN_PROCARGS2` with a synthetic positive-control marker and
+asserts that the synthetic endpoint token and selected provider key are absent;
+the queried process bytes are never printed.
+
+The Client contract check (it needs TekesClientKit, see above) compiles the
 TekesClientKit Swift contract sources and decodes/validates actual Kernel frames
 without a Client translation shim. It also compiles the generic
 `NativeSessionEndpoint` from TekesClientKit and runs its connection,
@@ -85,7 +118,7 @@ application UI integration.
 This paragraph applies to the sibling Tekes client repository; none of these
 names exist in this repository. The sibling Tekes application bundles the four
 executables in `Resources/BuiltInKernel`. Its `KernelManagedServer` owns launch
-configuration, environment injection and process lifetime;
+configuration, private bootstrap and process lifetime;
 `NativeSessionEndpoint` connects directly using the shared protocol. The Kernel
 Server settings permit a binary directory override and provider selection.
 `KernelManagedServerTests` covers packaged launch, connection, process reuse,

@@ -37,7 +37,10 @@ const CONFIG_DIGEST: &str = "000000000000000000000000000000000000000000000000000
 fn fixture_catalog() -> ResourceCatalog {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let root = fixtures.join("resources/migration");
-    let resolver = InstructionResolver::new(root.join("user"), [root.join("project")]);
+    let resolver = test_support::trusted_resolver(
+        InstructionResolver::new(root.join("user"), [root.join("project")]),
+        &[root.join("project")],
+    );
     let snapshot = resolver.capture().expect("resource instruction snapshot");
     ResourceCatalog::from_snapshot(&snapshot).expect("resource catalog")
 }
@@ -130,9 +133,12 @@ fn slice11_gate_77_skill_package_migration_and_explicit_collisions() {
         "---\nname: review\ndescription: Project\n---\nProject\n",
     )
     .expect("project manifest");
-    let snapshot = InstructionResolver::new(
-        invalid.path().join("user"),
-        [invalid.path().join("project")],
+    let snapshot = test_support::trusted_resolver(
+        InstructionResolver::new(
+            invalid.path().join("user"),
+            [invalid.path().join("project")],
+        ),
+        &[invalid.path().join("project")],
     )
     .capture()
     .expect("colliding skill snapshot");
@@ -215,6 +221,7 @@ fn slice11_gate_78_command_catalog_expansion_and_negative_corpus() {
     effective.commands.insert("position.md".to_owned(), 0);
     effective.commands.insert("expand.md".to_owned(), 1);
     let limits = ResourceCatalog::from_snapshot(&InstructionSnapshot {
+        folder_authority: None,
         format: 1,
         sources,
         effective,
@@ -230,6 +237,7 @@ fn slice11_gate_78_command_catalog_expansion_and_negative_corpus() {
     let alias = fixture_value("invalid-alias-command.canonical.json");
     let content = alias["content"].as_str().expect("alias command content");
     let snapshot = InstructionSnapshot {
+        folder_authority: None,
         format: 1,
         sources: vec![InstructionSource {
             origin: InstructionOrigin::User,

@@ -62,32 +62,6 @@ const fn is_source_revision(value: &str) -> bool {
 
 static TERMINATE_REQUESTED: AtomicBool = AtomicBool::new(false);
 
-pub(crate) fn endpoint_token_from_environment() -> Result<[u8; 32], DaemonError> {
-    let value = zeroize::Zeroizing::new(
-        std::env::var("TEKES_KERNEL_ENDPOINT_TOKEN")
-            .map_err(|_| DaemonError::credential("missing-endpoint-environment-token"))?,
-    );
-    decode_endpoint_token(&value)
-}
-
-fn decode_endpoint_token(value: &str) -> Result<[u8; 32], DaemonError> {
-    if value.len() != 64 || !value.bytes().all(|byte| byte.is_ascii_hexdigit()) {
-        return Err(DaemonError::credential(
-            "invalid-endpoint-environment-token",
-        ));
-    }
-    let mut token = [0u8; 32];
-    for (index, pair) in value.as_bytes().chunks_exact(2).enumerate() {
-        token[index] = u8::from_str_radix(
-            std::str::from_utf8(pair)
-                .map_err(|_| DaemonError::credential("invalid-endpoint-environment-token"))?,
-            16,
-        )
-        .map_err(|_| DaemonError::credential("invalid-endpoint-environment-token"))?;
-    }
-    Ok(token)
-}
-
 pub struct ProductionRootLock {
     file: File,
     path: PathBuf,
@@ -591,10 +565,6 @@ impl DaemonError {
 
     pub(crate) fn required_broker(message: impl Into<String>) -> Self {
         Self::new("required-broker-unavailable", message)
-    }
-
-    fn credential(message: impl Into<String>) -> Self {
-        Self::new("endpoint-credential-unavailable", message)
     }
 
     #[must_use]

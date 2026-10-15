@@ -19,6 +19,7 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>
 #[serde(deny_unknown_fields)]
 pub struct BuiltInLaunch {
     pub format: u64,
+    pub bootstrap_version: u64,
     pub root: PathBuf,
     pub worker: PathBuf,
     pub listen: SocketAddr,
@@ -30,9 +31,9 @@ pub struct BuiltInLaunch {
 }
 
 pub async fn run(path: PathBuf) -> Result<()> {
-    crate::boot_trace::start();
     let launch: BuiltInLaunch = serde_json::from_slice(&std::fs::read(path)?)?;
     if launch.format != 1
+        || launch.bootstrap_version != crate::bootstrap::VERSION
         || !launch.root.is_absolute()
         || !launch.worker.is_absolute()
         || !launch.listen.ip().is_loopback()
@@ -41,6 +42,22 @@ pub async fn run(path: PathBuf) -> Result<()> {
             .is_some_and(|address| !address.ip().is_loopback())
     {
         return Err(io::Error::other("invalid built-in launch configuration").into());
+    }
+    // This optional web surface currently has no authentication beyond
+    // Host/Origin. It cannot share an administrative host with session tools.
+    if launch.web_listen.is_some() {
+        return Err(io::Error::other("unauthenticated-web-client-disabled").into());
+    }
+    if launch.credential_bindings.values().any(|name| {
+        name.is_empty()
+            || !name.bytes().enumerate().all(|(index, byte)| {
+                byte == b'_' || byte.is_ascii_alphabetic() || (index > 0 && byte.is_ascii_digit())
+            })
+    }) {
+        return Err(io::Error::other("invalid-launch-credential-bindings").into());
+    }
+    if crate::bootstrap::rejects_legacy_environment(&launch.credential_bindings) {
+        return Err(io::Error::other("legacy-secret-environment-rejected").into());
     }
     let required: std::collections::BTreeSet<&str> = launch
         .providers
@@ -63,11 +80,12 @@ pub async fn run(path: PathBuf) -> Result<()> {
     if required != supplied {
         return Err(io::Error::other("credential bindings must match launch configuration").into());
     }
-    // Capture only explicitly selected credentials before creating any runtime.
-    let secrets = Arc::new(provider::EnvironmentSecretStore::capture(
-        &launch.credential_bindings,
-    )?);
-    let bearer = host_runtime::endpoint_token_from_environment()?;
+    let bootstrap =
+        crate::bootstrap::read(0, &launch.credential_bindings, crate::bootstrap::DEADLINE)?;
+    let bearer = transport::BearerToken::new(*bootstrap.token);
+    drop(bootstrap.token);
+    let secrets = Arc::new(bootstrap.store);
+    crate::boot_trace::start();
     let storage = launch.root.join("threads");
     std::fs::DirBuilder::new()
         .recursive(true)
@@ -162,7 +180,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
         Some(web_listen) => Some(tokio::net::TcpListener::bind(web_listen).await?),
         None => None,
     };
-    let config = transport::TransportConfig::loopback(address, transport::BearerToken::new(bearer));
+    let config = transport::TransportConfig::loopback(address, bearer);
     let assembly =
         ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?
             .with_file_changes(process.clone());
@@ -187,7 +205,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
         }
         None => None,
     };
-    let mut ready = serde_json::json!({"type":"ready","protocolVersion":3,"url":format!("http://{address}"),"pid":std::process::id()});
+    let mut ready = serde_json::json!({"type":"ready","protocolVersion":3,"bootstrapVersion":crate::bootstrap::VERSION,"url":format!("http://{address}"),"pid":std::process::id()});
     if let Some((_, _, bound)) = &web {
         ready["webUrl"] = format!("http://{bound}/").into();
     }

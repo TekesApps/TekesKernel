@@ -325,6 +325,7 @@ fn slice6_gate_51_inventory_and_model_readiness_are_independent() {
     assert!(listed[0].blank);
     assert_eq!(listed[0].as_of_seq, 1);
     let snapshot = ConfigSnapshot {
+        user_agent_dir: None,
         format: 1,
         workspace: ResolvedWorkspace {
             environment: None,

@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs::File;
 use std::io::Read;
 use std::os::fd::OwnedFd;
+use std::os::unix::process::CommandExt;
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -295,6 +296,7 @@ fn spawn_stdio(spawn: &StdioSpawnSpec) -> Result<StdioParts, McpError> {
     if let Some(cwd) = cwd {
         command.current_dir(cwd);
     }
+    command.process_group(0);
     let mut child = command
         .spawn()
         .map_err(|error| McpError::Transport(error.to_string()))?;
@@ -364,6 +366,14 @@ fn reap_stdio(mut generation: StdioGeneration) -> Result<(), McpError> {
     generation.stderr_stop.store(true, Ordering::Release);
     drop(generation.stdin);
     drop(generation.stdout);
+    if let Some(pid) = rustix::process::Pid::from_raw(generation.child.id() as i32) {
+        // The child owns this process group. Close descendants too, including
+        // those keeping pipe descriptors open after the direct child exits.
+        match rustix::process::kill_process_group(pid, rustix::process::Signal::KILL) {
+            Ok(()) | Err(rustix::io::Errno::SRCH) => {}
+            Err(error) => return Err(McpError::Transport(error.to_string())),
+        }
+    }
     if generation
         .child
         .try_wait()

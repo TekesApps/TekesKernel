@@ -21,9 +21,9 @@ use tekes_supervisor::client_admin::{
     ENVIRONMENT_METHODS, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
 };
 use tekes_supervisor::client_extensions::{
-    APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
-    HOST_FILE_METHODS, INITIAL_PRESET_METHODS, PLUGIN_METHODS, RECOVERY_METHODS, RESOURCE_METHODS,
-    SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS,
+    APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, FOLDER_TRUST_METHODS,
+    GOAL_METHODS, HOST_FILE_METHODS, INITIAL_PRESET_METHODS, PLUGIN_METHODS, RECOVERY_METHODS,
+    RESOURCE_METHODS, SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS,
     THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS,
 };
 use tekes_supervisor::endpoint_host::TEKES_UNARY_ROUTES;
@@ -80,6 +80,7 @@ async fn slice13_gate_91_production_assembly_mounts_and_executes_management() {
         .chain(
             [
                 RESOURCE_METHODS.as_slice(),
+                FOLDER_TRUST_METHODS.as_slice(),
                 INITIAL_PRESET_METHODS.as_slice(),
                 SESSION_PRESET_METHODS.as_slice(),
                 RECOVERY_METHODS.as_slice(),
@@ -460,6 +461,7 @@ fn slice13_gate_89_pending_oauth_requires_exact_bound_ownership() {
             "oauth-save",
             &McpManagementMutation::Save {
                 server: McpServerConfig {
+                    folder_id: None,
                     reference: reference.clone(),
                     transport: McpTransportConfig::Http {
                         url: "https://127.0.0.1:9/mcp".to_owned(),
@@ -577,6 +579,7 @@ async fn slice13_gate_88_standalone_mutations_close_the_bound_generation() {
         name: "standalone".to_owned(),
     };
     let config = |enabled| McpServerConfig {
+        folder_id: None,
         reference: reference.clone(),
         transport: McpTransportConfig::Stdio {
             command: vec![executable.to_string_lossy().into_owned()],

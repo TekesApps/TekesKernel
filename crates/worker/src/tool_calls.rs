@@ -33,11 +33,17 @@ where
         .to_owned();
     let manifest = BuiltinManifest::compiled();
     let assets = store::AssetStore::new(thread_folder.join("assets"))?;
-    let hooks = frozen_hook_bindings(&profile.instruction)?;
     // Re-read per batch: a mode selected through the endpoint applies to the
     // next tool call of a running session without a restart.
     let mut policy = session_permission_policy(&thread_folder);
     for call in calls {
+        let _hook_leases = profile
+            .instruction
+            .admit_kind(profile::InstructionKind::Hook);
+        let _skill_leases = profile
+            .instruction
+            .admit_kind(profile::InstructionKind::Skill);
+        let hooks = frozen_hook_bindings(&profile.instruction)?;
         if cancellation.supervisor_lost() {
             return Err(Box::new(ProtocolFailure(
                 "supervisor lost before tool execution".to_owned(),
@@ -73,7 +79,8 @@ where
             append_tool_validation_error(ledger, options, turn, call, &detail)?;
             continue;
         }
-        let write_roots = match kernel_protected_roots(&thread_folder)
+        let write_roots = match storage_root_for_thread_folder(&thread_folder)
+            .map(|root| profile.config.protected_roots(&root))
             .and_then(|protected| invocation_write_roots(profile, call, &protected))
         {
             Ok(roots) => roots,
@@ -218,6 +225,13 @@ pub(crate) fn frozen_hook_bindings(
         .hooks
         .iter()
         .filter(|(_, index)| {
+            if !instruction
+                .sources
+                .get(**index as usize)
+                .is_some_and(|source| instruction.source_authorized(source))
+            {
+                return false;
+            }
             instruction
                 .sources
                 .get(**index as usize)
@@ -264,7 +278,13 @@ pub(crate) fn frozen_skill_catalog(
         .effective
         .skills
         .iter()
-        .filter(|(logical_name, _)| !logical_name.contains('/'))
+        .filter(|(logical_name, index)| {
+            !logical_name.contains('/')
+                && instruction
+                    .sources
+                    .get(**index as usize)
+                    .is_some_and(|source| instruction.source_authorized(source))
+        })
         .map(|(logical_name, index)| {
             let source = instruction
                 .sources

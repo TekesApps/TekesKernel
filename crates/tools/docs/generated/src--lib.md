@@ -115,6 +115,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `compile_linux_plan` | `sandbox::compile_linux_plan` | `pub` |
 | `exposed_protected_roots` | `sandbox::exposed_protected_roots` | `pub` |
 | `kernel_protected_roots` | `sandbox::kernel_protected_roots` | `pub` |
+| `kernel_protected_roots_with_user_agent_dir` | `sandbox::kernel_protected_roots_with_user_agent_dir` | `pub` |
 | `policy_digest` | `sandbox::policy_digest` | `pub` |
 | `probe_backend` | `sandbox::probe_backend` | `pub` |
 | `protected_root_containing` | `sandbox::protected_root_containing` | `pub` |

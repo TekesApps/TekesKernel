@@ -1,5 +1,11 @@
 # Web Client
 
+The built-in 0.8 host rejects non-null `web_listen`: this library surface has
+no authentication beyond Host/Origin and cannot share administrative routes
+with network-enabled session tools. The API below remains a library contract;
+it is not an authenticated trust-management surface.
+
+
 [Users and protocols · documentation home](../README.md) · [Client boundary](client.md) · [Next: transport implementation](../../crates/transport/docs/README.md)
 
 TekesKernel can expose the Tekes experience through a browser without adding

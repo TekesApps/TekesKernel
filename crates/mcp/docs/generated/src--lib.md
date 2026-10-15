@@ -83,6 +83,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `TransportKind` | `types::TransportKind` | `pub` |
 | `McpBroker` | `broker::McpBroker` | `pub` |
 | `McpBrokerHandle` | `broker::McpBrokerHandle` | `pub` |
+| `McpPeerSnapshot` | `client::McpPeerSnapshot` | `pub` |
 
 ## Module declarations
 

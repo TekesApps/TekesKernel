@@ -4562,6 +4562,7 @@ mod tests {
     fn preset_skills_resolve_against_package_names() {
         let manifest = "---\nname: review\ndescription: Review a change\n---\nBody\n";
         let snapshot = profile::InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![profile::InstructionSource {
                 origin: profile::InstructionOrigin::User,

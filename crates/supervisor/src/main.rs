@@ -3,6 +3,15 @@ use std::path::PathBuf;
 use std::process::ExitCode;
 
 fn main() -> ExitCode {
+    if env::args_os().nth(1).as_deref() == Some(std::ffi::OsStr::new("--folder-trust")) {
+        return match tekes_supervisor::folder_trust::cli(&env::args_os().collect::<Vec<_>>()) {
+            Ok(()) => ExitCode::SUCCESS,
+            Err(error) => {
+                eprintln!("tekes-supervisor: {error}");
+                ExitCode::from(74)
+            }
+        };
+    }
     if env::args_os().len() == 2
         && env::args_os().nth(1).as_deref() == Some(std::ffi::OsStr::new("--models-available"))
     {

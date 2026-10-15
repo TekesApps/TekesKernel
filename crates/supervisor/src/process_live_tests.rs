@@ -1079,6 +1079,7 @@ fn register_local_tools_server(root: &std::path::Path, always_on: bool) {
     let registry = mcp::McpRegistryStore::new(root.join("config"));
     registry.mutate_idempotent("save-local-tools", &mcp::McpManagementMutation::Save {
         server: mcp::McpServerConfig {
+            folder_id: None,
             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "local".to_owned() },
             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "local-tools".to_owned()], cwd: None, environment: BTreeMap::new() },
             enabled: true,
@@ -1478,6 +1479,7 @@ fn real_public_mcp_task_continuation() {
     let registry = mcp::McpRegistryStore::new(root.join("config"));
     registry.mutate_idempotent("save-fixture", &mcp::McpManagementMutation::Save {
         server: mcp::McpServerConfig {
+            folder_id: None,
             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "fixture".to_owned() },
             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "task-augmented".to_owned()], cwd: None, environment: BTreeMap::new() },
             enabled: true,

@@ -219,6 +219,7 @@ constructs:
 ```text
 ConfigSnapshot = {
   format: 1,
+  user_agent_dir?: absolute path,
   workspace: ResolvedWorkspace,
   providers: Providers,
   settings: Settings,
@@ -229,6 +230,16 @@ ConfigSnapshot = {
   }
 }
 ```
+
+The launch authority freezes the actual shared instruction directory in
+`user_agent_dir`; session settings cannot set it. Every file write guard and
+foreground or detached execution sandbox protects that directory, the default
+service user's `~/.agents`, Kernel storage and platform credential directories
+even beneath a writable home. Older snapshots omit this field and retain the
+default protected roots. Missing paths resolve through their nearest existing
+ancestor so path aliases do not evade protection. Linux launches that expose a
+missing protected directory fail closed until the host prepares it; they do
+not silently omit the read-only mount.
 
 A snapshot published before `config/integrations.json` was removed carries an
 `integrations` document and an `integrations` revision; readers ignore both
@@ -362,3 +373,16 @@ revision CAS. `session.create {environment}` chooses a reference (default
 `local`); the creation intent fixes that reference, and each subsequent launch
 resolves the current definition. Save changes the next launch only, without
 changing folder trust, writable roots or running descriptors.
+
+## Folder execution authority (0.8)
+
+See [Folder trust](../docs/folder-trust.md) for the protected format-1 authority,
+local consent protocol and `folderTrust.v1` closed DTOs. Permission mode and
+`project_trusted` do not grant project execution. Instruction snapshots may add
+`folder_authority:{storage_root,folders}`; `folders` maps project indices to
+captured canonical identity/trust records. Legacy snapshots omit it and still
+decode, but cannot enable project hooks or skills. Discovery excludes untrusted
+executable sources before parsing; project AGENTS/settings/rules/commands remain
+readable. Runtime admission compares the captured identity and revision again,
+including continuation and resource use. Shared effect barriers report pending
+revocation separately from completed peer cleanup.

@@ -215,6 +215,11 @@ fn mount_plan(policy: &SandboxPolicy, executable: &Path) -> Result<MountPlan, Sa
             .iter()
             .any(|write| Path::new(root).starts_with(write))
         {
+            if canonical_optional(Path::new(root))?.is_none() {
+                return Err(SandboxError::Unavailable(format!(
+                    "protected root {root} must exist before exposing its writable ancestor"
+                )));
+            }
             add_mount(&mut mounts, &mut aliases, Path::new(root), &writable, false)?;
         }
     }
@@ -432,6 +437,20 @@ mod tests {
             scratch: None,
             protected_roots: Vec::new(),
         }
+    }
+
+    #[test]
+    fn absent_protected_root_under_writable_home_is_not_silently_skipped() {
+        let root = tempfile::tempdir().unwrap();
+        let home = fs::canonicalize(root.path()).unwrap();
+        let text = home.display().to_string();
+        let mut policy = policy(vec![text.clone()], vec![text]);
+        policy.protected_roots = vec![home.join("missing/.agents").display().to_string()];
+        assert!(matches!(
+            mount_plan(&policy, Path::new("/bin/true")),
+            Err(SandboxError::Unavailable(message)) if message.contains("must exist")
+        ));
+        assert!(!home.join("missing").exists());
     }
 
     #[test]

@@ -183,6 +183,34 @@ pub fn read(path: &Path) -> Result<Vec<u8>, FixtureError> {
     })
 }
 
+/// Give synthetic fixture projects explicit host trust in a process-local store.
+/// The store outlives returned catalogs; no production authority is touched.
+pub fn trusted_resolver(
+    resolver: profile::InstructionResolver,
+    folders: &[impl AsRef<std::path::Path>],
+) -> profile::InstructionResolver {
+    static STATE: std::sync::OnceLock<tempfile::TempDir> = std::sync::OnceLock::new();
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    let _guard = LOCK.lock().unwrap();
+    let root = STATE.get_or_init(|| tempfile::tempdir().unwrap());
+    let store = profile::FolderAuthorityStore::new(root.path());
+    for folder in folders {
+        if store
+            .status(folder.as_ref())
+            .is_ok_and(|record| record.trusted)
+        {
+            continue;
+        }
+        let revision = store.registry_revision().unwrap();
+        let request = format!("fixture-request-{revision}");
+        store.request(&request, revision, folder.as_ref()).unwrap();
+        store
+            .grant_from_host(&format!("fixture-grant-{revision}"), revision + 1, &request)
+            .unwrap();
+    }
+    resolver.with_folder_authority(root.path())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

@@ -323,6 +323,7 @@ fn reference() -> McpServerReference {
 
 fn server_config(executable: &Path, data_path: &Path, enabled: bool) -> McpServerConfig {
     McpServerConfig {
+        folder_id: None,
         reference: reference(),
         transport: McpTransportConfig::Stdio {
             command: vec![executable.to_string_lossy().into_owned()],

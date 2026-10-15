@@ -244,7 +244,6 @@ where
         turn,
         timestamp: options.event_timestamp().clone(),
     };
-    let hooks = frozen_hook_bindings(&profile.instruction)?;
     let assets = store::AssetStore::new(thread_folder.join("assets"))?;
     let mut interval = CONTINUATION_POLL_FLOOR;
     let mut resumed_from_park = false;
@@ -280,6 +279,10 @@ where
                 poll_immediately = true;
             }
         }
+        let _hook_leases = profile
+            .instruction
+            .admit_kind(profile::InstructionKind::Hook);
+        let hooks = frozen_hook_bindings(&profile.instruction)?;
         let terminalize = |ledger: &mut LockedLedger, terminal: BackendTerminal| {
             let mut pipeline = ToolPipeline::new(ledger, assets.clone(), SecretScanner::default());
             pipeline

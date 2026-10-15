@@ -20,6 +20,14 @@ const CANCELLATION_IO_TIMEOUT: Duration = Duration::from_millis(250);
 pub type McpPeerFuture<'a, T> = Pin<Box<dyn Future<Output = Result<T, McpError>> + Send + 'a>>;
 
 pub trait McpPeer: Send {
+    /// Evaluated after the broker peer mutex is acquired, including queued calls.
+    fn admit(&self) -> Result<Option<Box<dyn Send>>, McpError> {
+        Ok(None)
+    }
+
+    fn cached_tools(&self) -> Option<Vec<McpTool>> {
+        None
+    }
     fn server_name(&self) -> &str;
     /// Opt-in independent request ownership. None retains serialized dispatch.
     /// Implementations must bind returned futures to peer close/reconnect and
@@ -122,6 +130,7 @@ pub trait McpPeer: Send {
 }
 
 pub struct McpClient<T> {
+    tool_cache: Option<(u64, Vec<McpTool>)>,
     server_name: String,
     subscription_started: bool,
     transport: T,
@@ -139,6 +148,7 @@ pub struct McpClient<T> {
 impl<T: McpTransport> McpClient<T> {
     pub fn new(server_name: impl Into<String>, transport: T) -> Self {
         Self {
+            tool_cache: None,
             server_name: server_name.into(),
             subscription_started: false,
             transport,
@@ -751,6 +761,13 @@ impl<T: McpTransport> McpClient<T> {
 }
 
 impl<T: McpTransport> McpPeer for McpClient<T> {
+    fn cached_tools(&self) -> Option<Vec<McpTool>> {
+        self.tool_cache
+            .as_ref()
+            .filter(|(generation, _)| *generation == self.catalog_generation())
+            .map(|(_, tools)| tools.clone())
+    }
+
     fn start_scoped_tool(
         &self,
         name: &str,
@@ -900,6 +917,7 @@ impl<T: McpTransport> McpPeer for McpClient<T> {
                 return Err(error);
             }
             self.transport.install_tool_catalog(&tools)?;
+            self.tool_cache = Some((self.catalog_generation(), tools.clone()));
             Ok(tools)
         })
     }
@@ -1436,6 +1454,78 @@ impl McpClient<crate::HttpTransport> {
                 McpError::Unsupported("concurrent calls require an open modern HTTP peer".into())
             })?
             .await
+    }
+}
+
+/// Metadata-only retained generation used to project a pooled peer without spawning.
+pub struct McpPeerSnapshot {
+    name: String,
+    protocol: String,
+    identity: Option<McpImplementation>,
+    capabilities: McpCapabilities,
+    generation: u64,
+    tools: Vec<McpTool>,
+}
+impl McpPeerSnapshot {
+    pub fn capture(peer: &dyn McpPeer, tools: Vec<McpTool>) -> Self {
+        Self {
+            name: peer.server_name().to_owned(),
+            protocol: peer.protocol_version().to_owned(),
+            identity: peer.server_identity().cloned(),
+            capabilities: peer.capabilities().clone(),
+            generation: peer.catalog_generation(),
+            tools,
+        }
+    }
+}
+impl McpPeer for McpPeerSnapshot {
+    fn server_name(&self) -> &str {
+        &self.name
+    }
+    fn protocol_version(&self) -> &str {
+        &self.protocol
+    }
+    fn server_identity(&self) -> Option<&McpImplementation> {
+        self.identity.as_ref()
+    }
+    fn capabilities(&self) -> &McpCapabilities {
+        &self.capabilities
+    }
+    fn catalog_generation(&self) -> u64 {
+        self.generation
+    }
+    fn list_tools(&mut self) -> McpPeerFuture<'_, Vec<McpTool>> {
+        Box::pin(async { Ok(self.tools.clone()) })
+    }
+    fn close(&mut self) -> McpPeerFuture<'_, ()> {
+        Box::pin(async { Ok(()) })
+    }
+    fn list_prompts(&mut self) -> McpPeerFuture<'_, Vec<McpPrompt>> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
+    }
+    fn list_resources(&mut self) -> McpPeerFuture<'_, Vec<McpResource>> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
+    }
+    fn call_tool(
+        &mut self,
+        _name: &str,
+        _arguments: IJsonValue,
+        _cancellation: McpCancellationToken,
+    ) -> McpPeerFuture<'_, IJsonValue> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
+    }
+    fn get_prompt(&mut self, _name: &str, _arguments: IJsonValue) -> McpPeerFuture<'_, IJsonValue> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
+    }
+    fn read_resource(&mut self, _uri: &str) -> McpPeerFuture<'_, IJsonValue> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
+    }
+    fn task_operation(
+        &mut self,
+        _method: &str,
+        _params: IJsonValue,
+    ) -> McpPeerFuture<'_, IJsonValue> {
+        Box::pin(async { Err(McpError::Unsupported("metadata-only peer".into())) })
     }
 }
 

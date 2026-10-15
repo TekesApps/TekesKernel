@@ -400,7 +400,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `root.as_ref` | [50](../../src/client_admin.rs#L50) | receiver-type-required |
 | `new` | `root.to_path_buf` | [52](../../src/client_admin.rs#L52) | receiver-type-required |
 | `new` | `ConfigRepository::open(root).map_err` | [53](../../src/client_admin.rs#L53) | receiver-type-required |
-| `new` | `ConfigRepository::open` | [53](../../src/client_admin.rs#L53) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
+| `new` | `ConfigRepository::open` | [53](../../src/client_admin.rs#L53) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
 | `new` | `Mutex::new` | [55](../../src/client_admin.rs#L55) | external-constructor-callback-or-unresolved |
 | `new` | `AdminMutationJournal::open(root).map_err` | [56](../../src/client_admin.rs#L56) | receiver-type-required |
 | `new` | `AdminMutationJournal::open` | [56](../../src/client_admin.rs#L56) | [tekes-supervisor::client_admin::AdminMutationJournal::open](../../src/client_admin.rs#L884) |
@@ -517,7 +517,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `change_folders` | `Some` | [340](../../src/client_admin.rs#L340) | external-constructor-callback-or-unresolved |
 | `change_folders` | `NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(                     &self.root,                     &input.workspace_id,                 ))                 .map_err` | [341](../../src/client_admin.rs#L341) | receiver-type-required |
 | `change_folders` | `NamedLock::try_exclusive` | [341](../../src/client_admin.rs#L341) | [store::platform::NamedLock::try_exclusive](../../../store/src/platform.rs#L107) |
-| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [341](../../src/client_admin.rs#L341) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6423) |
+| `change_folders` | `crate::process_host::workspace_quiescence_lock_path` | [341](../../src/client_admin.rs#L341) | [tekes-supervisor::process_host::workspace_quiescence_lock_path](../../src/process_host.rs#L6462) |
 | `change_folders` | `failure` | [346](../../src/client_admin.rs#L346) | [tekes-supervisor::client_admin::failure](../../src/client_admin.rs#L714) |
 | `change_folders` | `internal_store` | [351](../../src/client_admin.rs#L351) | [tekes-supervisor::client_admin::internal_store](../../src/client_admin.rs#L1121) |
 | `change_folders` | `management_request_hash` | [355](../../src/client_admin.rs#L355) | [tekes-supervisor::client_admin::management_request_hash](../../src/client_admin.rs#L1141) |
@@ -970,7 +970,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `store::AssetStore::new(folder.join("assets")).unwrap` | [1558](../../src/client_admin.rs#L1558) | receiver-type-required |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `store::AssetStore::new` | [1558](../../src/client_admin.rs#L1558) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::ConfigSnapshot::decode(                 &assets                     .read_verified(&format!(                         "sha256-{}",                         raw["config"]["digest"].as_str().unwrap()                     ))                     .unwrap(),             )             .unwrap` | [1559](../../src/client_admin.rs#L1559) | receiver-type-required |
-| `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::ConfigSnapshot::decode` | [1559](../../src/client_admin.rs#L1559) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L407) |
+| `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::ConfigSnapshot::decode` | [1559](../../src/client_admin.rs#L1559) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L419) |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `assets                     .read_verified(&format!(                         "sha256-{}",                         raw["config"]["digest"].as_str().unwrap()                     ))                     .unwrap` | [1560](../../src/client_admin.rs#L1560) | receiver-type-required |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `assets                     .read_verified` | [1560](../../src/client_admin.rs#L1560) | receiver-type-required |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `snapshot.revisions.environments.unwrap` | [1569](../../src/client_admin.rs#L1569) | receiver-type-required |
@@ -986,7 +986,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::SessionScope::locate(root.path(), &id).unwrap` | [1591](../../src/client_admin.rs#L1591) | receiver-type-required |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::SessionScope::locate` | [1591](../../src/client_admin.rs#L1591) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L32) |
 | `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::LaunchProfile::resolve_and_publish_for_scope(                 &routes.repository,                 &session_scope,                 &agents,                 &assets,             )             .unwrap` | [1592](../../src/client_admin.rs#L1592) | receiver-type-required |
-| `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::LaunchProfile::resolve_and_publish_for_scope` | [1592](../../src/client_admin.rs#L1592) | [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../../profile/src/instruction.rs#L131) |
+| `concurrent_named_environment_save_and_create_capture_one_complete_revision` | `profile::LaunchProfile::resolve_and_publish_for_scope` | [1592](../../src/client_admin.rs#L1592) | [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../../profile/src/instruction.rs#L177) |
 | `policy_replacement_can_relax_local_default_below_ceiling` | `fixture` | [1612](../../src/client_admin.rs#L1612) | [tekes-supervisor::client_admin::tests::fixture](../../src/client_admin.rs#L1231) |
 | `policy_replacement_can_relax_local_default_below_ceiling` | `call` | [1613](../../src/client_admin.rs#L1613) | [tekes-supervisor::client_admin::tests::call](../../src/client_admin.rs#L1256) |
 | `policy_replacement_can_relax_local_default_below_ceiling` | `serde_json::to_value(&request.payload).expect` | [1621](../../src/client_admin.rs#L1621) | receiver-type-required |

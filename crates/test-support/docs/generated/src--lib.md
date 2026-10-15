@@ -18,7 +18,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [test-support::collect_relative_files](../../src/lib.rs#L139) | function_item | `private` |  |
 | [test-support::FixtureManifest](../../src/lib.rs#L174) | struct_item | `pub` |  |
 | [test-support::read](../../src/lib.rs#L179) | function_item | `pub` |  |
-| [test-support::tests::manifest_rejects_undeclared_top_level_corpus](../../src/lib.rs#L191) | function_item | `private` | test; #[cfg(test)] |
+| [test-support::trusted_resolver](../../src/lib.rs#L188) | function_item | `pub` |  |
+| [test-support::trusted_resolver::STATE](../../src/lib.rs#L192) | static_item | `private` |  |
+| [test-support::trusted_resolver::LOCK](../../src/lib.rs#L193) | static_item | `private` |  |
+| [test-support::tests::manifest_rejects_undeclared_top_level_corpus](../../src/lib.rs#L219) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -45,22 +48,25 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–7: 5 direct edges</summary>
+<details><summary>Functions 1–8: 6 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["test-support::collect_relative_files"]
-  n1["test-support::read"]
-  n2["test-support::FixtureRoot::discover"]
-  n3["test-support::FixtureRoot::from_manifest_dir"]
-  n4["test-support::FixtureRoot::path"]
-  n5["test-support::FixtureRoot::join"]
-  n6["test-support::FixtureRoot::verify_manifest"]
-  n0 --> n0
-  n2 --> n3
-  n6 --> n0
-  n6 --> n1
-  n6 --> n5
+  n0["profile::folder_authority::FolderAuthorityStore::new"]
+  n1["test-support::collect_relative_files"]
+  n2["test-support::read"]
+  n3["test-support::trusted_resolver"]
+  n4["test-support::FixtureRoot::discover"]
+  n5["test-support::FixtureRoot::from_manifest_dir"]
+  n6["test-support::FixtureRoot::path"]
+  n7["test-support::FixtureRoot::join"]
+  n8["test-support::FixtureRoot::verify_manifest"]
+  n1 --> n1
+  n3 --> n0
+  n4 --> n5
+  n8 --> n1
+  n8 --> n2
+  n8 --> n7
 ```
 
 </details>
@@ -165,17 +171,36 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `fs::read(path).map_err` | [180](../../src/lib.rs#L180) | receiver-type-required |
 | `read` | `fs::read` | [180](../../src/lib.rs#L180) | external-constructor-callback-or-unresolved |
 | `read` | `path.to_path_buf` | [181](../../src/lib.rs#L181) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir().expect` | [192](../../src/lib.rs#L192) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir` | [192](../../src/lib.rs#L192) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(             root.path().join("manifest.json"),             br#"{"corpora":{"known":["case.txt"]},"version":1}"#,         )         .expect` | [193](../../src/lib.rs#L193) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write` | [193](../../src/lib.rs#L193), [199](../../src/lib.rs#L199) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path().join` | [194](../../src/lib.rs#L194), [198](../../src/lib.rs#L198), [199](../../src/lib.rs#L199), [200](../../src/lib.rs#L200) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path` | [194](../../src/lib.rs#L194), [198](../../src/lib.rs#L198), [199](../../src/lib.rs#L199), [200](../../src/lib.rs#L200), [202](../../src/lib.rs#L202) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("known")).expect` | [198](../../src/lib.rs#L198) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir` | [198](../../src/lib.rs#L198), [200](../../src/lib.rs#L200) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(root.path().join("known/case.txt"), b"case").expect` | [199](../../src/lib.rs#L199) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("undeclared")).expect` | [200](../../src/lib.rs#L200) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest()             .expect_err` | [202](../../src/lib.rs#L202) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest` | [202](../../src/lib.rs#L202) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot` | [202](../../src/lib.rs#L202) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path().to_path_buf` | [202](../../src/lib.rs#L202) | receiver-type-required |
+| `trusted_resolver` | `LOCK.lock().unwrap` | [194](../../src/lib.rs#L194) | receiver-type-required |
+| `trusted_resolver` | `LOCK.lock` | [194](../../src/lib.rs#L194) | receiver-type-required |
+| `trusted_resolver` | `STATE.get_or_init` | [195](../../src/lib.rs#L195) | receiver-type-required |
+| `trusted_resolver` | `tempfile::tempdir().unwrap` | [195](../../src/lib.rs#L195) | receiver-type-required |
+| `trusted_resolver` | `tempfile::tempdir` | [195](../../src/lib.rs#L195) | external-constructor-callback-or-unresolved |
+| `trusted_resolver` | `profile::FolderAuthorityStore::new` | [196](../../src/lib.rs#L196) | [profile::folder_authority::FolderAuthorityStore::new](../../../profile/src/folder_authority.rs#L86) |
+| `trusted_resolver` | `root.path` | [196](../../src/lib.rs#L196), [211](../../src/lib.rs#L211) | receiver-type-required |
+| `trusted_resolver` | `store             .status(folder.as_ref())             .is_ok_and` | [198](../../src/lib.rs#L198) | receiver-type-required |
+| `trusted_resolver` | `store             .status` | [198](../../src/lib.rs#L198) | receiver-type-required |
+| `trusted_resolver` | `folder.as_ref` | [199](../../src/lib.rs#L199), [206](../../src/lib.rs#L206) | receiver-type-required |
+| `trusted_resolver` | `store.registry_revision().unwrap` | [204](../../src/lib.rs#L204) | receiver-type-required |
+| `trusted_resolver` | `store.registry_revision` | [204](../../src/lib.rs#L204) | receiver-type-required |
+| `trusted_resolver` | `store.request(&request, revision, folder.as_ref()).unwrap` | [206](../../src/lib.rs#L206) | receiver-type-required |
+| `trusted_resolver` | `store.request` | [206](../../src/lib.rs#L206) | receiver-type-required |
+| `trusted_resolver` | `store             .grant_from_host(&format!("fixture-grant-{revision}"), revision + 1, &request)             .unwrap` | [207](../../src/lib.rs#L207) | receiver-type-required |
+| `trusted_resolver` | `store             .grant_from_host` | [207](../../src/lib.rs#L207) | receiver-type-required |
+| `trusted_resolver` | `resolver.with_folder_authority` | [211](../../src/lib.rs#L211) | receiver-type-required |
+| `STATE` | `std::sync::OnceLock::new` | [192](../../src/lib.rs#L192) | external-constructor-callback-or-unresolved |
+| `LOCK` | `std::sync::Mutex::new` | [193](../../src/lib.rs#L193) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir().expect` | [220](../../src/lib.rs#L220) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir` | [220](../../src/lib.rs#L220) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(             root.path().join("manifest.json"),             br#"{"corpora":{"known":["case.txt"]},"version":1}"#,         )         .expect` | [221](../../src/lib.rs#L221) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write` | [221](../../src/lib.rs#L221), [227](../../src/lib.rs#L227) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path().join` | [222](../../src/lib.rs#L222), [226](../../src/lib.rs#L226), [227](../../src/lib.rs#L227), [228](../../src/lib.rs#L228) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path` | [222](../../src/lib.rs#L222), [226](../../src/lib.rs#L226), [227](../../src/lib.rs#L227), [228](../../src/lib.rs#L228), [230](../../src/lib.rs#L230) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("known")).expect` | [226](../../src/lib.rs#L226) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir` | [226](../../src/lib.rs#L226), [228](../../src/lib.rs#L228) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(root.path().join("known/case.txt"), b"case").expect` | [227](../../src/lib.rs#L227) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("undeclared")).expect` | [228](../../src/lib.rs#L228) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest()             .expect_err` | [230](../../src/lib.rs#L230) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest` | [230](../../src/lib.rs#L230) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot` | [230](../../src/lib.rs#L230) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path().to_path_buf` | [230](../../src/lib.rs#L230) | receiver-type-required |

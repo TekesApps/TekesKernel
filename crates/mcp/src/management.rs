@@ -92,6 +92,9 @@ pub enum McpTransportConfig {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct McpServerConfig {
+    /// Explicit global Folder identity; legacy rows require a single-folder alias.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub folder_id: Option<String>,
     pub reference: McpServerReference,
     pub transport: McpTransportConfig,
     pub enabled: bool,
@@ -154,7 +157,9 @@ impl McpRegistry {
             if server.reference.workspace_id != workspace || !server.enabled {
                 continue;
             }
-            if server.reference.scope == McpScope::Project && !server.project_trusted {
+            if server.reference.scope == McpScope::Project
+                && matches!(server.transport, McpTransportConfig::Stdio { .. })
+            {
                 continue;
             }
             match resolved.get(server.reference.name.as_str()) {
@@ -380,6 +385,9 @@ pub struct McpRegistryStore {
 }
 
 impl McpRegistryStore {
+    pub fn root(&self) -> &Path {
+        &self.root
+    }
     pub fn new(root: impl Into<PathBuf>) -> Self {
         Self {
             root: root.into(),
@@ -927,6 +935,17 @@ impl DurableOperation {
 
 fn validate_server(server: &McpServerConfig) -> Result<(), McpRegistryError> {
     let reference = &server.reference;
+    if let Some(folder) = &server.folder_id
+        && (reference.scope != McpScope::Project
+            || folder.len() != 64
+            || !folder
+                .bytes()
+                .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase()))
+    {
+        return Err(McpRegistryError::Invalid(
+            "invalid project folder_id".into(),
+        ));
+    }
     if reference.workspace_id.is_empty()
         || reference.name.is_empty()
         || reference.name.len() > 128
@@ -1036,6 +1055,22 @@ fn decode_registry_file(path: &Path, bytes: &[u8]) -> Result<McpRegistry, McpReg
         other => other,
     };
     let mut registry: McpRegistry = decode_canonical(bytes).map_err(name_file)?;
+    let mut active = BTreeMap::new();
+    for server in registry
+        .servers
+        .iter()
+        .filter(|server| server.enabled && server.reference.scope == McpScope::User)
+    {
+        let mut comparable = server.clone();
+        comparable.project_trusted = false;
+        if let Some(prior) = active.insert(server.reference.clone(), comparable.clone())
+            && prior != comparable
+        {
+            return Err(name_file(McpRegistryError::Invalid(
+                "conflicting active user MCP aliases; repair duplicate rows".into(),
+            )));
+        }
+    }
     let duplicates = dedupe_registry_last_wins(&mut registry);
     for reference in &duplicates {
         eprintln!(

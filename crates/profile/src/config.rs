@@ -369,6 +369,10 @@ fn ignore_legacy_field<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Res
 #[serde(deny_unknown_fields)]
 pub struct ConfigSnapshot {
     pub format: u64,
+    /// Host-selected shared instructions. This is frozen by the launch
+    /// authority, never taken from session-authored settings.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub user_agent_dir: Option<String>,
     pub workspace: ResolvedWorkspace,
     pub providers: ProvidersConfig,
     /// Snapshots published before the integrations file was removed carry an
@@ -387,6 +391,14 @@ pub struct ConfigSnapshot {
 }
 
 impl ConfigSnapshot {
+    #[must_use]
+    pub fn protected_roots(&self, storage_root: &Path) -> Vec<String> {
+        self.user_agent_dir.as_deref().map_or_else(
+            || tools::kernel_protected_roots(storage_root),
+            |user| tools::kernel_protected_roots_with_user_agent_dir(storage_root, Path::new(user)),
+        )
+    }
+
     #[must_use]
     pub fn execution_cwd(&self) -> Option<&str> {
         self.workspace
@@ -1330,6 +1342,7 @@ impl ConfigRepository {
         };
         Ok(ConfigSnapshot {
             format: FORMAT,
+            user_agent_dir: None,
             revisions: RevisionVector {
                 workspace: workspace.revision,
                 providers: providers.revision,
@@ -1918,6 +1931,9 @@ fn resolve_workspace(
 
 fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
     let path = Path::new("<config-snapshot>");
+    if let Some(user_agent_dir) = &snapshot.user_agent_dir {
+        validate_absolute(user_agent_dir, path)?;
+    }
     if snapshot.format != FORMAT {
         return Err(ProfileError::UnsupportedFormat {
             path: path.to_path_buf(),

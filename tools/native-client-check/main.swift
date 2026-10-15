@@ -4,7 +4,8 @@ import Foundation
   static func main() async throws {
     let url = URL(string: CommandLine.arguments[1])!
     let root = CommandLine.arguments[2]
-    let hex = ProcessInfo.processInfo.environment["TEKES_KERNEL_ENDPOINT_TOKEN"]!
+    let hex = String(data: FileHandle.standardInput.readData(ofLength: 64), encoding: .utf8)!
+    precondition(hex.count == 64)
     var bytes = Data()
     var index = hex.startIndex
     while index < hex.endIndex {

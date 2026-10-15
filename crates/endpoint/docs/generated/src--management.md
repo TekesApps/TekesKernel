@@ -194,46 +194,46 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [endpoint::management::tests::omitted_identity_is_auto_but_explicit_and_legacy_identity_stay_fixed](../../src/management.rs#L4436) | function_item | `private` | test; #[cfg(test)] |
 | [endpoint::management::tests::preset_genesis_replaces_identity_and_needs_reader_three](../../src/management.rs#L4472) | function_item | `private` | test; #[cfg(test)] |
 | [endpoint::management::tests::preset_skills_resolve_against_package_names](../../src/management.rs#L4562) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::legacy_session_create_without_folder_binding_remains_recoverable](../../src/management.rs#L4596) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::quarantined_fork_does_not_block_recovery_or_claim_success](../../src/management.rs#L4611) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::open_light_heals_metadata_after_any_config_writer_without_reading_threads](../../src/management.rs#L4686) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::unavailable_workspace_keeps_its_management_operation_pending](../../src/management.rs#L4775) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::a_select_model_payload_staged_before_the_rename_is_read_on_recovery](../../src/management.rs#L4814) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder](../../src/management.rs#L4882) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once](../../src/management.rs#L4927) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::relocation_moves_writable_roots_with_their_folder](../../src/management.rs#L4979) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::folder_store](../../src/management.rs#L5015) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::sibling](../../src/management.rs#L5033) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::write_session](../../src/management.rs#L5044) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::folders_are_added_listed_and_removed_with_their_writable_roots](../../src/management.rs#L5089) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::a_folder_bound_to_a_session_is_not_removed](../../src/management.rs#L5205) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::a_legacy_unbound_session_blocks_a_second_folder](../../src/management.rs#L5251) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids](../../src/management.rs#L5284) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::completed_workspace_operation_never_reopens_its_old_path](../../src/management.rs#L5316) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::create_in](../../src/management.rs#L5337) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::session_create_registers_an_unknown_cwd_once](../../src/management.rs#L5358) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::session_create_reads_workspace_skills_where_the_worker_launch_does](../../src/management.rs#L5425) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::session_folders_are_recorded_at_create_and_never_widened](../../src/management.rs#L5482) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::tests::folders_never_name_the_filesystem_root_or_kernel_storage](../../src/management.rs#L5540) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::BOOT](../../src/management.rs#L5635) | const_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::TICK](../../src/management.rs#L5636) | const_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::LATER](../../src/management.rs#L5637) | const_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::WORKSPACE](../../src/management.rs#L5638) | const_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5665) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5671) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5678) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5684) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::metadata_matches](../../src/management.rs#L5691) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::stuck_carriers_record](../../src/management.rs#L5698) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::tick_heals_stale_metadata_without_staging_an_operation](../../src/management.rs#L5732) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::tick_never_fails_while_policy_set_publishes](../../src/management.rs#L5762) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5807) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::boot_quarantines_the_parked_carriers_record_and_succeeds](../../src/management.rs#L5856) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::record_of_another_version_is_left_in_place_not_quarantined](../../src/management.rs#L5911) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::quarantine_keeps_the_payload_and_never_redrives_the_operation](../../src/management.rs#L5933) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::complete_workspace_record_without_response_is_quarantined](../../src/management.rs#L5996) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::management::k1_management_race::one_failing_record_does_not_stop_the_others_from_recovering](../../src/management.rs#L6032) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::legacy_session_create_without_folder_binding_remains_recoverable](../../src/management.rs#L4597) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::quarantined_fork_does_not_block_recovery_or_claim_success](../../src/management.rs#L4612) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::open_light_heals_metadata_after_any_config_writer_without_reading_threads](../../src/management.rs#L4687) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::unavailable_workspace_keeps_its_management_operation_pending](../../src/management.rs#L4776) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::a_select_model_payload_staged_before_the_rename_is_read_on_recovery](../../src/management.rs#L4815) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder](../../src/management.rs#L4883) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once](../../src/management.rs#L4928) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::relocation_moves_writable_roots_with_their_folder](../../src/management.rs#L4980) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::folder_store](../../src/management.rs#L5016) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::sibling](../../src/management.rs#L5034) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::write_session](../../src/management.rs#L5045) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::folders_are_added_listed_and_removed_with_their_writable_roots](../../src/management.rs#L5090) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::a_folder_bound_to_a_session_is_not_removed](../../src/management.rs#L5206) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::a_legacy_unbound_session_blocks_a_second_folder](../../src/management.rs#L5252) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids](../../src/management.rs#L5285) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::completed_workspace_operation_never_reopens_its_old_path](../../src/management.rs#L5317) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::create_in](../../src/management.rs#L5338) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::session_create_registers_an_unknown_cwd_once](../../src/management.rs#L5359) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::session_create_reads_workspace_skills_where_the_worker_launch_does](../../src/management.rs#L5426) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::session_folders_are_recorded_at_create_and_never_widened](../../src/management.rs#L5483) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::tests::folders_never_name_the_filesystem_root_or_kernel_storage](../../src/management.rs#L5541) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::BOOT](../../src/management.rs#L5636) | const_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::TICK](../../src/management.rs#L5637) | const_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::LATER](../../src/management.rs#L5638) | const_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::WORKSPACE](../../src/management.rs#L5639) | const_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5666) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5672) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5679) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5685) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::metadata_matches](../../src/management.rs#L5692) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::stuck_carriers_record](../../src/management.rs#L5699) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::tick_heals_stale_metadata_without_staging_an_operation](../../src/management.rs#L5733) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::tick_never_fails_while_policy_set_publishes](../../src/management.rs#L5763) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5808) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::boot_quarantines_the_parked_carriers_record_and_succeeds](../../src/management.rs#L5857) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::record_of_another_version_is_left_in_place_not_quarantined](../../src/management.rs#L5912) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::quarantine_keeps_the_payload_and_never_redrives_the_operation](../../src/management.rs#L5934) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::complete_workspace_record_without_response_is_quarantined](../../src/management.rs#L5997) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::management::k1_management_race::one_failing_record_does_not_stop_the_others_from_recovering](../../src/management.rs#L6033) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -1122,7 +1122,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `tools.iter().cloned().collect` | [287](../../src/management.rs#L287) | receiver-type-required |
 | `new` | `tools.iter().cloned` | [287](../../src/management.rs#L287) | receiver-type-required |
 | `new` | `tools.iter` | [287](../../src/management.rs#L287) | receiver-type-required |
-| `new` | `profile::ResourceCatalog::skill_package_names` | [288](../../src/management.rs#L288) | [profile::resources::ResourceCatalog::skill_package_names](../../../profile/src/resources.rs#L109) |
+| `new` | `profile::ResourceCatalog::skill_package_names` | [288](../../src/management.rs#L288) | [profile::resources::ResourceCatalog::skill_package_names](../../../profile/src/resources.rs#L114) |
 | `with_models` | `models.map` | [301](../../src/management.rs#L301) | receiver-type-required |
 | `permitted_tools` | `self.permitted.as_ref` | [308](../../src/management.rs#L308) | receiver-type-required |
 | `mcp_server_digest` | `self.mcp?.server_digest` | [312](../../src/management.rs#L312) | receiver-type-required |
@@ -1150,7 +1150,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_recovering` | `fs::OpenOptions::new()             .create(true)             .append` | [512](../../src/management.rs#L512) | receiver-type-required |
 | `open_recovering` | `fs::OpenOptions::new()             .create` | [512](../../src/management.rs#L512) | receiver-type-required |
 | `open_recovering` | `fs::OpenOptions::new` | [512](../../src/management.rs#L512) | external-constructor-callback-or-unresolved |
-| `open_recovering` | `ConfigRepository::open` | [517](../../src/management.rs#L517) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
+| `open_recovering` | `ConfigRepository::open` | [517](../../src/management.rs#L517) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
 | `open_recovering` | `store.recover_skipping` | [521](../../src/management.rs#L521) | receiver-type-required |
 | `open_recovering` | `store.seed_missing_workspace_policies` | [522](../../src/management.rs#L522) | receiver-type-required |
 | `open_recovering` | `store.reconcile_workspace_metadata` | [523](../../src/management.rs#L523) | receiver-type-required |
@@ -1166,7 +1166,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_light_at` | `fs::OpenOptions::new()             .create(true)             .append` | [548](../../src/management.rs#L548) | receiver-type-required |
 | `open_light_at` | `fs::OpenOptions::new()             .create` | [548](../../src/management.rs#L548) | receiver-type-required |
 | `open_light_at` | `fs::OpenOptions::new` | [548](../../src/management.rs#L548) | external-constructor-callback-or-unresolved |
-| `open_light_at` | `ConfigRepository::open` | [553](../../src/management.rs#L553) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
+| `open_light_at` | `ConfigRepository::open` | [553](../../src/management.rs#L553) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
 | `open_light_at` | `NamedLock::exclusive` | [557](../../src/management.rs#L557) | [store::platform::NamedLock::exclusive](../../../store/src/platform.rs#L103) |
 | `open_light_at` | `store.root.join` | [557](../../src/management.rs#L557) | receiver-type-required |
 | `open_light_at` | `store.heal_workspace_metadata_locked` | [558](../../src/management.rs#L558) | receiver-type-required |
@@ -1649,12 +1649,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_workspace_locked` | `Ok` | [1634](../../src/management.rs#L1634) | external-constructor-callback-or-unresolved |
 | `create_workspace_locked` | `serde_json::from_value` | [1634](../../src/management.rs#L1634) | external-constructor-callback-or-unresolved |
 | `create_workspace_locked` | `workspace.clone` | [1634](../../src/management.rs#L1634) | receiver-type-required |
-| `guard_folder_entry` | `tools::kernel_protected_roots` | [1643](../../src/management.rs#L1643) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L150) |
+| `guard_folder_entry` | `tools::kernel_protected_roots` | [1643](../../src/management.rs#L1643) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L151) |
 | `guard_folder_entry` | `canonical.parent().is_none` | [1644](../../src/management.rs#L1644) | receiver-type-required |
 | `guard_folder_entry` | `canonical.parent` | [1644](../../src/management.rs#L1644) | receiver-type-required |
 | `guard_folder_entry` | `canonical.is_dir` | [1645](../../src/management.rs#L1645) | receiver-type-required |
 | `guard_folder_entry` | `tools::protected_root_containing(&protected, canonical).is_some` | [1646](../../src/management.rs#L1646) | receiver-type-required |
-| `guard_folder_entry` | `tools::protected_root_containing` | [1646](../../src/management.rs#L1646) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L199) |
+| `guard_folder_entry` | `tools::protected_root_containing` | [1646](../../src/management.rs#L1646) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L213) |
 | `guard_folder_entry` | `Err` | [1648](../../src/management.rs#L1648) | external-constructor-callback-or-unresolved |
 | `guard_folder_entry` | `ManagementError::InvalidPath` | [1648](../../src/management.rs#L1648) | external-constructor-callback-or-unresolved |
 | `guard_folder_entry` | `requested.to_owned` | [1648](../../src/management.rs#L1648) | receiver-type-required |
@@ -2128,8 +2128,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_session_create` | `AssetStore::new` | [2651](../../src/management.rs#L2651) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
 | `drive_session_create` | `payload.join` | [2651](../../src/management.rs#L2651), [2673](../../src/management.rs#L2673) | receiver-type-required |
 | `drive_session_create` | `asset_store.read_verified` | [2652](../../src/management.rs#L2652), [2653](../../src/management.rs#L2653) | receiver-type-required |
-| `drive_session_create` | `profile::ConfigSnapshot::decode` | [2654](../../src/management.rs#L2654) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L407) |
-| `drive_session_create` | `profile::InstructionSnapshot::decode` | [2655](../../src/management.rs#L2655) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L167) |
+| `drive_session_create` | `profile::ConfigSnapshot::decode` | [2654](../../src/management.rs#L2654) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L419) |
+| `drive_session_create` | `profile::InstructionSnapshot::decode` | [2655](../../src/management.rs#L2655) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L214) |
 | `drive_session_create` | `instruction.validate_against_config` | [2656](../../src/management.rs#L2656) | receiver-type-required |
 | `drive_session_create` | `execution_path_from_snapshot` | [2658](../../src/management.rs#L2658) | [endpoint::management::execution_path_from_snapshot](../../src/management.rs#L3186) |
 | `drive_session_create` | `folder_binding_matches_snapshot` | [2659](../../src/management.rs#L2659) | [endpoint::management::folder_binding_matches_snapshot](../../src/management.rs#L3192) |
@@ -3004,707 +3004,707 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_genesis_replaces_identity_and_needs_reader_three` | `serde_json::from_slice` | [4507](../../src/management.rs#L4507) | external-constructor-callback-or-unresolved |
 | `preset_genesis_replaces_identity_and_needs_reader_three` | `genesis.canonical_bytes().unwrap` | [4507](../../src/management.rs#L4507) | receiver-type-required |
 | `preset_genesis_replaces_identity_and_needs_reader_three` | `genesis.canonical_bytes` | [4507](../../src/management.rs#L4507) | receiver-type-required |
-| `preset_skills_resolve_against_package_names` | `profile::EffectiveInstructions::default` | [4573](../../src/management.rs#L4573) | external-constructor-callback-or-unresolved |
-| `preset_skills_resolve_against_package_names` | `super::SessionPresetEnvironment::new` | [4575](../../src/management.rs#L4575) | [endpoint::management::SessionPresetEnvironment::new](../../src/management.rs#L275) |
-| `preset_skills_resolve_against_package_names` | `session_preset` | [4577](../../src/management.rs#L4577) | [endpoint::management::session_preset](../../src/management.rs#L3281) |
-| `preset_skills_resolve_against_package_names` | `Some` | [4578](../../src/management.rs#L4578) | external-constructor-callback-or-unresolved |
-| `preset_skills_resolve_against_package_names` | `resolve(json!(["review"])).unwrap().expect` | [4584](../../src/management.rs#L4584) | receiver-type-required |
-| `preset_skills_resolve_against_package_names` | `resolve(json!(["review"])).unwrap` | [4584](../../src/management.rs#L4584) | receiver-type-required |
-| `preset_skills_resolve_against_package_names` | `resolve` | [4584](../../src/management.rs#L4584) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `tempfile::tempdir().unwrap` | [4612](../../src/management.rs#L4612) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `tempfile::tempdir` | [4612](../../src/management.rs#L4612) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ManagementStore::open_at(root.path(), timestamp).unwrap` | [4614](../../src/management.rs#L4614), [4667](../../src/management.rs#L4667) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ManagementStore::open_at` | [4614](../../src/management.rs#L4614), [4667](../../src/management.rs#L4667) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path` | [4614](../../src/management.rs#L4614), [4615](../../src/management.rs#L4615), [4618](../../src/management.rs#L4618), [4667](../../src/management.rs#L4667) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ThreadStore::open(root.path()).unwrap` | [4615](../../src/management.rs#L4615) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ThreadStore::open` | [4615](../../src/management.rs#L4615) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path().join("threads").join` | [4618](../../src/management.rs#L4618) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path().join` | [4618](../../src/management.rs#L4618) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::create_dir(&folder).unwrap` | [4619](../../src/management.rs#L4619) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::create_dir` | [4619](../../src/management.rs#L4619) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice(line).unwrap())             .collect` | [4621](../../src/management.rs#L4621) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [4621](../../src/management.rs#L4621) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter` | [4621](../../src/management.rs#L4621) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split` | [4621](../../src/management.rs#L4621) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `line.is_empty` | [4623](../../src/management.rs#L4623) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json::from_slice(line).unwrap` | [4624](../../src/management.rs#L4624) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json::from_slice` | [4624](../../src/management.rs#L4624) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut()             .unwrap()             .insert` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut()             .unwrap` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut` | [4626](../../src/management.rs#L4626) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"launch_bindings_digest".into` | [4632](../../src/management.rs#L4632) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `Vec::new` | [4633](../../src/management.rs#L4633) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ledger.extend` | [4635](../../src/management.rs#L4635) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json_canonicalizer::to_vec(&event).unwrap` | [4635](../../src/management.rs#L4635) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json_canonicalizer::to_vec` | [4635](../../src/management.rs#L4635) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ledger.push` | [4636](../../src/management.rs#L4636) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [4638](../../src/management.rs#L4638) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::write` | [4638](../../src/management.rs#L4638) | external-constructor-callback-or-unresolved |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `folder.join` | [4638](../../src/management.rs#L4638) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store             .begin_fork("failed-fork", source, dest, timestamp)             .unwrap` | [4639](../../src/management.rs#L4639) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store             .begin_fork` | [4639](../../src/management.rs#L4639) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"failed-fork-rpc".into` | [4644](../../src/management.rs#L4644) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"session.fork".into` | [4645](../../src/management.rs#L4645) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"0".repeat` | [4646](../../src/management.rs#L4646) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `timestamp.into` | [4648](../../src/management.rs#L4648) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `to_ijson(&ForkIntent {                 kind: "fork".into(),                 source: source.into(),                 dest: dest.into(),                 at_endpoint_seq: None,                 kernel_anchor: 8,                 rewrite_op_id: "failed-fork".into(),                 principal: "uid:501".into(),                 ephemeral: false,                 preset: None,             })             .unwrap` | [4650](../../src/management.rs#L4650) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `to_ijson` | [4650](../../src/management.rs#L4650) | [endpoint::management::to_ijson](../../src/management.rs#L3865) |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"fork".into` | [4651](../../src/management.rs#L4651) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `source.into` | [4652](../../src/management.rs#L4652) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `dest.into` | [4653](../../src/management.rs#L4653) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"failed-fork".into` | [4656](../../src/management.rs#L4656) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"uid:501".into` | [4657](../../src/management.rs#L4657) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.operation_path` | [4663](../../src/management.rs#L4663) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `publish_canonical(&path, &record).unwrap` | [4664](../../src/management.rs#L4664) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `publish_canonical` | [4664](../../src/management.rs#L4664) | [endpoint::management::publish_canonical](../../src/management.rs#L3828) |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store.recover_rewrites_for_startup().unwrap` | [4665](../../src/management.rs#L4665) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store.recover_rewrites_for_startup` | [4665](../../src/management.rs#L4665) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.recover().unwrap` | [4666](../../src/management.rs#L4666) | receiver-type-required |
-| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.recover` | [4666](../../src/management.rs#L4666) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `tempfile::tempdir().expect` | [4688](../../src/management.rs#L4688) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `tempfile::tempdir` | [4688](../../src/management.rs#L4688) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root.path().join` | [4689](../../src/management.rs#L4689) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root.path` | [4689](../../src/management.rs#L4689), [4703](../../src/management.rs#L4703), [4706](../../src/management.rs#L4706), [4729](../../src/management.rs#L4729), [4742](../../src/management.rs#L4742), [4752](../../src/management.rs#L4752), [4765](../../src/management.rs#L4765) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir(&project).expect` | [4690](../../src/management.rs#L4690) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir` | [4690](../../src/management.rs#L4690) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"ws-light".to_owned` | [4694](../../src/management.rs#L4694) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Light".to_owned` | [4695](../../src/management.rs#L4695) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `Vec::new` | [4696](../../src/management.rs#L4696), [4708](../../src/management.rs#L4708) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ConfigRepository::open(root.path()).expect` | [4703](../../src/management.rs#L4703) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ConfigRepository::open` | [4703](../../src/management.rs#L4703) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.publish_workspace(0, &config).expect` | [4704](../../src/management.rs#L4704) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.publish_workspace` | [4704](../../src/management.rs#L4704) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_at(root.path(), "2026-10-12T00:00:00.000Z")             .expect` | [4706](../../src/management.rs#L4706) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_at` | [4706](../../src/management.rs#L4706) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `recovering             .list_workspaces(&sessions)             .expect` | [4709](../../src/management.rs#L4709) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `recovering             .list_workspaces` | [4709](../../src/management.rs#L4709) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root             .path()             .join` | [4714](../../src/management.rs#L4714) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root             .path` | [4714](../../src/management.rs#L4714) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir_all(&trap).expect` | [4717](../../src/management.rs#L4717) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir_all` | [4717](../../src/management.rs#L4717) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o000)).expect` | [4718](../../src/management.rs#L4718) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions` | [4718](../../src/management.rs#L4718), [4771](../../src/management.rs#L4771) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::Permissions::from_mode` | [4718](../../src/management.rs#L4718), [4771](../../src/management.rs#L4771) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.workspace("ws-light").expect` | [4721](../../src/management.rs#L4721), [4736](../../src/management.rs#L4736), [4749](../../src/management.rs#L4749) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.workspace` | [4721](../../src/management.rs#L4721), [4736](../../src/management.rs#L4736), [4749](../../src/management.rs#L4749) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace_policy(                 "ws-light",                 current.revision,                 default_workspace_policy(project.to_str().unwrap()),             )             .expect` | [4722](../../src/management.rs#L4722) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace_policy` | [4722](../../src/management.rs#L4722) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `default_workspace_policy` | [4726](../../src/management.rs#L4726) | [endpoint::management::default_workspace_policy](../../src/management.rs#L3483) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `project.to_str().unwrap` | [4726](../../src/management.rs#L4726) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `project.to_str` | [4726](../../src/management.rs#L4726) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path()).expect` | [4729](../../src/management.rs#L4729), [4752](../../src/management.rs#L4752) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light` | [4729](../../src/management.rs#L4729), [4742](../../src/management.rs#L4742), [4752](../../src/management.rs#L4752) | [endpoint::management::ManagementStore::open_light](../../src/management.rs#L536) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light             .list_workspaces(&sessions)             .expect` | [4730](../../src/management.rs#L4730) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light             .list_workspaces` | [4730](../../src/management.rs#L4730) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Renamed".to_owned` | [4737](../../src/management.rs#L4737) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace(renamed.revision - 1, &renamed)             .expect` | [4739](../../src/management.rs#L4739) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace` | [4739](../../src/management.rs#L4739), [4753](../../src/management.rs#L4753) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect("light open")             .list_workspaces(&sessions)             .expect` | [4742](../../src/management.rs#L4742) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect("light open")             .list_workspaces` | [4742](../../src/management.rs#L4742) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect` | [4742](../../src/management.rs#L4742) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Third".to_owned` | [4750](../../src/management.rs#L4750) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace(third.revision - 1, &third)             .expect` | [4753](../../src/management.rs#L4753) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `stale_view             .list_workspaces(&sessions)             .expect` | [4756](../../src/management.rs#L4756) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `stale_view             .list_workspaces` | [4756](../../src/management.rs#L4756) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light.metadata_path` | [4762](../../src/management.rs#L4762) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `read_canonical(&metadata_path).expect` | [4763](../../src/management.rs#L4763) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `read_canonical` | [4763](../../src/management.rs#L4763) | [endpoint::management::read_canonical](../../src/management.rs#L3833) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::remove_file(&metadata_path).expect` | [4764](../../src/management.rs#L4764) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::remove_file` | [4764](../../src/management.rs#L4764) | external-constructor-callback-or-unresolved |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect("light open")             .read_metadata("ws-light")             .expect` | [4765](../../src/management.rs#L4765) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect("light open")             .read_metadata` | [4765](../../src/management.rs#L4765) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect` | [4765](../../src/management.rs#L4765) | receiver-type-required |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at` | [4765](../../src/management.rs#L4765) | [endpoint::management::ManagementStore::open_light_at](../../src/management.rs#L540) |
-| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o700)).expect` | [4771](../../src/management.rs#L4771) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `tempfile::tempdir().expect` | [4776](../../src/management.rs#L4776) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `tempfile::tempdir` | [4776](../../src/management.rs#L4776) | external-constructor-callback-or-unresolved |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `root.path().join` | [4777](../../src/management.rs#L4777) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `root.path` | [4777](../../src/management.rs#L4777), [4779](../../src/management.rs#L4779), [4808](../../src/management.rs#L4808) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::create_dir(&project).expect` | [4778](../../src/management.rs#L4778) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::create_dir` | [4778](../../src/management.rs#L4778) | external-constructor-callback-or-unresolved |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:00.000Z")             .expect` | [4779](../../src/management.rs#L4779) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at` | [4779](../../src/management.rs#L4779), [4808](../../src/management.rs#L4808) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `"workspace-offline".to_owned` | [4784](../../src/management.rs#L4784) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `"Offline".to_owned` | [4785](../../src/management.rs#L4785) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `Vec::new` | [4786](../../src/management.rs#L4786) | external-constructor-callback-or-unresolved |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "workspace-offline-create",                 request_sha256: &"0".repeat(64),                 operation: "workspace.create",                 action: "create",                 config: &config,                 started_at: "2026-09-01T00:00:00.000Z",                 created: Some(true),                 relocation: None,                 folder: None,             })             .expect` | [4793](../../src/management.rs#L4793) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `store             .begin_workspace_operation` | [4793](../../src/management.rs#L4793) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `"0".repeat` | [4796](../../src/management.rs#L4796) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `Some` | [4801](../../src/management.rs#L4801) | external-constructor-callback-or-unresolved |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::remove_dir(&project).expect` | [4806](../../src/management.rs#L4806) | receiver-type-required |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::remove_dir` | [4806](../../src/management.rs#L4806) | external-constructor-callback-or-unresolved |
-| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:01.000Z")             .expect` | [4808](../../src/management.rs#L4808) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `tempfile::tempdir().expect` | [4815](../../src/management.rs#L4815) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `tempfile::tempdir` | [4815](../../src/management.rs#L4815) | external-constructor-callback-or-unresolved |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:00.000Z")             .expect` | [4816](../../src/management.rs#L4816) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `ManagementStore::open_at` | [4816](../../src/management.rs#L4816), [4858](../../src/management.rs#L4858) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `root.path` | [4816](../../src/management.rs#L4816), [4858](../../src/management.rs#L4858) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `store.operation_payload_path` | [4819](../../src/management.rs#L4819) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all(&payload).expect` | [4820](../../src/management.rs#L4820) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all` | [4820](../../src/management.rs#L4820), [4850](../../src/management.rs#L4850) | external-constructor-callback-or-unresolved |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec(&candidate).expect` | [4827](../../src/management.rs#L4827) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec` | [4827](../../src/management.rs#L4827), [4851](../../src/management.rs#L4851) | external-constructor-callback-or-unresolved |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `bytes.push` | [4828](../../src/management.rs#L4828) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write(payload.join("session-settings-v1.json"), &candidate_bytes)             .expect` | [4831](../../src/management.rs#L4831) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write` | [4831](../../src/management.rs#L4831), [4853](../../src/management.rs#L4853) | external-constructor-callback-or-unresolved |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `payload.join` | [4831](../../src/management.rs#L4831) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `store.operation_path` | [4849](../../src/management.rs#L4849) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all(operation_path.parent().expect("prefix")).expect` | [4850](../../src/management.rs#L4850) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `operation_path.parent().expect` | [4850](../../src/management.rs#L4850) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `operation_path.parent` | [4850](../../src/management.rs#L4850) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec(&record).expect` | [4851](../../src/management.rs#L4851) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `record_bytes.push` | [4852](../../src/management.rs#L4852) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write(&operation_path, &record_bytes).expect` | [4853](../../src/management.rs#L4853) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err()             .map(&#124;error&#124; error.to_string())             .unwrap_or_default` | [4861](../../src/management.rs#L4861) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err()             .map` | [4861](../../src/management.rs#L4861) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err` | [4861](../../src/management.rs#L4861) | receiver-type-required |
-| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `error.to_string` | [4863](../../src/management.rs#L4863) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `tempfile::tempdir().expect` | [4883](../../src/management.rs#L4883) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `tempfile::tempdir` | [4883](../../src/management.rs#L4883) | external-constructor-callback-or-unresolved |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `root.path().join` | [4884](../../src/management.rs#L4884), [4887](../../src/management.rs#L4887), [4912](../../src/management.rs#L4912) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `root.path` | [4884](../../src/management.rs#L4884), [4887](../../src/management.rs#L4887), [4912](../../src/management.rs#L4912) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `std::fs::create_dir(&project).expect` | [4885](../../src/management.rs#L4885) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `std::fs::create_dir` | [4885](../../src/management.rs#L4885) | external-constructor-callback-or-unresolved |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4887](../../src/management.rs#L4887) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `ManagementStore::open_at` | [4887](../../src/management.rs#L4887) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store             .create_workspace(                 "seeded-create",                 &"2".repeat(64),                 &project.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4889](../../src/management.rs#L4889) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store             .create_workspace` | [4889](../../src/management.rs#L4889) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `"2".repeat` | [4892](../../src/management.rs#L4892) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `project.to_string_lossy` | [4893](../../src/management.rs#L4893) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4898](../../src/management.rs#L4898) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs().expect` | [4898](../../src/management.rs#L4898) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs` | [4898](../../src/management.rs#L4898) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `config.policy.expect` | [4899](../../src/management.rs#L4899) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect("repository")             .resolve(&view.workspace_id)             .expect` | [4912](../../src/management.rs#L4912) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect("repository")             .resolve` | [4912](../../src/management.rs#L4912) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect` | [4912](../../src/management.rs#L4912) | receiver-type-required |
-| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open` | [4912](../../src/management.rs#L4912) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir().expect` | [4928](../../src/management.rs#L4928) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir` | [4928](../../src/management.rs#L4928) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root.path().join` | [4929](../../src/management.rs#L4929), [4932](../../src/management.rs#L4932), [4958](../../src/management.rs#L4958), [4972](../../src/management.rs#L4972) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root.path` | [4929](../../src/management.rs#L4929), [4932](../../src/management.rs#L4932), [4958](../../src/management.rs#L4958), [4972](../../src/management.rs#L4972) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::create_dir(&project).expect` | [4930](../../src/management.rs#L4930) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::create_dir` | [4930](../../src/management.rs#L4930) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4932](../../src/management.rs#L4932) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at` | [4932](../../src/management.rs#L4932), [4958](../../src/management.rs#L4958), [4972](../../src/management.rs#L4972) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `store             .create_workspace(                 "legacy-create",                 &"5".repeat(64),                 &project.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4934](../../src/management.rs#L4934) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `store             .create_workspace` | [4934](../../src/management.rs#L4934) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `"5".repeat` | [4937](../../src/management.rs#L4937) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `project.to_string_lossy` | [4938](../../src/management.rs#L4938) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join("workspaces")             .join(&view.workspace_id)             .join` | [4943](../../src/management.rs#L4943) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join("workspaces")             .join` | [4943](../../src/management.rs#L4943) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join` | [4943](../../src/management.rs#L4943) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join` | [4943](../../src/management.rs#L4943) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path` | [4943](../../src/management.rs#L4943) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json::from_slice(&std::fs::read(&path).expect("document")).expect` | [4950](../../src/management.rs#L4950) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json::from_slice` | [4950](../../src/management.rs#L4950) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::read(&path).expect` | [4950](../../src/management.rs#L4950) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::read` | [4950](../../src/management.rs#L4950) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut().expect("object").remove` | [4951](../../src/management.rs#L4951) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut().expect` | [4951](../../src/management.rs#L4951) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut` | [4951](../../src/management.rs#L4951) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json_canonicalizer::to_vec(&document).expect` | [4952](../../src/management.rs#L4952) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json_canonicalizer::to_vec` | [4952](../../src/management.rs#L4952) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `bytes.push` | [4953](../../src/management.rs#L4953) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::write(&path, bytes).expect` | [4954](../../src/management.rs#L4954) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::write` | [4954](../../src/management.rs#L4954) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `drop` | [4955](../../src/management.rs#L4955), [4968](../../src/management.rs#L4968) | external-constructor-callback-or-unresolved |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:01.000Z")                 .expect` | [4958](../../src/management.rs#L4958) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4960](../../src/management.rs#L4960) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs().expect` | [4960](../../src/management.rs#L4960) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs` | [4960](../../src/management.rs#L4960) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `config.policy.expect` | [4961](../../src/management.rs#L4961) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:02.000Z")                 .expect` | [4972](../../src/management.rs#L4972) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4974](../../src/management.rs#L4974) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs().expect` | [4974](../../src/management.rs#L4974) | receiver-type-required |
-| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs` | [4974](../../src/management.rs#L4974) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `tempfile::tempdir().expect` | [4980](../../src/management.rs#L4980) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `tempfile::tempdir` | [4980](../../src/management.rs#L4980) | external-constructor-callback-or-unresolved |
-| `relocation_moves_writable_roots_with_their_folder` | `root.path().join` | [4981](../../src/management.rs#L4981), [4984](../../src/management.rs#L4984), [4994](../../src/management.rs#L4994) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `root.path` | [4981](../../src/management.rs#L4981), [4984](../../src/management.rs#L4984), [4994](../../src/management.rs#L4994) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `std::fs::create_dir(&before).expect` | [4982](../../src/management.rs#L4982) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `std::fs::create_dir` | [4982](../../src/management.rs#L4982) | external-constructor-callback-or-unresolved |
-| `relocation_moves_writable_roots_with_their_folder` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4984](../../src/management.rs#L4984) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `ManagementStore::open_at` | [4984](../../src/management.rs#L4984) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `relocation_moves_writable_roots_with_their_folder` | `store             .create_workspace(                 "relocate-create",                 &"3".repeat(64),                 &before.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4986](../../src/management.rs#L4986) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `store             .create_workspace` | [4986](../../src/management.rs#L4986) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `"3".repeat` | [4989](../../src/management.rs#L4989) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `before.to_string_lossy` | [4990](../../src/management.rs#L4990) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `std::fs::rename(&before, &after).expect` | [4995](../../src/management.rs#L4995) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `std::fs::rename` | [4995](../../src/management.rs#L4995) | external-constructor-callback-or-unresolved |
-| `relocation_moves_writable_roots_with_their_folder` | `store             .relocate_workspace(                 "relocate-move",                 &"4".repeat(64),                 &view.workspace_id,                 &view.path,                 &after.to_string_lossy(),                 "2026-09-14T00:00:01.000Z",             )             .expect` | [4996](../../src/management.rs#L4996) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `store             .relocate_workspace` | [4996](../../src/management.rs#L4996) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `"4".repeat` | [4999](../../src/management.rs#L4999) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `after.to_string_lossy` | [5002](../../src/management.rs#L5002) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs().expect("configs")[&view.workspace_id].clone` | [5006](../../src/management.rs#L5006) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs().expect` | [5006](../../src/management.rs#L5006) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs` | [5006](../../src/management.rs#L5006) | receiver-type-required |
-| `relocation_moves_writable_roots_with_their_folder` | `config.policy.expect` | [5007](../../src/management.rs#L5007) | receiver-type-required |
-| `folder_store` | `tempfile::tempdir().expect` | [5016](../../src/management.rs#L5016) | receiver-type-required |
-| `folder_store` | `tempfile::tempdir` | [5016](../../src/management.rs#L5016) | external-constructor-callback-or-unresolved |
-| `folder_store` | `root.path().join` | [5017](../../src/management.rs#L5017), [5020](../../src/management.rs#L5020) | receiver-type-required |
-| `folder_store` | `root.path` | [5017](../../src/management.rs#L5017), [5020](../../src/management.rs#L5020) | receiver-type-required |
-| `folder_store` | `std::fs::create_dir(&project).expect` | [5018](../../src/management.rs#L5018) | receiver-type-required |
-| `folder_store` | `std::fs::create_dir` | [5018](../../src/management.rs#L5018) | external-constructor-callback-or-unresolved |
-| `folder_store` | `ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:00:00.000Z")                 .expect` | [5020](../../src/management.rs#L5020) | receiver-type-required |
-| `folder_store` | `ManagementStore::open_at` | [5020](../../src/management.rs#L5020) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `folder_store` | `store             .create_workspace(                 &format!("{name}-create"),                 &"5".repeat(64),                 &project.to_string_lossy(),                 "2026-10-08T00:00:00.000Z",             )             .expect` | [5022](../../src/management.rs#L5022) | receiver-type-required |
-| `folder_store` | `store             .create_workspace` | [5022](../../src/management.rs#L5022) | receiver-type-required |
-| `folder_store` | `"5".repeat` | [5025](../../src/management.rs#L5025) | receiver-type-required |
-| `folder_store` | `project.to_string_lossy` | [5026](../../src/management.rs#L5026) | receiver-type-required |
-| `sibling` | `root.path().join` | [5034](../../src/management.rs#L5034) | receiver-type-required |
-| `sibling` | `root.path` | [5034](../../src/management.rs#L5034) | receiver-type-required |
-| `sibling` | `std::fs::create_dir_all(&path).expect` | [5035](../../src/management.rs#L5035) | receiver-type-required |
-| `sibling` | `std::fs::create_dir_all` | [5035](../../src/management.rs#L5035) | external-constructor-callback-or-unresolved |
-| `sibling` | `path.canonicalize()             .expect("canonical")             .to_string_lossy()             .into_owned` | [5036](../../src/management.rs#L5036) | receiver-type-required |
-| `sibling` | `path.canonicalize()             .expect("canonical")             .to_string_lossy` | [5036](../../src/management.rs#L5036) | receiver-type-required |
-| `sibling` | `path.canonicalize()             .expect` | [5036](../../src/management.rs#L5036) | receiver-type-required |
-| `sibling` | `path.canonicalize` | [5036](../../src/management.rs#L5036) | receiver-type-required |
-| `write_session` | `"test".to_owned` | [5046](../../src/management.rs#L5046) | receiver-type-required |
-| `write_session` | `"session-endpoint".to_owned` | [5047](../../src/management.rs#L5047) | receiver-type-required |
-| `write_session` | `session_id.to_owned` | [5048](../../src/management.rs#L5048), [5050](../../src/management.rs#L5050) | receiver-type-required |
-| `write_session` | `"session.create".to_owned` | [5049](../../src/management.rs#L5049) | receiver-type-required |
-| `write_session` | `create_genesis(             session_id,             workspace_id,             binding.unwrap_or("folder-0001"),             &[binding.unwrap_or("folder-0001").to_owned()],             schema::DEFAULT_ENVIRONMENT,             &format!("sha256-{}", "a".repeat(64)),             &format!("sha256-{}", "b".repeat(64)),             None,             None,             "2026-10-08T00:00:00.000Z",             &origin,         )         .expect` | [5052](../../src/management.rs#L5052) | receiver-type-required |
-| `write_session` | `create_genesis` | [5052](../../src/management.rs#L5052) | [endpoint::management::create_genesis](../../src/management.rs#L3318) |
-| `write_session` | `binding.unwrap_or` | [5055](../../src/management.rs#L5055), [5056](../../src/management.rs#L5056) | receiver-type-required |
-| `write_session` | `binding.unwrap_or("folder-0001").to_owned` | [5056](../../src/management.rs#L5056) | receiver-type-required |
-| `write_session` | `serde_json::from_slice(&genesis.canonical_bytes().expect("bytes")).expect` | [5067](../../src/management.rs#L5067) | receiver-type-required |
-| `write_session` | `serde_json::from_slice` | [5067](../../src/management.rs#L5067) | external-constructor-callback-or-unresolved |
-| `write_session` | `genesis.canonical_bytes().expect` | [5067](../../src/management.rs#L5067) | receiver-type-required |
-| `write_session` | `genesis.canonical_bytes` | [5067](../../src/management.rs#L5067) | receiver-type-required |
-| `write_session` | `binding.is_none` | [5068](../../src/management.rs#L5068) | receiver-type-required |
-| `write_session` | `value.as_object_mut().expect` | [5070](../../src/management.rs#L5070) | receiver-type-required |
-| `write_session` | `value.as_object_mut` | [5070](../../src/management.rs#L5070) | receiver-type-required |
-| `write_session` | `object.remove` | [5072](../../src/management.rs#L5072) | receiver-type-required |
-| `write_session` | `schema::Event::from_value(             schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect("ijson"),         )         .expect` | [5075](../../src/management.rs#L5075) | receiver-type-required |
-| `write_session` | `schema::Event::from_value` | [5075](../../src/management.rs#L5075) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
-| `write_session` | `schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect` | [5076](../../src/management.rs#L5076) | receiver-type-required |
-| `write_session` | `schema::IJsonValue::parse` | [5076](../../src/management.rs#L5076) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `write_session` | `serde_json::to_vec(&value).expect` | [5076](../../src/management.rs#L5076) | receiver-type-required |
-| `write_session` | `serde_json::to_vec` | [5076](../../src/management.rs#L5076) | external-constructor-callback-or-unresolved |
-| `write_session` | `root.join("threads").join` | [5079](../../src/management.rs#L5079) | receiver-type-required |
-| `write_session` | `root.join` | [5079](../../src/management.rs#L5079) | receiver-type-required |
-| `write_session` | `std::fs::create_dir_all(&folder).expect` | [5080](../../src/management.rs#L5080) | receiver-type-required |
-| `write_session` | `std::fs::create_dir_all` | [5080](../../src/management.rs#L5080) | external-constructor-callback-or-unresolved |
-| `write_session` | `std::fs::write(             folder.join("main.jsonl"),             canonical_event_line(&event).expect("line"),         )         .expect` | [5081](../../src/management.rs#L5081) | receiver-type-required |
-| `write_session` | `std::fs::write` | [5081](../../src/management.rs#L5081) | external-constructor-callback-or-unresolved |
-| `write_session` | `folder.join` | [5082](../../src/management.rs#L5082) | receiver-type-required |
-| `write_session` | `canonical_event_line(&event).expect` | [5083](../../src/management.rs#L5083) | receiver-type-required |
-| `write_session` | `canonical_event_line` | [5083](../../src/management.rs#L5083) | [endpoint::management::canonical_event_line](../../src/management.rs#L3363) |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `folder_store` | [5090](../../src/management.rs#L5090) | [endpoint::management::tests::folder_store](../../src/management.rs#L5015) |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `sibling` | [5091](../../src/management.rs#L5091) | [endpoint::management::tests::sibling](../../src/management.rs#L5033) |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder(                 "folders-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:01.000Z",             )             .expect` | [5092](../../src/management.rs#L5092) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder` | [5092](../../src/management.rs#L5092), [5125](../../src/management.rs#L5125) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `"6".repeat` | [5095](../../src/management.rs#L5095), [5128](../../src/management.rs#L5128) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs().unwrap()[&view.workspace_id].clone` | [5118](../../src/management.rs#L5118), [5180](../../src/management.rs#L5180) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs().unwrap` | [5118](../../src/management.rs#L5118), [5180](../../src/management.rs#L5180) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs` | [5118](../../src/management.rs#L5118), [5180](../../src/management.rs#L5180) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `expected_roots.sort` | [5120](../../src/management.rs#L5120) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder(                 "folders-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:09.000Z",             )             .expect` | [5125](../../src/management.rs#L5125) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .remove_workspace_folder(                 "folders-remove",                 &"a".repeat(64),                 &view.workspace_id,                 &view.path,                 "2026-10-08T00:00:03.000Z",             )             .expect` | [5167](../../src/management.rs#L5167) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .remove_workspace_folder` | [5167](../../src/management.rs#L5167) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `"a".repeat` | [5170](../../src/management.rs#L5170) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `drop` | [5194](../../src/management.rs#L5194) | external-constructor-callback-or-unresolved |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:01:00.000Z")                 .expect` | [5196](../../src/management.rs#L5196) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `ManagementStore::open_at` | [5196](../../src/management.rs#L5196) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `root.path().join` | [5196](../../src/management.rs#L5196) | receiver-type-required |
-| `folders_are_added_listed_and_removed_with_their_writable_roots` | `root.path` | [5196](../../src/management.rs#L5196) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `folder_store` | [5206](../../src/management.rs#L5206) | [endpoint::management::tests::folder_store](../../src/management.rs#L5015) |
-| `a_folder_bound_to_a_session_is_not_removed` | `sibling` | [5207](../../src/management.rs#L5207) | [endpoint::management::tests::sibling](../../src/management.rs#L5033) |
-| `a_folder_bound_to_a_session_is_not_removed` | `store             .add_workspace_folder(                 "bound-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:01.000Z",             )             .expect` | [5208](../../src/management.rs#L5208) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `store             .add_workspace_folder` | [5208](../../src/management.rs#L5208) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `"6".repeat` | [5211](../../src/management.rs#L5211) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `write_session` | [5218](../../src/management.rs#L5218) | [endpoint::management::tests::write_session](../../src/management.rs#L5044) |
-| `a_folder_bound_to_a_session_is_not_removed` | `root.path().join` | [5219](../../src/management.rs#L5219) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `root.path` | [5219](../../src/management.rs#L5219) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `Some` | [5222](../../src/management.rs#L5222) | external-constructor-callback-or-unresolved |
-| `a_folder_bound_to_a_session_is_not_removed` | `store.remove_workspace_folder` | [5224](../../src/management.rs#L5224) | receiver-type-required |
-| `a_folder_bound_to_a_session_is_not_removed` | `"a".repeat` | [5226](../../src/management.rs#L5226) | receiver-type-required |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `folder_store` | [5252](../../src/management.rs#L5252) | [endpoint::management::tests::folder_store](../../src/management.rs#L5015) |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `sibling` | [5253](../../src/management.rs#L5253) | [endpoint::management::tests::sibling](../../src/management.rs#L5033) |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `write_session` | [5255](../../src/management.rs#L5255) | [endpoint::management::tests::write_session](../../src/management.rs#L5044) |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `root.path().join` | [5256](../../src/management.rs#L5256) | receiver-type-required |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `root.path` | [5256](../../src/management.rs#L5256) | receiver-type-required |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `store.add_workspace_folder` | [5261](../../src/management.rs#L5261) | receiver-type-required |
-| `a_legacy_unbound_session_blocks_a_second_folder` | `"6".repeat` | [5263](../../src/management.rs#L5263) | receiver-type-required |
-| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `"legacy".to_owned` | [5288](../../src/management.rs#L5288), [5289](../../src/management.rs#L5289) | receiver-type-required |
-| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `Vec::new` | [5291](../../src/management.rs#L5291) | external-constructor-callback-or-unresolved |
-| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `super::with_added_folder` | [5294](../../src/management.rs#L5294) | [endpoint::management::with_added_folder](../../src/management.rs#L3550) |
-| `completed_workspace_operation_never_reopens_its_old_path` | `tempfile::tempdir().expect` | [5317](../../src/management.rs#L5317) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `tempfile::tempdir` | [5317](../../src/management.rs#L5317) | external-constructor-callback-or-unresolved |
-| `completed_workspace_operation_never_reopens_its_old_path` | `root.path().join` | [5318](../../src/management.rs#L5318), [5321](../../src/management.rs#L5321), [5333](../../src/management.rs#L5333) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `root.path` | [5318](../../src/management.rs#L5318), [5321](../../src/management.rs#L5321), [5333](../../src/management.rs#L5333) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::create_dir(&project).expect` | [5319](../../src/management.rs#L5319) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::create_dir` | [5319](../../src/management.rs#L5319) | external-constructor-callback-or-unresolved |
-| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:00.000Z")                 .expect` | [5321](../../src/management.rs#L5321) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at` | [5321](../../src/management.rs#L5321), [5333](../../src/management.rs#L5333) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `completed_workspace_operation_never_reopens_its_old_path` | `store             .create_workspace(                 "completed-workspace-create",                 &"1".repeat(64),                 &project.to_string_lossy(),                 "2026-09-01T00:00:00.000Z",             )             .expect` | [5323](../../src/management.rs#L5323) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `store             .create_workspace` | [5323](../../src/management.rs#L5323) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `"1".repeat` | [5326](../../src/management.rs#L5326) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `project.to_string_lossy` | [5327](../../src/management.rs#L5327) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::remove_dir(&project).expect` | [5331](../../src/management.rs#L5331) | receiver-type-required |
-| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::remove_dir` | [5331](../../src/management.rs#L5331) | external-constructor-callback-or-unresolved |
-| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:01.000Z")             .expect` | [5333](../../src/management.rs#L5333) | receiver-type-required |
-| `create_in` | `store             .create_session(super::SessionCreateOperation {                 environment: None,                 rpc_id,                 request_sha256: &format!("{:0>64}", rpc_id.len()),                 requested_session_id: None,                 workspace_id: None,                 cwd: Some(cwd),                 identity_profile: None,                 preset: None,                 preset_mcp: None,                 preset_models: None,                 user_agent_dir: agents,                 started_at: "2026-10-15T00:00:00.000Z",                 principal: "test",             })             .expect` | [5338](../../src/management.rs#L5338) | receiver-type-required |
-| `create_in` | `store             .create_session` | [5338](../../src/management.rs#L5338) | receiver-type-required |
-| `create_in` | `Some` | [5345](../../src/management.rs#L5345) | external-constructor-callback-or-unresolved |
-| `session_create_registers_an_unknown_cwd_once` | `tempfile::tempdir().expect` | [5359](../../src/management.rs#L5359) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `tempfile::tempdir` | [5359](../../src/management.rs#L5359) | external-constructor-callback-or-unresolved |
-| `session_create_registers_an_unknown_cwd_once` | `root.path().join` | [5360](../../src/management.rs#L5360), [5361](../../src/management.rs#L5361), [5362](../../src/management.rs#L5362), [5363](../../src/management.rs#L5363) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `root.path` | [5360](../../src/management.rs#L5360), [5361](../../src/management.rs#L5361), [5362](../../src/management.rs#L5362), [5363](../../src/management.rs#L5363) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `root.path().join("one").join` | [5362](../../src/management.rs#L5362) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `root.path().join("two").join` | [5363](../../src/management.rs#L5363) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all(&alpha).expect` | [5364](../../src/management.rs#L5364) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all` | [5364](../../src/management.rs#L5364), [5365](../../src/management.rs#L5365) | external-constructor-callback-or-unresolved |
-| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all(&beta).expect` | [5365](../../src/management.rs#L5365) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5366](../../src/management.rs#L5366) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `ManagementStore::open_at` | [5366](../../src/management.rs#L5366) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `session_create_registers_an_unknown_cwd_once` | `alpha.to_string_lossy` | [5367](../../src/management.rs#L5367) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `create_in` | [5369](../../src/management.rs#L5369), [5395](../../src/management.rs#L5395), [5400](../../src/management.rs#L5400) | [endpoint::management::tests::create_in](../../src/management.rs#L5337) |
-| `session_create_registers_an_unknown_cwd_once` | `store.workspace_configs().expect` | [5370](../../src/management.rs#L5370) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store.workspace_configs` | [5370](../../src/management.rs#L5370) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `configs.values().next().expect("registered").clone` | [5372](../../src/management.rs#L5372) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `configs.values().next().expect` | [5372](../../src/management.rs#L5372) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `configs.values().next` | [5372](../../src/management.rs#L5372) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `configs.values` | [5372](../../src/management.rs#L5372) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `alpha.canonicalize().expect` | [5373](../../src/management.rs#L5373) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `alpha.canonicalize` | [5373](../../src/management.rs#L5373) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis(storage.join("threads").join(&first).join("main.jsonl"))             .expect("read genesis")             .expect` | [5385](../../src/management.rs#L5385) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis(storage.join("threads").join(&first).join("main.jsonl"))             .expect` | [5385](../../src/management.rs#L5385) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis` | [5385](../../src/management.rs#L5385) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `session_create_registers_an_unknown_cwd_once` | `storage.join("threads").join(&first).join` | [5385](../../src/management.rs#L5385) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `storage.join("threads").join` | [5385](../../src/management.rs#L5385) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `storage.join` | [5385](../../src/management.rs#L5385) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `serde_json::to_value(genesis.raw()).expect` | [5389](../../src/management.rs#L5389) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `serde_json::to_value` | [5389](../../src/management.rs#L5389) | external-constructor-callback-or-unresolved |
-| `session_create_registers_an_unknown_cwd_once` | `genesis.raw` | [5389](../../src/management.rs#L5389) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `beta.to_string_lossy` | [5400](../../src/management.rs#L5400) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values()             .map(&#124;config&#124; config.name.clone())             .collect::<Vec<_>>` | [5401](../../src/management.rs#L5401) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values()             .map` | [5401](../../src/management.rs#L5401) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values` | [5401](../../src/management.rs#L5401) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect` | [5401](../../src/management.rs#L5401) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs` | [5401](../../src/management.rs#L5401) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `config.name.clone` | [5405](../../src/management.rs#L5405) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `names.sort` | [5407](../../src/management.rs#L5407) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect("endpoint")             .list_sessions(&std::collections::HashSet::new())             .expect` | [5410](../../src/management.rs#L5410) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect("endpoint")             .list_sessions` | [5410](../../src/management.rs#L5410) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect` | [5410](../../src/management.rs#L5410) | receiver-type-required |
-| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open` | [5410](../../src/management.rs#L5410) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L263) |
-| `session_create_registers_an_unknown_cwd_once` | `std::collections::HashSet::new` | [5412](../../src/management.rs#L5412) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `tempfile::tempdir().expect` | [5426](../../src/management.rs#L5426) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `tempfile::tempdir` | [5426](../../src/management.rs#L5426) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `root.path().join` | [5427](../../src/management.rs#L5427), [5428](../../src/management.rs#L5428), [5429](../../src/management.rs#L5429) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `root.path` | [5427](../../src/management.rs#L5427), [5428](../../src/management.rs#L5428), [5429](../../src/management.rs#L5429) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all(&project).expect` | [5430](../../src/management.rs#L5430) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all` | [5430](../../src/management.rs#L5430), [5443](../../src/management.rs#L5443) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5431](../../src/management.rs#L5431) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `ManagementStore::open_at` | [5431](../../src/management.rs#L5431) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store             .create_workspace(                 "skills-workspace",                 &"7".repeat(64),                 &project.to_string_lossy(),                 "2026-10-15T00:00:00.000Z",             )             .expect` | [5432](../../src/management.rs#L5432) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store             .create_workspace` | [5432](../../src/management.rs#L5432) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `"7".repeat` | [5435](../../src/management.rs#L5435) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `project.to_string_lossy` | [5436](../../src/management.rs#L5436) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `dir.join("skills").join` | [5442](../../src/management.rs#L5442) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `dir.join` | [5442](../../src/management.rs#L5442) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all(&skill).expect` | [5443](../../src/management.rs#L5443) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::write(skill.join("SKILL.md"), manifest).expect` | [5444](../../src/management.rs#L5444) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::write` | [5444](../../src/management.rs#L5444) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `skill.join` | [5444](../../src/management.rs#L5444) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store.create_session` | [5448](../../src/management.rs#L5448) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `"8".repeat` | [5451](../../src/management.rs#L5451) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `Some` | [5453](../../src/management.rs#L5453), [5456](../../src/management.rs#L5456) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `write_skill` | [5466](../../src/management.rs#L5466), [5474](../../src/management.rs#L5474) | external-constructor-callback-or-unresolved |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `agents.join("workspaces").join` | [5466](../../src/management.rs#L5466) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `agents.join` | [5466](../../src/management.rs#L5466) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `storage.join("workspaces").join` | [5474](../../src/management.rs#L5474) | receiver-type-required |
-| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `storage.join` | [5474](../../src/management.rs#L5474) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `tempfile::tempdir().expect` | [5483](../../src/management.rs#L5483) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `tempfile::tempdir` | [5483](../../src/management.rs#L5483) | external-constructor-callback-or-unresolved |
-| `session_folders_are_recorded_at_create_and_never_widened` | `root.path().join` | [5484](../../src/management.rs#L5484), [5485](../../src/management.rs#L5485), [5486](../../src/management.rs#L5486), [5487](../../src/management.rs#L5487) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `root.path` | [5484](../../src/management.rs#L5484), [5485](../../src/management.rs#L5485), [5486](../../src/management.rs#L5486), [5487](../../src/management.rs#L5487) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all(&first).expect` | [5488](../../src/management.rs#L5488) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all` | [5488](../../src/management.rs#L5488), [5489](../../src/management.rs#L5489) | external-constructor-callback-or-unresolved |
-| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all(&second).expect` | [5489](../../src/management.rs#L5489) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5490](../../src/management.rs#L5490) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `ManagementStore::open_at` | [5490](../../src/management.rs#L5490) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `session_folders_are_recorded_at_create_and_never_widened` | `first.to_string_lossy` | [5491](../../src/management.rs#L5491) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `create_in` | [5492](../../src/management.rs#L5492), [5508](../../src/management.rs#L5508) | [endpoint::management::tests::create_in](../../src/management.rs#L5337) |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next()             .expect` | [5493](../../src/management.rs#L5493) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next` | [5493](../../src/management.rs#L5493) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys` | [5493](../../src/management.rs#L5493) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect` | [5493](../../src/management.rs#L5493) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs` | [5493](../../src/management.rs#L5493) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .add_workspace_folder(                 "add-second",                 &"9".repeat(64),                 &workspace_id,                 &second.to_string_lossy(),                 "2026-10-15T00:00:01.000Z",             )             .expect` | [5499](../../src/management.rs#L5499) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `store             .add_workspace_folder` | [5499](../../src/management.rs#L5499) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `"9".repeat` | [5502](../../src/management.rs#L5502) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `second.to_string_lossy` | [5504](../../src/management.rs#L5504) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `ConfigRepository::open(&storage).expect` | [5509](../../src/management.rs#L5509) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `ConfigRepository::open` | [5509](../../src/management.rs#L5509) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate(&storage, session)                 .and_then(&#124;scope&#124; scope.config(&repository))                 .expect` | [5511](../../src/management.rs#L5511) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate(&storage, session)                 .and_then` | [5511](../../src/management.rs#L5511) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate` | [5511](../../src/management.rs#L5511) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L32) |
-| `session_folders_are_recorded_at_create_and_never_widened` | `scope.config` | [5512](../../src/management.rs#L5512) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect("canonical")                 .to_string_lossy()                 .into_owned` | [5518](../../src/management.rs#L5518) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect("canonical")                 .to_string_lossy` | [5518](../../src/management.rs#L5518) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect` | [5518](../../src/management.rs#L5518) | receiver-type-required |
-| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize` | [5518](../../src/management.rs#L5518) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `tempfile::tempdir().expect` | [5541](../../src/management.rs#L5541) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `tempfile::tempdir` | [5541](../../src/management.rs#L5541) | external-constructor-callback-or-unresolved |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `root.path().join` | [5543](../../src/management.rs#L5543), [5545](../../src/management.rs#L5545) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `root.path` | [5543](../../src/management.rs#L5543), [5545](../../src/management.rs#L5545) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `home.join` | [5544](../../src/management.rs#L5544), [5546](../../src/management.rs#L5546) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5547](../../src/management.rs#L5547) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `ManagementStore::open_at` | [5547](../../src/management.rs#L5547) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::write(&file, b"notes").expect` | [5548](../../src/management.rs#L5548) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::write` | [5548](../../src/management.rs#L5548) | external-constructor-callback-or-unresolved |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `"/".to_owned` | [5550](../../src/management.rs#L5550) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.to_string_lossy().into_owned` | [5551](../../src/management.rs#L5551) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.to_string_lossy` | [5551](../../src/management.rs#L5551) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join("threads").to_string_lossy().into_owned` | [5552](../../src/management.rs#L5552) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join("threads").to_string_lossy` | [5552](../../src/management.rs#L5552) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join` | [5552](../../src/management.rs#L5552), [5599](../../src/management.rs#L5599) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `file.to_string_lossy().into_owned` | [5553](../../src/management.rs#L5553) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `file.to_string_lossy` | [5553](../../src/management.rs#L5553) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `rejected.iter().enumerate` | [5555](../../src/management.rs#L5555) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `rejected.iter` | [5555](../../src/management.rs#L5555) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store.create_session` | [5568](../../src/management.rs#L5568) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `"2".repeat` | [5571](../../src/management.rs#L5571) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `Some` | [5574](../../src/management.rs#L5574) | external-constructor-callback-or-unresolved |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `created.err` | [5583](../../src/management.rs#L5583) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `home.to_string_lossy` | [5591](../../src/management.rs#L5591) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `create_in` | [5592](../../src/management.rs#L5592) | [endpoint::management::tests::create_in](../../src/management.rs#L5337) |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next()             .expect` | [5593](../../src/management.rs#L5593) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next` | [5593](../../src/management.rs#L5593) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys` | [5593](../../src/management.rs#L5593) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect` | [5593](../../src/management.rs#L5593) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs` | [5593](../../src/management.rs#L5593) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::create_dir_all(&inside).expect` | [5600](../../src/management.rs#L5600) | receiver-type-required |
-| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::create_dir_all` | [5600](../../src/management.rs#L5600) | external-constructor-callback-or-unresolved |
-| `fixture` | `root.join` | [5641](../../src/management.rs#L5641) | receiver-type-required |
-| `fixture` | `fs::create_dir(&project).expect` | [5642](../../src/management.rs#L5642) | receiver-type-required |
-| `fixture` | `fs::create_dir` | [5642](../../src/management.rs#L5642) | external-constructor-callback-or-unresolved |
-| `fixture` | `project.to_string_lossy().into_owned` | [5643](../../src/management.rs#L5643) | receiver-type-required |
-| `fixture` | `project.to_string_lossy` | [5643](../../src/management.rs#L5643) | receiver-type-required |
-| `fixture` | `ConfigRepository::open(root).expect` | [5644](../../src/management.rs#L5644) | receiver-type-required |
-| `fixture` | `ConfigRepository::open` | [5644](../../src/management.rs#L5644) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `fixture` | `repository             .publish_workspace(                 0,                 &WorkspaceConfig {                     format: 1,                     revision: 1,                     id: WORKSPACE.to_owned(),                     name: "K1".to_owned(),                     cwd: Vec::new(),                     folders: vec![WorkspaceFolder {                         id: "folder-0001".to_owned(),                         path: folder.clone(),                     }],                     policy: Some(default_workspace_policy(&folder)),                 },             )             .expect` | [5645](../../src/management.rs#L5645) | receiver-type-required |
-| `fixture` | `repository             .publish_workspace` | [5645](../../src/management.rs#L5645) | receiver-type-required |
-| `fixture` | `WORKSPACE.to_owned` | [5651](../../src/management.rs#L5651) | receiver-type-required |
-| `fixture` | `"K1".to_owned` | [5652](../../src/management.rs#L5652) | receiver-type-required |
-| `fixture` | `Vec::new` | [5653](../../src/management.rs#L5653) | external-constructor-callback-or-unresolved |
-| `fixture` | `Some` | [5658](../../src/management.rs#L5658) | external-constructor-callback-or-unresolved |
-| `fixture` | `default_workspace_policy` | [5658](../../src/management.rs#L5658) | external-constructor-callback-or-unresolved |
-| `policy_with` | `default_workspace_policy` | [5666](../../src/management.rs#L5666) | external-constructor-callback-or-unresolved |
-| `policy_with` | `project.to_string_lossy` | [5666](../../src/management.rs#L5666) | receiver-type-required |
-| `policy_with` | `policy.allowed_tools.push` | [5667](../../src/management.rs#L5667) | receiver-type-required |
-| `policy_with` | `extra.to_owned` | [5667](../../src/management.rs#L5667) | receiver-type-required |
-| `set_policy` | `repository.workspace(WORKSPACE).expect` | [5672](../../src/management.rs#L5672) | receiver-type-required |
-| `set_policy` | `repository.workspace` | [5672](../../src/management.rs#L5672) | receiver-type-required |
-| `set_policy` | `repository             .publish_workspace_policy(WORKSPACE, revision, policy_with(project, extra))             .expect` | [5673](../../src/management.rs#L5673) | receiver-type-required |
-| `set_policy` | `repository             .publish_workspace_policy` | [5673](../../src/management.rs#L5673) | receiver-type-required |
-| `set_policy` | `policy_with` | [5674](../../src/management.rs#L5674) | [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5665) |
-| `quarantine_root` | `store::endpoint_management_root(root)             .expect("management root")             .join` | [5679](../../src/management.rs#L5679) | receiver-type-required |
-| `quarantine_root` | `store::endpoint_management_root(root)             .expect` | [5679](../../src/management.rs#L5679) | receiver-type-required |
-| `quarantine_root` | `store::endpoint_management_root` | [5679](../../src/management.rs#L5679) | [store::management_root::endpoint_management_root](../../../store/src/management_root.rs#L47) |
-| `stale_metadata` | `store.metadata_path` | [5685](../../src/management.rs#L5685) | receiver-type-required |
-| `stale_metadata` | `read_canonical(&path).expect` | [5686](../../src/management.rs#L5686) | receiver-type-required |
-| `stale_metadata` | `read_canonical` | [5686](../../src/management.rs#L5686) | external-constructor-callback-or-unresolved |
-| `stale_metadata` | `"0".repeat` | [5687](../../src/management.rs#L5687) | receiver-type-required |
-| `stale_metadata` | `publish_canonical(&path, &metadata).expect` | [5688](../../src/management.rs#L5688) | receiver-type-required |
-| `stale_metadata` | `publish_canonical` | [5688](../../src/management.rs#L5688) | external-constructor-callback-or-unresolved |
-| `metadata_matches` | `store.workspace_configs().expect("configs")[id].clone` | [5692](../../src/management.rs#L5692) | receiver-type-required |
-| `metadata_matches` | `store.workspace_configs().expect` | [5692](../../src/management.rs#L5692) | receiver-type-required |
-| `metadata_matches` | `store.workspace_configs` | [5692](../../src/management.rs#L5692) | receiver-type-required |
-| `metadata_matches` | `verify_metadata(&config, &store.read_metadata(id).expect("metadata")).is_ok` | [5693](../../src/management.rs#L5693) | receiver-type-required |
-| `metadata_matches` | `verify_metadata` | [5693](../../src/management.rs#L5693) | external-constructor-callback-or-unresolved |
-| `metadata_matches` | `store.read_metadata(id).expect` | [5693](../../src/management.rs#L5693) | receiver-type-required |
-| `metadata_matches` | `store.read_metadata` | [5693](../../src/management.rs#L5693) | receiver-type-required |
-| `stuck_carriers_record` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [5704](../../src/management.rs#L5704) | receiver-type-required |
-| `stuck_carriers_record` | `store.workspace_configs().expect` | [5704](../../src/management.rs#L5704) | receiver-type-required |
-| `stuck_carriers_record` | `store.workspace_configs` | [5704](../../src/management.rs#L5704) | receiver-type-required |
-| `stuck_carriers_record` | `"K1 renamed".to_owned` | [5706](../../src/management.rs#L5706) | receiver-type-required |
-| `stuck_carriers_record` | `hex_digest` | [5707](../../src/management.rs#L5707) | external-constructor-callback-or-unresolved |
-| `stuck_carriers_record` | `canonical_line(&config).expect` | [5707](../../src/management.rs#L5707) | receiver-type-required |
-| `stuck_carriers_record` | `canonical_line` | [5707](../../src/management.rs#L5707) | external-constructor-callback-or-unresolved |
-| `stuck_carriers_record` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id,                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [5708](../../src/management.rs#L5708) | receiver-type-required |
-| `stuck_carriers_record` | `store             .begin_workspace_operation` | [5708](../../src/management.rs#L5708) | receiver-type-required |
-| `stuck_carriers_record` | `publish_canonical(&path, &record).expect` | [5722](../../src/management.rs#L5722) | receiver-type-required |
-| `stuck_carriers_record` | `publish_canonical` | [5722](../../src/management.rs#L5722) | external-constructor-callback-or-unresolved |
-| `stuck_carriers_record` | `set_policy` | [5723](../../src/management.rs#L5723), [5724](../../src/management.rs#L5724) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5671) |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `tempfile::tempdir().expect` | [5733](../../src/management.rs#L5733) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `tempfile::tempdir` | [5733](../../src/management.rs#L5733) | external-constructor-callback-or-unresolved |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `fixture` | [5734](../../src/management.rs#L5734) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `root.path` | [5734](../../src/management.rs#L5734), [5735](../../src/management.rs#L5735), [5742](../../src/management.rs#L5742), [5756](../../src/management.rs#L5756) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5735](../../src/management.rs#L5735) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at` | [5735](../../src/management.rs#L5735) | external-constructor-callback-or-unresolved |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `store.operation_paths().expect` | [5736](../../src/management.rs#L5736) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `store.operation_paths` | [5736](../../src/management.rs#L5736) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `set_policy` | [5737](../../src/management.rs#L5737), [5755](../../src/management.rs#L5755) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5671) |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `stale_metadata` | [5738](../../src/management.rs#L5738) | [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5684) |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `CompleteOperations::default` | [5741](../../src/management.rs#L5741) | external-constructor-callback-or-unresolved |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)             .expect` | [5742](../../src/management.rs#L5742) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_recovering_again` | [5742](../../src/management.rs#L5742) | external-constructor-callback-or-unresolved |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5756](../../src/management.rs#L5756) | receiver-type-required |
-| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at_with_queue_driver` | [5756](../../src/management.rs#L5756) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `tempfile::tempdir().expect` | [5763](../../src/management.rs#L5763) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `tempfile::tempdir` | [5763](../../src/management.rs#L5763) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `fixture` | [5764](../../src/management.rs#L5764) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `tick_never_fails_while_policy_set_publishes` | `root.path` | [5764](../../src/management.rs#L5764), [5765](../../src/management.rs#L5765), [5769](../../src/management.rs#L5769), [5788](../../src/management.rs#L5788), [5799](../../src/management.rs#L5799) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5765](../../src/management.rs#L5765) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at` | [5765](../../src/management.rs#L5765) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `Arc::new` | [5766](../../src/management.rs#L5766) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `AtomicBool::new` | [5766](../../src/management.rs#L5766) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `Arc::clone` | [5768](../../src/management.rs#L5768) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `root.path().to_path_buf` | [5769](../../src/management.rs#L5769) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `std::thread::spawn` | [5770](../../src/management.rs#L5770) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `ConfigRepository::open(&root).expect` | [5771](../../src/management.rs#L5771) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ConfigRepository::open` | [5771](../../src/management.rs#L5771) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `tick_never_fails_while_policy_set_publishes` | `stop.load` | [5773](../../src/management.rs#L5773) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `repository.workspace(WORKSPACE).expect` | [5774](../../src/management.rs#L5774) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `repository.workspace` | [5774](../../src/management.rs#L5774) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `repository.publish_workspace_policy` | [5775](../../src/management.rs#L5775) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `policy_with` | [5778](../../src/management.rs#L5778) | [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5665) |
-| `tick_never_fails_while_policy_set_publishes` | `CompleteOperations::default` | [5785](../../src/management.rs#L5785) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)                 .is_err` | [5788](../../src/management.rs#L5788) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_recovering_again` | [5788](../../src/management.rs#L5788) | external-constructor-callback-or-unresolved |
-| `tick_never_fails_while_policy_set_publishes` | `stop.store` | [5794](../../src/management.rs#L5794) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `writer.join().expect` | [5795](../../src/management.rs#L5795) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `writer.join` | [5795](../../src/management.rs#L5795) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5799](../../src/management.rs#L5799) | receiver-type-required |
-| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at_with_queue_driver` | [5799](../../src/management.rs#L5799) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `fixture` | [5808](../../src/management.rs#L5808) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `parked_synthetic_rename` | `ManagementStore::open_at(root, BOOT).expect` | [5809](../../src/management.rs#L5809) | receiver-type-required |
-| `parked_synthetic_rename` | `ManagementStore::open_at` | [5809](../../src/management.rs#L5809) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `default_workspace_policy` | [5811](../../src/management.rs#L5811) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `project.to_string_lossy` | [5811](../../src/management.rs#L5811) | receiver-type-required |
-| `parked_synthetic_rename` | `(0..232)             .map(&#124;index&#124; format!("mcp__fixture_server__tool_{index:03}"))             .collect` | [5812](../../src/management.rs#L5812) | receiver-type-required |
-| `parked_synthetic_rename` | `(0..232)             .map` | [5812](../../src/management.rs#L5812) | receiver-type-required |
-| `parked_synthetic_rename` | `repository.workspace(WORKSPACE).expect` | [5815](../../src/management.rs#L5815) | receiver-type-required |
-| `parked_synthetic_rename` | `repository.workspace` | [5815](../../src/management.rs#L5815) | receiver-type-required |
-| `parked_synthetic_rename` | `repository             .publish_workspace_policy(WORKSPACE, revision, policy)             .expect` | [5816](../../src/management.rs#L5816) | receiver-type-required |
-| `parked_synthetic_rename` | `repository             .publish_workspace_policy` | [5816](../../src/management.rs#L5816) | receiver-type-required |
-| `parked_synthetic_rename` | `stale_metadata` | [5819](../../src/management.rs#L5819) | [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5684) |
-| `parked_synthetic_rename` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [5820](../../src/management.rs#L5820) | receiver-type-required |
-| `parked_synthetic_rename` | `store.workspace_configs().expect` | [5820](../../src/management.rs#L5820) | receiver-type-required |
-| `parked_synthetic_rename` | `store.workspace_configs` | [5820](../../src/management.rs#L5820) | receiver-type-required |
-| `parked_synthetic_rename` | `hex_digest` | [5822](../../src/management.rs#L5822) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `canonical_line(&config).expect` | [5822](../../src/management.rs#L5822) | receiver-type-required |
-| `parked_synthetic_rename` | `canonical_line` | [5822](../../src/management.rs#L5822) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: &rpc_id,                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [5825](../../src/management.rs#L5825) | receiver-type-required |
-| `parked_synthetic_rename` | `store             .begin_workspace_operation` | [5825](../../src/management.rs#L5825) | receiver-type-required |
-| `parked_synthetic_rename` | `publish_canonical(&path, &record).expect` | [5839](../../src/management.rs#L5839) | receiver-type-required |
-| `parked_synthetic_rename` | `publish_canonical` | [5839](../../src/management.rs#L5839) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `set_policy` | [5845](../../src/management.rs#L5845) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5671) |
-| `parked_synthetic_rename` | `fs::read(store.operation_payload_path(&rpc_id).join("workspace.json")).expect` | [5848](../../src/management.rs#L5848) | receiver-type-required |
-| `parked_synthetic_rename` | `fs::read` | [5848](../../src/management.rs#L5848), [5849](../../src/management.rs#L5849) | external-constructor-callback-or-unresolved |
-| `parked_synthetic_rename` | `store.operation_payload_path(&rpc_id).join` | [5848](../../src/management.rs#L5848) | receiver-type-required |
-| `parked_synthetic_rename` | `store.operation_payload_path` | [5848](../../src/management.rs#L5848) | receiver-type-required |
-| `parked_synthetic_rename` | `fs::read(&path).expect` | [5849](../../src/management.rs#L5849) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `tempfile::tempdir().expect` | [5857](../../src/management.rs#L5857) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `tempfile::tempdir` | [5857](../../src/management.rs#L5857) | external-constructor-callback-or-unresolved |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `parked_synthetic_rename` | [5858](../../src/management.rs#L5858) | [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5807) |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `root.path` | [5858](../../src/management.rs#L5858), [5859](../../src/management.rs#L5859), [5868](../../src/management.rs#L5868), [5872](../../src/management.rs#L5872), [5899](../../src/management.rs#L5899) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ConfigRepository::open(root.path()).expect` | [5859](../../src/management.rs#L5859) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ConfigRepository::open` | [5859](../../src/management.rs#L5859) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect("stem")             .to_string_lossy()             .into_owned` | [5861](../../src/management.rs#L5861) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect("stem")             .to_string_lossy` | [5861](../../src/management.rs#L5861) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect` | [5861](../../src/management.rs#L5861) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem` | [5861](../../src/management.rs#L5861) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)             .expect` | [5868](../../src/management.rs#L5868) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver` | [5868](../../src/management.rs#L5868), [5899](../../src/management.rs#L5899) | external-constructor-callback-or-unresolved |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `quarantine_root(root.path()).join` | [5872](../../src/management.rs#L5872) | receiver-type-required |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `quarantine_root` | [5872](../../src/management.rs#L5872) | [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5678) |
-| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5899](../../src/management.rs#L5899) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `tempfile::tempdir().expect` | [5912](../../src/management.rs#L5912) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `tempfile::tempdir` | [5912](../../src/management.rs#L5912) | external-constructor-callback-or-unresolved |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `parked_synthetic_rename` | [5913](../../src/management.rs#L5913) | [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5807) |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `root.path` | [5913](../../src/management.rs#L5913), [5919](../../src/management.rs#L5919) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `read_canonical(&path).expect` | [5914](../../src/management.rs#L5914) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `read_canonical` | [5914](../../src/management.rs#L5914) | external-constructor-callback-or-unresolved |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `publish_canonical(&path, &record).expect` | [5916](../../src/management.rs#L5916) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `publish_canonical` | [5916](../../src/management.rs#L5916) | external-constructor-callback-or-unresolved |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `fs::read(&path).expect` | [5917](../../src/management.rs#L5917) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `fs::read` | [5917](../../src/management.rs#L5917) | external-constructor-callback-or-unresolved |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)             .expect` | [5919](../../src/management.rs#L5919) | receiver-type-required |
-| `record_of_another_version_is_left_in_place_not_quarantined` | `ManagementStore::open_at_with_queue_driver` | [5919](../../src/management.rs#L5919) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `tempfile::tempdir().expect` | [5934](../../src/management.rs#L5934) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `tempfile::tempdir` | [5934](../../src/management.rs#L5934) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fixture` | [5935](../../src/management.rs#L5935) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `root.path` | [5935](../../src/management.rs#L5935), [5936](../../src/management.rs#L5936), [5951](../../src/management.rs#L5951), [5956](../../src/management.rs#L5956), [5958](../../src/management.rs#L5958), [5975](../../src/management.rs#L5975), [5984](../../src/management.rs#L5984), [5985](../../src/management.rs#L5985) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5936](../../src/management.rs#L5936) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at` | [5936](../../src/management.rs#L5936) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `stuck_carriers_record` | [5937](../../src/management.rs#L5937), [5982](../../src/management.rs#L5982) | [endpoint::management::k1_management_race::stuck_carriers_record](../../src/management.rs#L5698) |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect("stem")             .to_string_lossy()             .into_owned` | [5938](../../src/management.rs#L5938) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect("stem")             .to_string_lossy` | [5938](../../src/management.rs#L5938) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect` | [5938](../../src/management.rs#L5938) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem` | [5938](../../src/management.rs#L5938) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read(&path).expect` | [5943](../../src/management.rs#L5943) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read` | [5943](../../src/management.rs#L5943), [5944](../../src/management.rs#L5944) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read(             store                 .operation_payload_path("rpc-stuck")                 .join("workspace.json"),         )         .expect` | [5944](../../src/management.rs#L5944) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `store                 .operation_payload_path("rpc-stuck")                 .join` | [5945](../../src/management.rs#L5945) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `store                 .operation_payload_path` | [5945](../../src/management.rs#L5945) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `quarantine_root(root.path()).join` | [5951](../../src/management.rs#L5951), [5958](../../src/management.rs#L5958), [5985](../../src/management.rs#L5985) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `quarantine_root` | [5951](../../src/management.rs#L5951), [5958](../../src/management.rs#L5958), [5985](../../src/management.rs#L5985) | [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5678) |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::create_dir_all(partial.join("payload-root/stale")).expect` | [5952](../../src/management.rs#L5952) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::create_dir_all` | [5952](../../src/management.rs#L5952) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `partial.join` | [5952](../../src/management.rs#L5952), [5953](../../src/management.rs#L5953) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::write(partial.join("payload-root/stale/leftover"), b"x").expect` | [5953](../../src/management.rs#L5953) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::write` | [5953](../../src/management.rs#L5953) | external-constructor-callback-or-unresolved |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `repository.workspace(WORKSPACE).expect` | [5954](../../src/management.rs#L5954) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `repository.workspace` | [5954](../../src/management.rs#L5954) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5956](../../src/management.rs#L5956), [5975](../../src/management.rs#L5975), [5984](../../src/management.rs#L5984) | receiver-type-required |
-| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at_with_queue_driver` | [5956](../../src/management.rs#L5956), [5975](../../src/management.rs#L5975), [5984](../../src/management.rs#L5984) | external-constructor-callback-or-unresolved |
-| `complete_workspace_record_without_response_is_quarantined` | `tempfile::tempdir().expect` | [5997](../../src/management.rs#L5997) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `tempfile::tempdir` | [5997](../../src/management.rs#L5997) | external-constructor-callback-or-unresolved |
-| `complete_workspace_record_without_response_is_quarantined` | `fixture` | [5998](../../src/management.rs#L5998) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `complete_workspace_record_without_response_is_quarantined` | `root.path` | [5998](../../src/management.rs#L5998), [5999](../../src/management.rs#L5999), [6017](../../src/management.rs#L6017) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5999](../../src/management.rs#L5999) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at` | [5999](../../src/management.rs#L5999) | external-constructor-callback-or-unresolved |
-| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [6000](../../src/management.rs#L6000) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs().expect` | [6000](../../src/management.rs#L6000) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs` | [6000](../../src/management.rs#L6000) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "rpc-complete",                 request_sha256: &"1".repeat(64),                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [6001](../../src/management.rs#L6001) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `store             .begin_workspace_operation` | [6001](../../src/management.rs#L6001) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `"1".repeat` | [6004](../../src/management.rs#L6004) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `publish_canonical(&path, &record).expect` | [6015](../../src/management.rs#L6015) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `publish_canonical` | [6015](../../src/management.rs#L6015) | external-constructor-callback-or-unresolved |
-| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [6017](../../src/management.rs#L6017) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at_with_queue_driver` | [6017](../../src/management.rs#L6017) | external-constructor-callback-or-unresolved |
-| `complete_workspace_record_without_response_is_quarantined` | `path.file_stem().expect` | [6020](../../src/management.rs#L6020) | receiver-type-required |
-| `complete_workspace_record_without_response_is_quarantined` | `path.file_stem` | [6020](../../src/management.rs#L6020) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `tempfile::tempdir().expect` | [6033](../../src/management.rs#L6033) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `tempfile::tempdir` | [6033](../../src/management.rs#L6033) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `fixture` | [6034](../../src/management.rs#L6034) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5640) |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `root.path` | [6034](../../src/management.rs#L6034), [6035](../../src/management.rs#L6035) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `ManagementStore::open_at(root.path(), BOOT).expect` | [6035](../../src/management.rs#L6035) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `ManagementStore::open_at` | [6035](../../src/management.rs#L6035) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [6036](../../src/management.rs#L6036) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs().expect` | [6036](../../src/management.rs#L6036) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs` | [6036](../../src/management.rs#L6036) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `"K1 recovered".to_owned` | [6038](../../src/management.rs#L6038) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `hex_digest` | [6039](../../src/management.rs#L6039) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `canonical_line(&config).expect` | [6039](../../src/management.rs#L6039) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `canonical_line` | [6039](../../src/management.rs#L6039) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "rpc-pending",                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [6040](../../src/management.rs#L6040) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .begin_workspace_operation` | [6040](../../src/management.rs#L6040) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map(&#124;index&#124; format!("rpc-bogus-{index}"))             .find(&#124;rpc_id&#124; store.operation_path(rpc_id) < pending)             .expect` | [6054](../../src/management.rs#L6054) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map(&#124;index&#124; format!("rpc-bogus-{index}"))             .find` | [6054](../../src/management.rs#L6054) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map` | [6054](../../src/management.rs#L6054) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.operation_path` | [6056](../../src/management.rs#L6056), [6058](../../src/management.rs#L6058) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `fs::create_dir_all(bogus_path.parent().expect("prefix")).expect` | [6059](../../src/management.rs#L6059) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `fs::create_dir_all` | [6059](../../src/management.rs#L6059) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `bogus_path.parent().expect` | [6059](../../src/management.rs#L6059) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `bogus_path.parent` | [6059](../../src/management.rs#L6059) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `publish_canonical(             &bogus_path,             &OperationRecord {                 v: VERSION,                 rpc_id: bogus,                 operation: "bogus".to_owned(),                 request_sha256: "0".repeat(64),                 phase: OperationPhase::Prepared,                 started_at: TICK.to_owned(),                 intent: to_ijson(&json!({"kind":"bogus"})).expect("intent"),                 response: None,             },         )         .expect` | [6060](../../src/management.rs#L6060) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `publish_canonical` | [6060](../../src/management.rs#L6060) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `"bogus".to_owned` | [6065](../../src/management.rs#L6065) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `"0".repeat` | [6066](../../src/management.rs#L6066) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `TICK.to_owned` | [6068](../../src/management.rs#L6068) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `to_ijson(&json!({"kind":"bogus"})).expect` | [6069](../../src/management.rs#L6069) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `to_ijson` | [6069](../../src/management.rs#L6069) | external-constructor-callback-or-unresolved |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .recover()             .expect_err` | [6075](../../src/management.rs#L6075) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .recover` | [6075](../../src/management.rs#L6075) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `read_canonical(&pending).expect` | [6085](../../src/management.rs#L6085) | receiver-type-required |
-| `one_failing_record_does_not_stop_the_others_from_recovering` | `read_canonical` | [6085](../../src/management.rs#L6085) | external-constructor-callback-or-unresolved |
+| `preset_skills_resolve_against_package_names` | `profile::EffectiveInstructions::default` | [4574](../../src/management.rs#L4574) | external-constructor-callback-or-unresolved |
+| `preset_skills_resolve_against_package_names` | `super::SessionPresetEnvironment::new` | [4576](../../src/management.rs#L4576) | [endpoint::management::SessionPresetEnvironment::new](../../src/management.rs#L275) |
+| `preset_skills_resolve_against_package_names` | `session_preset` | [4578](../../src/management.rs#L4578) | [endpoint::management::session_preset](../../src/management.rs#L3281) |
+| `preset_skills_resolve_against_package_names` | `Some` | [4579](../../src/management.rs#L4579) | external-constructor-callback-or-unresolved |
+| `preset_skills_resolve_against_package_names` | `resolve(json!(["review"])).unwrap().expect` | [4585](../../src/management.rs#L4585) | receiver-type-required |
+| `preset_skills_resolve_against_package_names` | `resolve(json!(["review"])).unwrap` | [4585](../../src/management.rs#L4585) | receiver-type-required |
+| `preset_skills_resolve_against_package_names` | `resolve` | [4585](../../src/management.rs#L4585) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `tempfile::tempdir().unwrap` | [4613](../../src/management.rs#L4613) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `tempfile::tempdir` | [4613](../../src/management.rs#L4613) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ManagementStore::open_at(root.path(), timestamp).unwrap` | [4615](../../src/management.rs#L4615), [4668](../../src/management.rs#L4668) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ManagementStore::open_at` | [4615](../../src/management.rs#L4615), [4668](../../src/management.rs#L4668) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path` | [4615](../../src/management.rs#L4615), [4616](../../src/management.rs#L4616), [4619](../../src/management.rs#L4619), [4668](../../src/management.rs#L4668) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ThreadStore::open(root.path()).unwrap` | [4616](../../src/management.rs#L4616) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ThreadStore::open` | [4616](../../src/management.rs#L4616) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path().join("threads").join` | [4619](../../src/management.rs#L4619) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `root.path().join` | [4619](../../src/management.rs#L4619) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::create_dir(&folder).unwrap` | [4620](../../src/management.rs#L4620) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::create_dir` | [4620](../../src/management.rs#L4620) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice(line).unwrap())             .collect` | [4622](../../src/management.rs#L4622) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [4622](../../src/management.rs#L4622) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split(&#124;b&#124; *b == b'\n')             .filter` | [4622](../../src/management.rs#L4622) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `baseline             .split` | [4622](../../src/management.rs#L4622) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `line.is_empty` | [4624](../../src/management.rs#L4624) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json::from_slice(line).unwrap` | [4625](../../src/management.rs#L4625) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json::from_slice` | [4625](../../src/management.rs#L4625) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut()             .unwrap()             .insert` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut()             .unwrap` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap()             .as_object_mut` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut()             .find` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `events             .iter_mut` | [4627](../../src/management.rs#L4627) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"launch_bindings_digest".into` | [4633](../../src/management.rs#L4633) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `Vec::new` | [4634](../../src/management.rs#L4634) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ledger.extend` | [4636](../../src/management.rs#L4636) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json_canonicalizer::to_vec(&event).unwrap` | [4636](../../src/management.rs#L4636) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `serde_json_canonicalizer::to_vec` | [4636](../../src/management.rs#L4636) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `ledger.push` | [4637](../../src/management.rs#L4637) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::write(folder.join("main.jsonl"), &ledger).unwrap` | [4639](../../src/management.rs#L4639) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `fs::write` | [4639](../../src/management.rs#L4639) | external-constructor-callback-or-unresolved |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `folder.join` | [4639](../../src/management.rs#L4639) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store             .begin_fork("failed-fork", source, dest, timestamp)             .unwrap` | [4640](../../src/management.rs#L4640) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store             .begin_fork` | [4640](../../src/management.rs#L4640) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"failed-fork-rpc".into` | [4645](../../src/management.rs#L4645) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"session.fork".into` | [4646](../../src/management.rs#L4646) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"0".repeat` | [4647](../../src/management.rs#L4647) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `timestamp.into` | [4649](../../src/management.rs#L4649) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `to_ijson(&ForkIntent {                 kind: "fork".into(),                 source: source.into(),                 dest: dest.into(),                 at_endpoint_seq: None,                 kernel_anchor: 8,                 rewrite_op_id: "failed-fork".into(),                 principal: "uid:501".into(),                 ephemeral: false,                 preset: None,             })             .unwrap` | [4651](../../src/management.rs#L4651) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `to_ijson` | [4651](../../src/management.rs#L4651) | [endpoint::management::to_ijson](../../src/management.rs#L3865) |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"fork".into` | [4652](../../src/management.rs#L4652) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `source.into` | [4653](../../src/management.rs#L4653) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `dest.into` | [4654](../../src/management.rs#L4654) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"failed-fork".into` | [4657](../../src/management.rs#L4657) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `"uid:501".into` | [4658](../../src/management.rs#L4658) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.operation_path` | [4664](../../src/management.rs#L4664) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `publish_canonical(&path, &record).unwrap` | [4665](../../src/management.rs#L4665) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `publish_canonical` | [4665](../../src/management.rs#L4665) | [endpoint::management::publish_canonical](../../src/management.rs#L3828) |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store.recover_rewrites_for_startup().unwrap` | [4666](../../src/management.rs#L4666) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `store.recover_rewrites_for_startup` | [4666](../../src/management.rs#L4666) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.recover().unwrap` | [4667](../../src/management.rs#L4667) | receiver-type-required |
+| `quarantined_fork_does_not_block_recovery_or_claim_success` | `management.recover` | [4667](../../src/management.rs#L4667) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `tempfile::tempdir().expect` | [4689](../../src/management.rs#L4689) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `tempfile::tempdir` | [4689](../../src/management.rs#L4689) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root.path().join` | [4690](../../src/management.rs#L4690) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root.path` | [4690](../../src/management.rs#L4690), [4704](../../src/management.rs#L4704), [4707](../../src/management.rs#L4707), [4730](../../src/management.rs#L4730), [4743](../../src/management.rs#L4743), [4753](../../src/management.rs#L4753), [4766](../../src/management.rs#L4766) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir(&project).expect` | [4691](../../src/management.rs#L4691) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir` | [4691](../../src/management.rs#L4691) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"ws-light".to_owned` | [4695](../../src/management.rs#L4695) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Light".to_owned` | [4696](../../src/management.rs#L4696) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `Vec::new` | [4697](../../src/management.rs#L4697), [4709](../../src/management.rs#L4709) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ConfigRepository::open(root.path()).expect` | [4704](../../src/management.rs#L4704) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ConfigRepository::open` | [4704](../../src/management.rs#L4704) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.publish_workspace(0, &config).expect` | [4705](../../src/management.rs#L4705) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.publish_workspace` | [4705](../../src/management.rs#L4705) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_at(root.path(), "2026-10-12T00:00:00.000Z")             .expect` | [4707](../../src/management.rs#L4707) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_at` | [4707](../../src/management.rs#L4707) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `recovering             .list_workspaces(&sessions)             .expect` | [4710](../../src/management.rs#L4710) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `recovering             .list_workspaces` | [4710](../../src/management.rs#L4710) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root             .path()             .join` | [4715](../../src/management.rs#L4715) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `root             .path` | [4715](../../src/management.rs#L4715) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir_all(&trap).expect` | [4718](../../src/management.rs#L4718) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::create_dir_all` | [4718](../../src/management.rs#L4718) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o000)).expect` | [4719](../../src/management.rs#L4719) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions` | [4719](../../src/management.rs#L4719), [4772](../../src/management.rs#L4772) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::Permissions::from_mode` | [4719](../../src/management.rs#L4719), [4772](../../src/management.rs#L4772) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.workspace("ws-light").expect` | [4722](../../src/management.rs#L4722), [4737](../../src/management.rs#L4737), [4750](../../src/management.rs#L4750) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository.workspace` | [4722](../../src/management.rs#L4722), [4737](../../src/management.rs#L4737), [4750](../../src/management.rs#L4750) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace_policy(                 "ws-light",                 current.revision,                 default_workspace_policy(project.to_str().unwrap()),             )             .expect` | [4723](../../src/management.rs#L4723) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace_policy` | [4723](../../src/management.rs#L4723) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `default_workspace_policy` | [4727](../../src/management.rs#L4727) | [endpoint::management::default_workspace_policy](../../src/management.rs#L3483) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `project.to_str().unwrap` | [4727](../../src/management.rs#L4727) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `project.to_str` | [4727](../../src/management.rs#L4727) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path()).expect` | [4730](../../src/management.rs#L4730), [4753](../../src/management.rs#L4753) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light` | [4730](../../src/management.rs#L4730), [4743](../../src/management.rs#L4743), [4753](../../src/management.rs#L4753) | [endpoint::management::ManagementStore::open_light](../../src/management.rs#L536) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light             .list_workspaces(&sessions)             .expect` | [4731](../../src/management.rs#L4731) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light             .list_workspaces` | [4731](../../src/management.rs#L4731) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Renamed".to_owned` | [4738](../../src/management.rs#L4738) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace(renamed.revision - 1, &renamed)             .expect` | [4740](../../src/management.rs#L4740) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace` | [4740](../../src/management.rs#L4740), [4754](../../src/management.rs#L4754) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect("light open")             .list_workspaces(&sessions)             .expect` | [4743](../../src/management.rs#L4743) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect("light open")             .list_workspaces` | [4743](../../src/management.rs#L4743) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light(root.path())             .expect` | [4743](../../src/management.rs#L4743) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `"Third".to_owned` | [4751](../../src/management.rs#L4751) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `repository             .publish_workspace(third.revision - 1, &third)             .expect` | [4754](../../src/management.rs#L4754) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `stale_view             .list_workspaces(&sessions)             .expect` | [4757](../../src/management.rs#L4757) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `stale_view             .list_workspaces` | [4757](../../src/management.rs#L4757) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `light.metadata_path` | [4763](../../src/management.rs#L4763) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `read_canonical(&metadata_path).expect` | [4764](../../src/management.rs#L4764) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `read_canonical` | [4764](../../src/management.rs#L4764) | [endpoint::management::read_canonical](../../src/management.rs#L3833) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::remove_file(&metadata_path).expect` | [4765](../../src/management.rs#L4765) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::remove_file` | [4765](../../src/management.rs#L4765) | external-constructor-callback-or-unresolved |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect("light open")             .read_metadata("ws-light")             .expect` | [4766](../../src/management.rs#L4766) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect("light open")             .read_metadata` | [4766](../../src/management.rs#L4766) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at(root.path(), "2026-10-12T05:00:00.000Z")             .expect` | [4766](../../src/management.rs#L4766) | receiver-type-required |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `ManagementStore::open_light_at` | [4766](../../src/management.rs#L4766) | [endpoint::management::ManagementStore::open_light_at](../../src/management.rs#L540) |
+| `open_light_heals_metadata_after_any_config_writer_without_reading_threads` | `std::fs::set_permissions(&trap, std::fs::Permissions::from_mode(0o700)).expect` | [4772](../../src/management.rs#L4772) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `tempfile::tempdir().expect` | [4777](../../src/management.rs#L4777) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `tempfile::tempdir` | [4777](../../src/management.rs#L4777) | external-constructor-callback-or-unresolved |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `root.path().join` | [4778](../../src/management.rs#L4778) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `root.path` | [4778](../../src/management.rs#L4778), [4780](../../src/management.rs#L4780), [4809](../../src/management.rs#L4809) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::create_dir(&project).expect` | [4779](../../src/management.rs#L4779) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::create_dir` | [4779](../../src/management.rs#L4779) | external-constructor-callback-or-unresolved |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:00.000Z")             .expect` | [4780](../../src/management.rs#L4780) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at` | [4780](../../src/management.rs#L4780), [4809](../../src/management.rs#L4809) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `"workspace-offline".to_owned` | [4785](../../src/management.rs#L4785) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `"Offline".to_owned` | [4786](../../src/management.rs#L4786) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `Vec::new` | [4787](../../src/management.rs#L4787) | external-constructor-callback-or-unresolved |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "workspace-offline-create",                 request_sha256: &"0".repeat(64),                 operation: "workspace.create",                 action: "create",                 config: &config,                 started_at: "2026-09-01T00:00:00.000Z",                 created: Some(true),                 relocation: None,                 folder: None,             })             .expect` | [4794](../../src/management.rs#L4794) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `store             .begin_workspace_operation` | [4794](../../src/management.rs#L4794) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `"0".repeat` | [4797](../../src/management.rs#L4797) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `Some` | [4802](../../src/management.rs#L4802) | external-constructor-callback-or-unresolved |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::remove_dir(&project).expect` | [4807](../../src/management.rs#L4807) | receiver-type-required |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `std::fs::remove_dir` | [4807](../../src/management.rs#L4807) | external-constructor-callback-or-unresolved |
+| `unavailable_workspace_keeps_its_management_operation_pending` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:01.000Z")             .expect` | [4809](../../src/management.rs#L4809) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `tempfile::tempdir().expect` | [4816](../../src/management.rs#L4816) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `tempfile::tempdir` | [4816](../../src/management.rs#L4816) | external-constructor-callback-or-unresolved |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `ManagementStore::open_at(root.path(), "2026-09-01T00:00:00.000Z")             .expect` | [4817](../../src/management.rs#L4817) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `ManagementStore::open_at` | [4817](../../src/management.rs#L4817), [4859](../../src/management.rs#L4859) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `root.path` | [4817](../../src/management.rs#L4817), [4859](../../src/management.rs#L4859) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `store.operation_payload_path` | [4820](../../src/management.rs#L4820) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all(&payload).expect` | [4821](../../src/management.rs#L4821) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all` | [4821](../../src/management.rs#L4821), [4851](../../src/management.rs#L4851) | external-constructor-callback-or-unresolved |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec(&candidate).expect` | [4828](../../src/management.rs#L4828) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec` | [4828](../../src/management.rs#L4828), [4852](../../src/management.rs#L4852) | external-constructor-callback-or-unresolved |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `bytes.push` | [4829](../../src/management.rs#L4829) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write(payload.join("session-settings-v1.json"), &candidate_bytes)             .expect` | [4832](../../src/management.rs#L4832) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write` | [4832](../../src/management.rs#L4832), [4854](../../src/management.rs#L4854) | external-constructor-callback-or-unresolved |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `payload.join` | [4832](../../src/management.rs#L4832) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `store.operation_path` | [4850](../../src/management.rs#L4850) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::create_dir_all(operation_path.parent().expect("prefix")).expect` | [4851](../../src/management.rs#L4851) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `operation_path.parent().expect` | [4851](../../src/management.rs#L4851) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `operation_path.parent` | [4851](../../src/management.rs#L4851) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `serde_json_canonicalizer::to_vec(&record).expect` | [4852](../../src/management.rs#L4852) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `record_bytes.push` | [4853](../../src/management.rs#L4853) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `std::fs::write(&operation_path, &record_bytes).expect` | [4854](../../src/management.rs#L4854) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err()             .map(&#124;error&#124; error.to_string())             .unwrap_or_default` | [4862](../../src/management.rs#L4862) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err()             .map` | [4862](../../src/management.rs#L4862) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `recovered             .err` | [4862](../../src/management.rs#L4862) | receiver-type-required |
+| `a_select_model_payload_staged_before_the_rename_is_read_on_recovery` | `error.to_string` | [4864](../../src/management.rs#L4864) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `tempfile::tempdir().expect` | [4884](../../src/management.rs#L4884) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `tempfile::tempdir` | [4884](../../src/management.rs#L4884) | external-constructor-callback-or-unresolved |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `root.path().join` | [4885](../../src/management.rs#L4885), [4888](../../src/management.rs#L4888), [4913](../../src/management.rs#L4913) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `root.path` | [4885](../../src/management.rs#L4885), [4888](../../src/management.rs#L4888), [4913](../../src/management.rs#L4913) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `std::fs::create_dir(&project).expect` | [4886](../../src/management.rs#L4886) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `std::fs::create_dir` | [4886](../../src/management.rs#L4886) | external-constructor-callback-or-unresolved |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4888](../../src/management.rs#L4888) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `ManagementStore::open_at` | [4888](../../src/management.rs#L4888) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store             .create_workspace(                 "seeded-create",                 &"2".repeat(64),                 &project.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4890](../../src/management.rs#L4890) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store             .create_workspace` | [4890](../../src/management.rs#L4890) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `"2".repeat` | [4893](../../src/management.rs#L4893) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `project.to_string_lossy` | [4894](../../src/management.rs#L4894) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4899](../../src/management.rs#L4899) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs().expect` | [4899](../../src/management.rs#L4899) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `store.workspace_configs` | [4899](../../src/management.rs#L4899) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `config.policy.expect` | [4900](../../src/management.rs#L4900) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect("repository")             .resolve(&view.workspace_id)             .expect` | [4913](../../src/management.rs#L4913) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect("repository")             .resolve` | [4913](../../src/management.rs#L4913) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open(root.path().join("kernel"))             .expect` | [4913](../../src/management.rs#L4913) | receiver-type-required |
+| `a_created_workspace_starts_with_the_interactive_fixed_catalog_writable_in_its_folder` | `profile::ConfigRepository::open` | [4913](../../src/management.rs#L4913) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir().expect` | [4929](../../src/management.rs#L4929) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `tempfile::tempdir` | [4929](../../src/management.rs#L4929) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root.path().join` | [4930](../../src/management.rs#L4930), [4933](../../src/management.rs#L4933), [4959](../../src/management.rs#L4959), [4973](../../src/management.rs#L4973) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root.path` | [4930](../../src/management.rs#L4930), [4933](../../src/management.rs#L4933), [4959](../../src/management.rs#L4959), [4973](../../src/management.rs#L4973) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::create_dir(&project).expect` | [4931](../../src/management.rs#L4931) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::create_dir` | [4931](../../src/management.rs#L4931) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4933](../../src/management.rs#L4933) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at` | [4933](../../src/management.rs#L4933), [4959](../../src/management.rs#L4959), [4973](../../src/management.rs#L4973) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `store             .create_workspace(                 "legacy-create",                 &"5".repeat(64),                 &project.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4935](../../src/management.rs#L4935) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `store             .create_workspace` | [4935](../../src/management.rs#L4935) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `"5".repeat` | [4938](../../src/management.rs#L4938) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `project.to_string_lossy` | [4939](../../src/management.rs#L4939) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join("workspaces")             .join(&view.workspace_id)             .join` | [4944](../../src/management.rs#L4944) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join("workspaces")             .join` | [4944](../../src/management.rs#L4944) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join("kernel")             .join` | [4944](../../src/management.rs#L4944) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path()             .join` | [4944](../../src/management.rs#L4944) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `root             .path` | [4944](../../src/management.rs#L4944) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json::from_slice(&std::fs::read(&path).expect("document")).expect` | [4951](../../src/management.rs#L4951) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json::from_slice` | [4951](../../src/management.rs#L4951) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::read(&path).expect` | [4951](../../src/management.rs#L4951) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::read` | [4951](../../src/management.rs#L4951) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut().expect("object").remove` | [4952](../../src/management.rs#L4952) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut().expect` | [4952](../../src/management.rs#L4952) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `document.as_object_mut` | [4952](../../src/management.rs#L4952) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json_canonicalizer::to_vec(&document).expect` | [4953](../../src/management.rs#L4953) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `serde_json_canonicalizer::to_vec` | [4953](../../src/management.rs#L4953) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `bytes.push` | [4954](../../src/management.rs#L4954) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::write(&path, bytes).expect` | [4955](../../src/management.rs#L4955) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `std::fs::write` | [4955](../../src/management.rs#L4955) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `drop` | [4956](../../src/management.rs#L4956), [4969](../../src/management.rs#L4969) | external-constructor-callback-or-unresolved |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:01.000Z")                 .expect` | [4959](../../src/management.rs#L4959) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4961](../../src/management.rs#L4961) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs().expect` | [4961](../../src/management.rs#L4961) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `reopened.workspace_configs` | [4961](../../src/management.rs#L4961) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `config.policy.expect` | [4962](../../src/management.rs#L4962) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:02.000Z")                 .expect` | [4973](../../src/management.rs#L4973) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs().expect("configs")[&view.workspace_id].clone` | [4975](../../src/management.rs#L4975) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs().expect` | [4975](../../src/management.rs#L4975) | receiver-type-required |
+| `opening_the_store_seeds_a_policy_for_a_policy_less_workspace_once` | `again.workspace_configs` | [4975](../../src/management.rs#L4975) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `tempfile::tempdir().expect` | [4981](../../src/management.rs#L4981) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `tempfile::tempdir` | [4981](../../src/management.rs#L4981) | external-constructor-callback-or-unresolved |
+| `relocation_moves_writable_roots_with_their_folder` | `root.path().join` | [4982](../../src/management.rs#L4982), [4985](../../src/management.rs#L4985), [4995](../../src/management.rs#L4995) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `root.path` | [4982](../../src/management.rs#L4982), [4985](../../src/management.rs#L4985), [4995](../../src/management.rs#L4995) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `std::fs::create_dir(&before).expect` | [4983](../../src/management.rs#L4983) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `std::fs::create_dir` | [4983](../../src/management.rs#L4983) | external-constructor-callback-or-unresolved |
+| `relocation_moves_writable_roots_with_their_folder` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")                 .expect` | [4985](../../src/management.rs#L4985) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `ManagementStore::open_at` | [4985](../../src/management.rs#L4985) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `relocation_moves_writable_roots_with_their_folder` | `store             .create_workspace(                 "relocate-create",                 &"3".repeat(64),                 &before.to_string_lossy(),                 "2026-09-14T00:00:00.000Z",             )             .expect` | [4987](../../src/management.rs#L4987) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `store             .create_workspace` | [4987](../../src/management.rs#L4987) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `"3".repeat` | [4990](../../src/management.rs#L4990) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `before.to_string_lossy` | [4991](../../src/management.rs#L4991) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `std::fs::rename(&before, &after).expect` | [4996](../../src/management.rs#L4996) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `std::fs::rename` | [4996](../../src/management.rs#L4996) | external-constructor-callback-or-unresolved |
+| `relocation_moves_writable_roots_with_their_folder` | `store             .relocate_workspace(                 "relocate-move",                 &"4".repeat(64),                 &view.workspace_id,                 &view.path,                 &after.to_string_lossy(),                 "2026-09-14T00:00:01.000Z",             )             .expect` | [4997](../../src/management.rs#L4997) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `store             .relocate_workspace` | [4997](../../src/management.rs#L4997) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `"4".repeat` | [5000](../../src/management.rs#L5000) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `after.to_string_lossy` | [5003](../../src/management.rs#L5003) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs().expect("configs")[&view.workspace_id].clone` | [5007](../../src/management.rs#L5007) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs().expect` | [5007](../../src/management.rs#L5007) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `store.workspace_configs` | [5007](../../src/management.rs#L5007) | receiver-type-required |
+| `relocation_moves_writable_roots_with_their_folder` | `config.policy.expect` | [5008](../../src/management.rs#L5008) | receiver-type-required |
+| `folder_store` | `tempfile::tempdir().expect` | [5017](../../src/management.rs#L5017) | receiver-type-required |
+| `folder_store` | `tempfile::tempdir` | [5017](../../src/management.rs#L5017) | external-constructor-callback-or-unresolved |
+| `folder_store` | `root.path().join` | [5018](../../src/management.rs#L5018), [5021](../../src/management.rs#L5021) | receiver-type-required |
+| `folder_store` | `root.path` | [5018](../../src/management.rs#L5018), [5021](../../src/management.rs#L5021) | receiver-type-required |
+| `folder_store` | `std::fs::create_dir(&project).expect` | [5019](../../src/management.rs#L5019) | receiver-type-required |
+| `folder_store` | `std::fs::create_dir` | [5019](../../src/management.rs#L5019) | external-constructor-callback-or-unresolved |
+| `folder_store` | `ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:00:00.000Z")                 .expect` | [5021](../../src/management.rs#L5021) | receiver-type-required |
+| `folder_store` | `ManagementStore::open_at` | [5021](../../src/management.rs#L5021) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `folder_store` | `store             .create_workspace(                 &format!("{name}-create"),                 &"5".repeat(64),                 &project.to_string_lossy(),                 "2026-10-08T00:00:00.000Z",             )             .expect` | [5023](../../src/management.rs#L5023) | receiver-type-required |
+| `folder_store` | `store             .create_workspace` | [5023](../../src/management.rs#L5023) | receiver-type-required |
+| `folder_store` | `"5".repeat` | [5026](../../src/management.rs#L5026) | receiver-type-required |
+| `folder_store` | `project.to_string_lossy` | [5027](../../src/management.rs#L5027) | receiver-type-required |
+| `sibling` | `root.path().join` | [5035](../../src/management.rs#L5035) | receiver-type-required |
+| `sibling` | `root.path` | [5035](../../src/management.rs#L5035) | receiver-type-required |
+| `sibling` | `std::fs::create_dir_all(&path).expect` | [5036](../../src/management.rs#L5036) | receiver-type-required |
+| `sibling` | `std::fs::create_dir_all` | [5036](../../src/management.rs#L5036) | external-constructor-callback-or-unresolved |
+| `sibling` | `path.canonicalize()             .expect("canonical")             .to_string_lossy()             .into_owned` | [5037](../../src/management.rs#L5037) | receiver-type-required |
+| `sibling` | `path.canonicalize()             .expect("canonical")             .to_string_lossy` | [5037](../../src/management.rs#L5037) | receiver-type-required |
+| `sibling` | `path.canonicalize()             .expect` | [5037](../../src/management.rs#L5037) | receiver-type-required |
+| `sibling` | `path.canonicalize` | [5037](../../src/management.rs#L5037) | receiver-type-required |
+| `write_session` | `"test".to_owned` | [5047](../../src/management.rs#L5047) | receiver-type-required |
+| `write_session` | `"session-endpoint".to_owned` | [5048](../../src/management.rs#L5048) | receiver-type-required |
+| `write_session` | `session_id.to_owned` | [5049](../../src/management.rs#L5049), [5051](../../src/management.rs#L5051) | receiver-type-required |
+| `write_session` | `"session.create".to_owned` | [5050](../../src/management.rs#L5050) | receiver-type-required |
+| `write_session` | `create_genesis(             session_id,             workspace_id,             binding.unwrap_or("folder-0001"),             &[binding.unwrap_or("folder-0001").to_owned()],             schema::DEFAULT_ENVIRONMENT,             &format!("sha256-{}", "a".repeat(64)),             &format!("sha256-{}", "b".repeat(64)),             None,             None,             "2026-10-08T00:00:00.000Z",             &origin,         )         .expect` | [5053](../../src/management.rs#L5053) | receiver-type-required |
+| `write_session` | `create_genesis` | [5053](../../src/management.rs#L5053) | [endpoint::management::create_genesis](../../src/management.rs#L3318) |
+| `write_session` | `binding.unwrap_or` | [5056](../../src/management.rs#L5056), [5057](../../src/management.rs#L5057) | receiver-type-required |
+| `write_session` | `binding.unwrap_or("folder-0001").to_owned` | [5057](../../src/management.rs#L5057) | receiver-type-required |
+| `write_session` | `serde_json::from_slice(&genesis.canonical_bytes().expect("bytes")).expect` | [5068](../../src/management.rs#L5068) | receiver-type-required |
+| `write_session` | `serde_json::from_slice` | [5068](../../src/management.rs#L5068) | external-constructor-callback-or-unresolved |
+| `write_session` | `genesis.canonical_bytes().expect` | [5068](../../src/management.rs#L5068) | receiver-type-required |
+| `write_session` | `genesis.canonical_bytes` | [5068](../../src/management.rs#L5068) | receiver-type-required |
+| `write_session` | `binding.is_none` | [5069](../../src/management.rs#L5069) | receiver-type-required |
+| `write_session` | `value.as_object_mut().expect` | [5071](../../src/management.rs#L5071) | receiver-type-required |
+| `write_session` | `value.as_object_mut` | [5071](../../src/management.rs#L5071) | receiver-type-required |
+| `write_session` | `object.remove` | [5073](../../src/management.rs#L5073) | receiver-type-required |
+| `write_session` | `schema::Event::from_value(             schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect("ijson"),         )         .expect` | [5076](../../src/management.rs#L5076) | receiver-type-required |
+| `write_session` | `schema::Event::from_value` | [5076](../../src/management.rs#L5076) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `write_session` | `schema::IJsonValue::parse(&serde_json::to_vec(&value).expect("json")).expect` | [5077](../../src/management.rs#L5077) | receiver-type-required |
+| `write_session` | `schema::IJsonValue::parse` | [5077](../../src/management.rs#L5077) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `write_session` | `serde_json::to_vec(&value).expect` | [5077](../../src/management.rs#L5077) | receiver-type-required |
+| `write_session` | `serde_json::to_vec` | [5077](../../src/management.rs#L5077) | external-constructor-callback-or-unresolved |
+| `write_session` | `root.join("threads").join` | [5080](../../src/management.rs#L5080) | receiver-type-required |
+| `write_session` | `root.join` | [5080](../../src/management.rs#L5080) | receiver-type-required |
+| `write_session` | `std::fs::create_dir_all(&folder).expect` | [5081](../../src/management.rs#L5081) | receiver-type-required |
+| `write_session` | `std::fs::create_dir_all` | [5081](../../src/management.rs#L5081) | external-constructor-callback-or-unresolved |
+| `write_session` | `std::fs::write(             folder.join("main.jsonl"),             canonical_event_line(&event).expect("line"),         )         .expect` | [5082](../../src/management.rs#L5082) | receiver-type-required |
+| `write_session` | `std::fs::write` | [5082](../../src/management.rs#L5082) | external-constructor-callback-or-unresolved |
+| `write_session` | `folder.join` | [5083](../../src/management.rs#L5083) | receiver-type-required |
+| `write_session` | `canonical_event_line(&event).expect` | [5084](../../src/management.rs#L5084) | receiver-type-required |
+| `write_session` | `canonical_event_line` | [5084](../../src/management.rs#L5084) | [endpoint::management::canonical_event_line](../../src/management.rs#L3363) |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `folder_store` | [5091](../../src/management.rs#L5091) | [endpoint::management::tests::folder_store](../../src/management.rs#L5016) |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `sibling` | [5092](../../src/management.rs#L5092) | [endpoint::management::tests::sibling](../../src/management.rs#L5034) |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder(                 "folders-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:01.000Z",             )             .expect` | [5093](../../src/management.rs#L5093) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder` | [5093](../../src/management.rs#L5093), [5126](../../src/management.rs#L5126) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `"6".repeat` | [5096](../../src/management.rs#L5096), [5129](../../src/management.rs#L5129) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs().unwrap()[&view.workspace_id].clone` | [5119](../../src/management.rs#L5119), [5181](../../src/management.rs#L5181) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs().unwrap` | [5119](../../src/management.rs#L5119), [5181](../../src/management.rs#L5181) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store.workspace_configs` | [5119](../../src/management.rs#L5119), [5181](../../src/management.rs#L5181) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `expected_roots.sort` | [5121](../../src/management.rs#L5121) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .add_workspace_folder(                 "folders-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:09.000Z",             )             .expect` | [5126](../../src/management.rs#L5126) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .remove_workspace_folder(                 "folders-remove",                 &"a".repeat(64),                 &view.workspace_id,                 &view.path,                 "2026-10-08T00:00:03.000Z",             )             .expect` | [5168](../../src/management.rs#L5168) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `store             .remove_workspace_folder` | [5168](../../src/management.rs#L5168) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `"a".repeat` | [5171](../../src/management.rs#L5171) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `drop` | [5195](../../src/management.rs#L5195) | external-constructor-callback-or-unresolved |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:01:00.000Z")                 .expect` | [5197](../../src/management.rs#L5197) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `ManagementStore::open_at` | [5197](../../src/management.rs#L5197) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `root.path().join` | [5197](../../src/management.rs#L5197) | receiver-type-required |
+| `folders_are_added_listed_and_removed_with_their_writable_roots` | `root.path` | [5197](../../src/management.rs#L5197) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `folder_store` | [5207](../../src/management.rs#L5207) | [endpoint::management::tests::folder_store](../../src/management.rs#L5016) |
+| `a_folder_bound_to_a_session_is_not_removed` | `sibling` | [5208](../../src/management.rs#L5208) | [endpoint::management::tests::sibling](../../src/management.rs#L5034) |
+| `a_folder_bound_to_a_session_is_not_removed` | `store             .add_workspace_folder(                 "bound-add",                 &"6".repeat(64),                 &view.workspace_id,                 &second,                 "2026-10-08T00:00:01.000Z",             )             .expect` | [5209](../../src/management.rs#L5209) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `store             .add_workspace_folder` | [5209](../../src/management.rs#L5209) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `"6".repeat` | [5212](../../src/management.rs#L5212) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `write_session` | [5219](../../src/management.rs#L5219) | [endpoint::management::tests::write_session](../../src/management.rs#L5045) |
+| `a_folder_bound_to_a_session_is_not_removed` | `root.path().join` | [5220](../../src/management.rs#L5220) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `root.path` | [5220](../../src/management.rs#L5220) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `Some` | [5223](../../src/management.rs#L5223) | external-constructor-callback-or-unresolved |
+| `a_folder_bound_to_a_session_is_not_removed` | `store.remove_workspace_folder` | [5225](../../src/management.rs#L5225) | receiver-type-required |
+| `a_folder_bound_to_a_session_is_not_removed` | `"a".repeat` | [5227](../../src/management.rs#L5227) | receiver-type-required |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `folder_store` | [5253](../../src/management.rs#L5253) | [endpoint::management::tests::folder_store](../../src/management.rs#L5016) |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `sibling` | [5254](../../src/management.rs#L5254) | [endpoint::management::tests::sibling](../../src/management.rs#L5034) |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `write_session` | [5256](../../src/management.rs#L5256) | [endpoint::management::tests::write_session](../../src/management.rs#L5045) |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `root.path().join` | [5257](../../src/management.rs#L5257) | receiver-type-required |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `root.path` | [5257](../../src/management.rs#L5257) | receiver-type-required |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `store.add_workspace_folder` | [5262](../../src/management.rs#L5262) | receiver-type-required |
+| `a_legacy_unbound_session_blocks_a_second_folder` | `"6".repeat` | [5264](../../src/management.rs#L5264) | receiver-type-required |
+| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `"legacy".to_owned` | [5289](../../src/management.rs#L5289), [5290](../../src/management.rs#L5290) | receiver-type-required |
+| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `Vec::new` | [5292](../../src/management.rs#L5292) | external-constructor-callback-or-unresolved |
+| `folder_edits_materialize_a_legacy_cwd_workspace_with_its_synthesized_ids` | `super::with_added_folder` | [5295](../../src/management.rs#L5295) | [endpoint::management::with_added_folder](../../src/management.rs#L3550) |
+| `completed_workspace_operation_never_reopens_its_old_path` | `tempfile::tempdir().expect` | [5318](../../src/management.rs#L5318) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `tempfile::tempdir` | [5318](../../src/management.rs#L5318) | external-constructor-callback-or-unresolved |
+| `completed_workspace_operation_never_reopens_its_old_path` | `root.path().join` | [5319](../../src/management.rs#L5319), [5322](../../src/management.rs#L5322), [5334](../../src/management.rs#L5334) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `root.path` | [5319](../../src/management.rs#L5319), [5322](../../src/management.rs#L5322), [5334](../../src/management.rs#L5334) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::create_dir(&project).expect` | [5320](../../src/management.rs#L5320) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::create_dir` | [5320](../../src/management.rs#L5320) | external-constructor-callback-or-unresolved |
+| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:00.000Z")                 .expect` | [5322](../../src/management.rs#L5322) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at` | [5322](../../src/management.rs#L5322), [5334](../../src/management.rs#L5334) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `completed_workspace_operation_never_reopens_its_old_path` | `store             .create_workspace(                 "completed-workspace-create",                 &"1".repeat(64),                 &project.to_string_lossy(),                 "2026-09-01T00:00:00.000Z",             )             .expect` | [5324](../../src/management.rs#L5324) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `store             .create_workspace` | [5324](../../src/management.rs#L5324) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `"1".repeat` | [5327](../../src/management.rs#L5327) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `project.to_string_lossy` | [5328](../../src/management.rs#L5328) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::remove_dir(&project).expect` | [5332](../../src/management.rs#L5332) | receiver-type-required |
+| `completed_workspace_operation_never_reopens_its_old_path` | `std::fs::remove_dir` | [5332](../../src/management.rs#L5332) | external-constructor-callback-or-unresolved |
+| `completed_workspace_operation_never_reopens_its_old_path` | `ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:01.000Z")             .expect` | [5334](../../src/management.rs#L5334) | receiver-type-required |
+| `create_in` | `store             .create_session(super::SessionCreateOperation {                 environment: None,                 rpc_id,                 request_sha256: &format!("{:0>64}", rpc_id.len()),                 requested_session_id: None,                 workspace_id: None,                 cwd: Some(cwd),                 identity_profile: None,                 preset: None,                 preset_mcp: None,                 preset_models: None,                 user_agent_dir: agents,                 started_at: "2026-10-15T00:00:00.000Z",                 principal: "test",             })             .expect` | [5339](../../src/management.rs#L5339) | receiver-type-required |
+| `create_in` | `store             .create_session` | [5339](../../src/management.rs#L5339) | receiver-type-required |
+| `create_in` | `Some` | [5346](../../src/management.rs#L5346) | external-constructor-callback-or-unresolved |
+| `session_create_registers_an_unknown_cwd_once` | `tempfile::tempdir().expect` | [5360](../../src/management.rs#L5360) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `tempfile::tempdir` | [5360](../../src/management.rs#L5360) | external-constructor-callback-or-unresolved |
+| `session_create_registers_an_unknown_cwd_once` | `root.path().join` | [5361](../../src/management.rs#L5361), [5362](../../src/management.rs#L5362), [5363](../../src/management.rs#L5363), [5364](../../src/management.rs#L5364) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `root.path` | [5361](../../src/management.rs#L5361), [5362](../../src/management.rs#L5362), [5363](../../src/management.rs#L5363), [5364](../../src/management.rs#L5364) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `root.path().join("one").join` | [5363](../../src/management.rs#L5363) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `root.path().join("two").join` | [5364](../../src/management.rs#L5364) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all(&alpha).expect` | [5365](../../src/management.rs#L5365) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all` | [5365](../../src/management.rs#L5365), [5366](../../src/management.rs#L5366) | external-constructor-callback-or-unresolved |
+| `session_create_registers_an_unknown_cwd_once` | `fs::create_dir_all(&beta).expect` | [5366](../../src/management.rs#L5366) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5367](../../src/management.rs#L5367) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `ManagementStore::open_at` | [5367](../../src/management.rs#L5367) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `session_create_registers_an_unknown_cwd_once` | `alpha.to_string_lossy` | [5368](../../src/management.rs#L5368) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `create_in` | [5370](../../src/management.rs#L5370), [5396](../../src/management.rs#L5396), [5401](../../src/management.rs#L5401) | [endpoint::management::tests::create_in](../../src/management.rs#L5338) |
+| `session_create_registers_an_unknown_cwd_once` | `store.workspace_configs().expect` | [5371](../../src/management.rs#L5371) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store.workspace_configs` | [5371](../../src/management.rs#L5371) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `configs.values().next().expect("registered").clone` | [5373](../../src/management.rs#L5373) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `configs.values().next().expect` | [5373](../../src/management.rs#L5373) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `configs.values().next` | [5373](../../src/management.rs#L5373) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `configs.values` | [5373](../../src/management.rs#L5373) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `alpha.canonicalize().expect` | [5374](../../src/management.rs#L5374) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `alpha.canonicalize` | [5374](../../src/management.rs#L5374) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis(storage.join("threads").join(&first).join("main.jsonl"))             .expect("read genesis")             .expect` | [5386](../../src/management.rs#L5386) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis(storage.join("threads").join(&first).join("main.jsonl"))             .expect` | [5386](../../src/management.rs#L5386) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store::read_genesis` | [5386](../../src/management.rs#L5386) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `session_create_registers_an_unknown_cwd_once` | `storage.join("threads").join(&first).join` | [5386](../../src/management.rs#L5386) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `storage.join("threads").join` | [5386](../../src/management.rs#L5386) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `storage.join` | [5386](../../src/management.rs#L5386) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `serde_json::to_value(genesis.raw()).expect` | [5390](../../src/management.rs#L5390) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `serde_json::to_value` | [5390](../../src/management.rs#L5390) | external-constructor-callback-or-unresolved |
+| `session_create_registers_an_unknown_cwd_once` | `genesis.raw` | [5390](../../src/management.rs#L5390) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `beta.to_string_lossy` | [5401](../../src/management.rs#L5401) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values()             .map(&#124;config&#124; config.name.clone())             .collect::<Vec<_>>` | [5402](../../src/management.rs#L5402) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values()             .map` | [5402](../../src/management.rs#L5402) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect("configs")             .values` | [5402](../../src/management.rs#L5402) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs()             .expect` | [5402](../../src/management.rs#L5402) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `store             .workspace_configs` | [5402](../../src/management.rs#L5402) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `config.name.clone` | [5406](../../src/management.rs#L5406) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `names.sort` | [5408](../../src/management.rs#L5408) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect("endpoint")             .list_sessions(&std::collections::HashSet::new())             .expect` | [5411](../../src/management.rs#L5411) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect("endpoint")             .list_sessions` | [5411](../../src/management.rs#L5411) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open(&storage)             .expect` | [5411](../../src/management.rs#L5411) | receiver-type-required |
+| `session_create_registers_an_unknown_cwd_once` | `crate::NativeEndpoint::open` | [5411](../../src/management.rs#L5411) | [endpoint::service::NativeEndpoint::open](../../src/service.rs#L263) |
+| `session_create_registers_an_unknown_cwd_once` | `std::collections::HashSet::new` | [5413](../../src/management.rs#L5413) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `tempfile::tempdir().expect` | [5427](../../src/management.rs#L5427) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `tempfile::tempdir` | [5427](../../src/management.rs#L5427) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `root.path().join` | [5428](../../src/management.rs#L5428), [5429](../../src/management.rs#L5429), [5430](../../src/management.rs#L5430) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `root.path` | [5428](../../src/management.rs#L5428), [5429](../../src/management.rs#L5429), [5430](../../src/management.rs#L5430) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all(&project).expect` | [5431](../../src/management.rs#L5431) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all` | [5431](../../src/management.rs#L5431), [5444](../../src/management.rs#L5444) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5432](../../src/management.rs#L5432) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `ManagementStore::open_at` | [5432](../../src/management.rs#L5432) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store             .create_workspace(                 "skills-workspace",                 &"7".repeat(64),                 &project.to_string_lossy(),                 "2026-10-15T00:00:00.000Z",             )             .expect` | [5433](../../src/management.rs#L5433) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store             .create_workspace` | [5433](../../src/management.rs#L5433) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `"7".repeat` | [5436](../../src/management.rs#L5436) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `project.to_string_lossy` | [5437](../../src/management.rs#L5437) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `dir.join("skills").join` | [5443](../../src/management.rs#L5443) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `dir.join` | [5443](../../src/management.rs#L5443) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::create_dir_all(&skill).expect` | [5444](../../src/management.rs#L5444) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::write(skill.join("SKILL.md"), manifest).expect` | [5445](../../src/management.rs#L5445) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `fs::write` | [5445](../../src/management.rs#L5445) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `skill.join` | [5445](../../src/management.rs#L5445) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `store.create_session` | [5449](../../src/management.rs#L5449) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `"8".repeat` | [5452](../../src/management.rs#L5452) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `Some` | [5454](../../src/management.rs#L5454), [5457](../../src/management.rs#L5457) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `write_skill` | [5467](../../src/management.rs#L5467), [5475](../../src/management.rs#L5475) | external-constructor-callback-or-unresolved |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `agents.join("workspaces").join` | [5467](../../src/management.rs#L5467) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `agents.join` | [5467](../../src/management.rs#L5467) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `storage.join("workspaces").join` | [5475](../../src/management.rs#L5475) | receiver-type-required |
+| `session_create_reads_workspace_skills_where_the_worker_launch_does` | `storage.join` | [5475](../../src/management.rs#L5475) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `tempfile::tempdir().expect` | [5484](../../src/management.rs#L5484) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `tempfile::tempdir` | [5484](../../src/management.rs#L5484) | external-constructor-callback-or-unresolved |
+| `session_folders_are_recorded_at_create_and_never_widened` | `root.path().join` | [5485](../../src/management.rs#L5485), [5486](../../src/management.rs#L5486), [5487](../../src/management.rs#L5487), [5488](../../src/management.rs#L5488) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `root.path` | [5485](../../src/management.rs#L5485), [5486](../../src/management.rs#L5486), [5487](../../src/management.rs#L5487), [5488](../../src/management.rs#L5488) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all(&first).expect` | [5489](../../src/management.rs#L5489) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all` | [5489](../../src/management.rs#L5489), [5490](../../src/management.rs#L5490) | external-constructor-callback-or-unresolved |
+| `session_folders_are_recorded_at_create_and_never_widened` | `fs::create_dir_all(&second).expect` | [5490](../../src/management.rs#L5490) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5491](../../src/management.rs#L5491) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `ManagementStore::open_at` | [5491](../../src/management.rs#L5491) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `session_folders_are_recorded_at_create_and_never_widened` | `first.to_string_lossy` | [5492](../../src/management.rs#L5492) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `create_in` | [5493](../../src/management.rs#L5493), [5509](../../src/management.rs#L5509) | [endpoint::management::tests::create_in](../../src/management.rs#L5338) |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next()             .expect` | [5494](../../src/management.rs#L5494) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next` | [5494](../../src/management.rs#L5494) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect("configs")             .into_keys` | [5494](../../src/management.rs#L5494) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs()             .expect` | [5494](../../src/management.rs#L5494) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .workspace_configs` | [5494](../../src/management.rs#L5494) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .add_workspace_folder(                 "add-second",                 &"9".repeat(64),                 &workspace_id,                 &second.to_string_lossy(),                 "2026-10-15T00:00:01.000Z",             )             .expect` | [5500](../../src/management.rs#L5500) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `store             .add_workspace_folder` | [5500](../../src/management.rs#L5500) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `"9".repeat` | [5503](../../src/management.rs#L5503) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `second.to_string_lossy` | [5505](../../src/management.rs#L5505) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `ConfigRepository::open(&storage).expect` | [5510](../../src/management.rs#L5510) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `ConfigRepository::open` | [5510](../../src/management.rs#L5510) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate(&storage, session)                 .and_then(&#124;scope&#124; scope.config(&repository))                 .expect` | [5512](../../src/management.rs#L5512) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate(&storage, session)                 .and_then` | [5512](../../src/management.rs#L5512) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `profile::SessionScope::locate` | [5512](../../src/management.rs#L5512) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L32) |
+| `session_folders_are_recorded_at_create_and_never_widened` | `scope.config` | [5513](../../src/management.rs#L5513) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect("canonical")                 .to_string_lossy()                 .into_owned` | [5519](../../src/management.rs#L5519) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect("canonical")                 .to_string_lossy` | [5519](../../src/management.rs#L5519) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize()                 .expect` | [5519](../../src/management.rs#L5519) | receiver-type-required |
+| `session_folders_are_recorded_at_create_and_never_widened` | `path.canonicalize` | [5519](../../src/management.rs#L5519) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `tempfile::tempdir().expect` | [5542](../../src/management.rs#L5542) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `tempfile::tempdir` | [5542](../../src/management.rs#L5542) | external-constructor-callback-or-unresolved |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `root.path().join` | [5544](../../src/management.rs#L5544), [5546](../../src/management.rs#L5546) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `root.path` | [5544](../../src/management.rs#L5544), [5546](../../src/management.rs#L5546) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `home.join` | [5545](../../src/management.rs#L5545), [5547](../../src/management.rs#L5547) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect` | [5548](../../src/management.rs#L5548) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `ManagementStore::open_at` | [5548](../../src/management.rs#L5548) | [endpoint::management::ManagementStore::open_at](../../src/management.rs#L469) |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::write(&file, b"notes").expect` | [5549](../../src/management.rs#L5549) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::write` | [5549](../../src/management.rs#L5549) | external-constructor-callback-or-unresolved |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `"/".to_owned` | [5551](../../src/management.rs#L5551) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.to_string_lossy().into_owned` | [5552](../../src/management.rs#L5552) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.to_string_lossy` | [5552](../../src/management.rs#L5552) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join("threads").to_string_lossy().into_owned` | [5553](../../src/management.rs#L5553) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join("threads").to_string_lossy` | [5553](../../src/management.rs#L5553) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `storage.join` | [5553](../../src/management.rs#L5553), [5600](../../src/management.rs#L5600) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `file.to_string_lossy().into_owned` | [5554](../../src/management.rs#L5554) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `file.to_string_lossy` | [5554](../../src/management.rs#L5554) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `rejected.iter().enumerate` | [5556](../../src/management.rs#L5556) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `rejected.iter` | [5556](../../src/management.rs#L5556) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store.create_session` | [5569](../../src/management.rs#L5569) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `"2".repeat` | [5572](../../src/management.rs#L5572) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `Some` | [5575](../../src/management.rs#L5575) | external-constructor-callback-or-unresolved |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `created.err` | [5584](../../src/management.rs#L5584) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `home.to_string_lossy` | [5592](../../src/management.rs#L5592) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `create_in` | [5593](../../src/management.rs#L5593) | [endpoint::management::tests::create_in](../../src/management.rs#L5338) |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next()             .expect` | [5594](../../src/management.rs#L5594) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys()             .next` | [5594](../../src/management.rs#L5594) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect("configs")             .into_keys` | [5594](../../src/management.rs#L5594) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs()             .expect` | [5594](../../src/management.rs#L5594) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `store             .workspace_configs` | [5594](../../src/management.rs#L5594) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::create_dir_all(&inside).expect` | [5601](../../src/management.rs#L5601) | receiver-type-required |
+| `folders_never_name_the_filesystem_root_or_kernel_storage` | `fs::create_dir_all` | [5601](../../src/management.rs#L5601) | external-constructor-callback-or-unresolved |
+| `fixture` | `root.join` | [5642](../../src/management.rs#L5642) | receiver-type-required |
+| `fixture` | `fs::create_dir(&project).expect` | [5643](../../src/management.rs#L5643) | receiver-type-required |
+| `fixture` | `fs::create_dir` | [5643](../../src/management.rs#L5643) | external-constructor-callback-or-unresolved |
+| `fixture` | `project.to_string_lossy().into_owned` | [5644](../../src/management.rs#L5644) | receiver-type-required |
+| `fixture` | `project.to_string_lossy` | [5644](../../src/management.rs#L5644) | receiver-type-required |
+| `fixture` | `ConfigRepository::open(root).expect` | [5645](../../src/management.rs#L5645) | receiver-type-required |
+| `fixture` | `ConfigRepository::open` | [5645](../../src/management.rs#L5645) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `fixture` | `repository             .publish_workspace(                 0,                 &WorkspaceConfig {                     format: 1,                     revision: 1,                     id: WORKSPACE.to_owned(),                     name: "K1".to_owned(),                     cwd: Vec::new(),                     folders: vec![WorkspaceFolder {                         id: "folder-0001".to_owned(),                         path: folder.clone(),                     }],                     policy: Some(default_workspace_policy(&folder)),                 },             )             .expect` | [5646](../../src/management.rs#L5646) | receiver-type-required |
+| `fixture` | `repository             .publish_workspace` | [5646](../../src/management.rs#L5646) | receiver-type-required |
+| `fixture` | `WORKSPACE.to_owned` | [5652](../../src/management.rs#L5652) | receiver-type-required |
+| `fixture` | `"K1".to_owned` | [5653](../../src/management.rs#L5653) | receiver-type-required |
+| `fixture` | `Vec::new` | [5654](../../src/management.rs#L5654) | external-constructor-callback-or-unresolved |
+| `fixture` | `Some` | [5659](../../src/management.rs#L5659) | external-constructor-callback-or-unresolved |
+| `fixture` | `default_workspace_policy` | [5659](../../src/management.rs#L5659) | external-constructor-callback-or-unresolved |
+| `policy_with` | `default_workspace_policy` | [5667](../../src/management.rs#L5667) | external-constructor-callback-or-unresolved |
+| `policy_with` | `project.to_string_lossy` | [5667](../../src/management.rs#L5667) | receiver-type-required |
+| `policy_with` | `policy.allowed_tools.push` | [5668](../../src/management.rs#L5668) | receiver-type-required |
+| `policy_with` | `extra.to_owned` | [5668](../../src/management.rs#L5668) | receiver-type-required |
+| `set_policy` | `repository.workspace(WORKSPACE).expect` | [5673](../../src/management.rs#L5673) | receiver-type-required |
+| `set_policy` | `repository.workspace` | [5673](../../src/management.rs#L5673) | receiver-type-required |
+| `set_policy` | `repository             .publish_workspace_policy(WORKSPACE, revision, policy_with(project, extra))             .expect` | [5674](../../src/management.rs#L5674) | receiver-type-required |
+| `set_policy` | `repository             .publish_workspace_policy` | [5674](../../src/management.rs#L5674) | receiver-type-required |
+| `set_policy` | `policy_with` | [5675](../../src/management.rs#L5675) | [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5666) |
+| `quarantine_root` | `store::endpoint_management_root(root)             .expect("management root")             .join` | [5680](../../src/management.rs#L5680) | receiver-type-required |
+| `quarantine_root` | `store::endpoint_management_root(root)             .expect` | [5680](../../src/management.rs#L5680) | receiver-type-required |
+| `quarantine_root` | `store::endpoint_management_root` | [5680](../../src/management.rs#L5680) | [store::management_root::endpoint_management_root](../../../store/src/management_root.rs#L47) |
+| `stale_metadata` | `store.metadata_path` | [5686](../../src/management.rs#L5686) | receiver-type-required |
+| `stale_metadata` | `read_canonical(&path).expect` | [5687](../../src/management.rs#L5687) | receiver-type-required |
+| `stale_metadata` | `read_canonical` | [5687](../../src/management.rs#L5687) | external-constructor-callback-or-unresolved |
+| `stale_metadata` | `"0".repeat` | [5688](../../src/management.rs#L5688) | receiver-type-required |
+| `stale_metadata` | `publish_canonical(&path, &metadata).expect` | [5689](../../src/management.rs#L5689) | receiver-type-required |
+| `stale_metadata` | `publish_canonical` | [5689](../../src/management.rs#L5689) | external-constructor-callback-or-unresolved |
+| `metadata_matches` | `store.workspace_configs().expect("configs")[id].clone` | [5693](../../src/management.rs#L5693) | receiver-type-required |
+| `metadata_matches` | `store.workspace_configs().expect` | [5693](../../src/management.rs#L5693) | receiver-type-required |
+| `metadata_matches` | `store.workspace_configs` | [5693](../../src/management.rs#L5693) | receiver-type-required |
+| `metadata_matches` | `verify_metadata(&config, &store.read_metadata(id).expect("metadata")).is_ok` | [5694](../../src/management.rs#L5694) | receiver-type-required |
+| `metadata_matches` | `verify_metadata` | [5694](../../src/management.rs#L5694) | external-constructor-callback-or-unresolved |
+| `metadata_matches` | `store.read_metadata(id).expect` | [5694](../../src/management.rs#L5694) | receiver-type-required |
+| `metadata_matches` | `store.read_metadata` | [5694](../../src/management.rs#L5694) | receiver-type-required |
+| `stuck_carriers_record` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [5705](../../src/management.rs#L5705) | receiver-type-required |
+| `stuck_carriers_record` | `store.workspace_configs().expect` | [5705](../../src/management.rs#L5705) | receiver-type-required |
+| `stuck_carriers_record` | `store.workspace_configs` | [5705](../../src/management.rs#L5705) | receiver-type-required |
+| `stuck_carriers_record` | `"K1 renamed".to_owned` | [5707](../../src/management.rs#L5707) | receiver-type-required |
+| `stuck_carriers_record` | `hex_digest` | [5708](../../src/management.rs#L5708) | external-constructor-callback-or-unresolved |
+| `stuck_carriers_record` | `canonical_line(&config).expect` | [5708](../../src/management.rs#L5708) | receiver-type-required |
+| `stuck_carriers_record` | `canonical_line` | [5708](../../src/management.rs#L5708) | external-constructor-callback-or-unresolved |
+| `stuck_carriers_record` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id,                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [5709](../../src/management.rs#L5709) | receiver-type-required |
+| `stuck_carriers_record` | `store             .begin_workspace_operation` | [5709](../../src/management.rs#L5709) | receiver-type-required |
+| `stuck_carriers_record` | `publish_canonical(&path, &record).expect` | [5723](../../src/management.rs#L5723) | receiver-type-required |
+| `stuck_carriers_record` | `publish_canonical` | [5723](../../src/management.rs#L5723) | external-constructor-callback-or-unresolved |
+| `stuck_carriers_record` | `set_policy` | [5724](../../src/management.rs#L5724), [5725](../../src/management.rs#L5725) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5672) |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `tempfile::tempdir().expect` | [5734](../../src/management.rs#L5734) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `tempfile::tempdir` | [5734](../../src/management.rs#L5734) | external-constructor-callback-or-unresolved |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `fixture` | [5735](../../src/management.rs#L5735) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `root.path` | [5735](../../src/management.rs#L5735), [5736](../../src/management.rs#L5736), [5743](../../src/management.rs#L5743), [5757](../../src/management.rs#L5757) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5736](../../src/management.rs#L5736) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at` | [5736](../../src/management.rs#L5736) | external-constructor-callback-or-unresolved |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `store.operation_paths().expect` | [5737](../../src/management.rs#L5737) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `store.operation_paths` | [5737](../../src/management.rs#L5737) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `set_policy` | [5738](../../src/management.rs#L5738), [5756](../../src/management.rs#L5756) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5672) |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `stale_metadata` | [5739](../../src/management.rs#L5739) | [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5685) |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `CompleteOperations::default` | [5742](../../src/management.rs#L5742) | external-constructor-callback-or-unresolved |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)             .expect` | [5743](../../src/management.rs#L5743) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_recovering_again` | [5743](../../src/management.rs#L5743) | external-constructor-callback-or-unresolved |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5757](../../src/management.rs#L5757) | receiver-type-required |
+| `tick_heals_stale_metadata_without_staging_an_operation` | `ManagementStore::open_at_with_queue_driver` | [5757](../../src/management.rs#L5757) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `tempfile::tempdir().expect` | [5764](../../src/management.rs#L5764) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `tempfile::tempdir` | [5764](../../src/management.rs#L5764) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `fixture` | [5765](../../src/management.rs#L5765) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `tick_never_fails_while_policy_set_publishes` | `root.path` | [5765](../../src/management.rs#L5765), [5766](../../src/management.rs#L5766), [5770](../../src/management.rs#L5770), [5789](../../src/management.rs#L5789), [5800](../../src/management.rs#L5800) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5766](../../src/management.rs#L5766) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at` | [5766](../../src/management.rs#L5766) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `Arc::new` | [5767](../../src/management.rs#L5767) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `AtomicBool::new` | [5767](../../src/management.rs#L5767) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `Arc::clone` | [5769](../../src/management.rs#L5769) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `root.path().to_path_buf` | [5770](../../src/management.rs#L5770) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `std::thread::spawn` | [5771](../../src/management.rs#L5771) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `ConfigRepository::open(&root).expect` | [5772](../../src/management.rs#L5772) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ConfigRepository::open` | [5772](../../src/management.rs#L5772) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `tick_never_fails_while_policy_set_publishes` | `stop.load` | [5774](../../src/management.rs#L5774) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `repository.workspace(WORKSPACE).expect` | [5775](../../src/management.rs#L5775) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `repository.workspace` | [5775](../../src/management.rs#L5775) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `repository.publish_workspace_policy` | [5776](../../src/management.rs#L5776) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `policy_with` | [5779](../../src/management.rs#L5779) | [endpoint::management::k1_management_race::policy_with](../../src/management.rs#L5666) |
+| `tick_never_fails_while_policy_set_publishes` | `CompleteOperations::default` | [5786](../../src/management.rs#L5786) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_recovering_again(root.path(), TICK, None, &mut validated)                 .is_err` | [5789](../../src/management.rs#L5789) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_recovering_again` | [5789](../../src/management.rs#L5789) | external-constructor-callback-or-unresolved |
+| `tick_never_fails_while_policy_set_publishes` | `stop.store` | [5795](../../src/management.rs#L5795) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `writer.join().expect` | [5796](../../src/management.rs#L5796) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `writer.join` | [5796](../../src/management.rs#L5796) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5800](../../src/management.rs#L5800) | receiver-type-required |
+| `tick_never_fails_while_policy_set_publishes` | `ManagementStore::open_at_with_queue_driver` | [5800](../../src/management.rs#L5800) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `fixture` | [5809](../../src/management.rs#L5809) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `parked_synthetic_rename` | `ManagementStore::open_at(root, BOOT).expect` | [5810](../../src/management.rs#L5810) | receiver-type-required |
+| `parked_synthetic_rename` | `ManagementStore::open_at` | [5810](../../src/management.rs#L5810) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `default_workspace_policy` | [5812](../../src/management.rs#L5812) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `project.to_string_lossy` | [5812](../../src/management.rs#L5812) | receiver-type-required |
+| `parked_synthetic_rename` | `(0..232)             .map(&#124;index&#124; format!("mcp__fixture_server__tool_{index:03}"))             .collect` | [5813](../../src/management.rs#L5813) | receiver-type-required |
+| `parked_synthetic_rename` | `(0..232)             .map` | [5813](../../src/management.rs#L5813) | receiver-type-required |
+| `parked_synthetic_rename` | `repository.workspace(WORKSPACE).expect` | [5816](../../src/management.rs#L5816) | receiver-type-required |
+| `parked_synthetic_rename` | `repository.workspace` | [5816](../../src/management.rs#L5816) | receiver-type-required |
+| `parked_synthetic_rename` | `repository             .publish_workspace_policy(WORKSPACE, revision, policy)             .expect` | [5817](../../src/management.rs#L5817) | receiver-type-required |
+| `parked_synthetic_rename` | `repository             .publish_workspace_policy` | [5817](../../src/management.rs#L5817) | receiver-type-required |
+| `parked_synthetic_rename` | `stale_metadata` | [5820](../../src/management.rs#L5820) | [endpoint::management::k1_management_race::stale_metadata](../../src/management.rs#L5685) |
+| `parked_synthetic_rename` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [5821](../../src/management.rs#L5821) | receiver-type-required |
+| `parked_synthetic_rename` | `store.workspace_configs().expect` | [5821](../../src/management.rs#L5821) | receiver-type-required |
+| `parked_synthetic_rename` | `store.workspace_configs` | [5821](../../src/management.rs#L5821) | receiver-type-required |
+| `parked_synthetic_rename` | `hex_digest` | [5823](../../src/management.rs#L5823) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `canonical_line(&config).expect` | [5823](../../src/management.rs#L5823) | receiver-type-required |
+| `parked_synthetic_rename` | `canonical_line` | [5823](../../src/management.rs#L5823) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: &rpc_id,                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [5826](../../src/management.rs#L5826) | receiver-type-required |
+| `parked_synthetic_rename` | `store             .begin_workspace_operation` | [5826](../../src/management.rs#L5826) | receiver-type-required |
+| `parked_synthetic_rename` | `publish_canonical(&path, &record).expect` | [5840](../../src/management.rs#L5840) | receiver-type-required |
+| `parked_synthetic_rename` | `publish_canonical` | [5840](../../src/management.rs#L5840) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `set_policy` | [5846](../../src/management.rs#L5846) | [endpoint::management::k1_management_race::set_policy](../../src/management.rs#L5672) |
+| `parked_synthetic_rename` | `fs::read(store.operation_payload_path(&rpc_id).join("workspace.json")).expect` | [5849](../../src/management.rs#L5849) | receiver-type-required |
+| `parked_synthetic_rename` | `fs::read` | [5849](../../src/management.rs#L5849), [5850](../../src/management.rs#L5850) | external-constructor-callback-or-unresolved |
+| `parked_synthetic_rename` | `store.operation_payload_path(&rpc_id).join` | [5849](../../src/management.rs#L5849) | receiver-type-required |
+| `parked_synthetic_rename` | `store.operation_payload_path` | [5849](../../src/management.rs#L5849) | receiver-type-required |
+| `parked_synthetic_rename` | `fs::read(&path).expect` | [5850](../../src/management.rs#L5850) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `tempfile::tempdir().expect` | [5858](../../src/management.rs#L5858) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `tempfile::tempdir` | [5858](../../src/management.rs#L5858) | external-constructor-callback-or-unresolved |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `parked_synthetic_rename` | [5859](../../src/management.rs#L5859) | [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5808) |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `root.path` | [5859](../../src/management.rs#L5859), [5860](../../src/management.rs#L5860), [5869](../../src/management.rs#L5869), [5873](../../src/management.rs#L5873), [5900](../../src/management.rs#L5900) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ConfigRepository::open(root.path()).expect` | [5860](../../src/management.rs#L5860) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ConfigRepository::open` | [5860](../../src/management.rs#L5860) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect("stem")             .to_string_lossy()             .into_owned` | [5862](../../src/management.rs#L5862) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect("stem")             .to_string_lossy` | [5862](../../src/management.rs#L5862) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem()             .expect` | [5862](../../src/management.rs#L5862) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `path             .file_stem` | [5862](../../src/management.rs#L5862) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)             .expect` | [5869](../../src/management.rs#L5869) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver` | [5869](../../src/management.rs#L5869), [5900](../../src/management.rs#L5900) | external-constructor-callback-or-unresolved |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `quarantine_root(root.path()).join` | [5873](../../src/management.rs#L5873) | receiver-type-required |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `quarantine_root` | [5873](../../src/management.rs#L5873) | [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5679) |
+| `boot_quarantines_the_parked_carriers_record_and_succeeds` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5900](../../src/management.rs#L5900) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `tempfile::tempdir().expect` | [5913](../../src/management.rs#L5913) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `tempfile::tempdir` | [5913](../../src/management.rs#L5913) | external-constructor-callback-or-unresolved |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `parked_synthetic_rename` | [5914](../../src/management.rs#L5914) | [endpoint::management::k1_management_race::parked_synthetic_rename](../../src/management.rs#L5808) |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `root.path` | [5914](../../src/management.rs#L5914), [5920](../../src/management.rs#L5920) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `read_canonical(&path).expect` | [5915](../../src/management.rs#L5915) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `read_canonical` | [5915](../../src/management.rs#L5915) | external-constructor-callback-or-unresolved |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `publish_canonical(&path, &record).expect` | [5917](../../src/management.rs#L5917) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `publish_canonical` | [5917](../../src/management.rs#L5917) | external-constructor-callback-or-unresolved |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `fs::read(&path).expect` | [5918](../../src/management.rs#L5918) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `fs::read` | [5918](../../src/management.rs#L5918) | external-constructor-callback-or-unresolved |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None)             .expect` | [5920](../../src/management.rs#L5920) | receiver-type-required |
+| `record_of_another_version_is_left_in_place_not_quarantined` | `ManagementStore::open_at_with_queue_driver` | [5920](../../src/management.rs#L5920) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `tempfile::tempdir().expect` | [5935](../../src/management.rs#L5935) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `tempfile::tempdir` | [5935](../../src/management.rs#L5935) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fixture` | [5936](../../src/management.rs#L5936) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `root.path` | [5936](../../src/management.rs#L5936), [5937](../../src/management.rs#L5937), [5952](../../src/management.rs#L5952), [5957](../../src/management.rs#L5957), [5959](../../src/management.rs#L5959), [5976](../../src/management.rs#L5976), [5985](../../src/management.rs#L5985), [5986](../../src/management.rs#L5986) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at(root.path(), BOOT).expect` | [5937](../../src/management.rs#L5937) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at` | [5937](../../src/management.rs#L5937) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `stuck_carriers_record` | [5938](../../src/management.rs#L5938), [5983](../../src/management.rs#L5983) | [endpoint::management::k1_management_race::stuck_carriers_record](../../src/management.rs#L5699) |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect("stem")             .to_string_lossy()             .into_owned` | [5939](../../src/management.rs#L5939) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect("stem")             .to_string_lossy` | [5939](../../src/management.rs#L5939) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem()             .expect` | [5939](../../src/management.rs#L5939) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `path             .file_stem` | [5939](../../src/management.rs#L5939) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read(&path).expect` | [5944](../../src/management.rs#L5944) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read` | [5944](../../src/management.rs#L5944), [5945](../../src/management.rs#L5945) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::read(             store                 .operation_payload_path("rpc-stuck")                 .join("workspace.json"),         )         .expect` | [5945](../../src/management.rs#L5945) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `store                 .operation_payload_path("rpc-stuck")                 .join` | [5946](../../src/management.rs#L5946) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `store                 .operation_payload_path` | [5946](../../src/management.rs#L5946) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `quarantine_root(root.path()).join` | [5952](../../src/management.rs#L5952), [5959](../../src/management.rs#L5959), [5986](../../src/management.rs#L5986) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `quarantine_root` | [5952](../../src/management.rs#L5952), [5959](../../src/management.rs#L5959), [5986](../../src/management.rs#L5986) | [endpoint::management::k1_management_race::quarantine_root](../../src/management.rs#L5679) |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::create_dir_all(partial.join("payload-root/stale")).expect` | [5953](../../src/management.rs#L5953) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::create_dir_all` | [5953](../../src/management.rs#L5953) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `partial.join` | [5953](../../src/management.rs#L5953), [5954](../../src/management.rs#L5954) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::write(partial.join("payload-root/stale/leftover"), b"x").expect` | [5954](../../src/management.rs#L5954) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `fs::write` | [5954](../../src/management.rs#L5954) | external-constructor-callback-or-unresolved |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `repository.workspace(WORKSPACE).expect` | [5955](../../src/management.rs#L5955) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `repository.workspace` | [5955](../../src/management.rs#L5955) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [5957](../../src/management.rs#L5957), [5976](../../src/management.rs#L5976), [5985](../../src/management.rs#L5985) | receiver-type-required |
+| `quarantine_keeps_the_payload_and_never_redrives_the_operation` | `ManagementStore::open_at_with_queue_driver` | [5957](../../src/management.rs#L5957), [5976](../../src/management.rs#L5976), [5985](../../src/management.rs#L5985) | external-constructor-callback-or-unresolved |
+| `complete_workspace_record_without_response_is_quarantined` | `tempfile::tempdir().expect` | [5998](../../src/management.rs#L5998) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `tempfile::tempdir` | [5998](../../src/management.rs#L5998) | external-constructor-callback-or-unresolved |
+| `complete_workspace_record_without_response_is_quarantined` | `fixture` | [5999](../../src/management.rs#L5999) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `complete_workspace_record_without_response_is_quarantined` | `root.path` | [5999](../../src/management.rs#L5999), [6000](../../src/management.rs#L6000), [6018](../../src/management.rs#L6018) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at(root.path(), BOOT).expect` | [6000](../../src/management.rs#L6000) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at` | [6000](../../src/management.rs#L6000) | external-constructor-callback-or-unresolved |
+| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [6001](../../src/management.rs#L6001) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs().expect` | [6001](../../src/management.rs#L6001) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `store.workspace_configs` | [6001](../../src/management.rs#L6001) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "rpc-complete",                 request_sha256: &"1".repeat(64),                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [6002](../../src/management.rs#L6002) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `store             .begin_workspace_operation` | [6002](../../src/management.rs#L6002) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `"1".repeat` | [6005](../../src/management.rs#L6005) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `publish_canonical(&path, &record).expect` | [6016](../../src/management.rs#L6016) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `publish_canonical` | [6016](../../src/management.rs#L6016) | external-constructor-callback-or-unresolved |
+| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at_with_queue_driver(root.path(), LATER, None).expect` | [6018](../../src/management.rs#L6018) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `ManagementStore::open_at_with_queue_driver` | [6018](../../src/management.rs#L6018) | external-constructor-callback-or-unresolved |
+| `complete_workspace_record_without_response_is_quarantined` | `path.file_stem().expect` | [6021](../../src/management.rs#L6021) | receiver-type-required |
+| `complete_workspace_record_without_response_is_quarantined` | `path.file_stem` | [6021](../../src/management.rs#L6021) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `tempfile::tempdir().expect` | [6034](../../src/management.rs#L6034) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `tempfile::tempdir` | [6034](../../src/management.rs#L6034) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `fixture` | [6035](../../src/management.rs#L6035) | [endpoint::management::k1_management_race::fixture](../../src/management.rs#L5641) |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `root.path` | [6035](../../src/management.rs#L6035), [6036](../../src/management.rs#L6036) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `ManagementStore::open_at(root.path(), BOOT).expect` | [6036](../../src/management.rs#L6036) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `ManagementStore::open_at` | [6036](../../src/management.rs#L6036) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs().expect("configs")[WORKSPACE].clone` | [6037](../../src/management.rs#L6037) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs().expect` | [6037](../../src/management.rs#L6037) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.workspace_configs` | [6037](../../src/management.rs#L6037) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `"K1 recovered".to_owned` | [6039](../../src/management.rs#L6039) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `hex_digest` | [6040](../../src/management.rs#L6040) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `canonical_line(&config).expect` | [6040](../../src/management.rs#L6040) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `canonical_line` | [6040](../../src/management.rs#L6040) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .begin_workspace_operation(WorkspaceOperationWrite {                 rpc_id: "rpc-pending",                 request_sha256: &digest,                 operation: "workspace.rename",                 action: "rename",                 config: &config,                 started_at: TICK,                 created: None,                 relocation: None,                 folder: None,             })             .expect` | [6041](../../src/management.rs#L6041) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .begin_workspace_operation` | [6041](../../src/management.rs#L6041) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map(&#124;index&#124; format!("rpc-bogus-{index}"))             .find(&#124;rpc_id&#124; store.operation_path(rpc_id) < pending)             .expect` | [6055](../../src/management.rs#L6055) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map(&#124;index&#124; format!("rpc-bogus-{index}"))             .find` | [6055](../../src/management.rs#L6055) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `(0..)             .map` | [6055](../../src/management.rs#L6055) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store.operation_path` | [6057](../../src/management.rs#L6057), [6059](../../src/management.rs#L6059) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `fs::create_dir_all(bogus_path.parent().expect("prefix")).expect` | [6060](../../src/management.rs#L6060) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `fs::create_dir_all` | [6060](../../src/management.rs#L6060) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `bogus_path.parent().expect` | [6060](../../src/management.rs#L6060) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `bogus_path.parent` | [6060](../../src/management.rs#L6060) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `publish_canonical(             &bogus_path,             &OperationRecord {                 v: VERSION,                 rpc_id: bogus,                 operation: "bogus".to_owned(),                 request_sha256: "0".repeat(64),                 phase: OperationPhase::Prepared,                 started_at: TICK.to_owned(),                 intent: to_ijson(&json!({"kind":"bogus"})).expect("intent"),                 response: None,             },         )         .expect` | [6061](../../src/management.rs#L6061) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `publish_canonical` | [6061](../../src/management.rs#L6061) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `"bogus".to_owned` | [6066](../../src/management.rs#L6066) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `"0".repeat` | [6067](../../src/management.rs#L6067) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `TICK.to_owned` | [6069](../../src/management.rs#L6069) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `to_ijson(&json!({"kind":"bogus"})).expect` | [6070](../../src/management.rs#L6070) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `to_ijson` | [6070](../../src/management.rs#L6070) | external-constructor-callback-or-unresolved |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .recover()             .expect_err` | [6076](../../src/management.rs#L6076) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `store             .recover` | [6076](../../src/management.rs#L6076) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `read_canonical(&pending).expect` | [6086](../../src/management.rs#L6086) | receiver-type-required |
+| `one_failing_record_does_not_stop_the_others_from_recovering` | `read_canonical` | [6086](../../src/management.rs#L6086) | external-constructor-callback-or-unresolved |

@@ -43,3 +43,5 @@ pub const MAX_CATALOG_ITEMS: usize = 1_000;
 pub const MAX_CATALOG_PAGES: usize = 100;
 pub const MAX_CONTINUATION_ROUNDS: u32 = 32;
 pub use broker::{McpBroker, McpBrokerHandle};
+
+pub use client::McpPeerSnapshot;

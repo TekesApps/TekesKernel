@@ -563,7 +563,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve` | `"job working directory is outside sandbox read roots".to_owned` | [383](../../src/runtime_backends.rs#L383) | receiver-type-required |
 | `resolve` | `Vec::with_capacity` | [387](../../src/runtime_backends.rs#L387) | external-constructor-callback-or-unresolved |
 | `resolve` | `spec.writable_paths.len` | [387](../../src/runtime_backends.rs#L387) | receiver-type-required |
-| `resolve` | `crate::protected_root_containing` | [399](../../src/runtime_backends.rs#L399) | [tools::sandbox::protected_root_containing](../../src/sandbox.rs#L199) |
+| `resolve` | `crate::protected_root_containing` | [399](../../src/runtime_backends.rs#L399) | [tools::sandbox::protected_root_containing](../../src/sandbox.rs#L213) |
 | `resolve` | `Path::new` | [401](../../src/runtime_backends.rs#L401) | external-constructor-callback-or-unresolved |
 | `resolve` | `requested.iter().any` | [407](../../src/runtime_backends.rs#L407) | receiver-type-required |
 | `resolve` | `requested.iter` | [407](../../src/runtime_backends.rs#L407) | receiver-type-required |
@@ -605,7 +605,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `runner_command` | `BackendFailure::Unavailable` | [550](../../src/runtime_backends.rs#L550), [553](../../src/runtime_backends.rs#L553) | external-constructor-callback-or-unresolved |
 | `runner_command` | `error.to_string` | [550](../../src/runtime_backends.rs#L550), [553](../../src/runtime_backends.rs#L553) | receiver-type-required |
 | `runner_command` | `sandbox_command(effective_policy, &self.probe, &self.executable)             .map_err` | [552](../../src/runtime_backends.rs#L552) | receiver-type-required |
-| `runner_command` | `sandbox_command` | [552](../../src/runtime_backends.rs#L552) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L486) |
+| `runner_command` | `sandbox_command` | [552](../../src/runtime_backends.rs#L552) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L515) |
 | `new` | `Self::open` | [567](../../src/runtime_backends.rs#L567) | [tools::runtime_backends::JobBroker::open](../../src/runtime_backends.rs#L570) |
 | `new` | `root.into` | [567](../../src/runtime_backends.rs#L567) | receiver-type-required |
 | `open` | `Err` | [576](../../src/runtime_backends.rs#L576), [586](../../src/runtime_backends.rs#L586), [597](../../src/runtime_backends.rs#L597) | external-constructor-callback-or-unresolved |

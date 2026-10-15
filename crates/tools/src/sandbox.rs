@@ -144,23 +144,37 @@ pub enum SandboxError {
 }
 
 /// Directories no session may write or use as a folder: the Kernel storage
-/// root and the service user's platform credential store. Paths are
-/// canonical; a credential store that does not exist is omitted.
+/// root, shared user instructions and the service user's credential store.
+/// Resolve existing ancestors too: a not-yet-created directory must not
+/// become an unprotected writable alias when it is created later.
 #[must_use]
 pub fn kernel_protected_roots(storage_root: &Path) -> Vec<String> {
     let mut roots = Vec::new();
     roots.push(canonical_text(storage_root));
     if let Some(home) = service_user_home() {
+        roots.push(canonical_text(&home.join(".agents")));
         #[cfg(target_os = "macos")]
         let stores = [home.join("Library/Keychains")];
         #[cfg(not(target_os = "macos"))]
         let stores = [home.join(".local/share/keyrings")];
         for store in stores {
-            if let Ok(canonical) = store.canonicalize() {
-                roots.push(canonical.to_string_lossy().into_owned());
-            }
+            roots.push(canonical_text(&store));
         }
     }
+    roots.sort();
+    roots.dedup();
+    roots
+}
+
+/// Include the actual host-selected instruction directory, which need not
+/// be the service user's default `~/.agents`.
+#[must_use]
+pub fn kernel_protected_roots_with_user_agent_dir(
+    storage_root: &Path,
+    user_agent_dir: &Path,
+) -> Vec<String> {
+    let mut roots = kernel_protected_roots(storage_root);
+    roots.push(canonical_text(user_agent_dir));
     roots.sort();
     roots.dedup();
     roots
@@ -228,10 +242,25 @@ pub fn protected_root_containing<'a>(protected: &'a [String], path: &Path) -> Op
 }
 
 fn canonical_text(path: &Path) -> String {
-    path.canonicalize()
-        .unwrap_or_else(|_| path.to_path_buf())
-        .to_string_lossy()
-        .into_owned()
+    let mut existing = path;
+    let mut suffix = Vec::new();
+    loop {
+        if let Ok(canonical) = existing.canonicalize() {
+            return suffix
+                .iter()
+                .rev()
+                .fold(canonical, |base, part| base.join(part))
+                .to_string_lossy()
+                .into_owned();
+        }
+        match (existing.parent(), existing.file_name()) {
+            (Some(parent), Some(name)) => {
+                suffix.push(name.to_owned());
+                existing = parent;
+            }
+            _ => return path.to_string_lossy().into_owned(),
+        }
+    }
 }
 
 /// The home directory from the password database, not `HOME`: workers and
@@ -986,6 +1015,66 @@ mod tests {
         }
         assert!(protected_root_containing(&protected, &base.join("storage-sibling")).is_none());
         assert!(protected_root_containing(&protected, &base).is_none());
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn user_instructions_stay_protected_through_absent_paths_and_aliases() {
+        let root = tempfile::tempdir().unwrap();
+        let home = root.path().canonicalize().unwrap();
+        let storage = home.join("kernel");
+        let authored = home.join("shared");
+        fs::create_dir_all(&storage).unwrap();
+        fs::create_dir_all(&authored).unwrap();
+        std::os::unix::fs::symlink(&authored, home.join("alias")).unwrap();
+        let absent_alias = home.join("alias/not-created/.agents");
+        let protected = kernel_protected_roots_with_user_agent_dir(&storage, &absent_alias);
+        let canonical_user = authored.join("not-created/.agents");
+        assert!(protected.contains(&canonical_user.to_string_lossy().into_owned()));
+        assert!(
+            protected_root_containing(&protected, &absent_alias.join("hooks/new.json")).is_some()
+        );
+        assert!(
+            protected_root_containing(&protected, &canonical_user.join("skills/a/SKILL.md"))
+                .is_some()
+        );
+        fs::create_dir_all(&canonical_user).unwrap();
+        fs::write(canonical_user.join("original"), b"original").unwrap();
+        let text = |path: &Path| path.to_string_lossy().into_owned();
+        let policy = SandboxPolicy {
+            format: 1,
+            read_roots: vec![text(&home)],
+            write_roots: vec![text(&home)],
+            network: NetworkPolicy::Deny,
+            allow_process: true,
+            scratch: None,
+            protected_roots: exposed_protected_roots(&protected, &[text(&home)]),
+        };
+        let run = |script: &str| {
+            sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))
+                .unwrap()
+                .args(["-c", script])
+                .current_dir(&home)
+                .env_clear()
+                .output()
+                .unwrap()
+                .status
+                .success()
+        };
+        assert!(run("printf ok > sibling"));
+        for script in [
+            "printf changed > shared/not-created/.agents/original",
+            "printf new > alias/not-created/.agents/new",
+            "mkdir alias/not-created/.agents/hooks",
+            "mv shared/not-created/.agents removed",
+            "mv shared elsewhere",
+        ] {
+            assert!(!run(script), "{script}");
+        }
+        assert_eq!(
+            fs::read(canonical_user.join("original")).unwrap(),
+            b"original"
+        );
     }
 
     #[cfg(target_os = "macos")]

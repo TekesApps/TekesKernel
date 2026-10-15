@@ -234,9 +234,12 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
     )
     .expect("binary skill asset");
 
-    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&project])
-        .capture()
-        .expect("three-tier snapshot");
+    let snapshot = trust(
+        InstructionResolver::new_scoped(&user, &workspace, [&project]),
+        &[&project],
+    )
+    .capture()
+    .expect("three-tier snapshot");
     let catalog = ResourceCatalog::from_snapshot(&snapshot).expect("catalog");
     let sources = catalog
         .skill_summaries()
@@ -260,9 +263,12 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
         "---\nname: user-skill\ndescription: duplicate\n---\nbody\n",
     )
     .expect("duplicate skill");
-    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&project])
-        .capture()
-        .expect("duplicate snapshot keeps both sources");
+    let snapshot = trust(
+        InstructionResolver::new_scoped(&user, &workspace, [&project]),
+        &[&project],
+    )
+    .capture()
+    .expect("duplicate snapshot keeps both sources");
     let error = ResourceCatalog::from_snapshot(&snapshot).expect_err("ambiguous skill");
     assert!(
         error
@@ -289,9 +295,12 @@ fn same_workspace_folder_skills_with_the_same_name_remain_a_collision() {
         )
         .expect("skill bytes");
     }
-    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&first, &second])
-        .capture()
-        .expect("multi-folder snapshot");
+    let snapshot = trust(
+        InstructionResolver::new_scoped(&user, &workspace, [&first, &second]),
+        &[&first, &second],
+    )
+    .capture()
+    .expect("multi-folder snapshot");
     let error = ResourceCatalog::from_snapshot(&snapshot)
         .expect_err("same-workspace same-name skill must fail closed");
     assert!(error.to_string().contains("project:0 and project:1"));
@@ -325,7 +334,7 @@ fn agents_directory_is_primary_for_all_project_resources() {
     fs::create_dir_all(project.join(".agents/rules")).expect("rules");
     fs::write(project.join(".agents/rules/review.md"), "shared rules").expect("rule");
     fs::write(project.join("AGENTS.md"), "project instructions").expect("AGENTS");
-    let snapshot = InstructionResolver::new(&user, [&project])
+    let snapshot = trust(InstructionResolver::new(&user, [&project]), &[&project])
         .capture()
         .expect("shared snapshot");
     let catalog = ResourceCatalog::from_snapshot(&snapshot).expect("catalog");
@@ -447,7 +456,7 @@ fn preset_skills_name_packages_not_resource_files() {
     .expect("manifest");
     fs::write(user.join("skills/review/scripts/check.sh"), "true\n").expect("companion");
     fs::write(user.join("skills/notes.md"), "Loose notes\n").expect("flat file");
-    let snapshot = InstructionResolver::new(&user, [&project])
+    let snapshot = trust(InstructionResolver::new(&user, [&project]), &[&project])
         .capture()
         .expect("snapshot");
     // The snapshot keys every resource file; the package catalog names packages.
@@ -456,4 +465,24 @@ fn preset_skills_name_packages_not_resource_files() {
         ResourceCatalog::skill_package_names(&snapshot),
         ["review".to_owned()].into_iter().collect()
     );
+}
+
+fn trust(
+    resolver: profile::InstructionResolver,
+    folders: &[&std::path::Path],
+) -> profile::InstructionResolver {
+    static STATE: std::sync::OnceLock<tempfile::TempDir> = std::sync::OnceLock::new();
+    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
+    let _lock = LOCK.lock().unwrap();
+    let root = STATE.get_or_init(|| tempfile::tempdir().unwrap());
+    let store = profile::FolderAuthorityStore::new(root.path());
+    for path in folders {
+        let rev = store.registry_revision().unwrap();
+        let id = format!("r{rev}");
+        store.request(&id, rev, path).unwrap();
+        store
+            .grant_from_host(&format!("g{rev}"), rev + 1, &id)
+            .unwrap();
+    }
+    resolver.with_folder_authority(root.path())
 }

@@ -27,15 +27,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::tool_backends::ToolBackendRuntime](../../src/tool_backends.rs#L244) | struct_item | `pub(crate)` |  |
 | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) | function_item | `pub(crate)` |  |
 | [tekes-worker::tool_backends::preset_skill_catalog](../../src/tool_backends.rs#L503) | function_item | `pub(crate)` |  |
-| [tekes-worker::tool_backends::kernel_protected_roots](../../src/tool_backends.rs#L523) | function_item | `pub(crate)` |  |
-| [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L531) | function_item | `pub(crate)` |  |
-| [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L640) | function_item | `private` |  |
-| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L660) | function_item | `pub(crate)` |  |
-| [tekes-worker::tool_backends::preset_skill_tests::Skills](../../src/tool_backends.rs#L672) | struct_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::tool_backends::preset_skill_tests::Skills::skill_known](../../src/tool_backends.rs#L674) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::tool_backends::preset_skill_tests::entry](../../src/tool_backends.rs#L679) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::tool_backends::preset_skill_tests::write_genesis](../../src/tool_backends.rs#L689) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-worker::tool_backends::preset_skill_tests::a_preset_narrows_the_skill_catalog](../../src/tool_backends.rs#L706) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L521) | function_item | `pub(crate)` |  |
+| [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L630) | function_item | `pub(crate)` |  |
+| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L650) | function_item | `pub(crate)` |  |
+| [tekes-worker::tool_backends::preset_skill_tests::Skills](../../src/tool_backends.rs#L662) | struct_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::tool_backends::preset_skill_tests::Skills::skill_known](../../src/tool_backends.rs#L664) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::tool_backends::preset_skill_tests::entry](../../src/tool_backends.rs#L669) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::tool_backends::preset_skill_tests::write_genesis](../../src/tool_backends.rs#L679) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::tool_backends::preset_skill_tests::a_preset_narrows_the_skill_catalog](../../src/tool_backends.rs#L696) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -54,42 +53,37 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–17: 10 direct edges</summary>
+<details><summary>Functions 1–16: 7 direct edges</summary>
 
 ```mermaid
 flowchart TD
   n0["store::tail::read_genesis"]
   n1["tools::preset::ResolvedPreset::from_genesis"]
-  n2["tools::sandbox::kernel_protected_roots"]
-  n3["tools::sandbox::exposed_protected_roots"]
-  n4["tools::sandbox::protected_root_containing"]
-  n5["tekes-worker::tool_backends::exchange_tool_control_runtime"]
-  n6["tekes-worker::tool_backends::AllowedDynamicBackend::execute"]
-  n7["tekes-worker::tool_backends::tool_catalog_context"]
-  n8["tekes-worker::tool_backends::assemble_tool_backends"]
-  n9["tekes-worker::tool_backends::AllowedToolBackend::supports"]
-  n10["tekes-worker::tool_backends::AllowedToolBackend::execute"]
-  n11["tekes-worker::tool_backends::AllowedToolBackend::resume_after_approval"]
-  n12["tekes-worker::tool_backends::preset_skill_catalog"]
-  n13["tekes-worker::tool_backends::kernel_protected_roots"]
-  n14["tekes-worker::tool_backends::invocation_write_roots"]
-  n15["tekes-worker::tool_backends::storage_root_for_thread_folder"]
-  n16["tekes-worker::tool_backends::DeferredChildBackend::supports"]
-  n17["tekes-worker::tool_backends::session_permission_policy"]
-  n18["tekes-worker::tool_backends::DeferredChildBackend::execute"]
-  n19["tekes-worker::tool_backends::ReplayedChildBackend::supports"]
-  n20["tekes-worker::tool_backends::ReplayedChildBackend::execute"]
-  n21["tekes-worker::tool_backends::AllowedDynamicBackend::supports"]
-  n8 --> n2
-  n8 --> n3
-  n8 --> n5
-  n8 --> n12
-  n8 --> n15
-  n12 --> n0
-  n12 --> n1
-  n13 --> n2
-  n13 --> n15
-  n14 --> n4
+  n2["tools::sandbox::exposed_protected_roots"]
+  n3["tools::sandbox::protected_root_containing"]
+  n4["tekes-worker::tool_backends::exchange_tool_control_runtime"]
+  n5["tekes-worker::tool_backends::AllowedDynamicBackend::execute"]
+  n6["tekes-worker::tool_backends::tool_catalog_context"]
+  n7["tekes-worker::tool_backends::assemble_tool_backends"]
+  n8["tekes-worker::tool_backends::AllowedToolBackend::supports"]
+  n9["tekes-worker::tool_backends::AllowedToolBackend::execute"]
+  n10["tekes-worker::tool_backends::AllowedToolBackend::resume_after_approval"]
+  n11["tekes-worker::tool_backends::preset_skill_catalog"]
+  n12["tekes-worker::tool_backends::invocation_write_roots"]
+  n13["tekes-worker::tool_backends::storage_root_for_thread_folder"]
+  n14["tekes-worker::tool_backends::session_permission_policy"]
+  n15["tekes-worker::tool_backends::DeferredChildBackend::supports"]
+  n16["tekes-worker::tool_backends::DeferredChildBackend::execute"]
+  n17["tekes-worker::tool_backends::ReplayedChildBackend::supports"]
+  n18["tekes-worker::tool_backends::ReplayedChildBackend::execute"]
+  n19["tekes-worker::tool_backends::AllowedDynamicBackend::supports"]
+  n7 --> n2
+  n7 --> n4
+  n7 --> n11
+  n7 --> n13
+  n11 --> n0
+  n11 --> n1
+  n12 --> n3
 ```
 
 </details>
@@ -163,7 +157,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `tool_catalog_context` | `profile                 .instruction                 .meet_workspace_policy` | [226](../../src/tool_backends.rs#L226) | receiver-type-required |
 | `assemble_tool_backends` | `effective_allowed_tools` | [271](../../src/tool_backends.rs#L271) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `ToolBackendRouter::default` | [272](../../src/tool_backends.rs#L272) | external-constructor-callback-or-unresolved |
-| `assemble_tool_backends` | `storage_root_for_thread_folder` | [273](../../src/tool_backends.rs#L273) | [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L640) |
+| `assemble_tool_backends` | `storage_root_for_thread_folder` | [273](../../src/tool_backends.rs#L273) | [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L630) |
 | `assemble_tool_backends` | `profile         .instruction         .meet_workspace_policy` | [275](../../src/tool_backends.rs#L275) | receiver-type-required |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .first()         .ok_or` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .first` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
@@ -177,8 +171,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `invocation_write_roots.to_vec` | [297](../../src/tool_backends.rs#L297) | receiver-type-required |
 | `assemble_tool_backends` | `write_roots.sort` | [298](../../src/tool_backends.rs#L298) | receiver-type-required |
 | `assemble_tool_backends` | `write_roots.dedup` | [299](../../src/tool_backends.rs#L299) | receiver-type-required |
-| `assemble_tool_backends` | `tools::exposed_protected_roots` | [300](../../src/tool_backends.rs#L300) | [tools::sandbox::exposed_protected_roots](../../../tools/src/sandbox.rs#L173) |
-| `assemble_tool_backends` | `tools::kernel_protected_roots` | [301](../../src/tool_backends.rs#L301) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L150) |
+| `assemble_tool_backends` | `tools::exposed_protected_roots` | [300](../../src/tool_backends.rs#L300) | [tools::sandbox::exposed_protected_roots](../../../tools/src/sandbox.rs#L187) |
+| `assemble_tool_backends` | `profile.config.protected_roots` | [301](../../src/tool_backends.rs#L301) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.clone` | [306](../../src/tool_backends.rs#L306) | receiver-type-required |
 | `assemble_tool_backends` | `probe_backend` | [323](../../src/tool_backends.rs#L323) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .map(&#124;(index, path)&#124; {             (                 if index == 0 {                     "workspace".to_owned()                 } else {                     format!("workspace-{index}")                 },                 PathBuf::from(path),             )         })         .collect::<Vec<_>>` | [324](../../src/tool_backends.rs#L324) | receiver-type-required |
@@ -281,100 +275,97 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_skill_catalog` | `tools::ResolvedPreset::from_genesis` | [515](../../src/tool_backends.rs#L515) | [tools::preset::ResolvedPreset::from_genesis](../../../tools/src/preset.rs#L855) |
 | `preset_skill_catalog` | `catalog.retain` | [516](../../src/tool_backends.rs#L516) | receiver-type-required |
 | `preset_skill_catalog` | `skills.contains` | [516](../../src/tool_backends.rs#L516) | receiver-type-required |
-| `kernel_protected_roots` | `Ok` | [526](../../src/tool_backends.rs#L526) | external-constructor-callback-or-unresolved |
-| `kernel_protected_roots` | `tools::kernel_protected_roots` | [526](../../src/tool_backends.rs#L526) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L150) |
-| `kernel_protected_roots` | `storage_root_for_thread_folder` | [527](../../src/tool_backends.rs#L527) | [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L640) |
-| `invocation_write_roots` | `PathBuf::from` | [536](../../src/tool_backends.rs#L536), [599](../../src/tool_backends.rs#L599) | external-constructor-callback-or-unresolved |
-| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first()             .ok_or` | [537](../../src/tool_backends.rs#L537) | receiver-type-required |
-| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first` | [537](../../src/tool_backends.rs#L537) | receiver-type-required |
-| `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter()         .any` | [544](../../src/tool_backends.rs#L544) | receiver-type-required |
-| `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter` | [544](../../src/tool_backends.rs#L544) | receiver-type-required |
-| `invocation_write_roots` | `Ok` | [551](../../src/tool_backends.rs#L551), [637](../../src/tool_backends.rs#L637) | external-constructor-callback-or-unresolved |
-| `invocation_write_roots` | `profile             .instruction             .meet_workspace_policy` | [551](../../src/tool_backends.rs#L551) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map(PathBuf::from)         .collect::<Vec<_>>` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
-| `invocation_write_roots` | `call.name.as_str` | [563](../../src/tool_backends.rs#L563) | receiver-type-required |
-| `invocation_write_roots` | `call.arguments.get("writable_paths").is_none_or` | [565](../../src/tool_backends.rs#L565) | receiver-type-required |
-| `invocation_write_roots` | `call.arguments.get` | [565](../../src/tool_backends.rs#L565) | receiver-type-required |
-| `invocation_write_roots` | `value.is_null` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
-| `invocation_write_roots` | `value.as_array().is_some_and` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
-| `invocation_write_roots` | `value.as_array` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
-| `invocation_write_roots` | `allowed                 .iter()                 .map(&#124;path&#124; path.to_string_lossy().into_owned())                 .collect` | [571](../../src/tool_backends.rs#L571) | receiver-type-required |
-| `invocation_write_roots` | `allowed                 .iter()                 .map` | [571](../../src/tool_backends.rs#L571) | receiver-type-required |
-| `invocation_write_roots` | `allowed                 .iter` | [571](../../src/tool_backends.rs#L571) | receiver-type-required |
-| `invocation_write_roots` | `path.to_string_lossy().into_owned` | [573](../../src/tool_backends.rs#L573) | receiver-type-required |
-| `invocation_write_roots` | `path.to_string_lossy` | [573](../../src/tool_backends.rs#L573) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten()             .map(&#124;value&#124; {                 value                     .as_str()                     .map(ToOwned::to_owned)                     .ok_or("shell writable_paths must contain strings")             })             .collect::<Result<Vec<_>, _>>` | [576](../../src/tool_backends.rs#L576) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten()             .map` | [576](../../src/tool_backends.rs#L576) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten` | [576](../../src/tool_backends.rs#L576) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter` | [576](../../src/tool_backends.rs#L576) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then` | [576](../../src/tool_backends.rs#L576) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get` | [576](../../src/tool_backends.rs#L576), [589](../../src/tool_backends.rs#L589) | receiver-type-required |
-| `invocation_write_roots` | `value                     .as_str()                     .map(ToOwned::to_owned)                     .ok_or` | [583](../../src/tool_backends.rs#L583) | receiver-type-required |
-| `invocation_write_roots` | `value                     .as_str()                     .map` | [583](../../src/tool_backends.rs#L583) | receiver-type-required |
-| `invocation_write_roots` | `value                     .as_str` | [583](../../src/tool_backends.rs#L583) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then(Value::as_str)             .map(&#124;path&#124; vec![path.to_owned()])             .unwrap_or_default` | [589](../../src/tool_backends.rs#L589) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then(Value::as_str)             .map` | [589](../../src/tool_backends.rs#L589) | receiver-type-required |
-| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then` | [589](../../src/tool_backends.rs#L589) | receiver-type-required |
-| `invocation_write_roots` | `Vec::new` | [595](../../src/tool_backends.rs#L595), [597](../../src/tool_backends.rs#L597) | external-constructor-callback-or-unresolved |
-| `invocation_write_roots` | `raw_path             .components()             .any` | [600](../../src/tool_backends.rs#L600) | receiver-type-required |
-| `invocation_write_roots` | `raw_path             .components` | [600](../../src/tool_backends.rs#L600) | receiver-type-required |
-| `invocation_write_roots` | `Err` | [604](../../src/tool_backends.rs#L604), [612](../../src/tool_backends.rs#L612), [619](../../src/tool_backends.rs#L619) | external-constructor-callback-or-unresolved |
-| `invocation_write_roots` | `format!("writable path {raw:?} contains parent traversal").into` | [604](../../src/tool_backends.rs#L604) | receiver-type-required |
-| `invocation_write_roots` | `raw_path.is_absolute` | [606](../../src/tool_backends.rs#L606) | receiver-type-required |
-| `invocation_write_roots` | `workspace.join` | [609](../../src/tool_backends.rs#L609) | receiver-type-required |
-| `invocation_write_roots` | `allowed.iter().any` | [611](../../src/tool_backends.rs#L611) | receiver-type-required |
-| `invocation_write_roots` | `allowed.iter` | [611](../../src/tool_backends.rs#L611) | receiver-type-required |
-| `invocation_write_roots` | `target.starts_with` | [611](../../src/tool_backends.rs#L611) | receiver-type-required |
-| `invocation_write_roots` | `format!(                 "writable path {} is outside the effective writable roots",                 target.display()             )             .into` | [612](../../src/tool_backends.rs#L612) | receiver-type-required |
-| `invocation_write_roots` | `tools::protected_root_containing` | [618](../../src/tool_backends.rs#L618) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L199) |
-| `invocation_write_roots` | `format!(                 "writable path {} is inside the Kernel-owned directory {protected}",                 target.display()             )             .into` | [619](../../src/tool_backends.rs#L619) | receiver-type-required |
-| `invocation_write_roots` | `target                 .parent()                 .ok_or("apply_patch target has no writable parent")?                 .to_path_buf` | [626](../../src/tool_backends.rs#L626) | receiver-type-required |
-| `invocation_write_roots` | `target                 .parent()                 .ok_or` | [626](../../src/tool_backends.rs#L626) | receiver-type-required |
-| `invocation_write_roots` | `target                 .parent` | [626](../../src/tool_backends.rs#L626) | receiver-type-required |
-| `invocation_write_roots` | `roots.push` | [633](../../src/tool_backends.rs#L633) | receiver-type-required |
-| `invocation_write_roots` | `authority.to_string_lossy().into_owned` | [633](../../src/tool_backends.rs#L633) | receiver-type-required |
-| `invocation_write_roots` | `authority.to_string_lossy` | [633](../../src/tool_backends.rs#L633) | receiver-type-required |
-| `invocation_write_roots` | `roots.sort` | [635](../../src/tool_backends.rs#L635) | receiver-type-required |
-| `invocation_write_roots` | `roots.dedup` | [636](../../src/tool_backends.rs#L636) | receiver-type-required |
-| `storage_root_for_thread_folder` | `thread_folder         .parent()         .ok_or` | [643](../../src/tool_backends.rs#L643) | receiver-type-required |
-| `storage_root_for_thread_folder` | `thread_folder         .parent` | [643](../../src/tool_backends.rs#L643) | receiver-type-required |
-| `storage_root_for_thread_folder` | `parent.file_name().is_some_and` | [646](../../src/tool_backends.rs#L646) | receiver-type-required |
-| `storage_root_for_thread_folder` | `parent.file_name` | [646](../../src/tool_backends.rs#L646) | receiver-type-required |
-| `storage_root_for_thread_folder` | `Ok` | [647](../../src/tool_backends.rs#L647), [654](../../src/tool_backends.rs#L654) | external-constructor-callback-or-unresolved |
-| `storage_root_for_thread_folder` | `parent             .parent()             .ok_or("threads directory has no storage root")?             .to_path_buf` | [647](../../src/tool_backends.rs#L647) | receiver-type-required |
-| `storage_root_for_thread_folder` | `parent             .parent()             .ok_or` | [647](../../src/tool_backends.rs#L647) | receiver-type-required |
-| `storage_root_for_thread_folder` | `parent             .parent` | [647](../../src/tool_backends.rs#L647) | receiver-type-required |
-| `storage_root_for_thread_folder` | `parent.to_path_buf` | [654](../../src/tool_backends.rs#L654) | receiver-type-required |
-| `session_permission_policy` | `PermissionModePolicy::for_session_folder` | [661](../../src/tool_backends.rs#L661) | external-constructor-callback-or-unresolved |
-| `entry` | `name.to_owned` | [681](../../src/tool_backends.rs#L681) | receiver-type-required |
-| `entry` | `String::new` | [682](../../src/tool_backends.rs#L682) | external-constructor-callback-or-unresolved |
-| `entry` | `Vec::new` | [683](../../src/tool_backends.rs#L683) | external-constructor-callback-or-unresolved |
-| `entry` | `"d".to_owned` | [684](../../src/tool_backends.rs#L684) | receiver-type-required |
-| `entry` | `IJsonValue::parse(b"{}").unwrap` | [685](../../src/tool_backends.rs#L685) | receiver-type-required |
-| `entry` | `IJsonValue::parse` | [685](../../src/tool_backends.rs#L685) | external-constructor-callback-or-unresolved |
-| `write_genesis` | `genesis             .as_object_mut()             .unwrap()             .extend` | [696](../../src/tool_backends.rs#L696) | receiver-type-required |
-| `write_genesis` | `genesis             .as_object_mut()             .unwrap` | [696](../../src/tool_backends.rs#L696) | receiver-type-required |
-| `write_genesis` | `genesis             .as_object_mut` | [696](../../src/tool_backends.rs#L696) | receiver-type-required |
-| `write_genesis` | `opening.as_object().unwrap().clone` | [699](../../src/tool_backends.rs#L699) | receiver-type-required |
-| `write_genesis` | `opening.as_object().unwrap` | [699](../../src/tool_backends.rs#L699) | receiver-type-required |
-| `write_genesis` | `opening.as_object` | [699](../../src/tool_backends.rs#L699) | receiver-type-required |
-| `write_genesis` | `make_event(genesis).unwrap().canonical_bytes().unwrap` | [700](../../src/tool_backends.rs#L700) | receiver-type-required |
-| `write_genesis` | `make_event(genesis).unwrap().canonical_bytes` | [700](../../src/tool_backends.rs#L700) | receiver-type-required |
-| `write_genesis` | `make_event(genesis).unwrap` | [700](../../src/tool_backends.rs#L700) | receiver-type-required |
-| `write_genesis` | `make_event` | [700](../../src/tool_backends.rs#L700) | external-constructor-callback-or-unresolved |
-| `write_genesis` | `bytes.push` | [701](../../src/tool_backends.rs#L701) | receiver-type-required |
-| `write_genesis` | `std::fs::write(folder.join("main.jsonl"), bytes).unwrap` | [702](../../src/tool_backends.rs#L702) | receiver-type-required |
-| `write_genesis` | `std::fs::write` | [702](../../src/tool_backends.rs#L702) | external-constructor-callback-or-unresolved |
-| `write_genesis` | `folder.join` | [702](../../src/tool_backends.rs#L702) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `tempfile::tempdir().unwrap` | [707](../../src/tool_backends.rs#L707) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `tempfile::tempdir` | [707](../../src/tool_backends.rs#L707) | external-constructor-callback-or-unresolved |
-| `a_preset_narrows_the_skill_catalog` | `write_genesis` | [709](../../src/tool_backends.rs#L709), [722](../../src/tool_backends.rs#L722) | [tekes-worker::tool_backends::preset_skill_tests::write_genesis](../../src/tool_backends.rs#L689) |
-| `a_preset_narrows_the_skill_catalog` | `folder.path` | [709](../../src/tool_backends.rs#L709), [722](../../src/tool_backends.rs#L722), [723](../../src/tool_backends.rs#L723) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request(             &json!({"skills":["style-guide","removed-later"]}),             tools::PresetBase::General,             &Skills,         )         .unwrap` | [716](../../src/tool_backends.rs#L716) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request` | [716](../../src/tool_backends.rs#L716) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
-| `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog(catalog(), folder.path()).unwrap` | [723](../../src/tool_backends.rs#L723) | receiver-type-required |
-| `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog` | [723](../../src/tool_backends.rs#L723) | external-constructor-callback-or-unresolved |
-| `a_preset_narrows_the_skill_catalog` | `catalog` | [723](../../src/tool_backends.rs#L723) | external-constructor-callback-or-unresolved |
+| `invocation_write_roots` | `PathBuf::from` | [526](../../src/tool_backends.rs#L526), [589](../../src/tool_backends.rs#L589) | external-constructor-callback-or-unresolved |
+| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first()             .ok_or` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
+| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
+| `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter()         .any` | [534](../../src/tool_backends.rs#L534) | receiver-type-required |
+| `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter` | [534](../../src/tool_backends.rs#L534) | receiver-type-required |
+| `invocation_write_roots` | `Ok` | [541](../../src/tool_backends.rs#L541), [627](../../src/tool_backends.rs#L627) | external-constructor-callback-or-unresolved |
+| `invocation_write_roots` | `profile             .instruction             .meet_workspace_policy` | [541](../../src/tool_backends.rs#L541) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map(PathBuf::from)         .collect::<Vec<_>>` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `call.name.as_str` | [553](../../src/tool_backends.rs#L553) | receiver-type-required |
+| `invocation_write_roots` | `call.arguments.get("writable_paths").is_none_or` | [555](../../src/tool_backends.rs#L555) | receiver-type-required |
+| `invocation_write_roots` | `call.arguments.get` | [555](../../src/tool_backends.rs#L555) | receiver-type-required |
+| `invocation_write_roots` | `value.is_null` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
+| `invocation_write_roots` | `value.as_array().is_some_and` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
+| `invocation_write_roots` | `value.as_array` | [556](../../src/tool_backends.rs#L556) | receiver-type-required |
+| `invocation_write_roots` | `allowed                 .iter()                 .map(&#124;path&#124; path.to_string_lossy().into_owned())                 .collect` | [561](../../src/tool_backends.rs#L561) | receiver-type-required |
+| `invocation_write_roots` | `allowed                 .iter()                 .map` | [561](../../src/tool_backends.rs#L561) | receiver-type-required |
+| `invocation_write_roots` | `allowed                 .iter` | [561](../../src/tool_backends.rs#L561) | receiver-type-required |
+| `invocation_write_roots` | `path.to_string_lossy().into_owned` | [563](../../src/tool_backends.rs#L563) | receiver-type-required |
+| `invocation_write_roots` | `path.to_string_lossy` | [563](../../src/tool_backends.rs#L563) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten()             .map(&#124;value&#124; {                 value                     .as_str()                     .map(ToOwned::to_owned)                     .ok_or("shell writable_paths must contain strings")             })             .collect::<Result<Vec<_>, _>>` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten()             .map` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter()             .flatten` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then(Value::as_array)             .into_iter` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("writable_paths")             .and_then` | [566](../../src/tool_backends.rs#L566) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get` | [566](../../src/tool_backends.rs#L566), [579](../../src/tool_backends.rs#L579) | receiver-type-required |
+| `invocation_write_roots` | `value                     .as_str()                     .map(ToOwned::to_owned)                     .ok_or` | [573](../../src/tool_backends.rs#L573) | receiver-type-required |
+| `invocation_write_roots` | `value                     .as_str()                     .map` | [573](../../src/tool_backends.rs#L573) | receiver-type-required |
+| `invocation_write_roots` | `value                     .as_str` | [573](../../src/tool_backends.rs#L573) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then(Value::as_str)             .map(&#124;path&#124; vec![path.to_owned()])             .unwrap_or_default` | [579](../../src/tool_backends.rs#L579) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then(Value::as_str)             .map` | [579](../../src/tool_backends.rs#L579) | receiver-type-required |
+| `invocation_write_roots` | `call             .arguments             .get("path")             .and_then` | [579](../../src/tool_backends.rs#L579) | receiver-type-required |
+| `invocation_write_roots` | `Vec::new` | [585](../../src/tool_backends.rs#L585), [587](../../src/tool_backends.rs#L587) | external-constructor-callback-or-unresolved |
+| `invocation_write_roots` | `raw_path             .components()             .any` | [590](../../src/tool_backends.rs#L590) | receiver-type-required |
+| `invocation_write_roots` | `raw_path             .components` | [590](../../src/tool_backends.rs#L590) | receiver-type-required |
+| `invocation_write_roots` | `Err` | [594](../../src/tool_backends.rs#L594), [602](../../src/tool_backends.rs#L602), [609](../../src/tool_backends.rs#L609) | external-constructor-callback-or-unresolved |
+| `invocation_write_roots` | `format!("writable path {raw:?} contains parent traversal").into` | [594](../../src/tool_backends.rs#L594) | receiver-type-required |
+| `invocation_write_roots` | `raw_path.is_absolute` | [596](../../src/tool_backends.rs#L596) | receiver-type-required |
+| `invocation_write_roots` | `workspace.join` | [599](../../src/tool_backends.rs#L599) | receiver-type-required |
+| `invocation_write_roots` | `allowed.iter().any` | [601](../../src/tool_backends.rs#L601) | receiver-type-required |
+| `invocation_write_roots` | `allowed.iter` | [601](../../src/tool_backends.rs#L601) | receiver-type-required |
+| `invocation_write_roots` | `target.starts_with` | [601](../../src/tool_backends.rs#L601) | receiver-type-required |
+| `invocation_write_roots` | `format!(                 "writable path {} is outside the effective writable roots",                 target.display()             )             .into` | [602](../../src/tool_backends.rs#L602) | receiver-type-required |
+| `invocation_write_roots` | `tools::protected_root_containing` | [608](../../src/tool_backends.rs#L608) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L213) |
+| `invocation_write_roots` | `format!(                 "writable path {} is inside the Kernel-owned directory {protected}",                 target.display()             )             .into` | [609](../../src/tool_backends.rs#L609) | receiver-type-required |
+| `invocation_write_roots` | `target                 .parent()                 .ok_or("apply_patch target has no writable parent")?                 .to_path_buf` | [616](../../src/tool_backends.rs#L616) | receiver-type-required |
+| `invocation_write_roots` | `target                 .parent()                 .ok_or` | [616](../../src/tool_backends.rs#L616) | receiver-type-required |
+| `invocation_write_roots` | `target                 .parent` | [616](../../src/tool_backends.rs#L616) | receiver-type-required |
+| `invocation_write_roots` | `roots.push` | [623](../../src/tool_backends.rs#L623) | receiver-type-required |
+| `invocation_write_roots` | `authority.to_string_lossy().into_owned` | [623](../../src/tool_backends.rs#L623) | receiver-type-required |
+| `invocation_write_roots` | `authority.to_string_lossy` | [623](../../src/tool_backends.rs#L623) | receiver-type-required |
+| `invocation_write_roots` | `roots.sort` | [625](../../src/tool_backends.rs#L625) | receiver-type-required |
+| `invocation_write_roots` | `roots.dedup` | [626](../../src/tool_backends.rs#L626) | receiver-type-required |
+| `storage_root_for_thread_folder` | `thread_folder         .parent()         .ok_or` | [633](../../src/tool_backends.rs#L633) | receiver-type-required |
+| `storage_root_for_thread_folder` | `thread_folder         .parent` | [633](../../src/tool_backends.rs#L633) | receiver-type-required |
+| `storage_root_for_thread_folder` | `parent.file_name().is_some_and` | [636](../../src/tool_backends.rs#L636) | receiver-type-required |
+| `storage_root_for_thread_folder` | `parent.file_name` | [636](../../src/tool_backends.rs#L636) | receiver-type-required |
+| `storage_root_for_thread_folder` | `Ok` | [637](../../src/tool_backends.rs#L637), [644](../../src/tool_backends.rs#L644) | external-constructor-callback-or-unresolved |
+| `storage_root_for_thread_folder` | `parent             .parent()             .ok_or("threads directory has no storage root")?             .to_path_buf` | [637](../../src/tool_backends.rs#L637) | receiver-type-required |
+| `storage_root_for_thread_folder` | `parent             .parent()             .ok_or` | [637](../../src/tool_backends.rs#L637) | receiver-type-required |
+| `storage_root_for_thread_folder` | `parent             .parent` | [637](../../src/tool_backends.rs#L637) | receiver-type-required |
+| `storage_root_for_thread_folder` | `parent.to_path_buf` | [644](../../src/tool_backends.rs#L644) | receiver-type-required |
+| `session_permission_policy` | `PermissionModePolicy::for_session_folder` | [651](../../src/tool_backends.rs#L651) | external-constructor-callback-or-unresolved |
+| `entry` | `name.to_owned` | [671](../../src/tool_backends.rs#L671) | receiver-type-required |
+| `entry` | `String::new` | [672](../../src/tool_backends.rs#L672) | external-constructor-callback-or-unresolved |
+| `entry` | `Vec::new` | [673](../../src/tool_backends.rs#L673) | external-constructor-callback-or-unresolved |
+| `entry` | `"d".to_owned` | [674](../../src/tool_backends.rs#L674) | receiver-type-required |
+| `entry` | `IJsonValue::parse(b"{}").unwrap` | [675](../../src/tool_backends.rs#L675) | receiver-type-required |
+| `entry` | `IJsonValue::parse` | [675](../../src/tool_backends.rs#L675) | external-constructor-callback-or-unresolved |
+| `write_genesis` | `genesis             .as_object_mut()             .unwrap()             .extend` | [686](../../src/tool_backends.rs#L686) | receiver-type-required |
+| `write_genesis` | `genesis             .as_object_mut()             .unwrap` | [686](../../src/tool_backends.rs#L686) | receiver-type-required |
+| `write_genesis` | `genesis             .as_object_mut` | [686](../../src/tool_backends.rs#L686) | receiver-type-required |
+| `write_genesis` | `opening.as_object().unwrap().clone` | [689](../../src/tool_backends.rs#L689) | receiver-type-required |
+| `write_genesis` | `opening.as_object().unwrap` | [689](../../src/tool_backends.rs#L689) | receiver-type-required |
+| `write_genesis` | `opening.as_object` | [689](../../src/tool_backends.rs#L689) | receiver-type-required |
+| `write_genesis` | `make_event(genesis).unwrap().canonical_bytes().unwrap` | [690](../../src/tool_backends.rs#L690) | receiver-type-required |
+| `write_genesis` | `make_event(genesis).unwrap().canonical_bytes` | [690](../../src/tool_backends.rs#L690) | receiver-type-required |
+| `write_genesis` | `make_event(genesis).unwrap` | [690](../../src/tool_backends.rs#L690) | receiver-type-required |
+| `write_genesis` | `make_event` | [690](../../src/tool_backends.rs#L690) | external-constructor-callback-or-unresolved |
+| `write_genesis` | `bytes.push` | [691](../../src/tool_backends.rs#L691) | receiver-type-required |
+| `write_genesis` | `std::fs::write(folder.join("main.jsonl"), bytes).unwrap` | [692](../../src/tool_backends.rs#L692) | receiver-type-required |
+| `write_genesis` | `std::fs::write` | [692](../../src/tool_backends.rs#L692) | external-constructor-callback-or-unresolved |
+| `write_genesis` | `folder.join` | [692](../../src/tool_backends.rs#L692) | receiver-type-required |
+| `a_preset_narrows_the_skill_catalog` | `tempfile::tempdir().unwrap` | [697](../../src/tool_backends.rs#L697) | receiver-type-required |
+| `a_preset_narrows_the_skill_catalog` | `tempfile::tempdir` | [697](../../src/tool_backends.rs#L697) | external-constructor-callback-or-unresolved |
+| `a_preset_narrows_the_skill_catalog` | `write_genesis` | [699](../../src/tool_backends.rs#L699), [712](../../src/tool_backends.rs#L712) | [tekes-worker::tool_backends::preset_skill_tests::write_genesis](../../src/tool_backends.rs#L679) |
+| `a_preset_narrows_the_skill_catalog` | `folder.path` | [699](../../src/tool_backends.rs#L699), [712](../../src/tool_backends.rs#L712), [713](../../src/tool_backends.rs#L713) | receiver-type-required |
+| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request(             &json!({"skills":["style-guide","removed-later"]}),             tools::PresetBase::General,             &Skills,         )         .unwrap` | [706](../../src/tool_backends.rs#L706) | receiver-type-required |
+| `a_preset_narrows_the_skill_catalog` | `tools::ResolvedPreset::resolve_request` | [706](../../src/tool_backends.rs#L706) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
+| `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog(catalog(), folder.path()).unwrap` | [713](../../src/tool_backends.rs#L713) | receiver-type-required |
+| `a_preset_narrows_the_skill_catalog` | `preset_skill_catalog` | [713](../../src/tool_backends.rs#L713) | external-constructor-callback-or-unresolved |
+| `a_preset_narrows_the_skill_catalog` | `catalog` | [713](../../src/tool_backends.rs#L713) | external-constructor-callback-or-unresolved |

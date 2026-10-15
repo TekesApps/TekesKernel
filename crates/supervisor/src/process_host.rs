@@ -1001,7 +1001,7 @@ impl ProductionProcessHost {
         );
         let mcp = self
             .mcp_runtime
-            .prepare_workspace(workspace_id)
+            .prepare_for_config(&config)
             .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         if mcp_failure_is_required(&mcp.failures, &policy.allowed_tools) {
             return Err(PolicyCandidateError::new(
@@ -1192,6 +1192,45 @@ impl ProductionProcessHost {
             .instructions(&self.repository, &self.user_agent_dir, &config)
             .and_then(|resolver| resolver.capture())
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        profile::ResourceCatalog::from_snapshot(&snapshot)
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))
+    }
+
+    pub(crate) fn client_scope_config(
+        &self,
+        workspace: &str,
+        session: Option<&str>,
+    ) -> Result<profile::ConfigSnapshot, DaemonError> {
+        if let Some(session) = session {
+            let scope = self.session_scope(session)?;
+            if scope.workspace_id() != workspace {
+                return Err(DaemonError::invalid_config(
+                    "session belongs to another workspace",
+                ));
+            }
+            scope
+                .config(&self.repository)
+                .map_err(|error| DaemonError::invalid_config(error.to_string()))
+        } else {
+            self.repository
+                .resolve(workspace)
+                .map_err(|error| DaemonError::invalid_config(error.to_string()))
+        }
+    }
+    pub(crate) fn client_scope_resources(
+        &self,
+        workspace: &str,
+        session: Option<&str>,
+    ) -> Result<profile::ResourceCatalog, DaemonError> {
+        let config = self.client_scope_config(workspace, session)?;
+        let snapshot = profile::workspace_instructions(
+            &self.repository,
+            workspace,
+            &self.user_agent_dir,
+            &config,
+        )
+        .and_then(|resolver| resolver.capture())
+        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         profile::ResourceCatalog::from_snapshot(&snapshot)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))
     }
@@ -2528,7 +2567,7 @@ impl ProductionProcessHost {
                 // MCP tools join the effective catalog before the policy is
                 // validated against it: a policy may allow-list an MCP tool.
                 let mcp = mcp_runtime
-                    .prepare_workspace(&config.workspace.id)
+                    .prepare_for_config(config)
                     .map_err(|error| error.to_string())?;
                 if mcp_failure_is_required(&mcp.failures, &config.workspace.policy.allowed_tools) {
                     return Err("workspace policy requires an unavailable MCP server".to_owned());
@@ -4600,7 +4639,7 @@ fn frozen_tool_launch_policy(
         allow_process: true,
         scratch: None,
         protected_roots: tools::exposed_protected_roots(
-            &tools::kernel_protected_roots(storage_root),
+            &config.protected_roots(storage_root),
             &effective.writable_roots,
         ),
     };
@@ -7269,6 +7308,7 @@ mod tests {
     fn a_missing_preset_skill_is_one_warning() {
         let manifest = "---\nname: style-guide\ndescription: House style\n---\nBody\n";
         let instruction = profile::InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![profile::InstructionSource {
                 origin: profile::InstructionOrigin::User,
@@ -7431,6 +7471,7 @@ mod tests {
                     &format!("save-{name}"),
                     &mcp::McpManagementMutation::Save {
                         server: mcp::McpServerConfig {
+                            folder_id: None,
                             reference: mcp::McpServerReference {
                                 workspace_id: "ws".to_owned(),
                                 scope: mcp::McpScope::User,

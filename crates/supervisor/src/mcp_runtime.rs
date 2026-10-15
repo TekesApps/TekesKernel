@@ -344,6 +344,8 @@ impl McpRuntime {
         SecretAccess {
             store: Arc::clone(&self.secret_store),
             mutation: self.secret_mutation.clone(),
+            registry: Some(self.registry.clone()),
+            plugin_resolver: self.plugin_resolver.clone(),
         }
     }
 
@@ -427,18 +429,19 @@ impl McpRuntime {
     /// session preset names, preferring a project entry over a user entry and
     /// a user entry over a plugin one.
     pub fn preset_server_digest(&self, workspace_id: &str, server: &str) -> Option<String> {
-        let servers = self.list_servers(workspace_id).ok()?;
-        let rank = |scope: &McpScope| match scope {
-            McpScope::Project => 0,
-            McpScope::User => 1,
-            McpScope::Plugin => 2,
-        };
+        let (servers, _, failure) = self.scoped_servers(workspace_id, None).ok()?;
+        if failure.is_some() {
+            return None;
+        }
         let config = servers
             .iter()
-            .filter(|config| config.reference.name == server)
-            .min_by_key(|config| rank(&config.reference.scope))?;
-        let bytes = serde_json_canonicalizer::to_vec(config).ok()?;
-        Some(format!("sha256:{:x}", Sha256::digest(bytes)))
+            .find(|config| config.reference.name == server)?;
+        let (owner, _) = crate::mcp_scope::owner(config, Some(&self.registry)).ok()?;
+        let digest = crate::mcp_scope::config_digest(config).ok()?;
+        Some(format!(
+            "sha256:{:x}",
+            Sha256::digest(serde_json_canonicalizer::to_vec(&(owner, digest)).ok()?)
+        ))
     }
 
     pub fn list_servers(
@@ -557,21 +560,26 @@ impl McpRuntime {
                 .bindings
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
-            let Some(cached) = bindings.get_mut(&reference.workspace_id) else {
-                return;
-            };
-            cached.fingerprint.clear();
-            cached
-                .authority
-                .upgrade()
-                .map_or_else(BTreeSet::new, |authority| {
-                    authority
-                        .routes
-                        .values()
-                        .filter(|route| route.server.reference == *reference)
-                        .map(|route| route.key.clone())
-                        .collect()
-                })
+            let mut keys = BTreeSet::new();
+            for cached in bindings.values_mut() {
+                if cached.routes.values().any(|route| {
+                    route.server.reference.name == reference.name
+                        && route.server.reference.scope == reference.scope
+                }) {
+                    cached.fingerprint.clear();
+                    keys.extend(
+                        cached
+                            .routes
+                            .values()
+                            .filter(|route| {
+                                route.server.reference.name == reference.name
+                                    && route.server.reference.scope == reference.scope
+                            })
+                            .map(|route| route.key.clone()),
+                    );
+                }
+            }
+            keys
         };
         for key in keys {
             let _ = self.broker.handle().remove(key);
@@ -589,18 +597,15 @@ impl McpRuntime {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .iter()
-            .filter_map(|(workspace, binding)| {
-                binding
-                    .authority
-                    .upgrade()
-                    .map(|authority| (workspace.clone(), authority))
-            })
+            .map(|(scope, binding)| (scope.clone(), binding.routes.clone()))
             .collect::<Vec<_>>();
         let mut stale_workspaces = BTreeSet::new();
         let mut stale_keys = BTreeSet::new();
-        for (workspace, authority) in bindings {
-            for route in authority.routes.values() {
-                if authority.validate_route_generation(route).is_err() {
+        for (workspace, routes) in bindings {
+            for route in routes.values() {
+                if crate::mcp_admission::admit(&route.server, &self.secret_access(), &route.key)
+                    .is_err()
+                {
                     stale_workspaces.insert(workspace.clone());
                     stale_keys.insert(route.key.clone());
                 }
@@ -622,19 +627,44 @@ impl McpRuntime {
     }
 
     pub fn prepare_workspace(&self, workspace: &str) -> Result<McpWorkspaceBinding, McpError> {
+        self.prepare_scope(workspace, None)
+    }
+    pub fn prepare_for_config(
+        &self,
+        config: &profile::ConfigSnapshot,
+    ) -> Result<McpWorkspaceBinding, McpError> {
+        self.prepare_scope(&config.workspace.id, Some(&config.workspace.cwd))
+    }
+    fn prepare_scope(
+        &self,
+        workspace: &str,
+        paths: Option<&[String]>,
+    ) -> Result<McpWorkspaceBinding, McpError> {
+        let cache_key = format!(
+            "{}:{:x}",
+            workspace,
+            Sha256::digest(
+                serde_json::to_vec(&paths)
+                    .map_err(|error| McpError::Protocol(error.to_string()))?
+            )
+        );
         let _preparation = self
             .preparation
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         let (servers, plugin_resolutions, registry_failure) =
-            self.servers_with_plugins_degraded(workspace)?;
-        let fingerprint =
-            binding_fingerprint(&servers, &plugin_resolutions, self.secret_store.as_ref())?;
+            self.scoped_servers(workspace, paths)?;
+        let fingerprint = binding_fingerprint(
+            &servers,
+            &plugin_resolutions,
+            self.secret_store.as_ref(),
+            Some(&self.registry),
+        )?;
         let cached = self
             .bindings
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .remove(workspace);
+            .remove(&cache_key);
         if let Some(binding) = cached {
             let catalog_current = binding.catalog_generations.iter().all(|(key, expected)| {
                 self.broker
@@ -653,7 +683,25 @@ impl McpRuntime {
                 // still pooled and the routes still valid, so rebind rather
                 // than restart the servers (a stdio server's task state would
                 // not survive a restart).
-                let authority = binding.authority.upgrade().unwrap_or_else(|| {
+                let authority = if let Some(authority) = binding.authority.upgrade() {
+                    authority
+                } else {
+                    let mut retained = Vec::new();
+                    for key in binding.catalog_generations.keys() {
+                        match self.broker.handle().retain_snapshot(key.clone()) {
+                            Ok(Some(_)) => retained.push(key.clone()),
+                            outcome => {
+                                for key in retained {
+                                    let _ = self.broker.handle().release(key);
+                                }
+                                return Err(outcome.err().unwrap_or_else(|| {
+                                    McpError::Transport(
+                                        "MCP generation disappeared during rebind".into(),
+                                    )
+                                }));
+                            }
+                        }
+                    }
                     Arc::new(McpDynamicSupervisorAuthority::new(
                         self.broker.handle(),
                         binding.routes.clone(),
@@ -661,7 +709,7 @@ impl McpRuntime {
                         self.registry.clone(),
                         self.plugin_resolver.clone(),
                     ))
-                });
+                };
                 let catalog = binding.catalog.clone();
                 let failures = binding.failures.clone();
                 let tool_refusals = binding.tool_refusals.clone();
@@ -670,7 +718,7 @@ impl McpRuntime {
                 self.bindings
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner)
-                    .insert(workspace.to_owned(), binding);
+                    .insert(cache_key.clone(), binding);
                 return Ok(McpWorkspaceBinding {
                     catalog,
                     authority,
@@ -679,9 +727,9 @@ impl McpRuntime {
                     registry_failure: None,
                 });
             }
-            for key in binding.catalog_generations.into_keys() {
-                let _ = self.broker.handle().remove(key);
-            }
+            // An authority owns its own lease; dropping this cache must not
+            // remove peers shared with another live scope.
+            drop(binding);
         }
         let (tools, routes, catalog_generations, failures, tool_refusals) =
             with_preparation_runtime(|runtime| {
@@ -709,32 +757,28 @@ impl McpRuntime {
                         self.set_tool_refusal_state(&server.reference, &[]);
                         continue;
                     }
-                    let prepared = match prepare_server(
-                        server,
-                        plugin.as_ref(),
-                        self.secret_access(),
-                        runtime,
-                    ) {
-                        Ok(prepared) => prepared,
-                        Err(error) => {
-                            eprintln!(
-                                "mcp-server-refresh-failed: server={} code=refresh-failed",
-                                server.reference.name
-                            );
-                            let _ = error;
-                            failures.push(McpServerFailure {
-                                server: server.reference.clone(),
-                                code: "refresh-failed",
-                                detail: None,
-                            });
-                            self.failure_states
-                                .lock()
-                                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                                .insert(server.reference.clone(), "refresh-failed");
-                            self.set_tool_refusal_state(&server.reference, &[]);
-                            continue;
-                        }
-                    };
+                    let prepared =
+                        match self.prepare_pooled_server(server, plugin.as_ref(), runtime) {
+                            Ok(prepared) => prepared,
+                            Err(error) => {
+                                eprintln!(
+                                    "mcp-server-refresh-failed: server={} code=refresh-failed",
+                                    server.reference.name
+                                );
+                                let _ = error;
+                                failures.push(McpServerFailure {
+                                    server: server.reference.clone(),
+                                    code: "refresh-failed",
+                                    detail: None,
+                                });
+                                self.failure_states
+                                    .lock()
+                                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                                    .insert(server.reference.clone(), "refresh-failed");
+                                self.set_tool_refusal_state(&server.reference, &[]);
+                                continue;
+                            }
+                        };
                     self.failure_states
                         .lock()
                         .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -790,9 +834,13 @@ impl McpRuntime {
             self.registry.clone(),
             self.plugin_resolver.clone(),
         ));
-        let (stable_servers, stable_plugins, _) = self.servers_with_plugins_degraded(workspace)?;
-        let stable_fingerprint =
-            binding_fingerprint(&stable_servers, &stable_plugins, self.secret_store.as_ref())?;
+        let (stable_servers, stable_plugins, _) = self.scoped_servers(workspace, paths)?;
+        let stable_fingerprint = binding_fingerprint(
+            &stable_servers,
+            &stable_plugins,
+            self.secret_store.as_ref(),
+            Some(&self.registry),
+        )?;
         if stable_fingerprint != fingerprint {
             return Err(McpError::Conflict(
                 "MCP authority changed while its generation was prepared".to_owned(),
@@ -802,7 +850,7 @@ impl McpRuntime {
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
             .insert(
-                workspace.to_owned(),
+                cache_key,
                 CachedBinding {
                     fingerprint,
                     catalog: catalog.clone(),
@@ -823,14 +871,78 @@ impl McpRuntime {
         })
     }
 
+    fn prepare_pooled_server(
+        &self,
+        server: &McpServerConfig,
+        plugin: Option<&ResolvedPluginExecutable>,
+        runtime: &tokio::runtime::Runtime,
+    ) -> Result<PreparedServer, McpError> {
+        let secrets = self.secret_access();
+        let (key, credential_floors) = server_pool_key(server, plugin, &secrets)?;
+        let creation = generation_lock(&key);
+        let _creation = creation
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let admission = crate::mcp_admission::admit(server, &secrets, &key)?;
+        if let Some(mut peer) = self.broker.handle().retain_snapshot(key.clone())? {
+            let pending_pool = Some(PendingPoolLease {
+                broker: self.broker.handle(),
+                key: key.clone(),
+                transferred: false,
+                newly_created: false,
+            });
+            let tools = runtime.block_on(peer.list_tools())?;
+            return Ok(PreparedServer {
+                admission,
+                pending_pool,
+                key,
+                peer,
+                tools,
+                credential_floors,
+            });
+        }
+        let mut prepared = prepare_server(server, plugin, secrets, runtime)?;
+        let snapshot =
+            mcp::McpPeerSnapshot::capture(prepared.peer.as_ref(), prepared.tools.clone());
+        self.broker
+            .handle()
+            .register(prepared.key.clone(), prepared.peer, server.always_on)?;
+        prepared.peer = Box::new(snapshot);
+        prepared.pending_pool = Some(PendingPoolLease {
+            broker: self.broker.handle(),
+            key: prepared.key.clone(),
+            transferred: false,
+            newly_created: true,
+        });
+        Ok(prepared)
+    }
+
     /// Project one prepared server's catalog, capture its routes and pool the
     /// peer. Any failure leaves the peer unregistered (it is dropped with
     /// `prepared`) and the shared `routes` untouched.
+    fn prepare_resource_server(
+        &self,
+        server: &McpServerConfig,
+        plugin: Option<&ResolvedPluginExecutable>,
+        runtime: &tokio::runtime::Runtime,
+    ) -> Result<PreparedServer, McpError> {
+        let mut prepared = self.prepare_pooled_server(server, plugin, runtime)?;
+        if let Some(lease) = prepared.pending_pool.as_mut() {
+            lease.newly_created = false;
+        }
+        prepared.peer = Box::new(crate::mcp_admission::ResourcePeer::new(
+            prepared.peer,
+            self.broker.handle(),
+            prepared.key.clone(),
+        ));
+        Ok(prepared)
+    }
+
     fn bind_prepared_server(
         &self,
         server: &McpServerConfig,
         plugin: Option<&ResolvedPluginExecutable>,
-        prepared: PreparedServer,
+        mut prepared: PreparedServer,
         existing_routes: &BTreeMap<String, McpRoute>,
     ) -> Result<BoundServer, McpError> {
         let partial =
@@ -917,14 +1029,20 @@ impl McpRuntime {
                 )));
             }
         }
-        self.broker
-            .handle()
-            .register(prepared.key.clone(), prepared.peer, server.always_on)?;
+        if prepared.pending_pool.is_none() {
+            self.broker
+                .handle()
+                .register(prepared.key.clone(), prepared.peer, server.always_on)?;
+        }
         let generation = self
             .broker
             .handle()
             .catalog_generation(prepared.key.clone())?
             .ok_or_else(|| McpError::Transport("MCP peer disappeared after register".to_owned()))?;
+        if let Some(lease) = prepared.pending_pool.as_mut() {
+            lease.transferred = true;
+        }
+        drop(prepared.admission);
         Ok(BoundServer {
             key: prepared.key,
             generation,
@@ -991,6 +1109,7 @@ impl McpRuntime {
                     )));
                 }
                 let server = McpServerConfig {
+                    folder_id: None,
                     reference: McpServerReference {
                         workspace_id: workspace.to_owned(),
                         scope: McpScope::Plugin,
@@ -1013,25 +1132,10 @@ impl McpRuntime {
             .collect()
     }
 
-    fn servers_with_plugins(
+    fn scoped_servers(
         &self,
         workspace: &str,
-    ) -> Result<(Vec<McpServerConfig>, Vec<Option<ResolvedPluginExecutable>>), McpError> {
-        let (servers, plugins, registry_failure) = self.servers_with_plugins_degraded(workspace)?;
-        match registry_failure {
-            Some(message) => Err(McpError::Conflict(message)),
-            None => Ok((servers, plugins)),
-        }
-    }
-
-    /// Like `servers_with_plugins`, but an unreadable or unresolvable
-    /// standalone registry degrades to "no registry-configured servers" and
-    /// returns the failure message instead of refusing the workspace. A
-    /// worker launch must not be blocked by a hand-edited registry file; the
-    /// supervisor turns the message into a session notice.
-    fn servers_with_plugins_degraded(
-        &self,
-        workspace: &str,
+        paths: Option<&[String]>,
     ) -> Result<DegradedWorkspaceServers, McpError> {
         let (configured, registry_failure) = match self.registry.load() {
             Ok(mut registry) => {
@@ -1041,8 +1145,8 @@ impl McpRuntime {
                 registry
                     .servers
                     .retain(|server| server.reference.scope != McpScope::Plugin);
-                match registry.resolve(workspace) {
-                    Ok(resolved) => (resolved.into_iter().cloned().collect::<Vec<_>>(), None),
+                match crate::mcp_scope::resolve(&registry, &self.registry, workspace, paths) {
+                    Ok(resolved) => (resolved, None),
                     Err(error) => (Vec::new(), Some(error.to_string())),
                 }
             }
@@ -1122,18 +1226,45 @@ impl McpRuntime {
         &self,
         workspace: &str,
     ) -> Result<(String, Vec<McpResourceBinding>), McpError> {
+        self.list_resource_catalog_in_scope(workspace, None)
+    }
+    pub(crate) fn server_visible(
+        &self,
+        workspace: &str,
+        paths: Option<&[String]>,
+        reference: &McpServerReference,
+    ) -> Result<bool, McpError> {
+        let (servers, _, failure) = self.scoped_servers(workspace, paths)?;
+        if let Some(failure) = failure {
+            return Err(McpError::Conflict(failure));
+        }
+        Ok(servers.iter().any(|server| server.reference == *reference))
+    }
+    pub fn list_resource_catalog_in_scope(
+        &self,
+        workspace: &str,
+        paths: Option<&[String]>,
+    ) -> Result<(String, Vec<McpResourceBinding>), McpError> {
         let _preparation = self
             .preparation
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let (servers, plugins) = self.servers_with_plugins(workspace)?;
-        let generation = binding_fingerprint(&servers, &plugins, self.secret_store.as_ref())?;
+        let (servers, plugins, failure) = self.scoped_servers(workspace, paths)?;
+        if let Some(failure) = failure {
+            return Err(McpError::Conflict(failure));
+        }
+        let generation = binding_fingerprint(
+            &servers,
+            &plugins,
+            self.secret_store.as_ref(),
+            Some(&self.registry),
+        )?;
         let mut items = with_preparation_runtime(|runtime| {
             let mut items = Vec::new();
             for (server, plugin) in servers.iter().zip(&plugins) {
                 self.require_bound_credentials(server)?;
                 let mut prepared =
-                    prepare_server(server, plugin.as_ref(), self.secret_access(), runtime)?;
+                    self.prepare_resource_server(server, plugin.as_ref(), runtime)?;
                 items.extend(collect_prepared_resources(
                     runtime,
                     &mut prepared,
@@ -1143,9 +1274,16 @@ impl McpRuntime {
             }
             Ok(items)
         })?;
-        let (stable_servers, stable_plugins) = self.servers_with_plugins(workspace)?;
-        if binding_fingerprint(&stable_servers, &stable_plugins, self.secret_store.as_ref())?
-            != generation
+        let (stable_servers, stable_plugins, failure) = self.scoped_servers(workspace, paths)?;
+        if let Some(failure) = failure {
+            return Err(McpError::Conflict(failure));
+        }
+        if binding_fingerprint(
+            &stable_servers,
+            &stable_plugins,
+            self.secret_store.as_ref(),
+            Some(&self.registry),
+        )? != generation
         {
             return Err(McpError::Conflict(
                 "MCP resource generation changed during the read".to_owned(),
@@ -1189,7 +1327,7 @@ impl McpRuntime {
         let plugin = self.resolve_plugins(std::slice::from_ref(&server))?;
         with_preparation_runtime(|runtime| {
             let mut prepared =
-                prepare_server(&server, plugin[0].as_ref(), self.secret_access(), runtime)?;
+                self.prepare_resource_server(&server, plugin[0].as_ref(), runtime)?;
             read_prepared_resource(
                 runtime,
                 &mut prepared,
@@ -1640,6 +1778,7 @@ fn binding_fingerprint(
     servers: &[McpServerConfig],
     plugins: &[Option<ResolvedPluginExecutable>],
     secrets: &dyn SecretStore,
+    registry: Option<&McpRegistryStore>,
 ) -> Result<String, McpError> {
     let bytes = serde_json_canonicalizer::to_vec(&servers)
         .map_err(|error| McpError::Protocol(error.to_string()))?;
@@ -1668,6 +1807,15 @@ fn binding_fingerprint(
     let mut hasher = Sha256::new();
     hasher.update(b"tekes-mcp-binding-v1\0");
     hasher.update(bytes);
+    if let Some(registry) = registry {
+        for server in servers {
+            let (owner, folder) = crate::mcp_scope::owner(server, Some(registry))?;
+            hasher.update(
+                serde_json::to_vec(&(owner, folder))
+                    .map_err(|error| McpError::Protocol(error.to_string()))?,
+            );
+        }
+    }
     for plugin in plugins.iter().flatten() {
         hasher.update(plugin.plugin_generation.as_bytes());
         hasher.update([0]);
@@ -1777,6 +1925,8 @@ struct BoundServer {
 }
 
 struct PreparedServer {
+    admission: Option<Box<dyn Send>>,
+    pending_pool: Option<PendingPoolLease>,
     key: McpPoolKey,
     peer: Box<dyn McpPeer>,
     tools: Vec<mcp::McpTool>,
@@ -1809,9 +1959,9 @@ fn prepare_server_cancellable(
         return Err(McpError::Cancelled);
     }
     let _runtime_guard = runtime.enter();
-    let config_bytes = serde_json_canonicalizer::to_vec(config)
-        .map_err(|error| McpError::Protocol(error.to_string()))?;
-    let config_digest = format!("{:x}", Sha256::digest(&config_bytes));
+    let (initial_key, initial_floors) = server_pool_key(config, plugin, &secrets)?;
+    let admission = crate::mcp_admission::admit(config, &secrets, &initial_key)?;
+    let config_digest = initial_key.config_digest.clone();
     let (mut peer, credential_floors): (Box<dyn McpPeer>, Vec<(String, u64)>) = match &config
         .transport
     {
@@ -1926,7 +2076,7 @@ fn prepare_server_cancellable(
     };
     let authorization_identity = authorization_identity(&credential_floors);
     let key = McpPoolKey {
-        workspace: config.reference.workspace_id.clone(),
+        owner: initial_key.owner.clone(),
         scope: scope_name(config.reference.scope).to_owned(),
         server: config.reference.name.clone(),
         config_digest,
@@ -1934,7 +2084,16 @@ fn prepare_server_cancellable(
         protocol_mode: protocol_name(config.protocol_mode).to_owned(),
         plugin_generation: plugin.map(|value| value.plugin_generation.clone()),
     };
+    let _ = initial_floors;
+    let check_server = config.clone();
+    let check_secrets = secrets.clone();
+    let check_key = key.clone();
+    let peer = Box::new(crate::mcp_admission::AdmissionPeer::new(peer, move || {
+        crate::mcp_admission::admit(&check_server, &check_secrets, &check_key)
+    }));
     Ok(PreparedServer {
+        admission,
+        pending_pool: None,
         key,
         peer,
         tools,
@@ -1981,7 +2140,7 @@ fn http_request_authorization(
     })
 }
 
-fn credential_fields(server: &McpServerConfig) -> BTreeMap<String, String> {
+pub(crate) fn credential_fields(server: &McpServerConfig) -> BTreeMap<String, String> {
     let mut fields = BTreeMap::new();
     match &server.transport {
         McpTransportConfig::Stdio { environment, .. } => {
@@ -2121,6 +2280,8 @@ const fn protocol_name(mode: ProtocolMode) -> &'static str {
 pub struct SecretAccess {
     pub store: Arc<dyn SecretStore>,
     pub mutation: Option<Arc<dyn SecretMutationAuthority>>,
+    pub registry: Option<McpRegistryStore>,
+    pub plugin_resolver: Option<Arc<dyn PluginMcpResolver>>,
 }
 
 impl SecretAccess {
@@ -2129,6 +2290,8 @@ impl SecretAccess {
         Self {
             store,
             mutation: None,
+            registry: None,
+            plugin_resolver: None,
         }
     }
 }
@@ -2280,7 +2443,11 @@ impl McpDynamicSupervisorAuthority {
         Self {
             broker,
             routes,
-            secrets,
+            secrets: SecretAccess {
+                registry: Some(registry.clone()),
+                plugin_resolver: plugin_resolver.clone(),
+                ..secrets
+            },
             registry,
             plugin_resolver,
             cancellation: Arc::new(Mutex::new(McpCancellationToken::default())),
@@ -2578,6 +2745,10 @@ impl McpDynamicSupervisorAuthority {
         expected_tool: &DynamicTool,
         cancellation: McpCancellationToken,
     ) -> Result<(), RoutePeerError> {
+        let creation = generation_lock(&route.key);
+        let _creation = creation
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
         if cancellation.is_cancelled() {
             return Err(RoutePeerError::Unavailable(
                 "MCP operation was cancelled".to_owned(),
@@ -2714,8 +2885,10 @@ impl McpDynamicSupervisorAuthority {
             if current != route.server || !current.enabled {
                 return Err("server configuration generation changed".to_owned());
             }
-            if current.reference.scope == McpScope::Project && !current.project_trusted {
-                return Err("project server trust was revoked".to_owned());
+            let (current_key, _) = server_pool_key(&current, None, &self.secrets)
+                .map_err(|error| error.to_string())?;
+            if current_key != route.key {
+                return Err("MCP owner or trust generation changed".into());
             }
         }
         for (field, credential_id) in credential_fields(&route.server) {
@@ -2884,6 +3057,74 @@ impl endpoint::PresetMcpSource for McpRuntime {
     fn tool_name(&self, server: &str, tool: &str) -> Option<String> {
         mcp::project_name(server, tool).ok()
     }
+}
+
+struct PendingPoolLease {
+    newly_created: bool,
+    broker: McpBrokerHandle,
+    key: McpPoolKey,
+    transferred: bool,
+}
+impl Drop for PendingPoolLease {
+    fn drop(&mut self) {
+        if !self.transferred {
+            if self.newly_created {
+                let _ = self.broker.remove(self.key.clone());
+            } else {
+                let _ = self.broker.release(self.key.clone());
+            }
+        }
+    }
+}
+
+pub(crate) fn server_pool_key(
+    config: &McpServerConfig,
+    plugin: Option<&ResolvedPluginExecutable>,
+    secrets: &SecretAccess,
+) -> Result<(McpPoolKey, Vec<(String, u64)>), McpError> {
+    let (owner, folder) = crate::mcp_scope::owner(config, secrets.registry.as_ref())?;
+    let mut floors = Vec::new();
+    for credential in credential_fields(config).into_values() {
+        let (mut material, generation) = resolve_secret(&credential, secrets.store.as_ref())?;
+        material.zeroize();
+        floors.push((credential, generation));
+    }
+    floors.sort();
+    floors.dedup();
+    let digest = crate::mcp_scope::config_digest(config)?;
+    let config_digest = format!(
+        "{:x}",
+        Sha256::digest(
+            serde_json_canonicalizer::to_vec(&(digest, folder))
+                .map_err(|error| McpError::Protocol(error.to_string()))?
+        )
+    );
+    let key = McpPoolKey {
+        owner,
+        scope: scope_name(config.reference.scope).into(),
+        server: config.reference.name.clone(),
+        config_digest,
+        authorization_identity: authorization_identity(&floors),
+        protocol_mode: protocol_name(config.protocol_mode).into(),
+        plugin_generation: plugin.map(|plugin| plugin.plugin_generation.clone()),
+    };
+    Ok((key, floors))
+}
+
+fn generation_lock(key: &McpPoolKey) -> Arc<Mutex<()>> {
+    static LOCKS: std::sync::OnceLock<Mutex<BTreeMap<McpPoolKey, std::sync::Weak<Mutex<()>>>>> =
+        std::sync::OnceLock::new();
+    let mut locks = LOCKS
+        .get_or_init(|| Mutex::new(BTreeMap::new()))
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    locks.retain(|_, lock| lock.strong_count() > 0);
+    if let Some(lock) = locks.get(key).and_then(std::sync::Weak::upgrade) {
+        return lock;
+    }
+    let lock = Arc::new(Mutex::new(()));
+    locks.insert(key.clone(), Arc::downgrade(&lock));
+    lock
 }
 
 #[cfg(test)]
@@ -3360,6 +3601,7 @@ for line in sys.stdin:
 
     fn resource_test_server() -> McpServerConfig {
         McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".to_owned(),
                 scope: McpScope::User,
@@ -3386,8 +3628,10 @@ for line in sys.stdin:
     ) -> PreparedServer {
         let server = resource_test_server();
         PreparedServer {
+            admission: None,
+            pending_pool: None,
             key: McpPoolKey {
-                workspace: "ws".to_owned(),
+                owner: "ws".to_owned(),
                 scope: "user".to_owned(),
                 server: "resources".to_owned(),
                 config_digest: "config".to_owned(),
@@ -3577,8 +3821,29 @@ for line in sys.stdin:
     fn preset_references_resolve_by_name_with_project_over_user() {
         use endpoint::PresetMcpSource;
         let root = tempfile::tempdir().unwrap();
-        let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
+        let runtime = McpRuntime::open(
+            root.path().join("config"),
+            Arc::new(MemorySecretStore::new()),
+        )
+        .unwrap();
+        let folder = tempfile::tempdir().unwrap();
+        profile::ConfigRepository::open(root.path())
+            .unwrap()
+            .publish_workspace(
+                0,
+                &profile::WorkspaceConfig {
+                    format: 1,
+                    revision: 1,
+                    id: "ws".into(),
+                    name: "ws".into(),
+                    cwd: vec![folder.path().canonicalize().unwrap().display().to_string()],
+                    folders: vec![],
+                    policy: Some(profile::WorkspacePolicy::default()),
+                },
+            )
+            .unwrap();
         let server = |scope, command: &str| McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope,
@@ -3596,12 +3861,6 @@ for line in sys.stdin:
             plugin_component: None,
             project_trusted: true,
         };
-        let digest = |config: &McpServerConfig| {
-            format!(
-                "sha256:{:x}",
-                Sha256::digest(serde_json_canonicalizer::to_vec(config).unwrap())
-            )
-        };
         assert_eq!(runtime.server_digest("ws", "docs"), None);
         let user = server(McpScope::User, "/usr/bin/user-docs");
         runtime
@@ -3613,7 +3872,7 @@ for line in sys.stdin:
                 },
             )
             .unwrap();
-        assert_eq!(runtime.server_digest("ws", "docs"), Some(digest(&user)));
+        let user_digest = runtime.server_digest("ws", "docs").unwrap();
         let project = server(McpScope::Project, "/usr/bin/project-docs");
         runtime
             .mutate(
@@ -3624,8 +3883,23 @@ for line in sys.stdin:
                 },
             )
             .unwrap();
-        assert_eq!(runtime.server_digest("ws", "docs"), Some(digest(&project)));
-        assert_eq!(runtime.server_digest("other", "docs"), None);
+        assert_eq!(
+            runtime.server_digest("ws", "docs"),
+            Some(user_digest.clone()),
+            "self-reported trust must not shadow the User definition"
+        );
+        let trust = profile::FolderAuthorityStore::new(root.path());
+        trust.request("r", 0, folder.path()).unwrap();
+        trust.grant_from_host("g", 1, "r").unwrap();
+        assert_ne!(
+            runtime.server_digest("ws", "docs"),
+            Some(user_digest.clone())
+        );
+        assert_eq!(
+            runtime.server_digest("other", "docs"),
+            Some(user_digest),
+            "User ownership is global"
+        );
         assert_eq!(
             runtime.tool_name("docs", "open-file").as_deref(),
             Some("mcp__docs__open_2dfile")
@@ -3638,6 +3912,7 @@ for line in sys.stdin:
         let root = tempfile::tempdir().unwrap();
         let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
         let server = McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope: McpScope::User,
@@ -3718,6 +3993,7 @@ done
         fs::set_permissions(&script, fs::Permissions::from_mode(0o755)).unwrap();
         let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
         let server = McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope: McpScope::User,
@@ -3908,6 +4184,7 @@ done
 
     fn stdio_user_server(name: &str, script: &std::path::Path) -> McpServerConfig {
         McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope: McpScope::User,
@@ -4198,6 +4475,7 @@ done
         fs::set_permissions(&script, fs::Permissions::from_mode(0o755)).unwrap();
         let runtime = McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).unwrap();
         let server = McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".into(),
                 scope: McpScope::User,
@@ -4270,6 +4548,7 @@ done
             let runtime =
                 McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).expect("runtime");
             let server = McpServerConfig {
+                folder_id: None,
                 reference: McpServerReference {
                     workspace_id: "ws".to_owned(),
                     scope: McpScope::User,
@@ -4447,6 +4726,7 @@ done
         let runtime =
             McpRuntime::open(root.path(), Arc::new(MemorySecretStore::new())).expect("runtime");
         let server = McpServerConfig {
+            folder_id: None,
             reference: McpServerReference {
                 workspace_id: "ws".to_owned(),
                 scope: McpScope::User,
@@ -4537,15 +4817,13 @@ done
             )
             .expect("publish server");
 
-        let key = McpPoolKey {
-            workspace: "ws".to_owned(),
-            scope: "user".to_owned(),
-            server: "rotation".to_owned(),
-            config_digest: "rotation-config".to_owned(),
-            authorization_identity: "anonymous".to_owned(),
-            protocol_mode: "modern".to_owned(),
-            plugin_generation: None,
-        };
+        let key = server_pool_key(
+            &server,
+            None,
+            &SecretAccess::read_only(Arc::new(MemorySecretStore::new())),
+        )
+        .unwrap()
+        .0;
         let (dispatched_tx, dispatched_rx) = std::sync::mpsc::channel();
         let effect_keys = Arc::new(Mutex::new(Vec::new()));
         let reconcile_keys = Arc::new(Mutex::new(Vec::new()));
@@ -4978,15 +5256,13 @@ done
                 },
             )
             .expect("publish server");
-        let key = McpPoolKey {
-            workspace: "ws".to_owned(),
-            scope: "user".to_owned(),
-            server: "rotation".to_owned(),
-            config_digest: "rotation-config".to_owned(),
-            authorization_identity: "anonymous".to_owned(),
-            protocol_mode: "modern".to_owned(),
-            plugin_generation: None,
-        };
+        let key = server_pool_key(
+            &server,
+            None,
+            &SecretAccess::read_only(Arc::new(MemorySecretStore::new())),
+        )
+        .unwrap()
+        .0;
         let calls = Arc::new(AtomicUsize::new(0));
         let gets = Arc::new(AtomicUsize::new(0));
         let updates = Arc::new(Mutex::new(Vec::new()));
@@ -5260,15 +5536,13 @@ for line in sys.stdin:
                 },
             )
             .expect("publish server");
-        let key = McpPoolKey {
-            workspace: "ws".to_owned(),
-            scope: "user".to_owned(),
-            server: "rotation".to_owned(),
-            config_digest: "rotation-config".to_owned(),
-            authorization_identity: "anonymous".to_owned(),
-            protocol_mode: "legacy".to_owned(),
-            plugin_generation: None,
-        };
+        let key = server_pool_key(
+            &server,
+            None,
+            &SecretAccess::read_only(Arc::new(MemorySecretStore::new())),
+        )
+        .unwrap()
+        .0;
         let broker = McpBroker::start().expect("broker");
         let handle = broker.handle();
         handle
@@ -5370,3 +5644,7 @@ for line in sys.stdin:
         drop(broker);
     }
 }
+
+#[cfg(test)]
+#[path = "phase5_tests.rs"]
+mod phase5_tests;

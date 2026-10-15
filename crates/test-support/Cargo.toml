@@ -7,6 +7,7 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
+profile = { path = "../profile" }
 engine = { path = "../engine" }
 schema = { path = "../schema" }
 serde.workspace = true

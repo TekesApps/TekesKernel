@@ -1,6 +1,7 @@
 //! Versioned user configuration and immutable spawn-profile snapshots.
 
 mod config;
+mod folder_authority;
 mod instruction;
 mod launch;
 mod resources;
@@ -10,6 +11,9 @@ pub use config::{
     ConfigRepository, ConfigSnapshot, Environment, EnvironmentsConfig, Limits, Model, Provider,
     ProvidersConfig, ResolvedWorkspace, RevisionVector, ScopeSelection, SessionSettings,
     SettingsConfig, WebSearch, WorkspaceConfig, WorkspaceFolder, WorkspacePolicy,
+};
+pub use folder_authority::{
+    FolderAuthorityStore, FolderEffectLease, FolderIdentity, FolderTrust, FolderTrustReceipt,
 };
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,
@@ -137,3 +141,5 @@ fn contains_null(value: &serde_json::Value) -> bool {
         | serde_json::Value::String(_) => false,
     }
 }
+
+pub use instruction::FolderSnapshotAuthority;

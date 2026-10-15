@@ -730,7 +730,7 @@ Health routes are the only unauthenticated paths and expose no inventory.
 Every `/api/*` HTTP request and WebSocket upgrade requires
 `Authorization: Bearer <token>`, where token is 32 random bytes encoded
 base64url without padding. The launching application generates it and passes
-the same bytes as 64 hexadecimal characters in `TEKES_KERNEL_ENDPOINT_TOKEN`
+the same bytes as 64 hexadecimal characters in the private stdin bootstrap frame
 ([Application-owned launch](../docs/builtin-launch.md)); it is process-scoped.
 Helper and worker processes never receive it, and it is never written under
 the storage root or into argv, logs or discovery material. The listener performs

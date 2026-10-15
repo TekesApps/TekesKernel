@@ -35,23 +35,23 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/mcp/src/bin/mcp-fixture-server.rs](../../src/bin/mcp-fixture-server.rs) | 1 | 97 | [Symbols and calls](src--bin--mcp-fixture-server.md) |
-| [crates/mcp/src/broker.rs](../../src/broker.rs) | 21 | 156 | [Symbols and calls](src--broker.md) |
-| [crates/mcp/src/client.rs](../../src/client.rs) | 88 | 652 | [Symbols and calls](src--client.md) |
+| [crates/mcp/src/broker.rs](../../src/broker.rs) | 24 | 227 | [Symbols and calls](src--broker.md) |
+| [crates/mcp/src/client.rs](../../src/client.rs) | 106 | 700 | [Symbols and calls](src--client.md) |
 | [crates/mcp/src/lib.rs](../../src/lib.rs) | 6 | 0 | [Symbols and calls](src--lib.md) |
-| [crates/mcp/src/management.rs](../../src/management.rs) | 66 | 493 | [Symbols and calls](src--management.md) |
+| [crates/mcp/src/management.rs](../../src/management.rs) | 67 | 512 | [Symbols and calls](src--management.md) |
 | [crates/mcp/src/parameter_headers.rs](../../src/parameter_headers.rs) | 11 | 109 | [Symbols and calls](src--parameter_headers.md) |
-| [crates/mcp/src/pool.rs](../../src/pool.rs) | 19 | 134 | [Symbols and calls](src--pool.md) |
+| [crates/mcp/src/pool.rs](../../src/pool.rs) | 20 | 146 | [Symbols and calls](src--pool.md) |
 | [crates/mcp/src/projection.rs](../../src/projection.rs) | 20 | 184 | [Symbols and calls](src--projection.md) |
 | [crates/mcp/src/recovery.rs](../../src/recovery.rs) | 3 | 0 | [Symbols and calls](src--recovery.md) |
 | [crates/mcp/src/subscription.rs](../../src/subscription.rs) | 7 | 48 | [Symbols and calls](src--subscription.md) |
-| [crates/mcp/src/transport.rs](../../src/transport.rs) | 77 | 815 | [Symbols and calls](src--transport.md) |
+| [crates/mcp/src/transport.rs](../../src/transport.rs) | 77 | 822 | [Symbols and calls](src--transport.md) |
 | [crates/mcp/src/types.rs](../../src/types.rs) | 47 | 199 | [Symbols and calls](src--types.md) |
 | [crates/mcp/tests/handshake_lifecycle.rs](../../tests/handshake_lifecycle.rs) | 15 | 95 | `inventory.json` |
 | [crates/mcp/tests/http_discovery.rs](../../tests/http_discovery.rs) | 19 | 743 | `inventory.json` |
 | [crates/mcp/tests/live_official_sdk_tunnel.rs](../../tests/live_official_sdk_tunnel.rs) | 5 | 102 | `inventory.json` |
 | [crates/mcp/tests/live_services.rs](../../tests/live_services.rs) | 7 | 59 | `inventory.json` |
 | [crates/mcp/tests/rmcp_interop.rs](../../tests/rmcp_interop.rs) | 25 | 218 | `inventory.json` |
-| [crates/mcp/tests/slice13_gates.rs](../../tests/slice13_gates.rs) | 56 | 1025 | `inventory.json` |
+| [crates/mcp/tests/slice13_gates.rs](../../tests/slice13_gates.rs) | 57 | 1035 | `inventory.json` |
 | [crates/mcp/tests/tasks_extension.rs](../../tests/tasks_extension.rs) | 28 | 157 | `inventory.json` |
 
 ## Cross-file direct calls
@@ -68,6 +68,7 @@ flowchart LR
   m5["subscription.rs"]
   m6["transport.rs"]
   m7["types.rs"]
+  m0 -->|"1"| m1
   m0 -->|"1"| m3
   m1 -->|"3"| m4
   m1 -->|"6"| m7

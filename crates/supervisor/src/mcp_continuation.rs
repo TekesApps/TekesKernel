@@ -20,7 +20,7 @@ fn value(value: serde_json::Value) -> Result<IJsonValue> {
 
 pub fn task_authority(key: &McpPoolKey) -> Result<IJsonValue> {
     value(
-        json!({"format":1,"workspace":key.workspace,"scope":key.scope,"server":key.server,"configDigest":key.config_digest,"authorizationIdentity":key.authorization_identity,"protocolMode":key.protocol_mode,"pluginGeneration":key.plugin_generation}),
+        json!({"format":1,"owner":key.owner,"scope":key.scope,"server":key.server,"configDigest":key.config_digest,"authorizationIdentity":key.authorization_identity,"protocolMode":key.protocol_mode,"pluginGeneration":key.plugin_generation}),
     )
 }
 
@@ -276,7 +276,7 @@ for line in sys.stdin:
         let broker = mcp::McpBroker::start().unwrap();
         let handle = broker.handle();
         let key = McpPoolKey {
-            workspace: "ws".into(),
+            owner: "ws".into(),
             scope: "user".into(),
             server: "tasks".into(),
             config_digest: "1".into(),

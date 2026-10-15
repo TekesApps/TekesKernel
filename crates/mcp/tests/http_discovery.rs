@@ -230,7 +230,7 @@ async fn broker_modern_calls_overlap_and_cancel_without_evicting_siblings() {
     let broker = mcp::McpBroker::start().unwrap();
     let handle = broker.handle();
     let key = mcp::McpPoolKey {
-        workspace: "ws".into(),
+        owner: "ws".into(),
         scope: "project".into(),
         server: "scoped".into(),
         config_digest: "a".repeat(64),
@@ -1283,7 +1283,7 @@ async fn broker_registration_owns_subscription_until_removal() {
     let broker = mcp::McpBroker::start().unwrap();
     let handle = broker.handle();
     let key = mcp::McpPoolKey {
-        workspace: "subscription-test".into(),
+        owner: "subscription-test".into(),
         scope: "user".into(),
         server: "owned".into(),
         config_digest: "1".into(),
