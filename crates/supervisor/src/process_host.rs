@@ -950,12 +950,13 @@ impl ProductionProcessHost {
             .resolve(workspace_id)
             .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         config.workspace.policy = policy.clone();
-        let instruction = profile::InstructionResolver::new_scoped(
+        let instruction = profile::workspace_instructions(
+            &self.repository,
+            workspace_id,
             &self.user_agent_dir,
-            self.root.join("workspaces").join(workspace_id),
-            config.workspace.cwd.iter().map(PathBuf::from),
+            &config,
         )
-        .capture()
+        .and_then(|resolver| resolver.capture())
         .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
         let effective = instruction.meet_workspace_policy(policy);
         if effective.network != policy.network
@@ -1091,24 +1092,13 @@ impl ProductionProcessHost {
         &self,
         session_id: &str,
     ) -> Result<crate::file_observation::FileSubscription, DaemonError> {
-        endpoint::validate_session_id(session_id)
-            .map_err(|_| DaemonError::invalid_config("invalid session identity"))?;
-        let folder = ["threads", "archive"]
-            .into_iter()
-            .map(|area| self.root.join(area).join(session_id))
-            .find(|path| path.is_dir())
-            .ok_or_else(|| DaemonError::invalid_config("session not found"))?;
-        let (workspace, binding) = session_workspace_binding(&folder.join("main.jsonl"))?;
+        let scope = self.session_scope(session_id)?;
         let repository = self.repository.clone();
         let resolve = move || {
-            match &binding {
-                Some(binding) => {
-                    repository.resolve_for_session_binding(&workspace, &folder, binding)
-                }
-                None => repository.resolve_for_session(&workspace, &folder),
-            }
-            .map(|config| config.workspace)
-            .map_err(|error| error.to_string())
+            scope
+                .config(&repository)
+                .map(|config| config.workspace)
+                .map_err(|error| error.to_string())
         };
         let initial = resolve().map_err(DaemonError::invalid_config)?;
         let subscription = self
@@ -1133,21 +1123,10 @@ impl ProductionProcessHost {
         offset: u64,
         limit: usize,
     ) -> Result<serde_json::Value, DaemonError> {
-        endpoint::validate_session_id(session_id)
-            .map_err(|_| DaemonError::invalid_config("invalid session identity"))?;
-        let folder = ["threads", "archive"]
-            .into_iter()
-            .map(|area| self.root.join(area).join(session_id))
-            .find(|path| path.is_dir())
-            .ok_or_else(|| DaemonError::invalid_config("session not found"))?;
-        let (workspace, binding) = session_workspace_binding(&folder.join("main.jsonl"))?;
-        let config = match binding {
-            Some(binding) => self
-                .repository
-                .resolve_for_session_binding(&workspace, &folder, &binding),
-            None => self.repository.resolve_for_session(&workspace, &folder),
-        }
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let scope = self.session_scope(session_id)?;
+        let config = scope
+            .config(&self.repository)
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let (root, relative) = scoped_client_file_path(&config.workspace, path)?;
         self.file_observations
             .register(session_id, &root, &relative)
@@ -1164,6 +1143,15 @@ impl ProductionProcessHost {
         })
     }
 
+    /// The configuration scope of an active or archived session, from its
+    /// own genesis.
+    fn session_scope(&self, session_id: &str) -> Result<profile::SessionScope, DaemonError> {
+        endpoint::validate_session_id(session_id)
+            .map_err(|_| DaemonError::invalid_config("invalid session identity"))?;
+        profile::SessionScope::locate(&self.root, session_id)
+            .map_err(|_| DaemonError::invalid_config("session not found"))
+    }
+
     /// The user-level `.agents` directory (instruction sources).
     pub fn user_agent_dir(&self) -> &Path {
         &self.user_agent_dir
@@ -1172,21 +1160,10 @@ impl ProductionProcessHost {
     /// Canonical workspace roots for a session, primary (selected) root first.
     /// Resolved from the durable session binding exactly like `client_file_page`.
     pub fn client_session_roots(&self, session_id: &str) -> Result<Vec<PathBuf>, DaemonError> {
-        endpoint::validate_session_id(session_id)
-            .map_err(|_| DaemonError::invalid_config("invalid session identity"))?;
-        let folder = ["threads", "archive"]
-            .into_iter()
-            .map(|area| self.root.join(area).join(session_id))
-            .find(|path| path.is_dir())
-            .ok_or_else(|| DaemonError::invalid_config("session not found"))?;
-        let (workspace, binding) = session_workspace_binding(&folder.join("main.jsonl"))?;
-        let config = match binding {
-            Some(binding) => self
-                .repository
-                .resolve_for_session_binding(&workspace, &folder, &binding),
-            None => self.repository.resolve_for_session(&workspace, &folder),
-        }
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let scope = self.session_scope(session_id)?;
+        let config = scope
+            .config(&self.repository)
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let workspace = &config.workspace;
         let selected = workspace.selected_cwd.as_deref();
         selected
@@ -1207,33 +1184,14 @@ impl ProductionProcessHost {
         &self,
         session_id: &str,
     ) -> Result<profile::ResourceCatalog, DaemonError> {
-        if session_id.is_empty()
-            || session_id.contains(['/', '\\'])
-            || session_id == "."
-            || session_id == ".."
-        {
-            return Err(DaemonError::invalid_config("invalid session identity"));
-        }
-        let folder = ["threads", "archive"]
-            .into_iter()
-            .map(|area| self.root.join(area).join(session_id))
-            .find(|path| path.is_dir())
-            .ok_or_else(|| DaemonError::invalid_config("session not found"))?;
-        let (workspace, binding) = session_workspace_binding(&folder.join("main.jsonl"))?;
-        let config = match binding {
-            Some(binding) => self
-                .repository
-                .resolve_for_session_binding(&workspace, &folder, &binding),
-            None => self.repository.resolve_for_session(&workspace, &folder),
-        }
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let snapshot = profile::InstructionResolver::new_scoped(
-            &self.user_agent_dir,
-            self.root.join("workspaces").join(&workspace),
-            &config.workspace.cwd,
-        )
-        .capture()
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let scope = self.session_scope(session_id)?;
+        let config = scope
+            .config(&self.repository)
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let snapshot = scope
+            .instructions(&self.repository, &self.user_agent_dir, &config)
+            .and_then(|resolver| resolver.capture())
+            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         profile::ResourceCatalog::from_snapshot(&snapshot)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))
     }
@@ -1246,40 +1204,31 @@ impl ProductionProcessHost {
         workspace_id: &str,
         session_id: Option<&str>,
     ) -> Result<DynamicToolCatalog, DaemonError> {
-        let config = session_id
-            .map_or_else(
-                || self.repository.resolve(workspace_id),
-                |session_id| {
-                    let folder = ["threads", "archive"]
-                        .into_iter()
-                        .map(|area| self.root.join(area).join(session_id))
-                        .find(|path| path.is_dir())
-                        .ok_or_else(|| profile::ProfileError::InvalidPath {
-                            path: self.root.join("threads").join(session_id),
-                            reason: "session folder does not exist".to_owned(),
-                        })?;
-                    let (_, binding) = session_workspace_binding(&folder.join("main.jsonl"))
-                        .map_err(|error| profile::ProfileError::InvalidPath {
-                            path: folder.join("main.jsonl"),
-                            reason: error.to_string(),
-                        })?;
-                    match binding {
-                        Some(binding) => self.repository.resolve_for_session_binding(
-                            workspace_id,
-                            folder,
-                            &binding,
-                        ),
-                        None => self.repository.resolve_for_session(workspace_id, folder),
-                    }
-                },
-            )
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let instruction = profile::InstructionResolver::new_scoped(
+        // A session's catalog comes from its own genesis scope; a caller's
+        // `workspace_id` that disagrees with that genesis is refused.
+        let scope = session_id
+            .map(|session_id| self.session_scope(session_id))
+            .transpose()?;
+        if scope
+            .as_ref()
+            .is_some_and(|scope| scope.workspace_id() != workspace_id)
+        {
+            return Err(DaemonError::invalid_config(
+                "session belongs to another workspace",
+            ));
+        }
+        let config = match &scope {
+            Some(scope) => scope.config(&self.repository),
+            None => self.repository.resolve(workspace_id),
+        }
+        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let instruction = profile::workspace_instructions(
+            &self.repository,
+            workspace_id,
             &self.user_agent_dir,
-            self.root.join("workspaces").join(workspace_id),
-            config.workspace.cwd.iter().map(PathBuf::from),
+            &config,
         )
-        .capture()
+        .and_then(|resolver| resolver.capture())
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let mcp = self
             .mcp_runtime
@@ -6465,17 +6414,16 @@ fn scoped_client_file_path(
 }
 
 fn session_workspace_binding(ledger: &Path) -> Result<(String, Option<String>), DaemonError> {
-    // The genesis line is the only input: do not decode the whole ledger per lookup.
-    let genesis = store::read_genesis(ledger)
-        .map_err(DaemonError::store)?
-        .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?;
-    let genesis = &genesis;
-    let workspace_id = genesis
-        .string_field("workspace")
-        .map(str::to_owned)
-        .ok_or_else(|| DaemonError::corrupt("worker genesis has no workspace"))?;
-    let folder_binding = genesis.string_field("folder_binding").map(str::to_owned);
-    Ok((workspace_id, folder_binding))
+    // Read failures keep their store classification; a missing or incomplete
+    // genesis is corruption, as it was before the shared scope.
+    let scope = profile::SessionScope::for_ledger(ledger).map_err(|error| match error {
+        profile::ProfileError::Store(error) => DaemonError::store(error),
+        other => DaemonError::corrupt(other.to_string()),
+    })?;
+    Ok((
+        scope.workspace_id().to_owned(),
+        scope.folder_binding().map(str::to_owned),
+    ))
 }
 
 fn ledger_needs_worker(ledger: &Path) -> Result<bool, DaemonError> {

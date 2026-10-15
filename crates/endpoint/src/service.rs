@@ -433,22 +433,9 @@ impl NativeEndpoint {
         session_id: &str,
     ) -> Result<profile::ConfigSnapshot, NativeEndpointError> {
         validate_session_id(session_id)?;
-        let folder = self.active_folder(session_id)?;
-        // Only the genesis is needed (workspace and folder binding); do not decode the ledger.
-        let genesis = store::read_genesis(folder.join("main.jsonl"))?.ok_or_else(|| {
-            NativeEndpointError::Store(store::StoreError::Corruption(
-                "session ledger has no valid genesis prefix".to_owned(),
-            ))
-        })?;
-        let genesis = &genesis;
-        let workspace = genesis
-            .string_field("workspace")
-            .ok_or(NativeEndpointError::InventoryWorkspace)?;
+        let scope = profile::SessionScope::for_session_folder(self.active_folder(session_id)?)?;
         let repository = profile::ConfigRepository::open(self.store.root())?;
-        Ok(match genesis.string_field("folder_binding") {
-            Some(binding) => repository.resolve_for_session_binding(workspace, &folder, binding)?,
-            None => repository.resolve_for_session(workspace, &folder)?,
-        })
+        Ok(scope.config(&repository)?)
     }
 
     /// Freeze user-selected execution settings at input admission, before worker startup or

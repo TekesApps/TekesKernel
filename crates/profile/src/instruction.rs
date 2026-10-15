@@ -142,18 +142,15 @@ impl LaunchProfile {
                 path: assets.root().to_path_buf(),
                 reason: "thread asset directory has no session folder".to_owned(),
             })?;
-        let config = match folder_binding {
-            Some(binding) => {
-                repository.resolve_for_session_binding(workspace_id, session_folder, binding)?
-            }
-            None => repository.resolve_for_session(workspace_id, session_folder)?,
-        };
-        let resolver = InstructionResolver::new_scoped(
-            user_agent_dir.as_ref(),
-            repository.workspace_data_dir(workspace_id)?,
-            config.workspace.cwd.iter().map(Path::new),
+        let scope = crate::SessionScope::from_parts(
+            session_folder,
+            workspace_id,
+            folder_binding.map(str::to_owned),
         );
-        let instruction = resolver.capture()?;
+        let config = scope.config(repository)?;
+        let instruction = scope
+            .instructions(repository, user_agent_dir.as_ref(), &config)?
+            .capture()?;
         instruction.validate_against_config(&config)?;
         let effective_policy = instruction.meet_workspace_policy(&config.workspace.policy);
         let (config_digest, config_asset) = config.publish(assets)?;
@@ -273,7 +270,7 @@ impl InstructionSnapshot {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct InstructionResolver {
     user_data_dir: PathBuf,
     workspace_data_dir: Option<PathBuf>,

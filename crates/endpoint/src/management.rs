@@ -10,9 +10,7 @@ use std::os::unix::fs::MetadataExt;
 use std::path::{Path, PathBuf};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use profile::{
-    ConfigRepository, InstructionResolver, WorkspaceConfig, WorkspaceFolder, WorkspacePolicy,
-};
+use profile::{ConfigRepository, WorkspaceConfig, WorkspaceFolder, WorkspacePolicy};
 use schema::{Event, IJsonValue, OriginTuple, ResumePolicy};
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
@@ -1024,14 +1022,12 @@ impl ManagementStore {
         let config = self
             .config
             .resolve_for_binding(&workspace.id, &folder_binding)?;
-        let instruction = InstructionResolver::new_scoped(
+        let instruction = profile::workspace_instructions(
+            &self.config,
+            &workspace.id,
             request.user_agent_dir,
-            request
-                .user_agent_dir
-                .join("workspaces")
-                .join(&workspace.id),
-            config.workspace.cwd.iter().map(Path::new),
-        )
+            &config,
+        )?
         .capture()?;
         instruction.validate_against_config(&config)?;
         let environment =
@@ -1328,27 +1324,12 @@ impl ManagementStore {
         mcp: Option<&dyn PresetMcpSource>,
         models: Option<&dyn PresetModelSource>,
     ) -> Result<tools::ResolvedPreset, ManagementError> {
-        let genesis = store::read_genesis(source_folder.join("main.jsonl"))?.ok_or_else(|| {
-            ManagementError::CorruptOperation("fork source has no genesis".to_owned())
-        })?;
-        let workspace_id = genesis
-            .string_field("workspace")
-            .ok_or_else(|| {
-                ManagementError::CorruptOperation(
-                    "fork source genesis lacks a workspace".to_owned(),
-                )
-            })?
-            .to_owned();
-        let config = match genesis.string_field("folder_binding") {
-            Some(binding) => self.config.resolve_for_binding(&workspace_id, binding)?,
-            None => self.config.resolve(&workspace_id)?,
-        };
-        let instruction = InstructionResolver::new_scoped(
-            user_agent_dir,
-            user_agent_dir.join("workspaces").join(&workspace_id),
-            config.workspace.cwd.iter().map(Path::new),
-        )
-        .capture()?;
+        let scope = profile::SessionScope::for_session_folder(source_folder)?;
+        let workspace_id = scope.workspace_id().to_owned();
+        let config = scope.workspace_config(&self.config)?;
+        let instruction = scope
+            .instructions(&self.config, user_agent_dir, &config)?
+            .capture()?;
         let environment = SessionPresetEnvironment::new(&workspace_id, &instruction, mcp)
             .with_models(&config, models);
         session_preset(
@@ -5333,6 +5314,59 @@ mod tests {
                 .count()
                 == 2
         );
+    }
+
+    #[test]
+    fn session_create_reads_workspace_skills_where_the_worker_launch_does() {
+        let root = tempfile::tempdir().expect("root");
+        let storage = root.path().join("kernel");
+        let agents = root.path().join("agents");
+        let project = root.path().join("project");
+        fs::create_dir_all(&project).expect("project");
+        let store = ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect("store");
+        let (view, _) = store
+            .create_workspace(
+                "skills-workspace",
+                &"7".repeat(64),
+                &project.to_string_lossy(),
+                "2026-10-15T00:00:00.000Z",
+            )
+            .expect("workspace");
+        let manifest = "---\nname: review\ndescription: Review a change\n---\nBody\n";
+        let write_skill = |dir: &Path| {
+            let skill = dir.join("skills").join("review");
+            fs::create_dir_all(&skill).expect("skill dir");
+            fs::write(skill.join("SKILL.md"), manifest).expect("skill");
+        };
+        let preset = json!({"skills":["review"]});
+        let create = |rpc_id: &str| {
+            store.create_session(super::SessionCreateOperation {
+                rpc_id,
+                request_sha256: &"8".repeat(64),
+                requested_session_id: None,
+                workspace_id: Some(&view.workspace_id),
+                cwd: None,
+                identity_profile: None,
+                preset: Some(&preset),
+                preset_mcp: None,
+                preset_models: None,
+                user_agent_dir: &agents,
+                started_at: "2026-10-15T00:00:00.000Z",
+                principal: "test",
+            })
+        };
+        // A skill under the user directory's `workspaces/<id>` was never read
+        // at launch, so session creation must not accept it either.
+        write_skill(&agents.join("workspaces").join(&view.workspace_id));
+        assert!(matches!(
+            create("skills-elsewhere").err(),
+            Some(ManagementError::PresetInvalid(tools::PresetInvalid {
+                reason: tools::PresetInvalidReason::UnknownSkill,
+                ..
+            }))
+        ));
+        write_skill(&storage.join("workspaces").join(&view.workspace_id));
+        assert!(create("skills-workspace-data").is_ok());
     }
 
     #[test]

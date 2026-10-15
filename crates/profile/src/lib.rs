@@ -4,6 +4,7 @@ mod config;
 mod instruction;
 mod launch;
 mod resources;
+mod scope;
 
 pub use config::{
     ConfigRepository, ConfigSnapshot, Limits, Model, Provider, ProvidersConfig, ResolvedWorkspace,
@@ -24,6 +25,7 @@ pub use resources::{
     CommandCatalogEntry, CommandExpansion, CommandSummary, ResourceCatalog, ResourceError,
     SkillPackage, SkillResource, SkillSummary,
 };
+pub use scope::{SessionScope, workspace_instructions};
 
 use std::path::PathBuf;
 

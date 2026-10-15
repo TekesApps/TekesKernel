@@ -228,7 +228,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_worker_inner` | `snapshot_path` | [309](../../src/lib.rs#L309), [310](../../src/lib.rs#L310), [341](../../src/lib.rs#L341) | [tekes-supervisor::snapshot_path](../../src/lib.rs#L478) |
 | `launch_worker_inner` | `std::fs::read` | [314](../../src/lib.rs#L314), [315](../../src/lib.rs#L315), [342](../../src/lib.rs#L342) | external-constructor-callback-or-unresolved |
 | `launch_worker_inner` | `ConfigSnapshot::decode` | [316](../../src/lib.rs#L316) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L293) |
-| `launch_worker_inner` | `InstructionSnapshot::decode` | [317](../../src/lib.rs#L317) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L183) |
+| `launch_worker_inner` | `InstructionSnapshot::decode` | [317](../../src/lib.rs#L317) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L180) |
 | `launch_worker_inner` | `instruction.validate_against_config` | [318](../../src/lib.rs#L318) | receiver-type-required |
 | `launch_worker_inner` | `config.digest` | [319](../../src/lib.rs#L319) | receiver-type-required |
 | `launch_worker_inner` | `Err` | [320](../../src/lib.rs#L320), [323](../../src/lib.rs#L323) | external-constructor-callback-or-unresolved |

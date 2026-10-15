@@ -14,6 +14,29 @@ workspace version in `Cargo.toml`.
   operation keyed by an id derived from the request's rpc id, so a retried
   create resumes it. The response is unchanged.
 
+### Changed
+- One resolver for a session's configuration scope (`profile::SessionScope`):
+  the workspace and folder binding come only from the session's genesis, and
+  every capture of instructions uses the same three inputs (the service
+  user's `~/.agents`, the workspace data directory
+  `<storage-root>/workspaces/<id>`, and the bound folders). It replaces copies
+  in the endpoint config snapshot, fork preset resolution, worker launch, and
+  the file, root, resource and tool catalog reads.
+
+### Fixed
+- `session.create` and `session.fork {preset}` validated a preset's `skills`
+  against instructions read from `<home>/.agents` and
+  `<home>/.agents/workspaces/<id>` (with `<home>` the storage root), while the
+  worker launch reads the service user's `~/.agents` and
+  `<storage-root>/workspaces/<id>`. A skill could be accepted at create and
+  missing at launch, or the reverse. `session.presets.resolve` used a third
+  directory. All now read what the launch reads, and
+  [instruction-snapshot](spec/instruction-snapshot.md) names that directory
+  (it previously named `~/.agents/workspaces/<id>`, which no launch read).
+- `tools/list` and `tools/resolve` with a `sessionId` from another workspace
+  resolved one workspace's configuration under the other session's folder
+  binding; the mismatch is now refused.
+
 ### Security
 - Kernel-owned directories (the storage root and the platform credential
   store) are never writable by a session, even beneath a writable folder such
