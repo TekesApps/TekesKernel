@@ -73,7 +73,9 @@ where
             append_tool_validation_error(ledger, options, turn, call, &detail)?;
             continue;
         }
-        let write_roots = match invocation_write_roots(profile, call) {
+        let write_roots = match kernel_protected_roots(&thread_folder)
+            .and_then(|protected| invocation_write_roots(profile, call, &protected))
+        {
             Ok(roots) => roots,
             Err(error) => {
                 // Invalid model-supplied authority is a tool rejection, not

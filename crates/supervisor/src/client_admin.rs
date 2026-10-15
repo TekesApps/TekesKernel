@@ -1445,9 +1445,13 @@ mod tests {
         #[test]
         fn policy_set_racing_relocate_never_corrupts_management() {
             let (root, _host, routes, project) = folder_fixture();
-            let other = root.path().join("project-moved");
+            // Relocation targets are folder entries, which may not lie inside the storage root.
+            let outside = tempfile::tempdir().expect("outside storage");
+            let first_dir = outside.path().join("project-first");
+            let other = outside.path().join("project-moved");
+            fs::create_dir(&first_dir).expect("first");
             fs::create_dir(&other).expect("other");
-            let first = fs::canonicalize(&project)
+            let first = fs::canonicalize(&first_dir)
                 .expect("first")
                 .to_string_lossy()
                 .into_owned();

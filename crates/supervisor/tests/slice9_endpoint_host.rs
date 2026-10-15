@@ -306,8 +306,10 @@ fn route_registry_is_frozen_and_never_advertises_placeholders() {
 #[test]
 fn workspace_relocate_preserves_session_binding_and_rejects_a_stale_source_path() {
     let root = tempfile::tempdir().expect("root");
-    let original = root.path().join("project-original");
-    let relocated = root.path().join("project-relocated");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let original = projects.path().join("project-original");
+    let relocated = projects.path().join("project-relocated");
     std::fs::create_dir(&original).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),
@@ -395,7 +397,9 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
         .join("payload");
     std::fs::create_dir_all(&debris).expect("recordless payload");
     std::fs::write(debris.join("candidate"), b"private").expect("recordless candidate");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),
@@ -493,7 +497,9 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
 #[test]
 fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),
@@ -608,8 +614,10 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
 #[test]
 fn secondary_folder_session_binding_survives_create_and_path_move() {
     let root = tempfile::tempdir().expect("root");
-    let first = root.path().join("project-primary");
-    let second = root.path().join("project-secondary");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let first = projects.path().join("project-primary");
+    let second = projects.path().join("project-secondary");
     std::fs::create_dir(&first).expect("primary project");
     std::fs::create_dir(&second).expect("secondary project");
     let assembly = ProductionEndpointAssembly::open_with_clock(
@@ -670,7 +678,7 @@ fn secondary_folder_session_binding_survives_create_and_path_move() {
     let genesis: Value = serde_json::from_str(&first_line).expect("genesis JSON");
     assert_eq!(genesis["folder_binding"], "secondary");
 
-    let moved = root.path().join("project-secondary-moved");
+    let moved = projects.path().join("project-secondary-moved");
     std::fs::rename(&second, &moved).expect("move selected folder");
     workspace.revision = 3;
     workspace.folders[1].path = moved.display().to_string();
@@ -698,7 +706,9 @@ fn secondary_folder_session_binding_survives_create_and_path_move() {
 #[test]
 fn workspace_mutations_are_journaled_and_exact_retry_is_stable() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),
@@ -930,7 +940,9 @@ impl ProviderReadinessAuthority for UnavailableProvider {
 #[test]
 fn model_catalog_and_selection_keep_runtime_failure_display_only() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project-models");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project-models");
     std::fs::create_dir(&project).expect("project directory");
     profile::ConfigRepository::open(root.path())
         .expect("config repository")
@@ -1474,7 +1486,9 @@ fn append_turn(root: &std::path::Path, session: &str, first_seq: u64, settled: b
 #[test]
 fn preset_defaults_become_the_new_session_model() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let provider = profile::Provider {
         id: "fixture".to_owned(),
@@ -1584,7 +1598,9 @@ fn preset_defaults_become_the_new_session_model() {
 #[test]
 fn fork_can_replace_the_preset_of_its_destination() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),
@@ -1691,7 +1707,9 @@ fn fork_can_replace_the_preset_of_its_destination() {
 #[test]
 fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project directory");
     let assembly = ProductionEndpointAssembly::open_with_clock(
         root.path(),

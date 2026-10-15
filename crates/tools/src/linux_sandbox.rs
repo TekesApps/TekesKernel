@@ -133,6 +133,25 @@ pub(crate) fn confine(
             "loopback-only network cannot be enforced by the Linux backend".to_owned(),
         ));
     }
+    // Landlock only grants access; it cannot carve a read-only subtree out of
+    // a writable one. Refuse instead of silently exposing the protected root.
+    for root in policy.write_roots.iter().chain(policy.scratch.iter()) {
+        let canonical = std::fs::canonicalize(root).unwrap_or_else(|_| PathBuf::from(root));
+        if policy.is_protected_exception(&canonical) && canonical != Path::new(root) {
+            return Err(SandboxError::Invalid(
+                "write roots beneath a protected root must be canonical paths",
+            ));
+        }
+        if let Some(protected) = policy
+            .exposed_protected_root(Path::new(root))
+            .or_else(|| policy.exposed_protected_root(&canonical))
+        {
+            return Err(SandboxError::Unavailable(format!(
+                "Landlock cannot keep {protected} read-only beneath write root {root}; \
+                 bubblewrap is required"
+            )));
+        }
+    }
     let abi = supported_abi().map_err(|(_, detail)| SandboxError::Unavailable(detail))?;
     let ruleset = landlock_ruleset(policy, executable, abi)?;
     let filter = seccomp_filter(policy, true)?;
@@ -594,6 +613,33 @@ mod tests {
         }
     }
 
+    #[test]
+    fn protected_root_beneath_a_write_root_is_refused_not_exposed() {
+        let fixture = fixture();
+        let inside = fixture.inside.to_string_lossy().into_owned();
+        let storage = fixture.inside.join("storage");
+        let job = storage.join("jobs");
+        fs::create_dir_all(&job).unwrap();
+        let mut policy = policy(&fixture, NetworkPolicy::Deny, true);
+        policy.protected_roots = vec![storage.to_string_lossy().into_owned()];
+        let error = super::confine(
+            &mut std::process::Command::new("/bin/true"),
+            &policy,
+            Path::new("/bin/true"),
+        )
+        .unwrap_err();
+        assert!(
+            error.to_string().contains("bubblewrap is required"),
+            "{error}"
+        );
+
+        // A protected root outside every write root needs no carve-out, and a
+        // declared exception beneath it is an ordinary grant.
+        policy.write_roots = vec![job.to_string_lossy().into_owned()];
+        policy.read_roots = vec![inside];
+        assert!(policy.exposed_protected_root(&job).is_none());
+    }
+
     struct Fixture {
         _root: tempfile::TempDir,
         inside: PathBuf,
@@ -625,6 +671,7 @@ mod tests {
             network,
             allow_process,
             scratch: None,
+            protected_roots: Vec::new(),
         }
     }
 

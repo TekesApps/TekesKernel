@@ -471,7 +471,12 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
         arguments,
     };
     assert_eq!(
-        invocation_write_roots(&profile, &call("shell", json!({"command":"touch a.txt"}))).unwrap(),
+        invocation_write_roots(
+            &profile,
+            &call("shell", json!({"command":"touch a.txt"})),
+            &[]
+        )
+        .unwrap(),
         vec![workspace.clone()],
     );
     assert_eq!(
@@ -482,7 +487,8 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
                 json!({
                     "command":"touch a.txt", "writable_paths":[]
                 })
-            )
+            ),
+            &[],
         )
         .unwrap(),
         vec![workspace.clone()],
@@ -495,7 +501,8 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
                 json!({
                     "command":"touch a.txt", "writable_paths":["../outside"]
                 })
-            )
+            ),
+            &[],
         )
         .is_err()
     );
@@ -507,7 +514,8 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
                 json!({
                     "path":"a.txt", "content":"hello"
                 })
-            )
+            ),
+            &[],
         )
         .unwrap(),
         vec![workspace.clone()],
@@ -520,21 +528,27 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
                 json!({
                     "path":"a.txt", "old_text":"hello", "new_text":"world"
                 })
-            )
+            ),
+            &[],
         )
         .unwrap(),
         vec![workspace.clone()],
     );
     profile.config.workspace.policy.writable_roots.clear();
     assert!(
-        invocation_write_roots(&profile, &call("shell", json!({"command":"touch a.txt"})))
-            .unwrap()
-            .is_empty()
+        invocation_write_roots(
+            &profile,
+            &call("shell", json!({"command":"touch a.txt"})),
+            &[]
+        )
+        .unwrap()
+        .is_empty()
     );
     assert!(
         invocation_write_roots(
             &profile,
-            &call("write", json!({"path":"a.txt", "content":"hello"}))
+            &call("write", json!({"path":"a.txt", "content":"hello"})),
+            &[],
         )
         .is_err()
     );
@@ -544,7 +558,63 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
             &call(
                 "edit",
                 json!({"path":"a.txt", "old_text":"hello", "new_text":"world"})
-            )
+            ),
+            &[],
+        )
+        .is_err()
+    );
+}
+
+#[test]
+fn writable_paths_inside_kernel_owned_directories_are_refused() {
+    let root = tempfile::tempdir().unwrap();
+    let home = root.path().canonicalize().unwrap();
+    let storage = home.join("kernel-data");
+    std::fs::create_dir_all(storage.join("threads")).unwrap();
+    std::os::unix::fs::symlink(&storage, home.join("alias")).unwrap();
+    let mut profile = tool_profile(&home, &["shell", "write"]);
+    let home_text = home.to_string_lossy().into_owned();
+    profile.config.workspace.policy.writable_roots = vec![home_text.clone()];
+    let protected = tools::kernel_protected_roots(&storage);
+    let call = |name: &str, arguments| provider::ToolCall {
+        call_id: "call".to_owned(),
+        name: name.to_owned(),
+        arguments,
+    };
+    // The home folder itself stays writable; the sandbox carves storage out.
+    assert_eq!(
+        invocation_write_roots(
+            &profile,
+            &call("shell", json!({"command":"touch a.txt"})),
+            &protected
+        )
+        .unwrap(),
+        vec![home_text],
+    );
+    for path in [
+        "kernel-data/threads/ledger.jsonl",
+        "kernel-data/new.txt",
+        "alias/threads/ledger.jsonl",
+    ] {
+        let error = invocation_write_roots(
+            &profile,
+            &call("write", json!({"path": path, "content":"x"})),
+            &protected,
+        )
+        .unwrap_err();
+        assert!(
+            error.to_string().contains("Kernel-owned"),
+            "{path}: {error}"
+        );
+    }
+    assert!(
+        invocation_write_roots(
+            &profile,
+            &call(
+                "shell",
+                json!({"command":"touch x", "writable_paths":["kernel-data"]})
+            ),
+            &protected,
         )
         .is_err()
     );

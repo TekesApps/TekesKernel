@@ -30,6 +30,13 @@ pub struct SandboxPolicy {
     pub allow_process: bool,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub scratch: Option<String>,
+    /// Directories no write may reach even beneath a write root, such as the
+    /// Kernel storage root under a writable home folder. Only a write root
+    /// declared strictly beneath a protected root (a Kernel-owned job
+    /// directory) stays writable there; callers must never derive such a root
+    /// from session input.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub protected_roots: Vec<String>,
 }
 
 impl SandboxPolicy {
@@ -39,6 +46,7 @@ impl SandboxPolicy {
         }
         validate_roots(&self.read_roots)?;
         validate_roots(&self.write_roots)?;
+        validate_roots(&self.protected_roots)?;
         if let Some(scratch) = &self.scratch {
             validate_absolute(scratch)?;
         }
@@ -54,6 +62,28 @@ impl SandboxPolicy {
             }
         }
         Ok(())
+    }
+
+    /// True when `root` lies strictly beneath a protected root, which keeps
+    /// a write root declared there writable.
+    #[must_use]
+    pub fn is_protected_exception(&self, root: &Path) -> bool {
+        self.protected_roots
+            .iter()
+            .any(|protected| root != Path::new(protected) && root.starts_with(protected))
+    }
+
+    /// The first protected root that `root` would expose to writes: one at or
+    /// beneath `root`, unless `root` is itself a declared exception.
+    #[must_use]
+    pub fn exposed_protected_root(&self, root: &Path) -> Option<&str> {
+        if self.is_protected_exception(root) {
+            return None;
+        }
+        self.protected_roots
+            .iter()
+            .find(|protected| Path::new(protected).starts_with(root))
+            .map(String::as_str)
     }
 
     pub fn canonical_bytes(&self) -> Result<Vec<u8>, SandboxError> {
@@ -111,6 +141,126 @@ pub enum SandboxError {
     ApprovalMismatch,
     #[error("sandbox I/O error: {0}")]
     Io(#[from] std::io::Error),
+}
+
+/// Directories no session may write or use as a folder: the Kernel storage
+/// root and the service user's platform credential store. Paths are
+/// canonical; a credential store that does not exist is omitted.
+#[must_use]
+pub fn kernel_protected_roots(storage_root: &Path) -> Vec<String> {
+    let mut roots = Vec::new();
+    roots.push(canonical_text(storage_root));
+    if let Some(home) = service_user_home() {
+        #[cfg(target_os = "macos")]
+        let stores = [home.join("Library/Keychains")];
+        #[cfg(not(target_os = "macos"))]
+        let stores = [home.join(".local/share/keyrings")];
+        for store in stores {
+            if let Ok(canonical) = store.canonicalize() {
+                roots.push(canonical.to_string_lossy().into_owned());
+            }
+        }
+    }
+    roots.sort();
+    roots.dedup();
+    roots
+}
+
+/// The protected roots that lie at or beneath one of `write_roots`, which
+/// a sandbox built from those write roots must deny explicitly. Roots outside
+/// every write root are already unwritable, so the policy omits them.
+#[must_use]
+pub fn exposed_protected_roots(protected: &[String], write_roots: &[String]) -> Vec<String> {
+    let writes = write_roots
+        .iter()
+        .flat_map(|root| {
+            let canonical = canonical_text(Path::new(root));
+            [root.clone(), canonical]
+        })
+        .collect::<Vec<_>>();
+    let mut exposed = protected
+        .iter()
+        .filter(|root| {
+            writes
+                .iter()
+                .any(|write| Path::new(root).starts_with(write))
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+    exposed.sort();
+    exposed.dedup();
+    exposed
+}
+
+/// The protected root that `path` names or lies beneath, if any. `path` is
+/// compared both as given and resolved through its nearest existing
+/// ancestor, so a symlinked alias of a protected directory is caught too.
+#[must_use]
+pub fn protected_root_containing<'a>(protected: &'a [String], path: &Path) -> Option<&'a str> {
+    let mut existing = path;
+    let mut suffix = Vec::new();
+    let resolved = loop {
+        if let Ok(canonical) = existing.canonicalize() {
+            break Some(
+                suffix
+                    .iter()
+                    .rev()
+                    .fold(canonical, |base, part| base.join(part)),
+            );
+        }
+        match (existing.parent(), existing.file_name()) {
+            (Some(parent), Some(name)) => {
+                suffix.push(name.to_owned());
+                existing = parent;
+            }
+            _ => break None,
+        }
+    };
+    protected
+        .iter()
+        .find(|root| {
+            path.starts_with(root)
+                || resolved
+                    .as_deref()
+                    .is_some_and(|resolved| resolved.starts_with(root))
+        })
+        .map(String::as_str)
+}
+
+fn canonical_text(path: &Path) -> String {
+    path.canonicalize()
+        .unwrap_or_else(|_| path.to_path_buf())
+        .to_string_lossy()
+        .into_owned()
+}
+
+/// The home directory from the password database, not `HOME`: workers and
+/// tool processes run with a cleared environment.
+fn service_user_home() -> Option<std::path::PathBuf> {
+    use std::ffi::CStr;
+    use std::os::unix::ffi::OsStrExt;
+    let mut buffer = vec![0_u8; 16 * 1024];
+    // SAFETY: zeroed passwd is a valid out-parameter for getpwuid_r.
+    let mut entry: libc::passwd = unsafe { std::mem::zeroed() };
+    let mut result = std::ptr::null_mut();
+    // SAFETY: every pointer is live for the call and the buffer length is
+    // its real size; getpwuid_r writes only into `entry` and `buffer`.
+    let status = unsafe {
+        libc::getpwuid_r(
+            libc::geteuid(),
+            &mut entry,
+            buffer.as_mut_ptr().cast(),
+            buffer.len(),
+            &mut result,
+        )
+    };
+    if status != 0 || result.is_null() || entry.pw_dir.is_null() {
+        return None;
+    }
+    // SAFETY: on success pw_dir points to a NUL-terminated string in `buffer`.
+    let home = unsafe { CStr::from_ptr(entry.pw_dir) };
+    let home = Path::new(std::ffi::OsStr::from_bytes(home.to_bytes()));
+    home.is_absolute().then(|| home.to_path_buf())
 }
 
 pub fn policy_digest(policy: &SandboxPolicy) -> Result<String, SandboxError> {
@@ -179,6 +329,43 @@ pub fn compile_darwin_profile(policy: &SandboxPolicy) -> Result<Vec<u8>, Sandbox
             escape_sbpl(scratch)?
         ));
     }
+    // Seatbelt applies the last matching rule, so these denials override the
+    // write grants above. Seatbelt matches paths, not objects: renaming a
+    // writable ancestor would move a protected tree out from under its rule,
+    // so each ancestor within a write root is itself denied (creating
+    // siblings inside it stays allowed).
+    let grants = policy
+        .write_roots
+        .iter()
+        .chain(policy.scratch.iter())
+        .collect::<Vec<_>>();
+    let mut denied_ancestors = BTreeSet::new();
+    for protected in &policy.protected_roots {
+        lines.push(format!(
+            "(deny file-write* (subpath \"{}\"))",
+            escape_sbpl(protected)?
+        ));
+        for ancestor in Path::new(protected).ancestors().skip(1) {
+            if grants.iter().any(|root| ancestor.starts_with(root)) {
+                denied_ancestors.extend(ancestor.to_str());
+            }
+        }
+    }
+    for ancestor in denied_ancestors {
+        lines.push(format!(
+            "(deny file-write* (literal \"{}\"))",
+            escape_sbpl(ancestor)?
+        ));
+    }
+    for root in grants
+        .iter()
+        .filter(|root| policy.is_protected_exception(Path::new(root)))
+    {
+        lines.push(format!(
+            "(allow file-write* (subpath \"{}\"))",
+            escape_sbpl(root)?
+        ));
+    }
     if policy.allow_process {
         lines.push("(allow process-exec process-fork)".to_owned());
     }
@@ -214,6 +401,11 @@ pub fn compile_linux_plan(policy: &SandboxPolicy) -> Result<Vec<u8>, SandboxErro
         plan.as_object_mut()
             .expect("plan object")
             .insert("scratch".to_owned(), json!(scratch));
+    }
+    if !policy.protected_roots.is_empty() {
+        plan.as_object_mut()
+            .expect("plan object")
+            .insert("protected_roots".to_owned(), json!(policy.protected_roots));
     }
     let mut bytes = serde_json_canonicalizer::to_vec(&plan)
         .map_err(|error| SandboxError::Encoding(error.to_string()))?;
@@ -253,6 +445,11 @@ pub fn compile_linux_bubblewrap_plan(policy: &SandboxPolicy) -> Result<Vec<u8>, 
         plan.as_object_mut()
             .expect("plan object")
             .insert("scratch".to_owned(), json!(scratch));
+    }
+    if !policy.protected_roots.is_empty() {
+        plan.as_object_mut()
+            .expect("plan object")
+            .insert("protected_roots".to_owned(), json!(policy.protected_roots));
     }
     let mut bytes = serde_json_canonicalizer::to_vec(&plan)
         .map_err(|error| SandboxError::Encoding(error.to_string()))?;
@@ -484,6 +681,7 @@ fn probe_confinement(candidate: ProbeStatus) -> ProbeStatus {
             network: NetworkPolicy::Deny,
             allow_process: true,
             scratch: None,
+            protected_roots: Vec::new(),
         };
         let read = probe_output(
             sandbox_command(&policy, &candidate, Path::new("/bin/cat"))?
@@ -665,5 +863,177 @@ mod tests {
             compile_linux_bubblewrap_plan(&policy).unwrap(),
             include_bytes!("../../../fixtures/sandbox/linux-bubblewrap-plan.canonical.json")
         );
+    }
+
+    fn protected_policy(home: &str, protected: &str, writes: &[&str]) -> SandboxPolicy {
+        SandboxPolicy {
+            format: 1,
+            read_roots: vec![home.to_owned()],
+            write_roots: writes.iter().map(|root| (*root).to_owned()).collect(),
+            network: NetworkPolicy::Deny,
+            allow_process: true,
+            scratch: None,
+            protected_roots: vec![protected.to_owned()],
+        }
+    }
+
+    #[test]
+    fn protected_roots_are_omitted_from_serialization_when_empty() {
+        let policy: SandboxPolicy = serde_json::from_str(include_str!(
+            "../../../fixtures/sandbox/policy.canonical.json"
+        ))
+        .unwrap();
+        assert!(policy.protected_roots.is_empty());
+        assert_eq!(
+            policy.canonical_bytes().unwrap(),
+            include_str!("../../../fixtures/sandbox/policy.canonical.json")
+                .trim_end()
+                .as_bytes()
+        );
+    }
+
+    #[test]
+    fn darwin_profile_denies_protected_root_and_its_writable_ancestors() {
+        let policy = protected_policy(
+            "/Users/u",
+            "/Users/u/Library/Kernel",
+            &["/Users/u", "/Users/u/Library/Kernel/jobs/j1"],
+        );
+        let profile = String::from_utf8(compile_darwin_profile(&policy).unwrap()).unwrap();
+        let lines = profile.lines().collect::<Vec<_>>();
+        let position = |line: &str| {
+            lines
+                .iter()
+                .position(|candidate| *candidate == line)
+                .unwrap_or_else(|| panic!("missing {line}\n{profile}"))
+        };
+        let home_grant = position("(allow file-write* (subpath \"/Users/u\"))");
+        let deny = position("(deny file-write* (subpath \"/Users/u/Library/Kernel\"))");
+        let library = position("(deny file-write* (literal \"/Users/u/Library\"))");
+        let home = position("(deny file-write* (literal \"/Users/u\"))");
+        let exception = lines
+            .iter()
+            .rposition(|line| {
+                *line == "(allow file-write* (subpath \"/Users/u/Library/Kernel/jobs/j1\"))"
+            })
+            .unwrap();
+        assert!(home_grant < deny && deny < library.min(home));
+        assert!(exception > library.max(home), "{profile}");
+        assert!(
+            !profile.contains("(deny file-write* (literal \"/Users\"))"),
+            "{profile}"
+        );
+    }
+
+    #[test]
+    fn protected_exceptions_must_be_strictly_beneath() {
+        let policy = protected_policy("/a", "/a/k", &["/a"]);
+        assert!(!policy.is_protected_exception(Path::new("/a/k")));
+        assert!(policy.is_protected_exception(Path::new("/a/k/jobs")));
+        assert!(!policy.is_protected_exception(Path::new("/a/kx")));
+        assert_eq!(policy.exposed_protected_root(Path::new("/a")), Some("/a/k"));
+        assert_eq!(
+            policy.exposed_protected_root(Path::new("/a/k")),
+            Some("/a/k")
+        );
+        assert_eq!(policy.exposed_protected_root(Path::new("/a/k/jobs")), None);
+        assert_eq!(policy.exposed_protected_root(Path::new("/b")), None);
+    }
+
+    #[test]
+    fn unsorted_protected_roots_are_rejected() {
+        let mut policy = protected_policy("/a", "/a/k", &["/a"]);
+        policy.protected_roots = vec!["/a/z".to_owned(), "/a/k".to_owned()];
+        assert!(policy.validate().is_err());
+        policy.protected_roots = vec!["relative".to_owned()];
+        assert!(policy.validate().is_err());
+    }
+
+    #[test]
+    fn exposed_roots_keep_only_protected_roots_inside_write_roots() {
+        let protected = vec!["/h/Library/Keychains".to_owned(), "/h/data".to_owned()];
+        assert_eq!(
+            exposed_protected_roots(&protected, &["/h".to_owned()]),
+            protected
+        );
+        assert_eq!(
+            exposed_protected_roots(&protected, &["/h/data".to_owned()]),
+            vec!["/h/data".to_owned()]
+        );
+        assert!(exposed_protected_roots(&protected, &["/h/project".to_owned()]).is_empty());
+    }
+
+    #[test]
+    fn protected_root_lookup_resolves_symlinked_aliases() {
+        let root = tempfile::tempdir().unwrap();
+        let base = root.path().canonicalize().unwrap();
+        let storage = base.join("storage");
+        fs::create_dir_all(storage.join("threads")).unwrap();
+        std::os::unix::fs::symlink(&storage, base.join("alias")).unwrap();
+        let protected = kernel_protected_roots(&storage);
+        assert!(protected.contains(&storage.to_string_lossy().into_owned()));
+        for path in [
+            storage.clone(),
+            storage.join("threads/new/file"),
+            base.join("alias/threads"),
+            base.join("alias/missing/deeper"),
+        ] {
+            assert!(
+                protected_root_containing(&protected, &path).is_some(),
+                "{}",
+                path.display()
+            );
+        }
+        assert!(protected_root_containing(&protected, &base.join("storage-sibling")).is_none());
+        assert!(protected_root_containing(&protected, &base).is_none());
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn seatbelt_keeps_protected_root_read_only_beneath_a_writable_home() {
+        let root = tempfile::tempdir().unwrap();
+        let home = root.path().canonicalize().unwrap();
+        let storage = home.join("Library/Kernel");
+        let job = storage.join("jobs/j1");
+        fs::create_dir_all(&job).unwrap();
+        fs::create_dir_all(home.join("project")).unwrap();
+        fs::write(storage.join("ledger"), b"original").unwrap();
+        let text = |path: &Path| path.to_string_lossy().into_owned();
+        let mut writes = vec![text(&home), text(&job)];
+        writes.sort();
+        let policy = SandboxPolicy {
+            format: 1,
+            read_roots: vec![text(&home)],
+            write_roots: writes,
+            network: NetworkPolicy::Deny,
+            allow_process: true,
+            scratch: None,
+            protected_roots: vec![text(&storage)],
+        };
+        let status = available("darwin-seatbelt");
+        let run = |script: &str| {
+            sandbox_command(&policy, &status, Path::new("/bin/sh"))
+                .unwrap()
+                .args(["-c", script])
+                .current_dir(&home)
+                .env_clear()
+                .output()
+                .unwrap()
+                .status
+                .success()
+        };
+        assert!(run("echo ok > project/file"));
+        assert!(run("echo ok > Library/sibling"));
+        assert!(run("echo ok > Library/Kernel/jobs/j1/tail"));
+        assert!(!run("echo pwned > Library/Kernel/ledger"));
+        assert!(!run("echo pwned > Library/Kernel/new"));
+        assert!(!run("mv Library Moved"));
+        assert!(!run("mv Library/Kernel Moved"));
+        assert!(!run(
+            "ln Library/Kernel/ledger project/link && echo pwned >> project/link"
+        ));
+        assert!(!run("rm Library/Kernel/ledger"));
+        assert_eq!(fs::read(storage.join("ledger")).unwrap(), b"original");
+        assert!(!home.join("Moved").exists());
     }
 }

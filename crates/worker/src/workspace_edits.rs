@@ -224,6 +224,7 @@ mod tests {
                 network: NetworkPolicy::Deny,
                 allow_process: true,
                 scratch: None,
+                protected_roots: Vec::new(),
             },
             tools::probe_backend(sandbox),
         )

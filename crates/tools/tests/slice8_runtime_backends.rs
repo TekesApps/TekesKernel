@@ -53,6 +53,7 @@ fn helper_client_cancellation_kills_the_process_group() {
         network: NetworkPolicy::Deny,
         allow_process: true,
         scratch: None,
+        protected_roots: Vec::new(),
     };
     let digest = policy_digest(&policy).unwrap();
     let approval = SandboxApproval {
@@ -193,6 +194,7 @@ fn test_job_policy(primary_workspace: &std::path::Path) -> JobLaunchPolicy {
             network: NetworkPolicy::Deny,
             allow_process: true,
             scratch: None,
+            protected_roots: Vec::new(),
         },
         vec![primary_workspace],
     )
@@ -505,6 +507,7 @@ fn declared_toolchain_python_runs_inside_sandbox() {
         network: NetworkPolicy::Deny,
         allow_process: true,
         scratch: Some(scratch_path.to_string_lossy().into_owned()),
+        protected_roots: Vec::new(),
     };
     let profile = String::from_utf8(tools::compile_darwin_profile(&policy).unwrap()).unwrap();
     let output = Command::new("/usr/bin/sandbox-exec")
@@ -563,6 +566,7 @@ fn managed_helper_scratch_survives_clones_and_is_removed_on_last_drop() {
         network: NetworkPolicy::Deny,
         allow_process: true,
         scratch: None,
+        protected_roots: Vec::new(),
     };
     let client = HelperClient::sandboxed_with_scratch(
         "/unused-helper",

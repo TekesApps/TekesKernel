@@ -177,9 +177,21 @@ fn mount_plan(policy: &SandboxPolicy, executable: &Path) -> Result<MountPlan, Sa
         reject_protected_write(Path::new(root))?;
         if let Some(canonical) = canonical_optional(Path::new(root))? {
             reject_protected_write(&canonical)?;
+            // An exception beneath a protected root must be declared by its
+            // canonical name: a symlinked alias would otherwise turn a session
+            // path into a writable bind inside Kernel storage.
+            if policy.is_protected_exception(&canonical) && canonical != Path::new(root) {
+                return Err(SandboxError::Invalid(
+                    "write roots beneath a protected root must be canonical paths",
+                ));
+            }
             writable.push(canonical);
         }
     }
+    let writable = Writable {
+        roots: writable,
+        policy,
+    };
     let mut mounts = BTreeMap::new();
     let mut aliases = BTreeMap::new();
     for root in SYSTEM_READ_ROOTS {
@@ -192,6 +204,19 @@ fn mount_plan(policy: &SandboxPolicy, executable: &Path) -> Result<MountPlan, Sa
         .chain(policy.scratch.iter())
     {
         add_mount(&mut mounts, &mut aliases, Path::new(root), &writable, false)?;
+    }
+    // A protected root inside a writable bind becomes its own read-only bind;
+    // deeper mounts sort later, so a declared exception beneath it stays
+    // writable. Bind mounts follow the directory, so renaming an ancestor
+    // cannot move the protected tree out of its read-only view.
+    for root in &policy.protected_roots {
+        if writable
+            .roots
+            .iter()
+            .any(|write| Path::new(root).starts_with(write))
+        {
+            add_mount(&mut mounts, &mut aliases, Path::new(root), &writable, false)?;
+        }
     }
     add_mount(&mut mounts, &mut aliases, executable, &writable, true)?;
     if let Some(interpreter) = elf_interpreter(executable)? {
@@ -233,6 +258,27 @@ fn mount_plan(policy: &SandboxPolicy, executable: &Path) -> Result<MountPlan, Sa
     })
 }
 
+struct Writable<'a> {
+    roots: Vec<PathBuf>,
+    policy: &'a SandboxPolicy,
+}
+
+impl Writable<'_> {
+    /// Writable when some write root covers `source` and no protected root
+    /// at or above `source` overrides it, unless that write root is itself
+    /// a declared exception strictly beneath the protected root.
+    fn covers(&self, source: &Path) -> bool {
+        self.roots.iter().any(|root| {
+            source.starts_with(root)
+                && self.policy.protected_roots.iter().all(|protected| {
+                    let protected = Path::new(protected);
+                    !source.starts_with(protected)
+                        || (root != protected && root.starts_with(protected))
+                })
+        })
+    }
+}
+
 fn canonical_optional(path: &Path) -> Result<Option<PathBuf>, SandboxError> {
     match fs::canonicalize(path) {
         Ok(path) => Ok(Some(path)),
@@ -268,7 +314,7 @@ fn add_mount(
     mounts: &mut BTreeMap<PathBuf, Mount>,
     aliases: &mut BTreeMap<PathBuf, Mount>,
     path: &Path,
-    writable: &[PathBuf],
+    writable: &Writable<'_>,
     required: bool,
 ) -> Result<(), SandboxError> {
     if path == Path::new("/") {
@@ -303,7 +349,7 @@ fn add_mount(
             "bubblewrap roots must not alias the host filesystem root",
         ));
     }
-    let write = writable.iter().any(|root| source.starts_with(root));
+    let write = writable.covers(&source);
     // Mount only canonical destinations. Synthetic symlinks preserve aliases
     // without creating two independent mount views whose child write grants
     // could disagree. Existing symlinks within a parent bind remain intact.
@@ -384,7 +430,49 @@ mod tests {
             network: NetworkPolicy::Deny,
             allow_process: true,
             scratch: None,
+            protected_roots: Vec::new(),
         }
+    }
+
+    #[test]
+    fn protected_root_inside_a_writable_root_is_bound_read_only() {
+        let root = tempfile::tempdir().unwrap();
+        let home = fs::canonicalize(root.path()).unwrap();
+        let storage = home.join("storage");
+        let job = storage.join("jobs").join("j1");
+        fs::create_dir_all(&job).unwrap();
+        let text = |path: &Path| path.display().to_string();
+        let mut writes = vec![text(&home), text(&job)];
+        writes.sort();
+        let mut policy = policy(vec![text(&home)], writes);
+        policy.protected_roots = vec![text(&storage)];
+        let mounts = mount_plan(&policy, Path::new("/bin/true")).unwrap().mounts;
+        let find = |path: &Path| {
+            mounts
+                .iter()
+                .position(|mount| mount.destination == path)
+                .unwrap_or_else(|| panic!("no mount for {}: {mounts:?}", path.display()))
+        };
+        let (home_at, storage_at, job_at) = (find(&home), find(&storage), find(&job));
+        assert!(mounts[home_at].writable);
+        assert!(!mounts[storage_at].writable);
+        assert!(mounts[job_at].writable);
+        assert!(home_at < storage_at && storage_at < job_at);
+    }
+
+    #[test]
+    fn symlinked_exception_beneath_a_protected_root_is_rejected() {
+        let root = tempfile::tempdir().unwrap();
+        let home = fs::canonicalize(root.path()).unwrap();
+        let storage = home.join("storage");
+        fs::create_dir_all(storage.join("threads")).unwrap();
+        symlink(storage.join("threads"), home.join("alias")).unwrap();
+        let mut policy = policy(
+            vec![home.display().to_string()],
+            vec![home.join("alias").display().to_string()],
+        );
+        policy.protected_roots = vec![storage.display().to_string()];
+        assert!(mount_plan(&policy, Path::new("/bin/true")).is_err());
     }
 
     #[test]

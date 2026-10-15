@@ -492,7 +492,9 @@ fn production_carrier_rejects_structurally_invalid_route_payload_before_rpc_iden
 #[test]
 fn production_create_history_then_stream_append_is_durable_and_live() {
     let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
+    // Folders cannot lie inside the Kernel storage root.
+    let projects = tempfile::tempdir().expect("projects");
+    let project = projects.path().join("project");
     std::fs::create_dir(&project).expect("project");
     let assembly = assembly(root.path());
     assembly.finish_recovery().expect("recovery gate");

@@ -396,6 +396,14 @@ impl JobLaunchPolicy {
                     "job writable path {path} is outside permitted policy roots"
                 )));
             }
+            if let Some(protected) = crate::protected_root_containing(
+                &self.base_sandbox.protected_roots,
+                Path::new(&path),
+            ) {
+                return Err(BackendFailure::Denied(format!(
+                    "job writable path {path} is inside the Kernel-owned directory {protected}"
+                )));
+            }
             if requested.iter().any(|existing| existing == &path) {
                 return Err(BackendFailure::Invalid(
                     "job writable paths contain duplicate canonical roots".to_owned(),
@@ -2577,6 +2585,7 @@ mod disabled_job_launcher_tests {
             network: NetworkPolicy::Deny,
             allow_process: false,
             scratch: None,
+            protected_roots: Vec::new(),
         };
         assert!(matches!(
             launcher.runner_command(&spec, &policy),
@@ -2742,6 +2751,7 @@ mod namespace_job_identity_tests {
             network: crate::NetworkPolicy::Deny,
             allow_process: true,
             scratch: None,
+            protected_roots: Vec::new(),
         };
         assert!(matches!(
             broker.start_inner(

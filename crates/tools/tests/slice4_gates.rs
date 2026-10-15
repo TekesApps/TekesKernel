@@ -420,6 +420,7 @@ fn slice4_gate_44_exec_helper_process_protocol() {
         network: NetworkPolicy::Deny,
         allow_process: true,
         scratch: None,
+        protected_roots: Vec::new(),
     };
     let probe = probe_backend(host_sandbox_backend());
     if !host_has_sandbox() {

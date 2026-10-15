@@ -3193,7 +3193,9 @@ mod tests {
         .expect("describe");
         assert_eq!(described["kernelLayers"][0]["id"], "coding");
         assert_eq!(described["limits"]["maxLayers"], 8);
-        let project = root.path().join("project");
+        // Folders cannot lie inside the Kernel storage root.
+        let projects = tempfile::tempdir().expect("projects");
+        let project = projects.path().join("project");
         fs::create_dir_all(&project).expect("project");
         let repository = profile::ConfigRepository::open(root.path()).expect("repository");
         for (id, base) in [
@@ -3282,7 +3284,9 @@ mod tests {
     fn session_preset_method_cases_are_the_runtime_results() {
         let root = tempfile::tempdir().expect("root");
         let (extensions, _process) = production_extensions(root.path());
-        let project = root.path().join("project");
+        // Folders cannot lie inside the Kernel storage root.
+        let projects = tempfile::tempdir().expect("projects");
+        let project = projects.path().join("project");
         fs::create_dir_all(&project).expect("project");
         profile::ConfigRepository::open(root.path())
             .expect("repository")

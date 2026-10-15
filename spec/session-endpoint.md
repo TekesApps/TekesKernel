@@ -1486,7 +1486,14 @@ for compatibility and launch, not the permanent identity of the thread.
 for the same canonical path returns its existing workspace with
 `created:false`; a path that is a later folder of another workspace
 ([`workspaceFolders.v1`](client-extensions.md#workspace-administration)) is
-`workspace-invalid-path`; otherwise it allocates a UUIDv7 workspace id, publishes the
+`workspace-invalid-path`. A new folder is also `workspace-invalid-path` when
+it is not a directory, is the filesystem root `/`, or is a
+[Kernel-owned root](sandbox-profile.md#kernel-owned-roots) (the storage root,
+the platform credential store) or lies inside one. The same folder-entry
+rule applies to `workspace.addFolder`, the target of `workspace.relocate`, and
+the registration below. A folder that merely contains a Kernel-owned root,
+such as the home directory, is allowed; its sessions' sandboxes keep that root
+read-only. Otherwise it allocates a UUIDv7 workspace id, publishes the
 workspace config, then metadata, and returns `created:true`. The created
 config carries a seeded `policy`: `allowed_tools` is every fixed tool except
 the role selectors (`plan`, `summary_artifact`, `verify`, `report`),
@@ -1506,9 +1513,19 @@ operation timestamp and therefore stable across retry.
    first authored folder; a supplied `cwd` MUST canonicalize to exactly one of
    its current folder paths or the request is `workspace-invalid-path`. The
    matched stable folder id is frozen as `folder_binding`.
-2. With `cwd` only, exactly one folder path across active workspaces MUST
-   canonicalize equal to it. Zero matches is `workspace-invalid-path`;
-   multiple matches is `workspace-ambiguous`.
+2. With `cwd` only, the folder paths across active workspaces that
+   canonicalize equal to it are matched. One match selects it; multiple
+   matches is `workspace-ambiguous`. With zero matches the endpoint first
+   registers `cwd` as a new workspace exactly as `workspace.create` would
+   (same folder-entry rule, seeded policy and metadata), except that its
+   title is the folder name or, when another workspace already uses that
+   name, the first free `name (n)` for n ≥ 2. A path that fails the
+   folder-entry rule is `workspace-invalid-path`. The registration is its
+   own durable workspace operation, keyed by an id derived from the
+   `session.create` rpc id that no client rpc id can equal; a retried request
+   resumes it rather than registering twice. The registered workspace
+   remains even if the session create then fails. The response shape does
+   not change.
 3. With neither, exactly one active workspace MUST exist; otherwise the
    request is `bad-request`.
 4. Nonempty `agentPreset` is `unsupported-capability

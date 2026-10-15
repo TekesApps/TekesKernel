@@ -68,6 +68,7 @@ impl Fixture {
             network: NetworkPolicy::Deny,
             allow_process: true,
             scratch: None,
+            protected_roots: Vec::new(),
         }
     }
 
@@ -932,6 +933,7 @@ fn detached_job_launcher_process() {
         network: NetworkPolicy::Deny,
         allow_process: true,
         scratch: None,
+        protected_roots: Vec::new(),
     };
     let launch_policy =
         JobLaunchPolicy::new(workspace.to_string_lossy().into_owned(), policy, Vec::new()).unwrap();
