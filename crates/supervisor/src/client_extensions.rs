@@ -1753,22 +1753,23 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
             "session.presets.resolve" => {
                 let workspace_id = payload["workspaceId"].as_str().unwrap_or_default();
                 let snapshot = self.workspace_snapshot(workspace_id)?;
-                let instruction = profile::InstructionResolver::new_scoped(
-                    self.process.user_agent_dir(),
-                    self.process
-                        .user_agent_dir()
-                        .join("workspaces")
-                        .join(workspace_id),
-                    snapshot.workspace.cwd.iter().map(Path::new),
-                )
-                .capture()
-                .map_err(|_| {
-                    failure(
-                        "internal",
-                        "Endpoint operation failed",
-                        serde_json::json!({}),
-                    )
-                })?;
+                let instruction = profile::ConfigRepository::open(&self.root)
+                    .and_then(|repository| {
+                        profile::workspace_instructions(
+                            &repository,
+                            workspace_id,
+                            self.process.user_agent_dir(),
+                            &snapshot,
+                        )
+                    })
+                    .and_then(|resolver| resolver.capture())
+                    .map_err(|_| {
+                        failure(
+                            "internal",
+                            "Endpoint operation failed",
+                            serde_json::json!({}),
+                        )
+                    })?;
                 let environment = endpoint::SessionPresetEnvironment::new(
                     workspace_id,
                     &instruction,

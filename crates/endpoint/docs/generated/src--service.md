@@ -37,39 +37,39 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [endpoint::service::NativeEndpoint::list_sessions_with](../../src/service.rs#L306) | function_item | `private` |  |
 | [endpoint::service::NativeEndpoint::models](../../src/service.rs#L365) | function_item | `pub` |  |
 | [endpoint::service::NativeEndpoint::session_config_snapshot](../../src/service.rs#L431) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::submission_snapshot](../../src/service.rs#L456) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L463) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::hydrate_historical_submissions](../../src/service.rs#L488) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::create_session](../../src/service.rs#L596) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::create_session_for_endpoint](../../src/service.rs#L619) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L639) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::prompt](../../src/service.rs#L669) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::prompt_for_endpoint](../../src/service.rs#L680) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L698) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::update_queue](../../src/service.rs#L721) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::rename_session](../../src/service.rs#L736) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::rename_session_for_endpoint](../../src/service.rs#L746) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L756) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::seed_automatic_title_if_missing](../../src/service.rs#L775) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::record_session_notice](../../src/service.rs#L808) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::refine_automatic_title](../../src/service.rs#L862) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::author_keyed_with_ledger](../../src/service.rs#L903) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::cancel](../../src/service.rs#L926) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::cancel_for_endpoint](../../src/service.rs#L935) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L944) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::fork_session](../../src/service.rs#L974) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::archive_session](../../src/service.rs#L990) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::unarchive_session](../../src/service.rs#L998) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::reconcile_projection](../../src/service.rs#L1009) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1017) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::history](../../src/service.rs#L1031) | function_item | `pub` |  |
-| [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1041) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) | function_item | `private` |  |
-| [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1072) | function_item | `private` |  |
-| [endpoint::service::event](../../src/service.rs#L1085) | function_item | `private` |  |
-| [endpoint::service::store_error](../../src/service.rs#L1090) | function_item | `private` |  |
-| [endpoint::service::map_store_error](../../src/service.rs#L1094) | function_item | `private` |  |
-| [endpoint::service::NativeEndpointError](../../src/service.rs#L1103) | enum_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::submission_snapshot](../../src/service.rs#L443) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L450) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::hydrate_historical_submissions](../../src/service.rs#L475) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::create_session](../../src/service.rs#L583) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::create_session_for_endpoint](../../src/service.rs#L606) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L626) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::prompt](../../src/service.rs#L656) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::prompt_for_endpoint](../../src/service.rs#L667) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L685) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::update_queue](../../src/service.rs#L708) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::rename_session](../../src/service.rs#L723) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::rename_session_for_endpoint](../../src/service.rs#L733) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L743) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::seed_automatic_title_if_missing](../../src/service.rs#L762) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::record_session_notice](../../src/service.rs#L795) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::refine_automatic_title](../../src/service.rs#L849) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::author_keyed_with_ledger](../../src/service.rs#L890) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::cancel](../../src/service.rs#L913) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::cancel_for_endpoint](../../src/service.rs#L922) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L931) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::fork_session](../../src/service.rs#L961) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::archive_session](../../src/service.rs#L977) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::unarchive_session](../../src/service.rs#L985) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::reconcile_projection](../../src/service.rs#L996) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1004) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::history](../../src/service.rs#L1018) | function_item | `pub` |  |
+| [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1028) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) | function_item | `private` |  |
+| [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) | function_item | `private` |  |
+| [endpoint::service::event](../../src/service.rs#L1072) | function_item | `private` |  |
+| [endpoint::service::store_error](../../src/service.rs#L1077) | function_item | `private` |  |
+| [endpoint::service::map_store_error](../../src/service.rs#L1081) | function_item | `private` |  |
+| [endpoint::service::NativeEndpointError](../../src/service.rs#L1090) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -138,46 +138,46 @@ flowchart TD
   n23["endpoint::types::validate_session_id"]
   n24["profile::config::ConfigSnapshot::decode"]
   n25["profile::config::ConfigRepository::open"]
-  n26["schema::ijson::IJsonValue::parse"]
-  n27["store::asset::AssetStore::new"]
-  n28["store::card::read_card"]
-  n29["store::card::classify"]
-  n30["store::folder::ThreadStore::open"]
-  n31["store::tail::scan_valid_prefix"]
-  n32["store::tail::read_genesis"]
+  n26["profile::scope::SessionScope::for_session_folder"]
+  n27["schema::ijson::IJsonValue::parse"]
+  n28["store::asset::AssetStore::new"]
+  n29["store::card::read_card"]
+  n30["store::card::classify"]
+  n31["store::folder::ThreadStore::open"]
+  n32["store::tail::scan_valid_prefix"]
   n33["tools::preset::ResolvedPreset::from_genesis"]
   n1 --> n33
   n4 --> n3
-  n4 --> n28
   n4 --> n29
+  n4 --> n30
   n5 --> n0
   n6 --> n0
   n7 --> n1
   n7 --> n5
-  n8 --> n30
+  n8 --> n31
   n10 --> n12
   n11 --> n12
   n12 --> n3
   n12 --> n4
   n12 --> n7
   n12 --> n23
-  n12 --> n31
-  n13 --> n26
+  n12 --> n32
+  n13 --> n27
   n15 --> n2
   n15 --> n23
   n15 --> n25
-  n15 --> n32
+  n15 --> n26
   n16 --> n2
   n16 --> n15
   n16 --> n17
-  n16 --> n27
-  n17 --> n26
+  n16 --> n28
+  n17 --> n27
   n18 --> n2
   n18 --> n17
   n18 --> n24
-  n18 --> n26
   n18 --> n27
-  n18 --> n31
+  n18 --> n28
+  n18 --> n32
   n20 --> n22
   n21 --> n22
 ```
@@ -189,64 +189,64 @@ flowchart TD
 ```mermaid
 flowchart TD
   n0["endpoint::journal::EndpointJournal::open"]
-  n1["endpoint::service::NativeEndpoint::reconcile_projection"]
-  n2["endpoint::service::NativeEndpoint::reconciled_journal"]
-  n3["endpoint::service::NativeEndpoint::keyed"]
-  n4["endpoint::service::NativeEndpoint::validate_origin"]
-  n5["endpoint::service::NativeEndpoint::active_folder"]
-  n6["endpoint::service::event"]
-  n7["endpoint::service::NativeEndpoint::submission_snapshot"]
-  n8["endpoint::service::NativeEndpoint::create_session_with_operation"]
-  n9["endpoint::service::NativeEndpoint::prompt"]
-  n10["endpoint::service::NativeEndpoint::prompt_for_endpoint"]
-  n11["endpoint::service::NativeEndpoint::prompt_with_operation"]
-  n12["endpoint::service::NativeEndpoint::update_queue"]
-  n13["endpoint::service::NativeEndpoint::rename_session"]
-  n14["endpoint::service::NativeEndpoint::rename_session_for_endpoint"]
-  n15["endpoint::service::NativeEndpoint::rename_session_with_operation"]
-  n16["endpoint::service::NativeEndpoint::seed_automatic_title_if_missing"]
-  n17["endpoint::service::NativeEndpoint::record_session_notice"]
-  n18["endpoint::service::NativeEndpoint::refine_automatic_title"]
-  n19["endpoint::service::NativeEndpoint::author_keyed_with_ledger"]
-  n20["endpoint::service::NativeEndpoint::cancel"]
-  n21["endpoint::service::NativeEndpoint::cancel_for_endpoint"]
-  n22["endpoint::service::NativeEndpoint::cancel_with_operation"]
-  n23["endpoint::service::NativeEndpoint::fork_session"]
-  n24["endpoint::service::NativeEndpoint::archive_session"]
-  n25["endpoint::service::NativeEndpoint::unarchive_session"]
+  n1["endpoint::service::NativeEndpoint::reconciled_journal"]
+  n2["endpoint::service::NativeEndpoint::keyed"]
+  n3["endpoint::service::NativeEndpoint::validate_origin"]
+  n4["endpoint::service::NativeEndpoint::active_folder"]
+  n5["endpoint::service::event"]
+  n6["endpoint::service::NativeEndpoint::submission_snapshot"]
+  n7["endpoint::service::NativeEndpoint::create_session_with_operation"]
+  n8["endpoint::service::NativeEndpoint::prompt"]
+  n9["endpoint::service::NativeEndpoint::prompt_for_endpoint"]
+  n10["endpoint::service::NativeEndpoint::prompt_with_operation"]
+  n11["endpoint::service::NativeEndpoint::update_queue"]
+  n12["endpoint::service::NativeEndpoint::rename_session"]
+  n13["endpoint::service::NativeEndpoint::rename_session_for_endpoint"]
+  n14["endpoint::service::NativeEndpoint::rename_session_with_operation"]
+  n15["endpoint::service::NativeEndpoint::seed_automatic_title_if_missing"]
+  n16["endpoint::service::NativeEndpoint::record_session_notice"]
+  n17["endpoint::service::NativeEndpoint::refine_automatic_title"]
+  n18["endpoint::service::NativeEndpoint::author_keyed_with_ledger"]
+  n19["endpoint::service::NativeEndpoint::cancel"]
+  n20["endpoint::service::NativeEndpoint::cancel_for_endpoint"]
+  n21["endpoint::service::NativeEndpoint::cancel_with_operation"]
+  n22["endpoint::service::NativeEndpoint::fork_session"]
+  n23["endpoint::service::NativeEndpoint::archive_session"]
+  n24["endpoint::service::NativeEndpoint::unarchive_session"]
+  n25["endpoint::service::NativeEndpoint::reconcile_projection"]
   n26["endpoint::types::validate_session_id"]
   n27["store::tail::scan_valid_prefix"]
-  n1 --> n2
-  n2 --> n0
-  n2 --> n5
-  n2 --> n27
-  n8 --> n26
-  n9 --> n11
-  n10 --> n11
-  n11 --> n3
-  n11 --> n6
-  n11 --> n7
-  n12 --> n3
-  n12 --> n6
-  n13 --> n15
-  n14 --> n15
+  n1 --> n0
+  n1 --> n4
+  n1 --> n27
+  n7 --> n26
+  n8 --> n10
+  n9 --> n10
+  n10 --> n2
+  n10 --> n5
+  n10 --> n6
+  n11 --> n2
+  n11 --> n5
+  n12 --> n14
+  n13 --> n14
+  n14 --> n2
+  n14 --> n5
   n15 --> n3
-  n15 --> n6
-  n16 --> n4
-  n16 --> n6
-  n17 --> n4
-  n17 --> n6
-  n18 --> n4
-  n18 --> n6
-  n19 --> n26
-  n20 --> n22
-  n21 --> n22
-  n22 --> n4
-  n22 --> n6
+  n15 --> n5
+  n16 --> n3
+  n16 --> n5
+  n17 --> n3
+  n17 --> n5
+  n18 --> n26
+  n19 --> n21
+  n20 --> n21
+  n21 --> n3
+  n21 --> n5
+  n21 --> n26
   n22 --> n26
   n23 --> n26
   n24 --> n26
-  n25 --> n26
+  n25 --> n1
 ```
 
 </details>
@@ -449,254 +449,245 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `models` | `IJsonValue::parse` | [424](../../src/service.rs#L424) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `models` | `serde_json::to_vec` | [424](../../src/service.rs#L424) | external-constructor-callback-or-unresolved |
 | `session_config_snapshot` | `validate_session_id` | [435](../../src/service.rs#L435) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `session_config_snapshot` | `self.active_folder` | [436](../../src/service.rs#L436) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1072) |
-| `session_config_snapshot` | `store::read_genesis(folder.join("main.jsonl"))?.ok_or_else` | [438](../../src/service.rs#L438) | receiver-type-required |
-| `session_config_snapshot` | `store::read_genesis` | [438](../../src/service.rs#L438) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `session_config_snapshot` | `folder.join` | [438](../../src/service.rs#L438) | receiver-type-required |
-| `session_config_snapshot` | `NativeEndpointError::Store` | [439](../../src/service.rs#L439) | external-constructor-callback-or-unresolved |
-| `session_config_snapshot` | `store::StoreError::Corruption` | [439](../../src/service.rs#L439) | external-constructor-callback-or-unresolved |
-| `session_config_snapshot` | `"session ledger has no valid genesis prefix".to_owned` | [440](../../src/service.rs#L440) | receiver-type-required |
-| `session_config_snapshot` | `genesis             .string_field("workspace")             .ok_or` | [444](../../src/service.rs#L444) | receiver-type-required |
-| `session_config_snapshot` | `genesis             .string_field` | [444](../../src/service.rs#L444) | receiver-type-required |
-| `session_config_snapshot` | `profile::ConfigRepository::open` | [447](../../src/service.rs#L447) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
-| `session_config_snapshot` | `self.store.root` | [447](../../src/service.rs#L447) | receiver-type-required |
-| `session_config_snapshot` | `Ok` | [448](../../src/service.rs#L448) | external-constructor-callback-or-unresolved |
-| `session_config_snapshot` | `genesis.string_field` | [448](../../src/service.rs#L448) | receiver-type-required |
-| `session_config_snapshot` | `repository.resolve_for_session_binding` | [449](../../src/service.rs#L449) | receiver-type-required |
-| `session_config_snapshot` | `repository.resolve_for_session` | [450](../../src/service.rs#L450) | receiver-type-required |
-| `submission_snapshot` | `self.session_config_snapshot` | [457](../../src/service.rs#L457) | [endpoint::service::NativeEndpoint::session_config_snapshot](../../src/service.rs#L431) |
-| `submission_snapshot` | `store::AssetStore::new` | [458](../../src/service.rs#L458) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `submission_snapshot` | `self.active_folder(session_id)?.join` | [458](../../src/service.rs#L458) | receiver-type-required |
-| `submission_snapshot` | `self.active_folder` | [458](../../src/service.rs#L458) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1072) |
-| `submission_snapshot` | `config.publish` | [459](../../src/service.rs#L459) | receiver-type-required |
-| `submission_snapshot` | `Self::submission_metadata` | [460](../../src/service.rs#L460) | [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L463) |
-| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.provider.as_str())             .or(config.workspace.policy.provider.as_deref())             .or` | [467](../../src/service.rs#L467) | receiver-type-required |
-| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.provider.as_str())             .or` | [467](../../src/service.rs#L467) | receiver-type-required |
-| `submission_metadata` | `config             .session_settings             .as_ref()             .map` | [467](../../src/service.rs#L467), [473](../../src/service.rs#L473) | receiver-type-required |
-| `submission_metadata` | `config             .session_settings             .as_ref` | [467](../../src/service.rs#L467), [473](../../src/service.rs#L473) | receiver-type-required |
-| `submission_metadata` | `s.provider.as_str` | [470](../../src/service.rs#L470) | receiver-type-required |
-| `submission_metadata` | `config.workspace.policy.provider.as_deref` | [471](../../src/service.rs#L471) | receiver-type-required |
-| `submission_metadata` | `config.settings.default_provider.as_deref` | [472](../../src/service.rs#L472) | receiver-type-required |
-| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.model.as_str())             .or(config.workspace.policy.model.as_deref())             .or` | [473](../../src/service.rs#L473) | receiver-type-required |
-| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.model.as_str())             .or` | [473](../../src/service.rs#L473) | receiver-type-required |
-| `submission_metadata` | `s.model.as_str` | [476](../../src/service.rs#L476) | receiver-type-required |
-| `submission_metadata` | `config.workspace.policy.model.as_deref` | [477](../../src/service.rs#L477) | receiver-type-required |
-| `submission_metadata` | `config.settings.default_model.as_deref` | [478](../../src/service.rs#L478) | receiver-type-required |
-| `submission_metadata` | `Ok` | [479](../../src/service.rs#L479) | external-constructor-callback-or-unresolved |
-| `submission_metadata` | `IJsonValue::parse` | [479](../../src/service.rs#L479) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `submission_metadata` | `serde_json::to_vec` | [479](../../src/service.rs#L479) | external-constructor-callback-or-unresolved |
-| `hydrate_historical_submissions` | `entries.iter().any` | [496](../../src/service.rs#L496) | receiver-type-required |
-| `hydrate_historical_submissions` | `entries.iter` | [496](../../src/service.rs#L496) | receiver-type-required |
-| `hydrate_historical_submissions` | `serde_json::to_value(&entry.event.data)                     .is_ok_and` | [498](../../src/service.rs#L498) | receiver-type-required |
-| `hydrate_historical_submissions` | `serde_json::to_value` | [498](../../src/service.rs#L498), [520](../../src/service.rs#L520), [571](../../src/service.rs#L571), [584](../../src/service.rs#L584) | external-constructor-callback-or-unresolved |
-| `hydrate_historical_submissions` | `data.get("submission").is_none` | [499](../../src/service.rs#L499) | receiver-type-required |
-| `hydrate_historical_submissions` | `data.get` | [499](../../src/service.rs#L499), [574](../../src/service.rs#L574) | receiver-type-required |
-| `hydrate_historical_submissions` | `self.active_folder` | [504](../../src/service.rs#L504) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1072) |
-| `hydrate_historical_submissions` | `fs::read` | [507](../../src/service.rs#L507) | external-constructor-callback-or-unresolved |
-| `hydrate_historical_submissions` | `folder.join` | [507](../../src/service.rs#L507), [513](../../src/service.rs#L513) | receiver-type-required |
-| `hydrate_historical_submissions` | `scan_valid_prefix` | [510](../../src/service.rs#L510) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `hydrate_historical_submissions` | `store::AssetStore::new` | [513](../../src/service.rs#L513) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `hydrate_historical_submissions` | `std::collections::BTreeMap::new` | [517](../../src/service.rs#L517), [518](../../src/service.rs#L518) | external-constructor-callback-or-unresolved |
-| `hydrate_historical_submissions` | `event.raw` | [520](../../src/service.rs#L520) | receiver-type-required |
-| `hydrate_historical_submissions` | `event.kind` | [523](../../src/service.rs#L523) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then(&#124;c&#124; c.get("digest"))                         .and_then(Value::as_str)                         .map` | [525](../../src/service.rs#L525) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then(&#124;c&#124; c.get("digest"))                         .and_then` | [525](../../src/service.rs#L525) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then` | [525](../../src/service.rs#L525) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get` | [525](../../src/service.rs#L525), [532](../../src/service.rs#L532), [541](../../src/service.rs#L541) | receiver-type-required |
-| `hydrate_historical_submissions` | `c.get` | [527](../../src/service.rs#L527) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("config_digest")                         .and_then(Value::as_str)                         .map` | [532](../../src/service.rs#L532) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("config_digest")                         .and_then` | [532](../../src/service.rs#L532) | receiver-type-required |
-| `hydrate_historical_submissions` | `inputs.insert` | [538](../../src/service.rs#L538) | receiver-type-required |
-| `hydrate_historical_submissions` | `event.seq` | [538](../../src/service.rs#L538) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("trigger")                         .and_then(&#124;t&#124; t.get("inputs"))                         .and_then` | [541](../../src/service.rs#L541) | receiver-type-required |
-| `hydrate_historical_submissions` | `value                         .get("trigger")                         .and_then` | [541](../../src/service.rs#L541) | receiver-type-required |
-| `hydrate_historical_submissions` | `t.get` | [543](../../src/service.rs#L543) | receiver-type-required |
-| `hydrate_historical_submissions` | `digest.as_deref().and_then` | [548](../../src/service.rs#L548) | receiver-type-required |
-| `hydrate_historical_submissions` | `digest.as_deref` | [548](../../src/service.rs#L548) | receiver-type-required |
-| `hydrate_historical_submissions` | `assets.read_verified(&format!("sha256-{digest}")).ok` | [549](../../src/service.rs#L549) | receiver-type-required |
-| `hydrate_historical_submissions` | `assets.read_verified` | [549](../../src/service.rs#L549) | receiver-type-required |
-| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode(&bytes).ok` | [550](../../src/service.rs#L550) | receiver-type-required |
-| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode` | [550](../../src/service.rs#L550) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L293) |
-| `hydrate_historical_submissions` | `Self::submission_metadata(&config, digest).ok` | [551](../../src/service.rs#L551) | receiver-type-required |
-| `hydrate_historical_submissions` | `Self::submission_metadata` | [551](../../src/service.rs#L551) | [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L463) |
-| `hydrate_historical_submissions` | `seqs.iter().filter_map` | [553](../../src/service.rs#L553) | receiver-type-required |
-| `hydrate_historical_submissions` | `seqs.iter` | [553](../../src/service.rs#L553) | receiver-type-required |
-| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then(&#124;input&#124; input.get("submission"))                             .and_then(&#124;s&#124; IJsonValue::parse(&serde_json::to_vec(s).ok()?).ok())                             .or_else` | [554](../../src/service.rs#L554) | receiver-type-required |
-| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then(&#124;input&#124; input.get("submission"))                             .and_then` | [554](../../src/service.rs#L554) | receiver-type-required |
-| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then` | [554](../../src/service.rs#L554) | receiver-type-required |
-| `hydrate_historical_submissions` | `inputs                             .get` | [554](../../src/service.rs#L554) | receiver-type-required |
-| `hydrate_historical_submissions` | `input.get` | [556](../../src/service.rs#L556) | receiver-type-required |
-| `hydrate_historical_submissions` | `IJsonValue::parse(&serde_json::to_vec(s).ok()?).ok` | [557](../../src/service.rs#L557) | receiver-type-required |
-| `hydrate_historical_submissions` | `IJsonValue::parse` | [557](../../src/service.rs#L557), [589](../../src/service.rs#L589) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `hydrate_historical_submissions` | `serde_json::to_vec(s).ok` | [557](../../src/service.rs#L557) | receiver-type-required |
-| `hydrate_historical_submissions` | `serde_json::to_vec` | [557](../../src/service.rs#L557), [588](../../src/service.rs#L588) | external-constructor-callback-or-unresolved |
-| `hydrate_historical_submissions` | `historical.clone` | [558](../../src/service.rs#L558) | receiver-type-required |
-| `hydrate_historical_submissions` | `submissions.insert` | [560](../../src/service.rs#L560) | receiver-type-required |
-| `hydrate_historical_submissions` | `data.get("submission").is_some` | [574](../../src/service.rs#L574) | receiver-type-required |
-| `hydrate_historical_submissions` | `data                 .get("id")                 .and_then(Value::as_str)                 .and_then` | [577](../../src/service.rs#L577) | receiver-type-required |
-| `hydrate_historical_submissions` | `data                 .get("id")                 .and_then` | [577](../../src/service.rs#L577) | receiver-type-required |
-| `hydrate_historical_submissions` | `data                 .get` | [577](../../src/service.rs#L577) | receiver-type-required |
-| `hydrate_historical_submissions` | `submissions.get` | [580](../../src/service.rs#L580) | receiver-type-required |
-| `create_session` | `self.create_session_with_operation` | [605](../../src/service.rs#L605) | [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L639) |
-| `create_session_for_endpoint` | `self.create_session_with_operation` | [628](../../src/service.rs#L628) | [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L639) |
-| `create_session_with_operation` | `validate_session_id` | [643](../../src/service.rs#L643) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `create_session_with_operation` | `Err` | [645](../../src/service.rs#L645) | external-constructor-callback-or-unresolved |
-| `create_session_with_operation` | `event` | [647](../../src/service.rs#L647) | external-constructor-callback-or-unresolved |
-| `create_session_with_operation` | `Ok` | [662](../../src/service.rs#L662) | external-constructor-callback-or-unresolved |
-| `create_session_with_operation` | `self             .store             .create_thread(write.session_id, event)             .map_err` | [662](../../src/service.rs#L662) | receiver-type-required |
-| `create_session_with_operation` | `self             .store             .create_thread` | [662](../../src/service.rs#L662) | receiver-type-required |
-| `prompt` | `self.prompt_with_operation` | [677](../../src/service.rs#L677) | [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L698) |
-| `prompt_for_endpoint` | `self.prompt_with_operation` | [688](../../src/service.rs#L688) | [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L698) |
-| `prompt_with_operation` | `self.keyed` | [707](../../src/service.rs#L707) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1041) |
-| `prompt_with_operation` | `self.submission_snapshot` | [708](../../src/service.rs#L708) | [endpoint::service::NativeEndpoint::submission_snapshot](../../src/service.rs#L456) |
-| `prompt_with_operation` | `Value::Bool` | [715](../../src/service.rs#L715) | external-constructor-callback-or-unresolved |
-| `prompt_with_operation` | `event` | [717](../../src/service.rs#L717) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `update_queue` | `self.keyed` | [728](../../src/service.rs#L728) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1041) |
-| `update_queue` | `event` | [729](../../src/service.rs#L729) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `rename_session` | `self.rename_session_with_operation` | [743](../../src/service.rs#L743) | [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L756) |
-| `rename_session_for_endpoint` | `self.rename_session_with_operation` | [753](../../src/service.rs#L753) | [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L756) |
-| `rename_session_with_operation` | `self.keyed` | [764](../../src/service.rs#L764) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1041) |
-| `rename_session_with_operation` | `event` | [765](../../src/service.rs#L765) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `seed_automatic_title_if_missing` | `self.validate_origin` | [782](../../src/service.rs#L782) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) |
-| `seed_automatic_title_if_missing` | `self             .store             .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                 if projection.events.iter().any(&#124;item&#124; {                     *item.kind() == EventKind::Meta && item.string_field("title").is_some()                 }) {                     return Ok(None);                 }                 event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err(store_error)             })             .map_err` | [783](../../src/service.rs#L783) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `self             .store             .append_keyed_with_projection_if` | [783](../../src/service.rs#L783) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `projection.events.iter().any` | [786](../../src/service.rs#L786) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `projection.events.iter` | [786](../../src/service.rs#L786) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `item.kind` | [787](../../src/service.rs#L787) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `item.string_field("title").is_some` | [787](../../src/service.rs#L787) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `item.string_field` | [787](../../src/service.rs#L787) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `Ok` | [789](../../src/service.rs#L789), [799](../../src/service.rs#L799) | external-constructor-callback-or-unresolved |
-| `seed_automatic_title_if_missing` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err` | [791](../../src/service.rs#L791) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map` | [791](../../src/service.rs#L791) | receiver-type-required |
-| `seed_automatic_title_if_missing` | `event` | [791](../../src/service.rs#L791) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `seed_automatic_title_if_missing` | `Some` | [800](../../src/service.rs#L800) | external-constructor-callback-or-unresolved |
-| `seed_automatic_title_if_missing` | `outcome.into` | [800](../../src/service.rs#L800) | receiver-type-required |
-| `record_session_notice` | `self.validate_origin` | [815](../../src/service.rs#L815) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) |
-| `record_session_notice` | `self.store                 .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                     // A notice that repeats the newest one, with no input in between,                     // says nothing new (the same degraded launch on every worker                     // restart); fold it. An input after it is a fresh attempt the                     // user made, and its outcome must be shown again.                     let latest_notice = projection.events.iter().rposition(&#124;item&#124; {                         *item.kind() == EventKind::Meta && item.has_field("notice")                     });                     if let Some(index) = latest_notice {                         let repeats = serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then(&#124;value&#124; value.get("notice").cloned())                             .is_some_and(&#124;previous&#124; previous == payload);                         let input_since = projection.events[index + 1..]                             .iter()                             .any(&#124;item&#124; *item.kind() == EventKind::Input);                         if repeats && !input_since {                             return Ok(None);                         }                     }                     event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map(Some)                     .map_err(store_error)                 })                 .map_err` | [823](../../src/service.rs#L823) | receiver-type-required |
-| `record_session_notice` | `self.store                 .append_keyed_with_projection_if` | [823](../../src/service.rs#L823) | receiver-type-required |
-| `record_session_notice` | `projection.events.iter().rposition` | [829](../../src/service.rs#L829) | receiver-type-required |
-| `record_session_notice` | `projection.events.iter` | [829](../../src/service.rs#L829) | receiver-type-required |
-| `record_session_notice` | `item.kind` | [830](../../src/service.rs#L830), [839](../../src/service.rs#L839) | receiver-type-required |
-| `record_session_notice` | `item.has_field` | [830](../../src/service.rs#L830) | receiver-type-required |
-| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then(&#124;value&#124; value.get("notice").cloned())                             .is_some_and` | [833](../../src/service.rs#L833) | receiver-type-required |
-| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then` | [833](../../src/service.rs#L833) | receiver-type-required |
-| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok` | [833](../../src/service.rs#L833) | receiver-type-required |
-| `record_session_notice` | `serde_json::to_value` | [833](../../src/service.rs#L833) | external-constructor-callback-or-unresolved |
-| `record_session_notice` | `projection.events[index].raw` | [833](../../src/service.rs#L833) | receiver-type-required |
-| `record_session_notice` | `value.get("notice").cloned` | [835](../../src/service.rs#L835) | receiver-type-required |
-| `record_session_notice` | `value.get` | [835](../../src/service.rs#L835) | receiver-type-required |
-| `record_session_notice` | `projection.events[index + 1..]                             .iter()                             .any` | [837](../../src/service.rs#L837) | receiver-type-required |
-| `record_session_notice` | `projection.events[index + 1..]                             .iter` | [837](../../src/service.rs#L837) | receiver-type-required |
-| `record_session_notice` | `Ok` | [841](../../src/service.rs#L841), [853](../../src/service.rs#L853) | external-constructor-callback-or-unresolved |
-| `record_session_notice` | `event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map(Some)                     .map_err` | [844](../../src/service.rs#L844) | receiver-type-required |
-| `record_session_notice` | `event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map` | [844](../../src/service.rs#L844) | receiver-type-required |
-| `record_session_notice` | `event` | [844](../../src/service.rs#L844) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `record_session_notice` | `Some` | [854](../../src/service.rs#L854) | external-constructor-callback-or-unresolved |
-| `record_session_notice` | `outcome.into` | [854](../../src/service.rs#L854) | receiver-type-required |
-| `refine_automatic_title` | `self.validate_origin` | [869](../../src/service.rs#L869) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) |
-| `refine_automatic_title` | `self             .store             .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                 let latest_title = projection.events.iter().rev().find(&#124;item&#124; {                     *item.kind() == EventKind::Meta && item.string_field("title").is_some()                 });                 let remains_automatic_seed = latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten()                     .is_some_and(&#124;tuple&#124; tuple.op == AUTOMATIC_TITLE_SEED_OPERATION);                 if !remains_automatic_seed {                     return Ok(None);                 }                 event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err(store_error)             })             .map_err` | [870](../../src/service.rs#L870) | receiver-type-required |
-| `refine_automatic_title` | `self             .store             .append_keyed_with_projection_if` | [870](../../src/service.rs#L870) | receiver-type-required |
-| `refine_automatic_title` | `projection.events.iter().rev().find` | [873](../../src/service.rs#L873) | receiver-type-required |
-| `refine_automatic_title` | `projection.events.iter().rev` | [873](../../src/service.rs#L873) | receiver-type-required |
-| `refine_automatic_title` | `projection.events.iter` | [873](../../src/service.rs#L873) | receiver-type-required |
-| `refine_automatic_title` | `item.kind` | [874](../../src/service.rs#L874) | receiver-type-required |
-| `refine_automatic_title` | `item.string_field("title").is_some` | [874](../../src/service.rs#L874) | receiver-type-required |
-| `refine_automatic_title` | `item.string_field` | [874](../../src/service.rs#L874) | receiver-type-required |
-| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten()                     .is_some_and` | [876](../../src/service.rs#L876) | receiver-type-required |
-| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten` | [876](../../src/service.rs#L876) | receiver-type-required |
-| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err` | [876](../../src/service.rs#L876) | receiver-type-required |
-| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose` | [876](../../src/service.rs#L876) | receiver-type-required |
-| `refine_automatic_title` | `latest_title                     .map` | [876](../../src/service.rs#L876) | receiver-type-required |
-| `refine_automatic_title` | `Ok` | [883](../../src/service.rs#L883), [893](../../src/service.rs#L893) | external-constructor-callback-or-unresolved |
-| `refine_automatic_title` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err` | [885](../../src/service.rs#L885) | receiver-type-required |
-| `refine_automatic_title` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map` | [885](../../src/service.rs#L885) | receiver-type-required |
-| `refine_automatic_title` | `event` | [885](../../src/service.rs#L885) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `refine_automatic_title` | `Some` | [894](../../src/service.rs#L894) | external-constructor-callback-or-unresolved |
-| `refine_automatic_title` | `outcome.into` | [894](../../src/service.rs#L894) | receiver-type-required |
-| `author_keyed_with_ledger` | `validate_session_id` | [912](../../src/service.rs#L912) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `author_keyed_with_ledger` | `Err` | [914](../../src/service.rs#L914) | external-constructor-callback-or-unresolved |
-| `author_keyed_with_ledger` | `self             .store             .append_keyed_with_ledger_if(session_id, origin, build)             .map_err` | [916](../../src/service.rs#L916) | receiver-type-required |
-| `author_keyed_with_ledger` | `self             .store             .append_keyed_with_ledger_if` | [916](../../src/service.rs#L916) | receiver-type-required |
-| `author_keyed_with_ledger` | `Ok` | [920](../../src/service.rs#L920) | external-constructor-callback-or-unresolved |
-| `author_keyed_with_ledger` | `Some` | [921](../../src/service.rs#L921) | external-constructor-callback-or-unresolved |
-| `author_keyed_with_ledger` | `outcome.into` | [921](../../src/service.rs#L921) | receiver-type-required |
-| `cancel` | `self.cancel_with_operation` | [932](../../src/service.rs#L932) | [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L944) |
-| `cancel_for_endpoint` | `self.cancel_with_operation` | [941](../../src/service.rs#L941) | [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L944) |
-| `cancel_with_operation` | `validate_session_id` | [951](../../src/service.rs#L951) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `cancel_with_operation` | `self.validate_origin` | [952](../../src/service.rs#L952) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) |
-| `cancel_with_operation` | `self             .store             .append_keyed_with_projection(session_id, origin, &#124;seq, projection&#124; {                 let generation = projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max()                     .unwrap_or(0)                     + 1;                 event(json!({                 "v": 1, "seq": seq, "ts": timestamp, "kind": "stop_requested",                 "generation": generation, "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map_err(store_error)             })             .map_err` | [953](../../src/service.rs#L953) | receiver-type-required |
-| `cancel_with_operation` | `self             .store             .append_keyed_with_projection` | [953](../../src/service.rs#L953) | receiver-type-required |
-| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max()                     .unwrap_or` | [956](../../src/service.rs#L956) | receiver-type-required |
-| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max` | [956](../../src/service.rs#L956) | receiver-type-required |
-| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map` | [956](../../src/service.rs#L956) | receiver-type-required |
-| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter` | [956](../../src/service.rs#L956) | receiver-type-required |
-| `cancel_with_operation` | `projection                     .events                     .iter` | [956](../../src/service.rs#L956) | receiver-type-required |
-| `cancel_with_operation` | `item.integer_field` | [960](../../src/service.rs#L960) | receiver-type-required |
-| `cancel_with_operation` | `event(json!({                 "v": 1, "seq": seq, "ts": timestamp, "kind": "stop_requested",                 "generation": generation, "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map_err` | [964](../../src/service.rs#L964) | receiver-type-required |
-| `cancel_with_operation` | `event` | [964](../../src/service.rs#L964) | [endpoint::service::event](../../src/service.rs#L1085) |
-| `cancel_with_operation` | `Ok` | [971](../../src/service.rs#L971) | external-constructor-callback-or-unresolved |
-| `cancel_with_operation` | `outcome.into` | [971](../../src/service.rs#L971) | receiver-type-required |
-| `fork_session` | `validate_session_id` | [981](../../src/service.rs#L981), [982](../../src/service.rs#L982) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `fork_session` | `self.store             .begin_fork(operation_id, source, destination, timestamp)             .map_err` | [983](../../src/service.rs#L983) | receiver-type-required |
-| `fork_session` | `self.store             .begin_fork` | [983](../../src/service.rs#L983) | receiver-type-required |
-| `fork_session` | `self.store.recover_rewrites().map_err` | [986](../../src/service.rs#L986) | receiver-type-required |
-| `fork_session` | `self.store.recover_rewrites` | [986](../../src/service.rs#L986) | receiver-type-required |
-| `fork_session` | `Ok` | [987](../../src/service.rs#L987) | external-constructor-callback-or-unresolved |
-| `fork_session` | `destination.to_owned` | [987](../../src/service.rs#L987) | receiver-type-required |
-| `archive_session` | `validate_session_id` | [991](../../src/service.rs#L991) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `archive_session` | `self.store.archive(session_id).map_err` | [992](../../src/service.rs#L992) | receiver-type-required |
-| `archive_session` | `self.store.archive` | [992](../../src/service.rs#L992) | receiver-type-required |
-| `archive_session` | `Ok` | [993](../../src/service.rs#L993) | external-constructor-callback-or-unresolved |
-| `unarchive_session` | `validate_session_id` | [1002](../../src/service.rs#L1002) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `unarchive_session` | `self.store.unarchive(session_id).map_err` | [1003](../../src/service.rs#L1003) | receiver-type-required |
-| `unarchive_session` | `self.store.unarchive` | [1003](../../src/service.rs#L1003) | receiver-type-required |
-| `unarchive_session` | `Ok` | [1004](../../src/service.rs#L1004) | external-constructor-callback-or-unresolved |
-| `unarchive_session` | `session_id.to_owned` | [1005](../../src/service.rs#L1005) | receiver-type-required |
-| `reconcile_projection` | `self.reconciled_journal` | [1010](../../src/service.rs#L1010) | [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1017) |
-| `reconcile_projection` | `journal.last_seq` | [1011](../../src/service.rs#L1011) | receiver-type-required |
-| `reconcile_projection` | `i64::try_from(seq).map_err` | [1012](../../src/service.rs#L1012) | receiver-type-required |
-| `reconcile_projection` | `i64::try_from` | [1012](../../src/service.rs#L1012) | external-constructor-callback-or-unresolved |
-| `reconcile_projection` | `NativeEndpointError::SequenceOverflow` | [1012](../../src/service.rs#L1012) | external-constructor-callback-or-unresolved |
-| `reconcile_projection` | `Ok` | [1013](../../src/service.rs#L1013) | external-constructor-callback-or-unresolved |
-| `reconciled_journal` | `self.active_folder` | [1018](../../src/service.rs#L1018) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1072) |
-| `reconciled_journal` | `fs::read` | [1019](../../src/service.rs#L1019) | external-constructor-callback-or-unresolved |
-| `reconciled_journal` | `folder.join` | [1019](../../src/service.rs#L1019) | receiver-type-required |
-| `reconciled_journal` | `scan_valid_prefix` | [1020](../../src/service.rs#L1020) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `reconciled_journal` | `scan.projection.ok_or_else` | [1021](../../src/service.rs#L1021) | receiver-type-required |
-| `reconciled_journal` | `NativeEndpointError::Store` | [1022](../../src/service.rs#L1022) | external-constructor-callback-or-unresolved |
-| `reconciled_journal` | `store::StoreError::Corruption` | [1022](../../src/service.rs#L1022) | external-constructor-callback-or-unresolved |
-| `reconciled_journal` | `"thread ledger has no valid genesis prefix".to_owned` | [1023](../../src/service.rs#L1023) | receiver-type-required |
-| `reconciled_journal` | `EndpointJournal::open` | [1026](../../src/service.rs#L1026) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
-| `reconciled_journal` | `Projector::default().reconcile` | [1027](../../src/service.rs#L1027) | receiver-type-required |
-| `reconciled_journal` | `Projector::default` | [1027](../../src/service.rs#L1027) | external-constructor-callback-or-unresolved |
-| `reconciled_journal` | `Ok` | [1028](../../src/service.rs#L1028) | external-constructor-callback-or-unresolved |
-| `history` | `self.reconciled_journal` | [1037](../../src/service.rs#L1037) | [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1017) |
-| `history` | `Ok` | [1038](../../src/service.rs#L1038) | external-constructor-callback-or-unresolved |
-| `history` | `history_page` | [1038](../../src/service.rs#L1038) | [endpoint::history::history_page](../../src/history.rs#L13) |
-| `history` | `journal.records` | [1038](../../src/service.rs#L1038) | receiver-type-required |
-| `keyed` | `self.validate_origin` | [1051](../../src/service.rs#L1051) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1059) |
-| `keyed` | `self             .store             .append_keyed(session_id, origin, &#124;seq&#124; build(seq).map_err(store_error))             .map_err` | [1052](../../src/service.rs#L1052) | receiver-type-required |
-| `keyed` | `self             .store             .append_keyed` | [1052](../../src/service.rs#L1052) | receiver-type-required |
-| `keyed` | `build(seq).map_err` | [1054](../../src/service.rs#L1054) | receiver-type-required |
-| `keyed` | `build` | [1054](../../src/service.rs#L1054) | external-constructor-callback-or-unresolved |
-| `keyed` | `Ok` | [1056](../../src/service.rs#L1056) | external-constructor-callback-or-unresolved |
-| `keyed` | `outcome.into` | [1056](../../src/service.rs#L1056) | receiver-type-required |
-| `validate_origin` | `validate_session_id` | [1065](../../src/service.rs#L1065) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `validate_origin` | `Err` | [1067](../../src/service.rs#L1067) | external-constructor-callback-or-unresolved |
-| `validate_origin` | `Ok` | [1069](../../src/service.rs#L1069) | external-constructor-callback-or-unresolved |
-| `active_folder` | `validate_session_id` | [1073](../../src/service.rs#L1073) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
-| `active_folder` | `self.store.root().join("archive").join(session_id).is_dir` | [1074](../../src/service.rs#L1074) | receiver-type-required |
-| `active_folder` | `self.store.root().join("archive").join` | [1074](../../src/service.rs#L1074) | receiver-type-required |
-| `active_folder` | `self.store.root().join` | [1074](../../src/service.rs#L1074), [1077](../../src/service.rs#L1077) | receiver-type-required |
-| `active_folder` | `self.store.root` | [1074](../../src/service.rs#L1074), [1077](../../src/service.rs#L1077) | receiver-type-required |
-| `active_folder` | `Err` | [1075](../../src/service.rs#L1075), [1079](../../src/service.rs#L1079) | external-constructor-callback-or-unresolved |
-| `active_folder` | `self.store.root().join("threads").join` | [1077](../../src/service.rs#L1077) | receiver-type-required |
-| `active_folder` | `folder.is_dir` | [1078](../../src/service.rs#L1078) | receiver-type-required |
-| `active_folder` | `Ok` | [1081](../../src/service.rs#L1081) | external-constructor-callback-or-unresolved |
-| `event` | `serde_json::to_vec` | [1086](../../src/service.rs#L1086) | external-constructor-callback-or-unresolved |
-| `event` | `Ok` | [1087](../../src/service.rs#L1087) | external-constructor-callback-or-unresolved |
-| `event` | `Event::from_value` | [1087](../../src/service.rs#L1087) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
-| `event` | `IJsonValue::parse` | [1087](../../src/service.rs#L1087) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `store_error` | `store::StoreError::Corruption` | [1091](../../src/service.rs#L1091) | external-constructor-callback-or-unresolved |
-| `store_error` | `error.to_string` | [1091](../../src/service.rs#L1091) | receiver-type-required |
-| `map_store_error` | `NativeEndpointError::Store` | [1098](../../src/service.rs#L1098) | external-constructor-callback-or-unresolved |
+| `session_config_snapshot` | `profile::SessionScope::for_session_folder` | [436](../../src/service.rs#L436) | [profile::scope::SessionScope::for_session_folder](../../../profile/src/scope.rs#L35) |
+| `session_config_snapshot` | `self.active_folder` | [436](../../src/service.rs#L436) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) |
+| `session_config_snapshot` | `profile::ConfigRepository::open` | [437](../../src/service.rs#L437) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `session_config_snapshot` | `self.store.root` | [437](../../src/service.rs#L437) | receiver-type-required |
+| `session_config_snapshot` | `Ok` | [438](../../src/service.rs#L438) | external-constructor-callback-or-unresolved |
+| `session_config_snapshot` | `scope.config` | [438](../../src/service.rs#L438) | receiver-type-required |
+| `submission_snapshot` | `self.session_config_snapshot` | [444](../../src/service.rs#L444) | [endpoint::service::NativeEndpoint::session_config_snapshot](../../src/service.rs#L431) |
+| `submission_snapshot` | `store::AssetStore::new` | [445](../../src/service.rs#L445) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `submission_snapshot` | `self.active_folder(session_id)?.join` | [445](../../src/service.rs#L445) | receiver-type-required |
+| `submission_snapshot` | `self.active_folder` | [445](../../src/service.rs#L445) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) |
+| `submission_snapshot` | `config.publish` | [446](../../src/service.rs#L446) | receiver-type-required |
+| `submission_snapshot` | `Self::submission_metadata` | [447](../../src/service.rs#L447) | [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L450) |
+| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.provider.as_str())             .or(config.workspace.policy.provider.as_deref())             .or` | [454](../../src/service.rs#L454) | receiver-type-required |
+| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.provider.as_str())             .or` | [454](../../src/service.rs#L454) | receiver-type-required |
+| `submission_metadata` | `config             .session_settings             .as_ref()             .map` | [454](../../src/service.rs#L454), [460](../../src/service.rs#L460) | receiver-type-required |
+| `submission_metadata` | `config             .session_settings             .as_ref` | [454](../../src/service.rs#L454), [460](../../src/service.rs#L460) | receiver-type-required |
+| `submission_metadata` | `s.provider.as_str` | [457](../../src/service.rs#L457) | receiver-type-required |
+| `submission_metadata` | `config.workspace.policy.provider.as_deref` | [458](../../src/service.rs#L458) | receiver-type-required |
+| `submission_metadata` | `config.settings.default_provider.as_deref` | [459](../../src/service.rs#L459) | receiver-type-required |
+| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.model.as_str())             .or(config.workspace.policy.model.as_deref())             .or` | [460](../../src/service.rs#L460) | receiver-type-required |
+| `submission_metadata` | `config             .session_settings             .as_ref()             .map(&#124;s&#124; s.model.as_str())             .or` | [460](../../src/service.rs#L460) | receiver-type-required |
+| `submission_metadata` | `s.model.as_str` | [463](../../src/service.rs#L463) | receiver-type-required |
+| `submission_metadata` | `config.workspace.policy.model.as_deref` | [464](../../src/service.rs#L464) | receiver-type-required |
+| `submission_metadata` | `config.settings.default_model.as_deref` | [465](../../src/service.rs#L465) | receiver-type-required |
+| `submission_metadata` | `Ok` | [466](../../src/service.rs#L466) | external-constructor-callback-or-unresolved |
+| `submission_metadata` | `IJsonValue::parse` | [466](../../src/service.rs#L466) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `submission_metadata` | `serde_json::to_vec` | [466](../../src/service.rs#L466) | external-constructor-callback-or-unresolved |
+| `hydrate_historical_submissions` | `entries.iter().any` | [483](../../src/service.rs#L483) | receiver-type-required |
+| `hydrate_historical_submissions` | `entries.iter` | [483](../../src/service.rs#L483) | receiver-type-required |
+| `hydrate_historical_submissions` | `serde_json::to_value(&entry.event.data)                     .is_ok_and` | [485](../../src/service.rs#L485) | receiver-type-required |
+| `hydrate_historical_submissions` | `serde_json::to_value` | [485](../../src/service.rs#L485), [507](../../src/service.rs#L507), [558](../../src/service.rs#L558), [571](../../src/service.rs#L571) | external-constructor-callback-or-unresolved |
+| `hydrate_historical_submissions` | `data.get("submission").is_none` | [486](../../src/service.rs#L486) | receiver-type-required |
+| `hydrate_historical_submissions` | `data.get` | [486](../../src/service.rs#L486), [561](../../src/service.rs#L561) | receiver-type-required |
+| `hydrate_historical_submissions` | `self.active_folder` | [491](../../src/service.rs#L491) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) |
+| `hydrate_historical_submissions` | `fs::read` | [494](../../src/service.rs#L494) | external-constructor-callback-or-unresolved |
+| `hydrate_historical_submissions` | `folder.join` | [494](../../src/service.rs#L494), [500](../../src/service.rs#L500) | receiver-type-required |
+| `hydrate_historical_submissions` | `scan_valid_prefix` | [497](../../src/service.rs#L497) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `hydrate_historical_submissions` | `store::AssetStore::new` | [500](../../src/service.rs#L500) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `hydrate_historical_submissions` | `std::collections::BTreeMap::new` | [504](../../src/service.rs#L504), [505](../../src/service.rs#L505) | external-constructor-callback-or-unresolved |
+| `hydrate_historical_submissions` | `event.raw` | [507](../../src/service.rs#L507) | receiver-type-required |
+| `hydrate_historical_submissions` | `event.kind` | [510](../../src/service.rs#L510) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then(&#124;c&#124; c.get("digest"))                         .and_then(Value::as_str)                         .map` | [512](../../src/service.rs#L512) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then(&#124;c&#124; c.get("digest"))                         .and_then` | [512](../../src/service.rs#L512) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("config")                         .and_then` | [512](../../src/service.rs#L512) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get` | [512](../../src/service.rs#L512), [519](../../src/service.rs#L519), [528](../../src/service.rs#L528) | receiver-type-required |
+| `hydrate_historical_submissions` | `c.get` | [514](../../src/service.rs#L514) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("config_digest")                         .and_then(Value::as_str)                         .map` | [519](../../src/service.rs#L519) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("config_digest")                         .and_then` | [519](../../src/service.rs#L519) | receiver-type-required |
+| `hydrate_historical_submissions` | `inputs.insert` | [525](../../src/service.rs#L525) | receiver-type-required |
+| `hydrate_historical_submissions` | `event.seq` | [525](../../src/service.rs#L525) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("trigger")                         .and_then(&#124;t&#124; t.get("inputs"))                         .and_then` | [528](../../src/service.rs#L528) | receiver-type-required |
+| `hydrate_historical_submissions` | `value                         .get("trigger")                         .and_then` | [528](../../src/service.rs#L528) | receiver-type-required |
+| `hydrate_historical_submissions` | `t.get` | [530](../../src/service.rs#L530) | receiver-type-required |
+| `hydrate_historical_submissions` | `digest.as_deref().and_then` | [535](../../src/service.rs#L535) | receiver-type-required |
+| `hydrate_historical_submissions` | `digest.as_deref` | [535](../../src/service.rs#L535) | receiver-type-required |
+| `hydrate_historical_submissions` | `assets.read_verified(&format!("sha256-{digest}")).ok` | [536](../../src/service.rs#L536) | receiver-type-required |
+| `hydrate_historical_submissions` | `assets.read_verified` | [536](../../src/service.rs#L536) | receiver-type-required |
+| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode(&bytes).ok` | [537](../../src/service.rs#L537) | receiver-type-required |
+| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode` | [537](../../src/service.rs#L537) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L293) |
+| `hydrate_historical_submissions` | `Self::submission_metadata(&config, digest).ok` | [538](../../src/service.rs#L538) | receiver-type-required |
+| `hydrate_historical_submissions` | `Self::submission_metadata` | [538](../../src/service.rs#L538) | [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L450) |
+| `hydrate_historical_submissions` | `seqs.iter().filter_map` | [540](../../src/service.rs#L540) | receiver-type-required |
+| `hydrate_historical_submissions` | `seqs.iter` | [540](../../src/service.rs#L540) | receiver-type-required |
+| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then(&#124;input&#124; input.get("submission"))                             .and_then(&#124;s&#124; IJsonValue::parse(&serde_json::to_vec(s).ok()?).ok())                             .or_else` | [541](../../src/service.rs#L541) | receiver-type-required |
+| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then(&#124;input&#124; input.get("submission"))                             .and_then` | [541](../../src/service.rs#L541) | receiver-type-required |
+| `hydrate_historical_submissions` | `inputs                             .get(&seq)                             .and_then` | [541](../../src/service.rs#L541) | receiver-type-required |
+| `hydrate_historical_submissions` | `inputs                             .get` | [541](../../src/service.rs#L541) | receiver-type-required |
+| `hydrate_historical_submissions` | `input.get` | [543](../../src/service.rs#L543) | receiver-type-required |
+| `hydrate_historical_submissions` | `IJsonValue::parse(&serde_json::to_vec(s).ok()?).ok` | [544](../../src/service.rs#L544) | receiver-type-required |
+| `hydrate_historical_submissions` | `IJsonValue::parse` | [544](../../src/service.rs#L544), [576](../../src/service.rs#L576) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `hydrate_historical_submissions` | `serde_json::to_vec(s).ok` | [544](../../src/service.rs#L544) | receiver-type-required |
+| `hydrate_historical_submissions` | `serde_json::to_vec` | [544](../../src/service.rs#L544), [575](../../src/service.rs#L575) | external-constructor-callback-or-unresolved |
+| `hydrate_historical_submissions` | `historical.clone` | [545](../../src/service.rs#L545) | receiver-type-required |
+| `hydrate_historical_submissions` | `submissions.insert` | [547](../../src/service.rs#L547) | receiver-type-required |
+| `hydrate_historical_submissions` | `data.get("submission").is_some` | [561](../../src/service.rs#L561) | receiver-type-required |
+| `hydrate_historical_submissions` | `data                 .get("id")                 .and_then(Value::as_str)                 .and_then` | [564](../../src/service.rs#L564) | receiver-type-required |
+| `hydrate_historical_submissions` | `data                 .get("id")                 .and_then` | [564](../../src/service.rs#L564) | receiver-type-required |
+| `hydrate_historical_submissions` | `data                 .get` | [564](../../src/service.rs#L564) | receiver-type-required |
+| `hydrate_historical_submissions` | `submissions.get` | [567](../../src/service.rs#L567) | receiver-type-required |
+| `create_session` | `self.create_session_with_operation` | [592](../../src/service.rs#L592) | [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L626) |
+| `create_session_for_endpoint` | `self.create_session_with_operation` | [615](../../src/service.rs#L615) | [endpoint::service::NativeEndpoint::create_session_with_operation](../../src/service.rs#L626) |
+| `create_session_with_operation` | `validate_session_id` | [630](../../src/service.rs#L630) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `create_session_with_operation` | `Err` | [632](../../src/service.rs#L632) | external-constructor-callback-or-unresolved |
+| `create_session_with_operation` | `event` | [634](../../src/service.rs#L634) | external-constructor-callback-or-unresolved |
+| `create_session_with_operation` | `Ok` | [649](../../src/service.rs#L649) | external-constructor-callback-or-unresolved |
+| `create_session_with_operation` | `self             .store             .create_thread(write.session_id, event)             .map_err` | [649](../../src/service.rs#L649) | receiver-type-required |
+| `create_session_with_operation` | `self             .store             .create_thread` | [649](../../src/service.rs#L649) | receiver-type-required |
+| `prompt` | `self.prompt_with_operation` | [664](../../src/service.rs#L664) | [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L685) |
+| `prompt_for_endpoint` | `self.prompt_with_operation` | [675](../../src/service.rs#L675) | [endpoint::service::NativeEndpoint::prompt_with_operation](../../src/service.rs#L685) |
+| `prompt_with_operation` | `self.keyed` | [694](../../src/service.rs#L694) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1028) |
+| `prompt_with_operation` | `self.submission_snapshot` | [695](../../src/service.rs#L695) | [endpoint::service::NativeEndpoint::submission_snapshot](../../src/service.rs#L443) |
+| `prompt_with_operation` | `Value::Bool` | [702](../../src/service.rs#L702) | external-constructor-callback-or-unresolved |
+| `prompt_with_operation` | `event` | [704](../../src/service.rs#L704) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `update_queue` | `self.keyed` | [715](../../src/service.rs#L715) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1028) |
+| `update_queue` | `event` | [716](../../src/service.rs#L716) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `rename_session` | `self.rename_session_with_operation` | [730](../../src/service.rs#L730) | [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L743) |
+| `rename_session_for_endpoint` | `self.rename_session_with_operation` | [740](../../src/service.rs#L740) | [endpoint::service::NativeEndpoint::rename_session_with_operation](../../src/service.rs#L743) |
+| `rename_session_with_operation` | `self.keyed` | [751](../../src/service.rs#L751) | [endpoint::service::NativeEndpoint::keyed](../../src/service.rs#L1028) |
+| `rename_session_with_operation` | `event` | [752](../../src/service.rs#L752) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `seed_automatic_title_if_missing` | `self.validate_origin` | [769](../../src/service.rs#L769) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) |
+| `seed_automatic_title_if_missing` | `self             .store             .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                 if projection.events.iter().any(&#124;item&#124; {                     *item.kind() == EventKind::Meta && item.string_field("title").is_some()                 }) {                     return Ok(None);                 }                 event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err(store_error)             })             .map_err` | [770](../../src/service.rs#L770) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `self             .store             .append_keyed_with_projection_if` | [770](../../src/service.rs#L770) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `projection.events.iter().any` | [773](../../src/service.rs#L773) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `projection.events.iter` | [773](../../src/service.rs#L773) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `item.kind` | [774](../../src/service.rs#L774) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `item.string_field("title").is_some` | [774](../../src/service.rs#L774) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `item.string_field` | [774](../../src/service.rs#L774) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `Ok` | [776](../../src/service.rs#L776), [786](../../src/service.rs#L786) | external-constructor-callback-or-unresolved |
+| `seed_automatic_title_if_missing` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err` | [778](../../src/service.rs#L778) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map` | [778](../../src/service.rs#L778) | receiver-type-required |
+| `seed_automatic_title_if_missing` | `event` | [778](../../src/service.rs#L778) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `seed_automatic_title_if_missing` | `Some` | [787](../../src/service.rs#L787) | external-constructor-callback-or-unresolved |
+| `seed_automatic_title_if_missing` | `outcome.into` | [787](../../src/service.rs#L787) | receiver-type-required |
+| `record_session_notice` | `self.validate_origin` | [802](../../src/service.rs#L802) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) |
+| `record_session_notice` | `self.store                 .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                     // A notice that repeats the newest one, with no input in between,                     // says nothing new (the same degraded launch on every worker                     // restart); fold it. An input after it is a fresh attempt the                     // user made, and its outcome must be shown again.                     let latest_notice = projection.events.iter().rposition(&#124;item&#124; {                         *item.kind() == EventKind::Meta && item.has_field("notice")                     });                     if let Some(index) = latest_notice {                         let repeats = serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then(&#124;value&#124; value.get("notice").cloned())                             .is_some_and(&#124;previous&#124; previous == payload);                         let input_since = projection.events[index + 1..]                             .iter()                             .any(&#124;item&#124; *item.kind() == EventKind::Input);                         if repeats && !input_since {                             return Ok(None);                         }                     }                     event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map(Some)                     .map_err(store_error)                 })                 .map_err` | [810](../../src/service.rs#L810) | receiver-type-required |
+| `record_session_notice` | `self.store                 .append_keyed_with_projection_if` | [810](../../src/service.rs#L810) | receiver-type-required |
+| `record_session_notice` | `projection.events.iter().rposition` | [816](../../src/service.rs#L816) | receiver-type-required |
+| `record_session_notice` | `projection.events.iter` | [816](../../src/service.rs#L816) | receiver-type-required |
+| `record_session_notice` | `item.kind` | [817](../../src/service.rs#L817), [826](../../src/service.rs#L826) | receiver-type-required |
+| `record_session_notice` | `item.has_field` | [817](../../src/service.rs#L817) | receiver-type-required |
+| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then(&#124;value&#124; value.get("notice").cloned())                             .is_some_and` | [820](../../src/service.rs#L820) | receiver-type-required |
+| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok()                             .and_then` | [820](../../src/service.rs#L820) | receiver-type-required |
+| `record_session_notice` | `serde_json::to_value(projection.events[index].raw())                             .ok` | [820](../../src/service.rs#L820) | receiver-type-required |
+| `record_session_notice` | `serde_json::to_value` | [820](../../src/service.rs#L820) | external-constructor-callback-or-unresolved |
+| `record_session_notice` | `projection.events[index].raw` | [820](../../src/service.rs#L820) | receiver-type-required |
+| `record_session_notice` | `value.get("notice").cloned` | [822](../../src/service.rs#L822) | receiver-type-required |
+| `record_session_notice` | `value.get` | [822](../../src/service.rs#L822) | receiver-type-required |
+| `record_session_notice` | `projection.events[index + 1..]                             .iter()                             .any` | [824](../../src/service.rs#L824) | receiver-type-required |
+| `record_session_notice` | `projection.events[index + 1..]                             .iter` | [824](../../src/service.rs#L824) | receiver-type-required |
+| `record_session_notice` | `Ok` | [828](../../src/service.rs#L828), [840](../../src/service.rs#L840) | external-constructor-callback-or-unresolved |
+| `record_session_notice` | `event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map(Some)                     .map_err` | [831](../../src/service.rs#L831) | receiver-type-required |
+| `record_session_notice` | `event(json!({                         "v": 1, "seq": seq, "ts": timestamp, "kind": "meta",                         "notice": payload,                         "origin_key": origin.key, "origin_tuple": origin,                     }))                     .map` | [831](../../src/service.rs#L831) | receiver-type-required |
+| `record_session_notice` | `event` | [831](../../src/service.rs#L831) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `record_session_notice` | `Some` | [841](../../src/service.rs#L841) | external-constructor-callback-or-unresolved |
+| `record_session_notice` | `outcome.into` | [841](../../src/service.rs#L841) | receiver-type-required |
+| `refine_automatic_title` | `self.validate_origin` | [856](../../src/service.rs#L856) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) |
+| `refine_automatic_title` | `self             .store             .append_keyed_with_projection_if(session_id, origin, &#124;seq, projection&#124; {                 let latest_title = projection.events.iter().rev().find(&#124;item&#124; {                     *item.kind() == EventKind::Meta && item.string_field("title").is_some()                 });                 let remains_automatic_seed = latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten()                     .is_some_and(&#124;tuple&#124; tuple.op == AUTOMATIC_TITLE_SEED_OPERATION);                 if !remains_automatic_seed {                     return Ok(None);                 }                 event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err(store_error)             })             .map_err` | [857](../../src/service.rs#L857) | receiver-type-required |
+| `refine_automatic_title` | `self             .store             .append_keyed_with_projection_if` | [857](../../src/service.rs#L857) | receiver-type-required |
+| `refine_automatic_title` | `projection.events.iter().rev().find` | [860](../../src/service.rs#L860) | receiver-type-required |
+| `refine_automatic_title` | `projection.events.iter().rev` | [860](../../src/service.rs#L860) | receiver-type-required |
+| `refine_automatic_title` | `projection.events.iter` | [860](../../src/service.rs#L860) | receiver-type-required |
+| `refine_automatic_title` | `item.kind` | [861](../../src/service.rs#L861) | receiver-type-required |
+| `refine_automatic_title` | `item.string_field("title").is_some` | [861](../../src/service.rs#L861) | receiver-type-required |
+| `refine_automatic_title` | `item.string_field` | [861](../../src/service.rs#L861) | receiver-type-required |
+| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten()                     .is_some_and` | [863](../../src/service.rs#L863) | receiver-type-required |
+| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err(store::StoreError::from)?                     .flatten` | [863](../../src/service.rs#L863) | receiver-type-required |
+| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose()                     .map_err` | [863](../../src/service.rs#L863) | receiver-type-required |
+| `refine_automatic_title` | `latest_title                     .map(Event::origin_tuple)                     .transpose` | [863](../../src/service.rs#L863) | receiver-type-required |
+| `refine_automatic_title` | `latest_title                     .map` | [863](../../src/service.rs#L863) | receiver-type-required |
+| `refine_automatic_title` | `Ok` | [870](../../src/service.rs#L870), [880](../../src/service.rs#L880) | external-constructor-callback-or-unresolved |
+| `refine_automatic_title` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map(Some)                 .map_err` | [872](../../src/service.rs#L872) | receiver-type-required |
+| `refine_automatic_title` | `event(json!({                     "v": 1, "seq": seq, "ts": timestamp, "kind": "meta", "title": title,                     "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map` | [872](../../src/service.rs#L872) | receiver-type-required |
+| `refine_automatic_title` | `event` | [872](../../src/service.rs#L872) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `refine_automatic_title` | `Some` | [881](../../src/service.rs#L881) | external-constructor-callback-or-unresolved |
+| `refine_automatic_title` | `outcome.into` | [881](../../src/service.rs#L881) | receiver-type-required |
+| `author_keyed_with_ledger` | `validate_session_id` | [899](../../src/service.rs#L899) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `author_keyed_with_ledger` | `Err` | [901](../../src/service.rs#L901) | external-constructor-callback-or-unresolved |
+| `author_keyed_with_ledger` | `self             .store             .append_keyed_with_ledger_if(session_id, origin, build)             .map_err` | [903](../../src/service.rs#L903) | receiver-type-required |
+| `author_keyed_with_ledger` | `self             .store             .append_keyed_with_ledger_if` | [903](../../src/service.rs#L903) | receiver-type-required |
+| `author_keyed_with_ledger` | `Ok` | [907](../../src/service.rs#L907) | external-constructor-callback-or-unresolved |
+| `author_keyed_with_ledger` | `Some` | [908](../../src/service.rs#L908) | external-constructor-callback-or-unresolved |
+| `author_keyed_with_ledger` | `outcome.into` | [908](../../src/service.rs#L908) | receiver-type-required |
+| `cancel` | `self.cancel_with_operation` | [919](../../src/service.rs#L919) | [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L931) |
+| `cancel_for_endpoint` | `self.cancel_with_operation` | [928](../../src/service.rs#L928) | [endpoint::service::NativeEndpoint::cancel_with_operation](../../src/service.rs#L931) |
+| `cancel_with_operation` | `validate_session_id` | [938](../../src/service.rs#L938) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `cancel_with_operation` | `self.validate_origin` | [939](../../src/service.rs#L939) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) |
+| `cancel_with_operation` | `self             .store             .append_keyed_with_projection(session_id, origin, &#124;seq, projection&#124; {                 let generation = projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max()                     .unwrap_or(0)                     + 1;                 event(json!({                 "v": 1, "seq": seq, "ts": timestamp, "kind": "stop_requested",                 "generation": generation, "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map_err(store_error)             })             .map_err` | [940](../../src/service.rs#L940) | receiver-type-required |
+| `cancel_with_operation` | `self             .store             .append_keyed_with_projection` | [940](../../src/service.rs#L940) | receiver-type-required |
+| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max()                     .unwrap_or` | [943](../../src/service.rs#L943) | receiver-type-required |
+| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map(&#124;item&#124; item.integer_field("generation"))                     .max` | [943](../../src/service.rs#L943) | receiver-type-required |
+| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter(&#124;item&#124; matches!(item.kind(), schema::EventKind::StopRequested))                     .filter_map` | [943](../../src/service.rs#L943) | receiver-type-required |
+| `cancel_with_operation` | `projection                     .events                     .iter()                     .filter` | [943](../../src/service.rs#L943) | receiver-type-required |
+| `cancel_with_operation` | `projection                     .events                     .iter` | [943](../../src/service.rs#L943) | receiver-type-required |
+| `cancel_with_operation` | `item.integer_field` | [947](../../src/service.rs#L947) | receiver-type-required |
+| `cancel_with_operation` | `event(json!({                 "v": 1, "seq": seq, "ts": timestamp, "kind": "stop_requested",                 "generation": generation, "origin_key": origin.key, "origin_tuple": origin,                 }))                 .map_err` | [951](../../src/service.rs#L951) | receiver-type-required |
+| `cancel_with_operation` | `event` | [951](../../src/service.rs#L951) | [endpoint::service::event](../../src/service.rs#L1072) |
+| `cancel_with_operation` | `Ok` | [958](../../src/service.rs#L958) | external-constructor-callback-or-unresolved |
+| `cancel_with_operation` | `outcome.into` | [958](../../src/service.rs#L958) | receiver-type-required |
+| `fork_session` | `validate_session_id` | [968](../../src/service.rs#L968), [969](../../src/service.rs#L969) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `fork_session` | `self.store             .begin_fork(operation_id, source, destination, timestamp)             .map_err` | [970](../../src/service.rs#L970) | receiver-type-required |
+| `fork_session` | `self.store             .begin_fork` | [970](../../src/service.rs#L970) | receiver-type-required |
+| `fork_session` | `self.store.recover_rewrites().map_err` | [973](../../src/service.rs#L973) | receiver-type-required |
+| `fork_session` | `self.store.recover_rewrites` | [973](../../src/service.rs#L973) | receiver-type-required |
+| `fork_session` | `Ok` | [974](../../src/service.rs#L974) | external-constructor-callback-or-unresolved |
+| `fork_session` | `destination.to_owned` | [974](../../src/service.rs#L974) | receiver-type-required |
+| `archive_session` | `validate_session_id` | [978](../../src/service.rs#L978) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `archive_session` | `self.store.archive(session_id).map_err` | [979](../../src/service.rs#L979) | receiver-type-required |
+| `archive_session` | `self.store.archive` | [979](../../src/service.rs#L979) | receiver-type-required |
+| `archive_session` | `Ok` | [980](../../src/service.rs#L980) | external-constructor-callback-or-unresolved |
+| `unarchive_session` | `validate_session_id` | [989](../../src/service.rs#L989) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `unarchive_session` | `self.store.unarchive(session_id).map_err` | [990](../../src/service.rs#L990) | receiver-type-required |
+| `unarchive_session` | `self.store.unarchive` | [990](../../src/service.rs#L990) | receiver-type-required |
+| `unarchive_session` | `Ok` | [991](../../src/service.rs#L991) | external-constructor-callback-or-unresolved |
+| `unarchive_session` | `session_id.to_owned` | [992](../../src/service.rs#L992) | receiver-type-required |
+| `reconcile_projection` | `self.reconciled_journal` | [997](../../src/service.rs#L997) | [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1004) |
+| `reconcile_projection` | `journal.last_seq` | [998](../../src/service.rs#L998) | receiver-type-required |
+| `reconcile_projection` | `i64::try_from(seq).map_err` | [999](../../src/service.rs#L999) | receiver-type-required |
+| `reconcile_projection` | `i64::try_from` | [999](../../src/service.rs#L999) | external-constructor-callback-or-unresolved |
+| `reconcile_projection` | `NativeEndpointError::SequenceOverflow` | [999](../../src/service.rs#L999) | external-constructor-callback-or-unresolved |
+| `reconcile_projection` | `Ok` | [1000](../../src/service.rs#L1000) | external-constructor-callback-or-unresolved |
+| `reconciled_journal` | `self.active_folder` | [1005](../../src/service.rs#L1005) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) |
+| `reconciled_journal` | `fs::read` | [1006](../../src/service.rs#L1006) | external-constructor-callback-or-unresolved |
+| `reconciled_journal` | `folder.join` | [1006](../../src/service.rs#L1006) | receiver-type-required |
+| `reconciled_journal` | `scan_valid_prefix` | [1007](../../src/service.rs#L1007) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `reconciled_journal` | `scan.projection.ok_or_else` | [1008](../../src/service.rs#L1008) | receiver-type-required |
+| `reconciled_journal` | `NativeEndpointError::Store` | [1009](../../src/service.rs#L1009) | external-constructor-callback-or-unresolved |
+| `reconciled_journal` | `store::StoreError::Corruption` | [1009](../../src/service.rs#L1009) | external-constructor-callback-or-unresolved |
+| `reconciled_journal` | `"thread ledger has no valid genesis prefix".to_owned` | [1010](../../src/service.rs#L1010) | receiver-type-required |
+| `reconciled_journal` | `EndpointJournal::open` | [1013](../../src/service.rs#L1013) | [endpoint::journal::EndpointJournal::open](../../src/journal.rs#L165) |
+| `reconciled_journal` | `Projector::default().reconcile` | [1014](../../src/service.rs#L1014) | receiver-type-required |
+| `reconciled_journal` | `Projector::default` | [1014](../../src/service.rs#L1014) | external-constructor-callback-or-unresolved |
+| `reconciled_journal` | `Ok` | [1015](../../src/service.rs#L1015) | external-constructor-callback-or-unresolved |
+| `history` | `self.reconciled_journal` | [1024](../../src/service.rs#L1024) | [endpoint::service::NativeEndpoint::reconciled_journal](../../src/service.rs#L1004) |
+| `history` | `Ok` | [1025](../../src/service.rs#L1025) | external-constructor-callback-or-unresolved |
+| `history` | `history_page` | [1025](../../src/service.rs#L1025) | [endpoint::history::history_page](../../src/history.rs#L13) |
+| `history` | `journal.records` | [1025](../../src/service.rs#L1025) | receiver-type-required |
+| `keyed` | `self.validate_origin` | [1038](../../src/service.rs#L1038) | [endpoint::service::NativeEndpoint::validate_origin](../../src/service.rs#L1046) |
+| `keyed` | `self             .store             .append_keyed(session_id, origin, &#124;seq&#124; build(seq).map_err(store_error))             .map_err` | [1039](../../src/service.rs#L1039) | receiver-type-required |
+| `keyed` | `self             .store             .append_keyed` | [1039](../../src/service.rs#L1039) | receiver-type-required |
+| `keyed` | `build(seq).map_err` | [1041](../../src/service.rs#L1041) | receiver-type-required |
+| `keyed` | `build` | [1041](../../src/service.rs#L1041) | external-constructor-callback-or-unresolved |
+| `keyed` | `Ok` | [1043](../../src/service.rs#L1043) | external-constructor-callback-or-unresolved |
+| `keyed` | `outcome.into` | [1043](../../src/service.rs#L1043) | receiver-type-required |
+| `validate_origin` | `validate_session_id` | [1052](../../src/service.rs#L1052) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `validate_origin` | `Err` | [1054](../../src/service.rs#L1054) | external-constructor-callback-or-unresolved |
+| `validate_origin` | `Ok` | [1056](../../src/service.rs#L1056) | external-constructor-callback-or-unresolved |
+| `active_folder` | `validate_session_id` | [1060](../../src/service.rs#L1060) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
+| `active_folder` | `self.store.root().join("archive").join(session_id).is_dir` | [1061](../../src/service.rs#L1061) | receiver-type-required |
+| `active_folder` | `self.store.root().join("archive").join` | [1061](../../src/service.rs#L1061) | receiver-type-required |
+| `active_folder` | `self.store.root().join` | [1061](../../src/service.rs#L1061), [1064](../../src/service.rs#L1064) | receiver-type-required |
+| `active_folder` | `self.store.root` | [1061](../../src/service.rs#L1061), [1064](../../src/service.rs#L1064) | receiver-type-required |
+| `active_folder` | `Err` | [1062](../../src/service.rs#L1062), [1066](../../src/service.rs#L1066) | external-constructor-callback-or-unresolved |
+| `active_folder` | `self.store.root().join("threads").join` | [1064](../../src/service.rs#L1064) | receiver-type-required |
+| `active_folder` | `folder.is_dir` | [1065](../../src/service.rs#L1065) | receiver-type-required |
+| `active_folder` | `Ok` | [1068](../../src/service.rs#L1068) | external-constructor-callback-or-unresolved |
+| `event` | `serde_json::to_vec` | [1073](../../src/service.rs#L1073) | external-constructor-callback-or-unresolved |
+| `event` | `Ok` | [1074](../../src/service.rs#L1074) | external-constructor-callback-or-unresolved |
+| `event` | `Event::from_value` | [1074](../../src/service.rs#L1074) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `event` | `IJsonValue::parse` | [1074](../../src/service.rs#L1074) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `store_error` | `store::StoreError::Corruption` | [1078](../../src/service.rs#L1078) | external-constructor-callback-or-unresolved |
+| `store_error` | `error.to_string` | [1078](../../src/service.rs#L1078) | receiver-type-required |
+| `map_store_error` | `NativeEndpointError::Store` | [1085](../../src/service.rs#L1085) | external-constructor-callback-or-unresolved |

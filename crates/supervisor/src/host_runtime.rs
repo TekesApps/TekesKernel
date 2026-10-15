@@ -345,18 +345,19 @@ pub fn assemble_application_endpoint_host(
             }
 
             let resolved = match repository.resolve(&workspace_id) {
-                Ok(snapshot) => snapshot.workspace.cwd,
+                Ok(snapshot) => snapshot,
                 Err(_) if authored_roots.iter().any(|root| !root.is_dir()) => {
                     return Ok((workspace_id, ResourceCatalog::default()));
                 }
                 Err(error) => return Err(DaemonError::invalid_config(error.to_string())),
             };
-            let snapshot = match InstructionResolver::new_scoped(
+            let snapshot = match profile::workspace_instructions(
+                &repository,
+                &workspace_id,
                 user_agent_dir,
-                authority_root.join("workspaces").join(&workspace_id),
                 &resolved,
             )
-            .capture()
+            .and_then(|resolver| resolver.capture())
             {
                 Ok(snapshot) => snapshot,
                 Err(_) if authored_roots.iter().any(|root| !root.is_dir()) => {
@@ -413,7 +414,10 @@ pub fn assemble_application_endpoint_host(
         Some(process_host as Arc<dyn QueueTransactionAuthority>),
         input_admission,
     )
-    .map(|host| host.with_preset_mcp(preset_mcp))
+    .map(|host| {
+        host.with_preset_mcp(preset_mcp)
+            .with_user_agent_dir(user_agent_dir)
+    })
     .map_err(|error| DaemonError::corrupt(error.to_string()))
 }
 

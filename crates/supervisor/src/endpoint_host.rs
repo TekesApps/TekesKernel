@@ -549,6 +549,16 @@ impl ProductionEndpointHost {
         self
     }
 
+    /// The user-level `.agents` directory session creation captures
+    /// instructions from. Application assembly passes the same directory the
+    /// worker launch uses, so a preset is validated against the instructions
+    /// the session will run with. Without it the host uses `<home>/.agents`.
+    #[must_use]
+    pub fn with_user_agent_dir(mut self, user_agent_dir: &Path) -> Self {
+        self.user_agent_dir = user_agent_dir.to_path_buf();
+        self
+    }
+
     pub fn mux_description(&self) -> endpoint::MuxHostDescription {
         let mut capabilities = endpoint::SessionEndpointCapability::required();
         capabilities.extend([

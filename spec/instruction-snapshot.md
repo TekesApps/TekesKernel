@@ -7,8 +7,13 @@ spawn-time use of the D-55 instruction plane. It is an executable contract.
 
 The resolver receives explicit user and workspace data directories plus the
 ordered, canonical folder path list from a ConfigSnapshot. Production passes
-`~/.agents`, `~/.agents/workspaces/<workspace-id>`, and the current paths bound
-by that workspace. It never consults an ambient home directory.
+the service user's `~/.agents`, the workspace's private data directory
+`<storage-root>/workspaces/<workspace-id>` (the directory that holds its
+`workspace.json`, see [config](config.md#authority-and-layout)), and the
+current paths bound by that workspace. Every capture uses these same three
+inputs: worker launch, `session.create` and `session.fork {preset}` preset
+validation, `session.presets.resolve`, resource and tool catalogs, and policy
+candidate checks. It never consults an ambient home directory.
 
 User level, beneath the supplied directory:
 
