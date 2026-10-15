@@ -1667,6 +1667,18 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
             .unwrap_or(1);
         target.insert("min_reader".to_owned(), json!(reader.max(2)));
     }
+    // Recorded folders narrow the session's folders; whatever the copied
+    // minima say, a reader that predates them must not open it writable.
+    if target.contains_key("folders") {
+        let reader = target
+            .get("min_reader")
+            .and_then(Value::as_u64)
+            .unwrap_or(1);
+        target.insert(
+            "min_reader".to_owned(),
+            json!(reader.max(schema::FOLDERS_READER)),
+        );
+    }
     if let Some(seed) = object.get("seed")
         && !value_references_any(seed, context.poisoned_assets)
     {
@@ -2852,6 +2864,8 @@ mod tests {
                 "fork changed inherited field {field}"
             );
         }
+        // Recorded folders need reader 3 whatever the source minima said.
+        assert_eq!(raw["min_reader"], schema::FOLDERS_READER);
     }
 
     #[test]

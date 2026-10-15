@@ -353,7 +353,9 @@ sessions already bind to; the first edit publishes those same ids as
 
 Add canonicalizes an existing directory, appends it with the `folder-NNNN` id one
 above the highest existing one and, when the workspace has a policy, adds it to
-`writable_roots` as `workspace.create` seeds its folder. The canonical path
+`writable_roots` as `workspace.create` seeds its folder. Existing sessions
+keep the folders their genesis records (spec event §Genesis), so an added
+folder reaches only sessions created afterwards. The canonical path
 must not already be a folder of any workspace (`workspace-ambiguous`). A
 workspace that has an active, archived or in-flight session without a stable
 `folder_binding` refuses a second folder with `workspace-legacy-session`,
@@ -362,7 +364,8 @@ because such a session resolves only while its workspace has one folder.
 Remove compares `path` exactly with an authored folder path, so a folder
 whose directory no longer exists can still be removed. It refuses the last
 folder (`workspace-last-folder`) and a folder that any active, archived or
-in-flight session is bound to (`workspace-folder-in-use`, details carry the
+in-flight session is bound to or records among its genesis `folders` (an
+in-flight create records every folder) (`workspace-folder-in-use`, details carry the
 sorted `sessionIds`). Like `workspace.relocate` it requires the workspace's
 quiescence lock and otherwise fails with `workspace-busy`. Writable roots at
 or below the removed folder are dropped unless a remaining folder contains

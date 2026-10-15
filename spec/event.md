@@ -97,12 +97,18 @@ preset?: {format: 1, base: "general" | "blank", layers: [Layer], digest: str}}`
 `folder_binding` is the stable id of the folder the session runs in.
 `environment` names the environment the session runs in; `folders` lists the
 stable ids of the session's folders, nonempty and duplicate-free, and
-includes `folder_binding` when both are present. Both are written by
-`session.create` (`environment` is `local`; `folders` is every folder of the
-workspace at creation) and are references, not frozen values: a launch
-resolves each folder id to its current path, so relocation is followed. A
-genesis without them reads as `local` with every workspace folder. Readers
-that predate the fields ignore them, so they do not change `min_reader`.
+includes `folder_binding` when both are present. `session.create` writes both
+(`environment` is `local`; `folders` is every folder of the workspace at
+creation). They are references, not frozen values: a launch resolves each
+folder id to its current path, so relocation is followed, and resolves the
+environment by id (an unknown one fails the launch,
+[config §Environments](config.md#environments)). Recorded `folders` are the
+session's folders: its cwd list, instruction capture and writable roots come
+from them only, so a folder the workspace gains later reaches only sessions
+created afterwards. A genesis without them reads as `local` with every
+workspace folder. A genesis that records `folders` sets `min_reader` 3: a
+reader that predates them would widen the session to every workspace folder,
+so it opens the ledger read-only instead.
 
 A session derived from another, a fork or a session started by the
 `context` tool, copies the inherited fields verbatim
@@ -119,9 +125,9 @@ lifecycle (R15-10).
 ([session-endpoint § Session presets](session-endpoint.md#session-presets)).
 A genesis carries `identity_profile` or `preset`, never both, and one that
 carries `preset` sets `min_reader` 2: a reader 1 opens the ledger read-only
-instead of rendering the session with the wrong prompt. This build reads and
-writes reader version 2 (`schema::READER_VERSION`); ledgers with `min_reader`
-1 are unchanged.
+instead of rendering the session with the wrong prompt. This build reads
+reader version 3 (`schema::READER_VERSION`); ledgers with `min_reader` 1 or 2
+are unchanged.
 
 **Seed snapshot asset format (R16 closure).** `seed.snapshot` is UTF-8 JSONL
 with one LF-terminated **source event** per line, in strictly increasing

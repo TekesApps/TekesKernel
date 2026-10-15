@@ -358,7 +358,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `store.gc_rewrite_debris` | [225](../../src/host_runtime.rs#L225) | receiver-type-required |
 | `prepare_storage` | `crate::boot_trace::phase` | [226](../../src/host_runtime.rs#L226) | [tekes-supervisor::boot_trace::phase](../../src/boot_trace.rs#L60) |
 | `prepare_storage` | `profile::ConfigRepository::open(root)         .map_err` | [231](../../src/host_runtime.rs#L231) | receiver-type-required |
-| `prepare_storage` | `profile::ConfigRepository::open` | [231](../../src/host_runtime.rs#L231) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
+| `prepare_storage` | `profile::ConfigRepository::open` | [231](../../src/host_runtime.rs#L231) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L786) |
 | `prepare_storage` | `DaemonError::invalid_config` | [232](../../src/host_runtime.rs#L232) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `prepare_storage` | `error.to_string` | [232](../../src/host_runtime.rs#L232) | receiver-type-required |
 | `prepare_storage` | `Ok` | [233](../../src/host_runtime.rs#L233) | external-constructor-callback-or-unresolved |
@@ -400,12 +400,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `is_icloud_mobile_documents_path` | `path.components` | [295](../../src/host_runtime.rs#L295) | receiver-type-required |
 | `is_icloud_mobile_documents_path` | `OsStr::new` | [300](../../src/host_runtime.rs#L300), [303](../../src/host_runtime.rs#L303) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `ConfigRepository::open(authority_root)         .map_err` | [319](../../src/host_runtime.rs#L319) | receiver-type-required |
-| `assemble_application_endpoint_host` | `ConfigRepository::open` | [319](../../src/host_runtime.rs#L319) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
+| `assemble_application_endpoint_host` | `ConfigRepository::open` | [319](../../src/host_runtime.rs#L319) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L786) |
 | `assemble_application_endpoint_host` | `DaemonError::invalid_config` | [320](../../src/host_runtime.rs#L320), [323](../../src/host_runtime.rs#L323), [325](../../src/host_runtime.rs#L325), [328](../../src/host_runtime.rs#L328), [352](../../src/host_runtime.rs#L352), [366](../../src/host_runtime.rs#L366), [369](../../src/host_runtime.rs#L369), [393](../../src/host_runtime.rs#L393), [401](../../src/host_runtime.rs#L401) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `assemble_application_endpoint_host` | `error.to_string` | [320](../../src/host_runtime.rs#L320), [323](../../src/host_runtime.rs#L323), [325](../../src/host_runtime.rs#L325), [328](../../src/host_runtime.rs#L328), [352](../../src/host_runtime.rs#L352), [366](../../src/host_runtime.rs#L366), [369](../../src/host_runtime.rs#L369), [384](../../src/host_runtime.rs#L384), [405](../../src/host_runtime.rs#L405), [421](../../src/host_runtime.rs#L421) | receiver-type-required |
 | `assemble_application_endpoint_host` | `InstructionResolver::new(user_agent_dir, std::iter::empty::<&Path>())         .capture()         .map_err` | [321](../../src/host_runtime.rs#L321) | receiver-type-required |
 | `assemble_application_endpoint_host` | `InstructionResolver::new(user_agent_dir, std::iter::empty::<&Path>())         .capture` | [321](../../src/host_runtime.rs#L321) | receiver-type-required |
-| `assemble_application_endpoint_host` | `InstructionResolver::new` | [321](../../src/host_runtime.rs#L321) | [profile::instruction::InstructionResolver::new](../../../profile/src/instruction.rs#L282) |
+| `assemble_application_endpoint_host` | `InstructionResolver::new` | [321](../../src/host_runtime.rs#L321) | [profile::instruction::InstructionResolver::new](../../../profile/src/instruction.rs#L269) |
 | `assemble_application_endpoint_host` | `std::iter::empty::<&Path>` | [321](../../src/host_runtime.rs#L321) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `ResourceCatalog::from_snapshot(&instruction)         .map_err` | [324](../../src/host_runtime.rs#L324) | receiver-type-required |
 | `assemble_application_endpoint_host` | `ResourceCatalog::from_snapshot` | [324](../../src/host_runtime.rs#L324), [368](../../src/host_runtime.rs#L368) | [profile::resources::ResourceCatalog::from_snapshot](../../../profile/src/resources.rs#L98) |
@@ -427,7 +427,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_application_endpoint_host` | `repository.resolve` | [347](../../src/host_runtime.rs#L347) | receiver-type-required |
 | `assemble_application_endpoint_host` | `Err` | [352](../../src/host_runtime.rs#L352), [366](../../src/host_runtime.rs#L366) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `profile::workspace_instructions(                 &repository,                 &workspace_id,                 user_agent_dir,                 &resolved,             )             .and_then` | [354](../../src/host_runtime.rs#L354) | receiver-type-required |
-| `assemble_application_endpoint_host` | `profile::workspace_instructions` | [354](../../src/host_runtime.rs#L354) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L211) |
+| `assemble_application_endpoint_host` | `profile::workspace_instructions` | [354](../../src/host_runtime.rs#L354) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L220) |
 | `assemble_application_endpoint_host` | `resolver.capture` | [360](../../src/host_runtime.rs#L360) | receiver-type-required |
 | `assemble_application_endpoint_host` | `ResourceCatalog::from_snapshot(&snapshot)                 .map_err` | [368](../../src/host_runtime.rs#L368) | receiver-type-required |
 | `assemble_application_endpoint_host` | `Arc::clone` | [373](../../src/host_runtime.rs#L373), [383](../../src/host_runtime.rs#L383), [385](../../src/host_runtime.rs#L385), [387](../../src/host_runtime.rs#L387), [392](../../src/host_runtime.rs#L392), [412](../../src/host_runtime.rs#L412), [413](../../src/host_runtime.rs#L413) | external-constructor-callback-or-unresolved |

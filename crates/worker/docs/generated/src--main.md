@@ -470,8 +470,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `load_profiles` | `Err` | [539](../../src/main.rs#L539), [565](../../src/main.rs#L565) | external-constructor-callback-or-unresolved |
 | `load_profiles` | `"profile descriptors must be distinct and above stderr".into` | [539](../../src/main.rs#L539) | receiver-type-required |
 | `load_profiles` | `read_inherited_fd` | [541](../../src/main.rs#L541), [542](../../src/main.rs#L542), [543](../../src/main.rs#L543) | [tekes-worker::main::read_inherited_fd](../../src/main.rs#L509) |
-| `load_profiles` | `profile::ConfigSnapshot::decode` | [544](../../src/main.rs#L544) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L309) |
-| `load_profiles` | `profile::InstructionSnapshot::decode` | [545](../../src/main.rs#L545) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L180) |
+| `load_profiles` | `profile::ConfigSnapshot::decode` | [544](../../src/main.rs#L544) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L391) |
+| `load_profiles` | `profile::InstructionSnapshot::decode` | [545](../../src/main.rs#L545) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L167) |
 | `load_profiles` | `instruction.validate_against_config` | [546](../../src/main.rs#L546) | receiver-type-required |
 | `load_profiles` | `LaunchBindings::decode_verified` | [547](../../src/main.rs#L547) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
 | `load_profiles` | `instruction.meet_workspace_policy` | [552](../../src/main.rs#L552) | receiver-type-required |

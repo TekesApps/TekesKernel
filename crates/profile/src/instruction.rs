@@ -125,28 +125,15 @@ pub struct LaunchProfile {
 }
 
 impl LaunchProfile {
-    /// Resolves the launch profile for a session's immutable folder binding.
-    /// The selected root becomes the default cwd while instruction capture
-    /// still includes every bound folder in the workspace.
-    pub fn resolve_and_publish_for_binding(
+    /// Resolves the launch profile in a session's scope: its environment,
+    /// folder binding and recorded folders. The selected root becomes the
+    /// default cwd while instruction capture includes every session folder.
+    pub fn resolve_and_publish_for_scope(
         repository: &crate::ConfigRepository,
-        workspace_id: &str,
+        scope: &crate::SessionScope,
         user_agent_dir: impl AsRef<Path>,
         assets: &AssetStore,
-        folder_binding: Option<&str>,
     ) -> Result<Self, ProfileError> {
-        let session_folder = assets
-            .root()
-            .parent()
-            .ok_or_else(|| ProfileError::InvalidPath {
-                path: assets.root().to_path_buf(),
-                reason: "thread asset directory has no session folder".to_owned(),
-            })?;
-        let scope = crate::SessionScope::from_parts(
-            session_folder,
-            workspace_id,
-            folder_binding.map(str::to_owned),
-        );
         let config = scope.config(repository)?;
         let instruction = scope
             .instructions(repository, user_agent_dir.as_ref(), &config)?

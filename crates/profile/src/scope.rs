@@ -4,7 +4,7 @@
 
 use std::path::{Path, PathBuf};
 
-use crate::{ConfigRepository, ConfigSnapshot, InstructionResolver, ProfileError};
+use crate::{ConfigRepository, ConfigSnapshot, InstructionResolver, ProfileError, ScopeSelection};
 
 /// Where a session's configuration comes from. Built only from the session's
 /// own genesis, never from a client-supplied workspace or root.
@@ -169,26 +169,35 @@ impl SessionScope {
     /// including its session-local settings. A session created before stable
     /// folder bindings resolves only while its workspace has one folder.
     pub fn config(&self, repository: &ConfigRepository) -> Result<ConfigSnapshot, ProfileError> {
-        match &self.folder_binding {
-            Some(binding) => repository.resolve_for_session_binding(
-                &self.workspace_id,
-                &self.session_folder,
-                binding,
-            ),
-            None => repository.resolve_for_session(&self.workspace_id, &self.session_folder),
-        }
+        repository.resolve_scoped(
+            &self.workspace_id,
+            Some(&self.session_folder),
+            self.folder_binding.as_deref(),
+            self.selection(),
+        )
     }
 
-    /// The workspace-level configuration at the session's folder binding,
-    /// without its session-local settings: what a new session in the same
-    /// place would start from.
+    /// The workspace-level configuration in the session's scope (its
+    /// environment, binding and folders) without its session-local settings:
+    /// what a new session in the same place would start from.
     pub fn workspace_config(
         &self,
         repository: &ConfigRepository,
     ) -> Result<ConfigSnapshot, ProfileError> {
-        match &self.folder_binding {
-            Some(binding) => repository.resolve_for_binding(&self.workspace_id, binding),
-            None => repository.resolve(&self.workspace_id),
+        repository.resolve_scoped(
+            &self.workspace_id,
+            None,
+            self.folder_binding.as_deref(),
+            self.selection(),
+        )
+    }
+
+    /// The environment and recorded folder ids this scope resolves in.
+    #[must_use]
+    pub fn selection(&self) -> ScopeSelection<'_> {
+        ScopeSelection {
+            environment: self.environment(),
+            folders: self.folders.as_deref(),
         }
     }
 

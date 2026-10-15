@@ -14,8 +14,13 @@ pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 /// Ledger reader version this build understands. Version 2 adds the genesis
 /// `preset` field: a genesis that carries one sets `min_reader` 2, so an older
 /// reader opens the session read-only instead of rendering it with the wrong
-/// prompt (spec event §Genesis).
-pub const READER_VERSION: u64 = 2;
+/// prompt. Version 3 makes genesis `folders` narrow the session's folders: a
+/// genesis that records them sets `min_reader` 3, so an older reader does not
+/// widen the session to every workspace folder (spec event §Genesis).
+pub const READER_VERSION: u64 = 3;
+
+/// The reader a genesis that records `folders` requires.
+pub const FOLDERS_READER: u64 = 3;
 
 /// Genesis fields a session started from another session's scope (a fork,
 /// or a `context` start) copies verbatim: where it runs, with which

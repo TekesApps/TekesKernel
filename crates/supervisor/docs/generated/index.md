@@ -67,13 +67,13 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 150 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
 | [crates/supervisor/src/host_runtime.rs](../../src/host_runtime.rs) | 45 | 366 | [Symbols and calls](src--host_runtime.md) |
-| [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 184 | [Symbols and calls](src--lib.md) |
+| [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 191 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 199 | 2250 | [Symbols and calls](src--mcp_runtime.md) |
 | [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 372 | 6506 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1866 | [Symbols and calls](src--process_live_tests.md) |
-| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 844 | [Symbols and calls](src--production_tool_control.md) |
+| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 847 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |

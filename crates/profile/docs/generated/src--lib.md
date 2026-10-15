@@ -20,12 +20,15 @@ Visibility is the declaration spelling; trait members and reexports require thei
 |---|---|---|
 | `ConfigRepository` | `config::ConfigRepository` | `pub` |
 | `ConfigSnapshot` | `config::ConfigSnapshot` | `pub` |
+| `Environment` | `config::Environment` | `pub` |
+| `EnvironmentsConfig` | `config::EnvironmentsConfig` | `pub` |
 | `Limits` | `config::Limits` | `pub` |
 | `Model` | `config::Model` | `pub` |
 | `Provider` | `config::Provider` | `pub` |
 | `ProvidersConfig` | `config::ProvidersConfig` | `pub` |
 | `ResolvedWorkspace` | `config::ResolvedWorkspace` | `pub` |
 | `RevisionVector` | `config::RevisionVector` | `pub` |
+| `ScopeSelection` | `config::ScopeSelection` | `pub` |
 | `SessionSettings` | `config::SessionSettings` | `pub` |
 | `SettingsConfig` | `config::SettingsConfig` | `pub` |
 | `WebSearch` | `config::WebSearch` | `pub` |

@@ -1382,7 +1382,7 @@ fn decode_cursor(value: Option<&Value>, identity: &str) -> Result<usize, Supervi
 /// The genesis of a session the `context` tool starts from `source`, the
 /// caller's genesis. The new session starts in the caller's scope: workspace,
 /// folders, environment, configuration and preset, exactly as a fork inherits
-/// them; a preset genesis needs reader 2.
+/// them; a preset genesis needs reader 2 and recorded folders reader 3.
 fn context_start_genesis(
     source: &Value,
     workspace: &str,
@@ -1403,7 +1403,9 @@ fn context_start_genesis(
             event[*field] = value.clone();
         }
     }
-    if source.get("preset").is_some() {
+    if source.get("folders").is_some() {
+        event["min_reader"] = json!(schema::FOLDERS_READER);
+    } else if source.get("preset").is_some() {
         event["min_reader"] = json!(2);
     }
     Event::from_value(to_ijson(&event)?).map_err(map_schema)
@@ -1663,14 +1665,16 @@ mod context_start_tests {
         for field in schema::GENESIS_INHERITED_FIELDS {
             assert_eq!(raw.get(*field), source.get(*field), "{field}");
         }
-        assert_eq!(raw["min_reader"], 2);
+        assert_eq!(raw["min_reader"], schema::FOLDERS_READER);
         assert_eq!(raw["thread"], session);
 
-        // Without a preset the new session keeps the caller's identity profile.
+        // Without a preset or recorded folders the new session keeps the
+        // caller's identity profile and reader 1.
         let mut plain = source.clone();
         let object = plain.as_object_mut().unwrap();
         object.remove("preset");
         object.insert("identity_profile".into(), json!("general"));
+        object.remove("folders");
         let event =
             context_start_genesis(&plain, "ws", session, "2026-10-15T00:00:00.000Z", &origin)
                 .expect("genesis");

@@ -1083,6 +1083,7 @@ impl ProductionEndpointHost {
         let config = profile::ConfigSnapshot {
             format: 1,
             revisions: profile::RevisionVector {
+                environments: None,
                 workspace: 0,
                 providers: providers.revision,
                 settings: settings.revision,
@@ -1090,6 +1091,8 @@ impl ProductionEndpointHost {
                 session_settings: None,
             },
             workspace: profile::ResolvedWorkspace {
+                environment: None,
+                folders: None,
                 format: 1,
                 revision: 0,
                 id: String::new(),

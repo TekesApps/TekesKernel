@@ -132,6 +132,8 @@ fn config(path: &std::path::Path, allowed_tools: Vec<String>) -> ConfigSnapshot 
     ConfigSnapshot {
         format: 1,
         workspace: ResolvedWorkspace {
+            environment: None,
+            folders: None,
             format: 1,
             revision: 1,
             id: "ws".to_owned(),
@@ -154,6 +156,7 @@ fn config(path: &std::path::Path, allowed_tools: Vec<String>) -> ConfigSnapshot 
         settings: SettingsConfig::default(),
         session_settings: None,
         revisions: RevisionVector {
+            environments: None,
             workspace: 1,
             providers: 0,
             legacy_integrations: (),

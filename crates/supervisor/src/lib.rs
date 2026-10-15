@@ -231,12 +231,24 @@ fn launch_profiled_worker_inner(
         .parent()
         .ok_or(LaunchError::LedgerWithoutFolder)?;
     let assets = store::AssetStore::new(folder.join("assets"))?;
-    let profile = LaunchProfile::resolve_and_publish_for_binding(
+    // The launch resolves in the ledger's own genesis scope (environment,
+    // binding, folders); a spec that names another workspace or binding is a
+    // caller bug and fails closed.
+    let scope = profile::SessionScope::for_ledger(&spec.ledger)?;
+    if scope.workspace_id() != spec.workspace_id
+        || scope.folder_binding() != spec.folder_binding.as_deref()
+    {
+        return Err(profile::ProfileError::InvalidReference {
+            path: spec.ledger.clone(),
+            reason: "launch spec does not match the ledger genesis scope".to_owned(),
+        }
+        .into());
+    }
+    let profile = LaunchProfile::resolve_and_publish_for_scope(
         repository,
-        &spec.workspace_id,
+        &scope,
         &spec.user_agent_dir,
         &assets,
-        spec.folder_binding.as_deref(),
     )?;
     let bindings = match (bindings, binding_resolver) {
         (Some(bindings), None) => bindings,

@@ -2257,7 +2257,8 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   `sha256:` over the RFC 8785 bytes of the preset without `digest`; the colon
   keeps it apart from asset names (`sha256-<hex>`), which ledger rewrites
   resolve. MCP definition digests use the same `sha256:` form. Such a genesis
-  carries no `identity_profile` and sets `min_reader` 2 (spec event §Genesis).
+  carries no `identity_profile` and sets `min_reader` 2 (spec event §Genesis;
+  a genesis from `session.create` also records `folders` and so sets 3).
   Delegated children copy it verbatim. `session.fork` copies the source's
   opening (identity profile or preset) unless the request carries `preset`,
   which is resolved under the source session's workspace exactly as at

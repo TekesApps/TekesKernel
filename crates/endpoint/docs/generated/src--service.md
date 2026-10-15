@@ -451,7 +451,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_config_snapshot` | `validate_session_id` | [435](../../src/service.rs#L435) | [endpoint::types::validate_session_id](../../src/types.rs#L130) |
 | `session_config_snapshot` | `profile::SessionScope::for_session_folder` | [436](../../src/service.rs#L436) | [profile::scope::SessionScope::for_session_folder](../../../profile/src/scope.rs#L46) |
 | `session_config_snapshot` | `self.active_folder` | [436](../../src/service.rs#L436) | [endpoint::service::NativeEndpoint::active_folder](../../src/service.rs#L1059) |
-| `session_config_snapshot` | `profile::ConfigRepository::open` | [437](../../src/service.rs#L437) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
+| `session_config_snapshot` | `profile::ConfigRepository::open` | [437](../../src/service.rs#L437) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L786) |
 | `session_config_snapshot` | `self.store.root` | [437](../../src/service.rs#L437) | receiver-type-required |
 | `session_config_snapshot` | `Ok` | [438](../../src/service.rs#L438) | external-constructor-callback-or-unresolved |
 | `session_config_snapshot` | `scope.config` | [438](../../src/service.rs#L438) | receiver-type-required |
@@ -507,7 +507,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `hydrate_historical_submissions` | `assets.read_verified(&format!("sha256-{digest}")).ok` | [536](../../src/service.rs#L536) | receiver-type-required |
 | `hydrate_historical_submissions` | `assets.read_verified` | [536](../../src/service.rs#L536) | receiver-type-required |
 | `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode(&bytes).ok` | [537](../../src/service.rs#L537) | receiver-type-required |
-| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode` | [537](../../src/service.rs#L537) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L309) |
+| `hydrate_historical_submissions` | `profile::ConfigSnapshot::decode` | [537](../../src/service.rs#L537) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L391) |
 | `hydrate_historical_submissions` | `Self::submission_metadata(&config, digest).ok` | [538](../../src/service.rs#L538) | receiver-type-required |
 | `hydrate_historical_submissions` | `Self::submission_metadata` | [538](../../src/service.rs#L538) | [endpoint::service::NativeEndpoint::submission_metadata](../../src/service.rs#L450) |
 | `hydrate_historical_submissions` | `seqs.iter().filter_map` | [540](../../src/service.rs#L540) | receiver-type-required |
