@@ -196,6 +196,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `card_updated_ms` | `service::card_updated_ms` | `pub` |
 | `genesis_cwd` | `service::genesis_cwd` | `pub` |
 | `genesis_preset_summary` | `service::genesis_preset_summary` | `pub` |
+| `inventory_folder_binding` | `service::inventory_folder_binding` | `pub` |
 | `last_record_updated_ms` | `service::last_record_updated_ms` | `pub` |
 | `permission_mode_of` | `service::permission_mode_of` | `pub` |
 | `StitchDecision` | `stitch::StitchDecision` | `pub` |

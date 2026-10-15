@@ -331,6 +331,7 @@ impl Catalog {
         };
         if new_events.iter().any(|event| {
             event.string_field("title").is_some()
+                || (event.kind() == &schema::EventKind::Meta && event.has_field("scope_change"))
                 || matches!(
                     event.kind(),
                     schema::EventKind::State

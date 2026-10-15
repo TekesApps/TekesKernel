@@ -592,10 +592,10 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
             .expect("session ledger");
     let genesis: Value = serde_json::from_str(ledger.lines().next().unwrap()).expect("genesis");
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], schema::FOLDERS_READER);
+    assert_eq!(genesis["min_reader"], schema::SESSION_SCOPE_READER);
     assert!(genesis["folders"].is_array());
     assert!(
-        schema::validate_ledger(ledger.as_bytes(), schema::FOLDERS_READER - 1)
+        schema::validate_ledger(ledger.as_bytes(), schema::SESSION_SCOPE_READER - 1)
             .expect("older reader can inspect the session")
             .read_only,
         "a preset must not lower the recorded folders' reader gate"
@@ -692,11 +692,18 @@ fn secondary_folder_session_binding_survives_create_and_path_move() {
 
     let moved = projects.path().join("project-secondary-moved");
     std::fs::rename(&second, &moved).expect("move selected folder");
-    workspace.revision = 3;
-    workspace.folders[1].path = moved.display().to_string();
-    repository
-        .publish_workspace(2, &workspace)
-        .expect("publish moved binding");
+    // Runtime paths now belong to the Folder catalog. Editing the legacy
+    // template directly cannot move an existing session's logical folder.
+    let moved_response = block_on_ready(
+        assembly.dispatch(request(
+            "rpc-move-secondary-folder",
+            "workspace.relocate",
+            &serde_json::json!({"workspaceId":workspace_id,"previousPath":second,"path":moved})
+                .to_string(),
+        )),
+    )
+    .expect("relocate selected folder");
+    assert!(moved_response.result.ok, "{moved_response:?}");
     let snapshot = NativeEndpoint::open(root.path())
         .expect("native endpoint")
         .session_config_snapshot(SESSION)
@@ -1679,7 +1686,7 @@ fn fork_can_replace_the_preset_of_its_destination() {
     let replaced = value(&replaced)["sessionId"].as_str().unwrap().to_owned();
     let genesis = genesis_of(&replaced);
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], schema::FOLDERS_READER);
+    assert_eq!(genesis["min_reader"], schema::SESSION_SCOPE_READER);
     assert_eq!(genesis["folders"], genesis_of(SESSION)["folders"]);
     let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("fork preset");
     assert_eq!(preset.layers[0].id(), "reviewer");
@@ -1695,7 +1702,7 @@ fn fork_can_replace_the_preset_of_its_destination() {
     )
     .expect("forked ledger");
     assert!(
-        schema::validate_ledger(&copied, schema::FOLDERS_READER - 1)
+        schema::validate_ledger(&copied, schema::SESSION_SCOPE_READER - 1)
             .expect("older reader can inspect the fork")
             .read_only,
         "replacing a preset must not lower the inherited folders' reader gate"

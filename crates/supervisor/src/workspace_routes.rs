@@ -240,11 +240,32 @@ impl ProductionEndpointRoutes for WorkspaceRoutes {
             ));
         }
         let workspace_id = payload["workspaceId"].as_str().unwrap();
-        let workspace = PathBuf::from(
-            self.management
-                .workspace_path(workspace_id)
-                .map_err(|e| failure("workspace-missing", e.to_string()))?,
-        );
+        let workspace = if let Some(session) = payload.get("sessionId").and_then(Value::as_str) {
+            let scope = profile::SessionScope::locate(&self.root, session)
+                .map_err(|error| failure("workspace-missing", error.to_string()))?;
+            if scope.workspace_id() != workspace_id {
+                return Err(failure(
+                    "workspace-missing",
+                    "Session compatibility address differs",
+                ));
+            }
+            let repository = profile::ConfigRepository::open(&self.root)
+                .map_err(|error| failure("workspace-missing", error.to_string()))?;
+            let config = scope
+                .config(&repository)
+                .map_err(|error| failure("workspace-missing", error.to_string()))?;
+            PathBuf::from(
+                config
+                    .execution_cwd()
+                    .ok_or_else(|| failure("workspace-missing", "Session has no folder"))?,
+            )
+        } else {
+            PathBuf::from(
+                self.management
+                    .workspace_path(workspace_id)
+                    .map_err(|error| failure("workspace-missing", error.to_string()))?,
+            )
+        };
         if name == "turnChanges" {
             let session = payload["sessionId"].as_str().unwrap();
             // The session's own genesis line names its workspace: no inventory scan.

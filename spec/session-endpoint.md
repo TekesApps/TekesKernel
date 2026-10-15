@@ -1501,6 +1501,12 @@ Retries reuse that timestamp. An invalid config keeps readiness false (or the
 previous valid runtime snapshot active after readiness) and never derives a
 time from mtime.
 
+For 0.8 session launches, workspace is a compatibility creation adapter.
+See [session authority](config.md#session-authority-and-workspace-compatibility-08)
+and [session Folder edits](client-extensions.md#session-folder-administration).
+Workspace/binding names below describe the legacy protocol; a session-owned
+seed and logical Folder refs determine new sessions' runtime scope.
+
 This endpoint metadata sidecar is not the workspace configuration authority.
 The latter is `workspaces/<workspace-id>/workspace.json` under the data root
 and owns the ordered `{id,path}` folder bindings. A session-create intent and

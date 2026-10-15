@@ -18,6 +18,9 @@ use crate::endpoint_host::{ProductionEndpointRoutes, ProductionRouteFailure};
 use crate::mcp_runtime::{MAX_REPORTED_TOOL_REFUSALS, McpRefusedTool, refused_tool_json};
 use crate::process_host::{PolicyCandidateCause, PolicyCandidateError, ProductionProcessHost};
 
+mod session_folders;
+pub use session_folders::SESSION_FOLDER_METHODS;
+
 pub const ENVIRONMENT_METHODS: [(&str, MethodClass); 2] = [
     ("environments.list", MethodClass::ReadOnly),
     ("environments.save", MethodClass::Mutation),
@@ -68,6 +71,11 @@ impl ClientAdminRoutes {
     #[must_use]
     pub fn routes(self: &Arc<Self>) -> Vec<Arc<dyn ProductionEndpointRoutes>> {
         vec![
+            Arc::new(AdminCapabilityRoutes::new(
+                "sessionFolders.v1",
+                &SESSION_FOLDER_METHODS,
+                Arc::clone(self),
+            )),
             Arc::new(AdminCapabilityRoutes::new(
                 "folders.v1",
                 &FOLDER_METHODS,
@@ -362,9 +370,68 @@ impl ClientAdminRoutes {
         self.recover_pending_intents()?;
         let hash = management_request_hash(request)?;
         let management = self.management()?;
-        let workspace = management
-            .relocation_workspace(&request.rpc_id, &hash, &input.previous_path)
-            .map_err(map_folder_management)?;
+        let catalog = profile::FolderCatalog::new(&self.root);
+        let logical = catalog
+            .relocation(&request.rpc_id, &hash, &input.previous_path)
+            .map_err(map_catalog_relocation)?;
+        if logical.as_ref().is_some_and(|(_, done)| *done) {
+            mark_catalog_handoff(request)?;
+            return to_ijson(&json!({"relocated":true}));
+        }
+        let _folder_quiescence = logical
+            .as_ref()
+            .map(|(id, _)| {
+                NamedLock::try_exclusive(crate::process_host::workspace_quiescence_lock_path(
+                    &self.root,
+                    &format!("folder:{id}"),
+                ))
+            })
+            .transpose()
+            .map_err(|error| match error {
+                store::StoreError::Busy => failure(
+                    "workspace-busy",
+                    "Folder has a running session",
+                    json!({"path":input.previous_path}),
+                ),
+                other => internal_store(other),
+            })?;
+        let workspace =
+            match management.relocation_workspace(&request.rpc_id, &hash, &input.previous_path) {
+                Ok(workspace) => workspace,
+                Err(endpoint::ManagementError::InvalidPath(_)) if logical.is_some() => {
+                    let canonical = Path::new(&input.path).canonicalize().map_err(internal_io)?;
+                    if !canonical.is_dir()
+                        || canonical.parent().is_none()
+                        || tools::protected_root_containing(
+                            &tools::kernel_protected_roots(&self.root),
+                            &canonical,
+                        )
+                        .is_some()
+                    {
+                        return Err(failure(
+                            "workspace-invalid-path",
+                            "Workspace path is invalid",
+                            json!({"path":input.path}),
+                        ));
+                    }
+                    catalog
+                        .relocate(
+                            &request.rpc_id,
+                            &hash,
+                            &logical.expect("checked").0,
+                            &input.previous_path,
+                            &canonical.to_string_lossy(),
+                        )
+                        .map_err(map_catalog_relocation)?;
+                    mark_catalog_handoff(request)?;
+                    crate::endpoint_host::SessionDeliveryAuthority::workspace_metadata_changed(
+                        self.process_host.as_ref(),
+                        "",
+                    );
+                    return to_ijson(&json!({"relocated":true}));
+                }
+                Err(error) => return Err(map_folder_management(error)),
+            };
         let _quiescence = NamedLock::try_exclusive(
             crate::process_host::workspace_quiescence_lock_path(&self.root, &workspace),
         )
@@ -578,6 +645,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
             .chain(WORKSPACE_FOLDER_METHODS)
             .chain(ENVIRONMENT_METHODS)
             .chain(FOLDER_METHODS)
+            .chain(SESSION_FOLDER_METHODS)
             .map(|(name, _)| name.to_owned())
             .collect()
     }
@@ -588,6 +656,7 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
             .chain(WORKSPACE_FOLDER_METHODS)
             .chain(ENVIRONMENT_METHODS)
             .chain(FOLDER_METHODS)
+            .chain(SESSION_FOLDER_METHODS)
             .find_map(|(name, class)| (name == method).then_some(class))
     }
 
@@ -597,6 +666,12 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         payload: &Value,
     ) -> Result<(), ProductionRouteFailure> {
         match operation {
+            "session.listFolders" => {
+                parse::<session_folders::SessionFoldersGet>(payload).map(|_| ())
+            }
+            "session.addFolder" | "session.removeFolder" => {
+                parse::<session_folders::SessionFolderChange>(payload).map(|_| ())
+            }
             "folders.list" => parse::<EnvironmentsListRequest>(payload).map(|_| ()),
             "folders.relocate" => parse::<FolderRelocateRequest>(payload).map(|_| ()),
             "environments.list" => parse::<EnvironmentsListRequest>(payload).map(|_| ()),
@@ -674,9 +749,16 @@ impl ProductionEndpointRoutes for ClientAdminRoutes {
         &self,
         request: &EndpointHostCall,
         payload: &Value,
-        _principal: &str,
+        principal: &str,
     ) -> Result<IJsonValue, ProductionRouteFailure> {
         match request.operation.as_str() {
+            "session.listFolders" => self.session_folders(parse(payload)?),
+            "session.addFolder" => {
+                self.change_session_folder(request, parse(payload)?, true, principal)
+            }
+            "session.removeFolder" => {
+                self.change_session_folder(request, parse(payload)?, false, principal)
+            }
             "folders.list" => {
                 let _: EnvironmentsListRequest = parse(payload)?;
                 self.folder_inventory()
@@ -1272,6 +1354,33 @@ fn mark_management_handoff(request: &EndpointHostCall) -> Result<(), ProductionR
             delivery: "management".to_owned(),
             durable_identity: Some(RpcDurableIdentity {
                 kind: "management-operation".to_owned(),
+                id: request.rpc_id.clone(),
+                seq: None,
+            }),
+        })
+        .map_err(|error| internal(error.to_string()))
+}
+
+fn map_catalog_relocation(error: profile::ProfileError) -> ProductionRouteFailure {
+    if let profile::ProfileError::InvalidReference { reason, .. } = &error
+        && reason == "folder relocation idempotency conflict"
+    {
+        return failure(
+            "idempotency-conflict",
+            "RPC id was reused with different parameters",
+            json!({}),
+        );
+    }
+    internal_profile(error)
+}
+
+fn mark_catalog_handoff(request: &EndpointHostCall) -> Result<(), ProductionRouteFailure> {
+    request
+        .handoff
+        .mark_handed_off(DurableHandoffProof {
+            delivery: request.rpc_id.clone(),
+            durable_identity: Some(RpcDurableIdentity {
+                kind: "folder-relocation".to_owned(),
                 id: request.rpc_id.clone(),
                 seq: None,
             }),

@@ -200,7 +200,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_profiled_worker_inner` | `spec         .ledger         .parent` | [230](../../src/lib.rs#L230) | receiver-type-required |
 | `launch_profiled_worker_inner` | `store::AssetStore::new` | [234](../../src/lib.rs#L234) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
 | `launch_profiled_worker_inner` | `folder.join` | [234](../../src/lib.rs#L234) | receiver-type-required |
-| `launch_profiled_worker_inner` | `profile::SessionScope::for_ledger` | [238](../../src/lib.rs#L238) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L52) |
+| `launch_profiled_worker_inner` | `profile::SessionScope::for_ledger` | [238](../../src/lib.rs#L238) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L54) |
 | `launch_profiled_worker_inner` | `scope.workspace_id` | [239](../../src/lib.rs#L239) | receiver-type-required |
 | `launch_profiled_worker_inner` | `scope.folder_binding` | [240](../../src/lib.rs#L240) | receiver-type-required |
 | `launch_profiled_worker_inner` | `spec.folder_binding.as_deref` | [240](../../src/lib.rs#L240) | receiver-type-required |

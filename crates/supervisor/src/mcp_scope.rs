@@ -41,13 +41,40 @@ pub fn folder(
     let root = storage_root(registry)?;
     let authority = FolderAuthorityStore::new(root);
     if let Some(id) = &server.folder_id {
+        if let Some(folder) = profile::FolderCatalog::new(root)
+            .folders()
+            .map_err(refused)?
+            .into_iter()
+            .find(|folder| &folder.id == id)
+        {
+            return authority
+                .status(Path::new(&folder.path))
+                .map(Some)
+                .map_err(refused);
+        }
         return authority.record(id).map(Some).map_err(refused);
     }
     let repository = profile::ConfigRepository::open(root).map_err(refused)?;
-    let workspace = repository
-        .workspace(&server.reference.workspace_id)
-        .map_err(refused)?;
-    let paths = workspace.folder_paths();
+    let workspace = repository.workspace(&server.reference.workspace_id);
+    let paths = match &workspace {
+        Ok(workspace) => workspace
+            .folder_paths()
+            .into_iter()
+            .map(str::to_owned)
+            .collect::<Vec<_>>(),
+        Err(_) => profile::FolderCatalog::new(root)
+            .folders()
+            .map_err(refused)?
+            .into_iter()
+            .filter(|folder| {
+                folder
+                    .aliases
+                    .iter()
+                    .any(|(workspace, _)| workspace == &server.reference.workspace_id)
+            })
+            .map(|folder| folder.path)
+            .collect(),
+    };
     if paths.len() != 1 {
         return Err(refused("legacy project MCP requires an explicit folder_id"));
     }

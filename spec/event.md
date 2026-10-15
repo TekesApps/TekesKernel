@@ -116,10 +116,24 @@ workspace folder. A genesis that records `folders` sets `min_reader` 3: a
 reader that predates them would widen the session to every workspace folder,
 so it opens the ledger read-only instead.
 
+New 0.8 sessions also carry `session_scope`, containing a frozen compatibility
+creation `seed`, a `folder_refs` binding-to-logical-id map and
+`compatibility_instructions`. They require `min_reader:4`; reader 3 cannot
+resolve detached session authority safely. `workspace` and local binding ids
+remain compatibility addresses. Logical folder paths come from the Folder
+catalog, not from a workspace document.
+
+A host-authored, file-scoped `meta` may carry `scope_change`, the complete next
+`session_scope`, `folders`, `folder_binding`, `cwd` and `environment`, plus
+`min_reader:4`, an origin tuple and a request digest. The latest such event in
+the valid prefix determines the next launch. Its seq is the folder revision
+(initial revision is 1). Fork and context-start inherit this effective scope
+at the selected prefix, rather than reverting to the original genesis.
+
 A session derived from another, a fork or a session started by the
 `context` tool, copies the inherited fields verbatim
 (`schema::GENESIS_INHERITED_FIELDS`): `workspace`, `folder_binding`, `cwd`,
-`environment`, `folders`, `resume`, `config`, `instruction`,
+`environment`, `folders`, `session_scope`, `resume`, `config`, `instruction`,
 `identity_profile` and `preset` (an explicit fork preset replaces the
 source's). Every other field is set by the operation that creates the
 ledger (`schema::GENESIS_OPERATION_FIELDS`).
@@ -132,7 +146,7 @@ lifecycle (R15-10).
 A genesis carries `identity_profile` or `preset`, never both, and one that
 carries `preset` sets `min_reader` 2: a reader 1 opens the ledger read-only
 instead of rendering the session with the wrong prompt. This build reads
-reader version 3 (`schema::READER_VERSION`); ledgers with `min_reader` 1 or 2
+reader version 4 (`schema::READER_VERSION`); ledgers with `min_reader` 1 or 2
 are unchanged.
 
 **Seed snapshot asset format (R16 closure).** `seed.snapshot` is UTF-8 JSONL

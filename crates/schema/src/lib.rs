@@ -17,7 +17,10 @@ pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 /// prompt. Version 3 makes genesis `folders` narrow the session's folders: a
 /// genesis that records them sets `min_reader` 3, so an older reader does not
 /// widen the session to every workspace folder (spec event §Genesis).
-pub const READER_VERSION: u64 = 3;
+pub const READER_VERSION: u64 = 4;
+
+/// Session-owned creation seeds and subsequent per-session folder edits.
+pub const SESSION_SCOPE_READER: u64 = 4;
 
 /// The reader a genesis that records `folders` requires.
 pub const FOLDERS_READER: u64 = 3;
@@ -27,6 +30,7 @@ pub const FOLDERS_READER: u64 = 3;
 /// configuration and preset. Fork additionally carries `format` and remaps
 /// `seed` and `parent`; every other field is set by the operation itself.
 pub const GENESIS_INHERITED_FIELDS: &[&str] = &[
+    "session_scope",
     "workspace",
     "folder_binding",
     "cwd",
@@ -38,6 +42,41 @@ pub const GENESIS_INHERITED_FIELDS: &[&str] = &[
     "identity_profile",
     "preset",
 ];
+
+/// Fold only session scope edits over the original creation record. This is
+/// shared by launch, inventory, fork and context-start; no workspace lookup.
+pub fn effective_session_genesis(
+    events: &[Event],
+) -> Result<Option<serde_json::Value>, SchemaError> {
+    let Some(first) = events.first() else {
+        return Ok(None);
+    };
+    let mut value = serde_json::to_value(first.raw())?;
+    for event in events.iter().skip(1) {
+        if event.kind() != &EventKind::Meta {
+            continue;
+        }
+        let raw = serde_json::to_value(event.raw())?;
+        if let Some(change) = raw
+            .get("scope_change")
+            .and_then(serde_json::Value::as_object)
+        {
+            for field in [
+                "session_scope",
+                "folders",
+                "folder_binding",
+                "cwd",
+                "environment",
+            ] {
+                if let Some(next) = change.get(field) {
+                    value[field] = next.clone();
+                }
+            }
+            value["min_reader"] = serde_json::json!(SESSION_SCOPE_READER);
+        }
+    }
+    Ok(Some(value))
+}
 
 /// Genesis fields the creating operation always sets for the new ledger.
 pub const GENESIS_OPERATION_FIELDS: &[&str] = &[

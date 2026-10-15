@@ -1,13 +1,13 @@
 //! The one place a session's configuration scope is resolved from durable
-//! state: the workspace and stable folder binding frozen in its genesis, and
-//! the session folder that holds its settings.
+//! state: the session-owned seed and folder edits in its ledger, with a
+//! legacy workspace adapter for records lacking their original config asset.
 
 use std::path::{Path, PathBuf};
 
 use crate::{ConfigRepository, ConfigSnapshot, InstructionResolver, ProfileError, ScopeSelection};
 
 /// Where a session's configuration comes from. Built only from the session's
-/// own genesis, never from a client-supplied workspace or root.
+/// own ledger, never from a client-supplied workspace or root.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionScope {
     session_folder: PathBuf,
@@ -15,10 +15,12 @@ pub struct SessionScope {
     folder_binding: Option<String>,
     environment: Option<String>,
     folders: Option<Vec<String>>,
+    session_config: Option<crate::SessionConfig>,
+    legacy_seed: Option<crate::WorkspaceConfig>,
 }
 
 /// One of a session's folders: its stable id and its current path as the
-/// workspace records it. The id is what the session records; the path
+/// Folder catalog records it. The id is what the session records; the path
 /// follows relocation.
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FolderRecord {
@@ -42,7 +44,7 @@ impl SessionScope {
     }
 
     /// The scope recorded in the genesis of the session at `session_folder`.
-    /// Only the genesis line is read, never the whole ledger.
+    /// Launch reads the validated prefix to apply session-owned folder edits.
     pub fn for_session_folder(session_folder: impl Into<PathBuf>) -> Result<Self, ProfileError> {
         Self::for_ledger(session_folder.into().join("main.jsonl"))
     }
@@ -58,26 +60,52 @@ impl SessionScope {
                 reason: "session ledger has no folder".to_owned(),
             })?
             .to_path_buf();
-        let genesis =
-            store::read_genesis(&ledger)?.ok_or_else(|| ProfileError::InvalidReference {
+        let bytes = std::fs::read(&ledger)?;
+        let scan = store::scan_valid_prefix(&bytes, schema::READER_VERSION);
+        let projection = scan
+            .projection
+            .ok_or_else(|| ProfileError::InvalidReference {
                 path: ledger.clone(),
                 reason: "session ledger has no valid genesis".to_owned(),
             })?;
-        let workspace_id = genesis
-            .string_field("workspace")
-            .ok_or_else(|| ProfileError::InvalidReference {
-                path: ledger.clone(),
-                reason: "session genesis has no workspace".to_owned(),
-            })?
-            .to_owned();
-        let folder_binding = genesis.string_field("folder_binding").map(str::to_owned);
-        let environment = genesis.string_field("environment").map(str::to_owned);
-        let raw = serde_json::to_value(genesis.raw()).map_err(|error| {
-            ProfileError::InvalidReference {
+        if projection.read_only {
+            return Err(ProfileError::InvalidReference {
+                path: ledger,
+                reason: "session requires a newer reader".to_owned(),
+            });
+        }
+        let raw = schema::effective_session_genesis(&projection.events)
+            .map_err(|error| ProfileError::InvalidReference {
                 path: ledger.clone(),
                 reason: error.to_string(),
-            }
-        })?;
+            })?
+            .expect("validated genesis");
+        Self::from_genesis_value(session_folder, &raw)
+    }
+
+    /// Resolves a scope already folded under the caller's ledger lock.
+    pub fn from_genesis_value(
+        session_folder: impl Into<PathBuf>,
+        raw: &serde_json::Value,
+    ) -> Result<Self, ProfileError> {
+        let session_folder = session_folder.into();
+        let ledger = session_folder.join("main.jsonl");
+        let workspace_id = raw
+            .get("workspace")
+            .and_then(serde_json::Value::as_str)
+            .ok_or_else(|| ProfileError::InvalidReference {
+                path: ledger.clone(),
+                reason: "session genesis has no compatibility address".to_owned(),
+            })?
+            .to_owned();
+        let folder_binding = raw
+            .get("folder_binding")
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_owned);
+        let environment = raw
+            .get("environment")
+            .and_then(serde_json::Value::as_str)
+            .map(str::to_owned);
         let folders = raw
             .get("folders")
             .and_then(serde_json::Value::as_array)
@@ -88,12 +116,38 @@ impl SessionScope {
                     .map(str::to_owned)
                     .collect()
             });
+        let session_config: Option<crate::SessionConfig> = raw
+            .get("session_scope")
+            .cloned()
+            .map(serde_json::from_value)
+            .transpose()
+            .map_err(|error| ProfileError::InvalidReference {
+                path: ledger.clone(),
+                reason: format!("invalid session scope: {error}"),
+            })?;
+        // Read an old session's checksum-verified creation asset lazily. Do
+        // not rewrite its ledger or enumerate other sessions at startup.
+        let legacy_seed = if session_config.is_none() {
+            legacy_seed(&session_folder, &workspace_id, raw)?
+        } else {
+            None
+        };
+        if let Some(scope) = &session_config
+            && scope.seed.id != workspace_id
+        {
+            return Err(ProfileError::InvalidReference {
+                path: ledger,
+                reason: "session seed compatibility address differs".to_owned(),
+            });
+        }
         Ok(Self {
             session_folder,
             workspace_id,
             folder_binding,
             environment,
             folders,
+            session_config,
+            legacy_seed,
         })
     }
 
@@ -110,6 +164,8 @@ impl SessionScope {
             folder_binding,
             environment: None,
             folders: None,
+            session_config: None,
+            legacy_seed: None,
         }
     }
 
@@ -144,7 +200,13 @@ impl SessionScope {
         &self,
         repository: &ConfigRepository,
     ) -> Result<Vec<FolderRecord>, ProfileError> {
-        let workspace = repository.workspace(&self.workspace_id)?;
+        let workspace = match &self.session_config {
+            Some(scope) => crate::FolderCatalog::new(repository.root()).resolve(scope)?,
+            None => match &self.legacy_seed {
+                Some(seed) => crate::FolderCatalog::new(repository.root()).resolve_legacy(seed)?,
+                None => repository.workspace(&self.workspace_id)?,
+            },
+        };
         let ids = self
             .folders
             .clone()
@@ -169,6 +231,24 @@ impl SessionScope {
     /// including its session-local settings. A session created before stable
     /// folder bindings resolves only while its workspace has one folder.
     pub fn config(&self, repository: &ConfigRepository) -> Result<ConfigSnapshot, ProfileError> {
+        if let Some(scope) = &self.session_config {
+            let seed = crate::FolderCatalog::new(repository.root()).resolve(scope)?;
+            return repository.resolve_session_seed(
+                &seed,
+                Some(&self.session_folder),
+                self.folder_binding.as_deref(),
+                self.selection(),
+            );
+        }
+        if let Some(seed) = &self.legacy_seed {
+            let seed = crate::FolderCatalog::new(repository.root()).resolve_legacy(seed)?;
+            return repository.resolve_session_seed(
+                &seed,
+                Some(&self.session_folder),
+                self.folder_binding.as_deref(),
+                self.selection(),
+            );
+        }
         repository.resolve_scoped(
             &self.workspace_id,
             Some(&self.session_folder),
@@ -184,12 +264,41 @@ impl SessionScope {
         &self,
         repository: &ConfigRepository,
     ) -> Result<ConfigSnapshot, ProfileError> {
+        if let Some(scope) = &self.session_config {
+            let seed = crate::FolderCatalog::new(repository.root()).resolve(scope)?;
+            return repository.resolve_session_seed(
+                &seed,
+                None,
+                self.folder_binding.as_deref(),
+                self.selection(),
+            );
+        }
+        if let Some(seed) = &self.legacy_seed {
+            let seed = crate::FolderCatalog::new(repository.root()).resolve_legacy(seed)?;
+            return repository.resolve_session_seed(
+                &seed,
+                None,
+                self.folder_binding.as_deref(),
+                self.selection(),
+            );
+        }
         repository.resolve_scoped(
             &self.workspace_id,
             None,
             self.folder_binding.as_deref(),
             self.selection(),
         )
+    }
+
+    #[must_use]
+    pub fn session_config(&self) -> Option<&crate::SessionConfig> {
+        self.session_config.as_ref()
+    }
+
+    /// Whether the ledger owns its configuration rather than a live workspace.
+    #[must_use]
+    pub fn is_detached(&self) -> bool {
+        self.session_config.is_some() || self.legacy_seed.is_some()
     }
 
     /// The environment and recorded folder ids this scope resolves in.
@@ -210,8 +319,82 @@ impl SessionScope {
         user_agent_dir: &Path,
         config: &ConfigSnapshot,
     ) -> Result<InstructionResolver, ProfileError> {
+        if self
+            .session_config
+            .as_ref()
+            .is_some_and(|scope| !scope.compatibility_instructions)
+        {
+            return Ok(InstructionResolver::new_scoped(
+                user_agent_dir,
+                repository
+                    .root()
+                    .join("session-instructions")
+                    .join(self.session_folder.file_name().expect("session folder")),
+                config.workspace.cwd.iter().map(Path::new),
+            )
+            .with_folder_authority(repository.root()));
+        }
         workspace_instructions(repository, &self.workspace_id, user_agent_dir, config)
     }
+}
+
+fn legacy_seed(
+    folder: &Path,
+    workspace_id: &str,
+    raw: &serde_json::Value,
+) -> Result<Option<crate::WorkspaceConfig>, ProfileError> {
+    let Some(expected) = raw
+        .get("config")
+        .and_then(|config| config.get("digest"))
+        .and_then(serde_json::Value::as_str)
+        .filter(|digest| {
+            digest.len() == 64
+                && digest
+                    .bytes()
+                    .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
+        })
+    else {
+        return Ok(None);
+    };
+    let path = folder.join("assets").join(format!("sha256-{expected}"));
+    let bytes = match std::fs::read(&path) {
+        Ok(bytes) => bytes,
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => return Ok(None),
+        Err(error) => return Err(error.into()),
+    };
+    let actual = crate::digest(&bytes);
+    if actual != expected {
+        return Err(ProfileError::DigestMismatch {
+            expected: expected.to_owned(),
+            actual,
+        });
+    }
+    let snapshot: ConfigSnapshot = crate::parse_canonical(&path, &bytes)?;
+    let workspace = snapshot.workspace;
+    let ids = workspace.folders.unwrap_or_else(|| {
+        (1..=workspace.cwd.len())
+            .map(|index| format!("folder-{index:04}"))
+            .collect()
+    });
+    if ids.len() != workspace.cwd.len() || workspace.id != workspace_id {
+        return Err(ProfileError::InvalidReference {
+            path,
+            reason: "legacy config asset scope differs from genesis".to_owned(),
+        });
+    }
+    Ok(Some(crate::WorkspaceConfig {
+        format: 1,
+        revision: workspace.revision,
+        id: workspace.id,
+        name: workspace.name,
+        cwd: Vec::new(),
+        folders: ids
+            .into_iter()
+            .zip(workspace.cwd)
+            .map(|(id, path)| crate::WorkspaceFolder { id, path })
+            .collect(),
+        policy: Some(workspace.policy),
+    }))
 }
 
 /// The instruction resolver for `workspace_id` with `config`: the one source
@@ -438,5 +621,142 @@ mod tests {
         );
         let missing = SessionScope::for_session_folder(&folder).unwrap();
         assert!(missing.folders(&repository).is_err());
+    }
+    #[test]
+    fn phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace() {
+        let root = tempfile::tempdir().unwrap();
+        let project = root.path().join("project");
+        std::fs::create_dir(&project).unwrap();
+        let path = project
+            .canonicalize()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let repository = ConfigRepository::open(root.path()).unwrap();
+        let seed = WorkspaceConfig {
+            format: 1,
+            revision: 1,
+            id: "workspace-1".into(),
+            name: "Legacy".into(),
+            cwd: Vec::new(),
+            folders: vec![WorkspaceFolder {
+                id: "folder-0001".into(),
+                path: path.clone(),
+            }],
+            policy: Some(crate::WorkspacePolicy {
+                writable_roots: vec![path.clone()],
+                network: true,
+                ..Default::default()
+            }),
+        };
+        repository.publish_workspace(0, &seed).unwrap();
+        let snapshot = repository
+            .resolve_scoped(
+                "workspace-1",
+                None,
+                Some("folder-0001"),
+                ScopeSelection {
+                    environment: "local",
+                    folders: Some(&["folder-0001".into()]),
+                },
+            )
+            .unwrap();
+        let bytes = snapshot.canonical_bytes().unwrap();
+        let digest = crate::digest(&bytes);
+        let session = root.path().join("threads/legacy");
+        write_genesis_with(
+            &session,
+            Some("folder-0001"),
+            serde_json::json!({"config":{"digest":digest},"environment":"local","folders":["folder-0001"]}),
+        );
+        std::fs::create_dir(session.join("assets")).unwrap();
+        let asset = session.join("assets").join(format!("sha256-{digest}"));
+        std::fs::write(&asset, &bytes).unwrap();
+        let ledger_before = std::fs::read(session.join("main.jsonl")).unwrap();
+        let catalog = crate::FolderCatalog::new(root.path());
+        let native = catalog.capture(&seed).unwrap();
+        std::fs::remove_dir_all(root.path().join("workspaces/workspace-1")).unwrap();
+        let legacy = SessionScope::for_session_folder(&session).unwrap();
+        assert!(legacy.is_detached());
+        assert_eq!(
+            legacy.config(&repository).unwrap().workspace.policy,
+            snapshot.workspace.policy
+        );
+        let moved = root.path().join("moved");
+        std::fs::rename(&project, &moved).unwrap();
+        let moved = moved.canonicalize().unwrap().to_string_lossy().into_owned();
+        catalog
+            .relocate_alias("workspace-1", "folder-0001", &path, &moved)
+            .unwrap();
+        let restarted = SessionScope::for_session_folder(&session).unwrap();
+        assert_eq!(
+            restarted.config(&repository).unwrap().execution_cwd(),
+            Some(moved.as_str())
+        );
+        assert_eq!(catalog.resolve(&native).unwrap().folders[0].path, moved);
+        assert_eq!(
+            std::fs::read(session.join("main.jsonl")).unwrap(),
+            ledger_before
+        );
+        std::fs::write(asset, b"tampered\n").unwrap();
+        assert!(matches!(
+            SessionScope::for_session_folder(&session),
+            Err(ProfileError::DigestMismatch { .. })
+        ));
+    }
+
+    #[test]
+    fn phase7_environment_is_live_while_workspace_policy_is_a_creation_seed() {
+        let root = tempfile::tempdir().unwrap();
+        let project = root.path().join("project");
+        std::fs::create_dir(&project).unwrap();
+        let path = project
+            .canonicalize()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let repository = ConfigRepository::open(root.path()).unwrap();
+        let seed = WorkspaceConfig {
+            format: 1,
+            revision: 1,
+            id: "workspace-1".into(),
+            name: "Seed".into(),
+            cwd: vec![path.clone()],
+            folders: Vec::new(),
+            policy: Some(crate::WorkspacePolicy {
+                writable_roots: vec![path],
+                network: true,
+                ..Default::default()
+            }),
+        };
+        let scope = crate::FolderCatalog::new(root.path())
+            .capture(&seed)
+            .unwrap();
+        let session = root.path().join("threads/native");
+        write_genesis_with(
+            &session,
+            Some("folder-0001"),
+            serde_json::json!({"min_reader":4,"session_scope":scope,"environment":"local","folders":["folder-0001"]}),
+        );
+        for (revision, network) in [(1, false), (2, true)] {
+            let mut environment = crate::Environment::local();
+            environment.network = network;
+            repository
+                .publish_environments(
+                    revision - 1,
+                    &crate::EnvironmentsConfig {
+                        format: 1,
+                        revision,
+                        environments: vec![environment],
+                    },
+                )
+                .unwrap();
+            let config = SessionScope::for_session_folder(&session)
+                .unwrap()
+                .config(&repository)
+                .unwrap();
+            assert_eq!(config.workspace.policy.network, network);
+            assert_eq!(config.revisions.environments, Some(revision));
+        }
     }
 }

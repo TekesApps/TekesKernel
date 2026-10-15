@@ -718,12 +718,14 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         request: &ToolControl,
         resolved: &crate::tool_control::ResolvedToolControlLine,
     ) -> Result<IJsonValue, SupervisorOperationError> {
-        let genesis =
-            resolved.projection.events.first().ok_or_else(|| {
-                SupervisorOperationError::Corruption("caller has no genesis".into())
-            })?;
-        let source = serde_json::to_value(genesis.raw())
-            .map_err(|error| SupervisorOperationError::Protocol(error.to_string()))?;
+        resolved
+            .projection
+            .events
+            .first()
+            .ok_or_else(|| SupervisorOperationError::Corruption("caller has no genesis".into()))?;
+        let source = schema::effective_session_genesis(&resolved.projection.events)
+            .map_err(map_schema)?
+            .expect("genesis checked above");
         let session = deterministic_uuid(&request.request_id);
         let timestamp = paired_tool_timestamp(&resolved.projection, request)?;
         let origin = OriginTuple {
@@ -1401,7 +1403,9 @@ fn context_start_genesis(
             event[*field] = value.clone();
         }
     }
-    if source.get("folders").is_some() {
+    if source.get("session_scope").is_some() {
+        event["min_reader"] = json!(schema::SESSION_SCOPE_READER);
+    } else if source.get("folders").is_some() {
         event["min_reader"] = json!(schema::FOLDERS_READER);
     } else if source.get("preset").is_some() {
         event["min_reader"] = json!(2);

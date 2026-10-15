@@ -1404,8 +1404,19 @@ fn project_file(
             );
         }
     }
+    let scope_events = events
+        .iter()
+        .filter(|event| !dropped.contains(&event.seq()))
+        .cloned()
+        .collect::<Vec<_>>();
+    let effective_genesis = schema::effective_session_genesis(&scope_events)?
+        .ok_or_else(|| StoreError::Corruption("source genesis missing".to_owned()))?;
+    let effective_genesis = Event::from_value(schema::IJsonValue::parse(
+        &serde_json::to_vec(&effective_genesis)
+            .map_err(|error| StoreError::Corruption(error.to_string()))?,
+    )?)?;
     let genesis = build_genesis(
-        &events[0],
+        &effective_genesis,
         &GenesisContext {
             source_file,
             mapped,

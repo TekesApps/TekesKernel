@@ -58,8 +58,9 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/boot_trace.rs](../../src/boot_trace.rs) | 10 | 25 | [Symbols and calls](src--boot_trace.md) |
 | [crates/supervisor/src/bootstrap.rs](../../src/bootstrap.rs) | 25 | 144 | [Symbols and calls](src--bootstrap.md) |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 160 | [Symbols and calls](src--builtin.md) |
-| [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 166 | [Symbols and calls](src--catalog.md) |
-| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 100 | 1071 | [Symbols and calls](src--client_admin.md) |
+| [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
+| [crates/supervisor/src/client_admin/session_folders.rs](../../src/client_admin/session_folders.rs) | 12 | 368 | [Symbols and calls](src--client_admin--session_folders.md) |
+| [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 102 | 1129 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 140 | 1747 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 352 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
@@ -75,9 +76,9 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/mcp_admission.rs](../../src/mcp_admission.rs) | 40 | 97 | [Symbols and calls](src--mcp_admission.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 209 | 2390 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/mcp_scope.rs](../../src/mcp_scope.rs) | 9 | 129 | [Symbols and calls](src--mcp_scope.md) |
+| [crates/supervisor/src/mcp_scope.rs](../../src/mcp_scope.rs) | 9 | 149 | [Symbols and calls](src--mcp_scope.md) |
 | [crates/supervisor/src/phase5_tests.rs](../../src/phase5_tests.rs) | 9 | 282 | [Symbols and calls](src--phase5_tests.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 376 | 6633 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 376 | 6658 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1866 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 227 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 866 | [Symbols and calls](src--production_tool_control.md) |
@@ -86,19 +87,19 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |
 | [crates/supervisor/src/thread_card.rs](../../src/thread_card.rs) | 46 | 270 | [Symbols and calls](src--thread_card.md) |
 | [crates/supervisor/src/tool_control.rs](../../src/tool_control.rs) | 45 | 304 | [Symbols and calls](src--tool_control.md) |
-| [crates/supervisor/src/workspace_routes.rs](../../src/workspace_routes.rs) | 13 | 201 | [Symbols and calls](src--workspace_routes.md) |
+| [crates/supervisor/src/workspace_routes.rs](../../src/workspace_routes.rs) | 13 | 222 | [Symbols and calls](src--workspace_routes.md) |
 | [crates/supervisor/tests/folder_authorization.rs](../../tests/folder_authorization.rs) | 1 | 37 | `inventory.json` |
 | [crates/supervisor/tests/live_oauth.rs](../../tests/live_oauth.rs) | 3 | 106 | `inventory.json` |
 | [crates/supervisor/tests/ready_reads_no_thread.rs](../../tests/ready_reads_no_thread.rs) | 6 | 139 | `inventory.json` |
 | [crates/supervisor/tests/s4_lazy_boot_streams.rs](../../tests/s4_lazy_boot_streams.rs) | 65 | 905 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 9 | 60 | `inventory.json` |
 | [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 41 | 411 | `inventory.json` |
-| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 310 | `inventory.json` |
+| [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 311 | `inventory.json` |
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 120 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
 | [crates/supervisor/tests/slice9_endpoint_carrier.rs](../../tests/slice9_endpoint_carrier.rs) | 40 | 712 | `inventory.json` |
-| [crates/supervisor/tests/slice9_endpoint_host.rs](../../tests/slice9_endpoint_host.rs) | 50 | 1074 | `inventory.json` |
+| [crates/supervisor/tests/slice9_endpoint_host.rs](../../tests/slice9_endpoint_host.rs) | 50 | 1075 | `inventory.json` |
 | [crates/supervisor/tests/workspace_routes.rs](../../tests/workspace_routes.rs) | 3 | 51 | `inventory.json` |
 
 ## Cross-file direct calls
@@ -113,78 +114,80 @@ flowchart LR
   m3["builtin.rs"]
   m4["catalog.rs"]
   m5["client_admin.rs"]
-  m6["client_extensions.rs"]
-  m7["context_usage.rs"]
-  m8["continuation_journal.rs"]
-  m9["dynamic_bindings.rs"]
-  m10["endpoint_carrier.rs"]
-  m11["endpoint_host.rs"]
-  m12["file_leases.rs"]
-  m13["folder_trust.rs"]
-  m14["host_runtime.rs"]
-  m15["lib.rs"]
-  m16["main.rs"]
-  m17["mcp_admission.rs"]
-  m18["mcp_continuation.rs"]
-  m19["mcp_runtime.rs"]
-  m20["mcp_scope.rs"]
-  m21["process_host.rs"]
-  m22["production_tool_control.rs"]
-  m23["request_index.rs"]
-  m24["resource_capability.rs"]
-  m25["thread_card.rs"]
-  m26["tool_control.rs"]
-  m27["workspace_routes.rs"]
-  m0 -->|"1"| m10
-  m0 -->|"2"| m11
-  m0 -->|"1"| m27
+  m6["client_admin/session_folders.rs"]
+  m7["client_extensions.rs"]
+  m8["context_usage.rs"]
+  m9["continuation_journal.rs"]
+  m10["dynamic_bindings.rs"]
+  m11["endpoint_carrier.rs"]
+  m12["endpoint_host.rs"]
+  m13["file_leases.rs"]
+  m14["folder_trust.rs"]
+  m15["host_runtime.rs"]
+  m16["lib.rs"]
+  m17["main.rs"]
+  m18["mcp_admission.rs"]
+  m19["mcp_continuation.rs"]
+  m20["mcp_runtime.rs"]
+  m21["mcp_scope.rs"]
+  m22["process_host.rs"]
+  m23["production_tool_control.rs"]
+  m24["request_index.rs"]
+  m25["resource_capability.rs"]
+  m26["thread_card.rs"]
+  m27["tool_control.rs"]
+  m28["workspace_routes.rs"]
+  m0 -->|"1"| m11
+  m0 -->|"2"| m12
+  m0 -->|"1"| m28
   m3 -->|"10"| m1
   m3 -->|"2"| m2
-  m3 -->|"1"| m10
-  m3 -->|"6"| m14
-  m3 -->|"1"| m21
+  m3 -->|"1"| m11
+  m3 -->|"6"| m15
+  m3 -->|"1"| m22
   m4 -->|"1"| m1
-  m5 -->|"1"| m11
-  m5 -->|"2"| m21
-  m6 -->|"1"| m11
-  m6 -->|"1"| m13
-  m6 -->|"1"| m19
-  m6 -->|"2"| m24
-  m10 -->|"4"| m7
-  m10 -->|"1"| m12
-  m10 -->|"5"| m23
-  m11 -->|"1"| m14
-  m11 -->|"1"| m21
-  m14 -->|"1"| m1
-  m14 -->|"1"| m5
-  m14 -->|"1"| m6
-  m14 -->|"3"| m11
-  m14 -->|"1"| m24
-  m14 -->|"1"| m27
-  m16 -->|"1"| m3
-  m16 -->|"1"| m13
-  m17 -->|"3"| m19
-  m17 -->|"4"| m20
-  m19 -->|"2"| m8
-  m19 -->|"1"| m11
-  m19 -->|"6"| m17
-  m19 -->|"2"| m18
-  m19 -->|"6"| m20
-  m20 -->|"1"| m19
-  m21 -->|"4"| m1
-  m21 -->|"1"| m4
-  m21 -->|"3"| m9
-  m21 -->|"3"| m11
-  m21 -->|"176"| m14
-  m21 -->|"1"| m15
-  m21 -->|"1"| m19
-  m21 -->|"6"| m22
-  m21 -->|"5"| m25
-  m21 -->|"1"| m26
-  m22 -->|"1"| m26
-  m24 -->|"13"| m11
-  m25 -->|"1"| m1
-  m25 -->|"1"| m10
-  m25 -->|"1"| m14
-  m27 -->|"1"| m11
+  m5 -->|"1"| m12
+  m5 -->|"3"| m22
+  m6 -->|"1"| m22
+  m7 -->|"1"| m12
+  m7 -->|"1"| m14
+  m7 -->|"1"| m20
+  m7 -->|"2"| m25
+  m11 -->|"4"| m8
+  m11 -->|"1"| m13
+  m11 -->|"5"| m24
+  m12 -->|"1"| m15
+  m12 -->|"1"| m22
+  m15 -->|"1"| m1
+  m15 -->|"1"| m5
+  m15 -->|"1"| m7
+  m15 -->|"3"| m12
+  m15 -->|"1"| m25
+  m15 -->|"1"| m28
+  m17 -->|"1"| m3
+  m17 -->|"1"| m14
+  m18 -->|"3"| m20
+  m18 -->|"4"| m21
+  m20 -->|"2"| m9
+  m20 -->|"1"| m12
+  m20 -->|"6"| m18
+  m20 -->|"2"| m19
+  m20 -->|"6"| m21
+  m21 -->|"1"| m20
+  m22 -->|"4"| m1
+  m22 -->|"1"| m4
+  m22 -->|"3"| m10
+  m22 -->|"3"| m12
+  m22 -->|"177"| m15
+  m22 -->|"1"| m16
+  m22 -->|"1"| m20
+  m22 -->|"6"| m23
+  m22 -->|"5"| m26
+  m22 -->|"1"| m27
+  m23 -->|"1"| m27
+  m25 -->|"13"| m12
+  m26 -->|"1"| m1
+  m26 -->|"1"| m11
+  m26 -->|"1"| m15
+  m28 -->|"1"| m12
 ```

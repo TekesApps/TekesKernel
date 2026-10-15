@@ -223,7 +223,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_input` | `i64::try_from` | [124](../../src/thread_card.rs#L124) | external-constructor-callback-or-unresolved |
 | `main_line` | `bytes.truncate` | [135](../../src/thread_card.rs#L135) | receiver-type-required |
 | `main_line` | `endpoint::card_summary(projection).ok` | [136](../../src/thread_card.rs#L136) | receiver-type-required |
-| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L254) |
+| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L274) |
 | `main_line` | `Some` | [137](../../src/thread_card.rs#L137) | external-constructor-callback-or-unresolved |
 | `main_line` | `"main.jsonl".to_owned` | [139](../../src/thread_card.rs#L139) | receiver-type-required |
 | `main_line` | `session.to_owned` | [142](../../src/thread_card.rs#L142) | receiver-type-required |
@@ -232,7 +232,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare` | `main_line` | [163](../../src/thread_card.rs#L163) | [tekes-supervisor::thread_card::main_line](../../src/thread_card.rs#L129) |
 | `prepare` | `summary.cwd.is_none` | [167](../../src/thread_card.rs#L167) | receiver-type-required |
 | `prepare` | `Some` | [168](../../src/thread_card.rs#L168), [170](../../src/thread_card.rs#L170) | external-constructor-callback-or-unresolved |
-| `prepare` | `endpoint::genesis_cwd` | [168](../../src/thread_card.rs#L168) | [endpoint::service::genesis_cwd](../../../endpoint/src/service.rs#L122) |
+| `prepare` | `endpoint::genesis_cwd` | [168](../../src/thread_card.rs#L168) | [endpoint::service::genesis_cwd](../../../endpoint/src/service.rs#L142) |
 | `prepare` | `projection.events.first` | [168](../../src/thread_card.rs#L168) | receiver-type-required |
 | `prepare` | `session.to_owned` | [171](../../src/thread_card.rs#L171) | receiver-type-required |
 | `prepare` | `crate::host_runtime::system_timestamp().ok` | [172](../../src/thread_card.rs#L172) | receiver-type-required |

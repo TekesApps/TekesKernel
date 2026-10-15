@@ -104,10 +104,30 @@ impl SessionInventoryItem {
     ) -> String {
         self.folder_binding
             .as_ref()
-            .and_then(|binding| paths.get(&(self.workspace_id.clone(), binding.clone())))
+            .and_then(|binding| {
+                paths
+                    .get(&(String::new(), binding.clone()))
+                    .or_else(|| paths.get(&(self.workspace_id.clone(), binding.clone())))
+            })
             .cloned()
             .unwrap_or_else(|| self.cwd.clone())
     }
+}
+
+/// Inventory follows logical identity, while the ledger retains an old binding
+/// as its compatibility address. This prevents alias reuse moving old sessions.
+#[must_use]
+pub fn inventory_folder_binding(scope: &Value) -> Option<String> {
+    let binding = scope.get("folder_binding")?.as_str()?;
+    Some(
+        scope
+            .get("session_scope")
+            .and_then(|scope| scope.get("folder_refs"))
+            .and_then(|refs| refs.get(binding))
+            .and_then(Value::as_str)
+            .unwrap_or(binding)
+            .to_owned(),
+    )
 }
 
 /// File name of the durable per-session permission mode record (owned by the
@@ -285,13 +305,15 @@ pub fn card_summary(
                 .map(str::to_owned)
         }),
     };
+    let scope =
+        schema::effective_session_genesis(&projection.events)?.expect("genesis checked above");
     Ok(store::card::CardSummary {
         workspace: genesis
             .string_field("workspace")
             .ok_or(NativeEndpointError::InventoryWorkspace)?
             .to_owned(),
-        folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
-        cwd: genesis.string_field("cwd").map(str::to_owned),
+        folder_binding: inventory_folder_binding(&scope),
+        cwd: scope.get("cwd").and_then(Value::as_str).map(str::to_owned),
         created: genesis.string_field("ts").unwrap_or_default().to_owned(),
         updated_ms,
         title,

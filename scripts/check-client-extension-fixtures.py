@@ -30,6 +30,7 @@ EXPECTED_CAPABILITIES = {
     "goals.v1",
     "subagents.v1",
     "sessionFiles.v1",
+    "sessionFolders.v1",
     "resources.v1",
     "initialPresets.v1",
     "sessionPresets.v1",

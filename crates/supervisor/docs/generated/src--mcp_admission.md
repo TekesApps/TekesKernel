@@ -149,8 +149,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `admit` | `"MCP server removed".into` | [21](../../src/mcp_admission.rs#L21) | receiver-type-required |
 | `admit` | `Err` | [23](../../src/mcp_admission.rs#L23), [37](../../src/mcp_admission.rs#L37), [46](../../src/mcp_admission.rs#L46), [56](../../src/mcp_admission.rs#L56), [73](../../src/mcp_admission.rs#L73) | external-constructor-callback-or-unresolved |
 | `admit` | `"MCP configuration changed".into` | [23](../../src/mcp_admission.rs#L23) | receiver-type-required |
-| `admit` | `crate::mcp_scope::validate_user` | [26](../../src/mcp_admission.rs#L26) | [tekes-supervisor::mcp_scope::validate_user](../../src/mcp_scope.rs#L176) |
-| `admit` | `crate::mcp_scope::validate_project` | [29](../../src/mcp_admission.rs#L29) | [tekes-supervisor::mcp_scope::validate_project](../../src/mcp_scope.rs#L196) |
+| `admit` | `crate::mcp_scope::validate_user` | [26](../../src/mcp_admission.rs#L26) | [tekes-supervisor::mcp_scope::validate_user](../../src/mcp_scope.rs#L203) |
+| `admit` | `crate::mcp_scope::validate_project` | [29](../../src/mcp_admission.rs#L29) | [tekes-supervisor::mcp_scope::validate_project](../../src/mcp_scope.rs#L223) |
 | `admit` | `crate::mcp_runtime::credential_fields` | [31](../../src/mcp_admission.rs#L31) | [tekes-supervisor::mcp_runtime::credential_fields](../../src/mcp_runtime.rs#L2143) |
 | `admit` | `registry                 .credential_reference_state(&server.reference, &field, &id)                 .map_err` | [32](../../src/mcp_admission.rs#L32) | receiver-type-required |
 | `admit` | `registry                 .credential_reference_state` | [32](../../src/mcp_admission.rs#L32) | receiver-type-required |

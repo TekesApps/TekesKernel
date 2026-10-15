@@ -48,42 +48,46 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–10: 16 direct edges</summary>
+<details><summary>Functions 1–10: 18 direct edges</summary>
 
 ```mermaid
 flowchart TD
   n0["endpoint::management::ManagementStore::open_light"]
-  n1["schema::ijson::IJsonValue::parse"]
-  n2["schema::ijson::IJsonValue::parse_str"]
-  n3["store::tail::read_genesis"]
-  n4["tekes-supervisor::endpoint_host::ProductionRouteFailure::new"]
-  n5["tekes-supervisor::workspace_routes::WorkspaceRoutes::extension_failure_is_exact"]
-  n6["tekes-supervisor::workspace_routes::WorkspaceRoutes::execute"]
-  n7["tekes-supervisor::workspace_routes::failure"]
-  n8["tekes-supervisor::workspace_routes::wire"]
-  n9["tekes-supervisor::workspace_routes::method"]
-  n10["tekes-supervisor::workspace_routes::WorkspaceRoutes::open"]
-  n11["tekes-supervisor::workspace_routes::WorkspaceRoutes::authority"]
-  n12["tekes-supervisor::workspace_routes::WorkspaceRoutes::capabilities"]
-  n13["tekes-supervisor::workspace_routes::WorkspaceRoutes::extension_method_class"]
-  n14["tekes-supervisor::workspace_routes::WorkspaceRoutes::validate_extension_payload"]
-  n15["workspace-service::process::invoke_with_authority"]
-  n5 --> n9
-  n6 --> n3
-  n6 --> n7
-  n6 --> n8
-  n6 --> n9
-  n6 --> n15
-  n7 --> n2
-  n7 --> n4
+  n1["profile::config::ConfigRepository::open"]
+  n2["profile::scope::SessionScope::locate"]
+  n3["schema::ijson::IJsonValue::parse"]
+  n4["schema::ijson::IJsonValue::parse_str"]
+  n5["store::tail::read_genesis"]
+  n6["tekes-supervisor::endpoint_host::ProductionRouteFailure::new"]
+  n7["tekes-supervisor::workspace_routes::WorkspaceRoutes::extension_failure_is_exact"]
+  n8["tekes-supervisor::workspace_routes::WorkspaceRoutes::execute"]
+  n9["tekes-supervisor::workspace_routes::failure"]
+  n10["tekes-supervisor::workspace_routes::wire"]
+  n11["tekes-supervisor::workspace_routes::method"]
+  n12["tekes-supervisor::workspace_routes::WorkspaceRoutes::open"]
+  n13["tekes-supervisor::workspace_routes::WorkspaceRoutes::authority"]
+  n14["tekes-supervisor::workspace_routes::WorkspaceRoutes::capabilities"]
+  n15["tekes-supervisor::workspace_routes::WorkspaceRoutes::extension_method_class"]
+  n16["tekes-supervisor::workspace_routes::WorkspaceRoutes::validate_extension_payload"]
+  n17["workspace-service::process::invoke_with_authority"]
+  n7 --> n11
   n8 --> n1
-  n8 --> n7
-  n10 --> n0
-  n10 --> n7
-  n11 --> n7
+  n8 --> n2
+  n8 --> n5
+  n8 --> n9
+  n8 --> n10
+  n8 --> n11
+  n8 --> n17
+  n9 --> n4
+  n9 --> n6
+  n10 --> n3
+  n10 --> n9
+  n12 --> n0
+  n12 --> n9
   n13 --> n9
-  n14 --> n7
-  n14 --> n9
+  n15 --> n11
+  n16 --> n9
+  n16 --> n11
 ```
 
 </details>
@@ -178,7 +182,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `operations.iter().any` | [210](../../src/workspace_routes.rs#L210) | receiver-type-required |
 | `execute` | `operations.iter` | [210](../../src/workspace_routes.rs#L210) | receiver-type-required |
 | `execute` | `v.as_str` | [210](../../src/workspace_routes.rs#L210), [224](../../src/workspace_routes.rs#L224) | receiver-type-required |
-| `execute` | `Some` | [210](../../src/workspace_routes.rs#L210), [260](../../src/workspace_routes.rs#L260), [290](../../src/workspace_routes.rs#L290) | external-constructor-callback-or-unresolved |
+| `execute` | `Some` | [210](../../src/workspace_routes.rs#L210), [281](../../src/workspace_routes.rs#L281), [311](../../src/workspace_routes.rs#L311) | external-constructor-callback-or-unresolved |
 | `execute` | `READS                 .iter()                 .copied()                 .filter(&#124;m&#124; *m != "capabilities")                 .collect::<Vec<_>>` | [211](../../src/workspace_routes.rs#L211) | receiver-type-required |
 | `execute` | `READS                 .iter()                 .copied()                 .filter` | [211](../../src/workspace_routes.rs#L211) | receiver-type-required |
 | `execute` | `READS                 .iter()                 .copied` | [211](../../src/workspace_routes.rs#L211) | receiver-type-required |
@@ -191,56 +195,68 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `s.starts_with` | [224](../../src/workspace_routes.rs#L224) | receiver-type-required |
 | `execute` | `authority["allowFileWrites"].as_bool().unwrap_or` | [228](../../src/workspace_routes.rs#L228) | receiver-type-required |
 | `execute` | `authority["allowFileWrites"].as_bool` | [228](../../src/workspace_routes.rs#L228) | receiver-type-required |
-| `execute` | `wire` | [232](../../src/workspace_routes.rs#L232), [307](../../src/workspace_routes.rs#L307) | [tekes-supervisor::workspace_routes::wire](../../src/workspace_routes.rs#L27) |
+| `execute` | `wire` | [232](../../src/workspace_routes.rs#L232), [328](../../src/workspace_routes.rs#L328) | [tekes-supervisor::workspace_routes::wire](../../src/workspace_routes.rs#L27) |
 | `execute` | `WRITES.contains` | [236](../../src/workspace_routes.rs#L236) | receiver-type-required |
-| `execute` | `Err` | [237](../../src/workspace_routes.rs#L237), [262](../../src/workspace_routes.rs#L262), [300](../../src/workspace_routes.rs#L300) | external-constructor-callback-or-unresolved |
-| `execute` | `failure` | [237](../../src/workspace_routes.rs#L237), [246](../../src/workspace_routes.rs#L246), [262](../../src/workspace_routes.rs#L262), [269](../../src/workspace_routes.rs#L269), [272](../../src/workspace_routes.rs#L272), [274](../../src/workspace_routes.rs#L274), [277](../../src/workspace_routes.rs#L277), [285](../../src/workspace_routes.rs#L285), [295](../../src/workspace_routes.rs#L295), [298](../../src/workspace_routes.rs#L298), [300](../../src/workspace_routes.rs#L300) | [tekes-supervisor::workspace_routes::failure](../../src/workspace_routes.rs#L24) |
+| `execute` | `Err` | [237](../../src/workspace_routes.rs#L237), [247](../../src/workspace_routes.rs#L247), [283](../../src/workspace_routes.rs#L283), [321](../../src/workspace_routes.rs#L321) | external-constructor-callback-or-unresolved |
+| `execute` | `failure` | [237](../../src/workspace_routes.rs#L237), [245](../../src/workspace_routes.rs#L245), [247](../../src/workspace_routes.rs#L247), [253](../../src/workspace_routes.rs#L253), [256](../../src/workspace_routes.rs#L256), [260](../../src/workspace_routes.rs#L260), [266](../../src/workspace_routes.rs#L266), [283](../../src/workspace_routes.rs#L283), [290](../../src/workspace_routes.rs#L290), [293](../../src/workspace_routes.rs#L293), [295](../../src/workspace_routes.rs#L295), [298](../../src/workspace_routes.rs#L298), [306](../../src/workspace_routes.rs#L306), [316](../../src/workspace_routes.rs#L316), [319](../../src/workspace_routes.rs#L319), [321](../../src/workspace_routes.rs#L321) | [tekes-supervisor::workspace_routes::failure](../../src/workspace_routes.rs#L24) |
 | `execute` | `payload["workspaceId"].as_str().unwrap` | [242](../../src/workspace_routes.rs#L242) | receiver-type-required |
 | `execute` | `payload["workspaceId"].as_str` | [242](../../src/workspace_routes.rs#L242) | receiver-type-required |
-| `execute` | `PathBuf::from` | [243](../../src/workspace_routes.rs#L243) | external-constructor-callback-or-unresolved |
-| `execute` | `self.management                 .workspace_path(workspace_id)                 .map_err` | [244](../../src/workspace_routes.rs#L244) | receiver-type-required |
-| `execute` | `self.management                 .workspace_path` | [244](../../src/workspace_routes.rs#L244) | receiver-type-required |
-| `execute` | `e.to_string` | [246](../../src/workspace_routes.rs#L246), [269](../../src/workspace_routes.rs#L269), [272](../../src/workspace_routes.rs#L272), [274](../../src/workspace_routes.rs#L274), [277](../../src/workspace_routes.rs#L277), [285](../../src/workspace_routes.rs#L285) | receiver-type-required |
-| `execute` | `payload["sessionId"].as_str().unwrap` | [249](../../src/workspace_routes.rs#L249) | receiver-type-required |
-| `execute` | `payload["sessionId"].as_str` | [249](../../src/workspace_routes.rs#L249) | receiver-type-required |
-| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find(&#124;folder&#124; folder.is_dir())                 .and_then(&#124;folder&#124; {                     store::read_genesis(folder.join("main.jsonl"))                         .ok()                         .flatten()                 })                 .is_some_and` | [251](../../src/workspace_routes.rs#L251) | receiver-type-required |
-| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find(&#124;folder&#124; folder.is_dir())                 .and_then` | [251](../../src/workspace_routes.rs#L251) | receiver-type-required |
-| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find` | [251](../../src/workspace_routes.rs#L251) | receiver-type-required |
-| `execute` | `["threads", "archive"]                 .into_iter()                 .map` | [251](../../src/workspace_routes.rs#L251) | receiver-type-required |
-| `execute` | `["threads", "archive"]                 .into_iter` | [251](../../src/workspace_routes.rs#L251) | receiver-type-required |
-| `execute` | `self.root.join(area).join` | [253](../../src/workspace_routes.rs#L253) | receiver-type-required |
-| `execute` | `self.root.join` | [253](../../src/workspace_routes.rs#L253) | receiver-type-required |
-| `execute` | `folder.is_dir` | [254](../../src/workspace_routes.rs#L254) | receiver-type-required |
-| `execute` | `store::read_genesis(folder.join("main.jsonl"))                         .ok()                         .flatten` | [256](../../src/workspace_routes.rs#L256) | receiver-type-required |
-| `execute` | `store::read_genesis(folder.join("main.jsonl"))                         .ok` | [256](../../src/workspace_routes.rs#L256) | receiver-type-required |
-| `execute` | `store::read_genesis` | [256](../../src/workspace_routes.rs#L256) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `execute` | `folder.join` | [256](../../src/workspace_routes.rs#L256) | receiver-type-required |
-| `execute` | `genesis.string_field` | [260](../../src/workspace_routes.rs#L260) | receiver-type-required |
-| `execute` | `tempfile::NamedTempFile::new().map_err` | [269](../../src/workspace_routes.rs#L269) | receiver-type-required |
-| `execute` | `tempfile::NamedTempFile::new` | [269](../../src/workspace_routes.rs#L269) | external-constructor-callback-or-unresolved |
-| `execute` | `authority_file             .write_all(                 &serde_json::to_vec(&authority).map_err(&#124;e&#124; failure("internal", e.to_string()))?,             )             .map_err` | [270](../../src/workspace_routes.rs#L270) | receiver-type-required |
-| `execute` | `authority_file             .write_all` | [270](../../src/workspace_routes.rs#L270) | receiver-type-required |
-| `execute` | `serde_json::to_vec(&authority).map_err` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
-| `execute` | `serde_json::to_vec` | [272](../../src/workspace_routes.rs#L272) | external-constructor-callback-or-unresolved |
-| `execute` | `authority_file             .flush()             .map_err` | [275](../../src/workspace_routes.rs#L275) | receiver-type-required |
-| `execute` | `authority_file             .flush` | [275](../../src/workspace_routes.rs#L275) | receiver-type-required |
-| `execute` | `self.executable.clone` | [278](../../src/workspace_routes.rs#L278) | receiver-type-required |
-| `execute` | `name.to_owned` | [279](../../src/workspace_routes.rs#L279) | receiver-type-required |
-| `execute` | `payload.clone` | [280](../../src/workspace_routes.rs#L280) | receiver-type-required |
-| `execute` | `std::thread::spawn(move &#124;&#124; {             let runtime = tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err(&#124;e&#124; failure("internal", e.to_string()))?;             runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err(&#124;e&#124; failure(e.code, e.message))         })         .join()         .map_err` | [281](../../src/workspace_routes.rs#L281) | receiver-type-required |
-| `execute` | `std::thread::spawn(move &#124;&#124; {             let runtime = tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err(&#124;e&#124; failure("internal", e.to_string()))?;             runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err(&#124;e&#124; failure(e.code, e.message))         })         .join` | [281](../../src/workspace_routes.rs#L281) | receiver-type-required |
-| `execute` | `std::thread::spawn` | [281](../../src/workspace_routes.rs#L281) | external-constructor-callback-or-unresolved |
-| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err` | [282](../../src/workspace_routes.rs#L282) | receiver-type-required |
-| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build` | [282](../../src/workspace_routes.rs#L282) | receiver-type-required |
-| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all` | [282](../../src/workspace_routes.rs#L282) | receiver-type-required |
-| `execute` | `tokio::runtime::Builder::new_current_thread` | [282](../../src/workspace_routes.rs#L282) | external-constructor-callback-or-unresolved |
-| `execute` | `runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err` | [286](../../src/workspace_routes.rs#L286) | receiver-type-required |
-| `execute` | `runtime                 .block_on` | [286](../../src/workspace_routes.rs#L286) | receiver-type-required |
-| `execute` | `workspace_service::process::invoke_with_authority` | [287](../../src/workspace_routes.rs#L287) | [workspace-service::process::invoke_with_authority](../../../workspace-service/src/process.rs#L36) |
-| `execute` | `authority_file.path` | [290](../../src/workspace_routes.rs#L290) | receiver-type-required |
-| `execute` | `std::time::Duration::from_secs` | [293](../../src/workspace_routes.rs#L293) | external-constructor-callback-or-unresolved |
-| `execute` | `response.get` | [299](../../src/workspace_routes.rs#L299) | receiver-type-required |
-| `execute` | `error["code"].as_str().unwrap_or` | [301](../../src/workspace_routes.rs#L301) | receiver-type-required |
-| `execute` | `error["code"].as_str` | [301](../../src/workspace_routes.rs#L301) | receiver-type-required |
-| `execute` | `error["message"]                     .as_str()                     .unwrap_or` | [302](../../src/workspace_routes.rs#L302) | receiver-type-required |
-| `execute` | `error["message"]                     .as_str` | [302](../../src/workspace_routes.rs#L302) | receiver-type-required |
+| `execute` | `payload.get("sessionId").and_then` | [243](../../src/workspace_routes.rs#L243) | receiver-type-required |
+| `execute` | `payload.get` | [243](../../src/workspace_routes.rs#L243) | receiver-type-required |
+| `execute` | `profile::SessionScope::locate(&self.root, session)                 .map_err` | [244](../../src/workspace_routes.rs#L244) | receiver-type-required |
+| `execute` | `profile::SessionScope::locate` | [244](../../src/workspace_routes.rs#L244) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L34) |
+| `execute` | `error.to_string` | [245](../../src/workspace_routes.rs#L245), [253](../../src/workspace_routes.rs#L253), [256](../../src/workspace_routes.rs#L256), [266](../../src/workspace_routes.rs#L266) | receiver-type-required |
+| `execute` | `scope.workspace_id` | [246](../../src/workspace_routes.rs#L246) | receiver-type-required |
+| `execute` | `profile::ConfigRepository::open(&self.root)                 .map_err` | [252](../../src/workspace_routes.rs#L252) | receiver-type-required |
+| `execute` | `profile::ConfigRepository::open` | [252](../../src/workspace_routes.rs#L252) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L814) |
+| `execute` | `scope                 .config(&repository)                 .map_err` | [254](../../src/workspace_routes.rs#L254) | receiver-type-required |
+| `execute` | `scope                 .config` | [254](../../src/workspace_routes.rs#L254) | receiver-type-required |
+| `execute` | `PathBuf::from` | [257](../../src/workspace_routes.rs#L257), [263](../../src/workspace_routes.rs#L263) | external-constructor-callback-or-unresolved |
+| `execute` | `config                     .execution_cwd()                     .ok_or_else` | [258](../../src/workspace_routes.rs#L258) | receiver-type-required |
+| `execute` | `config                     .execution_cwd` | [258](../../src/workspace_routes.rs#L258) | receiver-type-required |
+| `execute` | `self.management                     .workspace_path(workspace_id)                     .map_err` | [264](../../src/workspace_routes.rs#L264) | receiver-type-required |
+| `execute` | `self.management                     .workspace_path` | [264](../../src/workspace_routes.rs#L264) | receiver-type-required |
+| `execute` | `payload["sessionId"].as_str().unwrap` | [270](../../src/workspace_routes.rs#L270) | receiver-type-required |
+| `execute` | `payload["sessionId"].as_str` | [270](../../src/workspace_routes.rs#L270) | receiver-type-required |
+| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find(&#124;folder&#124; folder.is_dir())                 .and_then(&#124;folder&#124; {                     store::read_genesis(folder.join("main.jsonl"))                         .ok()                         .flatten()                 })                 .is_some_and` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
+| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find(&#124;folder&#124; folder.is_dir())                 .and_then` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
+| `execute` | `["threads", "archive"]                 .into_iter()                 .map(&#124;area&#124; self.root.join(area).join(session))                 .find` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
+| `execute` | `["threads", "archive"]                 .into_iter()                 .map` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
+| `execute` | `["threads", "archive"]                 .into_iter` | [272](../../src/workspace_routes.rs#L272) | receiver-type-required |
+| `execute` | `self.root.join(area).join` | [274](../../src/workspace_routes.rs#L274) | receiver-type-required |
+| `execute` | `self.root.join` | [274](../../src/workspace_routes.rs#L274) | receiver-type-required |
+| `execute` | `folder.is_dir` | [275](../../src/workspace_routes.rs#L275) | receiver-type-required |
+| `execute` | `store::read_genesis(folder.join("main.jsonl"))                         .ok()                         .flatten` | [277](../../src/workspace_routes.rs#L277) | receiver-type-required |
+| `execute` | `store::read_genesis(folder.join("main.jsonl"))                         .ok` | [277](../../src/workspace_routes.rs#L277) | receiver-type-required |
+| `execute` | `store::read_genesis` | [277](../../src/workspace_routes.rs#L277) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `execute` | `folder.join` | [277](../../src/workspace_routes.rs#L277) | receiver-type-required |
+| `execute` | `genesis.string_field` | [281](../../src/workspace_routes.rs#L281) | receiver-type-required |
+| `execute` | `tempfile::NamedTempFile::new().map_err` | [290](../../src/workspace_routes.rs#L290) | receiver-type-required |
+| `execute` | `tempfile::NamedTempFile::new` | [290](../../src/workspace_routes.rs#L290) | external-constructor-callback-or-unresolved |
+| `execute` | `e.to_string` | [290](../../src/workspace_routes.rs#L290), [293](../../src/workspace_routes.rs#L293), [295](../../src/workspace_routes.rs#L295), [298](../../src/workspace_routes.rs#L298), [306](../../src/workspace_routes.rs#L306) | receiver-type-required |
+| `execute` | `authority_file             .write_all(                 &serde_json::to_vec(&authority).map_err(&#124;e&#124; failure("internal", e.to_string()))?,             )             .map_err` | [291](../../src/workspace_routes.rs#L291) | receiver-type-required |
+| `execute` | `authority_file             .write_all` | [291](../../src/workspace_routes.rs#L291) | receiver-type-required |
+| `execute` | `serde_json::to_vec(&authority).map_err` | [293](../../src/workspace_routes.rs#L293) | receiver-type-required |
+| `execute` | `serde_json::to_vec` | [293](../../src/workspace_routes.rs#L293) | external-constructor-callback-or-unresolved |
+| `execute` | `authority_file             .flush()             .map_err` | [296](../../src/workspace_routes.rs#L296) | receiver-type-required |
+| `execute` | `authority_file             .flush` | [296](../../src/workspace_routes.rs#L296) | receiver-type-required |
+| `execute` | `self.executable.clone` | [299](../../src/workspace_routes.rs#L299) | receiver-type-required |
+| `execute` | `name.to_owned` | [300](../../src/workspace_routes.rs#L300) | receiver-type-required |
+| `execute` | `payload.clone` | [301](../../src/workspace_routes.rs#L301) | receiver-type-required |
+| `execute` | `std::thread::spawn(move &#124;&#124; {             let runtime = tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err(&#124;e&#124; failure("internal", e.to_string()))?;             runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err(&#124;e&#124; failure(e.code, e.message))         })         .join()         .map_err` | [302](../../src/workspace_routes.rs#L302) | receiver-type-required |
+| `execute` | `std::thread::spawn(move &#124;&#124; {             let runtime = tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err(&#124;e&#124; failure("internal", e.to_string()))?;             runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err(&#124;e&#124; failure(e.code, e.message))         })         .join` | [302](../../src/workspace_routes.rs#L302) | receiver-type-required |
+| `execute` | `std::thread::spawn` | [302](../../src/workspace_routes.rs#L302) | external-constructor-callback-or-unresolved |
+| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build()                 .map_err` | [303](../../src/workspace_routes.rs#L303) | receiver-type-required |
+| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all()                 .build` | [303](../../src/workspace_routes.rs#L303) | receiver-type-required |
+| `execute` | `tokio::runtime::Builder::new_current_thread()                 .enable_all` | [303](../../src/workspace_routes.rs#L303) | receiver-type-required |
+| `execute` | `tokio::runtime::Builder::new_current_thread` | [303](../../src/workspace_routes.rs#L303) | external-constructor-callback-or-unresolved |
+| `execute` | `runtime                 .block_on(workspace_service::process::invoke_with_authority(                     &executable,                     &workspace,                     Some(authority_file.path()),                     &name,                     payload,                     std::time::Duration::from_secs(if name == "gitPush" { 135 } else { 30 }),                 ))                 .map_err` | [307](../../src/workspace_routes.rs#L307) | receiver-type-required |
+| `execute` | `runtime                 .block_on` | [307](../../src/workspace_routes.rs#L307) | receiver-type-required |
+| `execute` | `workspace_service::process::invoke_with_authority` | [308](../../src/workspace_routes.rs#L308) | [workspace-service::process::invoke_with_authority](../../../workspace-service/src/process.rs#L36) |
+| `execute` | `authority_file.path` | [311](../../src/workspace_routes.rs#L311) | receiver-type-required |
+| `execute` | `std::time::Duration::from_secs` | [314](../../src/workspace_routes.rs#L314) | external-constructor-callback-or-unresolved |
+| `execute` | `response.get` | [320](../../src/workspace_routes.rs#L320) | receiver-type-required |
+| `execute` | `error["code"].as_str().unwrap_or` | [322](../../src/workspace_routes.rs#L322) | receiver-type-required |
+| `execute` | `error["code"].as_str` | [322](../../src/workspace_routes.rs#L322) | receiver-type-required |
+| `execute` | `error["message"]                     .as_str()                     .unwrap_or` | [323](../../src/workspace_routes.rs#L323) | receiver-type-required |
+| `execute` | `error["message"]                     .as_str` | [323](../../src/workspace_routes.rs#L323) | receiver-type-required |

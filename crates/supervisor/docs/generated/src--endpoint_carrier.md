@@ -1240,7 +1240,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_context_projection_shared` | `self.inner.root.join("threads").join` | [1395](../../src/endpoint_carrier.rs#L1395) | receiver-type-required |
 | `refresh_context_projection_shared` | `self.inner.root.join` | [1395](../../src/endpoint_carrier.rs#L1395) | receiver-type-required |
 | `refresh_context_projection_shared` | `self.refresh_context_projection_locked` | [1396](../../src/endpoint_carrier.rs#L1396) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::refresh_context_projection_locked](../../src/endpoint_carrier.rs#L1399) |
-| `refresh_context_projection_locked` | `endpoint::NativeEndpoint::open` | [1406](../../src/endpoint_carrier.rs#L1406) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L320) |
+| `refresh_context_projection_locked` | `endpoint::NativeEndpoint::open` | [1406](../../src/endpoint_carrier.rs#L1406) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L342) |
 | `refresh_context_projection_locked` | `endpoint.session_config_snapshot(session_id).ok` | [1407](../../src/endpoint_carrier.rs#L1407) | receiver-type-required |
 | `refresh_context_projection_locked` | `endpoint.session_config_snapshot` | [1407](../../src/endpoint_carrier.rs#L1407) | receiver-type-required |
 | `refresh_context_projection_locked` | `crate::context_usage::sample` | [1408](../../src/endpoint_carrier.rs#L1408) | [tekes-supervisor::context_usage::sample](../../src/context_usage.rs#L209) |
@@ -1278,7 +1278,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_items` | `self.session_authority` | [1461](../../src/endpoint_carrier.rs#L1461) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::session_authority](../../src/endpoint_carrier.rs#L867) |
 | `session_items` | `authority.inventory_items` | [1462](../../src/endpoint_carrier.rs#L1462) | receiver-type-required |
 | `session_items` | `items.map_err` | [1464](../../src/endpoint_carrier.rs#L1464) | receiver-type-required |
-| `session_items` | `endpoint::NativeEndpoint::open` | [1466](../../src/endpoint_carrier.rs#L1466) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L320) |
+| `session_items` | `endpoint::NativeEndpoint::open` | [1466](../../src/endpoint_carrier.rs#L1466) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L342) |
 | `session_items` | `Ok` | [1467](../../src/endpoint_carrier.rs#L1467) | external-constructor-callback-or-unresolved |
 | `session_items` | `endpoint             .list_sessions(&self.live_sessions())?             .into_iter()             .filter(&#124;session&#124; include_archived &#124;&#124; !session.archived)             .collect` | [1467](../../src/endpoint_carrier.rs#L1467) | receiver-type-required |
 | `session_items` | `endpoint             .list_sessions(&self.live_sessions())?             .into_iter()             .filter` | [1467](../../src/endpoint_carrier.rs#L1467) | receiver-type-required |
@@ -1439,7 +1439,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_mux_journal` | `endpoint::frozen_history_page` | [1886](../../src/endpoint_carrier.rs#L1886) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L714) |
 | `open_mux_journal` | `error.to_string` | [1887](../../src/endpoint_carrier.rs#L1887) | receiver-type-required |
 | `open_mux_journal` | `endpoint::NativeEndpoint::open(&self.inner.root)?             .hydrate_historical_submissions` | [1888](../../src/endpoint_carrier.rs#L1888) | receiver-type-required |
-| `open_mux_journal` | `endpoint::NativeEndpoint::open` | [1888](../../src/endpoint_carrier.rs#L1888) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L320) |
+| `open_mux_journal` | `endpoint::NativeEndpoint::open` | [1888](../../src/endpoint_carrier.rs#L1888) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L342) |
 | `open_mux_journal` | `self.snapshot_projections` | [1891](../../src/endpoint_carrier.rs#L1891) | [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::snapshot_projections](../../src/endpoint_carrier.rs#L1939) |
 | `open_mux_journal` | `mux.into_stream` | [1892](../../src/endpoint_carrier.rs#L1892) | receiver-type-required |
 | `open_mux_journal` | `VecDeque::from` | [1896](../../src/endpoint_carrier.rs#L1896) | external-constructor-callback-or-unresolved |
@@ -1519,7 +1519,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `mux_journal_page` | `endpoint::frozen_history_page` | [2101](../../src/endpoint_carrier.rs#L2101) | [endpoint::mux::frozen_history_page](../../../endpoint/src/mux.rs#L714) |
 | `mux_journal_page` | `error.to_string` | [2107](../../src/endpoint_carrier.rs#L2107) | receiver-type-required |
 | `mux_journal_page` | `endpoint::NativeEndpoint::open(&self.inner.root)?             .hydrate_historical_submissions` | [2108](../../src/endpoint_carrier.rs#L2108) | receiver-type-required |
-| `mux_journal_page` | `endpoint::NativeEndpoint::open` | [2108](../../src/endpoint_carrier.rs#L2108) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L320) |
+| `mux_journal_page` | `endpoint::NativeEndpoint::open` | [2108](../../src/endpoint_carrier.rs#L2108) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L342) |
 | `mux_journal_page` | `Ok` | [2110](../../src/endpoint_carrier.rs#L2110) | external-constructor-callback-or-unresolved |
 | `map_source` | `serde_json::from_slice` | [2156](../../src/endpoint_carrier.rs#L2156), [2219](../../src/endpoint_carrier.rs#L2219), [2304](../../src/endpoint_carrier.rs#L2304), [2346](../../src/endpoint_carrier.rs#L2346), [2368](../../src/endpoint_carrier.rs#L2368) | external-constructor-callback-or-unresolved |
 | `map_source` | `envelope.payload.canonical_bytes` | [2156](../../src/endpoint_carrier.rs#L2156), [2219](../../src/endpoint_carrier.rs#L2219), [2304](../../src/endpoint_carrier.rs#L2304), [2346](../../src/endpoint_carrier.rs#L2346), [2368](../../src/endpoint_carrier.rs#L2368) | receiver-type-required |
