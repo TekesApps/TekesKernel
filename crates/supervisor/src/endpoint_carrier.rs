@@ -898,6 +898,18 @@ impl ProductionCarrierStreams {
         )?)
     }
 
+    pub fn publish_workspace_changed(
+        &self,
+        workspace_id: &str,
+    ) -> Result<usize, ProductionCarrierError> {
+        self.publish_host_frame(HostFrame::new(
+            HostFrameKind::WorkspaceChanged,
+            IJsonValue::parse(&serde_json::to_vec(&json!({
+                "type":"host/workspace-changed", "workspaceId":workspace_id,
+            }))?)?,
+        )?)
+    }
+
     pub fn attach_session(&self, session_id: &str) -> Result<(), ProductionCarrierError> {
         self.attach_everywhere(session_id)?;
         let projection = semantic_line_projection_mode(
@@ -1492,7 +1504,7 @@ impl ProductionCarrierStreams {
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
         let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let paths = management.workspace_paths()?;
+        let paths = management.folder_paths()?;
         let mut sessions = self
             .session_items(false)?
             .into_iter()
@@ -1528,7 +1540,7 @@ impl ProductionCarrierStreams {
         };
         let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let paths = management.workspace_paths()?;
+        let paths = management.folder_paths()?;
         Ok(Some(Some(inventory_row(item, &paths, &lineage)?)))
     }
 
@@ -2729,9 +2741,10 @@ fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, Product
 
 fn inventory_row(
     session: endpoint::SessionInventoryItem,
-    workspace_paths: &std::collections::BTreeMap<String, String>,
+    folder_paths: &std::collections::BTreeMap<(String, String), String>,
     lineage: &std::collections::BTreeMap<String, endpoint::ForkLineage>,
 ) -> Result<SessionSummary, endpoint::ManagementError> {
+    let cwd = session.resolved_cwd(folder_paths);
     let projections = session.title.map(|title| {
         IJsonValue::parse(
             &serde_json::to_vec(&json!({
@@ -2750,12 +2763,7 @@ fn inventory_row(
     let tail = classify(&session.lifecycle, lock);
     let fork = lineage.get(&session.session_id);
     Ok(SessionSummary {
-        cwd: workspace_paths
-            .get(&session.workspace_id)
-            .cloned()
-            .ok_or_else(|| {
-                endpoint::ManagementError::WorkspaceNotFound(session.workspace_id.clone())
-            })?,
+        cwd,
         parent_session_id: fork.map(|fork| fork.source.clone()),
         origin: fork.map(|_| "fork".to_owned()),
         ephemeral: session.ephemeral,
@@ -2769,6 +2777,84 @@ fn inventory_row(
         identity_profile: session.identity_profile,
         preset: session.preset,
     })
+}
+
+#[cfg(test)]
+mod folder_inventory_tests {
+    use super::*;
+
+    #[test]
+    fn inventory_uses_own_genesis_cwd_or_explicit_relocation_binding() {
+        let mut session = endpoint::SessionInventoryItem {
+            session_id: "session".into(),
+            workspace_id: "workspace".into(),
+            cwd: "/recorded/second".into(),
+            folder_binding: Some("second".into()),
+            title: None,
+            updated_at: 0,
+            archived: false,
+            running: false,
+            blank: true,
+            as_of_seq: 0,
+            lifecycle: schema::LifecycleFacts {
+                latest_turn: None,
+                terminal_tail: true,
+                stop_active: false,
+                stop_closure_point: None,
+                open_hold: false,
+                answered_hold: false,
+                runnable_inputs: Vec::new(),
+                turn_open_inputs: Vec::new(),
+                live_inputs: Vec::new(),
+                unstarted: false,
+                unresolved_work: false,
+                resume_policy: schema::ResumePolicy::Never,
+                recovery_ordinal: 0,
+                continuation_wait_until: None,
+                admission_wait_until: None,
+            },
+            permission_mode: "workspace-write".into(),
+            identity_profile: None,
+            preset: None,
+            ephemeral: false,
+        };
+        let paths = [
+            (("workspace".into(), "first".into()), "/first".into()),
+            (
+                ("workspace".into(), "second".into()),
+                "/relocated/second".into(),
+            ),
+        ]
+        .into_iter()
+        .collect();
+        let lineage = Default::default();
+        assert_eq!(
+            inventory_row(session.clone(), &paths, &lineage)
+                .unwrap()
+                .cwd,
+            "/relocated/second"
+        );
+        session.folder_binding = None;
+        assert_eq!(
+            inventory_row(session.clone(), &paths, &lineage)
+                .unwrap()
+                .cwd,
+            "/recorded/second"
+        );
+        session.folder_binding = Some("removed".into());
+        assert_eq!(
+            inventory_row(session.clone(), &paths, &lineage)
+                .unwrap()
+                .cwd,
+            "/recorded/second"
+        );
+        assert_eq!(
+            inventory_row(session, &Default::default(), &lineage)
+                .unwrap()
+                .cwd,
+            "/recorded/second"
+        );
+    }
 }
 
 fn semantic_projection(folder: &Path) -> Result<schema::LedgerProjection, HostFailure> {

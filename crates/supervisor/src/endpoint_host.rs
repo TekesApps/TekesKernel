@@ -133,6 +133,10 @@ pub trait SessionDeliveryAuthority: Send + Sync {
     /// session so inventory subscribers re-diff their baseline; stubs ignore it.
     fn session_metadata_changed(&self, _session_id: &str) {}
 
+    /// A durable folder relocation changed navigation paths. Existing
+    /// workspace and inventory subscribers must recompute their summaries.
+    fn workspace_metadata_changed(&self, _workspace_id: &str) {}
+
     fn prompt(
         &self,
         session_id: &str,
@@ -965,6 +969,9 @@ impl ProductionEndpointHost {
             )
             .map_err(map_management)?;
         mark_management_handoff(request)?;
+        if let Some(authority) = &self.delivery_authority {
+            authority.workspace_metadata_changed(workspace_id);
+        }
         to_ijson(&json!({"workspace":workspace}))
     }
 

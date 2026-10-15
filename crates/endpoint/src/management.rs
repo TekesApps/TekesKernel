@@ -960,6 +960,24 @@ impl ManagementStore {
             .collect())
     }
 
+    /// Relocation overlay for explicit session bindings. No primary-folder
+    /// fallback: a legacy or orphaned session keeps its genesis cwd.
+    pub fn folder_paths(&self) -> Result<BTreeMap<(String, String), String>, ManagementError> {
+        let _lock = NamedLock::shared(self.root.join("lock"))?;
+        Ok(self
+            .workspace_configs()?
+            .into_values()
+            .flat_map(|config| {
+                config
+                    .folder_ids()
+                    .into_iter()
+                    .zip(config.folder_paths())
+                    .map(|(id, path)| ((config.id.clone(), id), path.to_owned()))
+                    .collect::<Vec<_>>()
+            })
+            .collect())
+    }
+
     pub fn workspace_path(&self, workspace_id: &str) -> Result<String, ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         let config = self
@@ -1081,6 +1099,7 @@ impl ManagementStore {
         let genesis = create_genesis(
             &session_id,
             &workspace.id,
+            &cwd,
             &folder_binding,
             &folders,
             selected_environment,
@@ -1726,6 +1745,44 @@ impl ManagementStore {
         .map_err(Into::into)
     }
 
+    /// Resolve a path-addressed relocation, including an already prepared
+    /// intent whose source path no longer appears in current config.
+    pub fn relocation_workspace(
+        &self,
+        rpc_id: &str,
+        request_sha256: &str,
+        previous_path: &str,
+    ) -> Result<String, ManagementError> {
+        let _lock = NamedLock::shared(self.root.join("lock"))?;
+        let operation_path = self.operation_path(rpc_id);
+        if operation_path.exists() {
+            let record = read_canonical::<OperationRecord>(&operation_path)?;
+            if record.rpc_id != rpc_id
+                || record.operation != "workspace.relocate"
+                || record.request_sha256 != request_sha256
+            {
+                return Err(ManagementError::IdempotencyConflict {
+                    rpc_id: rpc_id.to_owned(),
+                    operation: "workspace.relocate".to_owned(),
+                });
+            }
+            return Ok(workspace_intent(&record)?.workspace_id);
+        }
+        let matches = self
+            .workspace_configs()?
+            .into_values()
+            .filter(|config| config.folder_paths().contains(&previous_path))
+            .map(|config| config.id)
+            .collect::<Vec<_>>();
+        match matches.as_slice() {
+            [id] => Ok(id.clone()),
+            [] => Err(ManagementError::InvalidPath(previous_path.to_owned())),
+            _ => Err(ManagementError::WorkspaceAmbiguous(
+                previous_path.to_owned(),
+            )),
+        }
+    }
+
     /// Rebinds one authored workspace folder to a new on-disk directory while preserving the
     /// workspace id and every session's stable `folder_binding`. `previous_path` is an exact
     /// compare-and-swap guard: a stale Client can never move a different folder after inventory
@@ -1739,23 +1796,31 @@ impl ManagementStore {
         path: &str,
         started_at: &str,
     ) -> Result<WorkspaceView, ManagementError> {
+        let _lock = NamedLock::exclusive(self.root.join("lock"))?;
+        if let Some(response) =
+            self.resume_folder_operation(rpc_id, request_sha256, "workspace.relocate")?
+        {
+            return serde_json::from_value(response.get("workspace").cloned().ok_or_else(
+                || ManagementError::CorruptOperation("missing workspace response".to_owned()),
+            )?)
+            .map_err(Into::into);
+        }
         let canonical = canonical_workspace_path(path)?;
         self.guard_folder_entry(&canonical, path)?;
         let canonical_string = canonical.to_string_lossy().into_owned();
-        let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         let configs = self.workspace_configs()?;
         let current = configs
             .get(workspace_id)
             .ok_or_else(|| ManagementError::WorkspaceNotFound(workspace_id.to_owned()))?;
 
-        let mut folders = current.folders.clone();
+        let mut folders = authored_folders(current);
         let target = folders
             .iter_mut()
             .find(|folder| folder.path == previous_path)
             .ok_or_else(|| ManagementError::InvalidPath(previous_path.to_owned()))?;
         let relocate_folder_id = target.id.clone();
         if configs.values().any(|config| {
-            config.folders.iter().any(|folder| {
+            authored_folders(config).iter().any(|folder| {
                 folder.path == canonical_string
                     && (config.id != workspace_id || folder.id != relocate_folder_id)
             })
@@ -1763,17 +1828,7 @@ impl ManagementStore {
             return Err(ManagementError::WorkspaceAmbiguous(canonical_string));
         }
         target.path = canonical_string.clone();
-        let cwd = current
-            .cwd
-            .iter()
-            .map(|candidate| {
-                if candidate == previous_path {
-                    canonical_string.clone()
-                } else {
-                    candidate.clone()
-                }
-            })
-            .collect();
+        let cwd = Vec::new();
         let config = WorkspaceConfig {
             format: current.format,
             revision: current.revision + 1,
@@ -2577,6 +2632,7 @@ impl ManagementStore {
                         "relocate intent lacks destination path".to_owned(),
                     )
                 })?;
+                current.folders = authored_folders(&current);
                 let folder = current
                     .folders
                     .iter_mut()
@@ -2587,11 +2643,10 @@ impl ManagementStore {
                         )
                     })?;
                 folder.path = relocated_path.to_owned();
-                for path in &mut current.cwd {
-                    if path == previous_path {
-                        *path = relocated_path.to_owned();
-                    }
-                }
+                current.cwd.clear();
+                current.policy = current
+                    .policy
+                    .map(|policy| relocate_policy_roots(policy, previous_path, relocated_path));
                 current.revision += 1;
                 current
             }
@@ -3318,6 +3373,7 @@ fn genesis_preset_defaults(
 fn create_genesis(
     session_id: &str,
     workspace_id: &str,
+    cwd: &str,
     folder_binding: &str,
     folders: &[String],
     environment: &str,
@@ -3335,6 +3391,7 @@ fn create_genesis(
         "kind":"genesis",
         "thread":session_id,
         "workspace":workspace_id,
+        "cwd":cwd,
         "folder_binding":folder_binding,
         "environment":environment,
         "folders":folders,
@@ -3402,6 +3459,9 @@ fn verify_session_create_genesis(
     if genesis.seq() != 1
         || genesis.string_field("thread") != Some(intent.session_id.as_str())
         || genesis.string_field("workspace") != Some(intent.workspace_id.as_str())
+        || genesis
+            .string_field("cwd")
+            .is_some_and(|cwd| cwd != intent.cwd)
         || (!intent.folder_binding.is_empty()
             && genesis.string_field("folder_binding") != Some(intent.folder_binding.as_str()))
         || intent
@@ -3491,6 +3551,18 @@ pub fn default_workspace_policy(canonical_folder: &str) -> WorkspacePolicy {
         max_wall_seconds: None,
         base: None,
     }
+}
+
+fn authored_folders(config: &WorkspaceConfig) -> Vec<WorkspaceFolder> {
+    config
+        .folder_ids()
+        .into_iter()
+        .zip(config.folder_paths())
+        .map(|(id, path)| WorkspaceFolder {
+            id,
+            path: path.to_owned(),
+        })
+        .collect()
 }
 
 /// Moves every writable root at or below the relocated folder to the new
@@ -4421,9 +4493,10 @@ pub enum ManagementError {
 mod tests {
     use super::{
         ForkIntent, ManagementError, ManagementStore, OperationPhase, OperationRecord, VERSION,
-        WorkspaceMetadata, WorkspaceOperationWrite, WorkspaceView, canonical_event_line,
-        create_genesis, default_workspace_policy, folder_binding_matches_snapshot,
-        publish_canonical, read_canonical, session_preset, to_ijson,
+        WorkspaceMetadata, WorkspaceOperationWrite, WorkspaceView, authored_folders,
+        canonical_event_line, create_genesis, default_workspace_policy,
+        folder_binding_matches_snapshot, publish_canonical, read_canonical, relocate_policy_roots,
+        session_preset, to_ijson,
     };
     use crate::SessionInventoryItem;
     use profile::{ConfigRepository, WorkspaceConfig, WorkspaceFolder};
@@ -4445,6 +4518,7 @@ mod tests {
             create_genesis(
                 &origin.target,
                 "ws",
+                "/fixture/project",
                 "folder-1",
                 &["folder-1".to_owned()],
                 schema::DEFAULT_ENVIRONMENT,
@@ -4490,6 +4564,7 @@ mod tests {
         let genesis = create_genesis(
             &origin.target,
             "ws",
+            "/fixture/project",
             "folder-1",
             &["folder-1".to_owned()],
             schema::DEFAULT_ENVIRONMENT,
@@ -5013,6 +5088,68 @@ mod tests {
         );
     }
 
+    #[test]
+    fn legacy_folder_relocation_rebuilds_lost_staging_and_replays_without_destination() {
+        let (root, store, view) = folder_store("legacy-relocate");
+        let mut config = store.config.workspace(&view.workspace_id).unwrap();
+        config.cwd = config
+            .folder_paths()
+            .into_iter()
+            .map(str::to_owned)
+            .collect();
+        config.folders.clear();
+        config.revision += 1;
+        store
+            .config
+            .publish_workspace(config.revision - 1, &config)
+            .unwrap();
+        let moved = root.path().join("moved");
+        fs::rename(&view.path, &moved).unwrap();
+        let path = fs::canonicalize(&moved)
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let mut desired = config.clone();
+        desired.folders = authored_folders(&config);
+        desired.folders[0].path = path.clone();
+        desired.cwd.clear();
+        desired.revision += 1;
+        desired.policy = desired
+            .policy
+            .map(|policy| relocate_policy_roots(policy, &view.path, &path));
+        let rpc = "legacy-folder-move";
+        let hash = "a".repeat(64);
+        let (operation, record) = store
+            .begin_workspace_operation(WorkspaceOperationWrite {
+                rpc_id: rpc,
+                request_sha256: &hash,
+                operation: "workspace.relocate",
+                action: "relocate",
+                config: &desired,
+                started_at: "2026-10-15T00:00:00.000Z",
+                created: None,
+                relocation: Some((&desired.folders[0].id, &view.path, &path)),
+                folder: None,
+            })
+            .unwrap();
+        fs::remove_file(store.operation_payload_path(rpc).join("workspace.json")).unwrap();
+        store.drive_workspace_operation(&operation, record).unwrap();
+        assert_eq!(store.config.workspace(&view.workspace_id).unwrap(), desired);
+        fs::remove_dir(&moved).unwrap();
+        assert_eq!(
+            store.relocation_workspace(rpc, &hash, &view.path).unwrap(),
+            view.workspace_id
+        );
+        let replay = store
+            .relocate_workspace(rpc, &hash, &view.workspace_id, &view.path, &path, "ignored")
+            .unwrap();
+        assert_eq!(replay.path, path);
+        assert!(matches!(
+            store.relocation_workspace(rpc, &"b".repeat(64), &view.path),
+            Err(ManagementError::IdempotencyConflict { .. })
+        ));
+    }
+
     fn folder_store(name: &str) -> (tempfile::TempDir, ManagementStore, WorkspaceView) {
         let root = tempfile::tempdir().expect("root");
         let project = root.path().join(name);
@@ -5053,6 +5190,7 @@ mod tests {
         let genesis = create_genesis(
             session_id,
             workspace_id,
+            "/fixture/project",
             binding.unwrap_or("folder-0001"),
             &[binding.unwrap_or("folder-0001").to_owned()],
             schema::DEFAULT_ENVIRONMENT,

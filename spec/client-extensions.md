@@ -551,6 +551,35 @@ retirement never returns an empty success placeholder.
 
 ## Folder trust (0.8)
 
+### Folder inventory and relocation
+
+`folders.v1` is an atomic group with `folders.list` (read-only, closed `{}`)
+and `folders.relocate` (mutation, closed `{previousPath:str,path:str}`).
+`folders.list` returns `{items:[{path:str,sessionIds:[str]}],archivedSessionIds:[str]}`.
+Items are sorted by path and IDs lexically. The list includes configured
+folders with no sessions. Active durable sessions group by their own primary
+cwd; secondary writable folders do not duplicate membership. Ephemeral sessions
+are omitted, and archived IDs are listed separately. Orphaned and legacy
+sessions retain the cwd recorded in their genesis. An explicit stable binding
+follows the current folder path after relocation. Paths are addresses for
+these navigation groups; grouping grants no execution or trust authority.
+
+Relocate rebinds a folder that the host has already moved on disk; Kernel does
+not move project files. `previousPath` is the exact currently configured path,
+even when that directory no longer exists. One matching compatibility binding
+is required; an unknown path is `workspace-invalid-path` and multiple owners
+are `workspace-ambiguous`. An active worker in its compatibility workspace is
+`workspace-busy`. The destination must satisfy the normal folder-entry guards.
+Successful response is `{relocated:true}`. Stable bindings and semantic ledgers
+remain unchanged; only future launch resolution and inventory paths follow
+the new directory. Existing workspace compatibility configuration and writable
+policy roots are updated through the same recoverable management transaction
+as `workspace.relocate`. Exact retries recover that transaction even after
+the old path disappears; conflicting reuse of an RPC ID is rejected. No trust
+is transferred to a new canonical path. Existing mux inventory subscribers
+receive cwd upserts on the management workspace-change notification; refresh
+`folders.list` for the corresponding grouped view.
+
 `folderTrust.v1` owns `folders.trust.status` (read), `folders.trust.request` and
 `folders.trust.revoke` (mutations). Closed request/response DTOs and authorization
 semantics are specified in [Folder trust](../docs/folder-trust.md). Its exact

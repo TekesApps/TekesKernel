@@ -29,6 +29,7 @@ pub const FOLDERS_READER: u64 = 3;
 pub const GENESIS_INHERITED_FIELDS: &[&str] = &[
     "workspace",
     "folder_binding",
+    "cwd",
     "environment",
     "folders",
     "resume",

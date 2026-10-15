@@ -36,6 +36,14 @@ workspace version in `Cargo.toml`.
   (`profile::SessionScope::environment` / `folders`).
 
 ### Changed
+- Session inventory derives each cwd from its own genesis and stable folder
+  binding, including relocation, instead of the workspace's first folder.
+  `folders.v1` adds path-based grouping and recoverable folder relocation;
+  old workspace routes remain compatible and relocation never grants trust.
+  Both relocation routes notify existing inventory subscribers. Legacy thread
+  cards retain the derived cwd without repeated genesis decoding. Plugin store
+  installation and recovery now serialize across independent handles, so MCP
+  background admission cannot collect another install's active staging files.
 - Folder trust now requires local host approval, with closed request/status/revoke
   RPCs, durable identity/revision checks, and execution-time hook/skill admission.
   Revocation rejects queued work and invalidates frozen resources and MCP peers.

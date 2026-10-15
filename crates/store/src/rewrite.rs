@@ -2835,6 +2835,7 @@ mod tests {
             .collect::<Vec<_>>();
         let genesis = events[0].as_object_mut().unwrap();
         genesis.insert("folder_binding".to_owned(), json!("folder-0002"));
+        genesis.insert("cwd".to_owned(), json!("/fixture/second"));
         genesis.insert("environment".to_owned(), json!("sandboxed"));
         genesis.insert("folders".to_owned(), json!(["folder-0001", "folder-0002"]));
         genesis.insert("instruction".to_owned(), json!({"digest":"ins"}));

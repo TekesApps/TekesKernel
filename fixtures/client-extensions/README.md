@@ -1,7 +1,7 @@
 # Client extension v1 oracle
 
 This corpus is the executable `.tekes` Client extension catalog: a
-17-method base and 21 capabilities with 67 methods. It was first frozen in
+17-method base and 23 capabilities with 72 methods. It was first frozen in
 Slice 14F and has been extended since. It is separate from the Session
 Endpoint base routes and does not define a new `SessionEvent` family.
 

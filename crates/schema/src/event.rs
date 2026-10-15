@@ -466,6 +466,15 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
         ));
     }
     required_str(object, "workspace", Some(seq))?;
+    if object.contains_key("cwd") {
+        let cwd = required_str(object, "cwd", Some(seq))?;
+        if !std::path::Path::new(cwd).is_absolute() || cwd.contains('\0') {
+            return Err(SchemaError::event(
+                Some(seq),
+                "cwd must be an absolute path",
+            ));
+        }
+    }
     let folder_binding = if object.contains_key("folder_binding") {
         Some(required_id(object, "folder_binding", seq)?)
     } else {

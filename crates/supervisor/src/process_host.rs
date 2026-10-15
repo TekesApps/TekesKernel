@@ -5241,6 +5241,21 @@ fn preserve_first_failure(failure: &mut Option<String>, message: String) {
 }
 
 impl SessionDeliveryAuthority for ProductionProcessHost {
+    fn workspace_metadata_changed(&self, workspace_id: &str) {
+        let streams = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone();
+        if let Some(streams) = streams
+            && let Err(error) = streams.publish_workspace_changed(workspace_id)
+        {
+            eprintln!(
+                "process-host-workspace-status-failed: workspace={workspace_id} error={error}"
+            );
+        }
+    }
+
     fn session_metadata_changed(&self, session_id: &str) {
         self.publish_session_status(session_id);
     }
@@ -5721,6 +5736,18 @@ impl ProductionProcessHost {
             return Some(SessionInventoryItem {
                 session_id: session_id.to_owned(),
                 workspace_id: view.summary.workspace.clone(),
+                cwd: view
+                    .summary
+                    .cwd
+                    .clone()
+                    .or_else(|| {
+                        store::read_genesis(folder.join("main.jsonl"))
+                            .ok()
+                            .flatten()
+                            .map(|g| endpoint::genesis_cwd(&folder, &g))
+                    })
+                    .unwrap_or_default(),
+                folder_binding: view.summary.folder_binding.clone(),
                 title: view.summary.title.clone(),
                 updated_at: view.summary.updated_ms,
                 archived: false,
@@ -5755,6 +5782,8 @@ impl ProductionProcessHost {
         Some(SessionInventoryItem {
             session_id: session_id.to_owned(),
             workspace_id: genesis.string_field("workspace")?.to_owned(),
+            cwd: endpoint::genesis_cwd(&folder, &genesis),
+            folder_binding: genesis.string_field("folder_binding").map(str::to_owned),
             title: None,
             updated_at,
             archived: false,
@@ -5876,6 +5905,8 @@ impl ProductionProcessHost {
                     items.push(SessionInventoryItem {
                         session_id: id,
                         workspace_id: String::new(),
+                        cwd: String::new(),
+                        folder_binding: None,
                         title: None,
                         updated_at: 0,
                         archived: true,

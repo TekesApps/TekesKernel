@@ -160,7 +160,13 @@ pub(crate) fn prepare(
     projection: &LedgerProjection,
     journal: Option<JournalInput>,
 ) -> Option<PreparedCard> {
-    let (line, summary) = main_line(session, bytes, valid_bytes, projection)?;
+    let (line, mut summary) = main_line(session, bytes, valid_bytes, projection)?;
+    // Materialize legacy metadata while the ledger is already folded, so a
+    // restarted host can still serve Fresh-card inventory without decoding
+    // every genesis again. Empty means the original cwd is unknown.
+    if summary.cwd.is_none() {
+        summary.cwd = Some(endpoint::genesis_cwd(&folder, projection.events.first()?));
+    }
     Some(PreparedCard {
         session: session.to_owned(),
         written: crate::host_runtime::system_timestamp().ok()?,

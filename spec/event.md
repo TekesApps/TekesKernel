@@ -90,11 +90,17 @@ workspace: str, origin_key: str, origin_tuple, resume: "never" |
 {"bounded": int}, parent?: {file: str, seq: int, spawn_id: str},
 seed?: {source: str, kinds: [str], snapshot: {asset: str, digest: str}},
 config: {digest: str}, instruction?: {digest: str},
-folder_binding?: str, environment?: str, folders?: [str],
+folder_binding?: str, cwd?: str, environment?: str, folders?: [str],
 identity_profile?: "auto" | "coding" | "general",
 preset?: {format: 1, base: "general" | "blank", layers: [Layer], digest: str}}`
 
 `folder_binding` is the stable id of the folder the session runs in.
+`cwd` is its absolute opening directory, recorded by `session.create` for
+inventory. It is immutable history; an explicit stable binding resolves to
+the relocated directory for navigation and future launches. Old genesis
+records omit it; inventory reads the execution cwd from their verified
+genesis config asset, never a later launch config or workspace default.
+If neither fact is available, the inventory cwd is empty (unknown).
 `environment` names the environment the session runs in; `folders` lists the
 stable ids of the session's folders, nonempty and duplicate-free, and
 includes `folder_binding` when both are present. `session.create` writes both
@@ -112,7 +118,7 @@ so it opens the ledger read-only instead.
 
 A session derived from another, a fork or a session started by the
 `context` tool, copies the inherited fields verbatim
-(`schema::GENESIS_INHERITED_FIELDS`): `workspace`, `folder_binding`,
+(`schema::GENESIS_INHERITED_FIELDS`): `workspace`, `folder_binding`, `cwd`,
 `environment`, `folders`, `resume`, `config`, `instruction`,
 `identity_profile` and `preset` (an explicit fork preset replaces the
 source's). Every other field is set by the operation that creates the

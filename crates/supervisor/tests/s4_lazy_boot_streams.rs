@@ -1031,11 +1031,11 @@ fn a_reopened_journal_replays_the_sequence_the_reconcile_published() {
     host.shutdown();
 }
 
-/// E836 C3: a thread whose workspace no longer exists is not hidden from the sidebar behind
-/// the Kernel's back: the inventory baseline fails (as it always did) instead of silently
-/// dropping the row.
+/// A session remains an inventory entity after its compatibility workspace
+/// disappears. Its own genesis cwd is still known; neither it nor healthy
+/// sessions vanish behind a workspace-level inventory failure.
 #[test]
-fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing() {
+fn an_orphaned_session_keeps_its_genesis_cwd_in_inventory() {
     let _serial = SERIAL
         .lock()
         .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -1046,11 +1046,13 @@ fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing(
     write_session_at(root.path(), &orphan, false);
     let ledger = root.path().join("threads").join(&orphan).join("main.jsonl");
     let text = std::fs::read_to_string(&ledger).expect("ledger");
-    std::fs::write(
-        &ledger,
-        text.replacen(r#""workspace":"ws""#, r#""workspace":"gone""#, 1),
-    )
-    .expect("orphan ledger");
+    let mut events = text
+        .lines()
+        .map(|line| serde_json::from_str::<serde_json::Value>(line).unwrap())
+        .collect::<Vec<_>>();
+    events[0]["workspace"] = serde_json::json!("gone");
+    events[0]["cwd"] = serde_json::json!("/orphan/recorded");
+    std::fs::write(&ledger, canonical_lines(events)).expect("orphan ledger");
     let assembly = assembly(root.path());
     let host = process_host(root.path());
     host.attach_streams(assembly.streams().clone());
@@ -1060,15 +1062,22 @@ fn an_orphan_workspace_thread_fails_the_inventory_baseline_instead_of_vanishing(
             .host()
             .open_mux_stream(1, SessionStreamTarget::SessionInventory),
     );
-    // the error names the missing workspace (`ManagementError::WorkspaceNotFound("gone")`)
-    match opened {
-        Err(HostFailure::Internal(message)) => assert!(
-            message.contains("gone") && message.contains("workspace was not found"),
-            "the error names the missing workspace: {message}"
-        ),
-        Err(other) => panic!("expected an internal failure naming the workspace, got {other:?}"),
-        Ok(_) => panic!("the orphan row must be an error, not a silent omission"),
-    }
+    let mut stream = opened.expect("session inventory survives missing workspace");
+    let SessionSyncFrame::InventoryBaseline { items, .. } =
+        block_on_ready(stream.recv()).unwrap().unwrap()
+    else {
+        panic!("inventory baseline")
+    };
+    assert_eq!(items.len(), 2);
+    assert!(items.iter().any(|row| row.session_id == fine));
+    assert_eq!(
+        items
+            .iter()
+            .find(|row| row.session_id == orphan)
+            .unwrap()
+            .cwd,
+        "/orphan/recorded"
+    );
     host.shutdown();
 }
 

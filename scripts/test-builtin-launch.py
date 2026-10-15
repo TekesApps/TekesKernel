@@ -255,6 +255,26 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
         call('session.selectModel',{'sessionId':session,'provider':'openai','model':'gpt-5'})
         catalog=call('session.models',{'sessionId':session})
         assert catalog['routable'] and catalog['groups'],catalog;print('MODEL_CATALOG_ROUTABLE')
+        # A secondary folder must never inherit the workspace's primary cwd
+        # in either the grouped list or the actual native inventory stream.
+        first=base/'group-first';first.mkdir()
+        second=base/'group-second';second.mkdir()
+        grouped_workspace=call('workspace.create',{'path':str(first)})['workspace']['workspaceId']
+        call('workspace.addFolder',{'workspaceId':grouped_workspace,'path':str(second)})
+        grouped_session=call('session.create',{'workspaceId':grouped_workspace,'cwd':str(second)})['sessionId']
+        grouped_ledger=Path(root)/'threads'/grouped_session/'main.jsonl'
+        original_ledger=grouped_ledger.read_bytes()
+        assert json.loads(original_ledger.splitlines()[0])['cwd']==str(second)
+        grouped=call('folders.list',{})
+        assert next(item for item in grouped['items'] if item['path']==str(second))['sessionIds']==[grouped_session],grouped
+        moved=base/'group-moved';second.rename(moved)
+        assert call('folders.relocate',{'previousPath':str(second),'path':str(moved)})=={'relocated':True}
+        grouped=call('folders.list',{})
+        assert next(item for item in grouped['items'] if item['path']==str(moved))['sessionIds']==[grouped_session],grouped
+        assert not any(item['path']==str(second) for item in grouped['items']),grouped
+        assert grouped_ledger.read_bytes()==original_ledger
+        assert not call('folders.trust.status',{'path':str(moved)})['folder']['trusted']
+        print('FOLDER_GROUPING_RELOCATION_AND_LEDGER_PRESERVATION_OK')
         import socket,struct
         from urllib.parse import urlparse
         url=urlparse(ready['url']); sock=socket.create_connection((url.hostname,url.port),timeout=5)
@@ -287,6 +307,32 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
                 assert other in ('workspace-smoke','inventory','control','actionables','journal'),value
                 captured.append({'kind':'workspace' if other=='workspace-smoke' else other,'frame':value['frame']})
             captured.append({'kind':kind,'frame':value['frame']})
+            if kind=='inventory':
+                row=next(row for row in value['frame']['snapshot']['items'] if row['sessionId']==grouped_session)
+                assert row['cwd']==str(moved),row
+                print('FOLDER_INVENTORY_RELOCATED_CWD_OK')
+                current=moved
+                for index,method in enumerate(('folders.relocate','workspace.relocate')):
+                    destination=base/f'group-moved-{index}';current.rename(destination)
+                    relocation={'previousPath':str(current),'path':str(destination)}
+                    if method=='workspace.relocate':relocation['workspaceId']=grouped_workspace
+                    result=call(method,relocation)
+                    if method=='folders.relocate':assert result=={'relocated':True},result
+                    else:assert result['workspace']['workspaceId']==grouped_workspace,result
+                    sock.settimeout(10)
+                    try:
+                        while True:
+                            delta=receive()
+                            other=delta['streamId']
+                            captured.append({'kind':'workspace' if other=='workspace-smoke' else other,'frame':delta['frame']})
+                            row=delta['frame'].get('session',{})
+                            if other=='inventory' and row.get('sessionId')==grouped_session and row['cwd']==str(destination):
+                                break
+                    finally:
+                        sock.settimeout(None)
+                    assert grouped_ledger.read_bytes()==original_ledger
+                    current=destination
+                print('FOLDER_RELOCATION_LIVE_INVENTORY_UPSERT_OK')
             if kind=='journal':
                 assert value['frame']['snapshot']['windowLimit']==7,value
                 # N1: the context projections newer than the frozen cut follow the snapshot as
