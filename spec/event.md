@@ -98,7 +98,7 @@ preset?: {format: 1, base: "general" | "blank", layers: [Layer], digest: str}}`
 `environment` names the environment the session runs in; `folders` lists the
 stable ids of the session's folders, nonempty and duplicate-free, and
 includes `folder_binding` when both are present. `session.create` writes both
-(`environment` is `local`; `folders` is every folder of the workspace at
+(`environment` is the requested ID, default `local`; `folders` is every folder of the workspace at
 creation). They are references, not frozen values: a launch resolves each
 folder id to its current path, so relocation is followed, and resolves the
 environment by id (an unknown one fails the launch,

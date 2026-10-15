@@ -1133,7 +1133,7 @@ arm requires a versioned Client authority change and new fixtures.
 | `workspace.archiveSession` | `{sessionId:uuid}` | `{archivedSessionIds:[uuid]}` |
 | `workspace.unarchiveSession` | `{sessionId:uuid}` | `{sessionId:uuid}` |
 | `session.list` | `{cursor?:str}` | `{items:[SessionSummary]}` |
-| `session.create` | `{workspaceId?:str,cwd?:str,sessionId?:uuid,agentPreset?:str,identityProfile?:"coding"|"general",preset?:Preset}` | `{sessionId:uuid}` |
+| `session.create` | `{workspaceId?:str,cwd?:str,sessionId?:uuid,agentPreset?:str,identityProfile?:"coding"|"general",preset?:Preset,environment?:str}` | `{sessionId:uuid}` |
 | `session.history` | `{sessionId:uuid,beforeSeq?:int,maxMessages?:int>=1}` | imported `SessionHistoryPage` |
 | `session.prompt` | `{sessionId:uuid,mode:"queue"|"steer",content:[PromptPart],clientTimeZone?:str}` | `{accepted:true,command?:{kind:"success",text?:str}}` |
 | `session.updateQueue` | `{sessionId:uuid,itemId:str,action:QueueAction}` | `{accepted:true}` |
@@ -1188,6 +1188,25 @@ placement). An open hold does not alter placement. Every mutation emits one
 whole snapshot after its durable receipt; reconnect may repeat the identical
 snapshot, and transition to no live inputs emits `items:[]`.
 
+### Session environment selection
+
+`session.create {environment?:str}` records the selected environment ID in
+its immutable creation intent and genesis. Omission selects `local`, exactly
+as before. The ID must name the built-in `local` or an authored environment;
+an unknown ID returns `environment-not-found {environment}` before cwd
+auto-registration, session staging, or any session intent is written. `null`,
+an empty string, and non-string values are `bad-request`.
+
+The creation snapshots resolve under that reference. At each later launch the
+Kernel resolves its current definition again; editing an environment does not
+rewrite genesis or alter a running worker's immutable descriptors. A recovered
+create uses its staged snapshots and selected ID, never mutable environment
+configuration; older intents without the new field remain recoverable.
+`environments.v1` is an opt-in client capability; older drivers omit the field
+and retain the existing create request/result. This is configuration selection,
+not an authorization action and never grants folder trust or writable roots.
+See [Client extensions](client-extensions.md#environments).
+
 ### Closed semantic errors
 
 For ordinary RPCs, semantic failures are HTTP 200 server-response errors. For
@@ -1219,6 +1238,7 @@ dynamic identifiers belong only in details.
 | `steer-unavailable` | `Current turn no longer accepts steering` | `{itemId}` |
 | `attachment-error` | `Image attachment is unavailable` | `{reason}` |
 | `model-unavailable` | `Model is unavailable` | `{provider,model}` |
+| `environment-not-found` | `Environment was not found` | `{environment:str}` |
 | `preset-invalid` | `Session preset is invalid` | `{reason,layer?,field?}` |
 | `title-invalid` | `Session title is invalid` | `{sessionId}` |
 | `accepted-but-not-confirmed` | `Mutation was accepted but its receipt was not confirmed` | `{rpcId,operation}` |
@@ -1236,7 +1256,7 @@ errors are separate):
 | `workspace.archiveSession` | `session-not-found`, `session-running`, `idempotency-conflict`, `internal` |
 | `workspace.unarchiveSession` | `session-not-found`, `not-archived`, `active-session-limit`, `idempotency-conflict`, `internal` |
 | `session.list` | `invalid-cursor`, `internal` |
-| `session.create` | `bad-request`, `workspace-not-found`, `workspace-invalid-path`, `workspace-ambiguous`, `session-conflict`, `active-session-limit`, `unsupported-capability`, `preset-invalid`, `idempotency-conflict`, `internal` |
+| `session.create` | `environment-not-found`, `bad-request`, `workspace-not-found`, `workspace-invalid-path`, `workspace-ambiguous`, `session-conflict`, `active-session-limit`, `unsupported-capability`, `preset-invalid`, `idempotency-conflict`, `internal` |
 | `session.history` | `session-not-found`, `archived`, `internal` |
 | `session.prompt` | `session-not-found`, `archived`, `steer-unavailable`, `attachment-error`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |
 | `session.updateQueue` | `session-not-found`, `archived`, `queue-item-not-found`, `steer-unavailable`, `attachment-error`, `idempotency-conflict`, `accepted-but-not-confirmed`, `internal` |

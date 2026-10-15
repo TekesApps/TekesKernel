@@ -353,3 +353,12 @@ execution permissions and are absent from the fixed catalog and new workspace
 seeds. Existing config bytes and snapshots are not rewritten. Remove these
 entries through the revisioned workspace policy API when editing the policy;
 see [retired Kernel memory](../docs/history/retired-kernel-memory.md).
+
+### Environment administration
+
+The optional [environments.v1](client-extensions.md#environments) client group
+reads effective definitions and upserts one authored definition with document
+revision CAS. `session.create {environment}` chooses a reference (default
+`local`); the creation intent fixes that reference, and each subsequent launch
+resolves the current definition. Save changes the next launch only, without
+changing folder trust, writable roots or running descriptors.

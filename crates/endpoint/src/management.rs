@@ -137,6 +137,8 @@ struct SessionCreateIntent {
     identity_profile: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     preset_digest: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    environment: Option<String>,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -330,6 +332,7 @@ pub struct SessionCreateOperation<'a> {
     pub requested_session_id: Option<&'a str>,
     pub workspace_id: Option<&'a str>,
     pub cwd: Option<&'a str>,
+    pub environment: Option<&'a str>,
     pub identity_profile: Option<tools::IdentityProfile>,
     /// Raw `session.create {preset}` request, resolved under the workspace base.
     pub preset: Option<&'a Value>,
@@ -991,6 +994,20 @@ impl ManagementStore {
                 .session_id_from_response(self.drive_session_create(&operation_path, record)?);
         }
 
+        // Resolve the named reference before cwd auto-registration or any
+        // session intent/assets are created. Retries above use staged bytes.
+        let selected_environment = request.environment.unwrap_or(schema::DEFAULT_ENVIRONMENT);
+        if self
+            .config
+            .environments()?
+            .environment(selected_environment)
+            .is_none()
+        {
+            return Err(ManagementError::EnvironmentNotFound(
+                selected_environment.to_owned(),
+            ));
+        }
+
         if active_session_count(&self.storage_root)? >= 256 {
             return Err(ManagementError::ActiveSessionLimit);
         }
@@ -1027,7 +1044,7 @@ impl ManagementStore {
             None,
             Some(&folder_binding),
             profile::ScopeSelection {
-                environment: schema::DEFAULT_ENVIRONMENT,
+                environment: selected_environment,
                 folders: Some(&folders),
             },
         )?;
@@ -1066,6 +1083,7 @@ impl ManagementStore {
             &workspace.id,
             &folder_binding,
             &folders,
+            selected_environment,
             &config_digest,
             &instruction_digest,
             request.identity_profile,
@@ -1111,6 +1129,7 @@ impl ManagementStore {
                         .to_owned()
                 }),
                 preset_digest: preset.as_ref().map(|preset| preset.digest.clone()),
+                environment: Some(selected_environment.to_owned()),
             })?,
             response: None,
         };
@@ -2641,6 +2660,9 @@ impl ManagementStore {
                 config.workspace.folder_binding.as_deref(),
                 &intent.folder_binding,
             )
+            || intent.environment.as_ref().is_some_and(|environment| {
+                config.workspace.environment.as_ref() != Some(environment)
+            })
             || intent.config_asset != format!("sha256-{}", config.digest()?)
             || intent.instruction_asset != format!("sha256-{}", instruction.digest()?)
         {
@@ -3298,6 +3320,7 @@ fn create_genesis(
     workspace_id: &str,
     folder_binding: &str,
     folders: &[String],
+    environment: &str,
     config_digest: &str,
     instruction_digest: &str,
     identity_profile: Option<tools::IdentityProfile>,
@@ -3313,7 +3336,7 @@ fn create_genesis(
         "thread":session_id,
         "workspace":workspace_id,
         "folder_binding":folder_binding,
-        "environment":schema::DEFAULT_ENVIRONMENT,
+        "environment":environment,
         "folders":folders,
         "format":1,
         // Recorded `folders` narrow the session's folders; a reader that
@@ -3381,6 +3404,10 @@ fn verify_session_create_genesis(
         || genesis.string_field("workspace") != Some(intent.workspace_id.as_str())
         || (!intent.folder_binding.is_empty()
             && genesis.string_field("folder_binding") != Some(intent.folder_binding.as_str()))
+        || intent
+            .environment
+            .as_deref()
+            .is_some_and(|environment| genesis.string_field("environment") != Some(environment))
         || genesis.string_field("ts") != Some(record.started_at.as_str())
         || config_digest != intent.config_asset.strip_prefix("sha256-")
         || instruction_digest != intent.instruction_asset.strip_prefix("sha256-")
@@ -4314,6 +4341,8 @@ pub enum ManagementError {
     NameConflict(String),
     #[error("workspace was not found: {0}")]
     WorkspaceNotFound(String),
+    #[error("environment was not found: {0}")]
+    EnvironmentNotFound(String),
     #[error("workspace path matches more than one workspace: {0}")]
     WorkspaceAmbiguous(String),
     #[error("workspace has only one folder: {0}")]
@@ -4418,6 +4447,7 @@ mod tests {
                 "ws",
                 "folder-1",
                 &["folder-1".to_owned()],
+                schema::DEFAULT_ENVIRONMENT,
                 "cfg",
                 "ins",
                 identity,
@@ -4462,6 +4492,7 @@ mod tests {
             "ws",
             "folder-1",
             &["folder-1".to_owned()],
+            schema::DEFAULT_ENVIRONMENT,
             "cfg",
             "ins",
             None,
@@ -5023,6 +5054,7 @@ mod tests {
             workspace_id,
             binding.unwrap_or("folder-0001"),
             &[binding.unwrap_or("folder-0001").to_owned()],
+            schema::DEFAULT_ENVIRONMENT,
             &format!("sha256-{}", "a".repeat(64)),
             &format!("sha256-{}", "b".repeat(64)),
             None,
@@ -5305,6 +5337,7 @@ mod tests {
     fn create_in(store: &ManagementStore, rpc_id: &str, cwd: &str, agents: &Path) -> String {
         store
             .create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id,
                 request_sha256: &format!("{:0>64}", rpc_id.len()),
                 requested_session_id: None,
@@ -5413,6 +5446,7 @@ mod tests {
         let preset = json!({"skills":["review"]});
         let create = |rpc_id: &str| {
             store.create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id,
                 request_sha256: &"8".repeat(64),
                 requested_session_id: None,
@@ -5532,6 +5566,7 @@ mod tests {
                 "workspace.create {path}"
             );
             let created = store.create_session(super::SessionCreateOperation {
+                environment: None,
                 rpc_id: &format!("reject-session-{index}"),
                 request_sha256: &"2".repeat(64),
                 requested_session_id: None,

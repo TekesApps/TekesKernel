@@ -11,8 +11,9 @@ use endpoint::{
 use profile::{ConfigRepository, WorkspaceConfig, WorkspacePolicy};
 use schema::IJsonValue;
 use serde_json::{Value, json};
+use sha2::Digest as _;
 use tekes_supervisor::client_admin::{
-    ClientAdminRoutes, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
+    ClientAdminRoutes, ENVIRONMENT_METHODS, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
 };
 use tekes_supervisor::client_extensions::{
     APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
@@ -113,7 +114,7 @@ fn production_fixture(with_workspace: bool) -> ProductionFixture {
             home: root.path().to_string_lossy().into_owned(),
             can_open_path: false,
         },
-        Arc::new(|| Ok("2026-08-29T00:00:00.000000000Z".to_owned())),
+        Arc::new(|| Ok("2026-08-29T00:00:00.000Z".to_owned())),
         &agent,
         Arc::clone(&process),
     )
@@ -267,6 +268,7 @@ fn production_group_constants() -> BTreeMap<String, BTreeMap<String, MethodClass
         ("threadSearch.v1", THREAD_SEARCH_METHODS.as_slice()),
         ("workspacePolicy.v1", WORKSPACE_POLICY_METHODS.as_slice()),
         ("workspaceFolders.v1", WORKSPACE_FOLDER_METHODS.as_slice()),
+        ("environments.v1", ENVIRONMENT_METHODS.as_slice()),
         ("usage.v1", USAGE_METHODS.as_slice()),
     ]
     .into_iter()
@@ -304,7 +306,7 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
         .values()
         .flat_map(|methods| methods.keys().cloned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(expected_methods.len(), 65);
+    assert_eq!(expected_methods.len(), 67);
 
     let production = production_fixture(false);
     assert_eq!(production.host.extension_capabilities(), expected_methods);
@@ -324,13 +326,14 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
     let admin =
         Arc::new(ClientAdminRoutes::new(admin_root.path(), process).expect("admin authority"));
     let routes = admin.routes();
-    assert_eq!(routes.len(), 2);
+    assert_eq!(routes.len(), 3);
     let composed = CompositeProductionEndpointRoutes::compose(routes.clone()).expect("compose");
     assert_eq!(
         composed.capabilities(),
         WORKSPACE_POLICY_METHODS
             .iter()
             .chain(WORKSPACE_FOLDER_METHODS.iter())
+            .chain(ENVIRONMENT_METHODS.iter())
             .map(|(name, _)| (*name).to_owned())
             .collect::<BTreeSet<_>>()
     );
@@ -351,7 +354,7 @@ async fn slice14f_gate_114_closed_dtos_authorities_and_idempotency() {
         .as_array()
         .expect("method cases")
         .clone();
-    assert_eq!(cases.len(), 65);
+    assert_eq!(cases.len(), 67);
     for (index, case) in cases.iter().enumerate() {
         let method = case["method"].as_str().expect("method");
         let payload = &case["request"];
@@ -482,7 +485,7 @@ async fn slice14f_gate_115_predecessor_disposition_and_no_special_cases() {
 #[tokio::test]
 async fn slice14f_gate_116_cross_capability_lifecycle() {
     let production = production_fixture(true);
-    assert_eq!(production.host.extension_capabilities().len(), 65);
+    assert_eq!(production.host.extension_capabilities().len(), 67);
 
     let package = write_plugin_package(production.root.path());
     let inspected = success_value(
@@ -778,4 +781,183 @@ async fn workspace_folders_round_trip_through_the_production_host() {
         missing.result.error.expect("absent").code,
         "workspace-not-found"
     );
+}
+
+#[tokio::test]
+async fn environment_protocol_defaults_errors_and_launch_scope() {
+    let production = production_fixture(true);
+    let repository = ConfigRepository::open(production.root.path()).unwrap();
+    let before =
+        success_value(&dispatch(&production, "env-list", "environments.list", json!({})).await);
+    assert_eq!(before["revision"], 0);
+    assert_eq!(before["environments"][0]["id"], "local");
+    assert!(
+        !production
+            .root
+            .path()
+            .join("config/environments.json")
+            .exists()
+    );
+
+    // A legacy driver's declared methods remain a valid subset; no new
+    // group or field is pushed via the unchanged host description or result.
+    let mut legacy = catalog_groups();
+    legacy.remove("environments.v1");
+    assert!(
+        legacy
+            .values()
+            .flat_map(|group| group.keys())
+            .all(|method| production.host.extension_capabilities().contains(method))
+    );
+    assert!(
+        !production.host.capabilities().contains("host.describe"),
+        "the retired describe method is not revived to push a new catalog"
+    );
+    let legacy = success_value(
+        &dispatch(
+            &production,
+            "legacy-create-env",
+            "session.create",
+            json!({"workspaceId":"workspace-1"}),
+        )
+        .await,
+    );
+    assert_eq!(legacy.as_object().unwrap().len(), 1);
+    let legacy_id = legacy["sessionId"].as_str().unwrap();
+    let legacy_scope = profile::SessionScope::locate(production.root.path(), legacy_id).unwrap();
+    assert_eq!(legacy_scope.environment(), "local");
+
+    // Unknown references are rejected before auto-registering a cwd or
+    // preparing a session intent/ledger. The endpoint RPC rejection itself
+    // may still have its ordinary durable response record.
+    fn files(path: &Path) -> BTreeMap<PathBuf, Vec<u8>> {
+        let mut result = BTreeMap::new();
+        for entry in fs::read_dir(path).unwrap() {
+            let entry = entry.unwrap();
+            if entry.file_type().unwrap().is_dir() {
+                result.extend(files(&entry.path()));
+            } else {
+                result.insert(entry.path(), fs::read(entry.path()).unwrap());
+            }
+        }
+        result
+    }
+    let operations = production
+        .root
+        .path()
+        .join("endpoint-management/operations");
+    let operations_before = files(&operations);
+    let workspaces_before = repository.workspaces().unwrap().len();
+    let project = tempfile::tempdir().unwrap();
+    let unknown = dispatch(
+        &production,
+        "unknown-env-create",
+        "session.create",
+        json!({"cwd":project.path(),"environment":"missing"}),
+    )
+    .await;
+    let error = unknown.result.error.unwrap();
+    assert_eq!(error.code, "environment-not-found");
+    assert_eq!(
+        serde_json::to_value(error.details).unwrap(),
+        json!({"environment":"missing"})
+    );
+    assert_eq!(repository.workspaces().unwrap().len(), workspaces_before);
+    assert_eq!(
+        fs::read_dir(production.root.path().join("threads"))
+            .unwrap()
+            .count(),
+        1
+    );
+    assert_eq!(files(&operations), operations_before);
+
+    let saved = success_value(&dispatch(&production, "save-offline", "environments.save",
+        json!({"expectedRevision":0,"environment":{"id":"offline","network":false,"toolchainRoots":[],"maxWallSeconds":60}})).await);
+    assert_eq!(saved["revision"], 1);
+    for (index, environment) in [json!(null), json!(false), json!("")]
+        .into_iter()
+        .enumerate()
+    {
+        assert_eq!(
+            dispatch(
+                &production,
+                &format!("bad-env-{index}"),
+                "session.create",
+                json!({"workspaceId":"workspace-1","environment":environment})
+            )
+            .await
+            .result
+            .error
+            .unwrap()
+            .code,
+            "bad-request"
+        );
+    }
+    let created = success_value(
+        &dispatch(
+            &production,
+            "offline-create",
+            "session.create",
+            json!({"workspaceId":"workspace-1","environment":"offline"}),
+        )
+        .await,
+    );
+    let id = created["sessionId"].as_str().unwrap();
+    let scope = profile::SessionScope::locate(production.root.path(), id).unwrap();
+    assert_eq!(scope.environment(), "offline");
+    let snapshot = scope.config(&repository).unwrap();
+    assert!(!snapshot.workspace.policy.network);
+    assert_eq!(snapshot.workspace.policy.max_wall_seconds, Some(60));
+    assert!(snapshot.workspace.policy.writable_roots.is_empty());
+    let ledger = fs::read(
+        production
+            .root
+            .path()
+            .join("threads")
+            .join(id)
+            .join("main.jsonl"),
+    )
+    .unwrap();
+    assert!(schema::validate_ledger(&ledger, 2).unwrap().read_only);
+
+    // Recover the create from its staged intent after the named definition
+    // changes. The published genesis/snapshots retain the originally chosen
+    // reference and bytes, while a subsequent launch sees the newer policy.
+    let digest = format!("{:x}", sha2::Sha256::digest(b"offline-create"));
+    let record = operations.join(&digest[..2]).join(format!("{digest}.json"));
+    let mut operation: Value = serde_json::from_slice(&fs::read(&record).unwrap()).unwrap();
+    assert_eq!(operation["intent"]["environment"], "offline");
+    operation["phase"] = "prepared".into();
+    operation.as_object_mut().unwrap().remove("response");
+    let mut bytes = serde_json_canonicalizer::to_vec(&operation).unwrap();
+    bytes.push(b'\n');
+    fs::write(&record, bytes).unwrap();
+    success_value(&dispatch(&production, "update-offline", "environments.save",
+        json!({"expectedRevision":1,"environment":{"id":"offline","network":true,"toolchainRoots":[],"maxWallSeconds":120}})).await);
+    fs::rename(
+        production.root.path().join("threads").join(id),
+        production.root.path().join("detached-create"),
+    )
+    .unwrap();
+    endpoint::ManagementStore::open_at_with_queue_driver(
+        production.root.path(),
+        "2026-08-29T00:01:00.000Z",
+        None,
+    )
+    .unwrap();
+    assert_eq!(
+        fs::read(
+            production
+                .root
+                .path()
+                .join("threads")
+                .join(id)
+                .join("main.jsonl")
+        )
+        .unwrap(),
+        ledger
+    );
+    let current = scope.config(&repository).unwrap();
+    assert_eq!(current.workspace.policy.max_wall_seconds, Some(120));
+    assert!(!snapshot.workspace.policy.network);
 }

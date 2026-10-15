@@ -234,7 +234,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_profiled_worker_inner` | `Ok` | [307](../../src/lib.rs#L307) | external-constructor-callback-or-unresolved |
 | `launch_worker_inner` | `snapshot_path` | [321](../../src/lib.rs#L321), [322](../../src/lib.rs#L322), [353](../../src/lib.rs#L353) | [tekes-supervisor::snapshot_path](../../src/lib.rs#L490) |
 | `launch_worker_inner` | `std::fs::read` | [326](../../src/lib.rs#L326), [327](../../src/lib.rs#L327), [354](../../src/lib.rs#L354) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `ConfigSnapshot::decode` | [328](../../src/lib.rs#L328) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L391) |
+| `launch_worker_inner` | `ConfigSnapshot::decode` | [328](../../src/lib.rs#L328) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L407) |
 | `launch_worker_inner` | `InstructionSnapshot::decode` | [329](../../src/lib.rs#L329) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L167) |
 | `launch_worker_inner` | `instruction.validate_against_config` | [330](../../src/lib.rs#L330) | receiver-type-required |
 | `launch_worker_inner` | `config.digest` | [331](../../src/lib.rs#L331) | receiver-type-required |

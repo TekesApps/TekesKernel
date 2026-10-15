@@ -29,7 +29,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/profile/src/config.rs](../../src/config.rs) | 108 | 1028 | [Symbols and calls](src--config.md) |
+| [crates/profile/src/config.rs](../../src/config.rs) | 110 | 1039 | [Symbols and calls](src--config.md) |
 | [crates/profile/src/instruction.rs](../../src/instruction.rs) | 51 | 449 | [Symbols and calls](src--instruction.md) |
 | [crates/profile/src/launch.rs](../../src/launch.rs) | 46 | 328 | [Symbols and calls](src--launch.md) |
 | [crates/profile/src/lib.rs](../../src/lib.rs) | 5 | 38 | [Symbols and calls](src--lib.md) |
@@ -51,7 +51,7 @@ flowchart LR
   m2["launch.rs"]
   m3["lib.rs"]
   m4["scope.rs"]
-  m0 -->|"12"| m3
+  m0 -->|"14"| m3
   m1 -->|"12"| m3
   m2 -->|"2"| m3
   m4 -->|"1"| m1

@@ -8,6 +8,7 @@ use std::path::{Path, PathBuf};
 use rustix::fs::{Mode, OFlags, fchmod, fstat, mkdirat, open, openat};
 use serde::{Deserialize, Serialize};
 use store::{AssetRef, AssetStore, AtomicPublisher, NamedLock};
+use unicode_normalization::UnicodeNormalization;
 
 use crate::{ProfileError, canonical_line, digest, parse_canonical};
 
@@ -247,6 +248,21 @@ impl Default for EnvironmentsConfig {
 }
 
 impl EnvironmentsConfig {
+    /// Validated canonical bytes for publication and durable administration intents.
+    pub fn canonical_bytes(&self) -> Result<Vec<u8>, ProfileError> {
+        let path = Path::new("config/environments.json");
+        validate_environments(self, false, path)?;
+        canonical_line(path, self)
+    }
+
+    /// Decode the same closed canonical format used for publication.
+    pub fn decode(bytes: &[u8]) -> Result<Self, ProfileError> {
+        let path = Path::new("config/environments.json");
+        let value = parse_canonical(path, bytes)?;
+        validate_environments(&value, false, path)?;
+        Ok(value)
+    }
+
     /// The environment named `id`: an authored entry, or the built-in
     /// `local` when the file does not define one.
     #[must_use]
@@ -1827,6 +1843,10 @@ fn validate_environments(
     let mut ids = BTreeSet::new();
     for environment in &value.environments {
         validate_id(&environment.id, "environment id", path)?;
+        if environment.id.len() > 512 || environment.id.nfc().collect::<String>() != environment.id
+        {
+            return invalid(path, "environment id must be NFC and at most 512 bytes");
+        }
         if !ids.insert(environment.id.as_str()) {
             return invalid(path, "duplicate environment id");
         }

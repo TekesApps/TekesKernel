@@ -1415,6 +1415,7 @@ impl ProductionProcessHost {
             .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let session_id = management
             .create_session(SessionCreateOperation {
+                environment: None,
                 rpc_id: &claim.claim_id,
                 request_sha256: &request_sha256,
                 requested_session_id: None,
@@ -9464,7 +9465,7 @@ mod tests {
         assert_handshake_failure_reaps_worker(
             "while :; do :; done",
             Duration::from_secs(5),
-            Some("worker hello timed out"),
+            "worker hello timed out",
         );
     }
 
@@ -9474,7 +9475,7 @@ mod tests {
         assert_handshake_failure_reaps_worker(
             "printf '%s\\n' 'not-json'; while :; do :; done",
             Duration::from_secs(5),
-            None,
+            "invalid JSON: expected ident at line 1 column 2",
         );
     }
 
@@ -9484,7 +9485,38 @@ mod tests {
         assert_handshake_failure_reaps_worker(
             "exit 0",
             Duration::from_secs(5),
-            Some("worker exited before hello"),
+            "worker exited before hello",
+        );
+    }
+
+    /// A child need not reach user code or write a witness for the production
+    /// hello deadline and pre-adoption guard to time out and reap it.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn worker_without_a_startup_witness_times_out_and_is_reaped() {
+        let child = std::process::Command::new("/bin/sleep")
+            .arg("30")
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .expect("native silent child");
+        let pid = child.id() as libc::pid_t;
+        let mut guard = WorkerHandshakeGuard {
+            child: Some(child),
+            credential_control: None,
+            credential_broker: None,
+        };
+        let mut reader = BufReader::new(guard.child_mut().stdout.take().unwrap());
+        let error = read_worker_hello(&mut reader, Instant::now() + Duration::from_millis(20))
+            .expect_err("no startup output must hit the hello deadline");
+        assert!(error.to_string().contains("worker hello timed out"));
+        drop(guard);
+        // SAFETY: signal 0 only probes the PID; the guard must have reaped it.
+        assert_eq!(unsafe { libc::kill(pid, 0) }, -1);
+        assert_eq!(
+            std::io::Error::last_os_error().raw_os_error(),
+            Some(libc::ESRCH)
         );
     }
 
@@ -9492,7 +9524,7 @@ mod tests {
     fn assert_handshake_failure_reaps_worker(
         behavior: &str,
         timeout: Duration,
-        expected_message: Option<&str>,
+        expected_message: &str,
     ) {
         let root = tempfile::tempdir().expect("process host root");
         let workspace = root.path().join("workspace");
@@ -9527,12 +9559,47 @@ mod tests {
         fs::write(
             &bin,
             format!(
-                "#!/bin/sh\nprintf '%s\\n' \"$$\" > '{}'\n{behavior}\n",
+                "#!/bin/sh\nif [ \"$1\" = --fixture-preflight ]; then exit 0; fi\nprintf '%s\\n' \"$$\" > '{}'\n{behavior}\n",
                 pid_file.display()
             ),
         )
         .expect("fake worker");
         fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        // A new temporary executable script can wait before /bin/sh's first
+        // instruction on macOS. Exercise that cold exec outside the hello
+        // deadline so these cases test malformed/EOF/timeout cleanup, rather
+        // than assuming the fixture reached user code within five seconds.
+        // Preflight exits before writing the PID or running `behavior`; no
+        // credential broker or worker descriptors have been created yet.
+        let mut preflight = std::process::Command::new(&bin)
+            .arg("--fixture-preflight")
+            .env_clear()
+            .stdin(std::process::Stdio::null())
+            .stdout(std::process::Stdio::null())
+            .stderr(std::process::Stdio::null())
+            .spawn()
+            .expect("fixture preflight");
+        let preflight_deadline = Instant::now() + Duration::from_secs(20);
+        loop {
+            match preflight.try_wait() {
+                Ok(Some(status)) => {
+                    assert!(status.success(), "fixture preflight failed: {status}");
+                    break;
+                }
+                Ok(None) if Instant::now() < preflight_deadline => {
+                    std::thread::sleep(Duration::from_millis(10));
+                }
+                status => {
+                    let _ = preflight.kill();
+                    let _ = preflight.wait();
+                    panic!("fixture preflight did not complete: {status:?}");
+                }
+            }
+        }
+        assert!(
+            !pid_file.exists(),
+            "preflight must not provide the PID witness"
+        );
         let helper = root.path().join("tekes-helper");
         fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
         fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
@@ -9567,12 +9634,10 @@ mod tests {
             Err(error) => error,
         };
         assert_eq!(error.bootstrap_code(), "protocol-mismatch");
-        if let Some(message) = expected_message {
-            assert!(
-                error.to_string().contains(message),
-                "unexpected error: {error}"
-            );
-        }
+        assert!(
+            error.to_string().ends_with(expected_message),
+            "unexpected error: {error}"
+        );
         let pid = fs::read_to_string(&pid_file)
             .expect("worker pid witness")
             .trim()

@@ -475,6 +475,11 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
     )
     .expect("operation JSON");
     operation["phase"] = Value::String("prepared".to_owned());
+    // Older prepared intents predate explicit environment selection.
+    operation["intent"]
+        .as_object_mut()
+        .unwrap()
+        .remove("environment");
     operation.as_object_mut().unwrap().remove("response");
     let mut bytes = serde_json_canonicalizer::to_vec(&operation).expect("canonical operation");
     bytes.push(b'\n');
@@ -587,7 +592,14 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
             .expect("session ledger");
     let genesis: Value = serde_json::from_str(ledger.lines().next().unwrap()).expect("genesis");
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], 2);
+    assert_eq!(genesis["min_reader"], schema::FOLDERS_READER);
+    assert!(genesis["folders"].is_array());
+    assert!(
+        schema::validate_ledger(ledger.as_bytes(), schema::FOLDERS_READER - 1)
+            .expect("older reader can inspect the session")
+            .read_only,
+        "a preset must not lower the recorded folders' reader gate"
+    );
     assert_eq!(genesis["preset"]["base"], "general");
     assert_eq!(
         genesis["preset"]["tools"],
@@ -1667,7 +1679,8 @@ fn fork_can_replace_the_preset_of_its_destination() {
     let replaced = value(&replaced)["sessionId"].as_str().unwrap().to_owned();
     let genesis = genesis_of(&replaced);
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], 2);
+    assert_eq!(genesis["min_reader"], schema::FOLDERS_READER);
+    assert_eq!(genesis["folders"], genesis_of(SESSION)["folders"]);
     let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("fork preset");
     assert_eq!(preset.layers[0].id(), "reviewer");
     assert_eq!(
@@ -1681,6 +1694,12 @@ fn fork_can_replace_the_preset_of_its_destination() {
             .join("main.jsonl"),
     )
     .expect("forked ledger");
+    assert!(
+        schema::validate_ledger(&copied, schema::FOLDERS_READER - 1)
+            .expect("older reader can inspect the fork")
+            .read_only,
+        "replacing a preset must not lower the inherited folders' reader gate"
+    );
     assert_eq!(
         schema::validate_ledger(&copied, schema::READER_VERSION)
             .expect("forked ledger validates")

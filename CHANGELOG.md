@@ -6,6 +6,11 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+- Development toward 0.8.0: optional `environments.v1` list/save administration
+  and `session.create {environment}` select a named launch-time reference.
+  Saves use revision CAS and durable retries; running snapshots stay fixed.
+  ClientKit environment integration remains separate; legacy create defaults to `local`.
+
 ### Added
 - `session.create {cwd}` registers a `cwd` that no workspace folder matches,
   exactly as `workspace.create` would (seeded policy, metadata), instead of
@@ -20,7 +25,7 @@ workspace version in `Cargo.toml`.
   the network off, lower the wall-time cap and add read-only toolchain roots,
   never writable roots. `local` leaves the workspace policy as it is.
 - Genesis `environment` and `folders`: `session.create` records the
-  environment (`local`) and the stable ids of the session's folders. They are
+  environment (requested ID, default `local`) and the stable ids of the session's folders. They are
   references resolved at launch (relocation is followed), not frozen paths.
   Sessions without them read as `local` with every workspace folder
   (`profile::SessionScope::environment` / `folders`).

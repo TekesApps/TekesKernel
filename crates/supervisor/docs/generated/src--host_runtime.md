@@ -358,7 +358,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `store.gc_rewrite_debris` | [225](../../src/host_runtime.rs#L225) | receiver-type-required |
 | `prepare_storage` | `crate::boot_trace::phase` | [226](../../src/host_runtime.rs#L226) | [tekes-supervisor::boot_trace::phase](../../src/boot_trace.rs#L60) |
 | `prepare_storage` | `profile::ConfigRepository::open(root)         .map_err` | [231](../../src/host_runtime.rs#L231) | receiver-type-required |
-| `prepare_storage` | `profile::ConfigRepository::open` | [231](../../src/host_runtime.rs#L231) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L786) |
+| `prepare_storage` | `profile::ConfigRepository::open` | [231](../../src/host_runtime.rs#L231) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
 | `prepare_storage` | `DaemonError::invalid_config` | [232](../../src/host_runtime.rs#L232) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `prepare_storage` | `error.to_string` | [232](../../src/host_runtime.rs#L232) | receiver-type-required |
 | `prepare_storage` | `Ok` | [233](../../src/host_runtime.rs#L233) | external-constructor-callback-or-unresolved |
@@ -400,7 +400,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `is_icloud_mobile_documents_path` | `path.components` | [295](../../src/host_runtime.rs#L295) | receiver-type-required |
 | `is_icloud_mobile_documents_path` | `OsStr::new` | [300](../../src/host_runtime.rs#L300), [303](../../src/host_runtime.rs#L303) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `ConfigRepository::open(authority_root)         .map_err` | [319](../../src/host_runtime.rs#L319) | receiver-type-required |
-| `assemble_application_endpoint_host` | `ConfigRepository::open` | [319](../../src/host_runtime.rs#L319) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L786) |
+| `assemble_application_endpoint_host` | `ConfigRepository::open` | [319](../../src/host_runtime.rs#L319) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L802) |
 | `assemble_application_endpoint_host` | `DaemonError::invalid_config` | [320](../../src/host_runtime.rs#L320), [323](../../src/host_runtime.rs#L323), [325](../../src/host_runtime.rs#L325), [328](../../src/host_runtime.rs#L328), [352](../../src/host_runtime.rs#L352), [366](../../src/host_runtime.rs#L366), [369](../../src/host_runtime.rs#L369), [393](../../src/host_runtime.rs#L393), [401](../../src/host_runtime.rs#L401) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `assemble_application_endpoint_host` | `error.to_string` | [320](../../src/host_runtime.rs#L320), [323](../../src/host_runtime.rs#L323), [325](../../src/host_runtime.rs#L325), [328](../../src/host_runtime.rs#L328), [352](../../src/host_runtime.rs#L352), [366](../../src/host_runtime.rs#L366), [369](../../src/host_runtime.rs#L369), [384](../../src/host_runtime.rs#L384), [405](../../src/host_runtime.rs#L405), [421](../../src/host_runtime.rs#L421) | receiver-type-required |
 | `assemble_application_endpoint_host` | `InstructionResolver::new(user_agent_dir, std::iter::empty::<&Path>())         .capture()         .map_err` | [321](../../src/host_runtime.rs#L321) | receiver-type-required |
@@ -441,7 +441,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_application_endpoint_host` | `command_clock` | [384](../../src/host_runtime.rs#L384) | external-constructor-callback-or-unresolved |
 | `assemble_application_endpoint_host` | `DaemonError::corrupt` | [389](../../src/host_runtime.rs#L389), [405](../../src/host_runtime.rs#L405), [421](../../src/host_runtime.rs#L421) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L588) |
 | `assemble_application_endpoint_host` | `ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))             .map_err` | [392](../../src/host_runtime.rs#L392) | receiver-type-required |
-| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [392](../../src/host_runtime.rs#L392) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L41) |
+| `assemble_application_endpoint_host` | `ClientAdminRoutes::new` | [392](../../src/host_runtime.rs#L392) | [tekes-supervisor::client_admin::ClientAdminRoutes::new](../../src/client_admin.rs#L46) |
 | `assemble_application_endpoint_host` | `extensions.routes` | [395](../../src/host_runtime.rs#L395) | receiver-type-required |
 | `assemble_application_endpoint_host` | `extension_routes.extend` | [396](../../src/host_runtime.rs#L396) | receiver-type-required |
 | `assemble_application_endpoint_host` | `admin_routes.routes` | [396](../../src/host_runtime.rs#L396) | receiver-type-required |
