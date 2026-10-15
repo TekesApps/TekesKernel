@@ -14,7 +14,19 @@ workspace version in `Cargo.toml`.
   operation keyed by an id derived from the request's rpc id, so a retried
   create resumes it. The response is unchanged.
 
+### Added
+- Genesis `environment` and `folders`: `session.create` records the
+  environment (`local`) and the stable ids of the session's folders. They are
+  references resolved at launch (relocation is followed), not frozen paths.
+  Sessions without them read as `local` with every workspace folder
+  (`profile::SessionScope::environment` / `folders`). The fields do not take
+  effect on configuration yet.
+
 ### Changed
+- Sessions derived from another (fork, `context` start) copy one closed set
+  of genesis fields (`schema::GENESIS_INHERITED_FIELDS`); fork builds that
+  part of its genesis from the list, so a new field cannot be dropped
+  silently.
 - One resolver for a session's configuration scope (`profile::SessionScope`):
   the workspace and folder binding come only from the session's genesis, and
   every capture of instructions uses the same three inputs (the service
@@ -24,6 +36,10 @@ workspace version in `Cargo.toml`.
   the file, root, resource and tool catalog reads.
 
 ### Fixed
+- A session started by the `context` tool dropped the caller's
+  `folder_binding`, `identity_profile` and `preset`. In a multi-folder
+  workspace it could not resolve its configuration at all, and it lost the
+  caller's preset. It now inherits the same fields as a fork.
 - `session.create` and `session.fork {preset}` validated a preset's `skills`
   against instructions read from `<home>/.agents` and
   `<home>/.agents/workspaces/<id>` (with `<home>` the storage root), while the

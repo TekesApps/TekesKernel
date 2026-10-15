@@ -13,6 +13,17 @@ pub struct SessionScope {
     session_folder: PathBuf,
     workspace_id: String,
     folder_binding: Option<String>,
+    environment: Option<String>,
+    folders: Option<Vec<String>>,
+}
+
+/// One of a session's folders: its stable id and its current path as the
+/// workspace records it. The id is what the session records; the path
+/// follows relocation.
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct FolderRecord {
+    pub id: String,
+    pub path: String,
 }
 
 impl SessionScope {
@@ -60,10 +71,29 @@ impl SessionScope {
             })?
             .to_owned();
         let folder_binding = genesis.string_field("folder_binding").map(str::to_owned);
+        let environment = genesis.string_field("environment").map(str::to_owned);
+        let raw = serde_json::to_value(genesis.raw()).map_err(|error| {
+            ProfileError::InvalidReference {
+                path: ledger.clone(),
+                reason: error.to_string(),
+            }
+        })?;
+        let folders = raw
+            .get("folders")
+            .and_then(serde_json::Value::as_array)
+            .map(|folders| {
+                folders
+                    .iter()
+                    .filter_map(serde_json::Value::as_str)
+                    .map(str::to_owned)
+                    .collect()
+            });
         Ok(Self {
             session_folder,
             workspace_id,
             folder_binding,
+            environment,
+            folders,
         })
     }
 
@@ -78,6 +108,8 @@ impl SessionScope {
             session_folder: session_folder.into(),
             workspace_id: workspace_id.into(),
             folder_binding,
+            environment: None,
+            folders: None,
         }
     }
 
@@ -94,6 +126,43 @@ impl SessionScope {
     #[must_use]
     pub fn folder_binding(&self) -> Option<&str> {
         self.folder_binding.as_deref()
+    }
+
+    /// The environment the session runs in: its genesis `environment`, or
+    /// [`schema::DEFAULT_ENVIRONMENT`] for a session that predates the field.
+    #[must_use]
+    pub fn environment(&self) -> &str {
+        self.environment
+            .as_deref()
+            .unwrap_or(schema::DEFAULT_ENVIRONMENT)
+    }
+
+    /// The session's folders with their current paths: the ids its genesis
+    /// records, or every workspace folder for a session that predates them.
+    /// A recorded id the workspace no longer has is an error, never skipped.
+    pub fn folders(
+        &self,
+        repository: &ConfigRepository,
+    ) -> Result<Vec<FolderRecord>, ProfileError> {
+        let workspace = repository.workspace(&self.workspace_id)?;
+        let ids = self
+            .folders
+            .clone()
+            .unwrap_or_else(|| workspace.folder_ids());
+        ids.into_iter()
+            .map(|id| {
+                let path = workspace.path_for_binding(&id).ok_or_else(|| {
+                    ProfileError::InvalidReference {
+                        path: self.session_folder.join("main.jsonl"),
+                        reason: format!("session folder {id} is not in its workspace"),
+                    }
+                })?;
+                Ok(FolderRecord {
+                    id,
+                    path: path.to_owned(),
+                })
+            })
+            .collect()
     }
 
     /// The configuration the session's next worker launch captures,
@@ -158,6 +227,10 @@ mod tests {
     use crate::{WorkspaceConfig, WorkspaceFolder};
 
     fn write_genesis(folder: &Path, binding: Option<&str>) {
+        write_genesis_with(folder, binding, serde_json::json!({}));
+    }
+
+    fn write_genesis_with(folder: &Path, binding: Option<&str>, extra: serde_json::Value) {
         std::fs::create_dir_all(folder).unwrap();
         let mut genesis = serde_json::json!({
             "config":{"digest":"cfg"},"format":1,"kind":"genesis","min_reader":1,
@@ -168,6 +241,9 @@ mod tests {
         });
         if let Some(binding) = binding {
             genesis["folder_binding"] = binding.into();
+        }
+        for (field, value) in extra.as_object().unwrap() {
+            genesis[field] = value.clone();
         }
         std::fs::write(
             folder.join("main.jsonl"),
@@ -256,5 +332,78 @@ mod tests {
                 session.workspace.cwd.iter().map(Path::new),
             )
         );
+    }
+
+    #[test]
+    fn environment_and_folders_come_from_the_genesis_or_the_workspace() {
+        let root = tempfile::tempdir().unwrap();
+        let first = root.path().join("first");
+        let second = root.path().join("second");
+        std::fs::create_dir_all(&first).unwrap();
+        std::fs::create_dir_all(&second).unwrap();
+        let repository = ConfigRepository::open(root.path()).unwrap();
+        let path = |dir: &Path| dir.canonicalize().unwrap().to_string_lossy().into_owned();
+        repository
+            .publish_workspace(
+                0,
+                &WorkspaceConfig {
+                    format: 1,
+                    revision: 1,
+                    id: "workspace-1".to_owned(),
+                    name: "Workspace".to_owned(),
+                    cwd: Vec::new(),
+                    folders: vec![
+                        WorkspaceFolder {
+                            id: "folder-0001".to_owned(),
+                            path: path(&first),
+                        },
+                        WorkspaceFolder {
+                            id: "folder-0002".to_owned(),
+                            path: path(&second),
+                        },
+                    ],
+                    policy: None,
+                },
+            )
+            .unwrap();
+        let record = |id: &str, dir: &Path| FolderRecord {
+            id: id.to_owned(),
+            path: path(dir),
+        };
+        let folder = root.path().join("threads").join("a");
+
+        // A session that predates the fields: `local`, every workspace folder.
+        write_genesis(&folder, Some("folder-0002"));
+        let legacy = SessionScope::for_session_folder(&folder).unwrap();
+        assert_eq!(legacy.environment(), "local");
+        assert_eq!(
+            legacy.folders(&repository).unwrap(),
+            vec![
+                record("folder-0001", &first),
+                record("folder-0002", &second)
+            ]
+        );
+
+        // Recorded fields win, in recorded order.
+        write_genesis_with(
+            &folder,
+            Some("folder-0002"),
+            serde_json::json!({"environment":"sandboxed","folders":["folder-0002"]}),
+        );
+        let recorded = SessionScope::for_session_folder(&folder).unwrap();
+        assert_eq!(recorded.environment(), "sandboxed");
+        assert_eq!(
+            recorded.folders(&repository).unwrap(),
+            vec![record("folder-0002", &second)]
+        );
+
+        // A recorded folder the workspace no longer has is an error.
+        write_genesis_with(
+            &folder,
+            None,
+            serde_json::json!({"folders":["folder-0009"]}),
+        );
+        let missing = SessionScope::for_session_folder(&folder).unwrap();
+        assert!(missing.folders(&repository).is_err());
     }
 }

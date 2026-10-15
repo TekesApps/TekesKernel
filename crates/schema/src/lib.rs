@@ -17,6 +17,42 @@ pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 /// prompt (spec event §Genesis).
 pub const READER_VERSION: u64 = 2;
 
+/// Genesis fields a session started from another session's scope (a fork,
+/// or a `context` start) copies verbatim: where it runs, with which
+/// configuration and preset. Fork additionally carries `format` and remaps
+/// `seed` and `parent`; every other field is set by the operation itself.
+pub const GENESIS_INHERITED_FIELDS: &[&str] = &[
+    "workspace",
+    "folder_binding",
+    "environment",
+    "folders",
+    "resume",
+    "config",
+    "instruction",
+    "identity_profile",
+    "preset",
+];
+
+/// Genesis fields the creating operation always sets for the new ledger.
+pub const GENESIS_OPERATION_FIELDS: &[&str] = &[
+    "v",
+    "seq",
+    "ts",
+    "kind",
+    "thread",
+    "format",
+    "min_reader",
+    "min_writer",
+    "origin_key",
+    "origin_tuple",
+    "ephemeral",
+    "seed",
+    "parent",
+];
+
+/// The environment a session without a genesis `environment` runs in.
+pub const DEFAULT_ENVIRONMENT: &str = "local";
+
 use thiserror::Error;
 
 #[derive(Debug, Error)]

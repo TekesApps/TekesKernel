@@ -1716,7 +1716,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_secret_authorities` | `worker_binary.into` | [811](../../src/process_host.rs#L811) | receiver-type-required |
 | `open_with_secret_authorities` | `validate_worker_binary` | [812](../../src/process_host.rs#L812) | [tekes-supervisor::process_host::validate_worker_binary](../../src/process_host.rs#L6616) |
 | `open_with_secret_authorities` | `ConfigRepository::open(&root)             .map_err` | [813](../../src/process_host.rs#L813) | receiver-type-required |
-| `open_with_secret_authorities` | `ConfigRepository::open` | [813](../../src/process_host.rs#L813) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `open_with_secret_authorities` | `ConfigRepository::open` | [813](../../src/process_host.rs#L813) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
 | `open_with_secret_authorities` | `DaemonError::invalid_config` | [814](../../src/process_host.rs#L814) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `open_with_secret_authorities` | `error.to_string` | [814](../../src/process_host.rs#L814), [816](../../src/process_host.rs#L816), [818](../../src/process_host.rs#L818), [827](../../src/process_host.rs#L827) | receiver-type-required |
 | `open_with_secret_authorities` | `NativeEndpoint::open(&root).map_err` | [816](../../src/process_host.rs#L816) | receiver-type-required |
@@ -1773,7 +1773,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_workspace_policy_candidate` | `policy.clone` | [952](../../src/process_host.rs#L952) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `profile::workspace_instructions(             &self.repository,             workspace_id,             &self.user_agent_dir,             &config,         )         .and_then(&#124;resolver&#124; resolver.capture())         .map_err` | [953](../../src/process_host.rs#L953) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `profile::workspace_instructions(             &self.repository,             workspace_id,             &self.user_agent_dir,             &config,         )         .and_then` | [953](../../src/process_host.rs#L953) | receiver-type-required |
-| `validate_workspace_policy_candidate` | `profile::workspace_instructions` | [953](../../src/process_host.rs#L953) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L142) |
+| `validate_workspace_policy_candidate` | `profile::workspace_instructions` | [953](../../src/process_host.rs#L953) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L211) |
 | `validate_workspace_policy_candidate` | `resolver.capture` | [959](../../src/process_host.rs#L959) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `instruction.meet_workspace_policy` | [961](../../src/process_host.rs#L961) | receiver-type-required |
 | `validate_workspace_policy_candidate` | `effective.allowed_tools.iter().collect::<BTreeSet<_>>` | [963](../../src/process_host.rs#L963) | receiver-type-required |
@@ -1871,7 +1871,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_scope` | `endpoint::validate_session_id` | [1149](../../src/process_host.rs#L1149) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
 | `session_scope` | `DaemonError::invalid_config` | [1150](../../src/process_host.rs#L1150), [1152](../../src/process_host.rs#L1152) | [tekes-supervisor::host_runtime::DaemonError::invalid_config](../../src/host_runtime.rs#L584) |
 | `session_scope` | `profile::SessionScope::locate(&self.root, session_id)             .map_err` | [1151](../../src/process_host.rs#L1151) | receiver-type-required |
-| `session_scope` | `profile::SessionScope::locate` | [1151](../../src/process_host.rs#L1151) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L21) |
+| `session_scope` | `profile::SessionScope::locate` | [1151](../../src/process_host.rs#L1151) | [profile::scope::SessionScope::locate](../../../profile/src/scope.rs#L32) |
 | `client_session_roots` | `self.session_scope` | [1163](../../src/process_host.rs#L1163) | [tekes-supervisor::process_host::ProductionProcessHost::session_scope](../../src/process_host.rs#L1148) |
 | `client_session_roots` | `scope             .config(&self.repository)             .map_err` | [1164](../../src/process_host.rs#L1164) | receiver-type-required |
 | `client_session_roots` | `scope             .config` | [1164](../../src/process_host.rs#L1164) | receiver-type-required |
@@ -1914,7 +1914,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `client_tool_catalog` | `error.to_string` | [1224](../../src/process_host.rs#L1224), [1232](../../src/process_host.rs#L1232), [1236](../../src/process_host.rs#L1236), [1250](../../src/process_host.rs#L1250) | receiver-type-required |
 | `client_tool_catalog` | `profile::workspace_instructions(             &self.repository,             workspace_id,             &self.user_agent_dir,             &config,         )         .and_then(&#124;resolver&#124; resolver.capture())         .map_err` | [1225](../../src/process_host.rs#L1225) | receiver-type-required |
 | `client_tool_catalog` | `profile::workspace_instructions(             &self.repository,             workspace_id,             &self.user_agent_dir,             &config,         )         .and_then` | [1225](../../src/process_host.rs#L1225) | receiver-type-required |
-| `client_tool_catalog` | `profile::workspace_instructions` | [1225](../../src/process_host.rs#L1225) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L142) |
+| `client_tool_catalog` | `profile::workspace_instructions` | [1225](../../src/process_host.rs#L1225) | [profile::scope::workspace_instructions](../../../profile/src/scope.rs#L211) |
 | `client_tool_catalog` | `resolver.capture` | [1231](../../src/process_host.rs#L1231) | receiver-type-required |
 | `client_tool_catalog` | `self             .mcp_runtime             .prepare_workspace(workspace_id)             .map_err` | [1233](../../src/process_host.rs#L1233) | receiver-type-required |
 | `client_tool_catalog` | `self             .mcp_runtime             .prepare_workspace` | [1233](../../src/process_host.rs#L1233) | receiver-type-required |
@@ -2952,7 +2952,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_control` | `handler.with_dynamic_routes` | [3598](../../src/process_host.rs#L3598) | receiver-type-required |
 | `handle_tool_control` | `handle.dynamic_catalog.clone` | [3598](../../src/process_host.rs#L3598) | receiver-type-required |
 | `handle_tool_control` | `ToolControlSession::new` | [3600](../../src/process_host.rs#L3600) | [tekes-supervisor::tool_control::ToolControlSession::new](../../src/tool_control.rs#L125) |
-| `handle_tool_control` | `ProductionToolControlPolicy::new` | [3604](../../src/process_host.rs#L3604) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L875) |
+| `handle_tool_control` | `ProductionToolControlPolicy::new` | [3604](../../src/process_host.rs#L3604) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L870) |
 | `handle_tool_control` | `tools::SecretScanner::default` | [3604](../../src/process_host.rs#L3604) | external-constructor-callback-or-unresolved |
 | `handle_tool_control` | `session             .handle_line(line)             .map_err` | [3606](../../src/process_host.rs#L3606) | receiver-type-required |
 | `handle_tool_control` | `session             .handle_line` | [3606](../../src/process_host.rs#L3606) | receiver-type-required |
@@ -2983,7 +2983,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `handle_tool_continuation` | `handle.dynamic_catalog.clone` | [3643](../../src/process_host.rs#L3643) | receiver-type-required |
 | `handle_tool_continuation` | `handler.continue_task` | [3645](../../src/process_host.rs#L3645) | receiver-type-required |
 | `handle_tool_continuation` | `ProductionToolControlPolicy::new(tools::SecretScanner::default())             .apply_continuation` | [3646](../../src/process_host.rs#L3646) | receiver-type-required |
-| `handle_tool_continuation` | `ProductionToolControlPolicy::new` | [3646](../../src/process_host.rs#L3646) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L875) |
+| `handle_tool_continuation` | `ProductionToolControlPolicy::new` | [3646](../../src/process_host.rs#L3646) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L870) |
 | `handle_tool_continuation` | `tools::SecretScanner::default` | [3646](../../src/process_host.rs#L3646) | external-constructor-callback-or-unresolved |
 | `handle_tool_continuation` | `worker_control::continuation::encode_tool_continuation_result(&response)             .map_err` | [3648](../../src/process_host.rs#L3648) | receiver-type-required |
 | `handle_tool_continuation` | `worker_control::continuation::encode_tool_continuation_result` | [3648](../../src/process_host.rs#L3648) | [worker-control::continuation::encode_tool_continuation_result](../../../worker-control/src/continuation.rs#L287) |
@@ -4201,7 +4201,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `scoped_client_file_path` | `target         .strip_prefix` | [6407](../../src/process_host.rs#L6407) | receiver-type-required |
 | `scoped_client_file_path` | `Ok` | [6413](../../src/process_host.rs#L6413) | external-constructor-callback-or-unresolved |
 | `session_workspace_binding` | `profile::SessionScope::for_ledger(ledger).map_err` | [6419](../../src/process_host.rs#L6419) | receiver-type-required |
-| `session_workspace_binding` | `profile::SessionScope::for_ledger` | [6419](../../src/process_host.rs#L6419) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L41) |
+| `session_workspace_binding` | `profile::SessionScope::for_ledger` | [6419](../../src/process_host.rs#L6419) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L52) |
 | `session_workspace_binding` | `DaemonError::store` | [6420](../../src/process_host.rs#L6420) | [tekes-supervisor::host_runtime::DaemonError::store](../../src/host_runtime.rs#L550) |
 | `session_workspace_binding` | `DaemonError::corrupt` | [6421](../../src/process_host.rs#L6421) | [tekes-supervisor::host_runtime::DaemonError::corrupt](../../src/host_runtime.rs#L588) |
 | `session_workspace_binding` | `other.to_string` | [6421](../../src/process_host.rs#L6421) | receiver-type-required |
@@ -5098,7 +5098,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `fs::create_dir` | [8516](../../src/process_host.rs#L8516), [8517](../../src/process_host.rs#L8517) | external-constructor-callback-or-unresolved |
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `fs::create_dir(&second).expect` | [8517](../../src/process_host.rs#L8517) | receiver-type-required |
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `profile::ConfigRepository::open(root.path()).expect` | [8518](../../src/process_host.rs#L8518) | receiver-type-required |
-| `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `profile::ConfigRepository::open` | [8518](../../src/process_host.rs#L8518) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `profile::ConfigRepository::open` | [8518](../../src/process_host.rs#L8518) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `repository             .publish_workspace(                 0,                 &profile::WorkspaceConfig {                     format: 1,                     revision: 1,                     id: "workspace-tools".to_owned(),                     name: "Workspace".to_owned(),                     cwd: Vec::new(),                     folders: vec![                         profile::WorkspaceFolder {                             id: "primary".to_owned(),                             path: first.display().to_string(),                         },                         profile::WorkspaceFolder {                             id: "secondary".to_owned(),                             path: second.display().to_string(),                         },                     ],                     policy: None,                 },             )             .expect` | [8519](../../src/process_host.rs#L8519) | receiver-type-required |
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `repository             .publish_workspace` | [8519](../../src/process_host.rs#L8519) | receiver-type-required |
 | `tool_launch_policy_uses_selected_folder_without_dropping_other_roots` | `"workspace-tools".to_owned` | [8525](../../src/process_host.rs#L8525) | receiver-type-required |
@@ -5135,7 +5135,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `fs::canonicalize(&workspace).expect` | [8647](../../src/process_host.rs#L8647) | receiver-type-required |
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `fs::canonicalize` | [8647](../../src/process_host.rs#L8647) | external-constructor-callback-or-unresolved |
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `profile::ConfigRepository::open(root.path()).expect` | [8648](../../src/process_host.rs#L8648) | receiver-type-required |
-| `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `profile::ConfigRepository::open` | [8648](../../src/process_host.rs#L8648) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L688) |
+| `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `profile::ConfigRepository::open` | [8648](../../src/process_host.rs#L8648) | [profile::config::ConfigRepository::open](../../../profile/src/config.rs#L704) |
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `repository             .publish_workspace(                 0,                 &profile::WorkspaceConfig {                     format: 1,                     revision: 1,                     id: "ws".to_owned(),                     name: "ws".to_owned(),                     cwd: vec![workspace.to_string_lossy().into_owned()],                     folders: Vec::new(),                     policy: Some(profile::WorkspacePolicy::default()),                 },             )             .expect` | [8649](../../src/process_host.rs#L8649) | receiver-type-required |
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `repository             .publish_workspace` | [8649](../../src/process_host.rs#L8649) | receiver-type-required |
 | `slice14c_gate_103_production_claim_uses_management_and_delivery_authorities` | `"ws".to_owned` | [8655](../../src/process_host.rs#L8655), [8656](../../src/process_host.rs#L8656), [8690](../../src/process_host.rs#L8690) | receiver-type-required |

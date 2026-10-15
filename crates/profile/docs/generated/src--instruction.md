@@ -232,7 +232,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_and_publish_for_binding` | `assets.root().to_path_buf` | [142](../../src/instruction.rs#L142) | receiver-type-required |
 | `resolve_and_publish_for_binding` | `assets.root` | [142](../../src/instruction.rs#L142) | receiver-type-required |
 | `resolve_and_publish_for_binding` | `"thread asset directory has no session folder".to_owned` | [143](../../src/instruction.rs#L143) | receiver-type-required |
-| `resolve_and_publish_for_binding` | `crate::SessionScope::from_parts` | [145](../../src/instruction.rs#L145) | [profile::scope::SessionScope::from_parts](../../src/scope.rs#L72) |
+| `resolve_and_publish_for_binding` | `crate::SessionScope::from_parts` | [145](../../src/instruction.rs#L145) | [profile::scope::SessionScope::from_parts](../../src/scope.rs#L102) |
 | `resolve_and_publish_for_binding` | `folder_binding.map` | [148](../../src/instruction.rs#L148) | receiver-type-required |
 | `resolve_and_publish_for_binding` | `scope.config` | [150](../../src/instruction.rs#L150) | receiver-type-required |
 | `resolve_and_publish_for_binding` | `scope             .instructions(repository, user_agent_dir.as_ref(), &config)?             .capture` | [151](../../src/instruction.rs#L151) | receiver-type-required |

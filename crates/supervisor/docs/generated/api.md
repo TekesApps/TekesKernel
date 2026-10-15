@@ -332,10 +332,10 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::with_dynamic_routes](../../src/production_tool_control.rs#L284) | `pub` | no resolved direct caller |
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::runtime](../../src/production_tool_control.rs#L295) | `pub` | no resolved direct caller |
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::continue_task](../../src/production_tool_control.rs#L375) | `pub` | no resolved direct caller |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy](../../src/production_tool_control.rs#L869) | `pub` | not a function |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L875) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::handle_tool_control](../../src/process_host.rs#L3579); [tekes-supervisor::process_host::ProductionProcessHost::handle_tool_continuation](../../src/process_host.rs#L3614); [tekes-worker::live_tests::live_kernel_turn](../../../worker/src/live_tests.rs#L38) |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation](../../src/production_tool_control.rs#L885) | `pub` | no resolved direct caller |
-| [tekes-supervisor::production_tool_control::SupervisorOperationError](../../src/production_tool_control.rs#L1464) | `pub` | not a function |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy](../../src/production_tool_control.rs#L864) | `pub` | not a function |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L870) | `pub` | [tekes-supervisor::process_host::ProductionProcessHost::handle_tool_control](../../src/process_host.rs#L3579); [tekes-supervisor::process_host::ProductionProcessHost::handle_tool_continuation](../../src/process_host.rs#L3614); [tekes-worker::live_tests::live_kernel_turn](../../../worker/src/live_tests.rs#L38) |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation](../../src/production_tool_control.rs#L880) | `pub` | no resolved direct caller |
+| [tekes-supervisor::production_tool_control::SupervisorOperationError](../../src/production_tool_control.rs#L1489) | `pub` | not a function |
 | [tekes-supervisor::request_index::IndexedRequest](../../src/request_index.rs#L25) | `pub(crate)` | not a function |
 | [tekes-supervisor::request_index::RequestIndex](../../src/request_index.rs#L46) | `pub(crate)` | not a function |
 | [tekes-supervisor::request_index::RequestIndex::insert](../../src/request_index.rs#L60) | `pub(crate)` | no resolved direct caller |

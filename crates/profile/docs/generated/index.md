@@ -28,12 +28,12 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/profile/src/config.rs](../../src/config.rs) | 96 | 938 | [Symbols and calls](src--config.md) |
+| [crates/profile/src/config.rs](../../src/config.rs) | 97 | 946 | [Symbols and calls](src--config.md) |
 | [crates/profile/src/instruction.rs](../../src/instruction.rs) | 51 | 457 | [Symbols and calls](src--instruction.md) |
 | [crates/profile/src/launch.rs](../../src/launch.rs) | 46 | 328 | [Symbols and calls](src--launch.md) |
 | [crates/profile/src/lib.rs](../../src/lib.rs) | 5 | 38 | [Symbols and calls](src--lib.md) |
 | [crates/profile/src/resources.rs](../../src/resources.rs) | 41 | 327 | [Symbols and calls](src--resources.md) |
-| [crates/profile/src/scope.rs](../../src/scope.rs) | 15 | 112 | [Symbols and calls](src--scope.md) |
+| [crates/profile/src/scope.rs](../../src/scope.rs) | 20 | 182 | [Symbols and calls](src--scope.md) |
 | [crates/profile/tests/slice8_launch_bindings.rs](../../tests/slice8_launch_bindings.rs) | 18 | 146 | `inventory.json` |
 | [crates/profile/tests/storage_layout.rs](../../tests/storage_layout.rs) | 16 | 308 | `inventory.json` |
 | [crates/profile/tests/web_search_config.rs](../../tests/web_search_config.rs) | 1 | 4 | `inventory.json` |

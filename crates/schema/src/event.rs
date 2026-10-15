@@ -466,8 +466,36 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
         ));
     }
     required_str(object, "workspace", Some(seq))?;
-    if object.contains_key("folder_binding") {
-        required_id(object, "folder_binding", seq)?;
+    let folder_binding = if object.contains_key("folder_binding") {
+        Some(required_id(object, "folder_binding", seq)?)
+    } else {
+        None
+    };
+    // The session's environment and folders (spec event §Genesis). Older
+    // sessions carry neither and read as `local` with every workspace folder.
+    if object.contains_key("environment") {
+        required_id(object, "environment", seq)?;
+    }
+    if let Some(folders) = optional_array(object, "folders", seq)? {
+        let mut ids = std::collections::BTreeSet::new();
+        for folder in folders {
+            let id = folder
+                .as_str()
+                .filter(|id| !id.is_empty())
+                .ok_or_else(|| SchemaError::event(Some(seq), "folders must be folder ids"))?;
+            if !ids.insert(id) {
+                return Err(SchemaError::event(Some(seq), "folders repeat a folder id"));
+            }
+        }
+        if ids.is_empty() {
+            return Err(SchemaError::event(Some(seq), "folders must not be empty"));
+        }
+        if folder_binding.is_some_and(|binding| !ids.contains(binding)) {
+            return Err(SchemaError::event(
+                Some(seq),
+                "folder_binding must name one of folders",
+            ));
+        }
     }
     if let Some(identity) = object.get("identity_profile")
         && !matches!(identity.as_str(), Some("auto" | "coding" | "general"))
