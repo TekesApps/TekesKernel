@@ -15,7 +15,7 @@ use endpoint::{DurableHandoffProof, EndpointHostCall, MethodClass, RpcDurableIde
 use plugins::{
     InstallOptions, MacOsNativeHelperVerifier, PluginReceipt, PluginSource, PluginStore,
 };
-use profile::ResourceCatalog;
+use profile::{ConfigRepository, ResourceCatalog};
 use schema::{EventKind, IJsonValue};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
@@ -414,6 +414,9 @@ impl ProductionClientExtensions {
                 )) as Arc<dyn ProductionEndpointRoutes>
             })
             .collect::<Vec<_>>();
+        routes.push(Arc::new(crate::folder_trust::FolderTrustRoutes::new(
+            self.root.clone(),
+        )));
         routes.push(Arc::new(McpManagementRoutes::new(
             self.process.mcp_runtime(),
         )));
@@ -450,14 +453,34 @@ impl ProductionClientExtensions {
     fn workspace_resource_catalog(
         &self,
         workspace_id: &str,
-    ) -> Result<&ResourceCatalog, ProductionRouteFailure> {
-        self.workspace_resources.get(workspace_id).ok_or_else(|| {
-            failure(
-                "resource-not-found",
-                "Workspace resource catalog was not found",
-                serde_json::json!({}),
-            )
-        })
+    ) -> Result<ResourceCatalog, ProductionRouteFailure> {
+        // Real workspace resources are re-resolved on every request so grants
+        // and revocations are visible without restarting the endpoint.
+        if ConfigRepository::open(&self.root)
+            .and_then(|repo| repo.workspace(workspace_id))
+            .is_ok()
+        {
+            return self
+                .process
+                .client_scope_resources(workspace_id, None)
+                .map_err(|error| {
+                    failure(
+                        "resource-not-found",
+                        "Resources are unavailable",
+                        serde_json::json!({"reason":error.to_string()}),
+                    )
+                });
+        }
+        self.workspace_resources
+            .get(workspace_id)
+            .cloned()
+            .ok_or_else(|| {
+                failure(
+                    "resource-not-found",
+                    "Workspace resource catalog was not found",
+                    serde_json::json!({}),
+                )
+            })
     }
 
     fn plugin_operation(
@@ -752,6 +775,7 @@ struct PluginGrantsRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ResourceListRequest {
     workspace_id: String,
+    session_id: Option<String>,
     source: String,
     after: Option<String>,
     limit: Option<usize>,
@@ -760,6 +784,7 @@ struct ResourceListRequest {
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ResourceReadRequest {
     workspace_id: String,
+    session_id: Option<String>,
     reference: Value,
     uri: String,
 }
@@ -2234,7 +2259,22 @@ impl ProductionClientExtensions {
         }
         match request.source.as_str() {
             "skill" => {
-                let catalog = self.workspace_resource_catalog(&request.workspace_id)?;
+                let catalog = if request.session_id.is_some() {
+                    self.process
+                        .client_scope_resources(
+                            &request.workspace_id,
+                            request.session_id.as_deref(),
+                        )
+                        .map_err(|error| {
+                            failure(
+                                "resource-not-found",
+                                "Resources are unavailable",
+                                serde_json::json!({"reason":error.to_string()}),
+                            )
+                        })?
+                } else {
+                    self.workspace_resource_catalog(&request.workspace_id)?
+                };
                 let mut items = Vec::new();
                 for package in catalog.skill_packages() {
                     for resource in &package.resources {
@@ -2277,9 +2317,29 @@ impl ProductionClientExtensions {
                 encode(&value)
             }
             "mcp" => {
+                let config = request
+                    .session_id
+                    .as_deref()
+                    .map(|session| {
+                        self.process
+                            .client_scope_config(&request.workspace_id, Some(session))
+                    })
+                    .transpose()
+                    .map_err(|error| {
+                        failure(
+                            "resource-not-found",
+                            "Session scope is unavailable",
+                            serde_json::json!({"reason":error.to_string()}),
+                        )
+                    })?;
                 let (generation, all) = self
                     .mcp
-                    .list_resource_catalog(&request.workspace_id)
+                    .list_resource_catalog_in_scope(
+                        &request.workspace_id,
+                        config
+                            .as_ref()
+                            .map(|config| config.workspace.cwd.as_slice()),
+                    )
                     .map_err(map_mcp_resource_error)?;
                 let start = match request.after {
                     None => 0,
@@ -2330,7 +2390,22 @@ impl ProductionClientExtensions {
                         serde_json::json!({}),
                     ));
                 }
-                let catalog = self.workspace_resource_catalog(&request.workspace_id)?;
+                let catalog = if request.session_id.is_some() {
+                    self.process
+                        .client_scope_resources(
+                            &request.workspace_id,
+                            request.session_id.as_deref(),
+                        )
+                        .map_err(|error| {
+                            failure(
+                                "resource-not-found",
+                                "Resources are unavailable",
+                                serde_json::json!({"reason":error.to_string()}),
+                            )
+                        })?
+                } else {
+                    self.workspace_resource_catalog(&request.workspace_id)?
+                };
                 let package = catalog.skill(&name).map_err(|_| {
                     failure(
                         "resource-not-found",
@@ -2345,16 +2420,13 @@ impl ProductionClientExtensions {
                         serde_json::json!({}),
                     ));
                 }
-                let text = self
-                    .workspace_resource_catalog(&request.workspace_id)?
-                    .skill_resource(&name, &request.uri)
-                    .map_err(|_| {
-                        failure(
-                            "resource-not-found",
-                            "Resource was not found",
-                            serde_json::json!({}),
-                        )
-                    })?;
+                let text = catalog.skill_resource(&name, &request.uri).map_err(|_| {
+                    failure(
+                        "resource-not-found",
+                        "Resource was not found",
+                        serde_json::json!({}),
+                    )
+                })?;
                 if text.len() > 4 * 1024 * 1024 {
                     return Err(failure(
                         "resource-too-large",
@@ -2370,7 +2442,32 @@ impl ProductionClientExtensions {
                 server,
                 binding_digest,
             } => {
-                if server.workspace_id != request.workspace_id {
+                let config = request
+                    .session_id
+                    .as_deref()
+                    .map(|session| {
+                        self.process
+                            .client_scope_config(&request.workspace_id, Some(session))
+                    })
+                    .transpose()
+                    .map_err(|error| {
+                        failure(
+                            "resource-not-found",
+                            "Session scope is unavailable",
+                            serde_json::json!({"reason":error.to_string()}),
+                        )
+                    })?;
+                if !self
+                    .mcp
+                    .server_visible(
+                        &request.workspace_id,
+                        config
+                            .as_ref()
+                            .map(|config| config.workspace.cwd.as_slice()),
+                        &server,
+                    )
+                    .map_err(map_mcp_resource_error)?
+                {
                     return Err(failure(
                         "resource-not-found",
                         "Resource was not found",
@@ -3096,6 +3193,12 @@ pub(crate) fn failure(code: &str, message: &str, details: Value) -> ProductionRo
     ProductionRouteFailure::new(code, message, details)
 }
 
+pub const FOLDER_TRUST_METHODS: [(&str, MethodClass); 3] = [
+    ("folders.trust.status", MethodClass::ReadOnly),
+    ("folders.trust.request", MethodClass::Mutation),
+    ("folders.trust.revoke", MethodClass::Mutation),
+];
+
 #[cfg(test)]
 mod tests {
     use std::fs;
@@ -3807,9 +3910,12 @@ mod tests {
         fs::create_dir_all(&agent).expect("agent root");
         let repository = profile::ConfigRepository::open(root.path()).expect("config repository");
         let mut catalogs = BTreeMap::new();
+        let trust_root_path = root.path().to_path_buf();
+        let project_root = tempfile::tempdir().unwrap();
+        let trust = profile::FolderAuthorityStore::new(&trust_root_path);
         for id in ["workspace-a", "workspace-b"] {
             let skill = "shared";
-            let project = root.path().join(format!("project-{id}"));
+            let project = project_root.path().join(format!("project-{id}"));
             let package = project.join(format!(".agent/skills/{skill}"));
             fs::create_dir_all(&package).expect("skill package");
             fs::write(
@@ -3819,6 +3925,11 @@ mod tests {
                 ),
             )
             .expect("skill");
+            let rev = trust.registry_revision().unwrap();
+            trust.request(id, rev, &project).unwrap();
+            trust
+                .grant_from_host(&format!("grant-{id}"), rev + 1, id)
+                .unwrap();
             repository
                 .publish_workspace(
                     0,
@@ -3839,6 +3950,7 @@ mod tests {
             .expect("workspace roots")
         {
             let snapshot = profile::InstructionResolver::new(&agent, &roots)
+                .with_folder_authority(&trust_root_path)
                 .capture()
                 .expect("snapshot");
             catalogs.insert(

@@ -16,10 +16,10 @@ use tekes_supervisor::client_admin::{
     ClientAdminRoutes, ENVIRONMENT_METHODS, WORKSPACE_FOLDER_METHODS, WORKSPACE_POLICY_METHODS,
 };
 use tekes_supervisor::client_extensions::{
-    APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, GOAL_METHODS,
-    HOST_FILE_METHODS, INITIAL_PRESET_METHODS, MCP_METHODS, PLUGIN_METHODS, RECOVERY_METHODS,
-    RESOURCE_METHODS, SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS, SUBAGENT_METHODS,
-    THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS,
+    APPROVAL_METHODS, ATTACHMENT_METHODS, FEEDBACK_METHODS, FILE_METHODS, FOLDER_TRUST_METHODS,
+    GOAL_METHODS, HOST_FILE_METHODS, INITIAL_PRESET_METHODS, MCP_METHODS, PLUGIN_METHODS,
+    RECOVERY_METHODS, RESOURCE_METHODS, SCHEDULE_METHODS, SESSION_PRESET_METHODS, SETTINGS_METHODS,
+    SUBAGENT_METHODS, THREAD_SEARCH_METHODS, TOOL_METHODS, USAGE_METHODS,
 };
 use tekes_supervisor::endpoint_host::{
     CompositeProductionEndpointRoutes, ProductionEndpointHost, ProductionEndpointRoutes,
@@ -264,6 +264,7 @@ fn production_group_constants() -> BTreeMap<String, BTreeMap<String, MethodClass
         ("tools.v1", TOOL_METHODS.as_slice()),
         ("plugins.v1", PLUGIN_METHODS.as_slice()),
         ("mcp.v1", MCP_METHODS.as_slice()),
+        ("folderTrust.v1", FOLDER_TRUST_METHODS.as_slice()),
         ("schedule.v1", SCHEDULE_METHODS.as_slice()),
         ("threadSearch.v1", THREAD_SEARCH_METHODS.as_slice()),
         ("workspacePolicy.v1", WORKSPACE_POLICY_METHODS.as_slice()),
@@ -306,7 +307,7 @@ fn slice14f_gate_113_catalog_negotiation_and_base_isolation() {
         .values()
         .flat_map(|methods| methods.keys().cloned())
         .collect::<BTreeSet<_>>();
-    assert_eq!(expected_methods.len(), 67);
+    assert_eq!(expected_methods.len(), 70);
 
     let production = production_fixture(false);
     assert_eq!(production.host.extension_capabilities(), expected_methods);
@@ -354,7 +355,7 @@ async fn slice14f_gate_114_closed_dtos_authorities_and_idempotency() {
         .as_array()
         .expect("method cases")
         .clone();
-    assert_eq!(cases.len(), 67);
+    assert_eq!(cases.len(), 70);
     for (index, case) in cases.iter().enumerate() {
         let method = case["method"].as_str().expect("method");
         let payload = &case["request"];
@@ -485,7 +486,7 @@ async fn slice14f_gate_115_predecessor_disposition_and_no_special_cases() {
 #[tokio::test]
 async fn slice14f_gate_116_cross_capability_lifecycle() {
     let production = production_fixture(true);
-    assert_eq!(production.host.extension_capabilities().len(), 67);
+    assert_eq!(production.host.extension_capabilities().len(), 70);
 
     let package = write_plugin_package(production.root.path());
     let inspected = success_value(

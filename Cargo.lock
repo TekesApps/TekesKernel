@@ -1952,6 +1952,7 @@ name = "test-support"
 version = "0.7.3"
 dependencies = [
  "engine",
+ "profile",
  "schema",
  "serde",
  "serde_json",

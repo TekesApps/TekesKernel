@@ -8,6 +8,8 @@ type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
 pub(super) struct LifecycleHooks {
     bindings: Vec<LifecycleHookBinding>,
+    instruction: InstructionSnapshot,
+    sources: std::collections::BTreeMap<String, profile::InstructionSource>,
     root: PathBuf,
     workspace: String,
     thread: String,
@@ -19,12 +21,17 @@ pub(super) struct LifecycleHooks {
 impl LifecycleHooks {
     pub(super) fn load(profile: &RuntimeProfile, ledger: &LockedLedger) -> Result<Option<Self>> {
         let mut bindings = Vec::new();
+        let mut sources = std::collections::BTreeMap::new();
         for (id, index) in &profile.instruction.effective.hooks {
             let source = &profile.instruction.sources[*index as usize];
+            if !profile.instruction.source_authorized(source) {
+                continue;
+            }
             let value: Value = serde_json::from_str(&source.content)?;
             if value["format"] == 2 {
                 let binding = tools::decode_lifecycle_hook_binding(source.content.as_bytes(), id)?;
                 if binding.enabled {
+                    sources.insert(binding.id.clone(), source.clone());
                     bindings.push(binding);
                 }
             }
@@ -60,6 +67,8 @@ impl LifecycleHooks {
             .to_owned();
         Ok(Some(Self {
             bindings,
+            sources,
+            instruction: profile.instruction.clone(),
             root,
             workspace: profile.config.workspace.id.clone(),
             thread,
@@ -100,6 +109,9 @@ impl LifecycleHooks {
         turn: u64,
         data: &Value,
     ) -> Result<Vec<String>> {
+        let _lease = self
+            .instruction
+            .admit_source(self.sources.get(&binding.id).ok_or("missing hook source")?)?;
         let event_id = hex(&serde_json_canonicalizer::to_vec(&json!({
             "thread": self.thread, "workspace": self.workspace, "binding": binding,
             "line": self.ledger_path.file_name().and_then(|name| name.to_str()),

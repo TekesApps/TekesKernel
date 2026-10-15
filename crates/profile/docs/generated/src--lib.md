@@ -8,11 +8,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [profile::ProfileError](../../src/lib.rs#L38) | enum_item | `pub` |  |
-| [profile::parse_canonical](../../src/lib.rs#L67) | function_item | `pub(crate)` |  |
-| [profile::canonical_line](../../src/lib.rs#L112) | function_item | `pub(crate)` |  |
-| [profile::digest](../../src/lib.rs#L126) | function_item | `pub(crate)` |  |
-| [profile::contains_null](../../src/lib.rs#L130) | function_item | `private` |  |
+| [profile::ProfileError](../../src/lib.rs#L42) | enum_item | `pub` |  |
+| [profile::parse_canonical](../../src/lib.rs#L71) | function_item | `pub(crate)` |  |
+| [profile::canonical_line](../../src/lib.rs#L116) | function_item | `pub(crate)` |  |
+| [profile::digest](../../src/lib.rs#L130) | function_item | `pub(crate)` |  |
+| [profile::contains_null](../../src/lib.rs#L134) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -35,6 +35,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `WorkspaceConfig` | `config::WorkspaceConfig` | `pub` |
 | `WorkspaceFolder` | `config::WorkspaceFolder` | `pub` |
 | `WorkspacePolicy` | `config::WorkspacePolicy` | `pub` |
+| `FolderAuthorityStore` | `folder_authority::FolderAuthorityStore` | `pub` |
+| `FolderEffectLease` | `folder_authority::FolderEffectLease` | `pub` |
+| `FolderIdentity` | `folder_authority::FolderIdentity` | `pub` |
+| `FolderTrust` | `folder_authority::FolderTrust` | `pub` |
+| `FolderTrustReceipt` | `folder_authority::FolderTrustReceipt` | `pub` |
 | `EffectiveInstructions` | `instruction::EffectiveInstructions` | `pub` |
 | `EffectivePolicy` | `instruction::EffectivePolicy` | `pub` |
 | `InstructionKind` | `instruction::InstructionKind` | `pub` |
@@ -73,12 +78,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `Digest` | `sha2::Digest` | `private` |
 | `Sha256` | `sha2::Sha256` | `private` |
 | `Error` | `thiserror::Error` | `private` |
+| `FolderSnapshotAuthority` | `instruction::FolderSnapshotAuthority` | `pub` |
 
 ## Module declarations
 
 | Module | Visibility | Attributes |
 |---|---|---|
 | `profile::config` | `private` |  |
+| `profile::folder_authority` | `private` |  |
 | `profile::instruction` | `private` |  |
 | `profile::launch` | `private` |  |
 | `profile::resources` | `private` |  |
@@ -109,32 +116,32 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `parse_canonical` | `path.into` | [71](../../src/lib.rs#L71) | receiver-type-required |
-| `parse_canonical` | `bytes.ends_with` | [72](../../src/lib.rs#L72) | receiver-type-required |
-| `parse_canonical` | `bytes.len` | [72](../../src/lib.rs#L72), [78](../../src/lib.rs#L78) | receiver-type-required |
-| `parse_canonical` | `bytes[..bytes.len() - 1].ends_with` | [72](../../src/lib.rs#L72) | receiver-type-required |
-| `parse_canonical` | `Err` | [73](../../src/lib.rs#L73), [90](../../src/lib.rs#L90), [101](../../src/lib.rs#L101) | external-constructor-callback-or-unresolved |
-| `parse_canonical` | `"expected one canonical JSON object followed by exactly one LF".to_owned` | [75](../../src/lib.rs#L75) | receiver-type-required |
-| `parse_canonical` | `schema::IJsonValue::parse(body).map_err` | [79](../../src/lib.rs#L79) | receiver-type-required |
-| `parse_canonical` | `schema::IJsonValue::parse` | [79](../../src/lib.rs#L79) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `parse_canonical` | `path.clone` | [80](../../src/lib.rs#L80), [86](../../src/lib.rs#L86), [97](../../src/lib.rs#L97) | receiver-type-required |
-| `parse_canonical` | `error.to_string` | [81](../../src/lib.rs#L81), [87](../../src/lib.rs#L87), [98](../../src/lib.rs#L98), [108](../../src/lib.rs#L108) | receiver-type-required |
-| `parse_canonical` | `value         .canonical_bytes()         .map_err` | [83](../../src/lib.rs#L83) | receiver-type-required |
-| `parse_canonical` | `value         .canonical_bytes` | [83](../../src/lib.rs#L83) | receiver-type-required |
-| `parse_canonical` | `"bytes are not RFC-8785 canonical".to_owned` | [92](../../src/lib.rs#L92) | receiver-type-required |
-| `parse_canonical` | `serde_json::from_slice(body).map_err` | [96](../../src/lib.rs#L96) | receiver-type-required |
-| `parse_canonical` | `serde_json::from_slice` | [96](../../src/lib.rs#L96) | external-constructor-callback-or-unresolved |
-| `parse_canonical` | `contains_null` | [100](../../src/lib.rs#L100) | [profile::contains_null](../../src/lib.rs#L130) |
-| `parse_canonical` | `"JSON null is not a substitute for an absent optional field".to_owned` | [103](../../src/lib.rs#L103) | receiver-type-required |
-| `parse_canonical` | `serde_json::from_value(json).map_err` | [106](../../src/lib.rs#L106) | receiver-type-required |
-| `parse_canonical` | `serde_json::from_value` | [106](../../src/lib.rs#L106) | external-constructor-callback-or-unresolved |
-| `canonical_line` | `path.into` | [116](../../src/lib.rs#L116) | receiver-type-required |
-| `canonical_line` | `serde_json_canonicalizer::to_vec(value).map_err` | [118](../../src/lib.rs#L118) | receiver-type-required |
-| `canonical_line` | `serde_json_canonicalizer::to_vec` | [118](../../src/lib.rs#L118) | external-constructor-callback-or-unresolved |
-| `canonical_line` | `error.to_string` | [120](../../src/lib.rs#L120) | receiver-type-required |
-| `canonical_line` | `bytes.push` | [122](../../src/lib.rs#L122) | receiver-type-required |
-| `canonical_line` | `Ok` | [123](../../src/lib.rs#L123) | external-constructor-callback-or-unresolved |
-| `contains_null` | `values.iter().any` | [133](../../src/lib.rs#L133) | receiver-type-required |
-| `contains_null` | `values.iter` | [133](../../src/lib.rs#L133) | receiver-type-required |
-| `contains_null` | `values.values().any` | [134](../../src/lib.rs#L134) | receiver-type-required |
-| `contains_null` | `values.values` | [134](../../src/lib.rs#L134) | receiver-type-required |
+| `parse_canonical` | `path.into` | [75](../../src/lib.rs#L75) | receiver-type-required |
+| `parse_canonical` | `bytes.ends_with` | [76](../../src/lib.rs#L76) | receiver-type-required |
+| `parse_canonical` | `bytes.len` | [76](../../src/lib.rs#L76), [82](../../src/lib.rs#L82) | receiver-type-required |
+| `parse_canonical` | `bytes[..bytes.len() - 1].ends_with` | [76](../../src/lib.rs#L76) | receiver-type-required |
+| `parse_canonical` | `Err` | [77](../../src/lib.rs#L77), [94](../../src/lib.rs#L94), [105](../../src/lib.rs#L105) | external-constructor-callback-or-unresolved |
+| `parse_canonical` | `"expected one canonical JSON object followed by exactly one LF".to_owned` | [79](../../src/lib.rs#L79) | receiver-type-required |
+| `parse_canonical` | `schema::IJsonValue::parse(body).map_err` | [83](../../src/lib.rs#L83) | receiver-type-required |
+| `parse_canonical` | `schema::IJsonValue::parse` | [83](../../src/lib.rs#L83) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `parse_canonical` | `path.clone` | [84](../../src/lib.rs#L84), [90](../../src/lib.rs#L90), [101](../../src/lib.rs#L101) | receiver-type-required |
+| `parse_canonical` | `error.to_string` | [85](../../src/lib.rs#L85), [91](../../src/lib.rs#L91), [102](../../src/lib.rs#L102), [112](../../src/lib.rs#L112) | receiver-type-required |
+| `parse_canonical` | `value         .canonical_bytes()         .map_err` | [87](../../src/lib.rs#L87) | receiver-type-required |
+| `parse_canonical` | `value         .canonical_bytes` | [87](../../src/lib.rs#L87) | receiver-type-required |
+| `parse_canonical` | `"bytes are not RFC-8785 canonical".to_owned` | [96](../../src/lib.rs#L96) | receiver-type-required |
+| `parse_canonical` | `serde_json::from_slice(body).map_err` | [100](../../src/lib.rs#L100) | receiver-type-required |
+| `parse_canonical` | `serde_json::from_slice` | [100](../../src/lib.rs#L100) | external-constructor-callback-or-unresolved |
+| `parse_canonical` | `contains_null` | [104](../../src/lib.rs#L104) | [profile::contains_null](../../src/lib.rs#L134) |
+| `parse_canonical` | `"JSON null is not a substitute for an absent optional field".to_owned` | [107](../../src/lib.rs#L107) | receiver-type-required |
+| `parse_canonical` | `serde_json::from_value(json).map_err` | [110](../../src/lib.rs#L110) | receiver-type-required |
+| `parse_canonical` | `serde_json::from_value` | [110](../../src/lib.rs#L110) | external-constructor-callback-or-unresolved |
+| `canonical_line` | `path.into` | [120](../../src/lib.rs#L120) | receiver-type-required |
+| `canonical_line` | `serde_json_canonicalizer::to_vec(value).map_err` | [122](../../src/lib.rs#L122) | receiver-type-required |
+| `canonical_line` | `serde_json_canonicalizer::to_vec` | [122](../../src/lib.rs#L122) | external-constructor-callback-or-unresolved |
+| `canonical_line` | `error.to_string` | [124](../../src/lib.rs#L124) | receiver-type-required |
+| `canonical_line` | `bytes.push` | [126](../../src/lib.rs#L126) | receiver-type-required |
+| `canonical_line` | `Ok` | [127](../../src/lib.rs#L127) | external-constructor-callback-or-unresolved |
+| `contains_null` | `values.iter().any` | [137](../../src/lib.rs#L137) | receiver-type-required |
+| `contains_null` | `values.iter` | [137](../../src/lib.rs#L137) | receiver-type-required |
+| `contains_null` | `values.values().any` | [138](../../src/lib.rs#L138) | receiver-type-required |
+| `contains_null` | `values.values` | [138](../../src/lib.rs#L138) | receiver-type-required |

@@ -298,7 +298,7 @@ where
     write_roots.sort();
     write_roots.dedup();
     let protected_roots = tools::exposed_protected_roots(
-        &tools::kernel_protected_roots(&storage_root),
+        &profile.config.protected_roots(&storage_root),
         &effective.writable_roots,
     );
     let sandbox_policy = SandboxPolicy {
@@ -518,16 +518,6 @@ pub(crate) fn preset_skill_catalog(
     Ok(catalog)
 }
 
-/// The Kernel-owned directories of the storage root that holds
-/// `thread_folder`; no tool call may name a writable path inside them.
-pub(crate) fn kernel_protected_roots(
-    thread_folder: &std::path::Path,
-) -> Result<Vec<String>, Box<dyn std::error::Error>> {
-    Ok(tools::kernel_protected_roots(
-        &storage_root_for_thread_folder(thread_folder)?,
-    ))
-}
-
 pub(crate) fn invocation_write_roots(
     profile: &RuntimeProfile,
     call: &provider::ToolCall,
@@ -637,7 +627,7 @@ pub(crate) fn invocation_write_roots(
     Ok(roots)
 }
 
-fn storage_root_for_thread_folder(
+pub(crate) fn storage_root_for_thread_folder(
     thread_folder: &std::path::Path,
 ) -> Result<PathBuf, Box<dyn std::error::Error>> {
     let parent = thread_folder

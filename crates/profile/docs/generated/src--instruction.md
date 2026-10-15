@@ -23,42 +23,47 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [profile::instruction::InstructionSource](../../src/instruction.rs#L75) | struct_item | `pub` |  |
 | [profile::instruction::EffectiveInstructions](../../src/instruction.rs#L85) | struct_item | `pub` |  |
 | [profile::instruction::InstructionSnapshot](../../src/instruction.rs#L95) | struct_item | `pub` |  |
-| [profile::instruction::EffectivePolicy](../../src/instruction.rs#L103) | struct_item | `pub` |  |
-| [profile::instruction::EffectivePolicy::digest](../../src/instruction.rs#L111) | function_item | `pub` |  |
-| [profile::instruction::LaunchProfile](../../src/instruction.rs#L117) | struct_item | `pub` |  |
-| [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../src/instruction.rs#L131) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L158) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::digest](../../src/instruction.rs#L163) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::decode](../../src/instruction.rs#L167) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::publish](../../src/instruction.rs#L173) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::validate_against_config](../../src/instruction.rs#L186) | function_item | `pub` |  |
-| [profile::instruction::InstructionSnapshot::meet_workspace_policy](../../src/instruction.rs#L240) | function_item | `pub` |  |
-| [profile::instruction::InstructionResolver](../../src/instruction.rs#L261) | struct_item | `pub` |  |
-| [profile::instruction::InstructionResolver::new](../../src/instruction.rs#L269) | function_item | `pub` |  |
-| [profile::instruction::InstructionResolver::new_scoped](../../src/instruction.rs#L284) | function_item | `pub` |  |
-| [profile::instruction::InstructionResolver::capture](../../src/instruction.rs#L299) | function_item | `pub` |  |
-| [profile::instruction::InstructionResolver::capture_with_hook](../../src/instruction.rs#L303) | function_item | `pub` |  |
-| [profile::instruction::InstructionResolver::scan](../../src/instruction.rs#L329) | function_item | `private` |  |
-| [profile::instruction::scan_origin](../../src/instruction.rs#L390) | function_item | `private` |  |
-| [profile::instruction::skill_text_resource](../../src/instruction.rs#L478) | function_item | `private` |  |
-| [profile::instruction::collect_files](../../src/instruction.rs#L506) | function_item | `private` |  |
-| [profile::instruction::maybe_source](../../src/instruction.rs#L538) | function_item | `private` |  |
-| [profile::instruction::read_stable_file](../../src/instruction.rs#L583) | function_item | `private` |  |
-| [profile::instruction::reject_directory_symlink](../../src/instruction.rs#L616) | function_item | `private` |  |
-| [profile::instruction::require_optional_directory](../../src/instruction.rs#L630) | function_item | `private` |  |
-| [profile::instruction::normalize_relative](../../src/instruction.rs#L641) | function_item | `private` |  |
-| [profile::instruction::normalize_logical](../../src/instruction.rs#L663) | function_item | `private` |  |
-| [profile::instruction::build_snapshot](../../src/instruction.rs#L678) | function_item | `private` |  |
-| [profile::instruction::derive_effective](../../src/instruction.rs#L689) | function_item | `private` |  |
-| [profile::instruction::resource_key](../../src/instruction.rs#L724) | function_item | `private` |  |
-| [profile::instruction::meet_policies](../../src/instruction.rs#L735) | function_item | `private` |  |
-| [profile::instruction::meet_optional_set](../../src/instruction.rs#L758) | function_item | `private` |  |
-| [profile::instruction::meet_required_set](../../src/instruction.rs#L769) | function_item | `private` |  |
-| [profile::instruction::meet_optional_cap](../../src/instruction.rs#L780) | function_item | `private` |  |
-| [profile::instruction::validate_settings](../../src/instruction.rs#L788) | function_item | `private` |  |
-| [profile::instruction::validate_snapshot](../../src/instruction.rs#L834) | function_item | `private` |  |
-| [profile::instruction::validate_source_path](../../src/instruction.rs#L937) | function_item | `private` |  |
-| [profile::instruction::source_order_key](../../src/instruction.rs#L957) | function_item | `private` |  |
+| [profile::instruction::FolderSnapshotAuthority](../../src/instruction.rs#L106) | struct_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::admit_source](../../src/instruction.rs#L112) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::source_authorized](../../src/instruction.rs#L133) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::admit_kind](../../src/instruction.rs#L138) | function_item | `pub` |  |
+| [profile::instruction::EffectivePolicy](../../src/instruction.rs#L149) | struct_item | `pub` |  |
+| [profile::instruction::EffectivePolicy::digest](../../src/instruction.rs#L157) | function_item | `pub` |  |
+| [profile::instruction::LaunchProfile](../../src/instruction.rs#L163) | struct_item | `pub` |  |
+| [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../src/instruction.rs#L177) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L205) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::digest](../../src/instruction.rs#L210) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::decode](../../src/instruction.rs#L214) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::publish](../../src/instruction.rs#L220) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::validate_against_config](../../src/instruction.rs#L233) | function_item | `pub` |  |
+| [profile::instruction::InstructionSnapshot::meet_workspace_policy](../../src/instruction.rs#L287) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver](../../src/instruction.rs#L308) | struct_item | `pub` |  |
+| [profile::instruction::InstructionResolver::new](../../src/instruction.rs#L317) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver::new_scoped](../../src/instruction.rs#L333) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver::with_folder_authority](../../src/instruction.rs#L350) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver::capture](../../src/instruction.rs#L355) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver::capture_with_hook](../../src/instruction.rs#L359) | function_item | `pub` |  |
+| [profile::instruction::InstructionResolver::scan](../../src/instruction.rs#L387) | function_item | `private` |  |
+| [profile::instruction::scan_origin](../../src/instruction.rs#L475) | function_item | `private` |  |
+| [profile::instruction::skill_text_resource](../../src/instruction.rs#L567) | function_item | `private` |  |
+| [profile::instruction::collect_files](../../src/instruction.rs#L595) | function_item | `private` |  |
+| [profile::instruction::maybe_source](../../src/instruction.rs#L627) | function_item | `private` |  |
+| [profile::instruction::read_stable_file](../../src/instruction.rs#L672) | function_item | `private` |  |
+| [profile::instruction::reject_directory_symlink](../../src/instruction.rs#L705) | function_item | `private` |  |
+| [profile::instruction::require_optional_directory](../../src/instruction.rs#L719) | function_item | `private` |  |
+| [profile::instruction::normalize_relative](../../src/instruction.rs#L730) | function_item | `private` |  |
+| [profile::instruction::normalize_logical](../../src/instruction.rs#L752) | function_item | `private` |  |
+| [profile::instruction::build_snapshot](../../src/instruction.rs#L767) | function_item | `private` |  |
+| [profile::instruction::derive_effective](../../src/instruction.rs#L779) | function_item | `private` |  |
+| [profile::instruction::resource_key](../../src/instruction.rs#L814) | function_item | `private` |  |
+| [profile::instruction::meet_policies](../../src/instruction.rs#L825) | function_item | `private` |  |
+| [profile::instruction::meet_optional_set](../../src/instruction.rs#L848) | function_item | `private` |  |
+| [profile::instruction::meet_required_set](../../src/instruction.rs#L859) | function_item | `private` |  |
+| [profile::instruction::meet_optional_cap](../../src/instruction.rs#L870) | function_item | `private` |  |
+| [profile::instruction::validate_settings](../../src/instruction.rs#L878) | function_item | `private` |  |
+| [profile::instruction::validate_snapshot](../../src/instruction.rs#L924) | function_item | `private` |  |
+| [profile::instruction::validate_source_path](../../src/instruction.rs#L1027) | function_item | `private` |  |
+| [profile::instruction::source_order_key](../../src/instruction.rs#L1047) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -94,116 +99,126 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–20: 31 direct edges</summary>
+<details><summary>Functions 1–20: 27 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["profile::instruction::EffectivePolicy::digest"]
-  n1["profile::instruction::LaunchProfile::resolve_and_publish_for_scope"]
-  n2["profile::instruction::InstructionSnapshot::canonical_bytes"]
-  n3["profile::instruction::InstructionSnapshot::digest"]
-  n4["profile::instruction::InstructionSnapshot::decode"]
-  n5["profile::instruction::InstructionSnapshot::publish"]
-  n6["profile::instruction::InstructionSnapshot::validate_against_config"]
-  n7["profile::instruction::InstructionSnapshot::meet_workspace_policy"]
-  n8["profile::instruction::InstructionResolver::new"]
-  n9["profile::instruction::InstructionResolver::new_scoped"]
-  n10["profile::instruction::InstructionResolver::capture"]
-  n11["profile::instruction::InstructionResolver::capture_with_hook"]
-  n12["profile::instruction::InstructionResolver::scan"]
-  n13["profile::instruction::scan_origin"]
-  n14["profile::instruction::InstructionSettings::decode"]
-  n15["profile::instruction::skill_text_resource"]
-  n16["profile::instruction::InstructionSettings::canonical_bytes"]
-  n17["profile::instruction::collect_files"]
-  n18["profile::instruction::maybe_source"]
-  n19["profile::instruction::read_stable_file"]
-  n20["profile::instruction::require_optional_directory"]
-  n21["profile::instruction::normalize_relative"]
-  n22["profile::instruction::normalize_logical"]
-  n23["profile::instruction::build_snapshot"]
-  n24["profile::instruction::meet_required_set"]
-  n25["profile::instruction::meet_optional_cap"]
-  n26["profile::instruction::validate_settings"]
-  n27["profile::instruction::validate_snapshot"]
-  n28["profile::canonical_line"]
-  n29["profile::digest"]
-  n30["profile::parse_canonical"]
-  n0 --> n28
-  n0 --> n29
-  n2 --> n27
-  n2 --> n28
-  n3 --> n2
-  n3 --> n29
-  n4 --> n27
+  n0["profile::folder_authority::FolderAuthorityStore::new"]
+  n1["profile::instruction::InstructionSnapshot::admit_source"]
+  n2["profile::instruction::InstructionSnapshot::source_authorized"]
+  n3["profile::instruction::InstructionSnapshot::admit_kind"]
+  n4["profile::instruction::EffectivePolicy::digest"]
+  n5["profile::instruction::LaunchProfile::resolve_and_publish_for_scope"]
+  n6["profile::instruction::InstructionSnapshot::canonical_bytes"]
+  n7["profile::instruction::InstructionSnapshot::digest"]
+  n8["profile::instruction::InstructionSnapshot::decode"]
+  n9["profile::instruction::InstructionSnapshot::publish"]
+  n10["profile::instruction::InstructionSnapshot::validate_against_config"]
+  n11["profile::instruction::InstructionSnapshot::meet_workspace_policy"]
+  n12["profile::instruction::InstructionResolver::new"]
+  n13["profile::instruction::InstructionResolver::new_scoped"]
+  n14["profile::instruction::InstructionResolver::with_folder_authority"]
+  n15["profile::instruction::InstructionResolver::capture"]
+  n16["profile::instruction::InstructionResolver::capture_with_hook"]
+  n17["profile::instruction::InstructionResolver::scan"]
+  n18["profile::instruction::InstructionSettings::decode"]
+  n19["profile::instruction::scan_origin"]
+  n20["profile::instruction::InstructionSettings::canonical_bytes"]
+  n21["profile::instruction::skill_text_resource"]
+  n22["profile::instruction::collect_files"]
+  n23["profile::instruction::maybe_source"]
+  n24["profile::instruction::require_optional_directory"]
+  n25["profile::instruction::build_snapshot"]
+  n26["profile::instruction::meet_required_set"]
+  n27["profile::instruction::meet_optional_cap"]
+  n28["profile::instruction::validate_settings"]
+  n29["profile::instruction::validate_snapshot"]
+  n30["profile::canonical_line"]
+  n31["profile::digest"]
+  n32["profile::parse_canonical"]
+  n1 --> n0
+  n2 --> n1
+  n3 --> n1
   n4 --> n30
-  n5 --> n2
-  n7 --> n24
-  n7 --> n25
-  n10 --> n11
-  n11 --> n12
-  n11 --> n23
-  n12 --> n13
-  n13 --> n15
-  n13 --> n17
-  n13 --> n18
-  n13 --> n20
-  n14 --> n26
-  n14 --> n30
-  n16 --> n26
-  n16 --> n28
-  n17 --> n17
-  n17 --> n20
-  n17 --> n21
-  n18 --> n19
-  n18 --> n22
-  n18 --> n26
-  n18 --> n29
-  n18 --> n30
+  n4 --> n31
+  n6 --> n29
+  n6 --> n30
+  n7 --> n6
+  n7 --> n31
+  n8 --> n29
+  n8 --> n32
+  n9 --> n6
+  n11 --> n26
+  n11 --> n27
+  n15 --> n16
+  n16 --> n17
+  n16 --> n25
+  n17 --> n0
+  n17 --> n19
+  n18 --> n28
+  n18 --> n32
+  n19 --> n21
+  n19 --> n22
+  n19 --> n23
+  n19 --> n24
+  n20 --> n28
+  n20 --> n30
 ```
 
 </details>
 
-<details><summary>Functions 21–35: 18 direct edges</summary>
+<details><summary>Functions 21–39: 26 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["profile::instruction::reject_directory_symlink"]
-  n1["profile::instruction::require_optional_directory"]
-  n2["profile::instruction::normalize_relative"]
-  n3["profile::instruction::normalize_logical"]
-  n4["profile::instruction::build_snapshot"]
-  n5["profile::instruction::derive_effective"]
-  n6["profile::instruction::resource_key"]
-  n7["profile::instruction::meet_policies"]
-  n8["profile::instruction::meet_optional_set"]
-  n9["profile::instruction::meet_required_set"]
-  n10["profile::instruction::meet_optional_cap"]
-  n11["profile::instruction::validate_settings"]
-  n12["profile::instruction::validate_snapshot"]
-  n13["profile::instruction::validate_source_path"]
-  n14["profile::instruction::source_order_key"]
-  n15["profile::digest"]
-  n16["profile::parse_canonical"]
-  n17["tools::lifecycle_hook::validate_instruction_hook"]
-  n1 --> n0
-  n2 --> n3
+  n0["profile::instruction::validate_source_path"]
+  n1["profile::instruction::source_order_key"]
+  n2["profile::instruction::skill_text_resource"]
+  n3["profile::instruction::collect_files"]
+  n4["profile::instruction::maybe_source"]
+  n5["profile::instruction::read_stable_file"]
+  n6["profile::instruction::reject_directory_symlink"]
+  n7["profile::instruction::require_optional_directory"]
+  n8["profile::instruction::normalize_relative"]
+  n9["profile::instruction::normalize_logical"]
+  n10["profile::instruction::build_snapshot"]
+  n11["profile::instruction::derive_effective"]
+  n12["profile::instruction::resource_key"]
+  n13["profile::instruction::meet_policies"]
+  n14["profile::instruction::meet_optional_set"]
+  n15["profile::instruction::meet_required_set"]
+  n16["profile::instruction::meet_optional_cap"]
+  n17["profile::instruction::validate_settings"]
+  n18["profile::instruction::validate_snapshot"]
+  n19["profile::digest"]
+  n20["profile::parse_canonical"]
+  n21["tools::lifecycle_hook::validate_instruction_hook"]
+  n0 --> n12
+  n3 --> n3
+  n3 --> n7
+  n3 --> n8
   n4 --> n5
-  n4 --> n12
-  n5 --> n6
-  n5 --> n7
-  n5 --> n16
-  n7 --> n8
-  n12 --> n3
-  n12 --> n5
-  n12 --> n6
-  n12 --> n11
-  n12 --> n13
-  n12 --> n14
-  n12 --> n15
-  n12 --> n16
-  n12 --> n17
-  n13 --> n6
+  n4 --> n9
+  n4 --> n17
+  n4 --> n19
+  n4 --> n20
+  n7 --> n6
+  n8 --> n9
+  n10 --> n11
+  n10 --> n18
+  n11 --> n12
+  n11 --> n13
+  n11 --> n20
+  n13 --> n14
+  n18 --> n0
+  n18 --> n1
+  n18 --> n9
+  n18 --> n11
+  n18 --> n12
+  n18 --> n17
+  n18 --> n19
+  n18 --> n20
+  n18 --> n21
 ```
 
 </details>
@@ -214,354 +229,390 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `decode` | `parse_canonical` | [44](../../src/instruction.rs#L44) | [profile::parse_canonical](../../src/lib.rs#L67) |
-| `decode` | `validate_settings` | [45](../../src/instruction.rs#L45) | [profile::instruction::validate_settings](../../src/instruction.rs#L788) |
+| `decode` | `parse_canonical` | [44](../../src/instruction.rs#L44) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `decode` | `validate_settings` | [45](../../src/instruction.rs#L45) | [profile::instruction::validate_settings](../../src/instruction.rs#L878) |
 | `decode` | `Path::new` | [45](../../src/instruction.rs#L45) | external-constructor-callback-or-unresolved |
 | `decode` | `Ok` | [46](../../src/instruction.rs#L46) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `validate_settings` | [50](../../src/instruction.rs#L50) | [profile::instruction::validate_settings](../../src/instruction.rs#L788) |
+| `canonical_bytes` | `validate_settings` | [50](../../src/instruction.rs#L50) | [profile::instruction::validate_settings](../../src/instruction.rs#L878) |
 | `canonical_bytes` | `Path::new` | [50](../../src/instruction.rs#L50) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L112) |
-| `digest` | `Ok` | [112](../../src/instruction.rs#L112) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [112](../../src/instruction.rs#L112) | [profile::digest](../../src/lib.rs#L126) |
-| `digest` | `canonical_line` | [112](../../src/instruction.rs#L112) | [profile::canonical_line](../../src/lib.rs#L112) |
-| `resolve_and_publish_for_scope` | `scope.config` | [137](../../src/instruction.rs#L137) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `scope             .instructions(repository, user_agent_dir.as_ref(), &config)?             .capture` | [138](../../src/instruction.rs#L138) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `scope             .instructions` | [138](../../src/instruction.rs#L138) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `user_agent_dir.as_ref` | [139](../../src/instruction.rs#L139) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `instruction.validate_against_config` | [141](../../src/instruction.rs#L141) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `instruction.meet_workspace_policy` | [142](../../src/instruction.rs#L142) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `config.publish` | [143](../../src/instruction.rs#L143) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `instruction.publish` | [144](../../src/instruction.rs#L144) | receiver-type-required |
-| `resolve_and_publish_for_scope` | `Ok` | [145](../../src/instruction.rs#L145) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `validate_snapshot` | [159](../../src/instruction.rs#L159) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L834) |
-| `canonical_bytes` | `canonical_line` | [160](../../src/instruction.rs#L160) | [profile::canonical_line](../../src/lib.rs#L112) |
-| `digest` | `Ok` | [164](../../src/instruction.rs#L164) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [164](../../src/instruction.rs#L164) | [profile::digest](../../src/lib.rs#L126) |
-| `digest` | `self.canonical_bytes` | [164](../../src/instruction.rs#L164) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L158) |
-| `decode` | `parse_canonical` | [168](../../src/instruction.rs#L168) | [profile::parse_canonical](../../src/lib.rs#L67) |
-| `decode` | `validate_snapshot` | [169](../../src/instruction.rs#L169) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L834) |
-| `decode` | `Ok` | [170](../../src/instruction.rs#L170) | external-constructor-callback-or-unresolved |
-| `publish` | `self.canonical_bytes` | [174](../../src/instruction.rs#L174) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L158) |
-| `publish` | `digest` | [175](../../src/instruction.rs#L175) | external-constructor-callback-or-unresolved |
-| `publish` | `assets.publish` | [176](../../src/instruction.rs#L176) | receiver-type-required |
-| `publish` | `Err` | [178](../../src/instruction.rs#L178) | external-constructor-callback-or-unresolved |
-| `publish` | `Ok` | [183](../../src/instruction.rs#L183) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `usize::try_from(workspace_index).map_err` | [192](../../src/instruction.rs#L192) | receiver-type-required |
-| `validate_against_config` | `usize::try_from` | [192](../../src/instruction.rs#L192) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `PathBuf::from` | [194](../../src/instruction.rs#L194), [202](../../src/instruction.rs#L202), [214](../../src/instruction.rs#L214), [219](../../src/instruction.rs#L219), [230](../../src/instruction.rs#L230) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `config.workspace.cwd.len` | [200](../../src/instruction.rs#L200) | receiver-type-required |
-| `validate_against_config` | `Err` | [201](../../src/instruction.rs#L201), [218](../../src/instruction.rs#L218), [229](../../src/instruction.rs#L229) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `fs::canonicalize(root).map_err` | [213](../../src/instruction.rs#L213) | receiver-type-required |
-| `validate_against_config` | `fs::canonicalize` | [213](../../src/instruction.rs#L213) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `error.to_string` | [215](../../src/instruction.rs#L215) | receiver-type-required |
-| `validate_against_config` | `canonical.to_str` | [217](../../src/instruction.rs#L217) | receiver-type-required |
-| `validate_against_config` | `Some` | [217](../../src/instruction.rs#L217) | external-constructor-callback-or-unresolved |
-| `validate_against_config` | `root.as_str` | [217](../../src/instruction.rs#L217) | receiver-type-required |
-| `validate_against_config` | `"instruction writable root is not canonical".to_owned` | [220](../../src/instruction.rs#L220) | receiver-type-required |
-| `validate_against_config` | `config                     .workspace                     .cwd                     .iter()                     .any` | [223](../../src/instruction.rs#L223) | receiver-type-required |
-| `validate_against_config` | `config                     .workspace                     .cwd                     .iter` | [223](../../src/instruction.rs#L223) | receiver-type-required |
-| `validate_against_config` | `canonical.starts_with` | [227](../../src/instruction.rs#L227) | receiver-type-required |
-| `validate_against_config` | `Ok` | [236](../../src/instruction.rs#L236) | external-constructor-callback-or-unresolved |
-| `meet_workspace_policy` | `instruction.network.unwrap_or` | [243](../../src/instruction.rs#L243) | receiver-type-required |
-| `meet_workspace_policy` | `meet_required_set` | [244](../../src/instruction.rs#L244), [248](../../src/instruction.rs#L248) | [profile::instruction::meet_required_set](../../src/instruction.rs#L769) |
-| `meet_workspace_policy` | `instruction.allowed_tools.as_deref` | [246](../../src/instruction.rs#L246) | receiver-type-required |
-| `meet_workspace_policy` | `instruction.writable_roots.as_deref` | [250](../../src/instruction.rs#L250) | receiver-type-required |
-| `meet_workspace_policy` | `meet_optional_cap` | [252](../../src/instruction.rs#L252) | [profile::instruction::meet_optional_cap](../../src/instruction.rs#L780) |
-| `new` | `user_agent_dir.as_ref().to_path_buf` | [274](../../src/instruction.rs#L274) | receiver-type-required |
-| `new` | `user_agent_dir.as_ref` | [274](../../src/instruction.rs#L274) | receiver-type-required |
-| `new` | `cwd                 .into_iter()                 .map(&#124;value&#124; value.as_ref().to_path_buf())                 .collect` | [276](../../src/instruction.rs#L276) | receiver-type-required |
-| `new` | `cwd                 .into_iter()                 .map` | [276](../../src/instruction.rs#L276) | receiver-type-required |
-| `new` | `cwd                 .into_iter` | [276](../../src/instruction.rs#L276) | receiver-type-required |
-| `new` | `value.as_ref().to_path_buf` | [278](../../src/instruction.rs#L278) | receiver-type-required |
-| `new` | `value.as_ref` | [278](../../src/instruction.rs#L278) | receiver-type-required |
-| `new_scoped` | `user_data_dir.as_ref().to_path_buf` | [290](../../src/instruction.rs#L290) | receiver-type-required |
-| `new_scoped` | `user_data_dir.as_ref` | [290](../../src/instruction.rs#L290) | receiver-type-required |
-| `new_scoped` | `Some` | [291](../../src/instruction.rs#L291) | external-constructor-callback-or-unresolved |
-| `new_scoped` | `workspace_data_dir.as_ref().to_path_buf` | [291](../../src/instruction.rs#L291) | receiver-type-required |
-| `new_scoped` | `workspace_data_dir.as_ref` | [291](../../src/instruction.rs#L291) | receiver-type-required |
-| `new_scoped` | `cwd                 .into_iter()                 .map(&#124;value&#124; value.as_ref().to_path_buf())                 .collect` | [292](../../src/instruction.rs#L292) | receiver-type-required |
-| `new_scoped` | `cwd                 .into_iter()                 .map` | [292](../../src/instruction.rs#L292) | receiver-type-required |
-| `new_scoped` | `cwd                 .into_iter` | [292](../../src/instruction.rs#L292) | receiver-type-required |
-| `new_scoped` | `value.as_ref().to_path_buf` | [294](../../src/instruction.rs#L294) | receiver-type-required |
-| `new_scoped` | `value.as_ref` | [294](../../src/instruction.rs#L294) | receiver-type-required |
-| `capture` | `self.capture_with_hook` | [300](../../src/instruction.rs#L300) | [profile::instruction::InstructionResolver::capture_with_hook](../../src/instruction.rs#L303) |
-| `capture_with_hook` | `self.scan` | [309](../../src/instruction.rs#L309) | [profile::instruction::InstructionResolver::scan](../../src/instruction.rs#L329) |
-| `capture_with_hook` | `after_scan` | [312](../../src/instruction.rs#L312), [318](../../src/instruction.rs#L318) | external-constructor-callback-or-unresolved |
-| `capture_with_hook` | `Err` | [316](../../src/instruction.rs#L316), [324](../../src/instruction.rs#L324) | external-constructor-callback-or-unresolved |
-| `capture_with_hook` | `previous.as_ref` | [319](../../src/instruction.rs#L319) | receiver-type-required |
-| `capture_with_hook` | `Some` | [319](../../src/instruction.rs#L319), [322](../../src/instruction.rs#L322) | external-constructor-callback-or-unresolved |
-| `capture_with_hook` | `build_snapshot` | [320](../../src/instruction.rs#L320) | [profile::instruction::build_snapshot](../../src/instruction.rs#L678) |
-| `scan` | `Vec::new` | [330](../../src/instruction.rs#L330) | external-constructor-callback-or-unresolved |
-| `scan` | `scan_origin` | [331](../../src/instruction.rs#L331), [338](../../src/instruction.rs#L338), [351](../../src/instruction.rs#L351) | [profile::instruction::scan_origin](../../src/instruction.rs#L390) |
-| `scan` | `self.cwd.iter().enumerate` | [340](../../src/instruction.rs#L340) | receiver-type-required |
-| `scan` | `self.cwd.iter` | [340](../../src/instruction.rs#L340) | receiver-type-required |
-| `scan` | `fs::canonicalize(cwd).map_err` | [341](../../src/instruction.rs#L341) | receiver-type-required |
-| `scan` | `fs::canonicalize` | [341](../../src/instruction.rs#L341) | external-constructor-callback-or-unresolved |
-| `scan` | `cwd.clone` | [342](../../src/instruction.rs#L342) | receiver-type-required |
-| `scan` | `error.to_string` | [343](../../src/instruction.rs#L343) | receiver-type-required |
-| `scan` | `canonical.is_dir` | [345](../../src/instruction.rs#L345) | receiver-type-required |
-| `scan` | `Err` | [346](../../src/instruction.rs#L346), [361](../../src/instruction.rs#L361), [368](../../src/instruction.rs#L368), [379](../../src/instruction.rs#L379) | external-constructor-callback-or-unresolved |
-| `scan` | `"workspace cwd is not a directory".to_owned` | [348](../../src/instruction.rs#L348) | receiver-type-required |
-| `scan` | `sources.len` | [360](../../src/instruction.rs#L360) | receiver-type-required |
-| `scan` | `ProfileError::LimitExceeded` | [361](../../src/instruction.rs#L361), [368](../../src/instruction.rs#L368) | external-constructor-callback-or-unresolved |
-| `scan` | `sources             .iter()             .map(&#124;source&#124; source.content.len() as u64)             .sum::<u64>` | [363](../../src/instruction.rs#L363) | receiver-type-required |
-| `scan` | `sources             .iter()             .map` | [363](../../src/instruction.rs#L363) | receiver-type-required |
-| `scan` | `sources             .iter` | [363](../../src/instruction.rs#L363) | receiver-type-required |
-| `scan` | `source.content.len` | [365](../../src/instruction.rs#L365) | receiver-type-required |
-| `scan` | `BTreeSet::new` | [372](../../src/instruction.rs#L372) | external-constructor-callback-or-unresolved |
-| `scan` | `identities.insert` | [374](../../src/instruction.rs#L374) | receiver-type-required |
-| `scan` | `source.origin.clone` | [375](../../src/instruction.rs#L375) | receiver-type-required |
-| `scan` | `source.kind.clone` | [376](../../src/instruction.rs#L376) | receiver-type-required |
-| `scan` | `source.path.clone` | [377](../../src/instruction.rs#L377) | receiver-type-required |
-| `scan` | `PathBuf::from` | [380](../../src/instruction.rs#L380) | external-constructor-callback-or-unresolved |
-| `scan` | `"instruction paths collide after NFC normalization".to_owned` | [381](../../src/instruction.rs#L381) | receiver-type-required |
-| `scan` | `sources.sort_by_key` | [385](../../src/instruction.rs#L385) | receiver-type-required |
-| `scan` | `Ok` | [386](../../src/instruction.rs#L386) | external-constructor-callback-or-unresolved |
-| `scan_origin` | `require_optional_directory` | [396](../../src/instruction.rs#L396), [411](../../src/instruction.rs#L411), [415](../../src/instruction.rs#L415), [422](../../src/instruction.rs#L422) | [profile::instruction::require_optional_directory](../../src/instruction.rs#L630) |
-| `scan_origin` | `Ok` | [397](../../src/instruction.rs#L397), [423](../../src/instruction.rs#L423), [475](../../src/instruction.rs#L475) | external-constructor-callback-or-unresolved |
-| `scan_origin` | `root.join` | [399](../../src/instruction.rs#L399), [410](../../src/instruction.rs#L410), [414](../../src/instruction.rs#L414), [418](../../src/instruction.rs#L418) | receiver-type-required |
-| `scan_origin` | `maybe_source` | [400](../../src/instruction.rs#L400), [425](../../src/instruction.rs#L425), [445](../../src/instruction.rs#L445), [465](../../src/instruction.rs#L465) | [profile::instruction::maybe_source](../../src/instruction.rs#L538) |
-| `scan_origin` | `root.to_path_buf` | [408](../../src/instruction.rs#L408) | receiver-type-required |
-| `scan_origin` | `agent.join` | [426](../../src/instruction.rs#L426), [437](../../src/instruction.rs#L437), [460](../../src/instruction.rs#L460) | receiver-type-required |
-| `scan_origin` | `Vec::new` | [438](../../src/instruction.rs#L438), [461](../../src/instruction.rs#L461) | external-constructor-callback-or-unresolved |
-| `scan_origin` | `collect_files` | [439](../../src/instruction.rs#L439), [462](../../src/instruction.rs#L462) | [profile::instruction::collect_files](../../src/instruction.rs#L506) |
-| `scan_origin` | `files.sort_by` | [440](../../src/instruction.rs#L440), [463](../../src/instruction.rs#L463) | receiver-type-required |
-| `scan_origin` | `left.0.as_bytes().cmp` | [440](../../src/instruction.rs#L440), [463](../../src/instruction.rs#L463) | receiver-type-required |
-| `scan_origin` | `left.0.as_bytes` | [440](../../src/instruction.rs#L440), [463](../../src/instruction.rs#L463) | receiver-type-required |
-| `scan_origin` | `right.0.as_bytes` | [440](../../src/instruction.rs#L440), [463](../../src/instruction.rs#L463) | receiver-type-required |
-| `scan_origin` | `skill_text_resource` | [442](../../src/instruction.rs#L442) | [profile::instruction::skill_text_resource](../../src/instruction.rs#L478) |
-| `scan_origin` | `kind.clone` | [448](../../src/instruction.rs#L448) | receiver-type-required |
-| `scan_origin` | `agent             .file_name()             .is_some_and` | [455](../../src/instruction.rs#L455) | receiver-type-required |
-| `scan_origin` | `agent             .file_name` | [455](../../src/instruction.rs#L455) | receiver-type-required |
-| `skill_text_resource` | `relative.split('/').any` | [479](../../src/instruction.rs#L479) | receiver-type-required |
-| `skill_text_resource` | `relative.split` | [479](../../src/instruction.rs#L479) | receiver-type-required |
-| `skill_text_resource` | `part.starts_with` | [479](../../src/instruction.rs#L479) | receiver-type-required |
-| `collect_files` | `require_optional_directory` | [511](../../src/instruction.rs#L511) | [profile::instruction::require_optional_directory](../../src/instruction.rs#L630) |
-| `collect_files` | `Ok` | [512](../../src/instruction.rs#L512), [535](../../src/instruction.rs#L535) | external-constructor-callback-or-unresolved |
-| `collect_files` | `fs::read_dir` | [514](../../src/instruction.rs#L514) | external-constructor-callback-or-unresolved |
-| `collect_files` | `entry.path` | [516](../../src/instruction.rs#L516) | receiver-type-required |
-| `collect_files` | `fs::symlink_metadata` | [517](../../src/instruction.rs#L517) | external-constructor-callback-or-unresolved |
-| `collect_files` | `metadata.file_type().is_symlink` | [518](../../src/instruction.rs#L518) | receiver-type-required |
-| `collect_files` | `metadata.file_type` | [518](../../src/instruction.rs#L518) | receiver-type-required |
-| `collect_files` | `Err` | [519](../../src/instruction.rs#L519), [532](../../src/instruction.rs#L532) | external-constructor-callback-or-unresolved |
-| `collect_files` | `ProfileError::Symlink` | [519](../../src/instruction.rs#L519) | external-constructor-callback-or-unresolved |
-| `collect_files` | `metadata.is_dir` | [521](../../src/instruction.rs#L521) | receiver-type-required |
-| `collect_files` | `collect_files` | [522](../../src/instruction.rs#L522) | [profile::instruction::collect_files](../../src/instruction.rs#L506) |
-| `collect_files` | `metadata.is_file` | [523](../../src/instruction.rs#L523) | receiver-type-required |
-| `collect_files` | `path                 .strip_prefix(root)                 .map_err` | [524](../../src/instruction.rs#L524) | receiver-type-required |
-| `collect_files` | `path                 .strip_prefix` | [524](../../src/instruction.rs#L524) | receiver-type-required |
-| `collect_files` | `path.clone` | [527](../../src/instruction.rs#L527) | receiver-type-required |
-| `collect_files` | `"instruction path escaped its kind directory".to_owned` | [528](../../src/instruction.rs#L528) | receiver-type-required |
-| `collect_files` | `output.push` | [530](../../src/instruction.rs#L530) | receiver-type-required |
-| `collect_files` | `normalize_relative` | [530](../../src/instruction.rs#L530) | [profile::instruction::normalize_relative](../../src/instruction.rs#L641) |
-| `collect_files` | `ProfileError::NotRegular` | [532](../../src/instruction.rs#L532) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `fs::symlink_metadata` | [545](../../src/instruction.rs#L545) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `metadata.file_type().is_symlink` | [547](../../src/instruction.rs#L547) | receiver-type-required |
-| `maybe_source` | `metadata.file_type` | [547](../../src/instruction.rs#L547) | receiver-type-required |
-| `maybe_source` | `Err` | [548](../../src/instruction.rs#L548), [551](../../src/instruction.rs#L551), [555](../../src/instruction.rs#L555), [563](../../src/instruction.rs#L563) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `ProfileError::Symlink` | [548](../../src/instruction.rs#L548) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `file.to_path_buf` | [548](../../src/instruction.rs#L548), [551](../../src/instruction.rs#L551), [559](../../src/instruction.rs#L559), [564](../../src/instruction.rs#L564) | receiver-type-required |
-| `maybe_source` | `metadata.is_file` | [550](../../src/instruction.rs#L550) | receiver-type-required |
-| `maybe_source` | `ProfileError::NotRegular` | [551](../../src/instruction.rs#L551) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `error.kind` | [554](../../src/instruction.rs#L554) | receiver-type-required |
-| `maybe_source` | `Ok` | [554](../../src/instruction.rs#L554), [580](../../src/instruction.rs#L580) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `error.into` | [555](../../src/instruction.rs#L555) | receiver-type-required |
-| `maybe_source` | `read_stable_file` | [557](../../src/instruction.rs#L557) | [profile::instruction::read_stable_file](../../src/instruction.rs#L583) |
-| `maybe_source` | `String::from_utf8(bytes.clone()).map_err` | [558](../../src/instruction.rs#L558) | receiver-type-required |
-| `maybe_source` | `String::from_utf8` | [558](../../src/instruction.rs#L558) | external-constructor-callback-or-unresolved |
-| `maybe_source` | `bytes.clone` | [558](../../src/instruction.rs#L558) | receiver-type-required |
-| `maybe_source` | `"instruction content is not UTF-8".to_owned` | [560](../../src/instruction.rs#L560) | receiver-type-required |
-| `maybe_source` | `content.contains` | [562](../../src/instruction.rs#L562) | receiver-type-required |
-| `maybe_source` | `"instruction content contains NUL".to_owned` | [565](../../src/instruction.rs#L565) | receiver-type-required |
-| `maybe_source` | `parse_canonical` | [569](../../src/instruction.rs#L569) | [profile::parse_canonical](../../src/lib.rs#L67) |
-| `maybe_source` | `validate_settings` | [570](../../src/instruction.rs#L570) | [profile::instruction::validate_settings](../../src/instruction.rs#L788) |
-| `maybe_source` | `normalize_logical` | [572](../../src/instruction.rs#L572) | [profile::instruction::normalize_logical](../../src/instruction.rs#L663) |
-| `maybe_source` | `sources.push` | [573](../../src/instruction.rs#L573) | receiver-type-required |
-| `maybe_source` | `origin.clone` | [574](../../src/instruction.rs#L574) | receiver-type-required |
-| `maybe_source` | `digest` | [578](../../src/instruction.rs#L578) | [profile::digest](../../src/lib.rs#L126) |
-| `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [584](../../src/instruction.rs#L584) | receiver-type-required |
-| `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags` | [584](../../src/instruction.rs#L584) | receiver-type-required |
-| `read_stable_file` | `OpenOptions::new()         .read` | [584](../../src/instruction.rs#L584) | receiver-type-required |
-| `read_stable_file` | `OpenOptions::new` | [584](../../src/instruction.rs#L584) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `file.metadata` | [588](../../src/instruction.rs#L588), [599](../../src/instruction.rs#L599) | receiver-type-required |
-| `read_stable_file` | `before.is_file` | [589](../../src/instruction.rs#L589) | receiver-type-required |
-| `read_stable_file` | `Err` | [590](../../src/instruction.rs#L590), [593](../../src/instruction.rs#L593), [602](../../src/instruction.rs#L602), [611](../../src/instruction.rs#L611) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `ProfileError::NotRegular` | [590](../../src/instruction.rs#L590) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `path.to_path_buf` | [590](../../src/instruction.rs#L590) | receiver-type-required |
-| `read_stable_file` | `before.len` | [592](../../src/instruction.rs#L592), [597](../../src/instruction.rs#L597), [606](../../src/instruction.rs#L606) | receiver-type-required |
-| `read_stable_file` | `ProfileError::LimitExceeded` | [593](../../src/instruction.rs#L593) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `Vec::with_capacity` | [597](../../src/instruction.rs#L597) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `file.read_to_end` | [598](../../src/instruction.rs#L598) | receiver-type-required |
-| `read_stable_file` | `fs::symlink_metadata` | [600](../../src/instruction.rs#L600) | external-constructor-callback-or-unresolved |
-| `read_stable_file` | `named.file_type().is_symlink` | [601](../../src/instruction.rs#L601) | receiver-type-required |
-| `read_stable_file` | `named.file_type` | [601](../../src/instruction.rs#L601) | receiver-type-required |
-| `read_stable_file` | `before.dev` | [604](../../src/instruction.rs#L604) | receiver-type-required |
-| `read_stable_file` | `after.dev` | [604](../../src/instruction.rs#L604), [608](../../src/instruction.rs#L608) | receiver-type-required |
-| `read_stable_file` | `before.ino` | [605](../../src/instruction.rs#L605) | receiver-type-required |
-| `read_stable_file` | `after.ino` | [605](../../src/instruction.rs#L605), [609](../../src/instruction.rs#L609) | receiver-type-required |
-| `read_stable_file` | `after.len` | [606](../../src/instruction.rs#L606) | receiver-type-required |
-| `read_stable_file` | `before.modified` | [607](../../src/instruction.rs#L607) | receiver-type-required |
-| `read_stable_file` | `after.modified` | [607](../../src/instruction.rs#L607) | receiver-type-required |
-| `read_stable_file` | `named.dev` | [608](../../src/instruction.rs#L608) | receiver-type-required |
-| `read_stable_file` | `named.ino` | [609](../../src/instruction.rs#L609) | receiver-type-required |
-| `read_stable_file` | `Ok` | [613](../../src/instruction.rs#L613) | external-constructor-callback-or-unresolved |
-| `reject_directory_symlink` | `fs::symlink_metadata` | [617](../../src/instruction.rs#L617) | external-constructor-callback-or-unresolved |
-| `reject_directory_symlink` | `metadata.file_type().is_symlink` | [618](../../src/instruction.rs#L618) | receiver-type-required |
-| `reject_directory_symlink` | `metadata.file_type` | [618](../../src/instruction.rs#L618) | receiver-type-required |
-| `reject_directory_symlink` | `Err` | [619](../../src/instruction.rs#L619), [621](../../src/instruction.rs#L621) | external-constructor-callback-or-unresolved |
-| `reject_directory_symlink` | `ProfileError::Symlink` | [619](../../src/instruction.rs#L619) | external-constructor-callback-or-unresolved |
-| `reject_directory_symlink` | `path.to_path_buf` | [619](../../src/instruction.rs#L619), [622](../../src/instruction.rs#L622) | receiver-type-required |
-| `reject_directory_symlink` | `metadata.is_dir` | [620](../../src/instruction.rs#L620) | receiver-type-required |
-| `reject_directory_symlink` | `"expected instruction directory".to_owned` | [623](../../src/instruction.rs#L623) | receiver-type-required |
-| `reject_directory_symlink` | `Ok` | [626](../../src/instruction.rs#L626) | external-constructor-callback-or-unresolved |
-| `require_optional_directory` | `fs::symlink_metadata` | [631](../../src/instruction.rs#L631) | external-constructor-callback-or-unresolved |
-| `require_optional_directory` | `reject_directory_symlink` | [633](../../src/instruction.rs#L633) | [profile::instruction::reject_directory_symlink](../../src/instruction.rs#L616) |
-| `require_optional_directory` | `Ok` | [634](../../src/instruction.rs#L634), [636](../../src/instruction.rs#L636) | external-constructor-callback-or-unresolved |
-| `require_optional_directory` | `error.kind` | [636](../../src/instruction.rs#L636) | receiver-type-required |
-| `require_optional_directory` | `Err` | [637](../../src/instruction.rs#L637) | external-constructor-callback-or-unresolved |
-| `require_optional_directory` | `error.into` | [637](../../src/instruction.rs#L637) | receiver-type-required |
-| `normalize_relative` | `Vec::new` | [642](../../src/instruction.rs#L642) | external-constructor-callback-or-unresolved |
-| `normalize_relative` | `path.components` | [643](../../src/instruction.rs#L643) | receiver-type-required |
-| `normalize_relative` | `value.to_str().ok_or_else` | [646](../../src/instruction.rs#L646) | receiver-type-required |
-| `normalize_relative` | `value.to_str` | [646](../../src/instruction.rs#L646) | receiver-type-required |
-| `normalize_relative` | `path.to_path_buf` | [647](../../src/instruction.rs#L647), [654](../../src/instruction.rs#L654) | receiver-type-required |
-| `normalize_relative` | `"instruction path is not UTF-8".to_owned` | [648](../../src/instruction.rs#L648) | receiver-type-required |
-| `normalize_relative` | `values.push` | [650](../../src/instruction.rs#L650) | receiver-type-required |
-| `normalize_relative` | `value.nfc().collect::<String>` | [650](../../src/instruction.rs#L650) | receiver-type-required |
-| `normalize_relative` | `value.nfc` | [650](../../src/instruction.rs#L650) | receiver-type-required |
-| `normalize_relative` | `Err` | [653](../../src/instruction.rs#L653) | external-constructor-callback-or-unresolved |
-| `normalize_relative` | `"instruction path contains a non-normal component".to_owned` | [655](../../src/instruction.rs#L655) | receiver-type-required |
-| `normalize_relative` | `normalize_logical` | [660](../../src/instruction.rs#L660) | [profile::instruction::normalize_logical](../../src/instruction.rs#L663) |
-| `normalize_relative` | `values.join` | [660](../../src/instruction.rs#L660) | receiver-type-required |
-| `normalize_logical` | `path.is_empty` | [664](../../src/instruction.rs#L664) | receiver-type-required |
-| `normalize_logical` | `path.contains` | [665](../../src/instruction.rs#L665) | receiver-type-required |
-| `normalize_logical` | `path             .split('/')             .any` | [666](../../src/instruction.rs#L666) | receiver-type-required |
-| `normalize_logical` | `path             .split` | [666](../../src/instruction.rs#L666) | receiver-type-required |
-| `normalize_logical` | `part.is_empty` | [668](../../src/instruction.rs#L668) | receiver-type-required |
-| `normalize_logical` | `Err` | [670](../../src/instruction.rs#L670) | external-constructor-callback-or-unresolved |
-| `normalize_logical` | `PathBuf::from` | [671](../../src/instruction.rs#L671) | external-constructor-callback-or-unresolved |
-| `normalize_logical` | `"invalid logical instruction path".to_owned` | [672](../../src/instruction.rs#L672) | receiver-type-required |
-| `normalize_logical` | `Ok` | [675](../../src/instruction.rs#L675) | external-constructor-callback-or-unresolved |
-| `normalize_logical` | `path.nfc().collect` | [675](../../src/instruction.rs#L675) | receiver-type-required |
-| `normalize_logical` | `path.nfc` | [675](../../src/instruction.rs#L675) | receiver-type-required |
-| `build_snapshot` | `derive_effective` | [679](../../src/instruction.rs#L679) | [profile::instruction::derive_effective](../../src/instruction.rs#L689) |
-| `build_snapshot` | `validate_snapshot` | [685](../../src/instruction.rs#L685) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L834) |
-| `build_snapshot` | `Ok` | [686](../../src/instruction.rs#L686) | external-constructor-callback-or-unresolved |
-| `derive_effective` | `EffectiveInstructions::default` | [690](../../src/instruction.rs#L690) | external-constructor-callback-or-unresolved |
-| `derive_effective` | `Vec::new` | [691](../../src/instruction.rs#L691) | external-constructor-callback-or-unresolved |
-| `derive_effective` | `sources.iter().enumerate` | [692](../../src/instruction.rs#L692) | receiver-type-required |
-| `derive_effective` | `sources.iter` | [692](../../src/instruction.rs#L692) | receiver-type-required |
-| `derive_effective` | `effective.agents.push` | [695](../../src/instruction.rs#L695) | receiver-type-required |
-| `derive_effective` | `effective                     .skills                     .insert` | [697](../../src/instruction.rs#L697) | receiver-type-required |
-| `derive_effective` | `resource_key` | [699](../../src/instruction.rs#L699), [704](../../src/instruction.rs#L704), [709](../../src/instruction.rs#L709) | [profile::instruction::resource_key](../../src/instruction.rs#L724) |
-| `derive_effective` | `effective                     .commands                     .insert` | [702](../../src/instruction.rs#L702) | receiver-type-required |
-| `derive_effective` | `effective                     .hooks                     .insert` | [707](../../src/instruction.rs#L707) | receiver-type-required |
-| `derive_effective` | `parse_canonical` | [713](../../src/instruction.rs#L713) | [profile::parse_canonical](../../src/lib.rs#L67) |
-| `derive_effective` | `PathBuf::from` | [713](../../src/instruction.rs#L713) | external-constructor-callback-or-unresolved |
-| `derive_effective` | `source.content.as_bytes` | [713](../../src/instruction.rs#L713) | receiver-type-required |
-| `derive_effective` | `policies.push` | [715](../../src/instruction.rs#L715) | receiver-type-required |
-| `derive_effective` | `meet_policies` | [720](../../src/instruction.rs#L720) | [profile::instruction::meet_policies](../../src/instruction.rs#L735) |
-| `derive_effective` | `Ok` | [721](../../src/instruction.rs#L721) | external-constructor-callback-or-unresolved |
-| `resource_key` | `source         .path         .strip_prefix(prefix)         .map(ToOwned::to_owned)         .ok_or_else` | [725](../../src/instruction.rs#L725) | receiver-type-required |
-| `resource_key` | `source         .path         .strip_prefix(prefix)         .map` | [725](../../src/instruction.rs#L725) | receiver-type-required |
-| `resource_key` | `source         .path         .strip_prefix` | [725](../../src/instruction.rs#L725) | receiver-type-required |
-| `resource_key` | `PathBuf::from` | [730](../../src/instruction.rs#L730) | external-constructor-callback-or-unresolved |
-| `meet_policies` | `Some` | [742](../../src/instruction.rs#L742), [747](../../src/instruction.rs#L747) | external-constructor-callback-or-unresolved |
-| `meet_policies` | `network.unwrap_or` | [742](../../src/instruction.rs#L742) | receiver-type-required |
-| `meet_policies` | `meet_optional_set` | [744](../../src/instruction.rs#L744), [745](../../src/instruction.rs#L745) | [profile::instruction::meet_optional_set](../../src/instruction.rs#L758) |
-| `meet_policies` | `cap.map_or` | [747](../../src/instruction.rs#L747) | receiver-type-required |
-| `meet_policies` | `current.min` | [747](../../src/instruction.rs#L747) | receiver-type-required |
-| `meet_policies` | `tools.map` | [752](../../src/instruction.rs#L752) | receiver-type-required |
-| `meet_policies` | `value.into_iter().collect` | [752](../../src/instruction.rs#L752), [753](../../src/instruction.rs#L753) | receiver-type-required |
-| `meet_policies` | `value.into_iter` | [752](../../src/instruction.rs#L752), [753](../../src/instruction.rs#L753) | receiver-type-required |
-| `meet_policies` | `roots.map` | [753](../../src/instruction.rs#L753) | receiver-type-required |
-| `meet_optional_set` | `value.into_iter().collect::<BTreeSet<_>>` | [762](../../src/instruction.rs#L762) | receiver-type-required |
-| `meet_optional_set` | `value.into_iter` | [762](../../src/instruction.rs#L762) | receiver-type-required |
-| `meet_optional_set` | `Some` | [763](../../src/instruction.rs#L763) | external-constructor-callback-or-unresolved |
-| `meet_optional_set` | `target.take` | [763](../../src/instruction.rs#L763) | receiver-type-required |
-| `meet_optional_set` | `current.intersection(&value).cloned().collect` | [764](../../src/instruction.rs#L764) | receiver-type-required |
-| `meet_optional_set` | `current.intersection(&value).cloned` | [764](../../src/instruction.rs#L764) | receiver-type-required |
-| `meet_optional_set` | `current.intersection` | [764](../../src/instruction.rs#L764) | receiver-type-required |
-| `meet_required_set` | `required.iter().cloned().collect::<BTreeSet<_>>` | [770](../../src/instruction.rs#L770) | receiver-type-required |
-| `meet_required_set` | `required.iter().cloned` | [770](../../src/instruction.rs#L770) | receiver-type-required |
-| `meet_required_set` | `required.iter` | [770](../../src/instruction.rs#L770) | receiver-type-required |
-| `meet_required_set` | `constraint.iter().cloned().collect::<BTreeSet<_>>` | [773](../../src/instruction.rs#L773) | receiver-type-required |
-| `meet_required_set` | `constraint.iter().cloned` | [773](../../src/instruction.rs#L773) | receiver-type-required |
-| `meet_required_set` | `constraint.iter` | [773](../../src/instruction.rs#L773) | receiver-type-required |
-| `meet_required_set` | `required.intersection(&constraint).cloned().collect` | [774](../../src/instruction.rs#L774) | receiver-type-required |
-| `meet_required_set` | `required.intersection(&constraint).cloned` | [774](../../src/instruction.rs#L774) | receiver-type-required |
-| `meet_required_set` | `required.intersection` | [774](../../src/instruction.rs#L774) | receiver-type-required |
-| `meet_required_set` | `required.into_iter().collect` | [776](../../src/instruction.rs#L776) | receiver-type-required |
-| `meet_required_set` | `required.into_iter` | [776](../../src/instruction.rs#L776) | receiver-type-required |
-| `meet_optional_cap` | `Some` | [782](../../src/instruction.rs#L782), [783](../../src/instruction.rs#L783) | external-constructor-callback-or-unresolved |
-| `meet_optional_cap` | `left.min` | [782](../../src/instruction.rs#L782) | receiver-type-required |
-| `validate_settings` | `Err` | [790](../../src/instruction.rs#L790), [797](../../src/instruction.rs#L797), [806](../../src/instruction.rs#L806), [816](../../src/instruction.rs#L816), [824](../../src/instruction.rs#L824) | external-constructor-callback-or-unresolved |
-| `validate_settings` | `path.to_path_buf` | [791](../../src/instruction.rs#L791), [798](../../src/instruction.rs#L798), [807](../../src/instruction.rs#L807), [817](../../src/instruction.rs#L817), [825](../../src/instruction.rs#L825) | receiver-type-required |
-| `validate_settings` | `Some` | [796](../../src/instruction.rs#L796) | external-constructor-callback-or-unresolved |
-| `validate_settings` | `"max_wall_seconds must be at least 1".to_owned` | [799](../../src/instruction.rs#L799) | receiver-type-required |
-| `validate_settings` | `policy             .max_wall_seconds             .is_some_and` | [802](../../src/instruction.rs#L802) | receiver-type-required |
-| `validate_settings` | `"max_wall_seconds exceeds the I-JSON safe-integer range".to_owned` | [808](../../src/instruction.rs#L808) | receiver-type-required |
-| `validate_settings` | `[&policy.allowed_tools, &policy.writable_roots]             .into_iter()             .flatten` | [811](../../src/instruction.rs#L811) | receiver-type-required |
-| `validate_settings` | `[&policy.allowed_tools, &policy.writable_roots]             .into_iter` | [811](../../src/instruction.rs#L811) | receiver-type-required |
-| `validate_settings` | `values.iter().collect::<BTreeSet<_>>().len` | [815](../../src/instruction.rs#L815) | receiver-type-required |
-| `validate_settings` | `values.iter().collect::<BTreeSet<_>>` | [815](../../src/instruction.rs#L815) | receiver-type-required |
-| `validate_settings` | `values.iter` | [815](../../src/instruction.rs#L815) | receiver-type-required |
-| `validate_settings` | `values.len` | [815](../../src/instruction.rs#L815) | receiver-type-required |
-| `validate_settings` | `"instruction policy set contains duplicates".to_owned` | [818](../../src/instruction.rs#L818) | receiver-type-required |
-| `validate_settings` | `policy.writable_roots.as_deref().unwrap_or_default` | [822](../../src/instruction.rs#L822) | receiver-type-required |
-| `validate_settings` | `policy.writable_roots.as_deref` | [822](../../src/instruction.rs#L822) | receiver-type-required |
-| `validate_settings` | `root.contains` | [823](../../src/instruction.rs#L823) | receiver-type-required |
-| `validate_settings` | `Path::new(root).is_absolute` | [823](../../src/instruction.rs#L823) | receiver-type-required |
-| `validate_settings` | `Path::new` | [823](../../src/instruction.rs#L823) | external-constructor-callback-or-unresolved |
-| `validate_settings` | `"instruction writable root must be absolute".to_owned` | [826](../../src/instruction.rs#L826) | receiver-type-required |
-| `validate_settings` | `Ok` | [831](../../src/instruction.rs#L831) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `Path::new` | [835](../../src/instruction.rs#L835), [915](../../src/instruction.rs#L915) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `Err` | [837](../../src/instruction.rs#L837), [843](../../src/instruction.rs#L843), [851](../../src/instruction.rs#L851), [858](../../src/instruction.rs#L858), [863](../../src/instruction.rs#L863), [874](../../src/instruction.rs#L874), [881](../../src/instruction.rs#L881), [887](../../src/instruction.rs#L887), [896](../../src/instruction.rs#L896), [906](../../src/instruction.rs#L906), [929](../../src/instruction.rs#L929) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `path.to_path_buf` | [838](../../src/instruction.rs#L838), [875](../../src/instruction.rs#L875), [897](../../src/instruction.rs#L897), [907](../../src/instruction.rs#L907), [930](../../src/instruction.rs#L930) | receiver-type-required |
-| `validate_snapshot` | `snapshot.sources.len` | [842](../../src/instruction.rs#L842) | receiver-type-required |
-| `validate_snapshot` | `ProfileError::LimitExceeded` | [843](../../src/instruction.rs#L843), [851](../../src/instruction.rs#L851), [858](../../src/instruction.rs#L858) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `snapshot         .sources         .iter()         .map(&#124;source&#124; source.content.len() as u64)         .sum::<u64>` | [845](../../src/instruction.rs#L845) | receiver-type-required |
-| `validate_snapshot` | `snapshot         .sources         .iter()         .map` | [845](../../src/instruction.rs#L845) | receiver-type-required |
-| `validate_snapshot` | `snapshot         .sources         .iter` | [845](../../src/instruction.rs#L845) | receiver-type-required |
-| `validate_snapshot` | `source.content.len` | [848](../../src/instruction.rs#L848), [857](../../src/instruction.rs#L857) | receiver-type-required |
-| `validate_snapshot` | `snapshot.sources.iter().enumerate` | [856](../../src/instruction.rs#L856) | receiver-type-required |
-| `validate_snapshot` | `snapshot.sources.iter` | [856](../../src/instruction.rs#L856) | receiver-type-required |
-| `validate_snapshot` | `source.content.contains` | [862](../../src/instruction.rs#L862) | receiver-type-required |
-| `validate_snapshot` | `PathBuf::from` | [864](../../src/instruction.rs#L864), [888](../../src/instruction.rs#L888), [914](../../src/instruction.rs#L914), [921](../../src/instruction.rs#L921) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `"instruction content contains NUL".to_owned` | [865](../../src/instruction.rs#L865) | receiver-type-required |
-| `validate_snapshot` | `source.content_sha256.len` | [868](../../src/instruction.rs#L868) | receiver-type-required |
-| `validate_snapshot` | `source                 .content_sha256                 .bytes()                 .all` | [869](../../src/instruction.rs#L869) | receiver-type-required |
-| `validate_snapshot` | `source                 .content_sha256                 .bytes` | [869](../../src/instruction.rs#L869) | receiver-type-required |
-| `validate_snapshot` | `byte.is_ascii_hexdigit` | [872](../../src/instruction.rs#L872) | receiver-type-required |
-| `validate_snapshot` | `byte.is_ascii_uppercase` | [872](../../src/instruction.rs#L872) | receiver-type-required |
-| `validate_snapshot` | `digest` | [879](../../src/instruction.rs#L879) | [profile::digest](../../src/lib.rs#L126) |
-| `validate_snapshot` | `source.content.as_bytes` | [879](../../src/instruction.rs#L879), [914](../../src/instruction.rs#L914), [919](../../src/instruction.rs#L919) | receiver-type-required |
-| `validate_snapshot` | `source.content_sha256.clone` | [882](../../src/instruction.rs#L882) | receiver-type-required |
-| `validate_snapshot` | `normalize_logical` | [886](../../src/instruction.rs#L886) | [profile::instruction::normalize_logical](../../src/instruction.rs#L663) |
-| `validate_snapshot` | `"logical path is not NFC-normalized".to_owned` | [889](../../src/instruction.rs#L889) | receiver-type-required |
-| `validate_snapshot` | `validate_source_path` | [892](../../src/instruction.rs#L892) | [profile::instruction::validate_source_path](../../src/instruction.rs#L937) |
-| `validate_snapshot` | `source_order_key` | [901](../../src/instruction.rs#L901) | [profile::instruction::source_order_key](../../src/instruction.rs#L957) |
-| `validate_snapshot` | `previous_key             .as_ref()             .is_some_and` | [902](../../src/instruction.rs#L902) | receiver-type-required |
-| `validate_snapshot` | `previous_key             .as_ref` | [902](../../src/instruction.rs#L902) | receiver-type-required |
-| `validate_snapshot` | `"sources are not in the deterministic discovery order".to_owned` | [908](../../src/instruction.rs#L908) | receiver-type-required |
-| `validate_snapshot` | `Some` | [911](../../src/instruction.rs#L911) | external-constructor-callback-or-unresolved |
-| `validate_snapshot` | `parse_canonical` | [914](../../src/instruction.rs#L914) | [profile::parse_canonical](../../src/lib.rs#L67) |
-| `validate_snapshot` | `validate_settings` | [915](../../src/instruction.rs#L915) | [profile::instruction::validate_settings](../../src/instruction.rs#L788) |
-| `validate_snapshot` | `resource_key` | [918](../../src/instruction.rs#L918) | [profile::instruction::resource_key](../../src/instruction.rs#L724) |
-| `validate_snapshot` | `tools::validate_instruction_hook(source.content.as_bytes(), &logical).map_err` | [919](../../src/instruction.rs#L919) | receiver-type-required |
-| `validate_snapshot` | `tools::validate_instruction_hook` | [919](../../src/instruction.rs#L919) | [tools::lifecycle_hook::validate_instruction_hook](../../../tools/src/lifecycle_hook.rs#L76) |
-| `validate_snapshot` | `error.to_string` | [922](../../src/instruction.rs#L922) | receiver-type-required |
-| `validate_snapshot` | `derive_effective` | [927](../../src/instruction.rs#L927) | [profile::instruction::derive_effective](../../src/instruction.rs#L689) |
-| `validate_snapshot` | `"effective projection does not equal the deterministic source fold".to_owned` | [931](../../src/instruction.rs#L931) | receiver-type-required |
-| `validate_snapshot` | `Ok` | [934](../../src/instruction.rs#L934) | external-constructor-callback-or-unresolved |
-| `validate_source_path` | `source.path.starts_with` | [941](../../src/instruction.rs#L941), [942](../../src/instruction.rs#L942) | receiver-type-required |
-| `validate_source_path` | `Ok` | [944](../../src/instruction.rs#L944), [946](../../src/instruction.rs#L946) | external-constructor-callback-or-unresolved |
-| `validate_source_path` | `resource_key(source, "skills/").map` | [947](../../src/instruction.rs#L947) | receiver-type-required |
-| `validate_source_path` | `resource_key` | [947](../../src/instruction.rs#L947), [948](../../src/instruction.rs#L948), [949](../../src/instruction.rs#L949) | [profile::instruction::resource_key](../../src/instruction.rs#L724) |
-| `validate_source_path` | `resource_key(source, "commands/").map` | [948](../../src/instruction.rs#L948) | receiver-type-required |
-| `validate_source_path` | `resource_key(source, "hooks/").map` | [949](../../src/instruction.rs#L949) | receiver-type-required |
-| `validate_source_path` | `Err` | [950](../../src/instruction.rs#L950) | external-constructor-callback-or-unresolved |
-| `validate_source_path` | `PathBuf::from` | [951](../../src/instruction.rs#L951) | external-constructor-callback-or-unresolved |
-| `validate_source_path` | `"source kind does not match its logical path".to_owned` | [952](../../src/instruction.rs#L952) | receiver-type-required |
-| `source_order_key` | `source.path.as_bytes().to_vec` | [970](../../src/instruction.rs#L970) | receiver-type-required |
-| `source_order_key` | `source.path.as_bytes` | [970](../../src/instruction.rs#L970) | receiver-type-required |
+| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `admit_source` | `Ok` | [117](../../src/instruction.rs#L117) | external-constructor-callback-or-unresolved |
+| `admit_source` | `self             .folder_authority             .as_ref()             .ok_or_else` | [119](../../src/instruction.rs#L119) | receiver-type-required |
+| `admit_source` | `self             .folder_authority             .as_ref` | [119](../../src/instruction.rs#L119) | receiver-type-required |
+| `admit_source` | `std::io::Error::other` | [122](../../src/instruction.rs#L122), [126](../../src/instruction.rs#L126) | external-constructor-callback-or-unresolved |
+| `admit_source` | `authority             .folders             .get(&workspace_index)             .ok_or_else` | [123](../../src/instruction.rs#L123) | receiver-type-required |
+| `admit_source` | `authority             .folders             .get` | [123](../../src/instruction.rs#L123) | receiver-type-required |
+| `admit_source` | `crate::FolderAuthorityStore::new(&authority.storage_root)             .admit(folder)             .map` | [127](../../src/instruction.rs#L127) | receiver-type-required |
+| `admit_source` | `crate::FolderAuthorityStore::new(&authority.storage_root)             .admit` | [127](../../src/instruction.rs#L127) | receiver-type-required |
+| `admit_source` | `crate::FolderAuthorityStore::new` | [127](../../src/instruction.rs#L127) | [profile::folder_authority::FolderAuthorityStore::new](../../src/folder_authority.rs#L86) |
+| `source_authorized` | `self.admit_source(source).is_ok` | [134](../../src/instruction.rs#L134) | receiver-type-required |
+| `source_authorized` | `self.admit_source` | [134](../../src/instruction.rs#L134) | [profile::instruction::InstructionSnapshot::admit_source](../../src/instruction.rs#L112) |
+| `admit_kind` | `self.sources             .iter()             .filter(&#124;source&#124; source.kind == kind)             .filter_map(&#124;source&#124; self.admit_source(source).ok().flatten())             .collect` | [139](../../src/instruction.rs#L139) | receiver-type-required |
+| `admit_kind` | `self.sources             .iter()             .filter(&#124;source&#124; source.kind == kind)             .filter_map` | [139](../../src/instruction.rs#L139) | receiver-type-required |
+| `admit_kind` | `self.sources             .iter()             .filter` | [139](../../src/instruction.rs#L139) | receiver-type-required |
+| `admit_kind` | `self.sources             .iter` | [139](../../src/instruction.rs#L139) | receiver-type-required |
+| `admit_kind` | `self.admit_source(source).ok().flatten` | [142](../../src/instruction.rs#L142) | receiver-type-required |
+| `admit_kind` | `self.admit_source(source).ok` | [142](../../src/instruction.rs#L142) | receiver-type-required |
+| `admit_kind` | `self.admit_source` | [142](../../src/instruction.rs#L142) | [profile::instruction::InstructionSnapshot::admit_source](../../src/instruction.rs#L112) |
+| `digest` | `Ok` | [158](../../src/instruction.rs#L158) | external-constructor-callback-or-unresolved |
+| `digest` | `digest` | [158](../../src/instruction.rs#L158) | [profile::digest](../../src/lib.rs#L130) |
+| `digest` | `canonical_line` | [158](../../src/instruction.rs#L158) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `resolve_and_publish_for_scope` | `scope.config` | [183](../../src/instruction.rs#L183) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `Some` | [184](../../src/instruction.rs#L184) | external-constructor-callback-or-unresolved |
+| `resolve_and_publish_for_scope` | `user_agent_dir.as_ref().to_string_lossy().into_owned` | [184](../../src/instruction.rs#L184) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `user_agent_dir.as_ref().to_string_lossy` | [184](../../src/instruction.rs#L184) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `user_agent_dir.as_ref` | [184](../../src/instruction.rs#L184), [186](../../src/instruction.rs#L186) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `scope             .instructions(repository, user_agent_dir.as_ref(), &config)?             .capture` | [185](../../src/instruction.rs#L185) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `scope             .instructions` | [185](../../src/instruction.rs#L185) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `instruction.validate_against_config` | [188](../../src/instruction.rs#L188) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `instruction.meet_workspace_policy` | [189](../../src/instruction.rs#L189) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `config.publish` | [190](../../src/instruction.rs#L190) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `instruction.publish` | [191](../../src/instruction.rs#L191) | receiver-type-required |
+| `resolve_and_publish_for_scope` | `Ok` | [192](../../src/instruction.rs#L192) | external-constructor-callback-or-unresolved |
+| `canonical_bytes` | `validate_snapshot` | [206](../../src/instruction.rs#L206) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L924) |
+| `canonical_bytes` | `canonical_line` | [207](../../src/instruction.rs#L207) | [profile::canonical_line](../../src/lib.rs#L116) |
+| `digest` | `Ok` | [211](../../src/instruction.rs#L211) | external-constructor-callback-or-unresolved |
+| `digest` | `digest` | [211](../../src/instruction.rs#L211) | [profile::digest](../../src/lib.rs#L130) |
+| `digest` | `self.canonical_bytes` | [211](../../src/instruction.rs#L211) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L205) |
+| `decode` | `parse_canonical` | [215](../../src/instruction.rs#L215) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `decode` | `validate_snapshot` | [216](../../src/instruction.rs#L216) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L924) |
+| `decode` | `Ok` | [217](../../src/instruction.rs#L217) | external-constructor-callback-or-unresolved |
+| `publish` | `self.canonical_bytes` | [221](../../src/instruction.rs#L221) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L205) |
+| `publish` | `digest` | [222](../../src/instruction.rs#L222) | external-constructor-callback-or-unresolved |
+| `publish` | `assets.publish` | [223](../../src/instruction.rs#L223) | receiver-type-required |
+| `publish` | `Err` | [225](../../src/instruction.rs#L225) | external-constructor-callback-or-unresolved |
+| `publish` | `Ok` | [230](../../src/instruction.rs#L230) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `usize::try_from(workspace_index).map_err` | [239](../../src/instruction.rs#L239) | receiver-type-required |
+| `validate_against_config` | `usize::try_from` | [239](../../src/instruction.rs#L239) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `PathBuf::from` | [241](../../src/instruction.rs#L241), [249](../../src/instruction.rs#L249), [261](../../src/instruction.rs#L261), [266](../../src/instruction.rs#L266), [277](../../src/instruction.rs#L277) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `config.workspace.cwd.len` | [247](../../src/instruction.rs#L247) | receiver-type-required |
+| `validate_against_config` | `Err` | [248](../../src/instruction.rs#L248), [265](../../src/instruction.rs#L265), [276](../../src/instruction.rs#L276) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `fs::canonicalize(root).map_err` | [260](../../src/instruction.rs#L260) | receiver-type-required |
+| `validate_against_config` | `fs::canonicalize` | [260](../../src/instruction.rs#L260) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `error.to_string` | [262](../../src/instruction.rs#L262) | receiver-type-required |
+| `validate_against_config` | `canonical.to_str` | [264](../../src/instruction.rs#L264) | receiver-type-required |
+| `validate_against_config` | `Some` | [264](../../src/instruction.rs#L264) | external-constructor-callback-or-unresolved |
+| `validate_against_config` | `root.as_str` | [264](../../src/instruction.rs#L264) | receiver-type-required |
+| `validate_against_config` | `"instruction writable root is not canonical".to_owned` | [267](../../src/instruction.rs#L267) | receiver-type-required |
+| `validate_against_config` | `config                     .workspace                     .cwd                     .iter()                     .any` | [270](../../src/instruction.rs#L270) | receiver-type-required |
+| `validate_against_config` | `config                     .workspace                     .cwd                     .iter` | [270](../../src/instruction.rs#L270) | receiver-type-required |
+| `validate_against_config` | `canonical.starts_with` | [274](../../src/instruction.rs#L274) | receiver-type-required |
+| `validate_against_config` | `Ok` | [283](../../src/instruction.rs#L283) | external-constructor-callback-or-unresolved |
+| `meet_workspace_policy` | `instruction.network.unwrap_or` | [290](../../src/instruction.rs#L290) | receiver-type-required |
+| `meet_workspace_policy` | `meet_required_set` | [291](../../src/instruction.rs#L291), [295](../../src/instruction.rs#L295) | [profile::instruction::meet_required_set](../../src/instruction.rs#L859) |
+| `meet_workspace_policy` | `instruction.allowed_tools.as_deref` | [293](../../src/instruction.rs#L293) | receiver-type-required |
+| `meet_workspace_policy` | `instruction.writable_roots.as_deref` | [297](../../src/instruction.rs#L297) | receiver-type-required |
+| `meet_workspace_policy` | `meet_optional_cap` | [299](../../src/instruction.rs#L299) | [profile::instruction::meet_optional_cap](../../src/instruction.rs#L870) |
+| `new` | `user_agent_dir.as_ref().to_path_buf` | [323](../../src/instruction.rs#L323) | receiver-type-required |
+| `new` | `user_agent_dir.as_ref` | [323](../../src/instruction.rs#L323) | receiver-type-required |
+| `new` | `cwd                 .into_iter()                 .map(&#124;value&#124; value.as_ref().to_path_buf())                 .collect` | [325](../../src/instruction.rs#L325) | receiver-type-required |
+| `new` | `cwd                 .into_iter()                 .map` | [325](../../src/instruction.rs#L325) | receiver-type-required |
+| `new` | `cwd                 .into_iter` | [325](../../src/instruction.rs#L325) | receiver-type-required |
+| `new` | `value.as_ref().to_path_buf` | [327](../../src/instruction.rs#L327) | receiver-type-required |
+| `new` | `value.as_ref` | [327](../../src/instruction.rs#L327) | receiver-type-required |
+| `new_scoped` | `user_data_dir.as_ref().to_path_buf` | [340](../../src/instruction.rs#L340) | receiver-type-required |
+| `new_scoped` | `user_data_dir.as_ref` | [340](../../src/instruction.rs#L340) | receiver-type-required |
+| `new_scoped` | `Some` | [341](../../src/instruction.rs#L341) | external-constructor-callback-or-unresolved |
+| `new_scoped` | `workspace_data_dir.as_ref().to_path_buf` | [341](../../src/instruction.rs#L341) | receiver-type-required |
+| `new_scoped` | `workspace_data_dir.as_ref` | [341](../../src/instruction.rs#L341) | receiver-type-required |
+| `new_scoped` | `cwd                 .into_iter()                 .map(&#124;value&#124; value.as_ref().to_path_buf())                 .collect` | [342](../../src/instruction.rs#L342) | receiver-type-required |
+| `new_scoped` | `cwd                 .into_iter()                 .map` | [342](../../src/instruction.rs#L342) | receiver-type-required |
+| `new_scoped` | `cwd                 .into_iter` | [342](../../src/instruction.rs#L342) | receiver-type-required |
+| `new_scoped` | `value.as_ref().to_path_buf` | [344](../../src/instruction.rs#L344) | receiver-type-required |
+| `new_scoped` | `value.as_ref` | [344](../../src/instruction.rs#L344) | receiver-type-required |
+| `with_folder_authority` | `Some` | [351](../../src/instruction.rs#L351) | external-constructor-callback-or-unresolved |
+| `with_folder_authority` | `storage_root.to_path_buf` | [351](../../src/instruction.rs#L351) | receiver-type-required |
+| `capture` | `self.capture_with_hook` | [356](../../src/instruction.rs#L356) | [profile::instruction::InstructionResolver::capture_with_hook](../../src/instruction.rs#L359) |
+| `capture_with_hook` | `self.scan` | [365](../../src/instruction.rs#L365) | [profile::instruction::InstructionResolver::scan](../../src/instruction.rs#L387) |
+| `capture_with_hook` | `after_scan` | [368](../../src/instruction.rs#L368), [374](../../src/instruction.rs#L374) | external-constructor-callback-or-unresolved |
+| `capture_with_hook` | `Err` | [372](../../src/instruction.rs#L372), [382](../../src/instruction.rs#L382) | external-constructor-callback-or-unresolved |
+| `capture_with_hook` | `previous.as_ref` | [375](../../src/instruction.rs#L375) | receiver-type-required |
+| `capture_with_hook` | `Some` | [375](../../src/instruction.rs#L375), [380](../../src/instruction.rs#L380) | external-constructor-callback-or-unresolved |
+| `capture_with_hook` | `build_snapshot` | [376](../../src/instruction.rs#L376) | [profile::instruction::build_snapshot](../../src/instruction.rs#L767) |
+| `capture_with_hook` | `Ok` | [378](../../src/instruction.rs#L378) | external-constructor-callback-or-unresolved |
+| `scan` | `Vec::new` | [390](../../src/instruction.rs#L390) | external-constructor-callback-or-unresolved |
+| `scan` | `BTreeMap::new` | [391](../../src/instruction.rs#L391) | external-constructor-callback-or-unresolved |
+| `scan` | `scan_origin` | [392](../../src/instruction.rs#L392), [400](../../src/instruction.rs#L400), [428](../../src/instruction.rs#L428) | [profile::instruction::scan_origin](../../src/instruction.rs#L475) |
+| `scan` | `self.cwd.iter().enumerate` | [408](../../src/instruction.rs#L408) | receiver-type-required |
+| `scan` | `self.cwd.iter` | [408](../../src/instruction.rs#L408) | receiver-type-required |
+| `scan` | `fs::canonicalize(cwd).map_err` | [409](../../src/instruction.rs#L409) | receiver-type-required |
+| `scan` | `fs::canonicalize` | [409](../../src/instruction.rs#L409) | external-constructor-callback-or-unresolved |
+| `scan` | `cwd.clone` | [410](../../src/instruction.rs#L410) | receiver-type-required |
+| `scan` | `error.to_string` | [411](../../src/instruction.rs#L411) | receiver-type-required |
+| `scan` | `canonical.is_dir` | [413](../../src/instruction.rs#L413) | receiver-type-required |
+| `scan` | `Err` | [414](../../src/instruction.rs#L414), [439](../../src/instruction.rs#L439), [446](../../src/instruction.rs#L446), [457](../../src/instruction.rs#L457) | external-constructor-callback-or-unresolved |
+| `scan` | `"workspace cwd is not a directory".to_owned` | [416](../../src/instruction.rs#L416) | receiver-type-required |
+| `scan` | `self.authority_root.as_ref().and_then` | [419](../../src/instruction.rs#L419) | receiver-type-required |
+| `scan` | `self.authority_root.as_ref` | [419](../../src/instruction.rs#L419) | receiver-type-required |
+| `scan` | `crate::FolderAuthorityStore::new(root)                     .status(&canonical)                     .ok` | [420](../../src/instruction.rs#L420) | receiver-type-required |
+| `scan` | `crate::FolderAuthorityStore::new(root)                     .status` | [420](../../src/instruction.rs#L420) | receiver-type-required |
+| `scan` | `crate::FolderAuthorityStore::new` | [420](../../src/instruction.rs#L420) | [profile::folder_authority::FolderAuthorityStore::new](../../src/folder_authority.rs#L86) |
+| `scan` | `trust.as_ref().is_some_and` | [424](../../src/instruction.rs#L424) | receiver-type-required |
+| `scan` | `trust.as_ref` | [424](../../src/instruction.rs#L424) | receiver-type-required |
+| `scan` | `folders.insert` | [426](../../src/instruction.rs#L426) | receiver-type-required |
+| `scan` | `sources.len` | [438](../../src/instruction.rs#L438) | receiver-type-required |
+| `scan` | `ProfileError::LimitExceeded` | [439](../../src/instruction.rs#L439), [446](../../src/instruction.rs#L446) | external-constructor-callback-or-unresolved |
+| `scan` | `sources             .iter()             .map(&#124;source&#124; source.content.len() as u64)             .sum::<u64>` | [441](../../src/instruction.rs#L441) | receiver-type-required |
+| `scan` | `sources             .iter()             .map` | [441](../../src/instruction.rs#L441) | receiver-type-required |
+| `scan` | `sources             .iter` | [441](../../src/instruction.rs#L441) | receiver-type-required |
+| `scan` | `source.content.len` | [443](../../src/instruction.rs#L443) | receiver-type-required |
+| `scan` | `BTreeSet::new` | [450](../../src/instruction.rs#L450) | external-constructor-callback-or-unresolved |
+| `scan` | `identities.insert` | [452](../../src/instruction.rs#L452) | receiver-type-required |
+| `scan` | `source.origin.clone` | [453](../../src/instruction.rs#L453) | receiver-type-required |
+| `scan` | `source.kind.clone` | [454](../../src/instruction.rs#L454) | receiver-type-required |
+| `scan` | `source.path.clone` | [455](../../src/instruction.rs#L455) | receiver-type-required |
+| `scan` | `PathBuf::from` | [458](../../src/instruction.rs#L458) | external-constructor-callback-or-unresolved |
+| `scan` | `"instruction paths collide after NFC normalization".to_owned` | [459](../../src/instruction.rs#L459) | receiver-type-required |
+| `scan` | `sources.sort_by_key` | [463](../../src/instruction.rs#L463) | receiver-type-required |
+| `scan` | `self             .authority_root             .as_ref()             .map` | [464](../../src/instruction.rs#L464) | receiver-type-required |
+| `scan` | `self             .authority_root             .as_ref` | [464](../../src/instruction.rs#L464) | receiver-type-required |
+| `scan` | `root.clone` | [468](../../src/instruction.rs#L468) | receiver-type-required |
+| `scan` | `Ok` | [471](../../src/instruction.rs#L471) | external-constructor-callback-or-unresolved |
+| `scan_origin` | `require_optional_directory` | [482](../../src/instruction.rs#L482), [497](../../src/instruction.rs#L497), [501](../../src/instruction.rs#L501), [508](../../src/instruction.rs#L508) | [profile::instruction::require_optional_directory](../../src/instruction.rs#L719) |
+| `scan_origin` | `Ok` | [483](../../src/instruction.rs#L483), [509](../../src/instruction.rs#L509), [564](../../src/instruction.rs#L564) | external-constructor-callback-or-unresolved |
+| `scan_origin` | `root.join` | [485](../../src/instruction.rs#L485), [496](../../src/instruction.rs#L496), [500](../../src/instruction.rs#L500), [504](../../src/instruction.rs#L504) | receiver-type-required |
+| `scan_origin` | `maybe_source` | [486](../../src/instruction.rs#L486), [511](../../src/instruction.rs#L511), [534](../../src/instruction.rs#L534), [554](../../src/instruction.rs#L554) | [profile::instruction::maybe_source](../../src/instruction.rs#L627) |
+| `scan_origin` | `root.to_path_buf` | [494](../../src/instruction.rs#L494) | receiver-type-required |
+| `scan_origin` | `agent.join` | [512](../../src/instruction.rs#L512), [526](../../src/instruction.rs#L526), [549](../../src/instruction.rs#L549) | receiver-type-required |
+| `scan_origin` | `Vec::new` | [527](../../src/instruction.rs#L527), [550](../../src/instruction.rs#L550) | external-constructor-callback-or-unresolved |
+| `scan_origin` | `collect_files` | [528](../../src/instruction.rs#L528), [551](../../src/instruction.rs#L551) | [profile::instruction::collect_files](../../src/instruction.rs#L595) |
+| `scan_origin` | `files.sort_by` | [529](../../src/instruction.rs#L529), [552](../../src/instruction.rs#L552) | receiver-type-required |
+| `scan_origin` | `left.0.as_bytes().cmp` | [529](../../src/instruction.rs#L529), [552](../../src/instruction.rs#L552) | receiver-type-required |
+| `scan_origin` | `left.0.as_bytes` | [529](../../src/instruction.rs#L529), [552](../../src/instruction.rs#L552) | receiver-type-required |
+| `scan_origin` | `right.0.as_bytes` | [529](../../src/instruction.rs#L529), [552](../../src/instruction.rs#L552) | receiver-type-required |
+| `scan_origin` | `skill_text_resource` | [531](../../src/instruction.rs#L531) | [profile::instruction::skill_text_resource](../../src/instruction.rs#L567) |
+| `scan_origin` | `kind.clone` | [537](../../src/instruction.rs#L537) | receiver-type-required |
+| `scan_origin` | `agent             .file_name()             .is_some_and` | [544](../../src/instruction.rs#L544) | receiver-type-required |
+| `scan_origin` | `agent             .file_name` | [544](../../src/instruction.rs#L544) | receiver-type-required |
+| `skill_text_resource` | `relative.split('/').any` | [568](../../src/instruction.rs#L568) | receiver-type-required |
+| `skill_text_resource` | `relative.split` | [568](../../src/instruction.rs#L568) | receiver-type-required |
+| `skill_text_resource` | `part.starts_with` | [568](../../src/instruction.rs#L568) | receiver-type-required |
+| `collect_files` | `require_optional_directory` | [600](../../src/instruction.rs#L600) | [profile::instruction::require_optional_directory](../../src/instruction.rs#L719) |
+| `collect_files` | `Ok` | [601](../../src/instruction.rs#L601), [624](../../src/instruction.rs#L624) | external-constructor-callback-or-unresolved |
+| `collect_files` | `fs::read_dir` | [603](../../src/instruction.rs#L603) | external-constructor-callback-or-unresolved |
+| `collect_files` | `entry.path` | [605](../../src/instruction.rs#L605) | receiver-type-required |
+| `collect_files` | `fs::symlink_metadata` | [606](../../src/instruction.rs#L606) | external-constructor-callback-or-unresolved |
+| `collect_files` | `metadata.file_type().is_symlink` | [607](../../src/instruction.rs#L607) | receiver-type-required |
+| `collect_files` | `metadata.file_type` | [607](../../src/instruction.rs#L607) | receiver-type-required |
+| `collect_files` | `Err` | [608](../../src/instruction.rs#L608), [621](../../src/instruction.rs#L621) | external-constructor-callback-or-unresolved |
+| `collect_files` | `ProfileError::Symlink` | [608](../../src/instruction.rs#L608) | external-constructor-callback-or-unresolved |
+| `collect_files` | `metadata.is_dir` | [610](../../src/instruction.rs#L610) | receiver-type-required |
+| `collect_files` | `collect_files` | [611](../../src/instruction.rs#L611) | [profile::instruction::collect_files](../../src/instruction.rs#L595) |
+| `collect_files` | `metadata.is_file` | [612](../../src/instruction.rs#L612) | receiver-type-required |
+| `collect_files` | `path                 .strip_prefix(root)                 .map_err` | [613](../../src/instruction.rs#L613) | receiver-type-required |
+| `collect_files` | `path                 .strip_prefix` | [613](../../src/instruction.rs#L613) | receiver-type-required |
+| `collect_files` | `path.clone` | [616](../../src/instruction.rs#L616) | receiver-type-required |
+| `collect_files` | `"instruction path escaped its kind directory".to_owned` | [617](../../src/instruction.rs#L617) | receiver-type-required |
+| `collect_files` | `output.push` | [619](../../src/instruction.rs#L619) | receiver-type-required |
+| `collect_files` | `normalize_relative` | [619](../../src/instruction.rs#L619) | [profile::instruction::normalize_relative](../../src/instruction.rs#L730) |
+| `collect_files` | `ProfileError::NotRegular` | [621](../../src/instruction.rs#L621) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `fs::symlink_metadata` | [634](../../src/instruction.rs#L634) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `metadata.file_type().is_symlink` | [636](../../src/instruction.rs#L636) | receiver-type-required |
+| `maybe_source` | `metadata.file_type` | [636](../../src/instruction.rs#L636) | receiver-type-required |
+| `maybe_source` | `Err` | [637](../../src/instruction.rs#L637), [640](../../src/instruction.rs#L640), [644](../../src/instruction.rs#L644), [652](../../src/instruction.rs#L652) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `ProfileError::Symlink` | [637](../../src/instruction.rs#L637) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `file.to_path_buf` | [637](../../src/instruction.rs#L637), [640](../../src/instruction.rs#L640), [648](../../src/instruction.rs#L648), [653](../../src/instruction.rs#L653) | receiver-type-required |
+| `maybe_source` | `metadata.is_file` | [639](../../src/instruction.rs#L639) | receiver-type-required |
+| `maybe_source` | `ProfileError::NotRegular` | [640](../../src/instruction.rs#L640) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `error.kind` | [643](../../src/instruction.rs#L643) | receiver-type-required |
+| `maybe_source` | `Ok` | [643](../../src/instruction.rs#L643), [669](../../src/instruction.rs#L669) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `error.into` | [644](../../src/instruction.rs#L644) | receiver-type-required |
+| `maybe_source` | `read_stable_file` | [646](../../src/instruction.rs#L646) | [profile::instruction::read_stable_file](../../src/instruction.rs#L672) |
+| `maybe_source` | `String::from_utf8(bytes.clone()).map_err` | [647](../../src/instruction.rs#L647) | receiver-type-required |
+| `maybe_source` | `String::from_utf8` | [647](../../src/instruction.rs#L647) | external-constructor-callback-or-unresolved |
+| `maybe_source` | `bytes.clone` | [647](../../src/instruction.rs#L647) | receiver-type-required |
+| `maybe_source` | `"instruction content is not UTF-8".to_owned` | [649](../../src/instruction.rs#L649) | receiver-type-required |
+| `maybe_source` | `content.contains` | [651](../../src/instruction.rs#L651) | receiver-type-required |
+| `maybe_source` | `"instruction content contains NUL".to_owned` | [654](../../src/instruction.rs#L654) | receiver-type-required |
+| `maybe_source` | `parse_canonical` | [658](../../src/instruction.rs#L658) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `maybe_source` | `validate_settings` | [659](../../src/instruction.rs#L659) | [profile::instruction::validate_settings](../../src/instruction.rs#L878) |
+| `maybe_source` | `normalize_logical` | [661](../../src/instruction.rs#L661) | [profile::instruction::normalize_logical](../../src/instruction.rs#L752) |
+| `maybe_source` | `sources.push` | [662](../../src/instruction.rs#L662) | receiver-type-required |
+| `maybe_source` | `origin.clone` | [663](../../src/instruction.rs#L663) | receiver-type-required |
+| `maybe_source` | `digest` | [667](../../src/instruction.rs#L667) | [profile::digest](../../src/lib.rs#L130) |
+| `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [673](../../src/instruction.rs#L673) | receiver-type-required |
+| `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags` | [673](../../src/instruction.rs#L673) | receiver-type-required |
+| `read_stable_file` | `OpenOptions::new()         .read` | [673](../../src/instruction.rs#L673) | receiver-type-required |
+| `read_stable_file` | `OpenOptions::new` | [673](../../src/instruction.rs#L673) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `file.metadata` | [677](../../src/instruction.rs#L677), [688](../../src/instruction.rs#L688) | receiver-type-required |
+| `read_stable_file` | `before.is_file` | [678](../../src/instruction.rs#L678) | receiver-type-required |
+| `read_stable_file` | `Err` | [679](../../src/instruction.rs#L679), [682](../../src/instruction.rs#L682), [691](../../src/instruction.rs#L691), [700](../../src/instruction.rs#L700) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `ProfileError::NotRegular` | [679](../../src/instruction.rs#L679) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `path.to_path_buf` | [679](../../src/instruction.rs#L679) | receiver-type-required |
+| `read_stable_file` | `before.len` | [681](../../src/instruction.rs#L681), [686](../../src/instruction.rs#L686), [695](../../src/instruction.rs#L695) | receiver-type-required |
+| `read_stable_file` | `ProfileError::LimitExceeded` | [682](../../src/instruction.rs#L682) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `Vec::with_capacity` | [686](../../src/instruction.rs#L686) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `file.read_to_end` | [687](../../src/instruction.rs#L687) | receiver-type-required |
+| `read_stable_file` | `fs::symlink_metadata` | [689](../../src/instruction.rs#L689) | external-constructor-callback-or-unresolved |
+| `read_stable_file` | `named.file_type().is_symlink` | [690](../../src/instruction.rs#L690) | receiver-type-required |
+| `read_stable_file` | `named.file_type` | [690](../../src/instruction.rs#L690) | receiver-type-required |
+| `read_stable_file` | `before.dev` | [693](../../src/instruction.rs#L693) | receiver-type-required |
+| `read_stable_file` | `after.dev` | [693](../../src/instruction.rs#L693), [697](../../src/instruction.rs#L697) | receiver-type-required |
+| `read_stable_file` | `before.ino` | [694](../../src/instruction.rs#L694) | receiver-type-required |
+| `read_stable_file` | `after.ino` | [694](../../src/instruction.rs#L694), [698](../../src/instruction.rs#L698) | receiver-type-required |
+| `read_stable_file` | `after.len` | [695](../../src/instruction.rs#L695) | receiver-type-required |
+| `read_stable_file` | `before.modified` | [696](../../src/instruction.rs#L696) | receiver-type-required |
+| `read_stable_file` | `after.modified` | [696](../../src/instruction.rs#L696) | receiver-type-required |
+| `read_stable_file` | `named.dev` | [697](../../src/instruction.rs#L697) | receiver-type-required |
+| `read_stable_file` | `named.ino` | [698](../../src/instruction.rs#L698) | receiver-type-required |
+| `read_stable_file` | `Ok` | [702](../../src/instruction.rs#L702) | external-constructor-callback-or-unresolved |
+| `reject_directory_symlink` | `fs::symlink_metadata` | [706](../../src/instruction.rs#L706) | external-constructor-callback-or-unresolved |
+| `reject_directory_symlink` | `metadata.file_type().is_symlink` | [707](../../src/instruction.rs#L707) | receiver-type-required |
+| `reject_directory_symlink` | `metadata.file_type` | [707](../../src/instruction.rs#L707) | receiver-type-required |
+| `reject_directory_symlink` | `Err` | [708](../../src/instruction.rs#L708), [710](../../src/instruction.rs#L710) | external-constructor-callback-or-unresolved |
+| `reject_directory_symlink` | `ProfileError::Symlink` | [708](../../src/instruction.rs#L708) | external-constructor-callback-or-unresolved |
+| `reject_directory_symlink` | `path.to_path_buf` | [708](../../src/instruction.rs#L708), [711](../../src/instruction.rs#L711) | receiver-type-required |
+| `reject_directory_symlink` | `metadata.is_dir` | [709](../../src/instruction.rs#L709) | receiver-type-required |
+| `reject_directory_symlink` | `"expected instruction directory".to_owned` | [712](../../src/instruction.rs#L712) | receiver-type-required |
+| `reject_directory_symlink` | `Ok` | [715](../../src/instruction.rs#L715) | external-constructor-callback-or-unresolved |
+| `require_optional_directory` | `fs::symlink_metadata` | [720](../../src/instruction.rs#L720) | external-constructor-callback-or-unresolved |
+| `require_optional_directory` | `reject_directory_symlink` | [722](../../src/instruction.rs#L722) | [profile::instruction::reject_directory_symlink](../../src/instruction.rs#L705) |
+| `require_optional_directory` | `Ok` | [723](../../src/instruction.rs#L723), [725](../../src/instruction.rs#L725) | external-constructor-callback-or-unresolved |
+| `require_optional_directory` | `error.kind` | [725](../../src/instruction.rs#L725) | receiver-type-required |
+| `require_optional_directory` | `Err` | [726](../../src/instruction.rs#L726) | external-constructor-callback-or-unresolved |
+| `require_optional_directory` | `error.into` | [726](../../src/instruction.rs#L726) | receiver-type-required |
+| `normalize_relative` | `Vec::new` | [731](../../src/instruction.rs#L731) | external-constructor-callback-or-unresolved |
+| `normalize_relative` | `path.components` | [732](../../src/instruction.rs#L732) | receiver-type-required |
+| `normalize_relative` | `value.to_str().ok_or_else` | [735](../../src/instruction.rs#L735) | receiver-type-required |
+| `normalize_relative` | `value.to_str` | [735](../../src/instruction.rs#L735) | receiver-type-required |
+| `normalize_relative` | `path.to_path_buf` | [736](../../src/instruction.rs#L736), [743](../../src/instruction.rs#L743) | receiver-type-required |
+| `normalize_relative` | `"instruction path is not UTF-8".to_owned` | [737](../../src/instruction.rs#L737) | receiver-type-required |
+| `normalize_relative` | `values.push` | [739](../../src/instruction.rs#L739) | receiver-type-required |
+| `normalize_relative` | `value.nfc().collect::<String>` | [739](../../src/instruction.rs#L739) | receiver-type-required |
+| `normalize_relative` | `value.nfc` | [739](../../src/instruction.rs#L739) | receiver-type-required |
+| `normalize_relative` | `Err` | [742](../../src/instruction.rs#L742) | external-constructor-callback-or-unresolved |
+| `normalize_relative` | `"instruction path contains a non-normal component".to_owned` | [744](../../src/instruction.rs#L744) | receiver-type-required |
+| `normalize_relative` | `normalize_logical` | [749](../../src/instruction.rs#L749) | [profile::instruction::normalize_logical](../../src/instruction.rs#L752) |
+| `normalize_relative` | `values.join` | [749](../../src/instruction.rs#L749) | receiver-type-required |
+| `normalize_logical` | `path.is_empty` | [753](../../src/instruction.rs#L753) | receiver-type-required |
+| `normalize_logical` | `path.contains` | [754](../../src/instruction.rs#L754) | receiver-type-required |
+| `normalize_logical` | `path             .split('/')             .any` | [755](../../src/instruction.rs#L755) | receiver-type-required |
+| `normalize_logical` | `path             .split` | [755](../../src/instruction.rs#L755) | receiver-type-required |
+| `normalize_logical` | `part.is_empty` | [757](../../src/instruction.rs#L757) | receiver-type-required |
+| `normalize_logical` | `Err` | [759](../../src/instruction.rs#L759) | external-constructor-callback-or-unresolved |
+| `normalize_logical` | `PathBuf::from` | [760](../../src/instruction.rs#L760) | external-constructor-callback-or-unresolved |
+| `normalize_logical` | `"invalid logical instruction path".to_owned` | [761](../../src/instruction.rs#L761) | receiver-type-required |
+| `normalize_logical` | `Ok` | [764](../../src/instruction.rs#L764) | external-constructor-callback-or-unresolved |
+| `normalize_logical` | `path.nfc().collect` | [764](../../src/instruction.rs#L764) | receiver-type-required |
+| `normalize_logical` | `path.nfc` | [764](../../src/instruction.rs#L764) | receiver-type-required |
+| `build_snapshot` | `derive_effective` | [768](../../src/instruction.rs#L768) | [profile::instruction::derive_effective](../../src/instruction.rs#L779) |
+| `build_snapshot` | `validate_snapshot` | [775](../../src/instruction.rs#L775) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L924) |
+| `build_snapshot` | `Ok` | [776](../../src/instruction.rs#L776) | external-constructor-callback-or-unresolved |
+| `derive_effective` | `EffectiveInstructions::default` | [780](../../src/instruction.rs#L780) | external-constructor-callback-or-unresolved |
+| `derive_effective` | `Vec::new` | [781](../../src/instruction.rs#L781) | external-constructor-callback-or-unresolved |
+| `derive_effective` | `sources.iter().enumerate` | [782](../../src/instruction.rs#L782) | receiver-type-required |
+| `derive_effective` | `sources.iter` | [782](../../src/instruction.rs#L782) | receiver-type-required |
+| `derive_effective` | `effective.agents.push` | [785](../../src/instruction.rs#L785) | receiver-type-required |
+| `derive_effective` | `effective                     .skills                     .insert` | [787](../../src/instruction.rs#L787) | receiver-type-required |
+| `derive_effective` | `resource_key` | [789](../../src/instruction.rs#L789), [794](../../src/instruction.rs#L794), [799](../../src/instruction.rs#L799) | [profile::instruction::resource_key](../../src/instruction.rs#L814) |
+| `derive_effective` | `effective                     .commands                     .insert` | [792](../../src/instruction.rs#L792) | receiver-type-required |
+| `derive_effective` | `effective                     .hooks                     .insert` | [797](../../src/instruction.rs#L797) | receiver-type-required |
+| `derive_effective` | `parse_canonical` | [803](../../src/instruction.rs#L803) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `derive_effective` | `PathBuf::from` | [803](../../src/instruction.rs#L803) | external-constructor-callback-or-unresolved |
+| `derive_effective` | `source.content.as_bytes` | [803](../../src/instruction.rs#L803) | receiver-type-required |
+| `derive_effective` | `policies.push` | [805](../../src/instruction.rs#L805) | receiver-type-required |
+| `derive_effective` | `meet_policies` | [810](../../src/instruction.rs#L810) | [profile::instruction::meet_policies](../../src/instruction.rs#L825) |
+| `derive_effective` | `Ok` | [811](../../src/instruction.rs#L811) | external-constructor-callback-or-unresolved |
+| `resource_key` | `source         .path         .strip_prefix(prefix)         .map(ToOwned::to_owned)         .ok_or_else` | [815](../../src/instruction.rs#L815) | receiver-type-required |
+| `resource_key` | `source         .path         .strip_prefix(prefix)         .map` | [815](../../src/instruction.rs#L815) | receiver-type-required |
+| `resource_key` | `source         .path         .strip_prefix` | [815](../../src/instruction.rs#L815) | receiver-type-required |
+| `resource_key` | `PathBuf::from` | [820](../../src/instruction.rs#L820) | external-constructor-callback-or-unresolved |
+| `meet_policies` | `Some` | [832](../../src/instruction.rs#L832), [837](../../src/instruction.rs#L837) | external-constructor-callback-or-unresolved |
+| `meet_policies` | `network.unwrap_or` | [832](../../src/instruction.rs#L832) | receiver-type-required |
+| `meet_policies` | `meet_optional_set` | [834](../../src/instruction.rs#L834), [835](../../src/instruction.rs#L835) | [profile::instruction::meet_optional_set](../../src/instruction.rs#L848) |
+| `meet_policies` | `cap.map_or` | [837](../../src/instruction.rs#L837) | receiver-type-required |
+| `meet_policies` | `current.min` | [837](../../src/instruction.rs#L837) | receiver-type-required |
+| `meet_policies` | `tools.map` | [842](../../src/instruction.rs#L842) | receiver-type-required |
+| `meet_policies` | `value.into_iter().collect` | [842](../../src/instruction.rs#L842), [843](../../src/instruction.rs#L843) | receiver-type-required |
+| `meet_policies` | `value.into_iter` | [842](../../src/instruction.rs#L842), [843](../../src/instruction.rs#L843) | receiver-type-required |
+| `meet_policies` | `roots.map` | [843](../../src/instruction.rs#L843) | receiver-type-required |
+| `meet_optional_set` | `value.into_iter().collect::<BTreeSet<_>>` | [852](../../src/instruction.rs#L852) | receiver-type-required |
+| `meet_optional_set` | `value.into_iter` | [852](../../src/instruction.rs#L852) | receiver-type-required |
+| `meet_optional_set` | `Some` | [853](../../src/instruction.rs#L853) | external-constructor-callback-or-unresolved |
+| `meet_optional_set` | `target.take` | [853](../../src/instruction.rs#L853) | receiver-type-required |
+| `meet_optional_set` | `current.intersection(&value).cloned().collect` | [854](../../src/instruction.rs#L854) | receiver-type-required |
+| `meet_optional_set` | `current.intersection(&value).cloned` | [854](../../src/instruction.rs#L854) | receiver-type-required |
+| `meet_optional_set` | `current.intersection` | [854](../../src/instruction.rs#L854) | receiver-type-required |
+| `meet_required_set` | `required.iter().cloned().collect::<BTreeSet<_>>` | [860](../../src/instruction.rs#L860) | receiver-type-required |
+| `meet_required_set` | `required.iter().cloned` | [860](../../src/instruction.rs#L860) | receiver-type-required |
+| `meet_required_set` | `required.iter` | [860](../../src/instruction.rs#L860) | receiver-type-required |
+| `meet_required_set` | `constraint.iter().cloned().collect::<BTreeSet<_>>` | [863](../../src/instruction.rs#L863) | receiver-type-required |
+| `meet_required_set` | `constraint.iter().cloned` | [863](../../src/instruction.rs#L863) | receiver-type-required |
+| `meet_required_set` | `constraint.iter` | [863](../../src/instruction.rs#L863) | receiver-type-required |
+| `meet_required_set` | `required.intersection(&constraint).cloned().collect` | [864](../../src/instruction.rs#L864) | receiver-type-required |
+| `meet_required_set` | `required.intersection(&constraint).cloned` | [864](../../src/instruction.rs#L864) | receiver-type-required |
+| `meet_required_set` | `required.intersection` | [864](../../src/instruction.rs#L864) | receiver-type-required |
+| `meet_required_set` | `required.into_iter().collect` | [866](../../src/instruction.rs#L866) | receiver-type-required |
+| `meet_required_set` | `required.into_iter` | [866](../../src/instruction.rs#L866) | receiver-type-required |
+| `meet_optional_cap` | `Some` | [872](../../src/instruction.rs#L872), [873](../../src/instruction.rs#L873) | external-constructor-callback-or-unresolved |
+| `meet_optional_cap` | `left.min` | [872](../../src/instruction.rs#L872) | receiver-type-required |
+| `validate_settings` | `Err` | [880](../../src/instruction.rs#L880), [887](../../src/instruction.rs#L887), [896](../../src/instruction.rs#L896), [906](../../src/instruction.rs#L906), [914](../../src/instruction.rs#L914) | external-constructor-callback-or-unresolved |
+| `validate_settings` | `path.to_path_buf` | [881](../../src/instruction.rs#L881), [888](../../src/instruction.rs#L888), [897](../../src/instruction.rs#L897), [907](../../src/instruction.rs#L907), [915](../../src/instruction.rs#L915) | receiver-type-required |
+| `validate_settings` | `Some` | [886](../../src/instruction.rs#L886) | external-constructor-callback-or-unresolved |
+| `validate_settings` | `"max_wall_seconds must be at least 1".to_owned` | [889](../../src/instruction.rs#L889) | receiver-type-required |
+| `validate_settings` | `policy             .max_wall_seconds             .is_some_and` | [892](../../src/instruction.rs#L892) | receiver-type-required |
+| `validate_settings` | `"max_wall_seconds exceeds the I-JSON safe-integer range".to_owned` | [898](../../src/instruction.rs#L898) | receiver-type-required |
+| `validate_settings` | `[&policy.allowed_tools, &policy.writable_roots]             .into_iter()             .flatten` | [901](../../src/instruction.rs#L901) | receiver-type-required |
+| `validate_settings` | `[&policy.allowed_tools, &policy.writable_roots]             .into_iter` | [901](../../src/instruction.rs#L901) | receiver-type-required |
+| `validate_settings` | `values.iter().collect::<BTreeSet<_>>().len` | [905](../../src/instruction.rs#L905) | receiver-type-required |
+| `validate_settings` | `values.iter().collect::<BTreeSet<_>>` | [905](../../src/instruction.rs#L905) | receiver-type-required |
+| `validate_settings` | `values.iter` | [905](../../src/instruction.rs#L905) | receiver-type-required |
+| `validate_settings` | `values.len` | [905](../../src/instruction.rs#L905) | receiver-type-required |
+| `validate_settings` | `"instruction policy set contains duplicates".to_owned` | [908](../../src/instruction.rs#L908) | receiver-type-required |
+| `validate_settings` | `policy.writable_roots.as_deref().unwrap_or_default` | [912](../../src/instruction.rs#L912) | receiver-type-required |
+| `validate_settings` | `policy.writable_roots.as_deref` | [912](../../src/instruction.rs#L912) | receiver-type-required |
+| `validate_settings` | `root.contains` | [913](../../src/instruction.rs#L913) | receiver-type-required |
+| `validate_settings` | `Path::new(root).is_absolute` | [913](../../src/instruction.rs#L913) | receiver-type-required |
+| `validate_settings` | `Path::new` | [913](../../src/instruction.rs#L913) | external-constructor-callback-or-unresolved |
+| `validate_settings` | `"instruction writable root must be absolute".to_owned` | [916](../../src/instruction.rs#L916) | receiver-type-required |
+| `validate_settings` | `Ok` | [921](../../src/instruction.rs#L921) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `Path::new` | [925](../../src/instruction.rs#L925), [1005](../../src/instruction.rs#L1005) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `Err` | [927](../../src/instruction.rs#L927), [933](../../src/instruction.rs#L933), [941](../../src/instruction.rs#L941), [948](../../src/instruction.rs#L948), [953](../../src/instruction.rs#L953), [964](../../src/instruction.rs#L964), [971](../../src/instruction.rs#L971), [977](../../src/instruction.rs#L977), [986](../../src/instruction.rs#L986), [996](../../src/instruction.rs#L996), [1019](../../src/instruction.rs#L1019) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `path.to_path_buf` | [928](../../src/instruction.rs#L928), [965](../../src/instruction.rs#L965), [987](../../src/instruction.rs#L987), [997](../../src/instruction.rs#L997), [1020](../../src/instruction.rs#L1020) | receiver-type-required |
+| `validate_snapshot` | `snapshot.sources.len` | [932](../../src/instruction.rs#L932) | receiver-type-required |
+| `validate_snapshot` | `ProfileError::LimitExceeded` | [933](../../src/instruction.rs#L933), [941](../../src/instruction.rs#L941), [948](../../src/instruction.rs#L948) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `snapshot         .sources         .iter()         .map(&#124;source&#124; source.content.len() as u64)         .sum::<u64>` | [935](../../src/instruction.rs#L935) | receiver-type-required |
+| `validate_snapshot` | `snapshot         .sources         .iter()         .map` | [935](../../src/instruction.rs#L935) | receiver-type-required |
+| `validate_snapshot` | `snapshot         .sources         .iter` | [935](../../src/instruction.rs#L935) | receiver-type-required |
+| `validate_snapshot` | `source.content.len` | [938](../../src/instruction.rs#L938), [947](../../src/instruction.rs#L947) | receiver-type-required |
+| `validate_snapshot` | `snapshot.sources.iter().enumerate` | [946](../../src/instruction.rs#L946) | receiver-type-required |
+| `validate_snapshot` | `snapshot.sources.iter` | [946](../../src/instruction.rs#L946) | receiver-type-required |
+| `validate_snapshot` | `source.content.contains` | [952](../../src/instruction.rs#L952) | receiver-type-required |
+| `validate_snapshot` | `PathBuf::from` | [954](../../src/instruction.rs#L954), [978](../../src/instruction.rs#L978), [1004](../../src/instruction.rs#L1004), [1011](../../src/instruction.rs#L1011) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `"instruction content contains NUL".to_owned` | [955](../../src/instruction.rs#L955) | receiver-type-required |
+| `validate_snapshot` | `source.content_sha256.len` | [958](../../src/instruction.rs#L958) | receiver-type-required |
+| `validate_snapshot` | `source                 .content_sha256                 .bytes()                 .all` | [959](../../src/instruction.rs#L959) | receiver-type-required |
+| `validate_snapshot` | `source                 .content_sha256                 .bytes` | [959](../../src/instruction.rs#L959) | receiver-type-required |
+| `validate_snapshot` | `byte.is_ascii_hexdigit` | [962](../../src/instruction.rs#L962) | receiver-type-required |
+| `validate_snapshot` | `byte.is_ascii_uppercase` | [962](../../src/instruction.rs#L962) | receiver-type-required |
+| `validate_snapshot` | `digest` | [969](../../src/instruction.rs#L969) | [profile::digest](../../src/lib.rs#L130) |
+| `validate_snapshot` | `source.content.as_bytes` | [969](../../src/instruction.rs#L969), [1004](../../src/instruction.rs#L1004), [1009](../../src/instruction.rs#L1009) | receiver-type-required |
+| `validate_snapshot` | `source.content_sha256.clone` | [972](../../src/instruction.rs#L972) | receiver-type-required |
+| `validate_snapshot` | `normalize_logical` | [976](../../src/instruction.rs#L976) | [profile::instruction::normalize_logical](../../src/instruction.rs#L752) |
+| `validate_snapshot` | `"logical path is not NFC-normalized".to_owned` | [979](../../src/instruction.rs#L979) | receiver-type-required |
+| `validate_snapshot` | `validate_source_path` | [982](../../src/instruction.rs#L982) | [profile::instruction::validate_source_path](../../src/instruction.rs#L1027) |
+| `validate_snapshot` | `source_order_key` | [991](../../src/instruction.rs#L991) | [profile::instruction::source_order_key](../../src/instruction.rs#L1047) |
+| `validate_snapshot` | `previous_key             .as_ref()             .is_some_and` | [992](../../src/instruction.rs#L992) | receiver-type-required |
+| `validate_snapshot` | `previous_key             .as_ref` | [992](../../src/instruction.rs#L992) | receiver-type-required |
+| `validate_snapshot` | `"sources are not in the deterministic discovery order".to_owned` | [998](../../src/instruction.rs#L998) | receiver-type-required |
+| `validate_snapshot` | `Some` | [1001](../../src/instruction.rs#L1001) | external-constructor-callback-or-unresolved |
+| `validate_snapshot` | `parse_canonical` | [1004](../../src/instruction.rs#L1004) | [profile::parse_canonical](../../src/lib.rs#L71) |
+| `validate_snapshot` | `validate_settings` | [1005](../../src/instruction.rs#L1005) | [profile::instruction::validate_settings](../../src/instruction.rs#L878) |
+| `validate_snapshot` | `resource_key` | [1008](../../src/instruction.rs#L1008) | [profile::instruction::resource_key](../../src/instruction.rs#L814) |
+| `validate_snapshot` | `tools::validate_instruction_hook(source.content.as_bytes(), &logical).map_err` | [1009](../../src/instruction.rs#L1009) | receiver-type-required |
+| `validate_snapshot` | `tools::validate_instruction_hook` | [1009](../../src/instruction.rs#L1009) | [tools::lifecycle_hook::validate_instruction_hook](../../../tools/src/lifecycle_hook.rs#L76) |
+| `validate_snapshot` | `error.to_string` | [1012](../../src/instruction.rs#L1012) | receiver-type-required |
+| `validate_snapshot` | `derive_effective` | [1017](../../src/instruction.rs#L1017) | [profile::instruction::derive_effective](../../src/instruction.rs#L779) |
+| `validate_snapshot` | `"effective projection does not equal the deterministic source fold".to_owned` | [1021](../../src/instruction.rs#L1021) | receiver-type-required |
+| `validate_snapshot` | `Ok` | [1024](../../src/instruction.rs#L1024) | external-constructor-callback-or-unresolved |
+| `validate_source_path` | `source.path.starts_with` | [1031](../../src/instruction.rs#L1031), [1032](../../src/instruction.rs#L1032) | receiver-type-required |
+| `validate_source_path` | `Ok` | [1034](../../src/instruction.rs#L1034), [1036](../../src/instruction.rs#L1036) | external-constructor-callback-or-unresolved |
+| `validate_source_path` | `resource_key(source, "skills/").map` | [1037](../../src/instruction.rs#L1037) | receiver-type-required |
+| `validate_source_path` | `resource_key` | [1037](../../src/instruction.rs#L1037), [1038](../../src/instruction.rs#L1038), [1039](../../src/instruction.rs#L1039) | [profile::instruction::resource_key](../../src/instruction.rs#L814) |
+| `validate_source_path` | `resource_key(source, "commands/").map` | [1038](../../src/instruction.rs#L1038) | receiver-type-required |
+| `validate_source_path` | `resource_key(source, "hooks/").map` | [1039](../../src/instruction.rs#L1039) | receiver-type-required |
+| `validate_source_path` | `Err` | [1040](../../src/instruction.rs#L1040) | external-constructor-callback-or-unresolved |
+| `validate_source_path` | `PathBuf::from` | [1041](../../src/instruction.rs#L1041) | external-constructor-callback-or-unresolved |
+| `validate_source_path` | `"source kind does not match its logical path".to_owned` | [1042](../../src/instruction.rs#L1042) | receiver-type-required |
+| `source_order_key` | `source.path.as_bytes().to_vec` | [1060](../../src/instruction.rs#L1060) | receiver-type-required |
+| `source_order_key` | `source.path.as_bytes` | [1060](../../src/instruction.rs#L1060) | receiver-type-required |

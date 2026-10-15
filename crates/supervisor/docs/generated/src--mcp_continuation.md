@@ -158,7 +158,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `temp.path().join` | [235](../../src/mcp_continuation.rs#L235), [300](../../src/mcp_continuation.rs#L300), [343](../../src/mcp_continuation.rs#L343) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `temp.path` | [235](../../src/mcp_continuation.rs#L235), [300](../../src/mcp_continuation.rs#L300), [343](../../src/mcp_continuation.rs#L343) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::StdioTransport::spawn(             &[                 "/usr/bin/python3".into(),                 "-u".into(),                 "-c".into(),                 script.into(),                 log.to_string_lossy().into_owned(),             ],             None,             &BTreeMap::new(),         )         .unwrap` | [256](../../src/mcp_continuation.rs#L256) | receiver-type-required |
-| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::StdioTransport::spawn` | [256](../../src/mcp_continuation.rs#L256) | [mcp::transport::StdioTransport::spawn](../../../mcp/src/transport.rs#L136) |
+| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::StdioTransport::spawn` | [256](../../src/mcp_continuation.rs#L256) | [mcp::transport::StdioTransport::spawn](../../../mcp/src/transport.rs#L137) |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `"/usr/bin/python3".into` | [258](../../src/mcp_continuation.rs#L258) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `"-u".into` | [259](../../src/mcp_continuation.rs#L259) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `"-c".into` | [260](../../src/mcp_continuation.rs#L260) | receiver-type-required |
@@ -166,7 +166,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `log.to_string_lossy().into_owned` | [262](../../src/mcp_continuation.rs#L262) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `log.to_string_lossy` | [262](../../src/mcp_continuation.rs#L262) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `BTreeMap::new` | [265](../../src/mcp_continuation.rs#L265) | external-constructor-callback-or-unresolved |
-| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::McpClient::new` | [268](../../src/mcp_continuation.rs#L268) | [mcp::client::McpClient::new](../../../mcp/src/client.rs#L140) |
+| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::McpClient::new` | [268](../../src/mcp_continuation.rs#L268) | [mcp::client::McpClient::new](../../../mcp/src/client.rs#L149) |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build()             .unwrap` | [269](../../src/mcp_continuation.rs#L269) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `tokio::runtime::Builder::new_current_thread()             .enable_all()             .build` | [269](../../src/mcp_continuation.rs#L269) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `tokio::runtime::Builder::new_current_thread()             .enable_all` | [269](../../src/mcp_continuation.rs#L269) | receiver-type-required |
@@ -175,7 +175,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `runtime             .block_on` | [273](../../src/mcp_continuation.rs#L273) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `client.connect` | [274](../../src/mcp_continuation.rs#L274) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::McpBroker::start().unwrap` | [276](../../src/mcp_continuation.rs#L276) | receiver-type-required |
-| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::McpBroker::start` | [276](../../src/mcp_continuation.rs#L276) | [mcp::broker::McpBroker::start](../../../mcp/src/broker.rs#L62) |
+| `journal_drives_bound_task_query_update_and_terminal_replay` | `mcp::McpBroker::start` | [276](../../src/mcp_continuation.rs#L276) | [mcp::broker::McpBroker::start](../../../mcp/src/broker.rs#L75) |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `broker.handle` | [277](../../src/mcp_continuation.rs#L277) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `"ws".into` | [279](../../src/mcp_continuation.rs#L279) | receiver-type-required |
 | `journal_drives_bound_task_query_update_and_terminal_replay` | `"user".into` | [280](../../src/mcp_continuation.rs#L280) | receiver-type-required |

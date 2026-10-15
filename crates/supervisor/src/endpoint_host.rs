@@ -1084,6 +1084,7 @@ impl ProductionEndpointHost {
         // This ephemeral snapshot projects global defaults only; no workspace or
         // session is created by opening the Composer's model menu.
         let config = profile::ConfigSnapshot {
+            user_agent_dir: None,
             format: 1,
             revisions: profile::RevisionVector {
                 environments: None,

@@ -1,9 +1,12 @@
-import os,json,tempfile,subprocess,select,secrets,urllib.request,base64,socket
+import os,json,tempfile,subprocess,select,secrets,urllib.request,base64,socket,struct,sys
 from pathlib import Path
 from urllib.parse import urlparse
 repo=Path(__file__).resolve().parent.parent
-with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
-    launch=Path(root)/'launch.json'
+with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
+    base=Path(temporary).resolve()
+    root=str(base/'state')
+    workspace_path=base/'project';workspace_path.mkdir()
+    launch=base/'launch.json'
     providers=json.loads((repo/'fixtures/config/providers.canonical.json').read_text())
     # The provider is always the local mock: the native client check sends a real prompt, and a
     # worker stuck on the internet would keep the session busy for the later selectModel step.
@@ -23,16 +26,35 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
     mock_provider=http.server.ThreadingHTTPServer(('127.0.0.1',0),MockProvider)
     threading.Thread(target=mock_provider.serve_forever,daemon=True).start()
     providers['providers'][0]['endpoint']=f'http://127.0.0.1:{mock_provider.server_port}/v1'
-    launch.write_text(json.dumps(dict(format=1,root=root,worker=str(repo/'target/debug/tekes-worker'),listen='127.0.0.1:0',web_listen='127.0.0.1:0',providers=providers,credential_bindings={'openai-main':'TEKES_BUILTIN_TEST_KEY'})))
+    launch.write_text(json.dumps(dict(format=1,bootstrap_version=1,root=root,worker=str(repo/'target/debug/tekes-worker'),listen='127.0.0.1:0',providers=providers,credential_bindings={'openai-main':'TEKES_BUILTIN_TEST_KEY'})))
     token=secrets.token_bytes(32)
-    env=os.environ.copy();env['HOME']=root;env['TEKES_KERNEL_ENDPOINT_TOKEN']=token.hex();env['TEKES_BUILTIN_TEST_KEY']='synthetic-builtin-test-key'
+    env=os.environ.copy();env['HOME']=temporary
+    env.pop('TEKES_KERNEL_ENDPOINT_TOKEN',None);env.pop('TEKES_BUILTIN_TEST_KEY',None)
+    visible_marker='synthetic-bootstrap-control-'+secrets.token_hex(16)
+    env['TEKES_BOOTSTRAP_TEST_VISIBLE_MARKER']=visible_marker
+    material='synthetic-builtin-test-key'
+    payload=json.dumps({'endpointToken':token.hex(),'credentials':{'openai-main':material}}).encode()
+    bootstrap=b'TEKES-KERNEL-BOOTSTRAP/1\n'+struct.pack('!I',len(payload))+payload
     command=[str(repo/'target/debug/tekes-supervisor'),'--built-in',str(launch)]
-    for missing in ['TEKES_KERNEL_ENDPOINT_TOKEN','TEKES_BUILTIN_TEST_KEY']:
-        missing_env=env.copy();missing_env.pop(missing)
-        failed=subprocess.run(command,input='',capture_output=True,text=True,env=missing_env,timeout=10)
-        assert failed.returncode!=0 and not failed.stdout,(missing,failed.returncode)
-        assert env['TEKES_BUILTIN_TEST_KEY'] not in failed.stderr
-    print('MISSING_LAUNCH_CREDENTIALS_REJECTED')
+    for legacy in ['TEKES_KERNEL_ENDPOINT_TOKEN','TEKES_BUILTIN_TEST_KEY']:
+        legacy_env=env.copy();legacy_env[legacy]='synthetic-legacy-not-echoed'
+        failed=subprocess.run(command,input=bootstrap,capture_output=True,env=legacy_env,timeout=10)
+        assert failed.returncode!=0 and not failed.stdout,(legacy,failed.returncode)
+        assert b'legacy-secret-environment-rejected' in failed.stderr
+        assert b'synthetic-legacy-not-echoed' not in failed.stderr
+    config=json.loads(launch.read_text());config['web_listen']='127.0.0.1:0'
+    launch.write_text(json.dumps(config))
+    failed=subprocess.run(command,input=bootstrap,capture_output=True,env=env,timeout=10)
+    assert failed.returncode!=0 and b'unauthenticated-web-client-disabled' in failed.stderr
+    assert not (Path(root)/'config').exists(),'failed launch produced config side effects'
+    config.pop('web_listen');launch.write_text(json.dumps(config))
+    for invalid in [b'',bootstrap[:30],b'TEKES-KERNEL-BOOTSTRAP/1\n'+struct.pack('!I',1024*1024+1)]:
+        failed=subprocess.run(command,input=invalid,capture_output=True,env=env,timeout=10)
+        assert failed.returncode!=0 and not failed.stdout
+        assert b'private-bootstrap-rejected' in failed.stderr
+        assert material.encode() not in failed.stderr
+        assert not (Path(root)/'config').exists(),'invalid frame produced config side effects'
+    print('PRIVATE_BOOTSTRAP_AND_LEGACY_WEB_REJECTIONS_OK')
     if os.environ.get('TEKES_FILE_TRANSFER_WORKER'):
         import hashlib
         attachment_session='018f0000-0000-7000-8000-000000000061'
@@ -50,27 +72,39 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
              'kind':'input','origin_key':'prompt','origin_tuple':dict(origin,key='prompt',op='submit'),
              'seq':2,'ts':'2026-08-26T09:00:01.000Z','v':1}]
         (folder/'main.jsonl').write_text(''.join(json.dumps(e,sort_keys=True,separators=(',',':'))+'\n' for e in events))
-    p=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env,text=True)
+    p=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
+    p.stdin.write(bootstrap);p.stdin.flush()
     try:
         if not select.select([p.stdout],[],[],20)[0]: raise RuntimeError('readiness timeout')
         line=p.stdout.readline()
         if not line: raise RuntimeError(p.stderr.read())
         ready=json.loads(line);print('READY',ready)
-        duplicate=subprocess.run(command,input='',capture_output=True,text=True,env=env,timeout=10)
+        if sys.platform=='darwin':
+            # CTL_KERN/KERN_PROCARGS2 reads the initial environment, even
+            # under the current macOS tool sandbox. Never print its contents.
+            import ctypes
+            libc=ctypes.CDLL(None,use_errno=True)
+            mib=(ctypes.c_int*3)(1,49,p.pid)
+            size=ctypes.c_size_t(1024*1024)
+            initial=ctypes.create_string_buffer(size.value)
+            try:
+                assert libc.sysctl(mib,3,initial,ctypes.byref(size),None,0)==0,'initial process query failed'
+                initial_bytes=initial.raw[:size.value]
+                assert visible_marker.encode() in initial_bytes,'initial environment positive control missing'
+                assert token.hex().encode() not in initial_bytes,'endpoint token exposed in initial process data'
+                assert material.encode() not in initial_bytes,'provider key exposed in initial process data'
+                del initial_bytes
+            finally:
+                ctypes.memset(initial,0,ctypes.sizeof(initial))
+            print('INITIAL_PROCESS_SECRET_ABSENCE_OK')
+        duplicate=subprocess.run(command,input=bootstrap,capture_output=True,env=env,timeout=10)
         assert duplicate.returncode!=0 and not duplicate.stdout,'duplicate instance accepted'
         print('DUPLICATE_INSTANCE_REJECTED')
         req=urllib.request.Request(ready['url']+'/health/ready',headers={'Authorization':'Bearer '+base64.urlsafe_b64encode(token).decode().rstrip('=')})
         try:
             with urllib.request.urlopen(req,timeout=5) as response: assert response.status in (200,204); print('HEALTH_READY',response.status)
         except urllib.error.HTTPError as error: raise AssertionError(f'health failed: {error.code}') from None
-        web=urlparse(ready['webUrl']); assert web.hostname=='127.0.0.1' and web.port,ready
-        with urllib.request.urlopen(ready['webUrl'],timeout=5) as response:
-            assert response.status==200 and b'<' in response.read(),response.status
-        sock=socket.create_connection((web.hostname,web.port),timeout=5)
-        sock.sendall(f'GET / HTTP/1.1\r\nHost: localhost:{web.port}\r\nConnection: close\r\n\r\n'.encode())
-        status=sock.recv(64).split(b'\r\n')[0]; sock.close()
-        assert not status.startswith(b'HTTP/1.1 2'),status
-        print('WEB_CLIENT_SERVED')
+        assert 'webUrl' not in ready and ready['bootstrapVersion']==1,ready
         def call(method,payload):
             rpc=secrets.token_hex(8)
             body=json.dumps({'type':'client-request','rpcId':rpc,'method':method,'payload':payload}).encode()
@@ -92,13 +126,13 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
         draft_catalog=call('models.list',{})
         assert draft_catalog['groups'] and draft_catalog['routable'],draft_catalog
         print('DRAFT_MODELS_ROUTABLE')
-        workspace=call('workspace.create',{'path':root})['workspace']
+        workspace=call('workspace.create',{'path':str(workspace_path)})['workspace']
         if os.environ.get('TEKES_FILE_TRANSFER_WORKER'):
             from urllib.parse import urlparse, unquote
             import hashlib
             content=bytes(range(256))*1000
-            (Path(root)/'binary-preview.dat').write_bytes(content)
-            cache=Path(root)/'preview-cache';cache.mkdir()
+            (workspace_path/'binary-preview.dat').write_bytes(content)
+            cache=base/'preview-cache';cache.mkdir()
             transfer={'workspace':{'_0':{'baseURL':ready['url'],
                 'headers':{'Authorization':'Bearer '+base64.urlsafe_b64encode(token).decode().rstrip('=')},
                 'identity':{'workspace':{'workspaceID':workspace['workspaceId'],'path':'binary-preview.dat'}},
@@ -122,7 +156,7 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
             call('workspace.archiveSession',{'sessionId':attachment_session})
         session=call('session.create',{'workspaceId':workspace['workspaceId']})['sessionId']
         print('SESSION_CREATED',session)
-        (Path(root)/'file-page.txt').write_text('first\nsecond\n')
+        (workspace_path/'file-page.txt').write_text('first\nsecond\n')
         file_stat=call('session.files.stat',{'sessionId':session,'path':'file-page.txt'})
         text_page=call('session.files.read',{'sessionId':session,'path':'file-page.txt','offset':2,'limit':1})
         byte_page=call('session.files.readBytes',{'sessionId':session,'path':'file-page.txt','offset':6,'limit':6})
@@ -151,7 +185,7 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
                 time.sleep(.1)
             else: raise AssertionError('Provider answer was not committed to the semantic ledger')
             print('IMAGE_PROVIDER_ANSWER_COMMITTED_OK')
-        project=Path(root)/'resource-project'
+        project=workspace_path/'resource-project'
         skill=project/'.agents/skills/project-only/SKILL.md'
         skill.parent.mkdir(parents=True)
         skill.write_text('---\nname: project-only\ndescription: Project scoped skill\n---\nProject rules.\n')
@@ -160,6 +194,38 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
         command_file.write_text('---\ndescription: Project scoped command\n---\nReview $ARGUMENTS\n')
         resource_workspace=call('workspace.create',{'path':str(project)})['workspace']
         resource_session=call('session.create',{'workspaceId':resource_workspace['workspaceId']})['sessionId']
+        assert call('skills/list',{'sessionId':resource_session})['skills']==[],'untrusted project skill enabled'
+        trust=call('folders.trust.request',{'path':str(project),'expectedRevision':0})
+        import pty,time
+        child,terminal=pty.fork()
+        if child==0:
+            os.execve(command[0],[command[0],'--folder-trust','grant',root,trust['requestId'],'smoke-grant','1'],env)
+        output=b'';confirmed=False;terminal_open=True;deadline=time.monotonic()+10
+        try:
+            while time.monotonic()<deadline:
+                if terminal_open and select.select([terminal],[],[],.1)[0]:
+                    try: chunk=os.read(terminal,8192)
+                    except OSError: chunk=b''
+                    if not chunk: terminal_open=False
+                    output+=chunk
+                    if b'to continue:' in output and not confirmed:
+                        os.write(terminal,('approve '+json.dumps(trust['requestId'])+'\n').encode());confirmed=True
+                if not terminal_open: time.sleep(.01)
+                done,status=os.waitpid(child,os.WNOHANG)
+                if done: child=0;assert os.waitstatus_to_exitcode(status)==0,output;break
+            if child:
+                done,status=os.waitpid(child,os.WNOHANG)
+                assert done and os.waitstatus_to_exitcode(status)==0,output
+                child=0
+            assert confirmed,'CLI did not request explicit consent'
+        finally:
+            os.close(terminal)
+            if child:
+                try: os.kill(child,9)
+                except ProcessLookupError: pass
+                os.waitpid(child,0)
+        assert call('folders.trust.status',{'path':str(project)})['folder']['trusted']
+        print('HOST_FOLDER_TRUST_AND_DEFAULT_DENY_OK')
         skills=call('skills/list',{'sessionId':resource_session})['skills']
         assert skills == [{'name':'project-only','description':'Project scoped skill','modelInvocable':True}],skills
         commands=call('commands/list',{'sessionId':resource_session})['commands']
@@ -249,7 +315,7 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as root:
         print('ALL_STREAM_BASELINES_OK')
         stream.close();sock.close()
         if os.environ.get('TEKES_NATIVE_CLIENT_EXEC'):
-            subprocess.run([os.environ['TEKES_NATIVE_CLIENT_EXEC'],ready['url'],root],env=env,check=True,timeout=20)
+            subprocess.run([os.environ['TEKES_NATIVE_CLIENT_EXEC'],ready['url'],str(workspace_path)],input=token.hex().encode(),env=env,check=True,timeout=20)
         p.stdin.close();p.wait(timeout=15)
         print('EXIT',p.returncode)
         if p.returncode: raise RuntimeError(p.stderr.read())

@@ -8,7 +8,7 @@ use crate::{McpError, McpPeer};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct McpPoolKey {
-    pub workspace: String,
+    pub owner: String,
     pub scope: String,
     pub server: String,
     pub config_digest: String,
@@ -84,7 +84,7 @@ impl McpPool {
             .map(|entry| Arc::clone(&entry.peer))
     }
 
-    async fn retain(&self, key: &McpPoolKey) -> Option<PooledPeer> {
+    pub(crate) async fn retain(&self, key: &McpPoolKey) -> Option<PooledPeer> {
         let mut peers = self.peers.write().await;
         let entry = peers.get_mut(key)?;
         entry.clients = entry.clients.saturating_add(1);
@@ -170,6 +170,27 @@ impl McpPool {
         }
     }
 
+    /// Best-effort idle cleanup. Active admissions keep their barrier; queued
+    /// operations independently recheck after the mutex and cannot revive it.
+    pub async fn reap_revoked(&self) {
+        let candidates = self
+            .peers
+            .read()
+            .await
+            .iter()
+            .map(|(key, entry)| (key.clone(), Arc::clone(&entry.peer)))
+            .collect::<Vec<_>>();
+        for (key, peer) in candidates {
+            let revoked = peer
+                .try_lock()
+                .ok()
+                .is_some_and(|guard| guard.admit().is_err());
+            if revoked {
+                let _ = self.remove(&key).await;
+            }
+        }
+    }
+
     pub async fn insert(
         &self,
         key: McpPoolKey,
@@ -210,7 +231,7 @@ impl McpPool {
         let stale_keys = peers
             .keys()
             .filter(|existing| {
-                existing.workspace == key.workspace
+                existing.owner == key.owner
                     && existing.scope == key.scope
                     && existing.server == key.server
                     && *existing != &key

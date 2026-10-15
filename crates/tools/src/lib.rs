@@ -58,8 +58,8 @@ pub use runtime_backends::*;
 pub use sandbox::{
     NetworkPolicy, ProbeFailure, ProbeStatus, SandboxApproval, SandboxBackend, SandboxError,
     SandboxPolicy, compile_darwin_profile, compile_linux_bubblewrap_plan, compile_linux_plan,
-    exposed_protected_roots, kernel_protected_roots, policy_digest, probe_backend,
-    protected_root_containing, validate_unsandboxed_approval,
+    exposed_protected_roots, kernel_protected_roots, kernel_protected_roots_with_user_agent_dir,
+    policy_digest, probe_backend, protected_root_containing, validate_unsandboxed_approval,
 };
 pub use schema_registry::{
     FIXED_SCHEMA_REVISION, FixedToolSchema, ObjectRule, ObjectSchema, PropertySchema,

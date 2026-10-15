@@ -17,7 +17,7 @@
 #![cfg(target_os = "macos")]
 
 use std::fs;
-use std::io::{BufRead, BufReader, Read};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Stdio};
@@ -102,6 +102,7 @@ fn ready_without_reading_threads(threads: usize, archived: usize) {
         &launch,
         serde_json::to_vec(&serde_json::json!({
             "format": 1,
+            "bootstrap_version": 1,
             "root": root,
             "worker": supervisor,
             "listen": "127.0.0.1:0",
@@ -119,12 +120,19 @@ fn ready_without_reading_threads(threads: usize, archived: usize) {
         .env("TEKES_KERNEL_BOOT_TRACE", "1")
         .env("HOME", &base)
         .env("TMPDIR", &base)
-        .env("TEKES_KERNEL_ENDPOINT_TOKEN", "a".repeat(64))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
         .expect("spawn supervisor");
+    let body =
+        serde_json::to_vec(&serde_json::json!({"endpointToken":"a".repeat(64),"credentials":{}}))
+            .unwrap();
+    let stdin = child.stdin.as_mut().unwrap();
+    stdin.write_all(b"TEKES-KERNEL-BOOTSTRAP/1\n").unwrap();
+    stdin.write_all(&(body.len() as u32).to_be_bytes()).unwrap();
+    stdin.write_all(&body).unwrap();
+    stdin.flush().unwrap();
     let mut stdout = BufReader::new(child.stdout.take().expect("stdout"));
     let (line_tx, line_rx) = std::sync::mpsc::channel();
     std::thread::spawn(move || {

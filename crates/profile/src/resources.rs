@@ -71,6 +71,7 @@ pub struct CommandExpansion {
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct ResourceCatalog {
     skills: BTreeMap<String, SkillPackage>,
+    instruction: Option<InstructionSnapshot>,
     commands: BTreeMap<String, CommandCatalogEntry>,
 }
 
@@ -98,7 +99,11 @@ impl ResourceCatalog {
     pub fn from_snapshot(snapshot: &InstructionSnapshot) -> Result<Self, ResourceError> {
         let skills = build_skills(snapshot)?;
         let commands = build_commands(snapshot)?;
-        Ok(Self { skills, commands })
+        Ok(Self {
+            skills,
+            commands,
+            instruction: Some(snapshot.clone()),
+        })
     }
 
     /// Names of the skill packages `snapshot` exposes, the names
@@ -114,10 +119,22 @@ impl ResourceCatalog {
             .unwrap_or_default()
     }
 
+    fn skill_authorized(&self, package: &SkillPackage) -> bool {
+        self.instruction.as_ref().is_some_and(|snapshot| {
+            snapshot.sources.iter().any(|source| {
+                source.kind == crate::InstructionKind::Skill
+                    && source.path == format!("skills/{}/SKILL.md", package.summary.name)
+                    && source_label(&source.origin) == package.summary.source
+                    && snapshot.source_authorized(source)
+            })
+        })
+    }
+
     #[must_use]
     pub fn skill_summaries(&self) -> Vec<SkillSummary> {
         self.skills
             .values()
+            .filter(|package| self.skill_authorized(package))
             .map(|package| package.summary.clone())
             .collect()
     }
@@ -125,6 +142,7 @@ impl ResourceCatalog {
     pub fn skill(&self, name: &str) -> Result<&SkillPackage, ResourceError> {
         self.skills
             .get(name)
+            .filter(|package| self.skill_authorized(package))
             .ok_or_else(|| ResourceError::SkillNotFound(name.to_owned()))
     }
 
@@ -132,7 +150,9 @@ impl ResourceCatalog {
     /// extension. The catalog is already one immutable instruction snapshot;
     /// callers must not reopen instruction files while paginating this view.
     pub fn skill_packages(&self) -> impl Iterator<Item = &SkillPackage> {
-        self.skills.values()
+        self.skills
+            .values()
+            .filter(|package| self.skill_authorized(package))
     }
 
     pub fn skill_resource(&self, skill: &str, path: &str) -> Result<&str, ResourceError> {
@@ -198,11 +218,9 @@ fn build_skills(
     snapshot: &InstructionSnapshot,
 ) -> Result<BTreeMap<String, SkillPackage>, ResourceError> {
     let mut candidates: BTreeMap<String, PackageCandidate<'_>> = BTreeMap::new();
-    for source in snapshot
-        .sources
-        .iter()
-        .filter(|source| source.kind == InstructionKind::Skill)
-    {
+    for source in snapshot.sources.iter().filter(|source| {
+        source.kind == InstructionKind::Skill && snapshot.source_authorized(source)
+    }) {
         let relative = source
             .path
             .strip_prefix("skills/")
@@ -644,6 +662,20 @@ fn hex_digest(bytes: &[u8]) -> String {
 
 #[cfg(test)]
 mod tests {
+    fn trusted_snapshot(snapshot: &mut InstructionSnapshot) -> tempfile::TempDir {
+        let root = tempfile::tempdir().unwrap();
+        let state = root.path().join("state");
+        let project = root.path().join("project");
+        std::fs::create_dir(&project).unwrap();
+        let store = crate::FolderAuthorityStore::new(&state);
+        store.request("r", 0, &project).unwrap();
+        let folder = store.grant_from_host("g", 1, "r").unwrap().folder;
+        snapshot.folder_authority = Some(crate::FolderSnapshotAuthority {
+            storage_root: state,
+            folders: [(0, folder)].into(),
+        });
+        root
+    }
     #[test]
     fn shared_skill_plain_description_accepts_embedded_colon() {
         let parsed = super::parse_front_matter("---\nname: example\ndescription: Set up a project: scan and validate.\nreferences:\n  - guide\n---\nBody", true).unwrap();
@@ -709,11 +741,13 @@ mod tests {
                 "rules\n",
             ),
         ];
-        let snapshot = InstructionSnapshot {
+        let mut snapshot = InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources,
             effective: EffectiveInstructions::default(),
         };
+        let _trust = trusted_snapshot(&mut snapshot);
         let error = ResourceCatalog::from_snapshot(&snapshot).expect_err("scope collision");
         assert!(
             error
@@ -734,6 +768,7 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("review.md".to_owned(), 0);
         let snapshot = InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![source],
             effective,
@@ -751,7 +786,8 @@ mod tests {
 
     #[test]
     fn invalid_winner_and_out_of_range_positionals_fail_closed() {
-        let invalid_package = InstructionSnapshot {
+        let mut invalid_package = InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![source(
                 InstructionOrigin::Project { workspace_index: 0 },
@@ -761,6 +797,7 @@ mod tests {
             )],
             effective: EffectiveInstructions::default(),
         };
+        let _trust = trusted_snapshot(&mut invalid_package);
         assert!(matches!(
             ResourceCatalog::from_snapshot(&invalid_package),
             Err(ResourceError::InvalidSkill(_))
@@ -775,6 +812,7 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("position.md".to_owned(), 0);
         let catalog = ResourceCatalog::from_snapshot(&InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![command],
             effective,
@@ -795,6 +833,7 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("expand.md".to_owned(), 0);
         let catalog = ResourceCatalog::from_snapshot(&InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources: vec![expanding],
             effective,

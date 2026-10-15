@@ -227,7 +227,8 @@ pub fn workspace_instructions(
         user_agent_dir,
         repository.workspace_data_dir(workspace_id)?,
         config.workspace.cwd.iter().map(Path::new),
-    ))
+    )
+    .with_folder_authority(repository.root()))
 }
 
 #[cfg(test)]
@@ -325,6 +326,28 @@ mod tests {
         assert_eq!(session.workspace, workspace.workspace);
         assert_eq!(session.workspace.selected_cwd, Some(canonical(&second)));
 
+        let user_agent_dir = root.path().join("custom-user");
+        let assets = store::AssetStore::new(folder.join("assets")).unwrap();
+        let launch = crate::LaunchProfile::resolve_and_publish_for_scope(
+            &repository,
+            &scope,
+            &user_agent_dir,
+            &assets,
+        )
+        .unwrap();
+        assert_eq!(
+            launch.config.user_agent_dir.as_deref(),
+            user_agent_dir.to_str()
+        );
+        let decoded = ConfigSnapshot::decode(&launch.config.canonical_bytes().unwrap()).unwrap();
+        assert_eq!(decoded.user_agent_dir, launch.config.user_agent_dir);
+        assert!(
+            decoded
+                .protected_roots(repository.root())
+                .iter()
+                .any(|path| { Path::new(path).ends_with("custom-user") })
+        );
+
         // Without a stable binding a multi-folder session has no defined root.
         write_genesis(&folder, None);
         let legacy = SessionScope::for_session_folder(&folder).unwrap();
@@ -340,6 +363,7 @@ mod tests {
                 root.path().join("workspaces").join("workspace-1"),
                 session.workspace.cwd.iter().map(Path::new),
             )
+            .with_folder_authority(repository.root())
         );
     }
 

@@ -53,7 +53,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/provider/src/normalize.rs](../../src/normalize.rs) | 92 | 1767 | [Symbols and calls](src--normalize.md) |
 | [crates/provider/src/oauth.rs](../../src/oauth.rs) | 27 | 294 | [Symbols and calls](src--oauth.md) |
 | [crates/provider/src/request.rs](../../src/request.rs) | 72 | 847 | [Symbols and calls](src--request.md) |
-| [crates/provider/src/secret_store.rs](../../src/secret_store.rs) | 35 | 130 | [Symbols and calls](src--secret_store.md) |
+| [crates/provider/src/secret_store.rs](../../src/secret_store.rs) | 35 | 131 | [Symbols and calls](src--secret_store.md) |
 | [crates/provider/src/sse.rs](../../src/sse.rs) | 15 | 92 | [Symbols and calls](src--sse.md) |
 | [crates/provider/tests/anthropic_messages_alignment.rs](../../tests/anthropic_messages_alignment.rs) | 21 | 176 | `inventory.json` |
 | [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 34 | 744 | `inventory.json` |

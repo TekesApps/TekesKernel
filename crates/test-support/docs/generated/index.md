@@ -13,6 +13,7 @@
 | Dependency | Kind | Target cfg |
 |---|---|---|
 | `engine` | normal | all |
+| `profile` | normal | all |
 | `schema` | normal | all |
 | `store` | normal | all |
 | `worker-control` | normal | all |
@@ -26,7 +27,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/test-support/src/lib.rs](../../src/lib.rs) | 11 | 130 | [Symbols and calls](src--lib.md) |
+| [crates/test-support/src/lib.rs](../../src/lib.rs) | 14 | 151 | [Symbols and calls](src--lib.md) |
 
 ## Cross-file direct calls
 

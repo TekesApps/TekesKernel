@@ -548,3 +548,13 @@ retirement never returns an empty success placeholder.
 - Gate 116: cross-capability lifecycle — plugin mutation reconciles MCP,
   schedule validates/applies policy+profile, archived usage/search behavior is
   exact, and all revoked generations fail closed.
+
+## Folder trust (0.8)
+
+`folderTrust.v1` owns `folders.trust.status` (read), `folders.trust.request` and
+`folders.trust.revoke` (mutations). Closed request/response DTOs and authorization
+semantics are specified in [Folder trust](../docs/folder-trust.md). Its exact
+error code is `folder-trust-refused`; no grant capability exists. Resource
+list/read optionally accept `sessionId` together with the compatibility
+`workspaceId`; a mismatching session/workspace is rejected and the session's
+recorded folders determine visibility.

@@ -759,6 +759,7 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("review.md".to_owned(), 2);
         ResourceCatalog::from_snapshot(&InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources,
             effective,
@@ -890,6 +891,7 @@ mod tests {
         effective.commands.insert("lock-talk.md".to_owned(), 1);
         let service = ClientResourceService::new(
             ResourceCatalog::from_snapshot(&InstructionSnapshot {
+                folder_authority: None,
                 format: 1,
                 sources,
                 effective,
@@ -1131,6 +1133,7 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("compact.md".to_owned(), 0);
         let compact_catalog = ResourceCatalog::from_snapshot(&InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources,
             effective,
@@ -1166,6 +1169,7 @@ mod tests {
         effective.commands.insert("compact.md".to_owned(), 0);
         effective.commands.insert("compact-now.md".to_owned(), 1);
         let snapshot = InstructionSnapshot {
+            folder_authority: None,
             format: 1,
             sources,
             effective,

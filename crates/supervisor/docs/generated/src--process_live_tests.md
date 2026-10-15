@@ -20,10 +20,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::process_live_tests::real_legacy_simple_task](../../src/process_live_tests.rs#L838) | function_item | `private` | test; #[cfg(target_os = "macos")] |
 | [tekes-supervisor::process_live_tests::real_provider_400_releases_queue_over_public_transport](../../src/process_live_tests.rs#L992) | function_item | `private` | test; #[cfg(target_os = "macos")] |
 | [tekes-supervisor::process_live_tests::register_local_tools_server](../../src/process_live_tests.rs#L1076) | function_item | `private` | test; #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_live_tests::real_public_deferred_tool_search](../../src/process_live_tests.rs#L1098) | function_item | `private` | test; #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_live_tests::real_public_image_attachment](../../src/process_live_tests.rs#L1213) | function_item | `private` | test; #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_live_tests::real_public_flow_case](../../src/process_live_tests.rs#L1286) | function_item | `private` | test; #[cfg(target_os = "macos")] |
-| [tekes-supervisor::process_live_tests::real_public_mcp_task_continuation](../../src/process_live_tests.rs#L1467) | function_item | `private` | test; #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_live_tests::real_public_deferred_tool_search](../../src/process_live_tests.rs#L1099) | function_item | `private` | test; #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_live_tests::real_public_image_attachment](../../src/process_live_tests.rs#L1214) | function_item | `private` | test; #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_live_tests::real_public_flow_case](../../src/process_live_tests.rs#L1287) | function_item | `private` | test; #[cfg(target_os = "macos")] |
+| [tekes-supervisor::process_live_tests::real_public_mcp_task_continuation](../../src/process_live_tests.rs#L1468) | function_item | `private` | test; #[cfg(target_os = "macos")] |
 
 ## Imports / reexports
 
@@ -441,7 +441,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_validator_exhaustion_releases_queued_input` | `listener.local_addr().unwrap` | [705](../../src/process_live_tests.rs#L705) | receiver-type-required |
 | `real_validator_exhaustion_releases_queued_input` | `listener.local_addr` | [705](../../src/process_live_tests.rs#L705) | receiver-type-required |
 | `real_validator_exhaustion_releases_queued_input` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"), host.clone()).unwrap` | [706](../../src/process_live_tests.rs#L706) | receiver-type-required |
-| `real_validator_exhaustion_releases_queued_input` | `crate::host_runtime::assemble_application_endpoint_host` | [706](../../src/process_live_tests.rs#L706) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
+| `real_validator_exhaustion_releases_queued_input` | `crate::host_runtime::assemble_application_endpoint_host` | [706](../../src/process_live_tests.rs#L706) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
 | `real_validator_exhaustion_releases_queued_input` | `"test".into` | [707](../../src/process_live_tests.rs#L707), [778](../../src/process_live_tests.rs#L778) | receiver-type-required |
 | `real_validator_exhaustion_releases_queued_input` | `workspace.to_string_lossy().into_owned` | [707](../../src/process_live_tests.rs#L707) | receiver-type-required |
 | `real_validator_exhaustion_releases_queued_input` | `workspace.to_string_lossy` | [707](../../src/process_live_tests.rs#L707) | receiver-type-required |
@@ -622,7 +622,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_legacy_simple_task` | `listener.local_addr().unwrap` | [896](../../src/process_live_tests.rs#L896) | receiver-type-required |
 | `real_legacy_simple_task` | `listener.local_addr` | [896](../../src/process_live_tests.rs#L896) | receiver-type-required |
 | `real_legacy_simple_task` | `crate::host_runtime::assemble_application_endpoint_host(&root,             endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},             Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"), host.clone()).unwrap` | [897](../../src/process_live_tests.rs#L897) | receiver-type-required |
-| `real_legacy_simple_task` | `crate::host_runtime::assemble_application_endpoint_host` | [897](../../src/process_live_tests.rs#L897) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
+| `real_legacy_simple_task` | `crate::host_runtime::assemble_application_endpoint_host` | [897](../../src/process_live_tests.rs#L897) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
 | `real_legacy_simple_task` | `"test".into` | [898](../../src/process_live_tests.rs#L898) | receiver-type-required |
 | `real_legacy_simple_task` | `workspace.to_string_lossy().into_owned` | [898](../../src/process_live_tests.rs#L898) | receiver-type-required |
 | `real_legacy_simple_task` | `workspace.to_string_lossy` | [898](../../src/process_live_tests.rs#L898) | receiver-type-required |
@@ -751,7 +751,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_provider_400_releases_queue_over_public_transport` | `listener.local_addr().unwrap` | [1012](../../src/process_live_tests.rs#L1012) | receiver-type-required |
 | `real_provider_400_releases_queue_over_public_transport` | `listener.local_addr` | [1012](../../src/process_live_tests.rs#L1012) | receiver-type-required |
 | `real_provider_400_releases_queue_over_public_transport` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1013](../../src/process_live_tests.rs#L1013) | receiver-type-required |
-| `real_provider_400_releases_queue_over_public_transport` | `crate::host_runtime::assemble_application_endpoint_host` | [1013](../../src/process_live_tests.rs#L1013) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
+| `real_provider_400_releases_queue_over_public_transport` | `crate::host_runtime::assemble_application_endpoint_host` | [1013](../../src/process_live_tests.rs#L1013) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
 | `real_provider_400_releases_queue_over_public_transport` | `"test".into` | [1014](../../src/process_live_tests.rs#L1014) | receiver-type-required |
 | `real_provider_400_releases_queue_over_public_transport` | `workspace.to_string_lossy().into_owned` | [1014](../../src/process_live_tests.rs#L1014) | receiver-type-required |
 | `real_provider_400_releases_queue_over_public_transport` | `workspace.to_string_lossy` | [1014](../../src/process_live_tests.rs#L1014) | receiver-type-required |
@@ -820,498 +820,498 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `register_local_tools_server` | `fs::create_dir_all(root.join("config")).unwrap` | [1078](../../src/process_live_tests.rs#L1078) | receiver-type-required |
 | `register_local_tools_server` | `fs::create_dir_all` | [1078](../../src/process_live_tests.rs#L1078) | external-constructor-callback-or-unresolved |
 | `register_local_tools_server` | `root.join` | [1078](../../src/process_live_tests.rs#L1078), [1079](../../src/process_live_tests.rs#L1079) | receiver-type-required |
-| `register_local_tools_server` | `mcp::McpRegistryStore::new` | [1079](../../src/process_live_tests.rs#L1079) | [mcp::management::McpRegistryStore::new](../../../mcp/src/management.rs#L383) |
-| `register_local_tools_server` | `registry.mutate_idempotent("save-local-tools", &mcp::McpManagementMutation::Save {         server: mcp::McpServerConfig {             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "local".to_owned() },             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "local-tools".to_owned()], cwd: None, environment: BTreeMap::new() },             enabled: true,             always_on,             protocol_mode: mcp::ProtocolMode::Legacy,             owner: None,             plugin_component: None,             project_trusted: true,         },         credential_fields: BTreeMap::new(),     }).expect` | [1080](../../src/process_live_tests.rs#L1080) | receiver-type-required |
+| `register_local_tools_server` | `mcp::McpRegistryStore::new` | [1079](../../src/process_live_tests.rs#L1079) | [mcp::management::McpRegistryStore::new](../../../mcp/src/management.rs#L391) |
+| `register_local_tools_server` | `registry.mutate_idempotent("save-local-tools", &mcp::McpManagementMutation::Save {         server: mcp::McpServerConfig {             folder_id: None,             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "local".to_owned() },             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "local-tools".to_owned()], cwd: None, environment: BTreeMap::new() },             enabled: true,             always_on,             protocol_mode: mcp::ProtocolMode::Legacy,             owner: None,             plugin_component: None,             project_trusted: true,         },         credential_fields: BTreeMap::new(),     }).expect` | [1080](../../src/process_live_tests.rs#L1080) | receiver-type-required |
 | `register_local_tools_server` | `registry.mutate_idempotent` | [1080](../../src/process_live_tests.rs#L1080) | receiver-type-required |
-| `register_local_tools_server` | `"ws".to_owned` | [1082](../../src/process_live_tests.rs#L1082) | receiver-type-required |
-| `register_local_tools_server` | `"local".to_owned` | [1082](../../src/process_live_tests.rs#L1082) | receiver-type-required |
-| `register_local_tools_server` | `BTreeMap::new` | [1083](../../src/process_live_tests.rs#L1083), [1091](../../src/process_live_tests.rs#L1091) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `PathBuf::from` | [1099](../../src/process_live_tests.rs#L1099) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1099](../../src/process_live_tests.rs#L1099) | receiver-type-required |
-| `real_public_deferred_tool_search` | `std::env::var` | [1099](../../src/process_live_tests.rs#L1099), [1104](../../src/process_live_tests.rs#L1104), [1109](../../src/process_live_tests.rs#L1109), [1129](../../src/process_live_tests.rs#L1129), [1130](../../src/process_live_tests.rs#L1130) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `root.parent().unwrap().join` | [1100](../../src/process_live_tests.rs#L1100) | receiver-type-required |
-| `real_public_deferred_tool_search` | `root.parent().unwrap` | [1100](../../src/process_live_tests.rs#L1100) | receiver-type-required |
-| `real_public_deferred_tool_search` | `root.parent` | [1100](../../src/process_live_tests.rs#L1100) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::create_dir_all(&workspace).unwrap` | [1101](../../src/process_live_tests.rs#L1101) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::create_dir_all` | [1101](../../src/process_live_tests.rs#L1101), [1102](../../src/process_live_tests.rs#L1102), [1103](../../src/process_live_tests.rs#L1103), [1125](../../src/process_live_tests.rs#L1125) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `fs::create_dir_all(root.join("config")).unwrap` | [1102](../../src/process_live_tests.rs#L1102) | receiver-type-required |
-| `real_public_deferred_tool_search` | `root.join` | [1102](../../src/process_live_tests.rs#L1102), [1103](../../src/process_live_tests.rs#L1103), [1105](../../src/process_live_tests.rs#L1105), [1121](../../src/process_live_tests.rs#L1121), [1124](../../src/process_live_tests.rs#L1124), [1130](../../src/process_live_tests.rs#L1130), [1136](../../src/process_live_tests.rs#L1136), [1144](../../src/process_live_tests.rs#L1144), [1149](../../src/process_live_tests.rs#L1149), [1207](../../src/process_live_tests.rs#L1207) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1103](../../src/process_live_tests.rs#L1103) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1104](../../src/process_live_tests.rs#L1104) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_slice` | [1104](../../src/process_live_tests.rs#L1104) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1104](../../src/process_live_tests.rs#L1104) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read` | [1104](../../src/process_live_tests.rs#L1104) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1104](../../src/process_live_tests.rs#L1104) | receiver-type-required |
-| `real_public_deferred_tool_search` | `write_canonical_test_json` | [1105](../../src/process_live_tests.rs#L1105), [1121](../../src/process_live_tests.rs#L1121) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `std::env::var("TEKES_TOOL_SEARCH_SCENARIO").is_ok_and` | [1109](../../src/process_live_tests.rs#L1109) | receiver-type-required |
-| `real_public_deferred_tool_search` | `register_local_tools_server` | [1122](../../src/process_live_tests.rs#L1122) | [tekes-supervisor::process_live_tests::register_local_tools_server](../../src/process_live_tests.rs#L1076) |
-| `real_public_deferred_tool_search` | `root.join("threads").join` | [1124](../../src/process_live_tests.rs#L1124) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1125](../../src/process_live_tests.rs#L1125) | receiver-type-required |
-| `real_public_deferred_tool_search` | `folder.join` | [1125](../../src/process_live_tests.rs#L1125), [1126](../../src/process_live_tests.rs#L1126) | receiver-type-required |
-| `real_public_deferred_tool_search` | `write_test_genesis` | [1127](../../src/process_live_tests.rs#L1127) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `Arc::new` | [1128](../../src/process_live_tests.rs#L1128), [1136](../../src/process_live_tests.rs#L1136) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `provider::MemorySecretStore::new` | [1128](../../src/process_live_tests.rs#L1128) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
-| `real_public_deferred_tool_search` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1129](../../src/process_live_tests.rs#L1129) | receiver-type-required |
-| `real_public_deferred_tool_search` | `secrets.publish` | [1129](../../src/process_live_tests.rs#L1129) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider["credential_key"].as_str().unwrap` | [1129](../../src/process_live_tests.rs#L1129) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider["credential_key"].as_str` | [1129](../../src/process_live_tests.rs#L1129) | receiver-type-required |
-| `real_public_deferred_tool_search` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1129](../../src/process_live_tests.rs#L1129) | receiver-type-required |
-| `real_public_deferred_tool_search` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-deferred-tool",root.join(".agent"),secrets).unwrap` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
-| `real_public_deferred_tool_search` | `ProductionProcessHost::open_with_secret_store` | [1130](../../src/process_live_tests.rs#L1130) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
-| `real_public_deferred_tool_search` | `tokio::runtime::Runtime::new().unwrap` | [1131](../../src/process_live_tests.rs#L1131) | receiver-type-required |
-| `real_public_deferred_tool_search` | `tokio::runtime::Runtime::new` | [1131](../../src/process_live_tests.rs#L1131) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1132](../../src/process_live_tests.rs#L1132) | receiver-type-required |
-| `real_public_deferred_tool_search` | `runtime.block_on` | [1132](../../src/process_live_tests.rs#L1132), [1161](../../src/process_live_tests.rs#L1161) | receiver-type-required |
-| `real_public_deferred_tool_search` | `tokio::net::TcpListener::bind` | [1132](../../src/process_live_tests.rs#L1132) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `listener.local_addr().unwrap` | [1133](../../src/process_live_tests.rs#L1133) | receiver-type-required |
-| `real_public_deferred_tool_search` | `listener.local_addr` | [1133](../../src/process_live_tests.rs#L1133) | receiver-type-required |
-| `real_public_deferred_tool_search` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1134](../../src/process_live_tests.rs#L1134) | receiver-type-required |
-| `real_public_deferred_tool_search` | `crate::host_runtime::assemble_application_endpoint_host` | [1134](../../src/process_live_tests.rs#L1134) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
-| `real_public_deferred_tool_search` | `"test".into` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
-| `real_public_deferred_tool_search` | `workspace.to_string_lossy().into_owned` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
-| `real_public_deferred_tool_search` | `workspace.to_string_lossy` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
-| `real_public_deferred_tool_search` | `root.to_string_lossy().into_owned` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
-| `real_public_deferred_tool_search` | `root.to_string_lossy` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
-| `real_public_deferred_tool_search` | `Ok` | [1136](../../src/process_live_tests.rs#L1136) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `"2026-09-04T10:00:00.000Z".into` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
-| `real_public_deferred_tool_search` | `host.clone` | [1136](../../src/process_live_tests.rs#L1136), [1137](../../src/process_live_tests.rs#L1137) | receiver-type-required |
-| `real_public_deferred_tool_search` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1137](../../src/process_live_tests.rs#L1137) | receiver-type-required |
-| `real_public_deferred_tool_search` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1137](../../src/process_live_tests.rs#L1137) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
-| `real_public_deferred_tool_search` | `transport::TransportConfig::loopback` | [1138](../../src/process_live_tests.rs#L1138) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
-| `real_public_deferred_tool_search` | `transport::BearerToken::new` | [1138](../../src/process_live_tests.rs#L1138) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
-| `real_public_deferred_tool_search` | `host.attach_streams` | [1139](../../src/process_live_tests.rs#L1139) | receiver-type-required |
-| `real_public_deferred_tool_search` | `assembly.streams().clone` | [1139](../../src/process_live_tests.rs#L1139) | receiver-type-required |
-| `real_public_deferred_tool_search` | `assembly.streams` | [1139](../../src/process_live_tests.rs#L1139) | receiver-type-required |
-| `real_public_deferred_tool_search` | `assembly.finish_recovery().unwrap` | [1140](../../src/process_live_tests.rs#L1140) | receiver-type-required |
-| `real_public_deferred_tool_search` | `assembly.finish_recovery` | [1140](../../src/process_live_tests.rs#L1140) | receiver-type-required |
-| `real_public_deferred_tool_search` | `assembly.into_server` | [1141](../../src/process_live_tests.rs#L1141) | receiver-type-required |
-| `real_public_deferred_tool_search` | `server.handle` | [1142](../../src/process_live_tests.rs#L1142) | receiver-type-required |
-| `real_public_deferred_tool_search` | `runtime.spawn` | [1143](../../src/process_live_tests.rs#L1143) | receiver-type-required |
-| `real_public_deferred_tool_search` | `server.serve` | [1143](../../src/process_live_tests.rs#L1143) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1144](../../src/process_live_tests.rs#L1144) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::write` | [1144](../../src/process_live_tests.rs#L1144), [1207](../../src/process_live_tests.rs#L1207) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1144](../../src/process_live_tests.rs#L1144) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::to_vec` | [1144](../../src/process_live_tests.rs#L1144) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `host.start_periodic_sweep` | [1145](../../src/process_live_tests.rs#L1145) | receiver-type-required |
-| `real_public_deferred_tool_search` | `std::panic::catch_unwind` | [1146](../../src/process_live_tests.rs#L1146) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `std::panic::AssertUnwindSafe` | [1146](../../src/process_live_tests.rs#L1146) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `Instant::now` | [1147](../../src/process_live_tests.rs#L1147) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `Duration::from_secs` | [1147](../../src/process_live_tests.rs#L1147) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `root.join("client-tool-search-receipt.json").exists` | [1149](../../src/process_live_tests.rs#L1149) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().count` | [1151](../../src/process_live_tests.rs#L1151) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines` | [1151](../../src/process_live_tests.rs#L1151), [1163](../../src/process_live_tests.rs#L1163) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap` | [1151](../../src/process_live_tests.rs#L1151), [1163](../../src/process_live_tests.rs#L1163) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read_to_string` | [1151](../../src/process_live_tests.rs#L1151), [1163](../../src/process_live_tests.rs#L1163) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `host.ensure_running(session).expect` | [1152](../../src/process_live_tests.rs#L1152) | receiver-type-required |
-| `real_public_deferred_tool_search` | `host.ensure_running` | [1152](../../src/process_live_tests.rs#L1152) | receiver-type-required |
-| `real_public_deferred_tool_search` | `std::thread::sleep` | [1156](../../src/process_live_tests.rs#L1156) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `Duration::from_millis` | [1156](../../src/process_live_tests.rs#L1156) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `host.shutdown` | [1159](../../src/process_live_tests.rs#L1159) | receiver-type-required |
-| `real_public_deferred_tool_search` | `handle.begin_drain` | [1160](../../src/process_live_tests.rs#L1160) | receiver-type-required |
-| `real_public_deferred_tool_search` | `runtime.block_on(serve).unwrap().unwrap` | [1161](../../src/process_live_tests.rs#L1161) | receiver-type-required |
-| `real_public_deferred_tool_search` | `runtime.block_on(serve).unwrap` | [1161](../../src/process_live_tests.rs#L1161) | receiver-type-required |
-| `real_public_deferred_tool_search` | `std::panic::resume_unwind` | [1162](../../src/process_live_tests.rs#L1162) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1163](../../src/process_live_tests.rs#L1163) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().map` | [1163](../../src/process_live_tests.rs#L1163) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_str(line).unwrap` | [1163](../../src/process_live_tests.rs#L1163) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_str` | [1163](../../src/process_live_tests.rs#L1163), [1177](../../src/process_live_tests.rs#L1177) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().filter` | [1164](../../src/process_live_tests.rs#L1164), [1182](../../src/process_live_tests.rs#L1182), [1200](../../src/process_live_tests.rs#L1200) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter` | [1164](../../src/process_live_tests.rs#L1164), [1169](../../src/process_live_tests.rs#L1169), [1170](../../src/process_live_tests.rs#L1170), [1171](../../src/process_live_tests.rs#L1171), [1174](../../src/process_live_tests.rs#L1174), [1182](../../src/process_live_tests.rs#L1182), [1200](../../src/process_live_tests.rs#L1200) | receiver-type-required |
-| `real_public_deferred_tool_search` | `usize::try_from(turn).unwrap` | [1167](../../src/process_live_tests.rs#L1167) | receiver-type-required |
-| `real_public_deferred_tool_search` | `usize::try_from` | [1167](../../src/process_live_tests.rs#L1167) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_call" && e["name"]=="tool_search" && e["turn"]==turn).expect` | [1169](../../src/process_live_tests.rs#L1169) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().find` | [1169](../../src/process_live_tests.rs#L1169), [1170](../../src/process_live_tests.rs#L1170), [1171](../../src/process_live_tests.rs#L1171), [1174](../../src/process_live_tests.rs#L1174) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_result" && e["call"]==search["call"] && e["outcome"]=="ok").unwrap` | [1170](../../src/process_live_tests.rs#L1170) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_call" && e["name"]==deferred_tool && e["turn"]==turn).expect` | [1171](../../src/process_live_tests.rs#L1171) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_result" && e["call"]==call["call"] && e["outcome"]=="ok").unwrap` | [1174](../../src/process_live_tests.rs#L1174) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_str(output["content"][0]["text"].as_str().unwrap()).unwrap` | [1177](../../src/process_live_tests.rs#L1177) | receiver-type-required |
-| `real_public_deferred_tool_search` | `output["content"][0]["text"].as_str().unwrap` | [1177](../../src/process_live_tests.rs#L1177) | receiver-type-required |
-| `real_public_deferred_tool_search` | `output["content"][0]["text"].as_str` | [1177](../../src/process_live_tests.rs#L1177) | receiver-type-required |
-| `real_public_deferred_tool_search` | `envelope["content"][0]["text"].as_str().expect` | [1179](../../src/process_live_tests.rs#L1179) | receiver-type-required |
-| `real_public_deferred_tool_search` | `envelope["content"][0]["text"].as_str` | [1179](../../src/process_live_tests.rs#L1179) | receiver-type-required |
-| `real_public_deferred_tool_search` | `events.iter().filter(&#124;e&#124;e["kind"]=="epoch").collect` | [1182](../../src/process_live_tests.rs#L1182) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_value(provider.clone()).unwrap` | [1189](../../src/process_live_tests.rs#L1189) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::from_value` | [1189](../../src/process_live_tests.rs#L1189) | external-constructor-callback-or-unresolved |
-| `real_public_deferred_tool_search` | `provider.clone` | [1189](../../src/process_live_tests.rs#L1189) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools().is_some` | [1190](../../src/process_live_tests.rs#L1190) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools` | [1190](../../src/process_live_tests.rs#L1190) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap` | [1190](../../src/process_live_tests.rs#L1190) | receiver-type-required |
-| `real_public_deferred_tool_search` | `provider::resolve_profile` | [1190](../../src/process_live_tests.rs#L1190) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
-| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap().to_owned` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
-| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
-| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
-| `real_public_deferred_tool_search` | `epochs.iter().find(&#124;e&#124;e["id"]==attempt["epoch"]).unwrap` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
-| `real_public_deferred_tool_search` | `epochs.iter().find` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
-| `real_public_deferred_tool_search` | `epochs.iter` | [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
-| `real_public_deferred_tool_search` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","native_deferred_routing":native,"settles":settles,"epochs":epochs})).unwrap()).unwrap` | [1207](../../src/process_live_tests.rs#L1207) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::to_vec_pretty(&json!({"status":"passed","native_deferred_routing":native,"settles":settles,"epochs":epochs})).unwrap` | [1207](../../src/process_live_tests.rs#L1207) | receiver-type-required |
-| `real_public_deferred_tool_search` | `serde_json::to_vec_pretty` | [1207](../../src/process_live_tests.rs#L1207) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `PathBuf::from` | [1214](../../src/process_live_tests.rs#L1214) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1214](../../src/process_live_tests.rs#L1214) | receiver-type-required |
-| `real_public_image_attachment` | `std::env::var` | [1214](../../src/process_live_tests.rs#L1214), [1219](../../src/process_live_tests.rs#L1219), [1233](../../src/process_live_tests.rs#L1233), [1234](../../src/process_live_tests.rs#L1234) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `root.parent().unwrap().join` | [1215](../../src/process_live_tests.rs#L1215) | receiver-type-required |
-| `real_public_image_attachment` | `root.parent().unwrap` | [1215](../../src/process_live_tests.rs#L1215) | receiver-type-required |
-| `real_public_image_attachment` | `root.parent` | [1215](../../src/process_live_tests.rs#L1215) | receiver-type-required |
-| `real_public_image_attachment` | `fs::create_dir_all(&workspace).unwrap` | [1216](../../src/process_live_tests.rs#L1216) | receiver-type-required |
-| `real_public_image_attachment` | `fs::create_dir_all` | [1216](../../src/process_live_tests.rs#L1216), [1217](../../src/process_live_tests.rs#L1217), [1218](../../src/process_live_tests.rs#L1218), [1229](../../src/process_live_tests.rs#L1229) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `fs::create_dir_all(root.join("config")).unwrap` | [1217](../../src/process_live_tests.rs#L1217) | receiver-type-required |
-| `real_public_image_attachment` | `root.join` | [1217](../../src/process_live_tests.rs#L1217), [1218](../../src/process_live_tests.rs#L1218), [1220](../../src/process_live_tests.rs#L1220), [1226](../../src/process_live_tests.rs#L1226), [1228](../../src/process_live_tests.rs#L1228), [1234](../../src/process_live_tests.rs#L1234), [1240](../../src/process_live_tests.rs#L1240), [1248](../../src/process_live_tests.rs#L1248), [1253](../../src/process_live_tests.rs#L1253), [1280](../../src/process_live_tests.rs#L1280) | receiver-type-required |
-| `real_public_image_attachment` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1218](../../src/process_live_tests.rs#L1218) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1219](../../src/process_live_tests.rs#L1219) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::from_slice` | [1219](../../src/process_live_tests.rs#L1219) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1219](../../src/process_live_tests.rs#L1219) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read` | [1219](../../src/process_live_tests.rs#L1219) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1219](../../src/process_live_tests.rs#L1219) | receiver-type-required |
-| `real_public_image_attachment` | `write_canonical_test_json` | [1220](../../src/process_live_tests.rs#L1220), [1226](../../src/process_live_tests.rs#L1226) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter(&#124;tool&#124; !matches!(tool.name.as_str(), "plan" &#124; "summary_artifact" &#124; "report" &#124; "verify"))         .map(&#124;tool&#124; tool.name).collect` | [1223](../../src/process_live_tests.rs#L1223) | receiver-type-required |
-| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter(&#124;tool&#124; !matches!(tool.name.as_str(), "plan" &#124; "summary_artifact" &#124; "report" &#124; "verify"))         .map` | [1223](../../src/process_live_tests.rs#L1223) | receiver-type-required |
-| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter` | [1223](../../src/process_live_tests.rs#L1223) | receiver-type-required |
-| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter` | [1223](../../src/process_live_tests.rs#L1223) | receiver-type-required |
-| `real_public_image_attachment` | `tools::BuiltinManifest::compiled` | [1223](../../src/process_live_tests.rs#L1223) | [tools::builtin::BuiltinManifest::compiled](../../../tools/src/builtin.rs#L315) |
-| `real_public_image_attachment` | `root.join("threads").join` | [1228](../../src/process_live_tests.rs#L1228) | receiver-type-required |
-| `real_public_image_attachment` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1229](../../src/process_live_tests.rs#L1229) | receiver-type-required |
-| `real_public_image_attachment` | `folder.join` | [1229](../../src/process_live_tests.rs#L1229), [1230](../../src/process_live_tests.rs#L1230) | receiver-type-required |
-| `real_public_image_attachment` | `write_test_genesis` | [1231](../../src/process_live_tests.rs#L1231) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `Arc::new` | [1232](../../src/process_live_tests.rs#L1232), [1240](../../src/process_live_tests.rs#L1240) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `provider::MemorySecretStore::new` | [1232](../../src/process_live_tests.rs#L1232) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
-| `real_public_image_attachment` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1233](../../src/process_live_tests.rs#L1233) | receiver-type-required |
-| `real_public_image_attachment` | `secrets.publish` | [1233](../../src/process_live_tests.rs#L1233) | receiver-type-required |
-| `real_public_image_attachment` | `provider["credential_key"].as_str().unwrap` | [1233](../../src/process_live_tests.rs#L1233) | receiver-type-required |
-| `real_public_image_attachment` | `provider["credential_key"].as_str` | [1233](../../src/process_live_tests.rs#L1233) | receiver-type-required |
-| `real_public_image_attachment` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1233](../../src/process_live_tests.rs#L1233) | receiver-type-required |
-| `real_public_image_attachment` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-image",root.join(".agent"),secrets).unwrap` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
-| `real_public_image_attachment` | `ProductionProcessHost::open_with_secret_store` | [1234](../../src/process_live_tests.rs#L1234) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
-| `real_public_image_attachment` | `tokio::runtime::Runtime::new().unwrap` | [1235](../../src/process_live_tests.rs#L1235) | receiver-type-required |
-| `real_public_image_attachment` | `tokio::runtime::Runtime::new` | [1235](../../src/process_live_tests.rs#L1235) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1236](../../src/process_live_tests.rs#L1236) | receiver-type-required |
-| `real_public_image_attachment` | `runtime.block_on` | [1236](../../src/process_live_tests.rs#L1236), [1265](../../src/process_live_tests.rs#L1265) | receiver-type-required |
-| `real_public_image_attachment` | `tokio::net::TcpListener::bind` | [1236](../../src/process_live_tests.rs#L1236) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `listener.local_addr().unwrap` | [1237](../../src/process_live_tests.rs#L1237) | receiver-type-required |
-| `real_public_image_attachment` | `listener.local_addr` | [1237](../../src/process_live_tests.rs#L1237) | receiver-type-required |
-| `real_public_image_attachment` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1238](../../src/process_live_tests.rs#L1238) | receiver-type-required |
-| `real_public_image_attachment` | `crate::host_runtime::assemble_application_endpoint_host` | [1238](../../src/process_live_tests.rs#L1238) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
-| `real_public_image_attachment` | `"test".into` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
-| `real_public_image_attachment` | `workspace.to_string_lossy().into_owned` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
-| `real_public_image_attachment` | `workspace.to_string_lossy` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
-| `real_public_image_attachment` | `root.to_string_lossy().into_owned` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
-| `real_public_image_attachment` | `root.to_string_lossy` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
-| `real_public_image_attachment` | `Ok` | [1240](../../src/process_live_tests.rs#L1240) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `"2026-09-04T10:00:00.000Z".into` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
-| `real_public_image_attachment` | `host.clone` | [1240](../../src/process_live_tests.rs#L1240), [1241](../../src/process_live_tests.rs#L1241) | receiver-type-required |
-| `real_public_image_attachment` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1241](../../src/process_live_tests.rs#L1241) | receiver-type-required |
-| `real_public_image_attachment` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1241](../../src/process_live_tests.rs#L1241) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
-| `real_public_image_attachment` | `transport::TransportConfig::loopback` | [1242](../../src/process_live_tests.rs#L1242) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
-| `real_public_image_attachment` | `transport::BearerToken::new` | [1242](../../src/process_live_tests.rs#L1242) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
-| `real_public_image_attachment` | `host.attach_streams` | [1243](../../src/process_live_tests.rs#L1243) | receiver-type-required |
-| `real_public_image_attachment` | `assembly.streams().clone` | [1243](../../src/process_live_tests.rs#L1243) | receiver-type-required |
-| `real_public_image_attachment` | `assembly.streams` | [1243](../../src/process_live_tests.rs#L1243) | receiver-type-required |
-| `real_public_image_attachment` | `assembly.finish_recovery().unwrap` | [1244](../../src/process_live_tests.rs#L1244) | receiver-type-required |
-| `real_public_image_attachment` | `assembly.finish_recovery` | [1244](../../src/process_live_tests.rs#L1244) | receiver-type-required |
-| `real_public_image_attachment` | `assembly.into_server` | [1245](../../src/process_live_tests.rs#L1245) | receiver-type-required |
-| `real_public_image_attachment` | `server.handle` | [1246](../../src/process_live_tests.rs#L1246) | receiver-type-required |
-| `real_public_image_attachment` | `runtime.spawn` | [1247](../../src/process_live_tests.rs#L1247) | receiver-type-required |
-| `real_public_image_attachment` | `server.serve` | [1247](../../src/process_live_tests.rs#L1247) | receiver-type-required |
-| `real_public_image_attachment` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1248](../../src/process_live_tests.rs#L1248) | receiver-type-required |
-| `real_public_image_attachment` | `fs::write` | [1248](../../src/process_live_tests.rs#L1248), [1280](../../src/process_live_tests.rs#L1280) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1248](../../src/process_live_tests.rs#L1248) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::to_vec` | [1248](../../src/process_live_tests.rs#L1248) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `host.start_periodic_sweep` | [1249](../../src/process_live_tests.rs#L1249) | receiver-type-required |
-| `real_public_image_attachment` | `std::panic::catch_unwind` | [1250](../../src/process_live_tests.rs#L1250) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `std::panic::AssertUnwindSafe` | [1250](../../src/process_live_tests.rs#L1250) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `Instant::now` | [1251](../../src/process_live_tests.rs#L1251) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `Duration::from_secs` | [1251](../../src/process_live_tests.rs#L1251) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `root.join("client-image-receipt.json").exists` | [1253](../../src/process_live_tests.rs#L1253) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().count` | [1255](../../src/process_live_tests.rs#L1255) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines` | [1255](../../src/process_live_tests.rs#L1255), [1267](../../src/process_live_tests.rs#L1267) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap` | [1255](../../src/process_live_tests.rs#L1255), [1267](../../src/process_live_tests.rs#L1267) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read_to_string` | [1255](../../src/process_live_tests.rs#L1255), [1267](../../src/process_live_tests.rs#L1267) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `host.ensure_running(session).expect` | [1256](../../src/process_live_tests.rs#L1256) | receiver-type-required |
-| `real_public_image_attachment` | `host.ensure_running` | [1256](../../src/process_live_tests.rs#L1256) | receiver-type-required |
-| `real_public_image_attachment` | `std::thread::sleep` | [1260](../../src/process_live_tests.rs#L1260) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `Duration::from_millis` | [1260](../../src/process_live_tests.rs#L1260) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `host.shutdown` | [1263](../../src/process_live_tests.rs#L1263) | receiver-type-required |
-| `real_public_image_attachment` | `handle.begin_drain` | [1264](../../src/process_live_tests.rs#L1264) | receiver-type-required |
-| `real_public_image_attachment` | `runtime.block_on(serve).unwrap().unwrap` | [1265](../../src/process_live_tests.rs#L1265) | receiver-type-required |
-| `real_public_image_attachment` | `runtime.block_on(serve).unwrap` | [1265](../../src/process_live_tests.rs#L1265) | receiver-type-required |
-| `real_public_image_attachment` | `std::panic::resume_unwind` | [1266](../../src/process_live_tests.rs#L1266) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1267](../../src/process_live_tests.rs#L1267) | receiver-type-required |
-| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().map` | [1267](../../src/process_live_tests.rs#L1267) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::from_str(line).unwrap` | [1267](../../src/process_live_tests.rs#L1267) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::from_str` | [1267](../../src/process_live_tests.rs#L1267) | external-constructor-callback-or-unresolved |
-| `real_public_image_attachment` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
-| `real_public_image_attachment` | `events.iter().filter` | [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
-| `real_public_image_attachment` | `events.iter` | [1268](../../src/process_live_tests.rs#L1268), [1271](../../src/process_live_tests.rs#L1271) | receiver-type-required |
-| `real_public_image_attachment` | `events.iter().find(&#124;e&#124; e["kind"]=="input").expect` | [1271](../../src/process_live_tests.rs#L1271) | receiver-type-required |
-| `real_public_image_attachment` | `events.iter().find` | [1271](../../src/process_live_tests.rs#L1271) | receiver-type-required |
-| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter().find(&#124;b&#124; b["type"]=="image").expect` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
-| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter().find` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
-| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
-| `real_public_image_attachment` | `input["content"].as_array().unwrap` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
-| `real_public_image_attachment` | `input["content"].as_array` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
-| `real_public_image_attachment` | `base64::engine::general_purpose::STANDARD.decode("iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAS0lEQVR42u3PQQkAAAgAsetfWiP4FgYrsKZeS0BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEDgsqnc8OJg6Ln3AAAAAElFTkSuQmCC").unwrap` | [1276](../../src/process_live_tests.rs#L1276) | receiver-type-required |
-| `real_public_image_attachment` | `base64::engine::general_purpose::STANDARD.decode` | [1276](../../src/process_live_tests.rs#L1276) | receiver-type-required |
-| `real_public_image_attachment` | `image["asset"].as_str().unwrap` | [1277](../../src/process_live_tests.rs#L1277) | receiver-type-required |
-| `real_public_image_attachment` | `image["asset"].as_str` | [1277](../../src/process_live_tests.rs#L1277) | receiver-type-required |
-| `real_public_image_attachment` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles,"asset":asset,"bytes":expected.len(),"provider":provider["id"],"model":provider["models"][0]["id"]})).unwrap()).unwrap` | [1280](../../src/process_live_tests.rs#L1280) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles,"asset":asset,"bytes":expected.len(),"provider":provider["id"],"model":provider["models"][0]["id"]})).unwrap` | [1280](../../src/process_live_tests.rs#L1280) | receiver-type-required |
-| `real_public_image_attachment` | `serde_json::to_vec_pretty` | [1280](../../src/process_live_tests.rs#L1280) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_FLOW_CASE").unwrap()).unwrap()).unwrap` | [1287](../../src/process_live_tests.rs#L1287) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::from_slice` | [1287](../../src/process_live_tests.rs#L1287), [1293](../../src/process_live_tests.rs#L1293) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `fs::read(std::env::var("TEKES_FLOW_CASE").unwrap()).unwrap` | [1287](../../src/process_live_tests.rs#L1287) | receiver-type-required |
-| `real_public_flow_case` | `fs::read` | [1287](../../src/process_live_tests.rs#L1287), [1293](../../src/process_live_tests.rs#L1293), [1430](../../src/process_live_tests.rs#L1430), [1444](../../src/process_live_tests.rs#L1444) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `std::env::var("TEKES_FLOW_CASE").unwrap` | [1287](../../src/process_live_tests.rs#L1287) | receiver-type-required |
-| `real_public_flow_case` | `std::env::var` | [1287](../../src/process_live_tests.rs#L1287), [1288](../../src/process_live_tests.rs#L1288), [1293](../../src/process_live_tests.rs#L1293), [1334](../../src/process_live_tests.rs#L1334), [1335](../../src/process_live_tests.rs#L1335), [1377](../../src/process_live_tests.rs#L1377), [1378](../../src/process_live_tests.rs#L1378) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `PathBuf::from` | [1288](../../src/process_live_tests.rs#L1288) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1288](../../src/process_live_tests.rs#L1288) | receiver-type-required |
-| `real_public_flow_case` | `root.parent().unwrap().join` | [1289](../../src/process_live_tests.rs#L1289) | receiver-type-required |
-| `real_public_flow_case` | `root.parent().unwrap` | [1289](../../src/process_live_tests.rs#L1289) | receiver-type-required |
-| `real_public_flow_case` | `root.parent` | [1289](../../src/process_live_tests.rs#L1289) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all(&workspace).unwrap` | [1290](../../src/process_live_tests.rs#L1290) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all` | [1290](../../src/process_live_tests.rs#L1290), [1291](../../src/process_live_tests.rs#L1291), [1292](../../src/process_live_tests.rs#L1292), [1305](../../src/process_live_tests.rs#L1305), [1314](../../src/process_live_tests.rs#L1314), [1322](../../src/process_live_tests.rs#L1322), [1329](../../src/process_live_tests.rs#L1329), [1372](../../src/process_live_tests.rs#L1372) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `fs::create_dir_all(root.join("config")).unwrap` | [1291](../../src/process_live_tests.rs#L1291) | receiver-type-required |
-| `real_public_flow_case` | `root.join` | [1291](../../src/process_live_tests.rs#L1291), [1292](../../src/process_live_tests.rs#L1292), [1294](../../src/process_live_tests.rs#L1294), [1302](../../src/process_live_tests.rs#L1302), [1313](../../src/process_live_tests.rs#L1313), [1322](../../src/process_live_tests.rs#L1322), [1323](../../src/process_live_tests.rs#L1323), [1329](../../src/process_live_tests.rs#L1329), [1330](../../src/process_live_tests.rs#L1330), [1335](../../src/process_live_tests.rs#L1335), [1341](../../src/process_live_tests.rs#L1341), [1349](../../src/process_live_tests.rs#L1349), [1353](../../src/process_live_tests.rs#L1353), [1372](../../src/process_live_tests.rs#L1372), [1373](../../src/process_live_tests.rs#L1373), [1378](../../src/process_live_tests.rs#L1378), [1384](../../src/process_live_tests.rs#L1384), [1392](../../src/process_live_tests.rs#L1392), [1396](../../src/process_live_tests.rs#L1396), [1432](../../src/process_live_tests.rs#L1432), [1450](../../src/process_live_tests.rs#L1450), [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1292](../../src/process_live_tests.rs#L1292) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1293](../../src/process_live_tests.rs#L1293) | receiver-type-required |
-| `real_public_flow_case` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1293](../../src/process_live_tests.rs#L1293) | receiver-type-required |
-| `real_public_flow_case` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1293](../../src/process_live_tests.rs#L1293) | receiver-type-required |
-| `real_public_flow_case` | `write_canonical_test_json` | [1294](../../src/process_live_tests.rs#L1294), [1302](../../src/process_live_tests.rs#L1302), [1318](../../src/process_live_tests.rs#L1318), [1328](../../src/process_live_tests.rs#L1328), [1371](../../src/process_live_tests.rs#L1371) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `case["max_wall_seconds"].as_u64` | [1299](../../src/process_live_tests.rs#L1299) | receiver-type-required |
-| `real_public_flow_case` | `policy.as_object_mut().expect("policy object").insert` | [1300](../../src/process_live_tests.rs#L1300) | receiver-type-required |
-| `real_public_flow_case` | `policy.as_object_mut().expect` | [1300](../../src/process_live_tests.rs#L1300) | receiver-type-required |
-| `real_public_flow_case` | `policy.as_object_mut` | [1300](../../src/process_live_tests.rs#L1300) | receiver-type-required |
-| `real_public_flow_case` | `"max_wall_seconds".to_owned` | [1300](../../src/process_live_tests.rs#L1300) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_files"].as_object().unwrap` | [1303](../../src/process_live_tests.rs#L1303) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_files"].as_object` | [1303](../../src/process_live_tests.rs#L1303) | receiver-type-required |
-| `real_public_flow_case` | `workspace.join` | [1304](../../src/process_live_tests.rs#L1304) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all(target.parent().unwrap()).unwrap` | [1305](../../src/process_live_tests.rs#L1305) | receiver-type-required |
-| `real_public_flow_case` | `target.parent().unwrap` | [1305](../../src/process_live_tests.rs#L1305) | receiver-type-required |
-| `real_public_flow_case` | `target.parent` | [1305](../../src/process_live_tests.rs#L1305) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(target, content.as_str().unwrap()).unwrap` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
-| `real_public_flow_case` | `fs::write` | [1306](../../src/process_live_tests.rs#L1306), [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1349](../../src/process_live_tests.rs#L1349), [1373](../../src/process_live_tests.rs#L1373), [1392](../../src/process_live_tests.rs#L1392), [1432](../../src/process_live_tests.rs#L1432), [1450](../../src/process_live_tests.rs#L1450), [1455](../../src/process_live_tests.rs#L1455) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `content.as_str().unwrap` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
-| `real_public_flow_case` | `content.as_str` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
-| `real_public_flow_case` | `register_local_tools_server` | [1310](../../src/process_live_tests.rs#L1310) | [tekes-supervisor::process_live_tests::register_local_tools_server](../../src/process_live_tests.rs#L1076) |
-| `real_public_flow_case` | `root.join("threads").join` | [1313](../../src/process_live_tests.rs#L1313) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1314](../../src/process_live_tests.rs#L1314) | receiver-type-required |
-| `real_public_flow_case` | `folder.join` | [1314](../../src/process_live_tests.rs#L1314), [1315](../../src/process_live_tests.rs#L1315), [1318](../../src/process_live_tests.rs#L1318), [1328](../../src/process_live_tests.rs#L1328), [1371](../../src/process_live_tests.rs#L1371) | receiver-type-required |
-| `real_public_flow_case` | `write_test_genesis_with_identity` | [1316](../../src/process_live_tests.rs#L1316) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `case["identity_profile"].as_str` | [1316](../../src/process_live_tests.rs#L1316) | receiver-type-required |
-| `real_public_flow_case` | `fs::create_dir_all(root.join(".agent/commands")).unwrap` | [1322](../../src/process_live_tests.rs#L1322), [1329](../../src/process_live_tests.rs#L1329), [1372](../../src/process_live_tests.rs#L1372) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(root.join(".agent/commands/compact.md"), case["seed_files"][".agent/commands/compact.md"].as_str().unwrap()).unwrap` | [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1373](../../src/process_live_tests.rs#L1373) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_files"][".agent/commands/compact.md"].as_str().unwrap` | [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1373](../../src/process_live_tests.rs#L1373) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_files"][".agent/commands/compact.md"].as_str` | [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1373](../../src/process_live_tests.rs#L1373) | receiver-type-required |
-| `real_public_flow_case` | `Arc::new` | [1333](../../src/process_live_tests.rs#L1333), [1341](../../src/process_live_tests.rs#L1341), [1376](../../src/process_live_tests.rs#L1376), [1384](../../src/process_live_tests.rs#L1384) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `provider::MemorySecretStore::new` | [1333](../../src/process_live_tests.rs#L1333), [1376](../../src/process_live_tests.rs#L1376) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
-| `real_public_flow_case` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | receiver-type-required |
-| `real_public_flow_case` | `secrets.publish` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | receiver-type-required |
-| `real_public_flow_case` | `provider["credential_key"].as_str().unwrap` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | receiver-type-required |
-| `real_public_flow_case` | `provider["credential_key"].as_str` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | receiver-type-required |
-| `real_public_flow_case` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | receiver-type-required |
-| `real_public_flow_case` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).unwrap` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
-| `real_public_flow_case` | `ProductionProcessHost::open_with_secret_store` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
-| `real_public_flow_case` | `tokio::runtime::Runtime::new().unwrap` | [1336](../../src/process_live_tests.rs#L1336), [1379](../../src/process_live_tests.rs#L1379) | receiver-type-required |
-| `real_public_flow_case` | `tokio::runtime::Runtime::new` | [1336](../../src/process_live_tests.rs#L1336), [1379](../../src/process_live_tests.rs#L1379) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1337](../../src/process_live_tests.rs#L1337), [1380](../../src/process_live_tests.rs#L1380) | receiver-type-required |
-| `real_public_flow_case` | `runtime.block_on` | [1337](../../src/process_live_tests.rs#L1337), [1361](../../src/process_live_tests.rs#L1361), [1380](../../src/process_live_tests.rs#L1380), [1404](../../src/process_live_tests.rs#L1404) | receiver-type-required |
-| `real_public_flow_case` | `tokio::net::TcpListener::bind` | [1337](../../src/process_live_tests.rs#L1337), [1380](../../src/process_live_tests.rs#L1380) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `listener.local_addr().unwrap` | [1338](../../src/process_live_tests.rs#L1338), [1381](../../src/process_live_tests.rs#L1381) | receiver-type-required |
-| `real_public_flow_case` | `listener.local_addr` | [1338](../../src/process_live_tests.rs#L1338), [1381](../../src/process_live_tests.rs#L1381) | receiver-type-required |
-| `real_public_flow_case` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1339](../../src/process_live_tests.rs#L1339), [1382](../../src/process_live_tests.rs#L1382) | receiver-type-required |
-| `real_public_flow_case` | `crate::host_runtime::assemble_application_endpoint_host` | [1339](../../src/process_live_tests.rs#L1339), [1382](../../src/process_live_tests.rs#L1382) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L312) |
-| `real_public_flow_case` | `"test".into` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
-| `real_public_flow_case` | `workspace.to_string_lossy().into_owned` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
-| `real_public_flow_case` | `workspace.to_string_lossy` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
-| `real_public_flow_case` | `root.to_string_lossy().into_owned` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
-| `real_public_flow_case` | `root.to_string_lossy` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
-| `real_public_flow_case` | `Ok` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `"2026-09-04T10:00:00.000Z".into` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
-| `real_public_flow_case` | `host.clone` | [1341](../../src/process_live_tests.rs#L1341), [1342](../../src/process_live_tests.rs#L1342), [1384](../../src/process_live_tests.rs#L1384), [1385](../../src/process_live_tests.rs#L1385) | receiver-type-required |
-| `real_public_flow_case` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1342](../../src/process_live_tests.rs#L1342), [1385](../../src/process_live_tests.rs#L1385) | receiver-type-required |
-| `real_public_flow_case` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1342](../../src/process_live_tests.rs#L1342), [1385](../../src/process_live_tests.rs#L1385) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
-| `real_public_flow_case` | `transport::TransportConfig::loopback` | [1343](../../src/process_live_tests.rs#L1343), [1386](../../src/process_live_tests.rs#L1386) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
-| `real_public_flow_case` | `transport::BearerToken::new` | [1343](../../src/process_live_tests.rs#L1343), [1386](../../src/process_live_tests.rs#L1386) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
-| `real_public_flow_case` | `host.attach_streams` | [1344](../../src/process_live_tests.rs#L1344), [1387](../../src/process_live_tests.rs#L1387) | receiver-type-required |
-| `real_public_flow_case` | `assembly.streams().clone` | [1344](../../src/process_live_tests.rs#L1344), [1387](../../src/process_live_tests.rs#L1387) | receiver-type-required |
-| `real_public_flow_case` | `assembly.streams` | [1344](../../src/process_live_tests.rs#L1344), [1387](../../src/process_live_tests.rs#L1387) | receiver-type-required |
-| `real_public_flow_case` | `assembly.finish_recovery().unwrap` | [1345](../../src/process_live_tests.rs#L1345), [1388](../../src/process_live_tests.rs#L1388) | receiver-type-required |
-| `real_public_flow_case` | `assembly.finish_recovery` | [1345](../../src/process_live_tests.rs#L1345), [1388](../../src/process_live_tests.rs#L1388) | receiver-type-required |
-| `real_public_flow_case` | `assembly.into_server` | [1346](../../src/process_live_tests.rs#L1346), [1389](../../src/process_live_tests.rs#L1389) | receiver-type-required |
-| `real_public_flow_case` | `server.handle` | [1347](../../src/process_live_tests.rs#L1347), [1390](../../src/process_live_tests.rs#L1390) | receiver-type-required |
-| `real_public_flow_case` | `runtime.spawn` | [1348](../../src/process_live_tests.rs#L1348), [1391](../../src/process_live_tests.rs#L1391) | receiver-type-required |
-| `real_public_flow_case` | `server.serve` | [1348](../../src/process_live_tests.rs#L1348), [1391](../../src/process_live_tests.rs#L1391) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1349](../../src/process_live_tests.rs#L1349), [1392](../../src/process_live_tests.rs#L1392) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1349](../../src/process_live_tests.rs#L1349), [1392](../../src/process_live_tests.rs#L1392) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec` | [1349](../../src/process_live_tests.rs#L1349), [1392](../../src/process_live_tests.rs#L1392) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `host.start_periodic_sweep` | [1350](../../src/process_live_tests.rs#L1350), [1393](../../src/process_live_tests.rs#L1393) | receiver-type-required |
-| `real_public_flow_case` | `std::panic::catch_unwind` | [1351](../../src/process_live_tests.rs#L1351), [1394](../../src/process_live_tests.rs#L1394) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `std::panic::AssertUnwindSafe` | [1351](../../src/process_live_tests.rs#L1351), [1394](../../src/process_live_tests.rs#L1394) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `Instant::now` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `Duration::from_secs` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `case["timeout_seconds"].as_u64().unwrap_or` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | receiver-type-required |
-| `real_public_flow_case` | `case["timeout_seconds"].as_u64` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | receiver-type-required |
-| `real_public_flow_case` | `root.join("client-flow-receipt.json").exists` | [1353](../../src/process_live_tests.rs#L1353), [1396](../../src/process_live_tests.rs#L1396) | receiver-type-required |
-| `real_public_flow_case` | `std::thread::sleep` | [1356](../../src/process_live_tests.rs#L1356), [1399](../../src/process_live_tests.rs#L1399) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `Duration::from_millis` | [1356](../../src/process_live_tests.rs#L1356), [1399](../../src/process_live_tests.rs#L1399) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `host.shutdown` | [1359](../../src/process_live_tests.rs#L1359), [1402](../../src/process_live_tests.rs#L1402) | receiver-type-required |
-| `real_public_flow_case` | `handle.begin_drain` | [1360](../../src/process_live_tests.rs#L1360), [1403](../../src/process_live_tests.rs#L1403) | receiver-type-required |
-| `real_public_flow_case` | `runtime.block_on(serve).unwrap().unwrap` | [1361](../../src/process_live_tests.rs#L1361), [1404](../../src/process_live_tests.rs#L1404) | receiver-type-required |
-| `real_public_flow_case` | `runtime.block_on(serve).unwrap` | [1361](../../src/process_live_tests.rs#L1361), [1404](../../src/process_live_tests.rs#L1404) | receiver-type-required |
-| `real_public_flow_case` | `std::panic::resume_unwind` | [1362](../../src/process_live_tests.rs#L1362), [1405](../../src/process_live_tests.rs#L1405) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | receiver-type-required |
-| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines().map` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | receiver-type-required |
-| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | receiver-type-required |
-| `real_public_flow_case` | `fs::read_to_string(&path).unwrap` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | receiver-type-required |
-| `real_public_flow_case` | `fs::read_to_string` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `serde_json::from_str(line).unwrap` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::from_str` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().filter` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407), [1418](../../src/process_live_tests.rs#L1418), [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `events.iter` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407), [1416](../../src/process_live_tests.rs#L1416), [1418](../../src/process_live_tests.rs#L1418), [1438](../../src/process_live_tests.rs#L1438), [1441](../../src/process_live_tests.rs#L1441), [1443](../../src/process_live_tests.rs#L1443), [1446](../../src/process_live_tests.rs#L1446), [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="compact" && e["origin_tuple"]["op"]=="commands/run").expect` | [1416](../../src/process_live_tests.rs#L1416), [1438](../../src/process_live_tests.rs#L1438) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find` | [1416](../../src/process_live_tests.rs#L1416), [1438](../../src/process_live_tests.rs#L1438), [1441](../../src/process_live_tests.rs#L1441), [1443](../../src/process_live_tests.rs#L1443), [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_prompts"].as_array().unwrap().len` | [1417](../../src/process_live_tests.rs#L1417) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_prompts"].as_array().unwrap` | [1417](../../src/process_live_tests.rs#L1417) | receiver-type-required |
-| `real_public_flow_case` | `case["seed_prompts"].as_array` | [1417](../../src/process_live_tests.rs#L1417) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="settle" && e["seq"].as_u64() < compact["seq"].as_u64()).count` | [1418](../../src/process_live_tests.rs#L1418) | receiver-type-required |
-| `real_public_flow_case` | `e["seq"].as_u64` | [1418](../../src/process_live_tests.rs#L1418), [1441](../../src/process_live_tests.rs#L1441), [1443](../../src/process_live_tests.rs#L1443), [1446](../../src/process_live_tests.rs#L1446), [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `compact["seq"].as_u64` | [1418](../../src/process_live_tests.rs#L1418), [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
-| `real_public_flow_case` | `record["evidence_refs"].as_array().expect` | [1424](../../src/process_live_tests.rs#L1424) | receiver-type-required |
-| `real_public_flow_case` | `record["evidence_refs"].as_array` | [1424](../../src/process_live_tests.rs#L1424) | receiver-type-required |
-| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter().flat_map(&#124;r&#124; r["from"].as_u64().unwrap()..=r["to"].as_u64().unwrap()).collect` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter().flat_map` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `compact["covers"].as_array().unwrap` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `compact["covers"].as_array` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `r["from"].as_u64().unwrap` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `r["from"].as_u64` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `r["to"].as_u64().unwrap` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `r["to"].as_u64` | [1426](../../src/process_live_tests.rs#L1426) | receiver-type-required |
-| `real_public_flow_case` | `compact["summary"].as_str().map` | [1428](../../src/process_live_tests.rs#L1428) | receiver-type-required |
-| `real_public_flow_case` | `compact["summary"].as_str` | [1428](../../src/process_live_tests.rs#L1428) | receiver-type-required |
-| `real_public_flow_case` | `summary.starts_with` | [1428](../../src/process_live_tests.rs#L1428) | receiver-type-required |
-| `real_public_flow_case` | `schema::validate_ledger(&fs::read(&path).unwrap(), schema::READER_VERSION).unwrap` | [1430](../../src/process_live_tests.rs#L1430), [1444](../../src/process_live_tests.rs#L1444) | receiver-type-required |
-| `real_public_flow_case` | `schema::validate_ledger` | [1430](../../src/process_live_tests.rs#L1430), [1444](../../src/process_live_tests.rs#L1444) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
-| `real_public_flow_case` | `fs::read(&path).unwrap` | [1430](../../src/process_live_tests.rs#L1430), [1444](../../src/process_live_tests.rs#L1444) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(root.join("compaction-summary.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap()).unwrap` | [1432](../../src/process_live_tests.rs#L1432) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap` | [1432](../../src/process_live_tests.rs#L1432) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec_pretty` | [1432](../../src/process_live_tests.rs#L1432), [1450](../../src/process_live_tests.rs#L1450), [1455](../../src/process_live_tests.rs#L1455) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `compact["seq"].as_u64().unwrap` | [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
-| `real_public_flow_case` | `compact["origin_key"].as_str().unwrap().to_owned` | [1440](../../src/process_live_tests.rs#L1440) | receiver-type-required |
-| `real_public_flow_case` | `compact["origin_key"].as_str().unwrap` | [1440](../../src/process_live_tests.rs#L1440) | receiver-type-required |
-| `real_public_flow_case` | `compact["origin_key"].as_str` | [1440](../../src/process_live_tests.rs#L1440) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="epoch" && e["seq"].as_u64().unwrap() > compact_seq).expect` | [1441](../../src/process_live_tests.rs#L1441) | receiver-type-required |
-| `real_public_flow_case` | `e["seq"].as_u64().unwrap` | [1441](../../src/process_live_tests.rs#L1441), [1443](../../src/process_live_tests.rs#L1443), [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect("post-compact input")["seq"].as_u64().unwrap` | [1443](../../src/process_live_tests.rs#L1443) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect("post-compact input")["seq"].as_u64` | [1443](../../src/process_live_tests.rs#L1443) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect` | [1443](../../src/process_live_tests.rs#L1443) | receiver-type-required |
-| `real_public_flow_case` | `engine::first_post_compact_attempt(&typed.events, &origin_key, &[post_input]).expect` | [1445](../../src/process_live_tests.rs#L1445) | receiver-type-required |
-| `real_public_flow_case` | `engine::first_post_compact_attempt` | [1445](../../src/process_live_tests.rs#L1445) | [engine::compact_gate::first_post_compact_attempt](../../../engine/src/compact_gate.rs#L20) |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str().unwrap().to_owned` | [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str().unwrap` | [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str` | [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap` | [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
-| `real_public_flow_case` | `Some` | [1446](../../src/process_live_tests.rs#L1446) | external-constructor-callback-or-unresolved |
-| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="tool_call" && e["seq"].as_u64().unwrap() < compact_seq).filter_map(&#124;e&#124; e["call"].as_str().map(str::to_owned)).collect` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="tool_call" && e["seq"].as_u64().unwrap() < compact_seq).filter_map` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `e["call"].as_str().map` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `e["call"].as_str` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(root.join("compact-gate.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact_seq,"origin_key":origin_key,"covers":compact["covers"],"epoch_seq":epoch["seq"],"post_input_seq":post_input,"first_post_compact_attempt_seq":gate,"first_post_compact_attempt":attempt,"pre_compact_call_ids":pre_calls})).unwrap()).unwrap` | [1450](../../src/process_live_tests.rs#L1450) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"compact_seq":compact_seq,"origin_key":origin_key,"covers":compact["covers"],"epoch_seq":epoch["seq"],"post_input_seq":post_input,"first_post_compact_attempt_seq":gate,"first_post_compact_attempt":attempt,"pre_compact_call_ids":pre_calls})).unwrap` | [1450](../../src/process_live_tests.rs#L1450) | receiver-type-required |
-| `real_public_flow_case` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles})).unwrap()).unwrap` | [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
-| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles})).unwrap` | [1455](../../src/process_live_tests.rs#L1455) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `PathBuf::from` | [1468](../../src/process_live_tests.rs#L1468) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1468](../../src/process_live_tests.rs#L1468) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `std::env::var` | [1468](../../src/process_live_tests.rs#L1468), [1474](../../src/process_live_tests.rs#L1474), [1477](../../src/process_live_tests.rs#L1477), [1502](../../src/process_live_tests.rs#L1502), [1503](../../src/process_live_tests.rs#L1503) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all(&root).unwrap` | [1469](../../src/process_live_tests.rs#L1469) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all` | [1469](../../src/process_live_tests.rs#L1469), [1471](../../src/process_live_tests.rs#L1471), [1472](../../src/process_live_tests.rs#L1472), [1473](../../src/process_live_tests.rs#L1473), [1494](../../src/process_live_tests.rs#L1494) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `root.parent().unwrap().join` | [1470](../../src/process_live_tests.rs#L1470) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `root.parent().unwrap` | [1470](../../src/process_live_tests.rs#L1470) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `root.parent` | [1470](../../src/process_live_tests.rs#L1470) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all(&workspace).unwrap` | [1471](../../src/process_live_tests.rs#L1471) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all(root.join("config")).unwrap` | [1472](../../src/process_live_tests.rs#L1472) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `root.join` | [1472](../../src/process_live_tests.rs#L1472), [1473](../../src/process_live_tests.rs#L1473), [1475](../../src/process_live_tests.rs#L1475), [1476](../../src/process_live_tests.rs#L1476), [1478](../../src/process_live_tests.rs#L1478), [1493](../../src/process_live_tests.rs#L1493), [1503](../../src/process_live_tests.rs#L1503), [1543](../../src/process_live_tests.rs#L1543) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1473](../../src/process_live_tests.rs#L1473) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1474](../../src/process_live_tests.rs#L1474) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `serde_json::from_slice` | [1474](../../src/process_live_tests.rs#L1474) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1474](../../src/process_live_tests.rs#L1474) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read` | [1474](../../src/process_live_tests.rs#L1474) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1474](../../src/process_live_tests.rs#L1474) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `write_canonical_test_json` | [1475](../../src/process_live_tests.rs#L1475), [1476](../../src/process_live_tests.rs#L1476) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `std::env::var("TEKES_TEST_MCP_FIXTURE_SERVER").expect` | [1477](../../src/process_live_tests.rs#L1477) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `mcp::McpRegistryStore::new` | [1478](../../src/process_live_tests.rs#L1478) | [mcp::management::McpRegistryStore::new](../../../mcp/src/management.rs#L383) |
-| `real_public_mcp_task_continuation` | `registry.mutate_idempotent("save-fixture", &mcp::McpManagementMutation::Save {         server: mcp::McpServerConfig {             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "fixture".to_owned() },             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "task-augmented".to_owned()], cwd: None, environment: BTreeMap::new() },             enabled: true,             always_on: true,             protocol_mode: mcp::ProtocolMode::Legacy,             owner: None,             plugin_component: None,             project_trusted: true,         },         credential_fields: BTreeMap::new(),     }).expect` | [1479](../../src/process_live_tests.rs#L1479) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `registry.mutate_idempotent` | [1479](../../src/process_live_tests.rs#L1479) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `"ws".to_owned` | [1481](../../src/process_live_tests.rs#L1481) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `"fixture".to_owned` | [1481](../../src/process_live_tests.rs#L1481) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `BTreeMap::new` | [1482](../../src/process_live_tests.rs#L1482), [1490](../../src/process_live_tests.rs#L1490) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `root.join("threads").join` | [1493](../../src/process_live_tests.rs#L1493) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1494](../../src/process_live_tests.rs#L1494) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `folder.join` | [1494](../../src/process_live_tests.rs#L1494), [1495](../../src/process_live_tests.rs#L1495) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `write_test_genesis` | [1496](../../src/process_live_tests.rs#L1496) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `append_test_input` | [1497](../../src/process_live_tests.rs#L1497) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().map(&#124;s&#124; serde_json::from_str(s).unwrap()).collect` | [1498](../../src/process_live_tests.rs#L1498), [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().map` | [1498](../../src/process_live_tests.rs#L1498), [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines` | [1498](../../src/process_live_tests.rs#L1498), [1509](../../src/process_live_tests.rs#L1509), [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap` | [1498](../../src/process_live_tests.rs#L1498), [1509](../../src/process_live_tests.rs#L1509), [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read_to_string` | [1498](../../src/process_live_tests.rs#L1498), [1509](../../src/process_live_tests.rs#L1509), [1517](../../src/process_live_tests.rs#L1517) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `serde_json::from_str(s).unwrap` | [1498](../../src/process_live_tests.rs#L1498), [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `serde_json::from_str` | [1498](../../src/process_live_tests.rs#L1498), [1509](../../src/process_live_tests.rs#L1509), [1517](../../src/process_live_tests.rs#L1517) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `write_test_events` | [1500](../../src/process_live_tests.rs#L1500) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `Arc::new` | [1501](../../src/process_live_tests.rs#L1501) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `provider::MemorySecretStore::new` | [1501](../../src/process_live_tests.rs#L1501) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
-| `real_public_mcp_task_continuation` | `secrets.publish(provider["credential_key"].as_str().unwrap(), provider::SecretRecord::Active { generation: 1, material: std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap() }).unwrap` | [1502](../../src/process_live_tests.rs#L1502) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `secrets.publish` | [1502](../../src/process_live_tests.rs#L1502) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `provider["credential_key"].as_str().unwrap` | [1502](../../src/process_live_tests.rs#L1502) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `provider["credential_key"].as_str` | [1502](../../src/process_live_tests.rs#L1502) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1502](../../src/process_live_tests.rs#L1502) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `ProductionProcessHost::open_with_secret_store(&root, std::env::var("TEKES_TEST_REAL_WORKER").unwrap(), "live-mcp-task", root.join(".agent"), secrets).unwrap` | [1503](../../src/process_live_tests.rs#L1503) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `ProductionProcessHost::open_with_secret_store` | [1503](../../src/process_live_tests.rs#L1503) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1503](../../src/process_live_tests.rs#L1503) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `std::panic::catch_unwind` | [1504](../../src/process_live_tests.rs#L1504) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `std::panic::AssertUnwindSafe` | [1504](../../src/process_live_tests.rs#L1504) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `host.schedule_main(session).unwrap().expect` | [1505](../../src/process_live_tests.rs#L1505) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `host.schedule_main(session).unwrap` | [1505](../../src/process_live_tests.rs#L1505) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `host.schedule_main` | [1505](../../src/process_live_tests.rs#L1505) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `host.start_periodic_sweep` | [1506](../../src/process_live_tests.rs#L1506) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `Instant::now` | [1507](../../src/process_live_tests.rs#L1507) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `Duration::from_secs` | [1507](../../src/process_live_tests.rs#L1507) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().filter_map(&#124;s&#124; serde_json::from_str(s).ok()).collect` | [1509](../../src/process_live_tests.rs#L1509) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().filter_map` | [1509](../../src/process_live_tests.rs#L1509) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `serde_json::from_str(s).ok` | [1509](../../src/process_live_tests.rs#L1509) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().any` | [1510](../../src/process_live_tests.rs#L1510) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter` | [1510](../../src/process_live_tests.rs#L1510), [1518](../../src/process_live_tests.rs#L1518), [1520](../../src/process_live_tests.rs#L1520), [1523](../../src/process_live_tests.rs#L1523), [1530](../../src/process_live_tests.rs#L1530), [1534](../../src/process_live_tests.rs#L1534), [1540](../../src/process_live_tests.rs#L1540) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `std::thread::sleep` | [1512](../../src/process_live_tests.rs#L1512) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `Duration::from_millis` | [1512](../../src/process_live_tests.rs#L1512) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `host.shutdown` | [1515](../../src/process_live_tests.rs#L1515) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `std::panic::resume_unwind` | [1516](../../src/process_live_tests.rs#L1516) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `events.iter().find(&#124;e&#124; e["kind"] == "settle").unwrap` | [1518](../../src/process_live_tests.rs#L1518) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().find` | [1518](../../src/process_live_tests.rs#L1518) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "tool_call" && e["name"] == "mcp__fixture__echo").collect` | [1520](../../src/process_live_tests.rs#L1520) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().filter` | [1520](../../src/process_live_tests.rs#L1520), [1523](../../src/process_live_tests.rs#L1523), [1530](../../src/process_live_tests.rs#L1530), [1534](../../src/process_live_tests.rs#L1534) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `calls[0]["call"].as_str().unwrap` | [1522](../../src/process_live_tests.rs#L1522) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `calls[0]["call"].as_str` | [1522](../../src/process_live_tests.rs#L1522) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "state" && e["subkind"] == "tool_continuation" && e["payload"]["call"] == call).collect` | [1523](../../src/process_live_tests.rs#L1523) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `steps.iter().map(&#124;e&#124; e["payload"]["action"].as_str().unwrap()).collect` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `steps.iter().map` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `steps.iter` | [1524](../../src/process_live_tests.rs#L1524), [1527](../../src/process_live_tests.rs#L1527) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `e["payload"]["action"].as_str().unwrap` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `e["payload"]["action"].as_str` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `steps.iter().find(&#124;e&#124; e["payload"]["action"] == "park").unwrap` | [1527](../../src/process_live_tests.rs#L1527) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `steps.iter().find` | [1527](../../src/process_live_tests.rs#L1527) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "run_start").collect` | [1530](../../src/process_live_tests.rs#L1530) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `park["seq"].as_u64().unwrap` | [1532](../../src/process_live_tests.rs#L1532) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `park["seq"].as_u64` | [1532](../../src/process_live_tests.rs#L1532) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "tool_result" && e["call"] == call).collect` | [1534](../../src/process_live_tests.rs#L1534) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `results[0]["content"][0]["text"].as_str().unwrap` | [1537](../../src/process_live_tests.rs#L1537) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `results[0]["content"][0]["text"].as_str` | [1537](../../src/process_live_tests.rs#L1537) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().rev().find(&#124;e&#124; e["kind"] == "output").unwrap` | [1540](../../src/process_live_tests.rs#L1540) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().rev().find` | [1540](../../src/process_live_tests.rs#L1540) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `events.iter().rev` | [1540](../../src/process_live_tests.rs#L1540) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::write(root.join("receipt.json"), serde_json::to_vec_pretty(&json!({"status":"passed","call":call,"continuation_actions":actions,"runs":runs.len(),"result_seq":results[0]["seq"]})).unwrap()).unwrap` | [1543](../../src/process_live_tests.rs#L1543) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `fs::write` | [1543](../../src/process_live_tests.rs#L1543) | external-constructor-callback-or-unresolved |
-| `real_public_mcp_task_continuation` | `serde_json::to_vec_pretty(&json!({"status":"passed","call":call,"continuation_actions":actions,"runs":runs.len(),"result_seq":results[0]["seq"]})).unwrap` | [1543](../../src/process_live_tests.rs#L1543) | receiver-type-required |
-| `real_public_mcp_task_continuation` | `serde_json::to_vec_pretty` | [1543](../../src/process_live_tests.rs#L1543) | external-constructor-callback-or-unresolved |
+| `register_local_tools_server` | `"ws".to_owned` | [1083](../../src/process_live_tests.rs#L1083) | receiver-type-required |
+| `register_local_tools_server` | `"local".to_owned` | [1083](../../src/process_live_tests.rs#L1083) | receiver-type-required |
+| `register_local_tools_server` | `BTreeMap::new` | [1084](../../src/process_live_tests.rs#L1084), [1092](../../src/process_live_tests.rs#L1092) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `PathBuf::from` | [1100](../../src/process_live_tests.rs#L1100) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1100](../../src/process_live_tests.rs#L1100) | receiver-type-required |
+| `real_public_deferred_tool_search` | `std::env::var` | [1100](../../src/process_live_tests.rs#L1100), [1105](../../src/process_live_tests.rs#L1105), [1110](../../src/process_live_tests.rs#L1110), [1130](../../src/process_live_tests.rs#L1130), [1131](../../src/process_live_tests.rs#L1131) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `root.parent().unwrap().join` | [1101](../../src/process_live_tests.rs#L1101) | receiver-type-required |
+| `real_public_deferred_tool_search` | `root.parent().unwrap` | [1101](../../src/process_live_tests.rs#L1101) | receiver-type-required |
+| `real_public_deferred_tool_search` | `root.parent` | [1101](../../src/process_live_tests.rs#L1101) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::create_dir_all(&workspace).unwrap` | [1102](../../src/process_live_tests.rs#L1102) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::create_dir_all` | [1102](../../src/process_live_tests.rs#L1102), [1103](../../src/process_live_tests.rs#L1103), [1104](../../src/process_live_tests.rs#L1104), [1126](../../src/process_live_tests.rs#L1126) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `fs::create_dir_all(root.join("config")).unwrap` | [1103](../../src/process_live_tests.rs#L1103) | receiver-type-required |
+| `real_public_deferred_tool_search` | `root.join` | [1103](../../src/process_live_tests.rs#L1103), [1104](../../src/process_live_tests.rs#L1104), [1106](../../src/process_live_tests.rs#L1106), [1122](../../src/process_live_tests.rs#L1122), [1125](../../src/process_live_tests.rs#L1125), [1131](../../src/process_live_tests.rs#L1131), [1137](../../src/process_live_tests.rs#L1137), [1145](../../src/process_live_tests.rs#L1145), [1150](../../src/process_live_tests.rs#L1150), [1208](../../src/process_live_tests.rs#L1208) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1104](../../src/process_live_tests.rs#L1104) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1105](../../src/process_live_tests.rs#L1105) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_slice` | [1105](../../src/process_live_tests.rs#L1105) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1105](../../src/process_live_tests.rs#L1105) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read` | [1105](../../src/process_live_tests.rs#L1105) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1105](../../src/process_live_tests.rs#L1105) | receiver-type-required |
+| `real_public_deferred_tool_search` | `write_canonical_test_json` | [1106](../../src/process_live_tests.rs#L1106), [1122](../../src/process_live_tests.rs#L1122) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `std::env::var("TEKES_TOOL_SEARCH_SCENARIO").is_ok_and` | [1110](../../src/process_live_tests.rs#L1110) | receiver-type-required |
+| `real_public_deferred_tool_search` | `register_local_tools_server` | [1123](../../src/process_live_tests.rs#L1123) | [tekes-supervisor::process_live_tests::register_local_tools_server](../../src/process_live_tests.rs#L1076) |
+| `real_public_deferred_tool_search` | `root.join("threads").join` | [1125](../../src/process_live_tests.rs#L1125) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1126](../../src/process_live_tests.rs#L1126) | receiver-type-required |
+| `real_public_deferred_tool_search` | `folder.join` | [1126](../../src/process_live_tests.rs#L1126), [1127](../../src/process_live_tests.rs#L1127) | receiver-type-required |
+| `real_public_deferred_tool_search` | `write_test_genesis` | [1128](../../src/process_live_tests.rs#L1128) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `Arc::new` | [1129](../../src/process_live_tests.rs#L1129), [1137](../../src/process_live_tests.rs#L1137) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `provider::MemorySecretStore::new` | [1129](../../src/process_live_tests.rs#L1129) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
+| `real_public_deferred_tool_search` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
+| `real_public_deferred_tool_search` | `secrets.publish` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider["credential_key"].as_str().unwrap` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider["credential_key"].as_str` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
+| `real_public_deferred_tool_search` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1130](../../src/process_live_tests.rs#L1130) | receiver-type-required |
+| `real_public_deferred_tool_search` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-deferred-tool",root.join(".agent"),secrets).unwrap` | [1131](../../src/process_live_tests.rs#L1131) | receiver-type-required |
+| `real_public_deferred_tool_search` | `ProductionProcessHost::open_with_secret_store` | [1131](../../src/process_live_tests.rs#L1131) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1131](../../src/process_live_tests.rs#L1131) | receiver-type-required |
+| `real_public_deferred_tool_search` | `tokio::runtime::Runtime::new().unwrap` | [1132](../../src/process_live_tests.rs#L1132) | receiver-type-required |
+| `real_public_deferred_tool_search` | `tokio::runtime::Runtime::new` | [1132](../../src/process_live_tests.rs#L1132) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1133](../../src/process_live_tests.rs#L1133) | receiver-type-required |
+| `real_public_deferred_tool_search` | `runtime.block_on` | [1133](../../src/process_live_tests.rs#L1133), [1162](../../src/process_live_tests.rs#L1162) | receiver-type-required |
+| `real_public_deferred_tool_search` | `tokio::net::TcpListener::bind` | [1133](../../src/process_live_tests.rs#L1133) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `listener.local_addr().unwrap` | [1134](../../src/process_live_tests.rs#L1134) | receiver-type-required |
+| `real_public_deferred_tool_search` | `listener.local_addr` | [1134](../../src/process_live_tests.rs#L1134) | receiver-type-required |
+| `real_public_deferred_tool_search` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1135](../../src/process_live_tests.rs#L1135) | receiver-type-required |
+| `real_public_deferred_tool_search` | `crate::host_runtime::assemble_application_endpoint_host` | [1135](../../src/process_live_tests.rs#L1135) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
+| `real_public_deferred_tool_search` | `"test".into` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
+| `real_public_deferred_tool_search` | `workspace.to_string_lossy().into_owned` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
+| `real_public_deferred_tool_search` | `workspace.to_string_lossy` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
+| `real_public_deferred_tool_search` | `root.to_string_lossy().into_owned` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
+| `real_public_deferred_tool_search` | `root.to_string_lossy` | [1136](../../src/process_live_tests.rs#L1136) | receiver-type-required |
+| `real_public_deferred_tool_search` | `Ok` | [1137](../../src/process_live_tests.rs#L1137) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `"2026-09-04T10:00:00.000Z".into` | [1137](../../src/process_live_tests.rs#L1137) | receiver-type-required |
+| `real_public_deferred_tool_search` | `host.clone` | [1137](../../src/process_live_tests.rs#L1137), [1138](../../src/process_live_tests.rs#L1138) | receiver-type-required |
+| `real_public_deferred_tool_search` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1138](../../src/process_live_tests.rs#L1138) | receiver-type-required |
+| `real_public_deferred_tool_search` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1138](../../src/process_live_tests.rs#L1138) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
+| `real_public_deferred_tool_search` | `transport::TransportConfig::loopback` | [1139](../../src/process_live_tests.rs#L1139) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
+| `real_public_deferred_tool_search` | `transport::BearerToken::new` | [1139](../../src/process_live_tests.rs#L1139) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
+| `real_public_deferred_tool_search` | `host.attach_streams` | [1140](../../src/process_live_tests.rs#L1140) | receiver-type-required |
+| `real_public_deferred_tool_search` | `assembly.streams().clone` | [1140](../../src/process_live_tests.rs#L1140) | receiver-type-required |
+| `real_public_deferred_tool_search` | `assembly.streams` | [1140](../../src/process_live_tests.rs#L1140) | receiver-type-required |
+| `real_public_deferred_tool_search` | `assembly.finish_recovery().unwrap` | [1141](../../src/process_live_tests.rs#L1141) | receiver-type-required |
+| `real_public_deferred_tool_search` | `assembly.finish_recovery` | [1141](../../src/process_live_tests.rs#L1141) | receiver-type-required |
+| `real_public_deferred_tool_search` | `assembly.into_server` | [1142](../../src/process_live_tests.rs#L1142) | receiver-type-required |
+| `real_public_deferred_tool_search` | `server.handle` | [1143](../../src/process_live_tests.rs#L1143) | receiver-type-required |
+| `real_public_deferred_tool_search` | `runtime.spawn` | [1144](../../src/process_live_tests.rs#L1144) | receiver-type-required |
+| `real_public_deferred_tool_search` | `server.serve` | [1144](../../src/process_live_tests.rs#L1144) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1145](../../src/process_live_tests.rs#L1145) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::write` | [1145](../../src/process_live_tests.rs#L1145), [1208](../../src/process_live_tests.rs#L1208) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1145](../../src/process_live_tests.rs#L1145) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::to_vec` | [1145](../../src/process_live_tests.rs#L1145) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `host.start_periodic_sweep` | [1146](../../src/process_live_tests.rs#L1146) | receiver-type-required |
+| `real_public_deferred_tool_search` | `std::panic::catch_unwind` | [1147](../../src/process_live_tests.rs#L1147) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `std::panic::AssertUnwindSafe` | [1147](../../src/process_live_tests.rs#L1147) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `Instant::now` | [1148](../../src/process_live_tests.rs#L1148) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `Duration::from_secs` | [1148](../../src/process_live_tests.rs#L1148) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `root.join("client-tool-search-receipt.json").exists` | [1150](../../src/process_live_tests.rs#L1150) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().count` | [1152](../../src/process_live_tests.rs#L1152) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines` | [1152](../../src/process_live_tests.rs#L1152), [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap` | [1152](../../src/process_live_tests.rs#L1152), [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read_to_string` | [1152](../../src/process_live_tests.rs#L1152), [1164](../../src/process_live_tests.rs#L1164) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `host.ensure_running(session).expect` | [1153](../../src/process_live_tests.rs#L1153) | receiver-type-required |
+| `real_public_deferred_tool_search` | `host.ensure_running` | [1153](../../src/process_live_tests.rs#L1153) | receiver-type-required |
+| `real_public_deferred_tool_search` | `std::thread::sleep` | [1157](../../src/process_live_tests.rs#L1157) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `Duration::from_millis` | [1157](../../src/process_live_tests.rs#L1157) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `host.shutdown` | [1160](../../src/process_live_tests.rs#L1160) | receiver-type-required |
+| `real_public_deferred_tool_search` | `handle.begin_drain` | [1161](../../src/process_live_tests.rs#L1161) | receiver-type-required |
+| `real_public_deferred_tool_search` | `runtime.block_on(serve).unwrap().unwrap` | [1162](../../src/process_live_tests.rs#L1162) | receiver-type-required |
+| `real_public_deferred_tool_search` | `runtime.block_on(serve).unwrap` | [1162](../../src/process_live_tests.rs#L1162) | receiver-type-required |
+| `real_public_deferred_tool_search` | `std::panic::resume_unwind` | [1163](../../src/process_live_tests.rs#L1163) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::read_to_string(&path).unwrap().lines().map` | [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_str(line).unwrap` | [1164](../../src/process_live_tests.rs#L1164) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_str` | [1164](../../src/process_live_tests.rs#L1164), [1178](../../src/process_live_tests.rs#L1178) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1165](../../src/process_live_tests.rs#L1165) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().filter` | [1165](../../src/process_live_tests.rs#L1165), [1183](../../src/process_live_tests.rs#L1183), [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter` | [1165](../../src/process_live_tests.rs#L1165), [1170](../../src/process_live_tests.rs#L1170), [1171](../../src/process_live_tests.rs#L1171), [1172](../../src/process_live_tests.rs#L1172), [1175](../../src/process_live_tests.rs#L1175), [1183](../../src/process_live_tests.rs#L1183), [1201](../../src/process_live_tests.rs#L1201) | receiver-type-required |
+| `real_public_deferred_tool_search` | `usize::try_from(turn).unwrap` | [1168](../../src/process_live_tests.rs#L1168) | receiver-type-required |
+| `real_public_deferred_tool_search` | `usize::try_from` | [1168](../../src/process_live_tests.rs#L1168) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_call" && e["name"]=="tool_search" && e["turn"]==turn).expect` | [1170](../../src/process_live_tests.rs#L1170) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().find` | [1170](../../src/process_live_tests.rs#L1170), [1171](../../src/process_live_tests.rs#L1171), [1172](../../src/process_live_tests.rs#L1172), [1175](../../src/process_live_tests.rs#L1175) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_result" && e["call"]==search["call"] && e["outcome"]=="ok").unwrap` | [1171](../../src/process_live_tests.rs#L1171) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_call" && e["name"]==deferred_tool && e["turn"]==turn).expect` | [1172](../../src/process_live_tests.rs#L1172) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().find(&#124;e&#124;e["kind"]=="tool_result" && e["call"]==call["call"] && e["outcome"]=="ok").unwrap` | [1175](../../src/process_live_tests.rs#L1175) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_str(output["content"][0]["text"].as_str().unwrap()).unwrap` | [1178](../../src/process_live_tests.rs#L1178) | receiver-type-required |
+| `real_public_deferred_tool_search` | `output["content"][0]["text"].as_str().unwrap` | [1178](../../src/process_live_tests.rs#L1178) | receiver-type-required |
+| `real_public_deferred_tool_search` | `output["content"][0]["text"].as_str` | [1178](../../src/process_live_tests.rs#L1178) | receiver-type-required |
+| `real_public_deferred_tool_search` | `envelope["content"][0]["text"].as_str().expect` | [1180](../../src/process_live_tests.rs#L1180) | receiver-type-required |
+| `real_public_deferred_tool_search` | `envelope["content"][0]["text"].as_str` | [1180](../../src/process_live_tests.rs#L1180) | receiver-type-required |
+| `real_public_deferred_tool_search` | `events.iter().filter(&#124;e&#124;e["kind"]=="epoch").collect` | [1183](../../src/process_live_tests.rs#L1183) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_value(provider.clone()).unwrap` | [1190](../../src/process_live_tests.rs#L1190) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::from_value` | [1190](../../src/process_live_tests.rs#L1190) | external-constructor-callback-or-unresolved |
+| `real_public_deferred_tool_search` | `provider.clone` | [1190](../../src/process_live_tests.rs#L1190) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools().is_some` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap().native_deferred_tools` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider::resolve_profile(&configured, &configured.models[0]).unwrap` | [1191](../../src/process_live_tests.rs#L1191) | receiver-type-required |
+| `real_public_deferred_tool_search` | `provider::resolve_profile` | [1191](../../src/process_live_tests.rs#L1191) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap().to_owned` | [1192](../../src/process_live_tests.rs#L1192) | receiver-type-required |
+| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str().unwrap` | [1192](../../src/process_live_tests.rs#L1192) | receiver-type-required |
+| `real_public_deferred_tool_search` | `epoch["tools"]["digest"].as_str` | [1192](../../src/process_live_tests.rs#L1192) | receiver-type-required |
+| `real_public_deferred_tool_search` | `epochs.iter().find(&#124;e&#124;e["id"]==attempt["epoch"]).unwrap` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |
+| `real_public_deferred_tool_search` | `epochs.iter().find` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |
+| `real_public_deferred_tool_search` | `epochs.iter` | [1202](../../src/process_live_tests.rs#L1202) | receiver-type-required |
+| `real_public_deferred_tool_search` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","native_deferred_routing":native,"settles":settles,"epochs":epochs})).unwrap()).unwrap` | [1208](../../src/process_live_tests.rs#L1208) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::to_vec_pretty(&json!({"status":"passed","native_deferred_routing":native,"settles":settles,"epochs":epochs})).unwrap` | [1208](../../src/process_live_tests.rs#L1208) | receiver-type-required |
+| `real_public_deferred_tool_search` | `serde_json::to_vec_pretty` | [1208](../../src/process_live_tests.rs#L1208) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `PathBuf::from` | [1215](../../src/process_live_tests.rs#L1215) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1215](../../src/process_live_tests.rs#L1215) | receiver-type-required |
+| `real_public_image_attachment` | `std::env::var` | [1215](../../src/process_live_tests.rs#L1215), [1220](../../src/process_live_tests.rs#L1220), [1234](../../src/process_live_tests.rs#L1234), [1235](../../src/process_live_tests.rs#L1235) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `root.parent().unwrap().join` | [1216](../../src/process_live_tests.rs#L1216) | receiver-type-required |
+| `real_public_image_attachment` | `root.parent().unwrap` | [1216](../../src/process_live_tests.rs#L1216) | receiver-type-required |
+| `real_public_image_attachment` | `root.parent` | [1216](../../src/process_live_tests.rs#L1216) | receiver-type-required |
+| `real_public_image_attachment` | `fs::create_dir_all(&workspace).unwrap` | [1217](../../src/process_live_tests.rs#L1217) | receiver-type-required |
+| `real_public_image_attachment` | `fs::create_dir_all` | [1217](../../src/process_live_tests.rs#L1217), [1218](../../src/process_live_tests.rs#L1218), [1219](../../src/process_live_tests.rs#L1219), [1230](../../src/process_live_tests.rs#L1230) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `fs::create_dir_all(root.join("config")).unwrap` | [1218](../../src/process_live_tests.rs#L1218) | receiver-type-required |
+| `real_public_image_attachment` | `root.join` | [1218](../../src/process_live_tests.rs#L1218), [1219](../../src/process_live_tests.rs#L1219), [1221](../../src/process_live_tests.rs#L1221), [1227](../../src/process_live_tests.rs#L1227), [1229](../../src/process_live_tests.rs#L1229), [1235](../../src/process_live_tests.rs#L1235), [1241](../../src/process_live_tests.rs#L1241), [1249](../../src/process_live_tests.rs#L1249), [1254](../../src/process_live_tests.rs#L1254), [1281](../../src/process_live_tests.rs#L1281) | receiver-type-required |
+| `real_public_image_attachment` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1219](../../src/process_live_tests.rs#L1219) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1220](../../src/process_live_tests.rs#L1220) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::from_slice` | [1220](../../src/process_live_tests.rs#L1220) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1220](../../src/process_live_tests.rs#L1220) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read` | [1220](../../src/process_live_tests.rs#L1220) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1220](../../src/process_live_tests.rs#L1220) | receiver-type-required |
+| `real_public_image_attachment` | `write_canonical_test_json` | [1221](../../src/process_live_tests.rs#L1221), [1227](../../src/process_live_tests.rs#L1227) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter(&#124;tool&#124; !matches!(tool.name.as_str(), "plan" &#124; "summary_artifact" &#124; "report" &#124; "verify"))         .map(&#124;tool&#124; tool.name).collect` | [1224](../../src/process_live_tests.rs#L1224) | receiver-type-required |
+| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter(&#124;tool&#124; !matches!(tool.name.as_str(), "plan" &#124; "summary_artifact" &#124; "report" &#124; "verify"))         .map` | [1224](../../src/process_live_tests.rs#L1224) | receiver-type-required |
+| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter()         .filter` | [1224](../../src/process_live_tests.rs#L1224) | receiver-type-required |
+| `real_public_image_attachment` | `tools::BuiltinManifest::compiled().tools.into_iter` | [1224](../../src/process_live_tests.rs#L1224) | receiver-type-required |
+| `real_public_image_attachment` | `tools::BuiltinManifest::compiled` | [1224](../../src/process_live_tests.rs#L1224) | [tools::builtin::BuiltinManifest::compiled](../../../tools/src/builtin.rs#L315) |
+| `real_public_image_attachment` | `root.join("threads").join` | [1229](../../src/process_live_tests.rs#L1229) | receiver-type-required |
+| `real_public_image_attachment` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1230](../../src/process_live_tests.rs#L1230) | receiver-type-required |
+| `real_public_image_attachment` | `folder.join` | [1230](../../src/process_live_tests.rs#L1230), [1231](../../src/process_live_tests.rs#L1231) | receiver-type-required |
+| `real_public_image_attachment` | `write_test_genesis` | [1232](../../src/process_live_tests.rs#L1232) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `Arc::new` | [1233](../../src/process_live_tests.rs#L1233), [1241](../../src/process_live_tests.rs#L1241) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `provider::MemorySecretStore::new` | [1233](../../src/process_live_tests.rs#L1233) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
+| `real_public_image_attachment` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
+| `real_public_image_attachment` | `secrets.publish` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
+| `real_public_image_attachment` | `provider["credential_key"].as_str().unwrap` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
+| `real_public_image_attachment` | `provider["credential_key"].as_str` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
+| `real_public_image_attachment` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1234](../../src/process_live_tests.rs#L1234) | receiver-type-required |
+| `real_public_image_attachment` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-image",root.join(".agent"),secrets).unwrap` | [1235](../../src/process_live_tests.rs#L1235) | receiver-type-required |
+| `real_public_image_attachment` | `ProductionProcessHost::open_with_secret_store` | [1235](../../src/process_live_tests.rs#L1235) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1235](../../src/process_live_tests.rs#L1235) | receiver-type-required |
+| `real_public_image_attachment` | `tokio::runtime::Runtime::new().unwrap` | [1236](../../src/process_live_tests.rs#L1236) | receiver-type-required |
+| `real_public_image_attachment` | `tokio::runtime::Runtime::new` | [1236](../../src/process_live_tests.rs#L1236) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1237](../../src/process_live_tests.rs#L1237) | receiver-type-required |
+| `real_public_image_attachment` | `runtime.block_on` | [1237](../../src/process_live_tests.rs#L1237), [1266](../../src/process_live_tests.rs#L1266) | receiver-type-required |
+| `real_public_image_attachment` | `tokio::net::TcpListener::bind` | [1237](../../src/process_live_tests.rs#L1237) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `listener.local_addr().unwrap` | [1238](../../src/process_live_tests.rs#L1238) | receiver-type-required |
+| `real_public_image_attachment` | `listener.local_addr` | [1238](../../src/process_live_tests.rs#L1238) | receiver-type-required |
+| `real_public_image_attachment` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1239](../../src/process_live_tests.rs#L1239) | receiver-type-required |
+| `real_public_image_attachment` | `crate::host_runtime::assemble_application_endpoint_host` | [1239](../../src/process_live_tests.rs#L1239) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
+| `real_public_image_attachment` | `"test".into` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
+| `real_public_image_attachment` | `workspace.to_string_lossy().into_owned` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
+| `real_public_image_attachment` | `workspace.to_string_lossy` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
+| `real_public_image_attachment` | `root.to_string_lossy().into_owned` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
+| `real_public_image_attachment` | `root.to_string_lossy` | [1240](../../src/process_live_tests.rs#L1240) | receiver-type-required |
+| `real_public_image_attachment` | `Ok` | [1241](../../src/process_live_tests.rs#L1241) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `"2026-09-04T10:00:00.000Z".into` | [1241](../../src/process_live_tests.rs#L1241) | receiver-type-required |
+| `real_public_image_attachment` | `host.clone` | [1241](../../src/process_live_tests.rs#L1241), [1242](../../src/process_live_tests.rs#L1242) | receiver-type-required |
+| `real_public_image_attachment` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1242](../../src/process_live_tests.rs#L1242) | receiver-type-required |
+| `real_public_image_attachment` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1242](../../src/process_live_tests.rs#L1242) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
+| `real_public_image_attachment` | `transport::TransportConfig::loopback` | [1243](../../src/process_live_tests.rs#L1243) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
+| `real_public_image_attachment` | `transport::BearerToken::new` | [1243](../../src/process_live_tests.rs#L1243) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
+| `real_public_image_attachment` | `host.attach_streams` | [1244](../../src/process_live_tests.rs#L1244) | receiver-type-required |
+| `real_public_image_attachment` | `assembly.streams().clone` | [1244](../../src/process_live_tests.rs#L1244) | receiver-type-required |
+| `real_public_image_attachment` | `assembly.streams` | [1244](../../src/process_live_tests.rs#L1244) | receiver-type-required |
+| `real_public_image_attachment` | `assembly.finish_recovery().unwrap` | [1245](../../src/process_live_tests.rs#L1245) | receiver-type-required |
+| `real_public_image_attachment` | `assembly.finish_recovery` | [1245](../../src/process_live_tests.rs#L1245) | receiver-type-required |
+| `real_public_image_attachment` | `assembly.into_server` | [1246](../../src/process_live_tests.rs#L1246) | receiver-type-required |
+| `real_public_image_attachment` | `server.handle` | [1247](../../src/process_live_tests.rs#L1247) | receiver-type-required |
+| `real_public_image_attachment` | `runtime.spawn` | [1248](../../src/process_live_tests.rs#L1248) | receiver-type-required |
+| `real_public_image_attachment` | `server.serve` | [1248](../../src/process_live_tests.rs#L1248) | receiver-type-required |
+| `real_public_image_attachment` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1249](../../src/process_live_tests.rs#L1249) | receiver-type-required |
+| `real_public_image_attachment` | `fs::write` | [1249](../../src/process_live_tests.rs#L1249), [1281](../../src/process_live_tests.rs#L1281) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1249](../../src/process_live_tests.rs#L1249) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::to_vec` | [1249](../../src/process_live_tests.rs#L1249) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `host.start_periodic_sweep` | [1250](../../src/process_live_tests.rs#L1250) | receiver-type-required |
+| `real_public_image_attachment` | `std::panic::catch_unwind` | [1251](../../src/process_live_tests.rs#L1251) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `std::panic::AssertUnwindSafe` | [1251](../../src/process_live_tests.rs#L1251) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `Instant::now` | [1252](../../src/process_live_tests.rs#L1252) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `Duration::from_secs` | [1252](../../src/process_live_tests.rs#L1252) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `root.join("client-image-receipt.json").exists` | [1254](../../src/process_live_tests.rs#L1254) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().count` | [1256](../../src/process_live_tests.rs#L1256) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines` | [1256](../../src/process_live_tests.rs#L1256), [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap` | [1256](../../src/process_live_tests.rs#L1256), [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read_to_string` | [1256](../../src/process_live_tests.rs#L1256), [1268](../../src/process_live_tests.rs#L1268) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `host.ensure_running(session).expect` | [1257](../../src/process_live_tests.rs#L1257) | receiver-type-required |
+| `real_public_image_attachment` | `host.ensure_running` | [1257](../../src/process_live_tests.rs#L1257) | receiver-type-required |
+| `real_public_image_attachment` | `std::thread::sleep` | [1261](../../src/process_live_tests.rs#L1261) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `Duration::from_millis` | [1261](../../src/process_live_tests.rs#L1261) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `host.shutdown` | [1264](../../src/process_live_tests.rs#L1264) | receiver-type-required |
+| `real_public_image_attachment` | `handle.begin_drain` | [1265](../../src/process_live_tests.rs#L1265) | receiver-type-required |
+| `real_public_image_attachment` | `runtime.block_on(serve).unwrap().unwrap` | [1266](../../src/process_live_tests.rs#L1266) | receiver-type-required |
+| `real_public_image_attachment` | `runtime.block_on(serve).unwrap` | [1266](../../src/process_live_tests.rs#L1266) | receiver-type-required |
+| `real_public_image_attachment` | `std::panic::resume_unwind` | [1267](../../src/process_live_tests.rs#L1267) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
+| `real_public_image_attachment` | `fs::read_to_string(&path).unwrap().lines().map` | [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::from_str(line).unwrap` | [1268](../../src/process_live_tests.rs#L1268) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::from_str` | [1268](../../src/process_live_tests.rs#L1268) | external-constructor-callback-or-unresolved |
+| `real_public_image_attachment` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1269](../../src/process_live_tests.rs#L1269) | receiver-type-required |
+| `real_public_image_attachment` | `events.iter().filter` | [1269](../../src/process_live_tests.rs#L1269) | receiver-type-required |
+| `real_public_image_attachment` | `events.iter` | [1269](../../src/process_live_tests.rs#L1269), [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
+| `real_public_image_attachment` | `events.iter().find(&#124;e&#124; e["kind"]=="input").expect` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
+| `real_public_image_attachment` | `events.iter().find` | [1272](../../src/process_live_tests.rs#L1272) | receiver-type-required |
+| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter().find(&#124;b&#124; b["type"]=="image").expect` | [1273](../../src/process_live_tests.rs#L1273) | receiver-type-required |
+| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter().find` | [1273](../../src/process_live_tests.rs#L1273) | receiver-type-required |
+| `real_public_image_attachment` | `input["content"].as_array().unwrap().iter` | [1273](../../src/process_live_tests.rs#L1273) | receiver-type-required |
+| `real_public_image_attachment` | `input["content"].as_array().unwrap` | [1273](../../src/process_live_tests.rs#L1273) | receiver-type-required |
+| `real_public_image_attachment` | `input["content"].as_array` | [1273](../../src/process_live_tests.rs#L1273) | receiver-type-required |
+| `real_public_image_attachment` | `base64::engine::general_purpose::STANDARD.decode("iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAS0lEQVR42u3PQQkAAAgAsetfWiP4FgYrsKZeS0BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEDgsqnc8OJg6Ln3AAAAAElFTkSuQmCC").unwrap` | [1277](../../src/process_live_tests.rs#L1277) | receiver-type-required |
+| `real_public_image_attachment` | `base64::engine::general_purpose::STANDARD.decode` | [1277](../../src/process_live_tests.rs#L1277) | receiver-type-required |
+| `real_public_image_attachment` | `image["asset"].as_str().unwrap` | [1278](../../src/process_live_tests.rs#L1278) | receiver-type-required |
+| `real_public_image_attachment` | `image["asset"].as_str` | [1278](../../src/process_live_tests.rs#L1278) | receiver-type-required |
+| `real_public_image_attachment` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles,"asset":asset,"bytes":expected.len(),"provider":provider["id"],"model":provider["models"][0]["id"]})).unwrap()).unwrap` | [1281](../../src/process_live_tests.rs#L1281) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles,"asset":asset,"bytes":expected.len(),"provider":provider["id"],"model":provider["models"][0]["id"]})).unwrap` | [1281](../../src/process_live_tests.rs#L1281) | receiver-type-required |
+| `real_public_image_attachment` | `serde_json::to_vec_pretty` | [1281](../../src/process_live_tests.rs#L1281) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_FLOW_CASE").unwrap()).unwrap()).unwrap` | [1288](../../src/process_live_tests.rs#L1288) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::from_slice` | [1288](../../src/process_live_tests.rs#L1288), [1294](../../src/process_live_tests.rs#L1294) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `fs::read(std::env::var("TEKES_FLOW_CASE").unwrap()).unwrap` | [1288](../../src/process_live_tests.rs#L1288) | receiver-type-required |
+| `real_public_flow_case` | `fs::read` | [1288](../../src/process_live_tests.rs#L1288), [1294](../../src/process_live_tests.rs#L1294), [1431](../../src/process_live_tests.rs#L1431), [1445](../../src/process_live_tests.rs#L1445) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `std::env::var("TEKES_FLOW_CASE").unwrap` | [1288](../../src/process_live_tests.rs#L1288) | receiver-type-required |
+| `real_public_flow_case` | `std::env::var` | [1288](../../src/process_live_tests.rs#L1288), [1289](../../src/process_live_tests.rs#L1289), [1294](../../src/process_live_tests.rs#L1294), [1335](../../src/process_live_tests.rs#L1335), [1336](../../src/process_live_tests.rs#L1336), [1378](../../src/process_live_tests.rs#L1378), [1379](../../src/process_live_tests.rs#L1379) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `PathBuf::from` | [1289](../../src/process_live_tests.rs#L1289) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1289](../../src/process_live_tests.rs#L1289) | receiver-type-required |
+| `real_public_flow_case` | `root.parent().unwrap().join` | [1290](../../src/process_live_tests.rs#L1290) | receiver-type-required |
+| `real_public_flow_case` | `root.parent().unwrap` | [1290](../../src/process_live_tests.rs#L1290) | receiver-type-required |
+| `real_public_flow_case` | `root.parent` | [1290](../../src/process_live_tests.rs#L1290) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all(&workspace).unwrap` | [1291](../../src/process_live_tests.rs#L1291) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all` | [1291](../../src/process_live_tests.rs#L1291), [1292](../../src/process_live_tests.rs#L1292), [1293](../../src/process_live_tests.rs#L1293), [1306](../../src/process_live_tests.rs#L1306), [1315](../../src/process_live_tests.rs#L1315), [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1373](../../src/process_live_tests.rs#L1373) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `fs::create_dir_all(root.join("config")).unwrap` | [1292](../../src/process_live_tests.rs#L1292) | receiver-type-required |
+| `real_public_flow_case` | `root.join` | [1292](../../src/process_live_tests.rs#L1292), [1293](../../src/process_live_tests.rs#L1293), [1295](../../src/process_live_tests.rs#L1295), [1303](../../src/process_live_tests.rs#L1303), [1314](../../src/process_live_tests.rs#L1314), [1323](../../src/process_live_tests.rs#L1323), [1324](../../src/process_live_tests.rs#L1324), [1330](../../src/process_live_tests.rs#L1330), [1331](../../src/process_live_tests.rs#L1331), [1336](../../src/process_live_tests.rs#L1336), [1342](../../src/process_live_tests.rs#L1342), [1350](../../src/process_live_tests.rs#L1350), [1354](../../src/process_live_tests.rs#L1354), [1373](../../src/process_live_tests.rs#L1373), [1374](../../src/process_live_tests.rs#L1374), [1379](../../src/process_live_tests.rs#L1379), [1385](../../src/process_live_tests.rs#L1385), [1393](../../src/process_live_tests.rs#L1393), [1397](../../src/process_live_tests.rs#L1397), [1433](../../src/process_live_tests.rs#L1433), [1451](../../src/process_live_tests.rs#L1451), [1456](../../src/process_live_tests.rs#L1456) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1293](../../src/process_live_tests.rs#L1293) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1294](../../src/process_live_tests.rs#L1294) | receiver-type-required |
+| `real_public_flow_case` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1294](../../src/process_live_tests.rs#L1294) | receiver-type-required |
+| `real_public_flow_case` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1294](../../src/process_live_tests.rs#L1294) | receiver-type-required |
+| `real_public_flow_case` | `write_canonical_test_json` | [1295](../../src/process_live_tests.rs#L1295), [1303](../../src/process_live_tests.rs#L1303), [1319](../../src/process_live_tests.rs#L1319), [1329](../../src/process_live_tests.rs#L1329), [1372](../../src/process_live_tests.rs#L1372) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `case["max_wall_seconds"].as_u64` | [1300](../../src/process_live_tests.rs#L1300) | receiver-type-required |
+| `real_public_flow_case` | `policy.as_object_mut().expect("policy object").insert` | [1301](../../src/process_live_tests.rs#L1301) | receiver-type-required |
+| `real_public_flow_case` | `policy.as_object_mut().expect` | [1301](../../src/process_live_tests.rs#L1301) | receiver-type-required |
+| `real_public_flow_case` | `policy.as_object_mut` | [1301](../../src/process_live_tests.rs#L1301) | receiver-type-required |
+| `real_public_flow_case` | `"max_wall_seconds".to_owned` | [1301](../../src/process_live_tests.rs#L1301) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_files"].as_object().unwrap` | [1304](../../src/process_live_tests.rs#L1304) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_files"].as_object` | [1304](../../src/process_live_tests.rs#L1304) | receiver-type-required |
+| `real_public_flow_case` | `workspace.join` | [1305](../../src/process_live_tests.rs#L1305) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all(target.parent().unwrap()).unwrap` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
+| `real_public_flow_case` | `target.parent().unwrap` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
+| `real_public_flow_case` | `target.parent` | [1306](../../src/process_live_tests.rs#L1306) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(target, content.as_str().unwrap()).unwrap` | [1307](../../src/process_live_tests.rs#L1307) | receiver-type-required |
+| `real_public_flow_case` | `fs::write` | [1307](../../src/process_live_tests.rs#L1307), [1324](../../src/process_live_tests.rs#L1324), [1331](../../src/process_live_tests.rs#L1331), [1350](../../src/process_live_tests.rs#L1350), [1374](../../src/process_live_tests.rs#L1374), [1393](../../src/process_live_tests.rs#L1393), [1433](../../src/process_live_tests.rs#L1433), [1451](../../src/process_live_tests.rs#L1451), [1456](../../src/process_live_tests.rs#L1456) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `content.as_str().unwrap` | [1307](../../src/process_live_tests.rs#L1307) | receiver-type-required |
+| `real_public_flow_case` | `content.as_str` | [1307](../../src/process_live_tests.rs#L1307) | receiver-type-required |
+| `real_public_flow_case` | `register_local_tools_server` | [1311](../../src/process_live_tests.rs#L1311) | [tekes-supervisor::process_live_tests::register_local_tools_server](../../src/process_live_tests.rs#L1076) |
+| `real_public_flow_case` | `root.join("threads").join` | [1314](../../src/process_live_tests.rs#L1314) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1315](../../src/process_live_tests.rs#L1315) | receiver-type-required |
+| `real_public_flow_case` | `folder.join` | [1315](../../src/process_live_tests.rs#L1315), [1316](../../src/process_live_tests.rs#L1316), [1319](../../src/process_live_tests.rs#L1319), [1329](../../src/process_live_tests.rs#L1329), [1372](../../src/process_live_tests.rs#L1372) | receiver-type-required |
+| `real_public_flow_case` | `write_test_genesis_with_identity` | [1317](../../src/process_live_tests.rs#L1317) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `case["identity_profile"].as_str` | [1317](../../src/process_live_tests.rs#L1317) | receiver-type-required |
+| `real_public_flow_case` | `fs::create_dir_all(root.join(".agent/commands")).unwrap` | [1323](../../src/process_live_tests.rs#L1323), [1330](../../src/process_live_tests.rs#L1330), [1373](../../src/process_live_tests.rs#L1373) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(root.join(".agent/commands/compact.md"), case["seed_files"][".agent/commands/compact.md"].as_str().unwrap()).unwrap` | [1324](../../src/process_live_tests.rs#L1324), [1331](../../src/process_live_tests.rs#L1331), [1374](../../src/process_live_tests.rs#L1374) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_files"][".agent/commands/compact.md"].as_str().unwrap` | [1324](../../src/process_live_tests.rs#L1324), [1331](../../src/process_live_tests.rs#L1331), [1374](../../src/process_live_tests.rs#L1374) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_files"][".agent/commands/compact.md"].as_str` | [1324](../../src/process_live_tests.rs#L1324), [1331](../../src/process_live_tests.rs#L1331), [1374](../../src/process_live_tests.rs#L1374) | receiver-type-required |
+| `real_public_flow_case` | `Arc::new` | [1334](../../src/process_live_tests.rs#L1334), [1342](../../src/process_live_tests.rs#L1342), [1377](../../src/process_live_tests.rs#L1377), [1385](../../src/process_live_tests.rs#L1385) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `provider::MemorySecretStore::new` | [1334](../../src/process_live_tests.rs#L1334), [1377](../../src/process_live_tests.rs#L1377) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
+| `real_public_flow_case` | `secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
+| `real_public_flow_case` | `secrets.publish` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
+| `real_public_flow_case` | `provider["credential_key"].as_str().unwrap` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
+| `real_public_flow_case` | `provider["credential_key"].as_str` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
+| `real_public_flow_case` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1335](../../src/process_live_tests.rs#L1335), [1378](../../src/process_live_tests.rs#L1378) | receiver-type-required |
+| `real_public_flow_case` | `ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).unwrap` | [1336](../../src/process_live_tests.rs#L1336), [1379](../../src/process_live_tests.rs#L1379) | receiver-type-required |
+| `real_public_flow_case` | `ProductionProcessHost::open_with_secret_store` | [1336](../../src/process_live_tests.rs#L1336), [1379](../../src/process_live_tests.rs#L1379) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1336](../../src/process_live_tests.rs#L1336), [1379](../../src/process_live_tests.rs#L1379) | receiver-type-required |
+| `real_public_flow_case` | `tokio::runtime::Runtime::new().unwrap` | [1337](../../src/process_live_tests.rs#L1337), [1380](../../src/process_live_tests.rs#L1380) | receiver-type-required |
+| `real_public_flow_case` | `tokio::runtime::Runtime::new` | [1337](../../src/process_live_tests.rs#L1337), [1380](../../src/process_live_tests.rs#L1380) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap` | [1338](../../src/process_live_tests.rs#L1338), [1381](../../src/process_live_tests.rs#L1381) | receiver-type-required |
+| `real_public_flow_case` | `runtime.block_on` | [1338](../../src/process_live_tests.rs#L1338), [1362](../../src/process_live_tests.rs#L1362), [1381](../../src/process_live_tests.rs#L1381), [1405](../../src/process_live_tests.rs#L1405) | receiver-type-required |
+| `real_public_flow_case` | `tokio::net::TcpListener::bind` | [1338](../../src/process_live_tests.rs#L1338), [1381](../../src/process_live_tests.rs#L1381) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `listener.local_addr().unwrap` | [1339](../../src/process_live_tests.rs#L1339), [1382](../../src/process_live_tests.rs#L1382) | receiver-type-required |
+| `real_public_flow_case` | `listener.local_addr` | [1339](../../src/process_live_tests.rs#L1339), [1382](../../src/process_live_tests.rs#L1382) | receiver-type-required |
+| `real_public_flow_case` | `crate::host_runtime::assemble_application_endpoint_host(&root,         endpoint::SessionHostDescription {version:"test".into(),cwd:workspace.to_string_lossy().into_owned(),provider:None,model:None,attached_sessions:0,home:root.to_string_lossy().into_owned(),can_open_path:false},         Arc::new(&#124;&#124; Ok("2026-09-04T10:00:00.000Z".into())), &root.join(".agent"),host.clone()).unwrap` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | receiver-type-required |
+| `real_public_flow_case` | `crate::host_runtime::assemble_application_endpoint_host` | [1340](../../src/process_live_tests.rs#L1340), [1383](../../src/process_live_tests.rs#L1383) | [tekes-supervisor::host_runtime::assemble_application_endpoint_host](../../src/host_runtime.rs#L286) |
+| `real_public_flow_case` | `"test".into` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
+| `real_public_flow_case` | `workspace.to_string_lossy().into_owned` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
+| `real_public_flow_case` | `workspace.to_string_lossy` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
+| `real_public_flow_case` | `root.to_string_lossy().into_owned` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
+| `real_public_flow_case` | `root.to_string_lossy` | [1341](../../src/process_live_tests.rs#L1341), [1384](../../src/process_live_tests.rs#L1384) | receiver-type-required |
+| `real_public_flow_case` | `Ok` | [1342](../../src/process_live_tests.rs#L1342), [1385](../../src/process_live_tests.rs#L1385) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `"2026-09-04T10:00:00.000Z".into` | [1342](../../src/process_live_tests.rs#L1342), [1385](../../src/process_live_tests.rs#L1385) | receiver-type-required |
+| `real_public_flow_case` | `host.clone` | [1342](../../src/process_live_tests.rs#L1342), [1343](../../src/process_live_tests.rs#L1343), [1385](../../src/process_live_tests.rs#L1385), [1386](../../src/process_live_tests.rs#L1386) | receiver-type-required |
+| `real_public_flow_case` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble(&root,unary,host.clone(),         transport::TransportConfig::loopback(address,transport::BearerToken::new([42;32]))).unwrap` | [1343](../../src/process_live_tests.rs#L1343), [1386](../../src/process_live_tests.rs#L1386) | receiver-type-required |
+| `real_public_flow_case` | `crate::endpoint_carrier::ProductionCarrierAssembly::assemble` | [1343](../../src/process_live_tests.rs#L1343), [1386](../../src/process_live_tests.rs#L1386) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2617) |
+| `real_public_flow_case` | `transport::TransportConfig::loopback` | [1344](../../src/process_live_tests.rs#L1344), [1387](../../src/process_live_tests.rs#L1387) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L111) |
+| `real_public_flow_case` | `transport::BearerToken::new` | [1344](../../src/process_live_tests.rs#L1344), [1387](../../src/process_live_tests.rs#L1387) | [transport::auth::BearerToken::new](../../../transport/src/auth.rs#L36) |
+| `real_public_flow_case` | `host.attach_streams` | [1345](../../src/process_live_tests.rs#L1345), [1388](../../src/process_live_tests.rs#L1388) | receiver-type-required |
+| `real_public_flow_case` | `assembly.streams().clone` | [1345](../../src/process_live_tests.rs#L1345), [1388](../../src/process_live_tests.rs#L1388) | receiver-type-required |
+| `real_public_flow_case` | `assembly.streams` | [1345](../../src/process_live_tests.rs#L1345), [1388](../../src/process_live_tests.rs#L1388) | receiver-type-required |
+| `real_public_flow_case` | `assembly.finish_recovery().unwrap` | [1346](../../src/process_live_tests.rs#L1346), [1389](../../src/process_live_tests.rs#L1389) | receiver-type-required |
+| `real_public_flow_case` | `assembly.finish_recovery` | [1346](../../src/process_live_tests.rs#L1346), [1389](../../src/process_live_tests.rs#L1389) | receiver-type-required |
+| `real_public_flow_case` | `assembly.into_server` | [1347](../../src/process_live_tests.rs#L1347), [1390](../../src/process_live_tests.rs#L1390) | receiver-type-required |
+| `real_public_flow_case` | `server.handle` | [1348](../../src/process_live_tests.rs#L1348), [1391](../../src/process_live_tests.rs#L1391) | receiver-type-required |
+| `real_public_flow_case` | `runtime.spawn` | [1349](../../src/process_live_tests.rs#L1349), [1392](../../src/process_live_tests.rs#L1392) | receiver-type-required |
+| `real_public_flow_case` | `server.serve` | [1349](../../src/process_live_tests.rs#L1349), [1392](../../src/process_live_tests.rs#L1392) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(root.join("client-endpoint.json"),serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap()).unwrap` | [1350](../../src/process_live_tests.rs#L1350), [1393](../../src/process_live_tests.rs#L1393) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec(&json!({"address":address.to_string(),"session":session})).unwrap` | [1350](../../src/process_live_tests.rs#L1350), [1393](../../src/process_live_tests.rs#L1393) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec` | [1350](../../src/process_live_tests.rs#L1350), [1393](../../src/process_live_tests.rs#L1393) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `host.start_periodic_sweep` | [1351](../../src/process_live_tests.rs#L1351), [1394](../../src/process_live_tests.rs#L1394) | receiver-type-required |
+| `real_public_flow_case` | `std::panic::catch_unwind` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `std::panic::AssertUnwindSafe` | [1352](../../src/process_live_tests.rs#L1352), [1395](../../src/process_live_tests.rs#L1395) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `Instant::now` | [1353](../../src/process_live_tests.rs#L1353), [1396](../../src/process_live_tests.rs#L1396) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `Duration::from_secs` | [1353](../../src/process_live_tests.rs#L1353), [1396](../../src/process_live_tests.rs#L1396) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `case["timeout_seconds"].as_u64().unwrap_or` | [1353](../../src/process_live_tests.rs#L1353), [1396](../../src/process_live_tests.rs#L1396) | receiver-type-required |
+| `real_public_flow_case` | `case["timeout_seconds"].as_u64` | [1353](../../src/process_live_tests.rs#L1353), [1396](../../src/process_live_tests.rs#L1396) | receiver-type-required |
+| `real_public_flow_case` | `root.join("client-flow-receipt.json").exists` | [1354](../../src/process_live_tests.rs#L1354), [1397](../../src/process_live_tests.rs#L1397) | receiver-type-required |
+| `real_public_flow_case` | `std::thread::sleep` | [1357](../../src/process_live_tests.rs#L1357), [1400](../../src/process_live_tests.rs#L1400) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `Duration::from_millis` | [1357](../../src/process_live_tests.rs#L1357), [1400](../../src/process_live_tests.rs#L1400) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `host.shutdown` | [1360](../../src/process_live_tests.rs#L1360), [1403](../../src/process_live_tests.rs#L1403) | receiver-type-required |
+| `real_public_flow_case` | `handle.begin_drain` | [1361](../../src/process_live_tests.rs#L1361), [1404](../../src/process_live_tests.rs#L1404) | receiver-type-required |
+| `real_public_flow_case` | `runtime.block_on(serve).unwrap().unwrap` | [1362](../../src/process_live_tests.rs#L1362), [1405](../../src/process_live_tests.rs#L1405) | receiver-type-required |
+| `real_public_flow_case` | `runtime.block_on(serve).unwrap` | [1362](../../src/process_live_tests.rs#L1362), [1405](../../src/process_live_tests.rs#L1405) | receiver-type-required |
+| `real_public_flow_case` | `std::panic::resume_unwind` | [1363](../../src/process_live_tests.rs#L1363), [1406](../../src/process_live_tests.rs#L1406) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines().map(&#124;line&#124;serde_json::from_str(line).unwrap()).collect` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
+| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines().map` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
+| `real_public_flow_case` | `fs::read_to_string(&path).unwrap().lines` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
+| `real_public_flow_case` | `fs::read_to_string(&path).unwrap` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
+| `real_public_flow_case` | `fs::read_to_string` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `serde_json::from_str(line).unwrap` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::from_str` | [1364](../../src/process_live_tests.rs#L1364), [1407](../../src/process_live_tests.rs#L1407) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `events.iter().filter(&#124;e&#124;e["kind"]=="settle").collect` | [1365](../../src/process_live_tests.rs#L1365), [1408](../../src/process_live_tests.rs#L1408) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().filter` | [1365](../../src/process_live_tests.rs#L1365), [1408](../../src/process_live_tests.rs#L1408), [1419](../../src/process_live_tests.rs#L1419), [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `events.iter` | [1365](../../src/process_live_tests.rs#L1365), [1408](../../src/process_live_tests.rs#L1408), [1417](../../src/process_live_tests.rs#L1417), [1419](../../src/process_live_tests.rs#L1419), [1439](../../src/process_live_tests.rs#L1439), [1442](../../src/process_live_tests.rs#L1442), [1444](../../src/process_live_tests.rs#L1444), [1447](../../src/process_live_tests.rs#L1447), [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="compact" && e["origin_tuple"]["op"]=="commands/run").expect` | [1417](../../src/process_live_tests.rs#L1417), [1439](../../src/process_live_tests.rs#L1439) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find` | [1417](../../src/process_live_tests.rs#L1417), [1439](../../src/process_live_tests.rs#L1439), [1442](../../src/process_live_tests.rs#L1442), [1444](../../src/process_live_tests.rs#L1444), [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_prompts"].as_array().unwrap().len` | [1418](../../src/process_live_tests.rs#L1418) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_prompts"].as_array().unwrap` | [1418](../../src/process_live_tests.rs#L1418) | receiver-type-required |
+| `real_public_flow_case` | `case["seed_prompts"].as_array` | [1418](../../src/process_live_tests.rs#L1418) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="settle" && e["seq"].as_u64() < compact["seq"].as_u64()).count` | [1419](../../src/process_live_tests.rs#L1419) | receiver-type-required |
+| `real_public_flow_case` | `e["seq"].as_u64` | [1419](../../src/process_live_tests.rs#L1419), [1442](../../src/process_live_tests.rs#L1442), [1444](../../src/process_live_tests.rs#L1444), [1447](../../src/process_live_tests.rs#L1447), [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `compact["seq"].as_u64` | [1419](../../src/process_live_tests.rs#L1419), [1440](../../src/process_live_tests.rs#L1440) | receiver-type-required |
+| `real_public_flow_case` | `record["evidence_refs"].as_array().expect` | [1425](../../src/process_live_tests.rs#L1425) | receiver-type-required |
+| `real_public_flow_case` | `record["evidence_refs"].as_array` | [1425](../../src/process_live_tests.rs#L1425) | receiver-type-required |
+| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter().flat_map(&#124;r&#124; r["from"].as_u64().unwrap()..=r["to"].as_u64().unwrap()).collect` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter().flat_map` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `compact["covers"].as_array().unwrap().iter` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `compact["covers"].as_array().unwrap` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `compact["covers"].as_array` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `r["from"].as_u64().unwrap` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `r["from"].as_u64` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `r["to"].as_u64().unwrap` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `r["to"].as_u64` | [1427](../../src/process_live_tests.rs#L1427) | receiver-type-required |
+| `real_public_flow_case` | `compact["summary"].as_str().map` | [1429](../../src/process_live_tests.rs#L1429) | receiver-type-required |
+| `real_public_flow_case` | `compact["summary"].as_str` | [1429](../../src/process_live_tests.rs#L1429) | receiver-type-required |
+| `real_public_flow_case` | `summary.starts_with` | [1429](../../src/process_live_tests.rs#L1429) | receiver-type-required |
+| `real_public_flow_case` | `schema::validate_ledger(&fs::read(&path).unwrap(), schema::READER_VERSION).unwrap` | [1431](../../src/process_live_tests.rs#L1431), [1445](../../src/process_live_tests.rs#L1445) | receiver-type-required |
+| `real_public_flow_case` | `schema::validate_ledger` | [1431](../../src/process_live_tests.rs#L1431), [1445](../../src/process_live_tests.rs#L1445) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `real_public_flow_case` | `fs::read(&path).unwrap` | [1431](../../src/process_live_tests.rs#L1431), [1445](../../src/process_live_tests.rs#L1445) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(root.join("compaction-summary.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap()).unwrap` | [1433](../../src/process_live_tests.rs#L1433) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"compact_seq":compact["seq"],"covers":compact["covers"],"summary_request":record,"summary_is_model":summary_is_model,"summary_bytes":compact["summary"].as_str().map(str::len)})).unwrap` | [1433](../../src/process_live_tests.rs#L1433) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec_pretty` | [1433](../../src/process_live_tests.rs#L1433), [1451](../../src/process_live_tests.rs#L1451), [1456](../../src/process_live_tests.rs#L1456) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `compact["seq"].as_u64().unwrap` | [1440](../../src/process_live_tests.rs#L1440) | receiver-type-required |
+| `real_public_flow_case` | `compact["origin_key"].as_str().unwrap().to_owned` | [1441](../../src/process_live_tests.rs#L1441) | receiver-type-required |
+| `real_public_flow_case` | `compact["origin_key"].as_str().unwrap` | [1441](../../src/process_live_tests.rs#L1441) | receiver-type-required |
+| `real_public_flow_case` | `compact["origin_key"].as_str` | [1441](../../src/process_live_tests.rs#L1441) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="epoch" && e["seq"].as_u64().unwrap() > compact_seq).expect` | [1442](../../src/process_live_tests.rs#L1442) | receiver-type-required |
+| `real_public_flow_case` | `e["seq"].as_u64().unwrap` | [1442](../../src/process_live_tests.rs#L1442), [1444](../../src/process_live_tests.rs#L1444), [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect("post-compact input")["seq"].as_u64().unwrap` | [1444](../../src/process_live_tests.rs#L1444) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect("post-compact input")["seq"].as_u64` | [1444](../../src/process_live_tests.rs#L1444) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["kind"]=="input" && e["seq"].as_u64().unwrap() > compact_seq).expect` | [1444](../../src/process_live_tests.rs#L1444) | receiver-type-required |
+| `real_public_flow_case` | `engine::first_post_compact_attempt(&typed.events, &origin_key, &[post_input]).expect` | [1446](../../src/process_live_tests.rs#L1446) | receiver-type-required |
+| `real_public_flow_case` | `engine::first_post_compact_attempt` | [1446](../../src/process_live_tests.rs#L1446) | [engine::compact_gate::first_post_compact_attempt](../../../engine/src/compact_gate.rs#L20) |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str().unwrap().to_owned` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str().unwrap` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap()["attempt"].as_str` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().find(&#124;e&#124; e["seq"].as_u64()==Some(gate)).unwrap` | [1447](../../src/process_live_tests.rs#L1447) | receiver-type-required |
+| `real_public_flow_case` | `Some` | [1447](../../src/process_live_tests.rs#L1447) | external-constructor-callback-or-unresolved |
+| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="tool_call" && e["seq"].as_u64().unwrap() < compact_seq).filter_map(&#124;e&#124; e["call"].as_str().map(str::to_owned)).collect` | [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `events.iter().filter(&#124;e&#124; e["kind"]=="tool_call" && e["seq"].as_u64().unwrap() < compact_seq).filter_map` | [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `e["call"].as_str().map` | [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `e["call"].as_str` | [1448](../../src/process_live_tests.rs#L1448) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(root.join("compact-gate.json"), serde_json::to_vec_pretty(&json!({"compact_seq":compact_seq,"origin_key":origin_key,"covers":compact["covers"],"epoch_seq":epoch["seq"],"post_input_seq":post_input,"first_post_compact_attempt_seq":gate,"first_post_compact_attempt":attempt,"pre_compact_call_ids":pre_calls})).unwrap()).unwrap` | [1451](../../src/process_live_tests.rs#L1451) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"compact_seq":compact_seq,"origin_key":origin_key,"covers":compact["covers"],"epoch_seq":epoch["seq"],"post_input_seq":post_input,"first_post_compact_attempt_seq":gate,"first_post_compact_attempt":attempt,"pre_compact_call_ids":pre_calls})).unwrap` | [1451](../../src/process_live_tests.rs#L1451) | receiver-type-required |
+| `real_public_flow_case` | `fs::write(root.join("receipt.json"),serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles})).unwrap()).unwrap` | [1456](../../src/process_live_tests.rs#L1456) | receiver-type-required |
+| `real_public_flow_case` | `serde_json::to_vec_pretty(&json!({"status":"passed","settles":settles})).unwrap` | [1456](../../src/process_live_tests.rs#L1456) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `PathBuf::from` | [1469](../../src/process_live_tests.rs#L1469) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `std::env::var("TEKES_PROCESS_ARTIFACT").unwrap` | [1469](../../src/process_live_tests.rs#L1469) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `std::env::var` | [1469](../../src/process_live_tests.rs#L1469), [1475](../../src/process_live_tests.rs#L1475), [1478](../../src/process_live_tests.rs#L1478), [1504](../../src/process_live_tests.rs#L1504), [1505](../../src/process_live_tests.rs#L1505) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all(&root).unwrap` | [1470](../../src/process_live_tests.rs#L1470) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all` | [1470](../../src/process_live_tests.rs#L1470), [1472](../../src/process_live_tests.rs#L1472), [1473](../../src/process_live_tests.rs#L1473), [1474](../../src/process_live_tests.rs#L1474), [1496](../../src/process_live_tests.rs#L1496) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `root.parent().unwrap().join` | [1471](../../src/process_live_tests.rs#L1471) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `root.parent().unwrap` | [1471](../../src/process_live_tests.rs#L1471) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `root.parent` | [1471](../../src/process_live_tests.rs#L1471) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all(&workspace).unwrap` | [1472](../../src/process_live_tests.rs#L1472) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all(root.join("config")).unwrap` | [1473](../../src/process_live_tests.rs#L1473) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `root.join` | [1473](../../src/process_live_tests.rs#L1473), [1474](../../src/process_live_tests.rs#L1474), [1476](../../src/process_live_tests.rs#L1476), [1477](../../src/process_live_tests.rs#L1477), [1479](../../src/process_live_tests.rs#L1479), [1495](../../src/process_live_tests.rs#L1495), [1505](../../src/process_live_tests.rs#L1505), [1545](../../src/process_live_tests.rs#L1545) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all(root.join("workspaces/ws")).unwrap` | [1474](../../src/process_live_tests.rs#L1474) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap` | [1475](../../src/process_live_tests.rs#L1475) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `serde_json::from_slice` | [1475](../../src/process_live_tests.rs#L1475) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap` | [1475](../../src/process_live_tests.rs#L1475) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read` | [1475](../../src/process_live_tests.rs#L1475) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap` | [1475](../../src/process_live_tests.rs#L1475) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `write_canonical_test_json` | [1476](../../src/process_live_tests.rs#L1476), [1477](../../src/process_live_tests.rs#L1477) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `std::env::var("TEKES_TEST_MCP_FIXTURE_SERVER").expect` | [1478](../../src/process_live_tests.rs#L1478) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `mcp::McpRegistryStore::new` | [1479](../../src/process_live_tests.rs#L1479) | [mcp::management::McpRegistryStore::new](../../../mcp/src/management.rs#L391) |
+| `real_public_mcp_task_continuation` | `registry.mutate_idempotent("save-fixture", &mcp::McpManagementMutation::Save {         server: mcp::McpServerConfig {             folder_id: None,             reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "fixture".to_owned() },             transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "task-augmented".to_owned()], cwd: None, environment: BTreeMap::new() },             enabled: true,             always_on: true,             protocol_mode: mcp::ProtocolMode::Legacy,             owner: None,             plugin_component: None,             project_trusted: true,         },         credential_fields: BTreeMap::new(),     }).expect` | [1480](../../src/process_live_tests.rs#L1480) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `registry.mutate_idempotent` | [1480](../../src/process_live_tests.rs#L1480) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `"ws".to_owned` | [1483](../../src/process_live_tests.rs#L1483) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `"fixture".to_owned` | [1483](../../src/process_live_tests.rs#L1483) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `BTreeMap::new` | [1484](../../src/process_live_tests.rs#L1484), [1492](../../src/process_live_tests.rs#L1492) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `root.join("threads").join` | [1495](../../src/process_live_tests.rs#L1495) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::create_dir_all(folder.join("assets")).unwrap` | [1496](../../src/process_live_tests.rs#L1496) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `folder.join` | [1496](../../src/process_live_tests.rs#L1496), [1497](../../src/process_live_tests.rs#L1497) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `write_test_genesis` | [1498](../../src/process_live_tests.rs#L1498) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `append_test_input` | [1499](../../src/process_live_tests.rs#L1499) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().map(&#124;s&#124; serde_json::from_str(s).unwrap()).collect` | [1500](../../src/process_live_tests.rs#L1500), [1519](../../src/process_live_tests.rs#L1519) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().map` | [1500](../../src/process_live_tests.rs#L1500), [1519](../../src/process_live_tests.rs#L1519) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines` | [1500](../../src/process_live_tests.rs#L1500), [1511](../../src/process_live_tests.rs#L1511), [1519](../../src/process_live_tests.rs#L1519) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap` | [1500](../../src/process_live_tests.rs#L1500), [1511](../../src/process_live_tests.rs#L1511), [1519](../../src/process_live_tests.rs#L1519) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read_to_string` | [1500](../../src/process_live_tests.rs#L1500), [1511](../../src/process_live_tests.rs#L1511), [1519](../../src/process_live_tests.rs#L1519) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `serde_json::from_str(s).unwrap` | [1500](../../src/process_live_tests.rs#L1500), [1519](../../src/process_live_tests.rs#L1519) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `serde_json::from_str` | [1500](../../src/process_live_tests.rs#L1500), [1511](../../src/process_live_tests.rs#L1511), [1519](../../src/process_live_tests.rs#L1519) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `write_test_events` | [1502](../../src/process_live_tests.rs#L1502) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `Arc::new` | [1503](../../src/process_live_tests.rs#L1503) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `provider::MemorySecretStore::new` | [1503](../../src/process_live_tests.rs#L1503) | [provider::secret_store::MemorySecretStore::new](../../../provider/src/secret_store.rs#L179) |
+| `real_public_mcp_task_continuation` | `secrets.publish(provider["credential_key"].as_str().unwrap(), provider::SecretRecord::Active { generation: 1, material: std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap() }).unwrap` | [1504](../../src/process_live_tests.rs#L1504) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `secrets.publish` | [1504](../../src/process_live_tests.rs#L1504) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `provider["credential_key"].as_str().unwrap` | [1504](../../src/process_live_tests.rs#L1504) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `provider["credential_key"].as_str` | [1504](../../src/process_live_tests.rs#L1504) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap` | [1504](../../src/process_live_tests.rs#L1504) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `ProductionProcessHost::open_with_secret_store(&root, std::env::var("TEKES_TEST_REAL_WORKER").unwrap(), "live-mcp-task", root.join(".agent"), secrets).unwrap` | [1505](../../src/process_live_tests.rs#L1505) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `ProductionProcessHost::open_with_secret_store` | [1505](../../src/process_live_tests.rs#L1505) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `std::env::var("TEKES_TEST_REAL_WORKER").unwrap` | [1505](../../src/process_live_tests.rs#L1505) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `std::panic::catch_unwind` | [1506](../../src/process_live_tests.rs#L1506) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `std::panic::AssertUnwindSafe` | [1506](../../src/process_live_tests.rs#L1506) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `host.schedule_main(session).unwrap().expect` | [1507](../../src/process_live_tests.rs#L1507) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `host.schedule_main(session).unwrap` | [1507](../../src/process_live_tests.rs#L1507) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `host.schedule_main` | [1507](../../src/process_live_tests.rs#L1507) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `host.start_periodic_sweep` | [1508](../../src/process_live_tests.rs#L1508) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `Instant::now` | [1509](../../src/process_live_tests.rs#L1509) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `Duration::from_secs` | [1509](../../src/process_live_tests.rs#L1509) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().filter_map(&#124;s&#124; serde_json::from_str(s).ok()).collect` | [1511](../../src/process_live_tests.rs#L1511) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::read_to_string(&path).unwrap().lines().filter_map` | [1511](../../src/process_live_tests.rs#L1511) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `serde_json::from_str(s).ok` | [1511](../../src/process_live_tests.rs#L1511) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().any` | [1512](../../src/process_live_tests.rs#L1512) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter` | [1512](../../src/process_live_tests.rs#L1512), [1520](../../src/process_live_tests.rs#L1520), [1522](../../src/process_live_tests.rs#L1522), [1525](../../src/process_live_tests.rs#L1525), [1532](../../src/process_live_tests.rs#L1532), [1536](../../src/process_live_tests.rs#L1536), [1542](../../src/process_live_tests.rs#L1542) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `std::thread::sleep` | [1514](../../src/process_live_tests.rs#L1514) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `Duration::from_millis` | [1514](../../src/process_live_tests.rs#L1514) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `host.shutdown` | [1517](../../src/process_live_tests.rs#L1517) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `std::panic::resume_unwind` | [1518](../../src/process_live_tests.rs#L1518) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `events.iter().find(&#124;e&#124; e["kind"] == "settle").unwrap` | [1520](../../src/process_live_tests.rs#L1520) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().find` | [1520](../../src/process_live_tests.rs#L1520) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "tool_call" && e["name"] == "mcp__fixture__echo").collect` | [1522](../../src/process_live_tests.rs#L1522) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().filter` | [1522](../../src/process_live_tests.rs#L1522), [1525](../../src/process_live_tests.rs#L1525), [1532](../../src/process_live_tests.rs#L1532), [1536](../../src/process_live_tests.rs#L1536) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `calls[0]["call"].as_str().unwrap` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `calls[0]["call"].as_str` | [1524](../../src/process_live_tests.rs#L1524) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "state" && e["subkind"] == "tool_continuation" && e["payload"]["call"] == call).collect` | [1525](../../src/process_live_tests.rs#L1525) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `steps.iter().map(&#124;e&#124; e["payload"]["action"].as_str().unwrap()).collect` | [1526](../../src/process_live_tests.rs#L1526) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `steps.iter().map` | [1526](../../src/process_live_tests.rs#L1526) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `steps.iter` | [1526](../../src/process_live_tests.rs#L1526), [1529](../../src/process_live_tests.rs#L1529) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `e["payload"]["action"].as_str().unwrap` | [1526](../../src/process_live_tests.rs#L1526) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `e["payload"]["action"].as_str` | [1526](../../src/process_live_tests.rs#L1526) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `steps.iter().find(&#124;e&#124; e["payload"]["action"] == "park").unwrap` | [1529](../../src/process_live_tests.rs#L1529) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `steps.iter().find` | [1529](../../src/process_live_tests.rs#L1529) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "run_start").collect` | [1532](../../src/process_live_tests.rs#L1532) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `park["seq"].as_u64().unwrap` | [1534](../../src/process_live_tests.rs#L1534) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `park["seq"].as_u64` | [1534](../../src/process_live_tests.rs#L1534) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().filter(&#124;e&#124; e["kind"] == "tool_result" && e["call"] == call).collect` | [1536](../../src/process_live_tests.rs#L1536) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `results[0]["content"][0]["text"].as_str().unwrap` | [1539](../../src/process_live_tests.rs#L1539) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `results[0]["content"][0]["text"].as_str` | [1539](../../src/process_live_tests.rs#L1539) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().rev().find(&#124;e&#124; e["kind"] == "output").unwrap` | [1542](../../src/process_live_tests.rs#L1542) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().rev().find` | [1542](../../src/process_live_tests.rs#L1542) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `events.iter().rev` | [1542](../../src/process_live_tests.rs#L1542) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::write(root.join("receipt.json"), serde_json::to_vec_pretty(&json!({"status":"passed","call":call,"continuation_actions":actions,"runs":runs.len(),"result_seq":results[0]["seq"]})).unwrap()).unwrap` | [1545](../../src/process_live_tests.rs#L1545) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `fs::write` | [1545](../../src/process_live_tests.rs#L1545) | external-constructor-callback-or-unresolved |
+| `real_public_mcp_task_continuation` | `serde_json::to_vec_pretty(&json!({"status":"passed","call":call,"continuation_actions":actions,"runs":runs.len(),"result_seq":results[0]["seq"]})).unwrap` | [1545](../../src/process_live_tests.rs#L1545) | receiver-type-required |
+| `real_public_mcp_task_continuation` | `serde_json::to_vec_pretty` | [1545](../../src/process_live_tests.rs#L1545) | external-constructor-callback-or-unresolved |

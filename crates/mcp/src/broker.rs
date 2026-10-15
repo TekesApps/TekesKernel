@@ -22,6 +22,19 @@ pub struct McpBrokerHandle {
 }
 
 enum Command {
+    ListResources {
+        key: McpPoolKey,
+        reply: SyncSender<Result<Vec<crate::McpResource>, McpError>>,
+    },
+    ReadResource {
+        key: McpPoolKey,
+        uri: String,
+        reply: SyncSender<Result<IJsonValue, McpError>>,
+    },
+    Retain {
+        key: McpPoolKey,
+        reply: SyncSender<Result<Option<Box<dyn McpPeer>>, McpError>>,
+    },
     Task {
         key: McpPoolKey,
         method: String,
@@ -90,6 +103,33 @@ impl Drop for McpBroker {
 }
 
 impl McpBrokerHandle {
+    pub fn list_resources(&self, key: McpPoolKey) -> Result<Vec<crate::McpResource>, McpError> {
+        let (sender, receiver) = mpsc::sync_channel(1);
+        self.sender
+            .try_send(Command::ListResources { key, reply: sender })
+            .map_err(map_send)?;
+        receive(receiver, Duration::from_secs(31))
+    }
+    pub fn read_resource(&self, key: McpPoolKey, uri: String) -> Result<IJsonValue, McpError> {
+        let (sender, receiver) = mpsc::sync_channel(1);
+        self.sender
+            .try_send(Command::ReadResource {
+                key,
+                uri,
+                reply: sender,
+            })
+            .map_err(map_send)?;
+        receive(receiver, Duration::from_secs(31))
+    }
+
+    pub fn retain_snapshot(&self, key: McpPoolKey) -> Result<Option<Box<dyn McpPeer>>, McpError> {
+        let (sender, receiver) = mpsc::sync_channel(1);
+        self.sender
+            .try_send(Command::Retain { key, reply: sender })
+            .map_err(map_send)?;
+        receive(receiver, Duration::from_secs(30))
+    }
+
     pub fn register(
         &self,
         key: McpPoolKey,
@@ -277,13 +317,105 @@ fn run(receiver: Receiver<Command>, shutdown: &AtomicBool) {
         return;
     };
     let pool = Arc::new(McpPool::new());
+    let reaping = Arc::new(AtomicBool::new(false));
+    let mut last_reap = std::time::Instant::now();
     while !shutdown.load(Ordering::Acquire) {
+        if last_reap.elapsed() >= Duration::from_millis(250)
+            && !reaping.swap(true, Ordering::AcqRel)
+        {
+            last_reap = std::time::Instant::now();
+            let pool = Arc::clone(&pool);
+            let reaping = Arc::clone(&reaping);
+            runtime.spawn(async move {
+                pool.reap_revoked().await;
+                reaping.store(false, Ordering::Release);
+            });
+        }
         let command = match receiver.recv_timeout(Duration::from_millis(50)) {
             Ok(command) => command,
             Err(mpsc::RecvTimeoutError::Timeout) => continue,
             Err(mpsc::RecvTimeoutError::Disconnected) => break,
         };
         match command {
+            Command::ListResources { key, reply } => {
+                let pool = Arc::clone(&pool);
+                runtime.spawn(async move {
+                    let result = async {
+                        let peer = pool
+                            .get(&key)
+                            .await
+                            .ok_or_else(|| McpError::Transport("MCP peer absent".into()))?;
+                        let mut peer = peer.lock().await;
+                        let _admission = peer.admit()?;
+                        peer.list_resources().await
+                    }
+                    .await;
+                    let _ = reply.send(result);
+                });
+            }
+            Command::ReadResource { key, uri, reply } => {
+                let pool = Arc::clone(&pool);
+                runtime.spawn(async move {
+                    let result = async {
+                        let peer = pool
+                            .get(&key)
+                            .await
+                            .ok_or_else(|| McpError::Transport("MCP peer absent".into()))?;
+                        let mut peer = peer.lock().await;
+                        let _admission = peer.admit()?;
+                        peer.read_resource(&uri).await
+                    }
+                    .await;
+                    let _ = reply.send(result);
+                });
+            }
+
+            Command::Retain { key, reply } => {
+                let pool = Arc::clone(&pool);
+                runtime.spawn(async move {
+                    let result = async {
+                        let Some(peer) = pool.retain(&key).await else {
+                            return Ok(None);
+                        };
+                        let snapshot = async {
+                            let peer = peer.lock().await;
+                            let _admission = peer.admit()?;
+                            let tools = match peer.cached_tools() {
+                                Some(tools) => tools,
+                                None => {
+                                    return Err(McpError::Unsupported(
+                                        "uncached catalog generation".into(),
+                                    ));
+                                }
+                            };
+                            Ok::<Box<dyn McpPeer>, McpError>(Box::new(
+                                crate::McpPeerSnapshot::capture(peer.as_ref(), tools),
+                            ))
+                        }
+                        .await;
+                        match snapshot {
+                            Ok(snapshot) => Ok(Some(snapshot)),
+                            Err(McpError::Unsupported(reason))
+                                if reason == "uncached catalog generation" =>
+                            {
+                                let _ = pool.remove(&key).await;
+                                Ok(None)
+                            }
+                            Err(error) => {
+                                let _ = pool.release(&key).await;
+                                Err(error)
+                            }
+                        }
+                    }
+                    .await;
+                    if let Err(undelivered) = reply.send(result)
+                        && matches!(undelivered.0, Ok(Some(_)))
+                    {
+                        let _ = pool.release(&key).await;
+                    }
+                });
+            }
+
             Command::Task {
                 key,
                 method,
@@ -299,6 +431,7 @@ fn run(receiver: Receiver<Command>, shutdown: &AtomicBool) {
                             .await
                             .ok_or_else(|| McpError::Transport("MCP peer is absent".into()))?;
                         let mut guard = peer.lock().await;
+                        let _admission = guard.admit()?;
                         let result = guard
                             .task_operation_cancellable(&method, params, cancellation)
                             .await;
@@ -360,6 +493,7 @@ fn run(receiver: Receiver<Command>, shutdown: &AtomicBool) {
                             .await
                             .ok_or_else(|| McpError::Transport("MCP peer is absent".to_owned()))?;
                         let mut guard = peer.lock().await;
+                        let _admission = guard.admit()?;
                         if let Some(ttl) = task_ttl_ms {
                             let result = guard
                                 .call_tool_augmented(&name, arguments, context, ttl, cancellation)

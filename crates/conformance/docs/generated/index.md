@@ -48,10 +48,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/conformance/tests/folder_mutation_sites.rs](../../tests/folder_mutation_sites.rs) | 20 | 172 | `inventory.json` |
 | [crates/conformance/tests/per_tool_projection.rs](../../tests/per_tool_projection.rs) | 21 | 186 | `inventory.json` |
 | [crates/conformance/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 2 | 17 | `inventory.json` |
-| [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 449 | `inventory.json` |
-| [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 19 | 444 | `inventory.json` |
+| [crates/conformance/tests/slice11_gates.rs](../../tests/slice11_gates.rs) | 39 | 454 | `inventory.json` |
+| [crates/conformance/tests/slice14f_gates.rs](../../tests/slice14f_gates.rs) | 19 | 445 | `inventory.json` |
 | [crates/conformance/tests/slice1_gates.rs](../../tests/slice1_gates.rs) | 33 | 568 | `inventory.json` |
-| [crates/conformance/tests/slice2_gates.rs](../../tests/slice2_gates.rs) | 7 | 195 | `inventory.json` |
+| [crates/conformance/tests/slice2_gates.rs](../../tests/slice2_gates.rs) | 7 | 208 | `inventory.json` |
 | [crates/conformance/tests/slice3_gates.rs](../../tests/slice3_gates.rs) | 3 | 42 | `inventory.json` |
 | [crates/conformance/tests/slice5_gates.rs](../../tests/slice5_gates.rs) | 10 | 245 | `inventory.json` |
 | [crates/conformance/tests/slice9_gates.rs](../../tests/slice9_gates.rs) | 23 | 393 | `inventory.json` |

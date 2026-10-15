@@ -572,7 +572,7 @@ struct RecoveryTransport {
 
 fn pool_key(server: &str) -> McpPoolKey {
     McpPoolKey {
-        workspace: "ws".to_owned(),
+        owner: "ws".to_owned(),
         scope: "project".to_owned(),
         server: server.to_owned(),
         config_digest: "a".repeat(64),
@@ -1292,6 +1292,7 @@ fn slice13_gate_91_management_publication_and_recovery() {
     let root = TempDir::new().expect("temp");
     let store = McpRegistryStore::new(root.path());
     let config = McpServerConfig {
+        folder_id: None,
         reference: McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: McpScope::Project,
@@ -1355,6 +1356,7 @@ fn slice13_gate_91_management_faults_recover_registry_and_credential_receipt() {
             name: "remote".to_owned(),
         };
         let server = McpServerConfig {
+            folder_id: None,
             reference: reference.clone(),
             transport: McpTransportConfig::Http {
                 url: "https://mcp.example.invalid/rpc".to_owned(),
@@ -1428,6 +1430,7 @@ fn slice13_gate_91_credential_field_operations_preserve_replace_and_remove_refer
         name: "stdio".to_owned(),
     };
     let make_server = || McpServerConfig {
+        folder_id: None,
         reference: reference.clone(),
         transport: McpTransportConfig::Stdio {
             command: vec!["/usr/bin/true".to_owned()],
@@ -1519,6 +1522,7 @@ fn slice13_gate_91_oauth_pending_to_bound_transition_is_exact() {
             "save-oauth",
             &McpManagementMutation::Save {
                 server: McpServerConfig {
+                    folder_id: None,
                     reference: reference.clone(),
                     transport: McpTransportConfig::Http {
                         url: "https://example.invalid/mcp".to_owned(),
@@ -1592,6 +1596,7 @@ fn slice13_gate_91_oauth_pending_to_bound_transition_is_exact() {
 fn slice13_gate_91_corrupt_operation_digest_chain_fails_closed() {
     let root = TempDir::new().expect("temp");
     let server = McpServerConfig {
+        folder_id: None,
         reference: McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: McpScope::User,
@@ -2135,6 +2140,7 @@ fn registry_file_keeps_the_last_entry_for_a_repeated_reference_and_saves_it_once
     let root = TempDir::new().expect("temp");
     let store = McpRegistryStore::new(root.path());
     let server = |name: &str, command: &str, enabled: bool| McpServerConfig {
+        folder_id: None,
         reference: McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: McpScope::User,
@@ -2157,7 +2163,7 @@ fn registry_file_keeps_the_last_entry_for_a_repeated_reference_and_saves_it_once
         format: 1,
         servers: vec![
             server("memory", "/usr/bin/true", true),
-            server("drawing-editor", "/usr/bin/false", true),
+            server("drawing-editor", "/usr/bin/true", true),
             server("memory", "/usr/bin/env", false),
             server("drawing-editor", "/usr/bin/true", true),
         ],
@@ -2199,6 +2205,7 @@ fn registry_file_tolerates_missing_trailing_newline_and_names_the_file_on_corrup
     let root = TempDir::new().expect("temp");
     let store = McpRegistryStore::new(root.path());
     let config = McpServerConfig {
+        folder_id: None,
         reference: McpServerReference {
             workspace_id: "ws".to_owned(),
             scope: McpScope::User,
@@ -2421,4 +2428,17 @@ fn refusal_names_are_reported_only_when_the_launch_binding_accepts_them() {
         );
         assert!(refusal.tool.len() <= 256);
     }
+}
+
+#[test]
+fn conflicting_active_user_alias_duplicates_are_not_silently_overwritten() {
+    let root = TempDir::new().unwrap();
+    let store = McpRegistryStore::new(root.path());
+    let row = |command: &str| serde_json::json!({"reference":{"workspace_id":"ws","scope":"user","name":"same"},"transport":{"kind":"stdio","command":[command],"environment":{}},"enabled":true,"always_on":false,"protocol_mode":"auto","project_trusted":false});
+    let bytes = serde_json_canonicalizer::to_vec(
+        &serde_json::json!({"format":1,"servers":[row("/bin/true"),row("/bin/false")]}),
+    )
+    .unwrap();
+    std::fs::write(root.path().join("mcp-servers.json"), bytes).unwrap();
+    assert!(store.load().is_err());
 }

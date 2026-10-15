@@ -34,7 +34,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/tools/src/bin/tekes-helper.rs](../../src/bin/tekes-helper.rs) | 2 | 31 | [Symbols and calls](src--bin--tekes-helper.md) |
-| [crates/tools/src/bubblewrap_sandbox.rs](../../src/bubblewrap_sandbox.rs) | 25 | 317 | [Symbols and calls](src--bubblewrap_sandbox.md) |
+| [crates/tools/src/bubblewrap_sandbox.rs](../../src/bubblewrap_sandbox.rs) | 26 | 330 | [Symbols and calls](src--bubblewrap_sandbox.md) |
 | [crates/tools/src/builtin.rs](../../src/builtin.rs) | 22 | 103 | [Symbols and calls](src--builtin.md) |
 | [crates/tools/src/guidance.rs](../../src/guidance.rs) | 15 | 26 | [Symbols and calls](src--guidance.md) |
 | [crates/tools/src/helper/native_grep.rs](../../src/helper/native_grep.rs) | 2 | 181 | [Symbols and calls](src--helper--native_grep.md) |
@@ -46,7 +46,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
 | [crates/tools/src/preset.rs](../../src/preset.rs) | 87 | 498 | [Symbols and calls](src--preset.md) |
 | [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 146 | 1474 | [Symbols and calls](src--runtime_backends.md) |
-| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 48 | 416 | [Symbols and calls](src--sandbox.md) |
+| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 50 | 467 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |
 | [crates/tools/tests/linux_sandbox_runtime.rs](../../tests/linux_sandbox_runtime.rs) | 43 | 613 | `inventory.json` |

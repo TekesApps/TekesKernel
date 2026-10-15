@@ -208,6 +208,13 @@ fn slice2_gate_20_instruction_snapshot_race() {
             directory.path().join("project1"),
         ],
     );
+    let resolver = test_support::trusted_resolver(
+        resolver,
+        &[
+            directory.path().join("project0"),
+            directory.path().join("project1"),
+        ],
+    );
     let scans = AtomicUsize::new(0);
     let changed = directory.path().join("project0/.agent/skills/shared.md");
     let snapshot = resolver
@@ -247,6 +254,13 @@ fn slice2_gate_21_instruction_next_launch_only() {
             directory.path().join("project1"),
         ],
     );
+    let resolver = test_support::trusted_resolver(
+        resolver,
+        &[
+            directory.path().join("project0"),
+            directory.path().join("project1"),
+        ],
+    );
     let first = resolver.capture().expect("first launch snapshot");
     let first_bytes = first.canonical_bytes().expect("first bytes");
     let first_digest = first.digest().expect("first digest");
@@ -280,7 +294,16 @@ fn slice2_gate_37_instruction_oracle_and_rejections() {
             fixtures.join("instruction-tree/project1"),
         ],
     );
-    let snapshot = resolver.capture().expect("fixture snapshot");
+    let resolver = test_support::trusted_resolver(
+        resolver,
+        &[
+            fixtures.join("instruction-tree/project0"),
+            fixtures.join("instruction-tree/project1"),
+        ],
+    );
+    let mut snapshot = resolver.capture().expect("fixture snapshot");
+    // Historical canonical bytes remain decodeable. Runtime provenance is host-local.
+    snapshot.folder_authority = None;
     let oracle = read(&fixtures.join("instructions/snapshot.canonical.json")).expect("oracle");
     assert_eq!(snapshot.canonical_bytes().expect("snapshot bytes"), oracle);
     assert_eq!(

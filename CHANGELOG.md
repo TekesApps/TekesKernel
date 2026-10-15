@@ -36,6 +36,22 @@ workspace version in `Cargo.toml`.
   (`profile::SessionScope::environment` / `folders`).
 
 ### Changed
+- Folder trust now requires local host approval, with closed request/status/revoke
+  RPCs, durable identity/revision checks, and execution-time hook/skill admission.
+  Revocation rejects queued work and invalidates frozen resources and MCP peers.
+- MCP pools use canonical global User, Folder and verified Plugin owners, with
+  effective configuration, trust and credential generations in their keys.
+  Equivalent aliases share one retained process; conflicts have no chosen winner.
+  Session scopes and resource reads use the same owner/trust resolver.
+- Built-in launch credentials now use a private, bounded stdin bootstrap frame.
+  Legacy endpoint/selected credential environments and the unauthenticated
+  optional Web Client are rejected. ClientKit must adapt before consuming 0.8;
+  the endpoint bearer and provider credential lookup semantics are unchanged.
+- Shared user instructions are permanently write-protected alongside Kernel
+  storage: launch snapshots freeze the actual host-selected directory for
+  worker file guards, command sandboxes and detached jobs. The default
+  `~/.agents` and missing-path aliases are protected too; Linux refuses a
+  writable ancestor when a required protected mount does not exist.
 - A session's recorded `folders` are its folders: its cwd list, instruction
   capture and writable roots come from them only. `workspace.addFolder`
   reaches sessions created afterwards and no longer widens existing ones.

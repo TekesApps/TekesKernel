@@ -19,14 +19,15 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [mcp::pool::McpPoolLease::drop](../../src/pool.rs#L59) | function_item | `private` |  |
 | [mcp::pool::McpPool::new](../../src/pool.rs#L75) | function_item | `pub` |  |
 | [mcp::pool::McpPool::get](../../src/pool.rs#L79) | function_item | `pub` |  |
-| [mcp::pool::McpPool::retain](../../src/pool.rs#L87) | function_item | `private` |  |
+| [mcp::pool::McpPool::retain](../../src/pool.rs#L87) | function_item | `pub(crate)` |  |
 | [mcp::pool::McpPool::acquire_or_create](../../src/pool.rs#L94) | function_item | `pub` |  |
-| [mcp::pool::McpPool::insert](../../src/pool.rs#L173) | function_item | `pub` |  |
-| [mcp::pool::McpPool::replace_generation](../../src/pool.rs#L203) | function_item | `pub` |  |
-| [mcp::pool::McpPool::remove](../../src/pool.rs#L263) | function_item | `pub` |  |
-| [mcp::pool::McpPool::release](../../src/pool.rs#L274) | function_item | `pub` |  |
-| [mcp::pool::McpPool::drain](../../src/pool.rs#L293) | function_item | `pub` |  |
-| [mcp::pool::McpPoolError](../../src/pool.rs#L309) | enum_item | `pub` |  |
+| [mcp::pool::McpPool::reap_revoked](../../src/pool.rs#L175) | function_item | `pub` |  |
+| [mcp::pool::McpPool::insert](../../src/pool.rs#L194) | function_item | `pub` |  |
+| [mcp::pool::McpPool::replace_generation](../../src/pool.rs#L224) | function_item | `pub` |  |
+| [mcp::pool::McpPool::remove](../../src/pool.rs#L284) | function_item | `pub` |  |
+| [mcp::pool::McpPool::release](../../src/pool.rs#L295) | function_item | `pub` |  |
+| [mcp::pool::McpPool::drain](../../src/pool.rs#L314) | function_item | `pub` |  |
+| [mcp::pool::McpPoolError](../../src/pool.rs#L330) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -50,24 +51,26 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–12: 2 direct edges</summary>
+<details><summary>Functions 1–13: 3 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["mcp::pool::McpPool::insert"]
-  n1["mcp::pool::McpPool::replace_generation"]
-  n2["mcp::pool::McpPool::remove"]
-  n3["mcp::pool::McpPool::release"]
-  n4["mcp::pool::McpPool::drain"]
-  n5["mcp::pool::McpPoolLease::peer"]
-  n6["mcp::pool::McpPoolLease::release"]
-  n7["mcp::pool::McpPoolLease::drop"]
-  n8["mcp::pool::McpPool::new"]
-  n9["mcp::pool::McpPool::get"]
-  n10["mcp::pool::McpPool::retain"]
-  n11["mcp::pool::McpPool::acquire_or_create"]
-  n11 --> n1
-  n11 --> n10
+  n0["mcp::pool::McpPool::reap_revoked"]
+  n1["mcp::pool::McpPool::insert"]
+  n2["mcp::pool::McpPool::replace_generation"]
+  n3["mcp::pool::McpPool::remove"]
+  n4["mcp::pool::McpPool::release"]
+  n5["mcp::pool::McpPool::drain"]
+  n6["mcp::pool::McpPoolLease::peer"]
+  n7["mcp::pool::McpPoolLease::release"]
+  n8["mcp::pool::McpPoolLease::drop"]
+  n9["mcp::pool::McpPool::new"]
+  n10["mcp::pool::McpPool::get"]
+  n11["mcp::pool::McpPool::retain"]
+  n12["mcp::pool::McpPool::acquire_or_create"]
+  n0 --> n3
+  n12 --> n2
+  n12 --> n11
 ```
 
 </details>
@@ -107,7 +110,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `acquire_or_create` | `key.clone` | [121](../../src/pool.rs#L121), [128](../../src/pool.rs#L128) | receiver-type-required |
 | `acquire_or_create` | `factory` | [126](../../src/pool.rs#L126) | external-constructor-callback-or-unresolved |
 | `acquire_or_create` | `self                     .replace_generation(key.clone(), peer, always_on)                     .await                     .map_err` | [127](../../src/pool.rs#L127) | receiver-type-required |
-| `acquire_or_create` | `self                     .replace_generation` | [127](../../src/pool.rs#L127) | [mcp::pool::McpPool::replace_generation](../../src/pool.rs#L203) |
+| `acquire_or_create` | `self                     .replace_generation` | [127](../../src/pool.rs#L127) | [mcp::pool::McpPool::replace_generation](../../src/pool.rs#L224) |
 | `acquire_or_create` | `McpError::Transport` | [130](../../src/pool.rs#L130), [155](../../src/pool.rs#L155) | external-constructor-callback-or-unresolved |
 | `acquire_or_create` | `error.to_string` | [130](../../src/pool.rs#L130) | receiver-type-required |
 | `acquire_or_create` | `Err` | [131](../../src/pool.rs#L131), [135](../../src/pool.rs#L135), [166](../../src/pool.rs#L166) | external-constructor-callback-or-unresolved |
@@ -122,64 +125,76 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `acquire_or_create` | `slot.outcome.lock().await.as_ref` | [151](../../src/pool.rs#L151) | receiver-type-required |
 | `acquire_or_create` | `self.retain(&key).await.ok_or_else` | [154](../../src/pool.rs#L154) | receiver-type-required |
 | `acquire_or_create` | `"MCP peer disappeared after single-flight creation".to_owned` | [156](../../src/pool.rs#L156) | receiver-type-required |
-| `insert` | `self.peers.write` | [178](../../src/pool.rs#L178) | receiver-type-required |
-| `insert` | `peers.get_mut` | [179](../../src/pool.rs#L179) | receiver-type-required |
-| `insert` | `existing.clients.saturating_add` | [180](../../src/pool.rs#L180) | receiver-type-required |
-| `insert` | `Arc::clone` | [181](../../src/pool.rs#L181), [192](../../src/pool.rs#L192) | external-constructor-callback-or-unresolved |
-| `insert` | `drop` | [182](../../src/pool.rs#L182) | external-constructor-callback-or-unresolved |
-| `insert` | `peer.close()                 .await                 .map_err` | [183](../../src/pool.rs#L183) | receiver-type-required |
-| `insert` | `peer.close` | [183](../../src/pool.rs#L183) | receiver-type-required |
-| `insert` | `McpPoolError::Close` | [185](../../src/pool.rs#L185) | external-constructor-callback-or-unresolved |
-| `insert` | `error.to_string` | [185](../../src/pool.rs#L185) | receiver-type-required |
-| `insert` | `Ok` | [186](../../src/pool.rs#L186), [197](../../src/pool.rs#L197) | external-constructor-callback-or-unresolved |
-| `insert` | `Arc::new` | [188](../../src/pool.rs#L188) | external-constructor-callback-or-unresolved |
-| `insert` | `Mutex::new` | [188](../../src/pool.rs#L188) | external-constructor-callback-or-unresolved |
-| `insert` | `peers.insert` | [189](../../src/pool.rs#L189) | receiver-type-required |
-| `replace_generation` | `self.peers.write` | [209](../../src/pool.rs#L209) | receiver-type-required |
-| `replace_generation` | `peers             .keys()             .filter(&#124;existing&#124; {                 existing.workspace == key.workspace                     && existing.scope == key.scope                     && existing.server == key.server                     && *existing != &key             })             .cloned()             .collect::<Vec<_>>` | [210](../../src/pool.rs#L210) | receiver-type-required |
-| `replace_generation` | `peers             .keys()             .filter(&#124;existing&#124; {                 existing.workspace == key.workspace                     && existing.scope == key.scope                     && existing.server == key.server                     && *existing != &key             })             .cloned` | [210](../../src/pool.rs#L210) | receiver-type-required |
-| `replace_generation` | `peers             .keys()             .filter` | [210](../../src/pool.rs#L210) | receiver-type-required |
-| `replace_generation` | `peers             .keys` | [210](../../src/pool.rs#L210) | receiver-type-required |
-| `replace_generation` | `stale_keys             .iter()             .filter_map(&#124;stale&#124; peers.remove(stale))             .collect::<Vec<_>>` | [220](../../src/pool.rs#L220) | receiver-type-required |
-| `replace_generation` | `stale_keys             .iter()             .filter_map` | [220](../../src/pool.rs#L220) | receiver-type-required |
-| `replace_generation` | `stale_keys             .iter` | [220](../../src/pool.rs#L220) | receiver-type-required |
-| `replace_generation` | `peers.remove` | [222](../../src/pool.rs#L222) | receiver-type-required |
-| `replace_generation` | `peers.get_mut` | [224](../../src/pool.rs#L224) | receiver-type-required |
-| `replace_generation` | `existing.clients.saturating_add` | [225](../../src/pool.rs#L225) | receiver-type-required |
-| `replace_generation` | `Arc::clone` | [227](../../src/pool.rs#L227), [246](../../src/pool.rs#L246) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `drop` | [228](../../src/pool.rs#L228), [251](../../src/pool.rs#L251) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `old.peer                     .lock()                     .await                     .close()                     .await                     .map_err` | [230](../../src/pool.rs#L230) | receiver-type-required |
-| `replace_generation` | `old.peer                     .lock()                     .await                     .close` | [230](../../src/pool.rs#L230) | receiver-type-required |
-| `replace_generation` | `old.peer                     .lock` | [230](../../src/pool.rs#L230) | receiver-type-required |
-| `replace_generation` | `McpPoolError::Close` | [235](../../src/pool.rs#L235), [239](../../src/pool.rs#L239), [258](../../src/pool.rs#L258) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `error.to_string` | [235](../../src/pool.rs#L235), [239](../../src/pool.rs#L239), [258](../../src/pool.rs#L258) | receiver-type-required |
-| `replace_generation` | `peer.close()                 .await                 .map_err` | [237](../../src/pool.rs#L237) | receiver-type-required |
-| `replace_generation` | `peer.close` | [237](../../src/pool.rs#L237) | receiver-type-required |
-| `replace_generation` | `Ok` | [240](../../src/pool.rs#L240), [260](../../src/pool.rs#L260) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `Arc::new` | [242](../../src/pool.rs#L242) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `Mutex::new` | [242](../../src/pool.rs#L242) | external-constructor-callback-or-unresolved |
-| `replace_generation` | `peers.insert` | [243](../../src/pool.rs#L243) | receiver-type-required |
-| `replace_generation` | `old.peer                 .lock()                 .await                 .close()                 .await                 .map_err` | [253](../../src/pool.rs#L253) | receiver-type-required |
-| `replace_generation` | `old.peer                 .lock()                 .await                 .close` | [253](../../src/pool.rs#L253) | receiver-type-required |
-| `replace_generation` | `old.peer                 .lock` | [253](../../src/pool.rs#L253) | receiver-type-required |
-| `remove` | `self.peers.write().await.remove` | [264](../../src/pool.rs#L264) | receiver-type-required |
-| `remove` | `self.peers.write` | [264](../../src/pool.rs#L264) | receiver-type-required |
-| `remove` | `Ok` | [266](../../src/pool.rs#L266), [269](../../src/pool.rs#L269) | external-constructor-callback-or-unresolved |
-| `remove` | `entry.peer.lock().await.close` | [268](../../src/pool.rs#L268) | receiver-type-required |
-| `remove` | `entry.peer.lock` | [268](../../src/pool.rs#L268) | receiver-type-required |
-| `release` | `self.peers.write` | [276](../../src/pool.rs#L276) | receiver-type-required |
-| `release` | `peers.get_mut` | [277](../../src/pool.rs#L277) | receiver-type-required |
-| `release` | `Ok` | [278](../../src/pool.rs#L278), [282](../../src/pool.rs#L282), [288](../../src/pool.rs#L288), [290](../../src/pool.rs#L290) | external-constructor-callback-or-unresolved |
-| `release` | `entry.clients.saturating_sub` | [280](../../src/pool.rs#L280) | receiver-type-required |
-| `release` | `peers.remove(key).map` | [284](../../src/pool.rs#L284) | receiver-type-required |
-| `release` | `peers.remove` | [284](../../src/pool.rs#L284) | receiver-type-required |
-| `release` | `peer.lock().await.close` | [287](../../src/pool.rs#L287) | receiver-type-required |
-| `release` | `peer.lock` | [287](../../src/pool.rs#L287) | receiver-type-required |
-| `drain` | `self.peers.write` | [295](../../src/pool.rs#L295) | receiver-type-required |
-| `drain` | `std::mem::take(&mut *peers)                 .into_values()                 .collect::<Vec<_>>` | [296](../../src/pool.rs#L296) | receiver-type-required |
-| `drain` | `std::mem::take(&mut *peers)                 .into_values` | [296](../../src/pool.rs#L296) | receiver-type-required |
-| `drain` | `std::mem::take` | [296](../../src/pool.rs#L296) | external-constructor-callback-or-unresolved |
-| `drain` | `entries.len` | [300](../../src/pool.rs#L300) | receiver-type-required |
-| `drain` | `entry.peer.lock().await.close` | [302](../../src/pool.rs#L302) | receiver-type-required |
-| `drain` | `entry.peer.lock` | [302](../../src/pool.rs#L302) | receiver-type-required |
-| `drain` | `Ok` | [304](../../src/pool.rs#L304) | external-constructor-callback-or-unresolved |
+| `reap_revoked` | `self             .peers             .read()             .await             .iter()             .map(&#124;(key, entry)&#124; (key.clone(), Arc::clone(&entry.peer)))             .collect::<Vec<_>>` | [176](../../src/pool.rs#L176) | receiver-type-required |
+| `reap_revoked` | `self             .peers             .read()             .await             .iter()             .map` | [176](../../src/pool.rs#L176) | receiver-type-required |
+| `reap_revoked` | `self             .peers             .read()             .await             .iter` | [176](../../src/pool.rs#L176) | receiver-type-required |
+| `reap_revoked` | `self             .peers             .read` | [176](../../src/pool.rs#L176) | receiver-type-required |
+| `reap_revoked` | `key.clone` | [181](../../src/pool.rs#L181) | receiver-type-required |
+| `reap_revoked` | `Arc::clone` | [181](../../src/pool.rs#L181) | external-constructor-callback-or-unresolved |
+| `reap_revoked` | `peer                 .try_lock()                 .ok()                 .is_some_and` | [184](../../src/pool.rs#L184) | receiver-type-required |
+| `reap_revoked` | `peer                 .try_lock()                 .ok` | [184](../../src/pool.rs#L184) | receiver-type-required |
+| `reap_revoked` | `peer                 .try_lock` | [184](../../src/pool.rs#L184) | receiver-type-required |
+| `reap_revoked` | `guard.admit().is_err` | [187](../../src/pool.rs#L187) | receiver-type-required |
+| `reap_revoked` | `guard.admit` | [187](../../src/pool.rs#L187) | receiver-type-required |
+| `reap_revoked` | `self.remove` | [189](../../src/pool.rs#L189) | [mcp::pool::McpPool::remove](../../src/pool.rs#L284) |
+| `insert` | `self.peers.write` | [199](../../src/pool.rs#L199) | receiver-type-required |
+| `insert` | `peers.get_mut` | [200](../../src/pool.rs#L200) | receiver-type-required |
+| `insert` | `existing.clients.saturating_add` | [201](../../src/pool.rs#L201) | receiver-type-required |
+| `insert` | `Arc::clone` | [202](../../src/pool.rs#L202), [213](../../src/pool.rs#L213) | external-constructor-callback-or-unresolved |
+| `insert` | `drop` | [203](../../src/pool.rs#L203) | external-constructor-callback-or-unresolved |
+| `insert` | `peer.close()                 .await                 .map_err` | [204](../../src/pool.rs#L204) | receiver-type-required |
+| `insert` | `peer.close` | [204](../../src/pool.rs#L204) | receiver-type-required |
+| `insert` | `McpPoolError::Close` | [206](../../src/pool.rs#L206) | external-constructor-callback-or-unresolved |
+| `insert` | `error.to_string` | [206](../../src/pool.rs#L206) | receiver-type-required |
+| `insert` | `Ok` | [207](../../src/pool.rs#L207), [218](../../src/pool.rs#L218) | external-constructor-callback-or-unresolved |
+| `insert` | `Arc::new` | [209](../../src/pool.rs#L209) | external-constructor-callback-or-unresolved |
+| `insert` | `Mutex::new` | [209](../../src/pool.rs#L209) | external-constructor-callback-or-unresolved |
+| `insert` | `peers.insert` | [210](../../src/pool.rs#L210) | receiver-type-required |
+| `replace_generation` | `self.peers.write` | [230](../../src/pool.rs#L230) | receiver-type-required |
+| `replace_generation` | `peers             .keys()             .filter(&#124;existing&#124; {                 existing.owner == key.owner                     && existing.scope == key.scope                     && existing.server == key.server                     && *existing != &key             })             .cloned()             .collect::<Vec<_>>` | [231](../../src/pool.rs#L231) | receiver-type-required |
+| `replace_generation` | `peers             .keys()             .filter(&#124;existing&#124; {                 existing.owner == key.owner                     && existing.scope == key.scope                     && existing.server == key.server                     && *existing != &key             })             .cloned` | [231](../../src/pool.rs#L231) | receiver-type-required |
+| `replace_generation` | `peers             .keys()             .filter` | [231](../../src/pool.rs#L231) | receiver-type-required |
+| `replace_generation` | `peers             .keys` | [231](../../src/pool.rs#L231) | receiver-type-required |
+| `replace_generation` | `stale_keys             .iter()             .filter_map(&#124;stale&#124; peers.remove(stale))             .collect::<Vec<_>>` | [241](../../src/pool.rs#L241) | receiver-type-required |
+| `replace_generation` | `stale_keys             .iter()             .filter_map` | [241](../../src/pool.rs#L241) | receiver-type-required |
+| `replace_generation` | `stale_keys             .iter` | [241](../../src/pool.rs#L241) | receiver-type-required |
+| `replace_generation` | `peers.remove` | [243](../../src/pool.rs#L243) | receiver-type-required |
+| `replace_generation` | `peers.get_mut` | [245](../../src/pool.rs#L245) | receiver-type-required |
+| `replace_generation` | `existing.clients.saturating_add` | [246](../../src/pool.rs#L246) | receiver-type-required |
+| `replace_generation` | `Arc::clone` | [248](../../src/pool.rs#L248), [267](../../src/pool.rs#L267) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `drop` | [249](../../src/pool.rs#L249), [272](../../src/pool.rs#L272) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `old.peer                     .lock()                     .await                     .close()                     .await                     .map_err` | [251](../../src/pool.rs#L251) | receiver-type-required |
+| `replace_generation` | `old.peer                     .lock()                     .await                     .close` | [251](../../src/pool.rs#L251) | receiver-type-required |
+| `replace_generation` | `old.peer                     .lock` | [251](../../src/pool.rs#L251) | receiver-type-required |
+| `replace_generation` | `McpPoolError::Close` | [256](../../src/pool.rs#L256), [260](../../src/pool.rs#L260), [279](../../src/pool.rs#L279) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `error.to_string` | [256](../../src/pool.rs#L256), [260](../../src/pool.rs#L260), [279](../../src/pool.rs#L279) | receiver-type-required |
+| `replace_generation` | `peer.close()                 .await                 .map_err` | [258](../../src/pool.rs#L258) | receiver-type-required |
+| `replace_generation` | `peer.close` | [258](../../src/pool.rs#L258) | receiver-type-required |
+| `replace_generation` | `Ok` | [261](../../src/pool.rs#L261), [281](../../src/pool.rs#L281) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `Arc::new` | [263](../../src/pool.rs#L263) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `Mutex::new` | [263](../../src/pool.rs#L263) | external-constructor-callback-or-unresolved |
+| `replace_generation` | `peers.insert` | [264](../../src/pool.rs#L264) | receiver-type-required |
+| `replace_generation` | `old.peer                 .lock()                 .await                 .close()                 .await                 .map_err` | [274](../../src/pool.rs#L274) | receiver-type-required |
+| `replace_generation` | `old.peer                 .lock()                 .await                 .close` | [274](../../src/pool.rs#L274) | receiver-type-required |
+| `replace_generation` | `old.peer                 .lock` | [274](../../src/pool.rs#L274) | receiver-type-required |
+| `remove` | `self.peers.write().await.remove` | [285](../../src/pool.rs#L285) | receiver-type-required |
+| `remove` | `self.peers.write` | [285](../../src/pool.rs#L285) | receiver-type-required |
+| `remove` | `Ok` | [287](../../src/pool.rs#L287), [290](../../src/pool.rs#L290) | external-constructor-callback-or-unresolved |
+| `remove` | `entry.peer.lock().await.close` | [289](../../src/pool.rs#L289) | receiver-type-required |
+| `remove` | `entry.peer.lock` | [289](../../src/pool.rs#L289) | receiver-type-required |
+| `release` | `self.peers.write` | [297](../../src/pool.rs#L297) | receiver-type-required |
+| `release` | `peers.get_mut` | [298](../../src/pool.rs#L298) | receiver-type-required |
+| `release` | `Ok` | [299](../../src/pool.rs#L299), [303](../../src/pool.rs#L303), [309](../../src/pool.rs#L309), [311](../../src/pool.rs#L311) | external-constructor-callback-or-unresolved |
+| `release` | `entry.clients.saturating_sub` | [301](../../src/pool.rs#L301) | receiver-type-required |
+| `release` | `peers.remove(key).map` | [305](../../src/pool.rs#L305) | receiver-type-required |
+| `release` | `peers.remove` | [305](../../src/pool.rs#L305) | receiver-type-required |
+| `release` | `peer.lock().await.close` | [308](../../src/pool.rs#L308) | receiver-type-required |
+| `release` | `peer.lock` | [308](../../src/pool.rs#L308) | receiver-type-required |
+| `drain` | `self.peers.write` | [316](../../src/pool.rs#L316) | receiver-type-required |
+| `drain` | `std::mem::take(&mut *peers)                 .into_values()                 .collect::<Vec<_>>` | [317](../../src/pool.rs#L317) | receiver-type-required |
+| `drain` | `std::mem::take(&mut *peers)                 .into_values` | [317](../../src/pool.rs#L317) | receiver-type-required |
+| `drain` | `std::mem::take` | [317](../../src/pool.rs#L317) | external-constructor-callback-or-unresolved |
+| `drain` | `entries.len` | [321](../../src/pool.rs#L321) | receiver-type-required |
+| `drain` | `entry.peer.lock().await.close` | [323](../../src/pool.rs#L323) | receiver-type-required |
+| `drain` | `entry.peer.lock` | [323](../../src/pool.rs#L323) | receiver-type-required |
+| `drain` | `Ok` | [325](../../src/pool.rs#L325) | external-constructor-callback-or-unresolved |

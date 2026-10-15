@@ -120,6 +120,7 @@ fn live_oauth_refresh_rotation_and_revocation_across_restarts() {
             "live-oauth-save",
             &McpManagementMutation::Save {
                 server: McpServerConfig {
+                    folder_id: None,
                     reference: reference.clone(),
                     transport: McpTransportConfig::Http {
                         url: server_url.clone(),

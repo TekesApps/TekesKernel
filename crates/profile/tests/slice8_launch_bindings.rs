@@ -130,6 +130,7 @@ fn schema_name_and_digest_are_validated() {
 
 fn config(path: &std::path::Path, allowed_tools: Vec<String>) -> ConfigSnapshot {
     ConfigSnapshot {
+        user_agent_dir: None,
         format: 1,
         workspace: ResolvedWorkspace {
             environment: None,

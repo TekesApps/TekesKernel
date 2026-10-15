@@ -13,8 +13,12 @@ and unknown required union discriminants fail closed.
 
 ## Configuration and identity
 
-An MCP server has the immutable reference
-`{workspace_id, scope, name}`, where `scope` is `user | project`. Names are
+An MCP server retains the compatibility reference
+`{workspace_id, scope, name}`, where `scope` is `user | project`. Canonical
+execution ownership is global `user`, `folder:<id>` or a verified plugin owner.
+Project rows may carry `folder_id`; legacy rows map only through single-folder
+workspaces. Equivalent aliases merge; unequal owner/name definitions conflict.
+See [Folder trust](../docs/folder-trust.md) for authorization and scope rules. Names are
 nonempty NFC strings of at most 128 UTF-8 bytes. A project entry of the same
 name shadows a user entry; it never mutates the user entry. Plugin entries use
 `scope:"plugin"`, include immutable `owner`, and are read-only through the
@@ -58,10 +62,11 @@ answer discovery this way with a placeholder response id). Non-authentication
 4xx responses may carry a JSON-RPC error as the response only when id/version
 match; the textual rejection above is surfaced as the remote error instead.
 Error bodies are bounded to 16 KiB. 401, 403, 5xx and any other mismatched
-identity or free-text hint never authorize downgrade. A configured but untrusted project entry is blocked by project trust: the
-registry omits it from resolution, so it is neither launched nor advertised,
-and a route whose trust is revoked fails its next reconnect; `mcp.list` still
-returns the entry with `project_trusted: false`.
+identity or free-text hint never authorize downgrade. Project stdio requires current Kernel host-granted Folder trust before any
+spawn, including probe and resource entry points. The compatibility boolean
+`project_trusted` is ignored as authority. Revocation invalidates cached routes,
+reconnects and queued calls; admission is checked after the peer mutex. The
+management list can still disclose stored untrusted configuration.
 
 ## JSON-RPC and transport bounds
 
@@ -500,8 +505,9 @@ calls own independent request state: the broker releases its peer lock before
 awaiting IO and keeps sibling requests alive after request-local failure.
 Explicit peer removal, close or reconnect cancels all requests from that generation.
 
-The supervisor daemon pool key includes server reference, frozen config
-digest, authorization identity, protocol mode, and plugin generation. One
+The supervisor daemon pool key includes canonical owner, scope/name, effective
+config plus Folder identity/trust revision, credential ids/generations, protocol
+mode and plugin generation. Compatibility workspace ids are not pool ownership. One
 creation wins per key; losers await it. Last-client release starts a bounded
 idle timer unless `always_on`; v1 fixes that timer to zero seconds, so the
 zero-client peer closes before release returns. Stop, disable, uninstall, credential revocation,
@@ -611,10 +617,12 @@ digest re-acks the receipt, while a different digest is
 so repeated saves are idempotent. The file is also edited by hand and by
 external writers, and the reader repairs the two deviations they produce
 rather than losing the catalog: a missing final newline is tolerated, and a
-repeated reference keeps its last entry (the newest write), is logged as
+repeated identical or disabled reference keeps its last entry, is logged as
 `mcp-registry-duplicate-reference`, and is published deduplicated by the next
-mutation. The same server registered under two workspaces is two references,
-not a repeat. Every other deviation (non-canonical bytes, an invalid server)
+mutation. Conflicting active User duplicates under one reference fail closed
+and require repairing the hand-edited file. Different workspace aliases remain
+distinct management references but resolve to canonical global User/Folder
+owners, and equivalent definitions share a pool generation. Every other deviation (non-canonical bytes, an invalid server)
 fails the load and names the file; the launch proceeds without the registry's
 servers and the session receives a notice.
 

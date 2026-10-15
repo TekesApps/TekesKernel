@@ -1,6 +1,7 @@
 //! Supervisor-owned worker launch boundary.
 
 pub mod boot_trace;
+mod bootstrap;
 pub mod builtin;
 mod catalog;
 pub mod client_admin;
@@ -586,3 +587,8 @@ mod tests {
         assert!(output.stderr.is_empty());
     }
 }
+
+pub mod folder_trust;
+
+mod mcp_admission;
+mod mcp_scope;

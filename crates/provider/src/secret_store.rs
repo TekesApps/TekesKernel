@@ -187,7 +187,7 @@ impl MemorySecretStore {
     ) -> Result<(), SecretStoreError> {
         validate_credential_id(credential_id)?;
         // Encoding validates the material and generation without exposing it.
-        drop(record.encode()?);
+        drop(zeroize::Zeroizing::new(record.encode()?));
         let mut records = self
             .records
             .lock()

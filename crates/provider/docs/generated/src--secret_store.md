@@ -137,6 +137,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `new` | `Self::default` | [180](../../src/secret_store.rs#L180) | external-constructor-callback-or-unresolved |
 | `publish` | `validate_credential_id` | [188](../../src/secret_store.rs#L188) | [provider::secret_store::validate_credential_id](../../src/secret_store.rs#L433) |
 | `publish` | `drop` | [190](../../src/secret_store.rs#L190) | external-constructor-callback-or-unresolved |
+| `publish` | `zeroize::Zeroizing::new` | [190](../../src/secret_store.rs#L190) | external-constructor-callback-or-unresolved |
 | `publish` | `record.encode` | [190](../../src/secret_store.rs#L190) | receiver-type-required |
 | `publish` | `self             .records             .lock()             .unwrap_or_else` | [191](../../src/secret_store.rs#L191) | receiver-type-required |
 | `publish` | `self             .records             .lock` | [191](../../src/secret_store.rs#L191) | receiver-type-required |
