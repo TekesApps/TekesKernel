@@ -5378,9 +5378,10 @@ mod tests {
                 started_at: "2026-10-15T00:00:00.000Z",
                 principal: "test",
             });
+            let refusal = created.err();
             assert!(
-                matches!(created, Err(ManagementError::InvalidPath(_))),
-                "session.create {path}: {created:?}"
+                matches!(refusal, Some(ManagementError::InvalidPath(_))),
+                "session.create {path}: {refusal:?}"
             );
         }
         assert!(store.workspace_configs().expect("configs").is_empty());
