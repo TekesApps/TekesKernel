@@ -996,7 +996,12 @@ impl ManagementStore {
         if active_session_count(&self.storage_root)? >= 256 {
             return Err(ManagementError::ActiveSessionLimit);
         }
-        let configs = self.workspace_configs()?;
+        let mut configs = self.workspace_configs()?;
+        if let (None, Some(cwd)) = (request.workspace_id, request.cwd)
+            && self.register_session_cwd(&configs, &request, cwd)?
+        {
+            configs = self.workspace_configs()?;
+        }
         let (workspace, cwd, folder_binding) =
             resolve_session_workspace(&configs, request.workspace_id, request.cwd)?;
         let session_id = match request.requested_session_id {
@@ -1522,11 +1527,38 @@ impl ManagementStore {
     ) -> Result<(WorkspaceView, bool), ManagementError> {
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         let canonical = canonical_workspace_path(path)?;
+        self.create_workspace_locked(WorkspaceCreate {
+            rpc_id,
+            request_sha256,
+            requested: path,
+            canonical: &canonical,
+            started_at,
+            title: TitleChoice::FolderName,
+        })
+    }
+
+    /// `workspace.create` under the management lock, also used when
+    /// `session.create` registers an unknown `cwd`.
+    fn create_workspace_locked(
+        &self,
+        create: WorkspaceCreate<'_>,
+    ) -> Result<(WorkspaceView, bool), ManagementError> {
+        let WorkspaceCreate {
+            rpc_id,
+            request_sha256,
+            requested: path,
+            canonical,
+            started_at,
+            title: title_choice,
+        } = create;
         let canonical_string = canonical.to_string_lossy().into_owned();
         let configs = self.workspace_configs()?;
         let existing = configs
             .values()
             .find(|config| primary_path(config).ok() == Some(canonical_string.as_str()));
+        if existing.is_none() {
+            self.guard_folder_entry(canonical, path)?;
+        }
         let (config, created) = match existing {
             Some(config) => (config.clone(), false),
             // A non-primary folder of another workspace would make cwd-only
@@ -1538,18 +1570,23 @@ impl ManagementStore {
                 return Err(ManagementError::InvalidPath(path.to_owned()));
             }
             None => {
-                let title = canonical
-                    .file_name()
-                    .and_then(|name| name.to_str())
-                    .ok_or_else(|| ManagementError::InvalidTitle(path.to_owned()))?;
-                validate_title(title)?;
-                ensure_unique_title(&configs, title, None)?;
+                let folder_name = canonical.file_name().and_then(|name| name.to_str());
+                let title = match title_choice {
+                    TitleChoice::FolderName => {
+                        let title = folder_name
+                            .ok_or_else(|| ManagementError::InvalidTitle(path.to_owned()))?;
+                        validate_title(title)?;
+                        ensure_unique_title(&configs, title, None)?;
+                        title.to_owned()
+                    }
+                    TitleChoice::FirstFree => first_free_title(&configs, folder_name)?,
+                };
                 (
                     WorkspaceConfig {
                         format: 1,
                         revision: 1,
                         id: allocate_uuid_v7()?,
-                        name: title.to_owned(),
+                        name: title,
                         cwd: Vec::new(),
                         policy: Some(default_workspace_policy(&canonical_string)),
                         folders: vec![WorkspaceFolder {
@@ -1585,6 +1622,56 @@ impl ManagementStore {
                 ManagementError::CorruptOperation("missing create decision".to_owned())
             })?;
         Ok((serde_json::from_value(workspace.clone())?, created))
+    }
+
+    /// The folder-entry guard for every path that becomes a workspace
+    /// folder: it must be an existing directory other than the filesystem
+    /// root, and neither a Kernel-owned directory (storage root, credential
+    /// store) nor inside one. A folder that merely contains them, such as the
+    /// home directory, is allowed; the sandbox keeps them read-only.
+    fn guard_folder_entry(&self, canonical: &Path, requested: &str) -> Result<(), ManagementError> {
+        let protected = tools::kernel_protected_roots(&self.storage_root);
+        if canonical.parent().is_none()
+            || !canonical.is_dir()
+            || tools::protected_root_containing(&protected, canonical).is_some()
+        {
+            return Err(ManagementError::InvalidPath(requested.to_owned()));
+        }
+        Ok(())
+    }
+
+    /// Registers `cwd` as a new workspace when no workspace folder
+    /// canonicalizes to it, so `session.create {cwd}` needs no prior
+    /// `workspace.create`. The registration is its own workspace operation,
+    /// keyed by a derived id no client rpc id can equal (those are at most
+    /// 128 bytes), so a retried create resumes rather than duplicates it.
+    fn register_session_cwd(
+        &self,
+        configs: &BTreeMap<String, WorkspaceConfig>,
+        request: &SessionCreateOperation<'_>,
+        cwd: &str,
+    ) -> Result<bool, ManagementError> {
+        let canonical = canonical_workspace_path(cwd)?;
+        let canonical_string = canonical.to_string_lossy().into_owned();
+        for workspace in configs.values() {
+            if binding_for_canonical_path(workspace, &canonical_string)?.is_some() {
+                return Ok(false);
+            }
+        }
+        let rpc_id = format!(
+            "session.create/workspace/{}/{}",
+            hex_digest(request.rpc_id.as_bytes()),
+            hex_digest(request.request_sha256.as_bytes())
+        );
+        self.create_workspace_locked(WorkspaceCreate {
+            rpc_id: &rpc_id,
+            request_sha256: request.request_sha256,
+            requested: cwd,
+            canonical: &canonical,
+            started_at: request.started_at,
+            title: TitleChoice::FirstFree,
+        })?;
+        Ok(true)
     }
 
     pub fn rename_workspace(
@@ -1643,6 +1730,7 @@ impl ManagementStore {
         started_at: &str,
     ) -> Result<WorkspaceView, ManagementError> {
         let canonical = canonical_workspace_path(path)?;
+        self.guard_folder_entry(&canonical, path)?;
         let canonical_string = canonical.to_string_lossy().into_owned();
         let _lock = NamedLock::exclusive(self.root.join("lock"))?;
         let configs = self.workspace_configs()?;
@@ -1737,9 +1825,9 @@ impl ManagementStore {
         {
             return folder_response(response);
         }
-        let canonical = canonical_workspace_path(path)?
-            .to_string_lossy()
-            .into_owned();
+        let canonical_path = canonical_workspace_path(path)?;
+        self.guard_folder_entry(&canonical_path, path)?;
+        let canonical = canonical_path.to_string_lossy().into_owned();
         let configs = self.workspace_configs()?;
         let current = configs
             .get(workspace_id)
@@ -3553,6 +3641,42 @@ fn validate_title(title: &str) -> Result<(), ManagementError> {
     Ok(())
 }
 
+/// How a created workspace gets its title.
+enum TitleChoice {
+    /// `workspace.create`: the folder name, which must be free.
+    FolderName,
+    /// Registration from `session.create`: the folder name, or the first free
+    /// `name (n)` when another workspace already uses it.
+    FirstFree,
+}
+
+struct WorkspaceCreate<'a> {
+    rpc_id: &'a str,
+    request_sha256: &'a str,
+    requested: &'a str,
+    canonical: &'a Path,
+    started_at: &'a str,
+    title: TitleChoice,
+}
+
+fn first_free_title(
+    configs: &BTreeMap<String, WorkspaceConfig>,
+    folder_name: Option<&str>,
+) -> Result<String, ManagementError> {
+    let base = folder_name
+        .filter(|name| validate_title(name).is_ok())
+        .unwrap_or("Folder");
+    (1..=configs.len() + 1)
+        .map(|index| match index {
+            1 => base.to_owned(),
+            index => format!("{base} ({index})"),
+        })
+        .find(|title| {
+            validate_title(title).is_ok() && !configs.values().any(|config| &config.name == title)
+        })
+        .ok_or_else(|| ManagementError::NameConflict(base.to_owned()))
+}
+
 fn ensure_unique_title(
     configs: &BTreeMap<String, WorkspaceConfig>,
     title: &str,
@@ -4686,8 +4810,9 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let project = root.path().join("seeded-project");
         std::fs::create_dir(&project).expect("project");
-        let store = ManagementStore::open_at(root.path(), "2026-09-14T00:00:00.000Z")
-            .expect("management store");
+        let store =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")
+                .expect("management store");
         let (view, created) = store
             .create_workspace(
                 "seeded-create",
@@ -4711,7 +4836,7 @@ mod tests {
         for tool in ["read", "apply_patch", "shell", "grep", "glob"] {
             assert!(policy.allowed_tools.iter().any(|name| name == tool));
         }
-        let resolved = profile::ConfigRepository::open(root.path())
+        let resolved = profile::ConfigRepository::open(root.path().join("kernel"))
             .expect("repository")
             .resolve(&view.workspace_id)
             .expect("resolved workspace");
@@ -4730,8 +4855,9 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let project = root.path().join("legacy-project");
         std::fs::create_dir(&project).expect("project");
-        let store = ManagementStore::open_at(root.path(), "2026-09-14T00:00:00.000Z")
-            .expect("management store");
+        let store =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")
+                .expect("management store");
         let (view, _) = store
             .create_workspace(
                 "legacy-create",
@@ -4743,6 +4869,7 @@ mod tests {
         // Rewrite the document the way a pre-seed Kernel left it: no policy.
         let path = root
             .path()
+            .join("kernel")
             .join("workspaces")
             .join(&view.workspace_id)
             .join("workspace.json");
@@ -4754,8 +4881,9 @@ mod tests {
         std::fs::write(&path, bytes).expect("rewrite");
         drop(store);
 
-        let reopened = ManagementStore::open_at(root.path(), "2026-09-14T00:00:01.000Z")
-            .expect("reopen seeds the policy");
+        let reopened =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:01.000Z")
+                .expect("reopen seeds the policy");
         let config = reopened.workspace_configs().expect("configs")[&view.workspace_id].clone();
         let policy = config.policy.expect("seeded on open");
         assert_eq!(policy.writable_roots, vec![view.path.clone()]);
@@ -4767,8 +4895,9 @@ mod tests {
         drop(reopened);
 
         // An authored policy (including the seed itself) is left alone on later opens.
-        let again = ManagementStore::open_at(root.path(), "2026-09-14T00:00:02.000Z")
-            .expect("reopen is idempotent");
+        let again =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:02.000Z")
+                .expect("reopen is idempotent");
         let config = again.workspace_configs().expect("configs")[&view.workspace_id].clone();
         assert_eq!(config.revision, revision_after_seed);
     }
@@ -4778,8 +4907,9 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let before = root.path().join("before");
         std::fs::create_dir(&before).expect("before");
-        let store = ManagementStore::open_at(root.path(), "2026-09-14T00:00:00.000Z")
-            .expect("management store");
+        let store =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-14T00:00:00.000Z")
+                .expect("management store");
         let (view, _) = store
             .create_workspace(
                 "relocate-create",
@@ -4813,8 +4943,9 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let project = root.path().join(name);
         std::fs::create_dir(&project).expect("project");
-        let store = ManagementStore::open_at(root.path(), "2026-10-08T00:00:00.000Z")
-            .expect("management store");
+        let store =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:00:00.000Z")
+                .expect("management store");
         let (view, _) = store
             .create_workspace(
                 &format!("{name}-create"),
@@ -4986,7 +5117,8 @@ mod tests {
         // A reopened store recovers nothing and keeps the metadata current.
         drop(store);
         let reopened =
-            ManagementStore::open_at(root.path(), "2026-10-08T00:01:00.000Z").expect("reopen");
+            ManagementStore::open_at(root.path().join("kernel"), "2026-10-08T00:01:00.000Z")
+                .expect("reopen");
         assert_eq!(
             reopened.workspace_folders(&view.workspace_id).unwrap(),
             remaining
@@ -5008,7 +5140,7 @@ mod tests {
             .expect("add folder");
         let session = "018f0000-0000-7000-8000-0000000000b1";
         write_session(
-            root.path(),
+            &root.path().join("kernel"),
             session,
             &view.workspace_id,
             Some("folder-0002"),
@@ -5044,7 +5176,12 @@ mod tests {
         let (root, store, view) = folder_store("legacy-primary");
         let second = sibling(&root, "legacy-second");
         let session = "018f0000-0000-7000-8000-0000000000c1";
-        write_session(root.path(), session, &view.workspace_id, None);
+        write_session(
+            &root.path().join("kernel"),
+            session,
+            &view.workspace_id,
+            None,
+        );
         match store.add_workspace_folder(
             "legacy-add",
             &"6".repeat(64),
@@ -5104,8 +5241,9 @@ mod tests {
         let root = tempfile::tempdir().expect("root");
         let project = root.path().join("completed-project");
         std::fs::create_dir(&project).expect("project");
-        let store = ManagementStore::open_at(root.path(), "2026-09-01T00:00:00.000Z")
-            .expect("management store");
+        let store =
+            ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:00.000Z")
+                .expect("management store");
         store
             .create_workspace(
                 "completed-workspace-create",
@@ -5116,8 +5254,169 @@ mod tests {
             .expect("complete workspace create");
         std::fs::remove_dir(&project).expect("remove project");
 
-        ManagementStore::open_at(root.path(), "2026-09-01T00:00:01.000Z")
+        ManagementStore::open_at(root.path().join("kernel"), "2026-09-01T00:00:01.000Z")
             .expect("completed history must not require its old path");
+    }
+
+    fn create_in(store: &ManagementStore, rpc_id: &str, cwd: &str, agents: &Path) -> String {
+        store
+            .create_session(super::SessionCreateOperation {
+                rpc_id,
+                request_sha256: &format!("{:0>64}", rpc_id.len()),
+                requested_session_id: None,
+                workspace_id: None,
+                cwd: Some(cwd),
+                identity_profile: None,
+                preset: None,
+                preset_mcp: None,
+                preset_models: None,
+                user_agent_dir: agents,
+                started_at: "2026-10-15T00:00:00.000Z",
+                principal: "test",
+            })
+            .expect("session create")
+    }
+
+    #[test]
+    fn session_create_registers_an_unknown_cwd_once() {
+        let root = tempfile::tempdir().expect("root");
+        let storage = root.path().join("kernel");
+        let agents = root.path().join("agents");
+        let alpha = root.path().join("one").join("app");
+        let beta = root.path().join("two").join("app");
+        fs::create_dir_all(&alpha).expect("alpha");
+        fs::create_dir_all(&beta).expect("beta");
+        let store = ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect("store");
+        let alpha_text = alpha.to_string_lossy();
+
+        let first = create_in(&store, "create-1", &alpha_text, &agents);
+        let configs = store.workspace_configs().expect("configs");
+        assert_eq!(configs.len(), 1);
+        let workspace = configs.values().next().expect("registered").clone();
+        let canonical = alpha.canonicalize().expect("canonical");
+        assert_eq!(workspace.name, "app");
+        assert_eq!(
+            workspace.folder_paths(),
+            vec![canonical.to_string_lossy().as_ref()]
+        );
+        assert_eq!(
+            workspace.policy,
+            Some(default_workspace_policy(&canonical.to_string_lossy()))
+        );
+
+        // A retried request answers the same session; a later one reuses the folder.
+        assert_eq!(create_in(&store, "create-1", &alpha_text, &agents), first);
+        let second = create_in(&store, "create-2", &alpha_text, &agents);
+        assert_ne!(second, first);
+        assert_eq!(store.workspace_configs().expect("configs").len(), 1);
+
+        // Another folder with the same name gets the first free title.
+        create_in(&store, "create-3", &beta.to_string_lossy(), &agents);
+        let mut names = store
+            .workspace_configs()
+            .expect("configs")
+            .values()
+            .map(|config| config.name.clone())
+            .collect::<Vec<_>>();
+        names.sort();
+        assert_eq!(names, vec!["app".to_owned(), "app (2)".to_owned()]);
+
+        let sessions = crate::NativeEndpoint::open(&storage)
+            .expect("endpoint")
+            .list_sessions(&std::collections::HashSet::new())
+            .expect("sessions");
+        assert_eq!(sessions.len(), 3);
+        assert!(
+            sessions
+                .iter()
+                .filter(|session| session.workspace_id == workspace.id)
+                .count()
+                == 2
+        );
+    }
+
+    #[test]
+    fn folders_never_name_the_filesystem_root_or_kernel_storage() {
+        let root = tempfile::tempdir().expect("root");
+        // The storage root lives inside a home-like folder, which stays allowed.
+        let home = root.path().join("home");
+        let storage = home.join("kernel");
+        let agents = root.path().join("agents");
+        let file = home.join("notes.txt");
+        let store = ManagementStore::open_at(&storage, "2026-10-15T00:00:00.000Z").expect("store");
+        fs::write(&file, b"notes").expect("file");
+        let rejected = [
+            "/".to_owned(),
+            storage.to_string_lossy().into_owned(),
+            storage.join("threads").to_string_lossy().into_owned(),
+            file.to_string_lossy().into_owned(),
+        ];
+        for (index, path) in rejected.iter().enumerate() {
+            assert!(
+                matches!(
+                    store.create_workspace(
+                        &format!("reject-{index}"),
+                        &"1".repeat(64),
+                        path,
+                        "2026-10-15T00:00:00.000Z",
+                    ),
+                    Err(ManagementError::InvalidPath(_))
+                ),
+                "workspace.create {path}"
+            );
+            let created = store.create_session(super::SessionCreateOperation {
+                rpc_id: &format!("reject-session-{index}"),
+                request_sha256: &"2".repeat(64),
+                requested_session_id: None,
+                workspace_id: None,
+                cwd: Some(path),
+                identity_profile: None,
+                preset: None,
+                preset_mcp: None,
+                preset_models: None,
+                user_agent_dir: &agents,
+                started_at: "2026-10-15T00:00:00.000Z",
+                principal: "test",
+            });
+            let refusal = created.err();
+            assert!(
+                matches!(refusal, Some(ManagementError::InvalidPath(_))),
+                "session.create {path}: {refusal:?}"
+            );
+        }
+        assert!(store.workspace_configs().expect("configs").is_empty());
+
+        let home_text = home.to_string_lossy();
+        create_in(&store, "home", &home_text, &agents);
+        let workspace_id = store
+            .workspace_configs()
+            .expect("configs")
+            .into_keys()
+            .next()
+            .expect("home workspace");
+        let inside = storage.join("plugins");
+        fs::create_dir_all(&inside).expect("plugins");
+        assert!(matches!(
+            store.add_workspace_folder(
+                "add-storage",
+                &"3".repeat(64),
+                &workspace_id,
+                &inside.to_string_lossy(),
+                "2026-10-15T00:00:01.000Z",
+            ),
+            Err(ManagementError::InvalidPath(_))
+        ));
+        assert!(matches!(
+            store.relocate_workspace(
+                "relocate-storage",
+                &"4".repeat(64),
+                &workspace_id,
+                &home.canonicalize().expect("home").to_string_lossy(),
+                &inside.to_string_lossy(),
+                "2026-10-15T00:00:01.000Z",
+            ),
+            Err(ManagementError::InvalidPath(_))
+        ));
     }
 }
 

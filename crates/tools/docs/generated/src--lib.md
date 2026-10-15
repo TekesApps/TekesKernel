@@ -113,8 +113,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `compile_darwin_profile` | `sandbox::compile_darwin_profile` | `pub` |
 | `compile_linux_bubblewrap_plan` | `sandbox::compile_linux_bubblewrap_plan` | `pub` |
 | `compile_linux_plan` | `sandbox::compile_linux_plan` | `pub` |
+| `exposed_protected_roots` | `sandbox::exposed_protected_roots` | `pub` |
+| `kernel_protected_roots` | `sandbox::kernel_protected_roots` | `pub` |
 | `policy_digest` | `sandbox::policy_digest` | `pub` |
 | `probe_backend` | `sandbox::probe_backend` | `pub` |
+| `protected_root_containing` | `sandbox::protected_root_containing` | `pub` |
 | `validate_unsandboxed_approval` | `sandbox::validate_unsandboxed_approval` | `pub` |
 | `FIXED_SCHEMA_REVISION` | `schema_registry::FIXED_SCHEMA_REVISION` | `pub` |
 | `FixedToolSchema` | `schema_registry::FixedToolSchema` | `pub` |

@@ -2828,7 +2828,7 @@ impl ProductionProcessHost {
         config: &ConfigSnapshot,
         instruction: &profile::InstructionSnapshot,
     ) -> Result<(tools::JobLaunchPolicy, Arc<tools::HelperJobLauncher>), DaemonError> {
-        let launch_policy = frozen_tool_launch_policy(config, instruction)?;
+        let launch_policy = frozen_tool_launch_policy(&self.root, config, instruction)?;
         let executable = self.worker_binary.with_file_name("tekes-helper");
         let launcher = if self.is_mcp_only_app_sandbox_host()? {
             tools::HelperJobLauncher::disabled(executable)
@@ -4629,6 +4629,7 @@ fn mcp_launch_notices(
 }
 
 fn frozen_tool_launch_policy(
+    storage_root: &Path,
     config: &ConfigSnapshot,
     instruction: &profile::InstructionSnapshot,
 ) -> Result<tools::JobLaunchPolicy, DaemonError> {
@@ -4648,6 +4649,10 @@ fn frozen_tool_launch_policy(
         },
         allow_process: true,
         scratch: None,
+        protected_roots: tools::exposed_protected_roots(
+            &tools::kernel_protected_roots(storage_root),
+            &effective.writable_roots,
+        ),
     };
     tools::JobLaunchPolicy::new(execution_cwd, sandbox, effective.writable_roots)
         .map_err(|error| DaemonError::required_broker(error.to_string()))
@@ -4718,6 +4723,7 @@ fn private_validator_launch_policy(
         },
         allow_process: true,
         scratch: None,
+        protected_roots: Vec::new(),
     };
     tools::JobLaunchPolicy::new(scratch.clone(), sandbox, vec![scratch])
         .map_err(|error| DaemonError::required_broker(error.to_string()))
@@ -8594,7 +8600,8 @@ mod tests {
         )
         .capture()
         .expect("instruction snapshot");
-        let policy = frozen_tool_launch_policy(&config, &instruction).expect("tool policy");
+        let policy =
+            frozen_tool_launch_policy(root.path(), &config, &instruction).expect("tool policy");
         assert_eq!(
             policy.primary_workspace_cwd(),
             second

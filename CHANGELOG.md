@@ -6,6 +6,35 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### Added
+- `session.create {cwd}` registers a `cwd` that no workspace folder matches,
+  exactly as `workspace.create` would (seeded policy, metadata), instead of
+  failing with `workspace-invalid-path`. The title is the folder name, or the
+  first free `name (n)`. The registration is its own durable workspace
+  operation keyed by an id derived from the request's rpc id, so a retried
+  create resumes it. The response is unchanged.
+
+### Security
+- Kernel-owned directories (the storage root and the platform credential
+  store) are never writable by a session, even beneath a writable folder such
+  as the home directory. Sandbox policies gain `protected_roots`, omitted when
+  empty so existing policy bytes and digests are unchanged:
+  - Seatbelt denies writes beneath each protected root and to each of its
+    ancestors within a write root, so renaming an ancestor cannot move the
+    protected tree out from under the rule.
+  - Bubblewrap binds each protected root read-only inside the writable bind.
+  - Landlock cannot carve out a subtree, so it refuses such a policy and the
+    session needs bubblewrap.
+  - A job's own state directory beneath the storage root stays writable.
+  - `write`/`edit`/`apply_patch` targets and `shell`/`job` writable paths
+    inside a Kernel-owned directory, including through a symlink, are refused
+    before a policy is derived.
+- Folder entry (`workspace.create`, `workspace.addFolder`,
+  `workspace.relocate` and the registration above) refuses `/`, a
+  non-directory, and a Kernel-owned directory or any path inside one, with
+  `workspace-invalid-path`. A folder that contains them, such as the home
+  directory, is allowed.
+
 ## 0.7.3 — 2026-10-15
 
 Session presets can set the model a session starts with (`defaults`), the

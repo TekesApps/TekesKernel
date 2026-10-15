@@ -34,7 +34,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
 | [crates/tools/src/bin/tekes-helper.rs](../../src/bin/tekes-helper.rs) | 2 | 31 | [Symbols and calls](src--bin--tekes-helper.md) |
-| [crates/tools/src/bubblewrap_sandbox.rs](../../src/bubblewrap_sandbox.rs) | 21 | 263 | [Symbols and calls](src--bubblewrap_sandbox.md) |
+| [crates/tools/src/bubblewrap_sandbox.rs](../../src/bubblewrap_sandbox.rs) | 25 | 317 | [Symbols and calls](src--bubblewrap_sandbox.md) |
 | [crates/tools/src/builtin.rs](../../src/builtin.rs) | 22 | 103 | [Symbols and calls](src--builtin.md) |
 | [crates/tools/src/guidance.rs](../../src/guidance.rs) | 15 | 26 | [Symbols and calls](src--guidance.md) |
 | [crates/tools/src/helper/native_grep.rs](../../src/helper/native_grep.rs) | 2 | 181 | [Symbols and calls](src--helper--native_grep.md) |
@@ -42,17 +42,17 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/tools/src/hook.rs](../../src/hook.rs) | 25 | 154 | [Symbols and calls](src--hook.md) |
 | [crates/tools/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/tools/src/lifecycle_hook.rs](../../src/lifecycle_hook.rs) | 10 | 39 | [Symbols and calls](src--lifecycle_hook.md) |
-| [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 67 | 241 | [Symbols and calls](src--linux_sandbox.md) |
+| [crates/tools/src/linux_sandbox.rs](../../src/linux_sandbox.rs) | 68 | 270 | [Symbols and calls](src--linux_sandbox.md) |
 | [crates/tools/src/pipeline.rs](../../src/pipeline.rs) | 44 | 483 | [Symbols and calls](src--pipeline.md) |
 | [crates/tools/src/preset.rs](../../src/preset.rs) | 87 | 498 | [Symbols and calls](src--preset.md) |
-| [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 146 | 1468 | [Symbols and calls](src--runtime_backends.md) |
-| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 33 | 237 | [Symbols and calls](src--sandbox.md) |
+| [crates/tools/src/runtime_backends.rs](../../src/runtime_backends.rs) | 146 | 1474 | [Symbols and calls](src--runtime_backends.md) |
+| [crates/tools/src/sandbox.rs](../../src/sandbox.rs) | 48 | 416 | [Symbols and calls](src--sandbox.md) |
 | [crates/tools/src/schema_registry.rs](../../src/schema_registry.rs) | 58 | 349 | [Symbols and calls](src--schema_registry.md) |
 | [crates/tools/tests/lifecycle_hooks.rs](../../tests/lifecycle_hooks.rs) | 7 | 26 | `inventory.json` |
-| [crates/tools/tests/linux_sandbox_runtime.rs](../../tests/linux_sandbox_runtime.rs) | 43 | 611 | `inventory.json` |
+| [crates/tools/tests/linux_sandbox_runtime.rs](../../tests/linux_sandbox_runtime.rs) | 43 | 613 | `inventory.json` |
 | [crates/tools/tests/slice14e_web.rs](../../tests/slice14e_web.rs) | 5 | 86 | `inventory.json` |
-| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 31 | 534 | `inventory.json` |
-| [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) | 21 | 258 | `inventory.json` |
+| [crates/tools/tests/slice4_gates.rs](../../tests/slice4_gates.rs) | 31 | 535 | `inventory.json` |
+| [crates/tools/tests/slice8_runtime_backends.rs](../../tests/slice8_runtime_backends.rs) | 21 | 262 | `inventory.json` |
 | [crates/tools/tests/slice8_schema_registry.rs](../../tests/slice8_schema_registry.rs) | 16 | 183 | `inventory.json` |
 | [crates/tools/tests/slice8_tool_runtime_oracle.rs](../../tests/slice8_tool_runtime_oracle.rs) | 10 | 212 | `inventory.json` |
 
@@ -83,7 +83,7 @@ flowchart LR
   m8 -->|"2"| m5
   m9 -->|"2"| m2
   m10 -->|"1"| m1
-  m10 -->|"1"| m11
+  m10 -->|"2"| m11
   m11 -->|"2"| m1
   m11 -->|"2"| m7
 ```

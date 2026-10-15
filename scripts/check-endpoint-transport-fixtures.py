@@ -490,10 +490,17 @@ def validate_management_contract_and_auxiliary() -> None:
     if resolution.get("workspace") != {"workspaceId": "018f0000-0000-7000-8000-000000000001", "path": "/workspace/project"}:
         raise Invalid("management create resolution does not use Workspace.path")
     cases = {case.get("name"): case for case in resolution.get("cases", [])}
-    if set(cases) != {"workspace-id-only", "cwd-only", "both-match", "both-mismatch", "neither-single-active", "neither-multiple-active", "agent-preset"}:
+    if set(cases) != {"workspace-id-only", "cwd-only", "cwd-unregistered", "cwd-filesystem-root", "both-match", "both-mismatch", "neither-single-active", "neither-multiple-active", "agent-preset"}:
         raise Invalid("management create resolution case closure changed")
     if cases["both-mismatch"].get("error") != "workspace-invalid-path" or cases["agent-preset"].get("error") != "unsupported-capability":
         raise Invalid("management create resolution failure semantics changed")
+    unregistered = cases["cwd-unregistered"]
+    if unregistered.get("registers") != {"path": "/workspace/new", "title": "new"} or unregistered.get("resolved", {}).get("cwd") != "/workspace/new" or "error" in unregistered:
+        raise Invalid("session.create no longer registers an unknown cwd")
+    if cases["cwd-filesystem-root"].get("error") != "workspace-invalid-path":
+        raise Invalid("session.create accepts the filesystem root as a folder")
+    if "registers `cwd` as a new workspace" not in spec or "Kernel-owned root" not in spec:
+        raise Invalid("management spec lost cwd registration or the folder-entry rule")
     if "Workspace.cwd" in spec or "cwd[0]" in spec:
         raise Invalid("management spec retains nonexistent Workspace.cwd")
 

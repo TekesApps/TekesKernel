@@ -11,7 +11,8 @@ one request/success/error transcript per closed registration, and
 `management-requests.canonical.jsonl` freezes the request identities derived
 from approval/question holds and all four resolution outcomes.
 `management-create-resolution.canonical.json` freezes `Workspace.path`
-resolution, `management-recovery.canonical.json` freezes archive-lock/config-
+resolution, including registration of an unknown `cwd` and refusal of `/`,
+`management-recovery.canonical.json` freezes archive-lock/config-
 digest/cap recovery, and `management-redact-carriers.canonical.json` proves
 both endpoint journals are scanned, dropped, and rebuilt rather than copied.
 `management-model-selection.canonical.json` keeps a selected model out of the

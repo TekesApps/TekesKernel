@@ -131,14 +131,15 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::tool_backends::ToolBackendPlan](../../src/tool_backends.rs#L235) | `pub(crate)` | not a function |
 | [tekes-worker::tool_backends::ToolBackendRuntime](../../src/tool_backends.rs#L244) | `pub(crate)` | not a function |
 | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_backends::preset_skill_catalog](../../src/tool_backends.rs#L498) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) |
-| [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L516) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L637) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::preset_skill_catalog](../../src/tool_backends.rs#L503) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) |
+| [tekes-worker::tool_backends::kernel_protected_roots](../../src/tool_backends.rs#L523) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L531) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L660) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_calls::append_tool_validation_error](../../src/tool_calls.rs#L194) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
-| [tekes-worker::tool_calls::frozen_hook_bindings](../../src/tool_calls.rs#L211) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
-| [tekes-worker::tool_calls::frozen_skill_catalog](../../src/tool_calls.rs#L236) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_calls::ToolCallBatch](../../src/tool_calls.rs#L290) | `pub(crate)` | not a function |
+| [tekes-worker::tool_calls::append_tool_validation_error](../../src/tool_calls.rs#L196) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
+| [tekes-worker::tool_calls::frozen_hook_bindings](../../src/tool_calls.rs#L213) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
+| [tekes-worker::tool_calls::frozen_skill_catalog](../../src/tool_calls.rs#L238) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_calls::ToolCallBatch](../../src/tool_calls.rs#L292) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::PROVIDER_RETRIES](../../src/turn_terminal.rs#L4) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::PROVIDER_ADMISSION_SUBKIND](../../src/turn_terminal.rs#L7) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::validate_terminal_tool_calls](../../src/turn_terminal.rs#L13) | `pub(crate)` | [tekes-worker::turn_terminal::append_terminal](../../src/turn_terminal.rs#L96) |

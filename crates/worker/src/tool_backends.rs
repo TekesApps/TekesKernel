@@ -297,6 +297,10 @@ where
     let mut write_roots = invocation_write_roots.to_vec();
     write_roots.sort();
     write_roots.dedup();
+    let protected_roots = tools::exposed_protected_roots(
+        &tools::kernel_protected_roots(&storage_root),
+        &effective.writable_roots,
+    );
     let sandbox_policy = SandboxPolicy {
         format: 1,
         read_roots: read_roots.clone(),
@@ -308,6 +312,7 @@ where
         },
         allow_process: true,
         scratch: None,
+        protected_roots,
     };
     #[cfg(target_os = "macos")]
     let sandbox_backend = SandboxBackend::DarwinSeatbeltV1;
@@ -513,9 +518,20 @@ pub(crate) fn preset_skill_catalog(
     Ok(catalog)
 }
 
+/// The Kernel-owned directories of the storage root that holds
+/// `thread_folder`; no tool call may name a writable path inside them.
+pub(crate) fn kernel_protected_roots(
+    thread_folder: &std::path::Path,
+) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    Ok(tools::kernel_protected_roots(
+        &storage_root_for_thread_folder(thread_folder)?,
+    ))
+}
+
 pub(crate) fn invocation_write_roots(
     profile: &RuntimeProfile,
     call: &provider::ToolCall,
+    protected: &[String],
 ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let workspace = PathBuf::from(
         profile
@@ -595,6 +611,13 @@ pub(crate) fn invocation_write_roots(
         if !allowed.iter().any(|root| target.starts_with(root)) {
             return Err(format!(
                 "writable path {} is outside the effective writable roots",
+                target.display()
+            )
+            .into());
+        }
+        if let Some(protected) = tools::protected_root_containing(protected, &target) {
+            return Err(format!(
+                "writable path {} is inside the Kernel-owned directory {protected}",
                 target.display()
             )
             .into());

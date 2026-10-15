@@ -14,12 +14,15 @@ The closed canonical policy object is:
   "write_roots": [absolute canonical directory, ...],
   "network": "deny" | "loopback" | "all",
   "allow_process": bool,
-  "scratch"?: absolute canonical directory
+  "scratch"?: absolute canonical directory,
+  "protected_roots"?: [absolute canonical directory, ...]
 }
 ```
 
 Root arrays are unique and UTF-8 byte-sorted. Every write root must equal or
 be beneath a read root. `scratch`, when present, is both readable and writable.
+`protected_roots` is unique and byte-sorted too, and is omitted when empty, so a
+policy without protected roots keeps its earlier bytes and digest.
 The policy digest is `sha256-` plus SHA-256 of its RFC-8785 canonical bytes.
 Authorization pre-checks and the mandatory OS profile consume this exact
 object; separately configured reachability is invalid.
@@ -38,6 +41,28 @@ policy, or replay under another call cannot reuse the grant. `/`, a home root,
 or another broad root requires an exact explicit grant and is never inferred
 from a child path.
 
+### Kernel-owned roots
+
+The **Kernel-owned roots** are the canonical storage root and the service
+user's platform credential store (`~/Library/Keychains` on macOS,
+`~/.local/share/keyrings` elsewhere, located through the password database
+rather than `HOME`; a store that does not exist is omitted). No session can
+write them, whatever folder it runs in:
+
+- A launch policy lists in `protected_roots` every Kernel-owned root that lies
+  at or beneath one of its permitted write roots, for example the storage root
+  under a writable home folder. Roots outside every write root are already
+  unwritable and are not listed.
+- No write reaches a protected root or anything beneath it. The only
+  exception is a write root declared by its canonical name strictly beneath a
+  protected root: the broker's own job state directory. Workers never derive
+  such a root from tool input: a `write`/`edit`/`apply_patch` target or a
+  `shell`/`job` writable path that names, or resolves through a symlink to, a
+  Kernel-owned root or a path inside one is refused before any policy is
+  derived.
+- Folder entry refuses the same roots (see
+  [session-endpoint](session-endpoint.md#create-fork-archive-and-model-publication)).
+
 For `job.start`, the supervisor-side broker repeats the subset check against
 the immutable policy ceiling carried with the correlated call. The job spec
 retains the normalized requested roots; the sandbox launcher receives the
@@ -54,7 +79,14 @@ policy's root order. It denies by default and imports the OS-provided
 runtime roots (`/System`, `/usr`, `/bin`, `/sbin`, and `/private/var/select`,
 whose selector symlinks `/bin/sh` and the Xcode shims read on every launch)
 plus `read_roots`, writes to `write_roots`/scratch, process
-execution to `allow_process`, and network to the selected class. The imported
+execution to `allow_process`, and network to the selected class. Each
+protected root then gets a `file-write*` deny on its subpath, after the write
+grants because Seatbelt applies the last matching rule. Seatbelt matches
+paths, not objects, so every ancestor of a protected root that lies within a
+write root also gets a `file-write*` deny on that literal path: renaming or
+replacing the ancestor would otherwise move the protected tree out from under
+its rule, while creating siblings inside the ancestor stays allowed. Write
+roots strictly beneath a protected root are granted again last. The imported
 baseline is a probed platform dependency: a missing or behaviorally rejected
 baseline fails the backend probe rather than widening authority. It selects no network,
 loopback-only, or all network from `network`.
@@ -76,6 +108,11 @@ continues to describe the explicit Landlock backend.
   read-only, and bind write roots and scratch read-write. Canonical targets
   and explicit aliases preserve the authorized object. Writable parent grants
   also cover nested read roots. Synthetic parent directories are read-only.
+- A protected root inside a writable bind gets its own read-only bind. Mounts
+  are applied shallowest first, so a write root strictly beneath it is bound
+  read-write again after it. Bind mounts follow the directory, so renaming an
+  ancestor moves the read-only view with it. A write root strictly beneath a
+  protected root that is not its own canonical name is refused.
 - Create a private `/proc` for the PID namespace and a minimal `/dev`. Never
   bind the host process/device trees. Roots resolving to `/`, write roots
   overlapping `/proc` or `/dev`, and aliases to those host trees are refused.
@@ -120,6 +157,10 @@ both in the forked child, after `PR_SET_NO_NEW_PRIVS` and before `execve`:
   roots only when `allow_process` is true; the requested executable and its
   ELF interpreter are always executable. Landlock also keeps the confined
   tree from tracing or reading `/proc/<pid>` state of processes outside it.
+  Landlock only grants access and cannot keep a subtree of a write root
+  read-only, so a policy with a protected root at or beneath a write root
+  (other than a write root strictly beneath that protected root) is refused
+  as unavailable; such a session needs the bubblewrap backend.
 - **seccomp** kills a foreign syscall ABI (and refuses x32 numbers), and
   refuses: kernel-module, kexec, mount, `pivot_root`, `setns`, `unshare` and
   namespace-creating `clone` flags, the kernel keyring, `bpf`,

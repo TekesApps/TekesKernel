@@ -656,7 +656,9 @@ async fn workspace_folders_round_trip_through_the_production_host() {
         .expect("primary")
         .to_string_lossy()
         .into_owned();
-    let second = production.root.path().join("second");
+    // An added folder cannot lie inside the Kernel storage root.
+    let outside = tempfile::tempdir().expect("outside storage");
+    let second = outside.path().join("second");
     fs::create_dir(&second).expect("second folder");
     let second = fs::canonicalize(second)
         .expect("canonical second")
