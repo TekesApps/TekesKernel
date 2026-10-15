@@ -25,9 +25,9 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/thread-search/src/host.rs](../../src/host.rs) | 4 | 75 | [Symbols and calls](src--host.md) |
-| [crates/thread-search/src/lib.rs](../../src/lib.rs) | 44 | 309 | [Symbols and calls](src--lib.md) |
-| [crates/thread-search/tests/slice14d_gates.rs](../../tests/slice14d_gates.rs) | 18 | 299 | `inventory.json` |
+| [crates/thread-search/src/host.rs](../../src/host.rs) | 4 | 74 | [Symbols and calls](src--host.md) |
+| [crates/thread-search/src/lib.rs](../../src/lib.rs) | 44 | 315 | [Symbols and calls](src--lib.md) |
+| [crates/thread-search/tests/slice14d_gates.rs](../../tests/slice14d_gates.rs) | 19 | 320 | `inventory.json` |
 
 ## Cross-file direct calls
 

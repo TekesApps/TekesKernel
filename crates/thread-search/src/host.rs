@@ -20,7 +20,7 @@ impl ThreadSearchAuthority {
     /// by session identity and capped at 50; no credentials or tool payloads are searched.
     pub fn search_sessions(&self, query: &str) -> Result<SessionSearchResults, SearchError> {
         validate_request(&SearchRequest {
-            workspace_id: "host".into(),
+            workspace_id: None,
             query: query.into(),
             limit: MAX_PAGE_SIZE,
             visibility: ArchiveVisibility::All,

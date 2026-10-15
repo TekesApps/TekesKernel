@@ -71,9 +71,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 175 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 199 | 2250 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 373 | 6544 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 373 | 6592 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 16 | 1866 | [Symbols and calls](src--process_live_tests.md) |
-| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 847 | [Symbols and calls](src--production_tool_control.md) |
+| [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 227 | [Symbols and calls](src--process_tool_visibility_tests.md) |
+| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 866 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |
@@ -84,7 +85,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/tests/ready_reads_no_thread.rs](../../tests/ready_reads_no_thread.rs) | 6 | 127 | `inventory.json` |
 | [crates/supervisor/tests/s4_lazy_boot_streams.rs](../../tests/s4_lazy_boot_streams.rs) | 65 | 895 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 9 | 60 | `inventory.json` |
-| [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 28 | 278 | `inventory.json` |
+| [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 41 | 411 | `inventory.json` |
 | [crates/supervisor/tests/slice13_management.rs](../../tests/slice13_management.rs) | 7 | 308 | `inventory.json` |
 | [crates/supervisor/tests/slice14a_reference_package.rs](../../tests/slice14a_reference_package.rs) | 32 | 246 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 120 | `inventory.json` |
@@ -155,7 +156,7 @@ flowchart LR
   m17 -->|"1"| m3
   m17 -->|"3"| m8
   m17 -->|"3"| m10
-  m17 -->|"169"| m12
+  m17 -->|"171"| m12
   m17 -->|"1"| m13
   m17 -->|"1"| m16
   m17 -->|"6"| m18

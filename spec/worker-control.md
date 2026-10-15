@@ -10,6 +10,20 @@ messages below. `fixtures/wire/` is the oracle for the base messages and
 exactly event's definitions (R12-6); envelope `origin_key` == the
 carried tuple's `key` everywhere (R12-4).
 
+Cross-session `context` discovery, reads and normal messages are host-wide;
+workspace/folder labels do not authorize them. Execution and tool approvals
+remain receiver-owned. State controls (resume/interrupt/archive) use the acting
+session's approval policy; durable binding and exact-retry receipts are
+unchanged. Fresh context input/interrupt deliveries use the endpoint origin
+operations `session.prompt` / `session.cancel` on both cold and live paths.
+An interrupted upgrade retry may replay an existing target `stop_requested`
+whose complete origin tuple is exactly `{principal:"kernel-worker",
+client:"context",target:sessionId,op:"cancel",key:requestId}`. This only
+acknowledges the original sequence; it never executes a fresh legacy cancel.
+A different tuple or event kind does not match. The source control receipt
+still takes precedence, and normal acting-session approval/binding applies
+before the runtime is invoked. See [builtin-tools](builtin-tools.md#cross-session-visibility).
+
 ## Negotiation (before locks, before any append)
 
 1. Worker → supervisor, first line:

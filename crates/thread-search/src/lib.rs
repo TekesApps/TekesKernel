@@ -38,7 +38,7 @@ pub enum ArchiveVisibility {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SearchRequest {
-    pub workspace_id: String,
+    pub workspace_id: Option<String>,
     pub query: String,
     pub limit: usize,
     pub visibility: ArchiveVisibility,
@@ -110,7 +110,12 @@ impl ThreadSearchAuthority {
         let (entries, index_use) = self.scan_and_repair_indices()?;
         let scoped = entries
             .into_iter()
-            .filter(|entry| entry.workspace_id == request.workspace_id)
+            .filter(|entry| {
+                request
+                    .workspace_id
+                    .as_ref()
+                    .is_none_or(|filter| &entry.workspace_id == filter)
+            })
             .filter(|entry| visibility_includes(request.visibility, entry.archived))
             .collect::<Vec<_>>();
         let catalog_digest = digest_entries(&scoped)?;
@@ -243,7 +248,7 @@ struct IndexEntry {
 #[serde(deny_unknown_fields)]
 struct CursorBody {
     v: u64,
-    workspace_id: String,
+    workspace_id: Option<String>,
     visibility: ArchiveVisibility,
     normalized_query: String,
     catalog_digest: String,
@@ -252,7 +257,11 @@ struct CursorBody {
 }
 
 fn validate_request(request: &SearchRequest) -> Result<(), SearchError> {
-    if !valid_workspace_id(&request.workspace_id) {
+    if request
+        .workspace_id
+        .as_deref()
+        .is_some_and(|value| !valid_workspace_id(value))
+    {
         return Err(SearchError::InvalidWorkspace);
     }
     if request.query.len() > MAX_QUERY_BYTES
@@ -558,7 +567,10 @@ fn decode_cursor(value: &str) -> Result<CursorBody, SearchError> {
         || cursor.v != FORMAT
         || !matches!(cursor.score, 1_000 | 2_000 | 3_000)
         || validate_session_id(&cursor.session_id).is_err()
-        || !valid_workspace_id(&cursor.workspace_id)
+        || cursor
+            .workspace_id
+            .as_deref()
+            .is_some_and(|value| !valid_workspace_id(value))
         || cursor.normalized_query.is_empty()
         || normalize(&cursor.normalized_query) != cursor.normalized_query
         || !valid_sha256_label(&cursor.catalog_digest)

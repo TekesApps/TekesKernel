@@ -466,6 +466,13 @@ fn every_declared_parameter_object_is_closed_recursively() {
 #[test]
 fn context_memory_and_shell_nested_rules_are_executable() {
     assert!(
+        validate_fixed_arguments(
+            "context",
+            &json!({"operation":"search","reason":"audit","query":"x","scope":"all"})
+        )
+        .is_ok()
+    );
+    assert!(
         validate_fixed_arguments("context", &json!({"operation":"search","reason":"audit"}))
             .is_err()
     );

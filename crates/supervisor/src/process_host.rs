@@ -6151,11 +6151,11 @@ impl SupervisorRuntimeAuthority for ProcessToolRuntime {
             principal: "kernel-worker".into(),
             client: "context".into(),
             target: request.target_session.clone(),
-            op: "prompt".into(),
+            op: "session.prompt".into(),
             key: request.request_id.clone(),
         };
         let receipt = host
-            .locked_prompt(
+            .prompt(
                 &request.target_session,
                 &timestamp,
                 &origin,
@@ -6181,13 +6181,71 @@ impl SupervisorRuntimeAuthority for ProcessToolRuntime {
         request: &InterruptRequest,
     ) -> Result<IJsonValue, SupervisorOperationError> {
         let host = self.host()?;
+        // Older live-worker deliveries used `cancel`. If the target committed
+        // that stop before the source receipt was published, replay that exact
+        // fact across an upgrade instead of issuing a second stop under the new
+        // endpoint operation. Never use the old operation for a fresh request.
+        let scope = host
+            .session_scope(&request.target_session)
+            .map_err(operation_unavailable)?;
+        let folder = scope.session_folder();
+        let metadata = fs::symlink_metadata(folder)
+            .map_err(|error| operation_unavailable(DaemonError::io(error)))?;
+        if !metadata.is_dir()
+            || metadata.file_type().is_symlink()
+            || folder.file_name().and_then(|name| name.to_str())
+                != Some(request.target_session.as_str())
+        {
+            return Err(SupervisorOperationError::Corruption(
+                "interrupt target folder identity mismatch".into(),
+            ));
+        }
+        let bytes = fs::read(folder.join("main.jsonl"))
+            .map_err(|error| operation_unavailable(DaemonError::io(error)))?;
+        let projection = scan_valid_prefix(&bytes, schema::READER_VERSION)
+            .projection
+            .ok_or_else(|| {
+                SupervisorOperationError::Corruption("interrupt target has no valid prefix".into())
+            })?;
+        if projection
+            .events
+            .first()
+            .and_then(|event| event.string_field("thread"))
+            != Some(request.target_session.as_str())
+        {
+            return Err(SupervisorOperationError::Corruption(
+                "interrupt target genesis identity mismatch".into(),
+            ));
+        }
+        let legacy_origin = OriginTuple {
+            principal: "kernel-worker".into(),
+            client: "context".into(),
+            target: request.target_session.clone(),
+            op: "cancel".into(),
+            key: request.request_id.clone(),
+        };
+        for event in &projection.events {
+            if event.kind() == &EventKind::StopRequested
+                && event
+                    .origin_tuple()
+                    .map_err(|error| SupervisorOperationError::Corruption(error.to_string()))?
+                    .as_ref()
+                    == Some(&legacy_origin)
+            {
+                return operation_value(serde_json::json!({
+                    "deduplicated":true,
+                    "seq":event.seq(),
+                    "session_id":request.target_session,
+                }));
+            }
+        }
         let timestamp =
             crate::host_runtime::system_timestamp().map_err(SupervisorOperationError::Protocol)?;
         let origin = OriginTuple {
             principal: "kernel-worker".into(),
             client: "context".into(),
             target: request.target_session.clone(),
-            op: "cancel".into(),
+            op: "session.cancel".into(),
             key: request.request_id.clone(),
         };
         let receipt = host
@@ -6679,6 +6737,7 @@ mod tests {
         assert!(super::scoped_client_file_path(&workspace, "escape").is_err());
     }
     include!("process_live_tests.rs");
+    include!("process_tool_visibility_tests.rs");
     use std::future::Future;
     use std::io::{Read as _, Write as _};
     use std::net::TcpListener;

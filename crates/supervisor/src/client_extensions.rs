@@ -812,7 +812,7 @@ struct SessionSearchRequest {
 #[derive(Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 struct ThreadSearchRequest {
-    workspace_id: String,
+    workspace_id: Option<String>,
     query: String,
     limit: usize,
     visibility: ArchiveVisibility,

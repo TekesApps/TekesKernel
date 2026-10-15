@@ -52,7 +52,7 @@ LF-terminated prefix. A trailing partial line is ignored, as in the store tail
 contract. An invalid **complete** line after that prefix is corruption and
 fails the query closed; search does not repair semantic ledgers. The first
 event must be `genesis`, `genesis.thread` must equal the folder UUID, and
-`genesis.workspace` supplies the workspace scope. The source row is:
+`genesis.workspace` supplies a legacy workspace label usable as a query filter. The source row is:
 
 ```text
 {session_id:uuid, workspace_id:str, title?:str, normalized_title?:str,
@@ -63,7 +63,7 @@ event must be `genesis`, `genesis.thread` must equal the folder UUID, and
 `supersedes` range is applied before selecting it. No live title means the
 thread is not matchable. `updated_at` is the last valid event's `ts`. Rows are sorted
 by UTF-8 bytes of `session_id`. A query's `catalog_digest` is
-`"sha256-" + lowercase_sha256(JCS(scoped_rows))`, after workspace and archive
+`"sha256-" + lowercase_sha256(JCS(scoped_rows))`, after optional workspace and archive
 visibility filtering but before text matching. Concurrent appends may make a
 later query observe a longer valid prefix; a page cursor detects that catalog
 change instead of mixing snapshots.
@@ -99,6 +99,22 @@ locale, recency, or index-engine score participates. Each result copies the
 source identity, title, updated timestamp, archive bit, `as_of_seq`, score and
 match class. Therefore independent implementations produce the same ordering.
 
+## Workspace filtering
+
+`SearchRequest.workspace_id` is optional. Omission selects all sessions across
+workspaces and folders; a nonempty value retains the exact legacy filter.
+This is an explicit query condition, not an authorization boundary. Results
+keep the target's actual `workspace_id`. The endpoint camel-case DTO omits
+`workspaceId` for host-wide search; existing callers sending it retain their
+previous results. There is no implicit change to archive visibility.
+
+Cursors bind the entire filter: `workspace_id:null` means host-wide, while a
+string means that exact workspace. Existing string-filter cursors retain their
+canonical bytes and work only with the same filter. A cursor cannot switch
+between global and filtered searches, another workspace, archive selection or
+query; scope mismatch fails with the existing `cursor-scope` error. Cache
+format and result identity are unchanged.
+
 ## Archive visibility
 
 Every internal request carries exactly one closed value:
@@ -123,7 +139,7 @@ base64url-no-padding(JCS(body)) "." lowercase_sha256(JCS(body))
 The closed body is:
 
 ```text
-{v:1, workspace_id:str, visibility:"active"|"archived"|"all",
+{v:1, workspace_id:str|null, visibility:"active"|"archived"|"all",
  normalized_query:str, catalog_digest:"sha256-"+hex64,
  score:1000|2000|3000, session_id:uuid}
 ```

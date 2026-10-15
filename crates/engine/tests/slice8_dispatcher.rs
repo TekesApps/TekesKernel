@@ -554,3 +554,108 @@ fn ledger_with_approval(
     fs::write(path, bytes).expect("approval ledger");
     directory
 }
+
+#[test]
+fn cross_session_communication_and_control_use_the_acting_session_policy() {
+    use engine::{PermissionMode, PermissionModePolicy};
+    let manifest = BuiltinManifest::compiled();
+    let context = CatalogContext::default();
+    let dispatcher = ToolDispatcher::new(&manifest, &context);
+    for mode in PermissionMode::ALL {
+        for operation in ["read", "send", "resume", "interrupt", "archive"] {
+            let arguments = json!({"operation":operation,"thread_id":"018f0000-0000-7000-8000-000000000099","message":"please inspect","reason":"coordinate"});
+            let directory = ledger_with_call("context", arguments.clone());
+            let mut ledger =
+                LockedLedger::open(directory.path().join("main.jsonl"), schema::READER_VERSION)
+                    .unwrap();
+            let assets = AssetStore::new(directory.path().join("assets")).unwrap();
+            let mut backend = FakeToolBackend::default();
+            backend.set_terminal(
+                "c1",
+                BackendTerminal::Completed(IJsonValue::from("delivered")),
+            );
+            let decision = dispatcher
+                .dispatch(
+                    &mut ToolPipeline::new(&mut ledger, assets, SecretScanner::default()),
+                    &invocation("context", arguments),
+                    &[],
+                    &mut PermissionModePolicy::new(mode),
+                    &mut backend,
+                )
+                .unwrap();
+            let communication = matches!(operation, "read" | "send");
+            let allowed = communication || mode == PermissionMode::DangerFullAccess;
+            assert_eq!(
+                backend.execution_count("c1"),
+                usize::from(allowed),
+                "{mode} {operation}"
+            );
+            assert_eq!(
+                matches!(decision, PipelineDecision::Parked { .. }),
+                !communication && mode == PermissionMode::WorkspaceWrite,
+                "{mode} {operation}"
+            );
+            if !communication && mode == PermissionMode::ReadOnly {
+                assert!(
+                    fs::read_to_string(ledger.path())
+                        .unwrap()
+                        .contains("read-only permission mode")
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn explicit_cross_session_resume_requires_its_own_durable_approval() {
+    let arguments = json!({"operation":"resume","thread_id":"018f0000-0000-7000-8000-000000000099","reason":"resume work"});
+    for grant in [None, Some(false), Some(true)] {
+        let directory =
+            ledger_with_approval("context", arguments.clone(), None, grant, "destructive");
+        let path = directory.path().join("main.jsonl");
+        // This helper's default request scope is execute; context control is destructive.
+        let bytes = fs::read_to_string(&path)
+            .unwrap()
+            .replace("\"scope\":\"execute\"", "\"scope\":\"destructive\"");
+        fs::write(&path, bytes).unwrap();
+        let mut ledger = LockedLedger::open(path, schema::READER_VERSION).unwrap();
+        let assets = AssetStore::new(directory.path().join("assets")).unwrap();
+        let manifest = BuiltinManifest::compiled();
+        let context = CatalogContext::default();
+        let mut backend = FakeToolBackend::default();
+        backend.set_terminal(
+            "c1",
+            BackendTerminal::Completed(IJsonValue::from("resumed")),
+        );
+        let call = invocation("context", arguments.clone());
+        let mut policy = engine::PermissionModePolicy::new(engine::PermissionMode::WorkspaceWrite);
+        let dispatcher = ToolDispatcher::new(&manifest, &context);
+        let first = dispatcher
+            .dispatch(
+                &mut ToolPipeline::new(&mut ledger, assets.clone(), SecretScanner::default()),
+                &call,
+                &[],
+                &mut policy,
+                &mut backend,
+            )
+            .unwrap();
+        let second = dispatcher
+            .dispatch(
+                &mut ToolPipeline::new(&mut ledger, assets, SecretScanner::default()),
+                &call,
+                &[],
+                &mut policy,
+                &mut backend,
+            )
+            .unwrap();
+        assert_eq!(first, second);
+        assert_eq!(
+            backend.execution_count("c1"),
+            usize::from(grant == Some(true))
+        );
+        assert_eq!(
+            matches!(first, PipelineDecision::Parked { .. }),
+            grant.is_none()
+        );
+    }
+}

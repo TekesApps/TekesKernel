@@ -618,6 +618,50 @@ async fn slice14f_gate_116_cross_capability_lifecycle() {
         search["results"][0]["session_id"], archived_session,
         "{search}"
     );
+    let foreign_id = "018f0000-0000-7000-8000-000000000098";
+    let original = production
+        .root
+        .path()
+        .join("archive")
+        .join(&archived_session)
+        .join("main.jsonl");
+    let foreign = production.root.path().join("archive").join(foreign_id);
+    fs::create_dir_all(foreign.join("assets")).unwrap();
+    let bytes = fs::read_to_string(original)
+        .unwrap()
+        .replace(&archived_session, foreign_id)
+        .replace("workspace-1", "workspace-other");
+    fs::write(foreign.join("main.jsonl"), bytes).unwrap();
+    let global_search = success_value(
+        &dispatch(
+            &production,
+            "search-global",
+            "thread.search",
+            json!({"query":"review","visibility":"archived","limit":20}),
+        )
+        .await,
+    );
+    assert_eq!(global_search["results"].as_array().unwrap().len(), 2);
+    assert!(
+        global_search["results"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|row| row["session_id"] == foreign_id && row["workspace_id"] == "workspace-other")
+    );
+    let filtered = success_value(&dispatch(&production, "search-still-filtered", "thread.search", json!({"workspaceId":"workspace-1","query":"review","visibility":"archived","limit":20})).await);
+    assert_eq!(filtered["results"].as_array().unwrap().len(), 1);
+    assert!(
+        !dispatch(
+            &production,
+            "search-invalid-filter",
+            "thread.search",
+            json!({"workspaceId":"","query":"review","visibility":"archived","limit":20})
+        )
+        .await
+        .result
+        .ok
+    );
     let usage = success_value(
         &dispatch(
             &production,

@@ -6,6 +6,11 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+- Development toward 0.8.0: host-wide cross-session context reads/messages,
+  explicit `context.search {scope:"all"}`, and optional workspace filtering
+  for thread title search. State controls retain the acting session's
+  approval policy; delivered content retains the receiver's permissions.
+
 - Development toward 0.8.0: optional `environments.v1` list/save administration
   and `session.create {environment}` select a named launch-time reference.
   Saves use revision CAS and durable retries; running snapshots stay fixed.

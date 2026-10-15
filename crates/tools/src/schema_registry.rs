@@ -12,7 +12,7 @@ use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
-pub const FIXED_SCHEMA_REVISION: &str = "builtin-tools/schema-4";
+pub const FIXED_SCHEMA_REVISION: &str = "builtin-tools/schema-5";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FixedToolSchema {
@@ -741,7 +741,7 @@ pub fn fixed_schema_registry() -> Vec<FixedToolSchema> {
         ),
         tool(
             "context",
-            "Discover historical context or perform approved project thread control through the supervisor.",
+            "Read or message any session through the supervisor; control actions follow the acting session approval policy.",
             context_schema(),
         ),
         tool(
@@ -1056,7 +1056,7 @@ fn context_schema() -> ObjectSchema {
             p("query", string()),
             p(
                 "scope",
-                enum_string(&["current_thread", "thread", "project"]),
+                enum_string(&["current_thread", "thread", "project", "all"]),
             ),
         ],
         &["operation", "reason"],

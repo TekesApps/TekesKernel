@@ -247,7 +247,7 @@ exactly one LF:
 ```text
 BuiltinSchemaOracle = {
   format: 1,
-  revision: "builtin-tools/schema-4",
+  revision: "builtin-tools/schema-5",
   schemas: [BuiltinSchema, ...]
 }
 BuiltinSchema = {
@@ -255,7 +255,7 @@ BuiltinSchema = {
   digest: "sha256-" + 64 lowercase hex digits,
   name: string,
   parameters: closed JSON Schema object,
-  revision: "builtin-tools/schema-4"
+  revision: "builtin-tools/schema-5"
 }
 ```
 
@@ -362,7 +362,7 @@ can disable one for a later launch, but cannot replace its contract.
 | name | availability | arguments | effect and execution |
 |---|---|---|---|
 | `apply_patch` | default | `operation`, `path`, `diff`, `expected_artifact_version`, `summary` | Contextual `apply_patch.v2` writer. Only `path` and `diff` are required; the host infers create/update from file existence and the current artifact version when omitted. Explicit operation/version fields retain their existing meaning. `diff` is V4A body-only: creation takes `+`-prefixed content lines; updates take context/removal/addition lines without file headers. The helper performs descriptor-beneath SHA compare-and-replace and temp+sync+rename atomically. Outside-workspace paths require approval and an explicit writable root. |
-| `context` | default | `operation`, `thread_id`, `message`, `goal`, `reason`, `turn_id`, `cursor`, `limit`, `query`, `scope` | Supervisor-backed historical discovery and thread control. Read operations are `search`, `records`, `threads`, `read`; mutating operations are `start`, `fork`, `send`, `resume`, `archive`, `interrupt`. Every call requires a nonempty audit reason; every mutation requires operation-specific approval. Workspace wall is mandatory. |
+| `context` | default | `operation`, `thread_id`, `message`, `goal`, `reason`, `turn_id`, `cursor`, `limit`, `query`, `scope` | Supervisor-backed historical discovery and thread control. Read operations are `search`, `records`, `threads`, `read`; mutating operations are `start`, `fork`, `send`, `resume`, `archive`, `interrupt`. Every call requires a nonempty audit reason. Reading and sending messages are approval-free across all session roots/folders; start/fork/resume/archive/interrupt follow the acting session approval policy. |
 | `context_get` | default | `record_ids`, `thread_id`, `reason`, `cursor`, `page_bytes` | Approval-free exact record read through the supervisor. One to sixteen positive record ids; `page_bytes` is at most 16384; returned historical content is untrusted data. |
 | `edit` | default | `path`, `old_text`, `new_text` | Replace one exact UTF-8 text span. An absent or repeated `old_text` fails without a write; a concurrent file change is detected before commit. Uses the same workspace edit Approval, sandbox, artifact version, and edit recording path as `write`. |
 | `glob` | default | `pattern`, `path` | Read-only helper filesystem walk, newest first; supports `*`, `?`, `**`; maximum 1000 results and 100000 scanned entries. |
@@ -408,20 +408,53 @@ tools create causal offers while `skill` or a dynamic tool consumes one; and
 terminal child return. Combining any of those would produce an operation union
 with different authorization or durability rules, not a simpler contract.
 
+### Cross-session visibility
+
+Session ids are host-wide identities: `context.threads`, `context.read`,
+`context_get`, and a `context.search` with `scope:"thread"` can address active
+or archived sessions regardless of workspace, root lineage, or folder overlap.
+Returned records are untrusted historical data. Parent-report proofs, fork
+inheritance and the prohibition on a worker archiving its own containing
+session are unchanged; archive still requires an active target.
+
+`context.search` retains its default `current_thread` and explicit `thread`
+and `project` selectors. `project` filters by the caller's legacy workspace;
+it is a query condition, never an authorization boundary. New explicit
+`scope:"all"` searches all active and archived sessions. Schema-5 advertises
+this additional selector; schemas through schema-4 remain usable for their
+existing selectors and operations, but cannot express `all`. Search cursors
+bind the exact selector, target session or project filter, and query. Old
+context-search cursors lacked the target binding and are rejected with the
+existing conflict error; clients restart pagination without a cursor.
+
+`context.send` only delivers normal input. Normal delivery can schedule a cold
+or idle receiver to process that message, exactly like ordinary host input;
+it does not invoke the separate `resume` control. The receiver retains its
+own permission mode, frozen preset, launch snapshot and execution/tool
+approval checks. Sending a message is not an execution grant. `send` retains its effectful
+execution barrier and durable retry identity; its approval-free class does not
+turn delivery into a read-only operation or bypass secret/result filtering. Explicit
+resume/interrupt/archive use the acting session's policy: read-only denies,
+workspace-write requests durable per-call approval, and danger-full-access
+allows. Exact retries replay their existing durable receipts.
+
+These visibility rules do not grant file access outside a session's resolved
+folders, filesystem writes, credentials, folder trust or MCP authority.
+
 ### Approval mapping
 
 Approval classification is part of the fixed contract, not inferred from the
 English description:
 
 - approval-free/read-only: `read`, `glob`, `grep`, `context_get`, the read arms
-  of `context`, `skill_explorer`, `tool_search`, and pure workflow
+  of `context` and its `send` communication arm, `skill_explorer`, `tool_search`, and pure workflow
   tools;
 - edit policy: every in-workspace `apply_patch`, `edit`, or `write`; a target under
   `.agent`, `.tekes`, Git hooks, or another privilege-defining path escalates
   to destructive;
 - execute policy: `shell`, `job.start`, and `web_fetch`;
 - destructive policy: out-of-workspace file writes, additional external
-  writable roots, `job.stop`, and every mutating `context` arm;
+  writable roots, `job.stop`, and `context.start/fork/resume/archive/interrupt`;
 - workflow holds: `ask_user_questions` and `plan` use their dedicated durable
   answer protocols. An answer to either is not a standing execution grant;
 - `web_search` is approval-free at the tool layer but still requires the

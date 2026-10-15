@@ -46,7 +46,6 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
 | `search_sessions` | `validate_request` | [22](../../src/host.rs#L22) | external-constructor-callback-or-unresolved |
-| `search_sessions` | `"host".into` | [23](../../src/host.rs#L23) | receiver-type-required |
 | `search_sessions` | `query.into` | [24](../../src/host.rs#L24) | receiver-type-required |
 | `search_sessions` | `normalize` | [29](../../src/host.rs#L29) | external-constructor-callback-or-unresolved |
 | `search_sessions` | `NamedLock::exclusive` | [30](../../src/host.rs#L30) | external-constructor-callback-or-unresolved |

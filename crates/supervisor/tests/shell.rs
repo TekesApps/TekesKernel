@@ -610,3 +610,322 @@ impl SupervisorJobAuthority for NoJobAuthority {
 fn ijson(value: Value) -> IJsonValue {
     IJsonValue::parse(&serde_json::to_vec(&value).expect("JSON bytes")).expect("I-JSON")
 }
+
+const FOREIGN: &str = "018f0000-0000-7000-8000-000000000099";
+const FOREIGN_TWO: &str = "018f0000-0000-7000-8000-000000000098";
+
+fn foreign_session(root: &Path, id: &str) {
+    let folder = root.join("threads").join(id);
+    fs::create_dir_all(folder.join("assets")).unwrap();
+    let events = [
+        json!({"v":1,"seq":1,"kind":"genesis","ts":TS,"format":1,"thread":id,"workspace":"other-ws","environment":"local","folders":["other-folder"],"config":{"digest":"cfg"},"resume":"never","min_reader":3,"min_writer":1,"origin_key":"create","origin_tuple":{"principal":"p","client":"cli","target":id,"op":"create","key":"create"}}),
+        json!({"v":1,"seq":2,"kind":"meta","ts":TS,"title":"foreign first"}),
+        json!({"v":1,"seq":3,"kind":"meta","ts":TS,"title":"foreign second"}),
+    ];
+    let bytes = events
+        .iter()
+        .flat_map(|event| {
+            let mut row = serde_json_canonicalizer::to_vec(event).unwrap();
+            row.push(b'\n');
+            row
+        })
+        .collect::<Vec<_>>();
+    schema::validate_ledger(&bytes, schema::READER_VERSION).unwrap();
+    fs::write(folder.join("main.jsonl"), bytes).unwrap();
+}
+
+fn visibility_call(root: &Path, id: &str, name: &str, arguments: Value) -> ToolControlResult {
+    let request = write_bound_request(root, id, name, arguments);
+    let response = production_session(root)
+        .handle_line(&encode_tool_control(&request).unwrap())
+        .unwrap();
+    decode_tool_control_result(&response).unwrap()
+}
+
+fn visibility_value(result: ToolControlResult) -> Value {
+    assert!(result.error.is_none(), "{:?}", result.error);
+    serde_json::to_value(result.value.unwrap()).unwrap()
+}
+
+#[test]
+fn context_reads_messages_and_controls_are_visible_across_workspace_and_folder_ids() {
+    let root = tempfile::tempdir().unwrap();
+    foreign_session(root.path(), FOREIGN);
+    foreign_session(root.path(), FOREIGN_TWO);
+    let folder = root.path().join("threads").join(FOREIGN);
+    engine::write_permission_mode(&folder, engine::PermissionMode::ReadOnly).unwrap();
+    let original_ledger = fs::read(folder.join("main.jsonl")).unwrap();
+    let original_mode = fs::read(engine::permission_mode_path(&folder)).unwrap();
+    let threads = visibility_value(visibility_call(
+        root.path(),
+        "threads-global",
+        "context",
+        json!({"operation":"threads","reason":"discover"}),
+    ));
+    assert_eq!(threads["threads"].as_array().unwrap().len(), 3);
+    let read = visibility_value(visibility_call(
+        root.path(),
+        "read-global",
+        "context",
+        json!({"operation":"read","thread_id":FOREIGN,"reason":"inspect"}),
+    ));
+    assert_eq!(
+        read["workspace"], "other-ws",
+        "metadata belongs to the target, not the caller"
+    );
+    let records = visibility_value(visibility_call(
+        root.path(),
+        "get-global",
+        "context_get",
+        json!({"thread_id":FOREIGN,"record_ids":[2],"reason":"inspect"}),
+    ));
+    assert_eq!(records["records"][0]["event"]["title"], "foreign first");
+    let project = visibility_value(visibility_call(
+        root.path(),
+        "project-filter",
+        "context",
+        json!({"operation":"search","query":"foreign","scope":"project","reason":"inspect"}),
+    ));
+    assert!(
+        project["hits"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|hit| hit["session_id"] == SESSION),
+        "legacy project is a query filter"
+    );
+    for (id, selector) in [
+        ("default-filter", None),
+        ("current-filter", Some("current_thread")),
+    ] {
+        let mut query = json!({"operation":"search","query":"foreign","reason":"inspect"});
+        if let Some(selector) = selector {
+            query["scope"] = json!(selector);
+        }
+        let current = visibility_value(visibility_call(root.path(), id, "context", query));
+        assert!(
+            current["hits"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .all(|hit| hit["session_id"] == SESSION)
+        );
+    }
+    let global = visibility_value(visibility_call(
+        root.path(),
+        "all-filter",
+        "context",
+        json!({"operation":"search","query":"foreign","scope":"all","reason":"inspect"}),
+    ));
+    assert_eq!(
+        global["hits"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter(|hit| hit["session_id"] != SESSION)
+            .count(),
+        4
+    );
+    let calls = Arc::new(std::sync::Mutex::new(Vec::new()));
+    for operation in ["send", "resume", "interrupt"] {
+        let request = write_bound_request(
+            root.path(),
+            operation,
+            "context",
+            json!({"operation":operation,"thread_id":FOREIGN,"message":"please inspect","reason":"coordinate"}),
+        );
+        let mut session = ToolControlSession::new(
+            root.path(),
+            Selected { version: 2 },
+            ProductionToolControlHandler::new(
+                root.path(),
+                VisibilityRuntime(Arc::clone(&calls)),
+                NoJobAuthority,
+            ),
+            ProductionToolControlPolicy::default(),
+        );
+        let line = encode_tool_control(&request).unwrap();
+        let result = session.handle_line(&line).unwrap();
+        assert!(decode_tool_control_result(&result).unwrap().error.is_none());
+        let mut restarted = ToolControlSession::new(
+            root.path(),
+            Selected { version: 2 },
+            ProductionToolControlHandler::new(
+                root.path(),
+                VisibilityRuntime(Arc::clone(&calls)),
+                NoJobAuthority,
+            ),
+            ProductionToolControlPolicy::default(),
+        );
+        assert_eq!(
+            restarted.handle_line(&line).unwrap(),
+            result,
+            "restart replays the receipt without invoking runtime twice"
+        );
+    }
+    assert_eq!(*calls.lock().unwrap(), ["send", "resume", "interrupt"]);
+    assert_eq!(
+        fs::read(folder.join("main.jsonl")).unwrap(),
+        original_ledger,
+        "handler never authors target semantic events"
+    );
+    assert_eq!(
+        fs::read(engine::permission_mode_path(&folder)).unwrap(),
+        original_mode,
+        "sending or control does not grant the sender's permission mode"
+    );
+    visibility_value(visibility_call(
+        root.path(),
+        "archive-global",
+        "context",
+        json!({"operation":"archive","thread_id":FOREIGN,"reason":"archive"}),
+    ));
+    let archived = visibility_value(visibility_call(
+        root.path(),
+        "read-archived",
+        "context",
+        json!({"operation":"read","thread_id":FOREIGN,"reason":"inspect"}),
+    ));
+    assert_eq!(archived["archived"], true);
+    assert!(
+        visibility_call(
+            root.path(),
+            "archive-again",
+            "context",
+            json!({"operation":"archive","thread_id":FOREIGN,"reason":"archive"})
+        )
+        .error
+        .is_some()
+    );
+    assert_eq!(
+        visibility_call(
+            root.path(),
+            "archive-self",
+            "context",
+            json!({"operation":"archive","thread_id":SESSION,"reason":"archive"})
+        )
+        .error
+        .unwrap()
+        .code,
+        ToolControlErrorCode::Denied
+    );
+}
+
+#[test]
+fn context_search_cursors_bind_targets_filters_and_reject_legacy_ambiguous_identity() {
+    use sha2::{Digest, Sha256};
+    let root = tempfile::tempdir().unwrap();
+    foreign_session(root.path(), FOREIGN);
+    foreign_session(root.path(), FOREIGN_TWO);
+    let query = json!({"operation":"search","query":"foreign","scope":"thread","thread_id":FOREIGN,"limit":1,"reason":"inspect"});
+    let first = visibility_value(visibility_call(
+        root.path(),
+        "first",
+        "context",
+        query.clone(),
+    ));
+    let cursor = first["cursor"].as_str().unwrap();
+    let mut second = query.clone();
+    second["cursor"] = json!(cursor);
+    let page = visibility_value(visibility_call(
+        root.path(),
+        "second",
+        "context",
+        second.clone(),
+    ));
+    assert_eq!(page["hits"][0]["record_id"], 3);
+    for (id, key, value) in [
+        ("target", "thread_id", FOREIGN_TWO),
+        ("scope", "scope", "all"),
+        ("query", "query", "different"),
+    ] {
+        let mut changed = second.clone();
+        changed[key] = json!(value);
+        assert_eq!(
+            visibility_call(root.path(), id, "context", changed)
+                .error
+                .unwrap()
+                .code,
+            ToolControlErrorCode::Conflict
+        );
+    }
+    let legacy = format!(
+        "tc1-{}-1",
+        &format!("{:x}", Sha256::digest(b"search:ws:thread:foreign"))[..16]
+    );
+    second["cursor"] = json!(legacy);
+    assert_eq!(
+        visibility_call(root.path(), "legacy", "context", second)
+            .error
+            .unwrap()
+            .code,
+        ToolControlErrorCode::Conflict
+    );
+    for (id, target) in [
+        ("traversal", "../outside"),
+        ("missing", "018f0000-0000-7000-8000-000000000097"),
+    ] {
+        assert!(
+            visibility_call(
+                root.path(),
+                id,
+                "context",
+                json!({"operation":"read","thread_id":target,"reason":"inspect"})
+            )
+            .error
+            .is_some()
+        );
+    }
+    #[cfg(unix)]
+    {
+        let link = root
+            .path()
+            .join("threads")
+            .join("018f0000-0000-7000-8000-000000000096");
+        std::os::unix::fs::symlink(root.path().join("threads").join(FOREIGN), &link).unwrap();
+        assert!(visibility_call(root.path(), "symlink", "context", json!({"operation":"read","thread_id":"018f0000-0000-7000-8000-000000000096","reason":"inspect"})).error.is_some());
+    }
+}
+
+struct VisibilityRuntime(Arc<std::sync::Mutex<Vec<&'static str>>>);
+impl SupervisorRuntimeAuthority for VisibilityRuntime {
+    fn ensure_running(
+        &mut self,
+        session: &str,
+        _request: &str,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        assert_eq!(session, FOREIGN);
+        self.0.lock().unwrap().push("resume");
+        Ok(ijson(json!({"running":true})))
+    }
+    fn deliver_input(
+        &mut self,
+        request: &DeliveryRequest,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        assert_eq!(request.target_session, FOREIGN);
+        assert_eq!(request.message, "please inspect");
+        self.0.lock().unwrap().push("send");
+        Ok(ijson(json!({"seq":4})))
+    }
+    fn interrupt(
+        &mut self,
+        request: &InterruptRequest,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        assert_eq!(request.target_session, FOREIGN);
+        self.0.lock().unwrap().push("interrupt");
+        Ok(ijson(json!({"seq":5})))
+    }
+    fn ensure_child(
+        &mut self,
+        _proof: &ChildLaunchProof,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        panic!("not child spawn")
+    }
+    fn deliver_report(
+        &mut self,
+        _proof: &ParentReportProof,
+        _result: &IJsonValue,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        panic!("not parent report")
+    }
+}

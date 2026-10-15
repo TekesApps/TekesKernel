@@ -292,7 +292,7 @@ pub fn approval_class(tool: &BuiltinTool, arguments: &Value) -> ApprovalClass {
             _ => ApprovalClass::Execute,
         },
         "context" => match arguments.get("operation").and_then(Value::as_str) {
-            Some("search" | "records" | "threads" | "read") => ApprovalClass::ReadOnly,
+            Some("search" | "records" | "threads" | "read" | "send") => ApprovalClass::ReadOnly,
             _ => ApprovalClass::Destructive,
         },
         _ => match tool.effect {
