@@ -72,33 +72,33 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [transport::server::web_remote_mux](../../src/server.rs#L802) | function_item | `private` |  |
 | [transport::server::remote_mux_inner](../../src/server.rs#L809) | function_item | `private` |  |
 | [transport::server::remote_mux_loop](../../src/server.rs#L831) | function_item | `private` |  |
-| [transport::server::send_mux](../../src/server.rs#L1054) | function_item | `private` |  |
-| [transport::server::send_mux_error](../../src/server.rs#L1069) | function_item | `private` |  |
-| [transport::server::send_mux_error_with_details](../../src/server.rs#L1080) | function_item | `private` |  |
-| [transport::server::close_mux_protocol](../../src/server.rs#L1106) | function_item | `private` |  |
-| [transport::server::acquire](../../src/server.rs#L1126) | function_item | `private` |  |
-| [transport::server::read_json_body](../../src/server.rs#L1136) | function_item | `private` |  |
-| [transport::server::decode_strict](../../src/server.rs#L1164) | function_item | `private` |  |
-| [transport::server::json_content_type](../../src/server.rs#L1169) | function_item | `private` |  |
-| [transport::server::call_context](../../src/server.rs#L1181) | function_item | `private` |  |
-| [transport::server::json_response](../../src/server.rs#L1189) | function_item | `private` |  |
-| [transport::server::accepted_but_not_confirmed](../../src/server.rs#L1205) | function_item | `private` |  |
-| [transport::server::host_failure](../../src/server.rs#L1227) | function_item | `private` |  |
-| [transport::server::fallback](../../src/server.rs#L1255) | function_item | `private` |  |
-| [transport::server::method_not_allowed](../../src/server.rs#L1271) | function_item | `private` |  |
-| [transport::server::request_security](../../src/server.rs#L1279) | function_item | `private` |  |
-| [transport::server::web_request_security](../../src/server.rs#L1300) | function_item | `private` |  |
-| [transport::server::is_api_path](../../src/server.rs#L1318) | function_item | `private` |  |
-| [transport::server::is_web_data_path](../../src/server.rs#L1322) | function_item | `private` |  |
-| [transport::server::unauthorized](../../src/server.rs#L1326) | function_item | `private` |  |
-| [transport::server::unavailable](../../src/server.rs#L1334) | function_item | `private` |  |
-| [transport::server::unavailable_code](../../src/server.rs#L1350) | function_item | `private` |  |
-| [transport::server::carrier_error_code](../../src/server.rs#L1358) | function_item | `private` |  |
-| [transport::server::carrier_error](../../src/server.rs#L1373) | function_item | `private` |  |
-| [transport::server::carrier_error::ErrorBody](../../src/server.rs#L1375) | struct_item | `private` |  |
-| [transport::server::carrier_error::ErrorValue](../../src/server.rs#L1379) | struct_item | `private` |  |
-| [transport::server::carrier_error::EmptyDetails](../../src/server.rs#L1385) | struct_item | `private` |  |
-| [transport::server::TransportConfigError](../../src/server.rs#L1404) | enum_item | `pub` |  |
+| [transport::server::send_mux](../../src/server.rs#L1063) | function_item | `private` |  |
+| [transport::server::send_mux_error](../../src/server.rs#L1078) | function_item | `private` |  |
+| [transport::server::send_mux_error_with_details](../../src/server.rs#L1089) | function_item | `private` |  |
+| [transport::server::close_mux_protocol](../../src/server.rs#L1115) | function_item | `private` |  |
+| [transport::server::acquire](../../src/server.rs#L1135) | function_item | `private` |  |
+| [transport::server::read_json_body](../../src/server.rs#L1145) | function_item | `private` |  |
+| [transport::server::decode_strict](../../src/server.rs#L1173) | function_item | `private` |  |
+| [transport::server::json_content_type](../../src/server.rs#L1178) | function_item | `private` |  |
+| [transport::server::call_context](../../src/server.rs#L1190) | function_item | `private` |  |
+| [transport::server::json_response](../../src/server.rs#L1198) | function_item | `private` |  |
+| [transport::server::accepted_but_not_confirmed](../../src/server.rs#L1214) | function_item | `private` |  |
+| [transport::server::host_failure](../../src/server.rs#L1236) | function_item | `private` |  |
+| [transport::server::fallback](../../src/server.rs#L1264) | function_item | `private` |  |
+| [transport::server::method_not_allowed](../../src/server.rs#L1280) | function_item | `private` |  |
+| [transport::server::request_security](../../src/server.rs#L1288) | function_item | `private` |  |
+| [transport::server::web_request_security](../../src/server.rs#L1309) | function_item | `private` |  |
+| [transport::server::is_api_path](../../src/server.rs#L1327) | function_item | `private` |  |
+| [transport::server::is_web_data_path](../../src/server.rs#L1331) | function_item | `private` |  |
+| [transport::server::unauthorized](../../src/server.rs#L1335) | function_item | `private` |  |
+| [transport::server::unavailable](../../src/server.rs#L1343) | function_item | `private` |  |
+| [transport::server::unavailable_code](../../src/server.rs#L1359) | function_item | `private` |  |
+| [transport::server::carrier_error_code](../../src/server.rs#L1367) | function_item | `private` |  |
+| [transport::server::carrier_error](../../src/server.rs#L1382) | function_item | `private` |  |
+| [transport::server::carrier_error::ErrorBody](../../src/server.rs#L1384) | struct_item | `private` |  |
+| [transport::server::carrier_error::ErrorValue](../../src/server.rs#L1388) | struct_item | `private` |  |
+| [transport::server::carrier_error::EmptyDetails](../../src/server.rs#L1394) | struct_item | `private` |  |
+| [transport::server::TransportConfigError](../../src/server.rs#L1413) | enum_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -507,8 +507,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `file_changes` | `StatusCode::NOT_FOUND.into_response` | [443](../../src/server.rs#L443) | receiver-type-required |
 | `file_changes` | `shared.draining.load` | [445](../../src/server.rs#L445) | receiver-type-required |
 | `file_changes` | `shared.host.readiness` | [445](../../src/server.rs#L445) | receiver-type-required |
-| `file_changes` | `unavailable` | [446](../../src/server.rs#L446) | [transport::server::unavailable](../../src/server.rs#L1334) |
-| `file_changes` | `acquire` | [448](../../src/server.rs#L448) | [transport::server::acquire](../../src/server.rs#L1126) |
+| `file_changes` | `unavailable` | [446](../../src/server.rs#L446) | [transport::server::unavailable](../../src/server.rs#L1343) |
+| `file_changes` | `acquire` | [448](../../src/server.rs#L448) | [transport::server::acquire](../../src/server.rs#L1135) |
 | `file_changes` | `tokio::task::spawn_blocking` | [452](../../src/server.rs#L452) | external-constructor-callback-or-unresolved |
 | `file_changes` | `authority.open` | [452](../../src/server.rs#L452) | receiver-type-required |
 | `file_changes` | `StatusCode::BAD_REQUEST.into_response` | [454](../../src/server.rs#L454) | receiver-type-required |
@@ -523,8 +523,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `file_prepare` | `StatusCode::NOT_FOUND.into_response` | [488](../../src/server.rs#L488) | receiver-type-required |
 | `file_prepare` | `shared.draining.load` | [490](../../src/server.rs#L490) | receiver-type-required |
 | `file_prepare` | `shared.host.readiness` | [490](../../src/server.rs#L490) | receiver-type-required |
-| `file_prepare` | `unavailable` | [491](../../src/server.rs#L491) | [transport::server::unavailable](../../src/server.rs#L1334) |
-| `file_prepare` | `acquire` | [493](../../src/server.rs#L493) | [transport::server::acquire](../../src/server.rs#L1126) |
+| `file_prepare` | `unavailable` | [491](../../src/server.rs#L491) | [transport::server::unavailable](../../src/server.rs#L1343) |
+| `file_prepare` | `acquire` | [493](../../src/server.rs#L493) | [transport::server::acquire](../../src/server.rs#L1135) |
 | `file_prepare` | `timeout` | [497](../../src/server.rs#L497), [515](../../src/server.rs#L515) | external-constructor-callback-or-unresolved |
 | `file_prepare` | `axum::body::to_bytes` | [499](../../src/server.rs#L499) | external-constructor-callback-or-unresolved |
 | `file_prepare` | `request.into_body` | [499](../../src/server.rs#L499) | receiver-type-required |
@@ -599,13 +599,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ready` | `readiness_error` | [638](../../src/server.rs#L638), [641](../../src/server.rs#L641) | [transport::server::readiness_error](../../src/server.rs#L663) |
 | `ready` | `shared.host.readiness` | [639](../../src/server.rs#L639) | receiver-type-required |
 | `ready` | `shared.config.readiness_identity.is_some` | [640](../../src/server.rs#L640) | receiver-type-required |
-| `ready` | `carrier_error` | [643](../../src/server.rs#L643) | [transport::server::carrier_error](../../src/server.rs#L1373) |
+| `ready` | `carrier_error` | [643](../../src/server.rs#L643) | [transport::server::carrier_error](../../src/server.rs#L1382) |
 | `ready` | `shared.config.readiness_identity.as_ref` | [649](../../src/server.rs#L649) | receiver-type-required |
 | `ready` | `canonical_json` | [650](../../src/server.rs#L650) | [transport::server::canonical_json](../../src/server.rs#L677) |
 | `ready` | `StatusCode::NO_CONTENT.into_response` | [659](../../src/server.rs#L659) | receiver-type-required |
 | `readiness_error` | `shared.config.readiness_identity.is_some` | [664](../../src/server.rs#L664) | receiver-type-required |
 | `readiness_error` | `canonical_json` | [665](../../src/server.rs#L665) | [transport::server::canonical_json](../../src/server.rs#L677) |
-| `readiness_error` | `carrier_error` | [673](../../src/server.rs#L673) | [transport::server::carrier_error](../../src/server.rs#L1373) |
+| `readiness_error` | `carrier_error` | [673](../../src/server.rs#L673) | [transport::server::carrier_error](../../src/server.rs#L1382) |
 | `canonical_json` | `serde_json_canonicalizer::to_vec(value)         .expect` | [678](../../src/server.rs#L678) | receiver-type-required |
 | `canonical_json` | `serde_json_canonicalizer::to_vec` | [678](../../src/server.rs#L678) | external-constructor-callback-or-unresolved |
 | `canonical_json` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header(axum::http::header::CONTENT_LENGTH, bytes.len().to_string())         .body(Body::from(bytes))         .expect` | [680](../../src/server.rs#L680) | receiver-type-required |
@@ -624,27 +624,27 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `unary_inner` | `request.uri().path` | [705](../../src/server.rs#L705) | receiver-type-required |
 | `unary_inner` | `request.uri` | [705](../../src/server.rs#L705) | receiver-type-required |
 | `unary_inner` | `AccessSpan::new` | [706](../../src/server.rs#L706) | [transport::server::AccessSpan::new](../../src/server.rs#L192) |
-| `unary_inner` | `acquire` | [707](../../src/server.rs#L707) | [transport::server::acquire](../../src/server.rs#L1126) |
+| `unary_inner` | `acquire` | [707](../../src/server.rs#L707) | [transport::server::acquire](../../src/server.rs#L1135) |
 | `unary_inner` | `access.finish` | [709](../../src/server.rs#L709), [713](../../src/server.rs#L713), [718](../../src/server.rs#L718), [727](../../src/server.rs#L727), [733](../../src/server.rs#L733), [748](../../src/server.rs#L748), [761](../../src/server.rs#L761), [778](../../src/server.rs#L778), [782](../../src/server.rs#L782), [784](../../src/server.rs#L784), [793](../../src/server.rs#L793) | receiver-type-required |
 | `unary_inner` | `Some` | [709](../../src/server.rs#L709), [713](../../src/server.rs#L713), [720](../../src/server.rs#L720), [727](../../src/server.rs#L727), [739](../../src/server.rs#L739), [754](../../src/server.rs#L754), [761](../../src/server.rs#L761), [782](../../src/server.rs#L782), [789](../../src/server.rs#L789), [793](../../src/server.rs#L793) | external-constructor-callback-or-unresolved |
 | `unary_inner` | `shared.host.readiness` | [711](../../src/server.rs#L711) | receiver-type-required |
-| `unary_inner` | `unavailable_code` | [712](../../src/server.rs#L712), [760](../../src/server.rs#L760), [792](../../src/server.rs#L792) | [transport::server::unavailable_code](../../src/server.rs#L1350) |
-| `unary_inner` | `unavailable` | [713](../../src/server.rs#L713), [761](../../src/server.rs#L761), [793](../../src/server.rs#L793) | [transport::server::unavailable](../../src/server.rs#L1334) |
+| `unary_inner` | `unavailable_code` | [712](../../src/server.rs#L712), [760](../../src/server.rs#L760), [792](../../src/server.rs#L792) | [transport::server::unavailable_code](../../src/server.rs#L1359) |
+| `unary_inner` | `unavailable` | [713](../../src/server.rs#L713), [761](../../src/server.rs#L761), [793](../../src/server.rs#L793) | [transport::server::unavailable](../../src/server.rs#L1343) |
 | `unary_inner` | `ROUTE_REGISTRY.contains` | [715](../../src/server.rs#L715) | receiver-type-required |
 | `unary_inner` | `path_method.as_str` | [715](../../src/server.rs#L715) | receiver-type-required |
 | `unary_inner` | `shared.extension_routes.contains` | [716](../../src/server.rs#L716) | receiver-type-required |
-| `unary_inner` | `carrier_error` | [719](../../src/server.rs#L719), [734](../../src/server.rs#L734), [749](../../src/server.rs#L749) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `unary_inner` | `read_json_body` | [723](../../src/server.rs#L723) | [transport::server::read_json_body](../../src/server.rs#L1136) |
-| `unary_inner` | `carrier_error_code` | [726](../../src/server.rs#L726) | [transport::server::carrier_error_code](../../src/server.rs#L1358) |
+| `unary_inner` | `carrier_error` | [719](../../src/server.rs#L719), [734](../../src/server.rs#L734), [749](../../src/server.rs#L749) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `unary_inner` | `read_json_body` | [723](../../src/server.rs#L723) | [transport::server::read_json_body](../../src/server.rs#L1145) |
+| `unary_inner` | `carrier_error_code` | [726](../../src/server.rs#L726) | [transport::server::carrier_error_code](../../src/server.rs#L1367) |
 | `unary_inner` | `response.status` | [726](../../src/server.rs#L726) | receiver-type-required |
-| `unary_inner` | `decode_strict` | [730](../../src/server.rs#L730) | [transport::server::decode_strict](../../src/server.rs#L1164) |
+| `unary_inner` | `decode_strict` | [730](../../src/server.rs#L730) | [transport::server::decode_strict](../../src/server.rs#L1173) |
 | `unary_inner` | `access.bind_rpc_id` | [743](../../src/server.rs#L743) | receiver-type-required |
 | `unary_inner` | `validate_rpc_id(&request.rpc_id).is_err` | [744](../../src/server.rs#L744) | receiver-type-required |
 | `unary_inner` | `validate_rpc_id` | [744](../../src/server.rs#L744) | [endpoint::rpc::validate_rpc_id](../../../endpoint/src/rpc.rs#L186) |
 | `unary_inner` | `shared.draining.load` | [757](../../src/server.rs#L757) | receiver-type-required |
 | `unary_inner` | `shared.host.classify_method` | [758](../../src/server.rs#L758) | receiver-type-required |
 | `unary_inner` | `DurableHandoffSignal::new` | [763](../../src/server.rs#L763) | [endpoint::host::DurableHandoffSignal::new](../../../endpoint/src/host.rs#L202) |
-| `unary_inner` | `call_context` | [764](../../src/server.rs#L764) | [transport::server::call_context](../../src/server.rs#L1181) |
+| `unary_inner` | `call_context` | [764](../../src/server.rs#L764) | [transport::server::call_context](../../src/server.rs#L1190) |
 | `unary_inner` | `handoff.clone` | [764](../../src/server.rs#L764) | receiver-type-required |
 | `unary_inner` | `timeout` | [765](../../src/server.rs#L765) | external-constructor-callback-or-unresolved |
 | `unary_inner` | `shared.host.unary` | [767](../../src/server.rs#L767) | receiver-type-required |
@@ -655,17 +655,17 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `unary_inner` | `response                 .result                 .error                 .as_ref()                 .map` | [773](../../src/server.rs#L773) | receiver-type-required |
 | `unary_inner` | `response                 .result                 .error                 .as_ref` | [773](../../src/server.rs#L773) | receiver-type-required |
 | `unary_inner` | `error.code.as_str` | [777](../../src/server.rs#L777) | receiver-type-required |
-| `unary_inner` | `json_response` | [778](../../src/server.rs#L778), [785](../../src/server.rs#L785) | [transport::server::json_response](../../src/server.rs#L1189) |
-| `unary_inner` | `host_failure` | [781](../../src/server.rs#L781) | [transport::server::host_failure](../../src/server.rs#L1227) |
+| `unary_inner` | `json_response` | [778](../../src/server.rs#L778), [785](../../src/server.rs#L785) | [transport::server::json_response](../../src/server.rs#L1198) |
+| `unary_inner` | `host_failure` | [781](../../src/server.rs#L781) | [transport::server::host_failure](../../src/server.rs#L1236) |
 | `unary_inner` | `handoff.is_durable` | [784](../../src/server.rs#L784) | receiver-type-required |
-| `unary_inner` | `accepted_but_not_confirmed` | [785](../../src/server.rs#L785) | [transport::server::accepted_but_not_confirmed](../../src/server.rs#L1205) |
+| `unary_inner` | `accepted_but_not_confirmed` | [785](../../src/server.rs#L785) | [transport::server::accepted_but_not_confirmed](../../src/server.rs#L1214) |
 | `remote_mux` | `remote_mux_inner` | [799](../../src/server.rs#L799) | [transport::server::remote_mux_inner](../../src/server.rs#L809) |
 | `web_remote_mux` | `remote_mux_inner` | [806](../../src/server.rs#L806) | [transport::server::remote_mux_inner](../../src/server.rs#L809) |
 | `web_remote_mux` | `Arc::clone` | [806](../../src/server.rs#L806) | external-constructor-callback-or-unresolved |
 | `remote_mux_inner` | `shared.draining.load` | [810](../../src/server.rs#L810) | receiver-type-required |
 | `remote_mux_inner` | `shared.host.readiness` | [810](../../src/server.rs#L810) | receiver-type-required |
-| `remote_mux_inner` | `unavailable` | [811](../../src/server.rs#L811), [819](../../src/server.rs#L819), [823](../../src/server.rs#L823) | [transport::server::unavailable](../../src/server.rs#L1334) |
-| `remote_mux_inner` | `acquire` | [813](../../src/server.rs#L813) | [transport::server::acquire](../../src/server.rs#L1126) |
+| `remote_mux_inner` | `unavailable` | [811](../../src/server.rs#L811), [819](../../src/server.rs#L819), [823](../../src/server.rs#L823) | [transport::server::unavailable](../../src/server.rs#L1343) |
+| `remote_mux_inner` | `acquire` | [813](../../src/server.rs#L813) | [transport::server::acquire](../../src/server.rs#L1135) |
 | `remote_mux_inner` | `shared.next_mux_generation.fetch_add` | [817](../../src/server.rs#L817) | receiver-type-required |
 | `remote_mux_inner` | `SessionMuxGeneration::new` | [818](../../src/server.rs#L818) | [endpoint::mux::SessionMuxGeneration::new](../../../endpoint/src/mux.rs#L548) |
 | `remote_mux_inner` | `shared.host.mux_description` | [821](../../src/server.rs#L821) | receiver-type-required |
@@ -677,126 +677,126 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `remote_mux_inner` | `remote_mux_loop` | [828](../../src/server.rs#L828) | [transport::server::remote_mux_loop](../../src/server.rs#L831) |
 | `remote_mux_loop` | `generation.generation` | [839](../../src/server.rs#L839) | receiver-type-required |
 | `remote_mux_loop` | `send_mux(&mut socket, &ready).await.is_err` | [842](../../src/server.rs#L842) | receiver-type-required |
-| `remote_mux_loop` | `send_mux` | [842](../../src/server.rs#L842) | [transport::server::send_mux](../../src/server.rs#L1054) |
+| `remote_mux_loop` | `send_mux` | [842](../../src/server.rs#L842) | [transport::server::send_mux](../../src/server.rs#L1063) |
 | `remote_mux_loop` | `mpsc::channel` | [845](../../src/server.rs#L845) | external-constructor-callback-or-unresolved |
-| `remote_mux_loop` | `BTreeMap::<String, JoinHandle<()>>::new` | [846](../../src/server.rs#L846) | external-constructor-callback-or-unresolved |
-| `remote_mux_loop` | `shared.drain.subscribe` | [847](../../src/server.rs#L847) | receiver-type-required |
-| `send_mux` | `endpoint::client_mux_frames(frame).map_err` | [1055](../../src/server.rs#L1055) | receiver-type-required |
-| `send_mux` | `endpoint::client_mux_frames` | [1055](../../src/server.rs#L1055) | [endpoint::client_wire::client_mux_frames](../../../endpoint/src/client_wire.rs#L107) |
-| `send_mux` | `serde_json_canonicalizer::to_vec(&frame).map_err` | [1056](../../src/server.rs#L1056) | receiver-type-required |
-| `send_mux` | `serde_json_canonicalizer::to_vec` | [1056](../../src/server.rs#L1056) | external-constructor-callback-or-unresolved |
-| `send_mux` | `bytes.len` | [1057](../../src/server.rs#L1057) | receiver-type-required |
-| `send_mux` | `Err` | [1058](../../src/server.rs#L1058) | external-constructor-callback-or-unresolved |
-| `send_mux` | `String::from_utf8(bytes).map_err` | [1060](../../src/server.rs#L1060) | receiver-type-required |
-| `send_mux` | `String::from_utf8` | [1060](../../src/server.rs#L1060) | external-constructor-callback-or-unresolved |
-| `send_mux` | `socket             .send(Message::Text(text.into()))             .await             .map_err` | [1061](../../src/server.rs#L1061) | receiver-type-required |
-| `send_mux` | `socket             .send` | [1061](../../src/server.rs#L1061) | receiver-type-required |
-| `send_mux` | `Message::Text` | [1062](../../src/server.rs#L1062) | external-constructor-callback-or-unresolved |
-| `send_mux` | `text.into` | [1062](../../src/server.rs#L1062) | receiver-type-required |
-| `send_mux` | `Ok` | [1066](../../src/server.rs#L1066) | external-constructor-callback-or-unresolved |
-| `send_mux_error` | `send_mux_error_with_details` | [1077](../../src/server.rs#L1077) | [transport::server::send_mux_error_with_details](../../src/server.rs#L1080) |
-| `send_mux_error_with_details` | `send_mux` | [1089](../../src/server.rs#L1089) | [transport::server::send_mux](../../src/server.rs#L1054) |
-| `send_mux_error_with_details` | `code.to_owned` | [1096](../../src/server.rs#L1096) | receiver-type-required |
-| `send_mux_error_with_details` | `message.to_owned` | [1097](../../src/server.rs#L1097) | receiver-type-required |
-| `send_mux_error_with_details` | `IJsonValue::parse_str(details).map_err` | [1098](../../src/server.rs#L1098) | receiver-type-required |
-| `send_mux_error_with_details` | `IJsonValue::parse_str` | [1098](../../src/server.rs#L1098) | [schema::ijson::IJsonValue::parse_str](../../../schema/src/ijson.rs#L23) |
-| `close_mux_protocol` | `send_mux_error` | [1107](../../src/server.rs#L1107) | [transport::server::send_mux_error](../../src/server.rs#L1069) |
-| `close_mux_protocol` | `socket         .send` | [1116](../../src/server.rs#L1116) | receiver-type-required |
-| `close_mux_protocol` | `Message::Close` | [1117](../../src/server.rs#L1117) | external-constructor-callback-or-unresolved |
-| `close_mux_protocol` | `Some` | [1117](../../src/server.rs#L1117) | external-constructor-callback-or-unresolved |
-| `close_mux_protocol` | `StreamErrorCode::ProtocolError.close_code` | [1118](../../src/server.rs#L1118) | receiver-type-required |
-| `close_mux_protocol` | `"protocol-error".into` | [1119](../../src/server.rs#L1119) | receiver-type-required |
-| `acquire` | `Arc::clone(semaphore).try_acquire_owned().map_err` | [1127](../../src/server.rs#L1127) | receiver-type-required |
-| `acquire` | `Arc::clone(semaphore).try_acquire_owned` | [1127](../../src/server.rs#L1127) | receiver-type-required |
-| `acquire` | `Arc::clone` | [1127](../../src/server.rs#L1127) | external-constructor-callback-or-unresolved |
-| `acquire` | `carrier_error` | [1128](../../src/server.rs#L1128) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `read_json_body` | `json_content_type` | [1137](../../src/server.rs#L1137) | [transport::server::json_content_type](../../src/server.rs#L1169) |
-| `read_json_body` | `request.headers` | [1137](../../src/server.rs#L1137) | receiver-type-required |
-| `read_json_body` | `Err` | [1138](../../src/server.rs#L1138), [1151](../../src/server.rs#L1151), [1156](../../src/server.rs#L1156) | external-constructor-callback-or-unresolved |
-| `read_json_body` | `carrier_error` | [1138](../../src/server.rs#L1138), [1151](../../src/server.rs#L1151), [1156](../../src/server.rs#L1156) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `read_json_body` | `timeout` | [1144](../../src/server.rs#L1144) | external-constructor-callback-or-unresolved |
-| `read_json_body` | `axum::body::to_bytes` | [1146](../../src/server.rs#L1146) | external-constructor-callback-or-unresolved |
-| `read_json_body` | `request.into_body` | [1146](../../src/server.rs#L1146) | receiver-type-required |
-| `read_json_body` | `Ok` | [1150](../../src/server.rs#L1150) | external-constructor-callback-or-unresolved |
-| `read_json_body` | `bytes.to_vec` | [1150](../../src/server.rs#L1150) | receiver-type-required |
-| `decode_strict` | `IJsonValue::parse(bytes).map_err` | [1165](../../src/server.rs#L1165) | receiver-type-required |
-| `decode_strict` | `IJsonValue::parse` | [1165](../../src/server.rs#L1165) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `decode_strict` | `serde_json::from_slice(bytes).map_err` | [1166](../../src/server.rs#L1166) | receiver-type-required |
-| `decode_strict` | `serde_json::from_slice` | [1166](../../src/server.rs#L1166) | external-constructor-callback-or-unresolved |
-| `json_content_type` | `headers         .get(CONTENT_TYPE)         .and_then(&#124;value&#124; value.to_str().ok())         .is_some_and` | [1170](../../src/server.rs#L1170) | receiver-type-required |
-| `json_content_type` | `headers         .get(CONTENT_TYPE)         .and_then` | [1170](../../src/server.rs#L1170) | receiver-type-required |
-| `json_content_type` | `headers         .get` | [1170](../../src/server.rs#L1170) | receiver-type-required |
-| `json_content_type` | `value.to_str().ok` | [1172](../../src/server.rs#L1172) | receiver-type-required |
-| `json_content_type` | `value.to_str` | [1172](../../src/server.rs#L1172) | receiver-type-required |
-| `json_content_type` | `value                 .split(';')                 .next()                 .is_some_and` | [1174](../../src/server.rs#L1174) | receiver-type-required |
-| `json_content_type` | `value                 .split(';')                 .next` | [1174](../../src/server.rs#L1174) | receiver-type-required |
-| `json_content_type` | `value                 .split` | [1174](../../src/server.rs#L1174) | receiver-type-required |
-| `json_content_type` | `mime.trim().eq_ignore_ascii_case` | [1177](../../src/server.rs#L1177) | receiver-type-required |
-| `json_content_type` | `mime.trim` | [1177](../../src/server.rs#L1177) | receiver-type-required |
-| `call_context` | `Instant::now` | [1183](../../src/server.rs#L1183) | external-constructor-callback-or-unresolved |
-| `call_context` | `DrainSignal::new` | [1184](../../src/server.rs#L1184) | [endpoint::host::DrainSignal::new](../../../endpoint/src/host.rs#L175) |
-| `call_context` | `Arc::clone` | [1184](../../src/server.rs#L1184) | external-constructor-callback-or-unresolved |
-| `json_response` | `serde_json_canonicalizer::to_vec` | [1190](../../src/server.rs#L1190) | external-constructor-callback-or-unresolved |
-| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header("content-length", bytes.len().to_string())             .body(Body::from(bytes))             .expect` | [1191](../../src/server.rs#L1191) | receiver-type-required |
-| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header("content-length", bytes.len().to_string())             .body` | [1191](../../src/server.rs#L1191) | receiver-type-required |
-| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header` | [1191](../../src/server.rs#L1191) | receiver-type-required |
-| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header` | [1191](../../src/server.rs#L1191) | receiver-type-required |
-| `json_response` | `Response::builder()             .status` | [1191](../../src/server.rs#L1191) | receiver-type-required |
-| `json_response` | `Response::builder` | [1191](../../src/server.rs#L1191) | external-constructor-callback-or-unresolved |
-| `json_response` | `bytes.len().to_string` | [1194](../../src/server.rs#L1194) | receiver-type-required |
-| `json_response` | `bytes.len` | [1194](../../src/server.rs#L1194) | receiver-type-required |
-| `json_response` | `Body::from` | [1195](../../src/server.rs#L1195) | external-constructor-callback-or-unresolved |
-| `json_response` | `carrier_error` | [1197](../../src/server.rs#L1197) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `accepted_but_not_confirmed` | `serde_json::to_vec(&serde_json::json!({         "rpcId": rpc_id,         "operation": operation,     }))     .expect` | [1206](../../src/server.rs#L1206) | receiver-type-required |
-| `accepted_but_not_confirmed` | `serde_json::to_vec` | [1206](../../src/server.rs#L1206) | external-constructor-callback-or-unresolved |
-| `accepted_but_not_confirmed` | `"server-response".to_owned` | [1212](../../src/server.rs#L1212) | receiver-type-required |
-| `accepted_but_not_confirmed` | `rpc_id.to_owned` | [1213](../../src/server.rs#L1213) | receiver-type-required |
-| `accepted_but_not_confirmed` | `Some` | [1217](../../src/server.rs#L1217) | external-constructor-callback-or-unresolved |
-| `accepted_but_not_confirmed` | `"accepted-but-not-confirmed".to_owned` | [1218](../../src/server.rs#L1218) | receiver-type-required |
-| `accepted_but_not_confirmed` | `"Mutation was accepted but its receipt was not confirmed".to_owned` | [1219](../../src/server.rs#L1219) | receiver-type-required |
-| `accepted_but_not_confirmed` | `IJsonValue::parse(&details)                     .expect` | [1220](../../src/server.rs#L1220) | receiver-type-required |
-| `accepted_but_not_confirmed` | `IJsonValue::parse` | [1220](../../src/server.rs#L1220) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `host_failure` | `carrier_error` | [1230](../../src/server.rs#L1230), [1238](../../src/server.rs#L1238) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `host_failure` | `unavailable` | [1251](../../src/server.rs#L1251) | [transport::server::unavailable](../../src/server.rs#L1334) |
-| `host_failure` | `unavailable_code` | [1251](../../src/server.rs#L1251) | [transport::server::unavailable_code](../../src/server.rs#L1350) |
-| `fallback` | `request.uri().path().starts_with` | [1256](../../src/server.rs#L1256) | receiver-type-required |
-| `fallback` | `request.uri().path` | [1256](../../src/server.rs#L1256) | receiver-type-required |
-| `fallback` | `request.uri` | [1256](../../src/server.rs#L1256) | receiver-type-required |
-| `fallback` | `request.method` | [1256](../../src/server.rs#L1256) | receiver-type-required |
-| `fallback` | `carrier_error` | [1262](../../src/server.rs#L1262), [1267](../../src/server.rs#L1267) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `method_not_allowed` | `carrier_error` | [1272](../../src/server.rs#L1272) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `request_security` | `is_api_path` | [1284](../../src/server.rs#L1284) | [transport::server::is_api_path](../../src/server.rs#L1318) |
-| `request_security` | `request.uri().path` | [1284](../../src/server.rs#L1284) | receiver-type-required |
-| `request_security` | `request.uri` | [1284](../../src/server.rs#L1284) | receiver-type-required |
-| `request_security` | `next.run` | [1285](../../src/server.rs#L1285), [1297](../../src/server.rs#L1297) | receiver-type-required |
-| `request_security` | `shared.config.bearer_token.authenticates` | [1287](../../src/server.rs#L1287) | receiver-type-required |
-| `request_security` | `request.headers` | [1287](../../src/server.rs#L1287), [1290](../../src/server.rs#L1290) | receiver-type-required |
-| `request_security` | `unauthorized` | [1288](../../src/server.rs#L1288) | [transport::server::unauthorized](../../src/server.rs#L1326) |
-| `request_security` | `shared.config.origins.permits` | [1290](../../src/server.rs#L1290) | receiver-type-required |
-| `request_security` | `carrier_error` | [1291](../../src/server.rs#L1291) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `web_request_security` | `shared.browser.permits_host` | [1305](../../src/server.rs#L1305) | receiver-type-required |
-| `web_request_security` | `request.headers` | [1305](../../src/server.rs#L1305), [1308](../../src/server.rs#L1308) | receiver-type-required |
-| `web_request_security` | `unauthorized` | [1306](../../src/server.rs#L1306) | [transport::server::unauthorized](../../src/server.rs#L1326) |
-| `web_request_security` | `is_web_data_path` | [1308](../../src/server.rs#L1308) | [transport::server::is_web_data_path](../../src/server.rs#L1322) |
-| `web_request_security` | `request.uri().path` | [1308](../../src/server.rs#L1308) | receiver-type-required |
-| `web_request_security` | `request.uri` | [1308](../../src/server.rs#L1308) | receiver-type-required |
-| `web_request_security` | `shared.browser.permits_origin` | [1308](../../src/server.rs#L1308) | receiver-type-required |
-| `web_request_security` | `carrier_error` | [1309](../../src/server.rs#L1309) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `web_request_security` | `next.run` | [1315](../../src/server.rs#L1315) | receiver-type-required |
-| `is_api_path` | `path.starts_with` | [1319](../../src/server.rs#L1319) | receiver-type-required |
-| `is_web_data_path` | `path.starts_with` | [1323](../../src/server.rs#L1323) | receiver-type-required |
-| `unauthorized` | `carrier_error` | [1327](../../src/server.rs#L1327) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `unavailable` | `shared.draining.load` | [1335](../../src/server.rs#L1335) | receiver-type-required |
-| `unavailable` | `carrier_error` | [1336](../../src/server.rs#L1336), [1342](../../src/server.rs#L1342) | [transport::server::carrier_error](../../src/server.rs#L1373) |
-| `unavailable_code` | `shared.draining.load` | [1351](../../src/server.rs#L1351) | receiver-type-required |
-| `carrier_error` | `serde_json_canonicalizer::to_vec(&ErrorBody {         error: ErrorValue {             code,             details: EmptyDetails {},             message,         },     })     .expect` | [1387](../../src/server.rs#L1387) | receiver-type-required |
-| `carrier_error` | `serde_json_canonicalizer::to_vec` | [1387](../../src/server.rs#L1387) | external-constructor-callback-or-unresolved |
-| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header("content-length", bytes.len().to_string())         .body(Body::from(bytes))         .expect` | [1395](../../src/server.rs#L1395) | receiver-type-required |
-| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header("content-length", bytes.len().to_string())         .body` | [1395](../../src/server.rs#L1395) | receiver-type-required |
-| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header` | [1395](../../src/server.rs#L1395) | receiver-type-required |
-| `carrier_error` | `Response::builder()         .status(status)         .header` | [1395](../../src/server.rs#L1395) | receiver-type-required |
-| `carrier_error` | `Response::builder()         .status` | [1395](../../src/server.rs#L1395) | receiver-type-required |
-| `carrier_error` | `Response::builder` | [1395](../../src/server.rs#L1395) | external-constructor-callback-or-unresolved |
-| `carrier_error` | `bytes.len().to_string` | [1398](../../src/server.rs#L1398) | receiver-type-required |
-| `carrier_error` | `bytes.len` | [1398](../../src/server.rs#L1398) | receiver-type-required |
-| `carrier_error` | `Body::from` | [1399](../../src/server.rs#L1399) | external-constructor-callback-or-unresolved |
+| `remote_mux_loop` | `BTreeMap::<String, (u64, JoinHandle<()>)>::new` | [849](../../src/server.rs#L849) | external-constructor-callback-or-unresolved |
+| `remote_mux_loop` | `shared.drain.subscribe` | [851](../../src/server.rs#L851) | receiver-type-required |
+| `send_mux` | `endpoint::client_mux_frames(frame).map_err` | [1064](../../src/server.rs#L1064) | receiver-type-required |
+| `send_mux` | `endpoint::client_mux_frames` | [1064](../../src/server.rs#L1064) | [endpoint::client_wire::client_mux_frames](../../../endpoint/src/client_wire.rs#L107) |
+| `send_mux` | `serde_json_canonicalizer::to_vec(&frame).map_err` | [1065](../../src/server.rs#L1065) | receiver-type-required |
+| `send_mux` | `serde_json_canonicalizer::to_vec` | [1065](../../src/server.rs#L1065) | external-constructor-callback-or-unresolved |
+| `send_mux` | `bytes.len` | [1066](../../src/server.rs#L1066) | receiver-type-required |
+| `send_mux` | `Err` | [1067](../../src/server.rs#L1067) | external-constructor-callback-or-unresolved |
+| `send_mux` | `String::from_utf8(bytes).map_err` | [1069](../../src/server.rs#L1069) | receiver-type-required |
+| `send_mux` | `String::from_utf8` | [1069](../../src/server.rs#L1069) | external-constructor-callback-or-unresolved |
+| `send_mux` | `socket             .send(Message::Text(text.into()))             .await             .map_err` | [1070](../../src/server.rs#L1070) | receiver-type-required |
+| `send_mux` | `socket             .send` | [1070](../../src/server.rs#L1070) | receiver-type-required |
+| `send_mux` | `Message::Text` | [1071](../../src/server.rs#L1071) | external-constructor-callback-or-unresolved |
+| `send_mux` | `text.into` | [1071](../../src/server.rs#L1071) | receiver-type-required |
+| `send_mux` | `Ok` | [1075](../../src/server.rs#L1075) | external-constructor-callback-or-unresolved |
+| `send_mux_error` | `send_mux_error_with_details` | [1086](../../src/server.rs#L1086) | [transport::server::send_mux_error_with_details](../../src/server.rs#L1089) |
+| `send_mux_error_with_details` | `send_mux` | [1098](../../src/server.rs#L1098) | [transport::server::send_mux](../../src/server.rs#L1063) |
+| `send_mux_error_with_details` | `code.to_owned` | [1105](../../src/server.rs#L1105) | receiver-type-required |
+| `send_mux_error_with_details` | `message.to_owned` | [1106](../../src/server.rs#L1106) | receiver-type-required |
+| `send_mux_error_with_details` | `IJsonValue::parse_str(details).map_err` | [1107](../../src/server.rs#L1107) | receiver-type-required |
+| `send_mux_error_with_details` | `IJsonValue::parse_str` | [1107](../../src/server.rs#L1107) | [schema::ijson::IJsonValue::parse_str](../../../schema/src/ijson.rs#L23) |
+| `close_mux_protocol` | `send_mux_error` | [1116](../../src/server.rs#L1116) | [transport::server::send_mux_error](../../src/server.rs#L1078) |
+| `close_mux_protocol` | `socket         .send` | [1125](../../src/server.rs#L1125) | receiver-type-required |
+| `close_mux_protocol` | `Message::Close` | [1126](../../src/server.rs#L1126) | external-constructor-callback-or-unresolved |
+| `close_mux_protocol` | `Some` | [1126](../../src/server.rs#L1126) | external-constructor-callback-or-unresolved |
+| `close_mux_protocol` | `StreamErrorCode::ProtocolError.close_code` | [1127](../../src/server.rs#L1127) | receiver-type-required |
+| `close_mux_protocol` | `"protocol-error".into` | [1128](../../src/server.rs#L1128) | receiver-type-required |
+| `acquire` | `Arc::clone(semaphore).try_acquire_owned().map_err` | [1136](../../src/server.rs#L1136) | receiver-type-required |
+| `acquire` | `Arc::clone(semaphore).try_acquire_owned` | [1136](../../src/server.rs#L1136) | receiver-type-required |
+| `acquire` | `Arc::clone` | [1136](../../src/server.rs#L1136) | external-constructor-callback-or-unresolved |
+| `acquire` | `carrier_error` | [1137](../../src/server.rs#L1137) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `read_json_body` | `json_content_type` | [1146](../../src/server.rs#L1146) | [transport::server::json_content_type](../../src/server.rs#L1178) |
+| `read_json_body` | `request.headers` | [1146](../../src/server.rs#L1146) | receiver-type-required |
+| `read_json_body` | `Err` | [1147](../../src/server.rs#L1147), [1160](../../src/server.rs#L1160), [1165](../../src/server.rs#L1165) | external-constructor-callback-or-unresolved |
+| `read_json_body` | `carrier_error` | [1147](../../src/server.rs#L1147), [1160](../../src/server.rs#L1160), [1165](../../src/server.rs#L1165) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `read_json_body` | `timeout` | [1153](../../src/server.rs#L1153) | external-constructor-callback-or-unresolved |
+| `read_json_body` | `axum::body::to_bytes` | [1155](../../src/server.rs#L1155) | external-constructor-callback-or-unresolved |
+| `read_json_body` | `request.into_body` | [1155](../../src/server.rs#L1155) | receiver-type-required |
+| `read_json_body` | `Ok` | [1159](../../src/server.rs#L1159) | external-constructor-callback-or-unresolved |
+| `read_json_body` | `bytes.to_vec` | [1159](../../src/server.rs#L1159) | receiver-type-required |
+| `decode_strict` | `IJsonValue::parse(bytes).map_err` | [1174](../../src/server.rs#L1174) | receiver-type-required |
+| `decode_strict` | `IJsonValue::parse` | [1174](../../src/server.rs#L1174) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `decode_strict` | `serde_json::from_slice(bytes).map_err` | [1175](../../src/server.rs#L1175) | receiver-type-required |
+| `decode_strict` | `serde_json::from_slice` | [1175](../../src/server.rs#L1175) | external-constructor-callback-or-unresolved |
+| `json_content_type` | `headers         .get(CONTENT_TYPE)         .and_then(&#124;value&#124; value.to_str().ok())         .is_some_and` | [1179](../../src/server.rs#L1179) | receiver-type-required |
+| `json_content_type` | `headers         .get(CONTENT_TYPE)         .and_then` | [1179](../../src/server.rs#L1179) | receiver-type-required |
+| `json_content_type` | `headers         .get` | [1179](../../src/server.rs#L1179) | receiver-type-required |
+| `json_content_type` | `value.to_str().ok` | [1181](../../src/server.rs#L1181) | receiver-type-required |
+| `json_content_type` | `value.to_str` | [1181](../../src/server.rs#L1181) | receiver-type-required |
+| `json_content_type` | `value                 .split(';')                 .next()                 .is_some_and` | [1183](../../src/server.rs#L1183) | receiver-type-required |
+| `json_content_type` | `value                 .split(';')                 .next` | [1183](../../src/server.rs#L1183) | receiver-type-required |
+| `json_content_type` | `value                 .split` | [1183](../../src/server.rs#L1183) | receiver-type-required |
+| `json_content_type` | `mime.trim().eq_ignore_ascii_case` | [1186](../../src/server.rs#L1186) | receiver-type-required |
+| `json_content_type` | `mime.trim` | [1186](../../src/server.rs#L1186) | receiver-type-required |
+| `call_context` | `Instant::now` | [1192](../../src/server.rs#L1192) | external-constructor-callback-or-unresolved |
+| `call_context` | `DrainSignal::new` | [1193](../../src/server.rs#L1193) | [endpoint::host::DrainSignal::new](../../../endpoint/src/host.rs#L175) |
+| `call_context` | `Arc::clone` | [1193](../../src/server.rs#L1193) | external-constructor-callback-or-unresolved |
+| `json_response` | `serde_json_canonicalizer::to_vec` | [1199](../../src/server.rs#L1199) | external-constructor-callback-or-unresolved |
+| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header("content-length", bytes.len().to_string())             .body(Body::from(bytes))             .expect` | [1200](../../src/server.rs#L1200) | receiver-type-required |
+| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header("content-length", bytes.len().to_string())             .body` | [1200](../../src/server.rs#L1200) | receiver-type-required |
+| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header(CONTENT_TYPE, "application/json")             .header` | [1200](../../src/server.rs#L1200) | receiver-type-required |
+| `json_response` | `Response::builder()             .status(StatusCode::OK)             .header` | [1200](../../src/server.rs#L1200) | receiver-type-required |
+| `json_response` | `Response::builder()             .status` | [1200](../../src/server.rs#L1200) | receiver-type-required |
+| `json_response` | `Response::builder` | [1200](../../src/server.rs#L1200) | external-constructor-callback-or-unresolved |
+| `json_response` | `bytes.len().to_string` | [1203](../../src/server.rs#L1203) | receiver-type-required |
+| `json_response` | `bytes.len` | [1203](../../src/server.rs#L1203) | receiver-type-required |
+| `json_response` | `Body::from` | [1204](../../src/server.rs#L1204) | external-constructor-callback-or-unresolved |
+| `json_response` | `carrier_error` | [1206](../../src/server.rs#L1206) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `accepted_but_not_confirmed` | `serde_json::to_vec(&serde_json::json!({         "rpcId": rpc_id,         "operation": operation,     }))     .expect` | [1215](../../src/server.rs#L1215) | receiver-type-required |
+| `accepted_but_not_confirmed` | `serde_json::to_vec` | [1215](../../src/server.rs#L1215) | external-constructor-callback-or-unresolved |
+| `accepted_but_not_confirmed` | `"server-response".to_owned` | [1221](../../src/server.rs#L1221) | receiver-type-required |
+| `accepted_but_not_confirmed` | `rpc_id.to_owned` | [1222](../../src/server.rs#L1222) | receiver-type-required |
+| `accepted_but_not_confirmed` | `Some` | [1226](../../src/server.rs#L1226) | external-constructor-callback-or-unresolved |
+| `accepted_but_not_confirmed` | `"accepted-but-not-confirmed".to_owned` | [1227](../../src/server.rs#L1227) | receiver-type-required |
+| `accepted_but_not_confirmed` | `"Mutation was accepted but its receipt was not confirmed".to_owned` | [1228](../../src/server.rs#L1228) | receiver-type-required |
+| `accepted_but_not_confirmed` | `IJsonValue::parse(&details)                     .expect` | [1229](../../src/server.rs#L1229) | receiver-type-required |
+| `accepted_but_not_confirmed` | `IJsonValue::parse` | [1229](../../src/server.rs#L1229) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `host_failure` | `carrier_error` | [1239](../../src/server.rs#L1239), [1247](../../src/server.rs#L1247) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `host_failure` | `unavailable` | [1260](../../src/server.rs#L1260) | [transport::server::unavailable](../../src/server.rs#L1343) |
+| `host_failure` | `unavailable_code` | [1260](../../src/server.rs#L1260) | [transport::server::unavailable_code](../../src/server.rs#L1359) |
+| `fallback` | `request.uri().path().starts_with` | [1265](../../src/server.rs#L1265) | receiver-type-required |
+| `fallback` | `request.uri().path` | [1265](../../src/server.rs#L1265) | receiver-type-required |
+| `fallback` | `request.uri` | [1265](../../src/server.rs#L1265) | receiver-type-required |
+| `fallback` | `request.method` | [1265](../../src/server.rs#L1265) | receiver-type-required |
+| `fallback` | `carrier_error` | [1271](../../src/server.rs#L1271), [1276](../../src/server.rs#L1276) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `method_not_allowed` | `carrier_error` | [1281](../../src/server.rs#L1281) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `request_security` | `is_api_path` | [1293](../../src/server.rs#L1293) | [transport::server::is_api_path](../../src/server.rs#L1327) |
+| `request_security` | `request.uri().path` | [1293](../../src/server.rs#L1293) | receiver-type-required |
+| `request_security` | `request.uri` | [1293](../../src/server.rs#L1293) | receiver-type-required |
+| `request_security` | `next.run` | [1294](../../src/server.rs#L1294), [1306](../../src/server.rs#L1306) | receiver-type-required |
+| `request_security` | `shared.config.bearer_token.authenticates` | [1296](../../src/server.rs#L1296) | receiver-type-required |
+| `request_security` | `request.headers` | [1296](../../src/server.rs#L1296), [1299](../../src/server.rs#L1299) | receiver-type-required |
+| `request_security` | `unauthorized` | [1297](../../src/server.rs#L1297) | [transport::server::unauthorized](../../src/server.rs#L1335) |
+| `request_security` | `shared.config.origins.permits` | [1299](../../src/server.rs#L1299) | receiver-type-required |
+| `request_security` | `carrier_error` | [1300](../../src/server.rs#L1300) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `web_request_security` | `shared.browser.permits_host` | [1314](../../src/server.rs#L1314) | receiver-type-required |
+| `web_request_security` | `request.headers` | [1314](../../src/server.rs#L1314), [1317](../../src/server.rs#L1317) | receiver-type-required |
+| `web_request_security` | `unauthorized` | [1315](../../src/server.rs#L1315) | [transport::server::unauthorized](../../src/server.rs#L1335) |
+| `web_request_security` | `is_web_data_path` | [1317](../../src/server.rs#L1317) | [transport::server::is_web_data_path](../../src/server.rs#L1331) |
+| `web_request_security` | `request.uri().path` | [1317](../../src/server.rs#L1317) | receiver-type-required |
+| `web_request_security` | `request.uri` | [1317](../../src/server.rs#L1317) | receiver-type-required |
+| `web_request_security` | `shared.browser.permits_origin` | [1317](../../src/server.rs#L1317) | receiver-type-required |
+| `web_request_security` | `carrier_error` | [1318](../../src/server.rs#L1318) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `web_request_security` | `next.run` | [1324](../../src/server.rs#L1324) | receiver-type-required |
+| `is_api_path` | `path.starts_with` | [1328](../../src/server.rs#L1328) | receiver-type-required |
+| `is_web_data_path` | `path.starts_with` | [1332](../../src/server.rs#L1332) | receiver-type-required |
+| `unauthorized` | `carrier_error` | [1336](../../src/server.rs#L1336) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `unavailable` | `shared.draining.load` | [1344](../../src/server.rs#L1344) | receiver-type-required |
+| `unavailable` | `carrier_error` | [1345](../../src/server.rs#L1345), [1351](../../src/server.rs#L1351) | [transport::server::carrier_error](../../src/server.rs#L1382) |
+| `unavailable_code` | `shared.draining.load` | [1360](../../src/server.rs#L1360) | receiver-type-required |
+| `carrier_error` | `serde_json_canonicalizer::to_vec(&ErrorBody {         error: ErrorValue {             code,             details: EmptyDetails {},             message,         },     })     .expect` | [1396](../../src/server.rs#L1396) | receiver-type-required |
+| `carrier_error` | `serde_json_canonicalizer::to_vec` | [1396](../../src/server.rs#L1396) | external-constructor-callback-or-unresolved |
+| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header("content-length", bytes.len().to_string())         .body(Body::from(bytes))         .expect` | [1404](../../src/server.rs#L1404) | receiver-type-required |
+| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header("content-length", bytes.len().to_string())         .body` | [1404](../../src/server.rs#L1404) | receiver-type-required |
+| `carrier_error` | `Response::builder()         .status(status)         .header(CONTENT_TYPE, "application/json")         .header` | [1404](../../src/server.rs#L1404) | receiver-type-required |
+| `carrier_error` | `Response::builder()         .status(status)         .header` | [1404](../../src/server.rs#L1404) | receiver-type-required |
+| `carrier_error` | `Response::builder()         .status` | [1404](../../src/server.rs#L1404) | receiver-type-required |
+| `carrier_error` | `Response::builder` | [1404](../../src/server.rs#L1404) | external-constructor-callback-or-unresolved |
+| `carrier_error` | `bytes.len().to_string` | [1407](../../src/server.rs#L1407) | receiver-type-required |
+| `carrier_error` | `bytes.len` | [1407](../../src/server.rs#L1407) | receiver-type-required |
+| `carrier_error` | `Body::from` | [1408](../../src/server.rs#L1408) | external-constructor-callback-or-unresolved |

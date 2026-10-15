@@ -93,7 +93,11 @@ The five targets are `workspace`, `session-inventory`, `session-journal`,
 `session-control`, and `actionables`. Journal target additionally carries
 `address:{sessionId}` and `maxMessages` in `1...500`; the normal initial value
 is 50. A stream ID is scoped to one physical generation and cannot be reused
-until closed. Connection loss cancels all logical streams and their cursors.
+until closed. `close` ends only that stream: frames the server had already
+produced for it are discarded, never validated against a later stream, so a
+close, or a reopen of the same ID, never ends the connection; a reopened ID
+starts with its own baseline. Connection loss cancels all logical streams and
+their cursors.
 
 Server frames are `ready`, `stream`, `journal-page-result`,
 `actionable-response-result`, or `error`. `stream` carries the matching

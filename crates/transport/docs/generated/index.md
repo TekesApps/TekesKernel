@@ -30,7 +30,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/transport/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/transport/src/server.rs](../../src/server.rs) | 91 | 492 | [Symbols and calls](src--server.md) |
 | [crates/transport/src/web.rs](../../src/web.rs) | 15 | 61 | [Symbols and calls](src--web.md) |
-| [crates/transport/tests/slice9_transport.rs](../../tests/slice9_transport.rs) | 52 | 670 | `inventory.json` |
+| [crates/transport/tests/slice9_transport.rs](../../tests/slice9_transport.rs) | 57 | 719 | `inventory.json` |
 
 ## Cross-file direct calls
 

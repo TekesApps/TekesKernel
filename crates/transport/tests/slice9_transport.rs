@@ -177,6 +177,7 @@ struct MockHost {
     fail_stream: bool,
     terminal_stream: Option<StreamErrorCode>,
     repeat_baseline: bool,
+    burst_after_baseline: usize,
     extensions: BTreeSet<String>,
 }
 
@@ -220,6 +221,7 @@ impl MockHost {
             fail_stream: false,
             terminal_stream: None,
             repeat_baseline: false,
+            burst_after_baseline: 0,
             extensions: BTreeSet::new(),
         }
     }
@@ -241,6 +243,11 @@ impl MockHost {
 
     fn with_repeat_baseline(mut self) -> Self {
         self.repeat_baseline = true;
+        self
+    }
+
+    fn with_burst_after_baseline(mut self, frames: usize) -> Self {
+        self.burst_after_baseline = frames;
         self
     }
 
@@ -491,11 +498,17 @@ impl EndpointCarrierHost for MockHost {
                 items: Vec::new(),
             },
         };
-        let frames = if self.repeat_baseline {
+        let mut frames = if self.repeat_baseline {
             VecDeque::from([baseline.clone(), baseline])
         } else {
             VecDeque::from([baseline])
         };
+        frames.extend(
+            (0..self.burst_after_baseline).map(|_| SessionSyncFrame::WorkspaceRemove {
+                generation,
+                workspace_id: "018f0000-0000-7000-8000-000000000001".to_owned(),
+            }),
+        );
         Box::pin(ready(Ok(
             Box::new(MockMuxStream { frames }) as SessionStreamReceiver
         )))
@@ -1274,6 +1287,85 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
         panic!("expected protocol close")
     };
     assert_eq!(u16::from(close.code), 1002);
+    task.abort();
+}
+
+/// A client may close a stream while frames for it are still queued in the mux. Those frames
+/// belong to a stream the client no longer follows: they are dropped instead of being validated
+/// against the generation, so neither a close nor a reopen (even under the same id) ends the mux.
+#[tokio::test]
+async fn v3_mux_drops_frames_queued_for_a_stream_the_client_closed() {
+    type Socket = tokio_tungstenite::WebSocketStream<
+        tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>,
+    >;
+    async fn send(socket: &mut Socket, frame: String) {
+        socket
+            .send(tokio_tungstenite::tungstenite::Message::Text(frame.into()))
+            .await
+            .expect("send mux frame");
+    }
+    async fn baseline_of(socket: &mut Socket, stream_id: &str) {
+        loop {
+            let message = socket
+                .next()
+                .await
+                .expect("mux frame")
+                .expect("mux message");
+            let tokio_tungstenite::tungstenite::Message::Text(text) = message else {
+                panic!("mux ended while waiting for {stream_id}: {message:?}")
+            };
+            let frame: Value = serde_json::from_str(&text).expect("mux JSON");
+            assert_ne!(
+                frame["type"], "error",
+                "mux failed while waiting for {stream_id}: {frame}"
+            );
+            if frame["streamId"] == stream_id && frame["frame"]["type"] == "baseline" {
+                return;
+            }
+        }
+    }
+    let open = |id: &str| {
+        format!(r#"{{"streamId":"{id}","target":{{"kind":"workspace"}},"type":"open"}}"#)
+    };
+    let close = |id: &str| format!(r#"{{"streamId":"{id}","type":"close"}}"#);
+
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:0")
+        .await
+        .expect("listener");
+    let address = listener.local_addr().expect("address");
+    let server = TransportServer::new(
+        Arc::new(MockHost::new(true).with_burst_after_baseline(1_000)),
+        config(),
+    )
+    .expect("server");
+    let task = tokio::spawn(server.serve(listener));
+    let mut request = format!("ws://{address}/api/remote.mux")
+        .into_client_request()
+        .expect("websocket request");
+    request.headers_mut().insert(
+        "authorization",
+        FIXTURE_AUTHORIZATION.parse().expect("authorization"),
+    );
+    let (mut socket, _) = tokio_tungstenite::connect_async(request)
+        .await
+        .expect("websocket connection");
+    let ready = socket.next().await.expect("ready").expect("ready frame");
+    assert!(
+        ready
+            .into_text()
+            .expect("ready text")
+            .contains(r#""type":"ready""#)
+    );
+
+    // Each close lands right after the baseline, while the burst behind it is still queued.
+    send(&mut socket, open("workspace-1")).await;
+    baseline_of(&mut socket, "workspace-1").await;
+    send(&mut socket, close("workspace-1")).await;
+    send(&mut socket, open("workspace-2")).await;
+    baseline_of(&mut socket, "workspace-2").await;
+    send(&mut socket, close("workspace-2")).await;
+    send(&mut socket, open("workspace-2")).await;
+    baseline_of(&mut socket, "workspace-2").await;
     task.abort();
 }
 
