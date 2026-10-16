@@ -40,7 +40,7 @@ fn description_requires_protocol_and_the_recovery_capabilities() {
     let mut capabilities = SessionEndpointCapability::required();
     capabilities.insert(SessionEndpointCapability::Models);
     let description = MuxHostDescription {
-        protocol_version: 3,
+        protocol_version: 4,
         product: MuxHostProduct {
             name: "TekesKernel".to_owned(),
             version: "dev-42".to_owned(),
@@ -55,7 +55,7 @@ fn description_requires_protocol_and_the_recovery_capabilities() {
     };
     description.validate().expect("valid description");
     let value = serde_json::to_value(&description).expect("serialize description");
-    assert_eq!(value["protocolVersion"], 3);
+    assert_eq!(value["protocolVersion"], 4);
     assert_eq!(value["product"]["version"], "dev-42");
     assert!(
         value["capabilities"]

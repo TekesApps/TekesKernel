@@ -23,7 +23,6 @@ use endpoint::{
     SessionAddress, SessionControlItem, SessionJournalPage, SessionJournalSnapshot,
     SessionMuxClientFrame, SessionStream, SessionStreamReceiver, SessionStreamTarget,
     SessionSummary, SessionSyncFrame, StreamChannel, StreamErrorCode, StreamFailure,
-    WorkspaceBaseline, WorkspaceSummary,
 };
 use engine::{LockFacts, classify};
 use schema::{Event, EventKind, IJsonValue, OriginTuple};
@@ -1471,46 +1470,18 @@ impl ProductionCarrierStreams {
             .collect())
     }
 
-    fn workspace_baseline(
-        &self,
-        generation: u64,
-    ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let sessions = self.session_items(true)?;
-        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
-        let list = management.list_workspaces(&sessions)?;
-        Ok(SessionSyncFrame::WorkspaceBaseline {
-            generation,
-            baseline: WorkspaceBaseline {
-                items: list
-                    .items
-                    .into_iter()
-                    .map(|workspace| WorkspaceSummary {
-                        id: workspace.workspace_id,
-                        path: workspace.path,
-                        title: workspace.title,
-                        session_ids: workspace.session_ids,
-                        created_at: workspace.created_at,
-                        updated_at: workspace.updated_at,
-                    })
-                    .collect(),
-                archived_session_ids: list.archived_session_ids,
-            },
-        })
-    }
-
     fn inventory_baseline(
         &self,
         generation: u64,
     ) -> Result<SessionSyncFrame, ProductionCarrierError> {
-        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
+        let management = endpoint::SessionOperations::open_sessions(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let paths = management.folder_paths()?;
         let mut sessions = self
             .session_items(false)?
             .into_iter()
             .filter(|session| !session.archived)
-            .map(|session| inventory_row(session, &paths, &lineage))
-            .collect::<Result<Vec<_>, endpoint::ManagementError>>()?;
+            .map(|session| inventory_row(session, &lineage))
+            .collect::<Result<Vec<_>, endpoint::SessionOperationError>>()?;
         sessions.sort_by(|left, right| {
             right
                 .updated_at
@@ -1538,10 +1509,9 @@ impl ProductionCarrierStreams {
         let Some(item) = item.map_err(ProductionCarrierError::Lifecycle)? else {
             return Ok(Some(None));
         };
-        let management = endpoint::ManagementStore::open_light(&self.inner.root)?;
+        let management = endpoint::SessionOperations::open_sessions(&self.inner.root)?;
         let lineage = management.completed_fork_lineage()?;
-        let paths = management.folder_paths()?;
-        Ok(Some(Some(inventory_row(item, &paths, &lineage)?)))
+        Ok(Some(Some(inventory_row(item, &lineage)?)))
     }
 
     fn control_baseline(
@@ -2006,30 +1976,9 @@ impl ProductionCarrierStreams {
                 address,
                 max_messages,
             } => self.open_mux_journal(generation, address, max_messages),
-            SessionStreamTarget::Workspace => {
-                let frame = self.workspace_baseline(generation)?;
-                let SessionSyncFrame::WorkspaceBaseline { baseline, .. } = &frame else {
-                    unreachable!()
-                };
-                let kind = ProductionStreamKind::Workspace {
-                    items: baseline
-                        .items
-                        .iter()
-                        .cloned()
-                        .map(|item| (item.id.clone(), item))
-                        .collect(),
-                    order: baseline.items.iter().map(|item| item.id.clone()).collect(),
-                    archived: baseline.archived_session_ids.clone(),
-                };
-                Ok(Box::new(ProductionStream {
-                    _lease: None,
-                    owner: self.clone(),
-                    generation,
-                    kind,
-                    pending: [frame].into_iter().collect(),
-                    source: Some(self.open_host()?),
-                }))
-            }
+            SessionStreamTarget::Workspace => Err(ProductionCarrierError::Lifecycle(
+                "workspace streams are not supported".into(),
+            )),
             SessionStreamTarget::SessionInventory => {
                 let baseline = self.inventory_baseline(generation)?;
                 let SessionSyncFrame::InventoryBaseline { items, .. } = &baseline else {
@@ -2117,11 +2066,6 @@ impl ProductionCarrierStreams {
 }
 
 enum ProductionStreamKind {
-    Workspace {
-        items: BTreeMap<String, WorkspaceSummary>,
-        order: Vec<String>,
-        archived: Vec<String>,
-    },
     Inventory {
         items: BTreeMap<String, SessionSummary>,
     },
@@ -2148,73 +2092,6 @@ impl ProductionStream {
         envelope: ServerRequest,
     ) -> Result<Option<SessionSyncFrame>, ProductionCarrierError> {
         match &mut self.kind {
-            ProductionStreamKind::Workspace {
-                items,
-                order,
-                archived,
-            } => {
-                let value: Value = serde_json::from_slice(&envelope.payload.canonical_bytes()?)?;
-                let kind = value
-                    .get("type")
-                    .and_then(Value::as_str)
-                    .unwrap_or_default();
-                if matches!(
-                    kind,
-                    "host/workspace-changed"
-                        | "host/workspace-removed"
-                        | "host/workspace-order-changed"
-                        | "host/archived-sessions-changed"
-                        | "host/session-added"
-                        | "host/session-removed"
-                ) {
-                    let SessionSyncFrame::WorkspaceBaseline { baseline, .. } =
-                        self.owner.workspace_baseline(self.generation)?
-                    else {
-                        unreachable!()
-                    };
-                    let next_items = baseline
-                        .items
-                        .into_iter()
-                        .map(|item| (item.id.clone(), item))
-                        .collect::<BTreeMap<_, _>>();
-                    let next_order = next_items.keys().cloned().collect::<Vec<_>>();
-                    let mut deltas = VecDeque::new();
-                    for id in items.keys().filter(|id| !next_items.contains_key(*id)) {
-                        deltas.push_back(SessionSyncFrame::WorkspaceRemove {
-                            generation: self.generation,
-                            workspace_id: id.clone(),
-                        });
-                    }
-                    for (id, workspace) in &next_items {
-                        if items.get(id) != Some(workspace) {
-                            deltas.push_back(SessionSyncFrame::WorkspaceUpsert {
-                                generation: self.generation,
-                                workspace: workspace.clone(),
-                            });
-                        }
-                    }
-                    if *order != next_order {
-                        deltas.push_back(SessionSyncFrame::WorkspaceOrder {
-                            generation: self.generation,
-                            workspace_ids: next_order.clone(),
-                        });
-                    }
-                    if *archived != baseline.archived_session_ids {
-                        deltas.push_back(SessionSyncFrame::ArchivedSessions {
-                            generation: self.generation,
-                            session_ids: baseline.archived_session_ids.clone(),
-                        });
-                    }
-                    *items = next_items;
-                    *order = next_order;
-                    *archived = baseline.archived_session_ids;
-                    let first = deltas.pop_front();
-                    self.pending.extend(deltas);
-                    Ok(first)
-                } else {
-                    Ok(None)
-                }
-            }
             ProductionStreamKind::Inventory { items } => {
                 let value: Value = serde_json::from_slice(&envelope.payload.canonical_bytes()?)?;
                 let kind = value
@@ -2602,12 +2479,10 @@ enum LifecycleTarget {
 
 fn lifecycle_target(request: &EndpointHostCall) -> Option<LifecycleTarget> {
     match request.operation.as_str() {
-        "workspace.archiveSession" | "session.discard" => {
+        "session.archive" | "session.discard" => {
             payload_session_id(&request.payload).map(LifecycleTarget::Detach)
         }
-        "workspace.unarchiveSession" => {
-            payload_session_id(&request.payload).map(LifecycleTarget::Attach)
-        }
+        "session.unarchive" => payload_session_id(&request.payload).map(LifecycleTarget::Attach),
         "session.create" => Some(LifecycleTarget::Created),
         _ => None,
     }
@@ -2650,7 +2525,7 @@ impl ProductionCarrierAssembly {
         let server =
             TransportServer::new(Arc::clone(&host) as Arc<dyn EndpointCarrierHost>, config)?
                 .with_file_transfer(Arc::new(
-                    crate::file_leases::WorkspaceFileTransfer::open(root)
+                    crate::file_leases::SessionFileTransfer::open(root)
                         .map_err(std::io::Error::other)?,
                 ));
         Ok(Self {
@@ -2741,10 +2616,9 @@ fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, Product
 
 fn inventory_row(
     session: endpoint::SessionInventoryItem,
-    folder_paths: &std::collections::BTreeMap<(String, String), String>,
     lineage: &std::collections::BTreeMap<String, endpoint::ForkLineage>,
-) -> Result<SessionSummary, endpoint::ManagementError> {
-    let cwd = session.resolved_cwd(folder_paths);
+) -> Result<SessionSummary, endpoint::SessionOperationError> {
+    let cwd = session.cwd.clone();
     let projections = session.title.map(|title| {
         IJsonValue::parse(
             &serde_json::to_vec(&json!({
@@ -2784,12 +2658,10 @@ mod folder_inventory_tests {
     use super::*;
 
     #[test]
-    fn inventory_uses_own_genesis_cwd_or_explicit_relocation_binding() {
-        let mut session = endpoint::SessionInventoryItem {
+    fn inventory_uses_only_its_own_recorded_execution_cwd() {
+        let session = endpoint::SessionInventoryItem {
             session_id: "session".into(),
-            workspace_id: "workspace".into(),
             cwd: "/recorded/second".into(),
-            folder_binding: Some("second".into()),
             title: None,
             updated_at: 0,
             archived: false,
@@ -2818,40 +2690,9 @@ mod folder_inventory_tests {
             preset: None,
             ephemeral: false,
         };
-        let paths = [
-            (("workspace".into(), "first".into()), "/first".into()),
-            (
-                ("workspace".into(), "second".into()),
-                "/relocated/second".into(),
-            ),
-        ]
-        .into_iter()
-        .collect();
         let lineage = Default::default();
         assert_eq!(
-            inventory_row(session.clone(), &paths, &lineage)
-                .unwrap()
-                .cwd,
-            "/relocated/second"
-        );
-        session.folder_binding = None;
-        assert_eq!(
-            inventory_row(session.clone(), &paths, &lineage)
-                .unwrap()
-                .cwd,
-            "/recorded/second"
-        );
-        session.folder_binding = Some("removed".into());
-        assert_eq!(
-            inventory_row(session.clone(), &paths, &lineage)
-                .unwrap()
-                .cwd,
-            "/recorded/second"
-        );
-        assert_eq!(
-            inventory_row(session, &Default::default(), &lineage)
-                .unwrap()
-                .cwd,
+            inventory_row(session, &lineage).unwrap().cwd,
             "/recorded/second"
         );
     }
@@ -3308,7 +3149,7 @@ pub enum ProductionCarrierError {
     #[error("carrier native endpoint failed: {0}")]
     NativeEndpoint(#[from] endpoint::NativeEndpointError),
     #[error("carrier management projection failed: {0}")]
-    Management(#[from] endpoint::ManagementError),
+    Management(#[from] endpoint::SessionOperationError),
     #[error("carrier endpoint journal failed: {0}")]
     EndpointJournal(#[from] endpoint::JournalError),
     #[error("carrier request derivation failed: {0}")]

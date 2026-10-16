@@ -4,9 +4,9 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::task::{Context, Poll, Waker};
 
 use endpoint::{
-    ClientRequest, DurableHandoffProof, EndpointHost, EndpointHostCall, ManagementStore,
-    NativeEndpoint, QueueTransactionOperation, QueueTransactionState, RpcDurableIdentity,
-    SessionHostDescription,
+    ClientRequest, DurableHandoffProof, EndpointHost, EndpointHostCall, NativeEndpoint,
+    QueueTransactionOperation, QueueTransactionState, RpcDurableIdentity, SessionHostDescription,
+    SessionOperations,
 };
 use schema::{IJsonValue, OriginTuple, ResumePolicy};
 use serde_json::Value;
@@ -45,13 +45,10 @@ fn opening_a_root_with_more_than_256_session_folders_is_not_an_error() {
     }
     ProductionEndpointAssembly::open(root.path(), description())
         .expect("257 session folders must not fail the endpoint assembly");
-    endpoint::ManagementStore::open_at_with_queue_driver(
-        root.path(),
-        "2026-10-12T00:00:00.000Z",
-        None,
-    )
-    .expect("the recovering open does not fail on the count either");
-    endpoint::ManagementStore::open_light(root.path()).expect("nor does the per-request open");
+    endpoint::SessionOperations::open_sessions(root.path())
+        .unwrap()
+        .recover_sessions(None, None)
+        .expect("recovery does not fail on the count");
 }
 
 struct LockedLedgerDelivery {
@@ -238,7 +235,7 @@ fn bootstrap(root: &std::path::Path) {
         .expect("native endpoint")
         .create_session(
             SESSION,
-            "workspace-1",
+            &test_support::execution_fixture(),
             CONFIG_DIGEST,
             ResumePolicy::Never,
             TIMESTAMP,
@@ -260,17 +257,17 @@ fn value(response: &endpoint::ServerResponse) -> Value {
 
 #[test]
 fn route_registry_is_frozen_and_never_advertises_placeholders() {
-    assert_eq!(TEKES_UNARY_ROUTES.len(), 16);
+    assert_eq!(TEKES_UNARY_ROUTES.len(), 13);
     assert_eq!(
         TEKES_UNARY_ROUTES
             .iter()
             .map(|route| route.name)
             .collect::<HashSet<_>>()
             .len(),
-        16
+        13
     );
     assert!(TEKES_UNARY_ROUTES.iter().any(|route| {
-        route.name == "workspace.create"
+        route.name == "session.create"
             && route.class == EndpointRouteClass::Mutation
             && route.implemented
     }));
@@ -291,98 +288,12 @@ fn route_registry_is_frozen_and_never_advertises_placeholders() {
             "session.create",
             "session.discard",
             "session.fork",
-            "workspace.archiveSession",
-            "workspace.create",
-            "workspace.relocate",
-            "workspace.rename",
-            "workspace.unarchiveSession",
+            "session.archive",
+            "session.unarchive",
         ]
         .into_iter()
         .map(str::to_owned)
         .collect()
-    );
-}
-
-#[test]
-fn workspace_relocate_preserves_session_binding_and_rejects_a_stale_source_path() {
-    let root = tempfile::tempdir().expect("root");
-    // Folders cannot lie inside the Kernel storage root.
-    let projects = tempfile::tempdir().expect("projects");
-    let original = projects.path().join("project-original");
-    let relocated = projects.path().join("project-relocated");
-    std::fs::create_dir(&original).expect("project directory");
-    let assembly = ProductionEndpointAssembly::open_with_clock(
-        root.path(),
-        description(),
-        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
-    )
-    .expect("assembly");
-    let created = block_on_ready(assembly.dispatch(request(
-        "rpc-relocate-create-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(original.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("create workspace");
-    let workspace_id = value(&created)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
-    let previous_path = value(&created)["workspace"]["path"]
-        .as_str()
-        .expect("canonical workspace path")
-        .to_owned();
-    block_on_ready(assembly.dispatch(request(
-        "rpc-relocate-create-session",
-        "session.create",
-        &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}"}}"#),
-    )))
-    .expect("create session");
-    let ledger =
-        std::fs::read_to_string(root.path().join("threads").join(SESSION).join("main.jsonl"))
-            .expect("session ledger");
-    let genesis: Value = serde_json::from_str(ledger.lines().next().unwrap()).expect("genesis");
-    assert_eq!(genesis["identity_profile"], "auto");
-
-    std::fs::rename(&original, &relocated).expect("move project");
-    let relocate_payload = format!(
-        r#"{{"path":{},"previousPath":{},"workspaceId":"{workspace_id}"}}"#,
-        serde_json::to_string(relocated.to_str().unwrap()).unwrap(),
-        serde_json::to_string(&previous_path).unwrap(),
-    );
-    let response = block_on_ready(assembly.dispatch(request(
-        "rpc-relocate-workspace",
-        "workspace.relocate",
-        &relocate_payload,
-    )))
-    .expect("relocate workspace");
-    assert!(response.result.ok, "{response:?}");
-    let canonical_relocated = relocated.canonicalize().expect("canonical relocated path");
-    assert_eq!(
-        value(&response)["workspace"]["path"],
-        canonical_relocated.display().to_string()
-    );
-    let snapshot = NativeEndpoint::open(root.path())
-        .expect("native endpoint")
-        .session_config_snapshot(SESSION)
-        .expect("session snapshot");
-    assert_eq!(
-        snapshot.workspace.selected_cwd.as_deref(),
-        canonical_relocated.to_str()
-    );
-
-    let stale = block_on_ready(assembly.dispatch(request(
-        "rpc-relocate-stale-source",
-        "workspace.relocate",
-        &relocate_payload,
-    )))
-    .expect("stale relocation response");
-    assert!(!stale.result.ok, "stale compare-and-swap must fail closed");
-    assert_eq!(
-        stale.result.error.expect("error").code,
-        "workspace-invalid-path"
     );
 }
 
@@ -392,7 +303,7 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
     let debris_digest = "aa00000000000000000000000000000000000000000000000000000000000000";
     let debris = root
         .path()
-        .join("endpoint-management/operations/aa")
+        .join("session-operations/operations/aa")
         .join(debris_digest)
         .join("payload");
     std::fs::create_dir_all(&debris).expect("recordless payload");
@@ -408,23 +319,13 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
     )
     .expect("assembly");
     assert!(!debris.exists(), "recordless payload must be startup GC");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-create-workspace-for-session",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     let invalid_profile = block_on_ready(assembly.dispatch(request(
         "rpc-session-invalid-profile",
         "session.create",
-        &format!(r#"{{"workspaceId":"{workspace_id}","identityProfile":"unknown"}}"#),
+        &format!(r#"{{"execution":{execution_json},"identityProfile":"unknown"}}"#),
     )))
     .expect("invalid profile response");
     assert_eq!(invalid_profile.result.error.unwrap().code, "bad-request");
@@ -432,7 +333,7 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
         "rpc-session-create",
         "session.create",
         &format!(
-            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","identityProfile":"general"}}"#
+            r#"{{"sessionId":"{SESSION}","execution":{execution_json},"identityProfile":"general"}}"#
         ),
     );
     let first = block_on_ready(assembly.dispatch(create.clone())).expect("session create");
@@ -467,7 +368,7 @@ fn session_create_stages_snapshots_and_recovers_from_pre_carrier_record() {
     let rpc_digest = format!("{:x}", sha2::Sha256::digest(b"rpc-session-create"));
     let record = root
         .path()
-        .join("endpoint-management/operations")
+        .join("session-operations/operations")
         .join(&rpc_digest[..2])
         .join(format!("{rpc_digest}.json"));
     let mut operation: Value = serde_json::from_slice(
@@ -512,19 +413,9 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
         std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
     )
     .expect("assembly");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-create-workspace-for-preset",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     let error = |rpc: &str, payload: String| {
         let response = block_on_ready(assembly.dispatch(request(rpc, "session.create", &payload)))
             .expect("response");
@@ -535,13 +426,13 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     };
     let (code, _) = error(
         "rpc-preset-and-profile",
-        format!(r#"{{"workspaceId":"{workspace_id}","identityProfile":"coding","preset":{{}}}}"#),
+        format!(r#"{{"execution":{execution_json},"identityProfile":"coding","preset":{{}}}}"#),
     );
     assert_eq!(code, "bad-request");
     let (code, details) = error(
         "rpc-preset-unknown-layer",
         format!(
-            r#"{{"workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"video"}}]}}}}"#
+            r#"{{"execution":{execution_json},"preset":{{"layers":[{{"kind":"kernel","id":"video"}}]}}}}"#
         ),
     );
     assert_eq!(code, "preset-invalid");
@@ -552,14 +443,14 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     let (code, details) = error(
         "rpc-preset-mcp-definition",
         format!(
-            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"pdf","env":{{"K":"v"}}}}]}}}}"#
+            r#"{{"execution":{execution_json},"preset":{{"mcp":[{{"server":"pdf","env":{{"K":"v"}}}}]}}}}"#
         ),
     );
     assert_eq!(code, "preset-invalid");
     assert_eq!(details["reason"], "secret-in-preset");
     let (code, details) = error(
         "rpc-preset-role-tool",
-        format!(r#"{{"workspaceId":"{workspace_id}","preset":{{"tools":["verify"]}}}}"#),
+        format!(r#"{{"execution":{execution_json},"preset":{{"tools":["verify"]}}}}"#),
     );
     assert_eq!(
         (code.as_str(), details),
@@ -571,7 +462,7 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
     let (code, details) = error(
         "rpc-preset-unknown-server",
         format!(
-            r#"{{"workspaceId":"{workspace_id}","preset":{{"mcp":[{{"server":"converter","tools":["convert"]}}]}}}}"#
+            r#"{{"execution":{execution_json},"preset":{{"mcp":[{{"server":"converter","tools":["convert"]}}]}}}}"#
         ),
     );
     assert_eq!(code, "preset-invalid");
@@ -582,7 +473,7 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
         "rpc-preset-create",
         "session.create",
         &format!(
-            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"domain-expert","version":"1","duty":"Prefer the domain tools.","tools":["read","grep"]}}]}}}}"#
+            r#"{{"sessionId":"{SESSION}","execution":{execution_json},"preset":{{"layers":[{{"kind":"kernel","id":"coding"}},{{"kind":"inline","id":"domain-expert","version":"1","duty":"Prefer the domain tools.","tools":["read","grep"]}}]}}}}"#
         ),
     )))
     .expect("session create");
@@ -592,10 +483,10 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
             .expect("session ledger");
     let genesis: Value = serde_json::from_str(ledger.lines().next().unwrap()).expect("genesis");
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], schema::SESSION_SCOPE_READER);
-    assert!(genesis["folders"].is_array());
+    assert_eq!(genesis["min_reader"], schema::EXECUTION_READER);
+    assert!(genesis["execution"].is_object());
     assert!(
-        schema::validate_ledger(ledger.as_bytes(), schema::SESSION_SCOPE_READER - 1)
+        schema::validate_ledger(ledger.as_bytes(), schema::EXECUTION_READER - 1)
             .expect("older reader can inspect the session")
             .read_only,
         "a preset must not lower the recorded folders' reader gate"
@@ -621,168 +512,6 @@ fn session_create_freezes_a_preset_and_refuses_invalid_ones() {
         .unwrap();
     assert_eq!(item.identity_profile, None);
     assert_eq!(item.preset, Some(preset.summary()));
-}
-
-#[test]
-fn secondary_folder_session_binding_survives_create_and_path_move() {
-    let root = tempfile::tempdir().expect("root");
-    // Folders cannot lie inside the Kernel storage root.
-    let projects = tempfile::tempdir().expect("projects");
-    let first = projects.path().join("project-primary");
-    let second = projects.path().join("project-secondary");
-    std::fs::create_dir(&first).expect("primary project");
-    std::fs::create_dir(&second).expect("secondary project");
-    let assembly = ProductionEndpointAssembly::open_with_clock(
-        root.path(),
-        description(),
-        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
-    )
-    .expect("assembly");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-create-multi-folder-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(first.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
-    let repository = profile::ConfigRepository::open(root.path()).expect("repository");
-    let mut workspace = repository.workspace(&workspace_id).expect("workspace");
-    workspace.revision = 2;
-    workspace.cwd.clear();
-    workspace.folders = vec![
-        profile::WorkspaceFolder {
-            id: "primary".to_owned(),
-            path: first.display().to_string(),
-        },
-        profile::WorkspaceFolder {
-            id: "secondary".to_owned(),
-            path: second.display().to_string(),
-        },
-    ];
-    repository
-        .publish_workspace(1, &workspace)
-        .expect("publish multi-folder workspace");
-
-    let response = block_on_ready(assembly.dispatch(request(
-        "rpc-create-secondary-session",
-        "session.create",
-        &format!(
-            r#"{{"cwd":{},"sessionId":"{SESSION}","workspaceId":"{workspace_id}"}}"#,
-            serde_json::to_string(second.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("secondary folder session create");
-    assert!(response.result.ok, "{response:?}");
-    assert_eq!(value(&response), serde_json::json!({"sessionId":SESSION}));
-    let ledger = root.path().join("threads").join(SESSION).join("main.jsonl");
-    let first_line = std::fs::read_to_string(&ledger)
-        .expect("ledger")
-        .lines()
-        .next()
-        .expect("genesis")
-        .to_owned();
-    let genesis: Value = serde_json::from_str(&first_line).expect("genesis JSON");
-    assert_eq!(genesis["folder_binding"], "secondary");
-
-    let moved = projects.path().join("project-secondary-moved");
-    std::fs::rename(&second, &moved).expect("move selected folder");
-    // Runtime paths now belong to the Folder catalog. Editing the legacy
-    // template directly cannot move an existing session's logical folder.
-    let moved_response = block_on_ready(
-        assembly.dispatch(request(
-            "rpc-move-secondary-folder",
-            "workspace.relocate",
-            &serde_json::json!({"workspaceId":workspace_id,"previousPath":second,"path":moved})
-                .to_string(),
-        )),
-    )
-    .expect("relocate selected folder");
-    assert!(moved_response.result.ok, "{moved_response:?}");
-    let snapshot = NativeEndpoint::open(root.path())
-        .expect("native endpoint")
-        .session_config_snapshot(SESSION)
-        .expect("session snapshot after folder move");
-    assert_eq!(
-        snapshot.workspace.folder_binding.as_deref(),
-        Some("secondary")
-    );
-    let first = first.canonicalize().expect("canonical primary");
-    let moved = moved.canonicalize().expect("canonical moved secondary");
-    assert_eq!(snapshot.workspace.selected_cwd.as_deref(), moved.to_str());
-    assert_eq!(
-        snapshot.workspace.cwd,
-        vec![first.display().to_string(), moved.display().to_string()],
-        "all folders retain authored order while execution follows the binding"
-    );
-}
-
-#[test]
-fn workspace_mutations_are_journaled_and_exact_retry_is_stable() {
-    let root = tempfile::tempdir().expect("root");
-    // Folders cannot lie inside the Kernel storage root.
-    let projects = tempfile::tempdir().expect("projects");
-    let project = projects.path().join("project");
-    std::fs::create_dir(&project).expect("project directory");
-    let assembly = ProductionEndpointAssembly::open_with_clock(
-        root.path(),
-        description(),
-        std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
-    )
-    .expect("assembly");
-    let create_request = request(
-        "rpc-workspace-create",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    );
-    let first = block_on_ready(assembly.dispatch(create_request.clone())).expect("create");
-    let second = block_on_ready(assembly.dispatch(create_request)).expect("retry");
-    assert_eq!(first, second);
-    let created = value(&first);
-    assert_eq!(created["created"], true);
-    let workspace_id = created["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id");
-    assert_eq!(workspace_id.as_bytes().get(14), Some(&b'7'));
-    assert!(
-        root.path()
-            .join("endpoint-management/workspaces")
-            .join(format!("{workspace_id}.json"))
-            .is_file()
-    );
-
-    let renamed = block_on_ready(assembly.dispatch(request(
-        "rpc-workspace-rename",
-        "workspace.rename",
-        &format!(r#"{{"title":"Renamed","workspaceId":"{workspace_id}"}}"#),
-    )))
-    .expect("rename");
-    assert_eq!(value(&renamed)["workspace"]["title"], "Renamed");
-
-    drop(assembly);
-    let _reopened = ProductionEndpointAssembly::open_with_clock(
-        root.path(),
-        description(),
-        std::sync::Arc::new(|| Ok("2026-08-28T09:01:00.000Z".to_owned())),
-    )
-    .expect("recovery open");
-    let sessions = endpoint::NativeEndpoint::open(root.path())
-        .expect("native endpoint")
-        .list_sessions(&HashSet::new())
-        .expect("session snapshot");
-    let workspaces = endpoint::ManagementStore::open_light(root.path())
-        .expect("management")
-        .list_workspaces(&sessions)
-        .expect("workspace snapshot");
-    assert_eq!(workspaces.items[0].title, "Renamed");
 }
 
 #[test]
@@ -839,7 +568,7 @@ fn archive_and_unarchive_are_independent_journaled_operations() {
     assert!(root.path().join("threads").join(SESSION).is_dir());
     let archive = block_on_ready(assembly.dispatch(request(
         "rpc-archive",
-        "workspace.archiveSession",
+        "session.archive",
         &format!(r#"{{"sessionId":"{SESSION}"}}"#),
     )))
     .expect("archive");
@@ -856,7 +585,7 @@ fn archive_and_unarchive_are_independent_journaled_operations() {
     );
     let unarchive = block_on_ready(assembly.dispatch(request(
         "rpc-unarchive",
-        "workspace.unarchiveSession",
+        "session.unarchive",
         &format!(r#"{{"sessionId":"{SESSION}"}}"#),
     )))
     .expect("unarchive");
@@ -911,7 +640,7 @@ fn complete_authority_seam_advertises_every_registered_route_without_placeholder
         std::sync::Arc::new(CompleteRoutes),
     )
     .expect("full assembly");
-    assert_eq!(assembly.host().capabilities().len(), 16);
+    assert_eq!(assembly.host().capabilities().len(), 13);
     let accepted = block_on_ready(assembly.dispatch(request(
         "rpc-prompt-seam",
         "session.prompt",
@@ -1011,23 +740,13 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
             .capabilities()
             .contains("session.selectModel")
     );
-    let workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-model-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     block_on_ready(assembly.dispatch(request(
         "rpc-model-session",
         "session.create",
-        &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}"}}"#),
+        &format!(r#"{{"sessionId":"{SESSION}","execution":{execution_json}}}"#),
     )))
     .expect("session create");
     let selected_before_first_turn = block_on_ready(assembly.dispatch(request(
@@ -1158,21 +877,6 @@ fn model_catalog_and_selection_keep_runtime_failure_display_only() {
 fn cancel_and_rename_use_exact_endpoint_origins_and_durable_receipts() {
     let root = tempfile::tempdir().expect("root");
     bootstrap(root.path());
-    profile::ConfigRepository::open(root.path())
-        .unwrap()
-        .publish_workspace(
-            0,
-            &profile::WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "workspace-1".into(),
-                name: "Project".into(),
-                cwd: vec![root.path().display().to_string()],
-                folders: vec![],
-                policy: None,
-            },
-        )
-        .unwrap();
     let delivery = std::sync::Arc::new(LockedLedgerDelivery {
         endpoint: NativeEndpoint::open(root.path()).expect("native endpoint"),
     });
@@ -1284,8 +988,7 @@ fn queue_management_gate_recovers_before_readiness_and_exact_retry_does_not_rede
         key: "rpc-queue-recovery/retract".to_owned(),
     };
     let action = IJsonValue::parse_str(r#"{"kind":"remove"}"#).unwrap();
-    let management = ManagementStore::open_at_with_queue_driver(root.path(), TIMESTAMP, None)
-        .expect("management");
+    let management = SessionOperations::open_sessions(root.path()).expect("management");
     let state = management
         .prepare_queue_transaction(QueueTransactionOperation {
             rpc_id: "rpc-queue-recovery",
@@ -1369,7 +1072,7 @@ fn archived_precedes_image_decode_without_a_duplicate_delivery_preflight() {
 
     block_on_ready(assembly.dispatch(request(
         "rpc-archive-before-invalid-image",
-        "workspace.archiveSession",
+        "session.archive",
         &format!(r#"{{"sessionId":"{SESSION}"}}"#),
     )))
     .expect("archive");
@@ -1551,24 +1254,14 @@ fn preset_defaults_become_the_new_session_model() {
         std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
     )
     .expect("assembly");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-defaults-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     let refused = block_on_ready(assembly.dispatch(request(
         "rpc-defaults-unknown",
         "session.create",
         &format!(
-            r#"{{"workspaceId":"{workspace_id}","preset":{{"defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"not-an-effort"}}}}}}"#
+            r#"{{"execution":{execution_json},"preset":{{"defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"not-an-effort"}}}}}}"#
         ),
     )))
     .expect("refused create");
@@ -1581,7 +1274,7 @@ fn preset_defaults_become_the_new_session_model() {
         "rpc-defaults-create",
         "session.create",
         &format!(
-            r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","preset":{{"layers":[{{"kind":"inline","id":"reviewer","version":"1","defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"{effort}"}}}}]}}}}"#
+            r#"{{"sessionId":"{SESSION}","execution":{execution_json},"preset":{{"layers":[{{"kind":"inline","id":"reviewer","version":"1","defaults":{{"provider":"fixture","model":"gpt-5","reasoningEffort":"{effort}"}}}}]}}}}"#
         ),
     )))
     .expect("session create");
@@ -1627,23 +1320,15 @@ fn fork_can_replace_the_preset_of_its_destination() {
         std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
     )
     .expect("assembly");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-fork-preset-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     block_on_ready(assembly.dispatch(request(
         "rpc-fork-preset-source",
         "session.create",
-        &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","identityProfile":"coding"}}"#),
+        &format!(
+            r#"{{"sessionId":"{SESSION}","execution":{execution_json},"identityProfile":"coding"}}"#
+        ),
     )))
     .expect("session create");
     append_turn(root.path(), SESSION, 2, true);
@@ -1686,8 +1371,8 @@ fn fork_can_replace_the_preset_of_its_destination() {
     let replaced = value(&replaced)["sessionId"].as_str().unwrap().to_owned();
     let genesis = genesis_of(&replaced);
     assert!(genesis.get("identity_profile").is_none());
-    assert_eq!(genesis["min_reader"], schema::SESSION_SCOPE_READER);
-    assert_eq!(genesis["folders"], genesis_of(SESSION)["folders"]);
+    assert_eq!(genesis["min_reader"], schema::EXECUTION_READER);
+    assert_eq!(genesis["execution"], genesis_of(SESSION)["execution"]);
     let preset = tools::ResolvedPreset::from_genesis(&genesis["preset"]).expect("fork preset");
     assert_eq!(preset.layers[0].id(), "reviewer");
     assert_eq!(
@@ -1702,7 +1387,7 @@ fn fork_can_replace_the_preset_of_its_destination() {
     )
     .expect("forked ledger");
     assert!(
-        schema::validate_ledger(&copied, schema::SESSION_SCOPE_READER - 1)
+        schema::validate_ledger(&copied, schema::EXECUTION_READER - 1)
             .expect("older reader can inspect the fork")
             .read_only,
         "replacing a preset must not lower the inherited folders' reader gate"
@@ -1743,23 +1428,13 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
         std::sync::Arc::new(|| Ok(TIMESTAMP.to_owned())),
     )
     .expect("assembly");
-    let created_workspace = block_on_ready(assembly.dispatch(request(
-        "rpc-ephemeral-workspace",
-        "workspace.create",
-        &format!(
-            r#"{{"path":{}}}"#,
-            serde_json::to_string(project.to_str().unwrap()).unwrap()
-        ),
-    )))
-    .expect("workspace create");
-    let workspace_id = value(&created_workspace)["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id")
-        .to_owned();
+    let execution_json =
+        serde_json::to_string(&serde_json::json!({"cwd":project,"allowed_tools":["read","grep"]}))
+            .unwrap();
     block_on_ready(assembly.dispatch(request(
         "rpc-ephemeral-source",
         "session.create",
-        &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}","identityProfile":"general"}}"#),
+        &format!(r#"{{"sessionId":"{SESSION}","execution":{execution_json},"identityProfile":"general"}}"#),
     )))
     .expect("session create");
     let next = append_turn(root.path(), SESSION, 2, true);
@@ -1809,7 +1484,7 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
             .unwrap()
             .ephemeral
     );
-    let lineage = ManagementStore::open_light(root.path())
+    let lineage = SessionOperations::open_sessions(root.path())
         .expect("management")
         .completed_fork_lineage()
         .expect("lineage");
@@ -1818,7 +1493,7 @@ fn ephemeral_fork_is_a_scratch_ledger_that_discard_and_startup_remove() {
 
     let archive = block_on_ready(assembly.dispatch(request(
         "rpc-archive-ephemeral",
-        "workspace.archiveSession",
+        "session.archive",
         &format!(r#"{{"sessionId":"{forked}"}}"#),
     )))
     .expect("archive response");

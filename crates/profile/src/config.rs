@@ -8,7 +8,6 @@ use std::path::{Path, PathBuf};
 use rustix::fs::{Mode, OFlags, fchmod, fstat, mkdirat, open, openat};
 use serde::{Deserialize, Serialize};
 use store::{AssetRef, AssetStore, AtomicPublisher, NamedLock};
-use unicode_normalization::UnicodeNormalization;
 
 use crate::{ProfileError, canonical_line, digest, parse_canonical};
 
@@ -17,7 +16,7 @@ const MAX_SAFE_INTEGER: u64 = 9_007_199_254_740_991;
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct WorkspacePolicy {
+pub struct ExecutionPolicy {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub writable_roots: Vec<String>,
     /// Explicit read-only toolchain installations; their bin directories form tool PATH.
@@ -30,97 +29,7 @@ pub struct WorkspacePolicy {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub allowed_tools: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub provider: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub model: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
     pub max_wall_seconds: Option<u64>,
-    /// Session preset base for sessions created in this workspace; omitted is
-    /// `general` (spec config §Workspace policy, session-endpoint §Session presets).
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub base: Option<tools::PresetBase>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct WorkspaceFolder {
-    pub id: String,
-    pub path: String,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct WorkspaceConfig {
-    pub format: u64,
-    pub revision: u64,
-    pub id: String,
-    pub name: String,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub cwd: Vec<String>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub folders: Vec<WorkspaceFolder>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub policy: Option<WorkspacePolicy>,
-}
-
-impl WorkspaceConfig {
-    #[must_use]
-    pub fn folder_paths(&self) -> Vec<&str> {
-        if self.folders.is_empty() {
-            self.cwd.iter().map(String::as_str).collect()
-        } else {
-            self.folders
-                .iter()
-                .map(|folder| folder.path.as_str())
-                .collect()
-        }
-    }
-
-    /// The stable folder ids in authored order: `folders` ids, or for a
-    /// legacy `cwd` workspace the `folder-NNNN` ids its sessions bind to.
-    #[must_use]
-    pub fn folder_ids(&self) -> Vec<String> {
-        if self.folders.is_empty() {
-            (1..=self.cwd.len())
-                .map(|index| format!("folder-{index:04}"))
-                .collect()
-        } else {
-            self.folders
-                .iter()
-                .map(|folder| folder.id.clone())
-                .collect()
-        }
-    }
-
-    #[must_use]
-    pub fn binding_for_path(&self, path: &str) -> Option<String> {
-        self.folders
-            .iter()
-            .find(|folder| folder.path == path)
-            .map(|folder| folder.id.clone())
-            .or_else(|| {
-                self.cwd
-                    .iter()
-                    .position(|candidate| candidate == path)
-                    .map(|index| format!("folder-{:04}", index + 1))
-            })
-    }
-
-    #[must_use]
-    pub fn path_for_binding(&self, binding: &str) -> Option<&str> {
-        if self.folders.is_empty() {
-            self.cwd
-                .iter()
-                .enumerate()
-                .find(|(index, _)| binding == format!("folder-{:04}", index + 1))
-                .map(|(_, path)| path.as_str())
-        } else {
-            self.folders
-                .iter()
-                .find(|folder| folder.id == binding)
-                .map(|folder| folder.path.as_str())
-        }
-    }
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -226,143 +135,21 @@ impl Default for SettingsConfig {
     }
 }
 
-/// `config/environments.json`: the named environments sessions run in. A
-/// missing file is revision 0 with no entries; the built-in `local`
-/// environment exists unless the file defines its own `local`.
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
-pub struct EnvironmentsConfig {
-    pub format: u64,
-    pub revision: u64,
-    pub environments: Vec<Environment>,
-}
-
-impl Default for EnvironmentsConfig {
-    fn default() -> Self {
-        Self {
-            format: FORMAT,
-            revision: 0,
-            environments: Vec::new(),
-        }
-    }
-}
-
-impl EnvironmentsConfig {
-    /// Validated canonical bytes for publication and durable administration intents.
-    pub fn canonical_bytes(&self) -> Result<Vec<u8>, ProfileError> {
-        let path = Path::new("config/environments.json");
-        validate_environments(self, false, path)?;
-        canonical_line(path, self)
-    }
-
-    /// Decode the same closed canonical format used for publication.
-    pub fn decode(bytes: &[u8]) -> Result<Self, ProfileError> {
-        let path = Path::new("config/environments.json");
-        let value = parse_canonical(path, bytes)?;
-        validate_environments(&value, false, path)?;
-        Ok(value)
-    }
-
-    /// The environment named `id`: an authored entry, or the built-in
-    /// `local` when the file does not define one.
-    #[must_use]
-    pub fn environment(&self, id: &str) -> Option<Environment> {
-        self.environments
-            .iter()
-            .find(|environment| environment.id == id)
-            .cloned()
-            .or_else(|| (id == schema::DEFAULT_ENVIRONMENT).then(Environment::local))
-    }
-}
-
-/// Where and how a session runs. While workspaces exist, an environment meets
-/// the workspace policy: it can switch the network off and cap wall time, and
-/// it adds read-only toolchain roots; it never widens writes.
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Environment {
-    pub id: String,
-    pub network: bool,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub toolchain_roots: Vec<String>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub max_wall_seconds: Option<u64>,
-}
-
-impl Environment {
-    /// The built-in default: the local computer, network on, no extra
-    /// toolchains and no wall-time cap, so it leaves the workspace policy as is.
-    #[must_use]
-    pub fn local() -> Self {
-        Self {
-            id: schema::DEFAULT_ENVIRONMENT.to_owned(),
-            network: true,
-            toolchain_roots: Vec::new(),
-            max_wall_seconds: None,
-        }
-    }
-}
-
-/// The environment and folder ids a session resolves its configuration in,
-/// as its genesis records them (`profile::SessionScope`).
-#[derive(Clone, Copy, Debug)]
-pub struct ScopeSelection<'a> {
-    pub environment: &'a str,
-    /// The session's folder ids; `None` keeps every workspace folder.
-    pub folders: Option<&'a [String]>,
-}
-
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct ResolvedWorkspace {
-    pub format: u64,
-    pub revision: u64,
-    pub id: String,
-    pub name: String,
-    /// The stable folder selected for this session snapshot. A workspace-wide
-    /// snapshot leaves this absent and retains authored folder order.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub folder_binding: Option<String>,
-    /// Canonical execution/default cwd paired with `folder_binding`. The
-    /// complete ordered `cwd` list remains authored workspace authority.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub selected_cwd: Option<String>,
+pub struct ResolvedExecution {
+    pub session_id: String,
     pub cwd: Vec<String>,
-    pub policy: WorkspacePolicy,
-    /// The environment a session snapshot was resolved in; its network,
-    /// toolchain roots and wall-time cap are already met into `policy`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environment: Option<String>,
-    /// The session's folder ids when its genesis records them; `cwd` then
-    /// lists only those folders and `policy.writable_roots` only roots inside
-    /// them.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub folders: Option<Vec<String>>,
+    pub policy: ExecutionPolicy,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RevisionVector {
-    pub workspace: u64,
     pub providers: u64,
     pub settings: u64,
-    /// Snapshots published before the integrations file was removed carry an
-    /// `integrations` revision; it is read and ignored, never written.
-    #[serde(
-        rename = "integrations",
-        default,
-        skip_serializing,
-        deserialize_with = "ignore_legacy_field"
-    )]
-    pub legacy_integrations: (),
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session_settings: Option<u64>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub environments: Option<u64>,
-}
-
-fn ignore_legacy_field<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<(), D::Error> {
-    serde::de::IgnoredAny::deserialize(deserializer).map(|_| ())
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
@@ -373,17 +160,8 @@ pub struct ConfigSnapshot {
     /// authority, never taken from session-authored settings.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub user_agent_dir: Option<String>,
-    pub workspace: ResolvedWorkspace,
+    pub execution: ResolvedExecution,
     pub providers: ProvidersConfig,
-    /// Snapshots published before the integrations file was removed carry an
-    /// `integrations` document; it is read and ignored, never written.
-    #[serde(
-        rename = "integrations",
-        default,
-        skip_serializing,
-        deserialize_with = "ignore_legacy_field"
-    )]
-    pub legacy_integrations: (),
     pub settings: SettingsConfig,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub session_settings: Option<SessionSettings>,
@@ -401,10 +179,7 @@ impl ConfigSnapshot {
 
     #[must_use]
     pub fn execution_cwd(&self) -> Option<&str> {
-        self.workspace
-            .selected_cwd
-            .as_deref()
-            .or_else(|| self.workspace.cwd.first().map(String::as_str))
+        self.execution.cwd.first().map(String::as_str)
     }
 
     pub fn canonical_bytes(&self) -> Result<Vec<u8>, ProfileError> {
@@ -443,15 +218,15 @@ impl ConfigSnapshot {
 
     #[must_use]
     pub fn requires_respawn_from(&self, previous: &Self) -> bool {
-        let current = &self.workspace.policy;
-        let old = &previous.workspace.policy;
+        let current = &self.execution.policy;
+        let old = &previous.execution.policy;
         if (old.network && !current.network)
             || removed(&old.allowed_tools, &current.allowed_tools)
             || old.toolchain_roots != current.toolchain_roots
             || removed(&old.writable_roots, &current.writable_roots)
             || lowered(old.max_wall_seconds, current.max_wall_seconds)
-            || old.provider != current.provider
-            || old.model != current.model
+            || previous.settings.default_provider != self.settings.default_provider
+            || previous.settings.default_model != self.settings.default_model
         {
             return true;
         }
@@ -483,7 +258,6 @@ macro_rules! config_document {
     };
 }
 
-config_document!(WorkspaceConfig, validate_workspace, "<workspace-config>");
 config_document!(ProvidersConfig, validate_providers, "<providers-config>");
 config_document!(SettingsConfig, validate_settings, "<settings-config>");
 config_document!(
@@ -755,58 +529,13 @@ fn open_private_root_sandboxed(
 fn prepare_repository_directories(root: &Path) -> Result<(), ProfileError> {
     let expected_uid = rustix::process::geteuid().as_raw();
     let root_descriptor = open_private_root(root, expected_uid, true)?;
-    for name in ["config", "workspaces"] {
-        let _ = open_directory_at(&root_descriptor, name, &root.join(name), true, expected_uid)?;
-    }
-    Ok(())
-}
-
-fn prepare_private_directory(path: &Path) -> Result<(), ProfileError> {
-    let parent_path = path
-        .parent()
-        .ok_or_else(|| invalid_private_directory(path, "private data directory has no parent"))?;
-    let name = path
-        .file_name()
-        .and_then(std::ffi::OsStr::to_str)
-        .ok_or_else(|| {
-            invalid_private_directory(path, "private data directory name must be UTF-8")
-        })?;
-    let expected_uid = rustix::process::geteuid().as_raw();
-    let parent = open_private_root(parent_path, expected_uid, false)?;
-    let _ = open_directory_at(&parent, name, path, true, expected_uid)?;
-    Ok(())
-}
-
-fn prepare_workspace_directory(root: &Path, workspace_id: &str) -> Result<(), ProfileError> {
-    validate_workspace_id(workspace_id)?;
-    let directory = root.join("workspaces").join(workspace_id);
-    prepare_private_directory(&directory)?;
-    for name in ["state", "skills"] {
-        prepare_private_directory(&directory.join(name))?;
-    }
-    Ok(())
-}
-
-fn prepare_existing_workspace_directories(root: &Path) -> Result<(), ProfileError> {
-    let workspaces = root.join("workspaces");
-    for entry in fs::read_dir(&workspaces)? {
-        let entry = entry?;
-        let path = entry.path();
-        if entry.file_type()?.is_symlink() || !entry.file_type()?.is_dir() {
-            return Err(ProfileError::InvalidPath {
-                path,
-                reason: "workspace authority entry must be a directory".to_owned(),
-            });
-        }
-        let id = entry
-            .file_name()
-            .into_string()
-            .map_err(|_| ProfileError::InvalidPath {
-                path: entry.path(),
-                reason: "workspace authority directory must be UTF-8".to_owned(),
-            })?;
-        prepare_workspace_directory(root, &id)?;
-    }
+    let _ = open_directory_at(
+        &root_descriptor,
+        "config",
+        &root.join("config"),
+        true,
+        expected_uid,
+    )?;
     Ok(())
 }
 
@@ -814,123 +543,12 @@ impl ConfigRepository {
     pub fn open(root: impl AsRef<Path>) -> Result<Self, ProfileError> {
         let root = root.as_ref().to_path_buf();
         prepare_repository_directories(&root)?;
-        prepare_existing_workspace_directories(&root)?;
         Ok(Self { root })
-    }
-
-    pub fn workspace_data_dir(&self, workspace_id: &str) -> Result<PathBuf, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        Ok(self.root.join("workspaces").join(workspace_id))
     }
 
     #[must_use]
     pub fn root(&self) -> &Path {
         &self.root
-    }
-
-    pub fn resolve(&self, workspace_id: &str) -> Result<ConfigSnapshot, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        self.resolve_unlocked(workspace_id, None, None, None)
-    }
-
-    /// Resolves a workspace snapshot with a selected stable execution folder.
-    /// The authored `workspace.cwd` order is unchanged so instruction/resource
-    /// capture still spans the complete workspace with stable precedence.
-    pub fn resolve_for_binding(
-        &self,
-        workspace_id: &str,
-        folder_binding: &str,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        self.resolve_unlocked(workspace_id, None, Some(folder_binding), None)
-    }
-
-    pub fn resolve_for_session(
-        &self,
-        workspace_id: &str,
-        session_folder: impl AsRef<Path>,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let snapshot =
-            self.resolve_unlocked(workspace_id, Some(session_folder.as_ref()), None, None)?;
-        if snapshot.workspace.cwd.len() != 1 {
-            return Err(ProfileError::InvalidReference {
-                path: session_folder.as_ref().to_path_buf(),
-                reason: "multi-folder session has no stable folder binding".to_owned(),
-            });
-        }
-        Ok(snapshot)
-    }
-
-    /// Session-local equivalent of `resolve_for_binding`; session settings are
-    /// read from `session_folder` while the stable binding selects the default
-    /// execution root.
-    pub fn resolve_for_session_binding(
-        &self,
-        workspace_id: &str,
-        session_folder: impl AsRef<Path>,
-        folder_binding: &str,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        self.resolve_unlocked(
-            workspace_id,
-            Some(session_folder.as_ref()),
-            Some(folder_binding),
-            None,
-        )
-    }
-
-    /// Resolves a snapshot in a session scope: its environment meets the
-    /// workspace policy, and recorded folder ids narrow `cwd` and writable
-    /// roots to the session's own folders. With `session_folder`, session
-    /// settings are read; a session without a binding or recorded folders
-    /// resolves only while its workspace has one folder.
-    pub fn resolve_scoped(
-        &self,
-        workspace_id: &str,
-        session_folder: Option<&Path>,
-        folder_binding: Option<&str>,
-        scope: ScopeSelection<'_>,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let snapshot =
-            self.resolve_unlocked(workspace_id, session_folder, folder_binding, Some(scope))?;
-        if let Some(session_folder) = session_folder
-            && folder_binding.is_none()
-            && snapshot.workspace.cwd.len() != 1
-        {
-            return Err(ProfileError::InvalidReference {
-                path: session_folder.to_path_buf(),
-                reason: "multi-folder session has no stable folder binding".to_owned(),
-            });
-        }
-        Ok(snapshot)
-    }
-
-    /// Reads `config/environments.json` without writing a missing file; the
-    /// revision-zero default is returned in memory.
-    pub fn environments(&self) -> Result<EnvironmentsConfig, ProfileError> {
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let path = self.root.join("config/environments.json");
-        let value = self.read_optional(&path)?.unwrap_or_default();
-        validate_environments(&value, true, &path)?;
-        Ok(value)
-    }
-
-    pub fn publish_environments(
-        &self,
-        expected_revision: u64,
-        value: &EnvironmentsConfig,
-    ) -> Result<(), ProfileError> {
-        let path = self.root.join("config/environments.json");
-        self.publish_global(expected_revision, value.revision, &path, value, |value| {
-            validate_environments(value, false, &path)
-        })
     }
 
     /// Reads the durable provider authority without synthesizing or writing a
@@ -950,120 +568,6 @@ impl ConfigRepository {
         let value = self.read_optional(&path)?.unwrap_or_default();
         validate_settings(&value, true, &path)?;
         Ok(value)
-    }
-
-    /// Reads one authored workspace document rather than its resolved spawn
-    /// projection.
-    pub fn workspace(&self, workspace_id: &str) -> Result<WorkspaceConfig, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let path = workspace_document_path(&self.root, workspace_id);
-        let value: WorkspaceConfig = self.read_required(&path)?;
-        validate_workspace(&value, false, &path)?;
-        if value.id != workspace_id {
-            return invalid(&path, "workspace id does not match filename");
-        }
-        Ok(value)
-    }
-
-    /// Reads every authored workspace document in stable workspace-id order.
-    /// Directory names are part of the authority and must match the document
-    /// identity; malformed entries fail the complete read.
-    pub fn workspaces(&self) -> Result<Vec<WorkspaceConfig>, ProfileError> {
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let mut entries =
-            fs::read_dir(self.root.join("workspaces"))?.collect::<Result<Vec<_>, _>>()?;
-        entries.sort_by_key(fs::DirEntry::file_name);
-        let mut values = Vec::with_capacity(entries.len());
-        for entry in entries {
-            let directory = entry.path();
-            if entry.file_type()?.is_symlink() || !entry.file_type()?.is_dir() {
-                return invalid(&directory, "workspace authority entry must be a directory");
-            }
-            let workspace_id =
-                entry
-                    .file_name()
-                    .into_string()
-                    .map_err(|_| ProfileError::InvalidPath {
-                        path: directory.clone(),
-                        reason: "workspace authority directory must be UTF-8".to_owned(),
-                    })?;
-            validate_workspace_id(&workspace_id)?;
-            let path = directory.join("workspace.json");
-            let value: WorkspaceConfig = self.read_required(&path)?;
-            validate_workspace(&value, false, &path)?;
-            if value.id != workspace_id {
-                return invalid(&path, "workspace id does not match directory name");
-            }
-            values.push(value);
-        }
-        Ok(values)
-    }
-
-    /// Returns the same canonical roots without erasing workspace ownership.
-    /// Client resource references use this view so a project skill cannot be
-    /// rebound under another workspace id.
-    pub fn resource_workspace_roots(&self) -> Result<Vec<(String, Vec<PathBuf>)>, ProfileError> {
-        let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        let directory = self.root.join("workspaces");
-        let mut entries = fs::read_dir(&directory)?.collect::<Result<Vec<_>, _>>()?;
-        entries.sort_by_key(fs::DirEntry::file_name);
-        let mut workspaces = Vec::new();
-        for entry in entries {
-            let directory_path = entry.path();
-            if !entry.file_type()?.is_dir() {
-                return Err(ProfileError::InvalidPath {
-                    path: directory_path,
-                    reason: "workspace authority entry must be a directory".to_owned(),
-                });
-            }
-            let workspace_id = directory_path
-                .file_name()
-                .and_then(|value| value.to_str())
-                .ok_or_else(|| ProfileError::InvalidPath {
-                    path: directory_path.clone(),
-                    reason: "workspace authority directory must be UTF-8".to_owned(),
-                })?;
-            validate_workspace_id(workspace_id)?;
-            let path = workspace_document_path(&self.root, workspace_id);
-            let workspace: WorkspaceConfig = self.read_required(&path)?;
-            validate_workspace(&workspace, false, &path)?;
-            if workspace.id != workspace_id {
-                return Err(ProfileError::InvalidSchema {
-                    path,
-                    reason: "workspace id does not match filename".to_owned(),
-                });
-            }
-            let roots = resolve_workspace(&workspace, &path)?
-                .cwd
-                .into_iter()
-                .map(PathBuf::from)
-                .collect::<Vec<_>>();
-            workspaces.push((workspace_id.to_owned(), roots));
-        }
-        Ok(workspaces)
-    }
-
-    pub fn publish_workspace(
-        &self,
-        expected_revision: u64,
-        value: &WorkspaceConfig,
-    ) -> Result<(), ProfileError> {
-        validate_workspace_id(&value.id)?;
-        let path = workspace_document_path(&self.root, &value.id);
-        let _lock = NamedLock::exclusive(self.root.join("config/.lock"))?;
-        prepare_workspace_directory(&self.root, &value.id)?;
-        let actual = match self.read_optional::<WorkspaceConfig>(&path)? {
-            Some(current) => {
-                validate_workspace(&current, false, &path)?;
-                current.revision
-            }
-            None => 0,
-        };
-        check_publication_revision(expected_revision, actual, value.revision)?;
-        validate_workspace(value, false, &path)?;
-        AtomicPublisher::replace(&path, &canonical_line(&path, value)?)?;
-        Ok(())
     }
 
     pub fn publish_providers(
@@ -1090,7 +594,7 @@ impl ConfigRepository {
         // Folder moves take the management lock before their own config work.
         // Holding its shared side across the active+archive scan prevents an
         // unarchive from moving a referencing session between the two scans.
-        let management_path = store::endpoint_management_root(&self.root)?.join("lock");
+        let management_path = self.root.join("session-operations/lock");
         let _management = management_path
             .exists()
             .then(|| NamedLock::shared(&management_path))
@@ -1102,7 +606,12 @@ impl ConfigRepository {
         validate_providers(&actual, true, &path)?;
         check_publication_revision(expected_revision, actual.revision, value.revision)?;
         validate_providers(value, false, &path)?;
-        self.validate_all_provider_references_unlocked(value)?;
+        self.validate_all_provider_references_unlocked(
+            value,
+            &self
+                .read_optional::<SettingsConfig>(&self.root.join("config/settings.json"))?
+                .unwrap_or_default(),
+        )?;
         AtomicPublisher::replace(&path, &canonical_line(&path, value)?)?;
         Ok(())
     }
@@ -1138,59 +647,9 @@ impl ConfigRepository {
             .read_optional::<ProvidersConfig>(&providers_path)?
             .unwrap_or_default();
         validate_providers(&providers, true, &providers_path)?;
-        let empty_workspace = WorkspaceConfig {
-            format: FORMAT,
-            revision: 1,
-            id: "reference-check".to_owned(),
-            name: "reference-check".to_owned(),
-            cwd: vec!["/".to_owned()],
-            folders: Vec::new(),
-            policy: None,
-        };
-        validate_references(&empty_workspace, &providers, value, &path)?;
+        validate_references(&providers, value, &path)?;
         AtomicPublisher::replace(&path, &canonical_line(&path, value)?)?;
         Ok(())
-    }
-
-    /// Replaces one workspace-local policy while preserving all other authored
-    /// fields. Provider references and the publication revision are checked
-    /// under the same exclusive lock.
-    pub fn publish_workspace_policy(
-        &self,
-        workspace_id: &str,
-        expected_revision: u64,
-        policy: WorkspacePolicy,
-    ) -> Result<WorkspaceConfig, ProfileError> {
-        validate_workspace_id(workspace_id)?;
-        let path = workspace_document_path(&self.root, workspace_id);
-        let providers_path = self.root.join("config/providers.json");
-        let settings_path = self.root.join("config/settings.json");
-        let _lock = NamedLock::exclusive(self.root.join("config/.lock"))?;
-        let mut value: WorkspaceConfig = self.read_required(&path)?;
-        validate_workspace(&value, false, &path)?;
-        let next_revision =
-            value
-                .revision
-                .checked_add(1)
-                .ok_or_else(|| ProfileError::InvalidSchema {
-                    path: path.clone(),
-                    reason: "workspace revision overflow".to_owned(),
-                })?;
-        check_publication_revision(expected_revision, value.revision, next_revision)?;
-        value.revision = next_revision;
-        value.policy = Some(policy);
-        validate_workspace(&value, false, &path)?;
-        let providers = self
-            .read_optional::<ProvidersConfig>(&providers_path)?
-            .unwrap_or_default();
-        let settings = self
-            .read_optional::<SettingsConfig>(&settings_path)?
-            .unwrap_or_default();
-        validate_providers(&providers, true, &providers_path)?;
-        validate_settings(&settings, true, &settings_path)?;
-        validate_references(&value, &providers, &settings, &path)?;
-        AtomicPublisher::replace(&path, &canonical_line(&path, &value)?)?;
-        Ok(value)
     }
 
     pub fn publish_session_settings(
@@ -1255,136 +714,62 @@ impl ConfigRepository {
         Ok(())
     }
 
-    fn resolve_unlocked(
+    pub(crate) fn resolve_execution_snapshot(
         &self,
-        workspace_id: &str,
+        session_id: &str,
+        execution: &crate::ExecutionConfig,
         session_folder: Option<&Path>,
-        folder_binding: Option<&str>,
-        scope: Option<ScopeSelection<'_>>,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        let workspace_path = workspace_document_path(&self.root, workspace_id);
-        let workspace: WorkspaceConfig = self.read_required(&workspace_path)?;
-        if workspace.id != workspace_id {
-            return Err(ProfileError::InvalidSchema {
-                path: workspace_path,
-                reason: "workspace id does not match filename".to_owned(),
-            });
-        }
-        self.resolve_seed_unlocked(&workspace, session_folder, folder_binding, scope)
-    }
-
-    /// Resolves a session-owned compatibility seed against current global configuration.
-    /// The seed is ledger data; no workspace document is consulted.
-    pub fn resolve_session_seed(
-        &self,
-        seed: &WorkspaceConfig,
-        session_folder: Option<&Path>,
-        folder_binding: Option<&str>,
-        scope: ScopeSelection<'_>,
     ) -> Result<ConfigSnapshot, ProfileError> {
         let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
-        self.resolve_seed_unlocked(seed, session_folder, folder_binding, Some(scope))
-    }
-
-    fn resolve_seed_unlocked(
-        &self,
-        workspace: &WorkspaceConfig,
-        session_folder: Option<&Path>,
-        folder_binding: Option<&str>,
-        scope: Option<ScopeSelection<'_>>,
-    ) -> Result<ConfigSnapshot, ProfileError> {
-        let workspace_path = self.root.join("<session-scope>");
-        let providers_path = self.root.join("config/providers.json");
-        let settings_path = self.root.join("config/settings.json");
-        let providers = self.read_optional(&providers_path)?.unwrap_or_default();
-        let settings = self.read_optional(&settings_path)?.unwrap_or_default();
-        let session_settings_path = session_folder
+        let providers: ProvidersConfig = self
+            .read_optional(&self.root.join("config/providers.json"))?
+            .unwrap_or_default();
+        let settings: SettingsConfig = self
+            .read_optional(&self.root.join("config/settings.json"))?
+            .unwrap_or_default();
+        let session_settings = session_folder
             .map(store::session_settings_path)
-            .transpose()?;
-        let session_settings = match session_settings_path.as_ref() {
-            Some(path) => self.read_optional::<SessionSettings>(path)?,
-            None => None,
-        };
-
-        validate_workspace(workspace, false, &workspace_path)?;
-        validate_providers(&providers, true, &providers_path)?;
-        validate_settings(&settings, true, &settings_path)?;
-        if let (Some(value), Some(path)) = (&session_settings, &session_settings_path) {
-            validate_session_settings(value, false, path)?;
-        }
-        validate_references(workspace, &providers, &settings, &workspace_path)?;
-        validate_session_reference(
-            &session_settings,
-            &providers,
-            session_settings_path.as_deref().unwrap_or(&workspace_path),
-        )?;
-        let mut resolved = resolve_workspace(workspace, &workspace_path)?;
-        // A session preset's tool selection replaces the workspace selection for
-        // that session; the instruction policy still meets it at every launch
-        // (spec session-endpoint §Session presets).
-        if let Some(tools) = session_folder
+            .transpose()?
+            .map(|path| self.read_optional::<SessionSettings>(&path))
+            .transpose()?
+            .flatten();
+        let mut allowed_tools = execution.allowed_tools.clone();
+        if let Some(selection) = session_folder
             .map(session_preset_tools)
             .transpose()?
             .flatten()
         {
-            resolved.policy.allowed_tools = tools;
+            allowed_tools.retain(|tool| selection.contains(tool));
         }
-        if let Some(binding) = folder_binding {
-            validate_id(binding, "folder binding id", &workspace_path)?;
-            let selected = workspace.path_for_binding(binding).ok_or_else(|| {
-                ProfileError::InvalidReference {
-                    path: workspace_path.clone(),
-                    reason: format!("unknown folder binding {binding}"),
-                }
-            })?;
-            let selected = canonical_directory(selected, &workspace_path)?;
-            if !resolved.cwd.contains(&selected) {
-                return Err(ProfileError::InvalidReference {
-                    path: workspace_path.clone(),
-                    reason: format!("folder binding {binding} has no resolved cwd"),
-                });
-            }
-            resolved.folder_binding = Some(binding.to_owned());
-            resolved.selected_cwd = Some(selected);
-        }
-        let environments_revision = match scope {
-            Some(scope) => {
-                let path = self.root.join("config/environments.json");
-                let environments: EnvironmentsConfig =
-                    self.read_optional(&path)?.unwrap_or_default();
-                validate_environments(&environments, true, &path)?;
-                apply_scope(
-                    &mut resolved,
-                    workspace,
-                    &environments,
-                    scope,
-                    &workspace_path,
-                )?;
-                Some(environments.revision)
-            }
-            None => None,
-        };
-        Ok(ConfigSnapshot {
+        let snapshot = ConfigSnapshot {
             format: FORMAT,
             user_agent_dir: None,
+            execution: ResolvedExecution {
+                session_id: session_id.to_owned(),
+
+                cwd: std::iter::once(&execution.cwd)
+                    .chain(&execution.read_roots)
+                    .cloned()
+                    .collect(),
+                policy: ExecutionPolicy {
+                    writable_roots: execution.writable_roots.clone(),
+                    toolchain_roots: execution.toolchain_roots.clone(),
+                    network: execution.network,
+                    allowed_tools,
+                    max_wall_seconds: execution.max_wall_seconds,
+                },
+            },
             revisions: RevisionVector {
-                workspace: workspace.revision,
                 providers: providers.revision,
                 settings: settings.revision,
                 session_settings: session_settings.as_ref().map(|value| value.revision),
-                environments: environments_revision,
-                legacy_integrations: (),
             },
-            workspace: resolved,
             providers,
-            legacy_integrations: (),
             settings,
             session_settings,
-        })
-    }
-
-    fn read_required<T: for<'de> Deserialize<'de>>(&self, path: &Path) -> Result<T, ProfileError> {
-        parse_canonical(path, &fs::read(path)?)
+        };
+        validate_snapshot(&snapshot)?;
+        Ok(snapshot)
     }
 
     fn read_optional<T: for<'de> Deserialize<'de>>(
@@ -1401,48 +786,9 @@ impl ConfigRepository {
     fn validate_all_provider_references_unlocked(
         &self,
         providers: &ProvidersConfig,
+        settings: &SettingsConfig,
     ) -> Result<(), ProfileError> {
-        let settings_path = self.root.join("config/settings.json");
-        let settings = self
-            .read_optional::<SettingsConfig>(&settings_path)?
-            .unwrap_or_default();
-        validate_settings(&settings, true, &settings_path)?;
-
-        let mut workspace_entries =
-            fs::read_dir(self.root.join("workspaces"))?.collect::<Result<Vec<_>, _>>()?;
-        workspace_entries.sort_by_key(fs::DirEntry::file_name);
-        for entry in workspace_entries {
-            if !entry.file_type()?.is_dir() {
-                return invalid(
-                    &entry.path(),
-                    "workspace authority entry must be a directory",
-                );
-            }
-            let workspace_path = entry.path().join("workspace.json");
-            let workspace: WorkspaceConfig = self.read_required(&workspace_path)?;
-            validate_workspace(&workspace, false, &workspace_path)?;
-            validate_references(&workspace, providers, &settings, &workspace_path)?;
-        }
-
-        for area in ["threads", "archive"] {
-            let root = self.root.join(area);
-            let entries = match fs::read_dir(&root) {
-                Ok(entries) => entries.collect::<Result<Vec<_>, _>>()?,
-                Err(error) if error.kind() == std::io::ErrorKind::NotFound => continue,
-                Err(error) => return Err(error.into()),
-            };
-            for entry in entries {
-                if !entry.file_type()?.is_dir() {
-                    continue;
-                }
-                let settings_path = store::session_settings_path(&entry.path())?;
-                if let Some(session) = self.read_optional::<SessionSettings>(&settings_path)? {
-                    validate_session_settings(&session, false, &settings_path)?;
-                    validate_session_reference(&Some(session), providers, &settings_path)?;
-                }
-            }
-        }
-        Ok(())
+        validate_references(providers, settings, Path::new("<host-config>"))
     }
 }
 
@@ -1485,29 +831,6 @@ fn revision_from_value<T: Serialize>(path: &Path, value: &T) -> Result<u64, Prof
         })
 }
 
-fn validate_workspace_id(id: &str) -> Result<(), ProfileError> {
-    let valid = !id.is_empty()
-        && id.len() <= 128
-        && !id.starts_with('.')
-        && id
-            .bytes()
-            .all(|byte| byte.is_ascii_alphanumeric() || matches!(byte, b'.' | b'_' | b'-'));
-    if valid {
-        Ok(())
-    } else {
-        Err(ProfileError::InvalidPath {
-            path: PathBuf::from(id),
-            reason: "workspace id is outside [A-Za-z0-9._-]".to_owned(),
-        })
-    }
-}
-
-fn workspace_document_path(root: &Path, workspace_id: &str) -> PathBuf {
-    root.join("workspaces")
-        .join(workspace_id)
-        .join("workspace.json")
-}
-
 fn validate_common(
     format: u64,
     revision: u64,
@@ -1527,46 +850,6 @@ fn validate_common(
         });
     }
     validate_safe_integer(revision, "revision", path)?;
-    Ok(())
-}
-
-fn validate_workspace(
-    value: &WorkspaceConfig,
-    allow_zero: bool,
-    path: &Path,
-) -> Result<(), ProfileError> {
-    validate_common(value.format, value.revision, allow_zero, path)?;
-    validate_workspace_id(&value.id)?;
-    validate_id(&value.name, "workspace name", path)?;
-    if value.cwd.is_empty() && value.folders.is_empty() {
-        return invalid(path, "workspace folders must be nonempty");
-    }
-    if !value.cwd.is_empty() && !value.folders.is_empty() {
-        return invalid(path, "workspace cannot contain both legacy cwd and folders");
-    }
-    let mut binding_ids = BTreeSet::new();
-    for folder in &value.folders {
-        validate_id(&folder.id, "folder binding id", path)?;
-        if !binding_ids.insert(folder.id.as_str()) {
-            return invalid(path, "duplicate folder binding id");
-        }
-        validate_absolute(&folder.path, path)?;
-    }
-    for cwd in value.folder_paths() {
-        validate_absolute(cwd, path)?;
-    }
-    if let Some(policy) = &value.policy {
-        for root in policy.writable_roots.iter().chain(&policy.toolchain_roots) {
-            validate_absolute(root, path)?;
-        }
-        validate_unique(&policy.allowed_tools, "allowed_tools", path)?;
-        if policy.max_wall_seconds == Some(0) {
-            return invalid(path, "max_wall_seconds must be at least 1");
-        }
-        if let Some(value) = policy.max_wall_seconds {
-            validate_safe_integer(value, "max_wall_seconds", path)?;
-        }
-    }
     Ok(())
 }
 
@@ -1730,49 +1013,32 @@ fn validate_session_reference(
 }
 
 fn validate_references(
-    workspace: &WorkspaceConfig,
     providers: &ProvidersConfig,
     settings: &SettingsConfig,
     path: &Path,
 ) -> Result<(), ProfileError> {
-    for (provider, model) in [
-        (
-            settings.default_provider.as_deref(),
-            settings.default_model.as_deref(),
-        ),
-        (
-            workspace
-                .policy
-                .as_ref()
-                .and_then(|value| value.provider.as_deref()),
-            workspace
-                .policy
-                .as_ref()
-                .and_then(|value| value.model.as_deref()),
-        ),
-    ] {
-        let Some(provider_id) = provider else {
-            if model.is_some() {
-                return invalid_reference(path, "model is set without a provider");
-            }
-            continue;
+    let Some(id) = settings.default_provider.as_deref() else {
+        return if settings.default_model.is_some() {
+            invalid_reference(path, "model is set without a provider")
+        } else {
+            Ok(())
         };
-        let provider = providers
-            .providers
+    };
+    let provider = providers
+        .providers
+        .iter()
+        .find(|provider| provider.id == id)
+        .ok_or_else(|| ProfileError::InvalidReference {
+            path: path.to_owned(),
+            reason: format!("unknown provider {id}"),
+        })?;
+    if let Some(model) = settings.default_model.as_deref()
+        && !provider
+            .models
             .iter()
-            .find(|value| value.id == provider_id)
-            .ok_or_else(|| ProfileError::InvalidReference {
-                path: path.to_path_buf(),
-                reason: format!("unknown provider {provider_id}"),
-            })?;
-        if let Some(model_id) = model
-            && !provider
-                .models
-                .iter()
-                .any(|value| value.id == model_id && value.enabled)
-        {
-            return invalid_reference(path, "model is absent or disabled");
-        }
+            .any(|value| value.id == model && value.enabled)
+    {
+        return invalid_reference(path, "model is absent or disabled");
     }
     Ok(())
 }
@@ -1802,157 +1068,6 @@ fn session_preset_tools(session_folder: &Path) -> Result<Option<Vec<String>>, Pr
     Ok(preset.tools)
 }
 
-/// Narrows a resolved workspace to a session scope (spec config
-/// §Environments). The environment meets the workspace policy; recorded
-/// folder ids select the session's folders in recorded order, and only
-/// writable roots inside them remain.
-fn apply_scope(
-    resolved: &mut ResolvedWorkspace,
-    workspace: &WorkspaceConfig,
-    environments: &EnvironmentsConfig,
-    scope: ScopeSelection<'_>,
-    path: &Path,
-) -> Result<(), ProfileError> {
-    let environment = environments.environment(scope.environment).ok_or_else(|| {
-        ProfileError::InvalidReference {
-            path: path.to_path_buf(),
-            reason: format!("unknown environment {}", scope.environment),
-        }
-    })?;
-    if let Some(ids) = scope.folders {
-        let mut cwd = Vec::with_capacity(ids.len());
-        for id in ids {
-            let authored =
-                workspace
-                    .path_for_binding(id)
-                    .ok_or_else(|| ProfileError::InvalidReference {
-                        path: path.to_path_buf(),
-                        reason: format!("session folder {id} is not in its workspace"),
-                    })?;
-            let canonical = canonical_directory(authored, path)?;
-            if cwd.contains(&canonical) {
-                return invalid(path, "session folders repeat a directory");
-            }
-            cwd.push(canonical);
-        }
-        if let Some(selected) = &resolved.selected_cwd
-            && !cwd.contains(selected)
-        {
-            return Err(ProfileError::InvalidReference {
-                path: path.to_path_buf(),
-                reason: "folder binding is not one of the session's folders".to_owned(),
-            });
-        }
-        resolved
-            .policy
-            .writable_roots
-            .retain(|root| cwd.iter().any(|base| Path::new(root).starts_with(base)));
-        resolved.cwd = cwd;
-        resolved.folders = Some(ids.to_vec());
-    }
-    resolved.policy.network &= environment.network;
-    resolved.policy.max_wall_seconds = match (
-        resolved.policy.max_wall_seconds,
-        environment.max_wall_seconds,
-    ) {
-        (Some(left), Some(right)) => Some(left.min(right)),
-        (left, right) => left.or(right),
-    };
-    for root in &environment.toolchain_roots {
-        let canonical = canonical_directory(root, path)?;
-        if canonical.contains(':') {
-            return invalid(path, "toolchain root cannot contain PATH separator");
-        }
-        resolved.policy.toolchain_roots.push(canonical);
-    }
-    resolved.policy.toolchain_roots.sort();
-    resolved.policy.toolchain_roots.dedup();
-    resolved.environment = Some(environment.id);
-    Ok(())
-}
-
-fn validate_environments(
-    value: &EnvironmentsConfig,
-    allow_zero: bool,
-    path: &Path,
-) -> Result<(), ProfileError> {
-    validate_common(value.format, value.revision, allow_zero, path)?;
-    let mut ids = BTreeSet::new();
-    for environment in &value.environments {
-        validate_id(&environment.id, "environment id", path)?;
-        if environment.id.len() > 512 || environment.id.nfc().collect::<String>() != environment.id
-        {
-            return invalid(path, "environment id must be NFC and at most 512 bytes");
-        }
-        if !ids.insert(environment.id.as_str()) {
-            return invalid(path, "duplicate environment id");
-        }
-        for root in &environment.toolchain_roots {
-            if !Path::new(root).is_absolute() || root.contains(':') {
-                return invalid(path, "environment toolchain roots are absolute paths");
-            }
-        }
-        if environment.max_wall_seconds == Some(0) {
-            return invalid(path, "environment max_wall_seconds must be positive");
-        }
-    }
-    Ok(())
-}
-
-fn resolve_workspace(
-    value: &WorkspaceConfig,
-    path: &Path,
-) -> Result<ResolvedWorkspace, ProfileError> {
-    let mut cwd = Vec::new();
-    for item in value.folder_paths() {
-        let resolved = canonical_directory(item, path)?;
-        if cwd.contains(&resolved) {
-            return invalid(path, "duplicate canonical cwd");
-        }
-        cwd.push(resolved);
-    }
-    let mut policy = value.policy.clone().unwrap_or_default();
-    let mut roots = Vec::new();
-    for item in &policy.writable_roots {
-        let resolved = canonical_directory(item, path)?;
-        if !cwd
-            .iter()
-            .any(|base| Path::new(&resolved).starts_with(base))
-        {
-            return invalid(path, "writable root is outside every cwd");
-        }
-        roots.push(resolved);
-    }
-    roots.sort();
-    roots.dedup();
-    policy.writable_roots = roots;
-    let mut toolchains = Vec::new();
-    for root in &policy.toolchain_roots {
-        let canonical = canonical_directory(root, path)?;
-        if canonical.contains(':') {
-            return invalid(path, "toolchain root cannot contain PATH separator");
-        }
-        toolchains.push(canonical);
-    }
-    toolchains.sort();
-    toolchains.dedup();
-    policy.toolchain_roots = toolchains;
-    policy.allowed_tools.sort();
-    policy.allowed_tools.dedup();
-    Ok(ResolvedWorkspace {
-        format: value.format,
-        revision: value.revision,
-        id: value.id.clone(),
-        name: value.name.clone(),
-        folder_binding: None,
-        selected_cwd: None,
-        cwd,
-        policy,
-        environment: None,
-        folders: None,
-    })
-}
-
 fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
     let path = Path::new("<config-snapshot>");
     if let Some(user_agent_dir) = &snapshot.user_agent_dir {
@@ -1964,50 +1079,24 @@ fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
             format: snapshot.format,
         });
     }
-    validate_common(
-        snapshot.workspace.format,
-        snapshot.workspace.revision,
-        false,
-        path,
-    )?;
-    validate_workspace_id(&snapshot.workspace.id)?;
-    validate_id(&snapshot.workspace.name, "workspace name", path)?;
-    if let Some(binding) = &snapshot.workspace.folder_binding {
-        validate_id(binding, "folder binding id", path)?;
-    }
-    match (
-        snapshot.workspace.folder_binding.as_ref(),
-        snapshot.workspace.selected_cwd.as_ref(),
-    ) {
-        (Some(_), Some(selected)) => {
-            validate_absolute(selected, path)?;
-            if canonical_directory(selected, path)? != *selected {
-                return invalid(path, "selected cwd is not canonical");
-            }
-            if !snapshot.workspace.cwd.contains(selected) {
-                return invalid(path, "selected cwd is not a bound workspace cwd");
-            }
-        }
-        (None, None) => {}
-        _ => return invalid(path, "folder binding and selected cwd must appear together"),
-    }
-    if snapshot.workspace.cwd.is_empty() {
+    validate_id(&snapshot.execution.session_id, "session id", path)?;
+    if snapshot.execution.cwd.is_empty() {
         return invalid(path, "snapshot workspace cwd must be nonempty");
     }
-    validate_unique(&snapshot.workspace.cwd, "snapshot cwd", path)?;
-    for cwd in &snapshot.workspace.cwd {
+    validate_unique(&snapshot.execution.cwd, "snapshot cwd", path)?;
+    for cwd in &snapshot.execution.cwd {
         validate_absolute(cwd, path)?;
         if canonical_directory(cwd, path)? != *cwd {
             return invalid(path, "snapshot cwd is not canonical");
         }
     }
-    if !is_sorted_unique(&snapshot.workspace.policy.toolchain_roots)
-        || !is_sorted_unique(&snapshot.workspace.policy.writable_roots)
-        || !is_sorted_unique(&snapshot.workspace.policy.allowed_tools)
+    if !is_sorted_unique(&snapshot.execution.policy.toolchain_roots)
+        || !is_sorted_unique(&snapshot.execution.policy.writable_roots)
+        || !is_sorted_unique(&snapshot.execution.policy.allowed_tools)
     {
         return invalid(path, "resolved policy sets must be sorted and unique");
     }
-    for root in &snapshot.workspace.policy.toolchain_roots {
+    for root in &snapshot.execution.policy.toolchain_roots {
         validate_absolute(root, path)?;
         if root.contains(':') || canonical_directory(root, path)? != *root {
             return invalid(
@@ -2016,13 +1105,13 @@ fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
             );
         }
     }
-    for root in &snapshot.workspace.policy.writable_roots {
+    for root in &snapshot.execution.policy.writable_roots {
         validate_absolute(root, path)?;
         if canonical_directory(root, path)? != *root {
             return invalid(path, "resolved writable root is not canonical");
         }
         if !snapshot
-            .workspace
+            .execution
             .cwd
             .iter()
             .any(|cwd| Path::new(root).starts_with(cwd))
@@ -2030,7 +1119,7 @@ fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
             return invalid(path, "resolved writable root is outside every cwd");
         }
     }
-    if let Some(value) = snapshot.workspace.policy.max_wall_seconds {
+    if let Some(value) = snapshot.execution.policy.max_wall_seconds {
         if value == 0 {
             return invalid(path, "max_wall_seconds must be at least 1");
         }
@@ -2053,19 +1142,9 @@ fn validate_snapshot(snapshot: &ConfigSnapshot) -> Result<(), ProfileError> {
             "revision-0 settings must equal the synthesized default",
         );
     }
-    let workspace = WorkspaceConfig {
-        format: snapshot.workspace.format,
-        revision: snapshot.workspace.revision,
-        id: snapshot.workspace.id.clone(),
-        name: snapshot.workspace.name.clone(),
-        cwd: snapshot.workspace.cwd.clone(),
-        folders: Vec::new(),
-        policy: Some(snapshot.workspace.policy.clone()),
-    };
-    validate_references(&workspace, &snapshot.providers, &snapshot.settings, path)?;
+    validate_references(&snapshot.providers, &snapshot.settings, path)?;
     validate_session_reference(&snapshot.session_settings, &snapshot.providers, path)?;
-    if snapshot.revisions.workspace != snapshot.workspace.revision
-        || snapshot.revisions.providers != snapshot.providers.revision
+    if snapshot.revisions.providers != snapshot.providers.revision
         || snapshot.revisions.settings != snapshot.settings.revision
         || snapshot.revisions.session_settings
             != snapshot
@@ -2225,87 +1304,5 @@ mod private_directory_tests {
         )
         .expect_err("symlink must fail closed");
         assert!(error.to_string().contains("traverses a symlink"));
-    }
-}
-
-#[cfg(test)]
-mod toolchain_tests {
-    use super::*;
-
-    #[test]
-    fn toolchain_roots_are_canonical_deduplicated_and_never_writable_roots() {
-        let root = tempfile::tempdir().unwrap();
-        let workspace = root.path().join("workspace");
-        let chain = root.path().join("python");
-        fs::create_dir_all(&workspace).unwrap();
-        fs::create_dir_all(chain.join("bin")).unwrap();
-        let alias = root.path().join("alias");
-        std::os::unix::fs::symlink(&chain, &alias).unwrap();
-        let mut config = WorkspaceConfig {
-            format: 1,
-            revision: 1,
-            id: "ws".into(),
-            name: "ws".into(),
-            cwd: vec![workspace.to_string_lossy().into_owned()],
-            folders: vec![],
-            policy: Some(WorkspacePolicy {
-                toolchain_roots: vec![
-                    alias.to_string_lossy().into_owned(),
-                    chain.to_string_lossy().into_owned(),
-                ],
-                ..Default::default()
-            }),
-        };
-        let resolved = resolve_workspace(&config, Path::new("test.json")).unwrap();
-        assert_eq!(
-            resolved.policy.toolchain_roots,
-            vec![
-                fs::canonicalize(&chain)
-                    .unwrap()
-                    .to_string_lossy()
-                    .into_owned()
-            ]
-        );
-        assert!(resolved.policy.writable_roots.is_empty());
-        assert_eq!(resolved.cwd.len(), 1, "toolchains are not project folders");
-        let ambiguous = root.path().join("bad:path");
-        fs::create_dir(&ambiguous).unwrap();
-        config.policy.as_mut().unwrap().toolchain_roots =
-            vec![ambiguous.to_string_lossy().into_owned()];
-        assert!(resolve_workspace(&config, Path::new("test.json")).is_err());
-    }
-}
-
-#[cfg(test)]
-mod legacy_snapshot_tests {
-    use super::*;
-
-    #[test]
-    fn a_snapshot_published_with_the_integrations_file_still_decodes() {
-        let root = tempfile::tempdir().unwrap();
-        let cwd = std::fs::canonicalize(root.path()).unwrap();
-        let legacy = serde_json::json!({
-            "format": 1,
-            "workspace": {
-                "format": 1, "revision": 1, "id": "ws", "name": "ws",
-                "cwd": [cwd.to_str().unwrap()], "policy": {"network": false}
-            },
-            "providers": {"format": 1, "revision": 0, "providers": []},
-            "integrations": {"format": 1, "revision": 0, "integrations": []},
-            "settings": {"format": 1, "revision": 0},
-            "revisions": {"workspace": 1, "providers": 0, "integrations": 0, "settings": 0}
-        });
-        let mut bytes = schema::IJsonValue::parse(&serde_json::to_vec(&legacy).unwrap())
-            .expect("i-json")
-            .canonical_bytes()
-            .expect("canonical");
-        bytes.push(b'\n');
-        let snapshot = ConfigSnapshot::decode(&bytes).expect("legacy snapshot decodes");
-        let reencoded = snapshot.canonical_bytes().expect("encode");
-        assert!(
-            !String::from_utf8(reencoded)
-                .unwrap()
-                .contains("integrations")
-        );
     }
 }

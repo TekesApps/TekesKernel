@@ -279,7 +279,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open` | `root.as_ref().to_path_buf` | [217](../../src/lib.rs#L217) | receiver-type-required |
 | `open` | `root.as_ref` | [217](../../src/lib.rs#L217) | receiver-type-required |
 | `open` | `fs::create_dir_all` | [218](../../src/lib.rs#L218) | external-constructor-callback-or-unresolved |
-| `open` | `store::retire_legacy_name` | [219](../../src/lib.rs#L219) | [store::management_root::retire_legacy_name](../../../store/src/management_root.rs#L21) |
+| `open` | `store::retire_legacy_name` | [219](../../src/lib.rs#L219) | [store::management_root::retire_legacy_name](../../../store/src/management_root.rs#L14) |
 | `open` | `root.join` | [220](../../src/lib.rs#L220) | receiver-type-required |
 | `open` | `legacy_lock.exists` | [221](../../src/lib.rs#L221) | receiver-type-required |
 | `open` | `fs::remove_file` | [222](../../src/lib.rs#L222) | external-constructor-callback-or-unresolved |

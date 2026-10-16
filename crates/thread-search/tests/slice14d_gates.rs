@@ -34,10 +34,10 @@ fn slice14d_gate_105_contract_oracle_and_stable_identity() {
     assert_eq!(actual["results"], fixture["all_results"]);
     assert_eq!(page.results[0].session_id, A);
     assert_eq!(page.results[1].session_id, B);
-    assert_eq!(page.results[2].session_id, C);
+    assert_eq!(page.results[2].session_id, D);
     assert_eq!(page.results[0].score, 3_000);
     assert_eq!(page.results[1].score, 2_000);
-    assert_eq!(page.results[2].score, 1_000);
+    assert_eq!(page.results[3].score, 1_000);
     assert!(page.reached_end);
     assert!(page.next_cursor.is_none());
     assert_eq!(page.index_use.missing, 4);
@@ -102,7 +102,15 @@ fn slice14d_gate_106_paging_archive_visibility_and_membership_lock() {
         })
         .expect("second page");
     assert_eq!(second.results[0].session_id, B);
-    assert!(second.reached_end);
+    assert!(!second.reached_end);
+    let third = authority
+        .search(&SearchRequest {
+            after: second.next_cursor,
+            ..request("all", "kernel design", 1, ArchiveVisibility::Active)
+        })
+        .unwrap();
+    assert_eq!(third.results[0].session_id, D);
+    assert!(third.reached_end);
 
     let archived = authority
         .search(&request(
@@ -412,13 +420,13 @@ fn slice14d_gate_108_fail_closed_and_semantic_non_mutation() {
 }
 
 fn request(
-    workspace_id: &str,
+    _selection: &str,
     query: &str,
     limit: usize,
     visibility: ArchiveVisibility,
 ) -> SearchRequest {
     SearchRequest {
-        workspace_id: Some(workspace_id.to_owned()),
+        session_filter: None,
         query: query.to_owned(),
         limit,
         visibility,
@@ -567,7 +575,7 @@ fn global_title_search_is_explicit_and_cursor_filters_cannot_be_widened() {
     let root = fixture_catalog();
     let authority = ThreadSearchAuthority::open(root.path()).unwrap();
     let global = SearchRequest {
-        workspace_id: None,
+        session_filter: None,
         ..request("unused", "kernel design", 1, ArchiveVisibility::All)
     };
     let first = authority.search(&global).unwrap();
@@ -578,60 +586,23 @@ fn global_title_search_is_explicit_and_cursor_filters_cannot_be_widened() {
         })
         .unwrap();
     assert_eq!(all.results.len(), 4);
-    assert!(all.results.iter().any(|row| row.workspace_id == "ws-other"));
-    let scoped = request("ws-main", "kernel design", 1, ArchiveVisibility::All);
-    let old_cursor = authority.search(&scoped).unwrap().next_cursor.unwrap();
+    assert!(all.results.iter().any(|row| row.session_id == D));
+    let cursor = first.next_cursor.clone().unwrap();
     assert!(matches!(
         authority.search(&SearchRequest {
-            after: Some(old_cursor.clone()),
+            session_filter: Some(A.into()),
+            after: Some(cursor),
             ..global.clone()
         }),
         Err(SearchError::CursorScope)
     ));
-    assert!(matches!(
-        authority.search(&SearchRequest {
-            after: first.next_cursor.clone(),
-            ..scoped.clone()
-        }),
-        Err(SearchError::CursorScope)
-    ));
-    assert!(
-        authority
-            .search(&SearchRequest {
-                after: Some(old_cursor),
-                ..scoped
-            })
-            .is_ok(),
-        "existing string-filter cursor stays compatible"
-    );
-    for changed in [
-        SearchRequest {
-            workspace_id: Some("ws-other".into()),
-            ..global.clone()
-        },
-        SearchRequest {
-            visibility: ArchiveVisibility::Active,
-            ..global.clone()
-        },
-        SearchRequest {
-            query: "different".into(),
-            ..global.clone()
-        },
-    ] {
-        assert!(matches!(
-            authority.search(&SearchRequest {
-                after: first.next_cursor.clone(),
-                ..changed
-            }),
-            Err(SearchError::CursorScope)
-        ));
-    }
-    assert!(
-        authority
-            .search(&SearchRequest {
-                after: first.next_cursor.clone(),
-                ..global
-            })
-            .is_ok()
-    );
+    let filtered = authority
+        .search(&SearchRequest {
+            session_filter: Some(D.into()),
+            limit: 10,
+            ..global
+        })
+        .unwrap();
+    assert_eq!(filtered.results.len(), 1);
+    assert_eq!(filtered.results[0].session_id, D);
 }

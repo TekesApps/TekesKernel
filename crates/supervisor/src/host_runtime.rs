@@ -16,11 +16,10 @@ use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use endpoint::SessionHostDescription;
-use profile::{ConfigRepository, InstructionResolver, ResourceCatalog};
+use profile::{InstructionResolver, ResourceCatalog};
 use store::{StoreError, ThreadStore};
 use thiserror::Error;
 
-use crate::client_admin::ClientAdminRoutes;
 use crate::client_extensions::ProductionClientExtensions;
 use crate::endpoint_carrier::ProductionCarrierError;
 use crate::endpoint_host::{
@@ -169,15 +168,13 @@ pub fn prepare_storage(storage_root: &Path) -> Result<ThreadStore, DaemonError> 
         "staging",
         ".create-staging",
         ".rewrite-trash",
-        "workspaces",
         "memory",
         "goals",
         "jobs",
         "tool-state",
         "config",
         "cache",
-        store::ENDPOINT_MANAGEMENT_DIR,
-        "plugins",
+        store::ENDPOINT_RPC_DIR,
     ] {
         let path = root.join(name);
         match fs::symlink_metadata(&path) {
@@ -290,60 +287,11 @@ pub fn assemble_application_endpoint_host(
     user_agent_dir: &Path,
     process_host: Arc<ProductionProcessHost>,
 ) -> Result<ProductionEndpointHost, DaemonError> {
-    let repository = ConfigRepository::open(authority_root)
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
     let instruction = InstructionResolver::new(user_agent_dir, std::iter::empty::<&Path>())
         .capture()
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
     let catalog = ResourceCatalog::from_snapshot(&instruction)
         .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-    let workspace_resources = repository
-        .workspaces()
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?
-        .into_iter()
-        .map(|workspace| {
-            let workspace_id = workspace.id.clone();
-            let authored_roots = workspace
-                .folder_paths()
-                .into_iter()
-                .map(PathBuf::from)
-                .collect::<Vec<_>>();
-
-            // A workspace may refer to a removable volume, a deleted temporary
-            // checkout, or another path that is not mounted at startup.
-            // It remains inventory authority, but it cannot contribute project
-            // resources until its roots are available again. Do not let that
-            // workspace prevent the host from binding its endpoint.
-            if authored_roots.iter().any(|root| !root.is_dir()) {
-                return Ok((workspace_id, ResourceCatalog::default()));
-            }
-
-            let resolved = match repository.resolve(&workspace_id) {
-                Ok(snapshot) => snapshot,
-                Err(_) if authored_roots.iter().any(|root| !root.is_dir()) => {
-                    return Ok((workspace_id, ResourceCatalog::default()));
-                }
-                Err(error) => return Err(DaemonError::invalid_config(error.to_string())),
-            };
-            let snapshot = match profile::workspace_instructions(
-                &repository,
-                &workspace_id,
-                user_agent_dir,
-                &resolved,
-            )
-            .and_then(|resolver| resolver.capture())
-            {
-                Ok(snapshot) => snapshot,
-                Err(_) if authored_roots.iter().any(|root| !root.is_dir()) => {
-                    return Ok((workspace_id, ResourceCatalog::default()));
-                }
-                Err(error) => return Err(DaemonError::invalid_config(error.to_string())),
-            };
-            let catalog = ResourceCatalog::from_snapshot(&snapshot)
-                .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-            Ok((workspace_id, catalog))
-        })
-        .collect::<Result<std::collections::BTreeMap<_, _>, DaemonError>>()?;
     let command_clock = Arc::clone(&clock);
     let input_admission = Arc::new(SessionInputAdmissionAuthority::new(
         authority_root.to_path_buf(),
@@ -352,7 +300,6 @@ pub fn assemble_application_endpoint_host(
         ProductionClientExtensions::open(
             authority_root,
             catalog,
-            workspace_resources,
             EndpointCommandInputAuthority::new(
                 Arc::clone(&process_host) as Arc<dyn SessionDeliveryAuthority>,
                 Arc::new(move || command_clock().map_err(|error| error.to_string())),
@@ -362,22 +309,9 @@ pub fn assemble_application_endpoint_host(
         )
         .map_err(|error| DaemonError::corrupt(format!("{}: {}", error.code, error.message)))?,
     );
-    let admin_routes = Arc::new(
-        ClientAdminRoutes::new(authority_root, Arc::clone(&process_host))
-            .map_err(|error| DaemonError::invalid_config(error.code))?,
-    );
-    let mut extension_routes = extensions.routes();
-    extension_routes.extend(admin_routes.routes());
-    let workspace_helper = process_host.workspace_service_binary();
-    if workspace_helper.is_file() {
-        extension_routes.push(Arc::new(
-            crate::workspace_routes::WorkspaceRoutes::open(authority_root, workspace_helper)
-                .map_err(|error| DaemonError::invalid_config(error.message))?,
-        ));
-    }
+    let extension_routes = extensions.routes();
     let routes = CompositeProductionEndpointRoutes::compose(extension_routes)
         .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-    let preset_mcp = process_host.mcp_runtime();
     ProductionEndpointHost::open_with_full_authorities_and_session_admission(
         authority_root,
         description,
@@ -388,10 +322,7 @@ pub fn assemble_application_endpoint_host(
         Some(process_host as Arc<dyn QueueTransactionAuthority>),
         input_admission,
     )
-    .map(|host| {
-        host.with_preset_mcp(preset_mcp)
-            .with_user_agent_dir(user_agent_dir)
-    })
+    .map(|host| host.with_user_agent_dir(user_agent_dir))
     .map_err(|error| DaemonError::corrupt(error.to_string()))
 }
 

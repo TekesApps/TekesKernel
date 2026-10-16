@@ -222,13 +222,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `decode` | `Ok` | [141](../../src/launch.rs#L141) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `validate_dynamic_catalog` | [145](../../src/launch.rs#L145) | [profile::launch::validate_dynamic_catalog](../../src/launch.rs#L366) |
 | `canonical_bytes` | `Path::new` | [145](../../src/launch.rs#L145) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `canonical_line` | [146](../../src/launch.rs#L146) | [profile::canonical_line](../../src/lib.rs#L118) |
+| `canonical_bytes` | `canonical_line` | [146](../../src/launch.rs#L146) | [profile::canonical_line](../../src/lib.rs#L114) |
 | `digest` | `Ok` | [150](../../src/launch.rs#L150) | external-constructor-callback-or-unresolved |
 | `bind` | `Self::bind_with_unavailable` | [186](../../src/launch.rs#L186) | [profile::launch::LaunchBindings::bind_with_unavailable](../../src/launch.rs#L193) |
 | `bind` | `Vec::new` | [186](../../src/launch.rs#L186) | external-constructor-callback-or-unresolved |
 | `bind_with_unavailable` | `unavailable_tools.sort` | [199](../../src/launch.rs#L199) | receiver-type-required |
 | `bind_with_unavailable` | `unavailable_tools.dedup` | [200](../../src/launch.rs#L200) | receiver-type-required |
-| `bind_with_unavailable` | `config.workspace.id.clone` | [203](../../src/launch.rs#L203) | receiver-type-required |
+| `bind_with_unavailable` | `config.execution.session_id.clone` | [203](../../src/launch.rs#L203) | receiver-type-required |
 | `bind_with_unavailable` | `config.digest` | [204](../../src/launch.rs#L204) | receiver-type-required |
 | `bind_with_unavailable` | `value.validate_against` | [209](../../src/launch.rs#L209) | receiver-type-required |
 | `bind_with_unavailable` | `Ok` | [210](../../src/launch.rs#L210) | external-constructor-callback-or-unresolved |
@@ -247,7 +247,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `decode_verified` | `Self::decode` | [247](../../src/launch.rs#L247) | [profile::launch::LaunchBindings::decode](../../src/launch.rs#L213) |
 | `canonical_bytes` | `validate_launch_bindings` | [251](../../src/launch.rs#L251) | [profile::launch::validate_launch_bindings](../../src/launch.rs#L337) |
 | `canonical_bytes` | `Path::new` | [251](../../src/launch.rs#L251) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `canonical_line` | [252](../../src/launch.rs#L252) | [profile::canonical_line](../../src/lib.rs#L118) |
+| `canonical_bytes` | `canonical_line` | [252](../../src/launch.rs#L252) | [profile::canonical_line](../../src/lib.rs#L114) |
 | `digest` | `Ok` | [256](../../src/launch.rs#L256) | external-constructor-callback-or-unresolved |
 | `publish` | `self.canonical_bytes` | [260](../../src/launch.rs#L260) | [profile::launch::LaunchBindings::canonical_bytes](../../src/launch.rs#L250) |
 | `publish` | `assets.publish` | [262](../../src/launch.rs#L262) | receiver-type-required |
@@ -269,8 +269,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_against` | `self             .unavailable_tools             .iter()             .map` | [293](../../src/launch.rs#L293) | receiver-type-required |
 | `validate_against` | `self             .unavailable_tools             .iter` | [293](../../src/launch.rs#L293) | receiver-type-required |
 | `validate_against` | `effective_names.contains` | [302](../../src/launch.rs#L302), [324](../../src/launch.rs#L324) | receiver-type-required |
-| `validate_against` | `config                     .workspace                     .policy                     .allowed_tools                     .iter()                     .any` | [303](../../src/launch.rs#L303) | receiver-type-required |
-| `validate_against` | `config                     .workspace                     .policy                     .allowed_tools                     .iter` | [303](../../src/launch.rs#L303) | receiver-type-required |
+| `validate_against` | `config                     .execution                     .policy                     .allowed_tools                     .iter()                     .any` | [303](../../src/launch.rs#L303) | receiver-type-required |
+| `validate_against` | `config                     .execution                     .policy                     .allowed_tools                     .iter` | [303](../../src/launch.rs#L303) | receiver-type-required |
 | `validate_against` | `Err` | [310](../../src/launch.rs#L310), [325](../../src/launch.rs#L325) | external-constructor-callback-or-unresolved |
 | `validate_against` | `path.to_path_buf` | [311](../../src/launch.rs#L311), [326](../../src/launch.rs#L326) | receiver-type-required |
 | `validate_against` | `unavailable.contains` | [324](../../src/launch.rs#L324) | receiver-type-required |

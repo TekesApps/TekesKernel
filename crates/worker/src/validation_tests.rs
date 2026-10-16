@@ -403,12 +403,12 @@ fn validator_profile_writes_only_to_private_scratch() {
     fs::create_dir_all(&scratch).unwrap();
     fs::create_dir_all(&snapshot).unwrap();
     let mut profile = tool_profile(&source, &["shell", "read", "write"]);
-    profile.config.workspace.policy.writable_roots = vec![source.to_string_lossy().into_owned()];
+    profile.config.execution.policy.writable_roots = vec![source.to_string_lossy().into_owned()];
     validation_runtime::isolate_validator_profile(&mut profile, &scratch, &snapshot);
-    assert_eq!(profile.config.workspace.cwd[0], scratch.to_string_lossy());
-    assert_eq!(profile.config.workspace.cwd[1], snapshot.to_string_lossy());
-    assert_eq!(profile.config.workspace.cwd[2], source.canonicalize().unwrap().to_string_lossy());
-    assert_eq!(profile.instruction.meet_workspace_policy(&profile.config.workspace.policy).writable_roots,
+    assert_eq!(profile.config.execution.cwd[0], scratch.to_string_lossy());
+    assert_eq!(profile.config.execution.cwd[1], snapshot.to_string_lossy());
+    assert_eq!(profile.config.execution.cwd[2], source.canonicalize().unwrap().to_string_lossy());
+    assert_eq!(profile.instruction.meet_workspace_policy(&profile.config.execution.policy).writable_roots,
         vec![scratch.to_string_lossy().into_owned()]);
     assert!(profile.validator);
 }

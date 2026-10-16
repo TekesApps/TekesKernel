@@ -86,10 +86,11 @@ repositories (names and pinned revisions only).
 
 ## What is in this repository
 
-The Session Endpoint server (protocol version 3), the provider and tool
-runtimes, an MCP client, plugin, schedule and thread-search services, a
-browser client.
-The endpoint registers 16 unary methods plus one multiplexed WebSocket stream
+The Session Endpoint server (protocol version 4), provider and tool runtimes,
+a Session-owned MCP client and title search. The retained browser prototype
+is a v3 consumer and is not adapted to the v4 endpoint. Separate host
+utility crates contain plugin and scheduling code; Kernel does not mount their
+management services. The endpoint registers 13 unary methods plus one multiplexed WebSocket stream
 (`remote.mux`); optional capabilities are registered separately. See the
 [Session Endpoint contract](spec/session-endpoint.md#routes-and-streams) and
 [Client extensions](spec/client-extensions.md).
@@ -98,6 +99,13 @@ The host application launches the Kernel as its own child process and supplies
 the endpoint token and provider credentials. The earlier launchd service, installer and
 selector have been removed.
 
+Sessions own immutable [execution values](spec/session-execution.md), rather
+than Environment/workspace/Folder registry references. Kernel connects and calls
+MCP over HTTP or host-supplied stdio streams. The [standalone CLI host](host/README.md)
+owns local MCP processes without a Tekes dependency. Installation, discovery,
+OAuth and authorization decisions belong to CLI/App hosts. Version 0.9.0 has
+no compatibility layer for 0.8/0.7 management APIs or launch configuration.
+
 ## Components
 
 | Component | Responsibility |
@@ -105,7 +113,7 @@ selector have been removed.
 | [Schema and store](docs/data/storage.md) | Validate, append and replay durable events and assets |
 | [Worker and engine](docs/flows/turn.md) | Build model context, call providers, run tools and settle turns |
 | [Supervisor](docs/runtime/supervisor.md) | Launch and reconcile workers, serve Client requests and coordinate integrations |
-| [Endpoint and transport](docs/interfaces/client.md) | Project ledger history and deliver the V3 Client protocol |
+| [Endpoint and transport](docs/interfaces/client.md) | Project ledger history and deliver the V4 Client protocol |
 | [Workspace service](docs/workspace-service-wse.md) | Run file and Git operations in a child process under a resolved workspace root |
 
 New sessions choose a `coding` or `general` identity from the first user request
@@ -119,13 +127,15 @@ input. See [identity selection](crates/worker/src/identity.rs) and the
 
 The toolchain is pinned in [rust-toolchain.toml](rust-toolchain.toml)
 (Rust 1.95.0). Build the four executables and run the launch smoke test, which
-starts a supervisor with a synthetic provider, creates a workspace and a
-session, and checks every stream baseline:
+starts a supervisor with a synthetic provider, creates a Session with explicit
+execution values, executes a sandboxed read, then checks restart and reconnect:
 
 ```sh
 cargo build --locked -p tekes-supervisor -p tekes-worker -p tools -p workspace-service \
   --bin tekes-supervisor --bin tekes-worker --bin tekes-helper --bin tekes-workspace-service
 python3 scripts/test-builtin-launch.py
+# Include an independently hosted local MCP process:
+TEKES_TEST_CLI_HOST=1 python3 scripts/test-builtin-launch.py
 ```
 
 To run it yourself, give `tekes-supervisor --built-in launch.json` a launch

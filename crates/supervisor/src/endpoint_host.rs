@@ -12,12 +12,12 @@ use std::time::{SystemTime, UNIX_EPOCH};
 use endpoint::{
     AttachmentAuthority, AttachmentErrorReason, AttachmentReadError, ClientRequest,
     DurableHandoffProof, EndpointDispatcher, EndpointHost, EndpointHostCall, EndpointHostFuture,
-    EndpointSubscriptionHub, ForkSessionOperation, HostFailure, ManagementError, ManagementStore,
+    EndpointSubscriptionHub, ExecutionCreateOperation, ForkSessionOperation, HostFailure,
     MaterializedPrompt, NativeEndpoint, NativeEndpointError, PendingQueueTransaction,
     PromptMaterializeError, PromptPart, QueueRecoveryDriver, QueueTransactionCompletion,
     QueueTransactionDecision, QueueTransactionOperation, QueueTransactionState, RpcDurableIdentity,
-    RpcError, RpcRegistry, RpcResult, SelectModelOperation, ServerResponse, SessionCreateOperation,
-    SessionHostDescription,
+    RpcError, RpcRegistry, RpcResult, SelectModelOperation, ServerResponse, SessionHostDescription,
+    SessionOperationError, SessionOperations,
 };
 use schema::IJsonValue;
 use schema::OriginTuple;
@@ -40,20 +40,9 @@ pub struct EndpointRoute {
     pub implemented: bool,
 }
 
-pub const TEKES_UNARY_ROUTES: [EndpointRoute; 16] = [
-    route("workspace.create", EndpointRouteClass::Mutation, true),
-    route("workspace.rename", EndpointRouteClass::Mutation, true),
-    route("workspace.relocate", EndpointRouteClass::Mutation, true),
-    route(
-        "workspace.archiveSession",
-        EndpointRouteClass::Mutation,
-        true,
-    ),
-    route(
-        "workspace.unarchiveSession",
-        EndpointRouteClass::Mutation,
-        true,
-    ),
+pub const TEKES_UNARY_ROUTES: [EndpointRoute; 13] = [
+    route("session.archive", EndpointRouteClass::Mutation, true),
+    route("session.unarchive", EndpointRouteClass::Mutation, true),
     route("session.create", EndpointRouteClass::Mutation, true),
     route("session.prompt", EndpointRouteClass::Mutation, false),
     route("session.updateQueue", EndpointRouteClass::Mutation, false),
@@ -202,16 +191,9 @@ pub(crate) fn recover_pending_management(
     root: &Path,
     authority: &dyn QueueTransactionAuthority,
     validated: &mut endpoint::CompleteOperations,
-) -> Result<(), ManagementError> {
-    let started_at = crate::host_runtime::system_timestamp()
-        .map_err(|error| ManagementError::QueueRecoveryFailed(error.to_string()))?;
-    ManagementStore::open_recovering_again(
-        root,
-        &started_at,
-        Some(&QueueRecoveryAdapter { authority }),
-        validated,
-    )
-    .map(|_| ())
+) -> Result<(), SessionOperationError> {
+    SessionOperations::open_sessions(root)?
+        .recover_sessions(Some(&QueueRecoveryAdapter { authority }), Some(validated))
 }
 
 struct QueueRecoveryAdapter<'a> {
@@ -222,9 +204,9 @@ impl QueueRecoveryDriver for QueueRecoveryAdapter<'_> {
     fn execute(
         &self,
         pending: &PendingQueueTransaction,
-    ) -> Result<QueueTransactionDecision, ManagementError> {
+    ) -> Result<QueueTransactionDecision, SessionOperationError> {
         let action = serde_json::from_slice(&pending.action.canonical_bytes()?)
-            .map_err(ManagementError::from)?;
+            .map_err(SessionOperationError::from)?;
         let transaction = worker_control::QueueTransaction {
             delivery: pending.rpc_id.clone(),
             rpc_id: pending.rpc_id.clone(),
@@ -233,21 +215,21 @@ impl QueueRecoveryDriver for QueueRecoveryAdapter<'_> {
             action,
         };
         transaction.validate().map_err(|error| {
-            ManagementError::QueueRecoveryFailed(format!(
+            SessionOperationError::QueueRecoveryFailed(format!(
                 "prepared transaction is invalid: {error}"
             ))
         })?;
         if transaction.replacement_origin() != pending.replacement_origin.as_ref() {
-            return Err(ManagementError::QueueRecoveryFailed(
+            return Err(SessionOperationError::QueueRecoveryFailed(
                 "prepared replacement origin disagrees with action".to_owned(),
             ));
         }
         let result = self
             .authority
             .execute(&pending.session_id, &transaction)
-            .map_err(|error| ManagementError::QueueRecoveryFailed(error.code))?;
+            .map_err(|error| SessionOperationError::QueueRecoveryFailed(error.code))?;
         result.validate_for(&transaction).map_err(|error| {
-            ManagementError::QueueRecoveryFailed(format!(
+            SessionOperationError::QueueRecoveryFailed(format!(
                 "worker result does not bind the prepared transaction: {error}"
             ))
         })?;
@@ -527,7 +509,7 @@ pub struct ProductionEndpointHost {
     storage_root: PathBuf,
     endpoint: NativeEndpoint,
     attachments: AttachmentAuthority,
-    management: ManagementStore,
+    management: SessionOperations,
     description: SessionHostDescription,
     clock: Arc<EndpointClock>,
     principal: String,
@@ -538,21 +520,9 @@ pub struct ProductionEndpointHost {
     delivery_authority: Option<Arc<dyn SessionDeliveryAuthority>>,
     queue_authority: Option<Arc<dyn QueueTransactionAuthority>>,
     input_admission: Arc<SessionInputAdmissionAuthority>,
-    /// MCP registry lookups for `session.create {preset}` references.
-    preset_mcp: Option<Arc<dyn endpoint::PresetMcpSource + Send + Sync>>,
 }
 
 impl ProductionEndpointHost {
-    /// Lets session presets reference the MCP servers registered for a workspace.
-    #[must_use]
-    pub fn with_preset_mcp(
-        mut self,
-        source: Arc<dyn endpoint::PresetMcpSource + Send + Sync>,
-    ) -> Self {
-        self.preset_mcp = Some(source);
-        self
-    }
-
     /// The user-level `.agents` directory session creation captures
     /// instructions from. Application assembly passes the same directory the
     /// worker launch uses, so a preset is validated against the instructions
@@ -742,17 +712,16 @@ impl ProductionEndpointHost {
                 return Err(EndpointAssemblyError::UnknownRoute);
             }
         }
-        let import_started_at = clock()?;
         let user_agent_dir = PathBuf::from(&description.home).join(".agents");
         let queue_recovery = queue_authority
             .as_deref()
             .map(|authority| QueueRecoveryAdapter { authority });
-        let management = ManagementStore::open_at_with_queue_driver(
-            root,
-            &import_started_at,
+        let management = SessionOperations::open_sessions(root)?;
+        management.recover_sessions(
             queue_recovery
                 .as_ref()
                 .map(|driver| driver as &dyn QueueRecoveryDriver),
+            None,
         )?;
         let mut description = description;
         description.can_open_path = false;
@@ -775,7 +744,6 @@ impl ProductionEndpointHost {
             input_admission: input_admission.unwrap_or_else(|| {
                 Arc::new(SessionInputAdmissionAuthority::new(root.to_path_buf()))
             }),
-            preset_mcp: None,
         })
     }
 
@@ -815,11 +783,8 @@ impl ProductionEndpointHost {
             serde_json::from_slice(&request.payload.canonical_bytes().map_err(internal_schema)?)
                 .map_err(internal_json)?;
         match request.operation.as_str() {
-            "workspace.create" => self.create_workspace(request, &payload),
-            "workspace.rename" => self.rename_workspace(request, &payload),
-            "workspace.relocate" => self.relocate_workspace(request, &payload),
-            "workspace.archiveSession" => self.archive_session(request, &payload),
-            "workspace.unarchiveSession" => self.unarchive_session(request, &payload),
+            "session.archive" => self.archive_session(request, &payload),
+            "session.unarchive" => self.unarchive_session(request, &payload),
             "session.create" => self.create_session(request, &payload),
             "session.models" if self.provider_readiness.is_some() => self.models(&payload),
             "models.list" if self.provider_readiness.is_some() => self.draft_models(&payload),
@@ -890,91 +855,6 @@ impl ProductionEndpointHost {
             })
     }
 
-    fn create_workspace(
-        &self,
-        request: &EndpointHostCall,
-        payload: &Value,
-    ) -> Result<IJsonValue, EndpointRpcFailure> {
-        require_object_fields(payload, &["path"], &["path"])?;
-        let path = required_string(payload, "path")?;
-        let timestamp = (self.clock)().map_err(internal_assembly)?;
-        let hash = request_hash(request)?;
-        let (workspace, created) = self
-            .management
-            .create_workspace(&request.rpc_id, &hash, path, &timestamp)
-            .map_err(map_management)?;
-        mark_management_handoff(request)?;
-        to_ijson(&json!({"workspace":workspace,"created":created}))
-    }
-
-    fn rename_workspace(
-        &self,
-        request: &EndpointHostCall,
-        payload: &Value,
-    ) -> Result<IJsonValue, EndpointRpcFailure> {
-        require_object_fields(
-            payload,
-            &["workspaceId", "title"],
-            &["workspaceId", "title"],
-        )?;
-        let workspace_id = required_string(payload, "workspaceId")?;
-        let title = required_string_allow_whitespace(payload, "title")?;
-        let timestamp = (self.clock)().map_err(internal_assembly)?;
-        let hash = request_hash(request)?;
-        let workspace = self
-            .management
-            .rename_workspace(&request.rpc_id, &hash, workspace_id, title, &timestamp)
-            .map_err(map_management)?;
-        mark_management_handoff(request)?;
-        to_ijson(&json!({"workspace":workspace}))
-    }
-
-    fn relocate_workspace(
-        &self,
-        request: &EndpointHostCall,
-        payload: &Value,
-    ) -> Result<IJsonValue, EndpointRpcFailure> {
-        require_object_fields(
-            payload,
-            &["workspaceId", "previousPath", "path"],
-            &["workspaceId", "previousPath", "path"],
-        )?;
-        let workspace_id = required_string(payload, "workspaceId")?;
-        let previous_path = required_string(payload, "previousPath")?;
-        let path = required_string(payload, "path")?;
-        // Workers hold this lock shared for their entire lifetime. Relocation therefore either
-        // observes a fully quiescent workspace or fails before authoring an operation record.
-        let _quiescence = store::NamedLock::try_exclusive(
-            crate::process_host::workspace_quiescence_lock_path(&self.storage_root, workspace_id),
-        )
-        .map_err(|error| match error {
-            store::StoreError::Busy => EndpointRpcFailure::new(
-                "workspace-busy",
-                "Workspace has a running session",
-                json!({"workspaceId":workspace_id}),
-            ),
-            _ => internal_failure(),
-        })?;
-        let timestamp = (self.clock)().map_err(internal_assembly)?;
-        let hash = request_hash(request)?;
-        let workspace = self
-            .management
-            .relocate_workspace(
-                &request.rpc_id,
-                &hash,
-                workspace_id,
-                previous_path,
-                path,
-                &timestamp,
-            )
-            .map_err(map_management)?;
-        mark_management_handoff(request)?;
-        if let Some(authority) = &self.delivery_authority {
-            authority.workspace_metadata_changed(workspace_id);
-        }
-        to_ijson(&json!({"workspace":workspace}))
-    }
-
     fn archive_session(
         &self,
         request: &EndpointHostCall,
@@ -984,7 +864,7 @@ impl ProductionEndpointHost {
         let session_id = required_string(payload, "sessionId")?;
         self.input_admission.with_session_gate(
             session_id,
-            |error| map_production_route_for("workspace.archiveSession", error),
+            |error| map_production_route_for("session.archive", error),
             || {
                 let timestamp = (self.clock)().map_err(internal_assembly)?;
                 let hash = request_hash(request)?;
@@ -1023,15 +903,13 @@ impl ProductionEndpointHost {
         require_object_fields(
             payload,
             &[
-                "workspaceId",
-                "cwd",
+                "execution",
                 "sessionId",
                 "agentPreset",
                 "identityProfile",
                 "preset",
-                "environment",
             ],
-            &[],
+            &["execution"],
         )?;
         if payload.get("agentPreset").is_some() {
             return Err(EndpointRpcFailure::new(
@@ -1040,9 +918,10 @@ impl ProductionEndpointHost {
                 json!({"operation":"session.create.agentPreset"}),
             ));
         }
-        let workspace_id = optional_string(payload, "workspaceId")?;
-        let cwd = optional_string(payload, "cwd")?;
-        let environment = optional_string(payload, "environment")?;
+        let execution: profile::ExecutionConfig =
+            serde_json::from_value(payload["execution"].clone())
+                .map_err(|_| invalid("execution must contain cwd and valid execution settings"))?;
+        execution.validate().map_err(invalid)?;
         let session_id = optional_string(payload, "sessionId")?;
         let identity_profile = optional_string(payload, "identityProfile")?
             .map(|value| {
@@ -1059,24 +938,20 @@ impl ProductionEndpointHost {
         let hash = request_hash(request)?;
         let session_id = self
             .management
-            .create_session(SessionCreateOperation {
-                rpc_id: &request.rpc_id,
-                request_sha256: &hash,
-                requested_session_id: session_id,
-                workspace_id,
-                cwd,
-                environment,
-                identity_profile,
-                preset,
-                preset_mcp: self
-                    .preset_mcp
-                    .as_deref()
-                    .map(|source| source as &dyn endpoint::PresetMcpSource),
-                preset_models: Some(&ConfiguredModels),
-                user_agent_dir: &self.user_agent_dir,
-                started_at: &timestamp,
-                principal: &self.principal,
-            })
+            .create_execution_session(
+                ExecutionCreateOperation {
+                    rpc_id: &request.rpc_id,
+                    request_sha256: &hash,
+                    requested_session_id: session_id,
+                    identity_profile,
+                    preset,
+                    preset_models: Some(&ConfiguredModels),
+                    user_agent_dir: &self.user_agent_dir,
+                    started_at: &timestamp,
+                    principal: &self.principal,
+                },
+                &execution,
+            )
             .map_err(map_management)?;
         mark_management_handoff(request)?;
         to_ijson(&json!({"sessionId":session_id}))
@@ -1094,28 +969,20 @@ impl ProductionEndpointHost {
             user_agent_dir: None,
             format: 1,
             revisions: profile::RevisionVector {
-                environments: None,
-                workspace: 0,
                 providers: providers.revision,
                 settings: settings.revision,
-                legacy_integrations: (),
+
                 session_settings: None,
             },
-            workspace: profile::ResolvedWorkspace {
-                environment: None,
-                folders: None,
-                format: 1,
-                revision: 0,
-                id: String::new(),
-                name: String::new(),
-                folder_binding: None,
-                selected_cwd: None,
+            execution: profile::ResolvedExecution {
+                session_id: String::new(),
+
                 cwd: vec![],
                 policy: Default::default(),
             },
             providers,
             settings,
-            legacy_integrations: (),
+
             session_settings: None,
         };
         let readiness = self
@@ -1462,10 +1329,6 @@ impl ProductionEndpointHost {
                 principal: &self.principal,
                 ephemeral,
                 preset: payload.get("preset"),
-                preset_mcp: self
-                    .preset_mcp
-                    .as_deref()
-                    .map(|source| source as &dyn endpoint::PresetMcpSource),
                 preset_models: Some(&ConfiguredModels),
                 user_agent_dir: &self.user_agent_dir,
             })
@@ -1761,14 +1624,12 @@ fn model_projection(
         .session_settings
         .as_ref()
         .map(|settings| settings.provider.as_str())
-        .or(config.workspace.policy.provider.as_deref())
         .or(config.settings.default_provider.as_deref())
         .unwrap_or_default();
     let selected_model = config
         .session_settings
         .as_ref()
         .map(|settings| settings.model.as_str())
-        .or(config.workspace.policy.model.as_deref())
         .or(config.settings.default_model.as_deref())
         .unwrap_or_default();
     let selected_effort = config
@@ -2109,7 +1970,7 @@ fn route_allows_error(operation: &str, code: &str) -> bool {
                 | "workspace-name-conflict"
                 | "idempotency-conflict"
         ),
-        "workspace.archiveSession" => matches!(
+        "session.archive" => matches!(
             code,
             "session-not-found" | "session-running" | "ephemeral" | "idempotency-conflict"
         ),
@@ -2121,7 +1982,7 @@ fn route_allows_error(operation: &str, code: &str) -> bool {
                 | "session-running"
                 | "idempotency-conflict"
         ),
-        "workspace.unarchiveSession" => matches!(
+        "session.unarchive" => matches!(
             code,
             "session-not-found" | "not-archived" | "active-session-limit" | "idempotency-conflict"
         ),
@@ -2578,25 +2439,22 @@ const fn attachment_reason(reason: AttachmentErrorReason) -> &'static str {
 fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), EndpointRpcFailure> {
     let (allowed, required): (&[&str], &[&str]) = match operation {
         "models.list" => (&[], &[]),
-        "workspace.archiveSession"
-        | "workspace.unarchiveSession"
-        | "session.cancel"
-        | "session.models" => (&["sessionId"], &["sessionId"]),
+        "session.archive" | "session.unarchive" | "session.cancel" | "session.models" => {
+            (&["sessionId"], &["sessionId"])
+        }
         "session.attachment" => (
             &["sessionId", "attachmentId"],
             &["sessionId", "attachmentId"],
         ),
         "session.create" => (
             &[
-                "workspaceId",
-                "cwd",
+                "execution",
                 "sessionId",
                 "agentPreset",
                 "identityProfile",
                 "preset",
-                "environment",
             ],
-            &[],
+            &["execution"],
         ),
         "session.prompt" => (
             &["sessionId", "mode", "content", "clientTimeZone"],
@@ -2625,24 +2483,17 @@ fn validate_extension_payload(operation: &str, payload: &Value) -> Result<(), En
         }
     };
     require_object_fields(payload, allowed, required)?;
+    if operation == "session.create" {
+        let execution: schema::ExecutionConfig =
+            serde_json::from_value(payload["execution"].clone())
+                .map_err(|_| invalid("invalid execution"))?;
+        execution.validate().map_err(invalid)?;
+    }
     Ok(())
 }
 
 fn validate_production_payload(operation: &str, payload: &Value) -> Result<(), EndpointRpcFailure> {
-    match operation {
-        "workspace.create" => require_object_fields(payload, &["path"], &["path"]),
-        "workspace.rename" => require_object_fields(
-            payload,
-            &["workspaceId", "title"],
-            &["workspaceId", "title"],
-        ),
-        "workspace.relocate" => require_object_fields(
-            payload,
-            &["workspaceId", "previousPath", "path"],
-            &["workspaceId", "previousPath", "path"],
-        ),
-        other => validate_extension_payload(other, payload),
-    }
+    validate_extension_payload(operation, payload)
 }
 
 fn invalid(_message: &str) -> EndpointRpcFailure {
@@ -2666,82 +2517,54 @@ fn map_endpoint(error: NativeEndpointError, session: Option<&str>) -> EndpointRp
     }
 }
 
-fn map_management(error: ManagementError) -> EndpointRpcFailure {
+fn map_management(error: SessionOperationError) -> EndpointRpcFailure {
     match error {
-        ManagementError::InvalidPath(path) => EndpointRpcFailure::new(
-            "workspace-invalid-path",
-            "Workspace path is invalid",
-            json!({"path":path}),
-        ),
-        ManagementError::InvalidTitle(title) => EndpointRpcFailure::new(
-            "workspace-title-invalid",
-            "Workspace title is invalid",
-            json!({"title":title}),
-        ),
-        ManagementError::NameConflict(name) => EndpointRpcFailure::new(
-            "workspace-name-conflict",
-            "Workspace title already exists",
-            json!({"name":name}),
-        ),
-        ManagementError::EnvironmentNotFound(environment) => EndpointRpcFailure::new(
-            "environment-not-found",
-            "Environment was not found",
-            json!({"environment":environment}),
-        ),
-        ManagementError::WorkspaceNotFound(workspace_id) => EndpointRpcFailure::new(
-            "workspace-not-found",
-            "Workspace was not found",
-            json!({"workspaceId":workspace_id}),
-        ),
-        ManagementError::WorkspaceAmbiguous(path) => EndpointRpcFailure::new(
-            "workspace-ambiguous",
-            "Workspace path matches more than one workspace",
-            json!({"path":path}),
-        ),
-        ManagementError::InvalidCreateSelection | ManagementError::PresetBadRequest(_) => {
+        SessionOperationError::PresetBadRequest(_) => {
             EndpointRpcFailure::new("bad-request", "Request payload is invalid", json!({}))
         }
-        ManagementError::PresetInvalid(invalid) => EndpointRpcFailure::new(
+        SessionOperationError::PresetInvalid(invalid) => EndpointRpcFailure::new(
             "preset-invalid",
             "Session preset is invalid",
             invalid.detail(),
         ),
-        ManagementError::IdempotencyConflict { rpc_id, operation } => EndpointRpcFailure::new(
-            "idempotency-conflict",
-            "rpcId was already used for another request",
-            json!({"rpcId":rpc_id,"operation":operation}),
-        ),
-        ManagementError::SessionNotFound(session_id) => EndpointRpcFailure::new(
+        SessionOperationError::IdempotencyConflict { rpc_id, operation } => {
+            EndpointRpcFailure::new(
+                "idempotency-conflict",
+                "rpcId was already used for another request",
+                json!({"rpcId":rpc_id,"operation":operation}),
+            )
+        }
+        SessionOperationError::SessionNotFound(session_id) => EndpointRpcFailure::new(
             "session-not-found",
             "Session was not found",
             json!({"sessionId":session_id}),
         ),
-        ManagementError::SessionArchived(session_id) => EndpointRpcFailure::new(
+        SessionOperationError::SessionArchived(session_id) => EndpointRpcFailure::new(
             "archived",
             "Session is archived",
             json!({"sessionId":session_id}),
         ),
-        ManagementError::SessionRunning(session_id) => EndpointRpcFailure::new(
+        SessionOperationError::SessionRunning(session_id) => EndpointRpcFailure::new(
             "session-running",
             "Session has a running worker",
             json!({"sessionId":session_id}),
         ),
-        ManagementError::SessionEphemeral(session_id) => EndpointRpcFailure::new(
+        SessionOperationError::SessionEphemeral(session_id) => EndpointRpcFailure::new(
             "ephemeral",
             "Session is ephemeral and cannot be archived",
             json!({"sessionId":session_id}),
         ),
-        ManagementError::SessionNotEphemeral(session_id) => EndpointRpcFailure::new(
+        SessionOperationError::SessionNotEphemeral(session_id) => EndpointRpcFailure::new(
             "not-ephemeral",
             "Session is not ephemeral",
             json!({"sessionId":session_id}),
         ),
-        ManagementError::InvalidAtSeq { session_id, at_seq } => EndpointRpcFailure::new(
+        SessionOperationError::InvalidAtSeq { session_id, at_seq } => EndpointRpcFailure::new(
             "invalid-at-seq",
             "Fork position is not a complete projection boundary",
             json!({"sessionId":session_id,"atSeq":at_seq.unwrap_or(0)}),
         ),
-        ManagementError::SessionConflict {
+        SessionOperationError::SessionConflict {
             session_id,
             requested_cwd,
             existing_cwd,
@@ -2759,15 +2582,15 @@ fn map_management(error: ManagementError) -> EndpointRpcFailure {
                 details,
             )
         }
-        ManagementError::ActiveSessionLimit => EndpointRpcFailure::new(
+        SessionOperationError::ActiveSessionLimit => EndpointRpcFailure::new(
             "active-session-limit",
             "Active session limit reached",
             json!({"limit":256}),
         ),
-        ManagementError::Store(store::StoreError::Busy) => {
+        SessionOperationError::Store(store::StoreError::Busy) => {
             EndpointRpcFailure::new("session-running", "Session has a running worker", json!({}))
         }
-        ManagementError::EndpointType(_) => {
+        SessionOperationError::EndpointType(_) | SessionOperationError::InvalidExecution(_) => {
             EndpointRpcFailure::new("bad-request", "Request payload is invalid", json!({}))
         }
         _ => EndpointRpcFailure::new("internal", "Endpoint operation failed", json!({})),
@@ -2848,7 +2671,7 @@ pub enum EndpointAssemblyError {
     #[error("endpoint clock failed: {0}")]
     Clock(String),
     #[error("endpoint management failed: {0}")]
-    Management(#[from] endpoint::ManagementError),
+    Management(#[from] endpoint::SessionOperationError),
     #[error("endpoint route extension advertised a non-V3 registration")]
     UnknownRoute,
 }

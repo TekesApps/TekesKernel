@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 use store::{AssetRef, AssetStore};
 use unicode_normalization::UnicodeNormalization;
 
-use crate::config::WorkspacePolicy;
+use crate::config::ExecutionPolicy;
 use crate::{ProfileError, canonical_line, digest, parse_canonical};
 
 const FORMAT: u64 = 1;
@@ -93,54 +93,26 @@ pub struct EffectiveInstructions {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct InstructionSnapshot {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub folder_authority: Option<FolderSnapshotAuthority>,
     pub format: u64,
     pub sources: Vec<InstructionSource>,
     pub effective: EffectiveInstructions,
 }
 
-/// Host-captured provenance. Old snapshots have no project execution authority.
-#[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct FolderSnapshotAuthority {
-    pub storage_root: PathBuf,
-    pub folders: BTreeMap<u64, crate::FolderTrust>,
-}
-
 impl InstructionSnapshot {
-    pub fn admit_source(
-        &self,
-        source: &InstructionSource,
-    ) -> std::io::Result<Option<crate::FolderEffectLease>> {
-        let InstructionOrigin::Project { workspace_index } = source.origin else {
-            return Ok(None);
-        };
-        let authority = self
-            .folder_authority
-            .as_ref()
-            .ok_or_else(|| std::io::Error::other("project-folder-untrusted"))?;
-        let folder = authority
-            .folders
-            .get(&workspace_index)
-            .ok_or_else(|| std::io::Error::other("project-folder-untrusted"))?;
-        crate::FolderAuthorityStore::new(&authority.storage_root)
-            .admit(folder)
-            .map(Some)
+    pub fn admit_source(&self, source: &InstructionSource) -> std::io::Result<Option<()>> {
+        if matches!(source.origin, InstructionOrigin::Project { .. })
+            && matches!(source.kind, InstructionKind::Hook | InstructionKind::Skill)
+        {
+            return Err(std::io::Error::other(
+                "project code must be prepared by the host",
+            ));
+        }
+        Ok(None)
     }
 
     #[must_use]
     pub fn source_authorized(&self, source: &InstructionSource) -> bool {
         self.admit_source(source).is_ok()
-    }
-
-    /// Hold admissions across a tool dispatch, including its before/after hooks.
-    pub fn admit_kind(&self, kind: InstructionKind) -> Vec<crate::FolderEffectLease> {
-        self.sources
-            .iter()
-            .filter(|source| source.kind == kind)
-            .filter_map(|source| self.admit_source(source).ok().flatten())
-            .collect()
     }
 }
 
@@ -186,7 +158,7 @@ impl LaunchProfile {
             .instructions(repository, user_agent_dir.as_ref(), &config)?
             .capture()?;
         instruction.validate_against_config(&config)?;
-        let effective_policy = instruction.meet_workspace_policy(&config.workspace.policy);
+        let effective_policy = instruction.meet_workspace_policy(&config.execution.policy);
         let (config_digest, config_asset) = config.publish(assets)?;
         let (instruction_digest, instruction_asset) = instruction.publish(assets)?;
         Ok(Self {
@@ -244,7 +216,7 @@ impl InstructionSnapshot {
                         ),
                     }
                 })?;
-                if index >= config.workspace.cwd.len() {
+                if index >= config.execution.cwd.len() {
                     return Err(ProfileError::InvalidReference {
                         path: PathBuf::from("<instruction-snapshot>"),
                         reason: format!(
@@ -268,7 +240,7 @@ impl InstructionSnapshot {
                     });
                 }
                 if !config
-                    .workspace
+                    .execution
                     .cwd
                     .iter()
                     .any(|cwd| canonical.starts_with(cwd))
@@ -284,7 +256,7 @@ impl InstructionSnapshot {
     }
 
     #[must_use]
-    pub fn meet_workspace_policy(&self, workspace: &WorkspacePolicy) -> EffectivePolicy {
+    pub fn meet_workspace_policy(&self, workspace: &ExecutionPolicy) -> EffectivePolicy {
         let instruction = &self.effective.policy;
         EffectivePolicy {
             network: workspace.network && instruction.network.unwrap_or(true),
@@ -309,7 +281,6 @@ pub struct InstructionResolver {
     user_data_dir: PathBuf,
     workspace_data_dir: Option<PathBuf>,
     cwd: Vec<PathBuf>,
-    authority_root: Option<PathBuf>,
 }
 
 impl InstructionResolver {
@@ -319,7 +290,6 @@ impl InstructionResolver {
         cwd: impl IntoIterator<Item = impl AsRef<Path>>,
     ) -> Self {
         Self {
-            authority_root: None,
             user_data_dir: user_agent_dir.as_ref().to_path_buf(),
             workspace_data_dir: None,
             cwd: cwd
@@ -336,7 +306,6 @@ impl InstructionResolver {
         cwd: impl IntoIterator<Item = impl AsRef<Path>>,
     ) -> Self {
         Self {
-            authority_root: None,
             user_data_dir: user_data_dir.as_ref().to_path_buf(),
             workspace_data_dir: Some(workspace_data_dir.as_ref().to_path_buf()),
             cwd: cwd
@@ -344,12 +313,6 @@ impl InstructionResolver {
                 .map(|value| value.as_ref().to_path_buf())
                 .collect(),
         }
-    }
-
-    #[must_use]
-    pub fn with_folder_authority(mut self, storage_root: &Path) -> Self {
-        self.authority_root = Some(storage_root.to_path_buf());
-        self
     }
 
     pub fn capture(&self) -> Result<InstructionSnapshot, ProfileError> {
@@ -373,9 +336,7 @@ impl InstructionResolver {
             };
             after_scan(scan);
             if previous.as_ref() == Some(&current) {
-                let mut snapshot = build_snapshot(current.0)?;
-                snapshot.folder_authority = current.1;
-                return Ok(snapshot);
+                return build_snapshot(current);
             }
             previous = Some(current);
         }
@@ -384,11 +345,8 @@ impl InstructionResolver {
         })
     }
 
-    fn scan(
-        &self,
-    ) -> Result<(Vec<InstructionSource>, Option<FolderSnapshotAuthority>), ProfileError> {
+    fn scan(&self) -> Result<Vec<InstructionSource>, ProfileError> {
         let mut sources = Vec::new();
-        let mut folders = BTreeMap::new();
         scan_origin(
             &self.user_data_dir,
             true,
@@ -416,19 +374,10 @@ impl InstructionResolver {
                     reason: "workspace cwd is not a directory".to_owned(),
                 });
             }
-            let trust = self.authority_root.as_ref().and_then(|root| {
-                crate::FolderAuthorityStore::new(root)
-                    .status(&canonical)
-                    .ok()
-            });
-            let executable = trust.as_ref().is_some_and(|folder| folder.trusted);
-            if let Some(trust) = trust {
-                folders.insert(index as u64, trust);
-            }
             scan_origin(
                 &canonical,
                 false,
-                executable,
+                false,
                 InstructionOrigin::Project {
                     workspace_index: index as u64,
                 },
@@ -461,14 +410,7 @@ impl InstructionResolver {
             }
         }
         sources.sort_by_key(source_order_key);
-        let authority = self
-            .authority_root
-            .as_ref()
-            .map(|root| FolderSnapshotAuthority {
-                storage_root: root.clone(),
-                folders,
-            });
-        Ok((sources, authority))
+        Ok(sources)
     }
 }
 
@@ -767,7 +709,6 @@ fn normalize_logical(path: &str) -> Result<String, ProfileError> {
 fn build_snapshot(sources: Vec<InstructionSource>) -> Result<InstructionSnapshot, ProfileError> {
     let effective = derive_effective(&sources)?;
     let snapshot = InstructionSnapshot {
-        folder_authority: None,
         format: FORMAT,
         sources,
         effective,

@@ -159,13 +159,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `ToolBackendRouter::default` | [272](../../src/tool_backends.rs#L272) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `storage_root_for_thread_folder` | [273](../../src/tool_backends.rs#L273) | [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L630) |
 | `assemble_tool_backends` | `profile         .instruction         .meet_workspace_policy` | [275](../../src/tool_backends.rs#L275) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .first()         .ok_or` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .first` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .first()         .ok_or` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .first` | [278](../../src/tool_backends.rs#L278) | receiver-type-required |
 | `assemble_tool_backends` | `sibling_helper_path` | [284](../../src/tool_backends.rs#L284) | external-constructor-callback-or-unresolved |
-| `assemble_tool_backends` | `profile.config.workspace.cwd.clone` | [285](../../src/tool_backends.rs#L285) | receiver-type-required |
+| `assemble_tool_backends` | `profile.config.execution.cwd.clone` | [285](../../src/tool_backends.rs#L285) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.extend` | [286](../../src/tool_backends.rs#L286) | receiver-type-required |
-| `assemble_tool_backends` | `profile             .config             .workspace             .policy             .toolchain_roots             .iter()             .cloned` | [287](../../src/tool_backends.rs#L287) | receiver-type-required |
-| `assemble_tool_backends` | `profile             .config             .workspace             .policy             .toolchain_roots             .iter` | [287](../../src/tool_backends.rs#L287), [390](../../src/tool_backends.rs#L390) | receiver-type-required |
+| `assemble_tool_backends` | `profile             .config             .execution             .policy             .toolchain_roots             .iter()             .cloned` | [287](../../src/tool_backends.rs#L287) | receiver-type-required |
+| `assemble_tool_backends` | `profile             .config             .execution             .policy             .toolchain_roots             .iter` | [287](../../src/tool_backends.rs#L287), [390](../../src/tool_backends.rs#L390) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.sort` | [295](../../src/tool_backends.rs#L295) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.dedup` | [296](../../src/tool_backends.rs#L296) | receiver-type-required |
 | `assemble_tool_backends` | `invocation_write_roots.to_vec` | [297](../../src/tool_backends.rs#L297) | receiver-type-required |
@@ -175,10 +175,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `profile.config.protected_roots` | [301](../../src/tool_backends.rs#L301) | receiver-type-required |
 | `assemble_tool_backends` | `read_roots.clone` | [306](../../src/tool_backends.rs#L306) | receiver-type-required |
 | `assemble_tool_backends` | `probe_backend` | [323](../../src/tool_backends.rs#L323) | external-constructor-callback-or-unresolved |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .map(&#124;(index, path)&#124; {             (                 if index == 0 {                     "workspace".to_owned()                 } else {                     format!("workspace-{index}")                 },                 PathBuf::from(path),             )         })         .collect::<Vec<_>>` | [324](../../src/tool_backends.rs#L324) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .map` | [324](../../src/tool_backends.rs#L324) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate` | [324](../../src/tool_backends.rs#L324), [412](../../src/tool_backends.rs#L412) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter` | [324](../../src/tool_backends.rs#L324), [412](../../src/tool_backends.rs#L412) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate()         .map(&#124;(index, path)&#124; {             (                 if index == 0 {                     "workspace".to_owned()                 } else {                     format!("workspace-{index}")                 },                 PathBuf::from(path),             )         })         .collect::<Vec<_>>` | [324](../../src/tool_backends.rs#L324) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate()         .map` | [324](../../src/tool_backends.rs#L324) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate` | [324](../../src/tool_backends.rs#L324), [412](../../src/tool_backends.rs#L412) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter` | [324](../../src/tool_backends.rs#L324), [412](../../src/tool_backends.rs#L412) | receiver-type-required |
 | `assemble_tool_backends` | `"workspace".to_owned` | [333](../../src/tool_backends.rs#L333) | receiver-type-required |
 | `assemble_tool_backends` | `PathBuf::from` | [337](../../src/tool_backends.rs#L337), [421](../../src/tool_backends.rs#L421), [440](../../src/tool_backends.rs#L440) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `helper_path.is_file` | [342](../../src/tool_backends.rs#L342) | receiver-type-required |
@@ -206,9 +206,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `"PYTHONDONTWRITEBYTECODE".into` | [382](../../src/tool_backends.rs#L382) | receiver-type-required |
 | `assemble_tool_backends` | `"1".into` | [382](../../src/tool_backends.rs#L382) | receiver-type-required |
 | `assemble_tool_backends` | `"TMPDIR".into` | [387](../../src/tool_backends.rs#L387) | receiver-type-required |
-| `assemble_tool_backends` | `profile.config.workspace.policy.toolchain_roots.is_empty` | [389](../../src/tool_backends.rs#L389) | receiver-type-required |
-| `assemble_tool_backends` | `profile             .config             .workspace             .policy             .toolchain_roots             .iter()             .map(&#124;root&#124; {                 std::path::Path::new(root)                     .join("bin")                     .to_string_lossy()                     .into_owned()             })             .collect::<Vec<_>>` | [390](../../src/tool_backends.rs#L390) | receiver-type-required |
-| `assemble_tool_backends` | `profile             .config             .workspace             .policy             .toolchain_roots             .iter()             .map` | [390](../../src/tool_backends.rs#L390) | receiver-type-required |
+| `assemble_tool_backends` | `profile.config.execution.policy.toolchain_roots.is_empty` | [389](../../src/tool_backends.rs#L389) | receiver-type-required |
+| `assemble_tool_backends` | `profile             .config             .execution             .policy             .toolchain_roots             .iter()             .map(&#124;root&#124; {                 std::path::Path::new(root)                     .join("bin")                     .to_string_lossy()                     .into_owned()             })             .collect::<Vec<_>>` | [390](../../src/tool_backends.rs#L390) | receiver-type-required |
+| `assemble_tool_backends` | `profile             .config             .execution             .policy             .toolchain_roots             .iter()             .map` | [390](../../src/tool_backends.rs#L390) | receiver-type-required |
 | `assemble_tool_backends` | `std::path::Path::new(root)                     .join("bin")                     .to_string_lossy()                     .into_owned` | [397](../../src/tool_backends.rs#L397) | receiver-type-required |
 | `assemble_tool_backends` | `std::path::Path::new(root)                     .join("bin")                     .to_string_lossy` | [397](../../src/tool_backends.rs#L397) | receiver-type-required |
 | `assemble_tool_backends` | `std::path::Path::new(root)                     .join` | [397](../../src/tool_backends.rs#L397) | receiver-type-required |
@@ -218,9 +218,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `["/usr/bin", "/bin", "/usr/sbin", "/sbin"]                 .into_iter` | [404](../../src/tool_backends.rs#L404) | receiver-type-required |
 | `assemble_tool_backends` | `"PATH".into` | [410](../../src/tool_backends.rs#L410) | receiver-type-required |
 | `assemble_tool_backends` | `bins.join` | [410](../../src/tool_backends.rs#L410) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .skip(1)         .map(&#124;(index, path)&#124; engine::RootMount {             name: format!("workspace-{index}"),             path: PathBuf::from(path),         })         .collect` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .skip(1)         .map` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
-| `assemble_tool_backends` | `profile         .config         .workspace         .cwd         .iter()         .enumerate()         .skip` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate()         .skip(1)         .map(&#124;(index, path)&#124; engine::RootMount {             name: format!("workspace-{index}"),             path: PathBuf::from(path),         })         .collect` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate()         .skip(1)         .map` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
+| `assemble_tool_backends` | `profile         .config         .execution         .cwd         .iter()         .enumerate()         .skip` | [412](../../src/tool_backends.rs#L412) | receiver-type-required |
 | `assemble_tool_backends` | `SystemToolBackend::new` | [424](../../src/tool_backends.rs#L424) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `cancellation.tools.clone` | [430](../../src/tool_backends.rs#L430) | receiver-type-required |
 | `assemble_tool_backends` | `std::env::current_exe()?         .parent()         .ok_or("worker executable has no parent directory")?         .join` | [432](../../src/tool_backends.rs#L432) | receiver-type-required |
@@ -229,10 +229,10 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble_tool_backends` | `std::env::current_exe` | [432](../../src/tool_backends.rs#L432) | external-constructor-callback-or-unresolved |
 | `assemble_tool_backends` | `workspace_helper.is_file` | [436](../../src/tool_backends.rs#L436) | receiver-type-required |
 | `assemble_tool_backends` | `system_backend.with_edit_recorder` | [438](../../src/tool_backends.rs#L438) | receiver-type-required |
-| `assemble_tool_backends` | `profile                     .config                     .workspace                     .cwd                     .iter()                     .map(PathBuf::from)                     .collect` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
-| `assemble_tool_backends` | `profile                     .config                     .workspace                     .cwd                     .iter()                     .map` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
-| `assemble_tool_backends` | `profile                     .config                     .workspace                     .cwd                     .iter` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
-| `assemble_tool_backends` | `profile.config.workspace.id.clone` | [449](../../src/tool_backends.rs#L449), [486](../../src/tool_backends.rs#L486) | receiver-type-required |
+| `assemble_tool_backends` | `profile                     .config                     .execution                     .cwd                     .iter()                     .map(PathBuf::from)                     .collect` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
+| `assemble_tool_backends` | `profile                     .config                     .execution                     .cwd                     .iter()                     .map` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
+| `assemble_tool_backends` | `profile                     .config                     .execution                     .cwd                     .iter` | [441](../../src/tool_backends.rs#L441) | receiver-type-required |
+| `assemble_tool_backends` | `profile.config.execution.session_id.clone` | [449](../../src/tool_backends.rs#L449), [486](../../src/tool_backends.rs#L486) | receiver-type-required |
 | `assemble_tool_backends` | `thread_folder                     .file_name()                     .and_then(&#124;name&#124; name.to_str())                     .ok_or("thread folder has no session identity")?                     .to_owned` | [450](../../src/tool_backends.rs#L450) | receiver-type-required |
 | `assemble_tool_backends` | `thread_folder                     .file_name()                     .and_then(&#124;name&#124; name.to_str())                     .ok_or` | [450](../../src/tool_backends.rs#L450) | receiver-type-required |
 | `assemble_tool_backends` | `thread_folder                     .file_name()                     .and_then` | [450](../../src/tool_backends.rs#L450) | receiver-type-required |
@@ -276,15 +276,15 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `preset_skill_catalog` | `catalog.retain` | [516](../../src/tool_backends.rs#L516) | receiver-type-required |
 | `preset_skill_catalog` | `skills.contains` | [516](../../src/tool_backends.rs#L516) | receiver-type-required |
 | `invocation_write_roots` | `PathBuf::from` | [526](../../src/tool_backends.rs#L526), [589](../../src/tool_backends.rs#L589) | external-constructor-callback-or-unresolved |
-| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first()             .ok_or` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
-| `invocation_write_roots` | `profile             .config             .workspace             .cwd             .first` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
+| `invocation_write_roots` | `profile             .config             .execution             .cwd             .first()             .ok_or` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
+| `invocation_write_roots` | `profile             .config             .execution             .cwd             .first` | [527](../../src/tool_backends.rs#L527) | receiver-type-required |
 | `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter()         .any` | [534](../../src/tool_backends.rs#L534) | receiver-type-required |
 | `invocation_write_roots` | `profile         .bindings         .dynamic_catalog         .tools         .iter` | [534](../../src/tool_backends.rs#L534) | receiver-type-required |
 | `invocation_write_roots` | `Ok` | [541](../../src/tool_backends.rs#L541), [627](../../src/tool_backends.rs#L627) | external-constructor-callback-or-unresolved |
 | `invocation_write_roots` | `profile             .instruction             .meet_workspace_policy` | [541](../../src/tool_backends.rs#L541) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map(PathBuf::from)         .collect::<Vec<_>>` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter()         .map` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
-| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .writable_roots         .into_iter` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .writable_roots         .into_iter()         .map(PathBuf::from)         .collect::<Vec<_>>` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .writable_roots         .into_iter()         .map` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
+| `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .writable_roots         .into_iter` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
 | `invocation_write_roots` | `profile         .instruction         .meet_workspace_policy` | [546](../../src/tool_backends.rs#L546) | receiver-type-required |
 | `invocation_write_roots` | `call.name.as_str` | [553](../../src/tool_backends.rs#L553) | receiver-type-required |
 | `invocation_write_roots` | `call.arguments.get("writable_paths").is_none_or` | [555](../../src/tool_backends.rs#L555) | receiver-type-required |

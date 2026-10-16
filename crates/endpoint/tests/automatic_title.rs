@@ -20,7 +20,7 @@ fn create(endpoint: &NativeEndpoint) {
     endpoint
         .create_session(
             SESSION,
-            "workspace-1",
+            &test_support::execution_fixture(),
             "config-digest",
             ResumePolicy::Never,
             "2026-09-03T08:00:00.000Z",

@@ -7,7 +7,6 @@ fn real_worker_repeated_context_releases_queued_body() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(
         &fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap(),
     )
@@ -16,8 +15,7 @@ fn real_worker_repeated_context_releases_queued_body() {
         &root.join("config/providers.json"),
         json!({"format":1,"revision":1,"providers":[provider.clone()]}),
     );
-    write_canonical_test_json(
-        &root.join("workspaces/ws/workspace.json"),
+    write_test_execution_config(&root,
         json!({
         "format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
         "policy":{"allowed_tools":["context_get"],"network":false,"writable_roots":[],
@@ -52,7 +50,7 @@ fn real_worker_repeated_context_releases_queued_body() {
         "live-process",
         root.join(".agent"),
         secrets,
-    )
+    ).inspect(|host| { attach_live_stdio(host,&root); })
     .unwrap();
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         host.schedule_main(session)
@@ -198,7 +196,6 @@ fn run_real_validator_process(repair: bool) {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(
         &fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap(),
     )
@@ -207,8 +204,7 @@ fn run_real_validator_process(repair: bool) {
         &root.join("config/providers.json"),
         json!({"format":1,"revision":1,"providers":[provider.clone()]}),
     );
-    write_canonical_test_json(
-        &root.join("workspaces/ws/workspace.json"),
+    write_test_execution_config(&root,
         json!({
         "format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
         "policy":{"allowed_tools":["read","apply_patch"],"network":false,"writable_roots":[workspace],
@@ -283,7 +279,7 @@ fn run_real_validator_process(repair: bool) {
         "live-validator-process",
         root.join(".agent"),
         secrets,
-    )
+    ).inspect(|host| { attach_live_stdio(host,&root); })
     .unwrap();
     let responder = crate::endpoint_carrier::ProductionRespondAuthority::open(
         &root,
@@ -464,11 +460,10 @@ fn delivery_fallback_requires_confirmed_child_exit() {
 #[test]
 fn approval_closed_stdin_waits_for_actual_exit_before_fallback() {
     let root = tempfile::tempdir().unwrap();
-    let workspace = root.path().join("workspace");
+    let project_root = tempfile::tempdir().unwrap();
+    let workspace = project_root.path().to_path_buf();
     fs::create_dir_all(&workspace).unwrap();
-    fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-    write_canonical_test_json(
-        &root.path().join("workspaces/ws/workspace.json"),
+    write_test_execution_config(root.path(),
         json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
     );
     let bin = root.path().join("fake-worker");
@@ -564,11 +559,10 @@ fn cancel_stage_failure_names_the_stage_and_keeps_typed_failures() {
 #[test]
 fn cancel_after_the_worker_closed_stdin_returns_the_durable_receipt() {
     let root = tempfile::tempdir().unwrap();
-    let workspace = root.path().join("workspace");
+    let project_root = tempfile::tempdir().unwrap();
+    let workspace = project_root.path().to_path_buf();
     fs::create_dir_all(&workspace).unwrap();
-    fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-    write_canonical_test_json(
-        &root.path().join("workspaces/ws/workspace.json"),
+    write_test_execution_config(root.path(),
         json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
     );
     let bin = root.path().join("fake-worker");
@@ -651,7 +645,6 @@ fn real_validator_exhaustion_releases_queued_input() {
     fs::create_dir_all(workspace.join(".agent/skills")).unwrap();
     fs::write(workspace.join(".agent/skills/live-proof.md"), "Live proof skill\nSKILL_LIVE_BODY_OK\n").unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     write_canonical_test_json(&root.join("config/settings.json"),
         json!({"format":1,"revision":1,"limits":{"max_workers":8,"max_provider_leases":8}}));
 
@@ -663,8 +656,7 @@ fn real_validator_exhaustion_releases_queued_input() {
         &root.join("config/providers.json"),
         json!({"format":1,"revision":1,"providers":[provider.clone()]}),
     );
-    write_canonical_test_json(
-        &root.join("workspaces/ws/workspace.json"),
+    write_test_execution_config(&root,
         json!({
         "format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
         "policy":{"allowed_tools":["read","apply_patch","skill_explorer","skill"],"network":false,"writable_roots":[workspace],
@@ -698,7 +690,7 @@ fn real_validator_exhaustion_releases_queued_input() {
         "live-validator-process",
         root.join(".agent"),
         secrets,
-    )
+    ).inspect(|host| { attach_live_stdio(host,&root); })
     .unwrap();
     let transport_runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = transport_runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
@@ -840,11 +832,10 @@ fn real_legacy_simple_task() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(workspace.join("docs")).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"), json!({"format":1,"revision":1,"providers":[provider.clone()]}));
     write_canonical_test_json(&root.join("config/settings.json"), json!({"format":1,"revision":1,"limits":{"max_workers":8,"max_provider_leases":8}}));
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"), json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["task","read","apply_patch"],"network":false,"writable_roots":[workspace],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":120}}));
+    write_test_execution_config(&root, json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["task","read","apply_patch"],"network":false,"writable_roots":[workspace],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":120}}));
     let session = "018f0000-0000-7000-8000-000000000128";
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
@@ -888,7 +879,7 @@ fn real_legacy_simple_task() {
     write_test_events(&path, events);
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"live-task",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"live-task",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let public_approval = std::env::var("TEKES_PUBLIC_APPROVAL").as_deref() == Ok("1");
     let live_transport = if public_approval {
         let runtime = tokio::runtime::Runtime::new().unwrap();
@@ -995,10 +986,9 @@ fn real_provider_400_releases_queue_over_public_transport() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"),json!({"format":1,"revision":1,"providers":[provider.clone()]}));
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"),json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":if question {vec!["think","ask_user_questions"]} else {vec!["think"]},"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":60}}));
+    write_test_execution_config(&root,json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":if question {vec!["think","ask_user_questions"]} else {vec!["think"]},"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":60}}));
     let session = "018f0000-0000-7000-8000-000000000129";
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
@@ -1006,7 +996,7 @@ fn real_provider_400_releases_queue_over_public_transport() {
     write_test_genesis(&path,session);
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
@@ -1073,24 +1063,8 @@ fn real_provider_400_releases_queue_over_public_transport() {
 /// server `local` (tools `mcp__local__<name>`): resident when `always_on`,
 /// otherwise schema-deferred behind `tool_search`.
 #[cfg(target_os = "macos")]
-fn register_local_tools_server(root: &std::path::Path, always_on: bool) {
-    let fixture = std::env::var("TEKES_TEST_MCP_FIXTURE_SERVER").expect("built mcp-fixture-server path (TEKES_TEST_MCP_FIXTURE_SERVER)");
-    fs::create_dir_all(root.join("config")).unwrap();
-    let registry = mcp::McpRegistryStore::new(root.join("config"));
-    registry.mutate_idempotent("save-local-tools", &mcp::McpManagementMutation::Save {
-        server: mcp::McpServerConfig {
-            folder_id: None,
-            reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "local".to_owned() },
-            transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "local-tools".to_owned()], cwd: None, environment: BTreeMap::new() },
-            enabled: true,
-            always_on,
-            protocol_mode: mcp::ProtocolMode::Legacy,
-            owner: None,
-            plugin_component: None,
-            project_trusted: true,
-        },
-        credential_fields: BTreeMap::new(),
-    }).expect("register local tools MCP server");
+fn register_local_tools_server(root:&Path, _always_on:bool) {
+    stage_live_stdio(root,"local");
 }
 
 #[cfg(target_os = "macos")]
@@ -1101,7 +1075,6 @@ fn real_public_deferred_tool_search() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"),json!({"format":1,"revision":1,"providers":[provider.clone()]}));
     // TEKES_TOOL_SEARCH_SCENARIO=shipping swaps the UAT-marker helper for a
@@ -1119,7 +1092,7 @@ fn real_public_deferred_tool_search() {
         ("mcp__local__uat_marker",
             [(1, json!({"marker":"FIRST_HOT_OK"}), json!({"marker":"FIRST_HOT_OK"})), (2, json!({"marker":"SECOND_HOT_OK"}), json!({"marker":"SECOND_HOT_OK"}))])
     };
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"),json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["tool_search",deferred_tool],"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":180}}));
+    write_test_execution_config(&root,json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["tool_search",deferred_tool],"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":180}}));
     register_local_tools_server(&root, false);
     let session = "018f0000-0000-7000-8000-000000000130";
     let folder = root.join("threads").join(session);
@@ -1128,7 +1101,7 @@ fn real_public_deferred_tool_search() {
     write_test_genesis(&path,session);
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-deferred-tool",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-deferred-tool",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
@@ -1216,7 +1189,6 @@ fn real_public_image_attachment() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"),json!({"format":1,"revision":1,"providers":[provider.clone()]}));
     // Keep the full ordinary catalog in the vision request, including complex
@@ -1224,7 +1196,7 @@ fn real_public_image_attachment() {
     let allowed_tools: Vec<_> = tools::BuiltinManifest::compiled().tools.into_iter()
         .filter(|tool| !matches!(tool.name.as_str(), "plan" | "summary_artifact" | "report" | "verify"))
         .map(|tool| tool.name).collect();
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"),json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":allowed_tools,"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":180}}));
+    write_test_execution_config(&root,json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":allowed_tools,"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":180}}));
     let session = "018f0000-0000-7000-8000-000000000131";
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
@@ -1232,7 +1204,7 @@ fn real_public_image_attachment() {
     write_test_genesis(&path,session);
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-image",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-image",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
@@ -1290,7 +1262,6 @@ fn real_public_flow_case() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"),json!({"format":1,"revision":1,"providers":[provider.clone()]}));
     let mut policy = json!({"toolchain_roots":case["toolchain_roots"].as_array().cloned().unwrap_or_default(),"allowed_tools":case["allowed_tools"].as_array().cloned().unwrap_or_else(|| vec![json!("apply_patch"),json!("read"),json!("shell"),json!("glob"),json!("grep")]),"network":false,"writable_roots":[workspace],"provider":provider["id"],"model":provider["models"][0]["id"]});
@@ -1300,7 +1271,7 @@ fn real_public_flow_case() {
     if let Some(seconds) = case["max_wall_seconds"].as_u64() {
         policy.as_object_mut().expect("policy object").insert("max_wall_seconds".to_owned(), json!(seconds));
     }
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"),json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":policy}));
+    write_test_execution_config(&root,json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":policy}));
     for (path, content) in case["seed_files"].as_object().unwrap() {
         let target = workspace.join(path);
         fs::create_dir_all(target.parent().unwrap()).unwrap();
@@ -1333,7 +1304,7 @@ fn real_public_flow_case() {
 
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
@@ -1376,7 +1347,7 @@ fn real_public_flow_case() {
 
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(),provider::SecretRecord::Active {generation:1,material:std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap()}).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root,std::env::var("TEKES_TEST_REAL_WORKER").unwrap(),"public-error-queue",root.join(".agent"),secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let runtime = tokio::runtime::Runtime::new().unwrap();
     let listener = runtime.block_on(tokio::net::TcpListener::bind("127.0.0.1:0")).unwrap();
     let address = listener.local_addr().unwrap();
@@ -1471,26 +1442,10 @@ fn real_public_mcp_task_continuation() {
     let workspace = root.parent().unwrap().join("workspace");
     fs::create_dir_all(&workspace).unwrap();
     fs::create_dir_all(root.join("config")).unwrap();
-    fs::create_dir_all(root.join("workspaces/ws")).unwrap();
     let provider: Value = serde_json::from_slice(&fs::read(std::env::var("TEKES_KERNEL_LIVE_PROVIDER").unwrap()).unwrap()).unwrap();
     write_canonical_test_json(&root.join("config/providers.json"), json!({"format":1,"revision":1,"providers":[provider.clone()]}));
-    write_canonical_test_json(&root.join("workspaces/ws/workspace.json"), json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["mcp__fixture__echo"],"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":240}}));
-    let fixture = std::env::var("TEKES_TEST_MCP_FIXTURE_SERVER").expect("built mcp-fixture-server path");
-    let registry = mcp::McpRegistryStore::new(root.join("config"));
-    registry.mutate_idempotent("save-fixture", &mcp::McpManagementMutation::Save {
-        server: mcp::McpServerConfig {
-            folder_id: None,
-            reference: mcp::McpServerReference { workspace_id: "ws".to_owned(), scope: mcp::McpScope::User, name: "fixture".to_owned() },
-            transport: mcp::McpTransportConfig::Stdio { command: vec![fixture, "task-augmented".to_owned()], cwd: None, environment: BTreeMap::new() },
-            enabled: true,
-            always_on: true,
-            protocol_mode: mcp::ProtocolMode::Legacy,
-            owner: None,
-            plugin_component: None,
-            project_trusted: true,
-        },
-        credential_fields: BTreeMap::new(),
-    }).expect("register fixture MCP server");
+    write_test_execution_config(&root, json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],"policy":{"allowed_tools":["mcp__fixture__echo"],"network":false,"writable_roots":[],"provider":provider["id"],"model":provider["models"][0]["id"],"max_wall_seconds":240}}));
+    stage_live_stdio(&root,"fixture");
     let session = "018f0000-0000-7000-8000-000000000132";
     let folder = root.join("threads").join(session);
     fs::create_dir_all(folder.join("assets")).unwrap();
@@ -1502,7 +1457,7 @@ fn real_public_mcp_task_continuation() {
     write_test_events(&path, events);
     let secrets = Arc::new(provider::MemorySecretStore::new());
     secrets.publish(provider["credential_key"].as_str().unwrap(), provider::SecretRecord::Active { generation: 1, material: std::env::var("TEKES_KERNEL_LIVE_KEY").unwrap() }).unwrap();
-    let host = ProductionProcessHost::open_with_secret_store(&root, std::env::var("TEKES_TEST_REAL_WORKER").unwrap(), "live-mcp-task", root.join(".agent"), secrets).unwrap();
+    let host = ProductionProcessHost::open_with_secret_store(&root, std::env::var("TEKES_TEST_REAL_WORKER").unwrap(), "live-mcp-task", root.join(".agent"), secrets).inspect(|host| { attach_live_stdio(host,&root); }).unwrap();
     let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
         host.schedule_main(session).unwrap().expect("actual worker process");
         host.start_periodic_sweep();
@@ -1543,4 +1498,17 @@ fn real_public_mcp_task_continuation() {
     assert_eq!(final_output["content"][0]["text"].as_str().map(str::trim), Some("augmented done"));
     assert!(events.iter().any(|e| e["kind"] == "usage"));
     fs::write(root.join("receipt.json"), serde_json::to_vec_pretty(&json!({"status":"passed","call":call,"continuation_actions":actions,"runs":runs.len(),"result_seq":results[0]["seq"]})).unwrap()).unwrap();
+}
+
+#[cfg(target_os="macos")]
+fn stage_live_stdio(root:&Path,name:&str) {
+    let socket=std::env::var("TEKES_TEST_MCP_STDIO_SOCKET").expect("live CLI host must provide TEKES_TEST_MCP_STDIO_SOCKET");
+    write_canonical_test_json(&root.join("test-host-mcp.json"),json!({"name":name,"socket":socket}));
+}
+#[cfg(target_os="macos")]
+fn attach_live_stdio(host:&ProductionProcessHost, root:&Path) {
+    if let Ok(bytes)=fs::read(root.join("test-host-mcp.json")) {
+        let value:Value=serde_json::from_slice(&bytes).unwrap();
+        host.mcp_runtime().set_stdio_connector(Arc::new(crate::stdio_channels::UnixStdioChannels([("test".into(),PathBuf::from(value["socket"].as_str().unwrap()))].into())));
+    }
 }

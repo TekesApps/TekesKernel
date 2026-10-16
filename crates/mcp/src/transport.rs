@@ -83,6 +83,153 @@ pub trait McpTransport: Send {
     }
 }
 
+/// MCP framing over streams whose lifecycle belongs to the caller. Closing
+/// this transport closes only these descriptors; it never signals a process.
+pub struct PipeTransport {
+    streams: Option<(File, File)>,
+    pending: Vec<u8>,
+    cancelled_ids: BTreeSet<u64>,
+    notifications: Vec<String>,
+}
+impl PipeTransport {
+    pub fn new(input: File, output: File) -> Result<Self, McpError> {
+        set_nonblocking(&input)?;
+        set_nonblocking(&output)?;
+        Ok(Self {
+            streams: Some((input, output)),
+            pending: Vec::new(),
+            cancelled_ids: BTreeSet::new(),
+            notifications: Vec::new(),
+        })
+    }
+    async fn write(&self, request: &JsonRpcRequest) -> Result<(), McpError> {
+        let bytes = request.canonical_line()?;
+        if bytes.len() > MAX_FRAME_BYTES {
+            return Err(McpError::Protocol("outbound frame exceeds 4 MiB".into()));
+        }
+        let file = self
+            .streams
+            .as_ref()
+            .ok_or_else(|| McpError::Transport("stdio channel closed".into()))?
+            .1
+            .try_clone()
+            .map_err(pipe_error)?;
+        let output = tokio::io::unix::AsyncFd::new(file).map_err(pipe_error)?;
+        let mut offset = 0;
+        while offset < bytes.len() {
+            let mut ready = output.writable().await.map_err(pipe_error)?;
+            match ready.try_io(|fd| std::io::Write::write(&mut fd.get_ref(), &bytes[offset..])) {
+                Err(_) => continue,
+                Ok(Ok(0)) => return Err(McpError::Transport("stdio channel write EOF".into())),
+                Ok(Ok(count)) => offset += count,
+                Ok(Err(error)) => return Err(pipe_error(error)),
+            }
+        }
+        Ok(())
+    }
+    async fn read_line(&mut self) -> Result<Vec<u8>, McpError> {
+        let file = self
+            .streams
+            .as_ref()
+            .ok_or_else(|| McpError::Transport("stdio channel closed".into()))?
+            .0
+            .try_clone()
+            .map_err(pipe_error)?;
+        let input = tokio::io::unix::AsyncFd::new(file).map_err(pipe_error)?;
+        loop {
+            if let Some(end) = self.pending.iter().position(|byte| *byte == b'\n') {
+                if end > MAX_FRAME_BYTES {
+                    return Err(McpError::Protocol("inbound frame exceeds 4 MiB".into()));
+                }
+                let mut line = self.pending.drain(..=end).collect::<Vec<_>>();
+                line.pop();
+                if line.last() == Some(&b'\r') {
+                    line.pop();
+                }
+                return Ok(line);
+            }
+            if self.pending.len() > MAX_FRAME_BYTES {
+                return Err(McpError::Protocol("inbound frame exceeds 4 MiB".into()));
+            }
+            let mut buffer = [0; 8192];
+            let mut ready = input.readable().await.map_err(pipe_error)?;
+            match ready.try_io(|fd| std::io::Read::read(&mut fd.get_ref(), &mut buffer)) {
+                Err(_) => continue,
+                Ok(Ok(0)) => return Err(McpError::Transport("stdio channel EOF".into())),
+                Ok(Ok(count)) => self.pending.extend_from_slice(&buffer[..count]),
+                Ok(Err(error)) => return Err(pipe_error(error)),
+            }
+        }
+    }
+}
+fn pipe_error(error: std::io::Error) -> McpError {
+    McpError::Transport(error.to_string())
+}
+impl McpTransport for PipeTransport {
+    fn request<'a>(
+        &'a mut self,
+        request: &'a JsonRpcRequest,
+        timeout: Duration,
+    ) -> crate::McpPeerFuture<'a, JsonRpcResponse> {
+        Box::pin(async move {
+            let result = tokio::time::timeout(timeout, async {
+                let id = request
+                    .id
+                    .ok_or_else(|| McpError::Protocol("request id is absent".into()))?;
+                self.write(request).await?;
+                loop {
+                    let bytes = self.read_line().await?;
+                    match decode_inbound(&bytes, id, &mut self.cancelled_ids)? {
+                        Inbound::Response(response) => return Ok(response),
+                        Inbound::Notification(method) => {
+                            if self.notifications.len() >= 1024 {
+                                return Err(McpError::Protocol(
+                                    "stdio notification backlog exceeded".into(),
+                                ));
+                            }
+                            self.notifications.push(method);
+                        }
+                        Inbound::LateCancelled => {}
+                    }
+                }
+            })
+            .await
+            .map_err(|_| McpError::Timeout(request.method.clone()))
+            .and_then(|value| value);
+            // Partial frames after timeout or malformed input cannot be replayed.
+            if result.is_err() {
+                self.streams.take();
+            }
+            result
+        })
+    }
+    fn notify<'a>(&'a mut self, notification: &'a JsonRpcRequest) -> crate::McpPeerFuture<'a, ()> {
+        Box::pin(async move {
+            if notification.id.is_some() {
+                return Err(McpError::Protocol("notification has an id".into()));
+            }
+            self.write(notification).await
+        })
+    }
+    fn close(&mut self) -> crate::McpPeerFuture<'_, ()> {
+        self.streams.take();
+        Box::pin(async { Ok(()) })
+    }
+    fn reconnect(&mut self) -> crate::McpPeerFuture<'_, ()> {
+        Box::pin(async {
+            Err(McpError::Transport(
+                "host must supply a fresh stdio channel".into(),
+            ))
+        })
+    }
+    fn mark_cancelled(&mut self, id: u64) {
+        self.cancelled_ids.insert(id);
+    }
+    fn take_notifications(&mut self) -> Vec<String> {
+        std::mem::take(&mut self.notifications)
+    }
+}
+
 pub struct StdioTransport {
     generation: Option<StdioGeneration>,
     diagnostics: Arc<Mutex<Vec<u8>>>,
@@ -749,9 +896,11 @@ impl HttpTransport {
     where
         F: Fn() -> Result<HttpRequestAuthorization, McpError> + Send + Sync + 'static,
     {
-        let loopback = url
-            .host_str()
-            .is_some_and(|host| matches!(host, "127.0.0.1" | "::1" | "localhost"));
+        let loopback = url.host().is_some_and(|host| match host {
+            url::Host::Domain(name) => name == "localhost",
+            url::Host::Ipv4(address) => address.is_loopback(),
+            url::Host::Ipv6(address) => address.is_loopback(),
+        });
         if url.scheme() != "https" && !(allow_test_http && loopback && url.scheme() == "http") {
             return Err(McpError::Transport(
                 "HTTP MCP requires HTTPS outside an explicit loopback test".to_owned(),

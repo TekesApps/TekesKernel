@@ -159,7 +159,7 @@ impl DynamicToolCatalog {
 #[serde(deny_unknown_fields)]
 pub struct LaunchBindings {
     pub format: u64,
-    pub workspace: String,
+    pub session_id: String,
     pub config_digest: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub goal_id: Option<String>,
@@ -200,7 +200,7 @@ impl LaunchBindings {
         unavailable_tools.dedup();
         let value = Self {
             format: FORMAT,
-            workspace: config.workspace.id.clone(),
+            session_id: config.execution.session_id.clone(),
             config_digest: config.digest()?,
             goal_id,
             dynamic_catalog,
@@ -272,7 +272,7 @@ impl LaunchBindings {
     pub fn validate_against(&self, config: &ConfigSnapshot) -> Result<(), ProfileError> {
         let path = Path::new("<launch-bindings>");
         validate_launch_bindings(self, path)?;
-        if self.workspace != config.workspace.id {
+        if self.session_id != config.execution.session_id {
             return invalid(path, "launch workspace does not match ConfigSnapshot");
         }
         if self.config_digest != config.digest()? {
@@ -301,7 +301,7 @@ impl LaunchBindings {
             // adds or hides authority.
             if effective_names.contains(*name)
                 || !config
-                    .workspace
+                    .execution
                     .policy
                     .allowed_tools
                     .iter()
@@ -315,7 +315,7 @@ impl LaunchBindings {
                 });
             }
         }
-        for allowed in &config.workspace.policy.allowed_tools {
+        for allowed in &config.execution.policy.allowed_tools {
             // Retired builtins may remain in historical workspace policies.
             // Accept the old selector without restoring an executable capability.
             if matches!(allowed.as_str(), "note" | "recall") {
@@ -341,7 +341,7 @@ fn validate_launch_bindings(value: &LaunchBindings, path: &Path) -> Result<(), P
             format: value.format,
         });
     }
-    validate_identifier(&value.workspace, "workspace", 128, path)?;
+    validate_identifier(&value.session_id, "session", 128, path)?;
     validate_sha256(&value.config_digest, "config_digest", path)?;
     if let Some(goal_id) = &value.goal_id {
         validate_identifier(goal_id, "goal_id", 128, path)?;

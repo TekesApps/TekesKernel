@@ -18,10 +18,12 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [test-support::collect_relative_files](../../src/lib.rs#L139) | function_item | `private` |  |
 | [test-support::FixtureManifest](../../src/lib.rs#L174) | struct_item | `pub` |  |
 | [test-support::read](../../src/lib.rs#L179) | function_item | `pub` |  |
-| [test-support::trusted_resolver](../../src/lib.rs#L188) | function_item | `pub` |  |
-| [test-support::trusted_resolver::STATE](../../src/lib.rs#L192) | static_item | `private` |  |
-| [test-support::trusted_resolver::LOCK](../../src/lib.rs#L193) | static_item | `private` |  |
-| [test-support::tests::manifest_rejects_undeclared_top_level_corpus](../../src/lib.rs#L219) | function_item | `private` | test; #[cfg(test)] |
+| [test-support::execution_fixture](../../src/lib.rs#L188) | function_item | `pub` |  |
+| [test-support::execution_fixture::PROJECT](../../src/lib.rs#L189) | static_item | `private` |  |
+| [test-support::freeze_execution_fixture](../../src/lib.rs#L197) | function_item | `pub` |  |
+| [test-support::resolve_execution_fixture](../../src/lib.rs#L227) | function_item | `pub` |  |
+| [test-support::bind_execution_fixture](../../src/lib.rs#L240) | function_item | `pub` |  |
+| [test-support::tests::manifest_rejects_undeclared_top_level_corpus](../../src/lib.rs#L283) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -48,25 +50,30 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–8: 6 direct edges</summary>
+<details><summary>Functions 1–11: 7 direct edges</summary>
 
 ```mermaid
 flowchart TD
-  n0["profile::folder_authority::FolderAuthorityStore::new"]
-  n1["test-support::collect_relative_files"]
-  n2["test-support::read"]
-  n3["test-support::trusted_resolver"]
-  n4["test-support::FixtureRoot::discover"]
-  n5["test-support::FixtureRoot::from_manifest_dir"]
-  n6["test-support::FixtureRoot::path"]
-  n7["test-support::FixtureRoot::join"]
-  n8["test-support::FixtureRoot::verify_manifest"]
-  n1 --> n1
-  n3 --> n0
-  n4 --> n5
-  n8 --> n1
-  n8 --> n2
-  n8 --> n7
+  n0["schema::event::Event::from_value"]
+  n1["schema::ijson::IJsonValue::parse"]
+  n2["test-support::collect_relative_files"]
+  n3["test-support::read"]
+  n4["test-support::execution_fixture"]
+  n5["test-support::freeze_execution_fixture"]
+  n6["test-support::resolve_execution_fixture"]
+  n7["test-support::bind_execution_fixture"]
+  n8["test-support::FixtureRoot::discover"]
+  n9["test-support::FixtureRoot::from_manifest_dir"]
+  n10["test-support::FixtureRoot::path"]
+  n11["test-support::FixtureRoot::join"]
+  n12["test-support::FixtureRoot::verify_manifest"]
+  n2 --> n2
+  n7 --> n0
+  n7 --> n1
+  n8 --> n9
+  n12 --> n2
+  n12 --> n3
+  n12 --> n11
 ```
 
 </details>
@@ -171,36 +178,73 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `fs::read(path).map_err` | [180](../../src/lib.rs#L180) | receiver-type-required |
 | `read` | `fs::read` | [180](../../src/lib.rs#L180) | external-constructor-callback-or-unresolved |
 | `read` | `path.to_path_buf` | [181](../../src/lib.rs#L181) | receiver-type-required |
-| `trusted_resolver` | `LOCK.lock().unwrap` | [194](../../src/lib.rs#L194) | receiver-type-required |
-| `trusted_resolver` | `LOCK.lock` | [194](../../src/lib.rs#L194) | receiver-type-required |
-| `trusted_resolver` | `STATE.get_or_init` | [195](../../src/lib.rs#L195) | receiver-type-required |
-| `trusted_resolver` | `tempfile::tempdir().unwrap` | [195](../../src/lib.rs#L195) | receiver-type-required |
-| `trusted_resolver` | `tempfile::tempdir` | [195](../../src/lib.rs#L195) | external-constructor-callback-or-unresolved |
-| `trusted_resolver` | `profile::FolderAuthorityStore::new` | [196](../../src/lib.rs#L196) | [profile::folder_authority::FolderAuthorityStore::new](../../../profile/src/folder_authority.rs#L86) |
-| `trusted_resolver` | `root.path` | [196](../../src/lib.rs#L196), [211](../../src/lib.rs#L211) | receiver-type-required |
-| `trusted_resolver` | `store             .status(folder.as_ref())             .is_ok_and` | [198](../../src/lib.rs#L198) | receiver-type-required |
-| `trusted_resolver` | `store             .status` | [198](../../src/lib.rs#L198) | receiver-type-required |
-| `trusted_resolver` | `folder.as_ref` | [199](../../src/lib.rs#L199), [206](../../src/lib.rs#L206) | receiver-type-required |
-| `trusted_resolver` | `store.registry_revision().unwrap` | [204](../../src/lib.rs#L204) | receiver-type-required |
-| `trusted_resolver` | `store.registry_revision` | [204](../../src/lib.rs#L204) | receiver-type-required |
-| `trusted_resolver` | `store.request(&request, revision, folder.as_ref()).unwrap` | [206](../../src/lib.rs#L206) | receiver-type-required |
-| `trusted_resolver` | `store.request` | [206](../../src/lib.rs#L206) | receiver-type-required |
-| `trusted_resolver` | `store             .grant_from_host(&format!("fixture-grant-{revision}"), revision + 1, &request)             .unwrap` | [207](../../src/lib.rs#L207) | receiver-type-required |
-| `trusted_resolver` | `store             .grant_from_host` | [207](../../src/lib.rs#L207) | receiver-type-required |
-| `trusted_resolver` | `resolver.with_folder_authority` | [211](../../src/lib.rs#L211) | receiver-type-required |
-| `STATE` | `std::sync::OnceLock::new` | [192](../../src/lib.rs#L192) | external-constructor-callback-or-unresolved |
-| `LOCK` | `std::sync::Mutex::new` | [193](../../src/lib.rs#L193) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir().expect` | [220](../../src/lib.rs#L220) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir` | [220](../../src/lib.rs#L220) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(             root.path().join("manifest.json"),             br#"{"corpora":{"known":["case.txt"]},"version":1}"#,         )         .expect` | [221](../../src/lib.rs#L221) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write` | [221](../../src/lib.rs#L221), [227](../../src/lib.rs#L227) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path().join` | [222](../../src/lib.rs#L222), [226](../../src/lib.rs#L226), [227](../../src/lib.rs#L227), [228](../../src/lib.rs#L228) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path` | [222](../../src/lib.rs#L222), [226](../../src/lib.rs#L226), [227](../../src/lib.rs#L227), [228](../../src/lib.rs#L228), [230](../../src/lib.rs#L230) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("known")).expect` | [226](../../src/lib.rs#L226) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir` | [226](../../src/lib.rs#L226), [228](../../src/lib.rs#L228) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(root.path().join("known/case.txt"), b"case").expect` | [227](../../src/lib.rs#L227) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("undeclared")).expect` | [228](../../src/lib.rs#L228) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest()             .expect_err` | [230](../../src/lib.rs#L230) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest` | [230](../../src/lib.rs#L230) | receiver-type-required |
-| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot` | [230](../../src/lib.rs#L230) | external-constructor-callback-or-unresolved |
-| `manifest_rejects_undeclared_top_level_corpus` | `root.path().to_path_buf` | [230](../../src/lib.rs#L230) | receiver-type-required |
+| `execution_fixture` | `PROJECT.get_or_init` | [190](../../src/lib.rs#L190) | receiver-type-required |
+| `execution_fixture` | `tempfile::tempdir().unwrap` | [190](../../src/lib.rs#L190) | receiver-type-required |
+| `execution_fixture` | `tempfile::tempdir` | [190](../../src/lib.rs#L190) | external-constructor-callback-or-unresolved |
+| `execution_fixture` | `serde_json::from_value(serde_json::json!({"cwd":project.path().canonicalize().unwrap()}))         .unwrap` | [191](../../src/lib.rs#L191) | receiver-type-required |
+| `execution_fixture` | `serde_json::from_value` | [191](../../src/lib.rs#L191) | external-constructor-callback-or-unresolved |
+| `PROJECT` | `std::sync::OnceLock::new` | [189](../../src/lib.rs#L189) | external-constructor-callback-or-unresolved |
+| `freeze_execution_fixture` | `policy.unwrap_or_default` | [203](../../src/lib.rs#L203) | receiver-type-required |
+| `freeze_execution_fixture` | `roots.split_first().ok_or` | [204](../../src/lib.rs#L204) | receiver-type-required |
+| `freeze_execution_fixture` | `roots.split_first` | [204](../../src/lib.rs#L204) | receiver-type-required |
+| `freeze_execution_fixture` | `serde_json::from_value` | [205](../../src/lib.rs#L205) | external-constructor-callback-or-unresolved |
+| `freeze_execution_fixture` | `repository.normalize_execution` | [210](../../src/lib.rs#L210) | receiver-type-required |
+| `freeze_execution_fixture` | `std::fs::write` | [211](../../src/lib.rs#L211) | external-constructor-callback-or-unresolved |
+| `freeze_execution_fixture` | `repository.root().join` | [212](../../src/lib.rs#L212) | receiver-type-required |
+| `freeze_execution_fixture` | `repository.root` | [212](../../src/lib.rs#L212) | receiver-type-required |
+| `freeze_execution_fixture` | `serde_json::to_vec` | [213](../../src/lib.rs#L213) | external-constructor-callback-or-unresolved |
+| `freeze_execution_fixture` | `provider.is_some` | [216](../../src/lib.rs#L216) | receiver-type-required |
+| `freeze_execution_fixture` | `model.is_some` | [216](../../src/lib.rs#L216) | receiver-type-required |
+| `freeze_execution_fixture` | `repository.settings` | [217](../../src/lib.rs#L217) | receiver-type-required |
+| `freeze_execution_fixture` | `repository.publish_settings` | [222](../../src/lib.rs#L222) | receiver-type-required |
+| `freeze_execution_fixture` | `Ok` | [224](../../src/lib.rs#L224) | external-constructor-callback-or-unresolved |
+| `resolve_execution_fixture` | `serde_json::from_slice` | [232](../../src/lib.rs#L232) | external-constructor-callback-or-unresolved |
+| `resolve_execution_fixture` | `std::fs::read` | [232](../../src/lib.rs#L232) | external-constructor-callback-or-unresolved |
+| `resolve_execution_fixture` | `repository.root().join` | [233](../../src/lib.rs#L233) | receiver-type-required |
+| `resolve_execution_fixture` | `repository.root` | [233](../../src/lib.rs#L233) | receiver-type-required |
+| `resolve_execution_fixture` | `Ok` | [235](../../src/lib.rs#L235) | external-constructor-callback-or-unresolved |
+| `resolve_execution_fixture` | `repository.resolve_execution` | [235](../../src/lib.rs#L235) | receiver-type-required |
+| `bind_execution_fixture` | `std::fs::read(ledger).unwrap` | [241](../../src/lib.rs#L241) | receiver-type-required |
+| `bind_execution_fixture` | `std::fs::read` | [241](../../src/lib.rs#L241), [248](../../src/lib.rs#L248) | external-constructor-callback-or-unresolved |
+| `bind_execution_fixture` | `bytes.iter().position(&#124;byte&#124; *byte == b'\n').unwrap` | [242](../../src/lib.rs#L242) | receiver-type-required |
+| `bind_execution_fixture` | `bytes.iter().position` | [242](../../src/lib.rs#L242) | receiver-type-required |
+| `bind_execution_fixture` | `bytes.iter` | [242](../../src/lib.rs#L242) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::from_slice(&bytes[..split]).unwrap` | [243](../../src/lib.rs#L243) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::from_slice` | [243](../../src/lib.rs#L243), [247](../../src/lib.rs#L247) | external-constructor-callback-or-unresolved |
+| `bind_execution_fixture` | `genesis.get("execution").is_some` | [244](../../src/lib.rs#L244) | receiver-type-required |
+| `bind_execution_fixture` | `genesis.get` | [244](../../src/lib.rs#L244) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::from_slice(         &std::fs::read(repository.root().join("execution-fixture.json")).unwrap(),     )     .unwrap` | [247](../../src/lib.rs#L247) | receiver-type-required |
+| `bind_execution_fixture` | `std::fs::read(repository.root().join("execution-fixture.json")).unwrap` | [248](../../src/lib.rs#L248) | receiver-type-required |
+| `bind_execution_fixture` | `repository.root().join` | [248](../../src/lib.rs#L248) | receiver-type-required |
+| `bind_execution_fixture` | `repository.root` | [248](../../src/lib.rs#L248) | receiver-type-required |
+| `bind_execution_fixture` | `genesis.as_object_mut().unwrap().remove` | [258](../../src/lib.rs#L258) | receiver-type-required |
+| `bind_execution_fixture` | `genesis.as_object_mut().unwrap` | [258](../../src/lib.rs#L258) | receiver-type-required |
+| `bind_execution_fixture` | `genesis.as_object_mut` | [258](../../src/lib.rs#L258) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::to_value(execution).unwrap` | [261](../../src/lib.rs#L261) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::to_value` | [261](../../src/lib.rs#L261) | external-constructor-callback-or-unresolved |
+| `bind_execution_fixture` | `schema::Event::from_value(         schema::IJsonValue::parse(&serde_json::to_vec(&genesis).unwrap()).unwrap(),     )     .unwrap` | [268](../../src/lib.rs#L268) | receiver-type-required |
+| `bind_execution_fixture` | `schema::Event::from_value` | [268](../../src/lib.rs#L268) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `bind_execution_fixture` | `schema::IJsonValue::parse(&serde_json::to_vec(&genesis).unwrap()).unwrap` | [269](../../src/lib.rs#L269) | receiver-type-required |
+| `bind_execution_fixture` | `schema::IJsonValue::parse` | [269](../../src/lib.rs#L269) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `bind_execution_fixture` | `serde_json::to_vec(&genesis).unwrap` | [269](../../src/lib.rs#L269) | receiver-type-required |
+| `bind_execution_fixture` | `serde_json::to_vec` | [269](../../src/lib.rs#L269) | external-constructor-callback-or-unresolved |
+| `bind_execution_fixture` | `event.canonical_bytes().unwrap` | [272](../../src/lib.rs#L272) | receiver-type-required |
+| `bind_execution_fixture` | `event.canonical_bytes` | [272](../../src/lib.rs#L272) | receiver-type-required |
+| `bind_execution_fixture` | `output.push` | [273](../../src/lib.rs#L273) | receiver-type-required |
+| `bind_execution_fixture` | `output.extend_from_slice` | [274](../../src/lib.rs#L274) | receiver-type-required |
+| `bind_execution_fixture` | `std::fs::write(ledger, output).unwrap` | [275](../../src/lib.rs#L275) | receiver-type-required |
+| `bind_execution_fixture` | `std::fs::write` | [275](../../src/lib.rs#L275) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir().expect` | [284](../../src/lib.rs#L284) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `tempfile::tempdir` | [284](../../src/lib.rs#L284) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(             root.path().join("manifest.json"),             br#"{"corpora":{"known":["case.txt"]},"version":1}"#,         )         .expect` | [285](../../src/lib.rs#L285) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write` | [285](../../src/lib.rs#L285), [291](../../src/lib.rs#L291) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path().join` | [286](../../src/lib.rs#L286), [290](../../src/lib.rs#L290), [291](../../src/lib.rs#L291), [292](../../src/lib.rs#L292) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path` | [286](../../src/lib.rs#L286), [290](../../src/lib.rs#L290), [291](../../src/lib.rs#L291), [292](../../src/lib.rs#L292), [294](../../src/lib.rs#L294) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("known")).expect` | [290](../../src/lib.rs#L290) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir` | [290](../../src/lib.rs#L290), [292](../../src/lib.rs#L292) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::write(root.path().join("known/case.txt"), b"case").expect` | [291](../../src/lib.rs#L291) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `fs::create_dir(root.path().join("undeclared")).expect` | [292](../../src/lib.rs#L292) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest()             .expect_err` | [294](../../src/lib.rs#L294) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot(root.path().to_path_buf())             .verify_manifest` | [294](../../src/lib.rs#L294) | receiver-type-required |
+| `manifest_rejects_undeclared_top_level_corpus` | `FixtureRoot` | [294](../../src/lib.rs#L294) | external-constructor-callback-or-unresolved |
+| `manifest_rejects_undeclared_top_level_corpus` | `root.path().to_path_buf` | [294](../../src/lib.rs#L294) | receiver-type-required |

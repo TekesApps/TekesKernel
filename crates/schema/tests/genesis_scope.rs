@@ -15,6 +15,37 @@ fn decodes(raw: &Value) -> bool {
     Event::decode(&serde_json::to_vec(raw).unwrap()).is_ok()
 }
 
+#[test]
+fn execution_genesis_has_no_management_identity_and_requires_its_reader() {
+    let mut raw = genesis();
+    for field in ["workspace", "folder_binding", "environment", "folders"] {
+        raw.as_object_mut().unwrap().remove(field);
+    }
+    raw["execution"] = json!({"cwd":"/fixture/second","network":false});
+    raw["min_reader"] = json!(schema::EXECUTION_READER);
+    assert!(decodes(&raw));
+    for (field, value) in [
+        ("min_reader", json!(4)),
+        ("workspace", json!("old")),
+        ("folder_binding", json!("folder")),
+        ("environment", json!("local")),
+        ("folders", json!(["folder"])),
+        ("execution", json!({"cwd":"/another/path"})),
+        ("execution", json!({"cwd":"/fixture/second","trusted":true})),
+        (
+            "execution",
+            json!({"cwd":"/fixture/second","read_roots":["relative"]}),
+        ),
+    ] {
+        let mut invalid = raw.clone();
+        invalid[field] = value;
+        assert!(
+            !decodes(&invalid),
+            "accepted invalid execution field {field}"
+        );
+    }
+}
+
 /// A genesis records its environment and folder ids; the bound folder is one
 /// of them, and a genesis without either still decodes (it reads as `local`
 /// with every workspace folder).

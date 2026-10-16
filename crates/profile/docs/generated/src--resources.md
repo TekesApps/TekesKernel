@@ -46,11 +46,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [profile::resources::validate_relative](../../src/resources.rs#L646) | function_item | `private` |  |
 | [profile::resources::hex_digest](../../src/resources.rs#L659) | function_item | `private` |  |
 | [profile::resources::tests::trusted_snapshot](../../src/resources.rs#L665) | function_item | `private` | test; #[cfg(test)] |
-| [profile::resources::tests::shared_skill_plain_description_accepts_embedded_colon](../../src/resources.rs#L680) | function_item | `private` | test; #[cfg(test)] |
-| [profile::resources::tests::source](../../src/resources.rs#L699) | function_item | `private` | test; #[cfg(test)] |
-| [profile::resources::tests::cross_scope_skill_collision_is_explicit_instead_of_silent_precedence](../../src/resources.rs#L715) | function_item | `private` | test; #[cfg(test)] |
-| [profile::resources::tests::command_expansion_has_closed_quoting_and_escape_rules](../../src/resources.rs#L760) | function_item | `private` | test; #[cfg(test)] |
-| [profile::resources::tests::invalid_winner_and_out_of_range_positionals_fail_closed](../../src/resources.rs#L788) | function_item | `private` | test; #[cfg(test)] |
+| [profile::resources::tests::shared_skill_plain_description_accepts_embedded_colon](../../src/resources.rs#L674) | function_item | `private` | test; #[cfg(test)] |
+| [profile::resources::tests::source](../../src/resources.rs#L693) | function_item | `private` | test; #[cfg(test)] |
+| [profile::resources::tests::cross_scope_skill_collision_is_explicit_instead_of_silent_precedence](../../src/resources.rs#L709) | function_item | `private` | test; #[cfg(test)] |
+| [profile::resources::tests::command_expansion_has_closed_quoting_and_escape_rules](../../src/resources.rs#L753) | function_item | `private` | test; #[cfg(test)] |
+| [profile::resources::tests::invalid_winner_and_out_of_range_positionals_fail_closed](../../src/resources.rs#L780) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -419,44 +419,33 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_relative` | `ResourceError::InvalidPath` | [654](../../src/resources.rs#L654) | external-constructor-callback-or-unresolved |
 | `validate_relative` | `path.to_owned` | [654](../../src/resources.rs#L654) | receiver-type-required |
 | `validate_relative` | `Ok` | [656](../../src/resources.rs#L656) | external-constructor-callback-or-unresolved |
-| `trusted_snapshot` | `tempfile::tempdir().unwrap` | [666](../../src/resources.rs#L666) | receiver-type-required |
-| `trusted_snapshot` | `tempfile::tempdir` | [666](../../src/resources.rs#L666) | external-constructor-callback-or-unresolved |
-| `trusted_snapshot` | `root.path().join` | [667](../../src/resources.rs#L667), [668](../../src/resources.rs#L668) | receiver-type-required |
-| `trusted_snapshot` | `root.path` | [667](../../src/resources.rs#L667), [668](../../src/resources.rs#L668) | receiver-type-required |
-| `trusted_snapshot` | `std::fs::create_dir(&project).unwrap` | [669](../../src/resources.rs#L669) | receiver-type-required |
-| `trusted_snapshot` | `std::fs::create_dir` | [669](../../src/resources.rs#L669) | external-constructor-callback-or-unresolved |
-| `trusted_snapshot` | `crate::FolderAuthorityStore::new` | [670](../../src/resources.rs#L670) | [profile::folder_authority::FolderAuthorityStore::new](../../src/folder_authority.rs#L86) |
-| `trusted_snapshot` | `store.request("r", 0, &project).unwrap` | [671](../../src/resources.rs#L671) | receiver-type-required |
-| `trusted_snapshot` | `store.request` | [671](../../src/resources.rs#L671) | receiver-type-required |
-| `trusted_snapshot` | `store.grant_from_host("g", 1, "r").unwrap` | [672](../../src/resources.rs#L672) | receiver-type-required |
-| `trusted_snapshot` | `store.grant_from_host` | [672](../../src/resources.rs#L672) | receiver-type-required |
-| `trusted_snapshot` | `Some` | [673](../../src/resources.rs#L673) | external-constructor-callback-or-unresolved |
-| `trusted_snapshot` | `[(0, folder)].into` | [675](../../src/resources.rs#L675) | receiver-type-required |
-| `shared_skill_plain_description_accepts_embedded_colon` | `super::parse_front_matter("---\nname: example\ndescription: Set up a project: scan and validate.\nreferences:\n  - guide\n---\nBody", true).unwrap` | [681](../../src/resources.rs#L681) | receiver-type-required |
-| `shared_skill_plain_description_accepts_embedded_colon` | `super::parse_front_matter` | [681](../../src/resources.rs#L681) | [profile::resources::parse_front_matter](../../src/resources.rs#L421) |
-| `source` | `path.to_owned` | [707](../../src/resources.rs#L707) | receiver-type-required |
-| `source` | `content.to_owned` | [709](../../src/resources.rs#L709) | receiver-type-required |
-| `source` | `hex_digest` | [710](../../src/resources.rs#L710) | external-constructor-callback-or-unresolved |
-| `source` | `content.as_bytes` | [710](../../src/resources.rs#L710) | receiver-type-required |
-| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `EffectiveInstructions::default` | [748](../../src/resources.rs#L748) | external-constructor-callback-or-unresolved |
-| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `trusted_snapshot` | [750](../../src/resources.rs#L750) | [profile::resources::tests::trusted_snapshot](../../src/resources.rs#L665) |
-| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `ResourceCatalog::from_snapshot(&snapshot).expect_err` | [751](../../src/resources.rs#L751) | receiver-type-required |
-| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `ResourceCatalog::from_snapshot` | [751](../../src/resources.rs#L751) | external-constructor-callback-or-unresolved |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `source` | [762](../../src/resources.rs#L762) | external-constructor-callback-or-unresolved |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `EffectiveInstructions::default` | [768](../../src/resources.rs#L768) | external-constructor-callback-or-unresolved |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `effective.commands.insert` | [769](../../src/resources.rs#L769) | receiver-type-required |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `"review.md".to_owned` | [769](../../src/resources.rs#L769) | receiver-type-required |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `ResourceCatalog::from_snapshot(&snapshot).expect` | [776](../../src/resources.rs#L776) | receiver-type-required |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `ResourceCatalog::from_snapshot` | [776](../../src/resources.rs#L776) | external-constructor-callback-or-unresolved |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `catalog             .expand_command("review", "'a b' strict")             .expect` | [777](../../src/resources.rs#L777) | receiver-type-required |
-| `command_expansion_has_closed_quoting_and_escape_rules` | `catalog             .expand_command` | [777](../../src/resources.rs#L777) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `EffectiveInstructions::default` | [798](../../src/resources.rs#L798), [812](../../src/resources.rs#L812), [833](../../src/resources.rs#L833) | external-constructor-callback-or-unresolved |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `trusted_snapshot` | [800](../../src/resources.rs#L800) | [profile::resources::tests::trusted_snapshot](../../src/resources.rs#L665) |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `source` | [806](../../src/resources.rs#L806), [827](../../src/resources.rs#L827) | [profile::resources::tests::source](../../src/resources.rs#L699) |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `effective.commands.insert` | [813](../../src/resources.rs#L813), [834](../../src/resources.rs#L834) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"position.md".to_owned` | [813](../../src/resources.rs#L813) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             folder_authority: None,             format: 1,             sources: vec![command],             effective,         })         .expect` | [814](../../src/resources.rs#L814) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot` | [814](../../src/resources.rs#L814), [835](../../src/resources.rs#L835) | external-constructor-callback-or-unresolved |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"$ARGUMENTS".repeat` | [826](../../src/resources.rs#L826) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"expand.md".to_owned` | [834](../../src/resources.rs#L834) | receiver-type-required |
-| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             folder_authority: None,             format: 1,             sources: vec![expanding],             effective,         })         .expect` | [835](../../src/resources.rs#L835) | receiver-type-required |
+| `trusted_snapshot` | `tempfile::tempdir().unwrap` | [671](../../src/resources.rs#L671) | receiver-type-required |
+| `trusted_snapshot` | `tempfile::tempdir` | [671](../../src/resources.rs#L671) | external-constructor-callback-or-unresolved |
+| `shared_skill_plain_description_accepts_embedded_colon` | `super::parse_front_matter("---\nname: example\ndescription: Set up a project: scan and validate.\nreferences:\n  - guide\n---\nBody", true).unwrap` | [675](../../src/resources.rs#L675) | receiver-type-required |
+| `shared_skill_plain_description_accepts_embedded_colon` | `super::parse_front_matter` | [675](../../src/resources.rs#L675) | [profile::resources::parse_front_matter](../../src/resources.rs#L421) |
+| `source` | `path.to_owned` | [701](../../src/resources.rs#L701) | receiver-type-required |
+| `source` | `content.to_owned` | [703](../../src/resources.rs#L703) | receiver-type-required |
+| `source` | `hex_digest` | [704](../../src/resources.rs#L704) | external-constructor-callback-or-unresolved |
+| `source` | `content.as_bytes` | [704](../../src/resources.rs#L704) | receiver-type-required |
+| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `EffectiveInstructions::default` | [741](../../src/resources.rs#L741) | external-constructor-callback-or-unresolved |
+| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `trusted_snapshot` | [743](../../src/resources.rs#L743) | [profile::resources::tests::trusted_snapshot](../../src/resources.rs#L665) |
+| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `ResourceCatalog::from_snapshot(&snapshot).expect_err` | [744](../../src/resources.rs#L744) | receiver-type-required |
+| `cross_scope_skill_collision_is_explicit_instead_of_silent_precedence` | `ResourceCatalog::from_snapshot` | [744](../../src/resources.rs#L744) | external-constructor-callback-or-unresolved |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `source` | [755](../../src/resources.rs#L755) | external-constructor-callback-or-unresolved |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `EffectiveInstructions::default` | [761](../../src/resources.rs#L761) | external-constructor-callback-or-unresolved |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `effective.commands.insert` | [762](../../src/resources.rs#L762) | receiver-type-required |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `"review.md".to_owned` | [762](../../src/resources.rs#L762) | receiver-type-required |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `ResourceCatalog::from_snapshot(&snapshot).expect` | [768](../../src/resources.rs#L768) | receiver-type-required |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `ResourceCatalog::from_snapshot` | [768](../../src/resources.rs#L768) | external-constructor-callback-or-unresolved |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `catalog             .expand_command("review", "'a b' strict")             .expect` | [769](../../src/resources.rs#L769) | receiver-type-required |
+| `command_expansion_has_closed_quoting_and_escape_rules` | `catalog             .expand_command` | [769](../../src/resources.rs#L769) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `EffectiveInstructions::default` | [789](../../src/resources.rs#L789), [803](../../src/resources.rs#L803), [823](../../src/resources.rs#L823) | external-constructor-callback-or-unresolved |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `trusted_snapshot` | [791](../../src/resources.rs#L791) | [profile::resources::tests::trusted_snapshot](../../src/resources.rs#L665) |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `source` | [797](../../src/resources.rs#L797), [817](../../src/resources.rs#L817) | [profile::resources::tests::source](../../src/resources.rs#L693) |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `effective.commands.insert` | [804](../../src/resources.rs#L804), [824](../../src/resources.rs#L824) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"position.md".to_owned` | [804](../../src/resources.rs#L804) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             format: 1,             sources: vec![command],             effective,         })         .expect` | [805](../../src/resources.rs#L805) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot` | [805](../../src/resources.rs#L805), [825](../../src/resources.rs#L825) | external-constructor-callback-or-unresolved |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"$ARGUMENTS".repeat` | [816](../../src/resources.rs#L816) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `"expand.md".to_owned` | [824](../../src/resources.rs#L824) | receiver-type-required |
+| `invalid_winner_and_out_of_range_positionals_fail_closed` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             format: 1,             sources: vec![expanding],             effective,         })         .expect` | [825](../../src/resources.rs#L825) | receiver-type-required |

@@ -12,7 +12,7 @@ use serde_json::{Map, Value, json};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
-pub const FIXED_SCHEMA_REVISION: &str = "builtin-tools/schema-5";
+pub const FIXED_SCHEMA_REVISION: &str = "builtin-tools/schema-6";
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct FixedToolSchema {
@@ -1054,10 +1054,7 @@ fn context_schema() -> ObjectSchema {
             p("cursor", string()),
             p("limit", integer(Some(1), None)),
             p("query", string()),
-            p(
-                "scope",
-                enum_string(&["current_thread", "thread", "project", "all"]),
-            ),
+            p("scope", enum_string(&["current_thread", "thread", "all"])),
         ],
         &["operation", "reason"],
         vec![

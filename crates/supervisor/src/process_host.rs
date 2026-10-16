@@ -1,7 +1,6 @@
 //! Resident worker process table and the concrete Slice-9 endpoint authorities.
 
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, VecDeque};
-use std::fmt::Write as _;
 use std::fs;
 use std::io::{BufRead, BufReader, Read, Write};
 use std::os::fd::AsRawFd;
@@ -12,17 +11,14 @@ use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Condvar, Mutex, TryLockError, Weak};
 use std::time::{Duration, Instant, UNIX_EPOCH};
 
-use chrono::{DateTime, Utc};
+use chrono::Utc;
 use endpoint::{
     AUTOMATIC_TITLE_REFINE_OPERATION, AUTOMATIC_TITLE_SEED_OPERATION, AcceptedStreamFrame,
-    EndpointJournal, ManagementStore, MaterializedPrompt, MutationReceipt, NativeEndpoint,
-    Projector, SESSION_NOTICE_OPERATION, SessionCreateOperation, SessionInventoryItem,
-    SessionNotice, SessionNoticeSeverity,
+    EndpointJournal, MaterializedPrompt, MutationReceipt, NativeEndpoint, Projector,
+    SESSION_NOTICE_OPERATION, SessionInventoryItem, SessionNotice, SessionNoticeSeverity,
 };
-use engine::{
-    AdmissionLease, AdmissionPool, EnsureAction, LockFacts, TailState, classify, ensure_action_at,
-};
-use plugins::{MacOsNativeHelperVerifier, PluginStore};
+use engine::{AdmissionLease, AdmissionPool, EnsureAction, LockFacts, classify, ensure_action_at};
+
 use profile::{ConfigRepository, ConfigSnapshot, DynamicToolCatalog};
 use schema::{Block, Event, EventKind, IJsonValue, OriginTuple};
 use sha2::{Digest, Sha256};
@@ -431,8 +427,6 @@ pub struct ProductionProcessHost {
     user_agent_dir: PathBuf,
     secret_store: Arc<dyn provider::SecretStore>,
     mcp_runtime: Arc<McpRuntime>,
-    plugin_store: Option<Arc<Mutex<PluginStore<MacOsNativeHelperVerifier>>>>,
-    schedule: schedule::ScheduleAuthority,
     workers: Mutex<HashMap<String, Arc<WorkerHandle>>>,
     /// Pre-existing sessions the client has released with `sessions.recover` (DESIGN §6). A
     /// session is deferred iff it is neither admitted (created/forked/unarchived by this
@@ -474,8 +468,6 @@ pub struct ProductionProcessHost {
     projection_cache: Mutex<HashMap<String, SessionProjectionCache>>,
     sweep_lock: Mutex<()>,
     periodic_sweep_started: AtomicBool,
-    schedule_timer_started: AtomicBool,
-    schedule_failure: Mutex<Option<String>>,
     restart_failures: Mutex<HashMap<String, RestartBackoff>>,
     draining: AtomicBool,
     #[cfg(test)]
@@ -491,8 +483,6 @@ struct SessionProjectionCache {
 struct WorkerHandle {
     /// Held for the complete process lifetime so a workspace relocation can
     /// acquire the matching exclusive lock without a check-then-spawn race.
-    _workspace_quiescence: store::NamedLock,
-    _folder_quiescence: Vec<store::NamedLock>,
     _session_scope_quiescence: store::NamedLock,
     stdin: Mutex<ChildStdin>,
     child: Mutex<Child>,
@@ -506,7 +496,6 @@ struct WorkerHandle {
     credential_broker: Mutex<Option<std::thread::JoinHandle<Result<(), String>>>>,
     credential_bindings: Mutex<Option<provider::ResolvedCredentialBindings>>,
     config_snapshot: ConfigSnapshot,
-    detached_scope: bool,
     dynamic_catalog: DynamicToolCatalog,
     dynamic_authority: Option<Arc<dyn DynamicSupervisorAuthority>>,
     tool_cancellation: tools::CancellationToken,
@@ -789,27 +778,6 @@ impl ProductionProcessHost {
         user_agent_dir: impl Into<PathBuf>,
         secret_store: Arc<dyn provider::SecretStore>,
     ) -> Result<Arc<Self>, DaemonError> {
-        Self::open_with_secret_authorities(
-            root,
-            worker_binary,
-            build,
-            user_agent_dir,
-            secret_store,
-            None,
-        )
-    }
-
-    /// `secret_mutation` is the write path for OAuth grants the Kernel mints
-    /// (secret-store §OAuth secret mutation); without it `oauth` MCP
-    /// bindings carry platform-installed tokens only.
-    pub fn open_with_secret_authorities(
-        root: impl AsRef<Path>,
-        worker_binary: impl Into<PathBuf>,
-        build: impl Into<String>,
-        user_agent_dir: impl Into<PathBuf>,
-        secret_store: Arc<dyn provider::SecretStore>,
-        secret_mutation: Option<Arc<dyn provider::SecretMutationAuthority>>,
-    ) -> Result<Arc<Self>, DaemonError> {
         let root = root.as_ref().to_path_buf();
         let worker_binary = worker_binary.into();
         validate_worker_binary(&worker_binary)?;
@@ -817,18 +785,11 @@ impl ProductionProcessHost {
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
         let endpoint =
             NativeEndpoint::open(&root).map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        let schedule = schedule::ScheduleAuthority::open(&root)
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let build = build.into();
-        let (mcp_runtime, plugin_store) = McpRuntime::open_production_authorities_with_mutation(
-            root.join("config"),
-            root.join("plugins"),
-            &build,
-            Arc::clone(&secret_store),
-            secret_mutation,
-        )
-        .map_err(|error| DaemonError::required_broker(error.to_string()))?;
-        let mcp_runtime = Arc::new(mcp_runtime);
+        let mcp_runtime = Arc::new(
+            McpRuntime::new(Arc::clone(&secret_store))
+                .map_err(|error| DaemonError::required_broker(error.to_string()))?,
+        );
         let root_for_catalog = root.clone();
         let threads_store = ThreadStore::open(&root_for_catalog).map_err(DaemonError::store)?;
         let host = Arc::new_cyclic(|weak| Self {
@@ -841,8 +802,6 @@ impl ProductionProcessHost {
             user_agent_dir: user_agent_dir.into(),
             secret_store,
             mcp_runtime,
-            plugin_store,
-            schedule,
             workers: Mutex::new(HashMap::new()),
             released: Mutex::new(HashSet::new()),
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
@@ -877,8 +836,6 @@ impl ProductionProcessHost {
             projection_cache: Mutex::new(HashMap::new()),
             sweep_lock: Mutex::new(()),
             periodic_sweep_started: AtomicBool::new(false),
-            schedule_timer_started: AtomicBool::new(false),
-            schedule_failure: Mutex::new(None),
             restart_failures: Mutex::new(HashMap::new()),
             draining: AtomicBool::new(false),
             #[cfg(test)]
@@ -933,168 +890,6 @@ impl ProductionProcessHost {
         ))
     }
 
-    /// Validates a replacement workspace-local policy against the current
-    /// immutable instruction ceiling and every currently installed tool
-    /// catalog. No worker is started and no config bytes are written.
-    ///
-    /// Returns the policy-named tools that are unavailable because their
-    /// healthy MCP server refused to project them (per tool; see
-    /// mcp-runtime). Such a name is neither an unknown tool nor an unavailable
-    /// server: the policy is accepted, the tool is not callable and not in the
-    /// catalog, and the caller reports it with its reason.
-    pub fn validate_workspace_policy_candidate(
-        &self,
-        workspace_id: &str,
-        policy: &profile::WorkspacePolicy,
-    ) -> Result<Vec<crate::mcp_runtime::McpRefusedTool>, PolicyCandidateError> {
-        use PolicyCandidateCause as Cause;
-        let mut config = self
-            .repository
-            .resolve(workspace_id)
-            .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
-        config.workspace.policy = policy.clone();
-        let instruction = profile::workspace_instructions(
-            &self.repository,
-            workspace_id,
-            &self.user_agent_dir,
-            &config,
-        )
-        .and_then(|resolver| resolver.capture())
-        .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
-        let effective = instruction.meet_workspace_policy(policy);
-        if effective.network != policy.network
-            || effective.allowed_tools.iter().collect::<BTreeSet<_>>()
-                != policy.allowed_tools.iter().collect::<BTreeSet<_>>()
-            || effective.writable_roots.iter().collect::<BTreeSet<_>>()
-                != policy.writable_roots.iter().collect::<BTreeSet<_>>()
-            || effective.max_wall_seconds != policy.max_wall_seconds
-        {
-            return Err(PolicyCandidateError::new(
-                Cause::AuthorityCeiling,
-                "workspace policy exceeds the immutable instruction ceiling",
-            ));
-        }
-
-        let requested = policy
-            .allowed_tools
-            .iter()
-            .cloned()
-            .collect::<BTreeSet<_>>();
-        let mut available = tools::BuiltinManifest::compiled()
-            .tools
-            .into_iter()
-            .map(|tool| tool.name)
-            .collect::<BTreeSet<_>>();
-        let mut discovery_config = config.clone();
-        discovery_config.workspace.policy.allowed_tools.clear();
-        let bindings = resolve_worker_launch_bindings(
-            &discovery_config,
-            &instruction,
-            None,
-            Vec::new(),
-            Vec::new(),
-        )
-        .map_err(|error| PolicyCandidateError::new(Cause::AuthorityCeiling, error))?;
-        available.extend(
-            bindings
-                .dynamic_catalog
-                .tools
-                .into_iter()
-                .map(|tool| tool.name),
-        );
-        let mcp = self
-            .mcp_runtime
-            .prepare_for_config(&config)
-            .map_err(|error| PolicyCandidateError::new(Cause::CatalogUnavailable, error))?;
-        if mcp_failure_is_required(&mcp.failures, &policy.allowed_tools) {
-            return Err(PolicyCandidateError::new(
-                Cause::McpServerUnavailable,
-                required_mcp_failure_reason(&mcp.failures, &policy.allowed_tools),
-            ));
-        }
-        available.extend(mcp.catalog.tools.iter().map(|tool| tool.name.clone()));
-        // A refused tool is excused only by its exact projected name on a
-        // server that otherwise prepared; every other absent name is still
-        // outside the installed catalog.
-        let unavailable = mcp.refused_allowed_tools(&policy.allowed_tools);
-        let excused = unavailable
-            .iter()
-            .filter_map(|refused| refused.refusal.name.clone())
-            .collect::<BTreeSet<_>>();
-        let unknown = requested
-            .iter()
-            .filter(|name| !available.contains(*name) && !excused.contains(*name))
-            .collect::<Vec<_>>();
-        if !unknown.is_empty() {
-            return Err(PolicyCandidateError::new(
-                Cause::ToolNotInstalled,
-                format!(
-                    "workspace policy names a tool outside the installed catalog: {}",
-                    bounded_name_list(unknown.iter().map(|name| name.as_str()))
-                ),
-            ));
-        }
-        Ok(unavailable)
-    }
-
-    /// Applies the privilege-reduction half of config publication. A relaxed
-    /// policy affects only later runs; a tightened effective snapshot stops
-    /// every live process in that workspace so no old authority survives the
-    /// successful endpoint response.
-    pub fn workspace_policy_published(
-        &self,
-        workspace_id: &str,
-        previous: &ConfigSnapshot,
-    ) -> Result<(), DaemonError> {
-        let current = self
-            .repository
-            .resolve(workspace_id)
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        if current.requires_respawn_from(previous) {
-            let workers = self
-                .workers
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                .values()
-                .filter(|worker| {
-                    !worker.detached_scope && worker.config_snapshot.workspace.id == workspace_id
-                })
-                .cloned()
-                .collect::<Vec<_>>();
-            for worker in workers {
-                terminate_worker(&worker);
-            }
-        }
-        Ok(())
-    }
-
-    /// Conservative recovery hook for a policy intent whose durable replace
-    /// is visible but whose post-publication receipt was interrupted. The old
-    /// snapshot is no longer reconstructible, so all live workers in the
-    /// workspace are stopped; later ensure-running uses the new snapshot.
-    pub fn workspace_policy_recovered(&self, workspace_id: &str) {
-        let workers = self
-            .workers
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .values()
-            .filter(|worker| {
-                !worker.detached_scope && worker.config_snapshot.workspace.id == workspace_id
-            })
-            .cloned()
-            .collect::<Vec<_>>();
-        for worker in workers {
-            terminate_worker(&worker);
-        }
-    }
-
-    #[must_use]
-    pub(crate) fn plugin_store(
-        &self,
-    ) -> Option<Arc<Mutex<PluginStore<MacOsNativeHelperVerifier>>>> {
-        self.plugin_store.clone()
-    }
-
     pub(crate) fn client_file_changes(
         &self,
         session_id: &str,
@@ -1109,7 +904,7 @@ impl ProductionProcessHost {
         let resolve = move || {
             profile::SessionScope::locate(&root, &session)
                 .and_then(|scope| scope.config(&repository))
-                .map(|config| config.workspace)
+                .map(|config| config.execution)
                 .map_err(|error| error.to_string())
         };
         let initial = resolve().map_err(DaemonError::invalid_config)?;
@@ -1139,7 +934,7 @@ impl ProductionProcessHost {
         let config = scope
             .config(&self.repository)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let (root, relative) = scoped_client_file_path(&config.workspace, path)?;
+        let (root, relative) = scoped_client_file_path(&config.execution, path)?;
         self.file_observations
             .register(session_id, &root, &relative)
             .map_err(DaemonError::invalid_config)?;
@@ -1172,21 +967,14 @@ impl ProductionProcessHost {
     /// Canonical workspace roots for a session, primary (selected) root first.
     /// Resolved from the durable session binding exactly like `client_file_page`.
     pub fn client_session_roots(&self, session_id: &str) -> Result<Vec<PathBuf>, DaemonError> {
-        let scope = self.session_scope(session_id)?;
-        let config = scope
+        let config = self
+            .session_scope(session_id)?
             .config(&self.repository)
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let workspace = &config.workspace;
-        let selected = workspace.selected_cwd.as_deref();
-        selected
-            .into_iter()
-            .chain(
-                workspace
-                    .cwd
-                    .iter()
-                    .map(String::as_str)
-                    .filter(|root| Some(*root) != selected),
-            )
+            .map_err(|e| DaemonError::invalid_config(e.to_string()))?;
+        config
+            .execution
+            .cwd
+            .iter()
             .map(|root| Path::new(root).canonicalize().map_err(DaemonError::io))
             .collect()
     }
@@ -1208,395 +996,29 @@ impl ProductionProcessHost {
             .map_err(|error| DaemonError::invalid_config(error.to_string()))
     }
 
-    pub(crate) fn client_scope_config(
-        &self,
-        workspace: &str,
-        session: Option<&str>,
-    ) -> Result<profile::ConfigSnapshot, DaemonError> {
-        if let Some(session) = session {
-            let scope = self.session_scope(session)?;
-            if scope.workspace_id() != workspace {
-                return Err(DaemonError::invalid_config(
-                    "session belongs to another workspace",
-                ));
-            }
-            scope
-                .config(&self.repository)
-                .map_err(|error| DaemonError::invalid_config(error.to_string()))
-        } else {
-            self.repository
-                .resolve(workspace)
-                .map_err(|error| DaemonError::invalid_config(error.to_string()))
-        }
-    }
-    pub(crate) fn client_scope_resources(
-        &self,
-        workspace: &str,
-        session: Option<&str>,
-    ) -> Result<profile::ResourceCatalog, DaemonError> {
-        let config = self.client_scope_config(workspace, session)?;
-        let resolver = match session {
-            Some(session) => self.session_scope(session)?.instructions(
-                &self.repository,
-                &self.user_agent_dir,
-                &config,
-            ),
-            None => profile::workspace_instructions(
-                &self.repository,
-                workspace,
-                &self.user_agent_dir,
-                &config,
-            ),
-        };
-        let snapshot = resolver
-            .and_then(|resolver| resolver.capture())
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        profile::ResourceCatalog::from_snapshot(&snapshot)
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))
-    }
-
     /// Resolves the same immutable dynamic catalog used by a newly launched
     /// worker. Client catalog reads therefore cannot advertise a row that the
     /// launch path would omit, nor retain a revoked MCP generation.
     pub(crate) fn client_tool_catalog(
         &self,
-        workspace_id: &str,
-        session_id: Option<&str>,
+        session: &str,
     ) -> Result<DynamicToolCatalog, DaemonError> {
-        // A session's catalog comes from its own genesis scope; a caller's
-        // `workspace_id` that disagrees with that genesis is refused.
-        let scope = session_id
-            .map(|session_id| self.session_scope(session_id))
-            .transpose()?;
-        if scope
-            .as_ref()
-            .is_some_and(|scope| scope.workspace_id() != workspace_id)
-        {
-            return Err(DaemonError::invalid_config(
-                "session belongs to another workspace",
-            ));
-        }
-        let config = match &scope {
-            Some(scope) => scope.config(&self.repository),
-            None => self.repository.resolve(workspace_id),
-        }
-        .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let resolver = match &scope {
-            Some(scope) => scope.instructions(&self.repository, &self.user_agent_dir, &config),
-            None => profile::workspace_instructions(
-                &self.repository,
-                workspace_id,
-                &self.user_agent_dir,
-                &config,
-            ),
-        };
-        let instruction = resolver
-            .and_then(|resolver| resolver.capture())
-            .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
+        let scope = self.session_scope(session)?;
+        let config = scope
+            .config(&self.repository)
+            .map_err(|e| DaemonError::invalid_config(e.to_string()))?;
+        let instruction = scope
+            .instructions(&self.repository, &self.user_agent_dir, &config)
+            .and_then(|r| r.capture())
+            .map_err(|e| DaemonError::invalid_config(e.to_string()))?;
         let mcp = self
             .mcp_runtime
-            .prepare_for_config(&config)
-            .map_err(|error| DaemonError::required_broker(error.to_string()))?;
-        if mcp_failure_is_required(&mcp.failures, &config.workspace.policy.allowed_tools) {
-            return Err(DaemonError::required_broker(
-                "workspace policy requires an unavailable MCP server",
-            ));
-        }
-        let unavailable = mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
-        let binding = resolve_worker_launch_bindings(
-            &config,
-            &instruction,
-            None,
-            mcp.catalog.tools,
-            unavailable,
-        )
-        .map_err(|error| DaemonError::required_broker(error.to_string()))?;
-        Ok(binding.dynamic_catalog)
-    }
-
-    /// Internal Slice-14C authority. Public schedule DTOs and capability
-    /// negotiation remain owned by Slice 14F.
-    #[must_use]
-    pub fn schedule_authority(&self) -> &schedule::ScheduleAuthority {
-        &self.schedule
-    }
-
-    /// Starts the sole host-local schedule timer after boot recovery. The
-    /// method is idempotent; Slice 14F calls it after saving the first enabled
-    /// definition if startup found no work.
-    pub fn start_schedule_timer(&self) -> Result<(), DaemonError> {
-        if self.schedule_timer_started.swap(true, Ordering::AcqRel) {
-            return Ok(());
-        }
-        *self
-            .schedule_failure
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
-        if let Err(error) = self.drive_schedule(true, Utc::now()) {
-            self.schedule_timer_started.store(false, Ordering::Release);
-            return Err(error);
-        }
-        if !self.schedule_has_work()? {
-            self.schedule_timer_started.store(false, Ordering::Release);
-            return Ok(());
-        }
-        let host = self.self_weak.clone();
-        std::thread::spawn(move || {
-            while let Some(host) = host.upgrade() {
-                if host.draining.load(Ordering::Acquire) {
-                    host.schedule_timer_started.store(false, Ordering::Release);
-                    return;
-                }
-                std::thread::sleep(Duration::from_secs(1));
-                if host.draining.load(Ordering::Acquire) {
-                    host.schedule_timer_started.store(false, Ordering::Release);
-                    return;
-                }
-                match host.drive_schedule(false, Utc::now()) {
-                    Ok(()) => {
-                        *host
-                            .schedule_failure
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
-                    }
-                    Err(error) => {
-                        // A durable unbound claim remains runnable work. Keep
-                        // the sole bounded timer alive so a transient launch
-                        // or projection failure cannot strand it forever;
-                        // readiness still exposes the latest failure.
-                        *host
-                            .schedule_failure
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                            Some(error.to_string());
-                        continue;
-                    }
-                }
-                match host.schedule_has_work() {
-                    Ok(true) => {}
-                    Ok(false) => {
-                        host.schedule_timer_started.store(false, Ordering::Release);
-                        // Close the save-vs-idle-exit race. A save that landed
-                        // before the false store is now visible and this
-                        // thread retakes ownership; a save after it observes
-                        // false and starts its own timer.
-                        match host.schedule_has_work() {
-                            Ok(true)
-                                if host
-                                    .schedule_timer_started
-                                    .compare_exchange(
-                                        false,
-                                        true,
-                                        Ordering::AcqRel,
-                                        Ordering::Acquire,
-                                    )
-                                    .is_ok() =>
-                            {
-                                continue;
-                            }
-                            Ok(_) => {}
-                            Err(error) => {
-                                *host
-                                    .schedule_failure
-                                    .lock()
-                                    .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                                    Some(error.to_string());
-                            }
-                        }
-                        return;
-                    }
-                    Err(error) => {
-                        *host
-                            .schedule_failure
-                            .lock()
-                            .unwrap_or_else(std::sync::PoisonError::into_inner) =
-                            Some(error.to_string());
-                        host.schedule_timer_started.store(false, Ordering::Release);
-                        return;
-                    }
-                }
-            }
-        });
-        Ok(())
-    }
-
-    #[must_use]
-    pub fn schedule_failure(&self) -> Option<String> {
-        self.schedule_failure
-            .lock()
-            .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .clone()
-    }
-
-    fn schedule_has_work(&self) -> Result<bool, DaemonError> {
-        self.schedule
-            .list(None)
-            .map(|tasks| {
-                tasks
-                    .into_iter()
-                    .any(|task| task.definition.enabled || task.last_status.is_active())
-            })
-            .map_err(|error| DaemonError::corrupt(error.to_string()))
-    }
-
-    fn drive_schedule(&self, startup: bool, now: DateTime<Utc>) -> Result<(), DaemonError> {
-        self.reconcile_schedule_statuses(now)?;
-        let claims = if startup {
-            self.schedule.recover(now)
-        } else {
-            self.schedule.poll_due(now)
-        }
-        .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        for claim in claims {
-            self.execute_schedule_claim(&claim, now)?;
-        }
-        Ok(())
-    }
-
-    fn execute_schedule_claim(
-        &self,
-        claim: &schedule::LaunchClaim,
-        now: DateTime<Utc>,
-    ) -> Result<(), DaemonError> {
-        // A claim may be driven once immediately and again by startup/timer
-        // recovery. Its session-create intent must remain byte-identical
-        // across those runs; wall-clock recovery time is not durable identity.
-        let timestamp = DateTime::parse_from_rfc3339(&claim.scheduled_for)
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?
-            .with_timezone(&Utc)
-            .to_rfc3339_opts(chrono::SecondsFormat::Millis, true);
-        let request_bytes = serde_json_canonicalizer::to_vec(claim)
-            .map_err(|error| DaemonError::protocol(error.to_string()))?;
-        let request_sha256 = Sha256::digest(&request_bytes).iter().fold(
-            String::with_capacity(64),
-            |mut output, byte| {
-                write!(output, "{byte:02x}").expect("writing to String cannot fail");
-                output
-            },
-        );
-        let management = ManagementStore::open_light_at(&self.root, &timestamp)
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        let session_id = management
-            .create_session(SessionCreateOperation {
-                environment: None,
-                rpc_id: &claim.claim_id,
-                request_sha256: &request_sha256,
-                requested_session_id: None,
-                workspace_id: Some(&claim.definition.workspace_id),
-                cwd: None,
-                identity_profile: None,
-                preset: None,
-                preset_mcp: None,
-                preset_models: None,
-                user_agent_dir: &self.user_agent_dir,
-                started_at: &timestamp,
-                principal: "schedule",
-            })
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        let origin = OriginTuple {
-            principal: "schedule".to_owned(),
-            client: "schedule".to_owned(),
-            target: session_id.clone(),
-            op: "session.prompt".to_owned(),
-            key: claim.claim_id.clone(),
-        };
-        let receipt = SessionDeliveryAuthority::prompt(
-            self,
-            &session_id,
-            &timestamp,
-            &origin,
-            &MaterializedPrompt {
-                blocks: vec![Block::Text {
-                    text: claim.definition.prompt.clone(),
-                }],
-                attachments: Vec::new(),
-                files: Vec::new(),
-            },
-            false,
-        )
-        .map_err(|error| DaemonError::protocol(format!("{}: {}", error.code, error.message)))?;
-        self.schedule
-            .bind_launch(
-                &claim.task_id,
-                &claim.claim_id,
-                &session_id,
-                receipt.seq,
-                now,
-            )
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        Ok(())
-    }
-
-    fn reconcile_schedule_statuses(&self, now: DateTime<Utc>) -> Result<(), DaemonError> {
-        let tasks = self
-            .schedule
-            .list(None)
-            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-        for task in tasks.into_iter().filter(|task| {
-            matches!(
-                task.last_status,
-                schedule::RunStatus::Running | schedule::RunStatus::Parked
-            )
-        }) {
-            let (Some(claim_id), Some(session_id)) = (
-                task.active_claim_id.as_deref(),
-                task.last_session_id.as_deref(),
-            ) else {
-                return Err(DaemonError::corrupt(
-                    "active bound schedule is missing claim/session identity",
-                ));
-            };
-            let active = self.root.join("threads").join(session_id);
-            let archived = self.root.join("archive").join(session_id);
-            let folder = if active.is_dir() { active } else { archived };
-            let ledger = folder.join("main.jsonl");
-            let bytes = fs::read(&ledger).map_err(DaemonError::io)?;
-            let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
-            let projection = scan
-                .projection
-                .ok_or_else(|| DaemonError::corrupt("scheduled session has no valid projection"))?;
-            let lock_facts = if self.live_worker(session_id).is_some()
-                || probe_line_lock(&ledger)? == LineLockState::Busy
-            {
-                LockFacts::OTHER
-            } else {
-                LockFacts::FREE
-            };
-            let tail = classify(&projection.lifecycle, lock_facts);
-            let (status, error) = match tail {
-                TailState::ParkedHold => (schedule::RunStatus::Parked, None),
-                TailState::Settled => {
-                    let settle = projection
-                        .events
-                        .iter()
-                        .rev()
-                        .find(|event| matches!(event.kind(), EventKind::Settle))
-                        .ok_or_else(|| {
-                            DaemonError::corrupt("scheduled session settled without settle")
-                        })?;
-                    match settle.string_field("outcome") {
-                        Some("completed") => (schedule::RunStatus::Completed, None),
-                        Some("interrupted") => (schedule::RunStatus::Interrupted, None),
-                        Some("error") => (
-                            schedule::RunStatus::Failed,
-                            settle.string_field("reason").map(str::to_owned),
-                        ),
-                        _ => {
-                            return Err(DaemonError::corrupt(
-                                "scheduled session has unknown settle outcome",
-                            ));
-                        }
-                    }
-                }
-                _ => (schedule::RunStatus::Running, None),
-            };
-            if task.last_status != status || task.last_error != error {
-                self.schedule
-                    .record_status(&task.definition.id, claim_id, status, error, now)
-                    .map_err(|error| DaemonError::corrupt(error.to_string()))?;
-            }
-        }
-        Ok(())
+            .prepare_session(scope.session_id(), &scope.execution().mcp)
+            .map_err(|e| DaemonError::required_broker(e.to_string()))?;
+        let unavailable = mcp.unavailable_tools(&config.execution.policy.allowed_tools);
+        resolve_worker_launch_bindings(&config, &instruction, None, mcp.catalog.tools, unavailable)
+            .map(|b| b.dynamic_catalog)
+            .map_err(|e| DaemonError::required_broker(e.to_string()))
     }
 
     /// Starts the work that touches threads, after the ready line (ADDENDUM-01 §1.4). One
@@ -1627,9 +1049,6 @@ impl ProductionProcessHost {
         self.cleanup_stale_ephemeral();
         if self.draining.load(Ordering::Acquire) {
             return;
-        }
-        if let Err(error) = self.start_schedule_timer() {
-            eprintln!("process-host-schedule-start-failed: {error}");
         }
         crate::boot_trace::phase("post_ready_timers");
         self.run_upgrade_pass();
@@ -2560,24 +1979,8 @@ impl ProductionProcessHost {
             &format!("session:{session_id}"),
         ))
         .map_err(DaemonError::store)?;
-        let (workspace_id, folder_binding) = session_workspace_binding(&ledger)?;
-        let workspace_quiescence =
-            store::NamedLock::shared(workspace_quiescence_lock_path(&self.root, &workspace_id))
-                .map_err(DaemonError::store)?;
         let detached_scope = profile::SessionScope::for_ledger(&ledger)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let mut folder_quiescence = Vec::new();
-        if let Some(config) = detached_scope.session_config() {
-            for id in config.folder_refs.values().collect::<BTreeSet<_>>() {
-                folder_quiescence.push(
-                    store::NamedLock::shared(workspace_quiescence_lock_path(
-                        &self.root,
-                        &format!("folder:{id}"),
-                    ))
-                    .map_err(DaemonError::store)?,
-                );
-            }
-        }
         let mcp_routes = Arc::new(Mutex::new(
             None::<(DynamicToolCatalog, Arc<dyn DynamicSupervisorAuthority>)>,
         ));
@@ -2593,6 +1996,7 @@ impl ProductionProcessHost {
         let launch_notices = Arc::new(Mutex::new(Vec::<SessionNotice>::new()));
         let launch_notices_capture = Arc::clone(&launch_notices);
         let preset_skills = genesis_preset_skills(&ledger);
+        let execution = detached_scope.execution().clone();
         let mut launch = launch_profiled_worker_with_secret_store_and_binding_resolver(
             &self.repository,
             &ProfiledWorkerLaunchSpec {
@@ -2601,39 +2005,21 @@ impl ProductionProcessHost {
                 timestamp,
                 run_id: run_id.clone(),
                 binary_attribution: self.build.clone(),
-                workspace_id,
-                folder_binding,
+
                 user_agent_dir: self.user_agent_dir.clone(),
             },
             self.secret_store.as_ref(),
             move |config, instruction| {
-                // MCP tools join the effective catalog before the policy is
-                // validated against it: a policy may allow-list an MCP tool.
                 let mcp = mcp_runtime
-                    .prepare_for_config(config)
+                    .prepare_session(&config.execution.session_id, &execution.mcp)
                     .map_err(|error| error.to_string())?;
-                if mcp_failure_is_required(&mcp.failures, &config.workspace.policy.allowed_tools) {
-                    return Err("workspace policy requires an unavailable MCP server".to_owned());
-                }
-                // A degraded MCP catalog still launches; the session learns
-                // what it is missing through a notice rather than a dead turn.
-                let mut notices = mcp_launch_notices(
-                    mcp.registry_failure.as_deref(),
-                    &mcp.failures,
-                    &mcp.tool_refusals,
-                    &config.workspace.policy.allowed_tools,
-                );
-                notices.extend(missing_preset_skill_notice(
-                    preset_skills.as_deref(),
-                    instruction,
-                ));
                 *launch_notices_capture
                     .lock()
-                    .unwrap_or_else(std::sync::PoisonError::into_inner) = notices;
-                let unavailable =
-                    mcp.refused_allowed_tool_names(&config.workspace.policy.allowed_tools);
-                // The bound goal is the session's durable goals.v1 record id
-                // (never a session, ledger, or process id).
+                    .unwrap_or_else(std::sync::PoisonError::into_inner) =
+                    missing_preset_skill_notice(preset_skills.as_deref(), instruction)
+                        .into_iter()
+                        .collect();
+                let unavailable = mcp.unavailable_tools(&config.execution.policy.allowed_tools);
                 let bindings = resolve_worker_launch_bindings(
                     config,
                     instruction,
@@ -2750,8 +2136,6 @@ impl ProductionProcessHost {
                 |(catalog, authority)| (catalog, Some(authority)),
             );
         let handle = Arc::new(WorkerHandle {
-            _workspace_quiescence: workspace_quiescence,
-            _folder_quiescence: folder_quiescence,
             _session_scope_quiescence: session_scope_quiescence,
             stdin: Mutex::new(stdin),
             child: Mutex::new(child),
@@ -2764,7 +2148,6 @@ impl ProductionProcessHost {
             credential_control: Mutex::new(credential_control),
             credential_broker: Mutex::new(credential_broker),
             credential_bindings: Mutex::new(launch.credential_bindings.take()),
-            detached_scope: detached_scope.is_detached(),
             config_snapshot: launch.config_snapshot,
             dynamic_catalog,
             dynamic_authority,
@@ -2799,13 +2182,12 @@ impl ProductionProcessHost {
         Ok(Sha256::digest(bytes).into())
     }
 
-    fn refresh_limits(&self, ledger: &Path) -> Result<(), DaemonError> {
-        let workspace = workspace_id(ledger)?;
-        let snapshot = self
+    fn refresh_limits(&self, _ledger: &Path) -> Result<(), DaemonError> {
+        let settings = self
             .repository
-            .resolve(&workspace)
+            .settings()
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let limits = snapshot.settings.limits.as_ref();
+        let limits = settings.limits.as_ref();
         self.max_workers.store(
             limits.and_then(|limits| limits.max_workers).unwrap_or(1),
             Ordering::Release,
@@ -4546,12 +3928,6 @@ impl ProductionProcessHost {
     }
 }
 
-/// The notices a degraded MCP launch owes the session: one for an unreadable
-/// registry (no registry-configured server joined the catalog) and one per
-/// server that could not be prepared. Nothing when the catalog is complete.
-/// Most refused tools one `mcp_tool` notice names.
-const MAX_NOTICE_TOOLS: usize = 8;
-
 /// The skills a session preset selects, read from the ledger's genesis.
 fn genesis_preset_skills(ledger: &Path) -> Option<Vec<String>> {
     let genesis = store::read_genesis(ledger).ok()??;
@@ -4585,97 +3961,19 @@ fn missing_preset_skill_notice(
     })
 }
 
-fn mcp_launch_notices(
-    registry_failure: Option<&str>,
-    failures: &[crate::mcp_runtime::McpServerFailure],
-    tool_refusals: &[crate::mcp_runtime::McpRefusedTool],
-    allowed_tools: &[String],
-) -> Vec<SessionNotice> {
-    let mut notices = Vec::new();
-    if let Some(message) = registry_failure {
-        notices.push(SessionNotice {
-            severity: SessionNoticeSeverity::Warning,
-            classification: "mcp_registry".to_owned(),
-            operation: "worker-launch".to_owned(),
-            message: format!("MCP servers were skipped for this run: {message}"),
-        });
-    }
-    for failure in failures {
-        let reason = failure.detail.as_deref().unwrap_or(failure.code);
-        notices.push(SessionNotice {
-            severity: SessionNoticeSeverity::Warning,
-            classification: "mcp_server".to_owned(),
-            operation: "worker-launch".to_owned(),
-            message: format!(
-                "MCP server {} was skipped for this run: {reason}",
-                failure.server.name
-            ),
-        });
-    }
-    // One notice per healthy server that skipped tools: the server stays
-    // available, the notice names each skipped tool, where in its schema and
-    // why. At most `MAX_NOTICE_TOOLS` are listed, those the workspace policy
-    // names first; the rest is counted.
-    let mut servers = BTreeMap::<&mcp::McpServerReference, Vec<&mcp::McpToolRefusal>>::new();
-    for refused in tool_refusals {
-        servers
-            .entry(&refused.server)
-            .or_default()
-            .push(&refused.refusal);
-    }
-    for (server, mut refusals) in servers {
-        refusals.sort_by_key(|refusal| {
-            !refusal
-                .name
-                .as_ref()
-                .is_some_and(|name| allowed_tools.contains(name))
-        });
-        let listed = refusals
-            .iter()
-            .take(MAX_NOTICE_TOOLS)
-            .map(|refusal| {
-                let location = refusal
-                    .pointer
-                    .as_deref()
-                    .map(|pointer| format!(" at {pointer}"))
-                    .unwrap_or_default();
-                format!("{}{location}: {}", refusal.tool, refusal.reason)
-            })
-            .collect::<Vec<_>>()
-            .join("; ");
-        let omitted = refusals.len().saturating_sub(MAX_NOTICE_TOOLS);
-        let tail = if omitted == 0 {
-            String::new()
-        } else {
-            format!("; and {omitted} more")
-        };
-        notices.push(SessionNotice {
-            severity: SessionNoticeSeverity::Warning,
-            classification: "mcp_tool".to_owned(),
-            operation: "worker-launch".to_owned(),
-            message: format!(
-                "MCP server {} is available but {} of its tools were skipped for this run: {listed}{tail}",
-                server.name,
-                refusals.len()
-            ),
-        });
-    }
-    notices
-}
-
 fn frozen_tool_launch_policy(
     storage_root: &Path,
     config: &ConfigSnapshot,
     instruction: &profile::InstructionSnapshot,
 ) -> Result<tools::JobLaunchPolicy, DaemonError> {
-    let effective = instruction.meet_workspace_policy(&config.workspace.policy);
+    let effective = instruction.meet_workspace_policy(&config.execution.policy);
     let execution_cwd = config
         .execution_cwd()
         .map(str::to_owned)
         .ok_or_else(|| DaemonError::invalid_config("workspace has no execution cwd"))?;
     let sandbox = tools::SandboxPolicy {
         format: 1,
-        read_roots: config.workspace.cwd.clone(),
+        read_roots: config.execution.cwd.clone(),
         write_roots: Vec::new(),
         network: if effective.network {
             tools::NetworkPolicy::All
@@ -4743,10 +4041,10 @@ fn private_validator_launch_policy(
 ) -> Result<tools::JobLaunchPolicy, DaemonError> {
     let scratch = scratch.to_string_lossy().into_owned();
     let mut read_roots = vec![scratch.clone(), snapshot.to_string_lossy().into_owned()];
-    read_roots.extend(config.workspace.cwd.iter().cloned());
+    read_roots.extend(config.execution.cwd.iter().cloned());
     read_roots.sort();
     read_roots.dedup();
-    let effective = instruction.meet_workspace_policy(&config.workspace.policy);
+    let effective = instruction.meet_workspace_policy(&config.execution.policy);
     let sandbox = tools::SandboxPolicy {
         format: 1,
         read_roots,
@@ -4780,110 +4078,6 @@ fn web_search_scope_ready(
             && scope.endpoint_origin == origin
             && scope.purpose == "web_search"
     })
-}
-
-fn mcp_failure_is_required(
-    failures: &[crate::mcp_runtime::McpServerFailure],
-    allowed_tools: &[String],
-) -> bool {
-    failures.iter().any(|failure| {
-        let marker = mcp::project_name(&failure.server.name, "required_marker")
-            .expect("validated MCP server names are nonempty");
-        let prefix = marker
-            .strip_suffix("required_marker")
-            .expect("static marker remains unescaped");
-        allowed_tools.iter().any(|tool| tool.starts_with(prefix))
-    })
-}
-
-/// The reason text for a policy that names an unavailable MCP server: which
-/// servers, and each one's stable failure code.
-fn required_mcp_failure_reason(
-    failures: &[crate::mcp_runtime::McpServerFailure],
-    allowed_tools: &[String],
-) -> String {
-    let required = failures
-        .iter()
-        .filter(|failure| mcp_failure_is_required(std::slice::from_ref(failure), allowed_tools))
-        .map(|failure| format!("{} ({})", failure.server.name, failure.code))
-        .collect::<Vec<_>>();
-    format!(
-        "workspace policy requires an unavailable MCP server: {}",
-        bounded_name_list(required.iter().map(String::as_str))
-    )
-}
-
-/// At most eight comma-separated names, each cut to 128 bytes, then a count.
-fn bounded_name_list<'a>(names: impl Iterator<Item = &'a str>) -> String {
-    const LISTED: usize = 8;
-    let names = names.collect::<Vec<_>>();
-    let mut text = names
-        .iter()
-        .take(LISTED)
-        .map(|name| {
-            let mut end = name.len().min(128);
-            while !name.is_char_boundary(end) {
-                end -= 1;
-            }
-            name[..end].to_owned()
-        })
-        .collect::<Vec<_>>()
-        .join(", ");
-    if names.len() > LISTED {
-        text.push_str(&format!(" and {} more", names.len() - LISTED));
-    }
-    text
-}
-
-/// Why `validate_workspace_policy_candidate` refused a policy. The cause is
-/// stable and machine-readable; the reason is the precise human sentence.
-#[derive(Debug)]
-pub struct PolicyCandidateError {
-    pub cause: PolicyCandidateCause,
-    reason: String,
-}
-
-impl PolicyCandidateError {
-    fn new(cause: PolicyCandidateCause, reason: impl ToString) -> Self {
-        Self {
-            cause,
-            reason: reason.to_string(),
-        }
-    }
-}
-
-impl std::fmt::Display for PolicyCandidateError {
-    fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        formatter.write_str(&self.reason)
-    }
-}
-
-impl std::error::Error for PolicyCandidateError {}
-
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum PolicyCandidateCause {
-    /// The policy exceeds a ceiling: the immutable instruction ceiling, or a
-    /// limit the resolved configuration enforces (a writable root outside
-    /// every workspace folder).
-    AuthorityCeiling,
-    /// The policy names a tool that is in no installed catalog.
-    ToolNotInstalled,
-    /// The policy names a tool of an MCP server that is not available.
-    McpServerUnavailable,
-    /// The catalogs needed to judge the policy could not be assembled.
-    CatalogUnavailable,
-}
-
-impl PolicyCandidateCause {
-    #[must_use]
-    pub const fn code(self) -> &'static str {
-        match self {
-            Self::AuthorityCeiling => "authority-ceiling",
-            Self::ToolNotInstalled => "tool-not-installed",
-            Self::McpServerUnavailable => "mcp-server-unavailable",
-            Self::CatalogUnavailable => "catalog-unavailable",
-        }
-    }
 }
 
 const fn child_dependency_admitted(ordinary_capacity: bool, parent_is_live_waiter: bool) -> bool {
@@ -5781,7 +4975,7 @@ impl ProductionProcessHost {
             }
             return Some(SessionInventoryItem {
                 session_id: session_id.to_owned(),
-                workspace_id: view.summary.workspace.clone(),
+
                 cwd: view
                     .summary
                     .cwd
@@ -5793,7 +4987,7 @@ impl ProductionProcessHost {
                             .map(|g| endpoint::genesis_cwd(&folder, &g))
                     })
                     .unwrap_or_default(),
-                folder_binding: view.summary.folder_binding.clone(),
+
                 title: view.summary.title.clone(),
                 updated_at: view.summary.updated_ms,
                 archived: false,
@@ -5827,11 +5021,8 @@ impl ProductionProcessHost {
             });
         Some(SessionInventoryItem {
             session_id: session_id.to_owned(),
-            workspace_id: genesis.string_field("workspace")?.to_owned(),
+
             cwd: endpoint::genesis_cwd(&folder, &genesis),
-            folder_binding: endpoint::inventory_folder_binding(
-                &serde_json::to_value(genesis.raw()).ok()?,
-            ),
             title: None,
             updated_at,
             archived: false,
@@ -5952,9 +5143,9 @@ impl ProductionProcessHost {
                 {
                     items.push(SessionInventoryItem {
                         session_id: id,
-                        workspace_id: String::new(),
+
                         cwd: String::new(),
-                        folder_binding: None,
+
                         title: None,
                         updated_at: 0,
                         archived: true,
@@ -6540,15 +5731,11 @@ fn operation_value(value: serde_json::Value) -> Result<IJsonValue, SupervisorOpe
 
 pub(crate) fn workspace_quiescence_lock_path(root: &Path, workspace_id: &str) -> PathBuf {
     let digest = Sha256::digest(workspace_id.as_bytes());
-    root.join(format!(".workspace-quiescence-{digest:x}.lock"))
-}
-
-fn workspace_id(ledger: &Path) -> Result<String, DaemonError> {
-    session_workspace_binding(ledger).map(|(workspace_id, _)| workspace_id)
+    root.join(format!(".execution-quiescence-{digest:x}.lock"))
 }
 
 fn scoped_client_file_path(
-    workspace: &profile::ResolvedWorkspace,
+    workspace: &profile::ResolvedExecution,
     path: &str,
 ) -> Result<(PathBuf, String), DaemonError> {
     let requested = Path::new(path);
@@ -6569,9 +5756,9 @@ fn scoped_client_file_path(
         requested.to_owned()
     } else {
         let selected = workspace
-            .selected_cwd
-            .as_deref()
-            .or_else(|| workspace.cwd.first().map(String::as_str))
+            .cwd
+            .first()
+            .map(String::as_str)
             .ok_or_else(|| DaemonError::invalid_config("session has no directory"))?;
         Path::new(selected).join(requested)
     }
@@ -6588,19 +5775,6 @@ fn scoped_client_file_path(
         .ok_or_else(|| DaemonError::invalid_config("file path is not UTF-8"))?
         .to_owned();
     Ok((root, relative))
-}
-
-fn session_workspace_binding(ledger: &Path) -> Result<(String, Option<String>), DaemonError> {
-    // Read failures keep their store classification; a missing or incomplete
-    // genesis is corruption, as it was before the shared scope.
-    let scope = profile::SessionScope::for_ledger(ledger).map_err(|error| match error {
-        profile::ProfileError::Store(error) => DaemonError::store(error),
-        other => DaemonError::corrupt(other.to_string()),
-    })?;
-    Ok((
-        scope.workspace_id().to_owned(),
-        scope.folder_binding().map(str::to_owned),
-    ))
 }
 
 fn ledger_needs_worker(ledger: &Path) -> Result<bool, DaemonError> {
@@ -6830,29 +6004,29 @@ mod tests {
         for directory in [first.path(), selected.path(), outside.path()] {
             std::fs::write(directory.join("file"), "fixture").unwrap();
         }
-        let workspace: profile::ResolvedWorkspace = serde_json::from_value(serde_json::json!({
-            "format":1,"revision":1,"id":"w","name":"w","selected_cwd":selected.path(),
-            "cwd":[first.path(),selected.path()],"policy":{}
+        let execution: profile::ResolvedExecution = serde_json::from_value(serde_json::json!({
+            "session_id":"s",
+            "cwd":[selected.path(),first.path()],"policy":{}
         }))
         .unwrap();
-        let (root, relative) = super::scoped_client_file_path(&workspace, "file").unwrap();
+        let (root, relative) = super::scoped_client_file_path(&execution, "file").unwrap();
         assert_eq!(root, selected.path().canonicalize().unwrap());
         assert_eq!(relative, "file");
         assert!(
-            super::scoped_client_file_path(&workspace, first.path().join("file").to_str().unwrap())
+            super::scoped_client_file_path(&execution, first.path().join("file").to_str().unwrap())
                 .is_ok()
         );
         assert!(
             super::scoped_client_file_path(
-                &workspace,
+                &execution,
                 outside.path().join("file").to_str().unwrap()
             )
             .is_err()
         );
-        assert!(super::scoped_client_file_path(&workspace, "../file").is_err());
+        assert!(super::scoped_client_file_path(&execution, "../file").is_err());
         std::os::unix::fs::symlink(outside.path().join("file"), selected.path().join("escape"))
             .unwrap();
-        assert!(super::scoped_client_file_path(&workspace, "escape").is_err());
+        assert!(super::scoped_client_file_path(&execution, "escape").is_err());
     }
     include!("process_live_tests.rs");
     include!("process_tool_visibility_tests.rs");
@@ -7387,7 +6561,6 @@ mod tests {
     fn a_missing_preset_skill_is_one_warning() {
         let manifest = "---\nname: style-guide\ndescription: House style\n---\nBody\n";
         let instruction = profile::InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: vec![profile::InstructionSource {
                 origin: profile::InstructionOrigin::User,
@@ -7413,272 +6586,15 @@ mod tests {
         assert_eq!(missing_preset_skill_notice(None, &instruction), None);
     }
 
-    #[test]
-    fn mcp_launch_notices_name_the_skipped_server_and_its_reason() {
-        let reference = mcp::McpServerReference {
-            workspace_id: "ws".to_owned(),
-            scope: mcp::McpScope::User,
-            name: "drawing-editor".to_owned(),
-        };
-        let notices = mcp_launch_notices(
-            None,
-            &[
-                crate::mcp_runtime::McpServerFailure {
-                    server: reference.clone(),
-                    code: "projection-failed",
-                    detail: Some(
-                        "MCP schema projection failed: tool get_entities: unsupported keyword"
-                            .to_owned(),
-                    ),
-                },
-                crate::mcp_runtime::McpServerFailure {
-                    server: mcp::McpServerReference {
-                        name: "offline".to_owned(),
-                        ..reference
-                    },
-                    code: "refresh-failed",
-                    detail: None,
-                },
-            ],
-            &[],
-            &[],
-        );
-        assert_eq!(notices.len(), 2);
-        assert_eq!(notices[0].classification, "mcp_server");
-        assert_eq!(
-            notices[0].message,
-            "MCP server drawing-editor was skipped for this run: MCP schema projection failed: tool get_entities: unsupported keyword"
-        );
-        assert_eq!(
-            notices[1].message,
-            "MCP server offline was skipped for this run: refresh-failed"
-        );
-    }
-
-    #[test]
-    fn refused_tools_produce_one_bounded_notice_per_healthy_server() {
-        let reference = mcp::McpServerReference {
-            workspace_id: "ws".to_owned(),
-            scope: mcp::McpScope::User,
-            name: "probe".to_owned(),
-        };
-        let refusal = |index: usize| crate::mcp_runtime::McpRefusedTool {
-            server: reference.clone(),
-            refusal: mcp::McpToolRefusal {
-                tool: format!("tool{index}"),
-                name: Some(format!("mcp__probe__tool{index}")),
-                code: "schema-refused",
-                pointer: Some("/parameters/properties/operand".to_owned()),
-                keyword: Some("maxProperties".to_owned()),
-                reason: "uses unsupported keyword \"maxProperties\"".to_owned(),
-            },
-        };
-        let one = mcp_launch_notices(None, &[], &[refusal(0)], &[]);
-        assert_eq!(one.len(), 1);
-        assert_eq!(one[0].classification, "mcp_tool");
-        assert_eq!(
-            one[0].message,
-            "MCP server probe is available but 1 of its tools were skipped for this run: tool0 at /parameters/properties/operand: uses unsupported keyword \"maxProperties\""
-        );
-        let many = (0..MAX_NOTICE_TOOLS + 3).map(refusal).collect::<Vec<_>>();
-        // The policy names the last tool: it is listed first, not cut.
-        let last = format!("mcp__probe__tool{}", MAX_NOTICE_TOOLS + 2);
-        let notices = mcp_launch_notices(None, &[], &many, std::slice::from_ref(&last));
-        assert_eq!(notices.len(), 1, "one notice per server, not per tool");
-        let message = &notices[0].message;
-        assert!(message.ends_with("; and 3 more"), "{message}");
-        assert!(
-            message.contains(&format!("{} of its tools", MAX_NOTICE_TOOLS + 3)),
-            "{message}"
-        );
-        assert!(message.contains(&format!("tool{} at", MAX_NOTICE_TOOLS + 2)));
-        assert!(!message.contains("tool7 at"), "{message}");
-        assert_eq!(message.matches(" at /parameters").count(), MAX_NOTICE_TOOLS);
-    }
-
-    #[cfg(target_os = "macos")]
-    fn write_catalog_server(script: &Path, tools_json: &str) {
-        fs::write(
-            script,
-            format!(
-                "#!/bin/sh\nwhile IFS= read -r line; do\ncase \"$line\" in\n*'\"method\":\"initialize\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":1,\"result\":{{\"protocolVersion\":\"{}\",\"capabilities\":{{\"tools\":{{}}}},\"serverInfo\":{{\"name\":\"catalog\",\"version\":\"1\"}}}}}}' ;;\n*'\"method\":\"tools/list\"'*) printf '%s\\n' '{{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{{\"tools\":{tools_json}}}}}' ;;\nesac\ndone\n",
-                mcp::LEGACY_PROTOCOL_VERSION
-            ),
-        )
-        .expect("catalog server");
-        fs::set_permissions(script, fs::Permissions::from_mode(0o755)).expect("script mode");
-    }
-
-    /// Runs one real worker launch (the worker itself exits at once) under
-    /// `allowed_tools` and returns the stranded-input notice message. A launch
-    /// whose bindings were refused says so; one that reached the worker does not.
-    #[cfg(target_os = "macos")]
-    fn launch_notice_for_policy(servers: &[(&str, String)], allowed_tools: &[&str]) -> String {
-        let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
-        fs::create_dir_all(&workspace).expect("workspace");
-        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspace config");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
-            json!({"format":1,"revision":1,"id":"ws","name":"ws",
-                "cwd":[workspace.to_string_lossy()],
-                "policy":{"allowed_tools":allowed_tools,"network":false,"writable_roots":[]}}),
-        );
-        let session = "018f0000-0000-7000-8000-000000000121";
-        let folder = root.path().join("threads").join(session);
-        fs::create_dir_all(folder.join("assets")).expect("thread folder");
-        let ledger = folder.join("main.jsonl");
-        write_test_genesis(&ledger, session);
-        let worker = root.path().join("failing-worker");
-        fs::write(&worker, b"#!/bin/sh\nexit 1\n").expect("failing worker");
-        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).expect("worker mode");
-        let helper = root.path().join("tekes-helper");
-        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
-        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
-        let host = ProductionProcessHost::open(
-            root.path(),
-            worker,
-            "test-build",
-            root.path().join("missing-agent-home"),
-        )
-        .expect("process host");
-        for (name, tools_json) in servers {
-            let script = root.path().join(format!("{name}-server"));
-            write_catalog_server(&script, tools_json);
-            host.mcp_runtime
-                .mutate(
-                    &format!("save-{name}"),
-                    &mcp::McpManagementMutation::Save {
-                        server: mcp::McpServerConfig {
-                            folder_id: None,
-                            reference: mcp::McpServerReference {
-                                workspace_id: "ws".to_owned(),
-                                scope: mcp::McpScope::User,
-                                name: (*name).to_owned(),
-                            },
-                            transport: mcp::McpTransportConfig::Stdio {
-                                command: vec![script.to_string_lossy().into_owned()],
-                                cwd: None,
-                                environment: BTreeMap::new(),
-                            },
-                            enabled: true,
-                            always_on: false,
-                            protocol_mode: mcp::ProtocolMode::Legacy,
-                            owner: None,
-                            plugin_component: None,
-                            project_trusted: true,
-                        },
-                        credential_fields: BTreeMap::new(),
-                    },
-                )
-                .expect("save server");
-        }
-        let origin = OriginTuple {
-            principal: "test".to_owned(),
-            client: "test".to_owned(),
-            target: session.to_owned(),
-            op: "session.prompt".to_owned(),
-            key: "rpc-launch-probe".to_owned(),
-        };
-        let prompt = MaterializedPrompt {
-            blocks: vec![Block::Text {
-                text: "launch probe".to_owned(),
-            }],
-            attachments: Vec::new(),
-            files: Vec::new(),
-        };
-        host.locked_prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, false)
-            .expect("durable prompt");
-        let notices = session_notices(&fs::read(&ledger).expect("ledger"));
-        let launch = notices
-            .iter()
-            .find(|notice| notice["classification"] == "worker_launch")
-            .unwrap_or_else(|| panic!("no worker_launch notice: {notices:?}"));
-        launch["message"].as_str().unwrap_or_default().to_owned()
-    }
-
-    /// set-accepted implies launch-accepted: every policy below is one
-    /// `validate_workspace_policy_candidate` accepts, and the real launch gets
-    /// past the bindings (it then fails only because the stub worker exits). The
-    /// control shows the probe can tell a refused binding from a started worker.
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn a_policy_set_accepts_never_breaks_the_launch_binding() {
-        let bad = |name: &str| {
-            format!(
-                r#"{{"name":"{name}","description":"Bad","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{"o":{{"type":"object","maxProperties":2,"properties":{{}}}}}},"required":[],"additionalProperties":false}}}}"#
-            )
-        };
-        let good = |name: &str| {
-            format!(
-                r#"{{"name":"{name}","description":"Good","annotations":{{"readOnlyHint":true}},"inputSchema":{{"type":"object","properties":{{}},"required":[],"additionalProperties":false}}}}"#
-            )
-        };
-        let binding_refused =
-            |message: &str| message.contains("launch bindings could not be derived");
-        // Control: an unknown name is refused at launch, as at set.
-        let message = launch_notice_for_policy(
-            &[("probe", format!("[{}]", good("alpha")))],
-            &["mcp__probe__nope"],
-        );
-        assert!(binding_refused(&message), "{message}");
-        // An ordinary refused tool.
-        let message = launch_notice_for_policy(
-            &[("probe", format!("[{},{}]", good("alpha"), bad("beta")))],
-            &["mcp__probe__alpha", "mcp__probe__beta"],
-        );
-        assert!(!binding_refused(&message), "{message}");
-        // A refused tool whose projected name collides with a healthy tool's.
-        let message = launch_notice_for_policy(
-            &[
-                ("a", format!("[{}]", bad("b__c"))),
-                ("a__b", format!("[{}]", good("c"))),
-            ],
-            &["mcp__a__b__c"],
-        );
-        assert!(!binding_refused(&message), "{message}");
-        // A refused tool whose projected name is too long for a launch name
-        // does not disturb the other tools' launch (a policy cannot name it:
-        // `set` refuses it as unknown).
-        let long = "x".repeat(130);
-        let message = launch_notice_for_policy(
-            &[("probe", format!("[{},{}]", good("alpha"), bad(&long)))],
-            &["mcp__probe__alpha"],
-        );
-        assert!(!binding_refused(&message), "{message}");
-    }
-
-    #[test]
-    fn unavailable_mcp_server_fails_launch_only_when_policy_names_its_tools() {
-        let failures = vec![crate::mcp_runtime::McpServerFailure {
-            server: mcp::McpServerReference {
-                workspace_id: "ws".to_owned(),
-                scope: mcp::McpScope::User,
-                name: "offline server".to_owned(),
-            },
-            code: "refresh-failed",
-            detail: None,
-        }];
-        assert!(!mcp_failure_is_required(&failures, &[]));
-        assert!(!mcp_failure_is_required(
-            &failures,
-            &["mcp__other__tool".to_owned()]
-        ));
-        assert!(mcp_failure_is_required(
-            &failures,
-            &["mcp__offline_20server__tool".to_owned()]
-        ));
-    }
-
     #[cfg(target_os = "macos")]
     #[test]
     fn durable_prompt_receipt_survives_spawn_failure_and_exact_retry_deduplicates() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
-        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspace config");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({"format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
                 "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
@@ -7746,78 +6662,6 @@ mod tests {
                 .as_str()
                 .unwrap_or_default()
                 .starts_with("The worker could not be started: "),
-            "{notices:?}"
-        );
-        host.shutdown();
-    }
-
-    /// An unreadable `config/mcp-servers.json` (the observed production case
-    /// was a hand edit that dropped the final newline and left a non-canonical
-    /// body) must not strand the input: the launch proceeds without the
-    /// registry's servers and the session shows a warning naming the file.
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn broken_mcp_registry_degrades_the_launch_and_warns_in_the_session() {
-        let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
-        fs::create_dir_all(&workspace).expect("workspace");
-        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspace config");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
-            json!({"format":1,"revision":1,"id":"ws","name":"ws",
-                "cwd":[workspace.to_string_lossy()],
-                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
-        );
-        fs::create_dir_all(root.path().join("config")).expect("config dir");
-        fs::write(
-            root.path().join("config/mcp-servers.json"),
-            b"{\"format\":1,\"servers\":[]} ",
-        )
-        .expect("broken registry");
-        let session = "018f0000-0000-7000-8000-000000000121";
-        let folder = root.path().join("threads").join(session);
-        fs::create_dir_all(folder.join("assets")).expect("thread folder");
-        let ledger = folder.join("main.jsonl");
-        write_test_genesis(&ledger, session);
-        let worker = root.path().join("failing-worker");
-        fs::write(&worker, b"#!/bin/sh\nexit 1\n").expect("failing worker");
-        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).expect("worker mode");
-        let host = ProductionProcessHost::open(
-            root.path(),
-            worker,
-            "test-build",
-            root.path().join("missing-agent-home"),
-        )
-        .expect("process host");
-        let origin = OriginTuple {
-            principal: "test".to_owned(),
-            client: "test".to_owned(),
-            target: session.to_owned(),
-            op: "session.prompt".to_owned(),
-            key: "rpc-broken-registry".to_owned(),
-        };
-        let prompt = MaterializedPrompt {
-            blocks: vec![Block::Text {
-                text: "run without mcp".to_owned(),
-            }],
-            attachments: Vec::new(),
-            files: Vec::new(),
-        };
-        host.locked_prompt(session, "2026-09-20T00:00:01.000Z", &origin, &prompt, false)
-            .expect("prompt is accepted");
-        let notices = session_notices(&fs::read(&ledger).expect("ledger"));
-        // The launch got past binding resolution (the registry warning was
-        // recorded) and only then failed on the fake worker binary.
-        let warning = notices
-            .iter()
-            .find(|notice| notice["severity"] == "warning")
-            .unwrap_or_else(|| panic!("registry warning is recorded: {notices:?}"));
-        assert_eq!(warning["classification"], "mcp_registry");
-        let message = warning["message"].as_str().expect("message");
-        assert!(message.contains("mcp-servers.json"), "{message}");
-        assert!(
-            notices.iter().any(|notice| notice["severity"] == "error"
-                && notice["classification"] == "worker_launch"),
             "{notices:?}"
         );
         host.shutdown();
@@ -8217,11 +7061,11 @@ mod tests {
         let folder = root.path().join("threads").join(session);
         fs::create_dir_all(folder.join("assets")).expect("thread folder");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
-                "cwd":[root.path().join("workspace").to_string_lossy()],
+                "cwd":[test_support::execution_fixture().cwd],
                 "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
             }),
         );
@@ -8472,13 +7316,14 @@ mod tests {
     fn worker_exit_path_projects_the_settled_tail_and_refreshes_inventory() {
         const SESSION: &str = "018f0000-0000-7000-8000-000000000003";
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -8489,6 +7334,13 @@ mod tests {
             env!("CARGO_MANIFEST_DIR"),
             "/../../fixtures/endpoint/projection-source.jsonl"
         );
+        let staged_fixture = root.path().join("settled-fixture.jsonl");
+        fs::copy(fixture, &staged_fixture).unwrap();
+        test_support::bind_execution_fixture(
+            &ConfigRepository::open(root.path()).unwrap(),
+            &staged_fixture,
+        );
+        let fixture = staged_fixture.to_str().unwrap();
         // The fake worker settles the whole turn on disk and exits without `appended`.
         let bin = root.path().join("fake-worker");
         fs::write(
@@ -8689,98 +7541,6 @@ mod tests {
     }
 
     #[test]
-    fn tool_launch_policy_uses_selected_folder_without_dropping_other_roots() {
-        let root = tempfile::tempdir().expect("root");
-        let first = root.path().join("first");
-        let second = root.path().join("second");
-        fs::create_dir(&first).expect("first root");
-        fs::create_dir(&second).expect("second root");
-        let repository = profile::ConfigRepository::open(root.path()).expect("repository");
-        repository
-            .publish_workspace(
-                0,
-                &profile::WorkspaceConfig {
-                    format: 1,
-                    revision: 1,
-                    id: "workspace-tools".to_owned(),
-                    name: "Workspace".to_owned(),
-                    cwd: Vec::new(),
-                    folders: vec![
-                        profile::WorkspaceFolder {
-                            id: "primary".to_owned(),
-                            path: first.display().to_string(),
-                        },
-                        profile::WorkspaceFolder {
-                            id: "secondary".to_owned(),
-                            path: second.display().to_string(),
-                        },
-                    ],
-                    policy: None,
-                },
-            )
-            .expect("workspace");
-        let config = repository
-            .resolve_for_binding("workspace-tools", "secondary")
-            .expect("selected config");
-        let instruction = profile::InstructionResolver::new(
-            root.path().join("missing-agent"),
-            config.workspace.cwd.iter().map(Path::new),
-        )
-        .capture()
-        .expect("instruction snapshot");
-        let policy =
-            frozen_tool_launch_policy(root.path(), &config, &instruction).expect("tool policy");
-        assert_eq!(
-            policy.primary_workspace_cwd(),
-            second
-                .canonicalize()
-                .expect("canonical second")
-                .to_str()
-                .unwrap()
-        );
-        assert_eq!(
-            policy.base_sandbox().read_roots,
-            vec![
-                first
-                    .canonicalize()
-                    .expect("canonical first")
-                    .display()
-                    .to_string(),
-                second
-                    .canonicalize()
-                    .expect("canonical second")
-                    .display()
-                    .to_string(),
-            ]
-        );
-        let scratch = root.path().join("validator/scratch");
-        let snapshot = root.path().join("validator/snapshot");
-        fs::create_dir_all(&scratch).expect("scratch");
-        fs::create_dir_all(&snapshot).expect("snapshot");
-        let scratch = scratch.canonicalize().expect("canonical scratch");
-        let snapshot = snapshot.canonicalize().expect("canonical snapshot");
-        let validator = private_validator_launch_policy(&scratch, &snapshot, &config, &instruction)
-            .expect("validator policy");
-        assert_eq!(validator.primary_workspace_cwd(), scratch.to_str().unwrap());
-        assert_eq!(
-            validator.permitted_write_roots(),
-            &[scratch.display().to_string()]
-        );
-        assert!(
-            validator
-                .base_sandbox()
-                .read_roots
-                .contains(&second.canonicalize().unwrap().display().to_string())
-        );
-        assert!(
-            validator
-                .base_sandbox()
-                .read_roots
-                .contains(&snapshot.display().to_string())
-        );
-    }
-
-    #[test]
     fn report_wake_targets_the_exact_nested_parent_line() {
         let root = Path::new("/kernel");
         let (key, ledger) =
@@ -8816,116 +7576,6 @@ mod tests {
             "an unrelated pending root cannot steal the dependency override"
         );
         assert!(child_dependency_admitted(true, false));
-    }
-
-    #[cfg(target_os = "macos")]
-    #[test]
-    fn slice14c_gate_103_production_claim_uses_management_and_delivery_authorities() {
-        let root = tempfile::tempdir().expect("schedule host root");
-        let workspace = root.path().join("workspace");
-        fs::create_dir_all(&workspace).expect("workspace");
-        let workspace = fs::canonicalize(&workspace).expect("canonical workspace");
-        let repository = profile::ConfigRepository::open(root.path()).expect("config repository");
-        repository
-            .publish_workspace(
-                0,
-                &profile::WorkspaceConfig {
-                    format: 1,
-                    revision: 1,
-                    id: "ws".to_owned(),
-                    name: "ws".to_owned(),
-                    cwd: vec![workspace.to_string_lossy().into_owned()],
-                    folders: Vec::new(),
-                    policy: Some(profile::WorkspacePolicy::default()),
-                },
-            )
-            .expect("workspace config");
-        let bin = root.path().join("fake-worker");
-        fs::write(
-            &bin,
-            b"#!/bin/sh\nprintf '%s\\n' '{\"hello\":{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}'\nIFS= read -r selected\nwhile IFS= read -r line; do :; done\n",
-        )
-        .expect("fake worker");
-        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
-        let helper = root.path().join("tekes-helper");
-        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
-        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
-
-        let host =
-            ProductionProcessHost::open(root.path(), &bin, "test", root.path().join(".agent"))
-                .expect("process host");
-        let now = DateTime::parse_from_rfc3339("2026-08-29T04:00:00Z")
-            .expect("time")
-            .with_timezone(&Utc);
-        let task_id = "018f0000-0000-7000-8000-0000000000c1";
-        host.schedule
-            .save(
-                schedule::OriginTuple {
-                    client_id: "test-client".to_owned(),
-                    key: "save".to_owned(),
-                },
-                schedule::ScheduleDefinition {
-                    id: task_id.to_owned(),
-                    name: "Scheduled review".to_owned(),
-                    workspace_id: "ws".to_owned(),
-                    cron: "0 * * * *".to_owned(),
-                    time_zone: "UTC".to_owned(),
-                    prompt: "Review now".to_owned(),
-                    permission_mode: "workspace-write".to_owned(),
-                    model_id: None,
-                    enabled: true,
-                    missed_policy: schedule::MissedPolicy::SkipAndRecord,
-                },
-                now,
-            )
-            .expect("save schedule");
-        let claim = host
-            .schedule
-            .run_now(
-                schedule::OriginTuple {
-                    client_id: "test-client".to_owned(),
-                    key: "run".to_owned(),
-                },
-                task_id,
-                now,
-            )
-            .expect("manual claim");
-        host.execute_schedule_claim(&claim, now)
-            .expect("production schedule launch");
-        let view = host.schedule.list(None).expect("schedule view").remove(0);
-        assert_eq!(view.last_status, schedule::RunStatus::Running);
-        assert_eq!(view.last_input_seq, Some(2));
-        let session = view.last_session_id.expect("bound session");
-        let ledger = root
-            .path()
-            .join("threads")
-            .join(&session)
-            .join("main.jsonl");
-        let projection =
-            store::scan_valid_prefix(&fs::read(ledger).expect("ledger"), schema::READER_VERSION)
-                .projection
-                .expect("valid projection");
-        assert_eq!(projection.events.len(), 3);
-        assert_eq!(projection.events[0].kind(), &EventKind::Genesis);
-        assert_eq!(projection.events[1].kind(), &EventKind::Input);
-        assert_eq!(
-            projection.events[1].origin_key(),
-            Some(claim.claim_id.as_str())
-        );
-        assert_eq!(projection.events[2].kind(), &EventKind::Meta);
-        assert_eq!(
-            projection.events[2].string_field("title"),
-            Some("Review now")
-        );
-        assert_eq!(
-            projection.events[2]
-                .origin_tuple()
-                .expect("title origin")
-                .expect("automatic title origin")
-                .op,
-            AUTOMATIC_TITLE_SEED_OPERATION
-        );
-        host.shutdown();
     }
 
     #[test]
@@ -8973,13 +7623,14 @@ mod tests {
     #[cfg(target_os = "macos")]
     fn check_sweep_recovery(defer_recovery: bool) {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9112,13 +7763,14 @@ mod tests {
     #[test]
     fn sweep_quarantines_busy_unknown_until_the_file_lock_is_free() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9178,12 +7830,13 @@ mod tests {
     #[test]
     fn ensure_existing_worker_refreshes_adjacent_secret_revocation() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9265,12 +7918,13 @@ mod tests {
     #[test]
     fn queue_recovery_is_preloaded_during_worker_negotiation() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9350,13 +8004,14 @@ mod tests {
     #[test]
     fn pending_queue_recovery_survives_an_ordinary_ensure_race() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9455,13 +8110,14 @@ mod tests {
     #[test]
     fn capacity_release_starts_a_pending_queue_transaction_on_a_settled_tail() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9570,13 +8226,14 @@ mod tests {
     #[test]
     fn no_mutual_worker_protocol_is_quarantined_until_binary_bytes_change() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9706,13 +8363,14 @@ mod tests {
         expected_message: &str,
     ) {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9848,13 +8506,14 @@ mod tests {
     #[test]
     fn sweep_propagates_a_durable_root_stop_before_descendant_triage() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -9932,13 +8591,14 @@ mod tests {
     #[cfg(target_os = "macos")]
     fn exercise_stop_cascade(live_root: bool) {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
         fs::create_dir_all(root.path().join("threads")).expect("threads");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -10058,12 +8718,13 @@ mod tests {
     #[test]
     fn max_one_worker_dependency_chain_progresses_without_admitting_unrelated_work() {
         let root = tempfile::tempdir().expect("process host root");
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).expect("workspace");
         fs::create_dir_all(root.path().join("config")).expect("config");
         fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
                 "cwd":[workspace.to_string_lossy()],
@@ -10222,11 +8883,11 @@ mod tests {
     #[test]
     fn prompt_after_confirmed_worker_exit_reuses_locked_origin() {
         let root = tempfile::tempdir().unwrap();
-        let workspace = root.path().join("workspace");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
         fs::create_dir_all(&workspace).unwrap();
-        fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-        write_canonical_test_json(
-            &root.path().join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root.path(),
             json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
                 "policy":{"allowed_tools":[],"writable_roots":[],"network":false}}),
         );
@@ -10290,6 +8951,29 @@ mod tests {
         );
     }
 
+    // Test builder only: freezes the scenario's roots/policy and separately
+    // publishes host model selection. Production never reads these fixtures.
+    fn write_test_execution_config(root: &Path, scenario: Value) {
+        let mut policy = scenario["policy"].clone();
+        let provider = policy
+            .as_object_mut()
+            .unwrap()
+            .remove("provider")
+            .and_then(|v| v.as_str().map(str::to_owned));
+        let model = policy
+            .as_object_mut()
+            .unwrap()
+            .remove("model")
+            .and_then(|v| v.as_str().map(str::to_owned));
+        test_support::freeze_execution_fixture(
+            &ConfigRepository::open(root).unwrap(),
+            serde_json::from_value(scenario["cwd"].clone()).unwrap(),
+            Some(serde_json::from_value(policy).unwrap()),
+            [provider, model],
+        )
+        .unwrap();
+    }
+
     #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn write_canonical_test_json(path: &Path, value: Value) {
         let mut bytes = serde_json_canonicalizer::to_vec(&value).expect("canonical JSON");
@@ -10313,11 +8997,11 @@ mod tests {
             let worker =
                 PathBuf::from(std::env::var("TEKES_TEST_REAL_WORKER").expect("real worker path"));
             let root = tempfile::tempdir().unwrap();
-            let workspace = root.path().join("workspace");
+            let project_root = tempfile::tempdir().unwrap();
+            let workspace = project_root.path().to_path_buf();
             fs::create_dir_all(&workspace).unwrap();
-            fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-            write_canonical_test_json(
-                &root.path().join("workspaces/ws/workspace.json"),
+            write_test_execution_config(
+                root.path(),
                 json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
                 "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}}),
             );
@@ -10553,7 +9237,7 @@ mod tests {
 
     /// A main ledger parked on an unanswered `ask_user` hold (call `ask1`, seq 9).
     fn held_ledger_lines(thread: &str) -> Vec<String> {
-        vec![
+        let mut lines = vec![
             format!(
                 r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{thread}"}},"resume":"never","seq":1,"thread":"{thread}","ts":"{HELD_TS}","v":1,"workspace":"ws"}}"#
             ),
@@ -10581,10 +9265,22 @@ mod tests {
             format!(
                 r#"{{"call":"ask1","kind":"approval_request","scope":"answer","seq":9,"ts":"{HELD_TS}","turn":1,"v":1}}"#
             ),
-        ]
+        ];
+        let mut genesis: Value = serde_json::from_str(&lines[0]).unwrap();
+        genesis.as_object_mut().unwrap().remove("workspace");
+        genesis["execution"] = serde_json::to_value(test_support::execution_fixture()).unwrap();
+        genesis["cwd"] = genesis["execution"]["cwd"].clone();
+        genesis["min_reader"] = json!(schema::EXECUTION_READER);
+        lines[0] = String::from_utf8(
+            schema::Event::decode(&serde_json::to_vec(&genesis).unwrap())
+                .unwrap()
+                .canonical_bytes()
+                .unwrap(),
+        )
+        .unwrap();
+        lines
     }
 
-    #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn held_response_line(thread: &str) -> String {
         format!(
             r#"{{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"r1","origin_tuple":{{"client":"cli","key":"r1","op":"approve","principal":"p","target":"{thread}"}},"seq":10,"ts":"{HELD_TS}","turn":1,"v":1}}"#
@@ -10648,7 +9344,6 @@ mod tests {
             .into_iter()
             .find(|item| item.session_id == session)
             .expect("row");
-        assert_eq!(card.summary.workspace, scanned.workspace_id);
         assert_eq!(card.summary.title, scanned.title);
         assert_eq!(card.summary.updated_ms, scanned.updated_at);
         assert_eq!(card.summary.blank, scanned.blank);
@@ -10766,8 +9461,8 @@ mod tests {
         let (host, streams, ledger) = held_host(root.path(), session, "");
         // Ephemeral genesis so the thread can be discarded.
         let text = fs::read_to_string(&ledger).expect("ledger");
-        // canonical key order: "config" < "ephemeral" < "format"
-        let ephemeral = text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1);
+        // Canonical key order places ephemeral before execution.
+        let ephemeral = text.replacen(r#""execution":"#, r#""ephemeral":true,"execution":"#, 1);
         assert_ne!(text, ephemeral);
         fs::write(&ledger, &ephemeral).expect("ephemeral ledger");
         // old life: the hold is answered, the published set is empty at last_seq 10
@@ -10851,7 +9546,7 @@ mod tests {
                     let text = fs::read_to_string(folder.join("main.jsonl")).expect("ledger");
                     fs::write(
                         folder.join("main.jsonl"),
-                        text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+                        text.replacen(r#""execution":"#, r#""ephemeral":true,"execution":"#, 1),
                     )
                     .expect("ephemeral");
                 }
@@ -10883,7 +9578,7 @@ mod tests {
         let early = host
             .build_inventory(false, Duration::ZERO)
             .expect("early list");
-        assert!(early.iter().all(|item| item.workspace_id == "ws"));
+        assert!(early.iter().all(|row| !row.session_id.is_empty()));
         // Verification proceeds in the background; a patient list is the scan list.
         let patient = host
             .build_inventory(true, Duration::from_secs(120))
@@ -10974,11 +9669,11 @@ mod tests {
     #[cfg_attr(not(target_os = "macos"), allow(dead_code))]
     fn open_host(root: &Path) -> (Arc<ProductionProcessHost>, ProductionCarrierStreams) {
         fs::create_dir_all(root.join("workspaces/ws")).expect("workspaces");
-        write_canonical_test_json(
-            &root.join("workspaces/ws/workspace.json"),
+        write_test_execution_config(
+            root,
             json!({
                 "format":1,"revision":1,"id":"ws","name":"ws",
-                "cwd":[root.join("workspace").to_string_lossy()],
+                "cwd":[test_support::execution_fixture().cwd],
                 "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
             }),
         );
@@ -11048,7 +9743,6 @@ mod tests {
             .expect("ok")
             .expect("row");
         assert!(one.blank);
-        assert_eq!(one.workspace_id, "ws");
         // a second client's inventory baseline lists both
         let mut inventory = streams
             .open_mux(7, endpoint::SessionStreamTarget::SessionInventory)
@@ -11277,7 +9971,7 @@ mod tests {
         host.shutdown();
     }
 
-    /// The client unarchive path (`ManagementStore::unarchive_session` ->
+    /// The client unarchive path (`SessionOperations::unarchive_session` ->
     /// `drive_folder_move`) admits the thread and brings it back into the catalog.
     #[cfg(target_os = "macos")]
     #[test]
@@ -11289,7 +9983,8 @@ mod tests {
         host.arm_admission();
         host.catalog.ensure_loaded();
         assert!(host.is_deferred(session));
-        let management = endpoint::ManagementStore::open_light(root.path()).expect("management");
+        let management =
+            endpoint::SessionOperations::open_sessions(root.path()).expect("management");
         let sha = "a".repeat(64);
         management
             .archive_session("rpc-archive-1", &sha, session, "2026-10-12T00:00:00.000Z")
@@ -11694,16 +10389,26 @@ mod tests {
         write_test_genesis_with_identity(path, thread, None);
     }
 
-    /// Genesis with an explicit `identity_profile`; `None` writes the legacy
-    /// record without the field, which reads as `coding`.
+    /// Modern execution genesis with optional identity selection.
     fn write_test_genesis_with_identity(path: &Path, thread: &str, identity: Option<&str>) {
         let mut genesis = json!({
             "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",
-            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+            "format":1,"min_reader":5,"min_writer":1,"thread":thread,
+            "execution":test_support::execution_fixture(),"cwd":test_support::execution_fixture().cwd,
             "origin_key":format!("create-{thread}"),
             "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},
             "resume":"never","config":{"digest":"test"}
         });
+        let root = path.parent().unwrap().parent().unwrap().parent().unwrap();
+        if let Ok(bytes) = fs::read(root.join("execution-fixture.json")) {
+            genesis["execution"] = serde_json::from_slice::<Value>(&bytes).unwrap();
+        }
+        if let Ok(bytes) = fs::read(root.join("test-host-mcp.json")) {
+            let value: Value = serde_json::from_slice(&bytes).unwrap();
+            genesis["execution"]["mcp"] =
+                json!([{"name":value["name"],"transport":{"type":"stdio","channel":"test"}}]);
+        }
+        genesis["cwd"] = genesis["execution"]["cwd"].clone();
         if let Some(identity) = identity {
             genesis["identity_profile"] = json!(identity);
         }
@@ -11771,7 +10476,8 @@ mod tests {
     ) {
         let mut genesis = json!({
             "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",
-            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+            "format":1,"min_reader":5,"min_writer":1,"thread":thread,
+            "execution":test_support::execution_fixture(),"cwd":test_support::execution_fixture().cwd,
             "origin_key":format!("create-{thread}"),
             "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},
             "resume":"never","config":{"digest":"test"}
@@ -11830,7 +10536,8 @@ mod tests {
             path,
             vec![json!({
                 "v":1,"seq":1,"kind":"genesis","ts":"2026-08-28T00:00:00.000Z",
-                "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"ws",
+                "format":1,"min_reader":5,"min_writer":1,"thread":thread,
+            "execution":test_support::execution_fixture(),"cwd":test_support::execution_fixture().cwd,
                 "origin_key":format!("create-{thread}"),
                 "origin_tuple":{"principal":"test","client":"test","target":thread,"op":"create","key":format!("create-{thread}")},
                 "resume":"never","config":{"digest":"test"},
@@ -12104,7 +10811,7 @@ mod tests {
         let text = fs::read_to_string(&ledger).expect("ledger");
         fs::write(
             &ledger,
-            text.replacen(r#""format":1,"#, r#""ephemeral":true,"format":1,"#, 1),
+            text.replacen(r#""execution":"#, r#""ephemeral":true,"execution":"#, 1),
         )
         .expect("ephemeral ledger");
         let (host, _streams) = open_host(root.path());

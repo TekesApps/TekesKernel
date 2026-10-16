@@ -209,14 +209,12 @@ pub(super) fn isolate_validator_profile(
     let scratch = scratch.to_string_lossy().into_owned();
     let snapshot = snapshot.to_string_lossy().into_owned();
     let original = std::mem::replace(
-        &mut profile.config.workspace.cwd,
+        &mut profile.config.execution.cwd,
         vec![scratch.clone(), snapshot],
     );
-    profile.config.workspace.cwd.extend(original);
-    if profile.config.workspace.folder_binding.is_some() {
-        profile.config.workspace.selected_cwd = Some(scratch.clone());
-    }
-    profile.config.workspace.policy.writable_roots = vec![scratch.clone()];
+    profile.config.execution.cwd.extend(original);
+
+    profile.config.execution.policy.writable_roots = vec![scratch.clone()];
     profile.instruction.effective.policy.writable_roots = Some(vec![scratch]);
     profile.validator = true;
 }
@@ -482,7 +480,7 @@ pub(super) fn snapshot(
     let mut snapshot = ArtifactSnapshot::default();
     let workspace = profile
         .config
-        .workspace
+        .execution
         .cwd
         .first()
         .ok_or("artifact workspace root missing")?;
@@ -595,6 +593,7 @@ fn collect_artifacts(
             || raw["parent"]["seq"].as_u64() != Some(spawn.seq())
             || raw["parent"]["spawn_id"].as_str() != spawn.string_field("spawn_id")
             || raw["workspace"].as_str() != events[0].string_field("workspace")
+            || raw.get("execution") != value(&events[0])?.get("execution")
             || raw["thread"].as_str()
                 != std::path::Path::new(child_file)
                     .file_stem()
@@ -670,7 +669,7 @@ pub(super) fn artifact_bytes(
         PathBuf::from(
             profile
                 .config
-                .workspace
+                .execution
                 .cwd
                 .first()
                 .ok_or("workspace has no root")?,
@@ -1177,7 +1176,7 @@ fn ensure_validator(
                     let asset = assets.publish(&bytes)?;
                     let snapshot_path = freeze_artifact_copy(
                         &snapshot_root,
-                        &run.profile.config.workspace.cwd,
+                        &run.profile.config.execution.cwd,
                         path,
                         &bytes,
                     )?;
@@ -1208,15 +1207,20 @@ fn ensure_validator(
         .and_then(|s| s.to_str())
         .ok_or("parent filename missing")?;
     let origin = format!("spawn:{spawn_id}");
-    let genesis = make_event(
-        json!({"v":1,"seq":1,"kind":"genesis","ts":run.options.event_timestamp(),
-        "format":1,"min_reader":1,"min_writer":1,"thread":child,"workspace":run.profile.config.workspace.id,
+    let mut raw = json!({"v":1,"seq":1,"kind":"genesis","ts":run.options.event_timestamp(),
+        "format":1,"min_reader":1,"min_writer":1,"thread":child,"workspace":run.profile.config.execution.session_id,
         "origin_key":origin,"origin_tuple":{"principal":"kernel-worker","client":"worker","target":child,"op":"spawn","key":origin},
         "parent":{"file":parent,"seq":seq,"spawn_id":spawn_id},"resume":{"bounded":3},
         "config":{"digest":run.options.config_digest},
         "validator_for":{"candidate_seq":candidate_seq,"binding":binding},
-        "seed":{"source":binding.thread,"kinds":["state"],"snapshot":{"asset":seed.asset,"digest":seed.asset.strip_prefix("sha256-").unwrap()}}}),
-    )?;
+        "seed":{"source":binding.thread,"kinds":["state"],"snapshot":{"asset":seed.asset,"digest":seed.asset.strip_prefix("sha256-").unwrap()}}});
+    if let Some(execution) = value(&events[0])?.get("execution") {
+        raw.as_object_mut().expect("genesis").remove("workspace");
+        raw["execution"] = execution.clone();
+        raw["cwd"] = execution["cwd"].clone();
+        raw["min_reader"] = json!(schema::EXECUTION_READER);
+    }
+    let genesis = make_event(raw)?;
     publish_child_genesis(folder, &child_file, genesis)?;
     ledger.append_contract(make_event(json!({"v":1,"seq":seq,"turn":binding.turn,"kind":"spawn","ts":run.options.event_timestamp(),
         "child":child_file,"call":call,"spawn_id":spawn_id,"resume":{"bounded":3},"seed":{"kinds":["state"]}}))?,BarrierContext::default())?;

@@ -109,7 +109,7 @@ flowchart TD
   n24["endpoint::rpc::validate_response"]
   n25["endpoint::rpc::validate_rpc_id"]
   n26["schema::ijson::IJsonValue::parse"]
-  n27["store::management_root::endpoint_management_root"]
+  n27["store::management_root::endpoint_rpc_root"]
   n28["store::platform::NamedLock::exclusive"]
   n29["store::platform::FullSync::full_sync"]
   n30["store::platform::NamedLock::shared"]
@@ -186,7 +186,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `open` | `store::endpoint_management_root` | [124](../../src/idempotency.rs#L124) | [store::management_root::endpoint_management_root](../../../store/src/management_root.rs#L47) |
+| `open` | `store::endpoint_rpc_root` | [124](../../src/idempotency.rs#L124) | [store::management_root::endpoint_rpc_root](../../../store/src/management_root.rs#L40) |
 | `open` | `endpoint_root.as_ref` | [124](../../src/idempotency.rs#L124) | receiver-type-required |
 | `open` | `root.join` | [125](../../src/idempotency.rs#L125), [127](../../src/idempotency.rs#L127) | receiver-type-required |
 | `open` | `fs::create_dir_all` | [126](../../src/idempotency.rs#L126) | external-constructor-callback-or-unresolved |

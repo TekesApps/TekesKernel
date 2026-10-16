@@ -16,11 +16,11 @@ pub struct SessionSearchResults {
 }
 
 impl ThreadSearchAuthority {
-    /// Includes active and archived sessions across workspaces. Results are stable
+    /// Includes active and archived sessions across Sessions. Results are stable
     /// by session identity and capped at 50; no credentials or tool payloads are searched.
     pub fn search_sessions(&self, query: &str) -> Result<SessionSearchResults, SearchError> {
         validate_request(&SearchRequest {
-            workspace_id: None,
+            session_filter: None,
             query: query.into(),
             limit: MAX_PAGE_SIZE,
             visibility: ArchiveVisibility::All,

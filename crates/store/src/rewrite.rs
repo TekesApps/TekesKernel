@@ -1661,6 +1661,10 @@ fn build_genesis(source: &Event, context: &GenesisContext<'_>) -> Result<Value, 
             target.insert((*field).to_owned(), value.clone());
         }
     }
+    if target.contains_key("execution") {
+        target.remove("workspace");
+        target.remove("folder_binding");
+    }
     // An explicit fork preset replaces the source's on the main line only;
     // a preset genesis needs reader 2 whatever the copied minima say.
     let preset = match (&context.operation.genesis_preset, context.source_file) {

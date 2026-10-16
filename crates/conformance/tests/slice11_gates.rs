@@ -13,7 +13,7 @@ use endpoint::{
 };
 use profile::{
     ConfigRepository, EffectiveInstructions, InstructionKind, InstructionOrigin,
-    InstructionResolver, InstructionSnapshot, InstructionSource, ResourceCatalog, WorkspaceConfig,
+    InstructionResolver, InstructionSnapshot, InstructionSource, ResourceCatalog,
 };
 use schema::{IJsonValue, OriginTuple, ResumePolicy};
 use serde_json::{Value, json};
@@ -37,9 +37,10 @@ const CONFIG_DIGEST: &str = "000000000000000000000000000000000000000000000000000
 fn fixture_catalog() -> ResourceCatalog {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let root = fixtures.join("resources/migration");
-    let resolver = test_support::trusted_resolver(
-        InstructionResolver::new(root.join("user"), [root.join("project")]),
-        &[root.join("project")],
+    let resolver = InstructionResolver::new_scoped(
+        root.join("user"),
+        root.join("project/.agent"),
+        [root.join("project")],
     );
     let snapshot = resolver.capture().expect("resource instruction snapshot");
     ResourceCatalog::from_snapshot(&snapshot).expect("resource catalog")
@@ -58,7 +59,7 @@ fn bootstrap_input_session(root: &std::path::Path) {
         .expect("native endpoint")
         .create_session(
             INPUT_SESSION_ID,
-            "workspace-1",
+            &test_support::execution_fixture(),
             CONFIG_DIGEST,
             ResumePolicy::Never,
             "2026-08-29T00:00:00.000Z",
@@ -90,13 +91,18 @@ fn slice11_gate_77_skill_package_migration_and_explicit_collisions() {
         .verify_manifest()
         .expect("complete fixture manifest");
     let catalog = fixture_catalog();
-    let expected = fixture_value("expected.canonical.json");
+    let mut expected = fixture_value("expected.canonical.json");
+    for skill in expected["skills"].as_array_mut().unwrap() {
+        if skill["source"] == "project:0" {
+            skill["source"] = json!("workspace");
+        }
+    }
     assert_eq!(
         serde_json::to_value(catalog.skill_summaries()).expect("skill summaries"),
         expected["skills"]
     );
     let package = catalog.skill("review").expect("review package");
-    assert_eq!(package.summary.source, "project:0");
+    assert_eq!(package.summary.source, "workspace");
     assert_eq!(
         package
             .resources
@@ -133,12 +139,10 @@ fn slice11_gate_77_skill_package_migration_and_explicit_collisions() {
         "---\nname: review\ndescription: Project\n---\nProject\n",
     )
     .expect("project manifest");
-    let snapshot = test_support::trusted_resolver(
-        InstructionResolver::new(
-            invalid.path().join("user"),
-            [invalid.path().join("project")],
-        ),
-        &[invalid.path().join("project")],
+    let snapshot = InstructionResolver::new_scoped(
+        invalid.path().join("user"),
+        invalid.path().join("project/.agent"),
+        [invalid.path().join("project")],
     )
     .capture()
     .expect("colliding skill snapshot");
@@ -221,7 +225,6 @@ fn slice11_gate_78_command_catalog_expansion_and_negative_corpus() {
     effective.commands.insert("position.md".to_owned(), 0);
     effective.commands.insert("expand.md".to_owned(), 1);
     let limits = ResourceCatalog::from_snapshot(&InstructionSnapshot {
-        folder_authority: None,
         format: 1,
         sources,
         effective,
@@ -237,7 +240,6 @@ fn slice11_gate_78_command_catalog_expansion_and_negative_corpus() {
     let alias = fixture_value("invalid-alias-command.canonical.json");
     let content = alias["content"].as_str().expect("alias command content");
     let snapshot = InstructionSnapshot {
-        folder_authority: None,
         format: 1,
         sources: vec![InstructionSource {
             origin: InstructionOrigin::User,
@@ -526,7 +528,7 @@ impl SessionDeliveryAuthority for RecordingDelivery {
 
 #[test]
 fn slice11_gate_80_production_input_seam_and_mux_authority() {
-    assert_eq!(TEKES_UNARY_ROUTES.len(), 16);
+    assert_eq!(TEKES_UNARY_ROUTES.len(), 13);
     assert!(
         TEKES_UNARY_ROUTES
             .iter()
@@ -780,7 +782,7 @@ fn slice11_gate_80_production_input_seam_and_mux_authority() {
         let result = block_on_ready(
             archive_host.call(EndpointHostCall {
                 rpc_id: "rpc-archive-command-race".to_owned(),
-                operation: "workspace.archiveSession".to_owned(),
+                operation: "session.archive".to_owned(),
                 payload: IJsonValue::parse_str(&format!(r#"{{"sessionId":"{INPUT_SESSION_ID}"}}"#))
                     .expect("archive payload"),
                 recovering: false,
@@ -872,21 +874,13 @@ fn slice11_gate_80_production_input_seam_and_mux_authority() {
         .join("project")
         .canonicalize()
         .expect("canonical project root");
-    ConfigRepository::open(production_root.path())
-        .expect("production config repository")
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "resource-workspace".to_owned(),
-                name: "Resource workspace".to_owned(),
-                cwd: vec![project.to_string_lossy().into_owned()],
-                folders: Vec::new(),
-                policy: None,
-            },
-        )
-        .expect("publish resource workspace");
+    test_support::freeze_execution_fixture(
+        &(ConfigRepository::open(production_root.path()).expect("production config repository")),
+        vec![project.to_string_lossy().into_owned()],
+        None,
+        [None, None],
+    )
+    .expect("publish resource workspace");
     let process_host = ProductionProcessHost::open(
         production_root.path(),
         std::env::current_exe().expect("test binary"),
@@ -918,20 +912,9 @@ fn slice11_gate_80_production_input_seam_and_mux_authority() {
         "resources/read",
         "tools/list",
         "tools/resolve",
-        "schedule.list",
-        "schedule.save",
-        "schedule.delete",
-        "schedule.runNow",
         "thread.search",
         "usage.summary",
         "usage.cacheAttribution",
-        "mcp.list",
-        "mcp.get",
-        "mcp.save",
-        "mcp.remove",
-        "mcp.probe",
-        "mcp.oauth.start",
-        "mcp.oauth.remove",
     ] {
         assert!(
             production.capabilities().contains(method),

@@ -440,7 +440,7 @@ impl EndpointCarrierHost for MockHost {
 
     fn mux_description(&self) -> Result<MuxHostDescription, HostFailure> {
         Ok(MuxHostDescription {
-            protocol_version: 3,
+            protocol_version: 4,
             product: MuxHostProduct {
                 name: "MockKernel".to_owned(),
                 version: "dev-test".to_owned(),
@@ -709,7 +709,7 @@ async fn web_client_is_direct_on_loopback_and_rejects_cross_origin_data() {
 
 #[tokio::test]
 async fn slice9_gate_65_endpoint_transport_authority() {
-    assert_eq!(transport::ROUTE_REGISTRY.len(), 17);
+    assert_eq!(transport::ROUTE_REGISTRY.len(), 14);
     let non_loopback = TransportConfig::loopback(
         SocketAddr::new(IpAddr::V4(Ipv4Addr::UNSPECIFIED), 7347),
         BearerToken::new([0; 32]),
@@ -717,7 +717,7 @@ async fn slice9_gate_65_endpoint_transport_authority() {
     assert!(TransportServer::new(Arc::new(MockHost::new(true)), non_loopback).is_err());
 
     let mismatch = TransportServer::new(
-        Arc::new(MockHost::new(true).without_route("workspace.unarchiveSession")),
+        Arc::new(MockHost::new(true).without_route("session.unarchive")),
         config(),
     );
     assert!(
@@ -1249,7 +1249,7 @@ async fn v3_mux_rejects_a_duplicate_baseline_on_one_logical_stream() {
     )
     .expect("ready JSON");
     assert_eq!(ready["type"], "ready");
-    assert_eq!(ready["host"]["protocolVersion"], 3);
+    assert_eq!(ready["host"]["protocolVersion"], 4);
     socket
         .send(tokio_tungstenite::tungstenite::Message::Text(
             r#"{"streamId":"workspace-1","target":{"kind":"workspace"},"type":"open"}"#.into(),

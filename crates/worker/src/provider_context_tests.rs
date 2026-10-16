@@ -5,8 +5,8 @@ use std::fs;
 use std::net::TcpListener;
 
 use profile::{
-    EffectiveInstructions, InstructionResolver, ProvidersConfig, ResolvedWorkspace, RevisionVector,
-    SettingsConfig, WorkspacePolicy,
+    EffectiveInstructions, ExecutionPolicy, InstructionResolver, ProvidersConfig,
+    ResolvedExecution, RevisionVector, SettingsConfig,
 };
 use test_support::FixtureRoot;
 
@@ -207,9 +207,10 @@ fn frozen_instruction_bytes_without_host_trust_do_not_enable_project_execution()
 fn package_skill_catalog_uses_same_frozen_resource_projection() {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let root = fixtures.join("resources/migration");
-    let snapshot = test_support::trusted_resolver(
-        InstructionResolver::new(root.join("user"), [root.join("project")]),
-        &[root.join("project")],
+    let snapshot = InstructionResolver::new_scoped(
+        root.join("user"),
+        root.join("project/.agent"),
+        [root.join("project")],
     )
     .capture()
     .expect("resource instruction snapshot");
@@ -446,7 +447,7 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
         .unwrap()
         .to_string_lossy()
         .into_owned();
-    profile.config.workspace.policy.writable_roots = vec![workspace.clone()];
+    profile.config.execution.policy.writable_roots = vec![workspace.clone()];
     let call = |name: &str, arguments| provider::ToolCall {
         call_id: "call".to_owned(),
         name: name.to_owned(),
@@ -516,7 +517,7 @@ fn shell_uses_effective_workspace_write_permission_without_model_restatement() {
         .unwrap(),
         vec![workspace.clone()],
     );
-    profile.config.workspace.policy.writable_roots.clear();
+    profile.config.execution.policy.writable_roots.clear();
     assert!(
         invocation_write_roots(
             &profile,
@@ -556,7 +557,7 @@ fn writable_paths_inside_kernel_owned_directories_are_refused() {
     std::os::unix::fs::symlink(&storage, home.join("alias")).unwrap();
     let mut profile = tool_profile(&home, &["shell", "write"]);
     let home_text = home.to_string_lossy().into_owned();
-    profile.config.workspace.policy.writable_roots = vec![home_text.clone()];
+    profile.config.execution.policy.writable_roots = vec![home_text.clone()];
     let protected = tools::kernel_protected_roots(&storage);
     let call = |name: &str, arguments| provider::ToolCall {
         call_id: "call".to_owned(),
@@ -613,7 +614,7 @@ fn frozen_host_user_agent_dir_is_used_by_file_write_guards() {
     std::os::unix::fs::symlink(&user, home.join("user-alias")).unwrap();
     let mut profile = tool_profile(&home, &["shell", "write"]);
     profile.config.user_agent_dir = Some(user.to_string_lossy().into_owned());
-    profile.config.workspace.policy.writable_roots = vec![home.to_string_lossy().into_owned()];
+    profile.config.execution.policy.writable_roots = vec![home.to_string_lossy().into_owned()];
     let protected = profile.config.protected_roots(&storage);
     for path in ["custom-user/hooks/a.json", "user-alias/skills/a/SKILL.md"] {
         let call = provider::ToolCall {
@@ -636,35 +637,27 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
     let config = ConfigSnapshot {
         user_agent_dir: None,
         format: 1,
-        workspace: ResolvedWorkspace {
-            environment: None,
-            folders: None,
-            format: 1,
-            revision: 1,
-            id: "ws".to_owned(),
-            name: "ws".to_owned(),
-            folder_binding: None,
-            selected_cwd: None,
+        execution: ResolvedExecution {
+            session_id: "ws".to_owned(),
+
             cwd: vec![
                 root.canonicalize()
                     .expect("canonical workspace")
                     .to_string_lossy()
                     .into_owned(),
             ],
-            policy: WorkspacePolicy {
+            policy: ExecutionPolicy {
                 allowed_tools,
-                ..WorkspacePolicy::default()
+                ..ExecutionPolicy::default()
             },
         },
         providers: ProvidersConfig::default(),
-        legacy_integrations: (),
+
         settings: SettingsConfig::default(),
         session_settings: None,
         revisions: RevisionVector {
-            environments: None,
-            workspace: 1,
             providers: 0,
-            legacy_integrations: (),
+
             settings: 0,
             session_settings: None,
         },
@@ -676,7 +669,6 @@ fn tool_profile(root: &std::path::Path, allowed_tools: &[&str]) -> RuntimeProfil
         validator: false,
         subagent: false,
         instruction: InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),
@@ -710,7 +702,7 @@ fn test_options(ledger: &LockedLedger) -> Options {
 fn unconfigured_provider_settles_with_the_exact_owned_reason() {
     let (directory, mut ledger) = context_ledger("responses", true);
     let mut profile = tool_profile(directory.path(), &[]);
-    profile.config.workspace.policy.network = true;
+    profile.config.execution.policy.network = true;
     let options = test_options(&ledger);
     let mut lines = std::iter::empty::<io::Result<String>>();
     let mut output = Vec::new();
@@ -810,9 +802,9 @@ fn provider_failures_keep_http_ownership_and_terminal_classification() {
 
 fn configured_test_provider_profile(root: &std::path::Path) -> RuntimeProfile {
     let mut profile = tool_profile(root, &[]);
-    profile.config.workspace.policy.network = true;
-    profile.config.workspace.policy.provider = Some("fixture".to_owned());
-    profile.config.workspace.policy.model = Some("gpt-5".to_owned());
+    profile.config.execution.policy.network = true;
+    profile.config.settings.default_provider = Some("fixture".to_owned());
+    profile.config.settings.default_model = Some("gpt-5".to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -1264,7 +1256,7 @@ fn catalog_role_is_derived_once_and_conflicts_fail_closed() {
 fn web_search_catalog_requires_network_config_and_active_launch_readiness() {
     let directory = tempfile::tempdir().expect("workspace");
     let mut profile = tool_profile(directory.path(), &["web_search"]);
-    profile.config.workspace.policy.network = true;
+    profile.config.execution.policy.network = true;
     profile.config.providers.web_search = Some(WebSearch {
         adapter: "tavily_v1".to_owned(),
         endpoint: "https://api.tavily.com".to_owned(),
@@ -1277,7 +1269,7 @@ fn web_search_catalog_requires_network_config_and_active_launch_readiness() {
     let unavailable = manifest
         .projection(&tool_catalog_context(&profile, false, false).expect("not-ready catalog"));
     assert!(!unavailable.iter().any(|tool| tool.name == "web_search"));
-    profile.config.workspace.policy.network = false;
+    profile.config.execution.policy.network = false;
     let denied = manifest
         .projection(&tool_catalog_context(&profile, false, true).expect("network denied catalog"));
     assert!(!denied.iter().any(|tool| tool.name == "web_search"));
@@ -2378,7 +2370,7 @@ fn production_task_creates_launches_waits_and_pairs_child_once() {
     child_writer.join().unwrap();
     let snapshot =
         validation_runtime::snapshot(&ledger, 2, &profile).expect("joined child artifacts");
-    let artifact_path = PathBuf::from(&profile.config.workspace.cwd[0])
+    let artifact_path = PathBuf::from(&profile.config.execution.cwd[0])
         .join("delegated.txt")
         .to_string_lossy()
         .into_owned();
@@ -2912,9 +2904,9 @@ fn production_provider_ignores_tool_network_policy_and_continues_after_tool_resu
             }
     });
     let mut profile = tool_profile(directory.path(), &["think"]);
-    profile.config.workspace.policy.network = false;
-    profile.config.workspace.policy.provider = Some("fixture".to_owned());
-    profile.config.workspace.policy.model = Some("gpt-5".to_owned());
+    profile.config.execution.policy.network = false;
+    profile.config.settings.default_provider = Some("fixture".to_owned());
+    profile.config.settings.default_model = Some("gpt-5".to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -3097,9 +3089,9 @@ fn assert_production_turn_continuation(real_memory_enabled: bool) {
             }
     });
     let mut profile = tool_profile(directory.path(), &["think"]);
-    profile.config.workspace.policy.network = false;
-    profile.config.workspace.policy.provider = Some("fixture".to_owned());
-    profile.config.workspace.policy.model = Some("gpt-5".to_owned());
+    profile.config.execution.policy.network = false;
+    profile.config.settings.default_provider = Some("fixture".to_owned());
+    profile.config.settings.default_model = Some("gpt-5".to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -3887,15 +3879,9 @@ fn overflow_profile_with_trigger(
     let config = ConfigSnapshot {
         user_agent_dir: None,
         format: 1,
-        workspace: ResolvedWorkspace {
-            environment: None,
-            folders: None,
-            format: 1,
-            revision: 1,
-            id: "ws".to_owned(),
-            name: "ws".to_owned(),
-            folder_binding: None,
-            selected_cwd: None,
+        execution: ResolvedExecution {
+            session_id: "ws".to_owned(),
+
             cwd: vec![
                 directory
                     .canonicalize()
@@ -3903,11 +3889,10 @@ fn overflow_profile_with_trigger(
                     .to_string_lossy()
                     .into_owned(),
             ],
-            policy: WorkspacePolicy {
+            policy: ExecutionPolicy {
                 network: true,
-                provider: Some("fixture".to_owned()),
-                model: Some("gpt-5".to_owned()),
-                ..WorkspacePolicy::default()
+
+                ..ExecutionPolicy::default()
             },
         },
         providers: ProvidersConfig {
@@ -3933,15 +3918,18 @@ fn overflow_profile_with_trigger(
             }],
             web_search: None,
         },
-        legacy_integrations: (),
-        settings: SettingsConfig::default(),
+
+        settings: SettingsConfig {
+            revision: 1,
+            default_provider: Some("fixture".into()),
+            default_model: Some("gpt-5".into()),
+            ..SettingsConfig::default()
+        },
         session_settings: None,
         revisions: RevisionVector {
-            environments: None,
-            workspace: 1,
             providers: 1,
-            legacy_integrations: (),
-            settings: 0,
+
+            settings: 1,
             session_settings: None,
         },
     };
@@ -3952,7 +3940,6 @@ fn overflow_profile_with_trigger(
         validator: false,
         subagent: false,
         instruction: InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),
@@ -5574,8 +5561,8 @@ fn eager_responses_profile_for(
         other => panic!("no eager Responses fixture for dialect {other}"),
     };
     let mut profile = tool_profile(root, allowed_tools);
-    profile.config.workspace.policy.provider = Some("fixture".to_owned());
-    profile.config.workspace.policy.model = Some(model.to_owned());
+    profile.config.settings.default_provider = Some("fixture".to_owned());
+    profile.config.settings.default_model = Some(model.to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -6520,7 +6507,7 @@ fn remote_task_continuation_parks_on_input_and_resumes_to_one_result() {
     let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
     let name = "mcp__fixture__async";
     let mut profile = tool_profile(directory.path(), &[]);
-    profile.config.workspace.policy.allowed_tools = vec![name.to_owned()];
+    profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
     profile.bindings.dynamic_catalog =
         profile::DynamicToolCatalog::resolve(vec![async_dynamic_tool(name)]).expect("catalog");
     let options = test_options(&ledger);
@@ -6770,7 +6757,7 @@ fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
     let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
     let name = "mcp__fixture__async";
     let mut profile = tool_profile(directory.path(), &[]);
-    profile.config.workspace.policy.allowed_tools = vec![name.to_owned()];
+    profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
     profile.bindings.dynamic_catalog =
         profile::DynamicToolCatalog::resolve(vec![async_dynamic_tool(name)]).expect("catalog");
     let options = test_options(&ledger);
@@ -6894,7 +6881,7 @@ fn native_route_declares_client_tool_search_and_replays_bound_output() {
     let (directory, mut ledger) = context_ledger("openai_responses_v1", false);
     let name = "mcp__fixture__marker";
     let mut profile = tool_profile(directory.path(), &[]);
-    profile.config.workspace.policy.allowed_tools = vec!["tool_search".to_owned(), name.to_owned()];
+    profile.config.execution.policy.allowed_tools = vec!["tool_search".to_owned(), name.to_owned()];
     let deferred = DynamicTool::declared(
         name,
         profile::DynamicToolSource {
@@ -6918,8 +6905,8 @@ fn native_route_declares_client_tool_search_and_replays_bound_output() {
     let deferred_schema = serde_json::to_value(&deferred.schema).unwrap();
     profile.bindings.dynamic_catalog =
         profile::DynamicToolCatalog::resolve(vec![deferred]).expect("catalog");
-    profile.config.workspace.policy.provider = Some("cf".to_owned());
-    profile.config.workspace.policy.model = Some("openai/gpt-5.6-luna".to_owned());
+    profile.config.settings.default_provider = Some("cf".to_owned());
+    profile.config.settings.default_model = Some("openai/gpt-5.6-luna".to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -7169,8 +7156,8 @@ fn eager_dispatch_executes_anthropic_call_before_message_stop_bytes() {
         executed
     });
     let mut profile = tool_profile(directory.path(), &["think"]);
-    profile.config.workspace.policy.provider = Some("anthropic".to_owned());
-    profile.config.workspace.policy.model = Some("claude-sonnet-4-20250514".to_owned());
+    profile.config.settings.default_provider = Some("anthropic".to_owned());
+    profile.config.settings.default_model = Some("claude-sonnet-4-20250514".to_owned());
     profile.config.providers = ProvidersConfig {
         format: 1,
         revision: 1,
@@ -7326,7 +7313,7 @@ fn remote_task_continuation_parks_when_polls_slow_and_resumes_when_due() {
     let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
     let name = "mcp__fixture__async";
     let mut profile = tool_profile(directory.path(), &[]);
-    profile.config.workspace.policy.allowed_tools = vec![name.to_owned()];
+    profile.config.execution.policy.allowed_tools = vec![name.to_owned()];
     profile.bindings.dynamic_catalog =
         profile::DynamicToolCatalog::resolve(vec![async_dynamic_tool(name)]).expect("catalog");
     let options = test_options(&ledger);
@@ -8811,86 +8798,4 @@ fn assert_child_seed_is(ledger: &LockedLedger, spawn: &DurableChildSpawn, seed: 
             .unwrap(),
         expected
     );
-}
-
-#[test]
-fn project_lifecycle_hooks_stop_using_frozen_receipts_after_revocation() {
-    let (directory, ledger) = context_ledger("openai_responses_v1", true);
-    let mut profile = tool_profile(directory.path(), &[]);
-    let log = install_lifecycle_test_hooks(directory.path(), &mut profile);
-    for source in &mut profile.instruction.sources {
-        source.origin = profile::InstructionOrigin::Project { workspace_index: 0 };
-    }
-    assert!(
-        lifecycle_hooks::LifecycleHooks::load(&profile, &ledger)
-            .unwrap()
-            .is_none()
-    );
-    let state = tempfile::tempdir().unwrap();
-    let authority = profile::FolderAuthorityStore::new(state.path());
-    let project = directory.path().join("hook-user");
-    let request = authority.request("r", 0, &project).unwrap();
-    let grant = authority.grant_from_host("g", 1, "r").unwrap();
-    profile.instruction.folder_authority = Some(profile::FolderSnapshotAuthority {
-        storage_root: state.path().to_path_buf(),
-        folders: [(0, grant.folder)].into(),
-    });
-    let hooks = lifecycle_hooks::LifecycleHooks::load(&profile, &ledger)
-        .unwrap()
-        .unwrap();
-    assert_eq!(
-        hooks.prepare(&ledger, 2, &[]),
-        vec!["LIFECYCLE_CONTEXT_MARKER"]
-    );
-    let before = fs::read(&log).unwrap();
-    authority.revoke("revoke", 2, &request.folder.id).unwrap();
-    assert!(
-        hooks.prepare(&ledger, 2, &[]).is_empty(),
-        "cached hook context must also lose authority"
-    );
-    hooks.before_compact(&ledger, 2, &[2], false);
-    assert_eq!(fs::read(&log).unwrap(), before);
-}
-
-#[test]
-fn project_format_one_hooks_need_host_grant_and_are_filtered_on_each_dispatch() {
-    let root = tempfile::tempdir().unwrap();
-    let state = tempfile::tempdir().unwrap();
-    let project = root.path().join("project");
-    let hooks = project.join(".agents/hooks");
-    fs::create_dir_all(&hooks).unwrap();
-    let marker = root.path().join("marker");
-    let code = r#"import sys,json,os
-r=json.load(sys.stdin)
-with open(os.environ['MARKER'],'a') as f:f.write('ran\n')
-print(json.dumps(dict(format=1,hook_id=r['hook_id'],call=r['call'],verdict={'allow':{}}),sort_keys=True,separators=(',',':')))
-"#;
-    let binding = json!({"format":1,"id":"policy","argv":["/usr/bin/python3","-c",code],"phase":"pre","failure":"closed","timeout_ms":1000,"stdout_bytes":4096,"stderr_bytes":4096,"env":{"MARKER":marker}});
-    fs::write(
-        hooks.join("policy"),
-        tools::encode_hook_line(&binding).unwrap(),
-    )
-    .unwrap();
-    let resolver = InstructionResolver::new(root.path().join("user"), [&project])
-        .with_folder_authority(state.path());
-    assert!(
-        frozen_hook_bindings(&resolver.capture().unwrap())
-            .unwrap()
-            .is_empty()
-    );
-    let authority = profile::FolderAuthorityStore::new(state.path());
-    let request = authority.request("r", 0, &project).unwrap();
-    authority.grant_from_host("g", 1, "r").unwrap();
-    let snapshot = resolver.capture().unwrap();
-    let admitted = snapshot.admit_kind(profile::InstructionKind::Hook);
-    let bindings = frozen_hook_bindings(&snapshot).unwrap();
-    assert_eq!(bindings.len(), 1);
-    let request_wire: tools::HookRequest =
-        serde_json::from_slice(include_bytes!("../../../fixtures/hooks/pre-request.json")).unwrap();
-    tools::ProcessHook::run(&bindings[0], &request_wire).unwrap();
-    assert_eq!(fs::read_to_string(&marker).unwrap(), "ran\n");
-    drop(admitted);
-    authority.revoke("revoke", 2, &request.folder.id).unwrap();
-    assert!(frozen_hook_bindings(&snapshot).unwrap().is_empty());
-    assert_eq!(fs::read_to_string(&marker).unwrap(), "ran\n");
 }

@@ -63,7 +63,7 @@ Static diagrams show dependencies or possible calls. Sequence diagrams show orde
 
 ## Current interface boundary
 
-[Session Endpoint](../../spec/session-endpoint.md#routes-and-streams) is the current public protocol: 16 base unary operations and
+[Session Endpoint](../../spec/session-endpoint.md#routes-and-streams) is the current public protocol: 13 base unary operations and
 one `/api/remote.mux` WebSocket route. `endpoint.jsonl` is the internal projection journal of the semantic
 ledger; it implies no protocol negotiation. Old list/history, dual-WebSocket and `/api/respond` routes must not appear as current entry points.
 

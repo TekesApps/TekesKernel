@@ -17,7 +17,7 @@ pub use folder::{
     move_thread_folder,
 };
 pub use management_root::{
-    ENDPOINT_MANAGEMENT_DIR, SESSION_SETTINGS_FILE, endpoint_management_root, retire_legacy_name,
+    ENDPOINT_RPC_DIR, SESSION_SETTINGS_FILE, endpoint_rpc_root, retire_legacy_name,
     session_settings_path,
 };
 pub use platform::{

@@ -17,8 +17,8 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::continuation::rfc3339_after](../../src/continuation.rs#L137) | function_item | `pub(crate)` |  |
 | [tekes-worker::continuation::ContinuationWait](../../src/continuation.rs#L142) | struct_item | `pub(crate)` |  |
 | [tekes-worker::continuation::wait_tool_continuation](../../src/continuation.rs#L157) | function_item | `pub(crate)` |  |
-| [tekes-worker::continuation::control_error_code_name](../../src/continuation.rs#L473) | function_item | `private` |  |
-| [tekes-worker::continuation::exchange_tool_continuation_runtime](../../src/continuation.rs#L482) | function_item | `private` |  |
+| [tekes-worker::continuation::control_error_code_name](../../src/continuation.rs#L470) | function_item | `private` |  |
+| [tekes-worker::continuation::exchange_tool_continuation_runtime](../../src/continuation.rs#L479) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -132,7 +132,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_tool_continuation` | `projection         .events         .iter` | [192](../../src/continuation.rs#L192) | receiver-type-required |
 | `wait_tool_continuation` | `event.kind` | [196](../../src/continuation.rs#L196), [212](../../src/continuation.rs#L212) | receiver-type-required |
 | `wait_tool_continuation` | `event.string_field` | [196](../../src/continuation.rs#L196), [212](../../src/continuation.rs#L212) | receiver-type-required |
-| `wait_tool_continuation` | `Some` | [196](../../src/continuation.rs#L196), [212](../../src/continuation.rs#L212), [402](../../src/continuation.rs#L402) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `Some` | [196](../../src/continuation.rs#L196), [212](../../src/continuation.rs#L212), [399](../../src/continuation.rs#L399) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `tool_call.turn().ok_or` | [199](../../src/continuation.rs#L199) | receiver-type-required |
 | `wait_tool_continuation` | `tool_call.turn` | [199](../../src/continuation.rs#L199) | receiver-type-required |
 | `wait_tool_continuation` | `tool_call         .string_field("attempt")         .ok_or("tool_call lacks attempt")?         .to_owned` | [200](../../src/continuation.rs#L200) | receiver-type-required |
@@ -151,8 +151,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_tool_continuation` | `effective.raw` | [214](../../src/continuation.rs#L214) | receiver-type-required |
 | `wait_tool_continuation` | `raw.get("invocation")                 .ok_or` | [217](../../src/continuation.rs#L217) | receiver-type-required |
 | `wait_tool_continuation` | `raw.get` | [217](../../src/continuation.rs#L217) | receiver-type-required |
-| `wait_tool_continuation` | `IJsonValue::parse` | [221](../../src/continuation.rs#L221), [367](../../src/continuation.rs#L367), [393](../../src/continuation.rs#L393) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `serde_json::to_vec` | [221](../../src/continuation.rs#L221), [367](../../src/continuation.rs#L367), [393](../../src/continuation.rs#L393) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `IJsonValue::parse` | [221](../../src/continuation.rs#L221), [364](../../src/continuation.rs#L364), [390](../../src/continuation.rs#L390) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `serde_json::to_vec` | [221](../../src/continuation.rs#L221), [364](../../src/continuation.rs#L364), [390](../../src/continuation.rs#L390) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `ToolControl::new` | [222](../../src/continuation.rs#L222) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `thread.clone` | [224](../../src/continuation.rs#L224) | receiver-type-required |
 | `wait_tool_continuation` | `name.clone` | [227](../../src/continuation.rs#L227) | receiver-type-required |
@@ -168,9 +168,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_tool_continuation` | `thread_folder.join` | [247](../../src/continuation.rs#L247) | receiver-type-required |
 | `wait_tool_continuation` | `continuation_facts(ledger, call)?.ok_or` | [255](../../src/continuation.rs#L255) | receiver-type-required |
 | `wait_tool_continuation` | `continuation_facts` | [255](../../src/continuation.rs#L255) | [tekes-worker::continuation::continuation_facts](../../src/continuation.rs#L22) |
-| `wait_tool_continuation` | `Err` | [257](../../src/continuation.rs#L257), [429](../../src/continuation.rs#L429) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `Err` | [257](../../src/continuation.rs#L257), [426](../../src/continuation.rs#L426) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `"continuation identity changed under the call".into` | [257](../../src/continuation.rs#L257) | receiver-type-required |
-| `wait_tool_continuation` | `Ok` | [260](../../src/continuation.rs#L260), [329](../../src/continuation.rs#L329), [348](../../src/continuation.rs#L348), [350](../../src/continuation.rs#L350), [361](../../src/continuation.rs#L361), [405](../../src/continuation.rs#L405), [455](../../src/continuation.rs#L455), [467](../../src/continuation.rs#L467) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `Ok` | [260](../../src/continuation.rs#L260), [326](../../src/continuation.rs#L326), [345](../../src/continuation.rs#L345), [347](../../src/continuation.rs#L347), [358](../../src/continuation.rs#L358), [402](../../src/continuation.rs#L402), [452](../../src/continuation.rs#L452), [464](../../src/continuation.rs#L464) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `facts                     .poll_after                     .as_deref()                     .and_then` | [267](../../src/continuation.rs#L267) | receiver-type-required |
 | `wait_tool_continuation` | `facts                     .poll_after                     .as_deref` | [267](../../src/continuation.rs#L267) | receiver-type-required |
 | `wait_tool_continuation` | `chrono::DateTime::parse_from_rfc3339(value).ok` | [270](../../src/continuation.rs#L270) | receiver-type-required |
@@ -179,88 +179,87 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `wait_tool_continuation` | `(due.with_timezone(&chrono::Utc) - chrono::Utc::now())                         .to_std` | [272](../../src/continuation.rs#L272) | receiver-type-required |
 | `wait_tool_continuation` | `due.with_timezone` | [272](../../src/continuation.rs#L272) | receiver-type-required |
 | `wait_tool_continuation` | `chrono::Utc::now` | [272](../../src/continuation.rs#L272) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `std::thread::sleep` | [275](../../src/continuation.rs#L275), [407](../../src/continuation.rs#L407) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `std::thread::sleep` | [275](../../src/continuation.rs#L275), [404](../../src/continuation.rs#L404) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `remaining.min` | [275](../../src/continuation.rs#L275) | receiver-type-required |
 | `wait_tool_continuation` | `Duration::from_millis(parked_interval.saturating_mul(2))                     .min` | [277](../../src/continuation.rs#L277) | receiver-type-required |
 | `wait_tool_continuation` | `Duration::from_millis` | [277](../../src/continuation.rs#L277) | external-constructor-callback-or-unresolved |
 | `wait_tool_continuation` | `parked_interval.saturating_mul` | [277](../../src/continuation.rs#L277) | receiver-type-required |
-| `wait_tool_continuation` | `profile             .instruction             .admit_kind` | [282](../../src/continuation.rs#L282) | receiver-type-required |
-| `wait_tool_continuation` | `frozen_hook_bindings` | [285](../../src/continuation.rs#L285) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `ToolPipeline::new` | [287](../../src/continuation.rs#L287), [395](../../src/continuation.rs#L395), [439](../../src/continuation.rs#L439) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `assets.clone` | [287](../../src/continuation.rs#L287), [395](../../src/continuation.rs#L395), [439](../../src/continuation.rs#L439) | receiver-type-required |
-| `wait_tool_continuation` | `SecretScanner::default` | [287](../../src/continuation.rs#L287), [395](../../src/continuation.rs#L395), [439](../../src/continuation.rs#L439) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `pipeline                 .complete_continuation(&execution, &hooks, &execution.invocation, terminal)                 .map_err` | [288](../../src/continuation.rs#L288) | receiver-type-required |
-| `wait_tool_continuation` | `pipeline                 .complete_continuation` | [288](../../src/continuation.rs#L288) | receiver-type-required |
-| `wait_tool_continuation` | `error.to_string` | [290](../../src/continuation.rs#L290) | receiver-type-required |
-| `wait_tool_continuation` | `cancellation.stop_requested` | [292](../../src/continuation.rs#L292), [388](../../src/continuation.rs#L388), [425](../../src/continuation.rs#L425) | receiver-type-required |
-| `wait_tool_continuation` | `ToolContinuationRequest::new` | [295](../../src/continuation.rs#L295), [410](../../src/continuation.rs#L410) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `original.clone` | [296](../../src/continuation.rs#L296), [411](../../src/continuation.rs#L411) | receiver-type-required |
-| `wait_tool_continuation` | `continuation_id.to_owned` | [297](../../src/continuation.rs#L297), [412](../../src/continuation.rs#L412) | receiver-type-required |
-| `wait_tool_continuation` | `exchange_tool_continuation_runtime(                 &selected,                 &cancel,                 lines,                 stdout,                 cancellation,                 true,             )             .map(&#124;response&#124; match response.result {                 ToolContinuationOutcome::Failed { error } => format!(                     "remote {}: {}",                     control_error_code_name(&error.code),                     error.message                 ),                 ToolContinuationOutcome::Pending { .. } => "remote still pending".to_owned(),                 ToolContinuationOutcome::Completed { .. } => {                     "remote completed before cancellation".to_owned()                 }             })             .unwrap_or_else` | [301](../../src/continuation.rs#L301) | receiver-type-required |
-| `wait_tool_continuation` | `exchange_tool_continuation_runtime(                 &selected,                 &cancel,                 lines,                 stdout,                 cancellation,                 true,             )             .map` | [301](../../src/continuation.rs#L301) | receiver-type-required |
-| `wait_tool_continuation` | `exchange_tool_continuation_runtime` | [301](../../src/continuation.rs#L301), [416](../../src/continuation.rs#L416) | [tekes-worker::continuation::exchange_tool_continuation_runtime](../../src/continuation.rs#L482) |
-| `wait_tool_continuation` | `"remote still pending".to_owned` | [315](../../src/continuation.rs#L315) | receiver-type-required |
-| `wait_tool_continuation` | `"remote completed before cancellation".to_owned` | [317](../../src/continuation.rs#L317) | receiver-type-required |
-| `wait_tool_continuation` | `terminalize` | [321](../../src/continuation.rs#L321), [353](../../src/continuation.rs#L353), [453](../../src/continuation.rs#L453), [458](../../src/continuation.rs#L458) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `"cancelled".to_owned` | [324](../../src/continuation.rs#L324) | receiver-type-required |
-| `wait_tool_continuation` | `facts                         .state                         .get("inputRequests")                         .cloned()                         .unwrap_or_else` | [336](../../src/continuation.rs#L336) | receiver-type-required |
-| `wait_tool_continuation` | `facts                         .state                         .get("inputRequests")                         .cloned` | [336](../../src/continuation.rs#L336) | receiver-type-required |
-| `wait_tool_continuation` | `facts                         .state                         .get` | [336](../../src/continuation.rs#L336) | receiver-type-required |
-| `wait_tool_continuation` | `facts.state.clone` | [340](../../src/continuation.rs#L340) | receiver-type-required |
-| `wait_tool_continuation` | `make_event` | [341](../../src/continuation.rs#L341) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `ledger.append_contract` | [346](../../src/continuation.rs#L346) | receiver-type-required |
-| `wait_tool_continuation` | `BarrierContext::default` | [346](../../src/continuation.rs#L346) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `announce_appended` | [347](../../src/continuation.rs#L347), [404](../../src/continuation.rs#L404), [454](../../src/continuation.rs#L454), [466](../../src/continuation.rs#L466) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `"denied".to_owned` | [356](../../src/continuation.rs#L356) | receiver-type-required |
-| `wait_tool_continuation` | `"remote task input was declined".to_owned` | [357](../../src/continuation.rs#L357) | receiver-type-required |
-| `wait_tool_continuation` | `facts.updated_at.is_some_and` | [363](../../src/continuation.rs#L363) | receiver-type-required |
-| `wait_tool_continuation` | `answer.unwrap_or_else` | [368](../../src/continuation.rs#L368) | receiver-type-required |
-| `wait_tool_continuation` | `std::mem::take` | [377](../../src/continuation.rs#L377) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `facts                 .state                 .get("pollIntervalMs")                 .and_then(Value::as_u64)                 .map` | [380](../../src/continuation.rs#L380) | receiver-type-required |
-| `wait_tool_continuation` | `facts                 .state                 .get("pollIntervalMs")                 .and_then` | [380](../../src/continuation.rs#L380) | receiver-type-required |
-| `wait_tool_continuation` | `facts                 .state                 .get` | [380](../../src/continuation.rs#L380) | receiver-type-required |
-| `wait_tool_continuation` | `remote_hint                 .map_or(interval, &#124;hint&#124; hint.max(interval))                 .min` | [385](../../src/continuation.rs#L385) | receiver-type-required |
-| `wait_tool_continuation` | `remote_hint                 .map_or` | [385](../../src/continuation.rs#L385) | receiver-type-required |
-| `wait_tool_continuation` | `hint.max` | [386](../../src/continuation.rs#L386) | receiver-type-required |
-| `wait_tool_continuation` | `rfc3339_after` | [392](../../src/continuation.rs#L392) | [tekes-worker::continuation::rfc3339_after](../../src/continuation.rs#L137) |
-| `wait_tool_continuation` | `pipeline.append_continuation_step` | [396](../../src/continuation.rs#L396), [440](../../src/continuation.rs#L440) | receiver-type-required |
-| `wait_tool_continuation` | `wait.as_millis` | [402](../../src/continuation.rs#L402) | receiver-type-required |
-| `wait_tool_continuation` | `(interval * 2).min` | [408](../../src/continuation.rs#L408) | receiver-type-required |
-| `wait_tool_continuation` | `action.clone` | [414](../../src/continuation.rs#L414) | receiver-type-required |
-| `wait_tool_continuation` | `cancellation.protocol_failed` | [425](../../src/continuation.rs#L425) | receiver-type-required |
-| `wait_tool_continuation` | `BackendTerminal::Completed` | [453](../../src/continuation.rs#L453) | external-constructor-callback-or-unresolved |
-| `wait_tool_continuation` | `control_error_code_name(&error.code).to_owned` | [461](../../src/continuation.rs#L461) | receiver-type-required |
-| `wait_tool_continuation` | `control_error_code_name` | [461](../../src/continuation.rs#L461) | [tekes-worker::continuation::control_error_code_name](../../src/continuation.rs#L473) |
-| `control_error_code_name` | `serde_json::to_value(code)         .ok()         .and_then(&#124;value&#124; value.as_str().map(str::to_owned))         .unwrap_or_else` | [474](../../src/continuation.rs#L474) | receiver-type-required |
-| `control_error_code_name` | `serde_json::to_value(code)         .ok()         .and_then` | [474](../../src/continuation.rs#L474) | receiver-type-required |
-| `control_error_code_name` | `serde_json::to_value(code)         .ok` | [474](../../src/continuation.rs#L474) | receiver-type-required |
-| `control_error_code_name` | `serde_json::to_value` | [474](../../src/continuation.rs#L474) | external-constructor-callback-or-unresolved |
-| `control_error_code_name` | `value.as_str().map` | [476](../../src/continuation.rs#L476) | receiver-type-required |
-| `control_error_code_name` | `value.as_str` | [476](../../src/continuation.rs#L476) | receiver-type-required |
-| `control_error_code_name` | `"internal".to_owned` | [477](../../src/continuation.rs#L477) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `require_version` | [490](../../src/continuation.rs#L490) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `cancellation.stop_requested` | [491](../../src/continuation.rs#L491) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `Err` | [492](../../src/continuation.rs#L492), [496](../../src/continuation.rs#L496), [506](../../src/continuation.rs#L506), [519](../../src/continuation.rs#L519), [533](../../src/continuation.rs#L533), [539](../../src/continuation.rs#L539), [546](../../src/continuation.rs#L546) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `"tool continuation cancelled by stop".into` | [492](../../src/continuation.rs#L492), [533](../../src/continuation.rs#L533) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `cancellation.supervisor_lost` | [494](../../src/continuation.rs#L494) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `cancellation.mark_protocol_failed` | [495](../../src/continuation.rs#L495), [505](../../src/continuation.rs#L505), [512](../../src/continuation.rs#L512), [518](../../src/continuation.rs#L518), [538](../../src/continuation.rs#L538), [545](../../src/continuation.rs#L545) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `Box::new` | [496](../../src/continuation.rs#L496), [506](../../src/continuation.rs#L506), [519](../../src/continuation.rs#L519), [539](../../src/continuation.rs#L539), [546](../../src/continuation.rs#L546) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `ProtocolFailure` | [496](../../src/continuation.rs#L496), [506](../../src/continuation.rs#L506), [513](../../src/continuation.rs#L513), [519](../../src/continuation.rs#L519), [539](../../src/continuation.rs#L539), [546](../../src/continuation.rs#L546) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `"supervisor EOF before tool continuation".to_owned` | [497](../../src/continuation.rs#L497) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `stdout.write_all` | [500](../../src/continuation.rs#L500) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `encode_tool_continuation` | [500](../../src/continuation.rs#L500) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `stdout.flush` | [501](../../src/continuation.rs#L501), [527](../../src/continuation.rs#L527) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `lines.next` | [503](../../src/continuation.rs#L503) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `cancellation.cancel` | [504](../../src/continuation.rs#L504), [511](../../src/continuation.rs#L511), [530](../../src/continuation.rs#L530) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `"supervisor EOF while awaiting tool continuation result".to_owned` | [507](../../src/continuation.rs#L507) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `line.map_err` | [510](../../src/continuation.rs#L510) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `decode_tool_continuation_result` | [515](../../src/continuation.rs#L515) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `line.as_bytes` | [515](../../src/continuation.rs#L515), [523](../../src/continuation.rs#L523) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `response.validate_for` | [517](../../src/continuation.rs#L517) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `Ok` | [521](../../src/continuation.rs#L521) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `decode_supervisor` | [523](../../src/continuation.rs#L523) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `stdout                         .write_all` | [525](../../src/continuation.rs#L525) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `encode_line` | [526](../../src/continuation.rs#L526) | external-constructor-callback-or-unresolved |
-| `exchange_tool_continuation_runtime` | `cancellation.defer` | [531](../../src/continuation.rs#L531) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `cancellation.park_delivery` | [536](../../src/continuation.rs#L536) | receiver-type-required |
-| `exchange_tool_continuation_runtime` | `"unexpected supervisor message while awaiting tool continuation result"                             .to_owned` | [540](../../src/continuation.rs#L540) | receiver-type-required |
+| `wait_tool_continuation` | `frozen_hook_bindings` | [282](../../src/continuation.rs#L282) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `ToolPipeline::new` | [284](../../src/continuation.rs#L284), [392](../../src/continuation.rs#L392), [436](../../src/continuation.rs#L436) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `assets.clone` | [284](../../src/continuation.rs#L284), [392](../../src/continuation.rs#L392), [436](../../src/continuation.rs#L436) | receiver-type-required |
+| `wait_tool_continuation` | `SecretScanner::default` | [284](../../src/continuation.rs#L284), [392](../../src/continuation.rs#L392), [436](../../src/continuation.rs#L436) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `pipeline                 .complete_continuation(&execution, &hooks, &execution.invocation, terminal)                 .map_err` | [285](../../src/continuation.rs#L285) | receiver-type-required |
+| `wait_tool_continuation` | `pipeline                 .complete_continuation` | [285](../../src/continuation.rs#L285) | receiver-type-required |
+| `wait_tool_continuation` | `error.to_string` | [287](../../src/continuation.rs#L287) | receiver-type-required |
+| `wait_tool_continuation` | `cancellation.stop_requested` | [289](../../src/continuation.rs#L289), [385](../../src/continuation.rs#L385), [422](../../src/continuation.rs#L422) | receiver-type-required |
+| `wait_tool_continuation` | `ToolContinuationRequest::new` | [292](../../src/continuation.rs#L292), [407](../../src/continuation.rs#L407) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `original.clone` | [293](../../src/continuation.rs#L293), [408](../../src/continuation.rs#L408) | receiver-type-required |
+| `wait_tool_continuation` | `continuation_id.to_owned` | [294](../../src/continuation.rs#L294), [409](../../src/continuation.rs#L409) | receiver-type-required |
+| `wait_tool_continuation` | `exchange_tool_continuation_runtime(                 &selected,                 &cancel,                 lines,                 stdout,                 cancellation,                 true,             )             .map(&#124;response&#124; match response.result {                 ToolContinuationOutcome::Failed { error } => format!(                     "remote {}: {}",                     control_error_code_name(&error.code),                     error.message                 ),                 ToolContinuationOutcome::Pending { .. } => "remote still pending".to_owned(),                 ToolContinuationOutcome::Completed { .. } => {                     "remote completed before cancellation".to_owned()                 }             })             .unwrap_or_else` | [298](../../src/continuation.rs#L298) | receiver-type-required |
+| `wait_tool_continuation` | `exchange_tool_continuation_runtime(                 &selected,                 &cancel,                 lines,                 stdout,                 cancellation,                 true,             )             .map` | [298](../../src/continuation.rs#L298) | receiver-type-required |
+| `wait_tool_continuation` | `exchange_tool_continuation_runtime` | [298](../../src/continuation.rs#L298), [413](../../src/continuation.rs#L413) | [tekes-worker::continuation::exchange_tool_continuation_runtime](../../src/continuation.rs#L479) |
+| `wait_tool_continuation` | `"remote still pending".to_owned` | [312](../../src/continuation.rs#L312) | receiver-type-required |
+| `wait_tool_continuation` | `"remote completed before cancellation".to_owned` | [314](../../src/continuation.rs#L314) | receiver-type-required |
+| `wait_tool_continuation` | `terminalize` | [318](../../src/continuation.rs#L318), [350](../../src/continuation.rs#L350), [450](../../src/continuation.rs#L450), [455](../../src/continuation.rs#L455) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `"cancelled".to_owned` | [321](../../src/continuation.rs#L321) | receiver-type-required |
+| `wait_tool_continuation` | `facts                         .state                         .get("inputRequests")                         .cloned()                         .unwrap_or_else` | [333](../../src/continuation.rs#L333) | receiver-type-required |
+| `wait_tool_continuation` | `facts                         .state                         .get("inputRequests")                         .cloned` | [333](../../src/continuation.rs#L333) | receiver-type-required |
+| `wait_tool_continuation` | `facts                         .state                         .get` | [333](../../src/continuation.rs#L333) | receiver-type-required |
+| `wait_tool_continuation` | `facts.state.clone` | [337](../../src/continuation.rs#L337) | receiver-type-required |
+| `wait_tool_continuation` | `make_event` | [338](../../src/continuation.rs#L338) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `ledger.append_contract` | [343](../../src/continuation.rs#L343) | receiver-type-required |
+| `wait_tool_continuation` | `BarrierContext::default` | [343](../../src/continuation.rs#L343) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `announce_appended` | [344](../../src/continuation.rs#L344), [401](../../src/continuation.rs#L401), [451](../../src/continuation.rs#L451), [463](../../src/continuation.rs#L463) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `"denied".to_owned` | [353](../../src/continuation.rs#L353) | receiver-type-required |
+| `wait_tool_continuation` | `"remote task input was declined".to_owned` | [354](../../src/continuation.rs#L354) | receiver-type-required |
+| `wait_tool_continuation` | `facts.updated_at.is_some_and` | [360](../../src/continuation.rs#L360) | receiver-type-required |
+| `wait_tool_continuation` | `answer.unwrap_or_else` | [365](../../src/continuation.rs#L365) | receiver-type-required |
+| `wait_tool_continuation` | `std::mem::take` | [374](../../src/continuation.rs#L374) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `facts                 .state                 .get("pollIntervalMs")                 .and_then(Value::as_u64)                 .map` | [377](../../src/continuation.rs#L377) | receiver-type-required |
+| `wait_tool_continuation` | `facts                 .state                 .get("pollIntervalMs")                 .and_then` | [377](../../src/continuation.rs#L377) | receiver-type-required |
+| `wait_tool_continuation` | `facts                 .state                 .get` | [377](../../src/continuation.rs#L377) | receiver-type-required |
+| `wait_tool_continuation` | `remote_hint                 .map_or(interval, &#124;hint&#124; hint.max(interval))                 .min` | [382](../../src/continuation.rs#L382) | receiver-type-required |
+| `wait_tool_continuation` | `remote_hint                 .map_or` | [382](../../src/continuation.rs#L382) | receiver-type-required |
+| `wait_tool_continuation` | `hint.max` | [383](../../src/continuation.rs#L383) | receiver-type-required |
+| `wait_tool_continuation` | `rfc3339_after` | [389](../../src/continuation.rs#L389) | [tekes-worker::continuation::rfc3339_after](../../src/continuation.rs#L137) |
+| `wait_tool_continuation` | `pipeline.append_continuation_step` | [393](../../src/continuation.rs#L393), [437](../../src/continuation.rs#L437) | receiver-type-required |
+| `wait_tool_continuation` | `wait.as_millis` | [399](../../src/continuation.rs#L399) | receiver-type-required |
+| `wait_tool_continuation` | `(interval * 2).min` | [405](../../src/continuation.rs#L405) | receiver-type-required |
+| `wait_tool_continuation` | `action.clone` | [411](../../src/continuation.rs#L411) | receiver-type-required |
+| `wait_tool_continuation` | `cancellation.protocol_failed` | [422](../../src/continuation.rs#L422) | receiver-type-required |
+| `wait_tool_continuation` | `BackendTerminal::Completed` | [450](../../src/continuation.rs#L450) | external-constructor-callback-or-unresolved |
+| `wait_tool_continuation` | `control_error_code_name(&error.code).to_owned` | [458](../../src/continuation.rs#L458) | receiver-type-required |
+| `wait_tool_continuation` | `control_error_code_name` | [458](../../src/continuation.rs#L458) | [tekes-worker::continuation::control_error_code_name](../../src/continuation.rs#L470) |
+| `control_error_code_name` | `serde_json::to_value(code)         .ok()         .and_then(&#124;value&#124; value.as_str().map(str::to_owned))         .unwrap_or_else` | [471](../../src/continuation.rs#L471) | receiver-type-required |
+| `control_error_code_name` | `serde_json::to_value(code)         .ok()         .and_then` | [471](../../src/continuation.rs#L471) | receiver-type-required |
+| `control_error_code_name` | `serde_json::to_value(code)         .ok` | [471](../../src/continuation.rs#L471) | receiver-type-required |
+| `control_error_code_name` | `serde_json::to_value` | [471](../../src/continuation.rs#L471) | external-constructor-callback-or-unresolved |
+| `control_error_code_name` | `value.as_str().map` | [473](../../src/continuation.rs#L473) | receiver-type-required |
+| `control_error_code_name` | `value.as_str` | [473](../../src/continuation.rs#L473) | receiver-type-required |
+| `control_error_code_name` | `"internal".to_owned` | [474](../../src/continuation.rs#L474) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `require_version` | [487](../../src/continuation.rs#L487) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `cancellation.stop_requested` | [488](../../src/continuation.rs#L488) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `Err` | [489](../../src/continuation.rs#L489), [493](../../src/continuation.rs#L493), [503](../../src/continuation.rs#L503), [516](../../src/continuation.rs#L516), [530](../../src/continuation.rs#L530), [536](../../src/continuation.rs#L536), [543](../../src/continuation.rs#L543) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `"tool continuation cancelled by stop".into` | [489](../../src/continuation.rs#L489), [530](../../src/continuation.rs#L530) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `cancellation.supervisor_lost` | [491](../../src/continuation.rs#L491) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `cancellation.mark_protocol_failed` | [492](../../src/continuation.rs#L492), [502](../../src/continuation.rs#L502), [509](../../src/continuation.rs#L509), [515](../../src/continuation.rs#L515), [535](../../src/continuation.rs#L535), [542](../../src/continuation.rs#L542) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `Box::new` | [493](../../src/continuation.rs#L493), [503](../../src/continuation.rs#L503), [516](../../src/continuation.rs#L516), [536](../../src/continuation.rs#L536), [543](../../src/continuation.rs#L543) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `ProtocolFailure` | [493](../../src/continuation.rs#L493), [503](../../src/continuation.rs#L503), [510](../../src/continuation.rs#L510), [516](../../src/continuation.rs#L516), [536](../../src/continuation.rs#L536), [543](../../src/continuation.rs#L543) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `"supervisor EOF before tool continuation".to_owned` | [494](../../src/continuation.rs#L494) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `stdout.write_all` | [497](../../src/continuation.rs#L497) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `encode_tool_continuation` | [497](../../src/continuation.rs#L497) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `stdout.flush` | [498](../../src/continuation.rs#L498), [524](../../src/continuation.rs#L524) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `lines.next` | [500](../../src/continuation.rs#L500) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `cancellation.cancel` | [501](../../src/continuation.rs#L501), [508](../../src/continuation.rs#L508), [527](../../src/continuation.rs#L527) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `"supervisor EOF while awaiting tool continuation result".to_owned` | [504](../../src/continuation.rs#L504) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `line.map_err` | [507](../../src/continuation.rs#L507) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `decode_tool_continuation_result` | [512](../../src/continuation.rs#L512) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `line.as_bytes` | [512](../../src/continuation.rs#L512), [520](../../src/continuation.rs#L520) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `response.validate_for` | [514](../../src/continuation.rs#L514) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `Ok` | [518](../../src/continuation.rs#L518) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `decode_supervisor` | [520](../../src/continuation.rs#L520) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `stdout                         .write_all` | [522](../../src/continuation.rs#L522) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `encode_line` | [523](../../src/continuation.rs#L523) | external-constructor-callback-or-unresolved |
+| `exchange_tool_continuation_runtime` | `cancellation.defer` | [528](../../src/continuation.rs#L528) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `cancellation.park_delivery` | [533](../../src/continuation.rs#L533) | receiver-type-required |
+| `exchange_tool_continuation_runtime` | `"unexpected supervisor message while awaiting tool continuation result"                             .to_owned` | [537](../../src/continuation.rs#L537) | receiver-type-required |

@@ -766,7 +766,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `serde_json::to_value` | [1440](../../src/system_tools.rs#L1440) | external-constructor-callback-or-unresolved |
 | `execute` | `unavailable` | [1442](../../src/system_tools.rs#L1442), [1445](../../src/system_tools.rs#L1445) | [engine::system_tools::unavailable](../../src/system_tools.rs#L1474) |
 | `execute` | `error.to_string` | [1442](../../src/system_tools.rs#L1442), [1445](../../src/system_tools.rs#L1445) | receiver-type-required |
-| `execute` | `validate_fixed_arguments` | [1444](../../src/system_tools.rs#L1444) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1231) |
+| `execute` | `validate_fixed_arguments` | [1444](../../src/system_tools.rs#L1444) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1228) |
 | `execute` | `self.execute_inner` | [1447](../../src/system_tools.rs#L1447) | receiver-type-required |
 | `terminal` | `json_to_ijson` | [1453](../../src/system_tools.rs#L1453), [1466](../../src/system_tools.rs#L1466) | [engine::system_tools::json_to_ijson](../../src/system_tools.rs#L1525) |
 | `terminal` | `BackendTerminal::Completed` | [1454](../../src/system_tools.rs#L1454) | external-constructor-callback-or-unresolved |

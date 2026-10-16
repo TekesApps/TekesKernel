@@ -486,7 +486,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             .get("operation")
             .and_then(Value::as_str)
             .ok_or_else(|| SupervisorOperationError::Invalid("context.operation missing".into()))?;
-        let workspace = genesis_workspace(&resolved.projection)?;
         match operation {
             "threads" => self.context_threads(),
             "read" => {
@@ -494,7 +493,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                 self.context_read(target)
             }
             "records" => self.context_records(resolved, arguments),
-            "search" => self.context_search(request, workspace, arguments),
+            "search" => self.context_search(request, arguments),
             "start" => self.context_start(request, resolved),
             "fork" => self.context_fork(request, resolved),
             "send" => {
@@ -591,7 +590,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         to_ijson(&json!({
             "session_id":target,
             "thread_id":genesis.string_field("thread"),
-            "workspace":genesis_workspace(&projection)?,
             "archived":archived,
             "last_seq":projection.last_seq,
             "latest_turn":projection.latest_turn,
@@ -632,7 +630,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
     fn context_search(
         &self,
         request: &ToolControl,
-        workspace: &str,
         arguments: &Value,
     ) -> Result<IJsonValue, SupervisorOperationError> {
         let query = required_string(arguments, "query")?;
@@ -648,8 +645,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                 session_folder(&self.root, target)?;
                 vec![target.to_owned()]
             }
-            "project" => visible_sessions(&self.root, Some(workspace))?,
-            "all" => visible_sessions(&self.root, None)?,
+            "all" => visible_sessions(&self.root)?,
             _ => {
                 return Err(SupervisorOperationError::Invalid(
                     "invalid context.search scope".into(),
@@ -661,7 +657,6 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
         let target = match scope {
             "current_thread" => request.session.as_str(),
             "thread" => required_string(arguments, "thread_id")?,
-            "project" => workspace,
             "all" => "",
             _ => unreachable!(),
         };
@@ -735,13 +730,7 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
             op: "create".into(),
             key: request.request_id.clone(),
         };
-        let event = context_start_genesis(
-            &source,
-            genesis_workspace(&resolved.projection)?,
-            &session,
-            timestamp,
-            &origin,
-        )?;
+        let event = context_start_genesis(&source, &session, timestamp, &origin)?;
         ThreadStore::open(&self.root)
             .map_err(map_store)?
             .create_thread(&session, event)
@@ -1124,7 +1113,7 @@ fn resolve_visible_line(
     line: &str,
 ) -> Result<(PathBuf, schema::LedgerProjection), SupervisorOperationError> {
     let mut found = None;
-    for session in visible_sessions(root, None)? {
+    for session in visible_sessions(root)? {
         let (folder, _) = session_folder(root, &session)?;
         for candidate in session_lines(&folder)? {
             if genesis_line(&candidate.1)? == line {
@@ -1140,10 +1129,7 @@ fn resolve_visible_line(
     found.ok_or_else(|| SupervisorOperationError::NotFound("line not found".into()))
 }
 
-fn visible_sessions(
-    root: &Path,
-    workspace_filter: Option<&str>,
-) -> Result<Vec<String>, SupervisorOperationError> {
+fn visible_sessions(root: &Path) -> Result<Vec<String>, SupervisorOperationError> {
     let mut sessions = BTreeSet::new();
     for area in ["threads", "archive"] {
         for entry in fs::read_dir(root.join(area)).map_err(map_io)? {
@@ -1153,11 +1139,6 @@ fn visible_sessions(
             }
             let session = entry.file_name().to_string_lossy().into_owned();
             validate_session_folder(&entry.path(), &session)?;
-            if let Some(filter) = workspace_filter
-                && folder_workspace(&entry.path())? != filter
-            {
-                continue;
-            }
             if !sessions.insert(session) {
                 return Err(SupervisorOperationError::Corruption(
                     "session exists in active and archive catalogs".into(),
@@ -1222,33 +1203,6 @@ fn read_projection(path: &Path) -> Result<schema::LedgerProjection, SupervisorOp
             path.display()
         ))
     })
-}
-
-/// The workspace a thread folder belongs to, from its genesis line only (the first line of
-/// `main.jsonl`): an explicit query filter must not decode the whole ledger.
-fn folder_workspace(folder: &Path) -> Result<String, SupervisorOperationError> {
-    let genesis = store::read_genesis(folder.join("main.jsonl"))
-        .map_err(map_store)?
-        .ok_or_else(|| {
-            SupervisorOperationError::Corruption(format!(
-                "{} has no valid genesis",
-                folder.display()
-            ))
-        })?;
-    genesis
-        .string_field("workspace")
-        .map(str::to_owned)
-        .ok_or_else(|| SupervisorOperationError::Corruption("genesis workspace missing".into()))
-}
-
-fn genesis_workspace(
-    projection: &schema::LedgerProjection,
-) -> Result<&str, SupervisorOperationError> {
-    projection
-        .events
-        .first()
-        .and_then(|event| event.string_field("workspace"))
-        .ok_or_else(|| SupervisorOperationError::Corruption("genesis workspace missing".into()))
 }
 
 fn genesis_line(projection: &schema::LedgerProjection) -> Result<&str, SupervisorOperationError> {
@@ -1379,36 +1333,30 @@ fn decode_cursor(value: Option<&Value>, identity: &str) -> Result<usize, Supervi
         .map_err(|_| SupervisorOperationError::Invalid("invalid cursor offset".into()))
 }
 
-/// The genesis of a session the `context` tool starts from `source`, the
-/// caller's genesis. The new session starts in the caller's scope: workspace,
-/// folders, environment, configuration and preset, exactly as a fork inherits
-/// them; a preset genesis needs reader 2 and recorded folders reader 3.
+/// Start a new Session with the caller's immutable execution ceiling.
 fn context_start_genesis(
     source: &Value,
-    workspace: &str,
     session: &str,
     timestamp: &str,
     origin: &OriginTuple,
 ) -> Result<Event, SupervisorOperationError> {
-    let mut event = json!({
-        "v":1,"seq":1,"ts":timestamp,"kind":"genesis",
-        "thread":session,"workspace":workspace,
-        "format":1,"min_reader":1,"min_writer":1,
-        "resume":source.get("resume").cloned().unwrap_or_else(|| json!("never")),
-        "config":source.get("config").cloned().ok_or_else(|| SupervisorOperationError::Corruption("caller genesis config missing".into()))?,
-        "origin_key":origin.key,"origin_tuple":origin,
-    });
-    for field in schema::GENESIS_INHERITED_FIELDS {
-        if let Some(value) = source.get(*field) {
-            event[*field] = value.clone();
+    let execution: schema::ExecutionConfig =
+        serde_json::from_value(source.get("execution").cloned().ok_or_else(|| {
+            SupervisorOperationError::Corruption("caller execution missing".into())
+        })?)
+        .map_err(|_| SupervisorOperationError::Corruption("invalid caller execution".into()))?;
+    execution
+        .validate()
+        .map_err(|_| SupervisorOperationError::Corruption("invalid caller execution".into()))?;
+    let mut event = json!({"v":1,"seq":1,"ts":timestamp,"kind":"genesis","thread":session,
+        "format":1,"min_reader":schema::EXECUTION_READER,"min_writer":1,"execution":execution,"cwd":execution.cwd,
+        "resume":source.get("resume").cloned().unwrap_or_else(||json!("never")),
+        "config":source.get("config").cloned().ok_or_else(|| SupervisorOperationError::Corruption("caller config missing".into()))?,
+        "origin_key":origin.key,"origin_tuple":origin});
+    for field in ["instruction", "identity_profile", "preset"] {
+        if let Some(value) = source.get(field) {
+            event[field] = value.clone();
         }
-    }
-    if source.get("session_scope").is_some() {
-        event["min_reader"] = json!(schema::SESSION_SCOPE_READER);
-    } else if source.get("folders").is_some() {
-        event["min_reader"] = json!(schema::FOLDERS_READER);
-    } else if source.get("preset").is_some() {
-        event["min_reader"] = json!(2);
     }
     Event::from_value(to_ijson(&event)?).map_err(map_schema)
 }
@@ -1642,17 +1590,9 @@ mod continuation_policy_tests {
 mod context_start_tests {
     use super::*;
 
-    /// A session the `context` tool starts runs in the caller's scope: every
-    /// inherited genesis field is copied, and a preset keeps reader 2.
     #[test]
-    fn a_started_session_inherits_the_callers_scope_and_preset() {
+    fn a_started_session_inherits_execution_without_legacy_management() {
         let session = "018f0000-0000-7000-8000-0000000000c2";
-        let source = json!({
-            "workspace":"ws","folder_binding":"folder-0002","environment":"local",
-            "folders":["folder-0001","folder-0002"],"resume":"never",
-            "config":{"digest":"cfg"},"instruction":{"digest":"ins"},"min_reader":2,
-            "preset":{"format":1,"base":"general","layers":[],"digest":"sha256:p"},
-        });
         let origin = OriginTuple {
             principal: "kernel-worker".into(),
             client: "context".into(),
@@ -1660,28 +1600,23 @@ mod context_start_tests {
             op: "create".into(),
             key: "request".into(),
         };
+        assert!(
+            context_start_genesis(
+                &json!({"workspace":"ws","config":{"digest":"cfg"}}),
+                session,
+                "2026-10-17T00:00:00.000Z",
+                &origin
+            )
+            .is_err()
+        );
+        let execution = json!({"cwd":"/fixture/project","network":false,"allowed_tools":["read"]});
+        let source = json!({"execution":execution,"cwd":"/fixture/project","config":{"digest":"cfg"},"resume":"never"});
         let event =
-            context_start_genesis(&source, "ws", session, "2026-10-15T00:00:00.000Z", &origin)
-                .expect("genesis");
+            context_start_genesis(&source, session, "2026-10-15T00:00:00.000Z", &origin).unwrap();
         let raw = serde_json::to_value(event.raw()).unwrap();
-        for field in schema::GENESIS_INHERITED_FIELDS {
-            assert_eq!(raw.get(*field), source.get(*field), "{field}");
-        }
-        assert_eq!(raw["min_reader"], schema::FOLDERS_READER);
-        assert_eq!(raw["thread"], session);
-
-        // Without a preset or recorded folders the new session keeps the
-        // caller's identity profile and reader 1.
-        let mut plain = source.clone();
-        let object = plain.as_object_mut().unwrap();
-        object.remove("preset");
-        object.insert("identity_profile".into(), json!("general"));
-        object.remove("folders");
-        let event =
-            context_start_genesis(&plain, "ws", session, "2026-10-15T00:00:00.000Z", &origin)
-                .expect("genesis");
-        let raw = serde_json::to_value(event.raw()).unwrap();
-        assert_eq!(raw["identity_profile"], "general");
-        assert_eq!(raw["min_reader"], 1);
+        assert_eq!(raw["execution"], execution);
+        assert_eq!(raw["min_reader"], schema::EXECUTION_READER);
+        assert!(raw.get("workspace").is_none());
+        assert!(raw.get("folder_binding").is_none());
     }
 }

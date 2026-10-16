@@ -8,6 +8,9 @@ The Client boundary is [Session Endpoint](session-endpoint.md); its
 `protocolVersion` integer is negotiated on the wire and appears in no file
 name. Do not infer support for a public capability from a filename.
 
+The 0.9.0 execution boundary is defined in [Session execution](session-execution.md).
+It supersedes older management-backed creation and scope rules.
+
 ## Thread data and lifecycle
 
 | Contract | Scope |

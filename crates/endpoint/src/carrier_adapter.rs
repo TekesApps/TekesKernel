@@ -11,12 +11,9 @@ use crate::{
     RpcResult, ServerRequest, ServerResponse, StreamChannel, StreamErrorCode,
 };
 
-pub const SESSION_ENDPOINT_PUBLIC_METHODS: [&str; 17] = [
-    "workspace.create",
-    "workspace.rename",
-    "workspace.relocate",
-    "workspace.archiveSession",
-    "workspace.unarchiveSession",
+pub const SESSION_ENDPOINT_PUBLIC_METHODS: [&str; 14] = [
+    "session.archive",
+    "session.unarchive",
     "session.create",
     "session.prompt",
     "session.updateQueue",

@@ -183,23 +183,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let home = root.path().join("home");
     std::fs::create_dir(&project)?;
     std::fs::create_dir(&home)?;
-    let workspace_routes: Option<
-        Arc<dyn tekes_supervisor::endpoint_host::ProductionEndpointRoutes>,
-    > = std::env::var_os("TEKES_WORKSPACE_SERVICE_BIN")
-        .map(|executable| {
-            tekes_supervisor::workspace_routes::WorkspaceRoutes::open(
-                root.path(),
-                PathBuf::from(executable),
-            )
-            .map(|routes| {
-                Arc::new(routes)
-                    as Arc<dyn tekes_supervisor::endpoint_host::ProductionEndpointRoutes>
-            })
-            .map_err(|error| std::io::Error::other(error.message))
-        })
-        .transpose()?;
-    let workspace_test_enabled = workspace_routes.is_some();
-
     let unary = ProductionEndpointHost::open_with_full_authorities(
         root.path(),
         SessionHostDescription {
@@ -212,7 +195,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             can_open_path: false,
         },
         Arc::new(|| Ok(TIMESTAMP.to_owned())),
-        workspace_routes,
+        None,
         Some(Arc::new(HarnessProviders)),
         Some(Arc::new(HarnessDelivery {
             endpoint: NativeEndpoint::open(root.path())?,
@@ -241,11 +224,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         format!(
             "http://{address}\n{AUTHORIZATION}\n{}\n{}",
             project.display(),
-            if workspace_test_enabled {
-                format!("{}\n", root.path().display())
-            } else {
-                String::new()
-            }
+            String::new()
         ),
     )?;
     assembly.into_server().serve(listener).await?;

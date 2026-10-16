@@ -216,7 +216,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `tokio::runtime::Builder::new_multi_thread()         .worker_threads` | [312](../../src/broker.rs#L312) | receiver-type-required |
 | `run` | `tokio::runtime::Builder::new_multi_thread` | [312](../../src/broker.rs#L312) | external-constructor-callback-or-unresolved |
 | `run` | `Arc::new` | [319](../../src/broker.rs#L319), [320](../../src/broker.rs#L320) | external-constructor-callback-or-unresolved |
-| `run` | `McpPool::new` | [319](../../src/broker.rs#L319) | [mcp::pool::McpPool::new](../../src/pool.rs#L75) |
+| `run` | `McpPool::new` | [319](../../src/broker.rs#L319) | [mcp::pool::McpPool::new](../../src/pool.rs#L72) |
 | `run` | `AtomicBool::new` | [320](../../src/broker.rs#L320) | external-constructor-callback-or-unresolved |
 | `run` | `std::time::Instant::now` | [321](../../src/broker.rs#L321), [326](../../src/broker.rs#L326) | external-constructor-callback-or-unresolved |
 | `run` | `shutdown.load` | [322](../../src/broker.rs#L322) | receiver-type-required |

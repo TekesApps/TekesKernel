@@ -37,12 +37,6 @@ where
     // next tool call of a running session without a restart.
     let mut policy = session_permission_policy(&thread_folder);
     for call in calls {
-        let _hook_leases = profile
-            .instruction
-            .admit_kind(profile::InstructionKind::Hook);
-        let _skill_leases = profile
-            .instruction
-            .admit_kind(profile::InstructionKind::Skill);
         let hooks = frozen_hook_bindings(&profile.instruction)?;
         if cancellation.supervisor_lost() {
             return Err(Box::new(ProtocolFailure(

@@ -1,5 +1,10 @@
 # Config v1 — authoritative files and spawn snapshots
 
+> 0.9.0 execution and responsibility changes are defined in
+> [Session execution](session-execution.md). Its Session creation and scope rules
+> replace the management-backed rules below; 0.8/0.7 compatibility is not a goal.
+
+
 This contract owns the bytes and behavior of the user-authored configuration
 under one storage root. It is an executable contract. Narrative docs may
 explain it but cannot redefine it.

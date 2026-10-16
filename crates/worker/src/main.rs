@@ -289,8 +289,14 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
             let ledger_workspace = ledger
                 .projection()
                 .and_then(|projection| projection.events.first())
-                .and_then(|genesis| genesis.string_field("workspace"));
-            if ledger_workspace != Some(profile.config.workspace.id.as_str()) {
+                .and_then(|genesis| {
+                    genesis.string_field(if genesis.has_field("execution") {
+                        "thread"
+                    } else {
+                        "workspace"
+                    })
+                });
+            if ledger_workspace != Some(profile.config.execution.session_id.as_str()) {
                 return Err("config snapshot workspace does not match genesis".into());
             }
         }
@@ -549,7 +555,7 @@ fn load_profiles(
                 bindings_digest,
                 &config,
             )?;
-            let policy = instruction.meet_workspace_policy(&config.workspace.policy);
+            let policy = instruction.meet_workspace_policy(&config.execution.policy);
             options.config_digest = config.digest()?;
             options.instruction_digest = instruction.digest()?;
             options.launch_bindings_digest = Some(bindings.digest()?);
@@ -658,7 +664,7 @@ fn sibling_helper_path() -> Result<PathBuf, Box<dyn std::error::Error>> {
 fn effective_allowed_tools(profile: &RuntimeProfile) -> BTreeSet<String> {
     let mut tools: BTreeSet<String> = profile
         .instruction
-        .meet_workspace_policy(&profile.config.workspace.policy)
+        .meet_workspace_policy(&profile.config.execution.policy)
         .allowed_tools
         .into_iter()
         // Historical policies may still select the retired memory builtins.

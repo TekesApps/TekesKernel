@@ -45,54 +45,52 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_inner](../../src/production_tool_control.rs#L411) | function_item | `private` |  |
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_dynamic](../../src/production_tool_control.rs#L448) | function_item | `private` |  |
 | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context](../../src/production_tool_control.rs#L479) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads](../../src/production_tool_control.rs#L551) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read](../../src/production_tool_control.rs#L587) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records](../../src/production_tool_control.rs#L603) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search](../../src/production_tool_control.rs#L632) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start](../../src/production_tool_control.rs#L716) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork](../../src/production_tool_control.rs#L752) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get](../../src/production_tool_control.rs#L772) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L850) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy](../../src/production_tool_control.rs#L858) | struct_item | `pub` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L864) | function_item | `pub` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation](../../src/production_tool_control.rs#L874) | function_item | `pub` |  |
-| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply](../../src/production_tool_control.rs#L916) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::policy_withheld](../../src/production_tool_control.rs#L955) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::child_launch_proof](../../src/production_tool_control.rs#L967) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::parent_report_proof](../../src/production_tool_control.rs#L1039) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1101) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::resolve_visible_line](../../src/production_tool_control.rs#L1122) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1143) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::require_active_session](../../src/production_tool_control.rs#L1171) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1181) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::folder_workspace](../../src/production_tool_control.rs#L1229) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::genesis_workspace](../../src/production_tool_control.rs#L1244) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1254) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1262) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::event_record](../../src/production_tool_control.rs#L1278) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1284) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::string_array](../../src/production_tool_control.rs#L1292) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::job_record_outcome](../../src/production_tool_control.rs#L1307) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1320) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1339) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1352) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1357) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::context_start_genesis](../../src/production_tool_control.rs#L1386) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1416) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1436) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::bounded_snippet](../../src/production_tool_control.rs#L1449) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::map_io](../../src/production_tool_control.rs#L1468) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::map_store](../../src/production_tool_control.rs#L1476) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::map_schema](../../src/production_tool_control.rs#L1488) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::SupervisorOperationError](../../src/production_tool_control.rs#L1493) | enum_item | `pub` |  |
-| [tekes-supervisor::production_tool_control::SupervisorOperationError::into_control_error](../../src/production_tool_control.rs#L1523) | function_item | `private` |  |
-| [tekes-supervisor::production_tool_control::tool_failure_tests::definitive_remote_tool_failure_is_not_retryable_transport_loss](../../src/production_tool_control.rs#L1550) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::production_tool_control::continuation_policy_tests::value](../../src/production_tool_control.rs#L1569) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::production_tool_control::continuation_policy_tests::pending_results_and_continuation_responses_pass_the_secret_policy](../../src/production_tool_control.rs#L1576) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::production_tool_control::context_start_tests::a_started_session_inherits_the_callers_scope_and_preset](../../src/production_tool_control.rs#L1648) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads](../../src/production_tool_control.rs#L550) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read](../../src/production_tool_control.rs#L586) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records](../../src/production_tool_control.rs#L601) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search](../../src/production_tool_control.rs#L630) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start](../../src/production_tool_control.rs#L711) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork](../../src/production_tool_control.rs#L741) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get](../../src/production_tool_control.rs#L761) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L839) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy](../../src/production_tool_control.rs#L847) | struct_item | `pub` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../src/production_tool_control.rs#L853) | function_item | `pub` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation](../../src/production_tool_control.rs#L863) | function_item | `pub` |  |
+| [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply](../../src/production_tool_control.rs#L905) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::policy_withheld](../../src/production_tool_control.rs#L944) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::child_launch_proof](../../src/production_tool_control.rs#L956) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::parent_report_proof](../../src/production_tool_control.rs#L1028) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1090) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::resolve_visible_line](../../src/production_tool_control.rs#L1111) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1132) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::require_active_session](../../src/production_tool_control.rs#L1152) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1162) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1208) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1216) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::event_record](../../src/production_tool_control.rs#L1232) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1238) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::string_array](../../src/production_tool_control.rs#L1246) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::job_record_outcome](../../src/production_tool_control.rs#L1261) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1274) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1293) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1306) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1311) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::context_start_genesis](../../src/production_tool_control.rs#L1337) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1364) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1384) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::bounded_snippet](../../src/production_tool_control.rs#L1397) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::map_io](../../src/production_tool_control.rs#L1416) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::map_store](../../src/production_tool_control.rs#L1424) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::map_schema](../../src/production_tool_control.rs#L1436) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::SupervisorOperationError](../../src/production_tool_control.rs#L1441) | enum_item | `pub` |  |
+| [tekes-supervisor::production_tool_control::SupervisorOperationError::into_control_error](../../src/production_tool_control.rs#L1471) | function_item | `private` |  |
+| [tekes-supervisor::production_tool_control::tool_failure_tests::definitive_remote_tool_failure_is_not_retryable_transport_loss](../../src/production_tool_control.rs#L1498) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::production_tool_control::continuation_policy_tests::value](../../src/production_tool_control.rs#L1517) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::production_tool_control::continuation_policy_tests::pending_results_and_continuation_responses_pass_the_secret_policy](../../src/production_tool_control.rs#L1524) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::production_tool_control::context_start_tests::a_started_session_inherits_execution_without_legacy_management](../../src/production_tool_control.rs#L1594) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -159,7 +157,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–20: 52 direct edges</summary>
+<details><summary>Functions 1–20: 51 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -172,104 +170,102 @@ flowchart TD
   n6["tekes-supervisor::production_tool_control::validate_session_folder"]
   n7["tekes-supervisor::production_tool_control::session_folder"]
   n8["tekes-supervisor::production_tool_control::read_projection"]
-  n9["tekes-supervisor::production_tool_control::genesis_workspace"]
-  n10["tekes-supervisor::production_tool_control::genesis_line"]
-  n11["tekes-supervisor::production_tool_control::required_string"]
-  n12["tekes-supervisor::production_tool_control::string_array"]
-  n13["tekes-supervisor::production_tool_control::job_record_outcome"]
-  n14["tekes-supervisor::production_tool_control::map_backend"]
-  n15["tekes-supervisor::production_tool_control::argument_limit"]
-  n16["tekes-supervisor::production_tool_control::encode_cursor"]
-  n17["tekes-supervisor::production_tool_control::decode_cursor"]
+  n9["tekes-supervisor::production_tool_control::genesis_line"]
+  n10["tekes-supervisor::production_tool_control::required_string"]
+  n11["tekes-supervisor::production_tool_control::string_array"]
+  n12["tekes-supervisor::production_tool_control::job_record_outcome"]
+  n13["tekes-supervisor::production_tool_control::map_backend"]
+  n14["tekes-supervisor::production_tool_control::argument_limit"]
+  n15["tekes-supervisor::production_tool_control::encode_cursor"]
+  n16["tekes-supervisor::production_tool_control::decode_cursor"]
+  n17["tekes-supervisor::production_tool_control::to_ijson"]
   n18["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::execute_outcome"]
-  n19["tekes-supervisor::production_tool_control::to_ijson"]
-  n20["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::continue_task"]
-  n21["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::reconcile"]
-  n22["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::cancel_inflight"]
-  n23["tekes-supervisor::production_tool_control::JobBrokerSupervisorAuthority::new"]
-  n24["tekes-supervisor::production_tool_control::JobBrokerSupervisorAuthority::execute"]
-  n25["tekes-supervisor::production_tool_control::ProductionToolControlHandler::new"]
-  n26["tekes-supervisor::production_tool_control::ProductionToolControlHandler::with_dynamic_routes"]
-  n27["tekes-supervisor::production_tool_control::ProductionToolControlHandler::runtime"]
-  n28["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute"]
-  n29["tekes-supervisor::production_tool_control::ProductionToolControlHandler::recovery"]
-  n30["tekes-supervisor::production_tool_control::ProductionToolControlHandler::reconcile"]
-  n31["tekes-supervisor::production_tool_control::ProductionToolControlHandler::continue_task"]
-  n32["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_inner"]
-  n33["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_dynamic"]
-  n34["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context"]
-  n35["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads"]
-  n36["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read"]
-  n37["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records"]
-  n38["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search"]
-  n39["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start"]
-  n40["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork"]
-  n41["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get"]
-  n42["tekes-supervisor::production_tool_control::is_fixed_supervisor_tool"]
-  n43["tekes-supervisor::production_tool_control::child_launch_proof"]
-  n44["tekes-supervisor::tool_control::resolve_durable_binding"]
-  n45["tools::runtime_backends::JobBroker::new"]
-  n46["tools::schema_registry::validate_fixed_arguments"]
-  n47["worker-control::durable::ToolControlResult::pending"]
-  n48["worker-control::durable::ToolControlResult::success"]
-  n49["worker-control::durable::ToolControlResult::failure"]
-  n23 --> n45
-  n24 --> n11
-  n24 --> n12
-  n24 --> n13
-  n24 --> n14
-  n24 --> n19
-  n28 --> n47
-  n28 --> n48
-  n28 --> n49
-  n29 --> n42
-  n32 --> n2
-  n32 --> n19
-  n32 --> n33
-  n32 --> n34
-  n32 --> n41
-  n32 --> n42
-  n32 --> n43
-  n32 --> n44
-  n32 --> n46
-  n33 --> n0
-  n34 --> n1
-  n34 --> n5
-  n34 --> n7
-  n34 --> n9
-  n34 --> n11
-  n34 --> n19
-  n34 --> n35
-  n34 --> n36
-  n34 --> n37
-  n34 --> n38
-  n34 --> n39
-  n34 --> n40
-  n35 --> n6
+  n19["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::continue_task"]
+  n20["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::reconcile"]
+  n21["tekes-supervisor::production_tool_control::DynamicSupervisorAuthority::cancel_inflight"]
+  n22["tekes-supervisor::production_tool_control::JobBrokerSupervisorAuthority::new"]
+  n23["tekes-supervisor::production_tool_control::JobBrokerSupervisorAuthority::execute"]
+  n24["tekes-supervisor::production_tool_control::ProductionToolControlHandler::new"]
+  n25["tekes-supervisor::production_tool_control::ProductionToolControlHandler::with_dynamic_routes"]
+  n26["tekes-supervisor::production_tool_control::ProductionToolControlHandler::runtime"]
+  n27["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute"]
+  n28["tekes-supervisor::production_tool_control::ProductionToolControlHandler::recovery"]
+  n29["tekes-supervisor::production_tool_control::ProductionToolControlHandler::reconcile"]
+  n30["tekes-supervisor::production_tool_control::ProductionToolControlHandler::continue_task"]
+  n31["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_inner"]
+  n32["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_dynamic"]
+  n33["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context"]
+  n34["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads"]
+  n35["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read"]
+  n36["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records"]
+  n37["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search"]
+  n38["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start"]
+  n39["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork"]
+  n40["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get"]
+  n41["tekes-supervisor::production_tool_control::is_fixed_supervisor_tool"]
+  n42["tekes-supervisor::production_tool_control::child_launch_proof"]
+  n43["tekes-supervisor::tool_control::resolve_durable_binding"]
+  n44["tools::runtime_backends::JobBroker::new"]
+  n45["tools::schema_registry::validate_fixed_arguments"]
+  n46["worker-control::durable::ToolControlResult::pending"]
+  n47["worker-control::durable::ToolControlResult::success"]
+  n48["worker-control::durable::ToolControlResult::failure"]
+  n22 --> n44
+  n23 --> n10
+  n23 --> n11
+  n23 --> n12
+  n23 --> n13
+  n23 --> n17
+  n27 --> n46
+  n27 --> n47
+  n27 --> n48
+  n28 --> n41
+  n31 --> n2
+  n31 --> n17
+  n31 --> n32
+  n31 --> n33
+  n31 --> n40
+  n31 --> n41
+  n31 --> n42
+  n31 --> n43
+  n31 --> n45
+  n32 --> n0
+  n33 --> n1
+  n33 --> n5
+  n33 --> n7
+  n33 --> n10
+  n33 --> n17
+  n33 --> n34
+  n33 --> n35
+  n33 --> n36
+  n33 --> n37
+  n33 --> n38
+  n33 --> n39
+  n34 --> n6
+  n34 --> n8
+  n34 --> n17
+  n35 --> n7
   n35 --> n8
-  n35 --> n19
-  n36 --> n7
-  n36 --> n8
-  n36 --> n19
-  n37 --> n11
+  n35 --> n17
+  n36 --> n10
+  n36 --> n14
+  n36 --> n15
+  n36 --> n16
+  n36 --> n17
+  n37 --> n3
+  n37 --> n4
+  n37 --> n7
+  n37 --> n9
+  n37 --> n10
+  n37 --> n14
   n37 --> n15
   n37 --> n16
   n37 --> n17
-  n37 --> n19
-  n38 --> n3
-  n38 --> n4
-  n38 --> n7
-  n38 --> n10
-  n38 --> n11
-  n38 --> n15
-  n38 --> n16
-  n38 --> n17
-  n38 --> n19
 ```
 
 </details>
 
-<details><summary>Functions 21–40: 36 direct edges</summary>
+<details><summary>Functions 21–40: 33 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -286,96 +282,90 @@ flowchart TD
   n10["tekes-supervisor::production_tool_control::validate_session_folder"]
   n11["tekes-supervisor::production_tool_control::session_folder"]
   n12["tekes-supervisor::production_tool_control::read_projection"]
-  n13["tekes-supervisor::production_tool_control::folder_workspace"]
-  n14["tekes-supervisor::production_tool_control::genesis_workspace"]
-  n15["tekes-supervisor::production_tool_control::genesis_line"]
-  n16["tekes-supervisor::production_tool_control::paired_tool_timestamp"]
-  n17["tekes-supervisor::production_tool_control::encode_cursor"]
-  n18["tekes-supervisor::production_tool_control::decode_cursor"]
-  n19["tekes-supervisor::production_tool_control::context_start_genesis"]
-  n20["tekes-supervisor::production_tool_control::deterministic_uuid"]
-  n21["tekes-supervisor::production_tool_control::validate_line_file_name"]
-  n22["tekes-supervisor::production_tool_control::to_ijson"]
-  n23["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start"]
-  n24["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork"]
-  n25["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get"]
-  n26["tekes-supervisor::production_tool_control::is_fixed_supervisor_tool"]
-  n27["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new"]
-  n28["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation"]
-  n29["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply"]
-  n30["tekes-supervisor::production_tool_control::policy_withheld"]
-  n31["tekes-supervisor::production_tool_control::child_launch_proof"]
-  n32["worker-control::durable::ToolControlResult::failure"]
+  n13["tekes-supervisor::production_tool_control::genesis_line"]
+  n14["tekes-supervisor::production_tool_control::paired_tool_timestamp"]
+  n15["tekes-supervisor::production_tool_control::event_record"]
+  n16["tekes-supervisor::production_tool_control::encode_cursor"]
+  n17["tekes-supervisor::production_tool_control::decode_cursor"]
+  n18["tekes-supervisor::production_tool_control::context_start_genesis"]
+  n19["tekes-supervisor::production_tool_control::deterministic_uuid"]
+  n20["tekes-supervisor::production_tool_control::validate_line_file_name"]
+  n21["tekes-supervisor::production_tool_control::to_ijson"]
+  n22["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start"]
+  n23["tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork"]
+  n24["tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get"]
+  n25["tekes-supervisor::production_tool_control::is_fixed_supervisor_tool"]
+  n26["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new"]
+  n27["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply_continuation"]
+  n28["tekes-supervisor::production_tool_control::ProductionToolControlPolicy::apply"]
+  n29["tekes-supervisor::production_tool_control::policy_withheld"]
+  n30["tekes-supervisor::production_tool_control::child_launch_proof"]
+  n31["worker-control::durable::ToolControlResult::failure"]
   n5 --> n12
-  n5 --> n15
-  n5 --> n21
+  n5 --> n13
+  n5 --> n20
   n6 --> n12
   n7 --> n6
   n7 --> n8
   n7 --> n11
-  n7 --> n15
+  n7 --> n13
   n8 --> n10
-  n8 --> n13
   n9 --> n11
   n10 --> n0
   n10 --> n4
   n11 --> n0
   n11 --> n10
   n12 --> n3
-  n13 --> n4
-  n23 --> n1
+  n22 --> n1
+  n22 --> n2
+  n22 --> n14
+  n22 --> n18
+  n22 --> n19
   n23 --> n2
   n23 --> n14
-  n23 --> n16
   n23 --> n19
-  n23 --> n20
-  n24 --> n2
+  n23 --> n21
+  n24 --> n7
   n24 --> n16
-  n24 --> n20
-  n24 --> n22
-  n25 --> n7
-  n25 --> n17
-  n25 --> n18
-  n25 --> n22
-  n29 --> n30
-  n30 --> n32
-  n31 --> n12
-  n31 --> n15
-  n31 --> n21
+  n24 --> n17
+  n24 --> n21
+  n28 --> n29
+  n29 --> n31
+  n30 --> n12
+  n30 --> n13
+  n30 --> n20
 ```
 
 </details>
 
-<details><summary>Functions 41–58: 6 direct edges</summary>
+<details><summary>Functions 41–56: 6 direct edges</summary>
 
 ```mermaid
 flowchart TD
   n0["schema::event::Event::from_value"]
   n1["schema::ijson::IJsonValue::parse"]
-  n2["tekes-supervisor::production_tool_control::paired_tool_timestamp"]
-  n3["tekes-supervisor::production_tool_control::event_record"]
-  n4["tekes-supervisor::production_tool_control::required_string"]
-  n5["tekes-supervisor::production_tool_control::string_array"]
-  n6["tekes-supervisor::production_tool_control::job_record_outcome"]
-  n7["tekes-supervisor::production_tool_control::map_backend"]
-  n8["tekes-supervisor::production_tool_control::argument_limit"]
-  n9["tekes-supervisor::production_tool_control::encode_cursor"]
-  n10["tekes-supervisor::production_tool_control::decode_cursor"]
-  n11["tekes-supervisor::production_tool_control::context_start_genesis"]
-  n12["tekes-supervisor::production_tool_control::deterministic_uuid"]
-  n13["tekes-supervisor::production_tool_control::validate_line_file_name"]
-  n14["tekes-supervisor::production_tool_control::bounded_snippet"]
-  n15["tekes-supervisor::production_tool_control::to_ijson"]
-  n16["tekes-supervisor::production_tool_control::map_io"]
-  n17["tekes-supervisor::production_tool_control::map_store"]
-  n18["tekes-supervisor::production_tool_control::map_schema"]
-  n19["tekes-supervisor::production_tool_control::SupervisorOperationError::into_control_error"]
-  n6 --> n7
-  n6 --> n15
-  n10 --> n9
-  n11 --> n0
-  n11 --> n15
-  n15 --> n1
+  n2["tekes-supervisor::production_tool_control::required_string"]
+  n3["tekes-supervisor::production_tool_control::string_array"]
+  n4["tekes-supervisor::production_tool_control::job_record_outcome"]
+  n5["tekes-supervisor::production_tool_control::map_backend"]
+  n6["tekes-supervisor::production_tool_control::argument_limit"]
+  n7["tekes-supervisor::production_tool_control::encode_cursor"]
+  n8["tekes-supervisor::production_tool_control::decode_cursor"]
+  n9["tekes-supervisor::production_tool_control::context_start_genesis"]
+  n10["tekes-supervisor::production_tool_control::deterministic_uuid"]
+  n11["tekes-supervisor::production_tool_control::validate_line_file_name"]
+  n12["tekes-supervisor::production_tool_control::bounded_snippet"]
+  n13["tekes-supervisor::production_tool_control::to_ijson"]
+  n14["tekes-supervisor::production_tool_control::map_io"]
+  n15["tekes-supervisor::production_tool_control::map_store"]
+  n16["tekes-supervisor::production_tool_control::map_schema"]
+  n17["tekes-supervisor::production_tool_control::SupervisorOperationError::into_control_error"]
+  n4 --> n5
+  n4 --> n13
+  n8 --> n7
+  n9 --> n0
+  n9 --> n13
+  n13 --> n1
 ```
 
 </details>
@@ -396,7 +386,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `serde_json::to_value` | [206](../../src/production_tool_control.rs#L206) | external-constructor-callback-or-unresolved |
 | `execute` | `SupervisorOperationError::Protocol` | [207](../../src/production_tool_control.rs#L207) | external-constructor-callback-or-unresolved |
 | `execute` | `error.to_string` | [207](../../src/production_tool_control.rs#L207) | receiver-type-required |
-| `execute` | `required_string` | [208](../../src/production_tool_control.rs#L208), [218](../../src/production_tool_control.rs#L218), [248](../../src/production_tool_control.rs#L248), [252](../../src/production_tool_control.rs#L252) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1284) |
+| `execute` | `required_string` | [208](../../src/production_tool_control.rs#L208), [218](../../src/production_tool_control.rs#L218), [248](../../src/production_tool_control.rs#L248), [252](../../src/production_tool_control.rs#L252) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1238) |
 | `execute` | `arguments                     .get("job_id")                     .and_then(Value::as_str)                     .filter(&#124;value&#124; !value.is_empty())                     .map(ToOwned::to_owned)                     .unwrap_or_else` | [211](../../src/production_tool_control.rs#L211) | receiver-type-required |
 | `execute` | `arguments                     .get("job_id")                     .and_then(Value::as_str)                     .filter(&#124;value&#124; !value.is_empty())                     .map` | [211](../../src/production_tool_control.rs#L211) | receiver-type-required |
 | `execute` | `arguments                     .get("job_id")                     .and_then(Value::as_str)                     .filter` | [211](../../src/production_tool_control.rs#L211) | receiver-type-required |
@@ -404,19 +394,19 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `arguments                     .get` | [211](../../src/production_tool_control.rs#L211) | receiver-type-required |
 | `execute` | `value.is_empty` | [214](../../src/production_tool_control.rs#L214), [223](../../src/production_tool_control.rs#L223) | receiver-type-required |
 | `execute` | `required_string(&arguments, "program")?.to_owned` | [218](../../src/production_tool_control.rs#L218) | receiver-type-required |
-| `execute` | `string_array` | [219](../../src/production_tool_control.rs#L219), [225](../../src/production_tool_control.rs#L225) | [tekes-supervisor::production_tool_control::string_array](../../src/production_tool_control.rs#L1292) |
+| `execute` | `string_array` | [219](../../src/production_tool_control.rs#L219), [225](../../src/production_tool_control.rs#L225) | [tekes-supervisor::production_tool_control::string_array](../../src/production_tool_control.rs#L1246) |
 | `execute` | `arguments                         .get("working_directory")                         .and_then(Value::as_str)                         .filter(&#124;value&#124; !value.is_empty())                         .map` | [220](../../src/production_tool_control.rs#L220) | receiver-type-required |
 | `execute` | `arguments                         .get("working_directory")                         .and_then(Value::as_str)                         .filter` | [220](../../src/production_tool_control.rs#L220) | receiver-type-required |
 | `execute` | `arguments                         .get("working_directory")                         .and_then` | [220](../../src/production_tool_control.rs#L220) | receiver-type-required |
 | `execute` | `arguments                         .get` | [220](../../src/production_tool_control.rs#L220) | receiver-type-required |
 | `execute` | `Default::default` | [226](../../src/production_tool_control.rs#L226) | external-constructor-callback-or-unresolved |
-| `execute` | `job_record_outcome` | [228](../../src/production_tool_control.rs#L228), [249](../../src/production_tool_control.rs#L249), [253](../../src/production_tool_control.rs#L253) | [tekes-supervisor::production_tool_control::job_record_outcome](../../src/production_tool_control.rs#L1307) |
+| `execute` | `job_record_outcome` | [228](../../src/production_tool_control.rs#L228), [249](../../src/production_tool_control.rs#L249), [253](../../src/production_tool_control.rs#L253) | [tekes-supervisor::production_tool_control::job_record_outcome](../../src/production_tool_control.rs#L1261) |
 | `execute` | `self.broker.start` | [228](../../src/production_tool_control.rs#L228) | receiver-type-required |
 | `execute` | `Arc::clone` | [232](../../src/production_tool_control.rs#L232) | external-constructor-callback-or-unresolved |
 | `execute` | `self.broker.list` | [237](../../src/production_tool_control.rs#L237) | receiver-type-required |
-| `execute` | `to_ijson` | [238](../../src/production_tool_control.rs#L238) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
+| `execute` | `to_ijson` | [238](../../src/production_tool_control.rs#L238) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
 | `execute` | `Err` | [239](../../src/production_tool_control.rs#L239), [240](../../src/production_tool_control.rs#L240), [244](../../src/production_tool_control.rs#L244), [255](../../src/production_tool_control.rs#L255) | external-constructor-callback-or-unresolved |
-| `execute` | `map_backend` | [239](../../src/production_tool_control.rs#L239) | [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1320) |
+| `execute` | `map_backend` | [239](../../src/production_tool_control.rs#L239) | [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1274) |
 | `execute` | `SupervisorOperationError::Denied` | [240](../../src/production_tool_control.rs#L240) | external-constructor-callback-or-unresolved |
 | `execute` | `"job list unexpectedly requested approval".into` | [241](../../src/production_tool_control.rs#L241) | receiver-type-required |
 | `execute` | `SupervisorOperationError::Unavailable` | [244](../../src/production_tool_control.rs#L244) | external-constructor-callback-or-unresolved |
@@ -434,7 +424,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `ToolControlResult::pending` | [313](../../src/production_tool_control.rs#L313) | [worker-control::durable::ToolControlResult::pending](../../../worker-control/src/durable.rs#L340) |
 | `execute` | `ToolControlResult::failure` | [319](../../src/production_tool_control.rs#L319) | [worker-control::durable::ToolControlResult::failure](../../../worker-control/src/durable.rs#L375) |
 | `execute` | `error.into_control_error` | [322](../../src/production_tool_control.rs#L322) | receiver-type-required |
-| `recovery` | `is_fixed_supervisor_tool` | [328](../../src/production_tool_control.rs#L328) | [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L850) |
+| `recovery` | `is_fixed_supervisor_tool` | [328](../../src/production_tool_control.rs#L328) | [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L839) |
 | `recovery` | `self             .dynamic_catalog             .tools             .iter()             .find` | [331](../../src/production_tool_control.rs#L331) | receiver-type-required |
 | `recovery` | `self             .dynamic_catalog             .tools             .iter` | [331](../../src/production_tool_control.rs#L331) | receiver-type-required |
 | `recovery` | `tool.external_effect.is_some` | [344](../../src/production_tool_control.rs#L344) | receiver-type-required |
@@ -467,23 +457,23 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_inner` | `resolve_durable_binding(&session_folder, request)             .map_err` | [418](../../src/production_tool_control.rs#L418) | receiver-type-required |
 | `execute_inner` | `resolve_durable_binding` | [418](../../src/production_tool_control.rs#L418) | [tekes-supervisor::tool_control::resolve_durable_binding](../../src/tool_control.rs#L546) |
 | `execute_inner` | `SupervisorOperationError::Conflict` | [419](../../src/production_tool_control.rs#L419) | external-constructor-callback-or-unresolved |
-| `execute_inner` | `is_fixed_supervisor_tool` | [420](../../src/production_tool_control.rs#L420) | [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L850) |
+| `execute_inner` | `is_fixed_supervisor_tool` | [420](../../src/production_tool_control.rs#L420) | [tekes-supervisor::production_tool_control::is_fixed_supervisor_tool](../../src/production_tool_control.rs#L839) |
 | `execute_inner` | `self.execute_dynamic` | [421](../../src/production_tool_control.rs#L421) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_dynamic](../../src/production_tool_control.rs#L448) |
 | `execute_inner` | `session_folder.join` | [421](../../src/production_tool_control.rs#L421) | receiver-type-required |
 | `execute_inner` | `validate_fixed_arguments(&request.name, &arguments)             .map_err` | [423](../../src/production_tool_control.rs#L423) | receiver-type-required |
-| `execute_inner` | `validate_fixed_arguments` | [423](../../src/production_tool_control.rs#L423) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1231) |
+| `execute_inner` | `validate_fixed_arguments` | [423](../../src/production_tool_control.rs#L423) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1228) |
 | `execute_inner` | `SupervisorOperationError::Invalid` | [424](../../src/production_tool_control.rs#L424), [436](../../src/production_tool_control.rs#L436) | external-constructor-callback-or-unresolved |
 | `execute_inner` | `request.name.as_str` | [425](../../src/production_tool_control.rs#L425) | receiver-type-required |
 | `execute_inner` | `self.execute_context` | [426](../../src/production_tool_control.rs#L426) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context](../../src/production_tool_control.rs#L479) |
-| `execute_inner` | `self.execute_context_get` | [427](../../src/production_tool_control.rs#L427) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get](../../src/production_tool_control.rs#L772) |
+| `execute_inner` | `self.execute_context_get` | [427](../../src/production_tool_control.rs#L427) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::execute_context_get](../../src/production_tool_control.rs#L761) |
 | `execute_inner` | `self.jobs.execute` | [428](../../src/production_tool_control.rs#L428) | receiver-type-required |
-| `execute_inner` | `child_launch_proof` | [430](../../src/production_tool_control.rs#L430) | [tekes-supervisor::production_tool_control::child_launch_proof](../../src/production_tool_control.rs#L967) |
+| `execute_inner` | `child_launch_proof` | [430](../../src/production_tool_control.rs#L430) | [tekes-supervisor::production_tool_control::child_launch_proof](../../src/production_tool_control.rs#L956) |
 | `execute_inner` | `self.runtime.ensure_child` | [431](../../src/production_tool_control.rs#L431) | receiver-type-required |
-| `execute_inner` | `parent_report_proof` | [434](../../src/production_tool_control.rs#L434) | [tekes-supervisor::production_tool_control::parent_report_proof](../../src/production_tool_control.rs#L1039) |
+| `execute_inner` | `parent_report_proof` | [434](../../src/production_tool_control.rs#L434) | [tekes-supervisor::production_tool_control::parent_report_proof](../../src/production_tool_control.rs#L1028) |
 | `execute_inner` | `arguments.get("result").ok_or_else` | [435](../../src/production_tool_control.rs#L435) | receiver-type-required |
 | `execute_inner` | `arguments.get` | [435](../../src/production_tool_control.rs#L435) | receiver-type-required |
 | `execute_inner` | `"report.result missing".into` | [436](../../src/production_tool_control.rs#L436) | receiver-type-required |
-| `execute_inner` | `to_ijson` | [438](../../src/production_tool_control.rs#L438) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
+| `execute_inner` | `to_ijson` | [438](../../src/production_tool_control.rs#L438) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
 | `execute_inner` | `self.runtime.deliver_report` | [439](../../src/production_tool_control.rs#L439) | receiver-type-required |
 | `execute_inner` | `Err` | [441](../../src/production_tool_control.rs#L441) | external-constructor-callback-or-unresolved |
 | `execute_inner` | `SupervisorOperationError::Unsupported` | [441](../../src/production_tool_control.rs#L441) | external-constructor-callback-or-unresolved |
@@ -507,629 +497,609 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_context` | `arguments             .get` | [485](../../src/production_tool_control.rs#L485) | receiver-type-required |
 | `execute_context` | `SupervisorOperationError::Invalid` | [488](../../src/production_tool_control.rs#L488) | external-constructor-callback-or-unresolved |
 | `execute_context` | `"context.operation missing".into` | [488](../../src/production_tool_control.rs#L488) | receiver-type-required |
-| `execute_context` | `genesis_workspace` | [489](../../src/production_tool_control.rs#L489) | [tekes-supervisor::production_tool_control::genesis_workspace](../../src/production_tool_control.rs#L1244) |
-| `execute_context` | `self.context_threads` | [491](../../src/production_tool_control.rs#L491) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads](../../src/production_tool_control.rs#L551) |
-| `execute_context` | `required_string` | [493](../../src/production_tool_control.rs#L493), [501](../../src/production_tool_control.rs#L501), [503](../../src/production_tool_control.rs#L503), [517](../../src/production_tool_control.rs#L517), [522](../../src/production_tool_control.rs#L522), [536](../../src/production_tool_control.rs#L536) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1284) |
-| `execute_context` | `self.context_read` | [494](../../src/production_tool_control.rs#L494) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read](../../src/production_tool_control.rs#L587) |
-| `execute_context` | `self.context_records` | [496](../../src/production_tool_control.rs#L496) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records](../../src/production_tool_control.rs#L603) |
-| `execute_context` | `self.context_search` | [497](../../src/production_tool_control.rs#L497) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search](../../src/production_tool_control.rs#L632) |
-| `execute_context` | `self.context_start` | [498](../../src/production_tool_control.rs#L498) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start](../../src/production_tool_control.rs#L716) |
-| `execute_context` | `self.context_fork` | [499](../../src/production_tool_control.rs#L499) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork](../../src/production_tool_control.rs#L752) |
-| `execute_context` | `session_folder` | [502](../../src/production_tool_control.rs#L502), [518](../../src/production_tool_control.rs#L518), [537](../../src/production_tool_control.rs#L537) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) |
-| `execute_context` | `self.runtime.deliver_input` | [504](../../src/production_tool_control.rs#L504) | receiver-type-required |
-| `execute_context` | `request.session.clone` | [505](../../src/production_tool_control.rs#L505), [539](../../src/production_tool_control.rs#L539) | receiver-type-required |
-| `execute_context` | `request.thread.clone` | [506](../../src/production_tool_control.rs#L506), [540](../../src/production_tool_control.rs#L540) | receiver-type-required |
-| `execute_context` | `target.to_owned` | [507](../../src/production_tool_control.rs#L507), [541](../../src/production_tool_control.rs#L541) | receiver-type-required |
-| `execute_context` | `request.request_id.clone` | [508](../../src/production_tool_control.rs#L508), [542](../../src/production_tool_control.rs#L542) | receiver-type-required |
-| `execute_context` | `message.to_owned` | [509](../../src/production_tool_control.rs#L509) | receiver-type-required |
-| `execute_context` | `arguments                         .get("goal")                         .and_then(Value::as_bool)                         .unwrap_or` | [510](../../src/production_tool_control.rs#L510) | receiver-type-required |
-| `execute_context` | `arguments                         .get("goal")                         .and_then` | [510](../../src/production_tool_control.rs#L510) | receiver-type-required |
-| `execute_context` | `arguments                         .get` | [510](../../src/production_tool_control.rs#L510) | receiver-type-required |
-| `execute_context` | `self.runtime.ensure_running` | [519](../../src/production_tool_control.rs#L519) | receiver-type-required |
-| `execute_context` | `Err` | [524](../../src/production_tool_control.rs#L524), [545](../../src/production_tool_control.rs#L545) | external-constructor-callback-or-unresolved |
-| `execute_context` | `SupervisorOperationError::Denied` | [524](../../src/production_tool_control.rs#L524) | external-constructor-callback-or-unresolved |
-| `execute_context` | `"a running worker cannot archive its containing session".into` | [525](../../src/production_tool_control.rs#L525) | receiver-type-required |
-| `execute_context` | `require_active_session` | [528](../../src/production_tool_control.rs#L528) | [tekes-supervisor::production_tool_control::require_active_session](../../src/production_tool_control.rs#L1171) |
-| `execute_context` | `ThreadStore::open(&self.root)                     .map_err(map_store)?                     .archive(target)                     .map_err` | [529](../../src/production_tool_control.rs#L529) | receiver-type-required |
-| `execute_context` | `ThreadStore::open(&self.root)                     .map_err(map_store)?                     .archive` | [529](../../src/production_tool_control.rs#L529) | receiver-type-required |
-| `execute_context` | `ThreadStore::open(&self.root)                     .map_err` | [529](../../src/production_tool_control.rs#L529) | receiver-type-required |
-| `execute_context` | `ThreadStore::open` | [529](../../src/production_tool_control.rs#L529) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
-| `execute_context` | `to_ijson` | [533](../../src/production_tool_control.rs#L533) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `execute_context` | `self.runtime.interrupt` | [538](../../src/production_tool_control.rs#L538) | receiver-type-required |
-| `execute_context` | `SupervisorOperationError::Unsupported` | [545](../../src/production_tool_control.rs#L545) | external-constructor-callback-or-unresolved |
-| `context_threads` | `Vec::new` | [552](../../src/production_tool_control.rs#L552) | external-constructor-callback-or-unresolved |
-| `context_threads` | `fs::read_dir(self.root.join(area)).map_err` | [554](../../src/production_tool_control.rs#L554) | receiver-type-required |
-| `context_threads` | `fs::read_dir` | [554](../../src/production_tool_control.rs#L554) | external-constructor-callback-or-unresolved |
-| `context_threads` | `self.root.join` | [554](../../src/production_tool_control.rs#L554) | receiver-type-required |
-| `context_threads` | `entry.map_err` | [555](../../src/production_tool_control.rs#L555) | receiver-type-required |
-| `context_threads` | `entry.file_type().map_err(map_io)?.is_dir` | [556](../../src/production_tool_control.rs#L556) | receiver-type-required |
-| `context_threads` | `entry.file_type().map_err` | [556](../../src/production_tool_control.rs#L556) | receiver-type-required |
-| `context_threads` | `entry.file_type` | [556](../../src/production_tool_control.rs#L556) | receiver-type-required |
-| `context_threads` | `entry.file_name().to_string_lossy().into_owned` | [559](../../src/production_tool_control.rs#L559) | receiver-type-required |
-| `context_threads` | `entry.file_name().to_string_lossy` | [559](../../src/production_tool_control.rs#L559) | receiver-type-required |
-| `context_threads` | `entry.file_name` | [559](../../src/production_tool_control.rs#L559) | receiver-type-required |
-| `context_threads` | `validate_session_folder` | [560](../../src/production_tool_control.rs#L560) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1181) |
-| `context_threads` | `entry.path` | [560](../../src/production_tool_control.rs#L560), [561](../../src/production_tool_control.rs#L561) | receiver-type-required |
-| `context_threads` | `read_projection` | [561](../../src/production_tool_control.rs#L561) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) |
-| `context_threads` | `entry.path().join` | [561](../../src/production_tool_control.rs#L561) | receiver-type-required |
-| `context_threads` | `projection.events.first().expect` | [562](../../src/production_tool_control.rs#L562) | receiver-type-required |
-| `context_threads` | `projection.events.first` | [562](../../src/production_tool_control.rs#L562) | receiver-type-required |
-| `context_threads` | `projection                     .events                     .iter()                     .rev()                     .find_map` | [563](../../src/production_tool_control.rs#L563) | receiver-type-required |
-| `context_threads` | `projection                     .events                     .iter()                     .rev` | [563](../../src/production_tool_control.rs#L563) | receiver-type-required |
-| `context_threads` | `projection                     .events                     .iter` | [563](../../src/production_tool_control.rs#L563) | receiver-type-required |
-| `context_threads` | `event.string_field` | [567](../../src/production_tool_control.rs#L567) | receiver-type-required |
-| `context_threads` | `items.push` | [568](../../src/production_tool_control.rs#L568) | receiver-type-required |
-| `context_threads` | `items.sort_by` | [579](../../src/production_tool_control.rs#L579) | receiver-type-required |
-| `context_threads` | `left.get("session_id")                 .and_then(Value::as_str)                 .cmp` | [580](../../src/production_tool_control.rs#L580) | receiver-type-required |
-| `context_threads` | `left.get("session_id")                 .and_then` | [580](../../src/production_tool_control.rs#L580) | receiver-type-required |
-| `context_threads` | `left.get` | [580](../../src/production_tool_control.rs#L580) | receiver-type-required |
-| `context_threads` | `right.get("session_id").and_then` | [582](../../src/production_tool_control.rs#L582) | receiver-type-required |
-| `context_threads` | `right.get` | [582](../../src/production_tool_control.rs#L582) | receiver-type-required |
-| `context_threads` | `to_ijson` | [584](../../src/production_tool_control.rs#L584) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `context_read` | `session_folder` | [588](../../src/production_tool_control.rs#L588) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) |
-| `context_read` | `read_projection` | [589](../../src/production_tool_control.rs#L589) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) |
-| `context_read` | `folder.join` | [589](../../src/production_tool_control.rs#L589) | receiver-type-required |
-| `context_read` | `projection.events.first().expect` | [590](../../src/production_tool_control.rs#L590) | receiver-type-required |
-| `context_read` | `projection.events.first` | [590](../../src/production_tool_control.rs#L590) | receiver-type-required |
-| `context_read` | `to_ijson` | [591](../../src/production_tool_control.rs#L591) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `context_records` | `required_string(arguments, "turn_id")?             .parse::<u64>()             .map_err` | [608](../../src/production_tool_control.rs#L608) | receiver-type-required |
-| `context_records` | `required_string(arguments, "turn_id")?             .parse::<u64>` | [608](../../src/production_tool_control.rs#L608) | receiver-type-required |
-| `context_records` | `required_string` | [608](../../src/production_tool_control.rs#L608) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1284) |
-| `context_records` | `SupervisorOperationError::Invalid` | [611](../../src/production_tool_control.rs#L611) | external-constructor-callback-or-unresolved |
-| `context_records` | `"turn_id is not a positive integer".into` | [611](../../src/production_tool_control.rs#L611) | receiver-type-required |
-| `context_records` | `decode_cursor` | [613](../../src/production_tool_control.rs#L613) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1357) |
-| `context_records` | `arguments.get` | [613](../../src/production_tool_control.rs#L613) | receiver-type-required |
-| `context_records` | `argument_limit` | [614](../../src/production_tool_control.rs#L614) | [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1339) |
-| `context_records` | `resolved             .projection             .events             .iter()             .filter(&#124;event&#124; event.turn() == Some(turn))             .collect::<Vec<_>>` | [615](../../src/production_tool_control.rs#L615) | receiver-type-required |
-| `context_records` | `resolved             .projection             .events             .iter()             .filter` | [615](../../src/production_tool_control.rs#L615) | receiver-type-required |
-| `context_records` | `resolved             .projection             .events             .iter` | [615](../../src/production_tool_control.rs#L615) | receiver-type-required |
-| `context_records` | `event.turn` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
-| `context_records` | `Some` | [619](../../src/production_tool_control.rs#L619) | external-constructor-callback-or-unresolved |
-| `context_records` | `matching             .iter()             .skip(offset)             .take(limit)             .map(event_record)             .collect::<Result<Vec<_>, _>>` | [621](../../src/production_tool_control.rs#L621) | receiver-type-required |
-| `context_records` | `matching             .iter()             .skip(offset)             .take(limit)             .map` | [621](../../src/production_tool_control.rs#L621) | receiver-type-required |
-| `context_records` | `matching             .iter()             .skip(offset)             .take` | [621](../../src/production_tool_control.rs#L621) | receiver-type-required |
-| `context_records` | `matching             .iter()             .skip` | [621](../../src/production_tool_control.rs#L621) | receiver-type-required |
-| `context_records` | `matching             .iter` | [621](../../src/production_tool_control.rs#L621) | receiver-type-required |
-| `context_records` | `(offset + records.len() < matching.len())             .then` | [627](../../src/production_tool_control.rs#L627) | receiver-type-required |
-| `context_records` | `records.len` | [627](../../src/production_tool_control.rs#L627), [628](../../src/production_tool_control.rs#L628) | receiver-type-required |
-| `context_records` | `matching.len` | [627](../../src/production_tool_control.rs#L627) | receiver-type-required |
-| `context_records` | `encode_cursor` | [628](../../src/production_tool_control.rs#L628) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1352) |
-| `context_records` | `to_ijson` | [629](../../src/production_tool_control.rs#L629) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `context_search` | `required_string` | [638](../../src/production_tool_control.rs#L638), [647](../../src/production_tool_control.rs#L647), [663](../../src/production_tool_control.rs#L663) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1284) |
-| `context_search` | `query.to_lowercase` | [639](../../src/production_tool_control.rs#L639) | receiver-type-required |
-| `context_search` | `arguments             .get("scope")             .and_then(Value::as_str)             .unwrap_or` | [640](../../src/production_tool_control.rs#L640) | receiver-type-required |
-| `context_search` | `arguments             .get("scope")             .and_then` | [640](../../src/production_tool_control.rs#L640) | receiver-type-required |
-| `context_search` | `arguments             .get` | [640](../../src/production_tool_control.rs#L640) | receiver-type-required |
-| `context_search` | `session_folder` | [648](../../src/production_tool_control.rs#L648), [673](../../src/production_tool_control.rs#L673) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) |
-| `context_search` | `visible_sessions` | [651](../../src/production_tool_control.rs#L651), [652](../../src/production_tool_control.rs#L652) | [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1143) |
-| `context_search` | `Some` | [651](../../src/production_tool_control.rs#L651) | external-constructor-callback-or-unresolved |
-| `context_search` | `Err` | [654](../../src/production_tool_control.rs#L654) | external-constructor-callback-or-unresolved |
-| `context_search` | `SupervisorOperationError::Invalid` | [654](../../src/production_tool_control.rs#L654) | external-constructor-callback-or-unresolved |
-| `context_search` | `"invalid context.search scope".into` | [655](../../src/production_tool_control.rs#L655) | receiver-type-required |
-| `context_search` | `request.session.as_str` | [662](../../src/production_tool_control.rs#L662) | receiver-type-required |
-| `context_search` | `json!(["context-search-v2", scope, target, query]).to_string` | [668](../../src/production_tool_control.rs#L668) | receiver-type-required |
-| `context_search` | `decode_cursor` | [669](../../src/production_tool_control.rs#L669) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1357) |
-| `context_search` | `arguments.get` | [669](../../src/production_tool_control.rs#L669) | receiver-type-required |
-| `context_search` | `argument_limit` | [670](../../src/production_tool_control.rs#L670) | [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1339) |
-| `context_search` | `Vec::new` | [671](../../src/production_tool_control.rs#L671) | external-constructor-callback-or-unresolved |
-| `context_search` | `session_lines` | [674](../../src/production_tool_control.rs#L674) | [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1101) |
-| `context_search` | `genesis_line` | [675](../../src/production_tool_control.rs#L675) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1254) |
-| `context_search` | `String::from_utf8(event.canonical_bytes().map_err(map_schema)?)                         .map_err` | [677](../../src/production_tool_control.rs#L677) | receiver-type-required |
-| `context_search` | `String::from_utf8` | [677](../../src/production_tool_control.rs#L677) | external-constructor-callback-or-unresolved |
-| `context_search` | `event.canonical_bytes().map_err` | [677](../../src/production_tool_control.rs#L677) | receiver-type-required |
-| `context_search` | `event.canonical_bytes` | [677](../../src/production_tool_control.rs#L677) | receiver-type-required |
-| `context_search` | `SupervisorOperationError::Protocol` | [678](../../src/production_tool_control.rs#L678) | external-constructor-callback-or-unresolved |
-| `context_search` | `error.to_string` | [678](../../src/production_tool_control.rs#L678) | receiver-type-required |
-| `context_search` | `canonical.to_lowercase().contains` | [679](../../src/production_tool_control.rs#L679) | receiver-type-required |
-| `context_search` | `canonical.to_lowercase` | [679](../../src/production_tool_control.rs#L679) | receiver-type-required |
-| `context_search` | `hits.push` | [680](../../src/production_tool_control.rs#L680) | receiver-type-required |
-| `context_search` | `hits.sort_by` | [693](../../src/production_tool_control.rs#L693) | receiver-type-required |
-| `context_search` | `(                 left.get("session_id").and_then(Value::as_str),                 left.get("thread_id").and_then(Value::as_str),                 left.get("record_id").and_then(Value::as_u64),             )                 .cmp` | [694](../../src/production_tool_control.rs#L694) | receiver-type-required |
-| `context_search` | `left.get("session_id").and_then` | [695](../../src/production_tool_control.rs#L695) | receiver-type-required |
-| `context_search` | `left.get` | [695](../../src/production_tool_control.rs#L695), [696](../../src/production_tool_control.rs#L696), [697](../../src/production_tool_control.rs#L697) | receiver-type-required |
-| `context_search` | `left.get("thread_id").and_then` | [696](../../src/production_tool_control.rs#L696) | receiver-type-required |
-| `context_search` | `left.get("record_id").and_then` | [697](../../src/production_tool_control.rs#L697) | receiver-type-required |
-| `context_search` | `right.get("session_id").and_then` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
-| `context_search` | `right.get` | [700](../../src/production_tool_control.rs#L700), [701](../../src/production_tool_control.rs#L701), [702](../../src/production_tool_control.rs#L702) | receiver-type-required |
-| `context_search` | `right.get("thread_id").and_then` | [701](../../src/production_tool_control.rs#L701) | receiver-type-required |
-| `context_search` | `right.get("record_id").and_then` | [702](../../src/production_tool_control.rs#L702) | receiver-type-required |
-| `context_search` | `hits             .iter()             .skip(offset)             .take(limit)             .cloned()             .collect::<Vec<_>>` | [705](../../src/production_tool_control.rs#L705) | receiver-type-required |
-| `context_search` | `hits             .iter()             .skip(offset)             .take(limit)             .cloned` | [705](../../src/production_tool_control.rs#L705) | receiver-type-required |
-| `context_search` | `hits             .iter()             .skip(offset)             .take` | [705](../../src/production_tool_control.rs#L705) | receiver-type-required |
-| `context_search` | `hits             .iter()             .skip` | [705](../../src/production_tool_control.rs#L705) | receiver-type-required |
-| `context_search` | `hits             .iter` | [705](../../src/production_tool_control.rs#L705) | receiver-type-required |
-| `context_search` | `(offset + page.len() < hits.len())             .then` | [711](../../src/production_tool_control.rs#L711) | receiver-type-required |
-| `context_search` | `page.len` | [711](../../src/production_tool_control.rs#L711), [712](../../src/production_tool_control.rs#L712) | receiver-type-required |
-| `context_search` | `hits.len` | [711](../../src/production_tool_control.rs#L711) | receiver-type-required |
-| `context_search` | `encode_cursor` | [712](../../src/production_tool_control.rs#L712) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1352) |
-| `context_search` | `to_ijson` | [713](../../src/production_tool_control.rs#L713) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `context_start` | `resolved             .projection             .events             .first()             .ok_or_else` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
-| `context_start` | `resolved             .projection             .events             .first` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
-| `context_start` | `SupervisorOperationError::Corruption` | [725](../../src/production_tool_control.rs#L725) | external-constructor-callback-or-unresolved |
-| `context_start` | `"caller has no genesis".into` | [725](../../src/production_tool_control.rs#L725) | receiver-type-required |
-| `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err(map_schema)?             .expect` | [726](../../src/production_tool_control.rs#L726) | receiver-type-required |
-| `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err` | [726](../../src/production_tool_control.rs#L726) | receiver-type-required |
-| `context_start` | `schema::effective_session_genesis` | [726](../../src/production_tool_control.rs#L726) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L48) |
-| `context_start` | `deterministic_uuid` | [729](../../src/production_tool_control.rs#L729) | [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1416) |
-| `context_start` | `paired_tool_timestamp` | [730](../../src/production_tool_control.rs#L730) | [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1262) |
-| `context_start` | `"kernel-worker".into` | [732](../../src/production_tool_control.rs#L732) | receiver-type-required |
-| `context_start` | `"context".into` | [733](../../src/production_tool_control.rs#L733) | receiver-type-required |
-| `context_start` | `session.clone` | [734](../../src/production_tool_control.rs#L734) | receiver-type-required |
-| `context_start` | `"create".into` | [735](../../src/production_tool_control.rs#L735) | receiver-type-required |
-| `context_start` | `request.request_id.clone` | [736](../../src/production_tool_control.rs#L736) | receiver-type-required |
-| `context_start` | `context_start_genesis` | [738](../../src/production_tool_control.rs#L738) | [tekes-supervisor::production_tool_control::context_start_genesis](../../src/production_tool_control.rs#L1386) |
-| `context_start` | `genesis_workspace` | [740](../../src/production_tool_control.rs#L740) | [tekes-supervisor::production_tool_control::genesis_workspace](../../src/production_tool_control.rs#L1244) |
-| `context_start` | `ThreadStore::open(&self.root)             .map_err(map_store)?             .create_thread(&session, event)             .map_err` | [745](../../src/production_tool_control.rs#L745) | receiver-type-required |
-| `context_start` | `ThreadStore::open(&self.root)             .map_err(map_store)?             .create_thread` | [745](../../src/production_tool_control.rs#L745) | receiver-type-required |
-| `context_start` | `ThreadStore::open(&self.root)             .map_err` | [745](../../src/production_tool_control.rs#L745) | receiver-type-required |
-| `context_start` | `ThreadStore::open` | [745](../../src/production_tool_control.rs#L745) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
-| `context_start` | `self.runtime.ensure_running` | [749](../../src/production_tool_control.rs#L749) | receiver-type-required |
-| `context_fork` | `deterministic_uuid` | [757](../../src/production_tool_control.rs#L757) | [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1416) |
-| `context_fork` | `paired_tool_timestamp` | [758](../../src/production_tool_control.rs#L758) | [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1262) |
-| `context_fork` | `ThreadStore::open(&self.root).map_err` | [759](../../src/production_tool_control.rs#L759) | receiver-type-required |
-| `context_fork` | `ThreadStore::open` | [759](../../src/production_tool_control.rs#L759) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
-| `context_fork` | `store             .begin_fork(                 &request.request_id,                 &request.session,                 &destination,                 timestamp,             )             .map_err` | [760](../../src/production_tool_control.rs#L760) | receiver-type-required |
-| `context_fork` | `store             .begin_fork` | [760](../../src/production_tool_control.rs#L760) | receiver-type-required |
-| `context_fork` | `store.recover_rewrites().map_err` | [768](../../src/production_tool_control.rs#L768) | receiver-type-required |
-| `context_fork` | `store.recover_rewrites` | [768](../../src/production_tool_control.rs#L768) | receiver-type-required |
-| `context_fork` | `to_ijson` | [769](../../src/production_tool_control.rs#L769) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `execute_context_get` | `arguments.get("thread_id").and_then` | [778](../../src/production_tool_control.rs#L778) | receiver-type-required |
-| `execute_context_get` | `arguments.get` | [778](../../src/production_tool_control.rs#L778), [807](../../src/production_tool_control.rs#L807) | receiver-type-required |
-| `execute_context_get` | `resolve_visible_line` | [779](../../src/production_tool_control.rs#L779) | [tekes-supervisor::production_tool_control::resolve_visible_line](../../src/production_tool_control.rs#L1122) |
-| `execute_context_get` | `resolved.projection.clone` | [780](../../src/production_tool_control.rs#L780) | receiver-type-required |
-| `execute_context_get` | `arguments             .get("record_ids")             .and_then(Value::as_array)             .ok_or_else` | [782](../../src/production_tool_control.rs#L782) | receiver-type-required |
-| `execute_context_get` | `arguments             .get("record_ids")             .and_then` | [782](../../src/production_tool_control.rs#L782) | receiver-type-required |
-| `execute_context_get` | `arguments             .get` | [782](../../src/production_tool_control.rs#L782), [808](../../src/production_tool_control.rs#L808) | receiver-type-required |
-| `execute_context_get` | `SupervisorOperationError::Invalid` | [786](../../src/production_tool_control.rs#L786), [792](../../src/production_tool_control.rs#L792), [819](../../src/production_tool_control.rs#L819) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `"context_get.record_ids missing".into` | [786](../../src/production_tool_control.rs#L786) | receiver-type-required |
-| `execute_context_get` | `Vec::new` | [788](../../src/production_tool_control.rs#L788), [812](../../src/production_tool_control.rs#L812) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `BTreeSet::new` | [789](../../src/production_tool_control.rs#L789) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `id.as_u64().ok_or_else` | [791](../../src/production_tool_control.rs#L791) | receiver-type-required |
-| `execute_context_get` | `id.as_u64` | [791](../../src/production_tool_control.rs#L791) | receiver-type-required |
-| `execute_context_get` | `"record id is not an integer".into` | [792](../../src/production_tool_control.rs#L792) | receiver-type-required |
-| `execute_context_get` | `seen.insert` | [794](../../src/production_tool_control.rs#L794) | receiver-type-required |
-| `execute_context_get` | `ordered.push` | [795](../../src/production_tool_control.rs#L795) | receiver-type-required |
-| `execute_context_get` | `decode_cursor` | [807](../../src/production_tool_control.rs#L807) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1357) |
-| `execute_context_get` | `arguments             .get("page_bytes")             .and_then(Value::as_u64)             .map_or` | [808](../../src/production_tool_control.rs#L808) | receiver-type-required |
-| `execute_context_get` | `arguments             .get("page_bytes")             .and_then` | [808](../../src/production_tool_control.rs#L808) | receiver-type-required |
-| `execute_context_get` | `ordered.iter().skip` | [815](../../src/production_tool_control.rs#L815) | receiver-type-required |
-| `execute_context_get` | `ordered.iter` | [815](../../src/production_tool_control.rs#L815) | receiver-type-required |
-| `execute_context_get` | `projection                 .events                 .get(usize::try_from(*id - 1).map_err(&#124;_&#124; {                     SupervisorOperationError::Invalid("record id does not fit this platform".into())                 })?)                 .filter(&#124;event&#124; event.seq() == *id)                 .ok_or_else` | [816](../../src/production_tool_control.rs#L816) | receiver-type-required |
-| `execute_context_get` | `projection                 .events                 .get(usize::try_from(*id - 1).map_err(&#124;_&#124; {                     SupervisorOperationError::Invalid("record id does not fit this platform".into())                 })?)                 .filter` | [816](../../src/production_tool_control.rs#L816) | receiver-type-required |
-| `execute_context_get` | `projection                 .events                 .get` | [816](../../src/production_tool_control.rs#L816) | receiver-type-required |
-| `execute_context_get` | `usize::try_from(*id - 1).map_err` | [818](../../src/production_tool_control.rs#L818) | receiver-type-required |
-| `execute_context_get` | `usize::try_from` | [818](../../src/production_tool_control.rs#L818) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `"record id does not fit this platform".into` | [819](../../src/production_tool_control.rs#L819) | receiver-type-required |
-| `execute_context_get` | `event.seq` | [821](../../src/production_tool_control.rs#L821) | receiver-type-required |
-| `execute_context_get` | `SupervisorOperationError::NotFound` | [822](../../src/production_tool_control.rs#L822) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `event.canonical_bytes().map_err` | [823](../../src/production_tool_control.rs#L823) | receiver-type-required |
-| `execute_context_get` | `event.canonical_bytes` | [823](../../src/production_tool_control.rs#L823) | receiver-type-required |
-| `execute_context_get` | `canonical.len` | [824](../../src/production_tool_control.rs#L824), [829](../../src/production_tool_control.rs#L829), [832](../../src/production_tool_control.rs#L832) | receiver-type-required |
-| `execute_context_get` | `Err` | [825](../../src/production_tool_control.rs#L825) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `SupervisorOperationError::Limit` | [825](../../src/production_tool_control.rs#L825) | external-constructor-callback-or-unresolved |
-| `execute_context_get` | `records.push` | [834](../../src/production_tool_control.rs#L834) | receiver-type-required |
-| `execute_context_get` | `(offset + consumed < ordered.len())             .then` | [840](../../src/production_tool_control.rs#L840) | receiver-type-required |
-| `execute_context_get` | `ordered.len` | [840](../../src/production_tool_control.rs#L840) | receiver-type-required |
-| `execute_context_get` | `encode_cursor` | [841](../../src/production_tool_control.rs#L841) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1352) |
-| `execute_context_get` | `to_ijson` | [842](../../src/production_tool_control.rs#L842) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `apply_continuation` | `response.request_id.clone` | [879](../../src/production_tool_control.rs#L879) | receiver-type-required |
-| `apply_continuation` | `response.call_id.clone` | [880](../../src/production_tool_control.rs#L880) | receiver-type-required |
-| `apply_continuation` | `"tool continuation result withheld by secret policy".into` | [884](../../src/production_tool_control.rs#L884) | receiver-type-required |
-| `apply_continuation` | `self.scanner.scan` | [890](../../src/production_tool_control.rs#L890), [894](../../src/production_tool_control.rs#L894), [900](../../src/production_tool_control.rs#L900) | receiver-type-required |
-| `apply_continuation` | `withheld` | [892](../../src/production_tool_control.rs#L892), [896](../../src/production_tool_control.rs#L896), [907](../../src/production_tool_control.rs#L907) | external-constructor-callback-or-unresolved |
-| `apply_continuation` | `IJsonValue::from` | [899](../../src/production_tool_control.rs#L899) | external-constructor-callback-or-unresolved |
-| `apply_continuation` | `error.message.clone` | [899](../../src/production_tool_control.rs#L899) | receiver-type-required |
-| `apply_continuation` | `serde_json::from_value(                             serde_json::to_value(message).unwrap_or(Value::Null),                         )                         .unwrap_or_else` | [902](../../src/production_tool_control.rs#L902) | receiver-type-required |
-| `apply_continuation` | `serde_json::from_value` | [902](../../src/production_tool_control.rs#L902) | external-constructor-callback-or-unresolved |
-| `apply_continuation` | `serde_json::to_value(message).unwrap_or` | [903](../../src/production_tool_control.rs#L903) | receiver-type-required |
-| `apply_continuation` | `serde_json::to_value` | [903](../../src/production_tool_control.rs#L903) | external-constructor-callback-or-unresolved |
-| `apply_continuation` | `"continuation error was redacted".to_owned` | [905](../../src/production_tool_control.rs#L905) | receiver-type-required |
-| `apply` | `result.pending.as_mut` | [917](../../src/production_tool_control.rs#L917) | receiver-type-required |
-| `apply` | `self.scanner.scan` | [920](../../src/production_tool_control.rs#L920), [929](../../src/production_tool_control.rs#L929), [939](../../src/production_tool_control.rs#L939) | receiver-type-required |
-| `apply` | `policy_withheld` | [925](../../src/production_tool_control.rs#L925), [934](../../src/production_tool_control.rs#L934), [947](../../src/production_tool_control.rs#L947), [950](../../src/production_tool_control.rs#L950) | [tekes-supervisor::production_tool_control::policy_withheld](../../src/production_tool_control.rs#L955) |
-| `apply` | `result.value.take` | [928](../../src/production_tool_control.rs#L928) | receiver-type-required |
-| `apply` | `Some` | [931](../../src/production_tool_control.rs#L931) | external-constructor-callback-or-unresolved |
-| `apply` | `result.error.as_mut` | [937](../../src/production_tool_control.rs#L937) | receiver-type-required |
-| `apply` | `IJsonValue::from` | [938](../../src/production_tool_control.rs#L938) | external-constructor-callback-or-unresolved |
-| `apply` | `error.message.clone` | [938](../../src/production_tool_control.rs#L938) | receiver-type-required |
-| `apply` | `serde_json::from_value(                         serde_json::to_value(message).unwrap_or(Value::Null),                     )                     .unwrap_or_else` | [941](../../src/production_tool_control.rs#L941) | receiver-type-required |
-| `apply` | `serde_json::from_value` | [941](../../src/production_tool_control.rs#L941) | external-constructor-callback-or-unresolved |
-| `apply` | `serde_json::to_value(message).unwrap_or` | [942](../../src/production_tool_control.rs#L942) | receiver-type-required |
-| `apply` | `serde_json::to_value` | [942](../../src/production_tool_control.rs#L942) | external-constructor-callback-or-unresolved |
-| `apply` | `"backend error was redacted".to_owned` | [944](../../src/production_tool_control.rs#L944) | receiver-type-required |
-| `policy_withheld` | `ToolControlResult::failure` | [956](../../src/production_tool_control.rs#L956) | [worker-control::durable::ToolControlResult::failure](../../../worker-control/src/durable.rs#L375) |
-| `policy_withheld` | `"tool-control result withheld by secret policy".into` | [961](../../src/production_tool_control.rs#L961) | receiver-type-required |
-| `child_launch_proof` | `resolved         .projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::Spawn)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .ok_or_else` | [971](../../src/production_tool_control.rs#L971) | receiver-type-required |
-| `child_launch_proof` | `resolved         .projection         .events         .iter()         .find` | [971](../../src/production_tool_control.rs#L971) | receiver-type-required |
-| `child_launch_proof` | `resolved         .projection         .events         .iter` | [971](../../src/production_tool_control.rs#L971) | receiver-type-required |
-| `child_launch_proof` | `event.turn` | [977](../../src/production_tool_control.rs#L977) | receiver-type-required |
-| `child_launch_proof` | `Some` | [977](../../src/production_tool_control.rs#L977), [978](../../src/production_tool_control.rs#L978), [987](../../src/production_tool_control.rs#L987), [1019](../../src/production_tool_control.rs#L1019), [1020](../../src/production_tool_control.rs#L1020), [1021](../../src/production_tool_control.rs#L1021) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `event.string_field` | [978](../../src/production_tool_control.rs#L978), [987](../../src/production_tool_control.rs#L987) | receiver-type-required |
-| `child_launch_proof` | `request.call_id.as_str` | [978](../../src/production_tool_control.rs#L978), [987](../../src/production_tool_control.rs#L987) | receiver-type-required |
-| `child_launch_proof` | `SupervisorOperationError::Conflict` | [981](../../src/production_tool_control.rs#L981), [989](../../src/production_tool_control.rs#L989), [1008](../../src/production_tool_control.rs#L1008), [1023](../../src/production_tool_control.rs#L1023) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `"task/subagent has no durable parent spawn proof".into` | [982](../../src/production_tool_control.rs#L982) | receiver-type-required |
-| `child_launch_proof` | `resolved.projection.events.iter().any` | [985](../../src/production_tool_control.rs#L985) | receiver-type-required |
-| `child_launch_proof` | `resolved.projection.events.iter` | [985](../../src/production_tool_control.rs#L985) | receiver-type-required |
-| `child_launch_proof` | `Err` | [989](../../src/production_tool_control.rs#L989), [1023](../../src/production_tool_control.rs#L1023) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `"child_result already terminalized this spawn".into` | [990](../../src/production_tool_control.rs#L990) | receiver-type-required |
-| `child_launch_proof` | `spawn         .string_field("child")         .ok_or_else` | [993](../../src/production_tool_control.rs#L993) | receiver-type-required |
-| `child_launch_proof` | `spawn         .string_field` | [993](../../src/production_tool_control.rs#L993), [1016](../../src/production_tool_control.rs#L1016) | receiver-type-required |
-| `child_launch_proof` | `SupervisorOperationError::Corruption` | [995](../../src/production_tool_control.rs#L995), [1002](../../src/production_tool_control.rs#L1002), [1014](../../src/production_tool_control.rs#L1014), [1018](../../src/production_tool_control.rs#L1018) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `"spawn.child missing".into` | [995](../../src/production_tool_control.rs#L995) | receiver-type-required |
-| `child_launch_proof` | `validate_line_file_name` | [996](../../src/production_tool_control.rs#L996) | [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1436) |
-| `child_launch_proof` | `resolved.thread_folder.join` | [997](../../src/production_tool_control.rs#L997) | receiver-type-required |
-| `child_launch_proof` | `read_projection` | [998](../../src/production_tool_control.rs#L998) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) |
-| `child_launch_proof` | `child         .events         .first()         .ok_or_else` | [999](../../src/production_tool_control.rs#L999) | receiver-type-required |
-| `child_launch_proof` | `child         .events         .first` | [999](../../src/production_tool_control.rs#L999) | receiver-type-required |
-| `child_launch_proof` | `"child genesis missing".into` | [1002](../../src/production_tool_control.rs#L1002) | receiver-type-required |
-| `child_launch_proof` | `serde_json::to_value(genesis.raw())         .map_err` | [1003](../../src/production_tool_control.rs#L1003) | receiver-type-required |
-| `child_launch_proof` | `serde_json::to_value` | [1003](../../src/production_tool_control.rs#L1003) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `genesis.raw` | [1003](../../src/production_tool_control.rs#L1003) | receiver-type-required |
-| `child_launch_proof` | `SupervisorOperationError::Protocol` | [1004](../../src/production_tool_control.rs#L1004) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `error.to_string` | [1004](../../src/production_tool_control.rs#L1004) | receiver-type-required |
-| `child_launch_proof` | `value         .get("parent")         .and_then(Value::as_object)         .ok_or_else` | [1005](../../src/production_tool_control.rs#L1005) | receiver-type-required |
-| `child_launch_proof` | `value         .get("parent")         .and_then` | [1005](../../src/production_tool_control.rs#L1005) | receiver-type-required |
-| `child_launch_proof` | `value         .get` | [1005](../../src/production_tool_control.rs#L1005) | receiver-type-required |
-| `child_launch_proof` | `"child parent binding missing".into` | [1008](../../src/production_tool_control.rs#L1008) | receiver-type-required |
-| `child_launch_proof` | `resolved         .line_path         .file_name()         .and_then(&#124;value&#124; value.to_str())         .ok_or_else` | [1009](../../src/production_tool_control.rs#L1009) | receiver-type-required |
-| `child_launch_proof` | `resolved         .line_path         .file_name()         .and_then` | [1009](../../src/production_tool_control.rs#L1009) | receiver-type-required |
-| `child_launch_proof` | `resolved         .line_path         .file_name` | [1009](../../src/production_tool_control.rs#L1009) | receiver-type-required |
-| `child_launch_proof` | `value.to_str` | [1012](../../src/production_tool_control.rs#L1012) | receiver-type-required |
-| `child_launch_proof` | `"parent file name is not UTF-8".into` | [1014](../../src/production_tool_control.rs#L1014) | receiver-type-required |
-| `child_launch_proof` | `spawn         .string_field("spawn_id")         .ok_or_else` | [1016](../../src/production_tool_control.rs#L1016) | receiver-type-required |
-| `child_launch_proof` | `"spawn_id missing".into` | [1018](../../src/production_tool_control.rs#L1018) | receiver-type-required |
-| `child_launch_proof` | `parent.get("file").and_then` | [1019](../../src/production_tool_control.rs#L1019) | receiver-type-required |
-| `child_launch_proof` | `parent.get` | [1019](../../src/production_tool_control.rs#L1019), [1020](../../src/production_tool_control.rs#L1020), [1021](../../src/production_tool_control.rs#L1021) | receiver-type-required |
-| `child_launch_proof` | `parent.get("seq").and_then` | [1020](../../src/production_tool_control.rs#L1020) | receiver-type-required |
-| `child_launch_proof` | `spawn.seq` | [1020](../../src/production_tool_control.rs#L1020), [1031](../../src/production_tool_control.rs#L1031) | receiver-type-required |
-| `child_launch_proof` | `parent.get("spawn_id").and_then` | [1021](../../src/production_tool_control.rs#L1021) | receiver-type-required |
-| `child_launch_proof` | `"child genesis does not match the durable parent spawn".into` | [1024](../../src/production_tool_control.rs#L1024) | receiver-type-required |
-| `child_launch_proof` | `Ok` | [1027](../../src/production_tool_control.rs#L1027) | external-constructor-callback-or-unresolved |
-| `child_launch_proof` | `request.session.clone` | [1028](../../src/production_tool_control.rs#L1028) | receiver-type-required |
-| `child_launch_proof` | `request.thread.clone` | [1029](../../src/production_tool_control.rs#L1029) | receiver-type-required |
-| `child_launch_proof` | `parent_file.to_owned` | [1030](../../src/production_tool_control.rs#L1030) | receiver-type-required |
-| `child_launch_proof` | `genesis_line(&child)?.to_owned` | [1032](../../src/production_tool_control.rs#L1032) | receiver-type-required |
-| `child_launch_proof` | `genesis_line` | [1032](../../src/production_tool_control.rs#L1032) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1254) |
-| `child_launch_proof` | `child_file.to_owned` | [1033](../../src/production_tool_control.rs#L1033) | receiver-type-required |
-| `child_launch_proof` | `spawn_id.to_owned` | [1034](../../src/production_tool_control.rs#L1034) | receiver-type-required |
-| `child_launch_proof` | `request.call_id.clone` | [1035](../../src/production_tool_control.rs#L1035) | receiver-type-required |
-| `parent_report_proof` | `resolved.projection.events.first().ok_or_else` | [1043](../../src/production_tool_control.rs#L1043) | receiver-type-required |
-| `parent_report_proof` | `resolved.projection.events.first` | [1043](../../src/production_tool_control.rs#L1043) | receiver-type-required |
-| `parent_report_proof` | `SupervisorOperationError::Corruption` | [1044](../../src/production_tool_control.rs#L1044), [1057](../../src/production_tool_control.rs#L1057), [1062](../../src/production_tool_control.rs#L1062), [1066](../../src/production_tool_control.rs#L1066), [1071](../../src/production_tool_control.rs#L1071), [1080](../../src/production_tool_control.rs#L1080) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `"reporting line has no genesis".into` | [1044](../../src/production_tool_control.rs#L1044) | receiver-type-required |
-| `parent_report_proof` | `serde_json::to_value(child_genesis.raw())         .map_err` | [1046](../../src/production_tool_control.rs#L1046) | receiver-type-required |
-| `parent_report_proof` | `serde_json::to_value` | [1046](../../src/production_tool_control.rs#L1046) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `child_genesis.raw` | [1046](../../src/production_tool_control.rs#L1046) | receiver-type-required |
-| `parent_report_proof` | `SupervisorOperationError::Protocol` | [1047](../../src/production_tool_control.rs#L1047) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `error.to_string` | [1047](../../src/production_tool_control.rs#L1047) | receiver-type-required |
-| `parent_report_proof` | `value         .get("parent")         .and_then(Value::as_object)         .ok_or_else` | [1048](../../src/production_tool_control.rs#L1048) | receiver-type-required |
-| `parent_report_proof` | `value         .get("parent")         .and_then` | [1048](../../src/production_tool_control.rs#L1048) | receiver-type-required |
-| `parent_report_proof` | `value         .get` | [1048](../../src/production_tool_control.rs#L1048) | receiver-type-required |
-| `parent_report_proof` | `SupervisorOperationError::Denied` | [1052](../../src/production_tool_control.rs#L1052) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `"report is valid only in a child line".into` | [1052](../../src/production_tool_control.rs#L1052) | receiver-type-required |
-| `parent_report_proof` | `parent         .get("file")         .and_then(Value::as_str)         .ok_or_else` | [1054](../../src/production_tool_control.rs#L1054) | receiver-type-required |
-| `parent_report_proof` | `parent         .get("file")         .and_then` | [1054](../../src/production_tool_control.rs#L1054) | receiver-type-required |
-| `parent_report_proof` | `parent         .get` | [1054](../../src/production_tool_control.rs#L1054), [1059](../../src/production_tool_control.rs#L1059), [1063](../../src/production_tool_control.rs#L1063) | receiver-type-required |
-| `parent_report_proof` | `"parent.file missing".into` | [1057](../../src/production_tool_control.rs#L1057) | receiver-type-required |
-| `parent_report_proof` | `validate_line_file_name` | [1058](../../src/production_tool_control.rs#L1058) | [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1436) |
-| `parent_report_proof` | `parent         .get("seq")         .and_then(Value::as_u64)         .ok_or_else` | [1059](../../src/production_tool_control.rs#L1059) | receiver-type-required |
-| `parent_report_proof` | `parent         .get("seq")         .and_then` | [1059](../../src/production_tool_control.rs#L1059) | receiver-type-required |
-| `parent_report_proof` | `"parent.seq missing".into` | [1062](../../src/production_tool_control.rs#L1062) | receiver-type-required |
-| `parent_report_proof` | `parent         .get("spawn_id")         .and_then(Value::as_str)         .ok_or_else` | [1063](../../src/production_tool_control.rs#L1063) | receiver-type-required |
-| `parent_report_proof` | `parent         .get("spawn_id")         .and_then` | [1063](../../src/production_tool_control.rs#L1063) | receiver-type-required |
-| `parent_report_proof` | `"parent.spawn_id missing".into` | [1066](../../src/production_tool_control.rs#L1066) | receiver-type-required |
-| `parent_report_proof` | `read_projection` | [1067](../../src/production_tool_control.rs#L1067) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) |
-| `parent_report_proof` | `resolved.thread_folder.join` | [1067](../../src/production_tool_control.rs#L1067) | receiver-type-required |
-| `parent_report_proof` | `parent_projection         .events         .get(usize::try_from(parent_seq - 1).map_err(&#124;_&#124; {             SupervisorOperationError::Corruption("parent seq does not fit this platform".into())         })?)         .filter(&#124;event&#124; event.seq() == parent_seq && matches!(event.kind(), EventKind::Spawn))         .ok_or_else` | [1068](../../src/production_tool_control.rs#L1068) | receiver-type-required |
-| `parent_report_proof` | `parent_projection         .events         .get(usize::try_from(parent_seq - 1).map_err(&#124;_&#124; {             SupervisorOperationError::Corruption("parent seq does not fit this platform".into())         })?)         .filter` | [1068](../../src/production_tool_control.rs#L1068) | receiver-type-required |
-| `parent_report_proof` | `parent_projection         .events         .get` | [1068](../../src/production_tool_control.rs#L1068) | receiver-type-required |
-| `parent_report_proof` | `usize::try_from(parent_seq - 1).map_err` | [1070](../../src/production_tool_control.rs#L1070) | receiver-type-required |
-| `parent_report_proof` | `usize::try_from` | [1070](../../src/production_tool_control.rs#L1070) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `"parent seq does not fit this platform".into` | [1071](../../src/production_tool_control.rs#L1071) | receiver-type-required |
-| `parent_report_proof` | `event.seq` | [1073](../../src/production_tool_control.rs#L1073) | receiver-type-required |
-| `parent_report_proof` | `SupervisorOperationError::Conflict` | [1074](../../src/production_tool_control.rs#L1074), [1085](../../src/production_tool_control.rs#L1085) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `"parent spawn proof missing".into` | [1074](../../src/production_tool_control.rs#L1074) | receiver-type-required |
-| `parent_report_proof` | `resolved         .line_path         .file_name()         .and_then(&#124;value&#124; value.to_str())         .ok_or_else` | [1075](../../src/production_tool_control.rs#L1075) | receiver-type-required |
-| `parent_report_proof` | `resolved         .line_path         .file_name()         .and_then` | [1075](../../src/production_tool_control.rs#L1075) | receiver-type-required |
-| `parent_report_proof` | `resolved         .line_path         .file_name` | [1075](../../src/production_tool_control.rs#L1075) | receiver-type-required |
-| `parent_report_proof` | `value.to_str` | [1078](../../src/production_tool_control.rs#L1078) | receiver-type-required |
-| `parent_report_proof` | `"child file name is not UTF-8".into` | [1080](../../src/production_tool_control.rs#L1080) | receiver-type-required |
-| `parent_report_proof` | `spawn.string_field` | [1082](../../src/production_tool_control.rs#L1082), [1083](../../src/production_tool_control.rs#L1083) | receiver-type-required |
-| `parent_report_proof` | `Some` | [1082](../../src/production_tool_control.rs#L1082), [1083](../../src/production_tool_control.rs#L1083) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `Err` | [1085](../../src/production_tool_control.rs#L1085) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `"reporting child does not match parent spawn".into` | [1086](../../src/production_tool_control.rs#L1086) | receiver-type-required |
-| `parent_report_proof` | `Ok` | [1089](../../src/production_tool_control.rs#L1089) | external-constructor-callback-or-unresolved |
-| `parent_report_proof` | `request.session.clone` | [1090](../../src/production_tool_control.rs#L1090) | receiver-type-required |
-| `parent_report_proof` | `request.thread.clone` | [1091](../../src/production_tool_control.rs#L1091) | receiver-type-required |
-| `parent_report_proof` | `child_file.to_owned` | [1092](../../src/production_tool_control.rs#L1092) | receiver-type-required |
-| `parent_report_proof` | `genesis_line(&parent_projection)?.to_owned` | [1093](../../src/production_tool_control.rs#L1093) | receiver-type-required |
-| `parent_report_proof` | `genesis_line` | [1093](../../src/production_tool_control.rs#L1093) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1254) |
-| `parent_report_proof` | `parent_file.to_owned` | [1094](../../src/production_tool_control.rs#L1094) | receiver-type-required |
-| `parent_report_proof` | `spawn_id.to_owned` | [1096](../../src/production_tool_control.rs#L1096) | receiver-type-required |
-| `parent_report_proof` | `request.call_id.clone` | [1097](../../src/production_tool_control.rs#L1097) | receiver-type-required |
-| `session_lines` | `Vec::new` | [1104](../../src/production_tool_control.rs#L1104) | external-constructor-callback-or-unresolved |
-| `session_lines` | `fs::read_dir(folder).map_err` | [1105](../../src/production_tool_control.rs#L1105) | receiver-type-required |
-| `session_lines` | `fs::read_dir` | [1105](../../src/production_tool_control.rs#L1105) | external-constructor-callback-or-unresolved |
-| `session_lines` | `entry.map_err` | [1106](../../src/production_tool_control.rs#L1106) | receiver-type-required |
-| `session_lines` | `entry.file_type().map_err(map_io)?.is_file` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
-| `session_lines` | `entry.file_type().map_err` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
-| `session_lines` | `entry.file_type` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
-| `session_lines` | `entry.path` | [1110](../../src/production_tool_control.rs#L1110) | receiver-type-required |
-| `session_lines` | `path.extension().and_then` | [1111](../../src/production_tool_control.rs#L1111) | receiver-type-required |
-| `session_lines` | `path.extension` | [1111](../../src/production_tool_control.rs#L1111) | receiver-type-required |
-| `session_lines` | `value.to_str` | [1111](../../src/production_tool_control.rs#L1111), [1112](../../src/production_tool_control.rs#L1112) | receiver-type-required |
-| `session_lines` | `Some` | [1111](../../src/production_tool_control.rs#L1111), [1112](../../src/production_tool_control.rs#L1112) | external-constructor-callback-or-unresolved |
-| `session_lines` | `path.file_name().and_then` | [1112](../../src/production_tool_control.rs#L1112) | receiver-type-required |
-| `session_lines` | `path.file_name` | [1112](../../src/production_tool_control.rs#L1112) | receiver-type-required |
-| `session_lines` | `read_projection` | [1113](../../src/production_tool_control.rs#L1113) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1216) |
-| `session_lines` | `lines.push` | [1115](../../src/production_tool_control.rs#L1115) | receiver-type-required |
-| `session_lines` | `lines.sort_by` | [1118](../../src/production_tool_control.rs#L1118) | receiver-type-required |
-| `session_lines` | `left.0.as_os_str().cmp` | [1118](../../src/production_tool_control.rs#L1118) | receiver-type-required |
-| `session_lines` | `left.0.as_os_str` | [1118](../../src/production_tool_control.rs#L1118) | receiver-type-required |
-| `session_lines` | `right.0.as_os_str` | [1118](../../src/production_tool_control.rs#L1118) | receiver-type-required |
-| `session_lines` | `Ok` | [1119](../../src/production_tool_control.rs#L1119) | external-constructor-callback-or-unresolved |
-| `resolve_visible_line` | `visible_sessions` | [1127](../../src/production_tool_control.rs#L1127) | [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1143) |
-| `resolve_visible_line` | `session_folder` | [1128](../../src/production_tool_control.rs#L1128) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) |
-| `resolve_visible_line` | `session_lines` | [1129](../../src/production_tool_control.rs#L1129) | [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1101) |
-| `resolve_visible_line` | `genesis_line` | [1130](../../src/production_tool_control.rs#L1130) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1254) |
-| `resolve_visible_line` | `found.is_some` | [1131](../../src/production_tool_control.rs#L1131) | receiver-type-required |
-| `resolve_visible_line` | `Err` | [1132](../../src/production_tool_control.rs#L1132) | external-constructor-callback-or-unresolved |
-| `resolve_visible_line` | `SupervisorOperationError::Corruption` | [1132](../../src/production_tool_control.rs#L1132) | external-constructor-callback-or-unresolved |
-| `resolve_visible_line` | `"line identity is duplicated across sessions".into` | [1133](../../src/production_tool_control.rs#L1133) | receiver-type-required |
-| `resolve_visible_line` | `Some` | [1136](../../src/production_tool_control.rs#L1136) | external-constructor-callback-or-unresolved |
-| `resolve_visible_line` | `found.ok_or_else` | [1140](../../src/production_tool_control.rs#L1140) | receiver-type-required |
-| `resolve_visible_line` | `SupervisorOperationError::NotFound` | [1140](../../src/production_tool_control.rs#L1140) | external-constructor-callback-or-unresolved |
-| `resolve_visible_line` | `"line not found".into` | [1140](../../src/production_tool_control.rs#L1140) | receiver-type-required |
-| `visible_sessions` | `BTreeSet::new` | [1147](../../src/production_tool_control.rs#L1147) | external-constructor-callback-or-unresolved |
-| `visible_sessions` | `fs::read_dir(root.join(area)).map_err` | [1149](../../src/production_tool_control.rs#L1149) | receiver-type-required |
-| `visible_sessions` | `fs::read_dir` | [1149](../../src/production_tool_control.rs#L1149) | external-constructor-callback-or-unresolved |
-| `visible_sessions` | `root.join` | [1149](../../src/production_tool_control.rs#L1149) | receiver-type-required |
-| `visible_sessions` | `entry.map_err` | [1150](../../src/production_tool_control.rs#L1150) | receiver-type-required |
-| `visible_sessions` | `entry.file_type().map_err(map_io)?.is_dir` | [1151](../../src/production_tool_control.rs#L1151) | receiver-type-required |
-| `visible_sessions` | `entry.file_type().map_err` | [1151](../../src/production_tool_control.rs#L1151) | receiver-type-required |
-| `visible_sessions` | `entry.file_type` | [1151](../../src/production_tool_control.rs#L1151) | receiver-type-required |
-| `visible_sessions` | `entry.file_name().to_string_lossy().into_owned` | [1154](../../src/production_tool_control.rs#L1154) | receiver-type-required |
-| `visible_sessions` | `entry.file_name().to_string_lossy` | [1154](../../src/production_tool_control.rs#L1154) | receiver-type-required |
-| `visible_sessions` | `entry.file_name` | [1154](../../src/production_tool_control.rs#L1154) | receiver-type-required |
-| `visible_sessions` | `validate_session_folder` | [1155](../../src/production_tool_control.rs#L1155) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1181) |
-| `visible_sessions` | `entry.path` | [1155](../../src/production_tool_control.rs#L1155), [1157](../../src/production_tool_control.rs#L1157) | receiver-type-required |
-| `visible_sessions` | `folder_workspace` | [1157](../../src/production_tool_control.rs#L1157) | [tekes-supervisor::production_tool_control::folder_workspace](../../src/production_tool_control.rs#L1229) |
-| `visible_sessions` | `sessions.insert` | [1161](../../src/production_tool_control.rs#L1161) | receiver-type-required |
-| `visible_sessions` | `Err` | [1162](../../src/production_tool_control.rs#L1162) | external-constructor-callback-or-unresolved |
-| `visible_sessions` | `SupervisorOperationError::Corruption` | [1162](../../src/production_tool_control.rs#L1162) | external-constructor-callback-or-unresolved |
-| `visible_sessions` | `"session exists in active and archive catalogs".into` | [1163](../../src/production_tool_control.rs#L1163) | receiver-type-required |
-| `visible_sessions` | `Ok` | [1168](../../src/production_tool_control.rs#L1168) | external-constructor-callback-or-unresolved |
-| `visible_sessions` | `sessions.into_iter().collect` | [1168](../../src/production_tool_control.rs#L1168) | receiver-type-required |
-| `visible_sessions` | `sessions.into_iter` | [1168](../../src/production_tool_control.rs#L1168) | receiver-type-required |
-| `require_active_session` | `session_folder` | [1172](../../src/production_tool_control.rs#L1172) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1201) |
-| `require_active_session` | `Err` | [1174](../../src/production_tool_control.rs#L1174) | external-constructor-callback-or-unresolved |
-| `require_active_session` | `SupervisorOperationError::NotFound` | [1174](../../src/production_tool_control.rs#L1174) | external-constructor-callback-or-unresolved |
-| `require_active_session` | `"active thread not found".into` | [1175](../../src/production_tool_control.rs#L1175) | receiver-type-required |
-| `require_active_session` | `Ok` | [1178](../../src/production_tool_control.rs#L1178) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `endpoint::validate_session_id(session)         .map_err` | [1182](../../src/production_tool_control.rs#L1182) | receiver-type-required |
-| `validate_session_folder` | `endpoint::validate_session_id` | [1182](../../src/production_tool_control.rs#L1182) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `validate_session_folder` | `SupervisorOperationError::Invalid` | [1183](../../src/production_tool_control.rs#L1183) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `"invalid session identity".into` | [1183](../../src/production_tool_control.rs#L1183) | receiver-type-required |
-| `validate_session_folder` | `fs::symlink_metadata(folder).map_err` | [1184](../../src/production_tool_control.rs#L1184) | receiver-type-required |
-| `validate_session_folder` | `fs::symlink_metadata` | [1184](../../src/production_tool_control.rs#L1184) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `metadata.is_dir` | [1185](../../src/production_tool_control.rs#L1185) | receiver-type-required |
-| `validate_session_folder` | `metadata.file_type().is_symlink` | [1185](../../src/production_tool_control.rs#L1185) | receiver-type-required |
-| `validate_session_folder` | `metadata.file_type` | [1185](../../src/production_tool_control.rs#L1185) | receiver-type-required |
-| `validate_session_folder` | `Err` | [1186](../../src/production_tool_control.rs#L1186), [1194](../../src/production_tool_control.rs#L1194) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `SupervisorOperationError::NotFound` | [1186](../../src/production_tool_control.rs#L1186) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `"thread not found".into` | [1187](../../src/production_tool_control.rs#L1187) | receiver-type-required |
-| `validate_session_folder` | `store::read_genesis(folder.join("main.jsonl"))         .map_err(map_store)?         .ok_or_else` | [1190](../../src/production_tool_control.rs#L1190) | receiver-type-required |
-| `validate_session_folder` | `store::read_genesis(folder.join("main.jsonl"))         .map_err` | [1190](../../src/production_tool_control.rs#L1190) | receiver-type-required |
-| `validate_session_folder` | `store::read_genesis` | [1190](../../src/production_tool_control.rs#L1190) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `validate_session_folder` | `folder.join` | [1190](../../src/production_tool_control.rs#L1190) | receiver-type-required |
-| `validate_session_folder` | `SupervisorOperationError::Corruption` | [1192](../../src/production_tool_control.rs#L1192), [1194](../../src/production_tool_control.rs#L1194) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `"genesis missing".into` | [1192](../../src/production_tool_control.rs#L1192) | receiver-type-required |
-| `validate_session_folder` | `genesis.string_field` | [1193](../../src/production_tool_control.rs#L1193) | receiver-type-required |
-| `validate_session_folder` | `Some` | [1193](../../src/production_tool_control.rs#L1193) | external-constructor-callback-or-unresolved |
-| `validate_session_folder` | `"folder/genesis identity mismatch".into` | [1195](../../src/production_tool_control.rs#L1195) | receiver-type-required |
-| `validate_session_folder` | `Ok` | [1198](../../src/production_tool_control.rs#L1198) | external-constructor-callback-or-unresolved |
-| `session_folder` | `endpoint::validate_session_id(session)         .map_err` | [1202](../../src/production_tool_control.rs#L1202) | receiver-type-required |
-| `session_folder` | `endpoint::validate_session_id` | [1202](../../src/production_tool_control.rs#L1202) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `session_folder` | `SupervisorOperationError::Invalid` | [1203](../../src/production_tool_control.rs#L1203) | external-constructor-callback-or-unresolved |
-| `session_folder` | `"invalid session identity".into` | [1203](../../src/production_tool_control.rs#L1203) | receiver-type-required |
-| `session_folder` | `root.join(area).join` | [1205](../../src/production_tool_control.rs#L1205) | receiver-type-required |
-| `session_folder` | `root.join` | [1205](../../src/production_tool_control.rs#L1205) | receiver-type-required |
-| `session_folder` | `fs::symlink_metadata(&folder).is_ok` | [1206](../../src/production_tool_control.rs#L1206) | receiver-type-required |
-| `session_folder` | `fs::symlink_metadata` | [1206](../../src/production_tool_control.rs#L1206) | external-constructor-callback-or-unresolved |
-| `session_folder` | `validate_session_folder` | [1207](../../src/production_tool_control.rs#L1207) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1181) |
-| `session_folder` | `Ok` | [1208](../../src/production_tool_control.rs#L1208) | external-constructor-callback-or-unresolved |
-| `session_folder` | `Err` | [1211](../../src/production_tool_control.rs#L1211) | external-constructor-callback-or-unresolved |
-| `session_folder` | `SupervisorOperationError::NotFound` | [1211](../../src/production_tool_control.rs#L1211) | external-constructor-callback-or-unresolved |
-| `session_folder` | `"thread not found".into` | [1212](../../src/production_tool_control.rs#L1212) | receiver-type-required |
-| `read_projection` | `fs::read(path).map_err` | [1217](../../src/production_tool_control.rs#L1217) | receiver-type-required |
-| `read_projection` | `fs::read` | [1217](../../src/production_tool_control.rs#L1217) | external-constructor-callback-or-unresolved |
-| `read_projection` | `scan_valid_prefix` | [1218](../../src/production_tool_control.rs#L1218) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `read_projection` | `scan.projection.ok_or_else` | [1219](../../src/production_tool_control.rs#L1219) | receiver-type-required |
-| `read_projection` | `SupervisorOperationError::Corruption` | [1220](../../src/production_tool_control.rs#L1220) | external-constructor-callback-or-unresolved |
-| `folder_workspace` | `store::read_genesis(folder.join("main.jsonl"))         .map_err(map_store)?         .ok_or_else` | [1230](../../src/production_tool_control.rs#L1230) | receiver-type-required |
-| `folder_workspace` | `store::read_genesis(folder.join("main.jsonl"))         .map_err` | [1230](../../src/production_tool_control.rs#L1230) | receiver-type-required |
-| `folder_workspace` | `store::read_genesis` | [1230](../../src/production_tool_control.rs#L1230) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
-| `folder_workspace` | `folder.join` | [1230](../../src/production_tool_control.rs#L1230) | receiver-type-required |
-| `folder_workspace` | `SupervisorOperationError::Corruption` | [1233](../../src/production_tool_control.rs#L1233), [1241](../../src/production_tool_control.rs#L1241) | external-constructor-callback-or-unresolved |
-| `folder_workspace` | `genesis         .string_field("workspace")         .map(str::to_owned)         .ok_or_else` | [1238](../../src/production_tool_control.rs#L1238) | receiver-type-required |
-| `folder_workspace` | `genesis         .string_field("workspace")         .map` | [1238](../../src/production_tool_control.rs#L1238) | receiver-type-required |
-| `folder_workspace` | `genesis         .string_field` | [1238](../../src/production_tool_control.rs#L1238) | receiver-type-required |
-| `folder_workspace` | `"genesis workspace missing".into` | [1241](../../src/production_tool_control.rs#L1241) | receiver-type-required |
-| `genesis_workspace` | `projection         .events         .first()         .and_then(&#124;event&#124; event.string_field("workspace"))         .ok_or_else` | [1247](../../src/production_tool_control.rs#L1247) | receiver-type-required |
-| `genesis_workspace` | `projection         .events         .first()         .and_then` | [1247](../../src/production_tool_control.rs#L1247) | receiver-type-required |
-| `genesis_workspace` | `projection         .events         .first` | [1247](../../src/production_tool_control.rs#L1247) | receiver-type-required |
-| `genesis_workspace` | `event.string_field` | [1250](../../src/production_tool_control.rs#L1250) | receiver-type-required |
-| `genesis_workspace` | `SupervisorOperationError::Corruption` | [1251](../../src/production_tool_control.rs#L1251) | external-constructor-callback-or-unresolved |
-| `genesis_workspace` | `"genesis workspace missing".into` | [1251](../../src/production_tool_control.rs#L1251) | receiver-type-required |
-| `genesis_line` | `projection         .events         .first()         .and_then(&#124;event&#124; event.string_field("thread"))         .ok_or_else` | [1255](../../src/production_tool_control.rs#L1255) | receiver-type-required |
-| `genesis_line` | `projection         .events         .first()         .and_then` | [1255](../../src/production_tool_control.rs#L1255) | receiver-type-required |
-| `genesis_line` | `projection         .events         .first` | [1255](../../src/production_tool_control.rs#L1255) | receiver-type-required |
-| `genesis_line` | `event.string_field` | [1258](../../src/production_tool_control.rs#L1258) | receiver-type-required |
-| `genesis_line` | `SupervisorOperationError::Corruption` | [1259](../../src/production_tool_control.rs#L1259) | external-constructor-callback-or-unresolved |
-| `genesis_line` | `"genesis thread missing".into` | [1259](../../src/production_tool_control.rs#L1259) | receiver-type-required |
-| `paired_tool_timestamp` | `projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::ToolCall)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .and_then(&#124;event&#124; event.string_field("ts"))         .ok_or_else` | [1266](../../src/production_tool_control.rs#L1266) | receiver-type-required |
-| `paired_tool_timestamp` | `projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::ToolCall)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .and_then` | [1266](../../src/production_tool_control.rs#L1266) | receiver-type-required |
-| `paired_tool_timestamp` | `projection         .events         .iter()         .find` | [1266](../../src/production_tool_control.rs#L1266) | receiver-type-required |
-| `paired_tool_timestamp` | `projection         .events         .iter` | [1266](../../src/production_tool_control.rs#L1266) | receiver-type-required |
-| `paired_tool_timestamp` | `event.turn` | [1271](../../src/production_tool_control.rs#L1271) | receiver-type-required |
-| `paired_tool_timestamp` | `Some` | [1271](../../src/production_tool_control.rs#L1271), [1272](../../src/production_tool_control.rs#L1272) | external-constructor-callback-or-unresolved |
-| `paired_tool_timestamp` | `event.string_field` | [1272](../../src/production_tool_control.rs#L1272), [1274](../../src/production_tool_control.rs#L1274) | receiver-type-required |
-| `paired_tool_timestamp` | `request.call_id.as_str` | [1272](../../src/production_tool_control.rs#L1272) | receiver-type-required |
-| `paired_tool_timestamp` | `SupervisorOperationError::Corruption` | [1275](../../src/production_tool_control.rs#L1275) | external-constructor-callback-or-unresolved |
-| `paired_tool_timestamp` | `"tool_call timestamp missing".into` | [1275](../../src/production_tool_control.rs#L1275) | receiver-type-required |
-| `event_record` | `event.canonical_bytes().map_err` | [1279](../../src/production_tool_control.rs#L1279) | receiver-type-required |
-| `event_record` | `event.canonical_bytes` | [1279](../../src/production_tool_control.rs#L1279) | receiver-type-required |
-| `event_record` | `serde_json::from_slice(&canonical)         .map_err` | [1280](../../src/production_tool_control.rs#L1280) | receiver-type-required |
-| `event_record` | `serde_json::from_slice` | [1280](../../src/production_tool_control.rs#L1280) | external-constructor-callback-or-unresolved |
-| `event_record` | `SupervisorOperationError::Protocol` | [1281](../../src/production_tool_control.rs#L1281) | external-constructor-callback-or-unresolved |
-| `event_record` | `error.to_string` | [1281](../../src/production_tool_control.rs#L1281) | receiver-type-required |
-| `required_string` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .ok_or_else` | [1285](../../src/production_tool_control.rs#L1285) | receiver-type-required |
-| `required_string` | `value         .get(field)         .and_then(Value::as_str)         .filter` | [1285](../../src/production_tool_control.rs#L1285) | receiver-type-required |
-| `required_string` | `value         .get(field)         .and_then` | [1285](../../src/production_tool_control.rs#L1285) | receiver-type-required |
-| `required_string` | `value         .get` | [1285](../../src/production_tool_control.rs#L1285) | receiver-type-required |
-| `required_string` | `value.is_empty` | [1288](../../src/production_tool_control.rs#L1288) | receiver-type-required |
-| `required_string` | `SupervisorOperationError::Invalid` | [1289](../../src/production_tool_control.rs#L1289) | external-constructor-callback-or-unresolved |
-| `string_array` | `value.get(field).map_or` | [1293](../../src/production_tool_control.rs#L1293) | receiver-type-required |
-| `string_array` | `value.get` | [1293](../../src/production_tool_control.rs#L1293) | receiver-type-required |
-| `string_array` | `Ok` | [1293](../../src/production_tool_control.rs#L1293) | external-constructor-callback-or-unresolved |
-| `string_array` | `Vec::new` | [1293](../../src/production_tool_control.rs#L1293) | external-constructor-callback-or-unresolved |
-| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter()             .map(&#124;value&#124; {                 value.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     SupervisorOperationError::Invalid(format!("{field} contains a non-string"))                 })             })             .collect` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
-| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter()             .map` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
-| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
-| `string_array` | `value             .as_array()             .ok_or_else` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
-| `string_array` | `value             .as_array` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
-| `string_array` | `SupervisorOperationError::Invalid` | [1296](../../src/production_tool_control.rs#L1296), [1300](../../src/production_tool_control.rs#L1300) | external-constructor-callback-or-unresolved |
-| `string_array` | `value.as_str().map(ToOwned::to_owned).ok_or_else` | [1299](../../src/production_tool_control.rs#L1299) | receiver-type-required |
-| `string_array` | `value.as_str().map` | [1299](../../src/production_tool_control.rs#L1299) | receiver-type-required |
-| `string_array` | `value.as_str` | [1299](../../src/production_tool_control.rs#L1299) | receiver-type-required |
-| `job_record_outcome` | `to_ijson` | [1311](../../src/production_tool_control.rs#L1311) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `job_record_outcome` | `Err` | [1312](../../src/production_tool_control.rs#L1312), [1313](../../src/production_tool_control.rs#L1313), [1315](../../src/production_tool_control.rs#L1315) | external-constructor-callback-or-unresolved |
-| `job_record_outcome` | `map_backend` | [1312](../../src/production_tool_control.rs#L1312) | [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1320) |
-| `job_record_outcome` | `SupervisorOperationError::Denied` | [1313](../../src/production_tool_control.rs#L1313) | external-constructor-callback-or-unresolved |
-| `job_record_outcome` | `SupervisorOperationError::Unavailable` | [1315](../../src/production_tool_control.rs#L1315) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::Invalid` | [1322](../../src/production_tool_control.rs#L1322) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::Denied` | [1323](../../src/production_tool_control.rs#L1323) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::Unavailable` | [1324](../../src/production_tool_control.rs#L1324), [1329](../../src/production_tool_control.rs#L1329), [1331](../../src/production_tool_control.rs#L1331), [1333](../../src/production_tool_control.rs#L1333), [1335](../../src/production_tool_control.rs#L1335) | external-constructor-callback-or-unresolved |
-| `map_backend` | `"job cancelled".into` | [1324](../../src/production_tool_control.rs#L1324) | receiver-type-required |
-| `map_backend` | `SupervisorOperationError::Timeout` | [1325](../../src/production_tool_control.rs#L1325) | external-constructor-callback-or-unresolved |
-| `map_backend` | `"job timed out".into` | [1325](../../src/production_tool_control.rs#L1325) | receiver-type-required |
-| `map_backend` | `SupervisorOperationError::Limit` | [1326](../../src/production_tool_control.rs#L1326) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::NotFound` | [1327](../../src/production_tool_control.rs#L1327) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::Conflict` | [1328](../../src/production_tool_control.rs#L1328) | external-constructor-callback-or-unresolved |
-| `map_backend` | `SupervisorOperationError::Protocol` | [1334](../../src/production_tool_control.rs#L1334) | external-constructor-callback-or-unresolved |
-| `argument_limit` | `value         .get("limit")         .and_then(Value::as_u64)         .map_or` | [1340](../../src/production_tool_control.rs#L1340) | receiver-type-required |
-| `argument_limit` | `value         .get("limit")         .and_then` | [1340](../../src/production_tool_control.rs#L1340) | receiver-type-required |
-| `argument_limit` | `value         .get` | [1340](../../src/production_tool_control.rs#L1340) | receiver-type-required |
-| `argument_limit` | `Err` | [1345](../../src/production_tool_control.rs#L1345) | external-constructor-callback-or-unresolved |
-| `argument_limit` | `SupervisorOperationError::Limit` | [1345](../../src/production_tool_control.rs#L1345) | external-constructor-callback-or-unresolved |
-| `argument_limit` | `Ok` | [1349](../../src/production_tool_control.rs#L1349) | external-constructor-callback-or-unresolved |
-| `encode_cursor` | `Sha256::digest` | [1353](../../src/production_tool_control.rs#L1353) | external-constructor-callback-or-unresolved |
-| `encode_cursor` | `identity.as_bytes` | [1353](../../src/production_tool_control.rs#L1353) | receiver-type-required |
-| `decode_cursor` | `value         .and_then(Value::as_str)         .filter` | [1358](../../src/production_tool_control.rs#L1358) | receiver-type-required |
-| `decode_cursor` | `value         .and_then` | [1358](../../src/production_tool_control.rs#L1358) | receiver-type-required |
-| `decode_cursor` | `value.is_empty` | [1360](../../src/production_tool_control.rs#L1360) | receiver-type-required |
-| `decode_cursor` | `Ok` | [1362](../../src/production_tool_control.rs#L1362) | external-constructor-callback-or-unresolved |
-| `decode_cursor` | `encode_cursor` | [1364](../../src/production_tool_control.rs#L1364) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1352) |
-| `decode_cursor` | `cursor_zero         .rsplit_once('-')         .map(&#124;(prefix, _)&#124; prefix)         .expect` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
-| `decode_cursor` | `cursor_zero         .rsplit_once('-')         .map` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
-| `decode_cursor` | `cursor_zero         .rsplit_once` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
-| `decode_cursor` | `cursor         .rsplit_once('-')         .ok_or_else` | [1369](../../src/production_tool_control.rs#L1369) | receiver-type-required |
-| `decode_cursor` | `cursor         .rsplit_once` | [1369](../../src/production_tool_control.rs#L1369) | receiver-type-required |
-| `decode_cursor` | `SupervisorOperationError::Invalid` | [1371](../../src/production_tool_control.rs#L1371), [1379](../../src/production_tool_control.rs#L1379) | external-constructor-callback-or-unresolved |
-| `decode_cursor` | `"invalid cursor".into` | [1371](../../src/production_tool_control.rs#L1371) | receiver-type-required |
-| `decode_cursor` | `Err` | [1373](../../src/production_tool_control.rs#L1373) | external-constructor-callback-or-unresolved |
-| `decode_cursor` | `SupervisorOperationError::Conflict` | [1373](../../src/production_tool_control.rs#L1373) | external-constructor-callback-or-unresolved |
-| `decode_cursor` | `"cursor does not belong to this query".into` | [1374](../../src/production_tool_control.rs#L1374) | receiver-type-required |
-| `decode_cursor` | `offset         .parse()         .map_err` | [1377](../../src/production_tool_control.rs#L1377) | receiver-type-required |
-| `decode_cursor` | `offset         .parse` | [1377](../../src/production_tool_control.rs#L1377) | receiver-type-required |
-| `decode_cursor` | `"invalid cursor offset".into` | [1379](../../src/production_tool_control.rs#L1379) | receiver-type-required |
-| `context_start_genesis` | `source.get` | [1402](../../src/production_tool_control.rs#L1402), [1406](../../src/production_tool_control.rs#L1406), [1408](../../src/production_tool_control.rs#L1408), [1410](../../src/production_tool_control.rs#L1410) | receiver-type-required |
-| `context_start_genesis` | `value.clone` | [1403](../../src/production_tool_control.rs#L1403) | receiver-type-required |
-| `context_start_genesis` | `source.get("session_scope").is_some` | [1406](../../src/production_tool_control.rs#L1406) | receiver-type-required |
-| `context_start_genesis` | `source.get("folders").is_some` | [1408](../../src/production_tool_control.rs#L1408) | receiver-type-required |
-| `context_start_genesis` | `source.get("preset").is_some` | [1410](../../src/production_tool_control.rs#L1410) | receiver-type-required |
-| `context_start_genesis` | `Event::from_value(to_ijson(&event)?).map_err` | [1413](../../src/production_tool_control.rs#L1413) | receiver-type-required |
-| `context_start_genesis` | `Event::from_value` | [1413](../../src/production_tool_control.rs#L1413) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
-| `context_start_genesis` | `to_ijson` | [1413](../../src/production_tool_control.rs#L1413) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1460) |
-| `deterministic_uuid` | `request_id.as_bytes()[..32].to_vec` | [1417](../../src/production_tool_control.rs#L1417) | receiver-type-required |
-| `deterministic_uuid` | `request_id.as_bytes` | [1417](../../src/production_tool_control.rs#L1417) | receiver-type-required |
-| `deterministic_uuid` | `String::from_utf8(bytes).expect` | [1425](../../src/production_tool_control.rs#L1425) | receiver-type-required |
-| `deterministic_uuid` | `String::from_utf8` | [1425](../../src/production_tool_control.rs#L1425) | external-constructor-callback-or-unresolved |
-| `validate_line_file_name` | `Path::new` | [1437](../../src/production_tool_control.rs#L1437) | external-constructor-callback-or-unresolved |
-| `validate_line_file_name` | `path.components().count` | [1438](../../src/production_tool_control.rs#L1438) | receiver-type-required |
-| `validate_line_file_name` | `path.components` | [1438](../../src/production_tool_control.rs#L1438) | receiver-type-required |
-| `validate_line_file_name` | `path.extension().and_then` | [1440](../../src/production_tool_control.rs#L1440) | receiver-type-required |
-| `validate_line_file_name` | `path.extension` | [1440](../../src/production_tool_control.rs#L1440) | receiver-type-required |
-| `validate_line_file_name` | `value.to_str` | [1440](../../src/production_tool_control.rs#L1440) | receiver-type-required |
-| `validate_line_file_name` | `Some` | [1440](../../src/production_tool_control.rs#L1440) | external-constructor-callback-or-unresolved |
-| `validate_line_file_name` | `Err` | [1442](../../src/production_tool_control.rs#L1442) | external-constructor-callback-or-unresolved |
-| `validate_line_file_name` | `SupervisorOperationError::Denied` | [1442](../../src/production_tool_control.rs#L1442) | external-constructor-callback-or-unresolved |
-| `validate_line_file_name` | `"line file escapes the session folder".into` | [1443](../../src/production_tool_control.rs#L1443) | receiver-type-required |
-| `validate_line_file_name` | `Ok` | [1446](../../src/production_tool_control.rs#L1446) | external-constructor-callback-or-unresolved |
-| `bounded_snippet` | `value.len` | [1450](../../src/production_tool_control.rs#L1450) | receiver-type-required |
-| `bounded_snippet` | `value.to_owned` | [1451](../../src/production_tool_control.rs#L1451) | receiver-type-required |
-| `bounded_snippet` | `value.is_char_boundary` | [1454](../../src/production_tool_control.rs#L1454) | receiver-type-required |
-| `to_ijson` | `IJsonValue::parse(         &serde_json::to_vec(value)             .map_err(&#124;error&#124; SupervisorOperationError::Protocol(error.to_string()))?,     )     .map_err` | [1461](../../src/production_tool_control.rs#L1461) | receiver-type-required |
-| `to_ijson` | `IJsonValue::parse` | [1461](../../src/production_tool_control.rs#L1461) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `to_ijson` | `serde_json::to_vec(value)             .map_err` | [1462](../../src/production_tool_control.rs#L1462) | receiver-type-required |
-| `to_ijson` | `serde_json::to_vec` | [1462](../../src/production_tool_control.rs#L1462) | external-constructor-callback-or-unresolved |
-| `to_ijson` | `SupervisorOperationError::Protocol` | [1463](../../src/production_tool_control.rs#L1463) | external-constructor-callback-or-unresolved |
-| `to_ijson` | `error.to_string` | [1463](../../src/production_tool_control.rs#L1463) | receiver-type-required |
-| `map_io` | `error.kind` | [1469](../../src/production_tool_control.rs#L1469) | receiver-type-required |
-| `map_io` | `SupervisorOperationError::NotFound` | [1470](../../src/production_tool_control.rs#L1470) | external-constructor-callback-or-unresolved |
-| `map_io` | `"resource not found".into` | [1470](../../src/production_tool_control.rs#L1470) | receiver-type-required |
-| `map_io` | `SupervisorOperationError::Unavailable` | [1472](../../src/production_tool_control.rs#L1472) | external-constructor-callback-or-unresolved |
-| `map_io` | `error.to_string` | [1472](../../src/production_tool_control.rs#L1472) | receiver-type-required |
-| `map_store` | `SupervisorOperationError::NotFound` | [1479](../../src/production_tool_control.rs#L1479) | external-constructor-callback-or-unresolved |
-| `map_store` | `"thread not found".into` | [1479](../../src/production_tool_control.rs#L1479) | receiver-type-required |
-| `map_store` | `SupervisorOperationError::Conflict` | [1482](../../src/production_tool_control.rs#L1482) | external-constructor-callback-or-unresolved |
-| `map_store` | `"thread is archived".into` | [1482](../../src/production_tool_control.rs#L1482) | receiver-type-required |
-| `map_store` | `SupervisorOperationError::Unavailable` | [1484](../../src/production_tool_control.rs#L1484) | external-constructor-callback-or-unresolved |
-| `map_store` | `other.to_string` | [1484](../../src/production_tool_control.rs#L1484) | receiver-type-required |
-| `map_schema` | `SupervisorOperationError::Corruption` | [1489](../../src/production_tool_control.rs#L1489) | external-constructor-callback-or-unresolved |
-| `map_schema` | `error.to_string` | [1489](../../src/production_tool_control.rs#L1489) | receiver-type-required |
-| `into_control_error` | `self.to_string` | [1540](../../src/production_tool_control.rs#L1540) | receiver-type-required |
-| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `SupervisorOperationError::ToolFailed("remote details".into()).into_control_error` | [1552](../../src/production_tool_control.rs#L1552) | receiver-type-required |
-| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `SupervisorOperationError::ToolFailed` | [1552](../../src/production_tool_control.rs#L1552) | external-constructor-callback-or-unresolved |
-| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `"remote details".into` | [1552](../../src/production_tool_control.rs#L1552) | receiver-type-required |
-| `value` | `IJsonValue::parse(raw.as_bytes()).unwrap` | [1570](../../src/production_tool_control.rs#L1570) | receiver-type-required |
-| `value` | `IJsonValue::parse` | [1570](../../src/production_tool_control.rs#L1570) | external-constructor-callback-or-unresolved |
-| `value` | `raw.as_bytes` | [1570](../../src/production_tool_control.rs#L1570) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ProductionToolControlPolicy::new` | [1577](../../src/production_tool_control.rs#L1577), [1628](../../src/production_tool_control.rs#L1628) | external-constructor-callback-or-unresolved |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `tools::SecretScanner::default` | [1577](../../src/production_tool_control.rs#L1577) | external-constructor-callback-or-unresolved |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControlResult::pending` | [1578](../../src/production_tool_control.rs#L1578) | external-constructor-callback-or-unresolved |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"a".repeat` | [1579](../../src/production_tool_control.rs#L1579) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"b".repeat` | [1581](../../src/production_tool_control.rs#L1581), [1596](../../src/production_tool_control.rs#L1596) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `value` | [1582](../../src/production_tool_control.rs#L1582), [1592](../../src/production_tool_control.rs#L1592), [1602](../../src/production_tool_control.rs#L1602), [1610](../../src/production_tool_control.rs#L1610) | [tekes-supervisor::production_tool_control::continuation_policy_tests::value](../../src/production_tool_control.rs#L1569) |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `policy.apply` | [1584](../../src/production_tool_control.rs#L1584) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `pending.clone` | [1584](../../src/production_tool_control.rs#L1584) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__t__x",             value("{}"),         )         .unwrap` | [1586](../../src/production_tool_control.rs#L1586) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControl::new` | [1586](../../src/production_tool_control.rs#L1586) | external-constructor-callback-or-unresolved |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolContinuationRequest::new(original, "b".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [1596](../../src/production_tool_control.rs#L1596) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolContinuationRequest::new` | [1596](../../src/production_tool_control.rs#L1596) | [worker-control::continuation::ToolContinuationRequest::new](../../../worker-control/src/continuation.rs#L32) |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `request.request_id.clone` | [1599](../../src/production_tool_control.rs#L1599), [1607](../../src/production_tool_control.rs#L1607) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"call-1".into` | [1600](../../src/production_tool_control.rs#L1600), [1608](../../src/production_tool_control.rs#L1608) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `policy.apply_continuation` | [1615](../../src/production_tool_control.rs#L1615) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str()                     .unwrap()                     .to_owned` | [1617](../../src/production_tool_control.rs#L1617) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str()                     .unwrap` | [1617](../../src/production_tool_control.rs#L1617) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str` | [1617](../../src/production_tool_control.rs#L1617) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap` | [1617](../../src/production_tool_control.rs#L1617) | receiver-type-required |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value` | [1617](../../src/production_tool_control.rs#L1617) | external-constructor-callback-or-unresolved |
-| `pending_results_and_continuation_responses_pass_the_secret_policy` | `tools::SecretScanner::failing` | [1628](../../src/production_tool_control.rs#L1628) | [tools::pipeline::SecretScanner::failing](../../../tools/src/pipeline.rs#L107) |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `"kernel-worker".into` | [1657](../../src/production_tool_control.rs#L1657) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `"context".into` | [1658](../../src/production_tool_control.rs#L1658) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `session.into` | [1659](../../src/production_tool_control.rs#L1659) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `"create".into` | [1660](../../src/production_tool_control.rs#L1660) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `"request".into` | [1661](../../src/production_tool_control.rs#L1661) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `context_start_genesis(&source, "ws", session, "2026-10-15T00:00:00.000Z", &origin)                 .expect` | [1664](../../src/production_tool_control.rs#L1664) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `context_start_genesis` | [1664](../../src/production_tool_control.rs#L1664), [1681](../../src/production_tool_control.rs#L1681) | external-constructor-callback-or-unresolved |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `serde_json::to_value(event.raw()).unwrap` | [1666](../../src/production_tool_control.rs#L1666), [1683](../../src/production_tool_control.rs#L1683) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `serde_json::to_value` | [1666](../../src/production_tool_control.rs#L1666), [1683](../../src/production_tool_control.rs#L1683) | external-constructor-callback-or-unresolved |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `event.raw` | [1666](../../src/production_tool_control.rs#L1666), [1683](../../src/production_tool_control.rs#L1683) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `source.clone` | [1675](../../src/production_tool_control.rs#L1675) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `plain.as_object_mut().unwrap` | [1676](../../src/production_tool_control.rs#L1676) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `plain.as_object_mut` | [1676](../../src/production_tool_control.rs#L1676) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `object.remove` | [1677](../../src/production_tool_control.rs#L1677), [1679](../../src/production_tool_control.rs#L1679) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `object.insert` | [1678](../../src/production_tool_control.rs#L1678) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `"identity_profile".into` | [1678](../../src/production_tool_control.rs#L1678) | receiver-type-required |
-| `a_started_session_inherits_the_callers_scope_and_preset` | `context_start_genesis(&plain, "ws", session, "2026-10-15T00:00:00.000Z", &origin)                 .expect` | [1681](../../src/production_tool_control.rs#L1681) | receiver-type-required |
+| `execute_context` | `self.context_threads` | [490](../../src/production_tool_control.rs#L490) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_threads](../../src/production_tool_control.rs#L550) |
+| `execute_context` | `required_string` | [492](../../src/production_tool_control.rs#L492), [500](../../src/production_tool_control.rs#L500), [502](../../src/production_tool_control.rs#L502), [516](../../src/production_tool_control.rs#L516), [521](../../src/production_tool_control.rs#L521), [535](../../src/production_tool_control.rs#L535) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1238) |
+| `execute_context` | `self.context_read` | [493](../../src/production_tool_control.rs#L493) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_read](../../src/production_tool_control.rs#L586) |
+| `execute_context` | `self.context_records` | [495](../../src/production_tool_control.rs#L495) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_records](../../src/production_tool_control.rs#L601) |
+| `execute_context` | `self.context_search` | [496](../../src/production_tool_control.rs#L496) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_search](../../src/production_tool_control.rs#L630) |
+| `execute_context` | `self.context_start` | [497](../../src/production_tool_control.rs#L497) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_start](../../src/production_tool_control.rs#L711) |
+| `execute_context` | `self.context_fork` | [498](../../src/production_tool_control.rs#L498) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::context_fork](../../src/production_tool_control.rs#L741) |
+| `execute_context` | `session_folder` | [501](../../src/production_tool_control.rs#L501), [517](../../src/production_tool_control.rs#L517), [536](../../src/production_tool_control.rs#L536) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) |
+| `execute_context` | `self.runtime.deliver_input` | [503](../../src/production_tool_control.rs#L503) | receiver-type-required |
+| `execute_context` | `request.session.clone` | [504](../../src/production_tool_control.rs#L504), [538](../../src/production_tool_control.rs#L538) | receiver-type-required |
+| `execute_context` | `request.thread.clone` | [505](../../src/production_tool_control.rs#L505), [539](../../src/production_tool_control.rs#L539) | receiver-type-required |
+| `execute_context` | `target.to_owned` | [506](../../src/production_tool_control.rs#L506), [540](../../src/production_tool_control.rs#L540) | receiver-type-required |
+| `execute_context` | `request.request_id.clone` | [507](../../src/production_tool_control.rs#L507), [541](../../src/production_tool_control.rs#L541) | receiver-type-required |
+| `execute_context` | `message.to_owned` | [508](../../src/production_tool_control.rs#L508) | receiver-type-required |
+| `execute_context` | `arguments                         .get("goal")                         .and_then(Value::as_bool)                         .unwrap_or` | [509](../../src/production_tool_control.rs#L509) | receiver-type-required |
+| `execute_context` | `arguments                         .get("goal")                         .and_then` | [509](../../src/production_tool_control.rs#L509) | receiver-type-required |
+| `execute_context` | `arguments                         .get` | [509](../../src/production_tool_control.rs#L509) | receiver-type-required |
+| `execute_context` | `self.runtime.ensure_running` | [518](../../src/production_tool_control.rs#L518) | receiver-type-required |
+| `execute_context` | `Err` | [523](../../src/production_tool_control.rs#L523), [544](../../src/production_tool_control.rs#L544) | external-constructor-callback-or-unresolved |
+| `execute_context` | `SupervisorOperationError::Denied` | [523](../../src/production_tool_control.rs#L523) | external-constructor-callback-or-unresolved |
+| `execute_context` | `"a running worker cannot archive its containing session".into` | [524](../../src/production_tool_control.rs#L524) | receiver-type-required |
+| `execute_context` | `require_active_session` | [527](../../src/production_tool_control.rs#L527) | [tekes-supervisor::production_tool_control::require_active_session](../../src/production_tool_control.rs#L1152) |
+| `execute_context` | `ThreadStore::open(&self.root)                     .map_err(map_store)?                     .archive(target)                     .map_err` | [528](../../src/production_tool_control.rs#L528) | receiver-type-required |
+| `execute_context` | `ThreadStore::open(&self.root)                     .map_err(map_store)?                     .archive` | [528](../../src/production_tool_control.rs#L528) | receiver-type-required |
+| `execute_context` | `ThreadStore::open(&self.root)                     .map_err` | [528](../../src/production_tool_control.rs#L528) | receiver-type-required |
+| `execute_context` | `ThreadStore::open` | [528](../../src/production_tool_control.rs#L528) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `execute_context` | `to_ijson` | [532](../../src/production_tool_control.rs#L532) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `execute_context` | `self.runtime.interrupt` | [537](../../src/production_tool_control.rs#L537) | receiver-type-required |
+| `execute_context` | `SupervisorOperationError::Unsupported` | [544](../../src/production_tool_control.rs#L544) | external-constructor-callback-or-unresolved |
+| `context_threads` | `Vec::new` | [551](../../src/production_tool_control.rs#L551) | external-constructor-callback-or-unresolved |
+| `context_threads` | `fs::read_dir(self.root.join(area)).map_err` | [553](../../src/production_tool_control.rs#L553) | receiver-type-required |
+| `context_threads` | `fs::read_dir` | [553](../../src/production_tool_control.rs#L553) | external-constructor-callback-or-unresolved |
+| `context_threads` | `self.root.join` | [553](../../src/production_tool_control.rs#L553) | receiver-type-required |
+| `context_threads` | `entry.map_err` | [554](../../src/production_tool_control.rs#L554) | receiver-type-required |
+| `context_threads` | `entry.file_type().map_err(map_io)?.is_dir` | [555](../../src/production_tool_control.rs#L555) | receiver-type-required |
+| `context_threads` | `entry.file_type().map_err` | [555](../../src/production_tool_control.rs#L555) | receiver-type-required |
+| `context_threads` | `entry.file_type` | [555](../../src/production_tool_control.rs#L555) | receiver-type-required |
+| `context_threads` | `entry.file_name().to_string_lossy().into_owned` | [558](../../src/production_tool_control.rs#L558) | receiver-type-required |
+| `context_threads` | `entry.file_name().to_string_lossy` | [558](../../src/production_tool_control.rs#L558) | receiver-type-required |
+| `context_threads` | `entry.file_name` | [558](../../src/production_tool_control.rs#L558) | receiver-type-required |
+| `context_threads` | `validate_session_folder` | [559](../../src/production_tool_control.rs#L559) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1162) |
+| `context_threads` | `entry.path` | [559](../../src/production_tool_control.rs#L559), [560](../../src/production_tool_control.rs#L560) | receiver-type-required |
+| `context_threads` | `read_projection` | [560](../../src/production_tool_control.rs#L560) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) |
+| `context_threads` | `entry.path().join` | [560](../../src/production_tool_control.rs#L560) | receiver-type-required |
+| `context_threads` | `projection.events.first().expect` | [561](../../src/production_tool_control.rs#L561) | receiver-type-required |
+| `context_threads` | `projection.events.first` | [561](../../src/production_tool_control.rs#L561) | receiver-type-required |
+| `context_threads` | `projection                     .events                     .iter()                     .rev()                     .find_map` | [562](../../src/production_tool_control.rs#L562) | receiver-type-required |
+| `context_threads` | `projection                     .events                     .iter()                     .rev` | [562](../../src/production_tool_control.rs#L562) | receiver-type-required |
+| `context_threads` | `projection                     .events                     .iter` | [562](../../src/production_tool_control.rs#L562) | receiver-type-required |
+| `context_threads` | `event.string_field` | [566](../../src/production_tool_control.rs#L566) | receiver-type-required |
+| `context_threads` | `items.push` | [567](../../src/production_tool_control.rs#L567) | receiver-type-required |
+| `context_threads` | `items.sort_by` | [578](../../src/production_tool_control.rs#L578) | receiver-type-required |
+| `context_threads` | `left.get("session_id")                 .and_then(Value::as_str)                 .cmp` | [579](../../src/production_tool_control.rs#L579) | receiver-type-required |
+| `context_threads` | `left.get("session_id")                 .and_then` | [579](../../src/production_tool_control.rs#L579) | receiver-type-required |
+| `context_threads` | `left.get` | [579](../../src/production_tool_control.rs#L579) | receiver-type-required |
+| `context_threads` | `right.get("session_id").and_then` | [581](../../src/production_tool_control.rs#L581) | receiver-type-required |
+| `context_threads` | `right.get` | [581](../../src/production_tool_control.rs#L581) | receiver-type-required |
+| `context_threads` | `to_ijson` | [583](../../src/production_tool_control.rs#L583) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `context_read` | `session_folder` | [587](../../src/production_tool_control.rs#L587) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) |
+| `context_read` | `read_projection` | [588](../../src/production_tool_control.rs#L588) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) |
+| `context_read` | `folder.join` | [588](../../src/production_tool_control.rs#L588) | receiver-type-required |
+| `context_read` | `projection.events.first().expect` | [589](../../src/production_tool_control.rs#L589) | receiver-type-required |
+| `context_read` | `projection.events.first` | [589](../../src/production_tool_control.rs#L589) | receiver-type-required |
+| `context_read` | `to_ijson` | [590](../../src/production_tool_control.rs#L590) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `context_records` | `required_string(arguments, "turn_id")?             .parse::<u64>()             .map_err` | [606](../../src/production_tool_control.rs#L606) | receiver-type-required |
+| `context_records` | `required_string(arguments, "turn_id")?             .parse::<u64>` | [606](../../src/production_tool_control.rs#L606) | receiver-type-required |
+| `context_records` | `required_string` | [606](../../src/production_tool_control.rs#L606) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1238) |
+| `context_records` | `SupervisorOperationError::Invalid` | [609](../../src/production_tool_control.rs#L609) | external-constructor-callback-or-unresolved |
+| `context_records` | `"turn_id is not a positive integer".into` | [609](../../src/production_tool_control.rs#L609) | receiver-type-required |
+| `context_records` | `decode_cursor` | [611](../../src/production_tool_control.rs#L611) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1311) |
+| `context_records` | `arguments.get` | [611](../../src/production_tool_control.rs#L611) | receiver-type-required |
+| `context_records` | `argument_limit` | [612](../../src/production_tool_control.rs#L612) | [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1293) |
+| `context_records` | `resolved             .projection             .events             .iter()             .filter(&#124;event&#124; event.turn() == Some(turn))             .collect::<Vec<_>>` | [613](../../src/production_tool_control.rs#L613) | receiver-type-required |
+| `context_records` | `resolved             .projection             .events             .iter()             .filter` | [613](../../src/production_tool_control.rs#L613) | receiver-type-required |
+| `context_records` | `resolved             .projection             .events             .iter` | [613](../../src/production_tool_control.rs#L613) | receiver-type-required |
+| `context_records` | `event.turn` | [617](../../src/production_tool_control.rs#L617) | receiver-type-required |
+| `context_records` | `Some` | [617](../../src/production_tool_control.rs#L617) | external-constructor-callback-or-unresolved |
+| `context_records` | `matching             .iter()             .skip(offset)             .take(limit)             .map(event_record)             .collect::<Result<Vec<_>, _>>` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
+| `context_records` | `matching             .iter()             .skip(offset)             .take(limit)             .map` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
+| `context_records` | `matching             .iter()             .skip(offset)             .take` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
+| `context_records` | `matching             .iter()             .skip` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
+| `context_records` | `matching             .iter` | [619](../../src/production_tool_control.rs#L619) | receiver-type-required |
+| `context_records` | `(offset + records.len() < matching.len())             .then` | [625](../../src/production_tool_control.rs#L625) | receiver-type-required |
+| `context_records` | `records.len` | [625](../../src/production_tool_control.rs#L625), [626](../../src/production_tool_control.rs#L626) | receiver-type-required |
+| `context_records` | `matching.len` | [625](../../src/production_tool_control.rs#L625) | receiver-type-required |
+| `context_records` | `encode_cursor` | [626](../../src/production_tool_control.rs#L626) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1306) |
+| `context_records` | `to_ijson` | [627](../../src/production_tool_control.rs#L627) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `context_search` | `required_string` | [635](../../src/production_tool_control.rs#L635), [644](../../src/production_tool_control.rs#L644), [659](../../src/production_tool_control.rs#L659) | [tekes-supervisor::production_tool_control::required_string](../../src/production_tool_control.rs#L1238) |
+| `context_search` | `query.to_lowercase` | [636](../../src/production_tool_control.rs#L636) | receiver-type-required |
+| `context_search` | `arguments             .get("scope")             .and_then(Value::as_str)             .unwrap_or` | [637](../../src/production_tool_control.rs#L637) | receiver-type-required |
+| `context_search` | `arguments             .get("scope")             .and_then` | [637](../../src/production_tool_control.rs#L637) | receiver-type-required |
+| `context_search` | `arguments             .get` | [637](../../src/production_tool_control.rs#L637) | receiver-type-required |
+| `context_search` | `session_folder` | [645](../../src/production_tool_control.rs#L645), [668](../../src/production_tool_control.rs#L668) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) |
+| `context_search` | `visible_sessions` | [648](../../src/production_tool_control.rs#L648) | [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1132) |
+| `context_search` | `Err` | [650](../../src/production_tool_control.rs#L650) | external-constructor-callback-or-unresolved |
+| `context_search` | `SupervisorOperationError::Invalid` | [650](../../src/production_tool_control.rs#L650) | external-constructor-callback-or-unresolved |
+| `context_search` | `"invalid context.search scope".into` | [651](../../src/production_tool_control.rs#L651) | receiver-type-required |
+| `context_search` | `request.session.as_str` | [658](../../src/production_tool_control.rs#L658) | receiver-type-required |
+| `context_search` | `json!(["context-search-v2", scope, target, query]).to_string` | [663](../../src/production_tool_control.rs#L663) | receiver-type-required |
+| `context_search` | `decode_cursor` | [664](../../src/production_tool_control.rs#L664) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1311) |
+| `context_search` | `arguments.get` | [664](../../src/production_tool_control.rs#L664) | receiver-type-required |
+| `context_search` | `argument_limit` | [665](../../src/production_tool_control.rs#L665) | [tekes-supervisor::production_tool_control::argument_limit](../../src/production_tool_control.rs#L1293) |
+| `context_search` | `Vec::new` | [666](../../src/production_tool_control.rs#L666) | external-constructor-callback-or-unresolved |
+| `context_search` | `session_lines` | [669](../../src/production_tool_control.rs#L669) | [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1090) |
+| `context_search` | `genesis_line` | [670](../../src/production_tool_control.rs#L670) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1208) |
+| `context_search` | `String::from_utf8(event.canonical_bytes().map_err(map_schema)?)                         .map_err` | [672](../../src/production_tool_control.rs#L672) | receiver-type-required |
+| `context_search` | `String::from_utf8` | [672](../../src/production_tool_control.rs#L672) | external-constructor-callback-or-unresolved |
+| `context_search` | `event.canonical_bytes().map_err` | [672](../../src/production_tool_control.rs#L672) | receiver-type-required |
+| `context_search` | `event.canonical_bytes` | [672](../../src/production_tool_control.rs#L672) | receiver-type-required |
+| `context_search` | `SupervisorOperationError::Protocol` | [673](../../src/production_tool_control.rs#L673) | external-constructor-callback-or-unresolved |
+| `context_search` | `error.to_string` | [673](../../src/production_tool_control.rs#L673) | receiver-type-required |
+| `context_search` | `canonical.to_lowercase().contains` | [674](../../src/production_tool_control.rs#L674) | receiver-type-required |
+| `context_search` | `canonical.to_lowercase` | [674](../../src/production_tool_control.rs#L674) | receiver-type-required |
+| `context_search` | `hits.push` | [675](../../src/production_tool_control.rs#L675) | receiver-type-required |
+| `context_search` | `hits.sort_by` | [688](../../src/production_tool_control.rs#L688) | receiver-type-required |
+| `context_search` | `(                 left.get("session_id").and_then(Value::as_str),                 left.get("thread_id").and_then(Value::as_str),                 left.get("record_id").and_then(Value::as_u64),             )                 .cmp` | [689](../../src/production_tool_control.rs#L689) | receiver-type-required |
+| `context_search` | `left.get("session_id").and_then` | [690](../../src/production_tool_control.rs#L690) | receiver-type-required |
+| `context_search` | `left.get` | [690](../../src/production_tool_control.rs#L690), [691](../../src/production_tool_control.rs#L691), [692](../../src/production_tool_control.rs#L692) | receiver-type-required |
+| `context_search` | `left.get("thread_id").and_then` | [691](../../src/production_tool_control.rs#L691) | receiver-type-required |
+| `context_search` | `left.get("record_id").and_then` | [692](../../src/production_tool_control.rs#L692) | receiver-type-required |
+| `context_search` | `right.get("session_id").and_then` | [695](../../src/production_tool_control.rs#L695) | receiver-type-required |
+| `context_search` | `right.get` | [695](../../src/production_tool_control.rs#L695), [696](../../src/production_tool_control.rs#L696), [697](../../src/production_tool_control.rs#L697) | receiver-type-required |
+| `context_search` | `right.get("thread_id").and_then` | [696](../../src/production_tool_control.rs#L696) | receiver-type-required |
+| `context_search` | `right.get("record_id").and_then` | [697](../../src/production_tool_control.rs#L697) | receiver-type-required |
+| `context_search` | `hits             .iter()             .skip(offset)             .take(limit)             .cloned()             .collect::<Vec<_>>` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
+| `context_search` | `hits             .iter()             .skip(offset)             .take(limit)             .cloned` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
+| `context_search` | `hits             .iter()             .skip(offset)             .take` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
+| `context_search` | `hits             .iter()             .skip` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
+| `context_search` | `hits             .iter` | [700](../../src/production_tool_control.rs#L700) | receiver-type-required |
+| `context_search` | `(offset + page.len() < hits.len())             .then` | [706](../../src/production_tool_control.rs#L706) | receiver-type-required |
+| `context_search` | `page.len` | [706](../../src/production_tool_control.rs#L706), [707](../../src/production_tool_control.rs#L707) | receiver-type-required |
+| `context_search` | `hits.len` | [706](../../src/production_tool_control.rs#L706) | receiver-type-required |
+| `context_search` | `encode_cursor` | [707](../../src/production_tool_control.rs#L707) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1306) |
+| `context_search` | `to_ijson` | [708](../../src/production_tool_control.rs#L708) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `context_start` | `resolved             .projection             .events             .first()             .ok_or_else` | [716](../../src/production_tool_control.rs#L716) | receiver-type-required |
+| `context_start` | `resolved             .projection             .events             .first` | [716](../../src/production_tool_control.rs#L716) | receiver-type-required |
+| `context_start` | `SupervisorOperationError::Corruption` | [720](../../src/production_tool_control.rs#L720) | external-constructor-callback-or-unresolved |
+| `context_start` | `"caller has no genesis".into` | [720](../../src/production_tool_control.rs#L720) | receiver-type-required |
+| `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err(map_schema)?             .expect` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
+| `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
+| `context_start` | `schema::effective_session_genesis` | [721](../../src/production_tool_control.rs#L721) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
+| `context_start` | `deterministic_uuid` | [724](../../src/production_tool_control.rs#L724) | [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1364) |
+| `context_start` | `paired_tool_timestamp` | [725](../../src/production_tool_control.rs#L725) | [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1216) |
+| `context_start` | `"kernel-worker".into` | [727](../../src/production_tool_control.rs#L727) | receiver-type-required |
+| `context_start` | `"context".into` | [728](../../src/production_tool_control.rs#L728) | receiver-type-required |
+| `context_start` | `session.clone` | [729](../../src/production_tool_control.rs#L729) | receiver-type-required |
+| `context_start` | `"create".into` | [730](../../src/production_tool_control.rs#L730) | receiver-type-required |
+| `context_start` | `request.request_id.clone` | [731](../../src/production_tool_control.rs#L731) | receiver-type-required |
+| `context_start` | `context_start_genesis` | [733](../../src/production_tool_control.rs#L733) | [tekes-supervisor::production_tool_control::context_start_genesis](../../src/production_tool_control.rs#L1337) |
+| `context_start` | `ThreadStore::open(&self.root)             .map_err(map_store)?             .create_thread(&session, event)             .map_err` | [734](../../src/production_tool_control.rs#L734) | receiver-type-required |
+| `context_start` | `ThreadStore::open(&self.root)             .map_err(map_store)?             .create_thread` | [734](../../src/production_tool_control.rs#L734) | receiver-type-required |
+| `context_start` | `ThreadStore::open(&self.root)             .map_err` | [734](../../src/production_tool_control.rs#L734) | receiver-type-required |
+| `context_start` | `ThreadStore::open` | [734](../../src/production_tool_control.rs#L734) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `context_start` | `self.runtime.ensure_running` | [738](../../src/production_tool_control.rs#L738) | receiver-type-required |
+| `context_fork` | `deterministic_uuid` | [746](../../src/production_tool_control.rs#L746) | [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1364) |
+| `context_fork` | `paired_tool_timestamp` | [747](../../src/production_tool_control.rs#L747) | [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1216) |
+| `context_fork` | `ThreadStore::open(&self.root).map_err` | [748](../../src/production_tool_control.rs#L748) | receiver-type-required |
+| `context_fork` | `ThreadStore::open` | [748](../../src/production_tool_control.rs#L748) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `context_fork` | `store             .begin_fork(                 &request.request_id,                 &request.session,                 &destination,                 timestamp,             )             .map_err` | [749](../../src/production_tool_control.rs#L749) | receiver-type-required |
+| `context_fork` | `store             .begin_fork` | [749](../../src/production_tool_control.rs#L749) | receiver-type-required |
+| `context_fork` | `store.recover_rewrites().map_err` | [757](../../src/production_tool_control.rs#L757) | receiver-type-required |
+| `context_fork` | `store.recover_rewrites` | [757](../../src/production_tool_control.rs#L757) | receiver-type-required |
+| `context_fork` | `to_ijson` | [758](../../src/production_tool_control.rs#L758) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `execute_context_get` | `arguments.get("thread_id").and_then` | [767](../../src/production_tool_control.rs#L767) | receiver-type-required |
+| `execute_context_get` | `arguments.get` | [767](../../src/production_tool_control.rs#L767), [796](../../src/production_tool_control.rs#L796) | receiver-type-required |
+| `execute_context_get` | `resolve_visible_line` | [768](../../src/production_tool_control.rs#L768) | [tekes-supervisor::production_tool_control::resolve_visible_line](../../src/production_tool_control.rs#L1111) |
+| `execute_context_get` | `resolved.projection.clone` | [769](../../src/production_tool_control.rs#L769) | receiver-type-required |
+| `execute_context_get` | `arguments             .get("record_ids")             .and_then(Value::as_array)             .ok_or_else` | [771](../../src/production_tool_control.rs#L771) | receiver-type-required |
+| `execute_context_get` | `arguments             .get("record_ids")             .and_then` | [771](../../src/production_tool_control.rs#L771) | receiver-type-required |
+| `execute_context_get` | `arguments             .get` | [771](../../src/production_tool_control.rs#L771), [797](../../src/production_tool_control.rs#L797) | receiver-type-required |
+| `execute_context_get` | `SupervisorOperationError::Invalid` | [775](../../src/production_tool_control.rs#L775), [781](../../src/production_tool_control.rs#L781), [808](../../src/production_tool_control.rs#L808) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `"context_get.record_ids missing".into` | [775](../../src/production_tool_control.rs#L775) | receiver-type-required |
+| `execute_context_get` | `Vec::new` | [777](../../src/production_tool_control.rs#L777), [801](../../src/production_tool_control.rs#L801) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `BTreeSet::new` | [778](../../src/production_tool_control.rs#L778) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `id.as_u64().ok_or_else` | [780](../../src/production_tool_control.rs#L780) | receiver-type-required |
+| `execute_context_get` | `id.as_u64` | [780](../../src/production_tool_control.rs#L780) | receiver-type-required |
+| `execute_context_get` | `"record id is not an integer".into` | [781](../../src/production_tool_control.rs#L781) | receiver-type-required |
+| `execute_context_get` | `seen.insert` | [783](../../src/production_tool_control.rs#L783) | receiver-type-required |
+| `execute_context_get` | `ordered.push` | [784](../../src/production_tool_control.rs#L784) | receiver-type-required |
+| `execute_context_get` | `decode_cursor` | [796](../../src/production_tool_control.rs#L796) | [tekes-supervisor::production_tool_control::decode_cursor](../../src/production_tool_control.rs#L1311) |
+| `execute_context_get` | `arguments             .get("page_bytes")             .and_then(Value::as_u64)             .map_or` | [797](../../src/production_tool_control.rs#L797) | receiver-type-required |
+| `execute_context_get` | `arguments             .get("page_bytes")             .and_then` | [797](../../src/production_tool_control.rs#L797) | receiver-type-required |
+| `execute_context_get` | `ordered.iter().skip` | [804](../../src/production_tool_control.rs#L804) | receiver-type-required |
+| `execute_context_get` | `ordered.iter` | [804](../../src/production_tool_control.rs#L804) | receiver-type-required |
+| `execute_context_get` | `projection                 .events                 .get(usize::try_from(*id - 1).map_err(&#124;_&#124; {                     SupervisorOperationError::Invalid("record id does not fit this platform".into())                 })?)                 .filter(&#124;event&#124; event.seq() == *id)                 .ok_or_else` | [805](../../src/production_tool_control.rs#L805) | receiver-type-required |
+| `execute_context_get` | `projection                 .events                 .get(usize::try_from(*id - 1).map_err(&#124;_&#124; {                     SupervisorOperationError::Invalid("record id does not fit this platform".into())                 })?)                 .filter` | [805](../../src/production_tool_control.rs#L805) | receiver-type-required |
+| `execute_context_get` | `projection                 .events                 .get` | [805](../../src/production_tool_control.rs#L805) | receiver-type-required |
+| `execute_context_get` | `usize::try_from(*id - 1).map_err` | [807](../../src/production_tool_control.rs#L807) | receiver-type-required |
+| `execute_context_get` | `usize::try_from` | [807](../../src/production_tool_control.rs#L807) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `"record id does not fit this platform".into` | [808](../../src/production_tool_control.rs#L808) | receiver-type-required |
+| `execute_context_get` | `event.seq` | [810](../../src/production_tool_control.rs#L810) | receiver-type-required |
+| `execute_context_get` | `SupervisorOperationError::NotFound` | [811](../../src/production_tool_control.rs#L811) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `event.canonical_bytes().map_err` | [812](../../src/production_tool_control.rs#L812) | receiver-type-required |
+| `execute_context_get` | `event.canonical_bytes` | [812](../../src/production_tool_control.rs#L812) | receiver-type-required |
+| `execute_context_get` | `canonical.len` | [813](../../src/production_tool_control.rs#L813), [818](../../src/production_tool_control.rs#L818), [821](../../src/production_tool_control.rs#L821) | receiver-type-required |
+| `execute_context_get` | `Err` | [814](../../src/production_tool_control.rs#L814) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `SupervisorOperationError::Limit` | [814](../../src/production_tool_control.rs#L814) | external-constructor-callback-or-unresolved |
+| `execute_context_get` | `records.push` | [823](../../src/production_tool_control.rs#L823) | receiver-type-required |
+| `execute_context_get` | `(offset + consumed < ordered.len())             .then` | [829](../../src/production_tool_control.rs#L829) | receiver-type-required |
+| `execute_context_get` | `ordered.len` | [829](../../src/production_tool_control.rs#L829) | receiver-type-required |
+| `execute_context_get` | `encode_cursor` | [830](../../src/production_tool_control.rs#L830) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1306) |
+| `execute_context_get` | `to_ijson` | [831](../../src/production_tool_control.rs#L831) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `apply_continuation` | `response.request_id.clone` | [868](../../src/production_tool_control.rs#L868) | receiver-type-required |
+| `apply_continuation` | `response.call_id.clone` | [869](../../src/production_tool_control.rs#L869) | receiver-type-required |
+| `apply_continuation` | `"tool continuation result withheld by secret policy".into` | [873](../../src/production_tool_control.rs#L873) | receiver-type-required |
+| `apply_continuation` | `self.scanner.scan` | [879](../../src/production_tool_control.rs#L879), [883](../../src/production_tool_control.rs#L883), [889](../../src/production_tool_control.rs#L889) | receiver-type-required |
+| `apply_continuation` | `withheld` | [881](../../src/production_tool_control.rs#L881), [885](../../src/production_tool_control.rs#L885), [896](../../src/production_tool_control.rs#L896) | external-constructor-callback-or-unresolved |
+| `apply_continuation` | `IJsonValue::from` | [888](../../src/production_tool_control.rs#L888) | external-constructor-callback-or-unresolved |
+| `apply_continuation` | `error.message.clone` | [888](../../src/production_tool_control.rs#L888) | receiver-type-required |
+| `apply_continuation` | `serde_json::from_value(                             serde_json::to_value(message).unwrap_or(Value::Null),                         )                         .unwrap_or_else` | [891](../../src/production_tool_control.rs#L891) | receiver-type-required |
+| `apply_continuation` | `serde_json::from_value` | [891](../../src/production_tool_control.rs#L891) | external-constructor-callback-or-unresolved |
+| `apply_continuation` | `serde_json::to_value(message).unwrap_or` | [892](../../src/production_tool_control.rs#L892) | receiver-type-required |
+| `apply_continuation` | `serde_json::to_value` | [892](../../src/production_tool_control.rs#L892) | external-constructor-callback-or-unresolved |
+| `apply_continuation` | `"continuation error was redacted".to_owned` | [894](../../src/production_tool_control.rs#L894) | receiver-type-required |
+| `apply` | `result.pending.as_mut` | [906](../../src/production_tool_control.rs#L906) | receiver-type-required |
+| `apply` | `self.scanner.scan` | [909](../../src/production_tool_control.rs#L909), [918](../../src/production_tool_control.rs#L918), [928](../../src/production_tool_control.rs#L928) | receiver-type-required |
+| `apply` | `policy_withheld` | [914](../../src/production_tool_control.rs#L914), [923](../../src/production_tool_control.rs#L923), [936](../../src/production_tool_control.rs#L936), [939](../../src/production_tool_control.rs#L939) | [tekes-supervisor::production_tool_control::policy_withheld](../../src/production_tool_control.rs#L944) |
+| `apply` | `result.value.take` | [917](../../src/production_tool_control.rs#L917) | receiver-type-required |
+| `apply` | `Some` | [920](../../src/production_tool_control.rs#L920) | external-constructor-callback-or-unresolved |
+| `apply` | `result.error.as_mut` | [926](../../src/production_tool_control.rs#L926) | receiver-type-required |
+| `apply` | `IJsonValue::from` | [927](../../src/production_tool_control.rs#L927) | external-constructor-callback-or-unresolved |
+| `apply` | `error.message.clone` | [927](../../src/production_tool_control.rs#L927) | receiver-type-required |
+| `apply` | `serde_json::from_value(                         serde_json::to_value(message).unwrap_or(Value::Null),                     )                     .unwrap_or_else` | [930](../../src/production_tool_control.rs#L930) | receiver-type-required |
+| `apply` | `serde_json::from_value` | [930](../../src/production_tool_control.rs#L930) | external-constructor-callback-or-unresolved |
+| `apply` | `serde_json::to_value(message).unwrap_or` | [931](../../src/production_tool_control.rs#L931) | receiver-type-required |
+| `apply` | `serde_json::to_value` | [931](../../src/production_tool_control.rs#L931) | external-constructor-callback-or-unresolved |
+| `apply` | `"backend error was redacted".to_owned` | [933](../../src/production_tool_control.rs#L933) | receiver-type-required |
+| `policy_withheld` | `ToolControlResult::failure` | [945](../../src/production_tool_control.rs#L945) | [worker-control::durable::ToolControlResult::failure](../../../worker-control/src/durable.rs#L375) |
+| `policy_withheld` | `"tool-control result withheld by secret policy".into` | [950](../../src/production_tool_control.rs#L950) | receiver-type-required |
+| `child_launch_proof` | `resolved         .projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::Spawn)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .ok_or_else` | [960](../../src/production_tool_control.rs#L960) | receiver-type-required |
+| `child_launch_proof` | `resolved         .projection         .events         .iter()         .find` | [960](../../src/production_tool_control.rs#L960) | receiver-type-required |
+| `child_launch_proof` | `resolved         .projection         .events         .iter` | [960](../../src/production_tool_control.rs#L960) | receiver-type-required |
+| `child_launch_proof` | `event.turn` | [966](../../src/production_tool_control.rs#L966) | receiver-type-required |
+| `child_launch_proof` | `Some` | [966](../../src/production_tool_control.rs#L966), [967](../../src/production_tool_control.rs#L967), [976](../../src/production_tool_control.rs#L976), [1008](../../src/production_tool_control.rs#L1008), [1009](../../src/production_tool_control.rs#L1009), [1010](../../src/production_tool_control.rs#L1010) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `event.string_field` | [967](../../src/production_tool_control.rs#L967), [976](../../src/production_tool_control.rs#L976) | receiver-type-required |
+| `child_launch_proof` | `request.call_id.as_str` | [967](../../src/production_tool_control.rs#L967), [976](../../src/production_tool_control.rs#L976) | receiver-type-required |
+| `child_launch_proof` | `SupervisorOperationError::Conflict` | [970](../../src/production_tool_control.rs#L970), [978](../../src/production_tool_control.rs#L978), [997](../../src/production_tool_control.rs#L997), [1012](../../src/production_tool_control.rs#L1012) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `"task/subagent has no durable parent spawn proof".into` | [971](../../src/production_tool_control.rs#L971) | receiver-type-required |
+| `child_launch_proof` | `resolved.projection.events.iter().any` | [974](../../src/production_tool_control.rs#L974) | receiver-type-required |
+| `child_launch_proof` | `resolved.projection.events.iter` | [974](../../src/production_tool_control.rs#L974) | receiver-type-required |
+| `child_launch_proof` | `Err` | [978](../../src/production_tool_control.rs#L978), [1012](../../src/production_tool_control.rs#L1012) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `"child_result already terminalized this spawn".into` | [979](../../src/production_tool_control.rs#L979) | receiver-type-required |
+| `child_launch_proof` | `spawn         .string_field("child")         .ok_or_else` | [982](../../src/production_tool_control.rs#L982) | receiver-type-required |
+| `child_launch_proof` | `spawn         .string_field` | [982](../../src/production_tool_control.rs#L982), [1005](../../src/production_tool_control.rs#L1005) | receiver-type-required |
+| `child_launch_proof` | `SupervisorOperationError::Corruption` | [984](../../src/production_tool_control.rs#L984), [991](../../src/production_tool_control.rs#L991), [1003](../../src/production_tool_control.rs#L1003), [1007](../../src/production_tool_control.rs#L1007) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `"spawn.child missing".into` | [984](../../src/production_tool_control.rs#L984) | receiver-type-required |
+| `child_launch_proof` | `validate_line_file_name` | [985](../../src/production_tool_control.rs#L985) | [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1384) |
+| `child_launch_proof` | `resolved.thread_folder.join` | [986](../../src/production_tool_control.rs#L986) | receiver-type-required |
+| `child_launch_proof` | `read_projection` | [987](../../src/production_tool_control.rs#L987) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) |
+| `child_launch_proof` | `child         .events         .first()         .ok_or_else` | [988](../../src/production_tool_control.rs#L988) | receiver-type-required |
+| `child_launch_proof` | `child         .events         .first` | [988](../../src/production_tool_control.rs#L988) | receiver-type-required |
+| `child_launch_proof` | `"child genesis missing".into` | [991](../../src/production_tool_control.rs#L991) | receiver-type-required |
+| `child_launch_proof` | `serde_json::to_value(genesis.raw())         .map_err` | [992](../../src/production_tool_control.rs#L992) | receiver-type-required |
+| `child_launch_proof` | `serde_json::to_value` | [992](../../src/production_tool_control.rs#L992) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `genesis.raw` | [992](../../src/production_tool_control.rs#L992) | receiver-type-required |
+| `child_launch_proof` | `SupervisorOperationError::Protocol` | [993](../../src/production_tool_control.rs#L993) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `error.to_string` | [993](../../src/production_tool_control.rs#L993) | receiver-type-required |
+| `child_launch_proof` | `value         .get("parent")         .and_then(Value::as_object)         .ok_or_else` | [994](../../src/production_tool_control.rs#L994) | receiver-type-required |
+| `child_launch_proof` | `value         .get("parent")         .and_then` | [994](../../src/production_tool_control.rs#L994) | receiver-type-required |
+| `child_launch_proof` | `value         .get` | [994](../../src/production_tool_control.rs#L994) | receiver-type-required |
+| `child_launch_proof` | `"child parent binding missing".into` | [997](../../src/production_tool_control.rs#L997) | receiver-type-required |
+| `child_launch_proof` | `resolved         .line_path         .file_name()         .and_then(&#124;value&#124; value.to_str())         .ok_or_else` | [998](../../src/production_tool_control.rs#L998) | receiver-type-required |
+| `child_launch_proof` | `resolved         .line_path         .file_name()         .and_then` | [998](../../src/production_tool_control.rs#L998) | receiver-type-required |
+| `child_launch_proof` | `resolved         .line_path         .file_name` | [998](../../src/production_tool_control.rs#L998) | receiver-type-required |
+| `child_launch_proof` | `value.to_str` | [1001](../../src/production_tool_control.rs#L1001) | receiver-type-required |
+| `child_launch_proof` | `"parent file name is not UTF-8".into` | [1003](../../src/production_tool_control.rs#L1003) | receiver-type-required |
+| `child_launch_proof` | `spawn         .string_field("spawn_id")         .ok_or_else` | [1005](../../src/production_tool_control.rs#L1005) | receiver-type-required |
+| `child_launch_proof` | `"spawn_id missing".into` | [1007](../../src/production_tool_control.rs#L1007) | receiver-type-required |
+| `child_launch_proof` | `parent.get("file").and_then` | [1008](../../src/production_tool_control.rs#L1008) | receiver-type-required |
+| `child_launch_proof` | `parent.get` | [1008](../../src/production_tool_control.rs#L1008), [1009](../../src/production_tool_control.rs#L1009), [1010](../../src/production_tool_control.rs#L1010) | receiver-type-required |
+| `child_launch_proof` | `parent.get("seq").and_then` | [1009](../../src/production_tool_control.rs#L1009) | receiver-type-required |
+| `child_launch_proof` | `spawn.seq` | [1009](../../src/production_tool_control.rs#L1009), [1020](../../src/production_tool_control.rs#L1020) | receiver-type-required |
+| `child_launch_proof` | `parent.get("spawn_id").and_then` | [1010](../../src/production_tool_control.rs#L1010) | receiver-type-required |
+| `child_launch_proof` | `"child genesis does not match the durable parent spawn".into` | [1013](../../src/production_tool_control.rs#L1013) | receiver-type-required |
+| `child_launch_proof` | `Ok` | [1016](../../src/production_tool_control.rs#L1016) | external-constructor-callback-or-unresolved |
+| `child_launch_proof` | `request.session.clone` | [1017](../../src/production_tool_control.rs#L1017) | receiver-type-required |
+| `child_launch_proof` | `request.thread.clone` | [1018](../../src/production_tool_control.rs#L1018) | receiver-type-required |
+| `child_launch_proof` | `parent_file.to_owned` | [1019](../../src/production_tool_control.rs#L1019) | receiver-type-required |
+| `child_launch_proof` | `genesis_line(&child)?.to_owned` | [1021](../../src/production_tool_control.rs#L1021) | receiver-type-required |
+| `child_launch_proof` | `genesis_line` | [1021](../../src/production_tool_control.rs#L1021) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1208) |
+| `child_launch_proof` | `child_file.to_owned` | [1022](../../src/production_tool_control.rs#L1022) | receiver-type-required |
+| `child_launch_proof` | `spawn_id.to_owned` | [1023](../../src/production_tool_control.rs#L1023) | receiver-type-required |
+| `child_launch_proof` | `request.call_id.clone` | [1024](../../src/production_tool_control.rs#L1024) | receiver-type-required |
+| `parent_report_proof` | `resolved.projection.events.first().ok_or_else` | [1032](../../src/production_tool_control.rs#L1032) | receiver-type-required |
+| `parent_report_proof` | `resolved.projection.events.first` | [1032](../../src/production_tool_control.rs#L1032) | receiver-type-required |
+| `parent_report_proof` | `SupervisorOperationError::Corruption` | [1033](../../src/production_tool_control.rs#L1033), [1046](../../src/production_tool_control.rs#L1046), [1051](../../src/production_tool_control.rs#L1051), [1055](../../src/production_tool_control.rs#L1055), [1060](../../src/production_tool_control.rs#L1060), [1069](../../src/production_tool_control.rs#L1069) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `"reporting line has no genesis".into` | [1033](../../src/production_tool_control.rs#L1033) | receiver-type-required |
+| `parent_report_proof` | `serde_json::to_value(child_genesis.raw())         .map_err` | [1035](../../src/production_tool_control.rs#L1035) | receiver-type-required |
+| `parent_report_proof` | `serde_json::to_value` | [1035](../../src/production_tool_control.rs#L1035) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `child_genesis.raw` | [1035](../../src/production_tool_control.rs#L1035) | receiver-type-required |
+| `parent_report_proof` | `SupervisorOperationError::Protocol` | [1036](../../src/production_tool_control.rs#L1036) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `error.to_string` | [1036](../../src/production_tool_control.rs#L1036) | receiver-type-required |
+| `parent_report_proof` | `value         .get("parent")         .and_then(Value::as_object)         .ok_or_else` | [1037](../../src/production_tool_control.rs#L1037) | receiver-type-required |
+| `parent_report_proof` | `value         .get("parent")         .and_then` | [1037](../../src/production_tool_control.rs#L1037) | receiver-type-required |
+| `parent_report_proof` | `value         .get` | [1037](../../src/production_tool_control.rs#L1037) | receiver-type-required |
+| `parent_report_proof` | `SupervisorOperationError::Denied` | [1041](../../src/production_tool_control.rs#L1041) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `"report is valid only in a child line".into` | [1041](../../src/production_tool_control.rs#L1041) | receiver-type-required |
+| `parent_report_proof` | `parent         .get("file")         .and_then(Value::as_str)         .ok_or_else` | [1043](../../src/production_tool_control.rs#L1043) | receiver-type-required |
+| `parent_report_proof` | `parent         .get("file")         .and_then` | [1043](../../src/production_tool_control.rs#L1043) | receiver-type-required |
+| `parent_report_proof` | `parent         .get` | [1043](../../src/production_tool_control.rs#L1043), [1048](../../src/production_tool_control.rs#L1048), [1052](../../src/production_tool_control.rs#L1052) | receiver-type-required |
+| `parent_report_proof` | `"parent.file missing".into` | [1046](../../src/production_tool_control.rs#L1046) | receiver-type-required |
+| `parent_report_proof` | `validate_line_file_name` | [1047](../../src/production_tool_control.rs#L1047) | [tekes-supervisor::production_tool_control::validate_line_file_name](../../src/production_tool_control.rs#L1384) |
+| `parent_report_proof` | `parent         .get("seq")         .and_then(Value::as_u64)         .ok_or_else` | [1048](../../src/production_tool_control.rs#L1048) | receiver-type-required |
+| `parent_report_proof` | `parent         .get("seq")         .and_then` | [1048](../../src/production_tool_control.rs#L1048) | receiver-type-required |
+| `parent_report_proof` | `"parent.seq missing".into` | [1051](../../src/production_tool_control.rs#L1051) | receiver-type-required |
+| `parent_report_proof` | `parent         .get("spawn_id")         .and_then(Value::as_str)         .ok_or_else` | [1052](../../src/production_tool_control.rs#L1052) | receiver-type-required |
+| `parent_report_proof` | `parent         .get("spawn_id")         .and_then` | [1052](../../src/production_tool_control.rs#L1052) | receiver-type-required |
+| `parent_report_proof` | `"parent.spawn_id missing".into` | [1055](../../src/production_tool_control.rs#L1055) | receiver-type-required |
+| `parent_report_proof` | `read_projection` | [1056](../../src/production_tool_control.rs#L1056) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) |
+| `parent_report_proof` | `resolved.thread_folder.join` | [1056](../../src/production_tool_control.rs#L1056) | receiver-type-required |
+| `parent_report_proof` | `parent_projection         .events         .get(usize::try_from(parent_seq - 1).map_err(&#124;_&#124; {             SupervisorOperationError::Corruption("parent seq does not fit this platform".into())         })?)         .filter(&#124;event&#124; event.seq() == parent_seq && matches!(event.kind(), EventKind::Spawn))         .ok_or_else` | [1057](../../src/production_tool_control.rs#L1057) | receiver-type-required |
+| `parent_report_proof` | `parent_projection         .events         .get(usize::try_from(parent_seq - 1).map_err(&#124;_&#124; {             SupervisorOperationError::Corruption("parent seq does not fit this platform".into())         })?)         .filter` | [1057](../../src/production_tool_control.rs#L1057) | receiver-type-required |
+| `parent_report_proof` | `parent_projection         .events         .get` | [1057](../../src/production_tool_control.rs#L1057) | receiver-type-required |
+| `parent_report_proof` | `usize::try_from(parent_seq - 1).map_err` | [1059](../../src/production_tool_control.rs#L1059) | receiver-type-required |
+| `parent_report_proof` | `usize::try_from` | [1059](../../src/production_tool_control.rs#L1059) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `"parent seq does not fit this platform".into` | [1060](../../src/production_tool_control.rs#L1060) | receiver-type-required |
+| `parent_report_proof` | `event.seq` | [1062](../../src/production_tool_control.rs#L1062) | receiver-type-required |
+| `parent_report_proof` | `SupervisorOperationError::Conflict` | [1063](../../src/production_tool_control.rs#L1063), [1074](../../src/production_tool_control.rs#L1074) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `"parent spawn proof missing".into` | [1063](../../src/production_tool_control.rs#L1063) | receiver-type-required |
+| `parent_report_proof` | `resolved         .line_path         .file_name()         .and_then(&#124;value&#124; value.to_str())         .ok_or_else` | [1064](../../src/production_tool_control.rs#L1064) | receiver-type-required |
+| `parent_report_proof` | `resolved         .line_path         .file_name()         .and_then` | [1064](../../src/production_tool_control.rs#L1064) | receiver-type-required |
+| `parent_report_proof` | `resolved         .line_path         .file_name` | [1064](../../src/production_tool_control.rs#L1064) | receiver-type-required |
+| `parent_report_proof` | `value.to_str` | [1067](../../src/production_tool_control.rs#L1067) | receiver-type-required |
+| `parent_report_proof` | `"child file name is not UTF-8".into` | [1069](../../src/production_tool_control.rs#L1069) | receiver-type-required |
+| `parent_report_proof` | `spawn.string_field` | [1071](../../src/production_tool_control.rs#L1071), [1072](../../src/production_tool_control.rs#L1072) | receiver-type-required |
+| `parent_report_proof` | `Some` | [1071](../../src/production_tool_control.rs#L1071), [1072](../../src/production_tool_control.rs#L1072) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `Err` | [1074](../../src/production_tool_control.rs#L1074) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `"reporting child does not match parent spawn".into` | [1075](../../src/production_tool_control.rs#L1075) | receiver-type-required |
+| `parent_report_proof` | `Ok` | [1078](../../src/production_tool_control.rs#L1078) | external-constructor-callback-or-unresolved |
+| `parent_report_proof` | `request.session.clone` | [1079](../../src/production_tool_control.rs#L1079) | receiver-type-required |
+| `parent_report_proof` | `request.thread.clone` | [1080](../../src/production_tool_control.rs#L1080) | receiver-type-required |
+| `parent_report_proof` | `child_file.to_owned` | [1081](../../src/production_tool_control.rs#L1081) | receiver-type-required |
+| `parent_report_proof` | `genesis_line(&parent_projection)?.to_owned` | [1082](../../src/production_tool_control.rs#L1082) | receiver-type-required |
+| `parent_report_proof` | `genesis_line` | [1082](../../src/production_tool_control.rs#L1082) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1208) |
+| `parent_report_proof` | `parent_file.to_owned` | [1083](../../src/production_tool_control.rs#L1083) | receiver-type-required |
+| `parent_report_proof` | `spawn_id.to_owned` | [1085](../../src/production_tool_control.rs#L1085) | receiver-type-required |
+| `parent_report_proof` | `request.call_id.clone` | [1086](../../src/production_tool_control.rs#L1086) | receiver-type-required |
+| `session_lines` | `Vec::new` | [1093](../../src/production_tool_control.rs#L1093) | external-constructor-callback-or-unresolved |
+| `session_lines` | `fs::read_dir(folder).map_err` | [1094](../../src/production_tool_control.rs#L1094) | receiver-type-required |
+| `session_lines` | `fs::read_dir` | [1094](../../src/production_tool_control.rs#L1094) | external-constructor-callback-or-unresolved |
+| `session_lines` | `entry.map_err` | [1095](../../src/production_tool_control.rs#L1095) | receiver-type-required |
+| `session_lines` | `entry.file_type().map_err(map_io)?.is_file` | [1096](../../src/production_tool_control.rs#L1096) | receiver-type-required |
+| `session_lines` | `entry.file_type().map_err` | [1096](../../src/production_tool_control.rs#L1096) | receiver-type-required |
+| `session_lines` | `entry.file_type` | [1096](../../src/production_tool_control.rs#L1096) | receiver-type-required |
+| `session_lines` | `entry.path` | [1099](../../src/production_tool_control.rs#L1099) | receiver-type-required |
+| `session_lines` | `path.extension().and_then` | [1100](../../src/production_tool_control.rs#L1100) | receiver-type-required |
+| `session_lines` | `path.extension` | [1100](../../src/production_tool_control.rs#L1100) | receiver-type-required |
+| `session_lines` | `value.to_str` | [1100](../../src/production_tool_control.rs#L1100), [1101](../../src/production_tool_control.rs#L1101) | receiver-type-required |
+| `session_lines` | `Some` | [1100](../../src/production_tool_control.rs#L1100), [1101](../../src/production_tool_control.rs#L1101) | external-constructor-callback-or-unresolved |
+| `session_lines` | `path.file_name().and_then` | [1101](../../src/production_tool_control.rs#L1101) | receiver-type-required |
+| `session_lines` | `path.file_name` | [1101](../../src/production_tool_control.rs#L1101) | receiver-type-required |
+| `session_lines` | `read_projection` | [1102](../../src/production_tool_control.rs#L1102) | [tekes-supervisor::production_tool_control::read_projection](../../src/production_tool_control.rs#L1197) |
+| `session_lines` | `lines.push` | [1104](../../src/production_tool_control.rs#L1104) | receiver-type-required |
+| `session_lines` | `lines.sort_by` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
+| `session_lines` | `left.0.as_os_str().cmp` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
+| `session_lines` | `left.0.as_os_str` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
+| `session_lines` | `right.0.as_os_str` | [1107](../../src/production_tool_control.rs#L1107) | receiver-type-required |
+| `session_lines` | `Ok` | [1108](../../src/production_tool_control.rs#L1108) | external-constructor-callback-or-unresolved |
+| `resolve_visible_line` | `visible_sessions` | [1116](../../src/production_tool_control.rs#L1116) | [tekes-supervisor::production_tool_control::visible_sessions](../../src/production_tool_control.rs#L1132) |
+| `resolve_visible_line` | `session_folder` | [1117](../../src/production_tool_control.rs#L1117) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) |
+| `resolve_visible_line` | `session_lines` | [1118](../../src/production_tool_control.rs#L1118) | [tekes-supervisor::production_tool_control::session_lines](../../src/production_tool_control.rs#L1090) |
+| `resolve_visible_line` | `genesis_line` | [1119](../../src/production_tool_control.rs#L1119) | [tekes-supervisor::production_tool_control::genesis_line](../../src/production_tool_control.rs#L1208) |
+| `resolve_visible_line` | `found.is_some` | [1120](../../src/production_tool_control.rs#L1120) | receiver-type-required |
+| `resolve_visible_line` | `Err` | [1121](../../src/production_tool_control.rs#L1121) | external-constructor-callback-or-unresolved |
+| `resolve_visible_line` | `SupervisorOperationError::Corruption` | [1121](../../src/production_tool_control.rs#L1121) | external-constructor-callback-or-unresolved |
+| `resolve_visible_line` | `"line identity is duplicated across sessions".into` | [1122](../../src/production_tool_control.rs#L1122) | receiver-type-required |
+| `resolve_visible_line` | `Some` | [1125](../../src/production_tool_control.rs#L1125) | external-constructor-callback-or-unresolved |
+| `resolve_visible_line` | `found.ok_or_else` | [1129](../../src/production_tool_control.rs#L1129) | receiver-type-required |
+| `resolve_visible_line` | `SupervisorOperationError::NotFound` | [1129](../../src/production_tool_control.rs#L1129) | external-constructor-callback-or-unresolved |
+| `resolve_visible_line` | `"line not found".into` | [1129](../../src/production_tool_control.rs#L1129) | receiver-type-required |
+| `visible_sessions` | `BTreeSet::new` | [1133](../../src/production_tool_control.rs#L1133) | external-constructor-callback-or-unresolved |
+| `visible_sessions` | `fs::read_dir(root.join(area)).map_err` | [1135](../../src/production_tool_control.rs#L1135) | receiver-type-required |
+| `visible_sessions` | `fs::read_dir` | [1135](../../src/production_tool_control.rs#L1135) | external-constructor-callback-or-unresolved |
+| `visible_sessions` | `root.join` | [1135](../../src/production_tool_control.rs#L1135) | receiver-type-required |
+| `visible_sessions` | `entry.map_err` | [1136](../../src/production_tool_control.rs#L1136) | receiver-type-required |
+| `visible_sessions` | `entry.file_type().map_err(map_io)?.is_dir` | [1137](../../src/production_tool_control.rs#L1137) | receiver-type-required |
+| `visible_sessions` | `entry.file_type().map_err` | [1137](../../src/production_tool_control.rs#L1137) | receiver-type-required |
+| `visible_sessions` | `entry.file_type` | [1137](../../src/production_tool_control.rs#L1137) | receiver-type-required |
+| `visible_sessions` | `entry.file_name().to_string_lossy().into_owned` | [1140](../../src/production_tool_control.rs#L1140) | receiver-type-required |
+| `visible_sessions` | `entry.file_name().to_string_lossy` | [1140](../../src/production_tool_control.rs#L1140) | receiver-type-required |
+| `visible_sessions` | `entry.file_name` | [1140](../../src/production_tool_control.rs#L1140) | receiver-type-required |
+| `visible_sessions` | `validate_session_folder` | [1141](../../src/production_tool_control.rs#L1141) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1162) |
+| `visible_sessions` | `entry.path` | [1141](../../src/production_tool_control.rs#L1141) | receiver-type-required |
+| `visible_sessions` | `sessions.insert` | [1142](../../src/production_tool_control.rs#L1142) | receiver-type-required |
+| `visible_sessions` | `Err` | [1143](../../src/production_tool_control.rs#L1143) | external-constructor-callback-or-unresolved |
+| `visible_sessions` | `SupervisorOperationError::Corruption` | [1143](../../src/production_tool_control.rs#L1143) | external-constructor-callback-or-unresolved |
+| `visible_sessions` | `"session exists in active and archive catalogs".into` | [1144](../../src/production_tool_control.rs#L1144) | receiver-type-required |
+| `visible_sessions` | `Ok` | [1149](../../src/production_tool_control.rs#L1149) | external-constructor-callback-or-unresolved |
+| `visible_sessions` | `sessions.into_iter().collect` | [1149](../../src/production_tool_control.rs#L1149) | receiver-type-required |
+| `visible_sessions` | `sessions.into_iter` | [1149](../../src/production_tool_control.rs#L1149) | receiver-type-required |
+| `require_active_session` | `session_folder` | [1153](../../src/production_tool_control.rs#L1153) | [tekes-supervisor::production_tool_control::session_folder](../../src/production_tool_control.rs#L1182) |
+| `require_active_session` | `Err` | [1155](../../src/production_tool_control.rs#L1155) | external-constructor-callback-or-unresolved |
+| `require_active_session` | `SupervisorOperationError::NotFound` | [1155](../../src/production_tool_control.rs#L1155) | external-constructor-callback-or-unresolved |
+| `require_active_session` | `"active thread not found".into` | [1156](../../src/production_tool_control.rs#L1156) | receiver-type-required |
+| `require_active_session` | `Ok` | [1159](../../src/production_tool_control.rs#L1159) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `endpoint::validate_session_id(session)         .map_err` | [1163](../../src/production_tool_control.rs#L1163) | receiver-type-required |
+| `validate_session_folder` | `endpoint::validate_session_id` | [1163](../../src/production_tool_control.rs#L1163) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `validate_session_folder` | `SupervisorOperationError::Invalid` | [1164](../../src/production_tool_control.rs#L1164) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `"invalid session identity".into` | [1164](../../src/production_tool_control.rs#L1164) | receiver-type-required |
+| `validate_session_folder` | `fs::symlink_metadata(folder).map_err` | [1165](../../src/production_tool_control.rs#L1165) | receiver-type-required |
+| `validate_session_folder` | `fs::symlink_metadata` | [1165](../../src/production_tool_control.rs#L1165) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `metadata.is_dir` | [1166](../../src/production_tool_control.rs#L1166) | receiver-type-required |
+| `validate_session_folder` | `metadata.file_type().is_symlink` | [1166](../../src/production_tool_control.rs#L1166) | receiver-type-required |
+| `validate_session_folder` | `metadata.file_type` | [1166](../../src/production_tool_control.rs#L1166) | receiver-type-required |
+| `validate_session_folder` | `Err` | [1167](../../src/production_tool_control.rs#L1167), [1175](../../src/production_tool_control.rs#L1175) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `SupervisorOperationError::NotFound` | [1167](../../src/production_tool_control.rs#L1167) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `"thread not found".into` | [1168](../../src/production_tool_control.rs#L1168) | receiver-type-required |
+| `validate_session_folder` | `store::read_genesis(folder.join("main.jsonl"))         .map_err(map_store)?         .ok_or_else` | [1171](../../src/production_tool_control.rs#L1171) | receiver-type-required |
+| `validate_session_folder` | `store::read_genesis(folder.join("main.jsonl"))         .map_err` | [1171](../../src/production_tool_control.rs#L1171) | receiver-type-required |
+| `validate_session_folder` | `store::read_genesis` | [1171](../../src/production_tool_control.rs#L1171) | [store::tail::read_genesis](../../../store/src/tail.rs#L86) |
+| `validate_session_folder` | `folder.join` | [1171](../../src/production_tool_control.rs#L1171) | receiver-type-required |
+| `validate_session_folder` | `SupervisorOperationError::Corruption` | [1173](../../src/production_tool_control.rs#L1173), [1175](../../src/production_tool_control.rs#L1175) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `"genesis missing".into` | [1173](../../src/production_tool_control.rs#L1173) | receiver-type-required |
+| `validate_session_folder` | `genesis.string_field` | [1174](../../src/production_tool_control.rs#L1174) | receiver-type-required |
+| `validate_session_folder` | `Some` | [1174](../../src/production_tool_control.rs#L1174) | external-constructor-callback-or-unresolved |
+| `validate_session_folder` | `"folder/genesis identity mismatch".into` | [1176](../../src/production_tool_control.rs#L1176) | receiver-type-required |
+| `validate_session_folder` | `Ok` | [1179](../../src/production_tool_control.rs#L1179) | external-constructor-callback-or-unresolved |
+| `session_folder` | `endpoint::validate_session_id(session)         .map_err` | [1183](../../src/production_tool_control.rs#L1183) | receiver-type-required |
+| `session_folder` | `endpoint::validate_session_id` | [1183](../../src/production_tool_control.rs#L1183) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `session_folder` | `SupervisorOperationError::Invalid` | [1184](../../src/production_tool_control.rs#L1184) | external-constructor-callback-or-unresolved |
+| `session_folder` | `"invalid session identity".into` | [1184](../../src/production_tool_control.rs#L1184) | receiver-type-required |
+| `session_folder` | `root.join(area).join` | [1186](../../src/production_tool_control.rs#L1186) | receiver-type-required |
+| `session_folder` | `root.join` | [1186](../../src/production_tool_control.rs#L1186) | receiver-type-required |
+| `session_folder` | `fs::symlink_metadata(&folder).is_ok` | [1187](../../src/production_tool_control.rs#L1187) | receiver-type-required |
+| `session_folder` | `fs::symlink_metadata` | [1187](../../src/production_tool_control.rs#L1187) | external-constructor-callback-or-unresolved |
+| `session_folder` | `validate_session_folder` | [1188](../../src/production_tool_control.rs#L1188) | [tekes-supervisor::production_tool_control::validate_session_folder](../../src/production_tool_control.rs#L1162) |
+| `session_folder` | `Ok` | [1189](../../src/production_tool_control.rs#L1189) | external-constructor-callback-or-unresolved |
+| `session_folder` | `Err` | [1192](../../src/production_tool_control.rs#L1192) | external-constructor-callback-or-unresolved |
+| `session_folder` | `SupervisorOperationError::NotFound` | [1192](../../src/production_tool_control.rs#L1192) | external-constructor-callback-or-unresolved |
+| `session_folder` | `"thread not found".into` | [1193](../../src/production_tool_control.rs#L1193) | receiver-type-required |
+| `read_projection` | `fs::read(path).map_err` | [1198](../../src/production_tool_control.rs#L1198) | receiver-type-required |
+| `read_projection` | `fs::read` | [1198](../../src/production_tool_control.rs#L1198) | external-constructor-callback-or-unresolved |
+| `read_projection` | `scan_valid_prefix` | [1199](../../src/production_tool_control.rs#L1199) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `read_projection` | `scan.projection.ok_or_else` | [1200](../../src/production_tool_control.rs#L1200) | receiver-type-required |
+| `read_projection` | `SupervisorOperationError::Corruption` | [1201](../../src/production_tool_control.rs#L1201) | external-constructor-callback-or-unresolved |
+| `genesis_line` | `projection         .events         .first()         .and_then(&#124;event&#124; event.string_field("thread"))         .ok_or_else` | [1209](../../src/production_tool_control.rs#L1209) | receiver-type-required |
+| `genesis_line` | `projection         .events         .first()         .and_then` | [1209](../../src/production_tool_control.rs#L1209) | receiver-type-required |
+| `genesis_line` | `projection         .events         .first` | [1209](../../src/production_tool_control.rs#L1209) | receiver-type-required |
+| `genesis_line` | `event.string_field` | [1212](../../src/production_tool_control.rs#L1212) | receiver-type-required |
+| `genesis_line` | `SupervisorOperationError::Corruption` | [1213](../../src/production_tool_control.rs#L1213) | external-constructor-callback-or-unresolved |
+| `genesis_line` | `"genesis thread missing".into` | [1213](../../src/production_tool_control.rs#L1213) | receiver-type-required |
+| `paired_tool_timestamp` | `projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::ToolCall)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .and_then(&#124;event&#124; event.string_field("ts"))         .ok_or_else` | [1220](../../src/production_tool_control.rs#L1220) | receiver-type-required |
+| `paired_tool_timestamp` | `projection         .events         .iter()         .find(&#124;event&#124; {             matches!(event.kind(), EventKind::ToolCall)                 && event.turn() == Some(request.turn)                 && event.string_field("call") == Some(request.call_id.as_str())         })         .and_then` | [1220](../../src/production_tool_control.rs#L1220) | receiver-type-required |
+| `paired_tool_timestamp` | `projection         .events         .iter()         .find` | [1220](../../src/production_tool_control.rs#L1220) | receiver-type-required |
+| `paired_tool_timestamp` | `projection         .events         .iter` | [1220](../../src/production_tool_control.rs#L1220) | receiver-type-required |
+| `paired_tool_timestamp` | `event.turn` | [1225](../../src/production_tool_control.rs#L1225) | receiver-type-required |
+| `paired_tool_timestamp` | `Some` | [1225](../../src/production_tool_control.rs#L1225), [1226](../../src/production_tool_control.rs#L1226) | external-constructor-callback-or-unresolved |
+| `paired_tool_timestamp` | `event.string_field` | [1226](../../src/production_tool_control.rs#L1226), [1228](../../src/production_tool_control.rs#L1228) | receiver-type-required |
+| `paired_tool_timestamp` | `request.call_id.as_str` | [1226](../../src/production_tool_control.rs#L1226) | receiver-type-required |
+| `paired_tool_timestamp` | `SupervisorOperationError::Corruption` | [1229](../../src/production_tool_control.rs#L1229) | external-constructor-callback-or-unresolved |
+| `paired_tool_timestamp` | `"tool_call timestamp missing".into` | [1229](../../src/production_tool_control.rs#L1229) | receiver-type-required |
+| `event_record` | `event.canonical_bytes().map_err` | [1233](../../src/production_tool_control.rs#L1233) | receiver-type-required |
+| `event_record` | `event.canonical_bytes` | [1233](../../src/production_tool_control.rs#L1233) | receiver-type-required |
+| `event_record` | `serde_json::from_slice(&canonical)         .map_err` | [1234](../../src/production_tool_control.rs#L1234) | receiver-type-required |
+| `event_record` | `serde_json::from_slice` | [1234](../../src/production_tool_control.rs#L1234) | external-constructor-callback-or-unresolved |
+| `event_record` | `SupervisorOperationError::Protocol` | [1235](../../src/production_tool_control.rs#L1235) | external-constructor-callback-or-unresolved |
+| `event_record` | `error.to_string` | [1235](../../src/production_tool_control.rs#L1235) | receiver-type-required |
+| `required_string` | `value         .get(field)         .and_then(Value::as_str)         .filter(&#124;value&#124; !value.is_empty())         .ok_or_else` | [1239](../../src/production_tool_control.rs#L1239) | receiver-type-required |
+| `required_string` | `value         .get(field)         .and_then(Value::as_str)         .filter` | [1239](../../src/production_tool_control.rs#L1239) | receiver-type-required |
+| `required_string` | `value         .get(field)         .and_then` | [1239](../../src/production_tool_control.rs#L1239) | receiver-type-required |
+| `required_string` | `value         .get` | [1239](../../src/production_tool_control.rs#L1239) | receiver-type-required |
+| `required_string` | `value.is_empty` | [1242](../../src/production_tool_control.rs#L1242) | receiver-type-required |
+| `required_string` | `SupervisorOperationError::Invalid` | [1243](../../src/production_tool_control.rs#L1243) | external-constructor-callback-or-unresolved |
+| `string_array` | `value.get(field).map_or` | [1247](../../src/production_tool_control.rs#L1247) | receiver-type-required |
+| `string_array` | `value.get` | [1247](../../src/production_tool_control.rs#L1247) | receiver-type-required |
+| `string_array` | `Ok` | [1247](../../src/production_tool_control.rs#L1247) | external-constructor-callback-or-unresolved |
+| `string_array` | `Vec::new` | [1247](../../src/production_tool_control.rs#L1247) | external-constructor-callback-or-unresolved |
+| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter()             .map(&#124;value&#124; {                 value.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                     SupervisorOperationError::Invalid(format!("{field} contains a non-string"))                 })             })             .collect` | [1248](../../src/production_tool_control.rs#L1248) | receiver-type-required |
+| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter()             .map` | [1248](../../src/production_tool_control.rs#L1248) | receiver-type-required |
+| `string_array` | `value             .as_array()             .ok_or_else(&#124;&#124; SupervisorOperationError::Invalid(format!("{field} must be an array")))?             .iter` | [1248](../../src/production_tool_control.rs#L1248) | receiver-type-required |
+| `string_array` | `value             .as_array()             .ok_or_else` | [1248](../../src/production_tool_control.rs#L1248) | receiver-type-required |
+| `string_array` | `value             .as_array` | [1248](../../src/production_tool_control.rs#L1248) | receiver-type-required |
+| `string_array` | `SupervisorOperationError::Invalid` | [1250](../../src/production_tool_control.rs#L1250), [1254](../../src/production_tool_control.rs#L1254) | external-constructor-callback-or-unresolved |
+| `string_array` | `value.as_str().map(ToOwned::to_owned).ok_or_else` | [1253](../../src/production_tool_control.rs#L1253) | receiver-type-required |
+| `string_array` | `value.as_str().map` | [1253](../../src/production_tool_control.rs#L1253) | receiver-type-required |
+| `string_array` | `value.as_str` | [1253](../../src/production_tool_control.rs#L1253) | receiver-type-required |
+| `job_record_outcome` | `to_ijson` | [1265](../../src/production_tool_control.rs#L1265) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `job_record_outcome` | `Err` | [1266](../../src/production_tool_control.rs#L1266), [1267](../../src/production_tool_control.rs#L1267), [1269](../../src/production_tool_control.rs#L1269) | external-constructor-callback-or-unresolved |
+| `job_record_outcome` | `map_backend` | [1266](../../src/production_tool_control.rs#L1266) | [tekes-supervisor::production_tool_control::map_backend](../../src/production_tool_control.rs#L1274) |
+| `job_record_outcome` | `SupervisorOperationError::Denied` | [1267](../../src/production_tool_control.rs#L1267) | external-constructor-callback-or-unresolved |
+| `job_record_outcome` | `SupervisorOperationError::Unavailable` | [1269](../../src/production_tool_control.rs#L1269) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::Invalid` | [1276](../../src/production_tool_control.rs#L1276) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::Denied` | [1277](../../src/production_tool_control.rs#L1277) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::Unavailable` | [1278](../../src/production_tool_control.rs#L1278), [1283](../../src/production_tool_control.rs#L1283), [1285](../../src/production_tool_control.rs#L1285), [1287](../../src/production_tool_control.rs#L1287), [1289](../../src/production_tool_control.rs#L1289) | external-constructor-callback-or-unresolved |
+| `map_backend` | `"job cancelled".into` | [1278](../../src/production_tool_control.rs#L1278) | receiver-type-required |
+| `map_backend` | `SupervisorOperationError::Timeout` | [1279](../../src/production_tool_control.rs#L1279) | external-constructor-callback-or-unresolved |
+| `map_backend` | `"job timed out".into` | [1279](../../src/production_tool_control.rs#L1279) | receiver-type-required |
+| `map_backend` | `SupervisorOperationError::Limit` | [1280](../../src/production_tool_control.rs#L1280) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::NotFound` | [1281](../../src/production_tool_control.rs#L1281) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::Conflict` | [1282](../../src/production_tool_control.rs#L1282) | external-constructor-callback-or-unresolved |
+| `map_backend` | `SupervisorOperationError::Protocol` | [1288](../../src/production_tool_control.rs#L1288) | external-constructor-callback-or-unresolved |
+| `argument_limit` | `value         .get("limit")         .and_then(Value::as_u64)         .map_or` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
+| `argument_limit` | `value         .get("limit")         .and_then` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
+| `argument_limit` | `value         .get` | [1294](../../src/production_tool_control.rs#L1294) | receiver-type-required |
+| `argument_limit` | `Err` | [1299](../../src/production_tool_control.rs#L1299) | external-constructor-callback-or-unresolved |
+| `argument_limit` | `SupervisorOperationError::Limit` | [1299](../../src/production_tool_control.rs#L1299) | external-constructor-callback-or-unresolved |
+| `argument_limit` | `Ok` | [1303](../../src/production_tool_control.rs#L1303) | external-constructor-callback-or-unresolved |
+| `encode_cursor` | `Sha256::digest` | [1307](../../src/production_tool_control.rs#L1307) | external-constructor-callback-or-unresolved |
+| `encode_cursor` | `identity.as_bytes` | [1307](../../src/production_tool_control.rs#L1307) | receiver-type-required |
+| `decode_cursor` | `value         .and_then(Value::as_str)         .filter` | [1312](../../src/production_tool_control.rs#L1312) | receiver-type-required |
+| `decode_cursor` | `value         .and_then` | [1312](../../src/production_tool_control.rs#L1312) | receiver-type-required |
+| `decode_cursor` | `value.is_empty` | [1314](../../src/production_tool_control.rs#L1314) | receiver-type-required |
+| `decode_cursor` | `Ok` | [1316](../../src/production_tool_control.rs#L1316) | external-constructor-callback-or-unresolved |
+| `decode_cursor` | `encode_cursor` | [1318](../../src/production_tool_control.rs#L1318) | [tekes-supervisor::production_tool_control::encode_cursor](../../src/production_tool_control.rs#L1306) |
+| `decode_cursor` | `cursor_zero         .rsplit_once('-')         .map(&#124;(prefix, _)&#124; prefix)         .expect` | [1319](../../src/production_tool_control.rs#L1319) | receiver-type-required |
+| `decode_cursor` | `cursor_zero         .rsplit_once('-')         .map` | [1319](../../src/production_tool_control.rs#L1319) | receiver-type-required |
+| `decode_cursor` | `cursor_zero         .rsplit_once` | [1319](../../src/production_tool_control.rs#L1319) | receiver-type-required |
+| `decode_cursor` | `cursor         .rsplit_once('-')         .ok_or_else` | [1323](../../src/production_tool_control.rs#L1323) | receiver-type-required |
+| `decode_cursor` | `cursor         .rsplit_once` | [1323](../../src/production_tool_control.rs#L1323) | receiver-type-required |
+| `decode_cursor` | `SupervisorOperationError::Invalid` | [1325](../../src/production_tool_control.rs#L1325), [1333](../../src/production_tool_control.rs#L1333) | external-constructor-callback-or-unresolved |
+| `decode_cursor` | `"invalid cursor".into` | [1325](../../src/production_tool_control.rs#L1325) | receiver-type-required |
+| `decode_cursor` | `Err` | [1327](../../src/production_tool_control.rs#L1327) | external-constructor-callback-or-unresolved |
+| `decode_cursor` | `SupervisorOperationError::Conflict` | [1327](../../src/production_tool_control.rs#L1327) | external-constructor-callback-or-unresolved |
+| `decode_cursor` | `"cursor does not belong to this query".into` | [1328](../../src/production_tool_control.rs#L1328) | receiver-type-required |
+| `decode_cursor` | `offset         .parse()         .map_err` | [1331](../../src/production_tool_control.rs#L1331) | receiver-type-required |
+| `decode_cursor` | `offset         .parse` | [1331](../../src/production_tool_control.rs#L1331) | receiver-type-required |
+| `decode_cursor` | `"invalid cursor offset".into` | [1333](../../src/production_tool_control.rs#L1333) | receiver-type-required |
+| `context_start_genesis` | `serde_json::from_value(source.get("execution").cloned().ok_or_else(&#124;&#124; {             SupervisorOperationError::Corruption("caller execution missing".into())         })?)         .map_err` | [1344](../../src/production_tool_control.rs#L1344) | receiver-type-required |
+| `context_start_genesis` | `serde_json::from_value` | [1344](../../src/production_tool_control.rs#L1344) | external-constructor-callback-or-unresolved |
+| `context_start_genesis` | `source.get("execution").cloned().ok_or_else` | [1344](../../src/production_tool_control.rs#L1344) | receiver-type-required |
+| `context_start_genesis` | `source.get("execution").cloned` | [1344](../../src/production_tool_control.rs#L1344) | receiver-type-required |
+| `context_start_genesis` | `source.get` | [1344](../../src/production_tool_control.rs#L1344), [1357](../../src/production_tool_control.rs#L1357) | receiver-type-required |
+| `context_start_genesis` | `SupervisorOperationError::Corruption` | [1345](../../src/production_tool_control.rs#L1345), [1347](../../src/production_tool_control.rs#L1347), [1350](../../src/production_tool_control.rs#L1350) | external-constructor-callback-or-unresolved |
+| `context_start_genesis` | `"caller execution missing".into` | [1345](../../src/production_tool_control.rs#L1345) | receiver-type-required |
+| `context_start_genesis` | `"invalid caller execution".into` | [1347](../../src/production_tool_control.rs#L1347), [1350](../../src/production_tool_control.rs#L1350) | receiver-type-required |
+| `context_start_genesis` | `execution         .validate()         .map_err` | [1348](../../src/production_tool_control.rs#L1348) | receiver-type-required |
+| `context_start_genesis` | `execution         .validate` | [1348](../../src/production_tool_control.rs#L1348) | receiver-type-required |
+| `context_start_genesis` | `value.clone` | [1358](../../src/production_tool_control.rs#L1358) | receiver-type-required |
+| `context_start_genesis` | `Event::from_value(to_ijson(&event)?).map_err` | [1361](../../src/production_tool_control.rs#L1361) | receiver-type-required |
+| `context_start_genesis` | `Event::from_value` | [1361](../../src/production_tool_control.rs#L1361) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `context_start_genesis` | `to_ijson` | [1361](../../src/production_tool_control.rs#L1361) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
+| `deterministic_uuid` | `request_id.as_bytes()[..32].to_vec` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
+| `deterministic_uuid` | `request_id.as_bytes` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
+| `deterministic_uuid` | `String::from_utf8(bytes).expect` | [1373](../../src/production_tool_control.rs#L1373) | receiver-type-required |
+| `deterministic_uuid` | `String::from_utf8` | [1373](../../src/production_tool_control.rs#L1373) | external-constructor-callback-or-unresolved |
+| `validate_line_file_name` | `Path::new` | [1385](../../src/production_tool_control.rs#L1385) | external-constructor-callback-or-unresolved |
+| `validate_line_file_name` | `path.components().count` | [1386](../../src/production_tool_control.rs#L1386) | receiver-type-required |
+| `validate_line_file_name` | `path.components` | [1386](../../src/production_tool_control.rs#L1386) | receiver-type-required |
+| `validate_line_file_name` | `path.extension().and_then` | [1388](../../src/production_tool_control.rs#L1388) | receiver-type-required |
+| `validate_line_file_name` | `path.extension` | [1388](../../src/production_tool_control.rs#L1388) | receiver-type-required |
+| `validate_line_file_name` | `value.to_str` | [1388](../../src/production_tool_control.rs#L1388) | receiver-type-required |
+| `validate_line_file_name` | `Some` | [1388](../../src/production_tool_control.rs#L1388) | external-constructor-callback-or-unresolved |
+| `validate_line_file_name` | `Err` | [1390](../../src/production_tool_control.rs#L1390) | external-constructor-callback-or-unresolved |
+| `validate_line_file_name` | `SupervisorOperationError::Denied` | [1390](../../src/production_tool_control.rs#L1390) | external-constructor-callback-or-unresolved |
+| `validate_line_file_name` | `"line file escapes the session folder".into` | [1391](../../src/production_tool_control.rs#L1391) | receiver-type-required |
+| `validate_line_file_name` | `Ok` | [1394](../../src/production_tool_control.rs#L1394) | external-constructor-callback-or-unresolved |
+| `bounded_snippet` | `value.len` | [1398](../../src/production_tool_control.rs#L1398) | receiver-type-required |
+| `bounded_snippet` | `value.to_owned` | [1399](../../src/production_tool_control.rs#L1399) | receiver-type-required |
+| `bounded_snippet` | `value.is_char_boundary` | [1402](../../src/production_tool_control.rs#L1402) | receiver-type-required |
+| `to_ijson` | `IJsonValue::parse(         &serde_json::to_vec(value)             .map_err(&#124;error&#124; SupervisorOperationError::Protocol(error.to_string()))?,     )     .map_err` | [1409](../../src/production_tool_control.rs#L1409) | receiver-type-required |
+| `to_ijson` | `IJsonValue::parse` | [1409](../../src/production_tool_control.rs#L1409) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `to_ijson` | `serde_json::to_vec(value)             .map_err` | [1410](../../src/production_tool_control.rs#L1410) | receiver-type-required |
+| `to_ijson` | `serde_json::to_vec` | [1410](../../src/production_tool_control.rs#L1410) | external-constructor-callback-or-unresolved |
+| `to_ijson` | `SupervisorOperationError::Protocol` | [1411](../../src/production_tool_control.rs#L1411) | external-constructor-callback-or-unresolved |
+| `to_ijson` | `error.to_string` | [1411](../../src/production_tool_control.rs#L1411) | receiver-type-required |
+| `map_io` | `error.kind` | [1417](../../src/production_tool_control.rs#L1417) | receiver-type-required |
+| `map_io` | `SupervisorOperationError::NotFound` | [1418](../../src/production_tool_control.rs#L1418) | external-constructor-callback-or-unresolved |
+| `map_io` | `"resource not found".into` | [1418](../../src/production_tool_control.rs#L1418) | receiver-type-required |
+| `map_io` | `SupervisorOperationError::Unavailable` | [1420](../../src/production_tool_control.rs#L1420) | external-constructor-callback-or-unresolved |
+| `map_io` | `error.to_string` | [1420](../../src/production_tool_control.rs#L1420) | receiver-type-required |
+| `map_store` | `SupervisorOperationError::NotFound` | [1427](../../src/production_tool_control.rs#L1427) | external-constructor-callback-or-unresolved |
+| `map_store` | `"thread not found".into` | [1427](../../src/production_tool_control.rs#L1427) | receiver-type-required |
+| `map_store` | `SupervisorOperationError::Conflict` | [1430](../../src/production_tool_control.rs#L1430) | external-constructor-callback-or-unresolved |
+| `map_store` | `"thread is archived".into` | [1430](../../src/production_tool_control.rs#L1430) | receiver-type-required |
+| `map_store` | `SupervisorOperationError::Unavailable` | [1432](../../src/production_tool_control.rs#L1432) | external-constructor-callback-or-unresolved |
+| `map_store` | `other.to_string` | [1432](../../src/production_tool_control.rs#L1432) | receiver-type-required |
+| `map_schema` | `SupervisorOperationError::Corruption` | [1437](../../src/production_tool_control.rs#L1437) | external-constructor-callback-or-unresolved |
+| `map_schema` | `error.to_string` | [1437](../../src/production_tool_control.rs#L1437) | receiver-type-required |
+| `into_control_error` | `self.to_string` | [1488](../../src/production_tool_control.rs#L1488) | receiver-type-required |
+| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `SupervisorOperationError::ToolFailed("remote details".into()).into_control_error` | [1500](../../src/production_tool_control.rs#L1500) | receiver-type-required |
+| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `SupervisorOperationError::ToolFailed` | [1500](../../src/production_tool_control.rs#L1500) | external-constructor-callback-or-unresolved |
+| `definitive_remote_tool_failure_is_not_retryable_transport_loss` | `"remote details".into` | [1500](../../src/production_tool_control.rs#L1500) | receiver-type-required |
+| `value` | `IJsonValue::parse(raw.as_bytes()).unwrap` | [1518](../../src/production_tool_control.rs#L1518) | receiver-type-required |
+| `value` | `IJsonValue::parse` | [1518](../../src/production_tool_control.rs#L1518) | external-constructor-callback-or-unresolved |
+| `value` | `raw.as_bytes` | [1518](../../src/production_tool_control.rs#L1518) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ProductionToolControlPolicy::new` | [1525](../../src/production_tool_control.rs#L1525), [1576](../../src/production_tool_control.rs#L1576) | external-constructor-callback-or-unresolved |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `tools::SecretScanner::default` | [1525](../../src/production_tool_control.rs#L1525) | external-constructor-callback-or-unresolved |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControlResult::pending` | [1526](../../src/production_tool_control.rs#L1526) | external-constructor-callback-or-unresolved |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"a".repeat` | [1527](../../src/production_tool_control.rs#L1527) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"b".repeat` | [1529](../../src/production_tool_control.rs#L1529), [1544](../../src/production_tool_control.rs#L1544) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `value` | [1530](../../src/production_tool_control.rs#L1530), [1540](../../src/production_tool_control.rs#L1540), [1550](../../src/production_tool_control.rs#L1550), [1558](../../src/production_tool_control.rs#L1558) | [tekes-supervisor::production_tool_control::continuation_policy_tests::value](../../src/production_tool_control.rs#L1517) |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `policy.apply` | [1532](../../src/production_tool_control.rs#L1532) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `pending.clone` | [1532](../../src/production_tool_control.rs#L1532) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControl::new(             "018f0000-0000-7000-8000-000000000003",             "018f0000-0000-7000-8000-000000000003",             1,             "call-1",             "mcp__t__x",             value("{}"),         )         .unwrap` | [1534](../../src/production_tool_control.rs#L1534) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolControl::new` | [1534](../../src/production_tool_control.rs#L1534) | external-constructor-callback-or-unresolved |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolContinuationRequest::new(original, "b".repeat(64), 1, ContinuationOperation::Query)                 .unwrap` | [1544](../../src/production_tool_control.rs#L1544) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `ToolContinuationRequest::new` | [1544](../../src/production_tool_control.rs#L1544) | [worker-control::continuation::ToolContinuationRequest::new](../../../worker-control/src/continuation.rs#L32) |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `request.request_id.clone` | [1547](../../src/production_tool_control.rs#L1547), [1555](../../src/production_tool_control.rs#L1555) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `"call-1".into` | [1548](../../src/production_tool_control.rs#L1548), [1556](../../src/production_tool_control.rs#L1556) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `policy.apply_continuation` | [1563](../../src/production_tool_control.rs#L1563) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str()                     .unwrap()                     .to_owned` | [1565](../../src/production_tool_control.rs#L1565) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str()                     .unwrap` | [1565](../../src/production_tool_control.rs#L1565) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap()["content"][0]["text"]                     .as_str` | [1565](../../src/production_tool_control.rs#L1565) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value(value).unwrap` | [1565](../../src/production_tool_control.rs#L1565) | receiver-type-required |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `serde_json::to_value` | [1565](../../src/production_tool_control.rs#L1565) | external-constructor-callback-or-unresolved |
+| `pending_results_and_continuation_responses_pass_the_secret_policy` | `tools::SecretScanner::failing` | [1576](../../src/production_tool_control.rs#L1576) | [tools::pipeline::SecretScanner::failing](../../../tools/src/pipeline.rs#L107) |
+| `a_started_session_inherits_execution_without_legacy_management` | `"kernel-worker".into` | [1597](../../src/production_tool_control.rs#L1597) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `"context".into` | [1598](../../src/production_tool_control.rs#L1598) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `session.into` | [1599](../../src/production_tool_control.rs#L1599) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `"create".into` | [1600](../../src/production_tool_control.rs#L1600) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `"request".into` | [1601](../../src/production_tool_control.rs#L1601) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `context_start_genesis(&source, session, "2026-10-15T00:00:00.000Z", &origin).unwrap` | [1615](../../src/production_tool_control.rs#L1615) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `context_start_genesis` | [1615](../../src/production_tool_control.rs#L1615) | external-constructor-callback-or-unresolved |
+| `a_started_session_inherits_execution_without_legacy_management` | `serde_json::to_value(event.raw()).unwrap` | [1616](../../src/production_tool_control.rs#L1616) | receiver-type-required |
+| `a_started_session_inherits_execution_without_legacy_management` | `serde_json::to_value` | [1616](../../src/production_tool_control.rs#L1616) | external-constructor-callback-or-unresolved |
+| `a_started_session_inherits_execution_without_legacy_management` | `event.raw` | [1616](../../src/production_tool_control.rs#L1616) | receiver-type-required |

@@ -4,7 +4,7 @@ pub mod boot_trace;
 mod bootstrap;
 pub mod builtin;
 mod catalog;
-pub mod client_admin;
+
 pub mod client_extensions;
 mod context_usage;
 pub mod continuation_journal;
@@ -20,9 +20,9 @@ pub mod process_host;
 pub mod production_tool_control;
 mod request_index;
 pub mod resource_capability;
+pub mod stdio_channels;
 mod thread_card;
 pub mod tool_control;
-pub mod workspace_routes;
 
 use std::collections::BTreeMap;
 use std::fs::{File, OpenOptions};
@@ -113,10 +113,6 @@ pub struct ProfiledWorkerLaunchSpec {
     pub timestamp: String,
     pub run_id: String,
     pub binary_attribution: String,
-    pub workspace_id: String,
-    /// Stable binding copied from the session genesis. Legacy sessions may
-    /// leave this absent and retain primary-folder launch behavior.
-    pub folder_binding: Option<String>,
     pub user_agent_dir: PathBuf,
 }
 
@@ -236,15 +232,6 @@ fn launch_profiled_worker_inner(
     // binding, folders); a spec that names another workspace or binding is a
     // caller bug and fails closed.
     let scope = profile::SessionScope::for_ledger(&spec.ledger)?;
-    if scope.workspace_id() != spec.workspace_id
-        || scope.folder_binding() != spec.folder_binding.as_deref()
-    {
-        return Err(profile::ProfileError::InvalidReference {
-            path: spec.ledger.clone(),
-            reason: "launch spec does not match the ledger genesis scope".to_owned(),
-        }
-        .into());
-    }
     let profile = LaunchProfile::resolve_and_publish_for_scope(
         repository,
         &scope,
@@ -587,8 +574,3 @@ mod tests {
         assert!(output.stderr.is_empty());
     }
 }
-
-pub mod folder_trust;
-
-mod mcp_admission;
-mod mcp_scope;

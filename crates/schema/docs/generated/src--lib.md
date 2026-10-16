@@ -8,17 +8,18 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [schema::READER_VERSION](../../src/lib.rs#L20) | const_item | `pub` |  |
-| [schema::SESSION_SCOPE_READER](../../src/lib.rs#L23) | const_item | `pub` |  |
-| [schema::FOLDERS_READER](../../src/lib.rs#L26) | const_item | `pub` |  |
-| [schema::GENESIS_INHERITED_FIELDS](../../src/lib.rs#L32) | const_item | `pub` |  |
-| [schema::effective_session_genesis](../../src/lib.rs#L48) | function_item | `pub` |  |
-| [schema::GENESIS_OPERATION_FIELDS](../../src/lib.rs#L82) | const_item | `pub` |  |
-| [schema::DEFAULT_ENVIRONMENT](../../src/lib.rs#L99) | const_item | `pub` |  |
-| [schema::SchemaError](../../src/lib.rs#L104) | enum_item | `pub` |  |
-| [schema::SchemaError::event](../../src/lib.rs#L116) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::constraint](../../src/lib.rs#L123) | function_item | `pub(crate)` |  |
-| [schema::SchemaError::rule](../../src/lib.rs#L132) | function_item | `pub` |  |
+| [schema::READER_VERSION](../../src/lib.rs#L22) | const_item | `pub` |  |
+| [schema::EXECUTION_READER](../../src/lib.rs#L25) | const_item | `pub` |  |
+| [schema::SESSION_SCOPE_READER](../../src/lib.rs#L28) | const_item | `pub` |  |
+| [schema::FOLDERS_READER](../../src/lib.rs#L31) | const_item | `pub` |  |
+| [schema::GENESIS_INHERITED_FIELDS](../../src/lib.rs#L37) | const_item | `pub` |  |
+| [schema::effective_session_genesis](../../src/lib.rs#L54) | function_item | `pub` |  |
+| [schema::GENESIS_OPERATION_FIELDS](../../src/lib.rs#L94) | const_item | `pub` |  |
+| [schema::DEFAULT_ENVIRONMENT](../../src/lib.rs#L111) | const_item | `pub` |  |
+| [schema::SchemaError](../../src/lib.rs#L116) | enum_item | `pub` |  |
+| [schema::SchemaError::event](../../src/lib.rs#L128) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::constraint](../../src/lib.rs#L135) | function_item | `pub(crate)` |  |
+| [schema::SchemaError::rule](../../src/lib.rs#L144) | function_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -27,6 +28,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `Event` | `event::Event` | `pub` |
 | `EventKind` | `event::EventKind` | `pub` |
 | `Visibility` | `event::Visibility` | `pub` |
+| `ExecutionConfig` | `execution::ExecutionConfig` | `pub` |
+| `McpConnection` | `execution::McpConnection` | `pub` |
+| `McpConnectionTransport` | `execution::McpConnectionTransport` | `pub` |
 | `LedgerProjection` | `fold::LedgerProjection` | `pub` |
 | `LedgerValidator` | `fold::LedgerValidator` | `pub` |
 | `LifecycleFacts` | `fold::LifecycleFacts` | `pub` |
@@ -44,6 +48,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | Module | Visibility | Attributes |
 |---|---|---|
 | `schema::event` | `private` |  |
+| `schema::execution` | `private` |  |
 | `schema::fold` | `private` |  |
 | `schema::ijson` | `private` |  |
 | `schema::metrics` | `pub` |  |
@@ -53,7 +58,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–4: 0 direct edges</summary>
+<details><summary>Functions 1–4: 1 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -61,6 +66,7 @@ flowchart TD
   n1["schema::SchemaError::constraint"]
   n2["schema::SchemaError::rule"]
   n3["schema::effective_session_genesis"]
+  n3 --> n0
 ```
 
 </details>
@@ -71,19 +77,24 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `effective_session_genesis` | `events.first` | [51](../../src/lib.rs#L51) | receiver-type-required |
-| `effective_session_genesis` | `Ok` | [52](../../src/lib.rs#L52), [78](../../src/lib.rs#L78) | external-constructor-callback-or-unresolved |
-| `effective_session_genesis` | `serde_json::to_value` | [54](../../src/lib.rs#L54), [59](../../src/lib.rs#L59) | external-constructor-callback-or-unresolved |
-| `effective_session_genesis` | `first.raw` | [54](../../src/lib.rs#L54) | receiver-type-required |
-| `effective_session_genesis` | `events.iter().skip` | [55](../../src/lib.rs#L55) | receiver-type-required |
-| `effective_session_genesis` | `events.iter` | [55](../../src/lib.rs#L55) | receiver-type-required |
-| `effective_session_genesis` | `event.kind` | [56](../../src/lib.rs#L56) | receiver-type-required |
-| `effective_session_genesis` | `event.raw` | [59](../../src/lib.rs#L59) | receiver-type-required |
-| `effective_session_genesis` | `raw             .get("scope_change")             .and_then` | [60](../../src/lib.rs#L60) | receiver-type-required |
-| `effective_session_genesis` | `raw             .get` | [60](../../src/lib.rs#L60) | receiver-type-required |
-| `effective_session_genesis` | `change.get` | [71](../../src/lib.rs#L71) | receiver-type-required |
-| `effective_session_genesis` | `next.clone` | [72](../../src/lib.rs#L72) | receiver-type-required |
-| `effective_session_genesis` | `Some` | [78](../../src/lib.rs#L78) | external-constructor-callback-or-unresolved |
-| `event` | `message.into` | [119](../../src/lib.rs#L119) | receiver-type-required |
-| `constraint` | `message.into` | [127](../../src/lib.rs#L127) | receiver-type-required |
-| `rule` | `Some` | [134](../../src/lib.rs#L134) | external-constructor-callback-or-unresolved |
+| `effective_session_genesis` | `events.first` | [57](../../src/lib.rs#L57) | receiver-type-required |
+| `effective_session_genesis` | `Ok` | [58](../../src/lib.rs#L58), [90](../../src/lib.rs#L90) | external-constructor-callback-or-unresolved |
+| `effective_session_genesis` | `serde_json::to_value` | [60](../../src/lib.rs#L60), [65](../../src/lib.rs#L65) | external-constructor-callback-or-unresolved |
+| `effective_session_genesis` | `first.raw` | [60](../../src/lib.rs#L60) | receiver-type-required |
+| `effective_session_genesis` | `events.iter().skip` | [61](../../src/lib.rs#L61) | receiver-type-required |
+| `effective_session_genesis` | `events.iter` | [61](../../src/lib.rs#L61) | receiver-type-required |
+| `effective_session_genesis` | `event.kind` | [62](../../src/lib.rs#L62) | receiver-type-required |
+| `effective_session_genesis` | `event.raw` | [65](../../src/lib.rs#L65) | receiver-type-required |
+| `effective_session_genesis` | `raw             .get("scope_change")             .and_then` | [66](../../src/lib.rs#L66) | receiver-type-required |
+| `effective_session_genesis` | `raw             .get` | [66](../../src/lib.rs#L66) | receiver-type-required |
+| `effective_session_genesis` | `value.get("execution").is_some` | [70](../../src/lib.rs#L70) | receiver-type-required |
+| `effective_session_genesis` | `value.get` | [70](../../src/lib.rs#L70) | receiver-type-required |
+| `effective_session_genesis` | `Err` | [71](../../src/lib.rs#L71) | external-constructor-callback-or-unresolved |
+| `effective_session_genesis` | `SchemaError::event` | [71](../../src/lib.rs#L71) | [schema::SchemaError::event](../../src/lib.rs#L128) |
+| `effective_session_genesis` | `Some` | [72](../../src/lib.rs#L72), [90](../../src/lib.rs#L90) | external-constructor-callback-or-unresolved |
+| `effective_session_genesis` | `event.seq` | [72](../../src/lib.rs#L72) | receiver-type-required |
+| `effective_session_genesis` | `change.get` | [83](../../src/lib.rs#L83) | receiver-type-required |
+| `effective_session_genesis` | `next.clone` | [84](../../src/lib.rs#L84) | receiver-type-required |
+| `event` | `message.into` | [131](../../src/lib.rs#L131) | receiver-type-required |
+| `constraint` | `message.into` | [139](../../src/lib.rs#L139) | receiver-type-required |
+| `rule` | `Some` | [146](../../src/lib.rs#L146) | external-constructor-callback-or-unresolved |

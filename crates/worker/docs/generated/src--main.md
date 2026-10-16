@@ -14,14 +14,14 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::main::main](../../src/main.rs#L148) | function_item | `private` |  |
 | [tekes-worker::main::is_protocol_failure](../../src/main.rs#L162) | function_item | `private` |  |
 | [tekes-worker::main::run](../../src/main.rs#L181) | function_item | `private` |  |
-| [tekes-worker::main::exchange_tool_control](../../src/main.rs#L402) | function_item | `pub` |  |
-| [tekes-worker::main::parse_options](../../src/main.rs#L436) | function_item | `private` |  |
-| [tekes-worker::main::parse_fd](../../src/main.rs#L500) | function_item | `private` |  |
-| [tekes-worker::main::read_inherited_fd](../../src/main.rs#L509) | function_item | `private` |  |
-| [tekes-worker::main::load_profiles](../../src/main.rs#L521) | function_item | `private` |  |
-| [tekes-worker::main::activate_subagent_profile](../../src/main.rs#L572) | function_item | `private` |  |
-| [tekes-worker::main::sibling_helper_path](../../src/main.rs#L639) | function_item | `private` |  |
-| [tekes-worker::main::effective_allowed_tools](../../src/main.rs#L658) | function_item | `private` |  |
+| [tekes-worker::main::exchange_tool_control](../../src/main.rs#L408) | function_item | `pub` |  |
+| [tekes-worker::main::parse_options](../../src/main.rs#L442) | function_item | `private` |  |
+| [tekes-worker::main::parse_fd](../../src/main.rs#L506) | function_item | `private` |  |
+| [tekes-worker::main::read_inherited_fd](../../src/main.rs#L515) | function_item | `private` |  |
+| [tekes-worker::main::load_profiles](../../src/main.rs#L527) | function_item | `private` |  |
+| [tekes-worker::main::activate_subagent_profile](../../src/main.rs#L578) | function_item | `private` |  |
+| [tekes-worker::main::sibling_helper_path](../../src/main.rs#L645) | function_item | `private` |  |
+| [tekes-worker::main::effective_allowed_tools](../../src/main.rs#L664) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -324,18 +324,18 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `is_protocol_failure` | `error.is::<worker_control::ProtocolError>` | [165](../../src/main.rs#L165) | receiver-type-required |
 | `is_protocol_failure` | `error.is::<worker_control::DurableControlError>` | [166](../../src/main.rs#L166) | receiver-type-required |
 | `is_protocol_failure` | `error.source` | [174](../../src/main.rs#L174) | receiver-type-required |
-| `run` | `parse_options` | [182](../../src/main.rs#L182) | [tekes-worker::main::parse_options](../../src/main.rs#L436) |
+| `run` | `parse_options` | [182](../../src/main.rs#L182) | [tekes-worker::main::parse_options](../../src/main.rs#L442) |
 | `run` | `RuntimeCancellation::default` | [183](../../src/main.rs#L183) | external-constructor-callback-or-unresolved |
 | `run` | `spawn_control_reader` | [184](../../src/main.rs#L184) | external-constructor-callback-or-unresolved |
 | `run` | `cancellation.clone` | [184](../../src/main.rs#L184) | receiver-type-required |
 | `run` | `io::stdout().lock` | [185](../../src/main.rs#L185) | receiver-type-required |
 | `run` | `io::stdout` | [185](../../src/main.rs#L185) | external-constructor-callback-or-unresolved |
-| `run` | `stdout.write_all` | [187](../../src/main.rs#L187), [316](../../src/main.rs#L316) | receiver-type-required |
+| `run` | `stdout.write_all` | [187](../../src/main.rs#L187), [322](../../src/main.rs#L322) | receiver-type-required |
 | `run` | `encode_line` | [187](../../src/main.rs#L187) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
 | `run` | `Hello::default` | [187](../../src/main.rs#L187) | external-constructor-callback-or-unresolved |
-| `run` | `stdout.flush` | [188](../../src/main.rs#L188), [317](../../src/main.rs#L317) | receiver-type-required |
+| `run` | `stdout.flush` | [188](../../src/main.rs#L188), [323](../../src/main.rs#L323) | receiver-type-required |
 | `run` | `lines.next` | [189](../../src/main.rs#L189), [205](../../src/main.rs#L205) | receiver-type-required |
-| `run` | `Ok` | [190](../../src/main.rs#L190), [200](../../src/main.rs#L200), [202](../../src/main.rs#L202), [206](../../src/main.rs#L206), [215](../../src/main.rs#L215), [229](../../src/main.rs#L229), [240](../../src/main.rs#L240), [250](../../src/main.rs#L250), [309](../../src/main.rs#L309), [319](../../src/main.rs#L319), [334](../../src/main.rs#L334), [348](../../src/main.rs#L348), [354](../../src/main.rs#L354), [392](../../src/main.rs#L392) | external-constructor-callback-or-unresolved |
+| `run` | `Ok` | [190](../../src/main.rs#L190), [200](../../src/main.rs#L200), [202](../../src/main.rs#L202), [206](../../src/main.rs#L206), [215](../../src/main.rs#L215), [229](../../src/main.rs#L229), [240](../../src/main.rs#L240), [250](../../src/main.rs#L250), [315](../../src/main.rs#L315), [325](../../src/main.rs#L325), [340](../../src/main.rs#L340), [354](../../src/main.rs#L354), [360](../../src/main.rs#L360), [398](../../src/main.rs#L398) | external-constructor-callback-or-unresolved |
 | `run` | `ExitCode::from` | [190](../../src/main.rs#L190), [200](../../src/main.rs#L200), [202](../../src/main.rs#L202), [206](../../src/main.rs#L206), [215](../../src/main.rs#L215), [229](../../src/main.rs#L229), [240](../../src/main.rs#L240) | external-constructor-callback-or-unresolved |
 | `run` | `selection.map_err` | [192](../../src/main.rs#L192) | receiver-type-required |
 | `run` | `ProtocolFailure` | [193](../../src/main.rs#L193), [209](../../src/main.rs#L209) | external-constructor-callback-or-unresolved |
@@ -343,12 +343,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `selection.as_bytes` | [197](../../src/main.rs#L197), [199](../../src/main.rs#L199) | receiver-type-required |
 | `run` | `decode_reject(selection.as_bytes()).is_ok` | [199](../../src/main.rs#L199) | receiver-type-required |
 | `run` | `decode_reject` | [199](../../src/main.rs#L199) | [worker-control::decode_reject](../../../worker-control/src/lib.rs#L300) |
-| `run` | `Some` | [204](../../src/main.rs#L204), [214](../../src/main.rs#L214), [228](../../src/main.rs#L228), [293](../../src/main.rs#L293) | external-constructor-callback-or-unresolved |
+| `run` | `Some` | [204](../../src/main.rs#L204), [214](../../src/main.rs#L214), [228](../../src/main.rs#L228), [299](../../src/main.rs#L299) | external-constructor-callback-or-unresolved |
 | `run` | `line.map_err` | [208](../../src/main.rs#L208) | receiver-type-required |
 | `run` | `decode_queue_transaction` | [213](../../src/main.rs#L213) | [worker-control::durable::decode_queue_transaction](../../../worker-control/src/durable.rs#L506) |
 | `run` | `line.as_bytes` | [213](../../src/main.rs#L213) | receiver-type-required |
 | `run` | `selection.selected` | [220](../../src/main.rs#L220) | receiver-type-required |
-| `run` | `load_profiles` | [221](../../src/main.rs#L221) | [tekes-worker::main::load_profiles](../../src/main.rs#L521) |
+| `run` | `load_profiles` | [221](../../src/main.rs#L221) | [tekes-worker::main::load_profiles](../../src/main.rs#L527) |
 | `run` | `BuiltinManifest::compiled` | [222](../../src/main.rs#L222) | [tools::builtin::BuiltinManifest::compiled](../../../tools/src/builtin.rs#L315) |
 | `run` | `manifest.validate` | [223](../../src/main.rs#L223) | receiver-type-required |
 | `run` | `require_version` | [224](../../src/main.rs#L224) | [worker-control::durable::require_version](../../../worker-control/src/durable.rs#L443) |
@@ -365,21 +365,21 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `options         .ledger         .parent` | [243](../../src/main.rs#L243) | receiver-type-required |
 | `run` | `DirectoryLock::shared` | [247](../../src/main.rs#L247) | [store::platform::DirectoryLock::shared](../../../store/src/platform.rs#L58) |
 | `run` | `LockedLedger::open` | [248](../../src/main.rs#L248) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
-| `run` | `Err` | [251](../../src/main.rs#L251), [294](../../src/main.rs#L294), [372](../../src/main.rs#L372) | external-constructor-callback-or-unresolved |
+| `run` | `Err` | [251](../../src/main.rs#L251), [300](../../src/main.rs#L300), [378](../../src/main.rs#L378) | external-constructor-callback-or-unresolved |
 | `run` | `error.into` | [251](../../src/main.rs#L251) | receiver-type-required |
 | `run` | `runtime_profile.as_mut` | [253](../../src/main.rs#L253) | receiver-type-required |
 | `run` | `validation_runtime::activate_validator_profile` | [254](../../src/main.rs#L254) | external-constructor-callback-or-unresolved |
-| `run` | `activate_subagent_profile` | [255](../../src/main.rs#L255) | [tekes-worker::main::activate_subagent_profile](../../src/main.rs#L572) |
+| `run` | `activate_subagent_profile` | [255](../../src/main.rs#L255) | [tekes-worker::main::activate_subagent_profile](../../src/main.rs#L578) |
 | `run` | `runtime_profile         .as_ref()         .map(&#124;profile&#124; lifecycle_hooks::LifecycleHooks::load(profile, &ledger))         .transpose` | [257](../../src/main.rs#L257) | receiver-type-required |
 | `run` | `runtime_profile         .as_ref()         .map` | [257](../../src/main.rs#L257) | receiver-type-required |
 | `run` | `runtime_profile         .as_ref` | [257](../../src/main.rs#L257) | receiver-type-required |
 | `run` | `lifecycle_hooks::LifecycleHooks::load` | [259](../../src/main.rs#L259) | external-constructor-callback-or-unresolved |
 | `run` | `hooks.flatten` | [262](../../src/main.rs#L262) | receiver-type-required |
 | `run` | `Arc::clone` | [269](../../src/main.rs#L269) | external-constructor-callback-or-unresolved |
-| `run` | `hooks.observe` | [272](../../src/main.rs#L272), [395](../../src/main.rs#L395) | receiver-type-required |
-| `run` | `(&#124;&#124; -> Result<ExitCode, Box<dyn std::error::Error>> {         // A crash between a completed final and the next goal turn must not         // strand an active goal on a settled tail. This is idempotent because         // only a settled tail can admit the next turn.         if startup_transaction.is_none()             && let Some(profile) = &runtime_profile         {             open_goal_continuation(&mut ledger, &options, profile, &cancellation)?;         }         let facts = ledger             .projection()             .ok_or("worker cannot run an empty ledger")?             .lifecycle             .clone();         if let Some(profile) = &runtime_profile {             let ledger_workspace = ledger                 .projection()                 .and_then(&#124;projection&#124; projection.events.first())                 .and_then(&#124;genesis&#124; genesis.string_field("workspace"));             if ledger_workspace != Some(profile.config.workspace.id.as_str()) {                 return Err("config snapshot workspace does not match genesis".into());             }         }         let state = classify(&facts, LockFacts::CALLER);         let decision = if startup_transaction.is_some() {             RunDecision::Start(RunMode::Reconcile)         } else if !facts.stop_active && validation_runtime::has_pending_validation(&ledger)? {             // Finishing a durable validation obligation is not an unsolicited             // resume of a completed session. In particular, resume=never must not             // discard a held candidate or its committed repair route after a crash.             RunDecision::Start(RunMode::Ordinary)         } else {             run_decision(state, &facts)         };         let RunDecision::Start(mode) = decision else {             return Ok(ExitCode::SUCCESS);         };          append_run_start(&mut ledger, &options, mode, facts.recovery_ordinal)?;         if let Some(transaction) = startup_transaction {             let result =                 execute_queue_transaction(&mut ledger, &options.event_timestamp(), &transaction)?;             stdout.write_all(&encode_queue_transaction_result(&result)?)?;             stdout.flush()?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }         open_ready_turn(&mut ledger, &options.event_timestamp(), mode)?;         if matches!(state, TailState::StoppedActive) && facts.unstarted {             let event = make_event(json!({                 "v": 1,                 "seq": ledger.next_seq(),                 "turn": 1,                 "kind": "settle",                 "ts": options.event_timestamp(),                 "outcome": "interrupted",                 "reason": "recovered"             }))?;             ledger.append_contract(event, BarrierContext::default())?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if recover_unpaired_tool_calls(             &mut ledger,             &options,             runtime_profile.as_ref(),             selected,             matches!(mode, RunMode::Reconcile),             &mut lines,             &mut stdout,             &cancellation,         )? {             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if matches!(mode, RunMode::Reconcile) {             reconcile_provider_attempt(&mut ledger, &options, &mut stdout)?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if matches!(mode, RunMode::Ordinary) {             if let Some(profile) = &runtime_profile {                 loop {                     let provider_result = run_provider_turn(                         &mut ledger,                         &options,                         profile,                         &selected,                         &mut credential,                         &mut lines,                         &mut stdout,                         &cancellation,                     );                     if let Err(error) = provider_result {                         if is_protocol_failure(error.as_ref()) {                             return Err(error);                         }                         settle_internal_worker_failure(&mut ledger, &options, error.as_ref())?;                     }                     drain_ready_deliveries(                         &mut ledger,                         &options,                         &selected,                         &mut lines,                         &mut stdout,                     )?;                     if !open_goal_continuation(&mut ledger, &options, profile, &cancellation)? {                         break;                     }                 }             } else {                 drain_ready_deliveries(&mut ledger, &options, &selected, &mut lines, &mut stdout)?;             }             return post_turn_exit(&mut ledger, &options, &cancellation, &mut stdout);         }         Ok(ExitCode::SUCCESS)     })` | [274](../../src/main.rs#L274) | external-constructor-callback-or-unresolved |
+| `run` | `hooks.observe` | [272](../../src/main.rs#L272), [401](../../src/main.rs#L401) | receiver-type-required |
+| `run` | `(&#124;&#124; -> Result<ExitCode, Box<dyn std::error::Error>> {         // A crash between a completed final and the next goal turn must not         // strand an active goal on a settled tail. This is idempotent because         // only a settled tail can admit the next turn.         if startup_transaction.is_none()             && let Some(profile) = &runtime_profile         {             open_goal_continuation(&mut ledger, &options, profile, &cancellation)?;         }         let facts = ledger             .projection()             .ok_or("worker cannot run an empty ledger")?             .lifecycle             .clone();         if let Some(profile) = &runtime_profile {             let ledger_workspace = ledger                 .projection()                 .and_then(&#124;projection&#124; projection.events.first())                 .and_then(&#124;genesis&#124; {                     genesis.string_field(if genesis.has_field("execution") {                         "thread"                     } else {                         "workspace"                     })                 });             if ledger_workspace != Some(profile.config.execution.session_id.as_str()) {                 return Err("config snapshot workspace does not match genesis".into());             }         }         let state = classify(&facts, LockFacts::CALLER);         let decision = if startup_transaction.is_some() {             RunDecision::Start(RunMode::Reconcile)         } else if !facts.stop_active && validation_runtime::has_pending_validation(&ledger)? {             // Finishing a durable validation obligation is not an unsolicited             // resume of a completed session. In particular, resume=never must not             // discard a held candidate or its committed repair route after a crash.             RunDecision::Start(RunMode::Ordinary)         } else {             run_decision(state, &facts)         };         let RunDecision::Start(mode) = decision else {             return Ok(ExitCode::SUCCESS);         };          append_run_start(&mut ledger, &options, mode, facts.recovery_ordinal)?;         if let Some(transaction) = startup_transaction {             let result =                 execute_queue_transaction(&mut ledger, &options.event_timestamp(), &transaction)?;             stdout.write_all(&encode_queue_transaction_result(&result)?)?;             stdout.flush()?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }         open_ready_turn(&mut ledger, &options.event_timestamp(), mode)?;         if matches!(state, TailState::StoppedActive) && facts.unstarted {             let event = make_event(json!({                 "v": 1,                 "seq": ledger.next_seq(),                 "turn": 1,                 "kind": "settle",                 "ts": options.event_timestamp(),                 "outcome": "interrupted",                 "reason": "recovered"             }))?;             ledger.append_contract(event, BarrierContext::default())?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if recover_unpaired_tool_calls(             &mut ledger,             &options,             runtime_profile.as_ref(),             selected,             matches!(mode, RunMode::Reconcile),             &mut lines,             &mut stdout,             &cancellation,         )? {             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if matches!(mode, RunMode::Reconcile) {             reconcile_provider_attempt(&mut ledger, &options, &mut stdout)?;             announce_appended(&ledger, &mut stdout)?;             return Ok(ExitCode::SUCCESS);         }          if matches!(mode, RunMode::Ordinary) {             if let Some(profile) = &runtime_profile {                 loop {                     let provider_result = run_provider_turn(                         &mut ledger,                         &options,                         profile,                         &selected,                         &mut credential,                         &mut lines,                         &mut stdout,                         &cancellation,                     );                     if let Err(error) = provider_result {                         if is_protocol_failure(error.as_ref()) {                             return Err(error);                         }                         settle_internal_worker_failure(&mut ledger, &options, error.as_ref())?;                     }                     drain_ready_deliveries(                         &mut ledger,                         &options,                         &selected,                         &mut lines,                         &mut stdout,                     )?;                     if !open_goal_continuation(&mut ledger, &options, profile, &cancellation)? {                         break;                     }                 }             } else {                 drain_ready_deliveries(&mut ledger, &options, &selected, &mut lines, &mut stdout)?;             }             return post_turn_exit(&mut ledger, &options, &cancellation, &mut stdout);         }         Ok(ExitCode::SUCCESS)     })` | [274](../../src/main.rs#L274) | external-constructor-callback-or-unresolved |
 | `run` | `startup_transaction.is_none` | [278](../../src/main.rs#L278) | receiver-type-required |
-| `run` | `open_goal_continuation` | [281](../../src/main.rs#L281), [383](../../src/main.rs#L383) | external-constructor-callback-or-unresolved |
+| `run` | `open_goal_continuation` | [281](../../src/main.rs#L281), [389](../../src/main.rs#L389) | external-constructor-callback-or-unresolved |
 | `run` | `ledger             .projection()             .ok_or("worker cannot run an empty ledger")?             .lifecycle             .clone` | [283](../../src/main.rs#L283) | receiver-type-required |
 | `run` | `ledger             .projection()             .ok_or` | [283](../../src/main.rs#L283) | receiver-type-required |
 | `run` | `ledger             .projection` | [283](../../src/main.rs#L283) | receiver-type-required |
@@ -387,161 +387,162 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `ledger                 .projection()                 .and_then` | [289](../../src/main.rs#L289) | receiver-type-required |
 | `run` | `ledger                 .projection` | [289](../../src/main.rs#L289) | receiver-type-required |
 | `run` | `projection.events.first` | [291](../../src/main.rs#L291) | receiver-type-required |
-| `run` | `genesis.string_field` | [292](../../src/main.rs#L292) | receiver-type-required |
-| `run` | `profile.config.workspace.id.as_str` | [293](../../src/main.rs#L293) | receiver-type-required |
-| `run` | `"config snapshot workspace does not match genesis".into` | [294](../../src/main.rs#L294) | receiver-type-required |
-| `run` | `classify` | [297](../../src/main.rs#L297) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
-| `run` | `startup_transaction.is_some` | [298](../../src/main.rs#L298) | receiver-type-required |
-| `run` | `RunDecision::Start` | [299](../../src/main.rs#L299), [304](../../src/main.rs#L304) | external-constructor-callback-or-unresolved |
-| `run` | `validation_runtime::has_pending_validation` | [300](../../src/main.rs#L300) | external-constructor-callback-or-unresolved |
-| `run` | `run_decision` | [306](../../src/main.rs#L306) | [engine::lifecycle::run_decision](../../../engine/src/lifecycle.rs#L159) |
-| `run` | `append_run_start` | [312](../../src/main.rs#L312) | external-constructor-callback-or-unresolved |
-| `run` | `execute_queue_transaction` | [315](../../src/main.rs#L315) | external-constructor-callback-or-unresolved |
-| `run` | `options.event_timestamp` | [315](../../src/main.rs#L315), [321](../../src/main.rs#L321) | receiver-type-required |
-| `run` | `encode_queue_transaction_result` | [316](../../src/main.rs#L316) | [worker-control::durable::encode_queue_transaction_result](../../../worker-control/src/durable.rs#L512) |
-| `run` | `announce_appended` | [318](../../src/main.rs#L318), [333](../../src/main.rs#L333), [347](../../src/main.rs#L347), [353](../../src/main.rs#L353) | external-constructor-callback-or-unresolved |
-| `run` | `open_ready_turn` | [321](../../src/main.rs#L321) | external-constructor-callback-or-unresolved |
-| `run` | `make_event` | [323](../../src/main.rs#L323) | external-constructor-callback-or-unresolved |
-| `run` | `ledger.append_contract` | [332](../../src/main.rs#L332) | receiver-type-required |
-| `run` | `BarrierContext::default` | [332](../../src/main.rs#L332) | external-constructor-callback-or-unresolved |
-| `run` | `recover_unpaired_tool_calls` | [337](../../src/main.rs#L337) | external-constructor-callback-or-unresolved |
-| `run` | `runtime_profile.as_ref` | [340](../../src/main.rs#L340) | receiver-type-required |
-| `run` | `reconcile_provider_attempt` | [352](../../src/main.rs#L352) | external-constructor-callback-or-unresolved |
-| `run` | `run_provider_turn` | [360](../../src/main.rs#L360) | external-constructor-callback-or-unresolved |
-| `run` | `is_protocol_failure` | [371](../../src/main.rs#L371) | [tekes-worker::main::is_protocol_failure](../../src/main.rs#L162) |
-| `run` | `error.as_ref` | [371](../../src/main.rs#L371), [374](../../src/main.rs#L374) | receiver-type-required |
-| `run` | `settle_internal_worker_failure` | [374](../../src/main.rs#L374) | external-constructor-callback-or-unresolved |
-| `run` | `drain_ready_deliveries` | [376](../../src/main.rs#L376), [388](../../src/main.rs#L388) | external-constructor-callback-or-unresolved |
-| `run` | `post_turn_exit` | [390](../../src/main.rs#L390) | external-constructor-callback-or-unresolved |
-| `exchange_tool_control` | `require_version` | [408](../../src/main.rs#L408) | [worker-control::durable::require_version](../../../worker-control/src/durable.rs#L443) |
-| `exchange_tool_control` | `stdout.write_all` | [409](../../src/main.rs#L409) | receiver-type-required |
-| `exchange_tool_control` | `encode_tool_control` | [409](../../src/main.rs#L409) | [worker-control::durable::encode_tool_control](../../../worker-control/src/durable.rs#L469) |
-| `exchange_tool_control` | `stdout.flush` | [410](../../src/main.rs#L410), [424](../../src/main.rs#L424) | receiver-type-required |
-| `exchange_tool_control` | `lines             .next()             .ok_or` | [412](../../src/main.rs#L412) | receiver-type-required |
-| `exchange_tool_control` | `lines             .next` | [412](../../src/main.rs#L412) | receiver-type-required |
-| `exchange_tool_control` | `decode_tool_control_result` | [415](../../src/main.rs#L415) | [worker-control::durable::decode_tool_control_result](../../../worker-control/src/durable.rs#L487) |
-| `exchange_tool_control` | `line.as_bytes` | [415](../../src/main.rs#L415), [420](../../src/main.rs#L420) | receiver-type-required |
-| `exchange_tool_control` | `result.validate_for` | [417](../../src/main.rs#L417) | receiver-type-required |
-| `exchange_tool_control` | `Ok` | [418](../../src/main.rs#L418) | external-constructor-callback-or-unresolved |
-| `exchange_tool_control` | `decode_supervisor` | [420](../../src/main.rs#L420) | [worker-control::decode_supervisor](../../../worker-control/src/lib.rs#L304) |
-| `exchange_tool_control` | `stdout                         .write_all` | [422](../../src/main.rs#L422) | receiver-type-required |
-| `exchange_tool_control` | `encode_line` | [423](../../src/main.rs#L423) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
-| `exchange_tool_control` | `Err` | [427](../../src/main.rs#L427) | external-constructor-callback-or-unresolved |
-| `exchange_tool_control` | `"unexpected supervisor message while awaiting tool-control result".into` | [428](../../src/main.rs#L428) | receiver-type-required |
-| `parse_options` | `env::args().skip` | [437](../../src/main.rs#L437) | receiver-type-required |
-| `parse_options` | `env::args` | [437](../../src/main.rs#L437) | external-constructor-callback-or-unresolved |
-| `parse_options` | `args         .next()         .ok_or` | [438](../../src/main.rs#L438) | receiver-type-required |
-| `parse_options` | `args         .next` | [438](../../src/main.rs#L438) | receiver-type-required |
-| `parse_options` | `PathBuf::from` | [442](../../src/main.rs#L442) | external-constructor-callback-or-unresolved |
-| `parse_options` | `String::new` | [443](../../src/main.rs#L443) | external-constructor-callback-or-unresolved |
-| `parse_options` | `Instant::now` | [444](../../src/main.rs#L444) | external-constructor-callback-or-unresolved |
-| `parse_options` | `option_env!("TEKES_SELECTED_BUILD")             .unwrap_or(env!("CARGO_PKG_VERSION"))             .to_owned` | [446](../../src/main.rs#L446) | receiver-type-required |
-| `parse_options` | `option_env!("TEKES_SELECTED_BUILD")             .unwrap_or` | [446](../../src/main.rs#L446) | receiver-type-required |
-| `parse_options` | `"injected-config".to_owned` | [449](../../src/main.rs#L449) | receiver-type-required |
-| `parse_options` | `"injected-instructions".to_owned` | [450](../../src/main.rs#L450) | receiver-type-required |
-| `parse_options` | `"default".to_owned` | [452](../../src/main.rs#L452) | receiver-type-required |
-| `parse_options` | `args.next` | [461](../../src/main.rs#L461), [462](../../src/main.rs#L462) | receiver-type-required |
-| `parse_options` | `args.next().ok_or` | [462](../../src/main.rs#L462) | receiver-type-required |
-| `parse_options` | `flag.as_str` | [463](../../src/main.rs#L463) | receiver-type-required |
-| `parse_options` | `Some` | [469](../../src/main.rs#L469), [471](../../src/main.rs#L471), [472](../../src/main.rs#L472), [473](../../src/main.rs#L473), [474](../../src/main.rs#L474), [486](../../src/main.rs#L486) | external-constructor-callback-or-unresolved |
-| `parse_options` | `parse_fd` | [471](../../src/main.rs#L471), [472](../../src/main.rs#L472), [473](../../src/main.rs#L473), [474](../../src/main.rs#L474) | [tekes-worker::main::parse_fd](../../src/main.rs#L500) |
-| `parse_options` | `value.as_str` | [476](../../src/main.rs#L476) | receiver-type-required |
-| `parse_options` | `Err` | [479](../../src/main.rs#L479), [484](../../src/main.rs#L484), [488](../../src/main.rs#L488), [492](../../src/main.rs#L492), [495](../../src/main.rs#L495) | external-constructor-callback-or-unresolved |
-| `parse_options` | `"--web-search-ready must be true or false".into` | [479](../../src/main.rs#L479) | receiver-type-required |
-| `parse_options` | `value.starts_with` | [483](../../src/main.rs#L483) | receiver-type-required |
-| `parse_options` | `"--provider-test-redirect is a debug-only loopback seam".into` | [484](../../src/main.rs#L484) | receiver-type-required |
-| `parse_options` | `format!("unknown option {flag}").into` | [488](../../src/main.rs#L488) | receiver-type-required |
-| `parse_options` | `options.event_timestamp().is_empty` | [491](../../src/main.rs#L491) | receiver-type-required |
-| `parse_options` | `options.event_timestamp` | [491](../../src/main.rs#L491) | receiver-type-required |
-| `parse_options` | `"--timestamp is required".into` | [492](../../src/main.rs#L492) | receiver-type-required |
-| `parse_options` | `options.credential_fd.is_none` | [494](../../src/main.rs#L494) | receiver-type-required |
-| `parse_options` | `"--web-search-ready requires --credential-fd".into` | [495](../../src/main.rs#L495) | receiver-type-required |
-| `parse_options` | `Ok` | [497](../../src/main.rs#L497) | external-constructor-callback-or-unresolved |
-| `parse_fd` | `value.parse::<i32>` | [501](../../src/main.rs#L501) | receiver-type-required |
-| `parse_fd` | `Err` | [503](../../src/main.rs#L503) | external-constructor-callback-or-unresolved |
-| `parse_fd` | `"snapshot descriptor must be nonnegative".into` | [503](../../src/main.rs#L503) | receiver-type-required |
-| `parse_fd` | `Ok` | [505](../../src/main.rs#L505) | external-constructor-callback-or-unresolved |
-| `read_inherited_fd` | `File::from_raw_fd` | [515](../../src/main.rs#L515) | external-constructor-callback-or-unresolved |
-| `read_inherited_fd` | `Vec::new` | [516](../../src/main.rs#L516) | external-constructor-callback-or-unresolved |
-| `read_inherited_fd` | `file.read_to_end` | [517](../../src/main.rs#L517) | receiver-type-required |
-| `read_inherited_fd` | `Ok` | [518](../../src/main.rs#L518) | external-constructor-callback-or-unresolved |
-| `load_profiles` | `options.launch_bindings_digest.as_deref` | [528](../../src/main.rs#L528) | receiver-type-required |
-| `load_profiles` | `Ok` | [530](../../src/main.rs#L530), [557](../../src/main.rs#L557) | external-constructor-callback-or-unresolved |
-| `load_profiles` | `Err` | [539](../../src/main.rs#L539), [565](../../src/main.rs#L565) | external-constructor-callback-or-unresolved |
-| `load_profiles` | `"profile descriptors must be distinct and above stderr".into` | [539](../../src/main.rs#L539) | receiver-type-required |
-| `load_profiles` | `read_inherited_fd` | [541](../../src/main.rs#L541), [542](../../src/main.rs#L542), [543](../../src/main.rs#L543) | [tekes-worker::main::read_inherited_fd](../../src/main.rs#L509) |
-| `load_profiles` | `profile::ConfigSnapshot::decode` | [544](../../src/main.rs#L544) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L419) |
-| `load_profiles` | `profile::InstructionSnapshot::decode` | [545](../../src/main.rs#L545) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L214) |
-| `load_profiles` | `instruction.validate_against_config` | [546](../../src/main.rs#L546) | receiver-type-required |
-| `load_profiles` | `LaunchBindings::decode_verified` | [547](../../src/main.rs#L547) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
-| `load_profiles` | `instruction.meet_workspace_policy` | [552](../../src/main.rs#L552) | receiver-type-required |
-| `load_profiles` | `config.digest` | [553](../../src/main.rs#L553) | receiver-type-required |
-| `load_profiles` | `instruction.digest` | [554](../../src/main.rs#L554) | receiver-type-required |
-| `load_profiles` | `Some` | [555](../../src/main.rs#L555), [557](../../src/main.rs#L557) | external-constructor-callback-or-unresolved |
-| `load_profiles` | `bindings.digest` | [555](../../src/main.rs#L555) | receiver-type-required |
-| `load_profiles` | `"config-fd, instruction-fd, launch-bindings-fd and launch-bindings-digest must be supplied together"                 .into` | [566](../../src/main.rs#L566) | receiver-type-required |
-| `activate_subagent_profile` | `Ok` | [577](../../src/main.rs#L577), [585](../../src/main.rs#L585), [631](../../src/main.rs#L631) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `ledger         .projection()         .and_then(&#124;p&#124; p.events.first())         .ok_or` | [579](../../src/main.rs#L579) | receiver-type-required |
-| `activate_subagent_profile` | `ledger         .projection()         .and_then` | [579](../../src/main.rs#L579) | receiver-type-required |
-| `activate_subagent_profile` | `ledger         .projection` | [579](../../src/main.rs#L579) | receiver-type-required |
-| `activate_subagent_profile` | `p.events.first` | [581](../../src/main.rs#L581) | receiver-type-required |
-| `activate_subagent_profile` | `serde_json::to_value` | [583](../../src/main.rs#L583) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `genesis.raw` | [583](../../src/main.rs#L583) | receiver-type-required |
-| `activate_subagent_profile` | `raw.get` | [584](../../src/main.rs#L584) | receiver-type-required |
-| `activate_subagent_profile` | `genesis.string_field` | [587](../../src/main.rs#L587) | receiver-type-required |
-| `activate_subagent_profile` | `ledger.path().file_stem().and_then` | [587](../../src/main.rs#L587) | receiver-type-required |
-| `activate_subagent_profile` | `ledger.path().file_stem` | [587](../../src/main.rs#L587) | receiver-type-required |
-| `activate_subagent_profile` | `ledger.path` | [587](../../src/main.rs#L587), [615](../../src/main.rs#L615) | receiver-type-required |
-| `activate_subagent_profile` | `n.to_str` | [587](../../src/main.rs#L587), [593](../../src/main.rs#L593), [615](../../src/main.rs#L615) | receiver-type-required |
-| `activate_subagent_profile` | `Err` | [588](../../src/main.rs#L588), [598](../../src/main.rs#L598), [617](../../src/main.rs#L617), [628](../../src/main.rs#L628) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `"child genesis identity does not match its line".into` | [588](../../src/main.rs#L588) | receiver-type-required |
-| `activate_subagent_profile` | `parent["file"].as_str().ok_or` | [590](../../src/main.rs#L590) | receiver-type-required |
-| `activate_subagent_profile` | `parent["file"].as_str` | [590](../../src/main.rs#L590) | receiver-type-required |
-| `activate_subagent_profile` | `std::path::Path::new(file)         .file_name()         .and_then` | [591](../../src/main.rs#L591) | receiver-type-required |
-| `activate_subagent_profile` | `std::path::Path::new(file)         .file_name` | [591](../../src/main.rs#L591) | receiver-type-required |
-| `activate_subagent_profile` | `std::path::Path::new` | [591](../../src/main.rs#L591) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `Some` | [594](../../src/main.rs#L594), [625](../../src/main.rs#L625) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `"invalid child parent file".into` | [598](../../src/main.rs#L598) | receiver-type-required |
-| `activate_subagent_profile` | `read_child_projection` | [600](../../src/main.rs#L600) | external-constructor-callback-or-unresolved |
-| `activate_subagent_profile` | `ledger             .path()             .parent()             .ok_or("missing child folder")?             .join` | [601](../../src/main.rs#L601) | receiver-type-required |
-| `activate_subagent_profile` | `ledger             .path()             .parent()             .ok_or` | [601](../../src/main.rs#L601) | receiver-type-required |
-| `activate_subagent_profile` | `ledger             .path()             .parent` | [601](../../src/main.rs#L601) | receiver-type-required |
-| `activate_subagent_profile` | `ledger             .path` | [601](../../src/main.rs#L601) | receiver-type-required |
-| `activate_subagent_profile` | `parent["seq"].as_u64().ok_or` | [607](../../src/main.rs#L607) | receiver-type-required |
-| `activate_subagent_profile` | `parent["seq"].as_u64` | [607](../../src/main.rs#L607) | receiver-type-required |
-| `activate_subagent_profile` | `parent_projection         .events         .iter()         .find(&#124;e&#124; e.seq() == seq)         .ok_or` | [608](../../src/main.rs#L608) | receiver-type-required |
-| `activate_subagent_profile` | `parent_projection         .events         .iter()         .find` | [608](../../src/main.rs#L608) | receiver-type-required |
-| `activate_subagent_profile` | `parent_projection         .events         .iter` | [608](../../src/main.rs#L608) | receiver-type-required |
-| `activate_subagent_profile` | `e.seq` | [611](../../src/main.rs#L611), [624](../../src/main.rs#L624) | receiver-type-required |
-| `activate_subagent_profile` | `spawn.kind` | [613](../../src/main.rs#L613) | receiver-type-required |
-| `activate_subagent_profile` | `spawn.string_field` | [614](../../src/main.rs#L614), [615](../../src/main.rs#L615) | receiver-type-required |
-| `activate_subagent_profile` | `parent["spawn_id"].as_str` | [614](../../src/main.rs#L614) | receiver-type-required |
-| `activate_subagent_profile` | `ledger.path().file_name().and_then` | [615](../../src/main.rs#L615) | receiver-type-required |
-| `activate_subagent_profile` | `ledger.path().file_name` | [615](../../src/main.rs#L615) | receiver-type-required |
-| `activate_subagent_profile` | `"child role does not match durable parent spawn".into` | [617](../../src/main.rs#L617) | receiver-type-required |
-| `activate_subagent_profile` | `spawn         .string_field("call")         .ok_or` | [619](../../src/main.rs#L619) | receiver-type-required |
-| `activate_subagent_profile` | `spawn         .string_field` | [619](../../src/main.rs#L619) | receiver-type-required |
-| `activate_subagent_profile` | `parent_projection.events.iter().any` | [622](../../src/main.rs#L622) | receiver-type-required |
-| `activate_subagent_profile` | `parent_projection.events.iter` | [622](../../src/main.rs#L622) | receiver-type-required |
-| `activate_subagent_profile` | `e.kind` | [623](../../src/main.rs#L623) | receiver-type-required |
-| `activate_subagent_profile` | `spawn.seq` | [624](../../src/main.rs#L624) | receiver-type-required |
-| `activate_subagent_profile` | `e.string_field` | [625](../../src/main.rs#L625) | receiver-type-required |
-| `activate_subagent_profile` | `"child role lacks a task or subagent invocation".into` | [628](../../src/main.rs#L628) | receiver-type-required |
-| `sibling_helper_path` | `std::env::current_exe` | [640](../../src/main.rs#L640) | external-constructor-callback-or-unresolved |
-| `sibling_helper_path` | `executable         .parent()         .ok_or` | [641](../../src/main.rs#L641) | receiver-type-required |
-| `sibling_helper_path` | `executable         .parent` | [641](../../src/main.rs#L641) | receiver-type-required |
-| `sibling_helper_path` | `directory.join` | [644](../../src/main.rs#L644) | receiver-type-required |
-| `sibling_helper_path` | `sibling.is_file` | [646](../../src/main.rs#L646) | receiver-type-required |
-| `sibling_helper_path` | `directory.file_name().is_some_and` | [647](../../src/main.rs#L647) | receiver-type-required |
-| `sibling_helper_path` | `directory.file_name` | [647](../../src/main.rs#L647) | receiver-type-required |
-| `sibling_helper_path` | `directory.parent` | [648](../../src/main.rs#L648) | receiver-type-required |
-| `sibling_helper_path` | `parent.join` | [650](../../src/main.rs#L650) | receiver-type-required |
-| `sibling_helper_path` | `built.is_file` | [651](../../src/main.rs#L651) | receiver-type-required |
-| `sibling_helper_path` | `Ok` | [652](../../src/main.rs#L652), [655](../../src/main.rs#L655) | external-constructor-callback-or-unresolved |
-| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .allowed_tools         .into_iter()         // Historical policies may still select the retired memory builtins.         .filter(&#124;name&#124; !matches!(name.as_str(), "note" &#124; "recall"))         .collect` | [659](../../src/main.rs#L659) | receiver-type-required |
-| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .allowed_tools         .into_iter()         // Historical policies may still select the retired memory builtins.         .filter` | [659](../../src/main.rs#L659) | receiver-type-required |
-| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.workspace.policy)         .allowed_tools         .into_iter` | [659](../../src/main.rs#L659) | receiver-type-required |
-| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy` | [659](../../src/main.rs#L659) | receiver-type-required |
-| `effective_allowed_tools` | `tools.insert` | [668](../../src/main.rs#L668), [671](../../src/main.rs#L671) | receiver-type-required |
-| `effective_allowed_tools` | `"verify".to_owned` | [668](../../src/main.rs#L668) | receiver-type-required |
-| `effective_allowed_tools` | `"report".to_owned` | [671](../../src/main.rs#L671) | receiver-type-required |
+| `run` | `genesis.string_field` | [293](../../src/main.rs#L293) | receiver-type-required |
+| `run` | `genesis.has_field` | [293](../../src/main.rs#L293) | receiver-type-required |
+| `run` | `profile.config.execution.session_id.as_str` | [299](../../src/main.rs#L299) | receiver-type-required |
+| `run` | `"config snapshot workspace does not match genesis".into` | [300](../../src/main.rs#L300) | receiver-type-required |
+| `run` | `classify` | [303](../../src/main.rs#L303) | [engine::lifecycle::classify](../../../engine/src/lifecycle.rs#L84) |
+| `run` | `startup_transaction.is_some` | [304](../../src/main.rs#L304) | receiver-type-required |
+| `run` | `RunDecision::Start` | [305](../../src/main.rs#L305), [310](../../src/main.rs#L310) | external-constructor-callback-or-unresolved |
+| `run` | `validation_runtime::has_pending_validation` | [306](../../src/main.rs#L306) | external-constructor-callback-or-unresolved |
+| `run` | `run_decision` | [312](../../src/main.rs#L312) | [engine::lifecycle::run_decision](../../../engine/src/lifecycle.rs#L159) |
+| `run` | `append_run_start` | [318](../../src/main.rs#L318) | external-constructor-callback-or-unresolved |
+| `run` | `execute_queue_transaction` | [321](../../src/main.rs#L321) | external-constructor-callback-or-unresolved |
+| `run` | `options.event_timestamp` | [321](../../src/main.rs#L321), [327](../../src/main.rs#L327) | receiver-type-required |
+| `run` | `encode_queue_transaction_result` | [322](../../src/main.rs#L322) | [worker-control::durable::encode_queue_transaction_result](../../../worker-control/src/durable.rs#L512) |
+| `run` | `announce_appended` | [324](../../src/main.rs#L324), [339](../../src/main.rs#L339), [353](../../src/main.rs#L353), [359](../../src/main.rs#L359) | external-constructor-callback-or-unresolved |
+| `run` | `open_ready_turn` | [327](../../src/main.rs#L327) | external-constructor-callback-or-unresolved |
+| `run` | `make_event` | [329](../../src/main.rs#L329) | external-constructor-callback-or-unresolved |
+| `run` | `ledger.append_contract` | [338](../../src/main.rs#L338) | receiver-type-required |
+| `run` | `BarrierContext::default` | [338](../../src/main.rs#L338) | external-constructor-callback-or-unresolved |
+| `run` | `recover_unpaired_tool_calls` | [343](../../src/main.rs#L343) | external-constructor-callback-or-unresolved |
+| `run` | `runtime_profile.as_ref` | [346](../../src/main.rs#L346) | receiver-type-required |
+| `run` | `reconcile_provider_attempt` | [358](../../src/main.rs#L358) | external-constructor-callback-or-unresolved |
+| `run` | `run_provider_turn` | [366](../../src/main.rs#L366) | external-constructor-callback-or-unresolved |
+| `run` | `is_protocol_failure` | [377](../../src/main.rs#L377) | [tekes-worker::main::is_protocol_failure](../../src/main.rs#L162) |
+| `run` | `error.as_ref` | [377](../../src/main.rs#L377), [380](../../src/main.rs#L380) | receiver-type-required |
+| `run` | `settle_internal_worker_failure` | [380](../../src/main.rs#L380) | external-constructor-callback-or-unresolved |
+| `run` | `drain_ready_deliveries` | [382](../../src/main.rs#L382), [394](../../src/main.rs#L394) | external-constructor-callback-or-unresolved |
+| `run` | `post_turn_exit` | [396](../../src/main.rs#L396) | external-constructor-callback-or-unresolved |
+| `exchange_tool_control` | `require_version` | [414](../../src/main.rs#L414) | [worker-control::durable::require_version](../../../worker-control/src/durable.rs#L443) |
+| `exchange_tool_control` | `stdout.write_all` | [415](../../src/main.rs#L415) | receiver-type-required |
+| `exchange_tool_control` | `encode_tool_control` | [415](../../src/main.rs#L415) | [worker-control::durable::encode_tool_control](../../../worker-control/src/durable.rs#L469) |
+| `exchange_tool_control` | `stdout.flush` | [416](../../src/main.rs#L416), [430](../../src/main.rs#L430) | receiver-type-required |
+| `exchange_tool_control` | `lines             .next()             .ok_or` | [418](../../src/main.rs#L418) | receiver-type-required |
+| `exchange_tool_control` | `lines             .next` | [418](../../src/main.rs#L418) | receiver-type-required |
+| `exchange_tool_control` | `decode_tool_control_result` | [421](../../src/main.rs#L421) | [worker-control::durable::decode_tool_control_result](../../../worker-control/src/durable.rs#L487) |
+| `exchange_tool_control` | `line.as_bytes` | [421](../../src/main.rs#L421), [426](../../src/main.rs#L426) | receiver-type-required |
+| `exchange_tool_control` | `result.validate_for` | [423](../../src/main.rs#L423) | receiver-type-required |
+| `exchange_tool_control` | `Ok` | [424](../../src/main.rs#L424) | external-constructor-callback-or-unresolved |
+| `exchange_tool_control` | `decode_supervisor` | [426](../../src/main.rs#L426) | [worker-control::decode_supervisor](../../../worker-control/src/lib.rs#L304) |
+| `exchange_tool_control` | `stdout                         .write_all` | [428](../../src/main.rs#L428) | receiver-type-required |
+| `exchange_tool_control` | `encode_line` | [429](../../src/main.rs#L429) | [worker-control::encode_line](../../../worker-control/src/lib.rs#L359) |
+| `exchange_tool_control` | `Err` | [433](../../src/main.rs#L433) | external-constructor-callback-or-unresolved |
+| `exchange_tool_control` | `"unexpected supervisor message while awaiting tool-control result".into` | [434](../../src/main.rs#L434) | receiver-type-required |
+| `parse_options` | `env::args().skip` | [443](../../src/main.rs#L443) | receiver-type-required |
+| `parse_options` | `env::args` | [443](../../src/main.rs#L443) | external-constructor-callback-or-unresolved |
+| `parse_options` | `args         .next()         .ok_or` | [444](../../src/main.rs#L444) | receiver-type-required |
+| `parse_options` | `args         .next` | [444](../../src/main.rs#L444) | receiver-type-required |
+| `parse_options` | `PathBuf::from` | [448](../../src/main.rs#L448) | external-constructor-callback-or-unresolved |
+| `parse_options` | `String::new` | [449](../../src/main.rs#L449) | external-constructor-callback-or-unresolved |
+| `parse_options` | `Instant::now` | [450](../../src/main.rs#L450) | external-constructor-callback-or-unresolved |
+| `parse_options` | `option_env!("TEKES_SELECTED_BUILD")             .unwrap_or(env!("CARGO_PKG_VERSION"))             .to_owned` | [452](../../src/main.rs#L452) | receiver-type-required |
+| `parse_options` | `option_env!("TEKES_SELECTED_BUILD")             .unwrap_or` | [452](../../src/main.rs#L452) | receiver-type-required |
+| `parse_options` | `"injected-config".to_owned` | [455](../../src/main.rs#L455) | receiver-type-required |
+| `parse_options` | `"injected-instructions".to_owned` | [456](../../src/main.rs#L456) | receiver-type-required |
+| `parse_options` | `"default".to_owned` | [458](../../src/main.rs#L458) | receiver-type-required |
+| `parse_options` | `args.next` | [467](../../src/main.rs#L467), [468](../../src/main.rs#L468) | receiver-type-required |
+| `parse_options` | `args.next().ok_or` | [468](../../src/main.rs#L468) | receiver-type-required |
+| `parse_options` | `flag.as_str` | [469](../../src/main.rs#L469) | receiver-type-required |
+| `parse_options` | `Some` | [475](../../src/main.rs#L475), [477](../../src/main.rs#L477), [478](../../src/main.rs#L478), [479](../../src/main.rs#L479), [480](../../src/main.rs#L480), [492](../../src/main.rs#L492) | external-constructor-callback-or-unresolved |
+| `parse_options` | `parse_fd` | [477](../../src/main.rs#L477), [478](../../src/main.rs#L478), [479](../../src/main.rs#L479), [480](../../src/main.rs#L480) | [tekes-worker::main::parse_fd](../../src/main.rs#L506) |
+| `parse_options` | `value.as_str` | [482](../../src/main.rs#L482) | receiver-type-required |
+| `parse_options` | `Err` | [485](../../src/main.rs#L485), [490](../../src/main.rs#L490), [494](../../src/main.rs#L494), [498](../../src/main.rs#L498), [501](../../src/main.rs#L501) | external-constructor-callback-or-unresolved |
+| `parse_options` | `"--web-search-ready must be true or false".into` | [485](../../src/main.rs#L485) | receiver-type-required |
+| `parse_options` | `value.starts_with` | [489](../../src/main.rs#L489) | receiver-type-required |
+| `parse_options` | `"--provider-test-redirect is a debug-only loopback seam".into` | [490](../../src/main.rs#L490) | receiver-type-required |
+| `parse_options` | `format!("unknown option {flag}").into` | [494](../../src/main.rs#L494) | receiver-type-required |
+| `parse_options` | `options.event_timestamp().is_empty` | [497](../../src/main.rs#L497) | receiver-type-required |
+| `parse_options` | `options.event_timestamp` | [497](../../src/main.rs#L497) | receiver-type-required |
+| `parse_options` | `"--timestamp is required".into` | [498](../../src/main.rs#L498) | receiver-type-required |
+| `parse_options` | `options.credential_fd.is_none` | [500](../../src/main.rs#L500) | receiver-type-required |
+| `parse_options` | `"--web-search-ready requires --credential-fd".into` | [501](../../src/main.rs#L501) | receiver-type-required |
+| `parse_options` | `Ok` | [503](../../src/main.rs#L503) | external-constructor-callback-or-unresolved |
+| `parse_fd` | `value.parse::<i32>` | [507](../../src/main.rs#L507) | receiver-type-required |
+| `parse_fd` | `Err` | [509](../../src/main.rs#L509) | external-constructor-callback-or-unresolved |
+| `parse_fd` | `"snapshot descriptor must be nonnegative".into` | [509](../../src/main.rs#L509) | receiver-type-required |
+| `parse_fd` | `Ok` | [511](../../src/main.rs#L511) | external-constructor-callback-or-unresolved |
+| `read_inherited_fd` | `File::from_raw_fd` | [521](../../src/main.rs#L521) | external-constructor-callback-or-unresolved |
+| `read_inherited_fd` | `Vec::new` | [522](../../src/main.rs#L522) | external-constructor-callback-or-unresolved |
+| `read_inherited_fd` | `file.read_to_end` | [523](../../src/main.rs#L523) | receiver-type-required |
+| `read_inherited_fd` | `Ok` | [524](../../src/main.rs#L524) | external-constructor-callback-or-unresolved |
+| `load_profiles` | `options.launch_bindings_digest.as_deref` | [534](../../src/main.rs#L534) | receiver-type-required |
+| `load_profiles` | `Ok` | [536](../../src/main.rs#L536), [563](../../src/main.rs#L563) | external-constructor-callback-or-unresolved |
+| `load_profiles` | `Err` | [545](../../src/main.rs#L545), [571](../../src/main.rs#L571) | external-constructor-callback-or-unresolved |
+| `load_profiles` | `"profile descriptors must be distinct and above stderr".into` | [545](../../src/main.rs#L545) | receiver-type-required |
+| `load_profiles` | `read_inherited_fd` | [547](../../src/main.rs#L547), [548](../../src/main.rs#L548), [549](../../src/main.rs#L549) | [tekes-worker::main::read_inherited_fd](../../src/main.rs#L515) |
+| `load_profiles` | `profile::ConfigSnapshot::decode` | [550](../../src/main.rs#L550) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L194) |
+| `load_profiles` | `profile::InstructionSnapshot::decode` | [551](../../src/main.rs#L551) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L186) |
+| `load_profiles` | `instruction.validate_against_config` | [552](../../src/main.rs#L552) | receiver-type-required |
+| `load_profiles` | `LaunchBindings::decode_verified` | [553](../../src/main.rs#L553) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
+| `load_profiles` | `instruction.meet_workspace_policy` | [558](../../src/main.rs#L558) | receiver-type-required |
+| `load_profiles` | `config.digest` | [559](../../src/main.rs#L559) | receiver-type-required |
+| `load_profiles` | `instruction.digest` | [560](../../src/main.rs#L560) | receiver-type-required |
+| `load_profiles` | `Some` | [561](../../src/main.rs#L561), [563](../../src/main.rs#L563) | external-constructor-callback-or-unresolved |
+| `load_profiles` | `bindings.digest` | [561](../../src/main.rs#L561) | receiver-type-required |
+| `load_profiles` | `"config-fd, instruction-fd, launch-bindings-fd and launch-bindings-digest must be supplied together"                 .into` | [572](../../src/main.rs#L572) | receiver-type-required |
+| `activate_subagent_profile` | `Ok` | [583](../../src/main.rs#L583), [591](../../src/main.rs#L591), [637](../../src/main.rs#L637) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `ledger         .projection()         .and_then(&#124;p&#124; p.events.first())         .ok_or` | [585](../../src/main.rs#L585) | receiver-type-required |
+| `activate_subagent_profile` | `ledger         .projection()         .and_then` | [585](../../src/main.rs#L585) | receiver-type-required |
+| `activate_subagent_profile` | `ledger         .projection` | [585](../../src/main.rs#L585) | receiver-type-required |
+| `activate_subagent_profile` | `p.events.first` | [587](../../src/main.rs#L587) | receiver-type-required |
+| `activate_subagent_profile` | `serde_json::to_value` | [589](../../src/main.rs#L589) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `genesis.raw` | [589](../../src/main.rs#L589) | receiver-type-required |
+| `activate_subagent_profile` | `raw.get` | [590](../../src/main.rs#L590) | receiver-type-required |
+| `activate_subagent_profile` | `genesis.string_field` | [593](../../src/main.rs#L593) | receiver-type-required |
+| `activate_subagent_profile` | `ledger.path().file_stem().and_then` | [593](../../src/main.rs#L593) | receiver-type-required |
+| `activate_subagent_profile` | `ledger.path().file_stem` | [593](../../src/main.rs#L593) | receiver-type-required |
+| `activate_subagent_profile` | `ledger.path` | [593](../../src/main.rs#L593), [621](../../src/main.rs#L621) | receiver-type-required |
+| `activate_subagent_profile` | `n.to_str` | [593](../../src/main.rs#L593), [599](../../src/main.rs#L599), [621](../../src/main.rs#L621) | receiver-type-required |
+| `activate_subagent_profile` | `Err` | [594](../../src/main.rs#L594), [604](../../src/main.rs#L604), [623](../../src/main.rs#L623), [634](../../src/main.rs#L634) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `"child genesis identity does not match its line".into` | [594](../../src/main.rs#L594) | receiver-type-required |
+| `activate_subagent_profile` | `parent["file"].as_str().ok_or` | [596](../../src/main.rs#L596) | receiver-type-required |
+| `activate_subagent_profile` | `parent["file"].as_str` | [596](../../src/main.rs#L596) | receiver-type-required |
+| `activate_subagent_profile` | `std::path::Path::new(file)         .file_name()         .and_then` | [597](../../src/main.rs#L597) | receiver-type-required |
+| `activate_subagent_profile` | `std::path::Path::new(file)         .file_name` | [597](../../src/main.rs#L597) | receiver-type-required |
+| `activate_subagent_profile` | `std::path::Path::new` | [597](../../src/main.rs#L597) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `Some` | [600](../../src/main.rs#L600), [631](../../src/main.rs#L631) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `"invalid child parent file".into` | [604](../../src/main.rs#L604) | receiver-type-required |
+| `activate_subagent_profile` | `read_child_projection` | [606](../../src/main.rs#L606) | external-constructor-callback-or-unresolved |
+| `activate_subagent_profile` | `ledger             .path()             .parent()             .ok_or("missing child folder")?             .join` | [607](../../src/main.rs#L607) | receiver-type-required |
+| `activate_subagent_profile` | `ledger             .path()             .parent()             .ok_or` | [607](../../src/main.rs#L607) | receiver-type-required |
+| `activate_subagent_profile` | `ledger             .path()             .parent` | [607](../../src/main.rs#L607) | receiver-type-required |
+| `activate_subagent_profile` | `ledger             .path` | [607](../../src/main.rs#L607) | receiver-type-required |
+| `activate_subagent_profile` | `parent["seq"].as_u64().ok_or` | [613](../../src/main.rs#L613) | receiver-type-required |
+| `activate_subagent_profile` | `parent["seq"].as_u64` | [613](../../src/main.rs#L613) | receiver-type-required |
+| `activate_subagent_profile` | `parent_projection         .events         .iter()         .find(&#124;e&#124; e.seq() == seq)         .ok_or` | [614](../../src/main.rs#L614) | receiver-type-required |
+| `activate_subagent_profile` | `parent_projection         .events         .iter()         .find` | [614](../../src/main.rs#L614) | receiver-type-required |
+| `activate_subagent_profile` | `parent_projection         .events         .iter` | [614](../../src/main.rs#L614) | receiver-type-required |
+| `activate_subagent_profile` | `e.seq` | [617](../../src/main.rs#L617), [630](../../src/main.rs#L630) | receiver-type-required |
+| `activate_subagent_profile` | `spawn.kind` | [619](../../src/main.rs#L619) | receiver-type-required |
+| `activate_subagent_profile` | `spawn.string_field` | [620](../../src/main.rs#L620), [621](../../src/main.rs#L621) | receiver-type-required |
+| `activate_subagent_profile` | `parent["spawn_id"].as_str` | [620](../../src/main.rs#L620) | receiver-type-required |
+| `activate_subagent_profile` | `ledger.path().file_name().and_then` | [621](../../src/main.rs#L621) | receiver-type-required |
+| `activate_subagent_profile` | `ledger.path().file_name` | [621](../../src/main.rs#L621) | receiver-type-required |
+| `activate_subagent_profile` | `"child role does not match durable parent spawn".into` | [623](../../src/main.rs#L623) | receiver-type-required |
+| `activate_subagent_profile` | `spawn         .string_field("call")         .ok_or` | [625](../../src/main.rs#L625) | receiver-type-required |
+| `activate_subagent_profile` | `spawn         .string_field` | [625](../../src/main.rs#L625) | receiver-type-required |
+| `activate_subagent_profile` | `parent_projection.events.iter().any` | [628](../../src/main.rs#L628) | receiver-type-required |
+| `activate_subagent_profile` | `parent_projection.events.iter` | [628](../../src/main.rs#L628) | receiver-type-required |
+| `activate_subagent_profile` | `e.kind` | [629](../../src/main.rs#L629) | receiver-type-required |
+| `activate_subagent_profile` | `spawn.seq` | [630](../../src/main.rs#L630) | receiver-type-required |
+| `activate_subagent_profile` | `e.string_field` | [631](../../src/main.rs#L631) | receiver-type-required |
+| `activate_subagent_profile` | `"child role lacks a task or subagent invocation".into` | [634](../../src/main.rs#L634) | receiver-type-required |
+| `sibling_helper_path` | `std::env::current_exe` | [646](../../src/main.rs#L646) | external-constructor-callback-or-unresolved |
+| `sibling_helper_path` | `executable         .parent()         .ok_or` | [647](../../src/main.rs#L647) | receiver-type-required |
+| `sibling_helper_path` | `executable         .parent` | [647](../../src/main.rs#L647) | receiver-type-required |
+| `sibling_helper_path` | `directory.join` | [650](../../src/main.rs#L650) | receiver-type-required |
+| `sibling_helper_path` | `sibling.is_file` | [652](../../src/main.rs#L652) | receiver-type-required |
+| `sibling_helper_path` | `directory.file_name().is_some_and` | [653](../../src/main.rs#L653) | receiver-type-required |
+| `sibling_helper_path` | `directory.file_name` | [653](../../src/main.rs#L653) | receiver-type-required |
+| `sibling_helper_path` | `directory.parent` | [654](../../src/main.rs#L654) | receiver-type-required |
+| `sibling_helper_path` | `parent.join` | [656](../../src/main.rs#L656) | receiver-type-required |
+| `sibling_helper_path` | `built.is_file` | [657](../../src/main.rs#L657) | receiver-type-required |
+| `sibling_helper_path` | `Ok` | [658](../../src/main.rs#L658), [661](../../src/main.rs#L661) | external-constructor-callback-or-unresolved |
+| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .allowed_tools         .into_iter()         // Historical policies may still select the retired memory builtins.         .filter(&#124;name&#124; !matches!(name.as_str(), "note" &#124; "recall"))         .collect` | [665](../../src/main.rs#L665) | receiver-type-required |
+| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .allowed_tools         .into_iter()         // Historical policies may still select the retired memory builtins.         .filter` | [665](../../src/main.rs#L665) | receiver-type-required |
+| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy(&profile.config.execution.policy)         .allowed_tools         .into_iter` | [665](../../src/main.rs#L665) | receiver-type-required |
+| `effective_allowed_tools` | `profile         .instruction         .meet_workspace_policy` | [665](../../src/main.rs#L665) | receiver-type-required |
+| `effective_allowed_tools` | `tools.insert` | [674](../../src/main.rs#L674), [677](../../src/main.rs#L677) | receiver-type-required |
+| `effective_allowed_tools` | `"verify".to_owned` | [674](../../src/main.rs#L674) | receiver-type-required |
+| `effective_allowed_tools` | `"report".to_owned` | [677](../../src/main.rs#L677) | receiver-type-required |

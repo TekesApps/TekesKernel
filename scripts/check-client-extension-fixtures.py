@@ -20,32 +20,7 @@ EXPECTED_FILES = [
     "negative.canonical.json",
     "value-cases.canonical.json",
 ]
-EXPECTED_CAPABILITIES = {
-    "recovery.v1",
-    "attachments.v1",
-    "approvals.v1",
-    "hostFiles.v1",
-    "feedback.v1",
-    "settings.v1",
-    "goals.v1",
-    "subagents.v1",
-    "sessionFiles.v1",
-    "sessionFolders.v1",
-    "resources.v1",
-    "initialPresets.v1",
-    "sessionPresets.v1",
-    "tools.v1",
-    "plugins.v1",
-    "mcp.v1",
-    "folderTrust.v1",
-    "folders.v1",
-    "schedule.v1",
-    "threadSearch.v1",
-    "workspacePolicy.v1",
-    "workspaceFolders.v1",
-    "environments.v1",
-    "usage.v1",
-}
+EXPECTED_CAPABILITIES = {'sessionFiles.v1', 'threadSearch.v1', 'resources.v1', 'goals.v1', 'subagents.v1', 'initialPresets.v1', 'approvals.v1', 'tools.v1', 'sessionPresets.v1', 'settings.v1', 'feedback.v1', 'recovery.v1', 'usage.v1', 'attachments.v1'}
 
 
 def canonical(value: object) -> bytes:
@@ -171,26 +146,16 @@ def main() -> None:
 
     negative = load("negative.canonical.json")["cases"]
     expected_negative = {
-        "partial-mcp",
+        "partial-capability",
         "base-collision",
         "unknown-field",
         "fake-empty-success",
-        "ignored-model-forbidden",
-        "ignored-policy-forbidden",
+        "retired-mcp-management",
+        "retired-folder-management",
         "tcu-method",
     }
     if {case["id"] for case in negative} != expected_negative:
         raise SystemExit("negative matrix drifted")
-    schedule = next(case for case in cases if case["method"] == "schedule.save")
-    definition = schedule["request"]["definition"]
-    if definition["permission_mode"] != "inherit" or "model_id" in definition:
-        raise SystemExit("default schedule case does not prove applied default authority")
-    inspect = next(case for case in cases if case["method"] == "plugin/inspect")
-    install = next(case for case in cases if case["method"] == "plugin/install")
-    if "packageDigest" in inspect["request"]:
-        raise SystemExit("plugin inspect discovers packageDigest; request is circular")
-    if not install["request"].get("packageDigest"):
-        raise SystemExit("plugin install lacks the inspected immutable package digest")
     approvals = next(case for case in cases if case["method"] == "approvals.policy")
     if [option["value"] for option in approvals["success"]["threadLevel"]] != [
         "read-only",
@@ -239,7 +204,6 @@ def main() -> None:
     values = load("value-cases.canonical.json")
     if {reference["kind"] for reference in values["resourceReferences"]} != {
         "skill",
-        "mcp",
     }:
         raise SystemExit("resource reference union coverage drifted")
     if {"text" in content for content in values["resourceContents"]} != {True, False}:
@@ -250,19 +214,6 @@ def main() -> None:
         "mcp",
     }:
         raise SystemExit("tool source union coverage drifted")
-    if {readiness["state"] for readiness in values["pluginReadiness"]} != {
-        "ready",
-        "refresh-failed",
-    }:
-        raise SystemExit("plugin readiness union coverage drifted")
-    policy_replacement = values["workspacePolicyReplacement"]
-    if (
-        policy_replacement["previous"]["network"] is not False
-        or policy_replacement["replacement"]["network"] is not True
-        or policy_replacement["expected"] != "accepted"
-    ):
-        raise SystemExit("workspace policy replacement lost valid local relaxation")
-
     print(
         f"client-extension fixtures: {len(methods)} methods in "
         f"{len(capabilities)} atomic capabilities; {len(legacy)} legacy routes disposed"

@@ -64,6 +64,17 @@ pub(super) fn inherited_opening(
     } else if let Some(identity) = selected(ledger)? {
         opening.insert("identity_profile".to_owned(), json!(identity.as_str()));
     }
+    if let Some(genesis) = ledger
+        .projection()
+        .and_then(|projection| projection.events.first())
+    {
+        let raw = serde_json::to_value(genesis.raw())?;
+        if let Some(execution) = raw.get("execution") {
+            opening.insert("execution".to_owned(), execution.clone());
+            opening.insert("cwd".to_owned(), execution["cwd"].clone());
+            opening.insert("min_reader".to_owned(), json!(schema::EXECUTION_READER));
+        }
+    }
     Ok(opening)
 }
 

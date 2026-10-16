@@ -32,7 +32,7 @@ fn identical_notice_folds_until_the_next_input() {
     endpoint
         .create_session(
             SESSION,
-            "workspace-1",
+            &test_support::execution_fixture(),
             "config-digest",
             ResumePolicy::Never,
             "2026-09-21T00:00:00.000Z",

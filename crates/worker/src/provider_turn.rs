@@ -53,7 +53,7 @@ pub(crate) fn run_provider_turn(
     let profile = &execution_profile;
     let wall_deadline = profile
         .config
-        .workspace
+        .execution
         .policy
         .max_wall_seconds
         .map(|seconds| Instant::now() + Duration::from_secs(seconds));
@@ -1491,14 +1491,12 @@ pub(crate) fn selected_provider(
         .session_settings
         .as_ref()
         .map(|settings| settings.provider.as_str())
-        .or(config.workspace.policy.provider.as_deref())
         .or(config.settings.default_provider.as_deref())
         .ok_or(SelectedProviderFailure::ProviderNotSelected)?;
     let model_id = config
         .session_settings
         .as_ref()
         .map(|settings| settings.model.as_str())
-        .or(config.workspace.policy.model.as_deref())
         .or(config.settings.default_model.as_deref())
         .ok_or(SelectedProviderFailure::ModelNotSelected)?;
     let provider = config

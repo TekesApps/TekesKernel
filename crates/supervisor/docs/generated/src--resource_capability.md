@@ -66,19 +66,19 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::resource_capability::tests::RecordingInput::compact](../../src/resource_capability.rs#L720) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::resource_capability::tests::RecordingInput::select_permission](../../src/resource_capability.rs#L731) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::source](../../src/resource_capability.rs#L770) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::session_catalog_controls_command_expansion](../../src/resource_capability.rs#L781) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::capabilities_are_separate_and_run_submits_one_keyed_input](../../src/resource_capability.rs#L801) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input](../../src/resource_capability.rs#L835) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::permission_verb_in_an_expanded_catalog_body_is_the_same_control_request](../../src/resource_capability.rs#L881) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::production_permission_selection_persists_the_mode_under_the_session_folder](../../src/resource_capability.rs#L931) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::RecordingDelivery](../../src/resource_capability.rs#L1001) | struct_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::RecordingDelivery::session_metadata_changed](../../src/resource_capability.rs#L1007) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::RecordingDelivery::prompt](../../src/resource_capability.rs#L1011) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::RecordingDelivery::cancel](../../src/resource_capability.rs#L1027) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::RecordingDelivery::rename](../../src/resource_capability.rs#L1036) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::command_attachments_follow_the_expanded_text_in_request_order](../../src/resource_capability.rs#L1052) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::resource_capability::tests::compact_verb_maps_to_the_manual_compaction_request_not_an_input](../../src/resource_capability.rs#L1161) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::source](../../src/resource_capability.rs#L769) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::session_catalog_controls_command_expansion](../../src/resource_capability.rs#L780) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::capabilities_are_separate_and_run_submits_one_keyed_input](../../src/resource_capability.rs#L800) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input](../../src/resource_capability.rs#L834) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::permission_verb_in_an_expanded_catalog_body_is_the_same_control_request](../../src/resource_capability.rs#L880) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::production_permission_selection_persists_the_mode_under_the_session_folder](../../src/resource_capability.rs#L929) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::RecordingDelivery](../../src/resource_capability.rs#L999) | struct_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::RecordingDelivery::session_metadata_changed](../../src/resource_capability.rs#L1005) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::RecordingDelivery::prompt](../../src/resource_capability.rs#L1009) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::RecordingDelivery::cancel](../../src/resource_capability.rs#L1025) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::RecordingDelivery::rename](../../src/resource_capability.rs#L1034) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::command_attachments_follow_the_expanded_text_in_request_order](../../src/resource_capability.rs#L1050) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::resource_capability::tests::compact_verb_maps_to_the_manual_compaction_request_not_an_input](../../src/resource_capability.rs#L1158) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -293,7 +293,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `commands_run_with_catalog` | `keyed.text.trim` | [231](../../src/resource_capability.rs#L231) | receiver-type-required |
 | `commands_run_with_catalog` | `request.attachments.is_empty` | [232](../../src/resource_capability.rs#L232), [251](../../src/resource_capability.rs#L251), [261](../../src/resource_capability.rs#L261) | receiver-type-required |
 | `commands_run_with_catalog` | `ResourceCapabilityError::Delivery` | [233](../../src/resource_capability.rs#L233), [252](../../src/resource_capability.rs#L252) | external-constructor-callback-or-unresolved |
-| `commands_run_with_catalog` | `ProductionRouteFailure::new` | [234](../../src/resource_capability.rs#L234), [253](../../src/resource_capability.rs#L253) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `commands_run_with_catalog` | `ProductionRouteFailure::new` | [234](../../src/resource_capability.rs#L234), [253](../../src/resource_capability.rs#L253) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `commands_run_with_catalog` | `empty_details` | [237](../../src/resource_capability.rs#L237), [256](../../src/resource_capability.rs#L256) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
 | `commands_run_with_catalog` | `self.input.compact` | [241](../../src/resource_capability.rs#L241) | receiver-type-required |
 | `commands_run_with_catalog` | `permission_verb_mode` | [242](../../src/resource_capability.rs#L242) | [tekes-supervisor::resource_capability::permission_verb_mode](../../src/resource_capability.rs#L95) |
@@ -315,7 +315,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_extension_payload` | `bad_request` | [310](../../src/resource_capability.rs#L310) | [tekes-supervisor::resource_capability::bad_request](../../src/resource_capability.rs#L672) |
 | `extension_failure_is_exact` | `base_failure_is_exact` | [320](../../src/resource_capability.rs#L320), [322](../../src/resource_capability.rs#L322) | [tekes-supervisor::resource_capability::base_failure_is_exact](../../src/resource_capability.rs#L651) |
 | `extension_failure_is_exact` | `resource_failure_is_exact` | [323](../../src/resource_capability.rs#L323) | [tekes-supervisor::resource_capability::resource_failure_is_exact](../../src/resource_capability.rs#L628) |
-| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1949) |
+| `extension_failure_is_exact` | `production_failure_is_exact_for` | [324](../../src/resource_capability.rs#L324) | [tekes-supervisor::endpoint_host::production_failure_is_exact_for](../../src/endpoint_host.rs#L1810) |
 | `execute` | `request.operation.as_str` | [333](../../src/resource_capability.rs#L333) | receiver-type-required |
 | `execute` | `encode_result` | [334](../../src/resource_capability.rs#L334), [335](../../src/resource_capability.rs#L335), [352](../../src/resource_capability.rs#L352) | [tekes-supervisor::resource_capability::encode_result](../../src/resource_capability.rs#L593) |
 | `execute` | `self.skills_list` | [334](../../src/resource_capability.rs#L334) | receiver-type-required |
@@ -356,7 +356,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `deliver` | `self.delivery                     .prompt(                         &input.session_id,                         &timestamp,                         &origin,                         &MaterializedPrompt {                             blocks,                             attachments: references,                             files: Vec::new(),                         },                         false,                     )                     .map_err` | [444](../../src/resource_capability.rs#L444) | receiver-type-required |
 | `deliver` | `self.delivery                     .prompt` | [444](../../src/resource_capability.rs#L444) | receiver-type-required |
 | `map_prompt_materialize_error` | `bad_request` | [470](../../src/resource_capability.rs#L470) | [tekes-supervisor::resource_capability::bad_request](../../src/resource_capability.rs#L672) |
-| `map_prompt_materialize_error` | `ProductionRouteFailure::new` | [471](../../src/resource_capability.rs#L471), [476](../../src/resource_capability.rs#L476), [481](../../src/resource_capability.rs#L481) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `map_prompt_materialize_error` | `ProductionRouteFailure::new` | [471](../../src/resource_capability.rs#L471), [476](../../src/resource_capability.rs#L476), [481](../../src/resource_capability.rs#L481) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `map_prompt_materialize_error` | `json_details` | [474](../../src/resource_capability.rs#L474), [479](../../src/resource_capability.rs#L479), [484](../../src/resource_capability.rs#L484) | [tekes-supervisor::resource_capability::json_details](../../src/resource_capability.rs#L667) |
 | `map_prompt_materialize_error` | `internal_failure` | [486](../../src/resource_capability.rs#L486) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
 | `submit` | `self.deliver` | [495](../../src/resource_capability.rs#L495) | receiver-type-required |
@@ -400,7 +400,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encode_result` | `serde_json::to_vec(value).map_err` | [594](../../src/resource_capability.rs#L594) | receiver-type-required |
 | `encode_result` | `serde_json::to_vec` | [594](../../src/resource_capability.rs#L594) | external-constructor-callback-or-unresolved |
 | `encode_result` | `internal_failure` | [594](../../src/resource_capability.rs#L594), [595](../../src/resource_capability.rs#L595) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
-| `map_resource_failure` | `ProductionRouteFailure::new` | [601](../../src/resource_capability.rs#L601), [604](../../src/resource_capability.rs#L604), [611](../../src/resource_capability.rs#L611), [622](../../src/resource_capability.rs#L622) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `map_resource_failure` | `ProductionRouteFailure::new` | [601](../../src/resource_capability.rs#L601), [604](../../src/resource_capability.rs#L604), [611](../../src/resource_capability.rs#L611), [622](../../src/resource_capability.rs#L622) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `map_resource_failure` | `empty_details` | [601](../../src/resource_capability.rs#L601), [607](../../src/resource_capability.rs#L607) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
 | `map_resource_failure` | `json_details` | [614](../../src/resource_capability.rs#L614) | [tekes-supervisor::resource_capability::json_details](../../src/resource_capability.rs#L667) |
 | `map_resource_failure` | `internal_failure` | [618](../../src/resource_capability.rs#L618) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
@@ -426,11 +426,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `json_details` | `IJsonValue::parse` | [668](../../src/resource_capability.rs#L668) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `json_details` | `serde_json::to_vec(value).expect` | [668](../../src/resource_capability.rs#L668) | receiver-type-required |
 | `json_details` | `serde_json::to_vec` | [668](../../src/resource_capability.rs#L668) | external-constructor-callback-or-unresolved |
-| `bad_request` | `ProductionRouteFailure::new` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `bad_request` | `ProductionRouteFailure::new` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `bad_request` | `empty_details` | [673](../../src/resource_capability.rs#L673) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
-| `internal_failure` | `ProductionRouteFailure::new` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `internal_failure` | `ProductionRouteFailure::new` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `internal_failure` | `empty_details` | [677](../../src/resource_capability.rs#L677) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
-| `unsupported` | `ProductionRouteFailure::new` | [681](../../src/resource_capability.rs#L681) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L517) |
+| `unsupported` | `ProductionRouteFailure::new` | [681](../../src/resource_capability.rs#L681) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
 | `unsupported` | `IJsonValue::parse(&serde_json::to_vec(&json!({"operation":operation})).expect("JSON"))             .expect` | [684](../../src/resource_capability.rs#L684) | receiver-type-required |
 | `unsupported` | `IJsonValue::parse` | [684](../../src/resource_capability.rs#L684) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `unsupported` | `serde_json::to_vec(&json!({"operation":operation})).expect` | [684](../../src/resource_capability.rs#L684) | receiver-type-required |
@@ -453,185 +453,185 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `catalog` | `EffectiveInstructions::default` | [759](../../src/resource_capability.rs#L759) | external-constructor-callback-or-unresolved |
 | `catalog` | `effective.commands.insert` | [760](../../src/resource_capability.rs#L760) | receiver-type-required |
 | `catalog` | `"review.md".to_owned` | [760](../../src/resource_capability.rs#L760) | receiver-type-required |
-| `catalog` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             folder_authority: None,             format: 1,             sources,             effective,         })         .expect` | [761](../../src/resource_capability.rs#L761) | receiver-type-required |
+| `catalog` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             format: 1,             sources,             effective,         })         .expect` | [761](../../src/resource_capability.rs#L761) | receiver-type-required |
 | `catalog` | `ResourceCatalog::from_snapshot` | [761](../../src/resource_capability.rs#L761) | external-constructor-callback-or-unresolved |
-| `source` | `path.to_owned` | [773](../../src/resource_capability.rs#L773) | receiver-type-required |
-| `source` | `content.to_owned` | [775](../../src/resource_capability.rs#L775) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `ClientResourceService::new` | [783](../../src/resource_capability.rs#L783) | external-constructor-callback-or-unresolved |
-| `session_catalog_controls_command_expansion` | `ResourceCatalog::default` | [783](../../src/resource_capability.rs#L783) | external-constructor-callback-or-unresolved |
-| `session_catalog_controls_command_expansion` | `RecordingInput::default` | [783](../../src/resource_capability.rs#L783) | external-constructor-callback-or-unresolved |
-| `session_catalog_controls_command_expansion` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [785](../../src/resource_capability.rs#L785) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `"review".to_owned` | [786](../../src/resource_capability.rs#L786) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `"src/main.rs".to_owned` | [787](../../src/resource_capability.rs#L787) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `"session-command".to_owned` | [788](../../src/resource_capability.rs#L788) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `Vec::new` | [789](../../src/resource_capability.rs#L789) | external-constructor-callback-or-unresolved |
-| `session_catalog_controls_command_expansion` | `service             .commands_run_with_catalog(&catalog(), &request, "uid:501")             .expect` | [792](../../src/resource_capability.rs#L792) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `service             .commands_run_with_catalog` | [792](../../src/resource_capability.rs#L792) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `catalog` | [793](../../src/resource_capability.rs#L793) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
-| `session_catalog_controls_command_expansion` | `service.input.calls.lock().expect` | [795](../../src/resource_capability.rs#L795) | receiver-type-required |
-| `session_catalog_controls_command_expansion` | `service.input.calls.lock` | [795](../../src/resource_capability.rs#L795) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `ClientResourceService::new` | [802](../../src/resource_capability.rs#L802) | external-constructor-callback-or-unresolved |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `catalog` | [802](../../src/resource_capability.rs#L802) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `RecordingInput::default` | [802](../../src/resource_capability.rs#L802) | external-constructor-callback-or-unresolved |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service             .commands_run(                 &CommandRunRequest {                     session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                     name: "review".to_owned(),                     arguments: "'src/lib.rs'".to_owned(),                     key: "command-1".to_owned(),                     attachments: Vec::new(),                 },                 "uid:501",             )             .expect` | [812](../../src/resource_capability.rs#L812) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service             .commands_run` | [812](../../src/resource_capability.rs#L812) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [815](../../src/resource_capability.rs#L815) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"review".to_owned` | [816](../../src/resource_capability.rs#L816) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"'src/lib.rs'".to_owned` | [817](../../src/resource_capability.rs#L817) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"command-1".to_owned` | [818](../../src/resource_capability.rs#L818) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `Vec::new` | [819](../../src/resource_capability.rs#L819) | external-constructor-callback-or-unresolved |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service.input.calls.lock().expect` | [825](../../src/resource_capability.rs#L825) | receiver-type-required |
-| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service.input.calls.lock` | [825](../../src/resource_capability.rs#L825) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `ClientResourceService::new` | [836](../../src/resource_capability.rs#L836) | external-constructor-callback-or-unresolved |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `catalog` | [836](../../src/resource_capability.rs#L836) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `RecordingInput::default` | [836](../../src/resource_capability.rs#L836) | external-constructor-callback-or-unresolved |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.commands_run` | [845](../../src/resource_capability.rs#L845) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [847](../../src/resource_capability.rs#L847) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `name.to_owned` | [848](../../src/resource_capability.rs#L848) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `arguments.to_owned` | [849](../../src/resource_capability.rs#L849) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `key.to_owned` | [850](../../src/resource_capability.rs#L850) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `Vec::new` | [851](../../src/resource_capability.rs#L851) | external-constructor-callback-or-unresolved |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "read-only", "perm-1").expect` | [856](../../src/resource_capability.rs#L856) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run` | [856](../../src/resource_capability.rs#L856), [861](../../src/resource_capability.rs#L861), [863](../../src/resource_capability.rs#L863) | external-constructor-callback-or-unresolved |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "yolo", "perm-2").expect_err` | [861](../../src/resource_capability.rs#L861) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "", "perm-3").expect_err` | [863](../../src/resource_capability.rs#L863) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.input.permissions.lock().expect` | [865](../../src/resource_capability.rs#L865) | receiver-type-required |
-| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.input.permissions.lock` | [865](../../src/resource_capability.rs#L865) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `EffectiveInstructions::default` | [889](../../src/resource_capability.rs#L889) | external-constructor-callback-or-unresolved |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `effective.commands.insert` | [890](../../src/resource_capability.rs#L890), [891](../../src/resource_capability.rs#L891) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"lock.md".to_owned` | [890](../../src/resource_capability.rs#L890) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"lock-talk.md".to_owned` | [891](../../src/resource_capability.rs#L891) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ClientResourceService::new` | [892](../../src/resource_capability.rs#L892) | external-constructor-callback-or-unresolved |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {                 folder_authority: None,                 format: 1,                 sources,                 effective,             })             .expect` | [893](../../src/resource_capability.rs#L893) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ResourceCatalog::from_snapshot` | [893](../../src/resource_capability.rs#L893) | external-constructor-callback-or-unresolved |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `RecordingInput::default` | [900](../../src/resource_capability.rs#L900) | external-constructor-callback-or-unresolved |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service                 .commands_run(                     &CommandRunRequest {                         session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                         name: name.to_owned(),                         arguments: arguments.to_owned(),                         key: key.to_owned(),                         attachments: Vec::new(),                     },                     "uid:501",                 )                 .expect` | [903](../../src/resource_capability.rs#L903) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service                 .commands_run` | [903](../../src/resource_capability.rs#L903) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [906](../../src/resource_capability.rs#L906) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `name.to_owned` | [907](../../src/resource_capability.rs#L907) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `arguments.to_owned` | [908](../../src/resource_capability.rs#L908) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `key.to_owned` | [909](../../src/resource_capability.rs#L909) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `Vec::new` | [910](../../src/resource_capability.rs#L910) | external-constructor-callback-or-unresolved |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.permissions.lock().expect` | [918](../../src/resource_capability.rs#L918) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.permissions.lock` | [918](../../src/resource_capability.rs#L918) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.calls.lock().expect` | [921](../../src/resource_capability.rs#L921) | receiver-type-required |
-| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.calls.lock` | [921](../../src/resource_capability.rs#L921) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `tempfile::tempdir().expect` | [932](../../src/resource_capability.rs#L932) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `tempfile::tempdir` | [932](../../src/resource_capability.rs#L932) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all(root.path().join("threads").join(session)).expect` | [935](../../src/resource_capability.rs#L935) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all` | [935](../../src/resource_capability.rs#L935), [936](../../src/resource_capability.rs#L936) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join("threads").join` | [935](../../src/resource_capability.rs#L935) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join` | [935](../../src/resource_capability.rs#L935), [936](../../src/resource_capability.rs#L936) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path` | [935](../../src/resource_capability.rs#L935), [936](../../src/resource_capability.rs#L936), [942](../../src/resource_capability.rs#L942), [966](../../src/resource_capability.rs#L966) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all(root.path().join("archive").join(archived)).expect` | [936](../../src/resource_capability.rs#L936) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join("archive").join` | [936](../../src/resource_capability.rs#L936) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Arc::new` | [937](../../src/resource_capability.rs#L937), [940](../../src/resource_capability.rs#L940), [941](../../src/resource_capability.rs#L941) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `RecordingDelivery` | [937](../../src/resource_capability.rs#L937) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Mutex::new` | [937](../../src/resource_capability.rs#L937) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Vec::new` | [937](../../src/resource_capability.rs#L937), [953](../../src/resource_capability.rs#L953) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `EndpointCommandInputAuthority::new` | [938](../../src/resource_capability.rs#L938) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Arc::clone` | [939](../../src/resource_capability.rs#L939) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Ok` | [940](../../src/resource_capability.rs#L940) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `"2026-08-29T00:00:00.000Z".to_owned` | [940](../../src/resource_capability.rs#L940) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `SessionInputAdmissionAuthority::new` | [941](../../src/resource_capability.rs#L941) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().to_path_buf` | [942](../../src/resource_capability.rs#L942) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `ClientResourceService::new` | [945](../../src/resource_capability.rs#L945) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `catalog` | [945](../../src/resource_capability.rs#L945) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `service.commands_run` | [947](../../src/resource_capability.rs#L947) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `session_id.to_owned` | [949](../../src/resource_capability.rs#L949) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `"permission".to_owned` | [950](../../src/resource_capability.rs#L950) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `mode.to_owned` | [951](../../src/resource_capability.rs#L951) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run(session, "read-only").expect` | [963](../../src/resource_capability.rs#L963) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run` | [963](../../src/resource_capability.rs#L963), [977](../../src/resource_capability.rs#L977), [988](../../src/resource_capability.rs#L988) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::read(             root.path()                 .join("threads")                 .join(session)                 .join("permission-mode.json"),         )         .expect` | [965](../../src/resource_capability.rs#L965) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::read` | [965](../../src/resource_capability.rs#L965) | external-constructor-callback-or-unresolved |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join("threads")                 .join(session)                 .join` | [966](../../src/resource_capability.rs#L966) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join("threads")                 .join` | [966](../../src/resource_capability.rs#L966) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join` | [966](../../src/resource_capability.rs#L966) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run(archived, "read-only").expect_err` | [977](../../src/resource_capability.rs#L977) | receiver-type-required |
-| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run("018f0000-0000-7000-8000-000000000074", "read-only").expect_err` | [988](../../src/resource_capability.rs#L988) | receiver-type-required |
-| `session_metadata_changed` | `self.1.lock().expect("metadata").push` | [1008](../../src/resource_capability.rs#L1008) | receiver-type-required |
-| `session_metadata_changed` | `self.1.lock().expect` | [1008](../../src/resource_capability.rs#L1008) | receiver-type-required |
-| `session_metadata_changed` | `self.1.lock` | [1008](../../src/resource_capability.rs#L1008) | receiver-type-required |
-| `session_metadata_changed` | `session_id.to_owned` | [1008](../../src/resource_capability.rs#L1008) | receiver-type-required |
-| `prompt` | `self.0.lock().expect` | [1019](../../src/resource_capability.rs#L1019) | receiver-type-required |
-| `prompt` | `self.0.lock` | [1019](../../src/resource_capability.rs#L1019) | receiver-type-required |
-| `prompt` | `Some` | [1020](../../src/resource_capability.rs#L1020) | external-constructor-callback-or-unresolved |
-| `prompt` | `session_id.to_owned` | [1020](../../src/resource_capability.rs#L1020) | receiver-type-required |
-| `prompt` | `origin.clone` | [1020](../../src/resource_capability.rs#L1020) | receiver-type-required |
-| `prompt` | `prompt.clone` | [1020](../../src/resource_capability.rs#L1020) | receiver-type-required |
-| `prompt` | `Ok` | [1021](../../src/resource_capability.rs#L1021) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `tempfile::tempdir().expect` | [1053](../../src/resource_capability.rs#L1053) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `tempfile::tempdir` | [1053](../../src/resource_capability.rs#L1053) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().join("threads").join` | [1055](../../src/resource_capability.rs#L1055) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().join` | [1055](../../src/resource_capability.rs#L1055) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path` | [1055](../../src/resource_capability.rs#L1055), [1063](../../src/resource_capability.rs#L1063), [1072](../../src/resource_capability.rs#L1072) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::create_dir_all(folder.join("assets")).expect` | [1056](../../src/resource_capability.rs#L1056) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::create_dir_all` | [1056](../../src/resource_capability.rs#L1056) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `folder.join` | [1056](../../src/resource_capability.rs#L1056), [1062](../../src/resource_capability.rs#L1062) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json_canonicalizer::to_vec(&genesis).expect` | [1060](../../src/resource_capability.rs#L1060) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json_canonicalizer::to_vec` | [1060](../../src/resource_capability.rs#L1060) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `ledger.push` | [1061](../../src/resource_capability.rs#L1061) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::write(folder.join("main.jsonl"), ledger).expect` | [1062](../../src/resource_capability.rs#L1062) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::write` | [1062](../../src/resource_capability.rs#L1062) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `AttachmentAuthority::open` | [1063](../../src/resource_capability.rs#L1063) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `attachments             .upload_file(session, "notes.txt", Some("text/plain"), "aGVsbG8gZmlsZQ==")             .expect` | [1064](../../src/resource_capability.rs#L1064) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `attachments             .upload_file` | [1064](../../src/resource_capability.rs#L1064) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Some` | [1065](../../src/resource_capability.rs#L1065) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Arc::new` | [1067](../../src/resource_capability.rs#L1067), [1070](../../src/resource_capability.rs#L1070), [1071](../../src/resource_capability.rs#L1071) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `RecordingDelivery` | [1067](../../src/resource_capability.rs#L1067) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Mutex::new` | [1067](../../src/resource_capability.rs#L1067) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Vec::new` | [1067](../../src/resource_capability.rs#L1067) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `EndpointCommandInputAuthority::new(             Arc::clone(&delivery) as Arc<dyn SessionDeliveryAuthority>,             Arc::new(&#124;&#124; Ok("2026-08-29T00:00:00.000Z".to_owned())),             Arc::new(SessionInputAdmissionAuthority::new(                 root.path().to_path_buf(),             )),         )         .with_attachment_authority` | [1068](../../src/resource_capability.rs#L1068) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `EndpointCommandInputAuthority::new` | [1068](../../src/resource_capability.rs#L1068) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Arc::clone` | [1069](../../src/resource_capability.rs#L1069) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `Ok` | [1070](../../src/resource_capability.rs#L1070) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"2026-08-29T00:00:00.000Z".to_owned` | [1070](../../src/resource_capability.rs#L1070) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `SessionInputAdmissionAuthority::new` | [1071](../../src/resource_capability.rs#L1071) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().to_path_buf` | [1072](../../src/resource_capability.rs#L1072) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `ClientResourceService::new` | [1076](../../src/resource_capability.rs#L1076) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `catalog` | [1076](../../src/resource_capability.rs#L1076) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `session.to_owned` | [1079](../../src/resource_capability.rs#L1079) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"review".to_owned` | [1080](../../src/resource_capability.rs#L1080) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"src/lib.rs".to_owned` | [1081](../../src/resource_capability.rs#L1081) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"command-attachments-1".to_owned` | [1082](../../src/resource_capability.rs#L1082) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `service.commands_run(&request, "uid:501").expect` | [1094](../../src/resource_capability.rs#L1094) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `service.commands_run` | [1094](../../src/resource_capability.rs#L1094) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `delivery.0.lock().expect` | [1096](../../src/resource_capability.rs#L1096) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `delivery.0.lock` | [1096](../../src/resource_capability.rs#L1096) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `recorded.as_ref().expect` | [1097](../../src/resource_capability.rs#L1097) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `recorded.as_ref` | [1097](../../src/resource_capability.rs#L1097) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value(&prompt.blocks[1]).expect` | [1108](../../src/resource_capability.rs#L1108) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value` | [1108](../../src/resource_capability.rs#L1108), [1111](../../src/resource_capability.rs#L1111) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value(&prompt.blocks[2]).expect` | [1111](../../src/resource_capability.rs#L1111) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `EffectiveInstructions::default` | [1133](../../src/resource_capability.rs#L1133) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `effective.commands.insert` | [1134](../../src/resource_capability.rs#L1134) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"compact.md".to_owned` | [1134](../../src/resource_capability.rs#L1134) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             folder_authority: None,             format: 1,             sources,             effective,         })         .expect` | [1135](../../src/resource_capability.rs#L1135) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `ResourceCatalog::from_snapshot` | [1135](../../src/resource_capability.rs#L1135) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `service             .commands_run_with_catalog(                 &compact_catalog,                 &CommandRunRequest {                     name: "compact".to_owned(),                     arguments: String::new(),                     key: "command-compact-attachments".to_owned(),                     ..request.clone()                 },                 "uid:501",             )             .expect_err` | [1142](../../src/resource_capability.rs#L1142) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `service             .commands_run_with_catalog` | [1142](../../src/resource_capability.rs#L1142) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"compact".to_owned` | [1146](../../src/resource_capability.rs#L1146) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `String::new` | [1147](../../src/resource_capability.rs#L1147) | external-constructor-callback-or-unresolved |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `"command-compact-attachments".to_owned` | [1148](../../src/resource_capability.rs#L1148) | receiver-type-required |
-| `command_attachments_follow_the_expanded_text_in_request_order` | `request.clone` | [1149](../../src/resource_capability.rs#L1149) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `EffectiveInstructions::default` | [1168](../../src/resource_capability.rs#L1168) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `effective.commands.insert` | [1169](../../src/resource_capability.rs#L1169), [1170](../../src/resource_capability.rs#L1170) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"compact.md".to_owned` | [1169](../../src/resource_capability.rs#L1169) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"compact-now.md".to_owned` | [1170](../../src/resource_capability.rs#L1170) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ClientResourceService::new` | [1177](../../src/resource_capability.rs#L1177) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ResourceCatalog::from_snapshot(&snapshot).expect` | [1178](../../src/resource_capability.rs#L1178) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ResourceCatalog::from_snapshot` | [1178](../../src/resource_capability.rs#L1178) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `RecordingInput::default` | [1179](../../src/resource_capability.rs#L1179) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service                 .commands_run(                     &CommandRunRequest {                         session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                         name: name.to_owned(),                         arguments: String::new(),                         key: key.to_owned(),                         attachments: Vec::new(),                     },                     "uid:501",                 )                 .expect` | [1182](../../src/resource_capability.rs#L1182) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service                 .commands_run` | [1182](../../src/resource_capability.rs#L1182) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [1185](../../src/resource_capability.rs#L1185) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `name.to_owned` | [1186](../../src/resource_capability.rs#L1186) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `String::new` | [1187](../../src/resource_capability.rs#L1187) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `key.to_owned` | [1188](../../src/resource_capability.rs#L1188) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `Vec::new` | [1189](../../src/resource_capability.rs#L1189) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `run` | [1195](../../src/resource_capability.rs#L1195), [1198](../../src/resource_capability.rs#L1198) | external-constructor-callback-or-unresolved |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.compacts.lock().expect` | [1200](../../src/resource_capability.rs#L1200) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.compacts.lock` | [1200](../../src/resource_capability.rs#L1200) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.calls.lock().expect` | [1201](../../src/resource_capability.rs#L1201) | receiver-type-required |
-| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.calls.lock` | [1201](../../src/resource_capability.rs#L1201) | receiver-type-required |
+| `source` | `path.to_owned` | [772](../../src/resource_capability.rs#L772) | receiver-type-required |
+| `source` | `content.to_owned` | [774](../../src/resource_capability.rs#L774) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `ClientResourceService::new` | [782](../../src/resource_capability.rs#L782) | external-constructor-callback-or-unresolved |
+| `session_catalog_controls_command_expansion` | `ResourceCatalog::default` | [782](../../src/resource_capability.rs#L782) | external-constructor-callback-or-unresolved |
+| `session_catalog_controls_command_expansion` | `RecordingInput::default` | [782](../../src/resource_capability.rs#L782) | external-constructor-callback-or-unresolved |
+| `session_catalog_controls_command_expansion` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [784](../../src/resource_capability.rs#L784) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `"review".to_owned` | [785](../../src/resource_capability.rs#L785) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `"src/main.rs".to_owned` | [786](../../src/resource_capability.rs#L786) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `"session-command".to_owned` | [787](../../src/resource_capability.rs#L787) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `Vec::new` | [788](../../src/resource_capability.rs#L788) | external-constructor-callback-or-unresolved |
+| `session_catalog_controls_command_expansion` | `service             .commands_run_with_catalog(&catalog(), &request, "uid:501")             .expect` | [791](../../src/resource_capability.rs#L791) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `service             .commands_run_with_catalog` | [791](../../src/resource_capability.rs#L791) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `catalog` | [792](../../src/resource_capability.rs#L792) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
+| `session_catalog_controls_command_expansion` | `service.input.calls.lock().expect` | [794](../../src/resource_capability.rs#L794) | receiver-type-required |
+| `session_catalog_controls_command_expansion` | `service.input.calls.lock` | [794](../../src/resource_capability.rs#L794) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `ClientResourceService::new` | [801](../../src/resource_capability.rs#L801) | external-constructor-callback-or-unresolved |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `catalog` | [801](../../src/resource_capability.rs#L801) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `RecordingInput::default` | [801](../../src/resource_capability.rs#L801) | external-constructor-callback-or-unresolved |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service             .commands_run(                 &CommandRunRequest {                     session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                     name: "review".to_owned(),                     arguments: "'src/lib.rs'".to_owned(),                     key: "command-1".to_owned(),                     attachments: Vec::new(),                 },                 "uid:501",             )             .expect` | [811](../../src/resource_capability.rs#L811) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service             .commands_run` | [811](../../src/resource_capability.rs#L811) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [814](../../src/resource_capability.rs#L814) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"review".to_owned` | [815](../../src/resource_capability.rs#L815) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"'src/lib.rs'".to_owned` | [816](../../src/resource_capability.rs#L816) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `"command-1".to_owned` | [817](../../src/resource_capability.rs#L817) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `Vec::new` | [818](../../src/resource_capability.rs#L818) | external-constructor-callback-or-unresolved |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service.input.calls.lock().expect` | [824](../../src/resource_capability.rs#L824) | receiver-type-required |
+| `capabilities_are_separate_and_run_submits_one_keyed_input` | `service.input.calls.lock` | [824](../../src/resource_capability.rs#L824) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `ClientResourceService::new` | [835](../../src/resource_capability.rs#L835) | external-constructor-callback-or-unresolved |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `catalog` | [835](../../src/resource_capability.rs#L835) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `RecordingInput::default` | [835](../../src/resource_capability.rs#L835) | external-constructor-callback-or-unresolved |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.commands_run` | [844](../../src/resource_capability.rs#L844) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [846](../../src/resource_capability.rs#L846) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `name.to_owned` | [847](../../src/resource_capability.rs#L847) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `arguments.to_owned` | [848](../../src/resource_capability.rs#L848) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `key.to_owned` | [849](../../src/resource_capability.rs#L849) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `Vec::new` | [850](../../src/resource_capability.rs#L850) | external-constructor-callback-or-unresolved |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "read-only", "perm-1").expect` | [855](../../src/resource_capability.rs#L855) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run` | [855](../../src/resource_capability.rs#L855), [860](../../src/resource_capability.rs#L860), [862](../../src/resource_capability.rs#L862) | external-constructor-callback-or-unresolved |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "yolo", "perm-2").expect_err` | [860](../../src/resource_capability.rs#L860) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `run("permission", "", "perm-3").expect_err` | [862](../../src/resource_capability.rs#L862) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.input.permissions.lock().expect` | [864](../../src/resource_capability.rs#L864) | receiver-type-required |
+| `permission_verb_selects_the_mode_without_a_catalog_entry_or_an_input` | `service.input.permissions.lock` | [864](../../src/resource_capability.rs#L864) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `EffectiveInstructions::default` | [888](../../src/resource_capability.rs#L888) | external-constructor-callback-or-unresolved |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `effective.commands.insert` | [889](../../src/resource_capability.rs#L889), [890](../../src/resource_capability.rs#L890) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"lock.md".to_owned` | [889](../../src/resource_capability.rs#L889) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"lock-talk.md".to_owned` | [890](../../src/resource_capability.rs#L890) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ClientResourceService::new` | [891](../../src/resource_capability.rs#L891) | external-constructor-callback-or-unresolved |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {                 format: 1,                 sources,                 effective,             })             .expect` | [892](../../src/resource_capability.rs#L892) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `ResourceCatalog::from_snapshot` | [892](../../src/resource_capability.rs#L892) | external-constructor-callback-or-unresolved |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `RecordingInput::default` | [898](../../src/resource_capability.rs#L898) | external-constructor-callback-or-unresolved |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service                 .commands_run(                     &CommandRunRequest {                         session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                         name: name.to_owned(),                         arguments: arguments.to_owned(),                         key: key.to_owned(),                         attachments: Vec::new(),                     },                     "uid:501",                 )                 .expect` | [901](../../src/resource_capability.rs#L901) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service                 .commands_run` | [901](../../src/resource_capability.rs#L901) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [904](../../src/resource_capability.rs#L904) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `name.to_owned` | [905](../../src/resource_capability.rs#L905) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `arguments.to_owned` | [906](../../src/resource_capability.rs#L906) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `key.to_owned` | [907](../../src/resource_capability.rs#L907) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `Vec::new` | [908](../../src/resource_capability.rs#L908) | external-constructor-callback-or-unresolved |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.permissions.lock().expect` | [916](../../src/resource_capability.rs#L916) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.permissions.lock` | [916](../../src/resource_capability.rs#L916) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.calls.lock().expect` | [919](../../src/resource_capability.rs#L919) | receiver-type-required |
+| `permission_verb_in_an_expanded_catalog_body_is_the_same_control_request` | `service.input.calls.lock` | [919](../../src/resource_capability.rs#L919) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `tempfile::tempdir().expect` | [930](../../src/resource_capability.rs#L930) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `tempfile::tempdir` | [930](../../src/resource_capability.rs#L930) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all(root.path().join("threads").join(session)).expect` | [933](../../src/resource_capability.rs#L933) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all` | [933](../../src/resource_capability.rs#L933), [934](../../src/resource_capability.rs#L934) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join("threads").join` | [933](../../src/resource_capability.rs#L933) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join` | [933](../../src/resource_capability.rs#L933), [934](../../src/resource_capability.rs#L934) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path` | [933](../../src/resource_capability.rs#L933), [934](../../src/resource_capability.rs#L934), [940](../../src/resource_capability.rs#L940), [964](../../src/resource_capability.rs#L964) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::create_dir_all(root.path().join("archive").join(archived)).expect` | [934](../../src/resource_capability.rs#L934) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().join("archive").join` | [934](../../src/resource_capability.rs#L934) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Arc::new` | [935](../../src/resource_capability.rs#L935), [938](../../src/resource_capability.rs#L938), [939](../../src/resource_capability.rs#L939) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `RecordingDelivery` | [935](../../src/resource_capability.rs#L935) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Mutex::new` | [935](../../src/resource_capability.rs#L935) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Vec::new` | [935](../../src/resource_capability.rs#L935), [951](../../src/resource_capability.rs#L951) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `EndpointCommandInputAuthority::new` | [936](../../src/resource_capability.rs#L936) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Arc::clone` | [937](../../src/resource_capability.rs#L937) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `Ok` | [938](../../src/resource_capability.rs#L938) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `"2026-08-29T00:00:00.000Z".to_owned` | [938](../../src/resource_capability.rs#L938) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `SessionInputAdmissionAuthority::new` | [939](../../src/resource_capability.rs#L939) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path().to_path_buf` | [940](../../src/resource_capability.rs#L940) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `ClientResourceService::new` | [943](../../src/resource_capability.rs#L943) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `catalog` | [943](../../src/resource_capability.rs#L943) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `service.commands_run` | [945](../../src/resource_capability.rs#L945) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `session_id.to_owned` | [947](../../src/resource_capability.rs#L947) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `"permission".to_owned` | [948](../../src/resource_capability.rs#L948) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `mode.to_owned` | [949](../../src/resource_capability.rs#L949) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run(session, "read-only").expect` | [961](../../src/resource_capability.rs#L961) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run` | [961](../../src/resource_capability.rs#L961), [975](../../src/resource_capability.rs#L975), [986](../../src/resource_capability.rs#L986) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::read(             root.path()                 .join("threads")                 .join(session)                 .join("permission-mode.json"),         )         .expect` | [963](../../src/resource_capability.rs#L963) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `std::fs::read` | [963](../../src/resource_capability.rs#L963) | external-constructor-callback-or-unresolved |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join("threads")                 .join(session)                 .join` | [964](../../src/resource_capability.rs#L964) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join("threads")                 .join` | [964](../../src/resource_capability.rs#L964) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `root.path()                 .join` | [964](../../src/resource_capability.rs#L964) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run(archived, "read-only").expect_err` | [975](../../src/resource_capability.rs#L975) | receiver-type-required |
+| `production_permission_selection_persists_the_mode_under_the_session_folder` | `run("018f0000-0000-7000-8000-000000000074", "read-only").expect_err` | [986](../../src/resource_capability.rs#L986) | receiver-type-required |
+| `session_metadata_changed` | `self.1.lock().expect("metadata").push` | [1006](../../src/resource_capability.rs#L1006) | receiver-type-required |
+| `session_metadata_changed` | `self.1.lock().expect` | [1006](../../src/resource_capability.rs#L1006) | receiver-type-required |
+| `session_metadata_changed` | `self.1.lock` | [1006](../../src/resource_capability.rs#L1006) | receiver-type-required |
+| `session_metadata_changed` | `session_id.to_owned` | [1006](../../src/resource_capability.rs#L1006) | receiver-type-required |
+| `prompt` | `self.0.lock().expect` | [1017](../../src/resource_capability.rs#L1017) | receiver-type-required |
+| `prompt` | `self.0.lock` | [1017](../../src/resource_capability.rs#L1017) | receiver-type-required |
+| `prompt` | `Some` | [1018](../../src/resource_capability.rs#L1018) | external-constructor-callback-or-unresolved |
+| `prompt` | `session_id.to_owned` | [1018](../../src/resource_capability.rs#L1018) | receiver-type-required |
+| `prompt` | `origin.clone` | [1018](../../src/resource_capability.rs#L1018) | receiver-type-required |
+| `prompt` | `prompt.clone` | [1018](../../src/resource_capability.rs#L1018) | receiver-type-required |
+| `prompt` | `Ok` | [1019](../../src/resource_capability.rs#L1019) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `tempfile::tempdir().expect` | [1051](../../src/resource_capability.rs#L1051) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `tempfile::tempdir` | [1051](../../src/resource_capability.rs#L1051) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().join("threads").join` | [1053](../../src/resource_capability.rs#L1053) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().join` | [1053](../../src/resource_capability.rs#L1053) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path` | [1053](../../src/resource_capability.rs#L1053), [1061](../../src/resource_capability.rs#L1061), [1070](../../src/resource_capability.rs#L1070) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::create_dir_all(folder.join("assets")).expect` | [1054](../../src/resource_capability.rs#L1054) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::create_dir_all` | [1054](../../src/resource_capability.rs#L1054) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `folder.join` | [1054](../../src/resource_capability.rs#L1054), [1060](../../src/resource_capability.rs#L1060) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json_canonicalizer::to_vec(&genesis).expect` | [1058](../../src/resource_capability.rs#L1058) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json_canonicalizer::to_vec` | [1058](../../src/resource_capability.rs#L1058) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `ledger.push` | [1059](../../src/resource_capability.rs#L1059) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::write(folder.join("main.jsonl"), ledger).expect` | [1060](../../src/resource_capability.rs#L1060) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `std::fs::write` | [1060](../../src/resource_capability.rs#L1060) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `AttachmentAuthority::open` | [1061](../../src/resource_capability.rs#L1061) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `attachments             .upload_file(session, "notes.txt", Some("text/plain"), "aGVsbG8gZmlsZQ==")             .expect` | [1062](../../src/resource_capability.rs#L1062) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `attachments             .upload_file` | [1062](../../src/resource_capability.rs#L1062) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Some` | [1063](../../src/resource_capability.rs#L1063) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Arc::new` | [1065](../../src/resource_capability.rs#L1065), [1068](../../src/resource_capability.rs#L1068), [1069](../../src/resource_capability.rs#L1069) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `RecordingDelivery` | [1065](../../src/resource_capability.rs#L1065) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Mutex::new` | [1065](../../src/resource_capability.rs#L1065) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Vec::new` | [1065](../../src/resource_capability.rs#L1065) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `EndpointCommandInputAuthority::new(             Arc::clone(&delivery) as Arc<dyn SessionDeliveryAuthority>,             Arc::new(&#124;&#124; Ok("2026-08-29T00:00:00.000Z".to_owned())),             Arc::new(SessionInputAdmissionAuthority::new(                 root.path().to_path_buf(),             )),         )         .with_attachment_authority` | [1066](../../src/resource_capability.rs#L1066) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `EndpointCommandInputAuthority::new` | [1066](../../src/resource_capability.rs#L1066) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Arc::clone` | [1067](../../src/resource_capability.rs#L1067) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `Ok` | [1068](../../src/resource_capability.rs#L1068) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"2026-08-29T00:00:00.000Z".to_owned` | [1068](../../src/resource_capability.rs#L1068) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `SessionInputAdmissionAuthority::new` | [1069](../../src/resource_capability.rs#L1069) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `root.path().to_path_buf` | [1070](../../src/resource_capability.rs#L1070) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `ClientResourceService::new` | [1074](../../src/resource_capability.rs#L1074) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `catalog` | [1074](../../src/resource_capability.rs#L1074) | [tekes-supervisor::resource_capability::tests::catalog](../../src/resource_capability.rs#L747) |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `session.to_owned` | [1077](../../src/resource_capability.rs#L1077) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"review".to_owned` | [1078](../../src/resource_capability.rs#L1078) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"src/lib.rs".to_owned` | [1079](../../src/resource_capability.rs#L1079) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"command-attachments-1".to_owned` | [1080](../../src/resource_capability.rs#L1080) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `service.commands_run(&request, "uid:501").expect` | [1092](../../src/resource_capability.rs#L1092) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `service.commands_run` | [1092](../../src/resource_capability.rs#L1092) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `delivery.0.lock().expect` | [1094](../../src/resource_capability.rs#L1094) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `delivery.0.lock` | [1094](../../src/resource_capability.rs#L1094) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `recorded.as_ref().expect` | [1095](../../src/resource_capability.rs#L1095) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `recorded.as_ref` | [1095](../../src/resource_capability.rs#L1095) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value(&prompt.blocks[1]).expect` | [1106](../../src/resource_capability.rs#L1106) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value` | [1106](../../src/resource_capability.rs#L1106), [1109](../../src/resource_capability.rs#L1109) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `serde_json::to_value(&prompt.blocks[2]).expect` | [1109](../../src/resource_capability.rs#L1109) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `EffectiveInstructions::default` | [1131](../../src/resource_capability.rs#L1131) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `effective.commands.insert` | [1132](../../src/resource_capability.rs#L1132) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"compact.md".to_owned` | [1132](../../src/resource_capability.rs#L1132) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `ResourceCatalog::from_snapshot(&InstructionSnapshot {             format: 1,             sources,             effective,         })         .expect` | [1133](../../src/resource_capability.rs#L1133) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `ResourceCatalog::from_snapshot` | [1133](../../src/resource_capability.rs#L1133) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `service             .commands_run_with_catalog(                 &compact_catalog,                 &CommandRunRequest {                     name: "compact".to_owned(),                     arguments: String::new(),                     key: "command-compact-attachments".to_owned(),                     ..request.clone()                 },                 "uid:501",             )             .expect_err` | [1139](../../src/resource_capability.rs#L1139) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `service             .commands_run_with_catalog` | [1139](../../src/resource_capability.rs#L1139) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"compact".to_owned` | [1143](../../src/resource_capability.rs#L1143) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `String::new` | [1144](../../src/resource_capability.rs#L1144) | external-constructor-callback-or-unresolved |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `"command-compact-attachments".to_owned` | [1145](../../src/resource_capability.rs#L1145) | receiver-type-required |
+| `command_attachments_follow_the_expanded_text_in_request_order` | `request.clone` | [1146](../../src/resource_capability.rs#L1146) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `EffectiveInstructions::default` | [1165](../../src/resource_capability.rs#L1165) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `effective.commands.insert` | [1166](../../src/resource_capability.rs#L1166), [1167](../../src/resource_capability.rs#L1167) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"compact.md".to_owned` | [1166](../../src/resource_capability.rs#L1166) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"compact-now.md".to_owned` | [1167](../../src/resource_capability.rs#L1167) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ClientResourceService::new` | [1173](../../src/resource_capability.rs#L1173) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ResourceCatalog::from_snapshot(&snapshot).expect` | [1174](../../src/resource_capability.rs#L1174) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `ResourceCatalog::from_snapshot` | [1174](../../src/resource_capability.rs#L1174) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `RecordingInput::default` | [1175](../../src/resource_capability.rs#L1175) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service                 .commands_run(                     &CommandRunRequest {                         session_id: "018f0000-0000-7000-8000-000000000011".to_owned(),                         name: name.to_owned(),                         arguments: String::new(),                         key: key.to_owned(),                         attachments: Vec::new(),                     },                     "uid:501",                 )                 .expect` | [1178](../../src/resource_capability.rs#L1178) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service                 .commands_run` | [1178](../../src/resource_capability.rs#L1178) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `"018f0000-0000-7000-8000-000000000011".to_owned` | [1181](../../src/resource_capability.rs#L1181) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `name.to_owned` | [1182](../../src/resource_capability.rs#L1182) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `String::new` | [1183](../../src/resource_capability.rs#L1183) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `key.to_owned` | [1184](../../src/resource_capability.rs#L1184) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `Vec::new` | [1185](../../src/resource_capability.rs#L1185) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `run` | [1191](../../src/resource_capability.rs#L1191), [1194](../../src/resource_capability.rs#L1194) | external-constructor-callback-or-unresolved |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.compacts.lock().expect` | [1196](../../src/resource_capability.rs#L1196) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.compacts.lock` | [1196](../../src/resource_capability.rs#L1196) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.calls.lock().expect` | [1197](../../src/resource_capability.rs#L1197) | receiver-type-required |
+| `compact_verb_maps_to_the_manual_compaction_request_not_an_input` | `service.input.calls.lock` | [1197](../../src/resource_capability.rs#L1197) | receiver-type-required |

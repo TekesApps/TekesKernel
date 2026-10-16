@@ -13,6 +13,7 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
     # TEKES_TEST_IMAGE_PROMPT only enables the extra image/command steps.
     import http.server,threading
     provider_requests=[]
+    tool_state={"issued":False,"mcp":False}
     class MockProvider(http.server.BaseHTTPRequestHandler):
         def do_POST(self):
             provider_requests.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
@@ -20,13 +21,27 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
                 'output':[{'type':'message','role':'assistant','phase':'final_answer','status':'completed',
                 'content':[{'type':'output_text','text':'KERNEL_IMAGE_RESPONSE_OK'}]}],
                 'usage':{'input_tokens':10,'output_tokens':4,'total_tokens':14}}}
+            if 'Read file-page.txt' in json.dumps(provider_requests[-1]) and not tool_state['issued']:
+                tool_state['issued']=True
+                event['response']['output']=[{'type':'function_call','id':'fc-read','call_id':'call-read',
+                    'name':'read','arguments':json.dumps({'path':'file-page.txt','offset':1,'limit':10})}]
+            if 'Call host MCP echo' in json.dumps(provider_requests[-1]) and not tool_state['mcp']:
+                tool_state['mcp']=True
+                event['response']['output']=[{'type':'function_call','id':'fc-mcp','call_id':'call-mcp',
+                    'name':'mcp__fixture__echo','arguments':json.dumps({'value':'HOST_STDIO_MCP_OK'})}]
             self.send_response(200);self.send_header('Content-Type','text/event-stream');self.end_headers()
+            if event['response']['output'][0]['type']=='function_call':
+                item=event['response']['output'][0]
+                added={'type':'response.output_item.added','output_index':0,'item':dict(item,arguments='')}
+                done={'type':'response.function_call_arguments.done','output_index':0,'arguments':item['arguments']}
+                for frame in (added,done):self.wfile.write(('data: '+json.dumps(frame)+'\n\n').encode())
             self.wfile.write(('data: '+json.dumps(event)+'\n\n').encode())
         def log_message(self,*args): pass
     mock_provider=http.server.ThreadingHTTPServer(('127.0.0.1',0),MockProvider)
     threading.Thread(target=mock_provider.serve_forever,daemon=True).start()
     providers['providers'][0]['endpoint']=f'http://127.0.0.1:{mock_provider.server_port}/v1'
     launch.write_text(json.dumps(dict(format=1,bootstrap_version=1,root=root,worker=str(repo/'target/debug/tekes-worker'),listen='127.0.0.1:0',providers=providers,credential_bindings={'openai-main':'TEKES_BUILTIN_TEST_KEY'})))
+    launch.chmod(0o600)
     token=secrets.token_bytes(32)
     env=os.environ.copy();env['HOME']=temporary
     env.pop('TEKES_KERNEL_ENDPOINT_TOKEN',None);env.pop('TEKES_BUILTIN_TEST_KEY',None)
@@ -72,6 +87,23 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
              'kind':'input','origin_key':'prompt','origin_tuple':dict(origin,key='prompt',op='submit'),
              'seq':2,'ts':'2026-08-26T09:00:01.000Z','v':1}]
         (folder/'main.jsonl').write_text(''.join(json.dumps(e,sort_keys=True,separators=(',',':'))+'\n' for e in events))
+    if os.environ.get('TEKES_TEST_CLI_HOST'):
+        server=base/'mcp.py'
+        server.write_text('''import json,sys,os
+with open(sys.argv[1],'a') as log:log.write(str(os.getpid())+'\\n')
+for line in sys.stdin:
+ r=json.loads(line)
+ if 'id' not in r:continue
+ method=r['method']
+ if method=='initialize':result={'protocolVersion':'2025-11-25','capabilities':{'tools':{}},'serverInfo':{'name':'host-fixture','version':'1'}}
+ elif method=='tools/list':result={'tools':[{'name':'echo','description':'Echo','inputSchema':{'type':'object','properties':{'value':{'type':'string'}},'required':['value'],'additionalProperties':False},'annotations':{'readOnlyHint':True}}]}
+ elif method=='tools/call':result={'content':[{'type':'text','text':r['params']['arguments']['value']}],'isError':False}
+ else:result={}
+ print(json.dumps({'jsonrpc':'2.0','id':r['id'],'result':result}),flush=True)
+''')
+        config['local_mcp']={'fixture':{'command':[sys.executable,'-u',str(server),str(base/'mcp-pids')]}}
+        launch.write_text(json.dumps(config))
+        command=[sys.executable,str(repo/'host/kernel_cli.py'),'--launch',str(launch),'--supervisor',str(repo/'target/debug/tekes-supervisor')]
     p=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
     p.stdin.write(bootstrap);p.stdin.flush()
     try:
@@ -126,272 +158,111 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
         draft_catalog=call('models.list',{})
         assert draft_catalog['groups'] and draft_catalog['routable'],draft_catalog
         print('DRAFT_MODELS_ROUTABLE')
-        workspace=call('workspace.create',{'path':str(workspace_path)})['workspace']
-        if os.environ.get('TEKES_FILE_TRANSFER_WORKER'):
-            from urllib.parse import urlparse, unquote
-            import hashlib
-            content=bytes(range(256))*1000
-            (workspace_path/'binary-preview.dat').write_bytes(content)
-            cache=base/'preview-cache';cache.mkdir()
-            transfer={'workspace':{'_0':{'baseURL':ready['url'],
-                'headers':{'Authorization':'Bearer '+base64.urlsafe_b64encode(token).decode().rstrip('=')},
-                'identity':{'workspace':{'workspaceID':workspace['workspaceId'],'path':'binary-preview.dat'}},
-                'cacheDirectory':cache.as_uri()+'/', 'maximumBytes':1024*1024*1024,'timeout':15}}}
-            result=subprocess.run([os.environ['TEKES_FILE_TRANSFER_WORKER']],input=json.dumps(transfer),capture_output=True,text=True,timeout=20)
-            assert result.returncode==0, result.stdout
-            receipt=json.loads(result.stdout)['receipt']
-            assert receipt['size']==len(content),receipt
-            assert receipt['revision']==hashlib.sha256(content).hexdigest(),receipt
-            assert Path(unquote(urlparse(receipt['fileURL']).path)).read_bytes()==content
-            print('SWIFT_FILE_TRANSFER_BINARY_ROUNDTRIP_OK')
-            transfer['workspace']['_0']['identity']={'sessionAttachment':{'sessionID':attachment_session,'attachmentID':'sha256:'+digest}}
-            result=subprocess.run([os.environ['TEKES_FILE_TRANSFER_WORKER']],input=json.dumps(transfer),capture_output=True,text=True,timeout=20)
-            assert result.returncode==0,result.stdout
-            receipt=json.loads(result.stdout)['receipt']
-            assert receipt['attachment']['attachmentId']=='sha256:'+digest,receipt
-            assert receipt['attachment']['width']==1 and receipt['attachment']['height']==1,receipt
-            assert receipt['revision']==digest,receipt
-            assert Path(unquote(urlparse(receipt['fileURL']).path)).read_bytes()==image
-            print('SWIFT_ATTACHMENT_TRANSFER_ROUNDTRIP_OK')
-            call('workspace.archiveSession',{'sessionId':attachment_session})
-        session=call('session.create',{'workspaceId':workspace['workspaceId']})['sessionId']
-        print('SESSION_CREATED',session)
-        (workspace_path/'file-page.txt').write_text('first\nsecond\n')
-        file_stat=call('session.files.stat',{'sessionId':session,'path':'file-page.txt'})
-        text_page=call('session.files.read',{'sessionId':session,'path':'file-page.txt','offset':2,'limit':1})
-        byte_page=call('session.files.readBytes',{'sessionId':session,'path':'file-page.txt','offset':6,'limit':6})
-        assert file_stat['bytes']==13,file_stat
-        assert text_page['text']=='second' and text_page['lines']==1 and text_page['eof'],text_page
-        assert base64.b64decode(byte_page['data'])==b'second' and not byte_page['eof'],byte_page
-        assert file_stat['version']==text_page['version']==byte_page['version']
-        print('SESSION_FILE_PAGES_REAL_PROCESS_OK')
-        if os.environ.get('TEKES_TEST_IMAGE_PROMPT'):
-            import time,hashlib
-            image_data='iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII='
-            receipt=call('session.prompt',{'sessionId':session,'mode':'queue','content':[{'type':'image','mediaType':'image/png','data':image_data}]})
-            assert receipt['accepted'],receipt
-            image_id='sha256:'+hashlib.sha256(base64.b64decode(image_data)).hexdigest()
-            attachment=call('session.attachment',{'sessionId':session,'attachmentId':image_id})
-            assert attachment['data']==image_data,attachment
-            deadline=time.monotonic()+15
-            while not provider_requests and time.monotonic()<deadline: time.sleep(.1)
-            assert provider_requests,'Worker did not reach local provider'
-            assert 'data:image/png;base64,'+image_data in json.dumps(provider_requests[0]),'Provider request omitted image'
-            print('IMAGE_PROMPT_TO_LOCAL_PROVIDER_OK')
-            deadline=time.monotonic()+15
-            while time.monotonic()<deadline:
-                events=[json.loads(line) for line in (Path(root)/'threads'/session/'main.jsonl').read_text().splitlines()]
-                if any(e.get('kind')=='output' and 'KERNEL_IMAGE_RESPONSE_OK' in json.dumps(e) for e in events): break
-                time.sleep(.1)
-            else: raise AssertionError('Provider answer was not committed to the semantic ledger')
-            print('IMAGE_PROVIDER_ANSWER_COMMITTED_OK')
-        project=workspace_path/'resource-project'
-        skill=project/'.agents/skills/project-only/SKILL.md'
-        skill.parent.mkdir(parents=True)
-        skill.write_text('---\nname: project-only\ndescription: Project scoped skill\n---\nProject rules.\n')
-        command_file=project/'.agents/commands/project-only.md'
-        command_file.parent.mkdir(parents=True)
-        command_file.write_text('---\ndescription: Project scoped command\n---\nReview $ARGUMENTS\n')
-        resource_workspace=call('workspace.create',{'path':str(project)})['workspace']
-        resource_session=call('session.create',{'workspaceId':resource_workspace['workspaceId']})['sessionId']
-        assert call('skills/list',{'sessionId':resource_session})['skills']==[],'untrusted project skill enabled'
-        trust=call('folders.trust.request',{'path':str(project),'expectedRevision':0})
-        import pty,time
-        child,terminal=pty.fork()
-        if child==0:
-            os.execve(command[0],[command[0],'--folder-trust','grant',root,trust['requestId'],'smoke-grant','1'],env)
-        output=b'';confirmed=False;terminal_open=True;deadline=time.monotonic()+10
-        try:
-            while time.monotonic()<deadline:
-                if terminal_open and select.select([terminal],[],[],.1)[0]:
-                    try: chunk=os.read(terminal,8192)
-                    except OSError: chunk=b''
-                    if not chunk: terminal_open=False
-                    output+=chunk
-                    if b'to continue:' in output and not confirmed:
-                        os.write(terminal,('approve '+json.dumps(trust['requestId'])+'\n').encode());confirmed=True
-                if not terminal_open: time.sleep(.01)
-                done,status=os.waitpid(child,os.WNOHANG)
-                if done: child=0;assert os.waitstatus_to_exitcode(status)==0,output;break
-            if child:
-                done,status=os.waitpid(child,os.WNOHANG)
-                assert done and os.waitstatus_to_exitcode(status)==0,output
-                child=0
-            assert confirmed,'CLI did not request explicit consent'
-        finally:
-            os.close(terminal)
-            if child:
-                try: os.kill(child,9)
-                except ProcessLookupError: pass
-                os.waitpid(child,0)
-        assert call('folders.trust.status',{'path':str(project)})['folder']['trusted']
-        print('HOST_FOLDER_TRUST_AND_DEFAULT_DENY_OK')
-        skills=call('skills/list',{'sessionId':resource_session})['skills']
-        assert skills == [{'name':'project-only','description':'Project scoped skill','modelInvocable':True}],skills
-        commands=call('commands/list',{'sessionId':resource_session})['commands']
-        assert [item['name'] for item in commands] == ['project-only'],commands
-        assert call('skills/list',{'sessionId':session})['skills'] == []
-        assert call('commands/list',{'sessionId':session})['commands'] == []
-        print('SESSION_RESOURCES_ISOLATED')
-        if os.environ.get('TEKES_TEST_IMAGE_PROMPT'):
-            command_key=secrets.token_hex(16)
-            command_receipt=call('commands/run',{'session_id':resource_session,'name':'project-only','arguments':'command-fixture','key':command_key})
-            assert command_receipt['commandId']==command_key,command_receipt
-            retry=call('commands/run',{'session_id':resource_session,'name':'project-only','arguments':'command-fixture','key':command_key})
-            assert retry['commandId']==command_key,retry
-            deadline=time.monotonic()+15
-            while time.monotonic()<deadline:
-                if any('Review command-fixture' in json.dumps(request) for request in provider_requests): break
-                time.sleep(.1)
-            else: raise AssertionError('Expanded project command did not reach provider')
-            print('PROJECT_COMMAND_EXECUTION_TO_PROVIDER_OK')
-            records=[json.loads(line) for line in (Path(root)/'threads'/resource_session/'main.jsonl').read_text().splitlines()]
-            command_inputs=[e for e in records if e.get('kind')=='input' and e.get('origin_tuple',{}).get('key')==command_key]
-            assert len(command_inputs)==1, 'Repeated command produced duplicate durable input'
-            print('COMMAND_RETRY_SINGLE_INPUT_OK')
-        initial_catalog=call('session.models',{'sessionId':session})
-        assert initial_catalog['routable'],initial_catalog
-        print('DEFAULT_MODEL_ROUTABLE')
-        call('session.selectModel',{'sessionId':session,'provider':'openai','model':'gpt-5'})
-        catalog=call('session.models',{'sessionId':session})
-        assert catalog['routable'] and catalog['groups'],catalog;print('MODEL_CATALOG_ROUTABLE')
-        # A secondary folder must never inherit the workspace's primary cwd
-        # in either the grouped list or the actual native inventory stream.
-        first=base/'group-first';first.mkdir()
-        second=base/'group-second';second.mkdir()
-        grouped_workspace=call('workspace.create',{'path':str(first)})['workspace']['workspaceId']
-        call('workspace.addFolder',{'workspaceId':grouped_workspace,'path':str(second)})
-        grouped_session=call('session.create',{'workspaceId':grouped_workspace,'cwd':str(second)})['sessionId']
-        grouped_ledger=Path(root)/'threads'/grouped_session/'main.jsonl'
-        original_ledger=grouped_ledger.read_bytes()
-        assert json.loads(original_ledger.splitlines()[0])['cwd']==str(second)
-        grouped=call('folders.list',{})
-        assert next(item for item in grouped['items'] if item['path']==str(second))['sessionIds']==[grouped_session],grouped
-        moved=base/'group-moved';second.rename(moved)
-        assert call('folders.relocate',{'previousPath':str(second),'path':str(moved)})=={'relocated':True}
-        grouped=call('folders.list',{})
-        assert next(item for item in grouped['items'] if item['path']==str(moved))['sessionIds']==[grouped_session],grouped
-        assert not any(item['path']==str(second) for item in grouped['items']),grouped
-        assert grouped_ledger.read_bytes()==original_ledger
-        assert not call('folders.trust.status',{'path':str(moved)})['folder']['trusted']
-        print('FOLDER_GROUPING_RELOCATION_AND_LEDGER_PRESERVATION_OK')
-        # The new path/session API is independent of the compatibility template.
-        native_first=base/'native-first';native_first.mkdir()
-        native_second=base/'native-second';native_second.mkdir()
-        (native_second/'session-only.txt').write_text('session folder authority\n')
-        native_session=call('session.create',{'cwd':str(native_first)})['sessionId']
-        native_peer=call('session.create',{'cwd':str(native_first)})['sessionId']
-        baseline=call('session.listFolders',{'sessionId':native_session})
-        assert baseline['revision']==1 and len(baseline['folders'])==1,baseline
-        added=call('session.addFolder',{'sessionId':native_session,'expectedRevision':1,'path':str(native_second)})
-        assert added['applies']=='next-launch',added
-        assert len(call('session.listFolders',{'sessionId':native_peer})['folders'])==1
-        removed=call('session.removeFolder',{'sessionId':native_session,'expectedRevision':added['revision'],'path':str(native_first)})
-        assert removed['revision']>added['revision'],removed
-        page=call('session.files.read',{'sessionId':native_session,'path':'session-only.txt','offset':1,'limit':1})
-        assert page['text']=='session folder authority',page
-        native_ledger=Path(root)/'threads'/native_session/'main.jsonl'
-        before_relocation=native_ledger.read_bytes()
-        native_moved=base/'native-moved';native_second.rename(native_moved)
-        assert call('folders.relocate',{'previousPath':str(native_second),'path':str(native_moved)})=={'relocated':True}
-        current=call('session.listFolders',{'sessionId':native_session})
-        assert [folder['path'] for folder in current['folders']]==[str(native_moved)],current
-        assert native_ledger.read_bytes()==before_relocation
-        assert not call('folders.trust.status',{'path':str(native_moved)})['folder']['trusted']
-        grouped=call('folders.list',{})
-        assert next(item for item in grouped['items'] if item['path']==str(native_moved))['sessionIds']==[native_session],grouped
-        assert len(call('session.listFolders',{'sessionId':native_peer})['folders'])==1
-        print('SESSION_FOLDER_SCOPE_AND_CATALOG_ONLY_RELOCATION_REAL_PROCESS_OK')
-        import socket,struct
-        from urllib.parse import urlparse
-        url=urlparse(ready['url']); sock=socket.create_connection((url.hostname,url.port),timeout=5)
-        key=base64.b64encode(secrets.token_bytes(16)).decode()
-        auth=base64.urlsafe_b64encode(token).decode().rstrip('=')
-        sock.sendall((f'GET /api/remote.mux HTTP/1.1\r\nHost: {url.netloc}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\nAuthorization: Bearer {auth}\r\n\r\n').encode())
-        stream=sock.makefile('rb');status=stream.readline();assert b' 101 ' in status,status
-        while stream.readline()!=b'\r\n':pass
-        def receive():
-            header=stream.read(2);assert len(header)==2
-            length=header[1]&127
-            if length==126:length=struct.unpack('!H',stream.read(2))[0]
-            elif length==127:length=struct.unpack('!Q',stream.read(8))[0]
-            return json.loads(stream.read(length))
-        frame=receive();assert frame['type']=='ready' and frame['host']['protocolVersion']==3,frame
-        print('MUX_READY',frame['host']['product'])
-        payload=json.dumps({'type':'open','streamId':'workspace-smoke','target':{'kind':'workspace'}}).encode()
-        mask=secrets.token_bytes(4);sock.sendall(bytes([129,128|len(payload)])+mask+bytes(b^mask[i%4] for i,b in enumerate(payload)))
-        frame=receive();assert frame['frame']['type']=='baseline' and isinstance(frame['frame']['generation'],str),frame;print('WORKSPACE_BASELINE_OK')
-        captured=[{'kind':'workspace','frame':frame['frame']}]
-        for kind,target in [('inventory',{'kind':'session-inventory'}),('control',{'kind':'session-control'}),('actionables',{'kind':'actionables'}),('journal',{'kind':'session-journal','address':{'sessionId':session},'maxMessages':7})]:
-            payload=json.dumps({'type':'open','streamId':kind,'target':target}).encode()
-            mask=secrets.token_bytes(4)
-            header=bytes([129,128|len(payload)]) if len(payload)<126 else bytes([129,254])+struct.pack('!H',len(payload))
-            sock.sendall(header+mask+bytes(b^mask[i%4] for i,b in enumerate(payload)))
-            while True:
-                value=receive()
-                if value.get('streamId')==kind:break
-                other=value.get('streamId')
-                assert other in ('workspace-smoke','inventory','control','actionables','journal'),value
-                captured.append({'kind':'workspace' if other=='workspace-smoke' else other,'frame':value['frame']})
-            captured.append({'kind':kind,'frame':value['frame']})
-            if kind=='inventory':
-                row=next(row for row in value['frame']['snapshot']['items'] if row['sessionId']==grouped_session)
-                assert row['cwd']==str(moved),row
-                print('FOLDER_INVENTORY_RELOCATED_CWD_OK')
-                current=moved
-                for index,method in enumerate(('folders.relocate','workspace.relocate')):
-                    destination=base/f'group-moved-{index}';current.rename(destination)
-                    relocation={'previousPath':str(current),'path':str(destination)}
-                    if method=='workspace.relocate':relocation['workspaceId']=grouped_workspace
-                    result=call(method,relocation)
-                    if method=='folders.relocate':assert result=={'relocated':True},result
-                    else:assert result['workspace']['workspaceId']==grouped_workspace,result
-                    sock.settimeout(10)
-                    try:
-                        while True:
-                            delta=receive()
-                            other=delta['streamId']
-                            captured.append({'kind':'workspace' if other=='workspace-smoke' else other,'frame':delta['frame']})
-                            row=delta['frame'].get('session',{})
-                            if other=='inventory' and row.get('sessionId')==grouped_session and row['cwd']==str(destination):
-                                break
-                    finally:
-                        sock.settimeout(None)
-                    assert grouped_ledger.read_bytes()==original_ledger
-                    current=destination
-                print('FOLDER_RELOCATION_LIVE_INVENTORY_UPSERT_OK')
-            if kind=='journal':
-                assert value['frame']['snapshot']['windowLimit']==7,value
-                # N1: the context projections newer than the frozen cut follow the snapshot as
-                # projection frames at their true clock sequence (the snapshot label is clamped
-                # to the cut, which a client holding the newer control baseline does not take).
-                snapshot=value['frame']['snapshot'];cut=snapshot['throughSequence'];label=snapshot['projections']['asOfSeq']
-                sock.settimeout(1.0);replayed=[]
-                try:
-                    while True:
-                        more=receive()
-                        if more.get('streamId')!='journal':continue
-                        captured.append({'kind':'journal','frame':more['frame']});replayed.append(more['frame'])
-                except (socket.timeout,TimeoutError):pass
-                sock.settimeout(None)
-                assert [f['type'] for f in replayed]==['projection']*2,replayed
-                assert [f['frame']['key'] for f in replayed]==['contextDetails','contextUsage'],replayed
-                for f in replayed:
-                    assert f['frame']['seq']>cut and f['frame']['seq']>label,(f,cut,label)
-                    assert f['frame']['value']==snapshot['projections']['values'][f['frame']['key']],f
-                print('JOURNAL_CONTEXT_PROJECTION_REPLAY_OK',cut,label,[f['frame']['seq'] for f in replayed])
-            if kind=='journal' and os.environ.get('TEKES_TEST_IMAGE_PROMPT'):
-                assert 'KERNEL_IMAGE_RESPONSE_OK' in json.dumps(value['frame']), 'Committed answer missing from journal baseline'
-                print('IMAGE_ANSWER_CLIENT_BASELINE_OK')
-        if os.environ.get('TEKES_BUILTIN_CLIENT_FRAMES'):
-            Path(os.environ['TEKES_BUILTIN_CLIENT_FRAMES']).write_text(json.dumps(captured))
-        print('ALL_STREAM_BASELINES_OK')
-        stream.close();sock.close()
-        if os.environ.get('TEKES_NATIVE_CLIENT_EXEC'):
-            subprocess.run([os.environ['TEKES_NATIVE_CLIENT_EXEC'],ready['url'],str(workspace_path)],input=token.hex().encode(),env=env,check=True,timeout=20)
-        p.stdin.close();p.wait(timeout=15)
+        import time
+        (workspace_path/'file-page.txt').write_text('SESSION_EXECUTION_READ_OK\n')
+        # Poison all retired configuration before create and again before restart.
+        retired={'config/environments.json':b'corrupt environment','config/folders.json':b'corrupt catalog',
+            'workspaces/retired/workspace.json':b'corrupt workspace'}
+        for relative,content in retired.items():
+            path=Path(root)/relative;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(content)
+        execution={'cwd':str(workspace_path),'network':False,'allowed_tools':['read']}
+        if os.environ.get('TEKES_TEST_CLI_HOST'):
+            execution['mcp']=[{'name':'fixture','transport':{'type':'stdio','channel':'fixture'}}]
+            execution['allowed_tools'].append('mcp__fixture__echo')
+            execution['allowed_tools'].sort()
+        session=call('session.create',{'execution':execution,'identityProfile':'general'})['sessionId']
+        ledger=Path(root)/'threads'/session/'main.jsonl'
+        genesis=json.loads(ledger.read_text().splitlines()[0])
+        assert genesis['execution']==execution and genesis['min_reader']==5,genesis
+        assert not any(key in genesis for key in ('environment','folders','session_scope'))
+        page=call('session.files.read',{'sessionId':session,'path':'file-page.txt','offset':1,'limit':1})
+        assert page['text']=='SESSION_EXECUTION_READ_OK',page
+        receipt=call('session.prompt',{'sessionId':session,'mode':'queue','content':[{'type':'text','text':'Read file-page.txt'}]})
+        assert receipt['accepted'],receipt
+        def settled():
+            events=[json.loads(line) for line in ledger.read_text().splitlines()]
+            return any(event.get('kind')=='settle' and event.get('outcome')=='completed' for event in events)
+        deadline=time.monotonic()+30
+        while time.monotonic()<deadline and not settled():time.sleep(.1)
+        assert settled(),ledger.read_text()
+        assert len(provider_requests)>=2,provider_requests
+        assert tool_state['issued'] and any('SESSION_EXECUTION_READ_OK' in json.dumps(item) for item in provider_requests),'actual read result did not reach provider'
+        assert 'KERNEL_IMAGE_RESPONSE_OK' in ledger.read_text()
+        print('SESSION_EXECUTION_REAL_WORKER_AND_SANDBOXED_READ_OK')
+        if os.environ.get('TEKES_TEST_CLI_HOST'):
+            call('session.prompt',{'sessionId':session,'mode':'queue','content':[{'type':'text','text':'Call host MCP echo'}]})
+            deadline=time.monotonic()+30
+            while time.monotonic()<deadline and sum(json.loads(line).get('kind')=='settle' for line in ledger.read_text().splitlines())<2:time.sleep(.1)
+            assert tool_state['mcp'] and 'HOST_STDIO_MCP_OK' in ledger.read_text(),ledger.read_text()
+            assert any('HOST_STDIO_MCP_OK' in json.dumps(item) and 'function_call_output' in json.dumps(item) for item in provider_requests),provider_requests
+            print('STANDALONE_CLI_HOST_REAL_MCP_CALL_OK')
+        original_genesis=ledger.read_text().splitlines()[0]
+        # Open the actual mux, then reconnect after a full supervisor restart.
+        def inventory():
+            url=urlparse(ready['url']);sock=socket.create_connection((url.hostname,url.port),timeout=10)
+            key=base64.b64encode(secrets.token_bytes(16)).decode()
+            auth=base64.urlsafe_b64encode(token).decode().rstrip('=')
+            sock.sendall((f'GET /api/remote.mux HTTP/1.1\r\nHost: {url.netloc}\r\nUpgrade: websocket\r\nConnection: Upgrade\r\nSec-WebSocket-Version: 13\r\nSec-WebSocket-Key: {key}\r\nAuthorization: Bearer {auth}\r\n\r\n').encode())
+            stream=sock.makefile('rb')
+            try:
+                assert b' 101 ' in stream.readline()
+                while stream.readline()!=b'\r\n':pass
+                def receive():
+                    header=stream.read(2);assert len(header)==2
+                    length=header[1]&127
+                    if length==126:length=struct.unpack('!H',stream.read(2))[0]
+                    elif length==127:length=struct.unpack('!Q',stream.read(8))[0]
+                    return json.loads(stream.read(length))
+                frame=receive();assert frame['type']=='ready',frame
+                assert 'workspace-sync' not in frame['host']['capabilities'],frame
+                payload=json.dumps({'type':'open','streamId':'inventory','target':{'kind':'session-inventory'}}).encode()
+                mask=secrets.token_bytes(4)
+                header=bytes([129,128|len(payload)]) if len(payload)<126 else bytes([129,254])+struct.pack('!H',len(payload))
+                sock.sendall(header+mask+bytes(b^mask[i%4] for i,b in enumerate(payload)))
+                frame=receive()
+                rows=frame['frame']['snapshot']['items']
+                row=next(row for row in rows if row['sessionId']==session)
+                assert row['cwd']==str(workspace_path),row
+            finally:
+                stream.close();sock.close()
+        inventory()
+        p.stdin.close();p.wait(timeout=15);assert p.returncode==0,p.stderr.read()
+        def no_mcp_processes():
+            if not os.environ.get('TEKES_TEST_CLI_HOST'):return
+            for pid in (base/'mcp-pids').read_text().splitlines():
+                try:os.kill(int(pid),0)
+                except ProcessLookupError:continue
+                raise AssertionError('host left MCP process alive: '+pid)
+        no_mcp_processes()
+        p=subprocess.Popen(command,stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.PIPE,env=env)
+        p.stdin.write(bootstrap);p.stdin.flush()
+        assert select.select([p.stdout],[],[],20)[0],'restart readiness timeout'
+        line=p.stdout.readline();assert line,p.stderr.read()
+        ready=json.loads(line)
+        inventory()
+        assert ledger.read_text().splitlines()[0]==original_genesis
+        call('session.rename',{'sessionId':session,'title':'Execution restart verified'})
+        assert 'Execution restart verified' in ledger.read_text()
+        restart_prompt='Confirm execution after restart'
+        if os.environ.get('TEKES_TEST_CLI_HOST'):
+            tool_state['mcp']=False
+            restart_prompt='Call host MCP echo after restart'
+        call('session.prompt',{'sessionId':session,'mode':'queue','content':[{'type':'text','text':restart_prompt}]})
+        def completed_turns():
+            return sum(event.get('kind')=='settle' and event.get('outcome')=='completed'
+                for event in (json.loads(line) for line in ledger.read_text().splitlines()))
+        expected_turns=3 if os.environ.get('TEKES_TEST_CLI_HOST') else 2
+        deadline=time.monotonic()+30
+        while time.monotonic()<deadline and completed_turns()<expected_turns:time.sleep(.1)
+        assert completed_turns()==expected_turns,ledger.read_text()
+        for relative,content in retired.items():assert (Path(root)/relative).read_bytes()==content
+        print('SESSION_EXECUTION_RESTART_RECONNECT_AND_RETIRED_STATE_ISOLATION_OK')
+        p.stdin.close();p.wait(timeout=15);assert p.returncode==0,p.stderr.read()
+        no_mcp_processes()
+        if os.environ.get('TEKES_TEST_CLI_HOST'):
+            assert tool_state['mcp'] and len((base/'mcp-pids').read_text().splitlines())>=2
+            print('CLI_MCP_RESTART_AND_ALL_HOST_CHILDREN_REAPED_OK')
         print('EXIT',p.returncode)
-        if p.returncode: raise RuntimeError(p.stderr.read())
     finally:
-        if p.poll() is None: p.kill();p.wait()
+        if p.poll() is None:p.kill();p.wait()
         mock_provider.shutdown();mock_provider.server_close()

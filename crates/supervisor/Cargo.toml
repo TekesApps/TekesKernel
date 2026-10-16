@@ -14,9 +14,7 @@ engine = { path = "../engine" }
 libc.workspace = true
 mcp = { path = "../mcp" }
 profile = { path = "../profile" }
-plugins = { path = "../plugins" }
 provider = { path = "../provider" }
-schedule = { path = "../schedule" }
 schema = { path = "../schema" }
 serde.workspace = true
 serde_json.workspace = true
@@ -33,12 +31,12 @@ zeroize.workspace = true
 url.workspace = true
 uuid.workspace = true
 workspace-service = { path = "../workspace-service" }
-host-files = { path = "../host-files" }
 user-documents = { path = "../user-documents" }
 session-controls = { path = "../session-controls" }
 tempfile.workspace = true
 
 [dev-dependencies]
+test-support = { path = "../test-support" }
 tempfile.workspace = true
 
 [lints.rust]

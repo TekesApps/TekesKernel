@@ -183,32 +183,96 @@ pub fn read(path: &Path) -> Result<Vec<u8>, FixtureError> {
     })
 }
 
-/// Give synthetic fixture projects explicit host trust in a process-local store.
-/// The store outlives returned catalogs; no production authority is touched.
-pub fn trusted_resolver(
-    resolver: profile::InstructionResolver,
-    folders: &[impl AsRef<std::path::Path>],
-) -> profile::InstructionResolver {
-    static STATE: std::sync::OnceLock<tempfile::TempDir> = std::sync::OnceLock::new();
-    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-    let _guard = LOCK.lock().unwrap();
-    let root = STATE.get_or_init(|| tempfile::tempdir().unwrap());
-    let store = profile::FolderAuthorityStore::new(root.path());
-    for folder in folders {
-        if store
-            .status(folder.as_ref())
-            .is_ok_and(|record| record.trusted)
-        {
-            continue;
-        }
-        let revision = store.registry_revision().unwrap();
-        let request = format!("fixture-request-{revision}");
-        store.request(&request, revision, folder.as_ref()).unwrap();
-        store
-            .grant_from_host(&format!("fixture-grant-{revision}"), revision + 1, &request)
-            .unwrap();
+/// A real project outside every test Kernel root. Pure endpoint fixtures do
+/// not execute tools; launch fixtures supply their own explicit execution.
+pub fn execution_fixture() -> schema::ExecutionConfig {
+    static PROJECT: std::sync::OnceLock<tempfile::TempDir> = std::sync::OnceLock::new();
+    let project = PROJECT.get_or_init(|| tempfile::tempdir().unwrap());
+    serde_json::from_value(serde_json::json!({"cwd":project.path().canonicalize().unwrap()}))
+        .unwrap()
+}
+
+/// Author modern execution inputs for tests that launch real workers. This
+/// is fixture setup only: Kernel never reads this file or converts ledgers.
+pub fn freeze_execution_fixture(
+    repository: &profile::ConfigRepository,
+    roots: Vec<String>,
+    policy: Option<profile::ExecutionPolicy>,
+    selection: [Option<String>; 2],
+) -> Result<(), Box<dyn std::error::Error>> {
+    let policy = policy.unwrap_or_default();
+    let (cwd, read_roots) = roots.split_first().ok_or("fixture requires cwd")?;
+    let execution: schema::ExecutionConfig = serde_json::from_value(serde_json::json!({
+        "cwd":cwd,"read_roots":read_roots,"writable_roots":policy.writable_roots,
+        "toolchain_roots":policy.toolchain_roots,"network":policy.network,
+        "allowed_tools":policy.allowed_tools,"max_wall_seconds":policy.max_wall_seconds
+    }))?;
+    let execution = repository.normalize_execution(&execution)?;
+    std::fs::write(
+        repository.root().join("execution-fixture.json"),
+        serde_json::to_vec(&execution)?,
+    )?;
+    let [provider, model] = selection;
+    if provider.is_some() || model.is_some() {
+        let mut settings = repository.settings()?;
+        let previous = settings.revision;
+        settings.revision += 1;
+        settings.default_provider = provider;
+        settings.default_model = model;
+        repository.publish_settings(previous, &settings)?;
     }
-    resolver.with_folder_authority(root.path())
+    Ok(())
+}
+
+pub fn resolve_execution_fixture(
+    repository: &profile::ConfigRepository,
+    session: &str,
+    folder: Option<&Path>,
+) -> Result<profile::ConfigSnapshot, Box<dyn std::error::Error>> {
+    let execution: schema::ExecutionConfig = serde_json::from_slice(&std::fs::read(
+        repository.root().join("execution-fixture.json"),
+    )?)?;
+    Ok(repository.resolve_execution(session, &execution, folder)?)
+}
+
+/// Explicitly author a 0.9 genesis when reusing a generic ledger corpus as a
+/// worker fixture. Call this before launch, never on production data.
+pub fn bind_execution_fixture(repository: &profile::ConfigRepository, ledger: &Path) {
+    let bytes = std::fs::read(ledger).unwrap();
+    let split = bytes.iter().position(|byte| *byte == b'\n').unwrap();
+    let mut genesis: serde_json::Value = serde_json::from_slice(&bytes[..split]).unwrap();
+    if genesis.get("execution").is_some() {
+        return;
+    }
+    let execution: schema::ExecutionConfig = serde_json::from_slice(
+        &std::fs::read(repository.root().join("execution-fixture.json")).unwrap(),
+    )
+    .unwrap();
+    for field in [
+        "workspace",
+        "folder_binding",
+        "environment",
+        "folders",
+        "session_scope",
+    ] {
+        genesis.as_object_mut().unwrap().remove(field);
+    }
+    genesis["cwd"] = serde_json::json!(execution.cwd);
+    genesis["execution"] = serde_json::to_value(execution).unwrap();
+    genesis["min_reader"] = serde_json::json!(
+        genesis["min_reader"]
+            .as_u64()
+            .unwrap_or(1)
+            .max(schema::EXECUTION_READER)
+    );
+    let event = schema::Event::from_value(
+        schema::IJsonValue::parse(&serde_json::to_vec(&genesis).unwrap()).unwrap(),
+    )
+    .unwrap();
+    let mut output = event.canonical_bytes().unwrap();
+    output.push(b'\n');
+    output.extend_from_slice(&bytes[split + 1..]);
+    std::fs::write(ledger, output).unwrap();
 }
 
 #[cfg(test)]

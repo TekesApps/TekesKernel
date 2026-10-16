@@ -9,14 +9,6 @@ fn submission_is_durable_before_run_and_retry_keeps_the_original_selection() {
     let root = tempfile::tempdir().unwrap();
     let repo = ConfigRepository::open(root.path()).unwrap();
     let fixtures = test_support::FixtureRoot::discover().unwrap();
-    let mut workspace = profile::WorkspaceConfig::decode(
-        &fs::read(fixtures.join("config/workspace.canonical.json")).unwrap(),
-    )
-    .unwrap();
-    workspace.revision = 1;
-    workspace.policy = None;
-    workspace.cwd = vec![root.path().display().to_string()];
-    repo.publish_workspace(0, &workspace).unwrap();
     let mut providers = profile::ProvidersConfig::decode(
         &fs::read(fixtures.join("config/providers.canonical.json")).unwrap(),
     )
@@ -35,7 +27,7 @@ fn submission_is_durable_before_run_and_retry_keeps_the_original_selection() {
     endpoint
         .create_session(
             id,
-            &workspace.id,
+            &test_support::execution_fixture(),
             "creation-config",
             ResumePolicy::Never,
             "2026-09-04T00:00:00.000Z",
