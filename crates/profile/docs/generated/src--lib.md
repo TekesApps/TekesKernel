@@ -41,6 +41,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `FolderTrust` | `folder_authority::FolderTrust` | `pub` |
 | `FolderTrustReceipt` | `folder_authority::FolderTrustReceipt` | `pub` |
 | `CatalogFolder` | `folder_catalog::CatalogFolder` | `pub` |
+| `FolderCapture` | `folder_catalog::FolderCapture` | `pub` |
 | `FolderCatalog` | `folder_catalog::FolderCatalog` | `pub` |
 | `SessionConfig` | `folder_catalog::SessionConfig` | `pub` |
 | `EffectiveInstructions` | `instruction::EffectiveInstructions` | `pub` |

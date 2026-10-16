@@ -6,6 +6,16 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+- Folder edits now stage catalog changes behind the session ledger commit,
+  recover interrupted publications, and leave the catalog unchanged on a
+  rejected configuration or uncommitted append.
+- MCP stdio shutdown reaps an already exited group leader before retrying
+  Darwin's zombie-group EPERM; signal errors no longer bypass child/stderr
+  cleanup, and persistent permission failures remain errors.
+- Clarify that preset model availability is checked only for the winning
+  `defaults`; overridden defaults are shape-checked and omitted from the
+  frozen preset and its digest.
+
 - Development toward 0.8.0: host-wide cross-session context reads/messages,
   explicit `context.search {scope:"all"}`, and optional workspace filtering
   for thread title search. State controls retain the acting session's

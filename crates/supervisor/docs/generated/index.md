@@ -59,7 +59,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/bootstrap.rs](../../src/bootstrap.rs) | 25 | 144 | [Symbols and calls](src--bootstrap.md) |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 160 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
-| [crates/supervisor/src/client_admin/session_folders.rs](../../src/client_admin/session_folders.rs) | 12 | 368 | [Symbols and calls](src--client_admin--session_folders.md) |
+| [crates/supervisor/src/client_admin/session_folders.rs](../../src/client_admin/session_folders.rs) | 13 | 435 | [Symbols and calls](src--client_admin--session_folders.md) |
 | [crates/supervisor/src/client_admin.rs](../../src/client_admin.rs) | 102 | 1129 | [Symbols and calls](src--client_admin.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 140 | 1747 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 352 | [Symbols and calls](src--context_usage.md) |

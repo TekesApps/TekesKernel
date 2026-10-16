@@ -362,37 +362,43 @@ fn set_nonblocking(file: &File) -> Result<(), McpError> {
         .map_err(|error| McpError::Transport(error.to_string()))
 }
 
-fn reap_stdio(mut generation: StdioGeneration) -> Result<(), McpError> {
+fn reap_stdio(generation: StdioGeneration) -> Result<(), McpError> {
+    reap_stdio_with_signal(generation, |pid| {
+        rustix::process::kill_process_group(pid, rustix::process::Signal::KILL)
+    })
+}
+
+fn reap_stdio_with_signal(
+    mut generation: StdioGeneration,
+    mut signal_group: impl FnMut(rustix::process::Pid) -> Result<(), rustix::io::Errno>,
+) -> Result<(), McpError> {
     generation.stderr_stop.store(true, Ordering::Release);
     drop(generation.stdin);
     drop(generation.stdout);
-    if let Some(pid) = rustix::process::Pid::from_raw(generation.child.id() as i32) {
-        // The child owns this process group. Close descendants too, including
-        // those keeping pipe descriptors open after the direct child exits.
-        match rustix::process::kill_process_group(pid, rustix::process::Signal::KILL) {
-            Ok(()) | Err(rustix::io::Errno::SRCH) => {}
-            Err(error) => return Err(McpError::Transport(error.to_string())),
+    let pid = rustix::process::Pid::from_raw(generation.child.id() as i32);
+    let mut group_result = pid.map_or(Ok(()), &mut signal_group);
+    // A group-signal error must not skip reaping the direct child or joining
+    // the stderr drain. Preserve the error until all possible cleanup is done.
+    let child_result = (|| {
+        if generation.child.try_wait()?.is_none() {
+            generation.child.kill()?;
+            generation.child.wait()?;
         }
+        Ok::<_, std::io::Error>(())
+    })();
+    if group_result == Err(rustix::io::Errno::PERM) && child_result.is_ok() {
+        // Darwin returns EPERM for a group containing only an unreaped zombie.
+        // Retry after wait: ESRCH confirms it disappeared; live descendants
+        // are still signalled, and a persistent permission error is retained.
+        group_result = pid.map_or(Ok(()), signal_group);
     }
-    if generation
-        .child
-        .try_wait()
-        .map_err(|error| McpError::Transport(error.to_string()))?
-        .is_none()
-    {
-        generation
-            .child
-            .kill()
-            .map_err(|error| McpError::Transport(error.to_string()))?;
+    let drain_result = generation.stderr_task.join();
+    match group_result {
+        Ok(()) | Err(rustix::io::Errno::SRCH) => {}
+        Err(error) => return Err(McpError::Transport(error.to_string())),
     }
-    generation
-        .child
-        .wait()
-        .map_err(|error| McpError::Transport(error.to_string()))?;
-    generation
-        .stderr_task
-        .join()
-        .map_err(|_| McpError::Transport("stdio stderr drain thread panicked".to_owned()))
+    child_result.map_err(|error| McpError::Transport(error.to_string()))?;
+    drain_result.map_err(|_| McpError::Transport("stdio stderr drain thread panicked".to_owned()))
 }
 
 fn start_stdio_reaper(
@@ -1349,6 +1355,69 @@ fn decode_inbound(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn exited_generation() -> StdioGeneration {
+        let parts = spawn_stdio(&StdioSpawnSpec {
+            argv: vec!["/bin/sh".into(), "-c".into(), "exit 0".into()],
+            cwd: None,
+            environment: BTreeMap::new(),
+        })
+        .unwrap();
+        let pid = rustix::process::Pid::from_raw(parts.generation.child.id() as i32).unwrap();
+        // Observe exit without reaping, deterministically exercising Darwin's
+        // zombie-only process group rather than depending on scheduler timing.
+        rustix::process::waitid(
+            rustix::process::WaitId::Pid(pid),
+            rustix::process::WaitIdOptions::EXITED | rustix::process::WaitIdOptions::NOWAIT,
+        )
+        .unwrap();
+        parts.generation
+    }
+
+    #[test]
+    fn stdio_reaps_an_already_exited_group_leader() {
+        let generation = exited_generation();
+        let pid = rustix::process::Pid::from_raw(generation.child.id() as i32).unwrap();
+        #[cfg(target_os = "macos")]
+        assert_eq!(
+            rustix::process::kill_process_group(pid, rustix::process::Signal::KILL),
+            Err(rustix::io::Errno::PERM)
+        );
+        reap_stdio(generation).unwrap();
+        assert_eq!(
+            rustix::process::waitpid(Some(pid), rustix::process::WaitOptions::NOHANG).unwrap_err(),
+            rustix::io::Errno::CHILD
+        );
+    }
+
+    #[test]
+    fn stdio_group_signal_failure_still_reaps_child_and_joins_stderr() {
+        let mut generation = exited_generation();
+        let pid = rustix::process::Pid::from_raw(generation.child.id() as i32).unwrap();
+        let joined = Arc::new(AtomicBool::new(false));
+        let joined_copy = joined.clone();
+        let drain = generation.stderr_task;
+        generation.stderr_task = std::thread::spawn(move || {
+            drain.join().unwrap();
+            joined_copy.store(true, Ordering::Release);
+        });
+        let mut attempts = 0;
+        let error = reap_stdio_with_signal(generation, |_| {
+            attempts += 1;
+            Err(rustix::io::Errno::PERM)
+        })
+        .unwrap_err();
+        assert!(matches!(error, McpError::Transport(_)));
+        assert_eq!(
+            attempts, 2,
+            "persistent denial must not be treated as an exited group"
+        );
+        assert!(joined.load(Ordering::Acquire));
+        assert_eq!(
+            rustix::process::waitpid(Some(pid), rustix::process::WaitOptions::NOHANG).unwrap_err(),
+            rustix::io::Errno::CHILD
+        );
+    }
 
     #[tokio::test]
     async fn owned_scoped_requests_cannot_outlive_close_or_reconnect() {

@@ -32,7 +32,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 |---|---:|---:|---|
 | [crates/profile/src/config.rs](../../src/config.rs) | 113 | 1051 | [Symbols and calls](src--config.md) |
 | [crates/profile/src/folder_authority.rs](../../src/folder_authority.rs) | 29 | 290 | [Symbols and calls](src--folder_authority.md) |
-| [crates/profile/src/folder_catalog.rs](../../src/folder_catalog.rs) | 18 | 214 | [Symbols and calls](src--folder_catalog.md) |
+| [crates/profile/src/folder_catalog.rs](../../src/folder_catalog.rs) | 31 | 413 | [Symbols and calls](src--folder_catalog.md) |
 | [crates/profile/src/instruction.rs](../../src/instruction.rs) | 56 | 487 | [Symbols and calls](src--instruction.md) |
 | [crates/profile/src/launch.rs](../../src/launch.rs) | 46 | 328 | [Symbols and calls](src--launch.md) |
 | [crates/profile/src/lib.rs](../../src/lib.rs) | 5 | 38 | [Symbols and calls](src--lib.md) |
@@ -60,7 +60,7 @@ flowchart LR
   m0 -->|"14"| m5
   m1 -->|"1"| m0
   m1 -->|"3"| m5
-  m2 -->|"6"| m5
+  m2 -->|"14"| m5
   m3 -->|"2"| m1
   m3 -->|"12"| m5
   m4 -->|"2"| m5

@@ -41,6 +41,7 @@ crates/plugins/src/store.rs|remove_empty|remove_dir|1|other
 crates/plugins/src/store.rs|remove_tree|remove_dir_all|1|other
 crates/plugins/src/store.rs|remove_tree|remove_file|1|other
 crates/plugins/src/store.rs|write_canonical|rename|1|other
+crates/profile/src/folder_catalog.rs|recover_capture|remove_file|1|journal
 crates/schedule/src/lib.rs|open|create_dir_all|1|other
 crates/schedule/src/lib.rs|open|remove_file|1|other
 crates/session-controls/src/lib.rs|remove|remove_file|1|other

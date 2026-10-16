@@ -107,7 +107,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `folder` | `profile::FolderCatalog::new(root)             .folders()             .map_err(refused)?             .into_iter` | [44](../../src/mcp_scope.rs#L44), [65](../../src/mcp_scope.rs#L65) | receiver-type-required |
 | `folder` | `profile::FolderCatalog::new(root)             .folders()             .map_err` | [44](../../src/mcp_scope.rs#L44), [65](../../src/mcp_scope.rs#L65) | receiver-type-required |
 | `folder` | `profile::FolderCatalog::new(root)             .folders` | [44](../../src/mcp_scope.rs#L44), [65](../../src/mcp_scope.rs#L65) | receiver-type-required |
-| `folder` | `profile::FolderCatalog::new` | [44](../../src/mcp_scope.rs#L44), [65](../../src/mcp_scope.rs#L65) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `folder` | `profile::FolderCatalog::new` | [44](../../src/mcp_scope.rs#L44), [65](../../src/mcp_scope.rs#L65) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `folder` | `authority                 .status(Path::new(&folder.path))                 .map(Some)                 .map_err` | [50](../../src/mcp_scope.rs#L50) | receiver-type-required |
 | `folder` | `authority                 .status(Path::new(&folder.path))                 .map` | [50](../../src/mcp_scope.rs#L50) | receiver-type-required |
 | `folder` | `authority                 .status` | [50](../../src/mcp_scope.rs#L50) | receiver-type-required |

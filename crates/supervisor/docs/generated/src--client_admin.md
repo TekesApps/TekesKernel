@@ -587,7 +587,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_folder` | `self.recover_pending_intents` | [370](../../src/client_admin.rs#L370) | [tekes-supervisor::client_admin::ClientAdminRoutes::recover_pending_intents](../../src/client_admin.rs#L102) |
 | `relocate_folder` | `management_request_hash` | [371](../../src/client_admin.rs#L371) | [tekes-supervisor::client_admin::management_request_hash](../../src/client_admin.rs#L1330) |
 | `relocate_folder` | `self.management` | [372](../../src/client_admin.rs#L372) | [tekes-supervisor::client_admin::ClientAdminRoutes::management](../../src/client_admin.rs#L553) |
-| `relocate_folder` | `profile::FolderCatalog::new` | [373](../../src/client_admin.rs#L373) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `relocate_folder` | `profile::FolderCatalog::new` | [373](../../src/client_admin.rs#L373) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `relocate_folder` | `catalog             .relocation(&request.rpc_id, &hash, &input.previous_path)             .map_err` | [374](../../src/client_admin.rs#L374) | receiver-type-required |
 | `relocate_folder` | `catalog             .relocation` | [374](../../src/client_admin.rs#L374) | receiver-type-required |
 | `relocate_folder` | `logical.as_ref().is_some_and` | [377](../../src/client_admin.rs#L377) | receiver-type-required |

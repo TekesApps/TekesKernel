@@ -331,7 +331,12 @@ Workers hold shared locks for their logical folders for their complete
 lifetime, preventing relocation while any of them is running.
 
 Per-session Folder edits are ledger `meta.scope_change` events, effective at
-the next launch. They never edit the compatibility workspace or another
+the next launch. `config/.folder-capture.json` is a private recovery intent,
+not a second scope authority: the exact checksummed ledger event determines
+whether its catalog state is published. Catalog access first settles a pending
+intent under the exclusive catalog lock; preparing or rejecting an edit alone
+cannot publish a new Folder. Catalog recovery also recognizes an archived
+session's ledger. They never edit the compatibility workspace or another
 session. See [sessionFolders.v1](client-extensions.md#session-folder-administration).
 
 ## Environments

@@ -2255,7 +2255,10 @@ PresetSummary = { base:"general"|"blank", layers:[{kind,id,version}], digest:str
   exactly as `session.selectModel` accepts it: a configured, enabled
   `provider`/`model` and optionally one of its reasoning efforts; anything
   else is `unknown-model`. The top level's `defaults` wins over every layer's,
-  and a later layer's over an earlier one's. `session.create` writes them as
+  and a later layer's over an earlier one's. Only the winning `defaults` is
+  checked for provider/model availability. Overridden defaults are shape-checked
+  (`bad-request` if malformed), but do not take effect and are absent from the
+  frozen preset in genesis and its digest. `session.create` writes them as
   the session's settings (revision 1) before it reports the session, and a
   `session.fork {preset}` whose preset has them writes them for the
   destination; `session.selectModel` changes the model later as usual.
