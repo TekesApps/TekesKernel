@@ -6,6 +6,15 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.8.0 — 2026-10-16
+
+Sessions own their environment and Folder scope; workspace routes remain a
+compatibility layer. Folder trust requires explicit local host approval, and
+MCP ownership follows trusted User, Folder and verified Plugin identities.
+Built-in hosts must use private bootstrap v1 with Session Endpoint protocol v3.
+New ledgers require reader version 3 and are read-only to 0.7 readers.
+
+
 - Folder edits now stage catalog changes behind the session ledger commit,
   recover interrupted publications, and leave the catalog unchanged on a
   rejected configuration or uncommitted append.
@@ -16,12 +25,12 @@ workspace version in `Cargo.toml`.
   `defaults`; overridden defaults are shape-checked and omitted from the
   frozen preset and its digest.
 
-- Development toward 0.8.0: host-wide cross-session context reads/messages,
+- Host-wide cross-session context reads/messages,
   explicit `context.search {scope:"all"}`, and optional workspace filtering
   for thread title search. State controls retain the acting session's
   approval policy; delivered content retains the receiver's permissions.
 
-- Development toward 0.8.0: optional `environments.v1` list/save administration
+- Optional `environments.v1` list/save administration
   and `session.create {environment}` select a named launch-time reference.
   Saves use revision CAS and durable retries; running snapshots stay fixed.
   ClientKit environment integration remains separate; legacy create defaults to `local`.
@@ -63,8 +72,10 @@ workspace version in `Cargo.toml`.
   Session scopes and resource reads use the same owner/trust resolver.
 - Built-in launch credentials now use a private, bounded stdin bootstrap frame.
   Legacy endpoint/selected credential environments and the unauthenticated
-  optional Web Client are rejected. ClientKit must adapt before consuming 0.8;
-  the endpoint bearer and provider credential lookup semantics are unchanged.
+  optional Web Client are rejected. ClientKit adapts this launch contract in
+  [`b386170`](https://github.com/TekesApps/TekesClientKit/commit/b386170);
+  consumers must include that adaptation before bundling 0.8.0. The endpoint
+  bearer and provider credential lookup semantics are unchanged.
 - Shared user instructions are permanently write-protected alongside Kernel
   storage: launch snapshots freeze the actual host-selected directory for
   worker file guards, command sandboxes and detached jobs. The default
