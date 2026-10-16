@@ -25,9 +25,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `CreateOutcome` | `folder::CreateOutcome` | `pub` |
 | `ThreadStore` | `folder::ThreadStore` | `pub` |
 | `move_thread_folder` | `folder::move_thread_folder` | `pub` |
-| `ENDPOINT_MANAGEMENT_DIR` | `management_root::ENDPOINT_MANAGEMENT_DIR` | `pub` |
+| `ENDPOINT_RPC_DIR` | `management_root::ENDPOINT_RPC_DIR` | `pub` |
 | `SESSION_SETTINGS_FILE` | `management_root::SESSION_SETTINGS_FILE` | `pub` |
-| `endpoint_management_root` | `management_root::endpoint_management_root` | `pub` |
+| `endpoint_rpc_root` | `management_root::endpoint_rpc_root` | `pub` |
 | `retire_legacy_name` | `management_root::retire_legacy_name` | `pub` |
 | `session_settings_path` | `management_root::session_settings_path` | `pub` |
 | `DirectoryLock` | `platform::DirectoryLock` | `pub` |

@@ -91,10 +91,7 @@ pub struct LineCard {
 #[derive(Clone, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct CardSummary {
-    pub workspace: String,
-    pub folder_binding: Option<String>,
-    /// Genesis cwd, never the workspace's first folder. Old cards omit it and
-    /// readers fall back to the genesis until the next verified publication.
+    /// Immutable Session cwd.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub cwd: Option<String>,
     pub created: String,

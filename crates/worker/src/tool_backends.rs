@@ -225,7 +225,7 @@ pub(crate) fn tool_catalog_context(
             && profile.config.providers.web_search.is_some()
             && profile
                 .instruction
-                .meet_workspace_policy(&profile.config.workspace.policy)
+                .meet_workspace_policy(&profile.config.execution.policy)
                 .network,
         has_deferred_catalog,
         selected_tools,
@@ -274,19 +274,19 @@ where
 
     let effective = profile
         .instruction
-        .meet_workspace_policy(&profile.config.workspace.policy);
+        .meet_workspace_policy(&profile.config.execution.policy);
     let workspace = profile
         .config
-        .workspace
+        .execution
         .cwd
         .first()
         .ok_or("runtime profile has no workspace root")?;
     let helper_path = sibling_helper_path()?;
-    let mut read_roots = profile.config.workspace.cwd.clone();
+    let mut read_roots = profile.config.execution.cwd.clone();
     read_roots.extend(
         profile
             .config
-            .workspace
+            .execution
             .policy
             .toolchain_roots
             .iter()
@@ -323,7 +323,7 @@ where
     let probe = probe_backend(sandbox_backend);
     let roots = profile
         .config
-        .workspace
+        .execution
         .cwd
         .iter()
         .enumerate()
@@ -386,10 +386,10 @@ where
             .environment
             .insert("TMPDIR".into(), format!("{scratch_path}/"));
     }
-    if !profile.config.workspace.policy.toolchain_roots.is_empty() {
+    if !profile.config.execution.policy.toolchain_roots.is_empty() {
         let mut bins = profile
             .config
-            .workspace
+            .execution
             .policy
             .toolchain_roots
             .iter()
@@ -411,7 +411,7 @@ where
     }
     system_config.extra_roots = profile
         .config
-        .workspace
+        .execution
         .cwd
         .iter()
         .enumerate()
@@ -440,13 +440,13 @@ where
                 workspace: PathBuf::from(workspace),
                 workspace_roots: profile
                     .config
-                    .workspace
+                    .execution
                     .cwd
                     .iter()
                     .map(PathBuf::from)
                     .collect(),
                 state_root: storage_root.join("workspace-service"),
-                workspace_id: profile.config.workspace.id.clone(),
+                workspace_id: profile.config.execution.session_id.clone(),
                 session_id: thread_folder
                     .file_name()
                     .and_then(|name| name.to_str())
@@ -483,7 +483,7 @@ where
         .deferred_search_entries(&dynamic)?;
     router.push(WorkflowBackend::new(
         &storage_root,
-        profile.config.workspace.id.clone(),
+        profile.config.execution.session_id.clone(),
         profile.bindings.goal_id.clone(),
         preset_skill_catalog(frozen_skill_catalog(&profile.instruction)?, thread_folder)?,
         deferred_tools,
@@ -526,7 +526,7 @@ pub(crate) fn invocation_write_roots(
     let workspace = PathBuf::from(
         profile
             .config
-            .workspace
+            .execution
             .cwd
             .first()
             .ok_or("runtime profile has no workspace root")?,
@@ -540,12 +540,12 @@ pub(crate) fn invocation_write_roots(
     {
         return Ok(profile
             .instruction
-            .meet_workspace_policy(&profile.config.workspace.policy)
+            .meet_workspace_policy(&profile.config.execution.policy)
             .writable_roots);
     }
     let allowed = profile
         .instruction
-        .meet_workspace_policy(&profile.config.workspace.policy)
+        .meet_workspace_policy(&profile.config.execution.policy)
         .writable_roots
         .into_iter()
         .map(PathBuf::from)

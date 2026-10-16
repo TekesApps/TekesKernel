@@ -12,7 +12,7 @@ use crate::{
     SessionEvent, SessionHistoryEntry, SessionToolEventView, history_page, validate_session_id,
 };
 
-pub const SESSION_ENDPOINT_PROTOCOL_VERSION: u16 = 3;
+pub const SESSION_ENDPOINT_PROTOCOL_VERSION: u16 = 4;
 pub const DEFAULT_JOURNAL_WINDOW_MESSAGES: usize = 50;
 pub const MAX_JOURNAL_WINDOW_MESSAGES: usize = 500;
 
@@ -33,7 +33,6 @@ impl SessionEndpointCapability {
     #[must_use]
     pub fn required() -> BTreeSet<Self> {
         [
-            Self::WorkspaceSync,
             Self::SessionInventorySync,
             Self::SessionJournal,
             Self::SessionControlSync,

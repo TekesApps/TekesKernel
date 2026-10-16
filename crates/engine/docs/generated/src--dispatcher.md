@@ -130,7 +130,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `provider_catalog` | `self.manifest             .projection` | [180](../../src/dispatcher.rs#L180) | receiver-type-required |
 | `provider_catalog` | `backend.supports` | [183](../../src/dispatcher.rs#L183) | receiver-type-required |
 | `provider_catalog` | `fixed_schema(&tool.name)                     .ok_or_else` | [185](../../src/dispatcher.rs#L185) | receiver-type-required |
-| `provider_catalog` | `fixed_schema` | [185](../../src/dispatcher.rs#L185) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1225) |
+| `provider_catalog` | `fixed_schema` | [185](../../src/dispatcher.rs#L185) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
 | `provider_catalog` | `DispatchError::UnknownTool` | [186](../../src/dispatcher.rs#L186) | external-constructor-callback-or-unresolved |
 | `provider_catalog` | `tool.name.clone` | [186](../../src/dispatcher.rs#L186) | receiver-type-required |
 | `provider_catalog` | `serde_json::to_vec` | [187](../../src/dispatcher.rs#L187) | external-constructor-callback-or-unresolved |
@@ -149,7 +149,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `dispatch` | `DispatchError::UnavailableTool` | [213](../../src/dispatcher.rs#L213), [216](../../src/dispatcher.rs#L216), [235](../../src/dispatcher.rs#L235) | external-constructor-callback-or-unresolved |
 | `dispatch` | `backend.supports` | [215](../../src/dispatcher.rs#L215) | receiver-type-required |
 | `dispatch` | `serde_json::to_value` | [218](../../src/dispatcher.rs#L218), [243](../../src/dispatcher.rs#L243) | external-constructor-callback-or-unresolved |
-| `dispatch` | `validate_fixed_arguments` | [219](../../src/dispatcher.rs#L219), [251](../../src/dispatcher.rs#L251) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1231) |
+| `dispatch` | `validate_fixed_arguments` | [219](../../src/dispatcher.rs#L219), [251](../../src/dispatcher.rs#L251) | [tools::schema_registry::validate_fixed_arguments](../../../tools/src/schema_registry.rs#L1228) |
 | `dispatch` | `invocation.thread.clone` | [221](../../src/dispatcher.rs#L221) | receiver-type-required |
 | `dispatch` | `invocation.call.clone` | [222](../../src/dispatcher.rs#L222) | receiver-type-required |
 | `dispatch` | `invocation.attempt.clone` | [224](../../src/dispatcher.rs#L224) | receiver-type-required |

@@ -6,6 +6,29 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+### 0.9.0 execution boundary
+
+- Session creation accepts an immutable `ExecutionConfig` value, without named
+  Environment, workspace or Folder catalog dependencies. Genesis records only
+  Session identity and execution authority; its ledger reader floor is 5.
+- Separate Session operation recovery from retired management journals; use
+  recorded cwd for inventory and explicit `session.archive` / `session.unarchive`.
+- Remove workspace create/rename/relocate from the public base route table and
+  Environment/Folder/workspace policy administration from application bootstrap.
+- Keep MCP HTTP and host-owned stdio connections/invocation in Kernel, selected
+  explicitly by each Session. Bind HTTP grants to their purpose and destination;
+  recheck credential generations and original reconnect contracts.
+- Move local MCP startup/environment/reaping to an independent CLI host, without
+  Tekes or ClientKit dependencies. App hosts supply the same stream interface.
+- Delete old management implementations and remove MCP registry/OAuth, plugin
+  administration, directory management and scheduling from Kernel assembly.
+  Project skills/hooks are no longer enabled by Folder trust.
+- Keep project AGENTS text under explicit execution roots while excluding
+  ambient project skills/hooks. The CLI relay observes disconnects even when
+  an MCP server stops reading stdin, and reaps the blocked child.
+- No compatibility with 0.8 or 0.7 is provided. Consumer migration remains a
+  separate stage; no release/tag has been made.
+
 ## 0.8.0 — 2026-10-16
 
 Sessions own their environment and Folder scope; workspace routes remain a

@@ -100,30 +100,6 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `JournalRecord` | `journal::JournalRecord` | `pub` |
 | `JournalTail` | `journal::JournalTail` | `pub` |
 | `LOCK_FILE` | `journal::LOCK_FILE` | `pub` |
-| `CompleteOperations` | `management::CompleteOperations` | `pub` |
-| `ForkLineage` | `management::ForkLineage` | `pub` |
-| `ForkSessionOperation` | `management::ForkSessionOperation` | `pub` |
-| `LEGACY_ORIGIN_CLIENT` | `management::LEGACY_ORIGIN_CLIENT` | `pub` |
-| `ManagementError` | `management::ManagementError` | `pub` |
-| `ManagementStore` | `management::ManagementStore` | `pub` |
-| `ORIGIN_CLIENT` | `management::ORIGIN_CLIENT` | `pub` |
-| `PendingQueueTransaction` | `management::PendingQueueTransaction` | `pub` |
-| `PresetMcpSource` | `management::PresetMcpSource` | `pub` |
-| `PresetModelSource` | `management::PresetModelSource` | `pub` |
-| `QueueRecoveryDriver` | `management::QueueRecoveryDriver` | `pub` |
-| `QueueTransactionCompletion` | `management::QueueTransactionCompletion` | `pub` |
-| `QueueTransactionDecision` | `management::QueueTransactionDecision` | `pub` |
-| `QueueTransactionOperation` | `management::QueueTransactionOperation` | `pub` |
-| `QueueTransactionState` | `management::QueueTransactionState` | `pub` |
-| `SelectModelOperation` | `management::SelectModelOperation` | `pub` |
-| `SelectedModel` | `management::SelectedModel` | `pub` |
-| `SessionCreateOperation` | `management::SessionCreateOperation` | `pub` |
-| `SessionPresetEnvironment` | `management::SessionPresetEnvironment` | `pub` |
-| `WorkspaceFolderView` | `management::WorkspaceFolderView` | `pub` |
-| `WorkspaceFolders` | `management::WorkspaceFolders` | `pub` |
-| `WorkspaceList` | `management::WorkspaceList` | `pub` |
-| `WorkspaceView` | `management::WorkspaceView` | `pub` |
-| `is_endpoint_origin_client` | `management::is_endpoint_origin_client` | `pub` |
 | `ActionableRegistry` | `mux::ActionableRegistry` | `pub` |
 | `DEFAULT_JOURNAL_WINDOW_MESSAGES` | `mux::DEFAULT_JOURNAL_WINDOW_MESSAGES` | `pub` |
 | `JournalFollow` | `mux::JournalFollow` | `pub` |
@@ -196,9 +172,26 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `card_updated_ms` | `service::card_updated_ms` | `pub` |
 | `genesis_cwd` | `service::genesis_cwd` | `pub` |
 | `genesis_preset_summary` | `service::genesis_preset_summary` | `pub` |
-| `inventory_folder_binding` | `service::inventory_folder_binding` | `pub` |
 | `last_record_updated_ms` | `service::last_record_updated_ms` | `pub` |
 | `permission_mode_of` | `service::permission_mode_of` | `pub` |
+| `CompleteOperations` | `session_operations::CompleteOperations` | `pub` |
+| `ExecutionCreateOperation` | `session_operations::ExecutionCreateOperation` | `pub` |
+| `ForkLineage` | `session_operations::ForkLineage` | `pub` |
+| `ForkSessionOperation` | `session_operations::ForkSessionOperation` | `pub` |
+| `ORIGIN_CLIENT` | `session_operations::ORIGIN_CLIENT` | `pub` |
+| `PendingQueueTransaction` | `session_operations::PendingQueueTransaction` | `pub` |
+| `PresetModelSource` | `session_operations::PresetModelSource` | `pub` |
+| `QueueRecoveryDriver` | `session_operations::QueueRecoveryDriver` | `pub` |
+| `QueueTransactionCompletion` | `session_operations::QueueTransactionCompletion` | `pub` |
+| `QueueTransactionDecision` | `session_operations::QueueTransactionDecision` | `pub` |
+| `QueueTransactionOperation` | `session_operations::QueueTransactionOperation` | `pub` |
+| `QueueTransactionState` | `session_operations::QueueTransactionState` | `pub` |
+| `SelectModelOperation` | `session_operations::SelectModelOperation` | `pub` |
+| `SelectedModel` | `session_operations::SelectedModel` | `pub` |
+| `SessionOperationError` | `session_operations::SessionOperationError` | `pub` |
+| `SessionOperations` | `session_operations::SessionOperations` | `pub` |
+| `SessionPresetEnvironment` | `session_operations::SessionPresetEnvironment` | `pub` |
+| `is_endpoint_origin_client` | `session_operations::is_endpoint_origin_client` | `pub` |
 | `StitchDecision` | `stitch::StitchDecision` | `pub` |
 | `StitchError` | `stitch::StitchError` | `pub` |
 | `stitch_window` | `stitch::stitch_window` | `pub` |
@@ -226,13 +219,13 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `endpoint::hub` | `private` |  |
 | `endpoint::idempotency` | `private` |  |
 | `endpoint::journal` | `private` |  |
-| `endpoint::management` | `private` |  |
 | `endpoint::mux` | `private` |  |
 | `endpoint::projection` | `private` |  |
 | `endpoint::requests` | `private` |  |
 | `endpoint::respond` | `private` |  |
 | `endpoint::rpc` | `private` |  |
 | `endpoint::service` | `private` |  |
+| `endpoint::session_operations` | `private` |  |
 | `endpoint::session_event_registry_generated` | `private` | #[rustfmt::skip] |
 | `endpoint::stitch` | `private` |  |
 | `endpoint::stream_queue` | `private` |  |

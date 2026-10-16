@@ -39,11 +39,11 @@ for line in sys.stdin:
     fn receiver_test(test: impl Fn(&Arc<ProductionProcessHost>, &Path, &mut ProcessToolRuntime)) {
         for mode in engine::PermissionMode::ALL {
             let root = tempfile::tempdir().unwrap();
-            let project = root.path().join("project");
+            let project_root = tempfile::tempdir().unwrap();
+            let project = project_root.path().to_path_buf();
             fs::create_dir_all(&project).unwrap();
-            fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-            write_canonical_test_json(
-                &root.path().join("workspaces/ws/workspace.json"),
+            write_test_execution_config(
+                root.path(),
                 json!({
                     "format":1,"revision":1,"id":"ws","name":"receiver","cwd":[project],
                     "policy":{"allowed_tools":[],"writable_roots":[],"network":false}

@@ -32,6 +32,8 @@ do
   python3 "$test"
 done
 
+python3 -m unittest discover -s host -p 'test_*.py'
+
 step "architecture atlas"
 if python3 -c 'import tree_sitter, tree_sitter_rust' 2>/dev/null; then
   python3 scripts/code-architecture.py --check

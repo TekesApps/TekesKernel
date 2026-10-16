@@ -230,13 +230,11 @@ async fn broker_modern_calls_overlap_and_cancel_without_evicting_siblings() {
     let broker = mcp::McpBroker::start().unwrap();
     let handle = broker.handle();
     let key = mcp::McpPoolKey {
-        owner: "ws".into(),
-        scope: "project".into(),
-        server: "scoped".into(),
+        session_id: "ws".into(),
+
+        connection: "scoped".into(),
         config_digest: "a".repeat(64),
         authorization_identity: "anonymous".into(),
-        protocol_mode: "modern".into(),
-        plugin_generation: None,
     };
     handle
         .register(key.clone(), Box::new(client), false)
@@ -1283,13 +1281,11 @@ async fn broker_registration_owns_subscription_until_removal() {
     let broker = mcp::McpBroker::start().unwrap();
     let handle = broker.handle();
     let key = mcp::McpPoolKey {
-        owner: "subscription-test".into(),
-        scope: "user".into(),
-        server: "owned".into(),
+        session_id: "subscription-test".into(),
+
+        connection: "owned".into(),
         config_digest: "1".into(),
         authorization_identity: "anonymous".into(),
-        protocol_mode: "modern".into(),
-        plugin_generation: None,
     };
     let registration = handle.clone();
     let registered_key = key.clone();

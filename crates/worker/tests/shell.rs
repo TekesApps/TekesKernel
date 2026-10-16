@@ -6,14 +6,13 @@ use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
 use profile::{
-    ConfigRepository, DynamicToolCatalog, Model, Provider, ProvidersConfig, SessionSettings,
-    WorkspaceConfig, WorkspacePolicy,
+    ConfigRepository, ExecutionPolicy, Model, Provider, ProvidersConfig, SessionSettings,
 };
 use provider::{CredentialScope, endpoint_origin, provider_request_digest_for_dialect};
 use schema::{Block, EventKind, OriginTuple, ResumePolicy, validate_ledger};
 use tekes_supervisor::{
-    ChildLaunchRegistry, ChildLaunchState, ProfiledWorkerLaunchSpec, WorkerLaunchBindings,
-    launch_profiled_worker_with_bindings, launch_profiled_worker_with_credentials,
+    ChildLaunchRegistry, ChildLaunchState, ProfiledWorkerLaunchSpec,
+    launch_profiled_worker_with_credentials,
     launch_profiled_worker_with_credentials_and_provider_test_redirect,
 };
 use test_support::{FixtureRoot, read};
@@ -418,332 +417,20 @@ fn post_turn_worker_drains_reached_deliveries_then_exits() {
 }
 
 #[test]
-fn supervisor_passes_immutable_profile_descriptors() {
-    let fixtures = FixtureRoot::discover().expect("fixtures");
-    let directory = tempfile::tempdir().expect("launch root");
-    let cwd = directory.path().join("workspace");
-    let secondary = directory.path().join("workspace-secondary");
-    fs::create_dir(&cwd).expect("workspace");
-    fs::create_dir(&secondary).expect("secondary workspace");
-    let repository = ConfigRepository::open(directory.path()).expect("config repository");
-    let workspace = WorkspaceConfig {
-        format: 1,
-        revision: 1,
-        id: "ws".to_owned(),
-        name: "Main".to_owned(),
-        cwd: Vec::new(),
-        folders: vec![
-            profile::WorkspaceFolder {
-                id: "primary".to_owned(),
-                path: cwd.to_str().expect("UTF-8").to_owned(),
-            },
-            profile::WorkspaceFolder {
-                id: "secondary".to_owned(),
-                path: secondary.to_str().expect("UTF-8").to_owned(),
-            },
-        ],
-        policy: None,
-    };
-    repository
-        .publish_workspace(0, &workspace)
-        .expect("workspace config");
-
-    let folder = directory.path().join("thread");
-    fs::create_dir_all(&folder).expect("thread folder");
-    let ledger = folder.join("main.jsonl");
-    let mut bytes = read(&fixtures.join("invalid/_valid-baseline.jsonl")).expect("baseline");
-    bytes.extend_from_slice(
-        br#"{"content":[{"text":"next","type":"text"}],"kind":"input","origin_key":"profile-run","origin_tuple":{"client":"cli","key":"profile-run","op":"submit","principal":"p","target":"t"},"seq":9,"ts":"2026-08-26T09:00:00.000Z","v":1}"#,
-    );
-    bytes.push(b'\n');
-    fs::write(&ledger, bytes).expect("ledger");
-
-    let legacy_error = launch_profiled_worker_with_bindings(
-        &repository,
-        &ProfiledWorkerLaunchSpec {
-            binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
-            ledger: ledger.clone(),
-            timestamp: "2026-08-26T09:00:01.000Z".to_owned(),
-            run_id: "legacy-multi-root".to_owned(),
-            binary_attribution: "tekes-worker-test".to_owned(),
-            workspace_id: "ws".to_owned(),
-            folder_binding: None,
-            user_agent_dir: directory.path().join("missing-user-agent"),
-        },
-        WorkerLaunchBindings::default(),
-    )
-    .err()
-    .expect("legacy multi-root launch must not guess the primary folder");
-    assert!(
-        legacy_error
-            .to_string()
-            .contains("no stable folder binding")
-    );
-
-    let spec = ProfiledWorkerLaunchSpec {
-        binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
-        ledger: ledger.clone(),
-        timestamp: "2026-08-26T09:00:01.000Z".to_owned(),
-        run_id: "profile-run".to_owned(),
-        binary_attribution: "tekes-worker-test".to_owned(),
-        workspace_id: "ws".to_owned(),
-        folder_binding: Some("secondary".to_owned()),
-        user_agent_dir: directory.path().join("missing-user-agent"),
-    };
-    // A launch spec cannot supply a binding absent from the ledger, even
-    // when that binding exists in the workspace.
-    let before = fs::read(&ledger).expect("unbound ledger");
-    let mismatch =
-        launch_profiled_worker_with_bindings(&repository, &spec, WorkerLaunchBindings::default())
-            .err()
-            .expect("launch scope must come from the ledger");
-    assert!(
-        mismatch
-            .to_string()
-            .contains("does not match the ledger genesis scope")
-    );
-    assert_eq!(fs::read(&ledger).unwrap(), before);
-
-    // Record the session's stable binding in a canonical genesis, preserving
-    // the remaining ledger bytes. The immutable descriptors must use it.
-    let end = before.iter().position(|byte| *byte == b'\n').unwrap();
-    let mut genesis: serde_json::Value = serde_json::from_slice(&before[..end]).unwrap();
-    genesis["folder_binding"] = "secondary".into();
-    let mut bound = serde_json_canonicalizer::to_vec(&genesis).unwrap();
-    bound.extend_from_slice(&before[end..]);
-    fs::write(&ledger, bound).expect("bound ledger");
-
-    let mut launched = launch_profiled_worker_with_bindings(
-        &repository,
-        &spec,
-        WorkerLaunchBindings {
-            goal_id: Some("goal-profile-run".to_owned()),
-            dynamic_catalog: DynamicToolCatalog {
-                format: 1,
-                tools: Vec::new(),
-            },
-            unavailable_tools: Vec::new(),
-        },
-    )
-    .expect("launch worker");
-    assert_eq!(
-        launched.config_snapshot.workspace.folder_binding.as_deref(),
-        Some("secondary")
-    );
-    assert_eq!(
-        launched.config_snapshot.workspace.selected_cwd.as_deref(),
-        secondary
-            .canonicalize()
-            .expect("secondary canonical")
-            .to_str()
-    );
-    assert_eq!(
-        launched.config_snapshot.workspace.cwd,
-        vec![
-            cwd.canonicalize()
-                .expect("primary canonical")
-                .display()
-                .to_string(),
-            secondary
-                .canonicalize()
-                .expect("secondary canonical")
-                .display()
-                .to_string(),
-        ]
-    );
-    let config_digest = launched.config_digest.clone();
-    let instruction_digest = launched.instruction_digest.clone();
-    let launch_bindings_digest = launched.launch_bindings_digest.clone();
-    let mut next_workspace = workspace;
-    next_workspace.revision = 2;
-    next_workspace.name = "Changed after spawn".to_owned();
-    repository
-        .publish_workspace(1, &next_workspace)
-        .expect("post-spawn config edit");
-    launched
-        .child
-        .stdin
-        .as_mut()
-        .expect("stdin")
-        .write_all(b"{\"selected\":{\"version\":2}}\n")
-        .expect("select protocol");
-    drop(launched.child.stdin.take());
-    let output = launched.child.wait_with_output().expect("worker output");
-    assert!(
-        output.status.success(),
-        "{}",
-        String::from_utf8_lossy(&output.stderr)
-    );
-    let projection = validate_ledger(
-        &fs::read(&ledger).expect("ledger bytes"),
-        schema::READER_VERSION,
-    )
-    .expect("profile-attributed ledger");
-    let run_start = &projection.events[9];
-    assert!(matches!(run_start.kind(), EventKind::RunStart));
-    assert_eq!(
-        run_start.string_field("config_digest"),
-        Some(config_digest.as_str())
-    );
-    assert_eq!(
-        run_start.string_field("instruction_digest"),
-        Some(instruction_digest.as_str())
-    );
-    assert_eq!(
-        run_start.string_field("launch_bindings_digest"),
-        Some(launch_bindings_digest.as_str())
-    );
-    let binding_bytes = fs::read(
-        folder
-            .join("assets")
-            .join(format!("sha256-{launch_bindings_digest}")),
-    )
-    .expect("durable launch bindings asset");
-    let binding: serde_json::Value =
-        serde_json::from_slice(&binding_bytes).expect("launch bindings JSON");
-    assert_eq!(binding["goal_id"], "goal-profile-run");
-    assert!(
-        run_start
-            .string_field("policy")
-            .is_some_and(|value| value.starts_with("sha256-"))
-    );
-}
-
-#[test]
-fn each_profiled_launch_resolves_the_environment_reference_again() {
-    let fixtures = FixtureRoot::discover().unwrap();
-    let root = tempfile::tempdir().unwrap();
-    let project = root.path().join("project");
-    let toolchain = root.path().join("toolchain");
-    fs::create_dir_all(&project).unwrap();
-    fs::create_dir_all(&toolchain).unwrap();
-    let project = project
-        .canonicalize()
-        .unwrap()
-        .to_string_lossy()
-        .into_owned();
-    let toolchain = toolchain
-        .canonicalize()
-        .unwrap()
-        .to_string_lossy()
-        .into_owned();
-    let repository = ConfigRepository::open(root.path().join("kernel")).unwrap();
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "ws".into(),
-                name: "Workspace".into(),
-                cwd: Vec::new(),
-                folders: vec![profile::WorkspaceFolder {
-                    id: "primary".into(),
-                    path: project.clone(),
-                }],
-                policy: Some(WorkspacePolicy {
-                    network: true,
-                    writable_roots: vec![project.clone()],
-                    max_wall_seconds: Some(600),
-                    ..WorkspacePolicy::default()
-                }),
-            },
-        )
-        .unwrap();
-    let publish = |revision, network, cap| {
-        repository
-            .publish_environments(
-                revision - 1,
-                &profile::EnvironmentsConfig {
-                    format: 1,
-                    revision,
-                    environments: vec![profile::Environment {
-                        id: "named".into(),
-                        network,
-                        toolchain_roots: vec![toolchain.clone()],
-                        max_wall_seconds: Some(cap),
-                    }],
-                },
-            )
-            .unwrap();
-    };
-    publish(1, false, 60);
-    let folder = root.path().join("thread");
-    fs::create_dir_all(&folder).unwrap();
-    let ledger = folder.join("main.jsonl");
-    let baseline = read(&fixtures.join("invalid/_valid-baseline.jsonl")).unwrap();
-    let end = baseline.iter().position(|byte| *byte == b'\n').unwrap();
-    let mut genesis: serde_json::Value = serde_json::from_slice(&baseline[..end]).unwrap();
-    genesis["environment"] = "named".into();
-    genesis["folder_binding"] = "primary".into();
-    genesis["folders"] = serde_json::json!(["primary"]);
-    genesis["min_reader"] = schema::FOLDERS_READER.into();
-    let mut bytes = serde_json_canonicalizer::to_vec(&genesis).unwrap();
-    bytes.extend_from_slice(&baseline[end..]);
-    fs::write(&ledger, &bytes).unwrap();
-    let launch = |run: &str| {
-        let mut launched = launch_profiled_worker_with_bindings(
-            &repository,
-            &ProfiledWorkerLaunchSpec {
-                binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
-                ledger: ledger.clone(),
-                timestamp: "2026-08-26T09:00:01.000Z".into(),
-                run_id: run.into(),
-                binary_attribution: "environment-test".into(),
-                workspace_id: "ws".into(),
-                folder_binding: Some("primary".into()),
-                user_agent_dir: root.path().join("missing-agent"),
-            },
-            WorkerLaunchBindings::default(),
-        )
-        .unwrap();
-        // Descriptors have been frozen, but no protocol selection means the
-        // worker has not acquired a ledger lease or any execution authority.
-        drop(launched.child.stdin.take());
-        let output = launched.child.wait_with_output().unwrap();
-        assert_eq!(output.status.code(), Some(EX_PROTOCOL));
-        (launched.config_snapshot, launched.config_digest)
-    };
-    let (first, first_digest) = launch("first-environment");
-    let asset = folder.join("assets").join(format!("sha256-{first_digest}"));
-    let frozen = fs::read(&asset).unwrap();
-    publish(2, true, 120);
-    let (next, next_digest) = launch("next-environment");
-    assert!(!first.workspace.policy.network);
-    assert!(next.workspace.policy.network);
-    assert_eq!(first.workspace.policy.max_wall_seconds, Some(60));
-    assert_eq!(next.workspace.policy.max_wall_seconds, Some(120));
-    assert_eq!(next.revisions.environments, Some(2));
-    assert_eq!(next.workspace.environment.as_deref(), Some("named"));
-    assert_eq!(next.workspace.policy.toolchain_roots, vec![toolchain]);
-    assert_eq!(first.workspace.policy.writable_roots, vec![project.clone()]);
-    assert_eq!(next.workspace.policy.writable_roots, vec![project]);
-    assert_ne!(first_digest, next_digest);
-    assert_eq!(fs::read(asset).unwrap(), frozen);
-    assert_eq!(fs::read(ledger).unwrap(), bytes);
-}
-
-#[test]
 fn slice7_credential_descriptor_launch() {
     let fixtures = FixtureRoot::discover().expect("fixtures");
     let directory = tempfile::tempdir().expect("launch root");
     let cwd = directory.path().join("workspace");
     fs::create_dir(&cwd).expect("workspace");
-    let repository = ConfigRepository::open(directory.path()).expect("config repository");
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "ws".to_owned(),
-                name: "Main".to_owned(),
-                cwd: vec![cwd.to_str().expect("UTF-8").to_owned()],
-                folders: Vec::new(),
-                policy: None,
-            },
-        )
-        .expect("workspace config");
+    let repository =
+        ConfigRepository::open(directory.path().join("kernel")).expect("config repository");
+    test_support::freeze_execution_fixture(
+        &(repository),
+        vec![cwd.to_str().expect("UTF-8").to_owned()],
+        None,
+        [None, None],
+    )
+    .expect("workspace config");
     let folder = directory.path().join("thread");
     fs::create_dir_all(&folder).expect("thread folder");
     let ledger = folder.join("main.jsonl");
@@ -753,27 +440,31 @@ fn slice7_credential_descriptor_launch() {
     );
     bytes.push(b'\n');
     fs::write(&ledger, bytes).expect("ledger");
-    let mut launched = launch_profiled_worker_with_credentials(
-        &repository,
-        &ProfiledWorkerLaunchSpec {
+    let mut launched = {
+        let fixture_repository = &repository;
+        let fixture_spec = &ProfiledWorkerLaunchSpec {
             binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
             ledger: ledger.clone(),
             timestamp: "2026-08-26T09:00:01.000Z".to_owned(),
             run_id: "credential-run".to_owned(),
             binary_attribution: "tekes-worker-test".to_owned(),
-            workspace_id: "ws".to_owned(),
-            folder_binding: None,
+
             user_agent_dir: directory.path().join("missing-user-agent"),
-        },
-        vec![CredentialScope {
-            credential_id: "main".to_owned(),
-            adapter: "openai_responses_v1".to_owned(),
-            endpoint_origin: "https://api.openai.com:443".to_owned(),
-            purpose: "provider".to_owned(),
-            generation: "g1".to_owned(),
-            material: "fixture-secret-never-log".to_owned(),
-        }],
-    )
+        };
+        test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+        launch_profiled_worker_with_credentials(
+            fixture_repository,
+            fixture_spec,
+            vec![CredentialScope {
+                credential_id: "main".to_owned(),
+                adapter: "openai_responses_v1".to_owned(),
+                endpoint_origin: "https://api.openai.com:443".to_owned(),
+                purpose: "provider".to_owned(),
+                generation: "g1".to_owned(),
+                material: "fixture-secret-never-log".to_owned(),
+            }],
+        )
+    }
     .expect("launch worker with credential channel");
     launched
         .child
@@ -826,7 +517,8 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
     let directory = tempfile::tempdir().expect("launch root");
     let cwd = directory.path().join("workspace");
     fs::create_dir(&cwd).expect("workspace");
-    let repository = ConfigRepository::open(directory.path()).expect("config repository");
+    let repository =
+        ConfigRepository::open(directory.path().join("kernel")).expect("config repository");
     repository
         .publish_providers(
             0,
@@ -855,25 +547,17 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
             },
         )
         .expect("provider config");
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "ws".to_owned(),
-                name: "Main".to_owned(),
-                cwd: vec![cwd.to_str().expect("UTF-8").to_owned()],
-                folders: Vec::new(),
-                policy: Some(WorkspacePolicy {
-                    network: true,
-                    provider: Some("fixture".to_owned()),
-                    model: Some("gpt-5".to_owned()),
-                    ..WorkspacePolicy::default()
-                }),
-            },
-        )
-        .expect("workspace config");
+    test_support::freeze_execution_fixture(
+        &(repository),
+        vec![cwd.to_str().expect("UTF-8").to_owned()],
+        Some(ExecutionPolicy {
+            network: true,
+
+            ..ExecutionPolicy::default()
+        }),
+        [Some("fixture".to_owned()), Some("gpt-5".to_owned())],
+    )
+    .expect("workspace config");
     let folder = directory.path().join("thread");
     fs::create_dir_all(&folder).expect("thread folder");
     repository
@@ -904,28 +588,32 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
     fs::write(&ledger, bytes).expect("ledger");
 
     let origin = endpoint_origin("https://api.openai.com/v1").expect("endpoint origin");
-    let mut launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
-        &repository,
-        &ProfiledWorkerLaunchSpec {
+    let mut launched = {
+        let fixture_repository = &repository;
+        let fixture_spec = &ProfiledWorkerLaunchSpec {
             binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
             ledger: ledger.clone(),
             timestamp: "2026-08-27T09:00:01.000Z".to_owned(),
             run_id: "provider-run".to_owned(),
             binary_attribution: "tekes-worker-test".to_owned(),
-            workspace_id: "ws".to_owned(),
-            folder_binding: None,
+
             user_agent_dir: directory.path().join("missing-user-agent"),
-        },
-        vec![CredentialScope {
-            credential_id: "fixture-key".to_owned(),
-            adapter: "responses".to_owned(),
-            endpoint_origin: origin,
-            purpose: "provider".to_owned(),
-            generation: "g1".to_owned(),
-            material: "provider-secret".to_owned(),
-        }],
-        &endpoint,
-    )
+        };
+        test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+        launch_profiled_worker_with_credentials_and_provider_test_redirect(
+            fixture_repository,
+            fixture_spec,
+            vec![CredentialScope {
+                credential_id: "fixture-key".to_owned(),
+                adapter: "responses".to_owned(),
+                endpoint_origin: origin,
+                purpose: "provider".to_owned(),
+                generation: "g1".to_owned(),
+                material: "provider-secret".to_owned(),
+            }],
+            &endpoint,
+        )
+    }
     .expect("launch provider worker");
     let stdout = launched.child.stdout.take().expect("worker stdout");
     let mut stdout = BufReader::new(stdout);
@@ -1238,7 +926,8 @@ fn slice7_ordinary_recovery_closes_old_attempt_before_resend() {
     let directory = tempfile::tempdir().expect("launch root");
     let cwd = directory.path().join("workspace");
     fs::create_dir(&cwd).expect("workspace");
-    let repository = ConfigRepository::open(directory.path()).expect("config repository");
+    let repository =
+        ConfigRepository::open(directory.path().join("kernel")).expect("config repository");
     repository
         .publish_providers(
             0,
@@ -1267,25 +956,17 @@ fn slice7_ordinary_recovery_closes_old_attempt_before_resend() {
             },
         )
         .expect("provider config");
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "ws".to_owned(),
-                name: "Main".to_owned(),
-                cwd: vec![cwd.to_str().expect("UTF-8").to_owned()],
-                folders: Vec::new(),
-                policy: Some(WorkspacePolicy {
-                    network: true,
-                    provider: Some("fixture".to_owned()),
-                    model: Some("gpt-5".to_owned()),
-                    ..WorkspacePolicy::default()
-                }),
-            },
-        )
-        .expect("workspace config");
+    test_support::freeze_execution_fixture(
+        &(repository),
+        vec![cwd.to_str().expect("UTF-8").to_owned()],
+        Some(ExecutionPolicy {
+            network: true,
+
+            ..ExecutionPolicy::default()
+        }),
+        [Some("fixture".to_owned()), Some("gpt-5".to_owned())],
+    )
+    .expect("workspace config");
     let folder = directory.path().join("thread");
     fs::create_dir_all(&folder).expect("thread folder");
     let ledger = folder.join("main.jsonl");
@@ -1302,28 +983,32 @@ fn slice7_ordinary_recovery_closes_old_attempt_before_resend() {
     fs::write(&ledger, bytes).expect("recovery ledger");
 
     let origin = endpoint_origin("https://api.openai.com/v1").expect("endpoint origin");
-    let mut launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
-        &repository,
-        &ProfiledWorkerLaunchSpec {
+    let mut launched = {
+        let fixture_repository = &repository;
+        let fixture_spec = &ProfiledWorkerLaunchSpec {
             binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
             ledger: ledger.clone(),
             timestamp: "2026-08-27T09:00:01.000Z".to_owned(),
             run_id: "ordinary-recovery".to_owned(),
             binary_attribution: "tekes-worker-test".to_owned(),
-            workspace_id: "ws".to_owned(),
-            folder_binding: None,
+
             user_agent_dir: directory.path().join("missing-user-agent"),
-        },
-        vec![CredentialScope {
-            credential_id: "fixture-key".to_owned(),
-            adapter: "responses".to_owned(),
-            endpoint_origin: origin,
-            purpose: "provider".to_owned(),
-            generation: "g1".to_owned(),
-            material: "provider-secret".to_owned(),
-        }],
-        &endpoint,
-    )
+        };
+        test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+        launch_profiled_worker_with_credentials_and_provider_test_redirect(
+            fixture_repository,
+            fixture_spec,
+            vec![CredentialScope {
+                credential_id: "fixture-key".to_owned(),
+                adapter: "responses".to_owned(),
+                endpoint_origin: origin,
+                purpose: "provider".to_owned(),
+                generation: "g1".to_owned(),
+                material: "provider-secret".to_owned(),
+            }],
+            &endpoint,
+        )
+    }
     .expect("launch recovery worker");
     let mut stdout = BufReader::new(launched.child.stdout.take().expect("worker stdout"));
     let stdin = launched.child.stdin.as_mut().expect("worker stdin");
@@ -1573,7 +1258,8 @@ fn gated_profiled_launch_stops_before_lease_or_provider_and_preserves_log() {
         let directory = tempfile::tempdir().expect("launch root");
         let cwd = directory.path().join("workspace");
         fs::create_dir(&cwd).expect("workspace");
-        let repository = ConfigRepository::open(directory.path()).expect("config repository");
+        let repository =
+            ConfigRepository::open(directory.path().join("kernel")).expect("config repository");
         repository
             .publish_providers(
                 0,
@@ -1602,25 +1288,17 @@ fn gated_profiled_launch_stops_before_lease_or_provider_and_preserves_log() {
                 },
             )
             .expect("provider config");
-        repository
-            .publish_workspace(
-                0,
-                &WorkspaceConfig {
-                    format: 1,
-                    revision: 1,
-                    id: "ws".to_owned(),
-                    name: "Main".to_owned(),
-                    cwd: vec![cwd.to_str().expect("UTF-8").to_owned()],
-                    folders: Vec::new(),
-                    policy: Some(WorkspacePolicy {
-                        network: true,
-                        provider: Some("fixture".to_owned()),
-                        model: Some("gpt-5".to_owned()),
-                        ..WorkspacePolicy::default()
-                    }),
-                },
-            )
-            .expect("workspace config");
+        test_support::freeze_execution_fixture(
+            &(repository),
+            vec![cwd.to_str().expect("UTF-8").to_owned()],
+            Some(ExecutionPolicy {
+                network: true,
+
+                ..ExecutionPolicy::default()
+            }),
+            [Some("fixture".to_owned()), Some("gpt-5".to_owned())],
+        )
+        .expect("workspace config");
         let folder = directory.path().join("thread");
         fs::create_dir_all(&folder).expect("thread folder");
         repository
@@ -1654,30 +1332,36 @@ fn gated_profiled_launch_stops_before_lease_or_provider_and_preserves_log() {
             .into_bytes();
         bytes.extend_from_slice(b"unrecognized-new-format-tail");
         fs::write(&ledger, &bytes).expect("ledger");
+        test_support::bind_execution_fixture(&repository, &ledger);
+        let bytes = fs::read(&ledger).unwrap();
 
         let origin = endpoint_origin("https://api.openai.com/v1").expect("endpoint origin");
-        let launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
-            &repository,
-            &ProfiledWorkerLaunchSpec {
+        let launched = {
+            let fixture_repository = &repository;
+            let fixture_spec = &ProfiledWorkerLaunchSpec {
                 binary: env!("CARGO_BIN_EXE_tekes-worker").into(),
                 ledger: ledger.clone(),
                 timestamp: "2026-08-27T09:00:01.000Z".to_owned(),
                 run_id: "provider-run".to_owned(),
                 binary_attribution: "tekes-worker-test".to_owned(),
-                workspace_id: "ws".to_owned(),
-                folder_binding: None,
+
                 user_agent_dir: directory.path().join("missing-user-agent"),
-            },
-            vec![CredentialScope {
-                credential_id: "fixture-key".to_owned(),
-                adapter: "responses".to_owned(),
-                endpoint_origin: origin,
-                purpose: "provider".to_owned(),
-                generation: "g1".to_owned(),
-                material: "provider-secret".to_owned(),
-            }],
-            &endpoint,
-        );
+            };
+            test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+            launch_profiled_worker_with_credentials_and_provider_test_redirect(
+                fixture_repository,
+                fixture_spec,
+                vec![CredentialScope {
+                    credential_id: "fixture-key".to_owned(),
+                    adapter: "responses".to_owned(),
+                    endpoint_origin: origin,
+                    purpose: "provider".to_owned(),
+                    generation: "g1".to_owned(),
+                    material: "provider-secret".to_owned(),
+                }],
+                &endpoint,
+            )
+        };
         // Unknown reader semantics cannot be used to capture a session-owned
         // launch scope. Reject in the parent before preparing any execution
         // authority; a writer-only gate still reaches the worker handshake.
@@ -1801,7 +1485,8 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
     let directory = tempfile::tempdir().expect("launch root");
     let cwd = directory.path().join("workspace");
     fs::create_dir(&cwd).expect("workspace");
-    let repository = ConfigRepository::open(directory.path()).expect("config repository");
+    let repository =
+        ConfigRepository::open(directory.path().join("kernel")).expect("config repository");
     repository
         .publish_providers(
             0,
@@ -1830,26 +1515,18 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
             },
         )
         .expect("provider config");
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "ws".to_owned(),
-                name: "Main".to_owned(),
-                cwd: vec![cwd.to_str().expect("UTF-8").to_owned()],
-                folders: Vec::new(),
-                policy: Some(WorkspacePolicy {
-                    network: true,
-                    provider: Some("fixture".to_owned()),
-                    model: Some("gpt-5".to_owned()),
-                    allowed_tools: vec!["context_get".to_owned()],
-                    ..WorkspacePolicy::default()
-                }),
-            },
-        )
-        .expect("workspace config");
+    test_support::freeze_execution_fixture(
+        &(repository),
+        vec![cwd.to_str().expect("UTF-8").to_owned()],
+        Some(ExecutionPolicy {
+            network: true,
+
+            allowed_tools: vec!["context_get".to_owned()],
+            ..ExecutionPolicy::default()
+        }),
+        [Some("fixture".to_owned()), Some("gpt-5".to_owned())],
+    )
+    .expect("workspace config");
     // Supervisor-owned tools bind the session to the thread folder's UUID.
     let folder = directory
         .path()
@@ -1887,18 +1564,22 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
         timestamp: "2026-08-27T09:00:01.000Z".to_owned(),
         run_id: run_id.to_owned(),
         binary_attribution: "tekes-worker-test".to_owned(),
-        workspace_id: "ws".to_owned(),
-        folder_binding: None,
+
         user_agent_dir: directory.path().join("missing-user-agent"),
     };
 
     // Run 1: grant the lease, wait for the eager control request, kill.
-    let mut launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
-        &repository,
-        &spec("eager-kill"),
-        scopes(),
-        &endpoint,
-    )
+    let mut launched = {
+        let fixture_repository = &repository;
+        let fixture_spec = &spec("eager-kill");
+        test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+        launch_profiled_worker_with_credentials_and_provider_test_redirect(
+            fixture_repository,
+            fixture_spec,
+            scopes(),
+            &endpoint,
+        )
+    }
     .expect("launch eager worker");
     let mut stdout = BufReader::new(launched.child.stdout.take().expect("worker stdout"));
     let stdin = launched.child.stdin.as_mut().expect("worker stdin");
@@ -1982,12 +1663,17 @@ fn eager_dispatch_survives_worker_kill_between_intent_and_result() {
     let killed_bytes = fs::read(&ledger).unwrap();
 
     // Run 2: recovery pairs the call exactly once, closes the attempt, re-sends.
-    let mut launched = launch_profiled_worker_with_credentials_and_provider_test_redirect(
-        &repository,
-        &spec("eager-recover"),
-        scopes(),
-        &endpoint,
-    )
+    let mut launched = {
+        let fixture_repository = &repository;
+        let fixture_spec = &spec("eager-recover");
+        test_support::bind_execution_fixture(fixture_repository, &fixture_spec.ledger);
+        launch_profiled_worker_with_credentials_and_provider_test_redirect(
+            fixture_repository,
+            fixture_spec,
+            scopes(),
+            &endpoint,
+        )
+    }
     .expect("launch recovery worker");
     let mut stdout = BufReader::new(launched.child.stdout.take().expect("worker stdout"));
     let stdin = launched.child.stdin.as_mut().expect("worker stdin");

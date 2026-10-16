@@ -34,8 +34,6 @@ fn line(event: &Event) -> Vec<u8> {
 
 fn summary() -> CardSummary {
     CardSummary {
-        workspace: "ws".into(),
-        folder_binding: None,
         cwd: None,
         created: "2026-09-04T00:00:00.000Z".into(),
         updated_ms: 1,

@@ -1,12 +1,14 @@
 //! TekesKernel's language-owned event and canonical JSON contract.
 
 mod event;
+mod execution;
 mod fold;
 mod ijson;
 pub mod metrics;
 mod types;
 
 pub use event::{Event, EventKind, Visibility};
+pub use execution::{ExecutionConfig, McpConnection, McpConnectionTransport};
 pub use fold::{LedgerProjection, LedgerValidator, LifecycleFacts, RunRange, validate_ledger};
 pub use ijson::IJsonValue;
 pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
@@ -17,7 +19,10 @@ pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 /// prompt. Version 3 makes genesis `folders` narrow the session's folders: a
 /// genesis that records them sets `min_reader` 3, so an older reader does not
 /// widen the session to every workspace folder (spec event §Genesis).
-pub const READER_VERSION: u64 = 4;
+pub const READER_VERSION: u64 = 5;
+
+/// Session-owned execution values without Environment or Folder references.
+pub const EXECUTION_READER: u64 = 5;
 
 /// Session-owned creation seeds and subsequent per-session folder edits.
 pub const SESSION_SCOPE_READER: u64 = 4;
@@ -30,6 +35,7 @@ pub const FOLDERS_READER: u64 = 3;
 /// configuration and preset. Fork additionally carries `format` and remaps
 /// `seed` and `parent`; every other field is set by the operation itself.
 pub const GENESIS_INHERITED_FIELDS: &[&str] = &[
+    "execution",
     "session_scope",
     "workspace",
     "folder_binding",
@@ -61,6 +67,12 @@ pub fn effective_session_genesis(
             .get("scope_change")
             .and_then(serde_json::Value::as_object)
         {
+            if value.get("execution").is_some() {
+                return Err(SchemaError::event(
+                    Some(event.seq()),
+                    "execution sessions cannot carry legacy scope changes",
+                ));
+            }
             for field in [
                 "session_scope",
                 "folders",

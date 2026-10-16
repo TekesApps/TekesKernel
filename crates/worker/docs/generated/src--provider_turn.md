@@ -29,7 +29,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1467) | enum_item | `pub(crate)` |  |
 | [tekes-worker::provider_turn::SelectedProviderFailure::detail](../../src/provider_turn.rs#L1476) | function_item | `private` |  |
 | [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1487) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1521) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1519) | function_item | `pub(crate)` |  |
 
 ## Imports / reexports
 
@@ -111,7 +111,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_provider_turn` | `hooks.before_turn` | [48](../../src/provider_turn.rs#L48) | receiver-type-required |
 | `run_provider_turn` | `profile.clone` | [51](../../src/provider_turn.rs#L51) | receiver-type-required |
 | `run_provider_turn` | `validation_runtime::activate_validator_profile` | [52](../../src/provider_turn.rs#L52) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `profile         .config         .workspace         .policy         .max_wall_seconds         .map` | [54](../../src/provider_turn.rs#L54) | receiver-type-required |
+| `run_provider_turn` | `profile         .config         .execution         .policy         .max_wall_seconds         .map` | [54](../../src/provider_turn.rs#L54) | receiver-type-required |
 | `run_provider_turn` | `Instant::now` | [59](../../src/provider_turn.rs#L59) | external-constructor-callback-or-unresolved |
 | `run_provider_turn` | `Duration::from_secs` | [59](../../src/provider_turn.rs#L59) | external-constructor-callback-or-unresolved |
 | `run_provider_turn` | `run_provider_turn_inner` | [60](../../src/provider_turn.rs#L60) | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
@@ -185,7 +185,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_provider_turn_inner` | `provider_catalog             .into_iter()             .map` | [256](../../src/provider_turn.rs#L256) | receiver-type-required |
 | `run_provider_turn_inner` | `provider_catalog             .into_iter` | [256](../../src/provider_turn.rs#L256) | receiver-type-required |
 | `run_provider_turn_inner` | `serde_json::to_value(value).expect` | [258](../../src/provider_turn.rs#L258) | receiver-type-required |
-| `run_provider_turn_inner` | `current_turn_inputs` | [262](../../src/provider_turn.rs#L262) | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1521) |
+| `run_provider_turn_inner` | `current_turn_inputs` | [262](../../src/provider_turn.rs#L262) | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1519) |
 | `run_provider_turn_inner` | `validation_runtime::JUDGE_SYSTEM.to_owned` | [268](../../src/provider_turn.rs#L268) | receiver-type-required |
 | `run_provider_turn_inner` | `identity::resolve_preset` | [270](../../src/provider_turn.rs#L270) | external-constructor-callback-or-unresolved |
 | `run_provider_turn_inner` | `preset.render` | [271](../../src/provider_turn.rs#L271) | receiver-type-required |
@@ -428,7 +428,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `local_provider_call_id` | `events.iter` | [1253](../../src/provider_turn.rs#L1253) | receiver-type-required |
 | `local_provider_call_id` | `"scoped provider call identity collision".into` | [1256](../../src/provider_turn.rs#L1256) | receiver-type-required |
 | `repair_provider_call_arguments` | `tools::fixed_schema(&call.name)         .and_then` | [1268](../../src/provider_turn.rs#L1268) | receiver-type-required |
-| `repair_provider_call_arguments` | `tools::fixed_schema` | [1268](../../src/provider_turn.rs#L1268) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1225) |
+| `repair_provider_call_arguments` | `tools::fixed_schema` | [1268](../../src/provider_turn.rs#L1268) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
 | `repair_provider_call_arguments` | `schema.repair_quoted_null_exclusive` | [1269](../../src/provider_turn.rs#L1269) | receiver-type-required |
 | `localize_provider_frame` | `Ok` | [1286](../../src/provider_turn.rs#L1286), [1295](../../src/provider_turn.rs#L1295) | external-constructor-callback-or-unresolved |
 | `localize_provider_frame` | `id.clone` | [1288](../../src/provider_turn.rs#L1288), [1293](../../src/provider_turn.rs#L1293) | receiver-type-required |
@@ -481,53 +481,49 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `settle_provider_unavailable` | `Ok` | [1463](../../src/provider_turn.rs#L1463) | external-constructor-callback-or-unresolved |
 | `detail` | `"provider_not_selected".to_owned` | [1478](../../src/provider_turn.rs#L1478) | receiver-type-required |
 | `detail` | `"model_not_selected".to_owned` | [1480](../../src/provider_turn.rs#L1480) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.workspace.policy.provider.as_deref())         .or(config.settings.default_provider.as_deref())         .ok_or` | [1490](../../src/provider_turn.rs#L1490) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.workspace.policy.provider.as_deref())         .or` | [1490](../../src/provider_turn.rs#L1490) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.settings.default_provider.as_deref())         .ok_or` | [1490](../../src/provider_turn.rs#L1490) | receiver-type-required |
 | `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or` | [1490](../../src/provider_turn.rs#L1490) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map` | [1490](../../src/provider_turn.rs#L1490), [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref` | [1490](../../src/provider_turn.rs#L1490), [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map` | [1490](../../src/provider_turn.rs#L1490), [1496](../../src/provider_turn.rs#L1496) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref` | [1490](../../src/provider_turn.rs#L1490), [1496](../../src/provider_turn.rs#L1496) | receiver-type-required |
 | `selected_provider` | `settings.provider.as_str` | [1493](../../src/provider_turn.rs#L1493) | receiver-type-required |
-| `selected_provider` | `config.workspace.policy.provider.as_deref` | [1494](../../src/provider_turn.rs#L1494) | receiver-type-required |
-| `selected_provider` | `config.settings.default_provider.as_deref` | [1495](../../src/provider_turn.rs#L1495) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.workspace.policy.model.as_deref())         .or(config.settings.default_model.as_deref())         .ok_or` | [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.workspace.policy.model.as_deref())         .or` | [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
-| `selected_provider` | `settings.model.as_str` | [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
-| `selected_provider` | `config.workspace.policy.model.as_deref` | [1501](../../src/provider_turn.rs#L1501) | receiver-type-required |
-| `selected_provider` | `config.settings.default_model.as_deref` | [1502](../../src/provider_turn.rs#L1502) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == provider_id)         .ok_or_else` | [1504](../../src/provider_turn.rs#L1504) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter()         .find` | [1504](../../src/provider_turn.rs#L1504) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter` | [1504](../../src/provider_turn.rs#L1504) | receiver-type-required |
-| `selected_provider` | `SelectedProviderFailure::ProviderNotConfigured` | [1509](../../src/provider_turn.rs#L1509) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `provider_id.to_owned` | [1509](../../src/provider_turn.rs#L1509) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter()         .find(&#124;model&#124; model.id == model_id)         .ok_or_else` | [1510](../../src/provider_turn.rs#L1510) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter()         .find` | [1510](../../src/provider_turn.rs#L1510) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter` | [1510](../../src/provider_turn.rs#L1510) | receiver-type-required |
-| `selected_provider` | `SelectedProviderFailure::ModelNotConfigured` | [1514](../../src/provider_turn.rs#L1514) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `model_id.to_owned` | [1514](../../src/provider_turn.rs#L1514), [1516](../../src/provider_turn.rs#L1516) | receiver-type-required |
-| `selected_provider` | `Err` | [1516](../../src/provider_turn.rs#L1516) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `SelectedProviderFailure::ModelDisabled` | [1516](../../src/provider_turn.rs#L1516) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `Ok` | [1518](../../src/provider_turn.rs#L1518) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `ledger.projection().ok_or` | [1525](../../src/provider_turn.rs#L1525) | receiver-type-required |
-| `current_turn_inputs` | `ledger.projection` | [1525](../../src/provider_turn.rs#L1525) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; *event.kind() == EventKind::TurnOpen && event.turn() == Some(turn))         .ok_or` | [1526](../../src/provider_turn.rs#L1526) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find` | [1526](../../src/provider_turn.rs#L1526) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev` | [1526](../../src/provider_turn.rs#L1526) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter` | [1526](../../src/provider_turn.rs#L1526) | receiver-type-required |
-| `current_turn_inputs` | `event.kind` | [1530](../../src/provider_turn.rs#L1530) | receiver-type-required |
-| `current_turn_inputs` | `event.turn` | [1530](../../src/provider_turn.rs#L1530) | receiver-type-required |
-| `current_turn_inputs` | `Some` | [1530](../../src/provider_turn.rs#L1530) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `serde_json::to_value` | [1532](../../src/provider_turn.rs#L1532) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `open.raw` | [1532](../../src/provider_turn.rs#L1532) | receiver-type-required |
-| `current_turn_inputs` | `Ok` | [1533](../../src/provider_turn.rs#L1533) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map(Value::as_u64)         .collect` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object` | [1533](../../src/provider_turn.rs#L1533) | receiver-type-required |
-| `current_turn_inputs` | `trigger.get` | [1538](../../src/provider_turn.rs#L1538) | receiver-type-required |
+| `selected_provider` | `config.settings.default_provider.as_deref` | [1494](../../src/provider_turn.rs#L1494) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.settings.default_model.as_deref())         .ok_or` | [1496](../../src/provider_turn.rs#L1496) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [1496](../../src/provider_turn.rs#L1496) | receiver-type-required |
+| `selected_provider` | `settings.model.as_str` | [1499](../../src/provider_turn.rs#L1499) | receiver-type-required |
+| `selected_provider` | `config.settings.default_model.as_deref` | [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == provider_id)         .ok_or_else` | [1502](../../src/provider_turn.rs#L1502) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter()         .find` | [1502](../../src/provider_turn.rs#L1502) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter` | [1502](../../src/provider_turn.rs#L1502) | receiver-type-required |
+| `selected_provider` | `SelectedProviderFailure::ProviderNotConfigured` | [1507](../../src/provider_turn.rs#L1507) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `provider_id.to_owned` | [1507](../../src/provider_turn.rs#L1507) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter()         .find(&#124;model&#124; model.id == model_id)         .ok_or_else` | [1508](../../src/provider_turn.rs#L1508) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter()         .find` | [1508](../../src/provider_turn.rs#L1508) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter` | [1508](../../src/provider_turn.rs#L1508) | receiver-type-required |
+| `selected_provider` | `SelectedProviderFailure::ModelNotConfigured` | [1512](../../src/provider_turn.rs#L1512) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `model_id.to_owned` | [1512](../../src/provider_turn.rs#L1512), [1514](../../src/provider_turn.rs#L1514) | receiver-type-required |
+| `selected_provider` | `Err` | [1514](../../src/provider_turn.rs#L1514) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `SelectedProviderFailure::ModelDisabled` | [1514](../../src/provider_turn.rs#L1514) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `Ok` | [1516](../../src/provider_turn.rs#L1516) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `ledger.projection().ok_or` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `current_turn_inputs` | `ledger.projection` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; *event.kind() == EventKind::TurnOpen && event.turn() == Some(turn))         .ok_or` | [1524](../../src/provider_turn.rs#L1524) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find` | [1524](../../src/provider_turn.rs#L1524) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev` | [1524](../../src/provider_turn.rs#L1524) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter` | [1524](../../src/provider_turn.rs#L1524) | receiver-type-required |
+| `current_turn_inputs` | `event.kind` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
+| `current_turn_inputs` | `event.turn` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
+| `current_turn_inputs` | `Some` | [1528](../../src/provider_turn.rs#L1528) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `serde_json::to_value` | [1530](../../src/provider_turn.rs#L1530) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `open.raw` | [1530](../../src/provider_turn.rs#L1530) | receiver-type-required |
+| `current_turn_inputs` | `Ok` | [1531](../../src/provider_turn.rs#L1531) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map(Value::as_u64)         .collect` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object` | [1531](../../src/provider_turn.rs#L1531) | receiver-type-required |
+| `current_turn_inputs` | `trigger.get` | [1536](../../src/provider_turn.rs#L1536) | receiver-type-required |

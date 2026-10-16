@@ -448,13 +448,11 @@ fn route(config: &profile::ConfigSnapshot) -> Option<(&profile::Provider, &profi
         .session_settings
         .as_ref()
         .map(|settings| settings.provider.as_str())
-        .or(config.workspace.policy.provider.as_deref())
         .or(config.settings.default_provider.as_deref());
     let model = config
         .session_settings
         .as_ref()
         .map(|settings| settings.model.as_str())
-        .or(config.workspace.policy.model.as_deref())
         .or(config.settings.default_model.as_deref());
     let provider = match provider {
         Some(id) => config
@@ -485,7 +483,7 @@ mod tests {
     fn config() -> profile::ConfigSnapshot {
         serde_json::from_value(json!({
             "format":1,
-            "workspace":{"format":1,"revision":1,"id":"w","name":"W","cwd":[std::fs::canonicalize(std::env::temp_dir()).unwrap()],"policy":{"network":true}},
+            "execution":{"session_id":"session","cwd":[std::fs::canonicalize(std::env::temp_dir()).unwrap()],"policy":{"network":true}},
             "providers":{"format":1,"revision":1,"providers":[{
                 "id":"p","adapter":"responses","dialect":"openai_responses_v1","endpoint_owner":"openai",
                 "gateway_translation":"direct","evidence_revision":"openai-2026-08-01","endpoint":"https://example.com/v1",
@@ -493,7 +491,7 @@ mod tests {
                     "context_window_tokens":100000,"compact_trigger_tokens":90000}]
             }]},
             "settings":{"format":1,"revision":1,"default_provider":"p","default_model":"gpt-5"},
-            "revisions":{"workspace":1,"providers":1,"settings":1}
+            "revisions":{"providers":1,"settings":1}
         })).unwrap()
     }
 

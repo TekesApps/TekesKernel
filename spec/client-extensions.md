@@ -1,6 +1,11 @@
 # Client extensions v1
 
-Status: executable contract for Slice 14F.
+> 0.9.0 execution and responsibility changes are defined in
+> [Session execution](session-execution.md). Its Session creation and scope rules
+> replace the management-backed rules below; 0.8/0.7 compatibility is not a goal.
+
+
+Status: executable 0.9.0 contract; no 0.8/0.7 compatibility.
 
 This contract closes the optional product-management surface above
 [Session Endpoint](session-endpoint.md#routes-and-streams). It does not modify that
@@ -31,19 +36,17 @@ substituted for one another.
 The base set remains exactly:
 
 ```text
-workspace.create workspace.rename workspace.relocate
-workspace.archiveSession workspace.unarchiveSession
+session.archive session.unarchive
 session.create session.prompt session.updateQueue session.cancel
 session.rename session.fork session.discard session.attachment session.models
 models.list session.selectModel remote.mux
 ```
 
 The executable extension catalog is `fixtures/client-extensions/catalog.canonical.json`:
-a 17-method base and 21 capabilities with 67 extension methods. This file
-specifies twelve capabilities directly; the nine native-client capabilities are
+a 14-method base (including mux) and 14 capabilities with 37 extension methods. The retained native-client capabilities are
 specified in Session Endpoint and listed under
 [Native-client capabilities](#native-client-capabilities).
-Capability ids and versions are Client metadata, not fields added to
+The Session Endpoint protocol version is 4. Capability ids and versions are Client metadata, not fields added to
 `host.describe`. Release qualification compares the Client driver's declared
 catalog with the server registry in both directions and rejects a collision
 with the base set or another extension. The v1 capability groups are atomic:
@@ -84,25 +87,13 @@ session or writes configuration. The preset model, limits and render order are
 | method | request | result |
 |---|---|---|
 | `session.presets.describe` | `{}` | `{format:1, renderVersion:1, bases:[{id:"general",identity,rules},{id:"blank"}], kernelLayers:[{kind:"kernel",id,version,title,identity,duty}], limits:{maxLayers,maxIdBytes,maxVersionBytes,maxIdentityBytes,maxDutyBytes,maxTextBytes,maxTools,maxMcpServers,maxMcpToolsPerServer,maxSkills}, invalidReasons:[str], selectableTools:[str]}` |
-| `session.presets.resolve` | `{workspaceId:str, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str], defaults?:{provider,model,reasoningEffort?}, mcpReadiness?:[McpReadiness]}` |
+| `session.presets.resolve` | `{execution:ExecutionConfig, preset:Preset}` | `{base, layers:[{kind,id,version}], presetText:str, digest:str, tools?:[str], mcp?:[{server,digest,tools}], skills?:[str], defaults?:{provider,model,reasoningEffort?}, mcpReadiness?:[McpReadiness]}` |
 
-`session.presets.resolve` resolves the preset exactly as `session.create`
-would under that workspace's base, instruction snapshot and MCP registry, and
-returns the same digest and selection the session's genesis would record. `presetText` is the harness identity and the
-preset-owned text with `{model}` unresolved; the working directory and the
-`AGENTS.md` scopes follow it in a session. A client can run it in its own build
-or tests to prove its presets before shipping them. `selectableTools` lists
-the fixed tools a preset's `tools` may name.
-
-When the preset references MCP servers, `mcpReadiness` reports each reference
-against the catalog a launch in that workspace would bind now (the preparation
-`tools/list` uses): `{server, status:"ready"|"incomplete"|"failed"|"unavailable",
-code?, missingTools?:[str], refusedTools?:[{tool,code}]}`. It is advisory: it
-never refuses the preset, and the digest is the one `session.create` records.
-`session.create` itself does not start servers, so without this check a
-missing tool shows only when a session launches (`invalid_reference`). Additional errors:
-`workspace-not-found {workspaceId}` and `preset-invalid {reason,layer?,field?}`;
-a malformed preset is `bad-request`.
+`session.presets.resolve {execution,preset}` resolves against explicit execution,
+host-owned instructions and selected MCP descriptors. It returns the same frozen
+preset digest that creation records. It does not open registries or launch local
+processes. Invalid selections are `preset-invalid`; malformed values are
+`bad-request`. See [Session execution](session-execution.md).
 
 ## Resource and tool catalogs
 
@@ -113,42 +104,34 @@ a malformed preset is `bad-request`.
 | `skills/list` | read | `{}` | `skill-package` `SkillsListResult` |
 | `commands/list` | read | `{}` | `command-catalog` `CommandsListResult` |
 | `commands/run` | mutation | `command-catalog` `CommandRunRequest` | its durable keyed-input result |
-| `resources/list` | read | `{workspaceId,source:"skill"|"mcp",after?,limit}` | `{format:1,items:[ResourceSummary],next?}` |
-| `resources/read` | read | `{workspaceId,reference,uri}` | `{format:1,content:ResourceContent}` |
+| `resources/list` | read | `{sessionId,source:"skill",after?,limit}` | `{format:1,items:[ResourceSummary],next?}` |
+| `resources/read` | read | `{sessionId,reference,uri}` | `{format:1,content:ResourceContent}` |
 
 `limit` is `1...100`; absence means 100. `ResourceSummary` is
 `{reference,uri,name,mimeType?,description?}` and the closed reference union is:
 
 ```text
 ResourceReference =
-  {kind:"skill",workspaceId,name,contentDigest}
-| {kind:"mcp",server:McpServerReference,bindingDigest}
+  {kind:"skill",sessionId,name,contentDigest}
 ```
 
-The skill digest is `skill-package` `content_digest`. The MCP binding digest
-is `"sha256-" + lowercase_hex(SHA-256(RFC8785({server,configDigest,
-protocolVersion,serverIdentity,authorizationIdentity,catalogGeneration})))`;
-the preimage contains no credential bytes. A restart or catalog-generation
-change makes the old reference stale rather than reusing it for different
-content. `ResourceContent` is exactly one of `{text,mimeType?}` or
-`{blobBase64,mimeType}` and is capped at 4 MiB decoded. Listing and reads use
-one frozen skill snapshot or one live MCP peer generation respectively;
-pagination never mixes generations. Closed additional errors are
-`resource-not-found`, `resource-stale`, and `resource-too-large`.
-For a skill reference, `uri` is its exact safe frozen relative resource path
-(for example `references/api.md`); for MCP it is the server-advertised URI.
-Neither arm rewrites a URI into a Kernel-private scheme.
+The skill digest is the frozen `skill-package` content digest. References must
+match the requested Session and frozen digest; stale or cross-Session references
+fail closed. `ResourceContent` is `{text,mimeType?}` or `{blobBase64,mimeType}`,
+capped at 4 MiB decoded. `uri` is a safe frozen relative resource path. Additional
+errors are `resource-not-found`, `resource-stale`, and `resource-too-large`.
+MCP resource/prompt browsing is not a Kernel endpoint capability in 0.9.0.
 
 `tools.v1` is read-only:
 
 | method | request | result |
 |---|---|---|
-| `tools/list` | `{workspaceId,sessionId?}` | `{format:1,catalogDigest,tools:[ToolSummary]}` |
-| `tools/resolve` | `{workspaceId,sessionId?,name}` | `{format:1,catalogDigest,tool:ToolSummary}` |
+| `tools/list` | `{sessionId}` | `{format:1,catalogDigest,tools:[ToolSummary]}` |
+| `tools/resolve` | `{sessionId,name}` | `{format:1,catalogDigest,tool:ToolSummary}` |
 
 `ToolSummary` is `{name,description,arguments,availability,backend,effect,
 source}`. `source` is exactly `{kind:"builtin"}` for a fixed row or
-`{kind:"plugin"|"mcp",id}` from the immutable `DynamicToolSource`.
+`{kind:"mcp",id}` from the immutable `DynamicToolSource`.
 Fixed rows use `builtin-tools`; dynamic rows use the immutable launch-binding
 projection. The endpoint never resolves or exposes credentials
 and never claims that a catalog row is executable after its generation is
@@ -157,278 +140,18 @@ empty result. Neither method is a model tool invocation path.
 The fixed `availability` string is the exact `builtin-tools` enum value
 (for example `read` is `default`); the endpoint defines no `always` alias.
 
-## Plugin and MCP management
-
-`plugins.v1` binds only the generic Slice-12 `PluginStore` authority:
-
-```text
-plugin/list          read      {}
-plugin/get           read      {pluginId}
-plugin/inspect       read      {archivePath}
-plugin/install       mutation  {archivePath,packageDigest,enable,grants,
-                                 allowDowngrade,allowSameVersionReplacement}
-plugin/setEnabled    mutation  {pluginId,enabled}
-plugin/setGrants     mutation  {pluginId,grants}
-plugin/remove        mutation  {pluginId}
-plugin/components    read      {}
-```
-
-Results are the canonical receipt/projection types from
-`plugin-package`, projected into these closed secret-free public values:
-
-```text
-PluginView = {pluginId,version,displayName,packageDigest,
-              integrity:"local-unverified"|"publisher-verified",
-              requestedCapabilities:[CapabilityRequest],
-              grantedCapabilities:[str],enabled}
-PluginComponentView = {ownerPluginId,ownerVersion,componentId,componentKind,
-                       pluginGeneration,grantedCapabilities,launchable}
-Readiness = {state:"ready"} | {state:"refresh-failed",code}
-```
-
-`plugin/list` returns `{format:1,plugins:[PluginView]}` in plugin-id order;
-`get`, `install`, `setEnabled`, and `setGrants` return
-`{format:1,plugin:PluginView,readiness?}`; `remove` returns
-`{format:1,removed,readiness}`; `components` returns
-`{format:1,components:[PluginComponentView]}` in the Slice-12 projection
-order. `inspect` returns `{format:1,manifest,packageDigest,integrity,
-requestedCapabilities}` without publishing the package. Filesystem source and
-package paths, data paths, native signing requirement strings, and publisher keys do
-not enter Client results. The host revalidates those facts internally.
-`archivePath` is an absolute local path and this capability is advertised only
-by the built-in local `.tekes` endpoint. Every successful mutation invokes
-`mcp-runtime` generation reconcile before its response; if peer close or
-reconcile fails, durable plugin success is returned with
-`readiness:{state:"refresh-failed",code}` rather than rolled back or reported
-as an install failure. Execution revalidates the new generation before every
-effect. Closed additional errors are `plugin-not-found`, `plugin-invalid`,
-`plugin-untrusted`, `plugin-grants`, `plugin-collision`,
-`plugin-version-conflict`, and `plugin-busy`.
-
-`plugin/inspect` safely stages the source and returns `packageDigest`, the exact
-canonical expanded-package tree digest computed by
-`plugin-package`/`PluginStore`; it is not a hash of the container/archive byte
-stream. The subsequent install request supplies that digest and rejects a source
-whose newly staged tree no longer matches it. Before install mutates
-`PluginStore`, the endpoint copies, safely expands, and verifies that exact tree
-into an rpcId-owned staging object, then durably prepares a plugin operation
-record keyed by `(rpcId, canonical request digest)` and naming the staged digest.
-The same journal records the exact PluginView/readiness result before endpoint
-handoff. Recovery never re-reads `archivePath`: it completes from the staged
-object or re-acks the committed result. Same-rpc different bytes conflict;
-remove/set mutations likewise require their journal's exact committed result,
-and absence/current state alone is never proof that this request committed.
-
-There is no Computer-Use method, DTO, dispatcher, or special component arm.
-Marketplace fetching, distribution-policy administration, and direct
-native-helper TCC controls are permanently absent in v1. A generic plugin's
-native MCP executable owns its platform permission prompts; the Kernel
-reaches it only through ordinary install, MCP discovery and call, with no
-plugin-specific lifecycle code.
-
-`mcp.v1` is exactly the seven methods and DTOs in `mcp-runtime`:
-`mcp.list`, `mcp.get`, `mcp.save`, `mcp.remove`, `mcp.probe`,
-`mcp.oauth.start`, and `mcp.oauth.remove`. This contract neither aliases their
-older slash spellings nor adds an eighth token-writing method.
-
-## Schedule and search
-
-`schedule.v1` binds `schedule` without changing its durable definition:
-
-| method | class | request | result |
-|---|---|---|---|
-| `schedule.list` | read | `{workspaceId?}` | `{format:1,schedules:[ScheduleView]}` |
-| `schedule.save` | mutation | `{definition}` | `{format:1,schedule:ScheduleView}` |
-| `schedule.delete` | mutation | `{taskId}` | `{format:1,deleted}` |
-| `schedule.runNow` | mutation | `{taskId}` | `{format:1,claim:LaunchClaim}` |
-
-The endpoint origin tuple is `(principal,rpcId)` and is the internal
-`origin_tuple`; no Client field supplies it. Before `save`, the handler proves
-the workspace exists. The format-1 public profile accepts exactly
-`permission_mode:"inherit"` and an absent `model_id`: the claim launcher then
-uses the ordinary effective workspace/global policy and model selection when
-it creates the session. Any other permission value returns `schedule-policy`;
-any present `model_id` returns `schedule-model` before the schedule log
-changes. This is deliberate fail-closed behavior: `schedule` stores no
-provider id, so applying a bare model id after the effective provider changes
-would be ambiguous. A later public profile may add an atomic provider+model
-binding only by versioning the durable definition and this DTO. Ignoring
-either stored field is a protocol defect. The remaining error mapping is
-one-to-one from `schedule`.
+## Session search
 
 `threadSearch.v1` has two read methods. `session.search {query}` returns
 `{items:[{sessionId,snippet}],hasMore}`: a host-wide search over visible
 conversation text in active and archived sessions, capped at 50 results.
 `thread.search` takes the exact `thread-search` internal request with
 camel-case field names:
-`{workspaceId?,query,limit,visibility,after?}`. Omitting `workspaceId` searches
-all sessions; supplying it retains an explicit legacy workspace query filter,
-not an authorization boundary. Cursors bind this complete selection and cannot
+`{sessionId?,query,limit,visibility,after?}`. Omitting `sessionId` searches all visible Sessions; supplying it filters by Session identity. Cursors bind this complete selection and cannot
 widen a filtered query to a global query. The result is
 `{format:1,results,nextCursor?,reachedEnd,catalogDigest}`; internal index
 diagnostics are omitted. Every named internal error maps to the same
 kebab-case endpoint code. No transcript/body search is implied.
-
-## Environments
-
-`environments.v1` is an atomic optional group with two methods:
-
-| method | class | request | result |
-|---|---|---|---|
-| `environments.list` | read | `{}` | `{format:1,revision,defaultEnvironment:"local",environments:[Environment]}` |
-| `environments.save` | mutation | `{expectedRevision,environment:Environment}` | `{format:1,revision,environment:Environment}` |
-
-`Environment = {id:str,network:bool,toolchainRoots:[str],maxWallSeconds?:uint}`.
-All field sets are closed, including the nested definition. Optional fields
-are absent, never null. IDs are nonempty NFC strings of at most 512 bytes,
-without control characters. Toolchain roots are absolute paths without the
-PATH separator `:`; a present wall-time cap is positive. The definition has
-no trust, tools, credentials or writable-root grant fields.
-
-List returns effective definitions in ID order, including built-in `local`
-(network on, no extra toolchains or wall cap) unless an authored `local`
-overrides it. Missing `config/environments.json` is revision 0; reads never
-create it. Save upserts one complete definition and preserves the others;
-there is no removal method. The expected revision refers to the whole
-environments document. Successful saves increment it once and use the same
-config-admin durable intent, exact request retry, startup recovery and
-atomic config publication as workspace policy administration. Reusing an RPC
-ID with different bytes conflicts, even after later edits. Validation failure
-creates neither config bytes nor a prepared intent. Additional save errors
-are `stale-revision` (message `Configuration revision is stale`, details
-`{expected,actual}`) and `environment-invalid` (message `Environment definition
-is invalid`, details `{reason}`).
-
-Environment edits apply only at the next launch. Network and wall time meet
-the workspace policy, and toolchains add read access; choosing or editing an
-environment never grants folder trust, writable roots, secrets, or OS consent.
-Kernel-owned paths remain permanently write-protected.
-
-Clients opt in only after their driver declares the complete group. The
-server does not push new method names, change `host.describe`, add mux frames,
-or change old create results. Drivers whose catalog omits this group keep
-calling their existing methods and omit `session.create.environment` (default
-`local`); they must not try new environment calls. Kernel contract tests do
-not qualify a consumer implementation: ClientKit's typed adapter/catalog and
-host application integration are a separate acceptance step.
-
-## Workspace administration
-
-Provider configuration is owned by the launching application, which supplies
-it in the launch document (see [built-in launch](../docs/builtin-launch.md)).
-The earlier `providerAdmin.v1` group (`providers.*`) was removed together with
-the launchd deployment; no Kernel route edits providers or the default model.
-Abandoned provider or settings operation records from that group are ignored
-on recovery.
-
-`workspace.policy.set` durably prepares,
-before config publication, an operation record keyed by `(rpcId, canonical
-request digest)` containing the authority path, expected/next revision, exact
-desired canonical bytes and digest, and exact result. Startup and every later
-mutation first finish any prepared record from those bytes, perform or
-idempotently reperform policy lifecycle effects, then commit the
-record; they do not wait for the original caller to retry. A committed retry
-re-acks its recorded result without consulting mutable current state. A later
-unrelated config revision is never inferred to prove the old request.
-
-`workspacePolicy.v1` consists of:
-
-```text
-workspace.policy.get  read      {workspaceId}
-workspace.policy.set  mutation  {workspaceId,expectedRevision,policy}
-```
-
-The policy is exactly `config` `WorkspacePolicy`. Set replaces the complete
-workspace-local policy. Relative to the previous workspace revision it may
-tighten or relax that local policy, including enabling network or tools that
-were previously absent, but it can never exceed immutable/deployment-global
-safety limits, installed catalog availability, plugin grants, credential
-scope, TCC consent, or operating-system permission. Thus the default
-`network:false` and empty tool set are not monotonic ceilings. The handler
-cannot grant an unavailable tool, credential, MCP server, plugin component,
-filesystem root, or OS permission. The mutation uses `config`
-locking/publication and triggers its privilege-reduction stop/respawn rule
-only when the replacement actually reduces a live run's effective authority.
-Errors are `workspace-not-found`,
-`stale-revision`, `policy-invalid`, and `policy-escalation`.
-
-`policy-escalation` is the code for every way a policy can exceed what is
-installed or granted, so its `message` and `details` say which. `details`
-always carries `reason`, the precise sentence, and `cause`, one of:
-
-| `cause` | `message` | meaning |
-|---|---|---|
-| `authority-ceiling` | Workspace policy exceeds an authority ceiling | the immutable instruction ceiling, or a limit the resolved configuration enforces (a writable root outside every workspace folder) |
-| `tool-not-installed` | Workspace policy names a tool that is not installed | a name in no installed catalog and not accounted for by a refusal below; `reason` lists the names (at most eight) |
-| `mcp-server-unavailable` | Workspace policy requires an MCP server that is unavailable | the policy names a tool of an MCP server that failed as a whole (`refresh-failed`, `credential-unavailable`, `projection-failed`); `reason` lists the servers and codes |
-
-A policy that could not be judged because the catalogs could not be assembled
-(configuration, instructions or MCP preparation failed) is not an escalation: it
-fails as `internal` with `details.cause = "catalog-unavailable"`.
-
-An MCP tool whose own schema the dynamic launch validator refuses is excluded
-alone while its server stays ready ([mcp-runtime](mcp-runtime.md) §Catalogs). A
-policy naming such a tool is therefore not refused: it is accepted exactly as
-sent (`workspace.policy.get` returns it), the tool is absent from `tools/list`
-and `tools/resolve` answers `tool-not-found`, the tool is not callable in any
-run, and the result reports it. The result is
-`{format:1,revision,policy}` plus, only when at least one named tool is
-unavailable for this reason, `unavailableTools` (at most 32 entries
-`{server,tool,name,code,reason,pointer?,keyword?}`, the diagnostic of
-mcp-runtime) and, when more exist, `unavailableToolCount`. Only an exact
-projected name of a refused tool is excused, and only when that name is a valid
-launch tool name (at most 128 bytes) and not also an executable catalog entry; a
-refused tool with an overlong projected name is an unknown tool (`tool-not-installed`); the check for unknown names, for an
-unavailable server and for every ceiling is unchanged.
-
-`workspaceFolders.v1` edits the ordered `config` `Workspace.folders` list:
-
-```text
-workspace.listFolders   read      {workspaceId}
-workspace.addFolder     mutation  {workspaceId,path}
-workspace.removeFolder  mutation  {workspaceId,path}
-```
-
-`WorkspaceFolders = {format:1,workspaceId,revision,folders:[{folderId,path}]}`
-in authored order. List returns it. Both mutations return
-`{workspace:Workspace,folders:WorkspaceFolders}`, where `Workspace` is the
-[Session Endpoint](session-endpoint.md) workspace value whose `path` is the
-first folder. A legacy `cwd` workspace lists the `folder-NNNN` ids its
-sessions already bind to; the first edit publishes those same ids as
-`folders`.
-
-Add canonicalizes an existing directory, appends it with the `folder-NNNN` id one
-above the highest existing one and, when the workspace has a policy, adds it to
-`writable_roots` as `workspace.create` seeds its folder. Existing sessions
-keep the folders their genesis records (spec event §Genesis), so an added
-folder reaches only sessions created afterwards. The canonical path
-must not already be a folder of any workspace (`workspace-ambiguous`). A
-workspace that has an active, archived or in-flight session without a stable
-`folder_binding` refuses a second folder with `workspace-legacy-session`,
-because such a session resolves only while its workspace has one folder.
-
-Remove compares `path` exactly with an authored folder path, so a folder
-whose directory no longer exists can still be removed. It refuses the last
-folder (`workspace-last-folder`) and a folder that any active, archived or
-in-flight session is bound to or records among its genesis `folders` (an
-in-flight create records every folder) (`workspace-folder-in-use`, details carry the
-sorted `sessionIds`). Like `workspace.relocate` it requires the workspace's
-quiescence lock and otherwise fails with `workspace-busy`. Writable roots at
-or below the removed folder are dropped unless a remaining folder contains
-them. Removing the first folder makes the next one the workspace `path`.
-
-Both mutations are endpoint management operations: the `(rpcId, canonical
-request digest)` operation record under `endpoint-management/` is prepared
-before config publication and is recovered like `workspace.relocate`. An
-exact retry resumes or replays that record without rechecking preconditions.
-They also hold the same in-process gate as `workspace.policy.set`. Existing
-sessions keep their `folder_binding`. Detached sessions resolve their own
-creation seed and are unaffected by these template edits; old sessions without
-a usable creation asset retain the compatibility resolver. A running worker
-keeps its launch snapshot. Errors are `workspace-not-found`,
-`workspace-invalid-path`, `workspace-ambiguous`, `workspace-busy`,
-`workspace-last-folder`, `workspace-folder-in-use`, and
-`workspace-legacy-session`.
 
 ## Usage projection
 
@@ -482,7 +205,7 @@ group sums it; a present/absent mixture or heterogeneous contract is
 
 ## Native-client capabilities
 
-These nine capabilities are atomic catalog groups like the ones above. Their
+These retained capabilities are atomic catalog groups like the ones above. Their
 requests, results and rules are specified in Session Endpoint; this table
 fixes only membership, method class and the closed capability errors from
 `errors.canonical.json`.
@@ -493,7 +216,6 @@ fixes only membership, method class and the closed capability errors from
 | `attachments.v1` | `attachments.policy` (read), `session.uploadFile` (mutation), `session.fileAttachment` (read) | `archived`, `attachment-error`, `session-not-found` | [Inline attachment policy](session-endpoint.md#inline-attachment-policy), [File attachments](session-endpoint.md#file-attachments) |
 | `approvals.v1` | `approvals.policy` (read), `approvals.mode` (read), `approvals.select` (mutation) | `archived`, `session-not-found` | [Approval policy](session-endpoint.md#approval-policy) |
 | `sessionFiles.v1` | `session.files.stat`, `session.files.read`, `session.files.readBytes` (all read) | `file-unavailable` | [Session file reads](session-endpoint.md#session-file-reads) |
-| `hostFiles.v1` | `directory.list` (read), `directory.create` (mutation), `session.references.files` (read), `session.references.sessions` (read) | `directory-exists`, `directory-forbidden`, `directory-not-found`, `io-error`, `session-not-found` | [Host directories and mention candidates](session-endpoint.md#host-directories-and-mention-candidates) |
 | `feedback.v1` | `feedback.list` (read), `feedback.put` (mutation), `feedback.delete` (mutation) | `io`, `version-conflict` | [Message feedback](session-endpoint.md#message-feedback) |
 | `settings.v1` | `settings.describe` (read), `settings.mutate` (mutation), `settings.update` (mutation), `settings.document` (read) | `io`, `settings-invalid`, `stale-revision`, `unknown-namespace` | [Instruction settings](session-endpoint.md#instruction-settings) |
 | `goals.v1` | `goals.get` (read), `goals.edit`, `goals.clear`, `goals.pause`, `goals.resume` (mutation) | `goal-invalid-transition`, `goal-not-found`, `goal-stale`, `ledger-corrupt`, `session-not-found` | [Goals](session-endpoint.md#goals) |
@@ -546,85 +268,6 @@ retirement never returns an empty success placeholder.
 - Gate 115: route inventory is complete in both directions and every legacy
   route is base, replaced, implemented, or retired; no TCU special case and no
   fake empty success exists.
-- Gate 116: cross-capability lifecycle — plugin mutation reconciles MCP,
-  schedule validates/applies policy+profile, archived usage/search behavior is
-  exact, and all revoked generations fail closed.
-
-## Folder trust (0.8)
-
-### Folder inventory and relocation
-
-`folders.v1` is an atomic group with `folders.list` (read-only, closed `{}`)
-and `folders.relocate` (mutation, closed `{previousPath:str,path:str}`).
-`folders.list` returns `{items:[{path:str,sessionIds:[str]}],archivedSessionIds:[str]}`.
-Items are sorted by path and IDs lexically. The list includes configured
-folders with no sessions. Active durable sessions group by their own primary
-cwd; secondary writable folders do not duplicate membership. Ephemeral sessions
-are omitted, and archived IDs are listed separately. Orphaned and legacy
-sessions retain the cwd recorded in their genesis. An explicit stable binding
-follows the current folder path after relocation. Paths are addresses for
-these navigation groups; grouping grants no execution or trust authority.
-
-Relocate rebinds a folder that the host has already moved on disk; Kernel does
-not move project files. `previousPath` is the exact currently configured path,
-even when that directory no longer exists. A logical Folder or one matching
-legacy compatibility binding is required; an unknown path is
-`workspace-invalid-path` and ambiguous legacy owners are `workspace-ambiguous`.
-An active worker using the logical Folder or its legacy compatibility workspace
-is `workspace-busy`. The destination must satisfy the normal folder-entry guards.
-Successful response is `{relocated:true}`. Stable bindings and semantic ledgers
-remain unchanged; only future launch resolution and inventory paths follow
-the new directory. Existing workspace compatibility configuration and writable
-policy roots are updated through the same recoverable management transaction
-as `workspace.relocate`. Exact retries recover that transaction even after
-the old path disappears; conflicting reuse of an RPC ID is rejected. No trust
-is transferred to a new canonical path. Existing mux inventory subscribers
-receive cwd upserts on the management workspace-change notification; refresh
-`folders.list` for the corresponding grouped view.
-
-`folderTrust.v1` owns `folders.trust.status` (read), `folders.trust.request` and
-`folders.trust.revoke` (mutations). Closed request/response DTOs and authorization
-semantics are specified in [Folder trust](../docs/folder-trust.md). Its exact
-error code is `folder-trust-refused`; no grant capability exists. Resource
-list/read optionally accept `sessionId` together with the compatibility
-`workspaceId`; a mismatching session/workspace is rejected and the session's
-recorded folders determine visibility.
-
-### Session folder administration
-
-`sessionFolders.v1` is an atomic optional capability:
-
-| Method | Class | Request | Success |
-| --- | --- | --- | --- |
-| `session.listFolders` | read | `{sessionId}` | `{sessionId,revision,folders:[{id,path}]}` |
-| `session.addFolder` | mutation | `{sessionId,expectedRevision,path}` | `{sessionId,revision,applies:"next-launch"}` |
-| `session.removeFolder` | mutation | `{sessionId,expectedRevision,path}` | same |
-
-Requests are closed objects. New sessions expose logical Folder ids; legacy
-adapters may still expose their old binding ids until converted. Folder revisions use the last scope-change
-ledger seq (1 before the first edit), independent of normal conversation
-traffic. Add canonicalizes an existing directory and applies the same root
-and Kernel-data guards as create; remove matches the current authored path
-exactly, including an offline folder. Removing the primary selects the first
-remaining folder. The last folder cannot be removed. Duplicate adds and
-missing removes are `bad-request`, stale revisions are `stale-revision`.
-
-The append under the lifecycle and writer locks is the durable CAS and exact
-retry receipt. A Folder edit validates its complete configuration before
-preparing a private catalog intent. The catalog lock is held across the ledger
-append and catalog publication; the catalog is published only when the exact
-prepared event is present in the valid ledger prefix. Recovery completes a
-committed publication, or discards a preparation with no matching event,
-before any subsequent catalog read or write. A partial trailing record never
-commits a Folder edit. An ambiguous I/O failure is retried with the same RPC id;
-it must never be converted into a new write with a fresh id. Reusing an RPC id with different parameters is
-`idempotency-conflict`; successful replay returns the original revision.
-A live worker holding the line writer lock causes `workspace-busy` (the
-compatibility error code); callers retry with a new operation after it exits.
-No live worker's policy is changed in place. New folders do not gain trust.
-The session's ledger and inventory are refreshed, and other sessions' ledgers,
-folder sets and effective policies remain unchanged.
-
-Workspace administration capabilities remain supported as compatibility
-creation templates. Native session runtime authority is described in
-[config](config.md#session-authority-and-workspace-compatibility-08).
+- Gate 116: actual production capability assembly, rejection of removed management
+  routes without storage side effects, Session lifecycle/recovery, archived
+  usage/search behavior and revoked connection generations fail closed.

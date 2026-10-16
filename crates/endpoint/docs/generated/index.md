@@ -19,6 +19,7 @@
 
 | Dependency | Kind | Target cfg |
 |---|---|---|
+| `mcp` | normal | all |
 | `profile` | normal | all |
 | `schema` | normal | all |
 | `store` | normal | all |
@@ -45,24 +46,24 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/idempotency.rs](../../src/idempotency.rs) | 35 | 418 | [Symbols and calls](src--idempotency.md) |
 | [crates/endpoint/src/journal.rs](../../src/journal.rs) | 37 | 393 | [Symbols and calls](src--journal.md) |
 | [crates/endpoint/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
-| [crates/endpoint/src/management.rs](../../src/management.rs) | 230 | 3232 | [Symbols and calls](src--management.md) |
 | [crates/endpoint/src/mux.rs](../../src/mux.rs) | 50 | 170 | [Symbols and calls](src--mux.md) |
 | [crates/endpoint/src/projection.rs](../../src/projection.rs) | 42 | 744 | [Symbols and calls](src--projection.md) |
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
 | [crates/endpoint/src/respond.rs](../../src/respond.rs) | 17 | 133 | [Symbols and calls](src--respond.md) |
 | [crates/endpoint/src/rpc.rs](../../src/rpc.rs) | 25 | 72 | [Symbols and calls](src--rpc.md) |
-| [crates/endpoint/src/service.rs](../../src/service.rs) | 65 | 507 | [Symbols and calls](src--service.md) |
+| [crates/endpoint/src/service.rs](../../src/service.rs) | 60 | 450 | [Symbols and calls](src--service.md) |
 | [crates/endpoint/src/session_event_registry_generated.rs](../../src/session_event_registry_generated.rs) | 8 | 7 | [Symbols and calls](src--session_event_registry_generated.md) |
+| [crates/endpoint/src/session_operations.rs](../../src/session_operations.rs) | 108 | 1239 | [Symbols and calls](src--session_operations.md) |
 | [crates/endpoint/src/stitch.rs](../../src/stitch.rs) | 4 | 36 | [Symbols and calls](src--stitch.md) |
 | [crates/endpoint/src/stream_queue.rs](../../src/stream_queue.rs) | 11 | 57 | [Symbols and calls](src--stream_queue.md) |
 | [crates/endpoint/src/types.rs](../../src/types.rs) | 11 | 55 | [Symbols and calls](src--types.md) |
-| [crates/endpoint/tests/automatic_title.rs](../../tests/automatic_title.rs) | 5 | 47 | `inventory.json` |
+| [crates/endpoint/tests/automatic_title.rs](../../tests/automatic_title.rs) | 5 | 48 | `inventory.json` |
 | [crates/endpoint/tests/legacy_replay.rs](../../tests/legacy_replay.rs) | 2 | 126 | `inventory.json` |
 | [crates/endpoint/tests/session_endpoint.rs](../../tests/session_endpoint.rs) | 10 | 100 | `inventory.json` |
-| [crates/endpoint/tests/session_notice.rs](../../tests/session_notice.rs) | 4 | 39 | `inventory.json` |
-| [crates/endpoint/tests/slice6_gates.rs](../../tests/slice6_gates.rs) | 10 | 262 | `inventory.json` |
+| [crates/endpoint/tests/session_notice.rs](../../tests/session_notice.rs) | 4 | 40 | `inventory.json` |
+| [crates/endpoint/tests/slice6_gates.rs](../../tests/slice6_gates.rs) | 10 | 255 | `inventory.json` |
 | [crates/endpoint/tests/slice9_lower_seam.rs](../../tests/slice9_lower_seam.rs) | 23 | 235 | `inventory.json` |
-| [crates/endpoint/tests/submission_intent.rs](../../tests/submission_intent.rs) | 2 | 113 | `inventory.json` |
+| [crates/endpoint/tests/submission_intent.rs](../../tests/submission_intent.rs) | 2 | 107 | `inventory.json` |
 
 ## Cross-file direct calls
 
@@ -78,34 +79,34 @@ flowchart LR
   m5["hub.rs"]
   m6["idempotency.rs"]
   m7["journal.rs"]
-  m8["management.rs"]
-  m9["mux.rs"]
-  m10["projection.rs"]
-  m11["requests.rs"]
-  m12["respond.rs"]
-  m13["rpc.rs"]
-  m14["service.rs"]
-  m15["session_event_registry_generated.rs"]
+  m8["mux.rs"]
+  m9["projection.rs"]
+  m10["requests.rs"]
+  m11["respond.rs"]
+  m12["rpc.rs"]
+  m13["service.rs"]
+  m14["session_event_registry_generated.rs"]
+  m15["session_operations.rs"]
   m16["stream_queue.rs"]
   m17["types.rs"]
   m0 -->|"5"| m4
   m1 -->|"2"| m7
   m1 -->|"4"| m17
   m2 -->|"1"| m4
-  m2 -->|"1"| m12
+  m2 -->|"1"| m11
   m5 -->|"3"| m17
-  m6 -->|"3"| m13
-  m8 -->|"1"| m7
-  m8 -->|"2"| m14
-  m8 -->|"14"| m17
-  m9 -->|"1"| m3
-  m9 -->|"2"| m17
-  m10 -->|"1"| m15
-  m11 -->|"2"| m17
-  m14 -->|"1"| m3
-  m14 -->|"1"| m7
-  m14 -->|"2"| m10
-  m14 -->|"11"| m17
+  m6 -->|"3"| m12
+  m8 -->|"1"| m3
+  m8 -->|"2"| m17
+  m9 -->|"1"| m14
+  m10 -->|"2"| m17
+  m13 -->|"1"| m3
+  m13 -->|"1"| m7
+  m13 -->|"2"| m9
+  m13 -->|"11"| m17
+  m15 -->|"1"| m7
+  m15 -->|"1"| m13
+  m15 -->|"13"| m17
   m16 -->|"2"| m4
-  m17 -->|"2"| m15
+  m17 -->|"2"| m14
 ```

@@ -1,7 +1,7 @@
 use profile::{
     ConfigSnapshot, DynamicTool, DynamicToolCatalog, DynamicToolEffect, DynamicToolSource,
-    DynamicToolSourceKind, LaunchBindings, ProvidersConfig, ResolvedWorkspace, RevisionVector,
-    SchemaRefusal, SettingsConfig, WorkspacePolicy,
+    DynamicToolSourceKind, ExecutionPolicy, LaunchBindings, ProvidersConfig, ResolvedExecution,
+    RevisionVector, SchemaRefusal, SettingsConfig,
 };
 use schema::IJsonValue;
 use serde_json::json;
@@ -43,7 +43,7 @@ fn host_goal_and_dynamic_catalog_are_exact_snapshot_bound_bytes() {
     assert_eq!(decoded.goal_id.as_deref(), Some("goal-host-1"));
 
     let mut wrong_snapshot = config.clone();
-    wrong_snapshot.workspace.name = "different".to_owned();
+    wrong_snapshot.execution.session_id = "different".to_owned();
     assert!(LaunchBindings::decode(&bytes, &wrong_snapshot).is_err());
     assert!(LaunchBindings::decode_verified(&bytes, &"0".repeat(64), &config).is_err());
 }
@@ -56,7 +56,7 @@ fn goal_identity_and_allowed_catalog_references_fail_closed() {
     assert!(LaunchBindings::bind(&config, None, empty.clone()).is_err());
 
     let mut no_allowed = config.clone();
-    no_allowed.workspace.policy.allowed_tools.clear();
+    no_allowed.execution.policy.allowed_tools.clear();
     assert!(LaunchBindings::bind(&no_allowed, Some(String::new()), empty).is_err());
 }
 
@@ -132,35 +132,27 @@ fn config(path: &std::path::Path, allowed_tools: Vec<String>) -> ConfigSnapshot 
     ConfigSnapshot {
         user_agent_dir: None,
         format: 1,
-        workspace: ResolvedWorkspace {
-            environment: None,
-            folders: None,
-            format: 1,
-            revision: 1,
-            id: "ws".to_owned(),
-            name: "Workspace".to_owned(),
-            folder_binding: None,
-            selected_cwd: None,
+        execution: ResolvedExecution {
+            session_id: "ws".to_owned(),
+
             cwd: vec![
                 path.canonicalize()
                     .expect("canonical workspace")
                     .to_string_lossy()
                     .into_owned(),
             ],
-            policy: WorkspacePolicy {
+            policy: ExecutionPolicy {
                 allowed_tools,
-                ..WorkspacePolicy::default()
+                ..ExecutionPolicy::default()
             },
         },
         providers: ProvidersConfig::default(),
-        legacy_integrations: (),
+
         settings: SettingsConfig::default(),
         session_settings: None,
         revisions: RevisionVector {
-            environments: None,
-            workspace: 1,
             providers: 0,
-            legacy_integrations: (),
+
             settings: 0,
             session_settings: None,
         },
@@ -379,7 +371,7 @@ fn toolchain_selection_changes_require_respawn() {
     let directory = tempfile::tempdir().unwrap();
     let previous = config(directory.path(), vec![]);
     let mut current = previous.clone();
-    current.workspace.policy.toolchain_roots =
+    current.execution.policy.toolchain_roots =
         vec![directory.path().to_string_lossy().into_owned()];
     assert!(current.requires_respawn_from(&previous));
     assert!(previous.requires_respawn_from(&current));
@@ -513,7 +505,7 @@ fn unavailable_tools_excuse_only_allowed_unbound_names_and_keep_empty_bytes() {
 
     // Another unknown name is not excused by it.
     let mut other = config.clone();
-    other.workspace.policy.allowed_tools = vec![
+    other.execution.policy.allowed_tools = vec![
         "mcp__probe__alpha".to_owned(),
         "mcp__probe__beta".to_owned(),
         "mcp__probe__gamma".to_owned(),
@@ -542,7 +534,7 @@ fn unavailable_tools_excuse_only_allowed_unbound_names_and_keep_empty_bytes() {
         .is_err()
     );
     let mut narrower = config.clone();
-    narrower.workspace.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
+    narrower.execution.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
     assert!(
         LaunchBindings::bind_with_unavailable(
             &narrower,
@@ -554,7 +546,7 @@ fn unavailable_tools_excuse_only_allowed_unbound_names_and_keep_empty_bytes() {
     );
     // Empty: no field, same bytes as before this contract existed.
     let mut plain = config;
-    plain.workspace.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
+    plain.execution.policy.allowed_tools = vec!["mcp__probe__alpha".to_owned()];
     let plain = LaunchBindings::bind(&plain, None, catalog).expect("plain");
     assert!(
         !std::str::from_utf8(&plain.canonical_bytes().unwrap())

@@ -7,8 +7,8 @@ use endpoint::{
     history_page, stitch_window, validate_request, validate_session_id,
 };
 use profile::{
-    ConfigSnapshot, Model, Provider, ProvidersConfig, ResolvedWorkspace, RevisionVector,
-    SettingsConfig, WorkspacePolicy,
+    ConfigSnapshot, ExecutionPolicy, Model, Provider, ProvidersConfig, ResolvedExecution,
+    RevisionVector, SettingsConfig,
 };
 use schema::{IJsonValue, OriginTuple, ResumePolicy, validate_ledger};
 use serde::Deserialize;
@@ -203,7 +203,7 @@ fn slice6_gate_50_endpoint_mutation_and_archive_contract() {
         endpoint
             .create_session(
                 session,
-                "workspace-1",
+                &test_support::execution_fixture(),
                 "cfg",
                 ResumePolicy::Never,
                 "2026-08-26T09:00:00.000Z",
@@ -211,21 +211,6 @@ fn slice6_gate_50_endpoint_mutation_and_archive_contract() {
             )
             .expect("create")
     );
-    profile::ConfigRepository::open(root.path())
-        .expect("config repository")
-        .publish_workspace(
-            0,
-            &profile::WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "workspace-1".to_owned(),
-                name: "Project".to_owned(),
-                cwd: vec![root.path().display().to_string()],
-                folders: vec![],
-                policy: None,
-            },
-        )
-        .expect("workspace configuration");
     let prompt = origin(session, "submit", "prompt-1");
     let content = IJsonValue::parse_str(r#"[{"type":"text","text":"hello"}]"#).expect("content");
     let first = endpoint
@@ -308,7 +293,7 @@ fn slice6_gate_51_inventory_and_model_readiness_are_independent() {
     endpoint
         .create_session(
             session,
-            "workspace-1",
+            &test_support::execution_fixture(),
             "cfg",
             ResumePolicy::Never,
             "2026-08-26T09:00:00.000Z",
@@ -320,27 +305,18 @@ fn slice6_gate_51_inventory_and_model_readiness_are_independent() {
     assert_eq!(listed.len(), 1);
     assert!(listed[0].running);
     assert!(!listed[0].archived);
-    assert_eq!(listed[0].workspace_id, "workspace-1");
     assert_eq!(listed[0].updated_at, 1_787_734_800_000);
     assert!(listed[0].blank);
     assert_eq!(listed[0].as_of_seq, 1);
     let snapshot = ConfigSnapshot {
         user_agent_dir: None,
         format: 1,
-        workspace: ResolvedWorkspace {
-            environment: None,
-            folders: None,
-            format: 1,
-            revision: 1,
-            id: "workspace-1".to_owned(),
-            name: "Project".to_owned(),
-            folder_binding: None,
-            selected_cwd: None,
+        execution: ResolvedExecution {
+            session_id: "workspace-1".to_owned(),
+
             cwd: vec!["/workspace/project".to_owned()],
-            policy: WorkspacePolicy {
-                provider: Some("deepseek".to_owned()),
-                model: Some("deepseek-chat".to_owned()),
-                ..WorkspacePolicy::default()
+            policy: ExecutionPolicy {
+                ..ExecutionPolicy::default()
             },
         },
         providers: ProvidersConfig {
@@ -366,20 +342,18 @@ fn slice6_gate_51_inventory_and_model_readiness_are_independent() {
                 }],
             }],
         },
-        legacy_integrations: (),
+
         settings: SettingsConfig {
             format: 1,
             revision: 1,
-            default_provider: None,
-            default_model: None,
+            default_provider: Some("deepseek".into()),
+            default_model: Some("deepseek-chat".into()),
             limits: None,
         },
         session_settings: None,
         revisions: RevisionVector {
-            environments: None,
-            workspace: 1,
             providers: 1,
-            legacy_integrations: (),
+
             settings: 1,
             session_settings: None,
         },

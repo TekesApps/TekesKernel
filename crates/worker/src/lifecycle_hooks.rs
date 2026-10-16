@@ -70,7 +70,7 @@ impl LifecycleHooks {
             sources,
             instruction: profile.instruction.clone(),
             root,
-            workspace: profile.config.workspace.id.clone(),
+            workspace: profile.config.execution.session_id.clone(),
             thread,
             observed_through: std::cell::Cell::new(baseline),
             ledger_path: ledger.path().to_path_buf(),

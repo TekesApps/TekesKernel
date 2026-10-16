@@ -194,7 +194,7 @@ fn dispatcher_persists_typed_handoff_before_completion() {
     let hash = format!("{:x}", Sha256::digest(b"rpc-proof"));
     let path = root
         .path()
-        .join("endpoint-management/rpc")
+        .join("endpoint-rpc/rpc")
         .join(&hash[..2])
         .join(format!("{hash}.jsonl"));
     let rows: Vec<serde_json::Value> = std::fs::read_to_string(path)

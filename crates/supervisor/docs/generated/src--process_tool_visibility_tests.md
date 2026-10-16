@@ -45,14 +45,15 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
-| `receiver_test` | `tempfile::tempdir().unwrap` | [41](../../src/process_tool_visibility_tests.rs#L41) | receiver-type-required |
-| `receiver_test` | `tempfile::tempdir` | [41](../../src/process_tool_visibility_tests.rs#L41) | external-constructor-callback-or-unresolved |
-| `receiver_test` | `root.path().join` | [42](../../src/process_tool_visibility_tests.rs#L42), [44](../../src/process_tool_visibility_tests.rs#L44), [46](../../src/process_tool_visibility_tests.rs#L46), [52](../../src/process_tool_visibility_tests.rs#L52), [55](../../src/process_tool_visibility_tests.rs#L55), [58](../../src/process_tool_visibility_tests.rs#L58), [62](../../src/process_tool_visibility_tests.rs#L62), [72](../../src/process_tool_visibility_tests.rs#L72) | receiver-type-required |
-| `receiver_test` | `root.path` | [42](../../src/process_tool_visibility_tests.rs#L42), [44](../../src/process_tool_visibility_tests.rs#L44), [46](../../src/process_tool_visibility_tests.rs#L46), [52](../../src/process_tool_visibility_tests.rs#L52), [55](../../src/process_tool_visibility_tests.rs#L55), [58](../../src/process_tool_visibility_tests.rs#L58), [62](../../src/process_tool_visibility_tests.rs#L62), [69](../../src/process_tool_visibility_tests.rs#L69), [72](../../src/process_tool_visibility_tests.rs#L72) | receiver-type-required |
-| `receiver_test` | `fs::create_dir_all(&project).unwrap` | [43](../../src/process_tool_visibility_tests.rs#L43) | receiver-type-required |
-| `receiver_test` | `fs::create_dir_all` | [43](../../src/process_tool_visibility_tests.rs#L43), [44](../../src/process_tool_visibility_tests.rs#L44), [59](../../src/process_tool_visibility_tests.rs#L59), [63](../../src/process_tool_visibility_tests.rs#L63) | external-constructor-callback-or-unresolved |
-| `receiver_test` | `fs::create_dir_all(root.path().join("workspaces/ws")).unwrap` | [44](../../src/process_tool_visibility_tests.rs#L44) | receiver-type-required |
-| `receiver_test` | `write_canonical_test_json` | [45](../../src/process_tool_visibility_tests.rs#L45) | external-constructor-callback-or-unresolved |
+| `receiver_test` | `tempfile::tempdir().unwrap` | [41](../../src/process_tool_visibility_tests.rs#L41), [42](../../src/process_tool_visibility_tests.rs#L42) | receiver-type-required |
+| `receiver_test` | `tempfile::tempdir` | [41](../../src/process_tool_visibility_tests.rs#L41), [42](../../src/process_tool_visibility_tests.rs#L42) | external-constructor-callback-or-unresolved |
+| `receiver_test` | `project_root.path().to_path_buf` | [43](../../src/process_tool_visibility_tests.rs#L43) | receiver-type-required |
+| `receiver_test` | `project_root.path` | [43](../../src/process_tool_visibility_tests.rs#L43) | receiver-type-required |
+| `receiver_test` | `fs::create_dir_all(&project).unwrap` | [44](../../src/process_tool_visibility_tests.rs#L44) | receiver-type-required |
+| `receiver_test` | `fs::create_dir_all` | [44](../../src/process_tool_visibility_tests.rs#L44), [59](../../src/process_tool_visibility_tests.rs#L59), [63](../../src/process_tool_visibility_tests.rs#L63) | external-constructor-callback-or-unresolved |
+| `receiver_test` | `write_test_execution_config` | [45](../../src/process_tool_visibility_tests.rs#L45) | external-constructor-callback-or-unresolved |
+| `receiver_test` | `root.path` | [46](../../src/process_tool_visibility_tests.rs#L46), [52](../../src/process_tool_visibility_tests.rs#L52), [55](../../src/process_tool_visibility_tests.rs#L55), [58](../../src/process_tool_visibility_tests.rs#L58), [62](../../src/process_tool_visibility_tests.rs#L62), [69](../../src/process_tool_visibility_tests.rs#L69), [72](../../src/process_tool_visibility_tests.rs#L72) | receiver-type-required |
+| `receiver_test` | `root.path().join` | [52](../../src/process_tool_visibility_tests.rs#L52), [55](../../src/process_tool_visibility_tests.rs#L55), [58](../../src/process_tool_visibility_tests.rs#L58), [62](../../src/process_tool_visibility_tests.rs#L62), [72](../../src/process_tool_visibility_tests.rs#L72) | receiver-type-required |
 | `receiver_test` | `fs::write(&bin, WORKER).unwrap` | [53](../../src/process_tool_visibility_tests.rs#L53) | receiver-type-required |
 | `receiver_test` | `fs::write` | [53](../../src/process_tool_visibility_tests.rs#L53), [56](../../src/process_tool_visibility_tests.rs#L56) | external-constructor-callback-or-unresolved |
 | `receiver_test` | `fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).unwrap` | [54](../../src/process_tool_visibility_tests.rs#L54) | receiver-type-required |

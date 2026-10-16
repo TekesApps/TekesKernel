@@ -55,7 +55,13 @@ if args.public_approval or args.scenario in ('tool-search','image'):
     shutil.copy2(root/'scripts'/client_name,client_script)
     client_log=(args.output/'client.log').open('w')
     client=subprocess.Popen([__import__('sys').executable,str(client_script),str(args.output.resolve()/'runtime')],stdout=client_log,stderr=subprocess.STDOUT)
-run = subprocess.run([str(frozen/'tekes-supervisor-live-test'),'process_host::tests::'+test_name,'--exact','--ignored','--nocapture'],cwd=root,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
+# The test process is a Kernel client; this separate CLI host owns MCP children.
+import sys
+sys.path.insert(0, str(root/'host'))
+from kernel_cli import LocalMCPHost
+with LocalMCPHost({'test':{'command':[str(frozen/'mcp-fixture-server'), 'task-augmented' if args.scenario=='mcp-task' else 'local-tools']}}) as mcp_host:
+    env['TEKES_TEST_MCP_STDIO_SOCKET']=mcp_host.channels['test']
+    run = subprocess.run([str(frozen/'tekes-supervisor-live-test'),'process_host::tests::'+test_name,'--exact','--ignored','--nocapture'],cwd=root,env=env,stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
 client_code=0
 if client:
     if run.returncode: client.terminate()

@@ -19,29 +19,28 @@ struct Lease {
 #[derive(Default)]
 pub struct FileLeases(Mutex<HashMap<String, Lease>>);
 
-pub struct WorkspaceFileTransfer {
-    management: endpoint::ManagementStore,
+pub struct SessionFileTransfer {
+    root: std::path::PathBuf,
     attachments: endpoint::AttachmentAuthority,
     leases: FileLeases,
 }
 
-impl WorkspaceFileTransfer {
+impl SessionFileTransfer {
     pub fn open(root: &std::path::Path) -> Result<Self, String> {
         Ok(Self {
-            management: endpoint::ManagementStore::open_light(root)
-                .map_err(|error| error.to_string())?,
+            root: root.to_path_buf(),
             attachments: endpoint::AttachmentAuthority::open(root),
             leases: FileLeases::default(),
         })
     }
 }
 
-impl transport::FileTransferAuthority for WorkspaceFileTransfer {
+impl transport::FileTransferAuthority for SessionFileTransfer {
     fn prepare(&self, request: serde_json::Value) -> Result<serde_json::Value, String> {
         #[derive(serde::Deserialize)]
         #[serde(rename_all = "camelCase", deny_unknown_fields)]
-        struct WorkspaceRequest {
-            workspace_id: String,
+        struct SessionRequest {
+            session_id: String,
             path: String,
             maximum_bytes: usize,
             prefer_local: bool,
@@ -66,17 +65,23 @@ impl transport::FileTransferAuthority for WorkspaceFileTransfer {
         #[derive(serde::Deserialize)]
         #[serde(untagged)]
         enum Request {
-            Workspace(WorkspaceRequest),
+            Session(SessionRequest),
             Attachment(AttachmentRequest),
         }
         let request: Request =
             serde_json::from_value(request).map_err(|_| "Invalid preview request")?;
         match request {
-            Request::Workspace(request) => {
-                let root = self
-                    .management
-                    .workspace_path(&request.workspace_id)
-                    .map_err(|_| "Unknown workspace")?;
+            Request::Session(request) => {
+                endpoint::validate_session_id(&request.session_id)
+                    .map_err(|_| "Invalid session")?;
+                let repository = profile::ConfigRepository::open(&self.root)
+                    .map_err(|_| "Configuration unavailable")?;
+                let scope = profile::SessionScope::locate(&self.root, &request.session_id)
+                    .map_err(|_| "Unknown session")?;
+                let config = scope
+                    .config(&repository)
+                    .map_err(|_| "Execution unavailable")?;
+                let root = config.execution_cwd().ok_or("Missing execution cwd")?;
                 let _ = request.prefer_local; // Remote snapshots avoid disclosing local paths.
                 let bytes = workspace_service::file_snapshot(
                     std::path::Path::new(&root),
@@ -229,7 +234,7 @@ mod tests {
                 }],
             )
             .unwrap();
-        let transfer = WorkspaceFileTransfer::open(root.path()).unwrap();
+        let transfer = SessionFileTransfer::open(root.path()).unwrap();
         let id = &image.attachments[0].attachment_id;
         let request = json!({"source":{"kind":"sessionAttachment","sessionId":session,"attachmentId":id},"maximumBytes":4096,"preferLocal":false});
         assert!(transfer.prepare(request.clone()).is_err());
@@ -272,7 +277,7 @@ mod tests {
         let mut ledger = serde_json_canonicalizer::to_vec(&genesis).unwrap();
         ledger.push(b'\n');
         std::fs::write(folder.join("main.jsonl"), &ledger).unwrap();
-        let transfer = WorkspaceFileTransfer::open(root.path()).unwrap();
+        let transfer = SessionFileTransfer::open(root.path()).unwrap();
         let authority = endpoint::AttachmentAuthority::open(root.path());
         let receipt = authority
             .upload_file(session, "notes.txt", Some("text/plain"), "aGVsbG8gZmlsZQ==")

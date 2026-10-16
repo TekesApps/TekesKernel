@@ -5,7 +5,7 @@
 
 mod broker;
 mod client;
-mod management;
+
 mod parameter_headers;
 mod pool;
 mod projection;
@@ -16,19 +16,16 @@ mod transport;
 mod types;
 
 pub use client::{McpClient, McpPeer, McpPeerFuture};
-pub use management::{
-    CredentialValue, McpCredentialFieldOperation, McpCredentialReference,
-    McpCredentialReferenceState, McpManagementFault, McpManagementMutation, McpManagementResult,
-    McpMutationReceipt, McpRegistry, McpRegistryError, McpRegistryStore, McpScope, McpServerConfig,
-    McpServerReference, McpTransportConfig,
-};
+
 pub use pool::{McpPool, McpPoolError, McpPoolKey, McpPoolLease, PooledPeer};
 pub use projection::{
     MAX_TOOL_REFUSAL_NAME_BYTES, MAX_TOOL_REFUSAL_REASON_BYTES, McpProjectionError, McpToolRefusal,
     PartialProjection, project_catalog, project_catalog_partial, project_name, refusal_code,
 };
 pub use recovery::{McpLossState, RecoveryAction, recovery_action};
-pub use transport::{HttpRequestAuthorization, HttpTransport, McpTransport, StdioTransport};
+pub use transport::{
+    HttpRequestAuthorization, HttpTransport, McpTransport, PipeTransport, StdioTransport,
+};
 pub use types::{
     JsonRpcError, JsonRpcRequest, JsonRpcResponse, McpCancellationToken, McpCapabilities,
     McpContent, McpError, McpIcon, McpIconTheme, McpImplementation, McpPrompt, McpResource,

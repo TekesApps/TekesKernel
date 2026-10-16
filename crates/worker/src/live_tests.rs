@@ -103,13 +103,13 @@ fn live_kernel_turn() {
         profile.instruction.effective.skills.insert(format!("{name}/SKILL.md"), 0);
     }
 
-    profile.config.workspace.policy.max_wall_seconds = Some(std::env::var("TEKES_KERNEL_LIVE_MAX_WALL_SECONDS").map(|value| value.parse::<u64>().expect("positive live wall timeout")).unwrap_or(180));
-    profile.config.workspace.policy.writable_roots = profile.config.workspace.cwd.clone();
-    profile.config.workspace.policy.toolchain_roots = serde_json::from_str(
+    profile.config.execution.policy.max_wall_seconds = Some(std::env::var("TEKES_KERNEL_LIVE_MAX_WALL_SECONDS").map(|value| value.parse::<u64>().expect("positive live wall timeout")).unwrap_or(180));
+    profile.config.execution.policy.writable_roots = profile.config.execution.cwd.clone();
+    profile.config.execution.policy.toolchain_roots = serde_json::from_str(
         &std::env::var("TEKES_KERNEL_LIVE_TOOLCHAIN_ROOTS").unwrap_or_else(|_| "[]".to_owned())
     ).expect("explicit toolchain roots JSON");
-    profile.config.workspace.policy.provider = Some(selected_provider.id.clone());
-    profile.config.workspace.policy.model = Some(model.clone());
+    profile.config.settings.default_provider = Some(selected_provider.id.clone());
+    profile.config.settings.default_model = Some(model.clone());
     if prompt.contains("STEP_1_CLOSING_SPEED") {
         profile.config.session_settings = Some(profile::SessionSettings {
             format: 1, revision: 1, provider: selected_provider.id.clone(),

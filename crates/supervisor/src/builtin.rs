@@ -25,6 +25,8 @@ pub struct BuiltInLaunch {
     pub listen: SocketAddr,
     pub providers: profile::ProvidersConfig,
     pub credential_bindings: BTreeMap<String, String>,
+    #[serde(default)]
+    pub stdio_channels: BTreeMap<String, PathBuf>,
     /// Loopback address for the optional browser Web Client; absent means off.
     #[serde(default)]
     pub web_listen: Option<SocketAddr>,
@@ -77,8 +79,11 @@ pub async fn run(path: PathBuf) -> Result<()> {
         .keys()
         .map(String::as_str)
         .collect();
-    if required != supplied {
-        return Err(io::Error::other("credential bindings must match launch configuration").into());
+    if !required.is_subset(&supplied) {
+        return Err(io::Error::other(
+            "launch credentials must include every configured provider binding",
+        )
+        .into());
     }
     let bootstrap =
         crate::bootstrap::read(0, &launch.credential_bindings, crate::bootstrap::DEADLINE)?;
@@ -144,14 +149,18 @@ pub async fn run(path: PathBuf) -> Result<()> {
         .ok_or_else(|| io::Error::other("HOME is required for shared user skills"))?
         .join(".agents");
     let build = option_env!("TEKES_SELECTED_BUILD").unwrap_or(env!("CARGO_PKG_VERSION"));
-    let process = ProductionProcessHost::open_with_secret_authorities(
+    let process = ProductionProcessHost::open_with_secret_store(
         &launch.root,
         launch.worker,
         build,
         &user_agent_dir,
         secrets,
-        None,
     )?;
+    process
+        .mcp_runtime()
+        .set_stdio_connector(Arc::new(crate::stdio_channels::UnixStdioChannels(
+            launch.stdio_channels,
+        )));
     crate::boot_trace::phase("process_host");
     process.preflight_mandatory_authorities()?;
     crate::boot_trace::phase("preflight_authorities");
@@ -205,7 +214,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
         }
         None => None,
     };
-    let mut ready = serde_json::json!({"type":"ready","protocolVersion":3,"bootstrapVersion":crate::bootstrap::VERSION,"url":format!("http://{address}"),"pid":std::process::id()});
+    let mut ready = serde_json::json!({"type":"ready","protocolVersion":endpoint::SESSION_ENDPOINT_PROTOCOL_VERSION,"bootstrapVersion":crate::bootstrap::VERSION,"url":format!("http://{address}"),"pid":std::process::id()});
     if let Some((_, _, bound)) = &web {
         ready["webUrl"] = format!("http://{bound}/").into();
     }

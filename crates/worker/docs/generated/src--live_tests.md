@@ -186,7 +186,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `live_kernel_turn` | `std::env::var("TEKES_KERNEL_LIVE_MAX_WALL_SECONDS").map` | [106](../../src/live_tests.rs#L106) | receiver-type-required |
 | `live_kernel_turn` | `value.parse::<u64>().expect` | [106](../../src/live_tests.rs#L106) | receiver-type-required |
 | `live_kernel_turn` | `value.parse::<u64>` | [106](../../src/live_tests.rs#L106) | receiver-type-required |
-| `live_kernel_turn` | `profile.config.workspace.cwd.clone` | [107](../../src/live_tests.rs#L107) | receiver-type-required |
+| `live_kernel_turn` | `profile.config.execution.cwd.clone` | [107](../../src/live_tests.rs#L107) | receiver-type-required |
 | `live_kernel_turn` | `serde_json::from_str(         &std::env::var("TEKES_KERNEL_LIVE_TOOLCHAIN_ROOTS").unwrap_or_else(&#124;_&#124; "[]".to_owned())     ).expect` | [108](../../src/live_tests.rs#L108) | receiver-type-required |
 | `live_kernel_turn` | `serde_json::from_str` | [108](../../src/live_tests.rs#L108), [482](../../src/live_tests.rs#L482) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `std::env::var("TEKES_KERNEL_LIVE_TOOLCHAIN_ROOTS").unwrap_or_else` | [109](../../src/live_tests.rs#L109) | receiver-type-required |
@@ -220,7 +220,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `live_kernel_turn` | `provider::CredentialClient::new` | [146](../../src/live_tests.rs#L146) | [provider::credential::CredentialClient::new](../../../provider/src/credential.rs#L271) |
 | `live_kernel_turn` | `LiveControl::default` | [147](../../src/live_tests.rs#L147) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlHandler::new` | [148](../../src/live_tests.rs#L148) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::new](../../../supervisor/src/production_tool_control.rs#L273) |
-| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlPolicy::new` | [150](../../src/live_tests.rs#L150) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../../supervisor/src/production_tool_control.rs#L864) |
+| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlPolicy::new` | [150](../../src/live_tests.rs#L150) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../../supervisor/src/production_tool_control.rs#L853) |
 | `live_kernel_turn` | `SecretScanner::default` | [150](../../src/live_tests.rs#L150) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `std::rc::Rc::new` | [151](../../src/live_tests.rs#L151), [153](../../src/live_tests.rs#L153), [161](../../src/live_tests.rs#L161) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `std::cell::RefCell::new` | [151](../../src/live_tests.rs#L151) | external-constructor-callback-or-unresolved |

@@ -2,9 +2,7 @@ use std::fs;
 use std::os::unix::fs::MetadataExt;
 use std::os::unix::fs::{PermissionsExt, symlink};
 
-use profile::{
-    ConfigRepository, InstructionResolver, ResourceCatalog, WorkspaceConfig, WorkspaceFolder,
-};
+use profile::{ConfigRepository, InstructionResolver, ResourceCatalog};
 
 fn canonical_line(value: &serde_json::Value) -> Vec<u8> {
     let mut bytes = serde_json_canonicalizer::to_vec(value).expect("canonical workspace");
@@ -13,7 +11,7 @@ fn canonical_line(value: &serde_json::Value) -> Vec<u8> {
 }
 
 #[test]
-fn stray_file_in_workspace_authority_directory_is_an_explicit_open_failure() {
+fn retired_workspace_directory_is_not_opened() {
     // The pre-release flat `workspaces/<id>.json` layout is no longer migrated in place.
     // A file where a workspace directory belongs fails the open with a typed path error
     // instead of being silently rewritten.
@@ -33,8 +31,7 @@ fn stray_file_in_workspace_authority_directory_is_an_explicit_open_failure() {
     )
     .expect("stray workspace file");
 
-    let error = ConfigRepository::open(root.path()).expect_err("stray file rejected");
-    assert!(error.to_string().contains("must be a directory"));
+    ConfigRepository::open(root.path()).expect("retired directory is not read");
     assert!(stray.is_file());
     assert!(!root.path().join("workspaces/workspace-1").exists());
 }
@@ -75,11 +72,7 @@ fn repository_rejects_dangerously_writable_private_directories_before_hardening(
 #[test]
 fn repository_hardens_safe_existing_directories_and_reopens_idempotently() {
     let root = tempfile::tempdir().expect("root");
-    for path in [
-        root.path().to_path_buf(),
-        root.path().join("config"),
-        root.path().join("workspaces"),
-    ] {
+    for path in [root.path().to_path_buf(), root.path().join("config")] {
         if !path.exists() {
             fs::create_dir(&path).expect("private directory");
         }
@@ -87,11 +80,7 @@ fn repository_hardens_safe_existing_directories_and_reopens_idempotently() {
     }
     ConfigRepository::open(root.path()).expect("first open");
     ConfigRepository::open(root.path()).expect("repeat open");
-    for path in [
-        root.path().to_path_buf(),
-        root.path().join("config"),
-        root.path().join("workspaces"),
-    ] {
+    for path in [root.path().to_path_buf(), root.path().join("config")] {
         assert_eq!(fs::metadata(path).expect("metadata").mode() & 0o777, 0o700);
     }
 }
@@ -102,7 +91,7 @@ fn repository_securely_creates_a_missing_root_leaf() {
     let root = parent.path().join("authority");
     let repository = ConfigRepository::open(&root).expect("create repository leaf");
     assert_eq!(repository.root(), root);
-    for path in [root.clone(), root.join("config"), root.join("workspaces")] {
+    for path in [root.clone(), root.join("config")] {
         let metadata = fs::symlink_metadata(path).expect("private directory");
         assert!(metadata.is_dir());
         assert!(!metadata.file_type().is_symlink());
@@ -117,92 +106,6 @@ fn repository_rejects_an_empty_or_root_only_authority_path() {
         let error = ConfigRepository::open(path).expect_err("root without private leaf");
         assert!(error.to_string().contains("must name a directory"));
     }
-}
-
-#[test]
-fn multiple_folder_bindings_keep_identity_when_absolute_paths_move() {
-    let root = tempfile::tempdir().expect("root");
-    let first = root.path().join("first");
-    let second = root.path().join("second");
-    let moved = root.path().join("moved");
-    for path in [&first, &second, &moved] {
-        fs::create_dir(path).expect("folder");
-    }
-    let repository = ConfigRepository::open(root.path()).expect("repository");
-    let mut workspace = WorkspaceConfig {
-        format: 1,
-        revision: 1,
-        id: "workspace-1".to_owned(),
-        name: "Workspace".to_owned(),
-        cwd: Vec::new(),
-        folders: vec![
-            WorkspaceFolder {
-                id: "source".to_owned(),
-                path: first.display().to_string(),
-            },
-            WorkspaceFolder {
-                id: "docs".to_owned(),
-                path: second.display().to_string(),
-            },
-        ],
-        policy: None,
-    };
-    repository
-        .publish_workspace(0, &workspace)
-        .expect("publish");
-    let docs = repository
-        .resolve_for_binding("workspace-1", "docs")
-        .expect("resolve selected docs binding");
-    assert_eq!(docs.workspace.folder_binding.as_deref(), Some("docs"));
-    assert_eq!(
-        docs.workspace.cwd.len(),
-        2,
-        "all folder roots remain frozen"
-    );
-    let first_canonical = fs::canonicalize(&first).expect("canonical first");
-    let second_canonical = fs::canonicalize(&second).expect("canonical second");
-    assert_eq!(docs.workspace.cwd[0], first_canonical.display().to_string());
-    assert_eq!(
-        docs.workspace.cwd[1],
-        second_canonical.display().to_string()
-    );
-    assert_eq!(
-        docs.workspace.selected_cwd.as_deref(),
-        second_canonical.to_str()
-    );
-    let legacy_session = root.path().join("legacy-session");
-    fs::create_dir(&legacy_session).expect("legacy session folder");
-    let error = repository
-        .resolve_for_session("workspace-1", &legacy_session)
-        .expect_err("legacy multi-folder session must not guess the primary binding");
-    assert!(error.to_string().contains("no stable folder binding"));
-    workspace.revision = 2;
-    workspace.folders[0].path = moved.display().to_string();
-    repository
-        .publish_workspace(1, &workspace)
-        .expect("move binding");
-    let stored = repository.workspace("workspace-1").expect("stored");
-    assert_eq!(stored.folders[0].id, "source");
-    assert_eq!(stored.folders[0].path, moved.display().to_string());
-    assert_eq!(stored.folder_paths().len(), 2);
-    let source = repository
-        .resolve_for_binding("workspace-1", "source")
-        .expect("resolve moved source binding");
-    let moved_canonical = fs::canonicalize(&moved).expect("canonical moved");
-    assert_eq!(source.workspace.folder_binding.as_deref(), Some("source"));
-    assert_eq!(source.workspace.cwd.len(), 2);
-    assert_eq!(
-        source.workspace.cwd[0],
-        moved_canonical.display().to_string()
-    );
-    assert_eq!(
-        source.workspace.cwd[1],
-        second_canonical.display().to_string()
-    );
-    assert_eq!(
-        source.workspace.selected_cwd.as_deref(),
-        moved_canonical.to_str()
-    );
 }
 
 #[test]
@@ -234,12 +137,9 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
     )
     .expect("binary skill asset");
 
-    let snapshot = trust(
-        InstructionResolver::new_scoped(&user, &workspace, [&project]),
-        &[&project],
-    )
-    .capture()
-    .expect("three-tier snapshot");
+    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&project])
+        .capture()
+        .expect("three-tier snapshot");
     let catalog = ResourceCatalog::from_snapshot(&snapshot).expect("catalog");
     let sources = catalog
         .skill_summaries()
@@ -251,10 +151,7 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
         sources.get("workspace-skill").map(String::as_str),
         Some("workspace")
     );
-    assert_eq!(
-        sources.get("project-skill").map(String::as_str),
-        Some("project:0")
-    );
+    assert!(!sources.contains_key("project-skill"));
 
     let duplicate = workspace.join("skills/user-skill");
     fs::create_dir_all(&duplicate).expect("duplicate directory");
@@ -263,12 +160,9 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
         "---\nname: user-skill\ndescription: duplicate\n---\nbody\n",
     )
     .expect("duplicate skill");
-    let snapshot = trust(
-        InstructionResolver::new_scoped(&user, &workspace, [&project]),
-        &[&project],
-    )
-    .capture()
-    .expect("duplicate snapshot keeps both sources");
+    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&project])
+        .capture()
+        .expect("duplicate snapshot keeps both sources");
     let error = ResourceCatalog::from_snapshot(&snapshot).expect_err("ambiguous skill");
     assert!(
         error
@@ -278,7 +172,7 @@ fn user_workspace_and_project_skills_keep_sources_and_collisions_fail() {
 }
 
 #[test]
-fn same_workspace_folder_skills_with_the_same_name_remain_a_collision() {
+fn project_folders_never_enable_ambient_skills() {
     let root = tempfile::tempdir().expect("root");
     let user = root.path().join("user");
     let workspace = root.path().join("workspace-data");
@@ -295,15 +189,15 @@ fn same_workspace_folder_skills_with_the_same_name_remain_a_collision() {
         )
         .expect("skill bytes");
     }
-    let snapshot = trust(
-        InstructionResolver::new_scoped(&user, &workspace, [&first, &second]),
-        &[&first, &second],
-    )
-    .capture()
-    .expect("multi-folder snapshot");
-    let error = ResourceCatalog::from_snapshot(&snapshot)
-        .expect_err("same-workspace same-name skill must fail closed");
-    assert!(error.to_string().contains("project:0 and project:1"));
+    let snapshot = InstructionResolver::new_scoped(&user, &workspace, [&first, &second])
+        .capture()
+        .expect("multi-folder snapshot");
+    assert!(
+        ResourceCatalog::from_snapshot(&snapshot)
+            .unwrap()
+            .skill_summaries()
+            .is_empty()
+    );
 }
 
 #[test]
@@ -334,7 +228,7 @@ fn agents_directory_is_primary_for_all_project_resources() {
     fs::create_dir_all(project.join(".agents/rules")).expect("rules");
     fs::write(project.join(".agents/rules/review.md"), "shared rules").expect("rule");
     fs::write(project.join("AGENTS.md"), "project instructions").expect("AGENTS");
-    let snapshot = trust(InstructionResolver::new(&user, [&project]), &[&project])
+    let snapshot = InstructionResolver::new_scoped(&user, project.join(".agents"), [&project])
         .capture()
         .expect("shared snapshot");
     let catalog = ResourceCatalog::from_snapshot(&snapshot).expect("catalog");
@@ -361,88 +255,6 @@ fn agents_directory_is_primary_for_all_project_resources() {
 }
 
 #[test]
-fn a_session_preset_tool_selection_replaces_the_workspace_selection() {
-    struct Docs;
-    impl tools::PresetEnvironment for Docs {
-        fn mcp_server_digest(&self, _server: &str) -> Option<String> {
-            Some("sha256:docs".to_owned())
-        }
-        fn mcp_tool_name(&self, server: &str, tool: &str) -> Option<String> {
-            Some(format!("mcp__{server}__{tool}"))
-        }
-    }
-    let root = tempfile::tempdir().expect("root");
-    let project = root.path().join("project");
-    fs::create_dir(&project).expect("project");
-    let repository = ConfigRepository::open(root.path()).expect("repository");
-    repository
-        .publish_workspace(
-            0,
-            &WorkspaceConfig {
-                format: 1,
-                revision: 1,
-                id: "workspace-1".to_owned(),
-                name: "Workspace".to_owned(),
-                cwd: vec![project.display().to_string()],
-                folders: Vec::new(),
-                policy: Some(profile::WorkspacePolicy {
-                    allowed_tools: vec!["read".to_owned(), "shell".to_owned()],
-                    ..profile::WorkspacePolicy::default()
-                }),
-            },
-        )
-        .expect("publish");
-    let session = root.path().join("session");
-    fs::create_dir(&session).expect("session folder");
-    let genesis = |opening: serde_json::Value| {
-        let thread = "018f0000-0000-7000-8000-000000000003";
-        let mut value = serde_json::json!({"v":1,"seq":1,"kind":"genesis","ts":"2026-10-14T00:00:00.000Z",
-            "format":1,"min_reader":1,"min_writer":1,"thread":thread,"workspace":"workspace-1",
-            "origin_key":"create","origin_tuple":{"principal":"p","client":"cli","target":thread,"op":"create","key":"create"},
-            "resume":"never","config":{"digest":"cfg"}});
-        value
-            .as_object_mut()
-            .unwrap()
-            .extend(opening.as_object().unwrap().clone());
-        let event = schema::Event::decode(&serde_json::to_vec(&value).unwrap()).expect("genesis");
-        let mut bytes = event.canonical_bytes().unwrap();
-        bytes.push(b'\n');
-        fs::write(session.join("main.jsonl"), bytes).expect("ledger");
-    };
-
-    genesis(serde_json::json!({"identity_profile":"coding"}));
-    let legacy = repository
-        .resolve_for_session("workspace-1", &session)
-        .expect("legacy session");
-    assert_eq!(legacy.workspace.policy.allowed_tools, ["read", "shell"]);
-
-    let preset = tools::ResolvedPreset::resolve_request(
-        &serde_json::json!({"tools":["read"],"mcp":[{"server":"docs","tools":["open"]}]}),
-        tools::PresetBase::General,
-        &Docs,
-    )
-    .expect("preset");
-    genesis(serde_json::json!({"min_reader":2,"preset":preset}));
-    let selected = repository
-        .resolve_for_session("workspace-1", &session)
-        .expect("preset session");
-    assert_eq!(
-        selected.workspace.policy.allowed_tools,
-        ["mcp__docs__open", "read"]
-    );
-    // A workspace-wide resolution keeps the workspace selection.
-    assert_eq!(
-        repository
-            .resolve("workspace-1")
-            .expect("workspace")
-            .workspace
-            .policy
-            .allowed_tools,
-        ["read", "shell"]
-    );
-}
-
-#[test]
 fn preset_skills_name_packages_not_resource_files() {
     let root = tempfile::tempdir().expect("root");
     let user = root.path().join("agent");
@@ -456,7 +268,7 @@ fn preset_skills_name_packages_not_resource_files() {
     .expect("manifest");
     fs::write(user.join("skills/review/scripts/check.sh"), "true\n").expect("companion");
     fs::write(user.join("skills/notes.md"), "Loose notes\n").expect("flat file");
-    let snapshot = trust(InstructionResolver::new(&user, [&project]), &[&project])
+    let snapshot = InstructionResolver::new(&user, [&project])
         .capture()
         .expect("snapshot");
     // The snapshot keys every resource file; the package catalog names packages.
@@ -465,24 +277,4 @@ fn preset_skills_name_packages_not_resource_files() {
         ResourceCatalog::skill_package_names(&snapshot),
         ["review".to_owned()].into_iter().collect()
     );
-}
-
-fn trust(
-    resolver: profile::InstructionResolver,
-    folders: &[&std::path::Path],
-) -> profile::InstructionResolver {
-    static STATE: std::sync::OnceLock<tempfile::TempDir> = std::sync::OnceLock::new();
-    static LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
-    let _lock = LOCK.lock().unwrap();
-    let root = STATE.get_or_init(|| tempfile::tempdir().unwrap());
-    let store = profile::FolderAuthorityStore::new(root.path());
-    for path in folders {
-        let rev = store.registry_revision().unwrap();
-        let id = format!("r{rev}");
-        store.request(&id, rev, path).unwrap();
-        store
-            .grant_from_host(&format!("g{rev}"), rev + 1, &id)
-            .unwrap();
-    }
-    resolver.with_folder_authority(root.path())
 }

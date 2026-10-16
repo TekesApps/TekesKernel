@@ -15,8 +15,8 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [host-files::Failure::code](../../src/lib.rs#L65) | `pub` | no resolved direct caller |
 | [host-files::Failure::message](../../src/lib.rs#L78) | `pub` | no resolved direct caller |
 | [host-files::SessionCandidate](../../src/lib.rs#L106) | `pub` | not a function |
-| [host-files::validate](../../src/lib.rs#L145) | `pub` | [tekes-supervisor::client_extensions::validate_payload](../../../supervisor/src/client_extensions.rs#L3034) |
-| [host-files::list_directory](../../src/lib.rs#L228) | `pub` | [tekes-supervisor::client_extensions::ProductionClientExtensions::host_files](../../../supervisor/src/client_extensions.rs#L1681) |
-| [host-files::create_directory](../../src/lib.rs#L276) | `pub` | [tekes-supervisor::client_extensions::ProductionClientExtensions::host_files](../../../supervisor/src/client_extensions.rs#L1681) |
-| [host-files::file_references](../../src/lib.rs#L321) | `pub` | [tekes-supervisor::client_extensions::ProductionClientExtensions::host_files](../../../supervisor/src/client_extensions.rs#L1681) |
-| [host-files::session_references](../../src/lib.rs#L412) | `pub` | [tekes-supervisor::client_extensions::ProductionClientExtensions::host_files](../../../supervisor/src/client_extensions.rs#L1681) |
+| [host-files::validate](../../src/lib.rs#L145) | `pub` | no resolved direct caller |
+| [host-files::list_directory](../../src/lib.rs#L228) | `pub` | no resolved direct caller |
+| [host-files::create_directory](../../src/lib.rs#L276) | `pub` | no resolved direct caller |
+| [host-files::file_references](../../src/lib.rs#L321) | `pub` | no resolved direct caller |
+| [host-files::session_references](../../src/lib.rs#L412) | `pub` | no resolved direct caller |

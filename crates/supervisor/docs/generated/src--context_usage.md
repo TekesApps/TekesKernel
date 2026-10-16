@@ -23,17 +23,17 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::context_usage::expanded_bytes](../../src/context_usage.rs#L423) | function_item | `private` |  |
 | [tekes-supervisor::context_usage::expanded_bytes::references](../../src/context_usage.rs#L425) | function_item | `private` |  |
 | [tekes-supervisor::context_usage::route](../../src/context_usage.rs#L446) | function_item | `private` |  |
-| [tekes-supervisor::context_usage::tests::config](../../src/context_usage.rs#L485) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L500) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L508) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L534) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory](../../src/context_usage.rs#L545) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::dialect_shapes_are_classified_without_catalog_inference](../../src/context_usage.rs#L596) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::invalidation_replaces_both_total_and_details_and_changes_clock](../../src/context_usage.rs#L629) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::paired_clock_migrates_legacy_and_rejects_corruption](../../src/context_usage.rs#L714) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::request_bounds_are_not_billing_totals_and_replacements_invalidate](../../src/context_usage.rs#L745) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::opaque_media_and_continuations_are_not_priced_by_identifier_bytes](../../src/context_usage.rs#L772) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::context_usage::tests::durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence](../../src/context_usage.rs#L785) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::config](../../src/context_usage.rs#L483) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L498) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L506) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L532) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory](../../src/context_usage.rs#L543) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::dialect_shapes_are_classified_without_catalog_inference](../../src/context_usage.rs#L594) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::invalidation_replaces_both_total_and_details_and_changes_clock](../../src/context_usage.rs#L627) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::paired_clock_migrates_legacy_and_rejects_corruption](../../src/context_usage.rs#L712) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::request_bounds_are_not_billing_totals_and_replacements_invalidate](../../src/context_usage.rs#L743) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::opaque_media_and_continuations_are_not_priced_by_identifier_bytes](../../src/context_usage.rs#L770) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::context_usage::tests::durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence](../../src/context_usage.rs#L783) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -280,115 +280,111 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `references` | `values.iter().try_fold` | [437](../../src/context_usage.rs#L437) | receiver-type-required |
 | `references` | `values.iter` | [437](../../src/context_usage.rs#L437) | receiver-type-required |
 | `references` | `sum.checked_add` | [438](../../src/context_usage.rs#L438) | receiver-type-required |
-| `route` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.workspace.policy.provider.as_deref())         .or` | [447](../../src/context_usage.rs#L447) | receiver-type-required |
 | `route` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or` | [447](../../src/context_usage.rs#L447) | receiver-type-required |
-| `route` | `config         .session_settings         .as_ref()         .map` | [447](../../src/context_usage.rs#L447), [453](../../src/context_usage.rs#L453) | receiver-type-required |
-| `route` | `config         .session_settings         .as_ref` | [447](../../src/context_usage.rs#L447), [453](../../src/context_usage.rs#L453) | receiver-type-required |
+| `route` | `config         .session_settings         .as_ref()         .map` | [447](../../src/context_usage.rs#L447), [452](../../src/context_usage.rs#L452) | receiver-type-required |
+| `route` | `config         .session_settings         .as_ref` | [447](../../src/context_usage.rs#L447), [452](../../src/context_usage.rs#L452) | receiver-type-required |
 | `route` | `settings.provider.as_str` | [450](../../src/context_usage.rs#L450) | receiver-type-required |
-| `route` | `config.workspace.policy.provider.as_deref` | [451](../../src/context_usage.rs#L451) | receiver-type-required |
-| `route` | `config.settings.default_provider.as_deref` | [452](../../src/context_usage.rs#L452) | receiver-type-required |
-| `route` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.workspace.policy.model.as_deref())         .or` | [453](../../src/context_usage.rs#L453) | receiver-type-required |
-| `route` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [453](../../src/context_usage.rs#L453) | receiver-type-required |
-| `route` | `settings.model.as_str` | [456](../../src/context_usage.rs#L456) | receiver-type-required |
-| `route` | `config.workspace.policy.model.as_deref` | [457](../../src/context_usage.rs#L457) | receiver-type-required |
-| `route` | `config.settings.default_model.as_deref` | [458](../../src/context_usage.rs#L458) | receiver-type-required |
-| `route` | `config             .providers             .providers             .iter()             .find` | [460](../../src/context_usage.rs#L460), [465](../../src/context_usage.rs#L465) | receiver-type-required |
-| `route` | `config             .providers             .providers             .iter` | [460](../../src/context_usage.rs#L460), [465](../../src/context_usage.rs#L465) | receiver-type-required |
-| `route` | `provider.models.iter().any` | [469](../../src/context_usage.rs#L469) | receiver-type-required |
-| `route` | `provider.models.iter` | [469](../../src/context_usage.rs#L469), [476](../../src/context_usage.rs#L476) | receiver-type-required |
-| `route` | `provider             .models             .iter()             .find` | [472](../../src/context_usage.rs#L472) | receiver-type-required |
-| `route` | `provider             .models             .iter` | [472](../../src/context_usage.rs#L472) | receiver-type-required |
-| `route` | `provider.models.iter().find` | [476](../../src/context_usage.rs#L476) | receiver-type-required |
-| `route` | `Some` | [478](../../src/context_usage.rs#L478) | external-constructor-callback-or-unresolved |
-| `config` | `serde_json::from_value(json!({             "format":1,             "workspace":{"format":1,"revision":1,"id":"w","name":"W","cwd":[std::fs::canonicalize(std::env::temp_dir()).unwrap()],"policy":{"network":true}},             "providers":{"format":1,"revision":1,"providers":[{                 "id":"p","adapter":"responses","dialect":"openai_responses_v1","endpoint_owner":"openai",                 "gateway_translation":"direct","evidence_revision":"openai-2026-08-01","endpoint":"https://example.com/v1",                 "models":[{"id":"gpt-5","profile":"openai_responses_v1:gpt-5","enabled":true,                     "context_window_tokens":100000,"compact_trigger_tokens":90000}]             }]},             "settings":{"format":1,"revision":1,"default_provider":"p","default_model":"gpt-5"},             "revisions":{"workspace":1,"providers":1,"settings":1}         })).unwrap` | [486](../../src/context_usage.rs#L486) | receiver-type-required |
-| `config` | `serde_json::from_value` | [486](../../src/context_usage.rs#L486) | external-constructor-callback-or-unresolved |
-| `event` | `Event::from_value(schema::IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap())             .unwrap` | [504](../../src/context_usage.rs#L504) | receiver-type-required |
-| `event` | `Event::from_value` | [504](../../src/context_usage.rs#L504) | external-constructor-callback-or-unresolved |
-| `event` | `schema::IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap` | [504](../../src/context_usage.rs#L504) | receiver-type-required |
-| `event` | `schema::IJsonValue::parse` | [504](../../src/context_usage.rs#L504) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `event` | `serde_json::to_vec(&value).unwrap` | [504](../../src/context_usage.rs#L504) | receiver-type-required |
-| `event` | `serde_json::to_vec` | [504](../../src/context_usage.rs#L504) | external-constructor-callback-or-unresolved |
-| `prepared` | `AssetStore::new(folder.join("assets")).unwrap` | [509](../../src/context_usage.rs#L509) | receiver-type-required |
-| `prepared` | `AssetStore::new` | [509](../../src/context_usage.rs#L509) | external-constructor-callback-or-unresolved |
-| `prepared` | `folder.join` | [509](../../src/context_usage.rs#L509) | receiver-type-required |
-| `prepared` | `assets.publish(b"system").unwrap` | [510](../../src/context_usage.rs#L510) | receiver-type-required |
-| `prepared` | `assets.publish` | [510](../../src/context_usage.rs#L510), [511](../../src/context_usage.rs#L511) | receiver-type-required |
-| `prepared` | `assets.publish(b"[]").unwrap` | [511](../../src/context_usage.rs#L511) | receiver-type-required |
-| `prepared` | `assets             .publish(br#"{"model":"gpt-5","input":[{"role":"user","content":"hello"}]}"#)             .unwrap` | [512](../../src/context_usage.rs#L512) | receiver-type-required |
-| `prepared` | `assets             .publish` | [512](../../src/context_usage.rs#L512) | receiver-type-required |
-| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap()             .publish(&serde_json::to_vec(&request).unwrap())             .unwrap` | [535](../../src/context_usage.rs#L535) | receiver-type-required |
-| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap()             .publish` | [535](../../src/context_usage.rs#L535) | receiver-type-required |
-| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap` | [535](../../src/context_usage.rs#L535) | receiver-type-required |
-| `replace_request` | `AssetStore::new` | [535](../../src/context_usage.rs#L535) | external-constructor-callback-or-unresolved |
-| `replace_request` | `folder.join` | [535](../../src/context_usage.rs#L535) | receiver-type-required |
-| `replace_request` | `serde_json::to_vec(&request).unwrap` | [537](../../src/context_usage.rs#L537) | receiver-type-required |
-| `replace_request` | `serde_json::to_vec` | [537](../../src/context_usage.rs#L537) | external-constructor-callback-or-unresolved |
-| `replace_request` | `serde_json::to_value(events[2].raw()).unwrap` | [539](../../src/context_usage.rs#L539) | receiver-type-required |
-| `replace_request` | `serde_json::to_value` | [539](../../src/context_usage.rs#L539) | external-constructor-callback-or-unresolved |
-| `replace_request` | `events[2].raw` | [539](../../src/context_usage.rs#L539) | receiver-type-required |
-| `replace_request` | `event` | [541](../../src/context_usage.rs#L541) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L500) |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `tempfile::tempdir().unwrap` | [546](../../src/context_usage.rs#L546) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `tempfile::tempdir` | [546](../../src/context_usage.rs#L546) | external-constructor-callback-or-unresolved |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `config` | [547](../../src/context_usage.rs#L547) | external-constructor-callback-or-unresolved |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `prepared` | [548](../../src/context_usage.rs#L548) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L508) |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `folder.path` | [548](../../src/context_usage.rs#L548), [550](../../src/context_usage.rs#L550), [560](../../src/context_usage.rs#L560) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `replace_request` | [549](../../src/context_usage.rs#L549) | [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L534) |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `sample` | [560](../../src/context_usage.rs#L560) | external-constructor-callback-or-unresolved |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `Some` | [560](../../src/context_usage.rs#L560) | external-constructor-callback-or-unresolved |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::from_str(include_str!(             "../../../fixtures/context-details/native-v1.json"         ))         .unwrap` | [561](../../src/context_usage.rs#L561) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::from_str` | [561](../../src/context_usage.rs#L561) | external-constructor-callback-or-unresolved |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `details["rows"].as_array().unwrap` | [573](../../src/context_usage.rs#L573) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `details["rows"].as_array` | [573](../../src/context_usage.rs#L573) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::to_string(details).unwrap` | [583](../../src/context_usage.rs#L583) | receiver-type-required |
-| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::to_string` | [583](../../src/context_usage.rs#L583) | external-constructor-callback-or-unresolved |
-| `dialect_shapes_are_classified_without_catalog_inference` | `request_rows` | [607](../../src/context_usage.rs#L607), [624](../../src/context_usage.rs#L624) | external-constructor-callback-or-unresolved |
-| `dialect_shapes_are_classified_without_catalog_inference` | `std::collections::BTreeSet::new` | [616](../../src/context_usage.rs#L616) | external-constructor-callback-or-unresolved |
-| `dialect_shapes_are_classified_without_catalog_inference` | `row["children"].as_array().unwrap` | [619](../../src/context_usage.rs#L619) | receiver-type-required |
-| `dialect_shapes_are_classified_without_catalog_inference` | `row["children"].as_array` | [619](../../src/context_usage.rs#L619) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `tempfile::tempdir().unwrap` | [630](../../src/context_usage.rs#L630) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `tempfile::tempdir` | [630](../../src/context_usage.rs#L630) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `config` | [631](../../src/context_usage.rs#L631) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `prepared` | [632](../../src/context_usage.rs#L632) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L508) |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `folder.path` | [632](../../src/context_usage.rs#L632), [633](../../src/context_usage.rs#L633), [655](../../src/context_usage.rs#L655), [693](../../src/context_usage.rs#L693), [698](../../src/context_usage.rs#L698), [706](../../src/context_usage.rs#L706) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `sample` | [633](../../src/context_usage.rs#L633), [655](../../src/context_usage.rs#L655), [693](../../src/context_usage.rs#L693) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `Some` | [633](../../src/context_usage.rs#L633), [655](../../src/context_usage.rs#L655), [692](../../src/context_usage.rs#L692), [693](../../src/context_usage.rs#L693) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `[             json!({"kind":"compact","covers":[{"from":3,"to":3}],"summary":"small"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"supersedes":[{"from":3,"to":3}]}),             serde_json::to_value(events[0].raw()).unwrap(),             serde_json::to_value(events[1].raw()).unwrap(),             json!({"kind":"extension-context-replacement"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"retracts":[{"from":3,"to":3}]}),         ]         .into_iter()         .enumerate` | [638](../../src/context_usage.rs#L638) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `[             json!({"kind":"compact","covers":[{"from":3,"to":3}],"summary":"small"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"supersedes":[{"from":3,"to":3}]}),             serde_json::to_value(events[0].raw()).unwrap(),             serde_json::to_value(events[1].raw()).unwrap(),             json!({"kind":"extension-context-replacement"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"retracts":[{"from":3,"to":3}]}),         ]         .into_iter` | [638](../../src/context_usage.rs#L638) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value(events[0].raw()).unwrap` | [643](../../src/context_usage.rs#L643) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value` | [643](../../src/context_usage.rs#L643), [644](../../src/context_usage.rs#L644) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events[0].raw` | [643](../../src/context_usage.rs#L643) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value(events[1].raw()).unwrap` | [644](../../src/context_usage.rs#L644) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events[1].raw` | [644](../../src/context_usage.rs#L644) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events.clone` | [653](../../src/context_usage.rs#L653), [696](../../src/context_usage.rs#L696) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `changed.push` | [654](../../src/context_usage.rs#L654) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `event` | [654](../../src/context_usage.rs#L654) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L500) |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::from_str(include_str!(                     "../../../fixtures/context-details/native-unknown-v1.json"                 ))                 .unwrap` | [657](../../src/context_usage.rs#L657) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::from_str` | [657](../../src/context_usage.rs#L657) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `config.clone` | [690](../../src/context_usage.rs#L690) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `"other".into` | [691](../../src/context_usage.rs#L691), [692](../../src/context_usage.rs#L692) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `replace_request` | [697](../../src/context_usage.rs#L697) | [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L534) |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `std::fs::remove_dir_all(folder.path().join("assets")).unwrap` | [706](../../src/context_usage.rs#L706) | receiver-type-required |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `std::fs::remove_dir_all` | [706](../../src/context_usage.rs#L706) | external-constructor-callback-or-unresolved |
-| `invalidation_replaces_both_total_and_details_and_changes_clock` | `folder.path().join` | [706](../../src/context_usage.rs#L706) | receiver-type-required |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `tempfile::tempdir().unwrap` | [715](../../src/context_usage.rs#L715) | receiver-type-required |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `tempfile::tempdir` | [715](../../src/context_usage.rs#L715) | external-constructor-callback-or-unresolved |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `config` | [716](../../src/context_usage.rs#L716) | external-constructor-callback-or-unresolved |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `prepared` | [717](../../src/context_usage.rs#L717) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L508) |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `folder.path` | [717](../../src/context_usage.rs#L717), [727](../../src/context_usage.rs#L727), [737](../../src/context_usage.rs#L737) | receiver-type-required |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `sample` | [727](../../src/context_usage.rs#L727) | external-constructor-callback-or-unresolved |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `Some` | [727](../../src/context_usage.rs#L727) | external-constructor-callback-or-unresolved |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `std::fs::write(             folder.path().join("context-usage.projection.json"),             b"bad JSON",         )         .unwrap` | [736](../../src/context_usage.rs#L736) | receiver-type-required |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `std::fs::write` | [736](../../src/context_usage.rs#L736) | external-constructor-callback-or-unresolved |
-| `paired_clock_migrates_legacy_and_rejects_corruption` | `folder.path().join` | [737](../../src/context_usage.rs#L737) | receiver-type-required |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `tempfile::tempdir().unwrap` | [746](../../src/context_usage.rs#L746) | receiver-type-required |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `tempfile::tempdir` | [746](../../src/context_usage.rs#L746) | external-constructor-callback-or-unresolved |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `config` | [747](../../src/context_usage.rs#L747) | external-constructor-callback-or-unresolved |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `prepared` | [748](../../src/context_usage.rs#L748) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L508) |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `folder.path` | [748](../../src/context_usage.rs#L748), [749](../../src/context_usage.rs#L749), [755](../../src/context_usage.rs#L755), [761](../../src/context_usage.rs#L761), [766](../../src/context_usage.rs#L766) | receiver-type-required |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `derive` | [749](../../src/context_usage.rs#L749), [755](../../src/context_usage.rs#L755), [761](../../src/context_usage.rs#L761), [766](../../src/context_usage.rs#L766) | external-constructor-callback-or-unresolved |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `Some` | [749](../../src/context_usage.rs#L749), [755](../../src/context_usage.rs#L755), [761](../../src/context_usage.rs#L761), [766](../../src/context_usage.rs#L766) | external-constructor-callback-or-unresolved |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `events.push` | [752](../../src/context_usage.rs#L752), [757](../../src/context_usage.rs#L757) | receiver-type-required |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `event` | [752](../../src/context_usage.rs#L752), [757](../../src/context_usage.rs#L757) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L500) |
-| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `config.clone` | [764](../../src/context_usage.rs#L764) | receiver-type-required |
-| `durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence` | `tempfile::tempdir().unwrap` | [786](../../src/context_usage.rs#L786) | receiver-type-required |
-| `durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence` | `tempfile::tempdir` | [786](../../src/context_usage.rs#L786) | external-constructor-callback-or-unresolved |
+| `route` | `config.settings.default_provider.as_deref` | [451](../../src/context_usage.rs#L451) | receiver-type-required |
+| `route` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [452](../../src/context_usage.rs#L452) | receiver-type-required |
+| `route` | `settings.model.as_str` | [455](../../src/context_usage.rs#L455) | receiver-type-required |
+| `route` | `config.settings.default_model.as_deref` | [456](../../src/context_usage.rs#L456) | receiver-type-required |
+| `route` | `config             .providers             .providers             .iter()             .find` | [458](../../src/context_usage.rs#L458), [463](../../src/context_usage.rs#L463) | receiver-type-required |
+| `route` | `config             .providers             .providers             .iter` | [458](../../src/context_usage.rs#L458), [463](../../src/context_usage.rs#L463) | receiver-type-required |
+| `route` | `provider.models.iter().any` | [467](../../src/context_usage.rs#L467) | receiver-type-required |
+| `route` | `provider.models.iter` | [467](../../src/context_usage.rs#L467), [474](../../src/context_usage.rs#L474) | receiver-type-required |
+| `route` | `provider             .models             .iter()             .find` | [470](../../src/context_usage.rs#L470) | receiver-type-required |
+| `route` | `provider             .models             .iter` | [470](../../src/context_usage.rs#L470) | receiver-type-required |
+| `route` | `provider.models.iter().find` | [474](../../src/context_usage.rs#L474) | receiver-type-required |
+| `route` | `Some` | [476](../../src/context_usage.rs#L476) | external-constructor-callback-or-unresolved |
+| `config` | `serde_json::from_value(json!({             "format":1,             "execution":{"session_id":"session","cwd":[std::fs::canonicalize(std::env::temp_dir()).unwrap()],"policy":{"network":true}},             "providers":{"format":1,"revision":1,"providers":[{                 "id":"p","adapter":"responses","dialect":"openai_responses_v1","endpoint_owner":"openai",                 "gateway_translation":"direct","evidence_revision":"openai-2026-08-01","endpoint":"https://example.com/v1",                 "models":[{"id":"gpt-5","profile":"openai_responses_v1:gpt-5","enabled":true,                     "context_window_tokens":100000,"compact_trigger_tokens":90000}]             }]},             "settings":{"format":1,"revision":1,"default_provider":"p","default_model":"gpt-5"},             "revisions":{"providers":1,"settings":1}         })).unwrap` | [484](../../src/context_usage.rs#L484) | receiver-type-required |
+| `config` | `serde_json::from_value` | [484](../../src/context_usage.rs#L484) | external-constructor-callback-or-unresolved |
+| `event` | `Event::from_value(schema::IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap())             .unwrap` | [502](../../src/context_usage.rs#L502) | receiver-type-required |
+| `event` | `Event::from_value` | [502](../../src/context_usage.rs#L502) | external-constructor-callback-or-unresolved |
+| `event` | `schema::IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap` | [502](../../src/context_usage.rs#L502) | receiver-type-required |
+| `event` | `schema::IJsonValue::parse` | [502](../../src/context_usage.rs#L502) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `event` | `serde_json::to_vec(&value).unwrap` | [502](../../src/context_usage.rs#L502) | receiver-type-required |
+| `event` | `serde_json::to_vec` | [502](../../src/context_usage.rs#L502) | external-constructor-callback-or-unresolved |
+| `prepared` | `AssetStore::new(folder.join("assets")).unwrap` | [507](../../src/context_usage.rs#L507) | receiver-type-required |
+| `prepared` | `AssetStore::new` | [507](../../src/context_usage.rs#L507) | external-constructor-callback-or-unresolved |
+| `prepared` | `folder.join` | [507](../../src/context_usage.rs#L507) | receiver-type-required |
+| `prepared` | `assets.publish(b"system").unwrap` | [508](../../src/context_usage.rs#L508) | receiver-type-required |
+| `prepared` | `assets.publish` | [508](../../src/context_usage.rs#L508), [509](../../src/context_usage.rs#L509) | receiver-type-required |
+| `prepared` | `assets.publish(b"[]").unwrap` | [509](../../src/context_usage.rs#L509) | receiver-type-required |
+| `prepared` | `assets             .publish(br#"{"model":"gpt-5","input":[{"role":"user","content":"hello"}]}"#)             .unwrap` | [510](../../src/context_usage.rs#L510) | receiver-type-required |
+| `prepared` | `assets             .publish` | [510](../../src/context_usage.rs#L510) | receiver-type-required |
+| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap()             .publish(&serde_json::to_vec(&request).unwrap())             .unwrap` | [533](../../src/context_usage.rs#L533) | receiver-type-required |
+| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap()             .publish` | [533](../../src/context_usage.rs#L533) | receiver-type-required |
+| `replace_request` | `AssetStore::new(folder.join("assets"))             .unwrap` | [533](../../src/context_usage.rs#L533) | receiver-type-required |
+| `replace_request` | `AssetStore::new` | [533](../../src/context_usage.rs#L533) | external-constructor-callback-or-unresolved |
+| `replace_request` | `folder.join` | [533](../../src/context_usage.rs#L533) | receiver-type-required |
+| `replace_request` | `serde_json::to_vec(&request).unwrap` | [535](../../src/context_usage.rs#L535) | receiver-type-required |
+| `replace_request` | `serde_json::to_vec` | [535](../../src/context_usage.rs#L535) | external-constructor-callback-or-unresolved |
+| `replace_request` | `serde_json::to_value(events[2].raw()).unwrap` | [537](../../src/context_usage.rs#L537) | receiver-type-required |
+| `replace_request` | `serde_json::to_value` | [537](../../src/context_usage.rs#L537) | external-constructor-callback-or-unresolved |
+| `replace_request` | `events[2].raw` | [537](../../src/context_usage.rs#L537) | receiver-type-required |
+| `replace_request` | `event` | [539](../../src/context_usage.rs#L539) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L498) |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `tempfile::tempdir().unwrap` | [544](../../src/context_usage.rs#L544) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `tempfile::tempdir` | [544](../../src/context_usage.rs#L544) | external-constructor-callback-or-unresolved |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `config` | [545](../../src/context_usage.rs#L545) | external-constructor-callback-or-unresolved |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `prepared` | [546](../../src/context_usage.rs#L546) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L506) |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `folder.path` | [546](../../src/context_usage.rs#L546), [548](../../src/context_usage.rs#L548), [558](../../src/context_usage.rs#L558) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `replace_request` | [547](../../src/context_usage.rs#L547) | [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L532) |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `sample` | [558](../../src/context_usage.rs#L558) | external-constructor-callback-or-unresolved |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `Some` | [558](../../src/context_usage.rs#L558) | external-constructor-callback-or-unresolved |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::from_str(include_str!(             "../../../fixtures/context-details/native-v1.json"         ))         .unwrap` | [559](../../src/context_usage.rs#L559) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::from_str` | [559](../../src/context_usage.rs#L559) | external-constructor-callback-or-unresolved |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `details["rows"].as_array().unwrap` | [571](../../src/context_usage.rs#L571) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `details["rows"].as_array` | [571](../../src/context_usage.rs#L571) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::to_string(details).unwrap` | [581](../../src/context_usage.rs#L581) | receiver-type-required |
+| `atomic_sample_partitions_system_and_deduplicates_safe_tool_inventory` | `serde_json::to_string` | [581](../../src/context_usage.rs#L581) | external-constructor-callback-or-unresolved |
+| `dialect_shapes_are_classified_without_catalog_inference` | `request_rows` | [605](../../src/context_usage.rs#L605), [622](../../src/context_usage.rs#L622) | external-constructor-callback-or-unresolved |
+| `dialect_shapes_are_classified_without_catalog_inference` | `std::collections::BTreeSet::new` | [614](../../src/context_usage.rs#L614) | external-constructor-callback-or-unresolved |
+| `dialect_shapes_are_classified_without_catalog_inference` | `row["children"].as_array().unwrap` | [617](../../src/context_usage.rs#L617) | receiver-type-required |
+| `dialect_shapes_are_classified_without_catalog_inference` | `row["children"].as_array` | [617](../../src/context_usage.rs#L617) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `tempfile::tempdir().unwrap` | [628](../../src/context_usage.rs#L628) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `tempfile::tempdir` | [628](../../src/context_usage.rs#L628) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `config` | [629](../../src/context_usage.rs#L629) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `prepared` | [630](../../src/context_usage.rs#L630) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L506) |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `folder.path` | [630](../../src/context_usage.rs#L630), [631](../../src/context_usage.rs#L631), [653](../../src/context_usage.rs#L653), [691](../../src/context_usage.rs#L691), [696](../../src/context_usage.rs#L696), [704](../../src/context_usage.rs#L704) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `sample` | [631](../../src/context_usage.rs#L631), [653](../../src/context_usage.rs#L653), [691](../../src/context_usage.rs#L691) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `Some` | [631](../../src/context_usage.rs#L631), [653](../../src/context_usage.rs#L653), [690](../../src/context_usage.rs#L690), [691](../../src/context_usage.rs#L691) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `[             json!({"kind":"compact","covers":[{"from":3,"to":3}],"summary":"small"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"supersedes":[{"from":3,"to":3}]}),             serde_json::to_value(events[0].raw()).unwrap(),             serde_json::to_value(events[1].raw()).unwrap(),             json!({"kind":"extension-context-replacement"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"retracts":[{"from":3,"to":3}]}),         ]         .into_iter()         .enumerate` | [636](../../src/context_usage.rs#L636) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `[             json!({"kind":"compact","covers":[{"from":3,"to":3}],"summary":"small"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"supersedes":[{"from":3,"to":3}]}),             serde_json::to_value(events[0].raw()).unwrap(),             serde_json::to_value(events[1].raw()).unwrap(),             json!({"kind":"extension-context-replacement"}),             json!({"kind":"output","turn":1,"attempt":"a1","content":[],                 "sealed":{"version":1,"adapter":"openai_responses_v1","fragments":"[]"},                 "usage":{"availability":"unavailable"},"retracts":[{"from":3,"to":3}]}),         ]         .into_iter` | [636](../../src/context_usage.rs#L636) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value(events[0].raw()).unwrap` | [641](../../src/context_usage.rs#L641) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value` | [641](../../src/context_usage.rs#L641), [642](../../src/context_usage.rs#L642) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events[0].raw` | [641](../../src/context_usage.rs#L641) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::to_value(events[1].raw()).unwrap` | [642](../../src/context_usage.rs#L642) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events[1].raw` | [642](../../src/context_usage.rs#L642) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `events.clone` | [651](../../src/context_usage.rs#L651), [694](../../src/context_usage.rs#L694) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `changed.push` | [652](../../src/context_usage.rs#L652) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `event` | [652](../../src/context_usage.rs#L652) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L498) |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::from_str(include_str!(                     "../../../fixtures/context-details/native-unknown-v1.json"                 ))                 .unwrap` | [655](../../src/context_usage.rs#L655) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `serde_json::from_str` | [655](../../src/context_usage.rs#L655) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `config.clone` | [688](../../src/context_usage.rs#L688) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `"other".into` | [689](../../src/context_usage.rs#L689), [690](../../src/context_usage.rs#L690) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `replace_request` | [695](../../src/context_usage.rs#L695) | [tekes-supervisor::context_usage::tests::replace_request](../../src/context_usage.rs#L532) |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `std::fs::remove_dir_all(folder.path().join("assets")).unwrap` | [704](../../src/context_usage.rs#L704) | receiver-type-required |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `std::fs::remove_dir_all` | [704](../../src/context_usage.rs#L704) | external-constructor-callback-or-unresolved |
+| `invalidation_replaces_both_total_and_details_and_changes_clock` | `folder.path().join` | [704](../../src/context_usage.rs#L704) | receiver-type-required |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `tempfile::tempdir().unwrap` | [713](../../src/context_usage.rs#L713) | receiver-type-required |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `tempfile::tempdir` | [713](../../src/context_usage.rs#L713) | external-constructor-callback-or-unresolved |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `config` | [714](../../src/context_usage.rs#L714) | external-constructor-callback-or-unresolved |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `prepared` | [715](../../src/context_usage.rs#L715) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L506) |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `folder.path` | [715](../../src/context_usage.rs#L715), [725](../../src/context_usage.rs#L725), [735](../../src/context_usage.rs#L735) | receiver-type-required |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `sample` | [725](../../src/context_usage.rs#L725) | external-constructor-callback-or-unresolved |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `Some` | [725](../../src/context_usage.rs#L725) | external-constructor-callback-or-unresolved |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `std::fs::write(             folder.path().join("context-usage.projection.json"),             b"bad JSON",         )         .unwrap` | [734](../../src/context_usage.rs#L734) | receiver-type-required |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `std::fs::write` | [734](../../src/context_usage.rs#L734) | external-constructor-callback-or-unresolved |
+| `paired_clock_migrates_legacy_and_rejects_corruption` | `folder.path().join` | [735](../../src/context_usage.rs#L735) | receiver-type-required |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `tempfile::tempdir().unwrap` | [744](../../src/context_usage.rs#L744) | receiver-type-required |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `tempfile::tempdir` | [744](../../src/context_usage.rs#L744) | external-constructor-callback-or-unresolved |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `config` | [745](../../src/context_usage.rs#L745) | external-constructor-callback-or-unresolved |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `prepared` | [746](../../src/context_usage.rs#L746) | [tekes-supervisor::context_usage::tests::prepared](../../src/context_usage.rs#L506) |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `folder.path` | [746](../../src/context_usage.rs#L746), [747](../../src/context_usage.rs#L747), [753](../../src/context_usage.rs#L753), [759](../../src/context_usage.rs#L759), [764](../../src/context_usage.rs#L764) | receiver-type-required |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `derive` | [747](../../src/context_usage.rs#L747), [753](../../src/context_usage.rs#L753), [759](../../src/context_usage.rs#L759), [764](../../src/context_usage.rs#L764) | external-constructor-callback-or-unresolved |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `Some` | [747](../../src/context_usage.rs#L747), [753](../../src/context_usage.rs#L753), [759](../../src/context_usage.rs#L759), [764](../../src/context_usage.rs#L764) | external-constructor-callback-or-unresolved |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `events.push` | [750](../../src/context_usage.rs#L750), [755](../../src/context_usage.rs#L755) | receiver-type-required |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `event` | [750](../../src/context_usage.rs#L750), [755](../../src/context_usage.rs#L755) | [tekes-supervisor::context_usage::tests::event](../../src/context_usage.rs#L498) |
+| `request_bounds_are_not_billing_totals_and_replacements_invalidate` | `config.clone` | [762](../../src/context_usage.rs#L762) | receiver-type-required |
+| `durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence` | `tempfile::tempdir().unwrap` | [784](../../src/context_usage.rs#L784) | receiver-type-required |
+| `durable_clock_survives_recreation_and_does_not_reuse_invalidated_sequence` | `tempfile::tempdir` | [784](../../src/context_usage.rs#L784) | external-constructor-callback-or-unresolved |

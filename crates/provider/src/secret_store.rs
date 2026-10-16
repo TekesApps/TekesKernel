@@ -507,14 +507,7 @@ mod tests {
     fn config_with_shared_key() -> ConfigSnapshot {
         serde_json::from_value(json!({
             "format": 1,
-            "workspace": {
-                "format": 1,
-                "revision": 1,
-                "id": "workspace",
-                "name": "Workspace",
-                "cwd": ["/tmp"],
-                "policy": {"network": true}
-            },
+            "execution": {"session_id":"session","cwd":["/tmp"],"policy":{"network":true}},
             "providers": {
                 "format": 1,
                 "revision": 1,
@@ -525,7 +518,7 @@ mod tests {
                 "web_search": {"adapter":"tavily_v1","endpoint":"https://search.example","credential_key":"shared"}
             },
                         "settings": {"format":1,"revision":0},
-            "revisions": {"workspace":1,"providers":1,"settings":0}
+            "revisions": {"providers":1,"settings":0}
         }))
         .expect("config snapshot")
     }

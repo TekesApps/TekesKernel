@@ -202,7 +202,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fingerprint` | `self.journal.as_ref().map_or` | [82](../../src/thread_card.rs#L82) | receiver-type-required |
 | `fingerprint` | `self.journal.as_ref` | [82](../../src/thread_card.rs#L82) | receiver-type-required |
 | `holds_of` | `line_requests(session, source_line, projection).ok` | [92](../../src/thread_card.rs#L92) | receiver-type-required |
-| `holds_of` | `line_requests` | [92](../../src/thread_card.rs#L92) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2908) |
+| `holds_of` | `line_requests` | [92](../../src/thread_card.rs#L92) | [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L2749) |
 | `holds_of` | `Some` | [93](../../src/thread_card.rs#L93) | external-constructor-callback-or-unresolved |
 | `holds_of` | `requests             .into_iter()             .map(&#124;(state, _)&#124; Hold {                 hold_seq: state.request.causal_kernel_seq,                 kind: match state.request.frame_type {                     endpoint::RequestFrameType::Approval => "approval",                     endpoint::RequestFrameType::Question => "question",                 }                 .to_owned(),                 resolved: state.resolution.map(&#124;(seq, outcome)&#124; HoldResolution {                     seq,                     // kebab-case ('allowed-once', 'rejected', 'cancelled', 'answered')                     outcome: serde_json::to_value(outcome)                         .ok()                         .and_then(&#124;value&#124; value.as_str().map(str::to_owned))                         .unwrap_or_default(),                 }),             })             .collect` | [94](../../src/thread_card.rs#L94) | receiver-type-required |
 | `holds_of` | `requests             .into_iter()             .map` | [94](../../src/thread_card.rs#L94) | receiver-type-required |
@@ -223,7 +223,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `journal_input` | `i64::try_from` | [124](../../src/thread_card.rs#L124) | external-constructor-callback-or-unresolved |
 | `main_line` | `bytes.truncate` | [135](../../src/thread_card.rs#L135) | receiver-type-required |
 | `main_line` | `endpoint::card_summary(projection).ok` | [136](../../src/thread_card.rs#L136) | receiver-type-required |
-| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L274) |
+| `main_line` | `endpoint::card_summary` | [136](../../src/thread_card.rs#L136) | [endpoint::service::card_summary](../../../endpoint/src/service.rs#L210) |
 | `main_line` | `Some` | [137](../../src/thread_card.rs#L137) | external-constructor-callback-or-unresolved |
 | `main_line` | `"main.jsonl".to_owned` | [139](../../src/thread_card.rs#L139) | receiver-type-required |
 | `main_line` | `session.to_owned` | [142](../../src/thread_card.rs#L142) | receiver-type-required |
@@ -232,11 +232,11 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare` | `main_line` | [163](../../src/thread_card.rs#L163) | [tekes-supervisor::thread_card::main_line](../../src/thread_card.rs#L129) |
 | `prepare` | `summary.cwd.is_none` | [167](../../src/thread_card.rs#L167) | receiver-type-required |
 | `prepare` | `Some` | [168](../../src/thread_card.rs#L168), [170](../../src/thread_card.rs#L170) | external-constructor-callback-or-unresolved |
-| `prepare` | `endpoint::genesis_cwd` | [168](../../src/thread_card.rs#L168) | [endpoint::service::genesis_cwd](../../../endpoint/src/service.rs#L142) |
+| `prepare` | `endpoint::genesis_cwd` | [168](../../src/thread_card.rs#L168) | [endpoint::service::genesis_cwd](../../../endpoint/src/service.rs#L101) |
 | `prepare` | `projection.events.first` | [168](../../src/thread_card.rs#L168) | receiver-type-required |
 | `prepare` | `session.to_owned` | [171](../../src/thread_card.rs#L171) | receiver-type-required |
 | `prepare` | `crate::host_runtime::system_timestamp().ok` | [172](../../src/thread_card.rs#L172) | receiver-type-required |
-| `prepare` | `crate::host_runtime::system_timestamp` | [172](../../src/thread_card.rs#L172) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L475) |
+| `prepare` | `crate::host_runtime::system_timestamp` | [172](../../src/thread_card.rs#L172) | [tekes-supervisor::host_runtime::system_timestamp](../../src/host_runtime.rs#L406) |
 | `complete_children` | `fold_children` | [183](../../src/thread_card.rs#L183) | [tekes-supervisor::thread_card::fold_children](../../src/thread_card.rs#L200) |
 | `complete_children` | `card.lines.extend` | [184](../../src/thread_card.rs#L184) | receiver-type-required |
 | `fold_child_views` | `fold_children(session, folder)         .iter()         .map(PreparedLine::view)         .collect` | [194](../../src/thread_card.rs#L194) | receiver-type-required |
@@ -252,7 +252,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fold_children` | `entry.file_name().to_string_lossy` | [208](../../src/thread_card.rs#L208) | receiver-type-required |
 | `fold_children` | `entry.file_name` | [208](../../src/thread_card.rs#L208) | receiver-type-required |
 | `fold_children` | `(store::card::valid_line_name(&name)                 && name != "main.jsonl"                 && entry.file_type().is_ok_and(&#124;kind&#124; kind.is_file()))             .then_some` | [209](../../src/thread_card.rs#L209) | receiver-type-required |
-| `fold_children` | `store::card::valid_line_name` | [209](../../src/thread_card.rs#L209) | [store::card::valid_line_name](../../../store/src/card.rs#L259) |
+| `fold_children` | `store::card::valid_line_name` | [209](../../src/thread_card.rs#L209) | [store::card::valid_line_name](../../../store/src/card.rs#L256) |
 | `fold_children` | `entry.file_type().is_ok_and` | [211](../../src/thread_card.rs#L211) | receiver-type-required |
 | `fold_children` | `entry.file_type` | [211](../../src/thread_card.rs#L211) | receiver-type-required |
 | `fold_children` | `kind.is_file` | [211](../../src/thread_card.rs#L211) | receiver-type-required |
@@ -295,7 +295,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write` | `prepared.summary.clone` | [288](../../src/thread_card.rs#L288) | receiver-type-required |
 | `write` | `prepared.journal.as_ref().map` | [289](../../src/thread_card.rs#L289) | receiver-type-required |
 | `write` | `prepared.journal.as_ref` | [289](../../src/thread_card.rs#L289) | receiver-type-required |
-| `write` | `store::card::write_card` | [296](../../src/thread_card.rs#L296) | [store::card::write_card](../../../store/src/card.rs#L585) |
+| `write` | `store::card::write_card` | [296](../../src/thread_card.rs#L296) | [store::card::write_card](../../../store/src/card.rs#L582) |
 | `write` | `WriteOutcome::Skipped` | [303](../../src/thread_card.rs#L303) | external-constructor-callback-or-unresolved |
 | `new` | `Duration::from_secs` | [323](../../src/thread_card.rs#L323) | external-constructor-callback-or-unresolved |
 | `new` | `Mutex::new` | [325](../../src/thread_card.rs#L325) | external-constructor-callback-or-unresolved |

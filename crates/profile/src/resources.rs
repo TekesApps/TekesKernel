@@ -663,18 +663,12 @@ fn hex_digest(bytes: &[u8]) -> String {
 #[cfg(test)]
 mod tests {
     fn trusted_snapshot(snapshot: &mut InstructionSnapshot) -> tempfile::TempDir {
-        let root = tempfile::tempdir().unwrap();
-        let state = root.path().join("state");
-        let project = root.path().join("project");
-        std::fs::create_dir(&project).unwrap();
-        let store = crate::FolderAuthorityStore::new(&state);
-        store.request("r", 0, &project).unwrap();
-        let folder = store.grant_from_host("g", 1, "r").unwrap().folder;
-        snapshot.folder_authority = Some(crate::FolderSnapshotAuthority {
-            storage_root: state,
-            folders: [(0, folder)].into(),
-        });
-        root
+        for source in &mut snapshot.sources {
+            if matches!(source.origin, InstructionOrigin::Project { .. }) {
+                source.origin = InstructionOrigin::Workspace;
+            }
+        }
+        tempfile::tempdir().unwrap()
     }
     #[test]
     fn shared_skill_plain_description_accepts_embedded_colon() {
@@ -742,7 +736,6 @@ mod tests {
             ),
         ];
         let mut snapshot = InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources,
             effective: EffectiveInstructions::default(),
@@ -752,7 +745,7 @@ mod tests {
         assert!(
             error
                 .to_string()
-                .contains("defined by both user and project:0")
+                .contains("defined by both user and workspace")
         );
     }
 
@@ -768,7 +761,6 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("review.md".to_owned(), 0);
         let snapshot = InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: vec![source],
             effective,
@@ -787,7 +779,6 @@ mod tests {
     #[test]
     fn invalid_winner_and_out_of_range_positionals_fail_closed() {
         let mut invalid_package = InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: vec![source(
                 InstructionOrigin::Project { workspace_index: 0 },
@@ -812,7 +803,6 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("position.md".to_owned(), 0);
         let catalog = ResourceCatalog::from_snapshot(&InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: vec![command],
             effective,
@@ -833,7 +823,6 @@ mod tests {
         let mut effective = EffectiveInstructions::default();
         effective.commands.insert("expand.md".to_owned(), 0);
         let catalog = ResourceCatalog::from_snapshot(&InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: vec![expanding],
             effective,

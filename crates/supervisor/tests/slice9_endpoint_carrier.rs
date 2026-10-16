@@ -195,7 +195,7 @@ fn production_mux_journal_is_follow_first_and_actionables_replay_by_stable_revis
     assembly.finish_recovery().expect("recovery gate");
     let host = assembly.host();
     let description = host.mux_description().expect("V3 description");
-    assert_eq!(description.protocol_version, 3);
+    assert_eq!(description.protocol_version, 4);
     assert_eq!(description.product.name, "TekesKernel");
 
     let mut journal = block_on_ready(host.open_mux_stream(
@@ -352,8 +352,6 @@ fn context_control_reconnect_restores_valid_pair_and_replaces_it_after_compactio
     let root = tempfile::tempdir().expect("root");
     write_held_session(root.path());
     profile::ConfigRepository::open(root.path()).expect("config layout");
-    std::fs::create_dir_all(root.path().join("workspaces/ws")).unwrap();
-    std::fs::create_dir_all(root.path().join("workspace")).unwrap();
     std::fs::write(
         root.path().join("config/providers.json"),
         include_bytes!("../../../fixtures/config/providers.canonical.json"),
@@ -364,14 +362,6 @@ fn context_control_reconnect_restores_valid_pair_and_replaces_it_after_compactio
         include_bytes!("../../../fixtures/config/settings.canonical.json"),
     )
     .unwrap();
-    let mut workspace = serde_json_canonicalizer::to_vec(&json!({
-        "format":1,"revision":1,"id":"ws","name":"ws",
-        "cwd":[std::fs::canonicalize(root.path().join("workspace")).unwrap()],
-        "policy":{"network":true}
-    }))
-    .unwrap();
-    workspace.push(b'\n');
-    std::fs::write(root.path().join("workspaces/ws/workspace.json"), workspace).unwrap();
     let config = endpoint::NativeEndpoint::open(root.path())
         .unwrap()
         .session_config_snapshot(SESSION)
@@ -475,14 +465,14 @@ fn production_carrier_rejects_structurally_invalid_route_payload_before_rpc_iden
     let request = ClientRequest {
         envelope_type: "client-request".to_owned(),
         rpc_id: "rpc-invalid-workspace-create".to_owned(),
-        method: "workspace.create".to_owned(),
+        method: "session.create".to_owned(),
         payload: IJsonValue::parse_str(r#"{"unexpected":true}"#).expect("valid outer payload"),
     };
     let failure = block_on_ready(assembly.host().unary(request, call_context()))
         .expect_err("closed route payload must fail before dispatch");
     assert!(matches!(failure, HostFailure::InvalidRequest));
     assert_eq!(
-        std::fs::read_dir(root.path().join("endpoint-management/rpc"))
+        std::fs::read_dir(root.path().join("endpoint-rpc/rpc"))
             .expect("rpc registry")
             .count(),
         0
@@ -499,31 +489,17 @@ fn production_create_history_then_stream_append_is_durable_and_live() {
     let assembly = assembly(root.path());
     assembly.finish_recovery().expect("recovery gate");
 
-    let workspace = block_on_ready(assembly.host().unary(
-        client_request(
-            "rpc-live-workspace",
-            "workspace.create",
-            &format!(
-                r#"{{"path":{}}}"#,
-                serde_json::to_string(project.to_str().expect("UTF-8 project")).expect("path JSON")
-            ),
-        ),
-        call_context(),
-    ))
-    .expect("workspace create");
-    let workspace_value = response_value(&workspace);
-    let workspace_id = workspace_value["workspace"]["workspaceId"]
-        .as_str()
-        .expect("workspace id");
-    block_on_ready(assembly.host().unary(
+    let execution_json = serde_json::to_string(&serde_json::json!({"cwd":project})).unwrap();
+    let created = block_on_ready(assembly.host().unary(
         client_request(
             "rpc-live-session",
             "session.create",
-            &format!(r#"{{"sessionId":"{SESSION}","workspaceId":"{workspace_id}"}}"#),
+            &format!(r#"{{"sessionId":"{SESSION}","execution":{execution_json}}}"#),
         ),
         call_context(),
     ))
     .expect("session create");
+    assert_eq!(response_value(&created)["sessionId"], SESSION);
     let mut mux = block_on_ready(endpoint::CarrierStreamHandler::open_stream(
         assembly.streams(),
         endpoint::StreamChannel::Mux,
@@ -1088,7 +1064,9 @@ fn write_session_at(root: &std::path::Path, session: &str, held: bool) {
     std::fs::create_dir(folder.join("assets")).expect("assets");
     let lines = [
         format!(
-            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":1,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{session}"}},"resume":"never","seq":1,"thread":"{session}","ts":"{TIMESTAMP}","v":1,"workspace":"ws"}}"#
+            r#"{{"config":{{"digest":"cfg"}},"format":1,"kind":"genesis","min_reader":5,"min_writer":1,"origin_key":"create","origin_tuple":{{"client":"cli","key":"create","op":"create","principal":"p","target":"{session}"}},"resume":"never","seq":1,"thread":"{session}","ts":"{TIMESTAMP}","v":1,"execution":{execution},"cwd":{cwd}}}"#,
+            execution = serde_json::to_string(&test_support::execution_fixture()).unwrap(),
+            cwd = serde_json::to_string(&test_support::execution_fixture().cwd).unwrap()
         ),
         format!(
             r#"{{"content":[{{"text":"start","type":"text"}}],"kind":"input","origin_key":"i1","origin_tuple":{{"client":"cli","key":"i1","op":"submit","principal":"p","target":"{session}"}},"seq":2,"ts":"{TIMESTAMP}","v":1}}"#
@@ -1115,6 +1093,18 @@ fn write_session_at(root: &std::path::Path, session: &str, held: bool) {
             r#"{{"call":"ask1","kind":"approval_request","scope":"answer","seq":9,"ts":"{TIMESTAMP}","turn":1,"v":1}}"#
         ),
     ];
+    let lines = lines
+        .into_iter()
+        .map(|line| {
+            String::from_utf8(
+                schema::Event::decode(line.as_bytes())
+                    .unwrap()
+                    .canonical_bytes()
+                    .unwrap(),
+            )
+            .unwrap()
+        })
+        .collect::<Vec<_>>();
     let keep = if held { lines.len() } else { 2 };
     std::fs::write(folder.join("main.jsonl"), lines[..keep].join("\n") + "\n").expect("ledger");
 }

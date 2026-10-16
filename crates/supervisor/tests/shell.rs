@@ -670,7 +670,7 @@ fn context_reads_messages_and_controls_are_visible_across_workspace_and_folder_i
         json!({"operation":"read","thread_id":FOREIGN,"reason":"inspect"}),
     ));
     assert_eq!(
-        read["workspace"], "other-ws",
+        read["session_id"], FOREIGN,
         "metadata belongs to the target, not the caller"
     );
     let records = visibility_value(visibility_call(
@@ -680,20 +680,13 @@ fn context_reads_messages_and_controls_are_visible_across_workspace_and_folder_i
         json!({"thread_id":FOREIGN,"record_ids":[2],"reason":"inspect"}),
     ));
     assert_eq!(records["records"][0]["event"]["title"], "foreign first");
-    let project = visibility_value(visibility_call(
+    let removed_project_scope = visibility_call(
         root.path(),
         "project-filter",
         "context",
         json!({"operation":"search","query":"foreign","scope":"project","reason":"inspect"}),
-    ));
-    assert!(
-        project["hits"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .all(|hit| hit["session_id"] == SESSION),
-        "legacy project is a query filter"
     );
+    assert!(removed_project_scope.error.is_some());
     for (id, selector) in [
         ("default-filter", None),
         ("current-filter", Some("current_thread")),

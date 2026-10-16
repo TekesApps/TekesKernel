@@ -40,12 +40,9 @@ pub const MAX_REQUEST_BYTES: usize = 16 * 1024 * 1024;
 /// graceful shutdown waits for existing connections after this announcement interval.
 const DRAIN_ANNOUNCEMENT_INTERVAL: Duration = Duration::from_millis(100);
 
-pub const ROUTE_REGISTRY: [&str; 17] = [
-    "workspace.create",
-    "workspace.rename",
-    "workspace.relocate",
-    "workspace.archiveSession",
-    "workspace.unarchiveSession",
+pub const ROUTE_REGISTRY: [&str; 14] = [
+    "session.archive",
+    "session.unarchive",
     "session.create",
     "session.prompt",
     "session.updateQueue",

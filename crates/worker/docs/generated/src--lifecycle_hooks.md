@@ -121,7 +121,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `load` | `e.string_field` | [65](../../src/lifecycle_hooks.rs#L65) | receiver-type-required |
 | `load` | `Some` | [68](../../src/lifecycle_hooks.rs#L68) | external-constructor-callback-or-unresolved |
 | `load` | `profile.instruction.clone` | [71](../../src/lifecycle_hooks.rs#L71) | receiver-type-required |
-| `load` | `profile.config.workspace.id.clone` | [73](../../src/lifecycle_hooks.rs#L73) | receiver-type-required |
+| `load` | `profile.config.execution.session_id.clone` | [73](../../src/lifecycle_hooks.rs#L73) | receiver-type-required |
 | `load` | `std::cell::Cell::new` | [75](../../src/lifecycle_hooks.rs#L75) | external-constructor-callback-or-unresolved |
 | `load` | `ledger.path().to_path_buf` | [76](../../src/lifecycle_hooks.rs#L76) | receiver-type-required |
 | `load` | `ledger.path` | [76](../../src/lifecycle_hooks.rs#L76) | receiver-type-required |

@@ -11,14 +11,7 @@ use tekes_supervisor::process_host::ProductionProcessHost;
 fn config() -> ConfigSnapshot {
     serde_json::from_value(json!({
         "format": 1,
-        "workspace": {
-            "format": 1,
-            "revision": 1,
-            "id": "workspace",
-            "name": "Workspace",
-            "cwd": ["/tmp"],
-            "policy": {"network": true}
-        },
+        "execution":{"session_id":"session","cwd":["/tmp"],"policy":{"network":true}},
         "providers": {
             "format": 1,
             "revision": 1,
@@ -35,7 +28,7 @@ fn config() -> ConfigSnapshot {
             }]
         },
                 "settings": {"format":1,"revision":0},
-        "revisions": {"workspace":1,"providers":1,"settings":0}
+        "revisions": {"providers":1,"settings":0}
     }))
     .expect("config snapshot")
 }

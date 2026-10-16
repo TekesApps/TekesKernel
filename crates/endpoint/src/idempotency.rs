@@ -112,7 +112,7 @@ enum Entry {
 }
 
 /// Contract-shaped endpoint-wide mutation carrier. Each rpcId owns a
-/// canonical phase journal under `endpoint-management/rpc/`.
+/// canonical phase journal under `endpoint-rpc/rpc/`.
 pub struct RpcRegistry {
     root: PathBuf,
     rpc_root: PathBuf,
@@ -121,7 +121,7 @@ pub struct RpcRegistry {
 
 impl RpcRegistry {
     pub fn open(endpoint_root: impl AsRef<Path>) -> Result<Self, RpcRegistryError> {
-        let root = store::endpoint_management_root(endpoint_root.as_ref())?;
+        let root = store::endpoint_rpc_root(endpoint_root.as_ref())?;
         let rpc_root = root.join("rpc");
         fs::create_dir_all(&rpc_root)?;
         let lock_path = root.join("rpc.lock");

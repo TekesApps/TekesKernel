@@ -68,7 +68,7 @@ def main() -> None:
         raise SystemExit("cursor body is not canonical")
     if set(body) != {
         "v",
-        "workspace_id",
+        "session_filter",
         "visibility",
         "normalized_query",
         "catalog_digest",

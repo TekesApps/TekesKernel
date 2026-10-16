@@ -41,31 +41,31 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tools::schema_registry::canonical_schema_oracle_bytes](../../src/schema_registry.rs#L1017) | function_item | `pub` |  |
 | [tools::schema_registry::audit_reason](../../src/schema_registry.rs#L1024) | function_item | `private` |  |
 | [tools::schema_registry::context_schema](../../src/schema_registry.rs#L1031) | function_item | `private` |  |
-| [tools::schema_registry::shell_schema](../../src/schema_registry.rs#L1108) | function_item | `private` |  |
-| [tools::schema_registry::summary_schema](../../src/schema_registry.rs#L1150) | function_item | `private` |  |
-| [tools::schema_registry::task_schema](../../src/schema_registry.rs#L1164) | function_item | `private` |  |
-| [tools::schema_registry::verify_schema](../../src/schema_registry.rs#L1195) | function_item | `private` |  |
-| [tools::schema_registry::fixed_schema](../../src/schema_registry.rs#L1225) | function_item | `pub` |  |
-| [tools::schema_registry::validate_fixed_arguments](../../src/schema_registry.rs#L1231) | function_item | `pub` |  |
-| [tools::schema_registry::tool](../../src/schema_registry.rs#L1240) | function_item | `private` |  |
-| [tools::schema_registry::object](../../src/schema_registry.rs#L1253) | function_item | `private` |  |
-| [tools::schema_registry::p](../../src/schema_registry.rs#L1265) | function_item | `private` |  |
-| [tools::schema_registry::boolean](../../src/schema_registry.rs#L1269) | function_item | `private` |  |
-| [tools::schema_registry::integer](../../src/schema_registry.rs#L1273) | function_item | `private` |  |
-| [tools::schema_registry::integer_default](../../src/schema_registry.rs#L1281) | function_item | `private` |  |
-| [tools::schema_registry::string](../../src/schema_registry.rs#L1289) | function_item | `private` |  |
-| [tools::schema_registry::nonempty_string](../../src/schema_registry.rs#L1297) | function_item | `private` |  |
-| [tools::schema_registry::enum_string](../../src/schema_registry.rs#L1305) | function_item | `private` |  |
-| [tools::schema_registry::array](../../src/schema_registry.rs#L1313) | function_item | `private` |  |
-| [tools::schema_registry::string_array](../../src/schema_registry.rs#L1327) | function_item | `private` |  |
-| [tools::schema_registry::nullable](../../src/schema_registry.rs#L1331) | function_item | `private` |  |
-| [tools::schema_registry::any_of](../../src/schema_registry.rs#L1335) | function_item | `private` |  |
-| [tools::schema_registry::nested](../../src/schema_registry.rs#L1339) | function_item | `private` |  |
-| [tools::schema_registry::search_schema](../../src/schema_registry.rs#L1343) | function_item | `private` |  |
-| [tools::schema_registry::string_equals](../../src/schema_registry.rs#L1354) | function_item | `private` |  |
-| [tools::schema_registry::require_properties](../../src/schema_registry.rs#L1358) | function_item | `private` |  |
-| [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) | function_item | `private` |  |
-| [tools::schema_registry::validate_project_relative](../../src/schema_registry.rs#L1385) | function_item | `private` |  |
+| [tools::schema_registry::shell_schema](../../src/schema_registry.rs#L1105) | function_item | `private` |  |
+| [tools::schema_registry::summary_schema](../../src/schema_registry.rs#L1147) | function_item | `private` |  |
+| [tools::schema_registry::task_schema](../../src/schema_registry.rs#L1161) | function_item | `private` |  |
+| [tools::schema_registry::verify_schema](../../src/schema_registry.rs#L1192) | function_item | `private` |  |
+| [tools::schema_registry::fixed_schema](../../src/schema_registry.rs#L1222) | function_item | `pub` |  |
+| [tools::schema_registry::validate_fixed_arguments](../../src/schema_registry.rs#L1228) | function_item | `pub` |  |
+| [tools::schema_registry::tool](../../src/schema_registry.rs#L1237) | function_item | `private` |  |
+| [tools::schema_registry::object](../../src/schema_registry.rs#L1250) | function_item | `private` |  |
+| [tools::schema_registry::p](../../src/schema_registry.rs#L1262) | function_item | `private` |  |
+| [tools::schema_registry::boolean](../../src/schema_registry.rs#L1266) | function_item | `private` |  |
+| [tools::schema_registry::integer](../../src/schema_registry.rs#L1270) | function_item | `private` |  |
+| [tools::schema_registry::integer_default](../../src/schema_registry.rs#L1278) | function_item | `private` |  |
+| [tools::schema_registry::string](../../src/schema_registry.rs#L1286) | function_item | `private` |  |
+| [tools::schema_registry::nonempty_string](../../src/schema_registry.rs#L1294) | function_item | `private` |  |
+| [tools::schema_registry::enum_string](../../src/schema_registry.rs#L1302) | function_item | `private` |  |
+| [tools::schema_registry::array](../../src/schema_registry.rs#L1310) | function_item | `private` |  |
+| [tools::schema_registry::string_array](../../src/schema_registry.rs#L1324) | function_item | `private` |  |
+| [tools::schema_registry::nullable](../../src/schema_registry.rs#L1328) | function_item | `private` |  |
+| [tools::schema_registry::any_of](../../src/schema_registry.rs#L1332) | function_item | `private` |  |
+| [tools::schema_registry::nested](../../src/schema_registry.rs#L1336) | function_item | `private` |  |
+| [tools::schema_registry::search_schema](../../src/schema_registry.rs#L1340) | function_item | `private` |  |
+| [tools::schema_registry::string_equals](../../src/schema_registry.rs#L1351) | function_item | `private` |  |
+| [tools::schema_registry::require_properties](../../src/schema_registry.rs#L1355) | function_item | `private` |  |
+| [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) | function_item | `private` |  |
+| [tools::schema_registry::validate_project_relative](../../src/schema_registry.rs#L1382) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -281,7 +281,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `to_json_schema` | `self.rules.iter` | [303](../../src/schema_registry.rs#L303) | receiver-type-required |
 | `validate` | `value             .as_object()             .ok_or_else` | [310](../../src/schema_registry.rs#L310) | receiver-type-required |
 | `validate` | `value             .as_object` | [310](../../src/schema_registry.rs#L310) | receiver-type-required |
-| `validate` | `invalid` | [312](../../src/schema_registry.rs#L312), [319](../../src/schema_registry.rs#L319), [326](../../src/schema_registry.rs#L326) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) |
+| `validate` | `invalid` | [312](../../src/schema_registry.rs#L312), [319](../../src/schema_registry.rs#L319), [326](../../src/schema_registry.rs#L326) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) |
 | `validate` | `self             .properties             .iter()             .map(&#124;property&#124; property.name)             .collect::<BTreeSet<_>>` | [313](../../src/schema_registry.rs#L313) | receiver-type-required |
 | `validate` | `self             .properties             .iter()             .map` | [313](../../src/schema_registry.rs#L313) | receiver-type-required |
 | `validate` | `self             .properties             .iter` | [313](../../src/schema_registry.rs#L313) | receiver-type-required |
@@ -320,7 +320,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate` | `value.is_boolean` | [417](../../src/schema_registry.rs#L417) | receiver-type-required |
 | `validate` | `Ok` | [417](../../src/schema_registry.rs#L417), [437](../../src/schema_registry.rs#L437), [458](../../src/schema_registry.rs#L458), [486](../../src/schema_registry.rs#L486), [489](../../src/schema_registry.rs#L489), [496](../../src/schema_registry.rs#L496) | external-constructor-callback-or-unresolved |
 | `validate` | `Err` | [418](../../src/schema_registry.rs#L418), [426](../../src/schema_registry.rs#L426), [432](../../src/schema_registry.rs#L432), [448](../../src/schema_registry.rs#L448), [451](../../src/schema_registry.rs#L451), [456](../../src/schema_registry.rs#L456), [470](../../src/schema_registry.rs#L470), [473](../../src/schema_registry.rs#L473), [482](../../src/schema_registry.rs#L482), [498](../../src/schema_registry.rs#L498) | external-constructor-callback-or-unresolved |
-| `validate` | `invalid` | [418](../../src/schema_registry.rs#L418), [424](../../src/schema_registry.rs#L424), [426](../../src/schema_registry.rs#L426), [432](../../src/schema_registry.rs#L432), [446](../../src/schema_registry.rs#L446), [448](../../src/schema_registry.rs#L448), [451](../../src/schema_registry.rs#L451), [456](../../src/schema_registry.rs#L456), [468](../../src/schema_registry.rs#L468), [470](../../src/schema_registry.rs#L470), [473](../../src/schema_registry.rs#L473), [482](../../src/schema_registry.rs#L482), [498](../../src/schema_registry.rs#L498) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) |
+| `validate` | `invalid` | [418](../../src/schema_registry.rs#L418), [424](../../src/schema_registry.rs#L424), [426](../../src/schema_registry.rs#L426), [432](../../src/schema_registry.rs#L432), [446](../../src/schema_registry.rs#L446), [448](../../src/schema_registry.rs#L448), [451](../../src/schema_registry.rs#L451), [456](../../src/schema_registry.rs#L456), [468](../../src/schema_registry.rs#L468), [470](../../src/schema_registry.rs#L470), [473](../../src/schema_registry.rs#L473), [482](../../src/schema_registry.rs#L482), [498](../../src/schema_registry.rs#L498) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) |
 | `validate` | `value                     .as_i64()                     .ok_or_else` | [422](../../src/schema_registry.rs#L422) | receiver-type-required |
 | `validate` | `value                     .as_i64` | [422](../../src/schema_registry.rs#L422) | receiver-type-required |
 | `validate` | `minimum.is_some_and` | [425](../../src/schema_registry.rs#L425) | receiver-type-required |
@@ -362,13 +362,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate` | `properties                     .iter` | [591](../../src/schema_registry.rs#L591), [600](../../src/schema_registry.rs#L600) | receiver-type-required |
 | `validate` | `object.contains_key` | [593](../../src/schema_registry.rs#L593), [688](../../src/schema_registry.rs#L688) | receiver-type-required |
 | `validate` | `Err` | [596](../../src/schema_registry.rs#L596), [605](../../src/schema_registry.rs#L605), [633](../../src/schema_registry.rs#L633), [658](../../src/schema_registry.rs#L658), [681](../../src/schema_registry.rs#L681), [699](../../src/schema_registry.rs#L699) | external-constructor-callback-or-unresolved |
-| `validate` | `invalid` | [596](../../src/schema_registry.rs#L596), [605](../../src/schema_registry.rs#L605), [631](../../src/schema_registry.rs#L631), [633](../../src/schema_registry.rs#L633), [649](../../src/schema_registry.rs#L649), [658](../../src/schema_registry.rs#L658), [681](../../src/schema_registry.rs#L681), [696](../../src/schema_registry.rs#L696), [699](../../src/schema_registry.rs#L699) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) |
+| `validate` | `invalid` | [596](../../src/schema_registry.rs#L596), [605](../../src/schema_registry.rs#L605), [631](../../src/schema_registry.rs#L631), [633](../../src/schema_registry.rs#L633), [649](../../src/schema_registry.rs#L649), [658](../../src/schema_registry.rs#L658), [681](../../src/schema_registry.rs#L681), [696](../../src/schema_registry.rs#L696), [699](../../src/schema_registry.rs#L699) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) |
 | `validate` | `properties                     .iter()                     .filter(&#124;property&#124; object.get(**property).is_some_and(&#124;value&#124; !value.is_null()))                     .count` | [600](../../src/schema_registry.rs#L600) | receiver-type-required |
 | `validate` | `object.get(**property).is_some_and` | [602](../../src/schema_registry.rs#L602) | receiver-type-required |
 | `validate` | `object.get` | [602](../../src/schema_registry.rs#L602), [673](../../src/schema_registry.rs#L673), [693](../../src/schema_registry.rs#L693) | receiver-type-required |
 | `validate` | `value.is_null` | [602](../../src/schema_registry.rs#L602) | receiver-type-required |
-| `validate` | `string_equals` | [619](../../src/schema_registry.rs#L619), [632](../../src/schema_registry.rs#L632), [644](../../src/schema_registry.rs#L644) | [tools::schema_registry::string_equals](../../src/schema_registry.rs#L1354) |
-| `validate` | `require_properties` | [620](../../src/schema_registry.rs#L620), [689](../../src/schema_registry.rs#L689) | [tools::schema_registry::require_properties](../../src/schema_registry.rs#L1358) |
+| `validate` | `string_equals` | [619](../../src/schema_registry.rs#L619), [632](../../src/schema_registry.rs#L632), [644](../../src/schema_registry.rs#L644) | [tools::schema_registry::string_equals](../../src/schema_registry.rs#L1351) |
+| `validate` | `require_properties` | [620](../../src/schema_registry.rs#L620), [689](../../src/schema_registry.rs#L689) | [tools::schema_registry::require_properties](../../src/schema_registry.rs#L1355) |
 | `validate` | `object                     .get(*array)                     .and_then(Value::as_array)                     .ok_or_else` | [628](../../src/schema_registry.rs#L628) | receiver-type-required |
 | `validate` | `object                     .get(*array)                     .and_then` | [628](../../src/schema_registry.rs#L628) | receiver-type-required |
 | `validate` | `object                     .get` | [628](../../src/schema_registry.rs#L628), [666](../../src/schema_registry.rs#L666), [674](../../src/schema_registry.rs#L674) | receiver-type-required |
@@ -382,7 +382,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate` | `output.split` | [656](../../src/schema_registry.rs#L656) | receiver-type-required |
 | `validate` | `object                     .get(*property)                     .and_then(Value::as_str)                     .unwrap_or_default` | [666](../../src/schema_registry.rs#L666) | receiver-type-required |
 | `validate` | `object                     .get(*property)                     .and_then` | [666](../../src/schema_registry.rs#L666) | receiver-type-required |
-| `validate` | `validate_project_relative` | [670](../../src/schema_registry.rs#L670), [679](../../src/schema_registry.rs#L679) | [tools::schema_registry::validate_project_relative](../../src/schema_registry.rs#L1385) |
+| `validate` | `validate_project_relative` | [670](../../src/schema_registry.rs#L670), [679](../../src/schema_registry.rs#L679) | [tools::schema_registry::validate_project_relative](../../src/schema_registry.rs#L1382) |
 | `validate` | `object.get("mode").and_then` | [673](../../src/schema_registry.rs#L673) | receiver-type-required |
 | `validate` | `object                     .get("path")                     .and_then(Value::as_str)                     .unwrap_or_default` | [674](../../src/schema_registry.rs#L674) | receiver-type-required |
 | `validate` | `object                     .get("path")                     .and_then` | [674](../../src/schema_registry.rs#L674) | receiver-type-required |
@@ -400,51 +400,51 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `canonical_schema_oracle_bytes` | `serde_json_canonicalizer::to_vec` | [1018](../../src/schema_registry.rs#L1018) | external-constructor-callback-or-unresolved |
 | `canonical_schema_oracle_bytes` | `schema_oracle_value` | [1018](../../src/schema_registry.rs#L1018) | [tools::schema_registry::schema_oracle_value](../../src/schema_registry.rs#L1002) |
 | `canonical_schema_oracle_bytes` | `bytes.push` | [1020](../../src/schema_registry.rs#L1020) | receiver-type-required |
-| `audit_reason` | `any_of` | [1025](../../src/schema_registry.rs#L1025) | [tools::schema_registry::any_of](../../src/schema_registry.rs#L1335) |
-| `context_schema` | `object` | [1032](../../src/schema_registry.rs#L1032) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `shell_schema` | `nested` | [1109](../../src/schema_registry.rs#L1109), [1114](../../src/schema_registry.rs#L1114) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1339) |
-| `shell_schema` | `object` | [1109](../../src/schema_registry.rs#L1109), [1114](../../src/schema_registry.rs#L1114), [1119](../../src/schema_registry.rs#L1119) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `summary_schema` | `object` | [1151](../../src/schema_registry.rs#L1151) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `task_schema` | `nested` | [1165](../../src/schema_registry.rs#L1165) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1339) |
-| `task_schema` | `object` | [1165](../../src/schema_registry.rs#L1165), [1176](../../src/schema_registry.rs#L1176) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `verify_schema` | `nested` | [1196](../../src/schema_registry.rs#L1196), [1201](../../src/schema_registry.rs#L1201) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1339) |
-| `verify_schema` | `object` | [1196](../../src/schema_registry.rs#L1196), [1201](../../src/schema_registry.rs#L1201), [1210](../../src/schema_registry.rs#L1210) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `fixed_schema` | `fixed_schema_registry()         .into_iter()         .find` | [1226](../../src/schema_registry.rs#L1226) | receiver-type-required |
-| `fixed_schema` | `fixed_schema_registry()         .into_iter` | [1226](../../src/schema_registry.rs#L1226) | receiver-type-required |
-| `fixed_schema` | `fixed_schema_registry` | [1226](../../src/schema_registry.rs#L1226) | [tools::schema_registry::fixed_schema_registry](../../src/schema_registry.rs#L713) |
-| `validate_fixed_arguments` | `fixed_schema(name)         .ok_or_else(&#124;&#124; SchemaValidationError::UnknownTool(name.to_owned()))?         .validate` | [1235](../../src/schema_registry.rs#L1235) | receiver-type-required |
-| `validate_fixed_arguments` | `fixed_schema(name)         .ok_or_else` | [1235](../../src/schema_registry.rs#L1235) | receiver-type-required |
-| `validate_fixed_arguments` | `fixed_schema` | [1235](../../src/schema_registry.rs#L1235) | [tools::schema_registry::fixed_schema](../../src/schema_registry.rs#L1225) |
-| `validate_fixed_arguments` | `SchemaValidationError::UnknownTool` | [1236](../../src/schema_registry.rs#L1236) | external-constructor-callback-or-unresolved |
-| `validate_fixed_arguments` | `name.to_owned` | [1236](../../src/schema_registry.rs#L1236) | receiver-type-required |
-| `object` | `required.to_vec` | [1260](../../src/schema_registry.rs#L1260) | receiver-type-required |
-| `integer_default` | `Some` | [1285](../../src/schema_registry.rs#L1285) | external-constructor-callback-or-unresolved |
-| `nonempty_string` | `Some` | [1299](../../src/schema_registry.rs#L1299) | external-constructor-callback-or-unresolved |
-| `array` | `Box::new` | [1320](../../src/schema_registry.rs#L1320) | external-constructor-callback-or-unresolved |
-| `string_array` | `array` | [1328](../../src/schema_registry.rs#L1328) | [tools::schema_registry::array](../../src/schema_registry.rs#L1313) |
-| `string_array` | `string` | [1328](../../src/schema_registry.rs#L1328) | [tools::schema_registry::string](../../src/schema_registry.rs#L1289) |
-| `nullable` | `ValueSchema::Nullable` | [1332](../../src/schema_registry.rs#L1332) | external-constructor-callback-or-unresolved |
-| `nullable` | `Box::new` | [1332](../../src/schema_registry.rs#L1332) | external-constructor-callback-or-unresolved |
-| `any_of` | `ValueSchema::AnyOf` | [1336](../../src/schema_registry.rs#L1336) | external-constructor-callback-or-unresolved |
-| `nested` | `ValueSchema::Object` | [1340](../../src/schema_registry.rs#L1340) | external-constructor-callback-or-unresolved |
-| `nested` | `Box::new` | [1340](../../src/schema_registry.rs#L1340) | external-constructor-callback-or-unresolved |
-| `search_schema` | `object` | [1344](../../src/schema_registry.rs#L1344) | [tools::schema_registry::object](../../src/schema_registry.rs#L1253) |
-| `string_equals` | `object.get(property).and_then` | [1355](../../src/schema_registry.rs#L1355) | receiver-type-required |
-| `string_equals` | `object.get` | [1355](../../src/schema_registry.rs#L1355) | receiver-type-required |
-| `string_equals` | `Some` | [1355](../../src/schema_registry.rs#L1355) | external-constructor-callback-or-unresolved |
-| `require_properties` | `object             .get(*property)             .ok_or_else` | [1365](../../src/schema_registry.rs#L1365) | receiver-type-required |
-| `require_properties` | `object             .get` | [1365](../../src/schema_registry.rs#L1365) | receiver-type-required |
-| `require_properties` | `invalid` | [1367](../../src/schema_registry.rs#L1367), [1369](../../src/schema_registry.rs#L1369) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) |
-| `require_properties` | `value.as_str().is_none_or` | [1368](../../src/schema_registry.rs#L1368) | receiver-type-required |
-| `require_properties` | `value.as_str` | [1368](../../src/schema_registry.rs#L1368) | receiver-type-required |
-| `require_properties` | `Err` | [1369](../../src/schema_registry.rs#L1369) | external-constructor-callback-or-unresolved |
-| `require_properties` | `Ok` | [1375](../../src/schema_registry.rs#L1375) | external-constructor-callback-or-unresolved |
-| `invalid` | `path.to_owned` | [1380](../../src/schema_registry.rs#L1380) | receiver-type-required |
-| `invalid` | `message.to_owned` | [1381](../../src/schema_registry.rs#L1381) | receiver-type-required |
-| `validate_project_relative` | `value.is_empty` | [1386](../../src/schema_registry.rs#L1386) | receiver-type-required |
-| `validate_project_relative` | `value.starts_with` | [1387](../../src/schema_registry.rs#L1387), [1388](../../src/schema_registry.rs#L1388) | receiver-type-required |
-| `validate_project_relative` | `value.split('/').any` | [1389](../../src/schema_registry.rs#L1389) | receiver-type-required |
-| `validate_project_relative` | `value.split` | [1389](../../src/schema_registry.rs#L1389) | receiver-type-required |
-| `validate_project_relative` | `Err` | [1391](../../src/schema_registry.rs#L1391) | external-constructor-callback-or-unresolved |
-| `validate_project_relative` | `invalid` | [1391](../../src/schema_registry.rs#L1391) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1378) |
-| `validate_project_relative` | `Ok` | [1396](../../src/schema_registry.rs#L1396) | external-constructor-callback-or-unresolved |
+| `audit_reason` | `any_of` | [1025](../../src/schema_registry.rs#L1025) | [tools::schema_registry::any_of](../../src/schema_registry.rs#L1332) |
+| `context_schema` | `object` | [1032](../../src/schema_registry.rs#L1032) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `shell_schema` | `nested` | [1106](../../src/schema_registry.rs#L1106), [1111](../../src/schema_registry.rs#L1111) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1336) |
+| `shell_schema` | `object` | [1106](../../src/schema_registry.rs#L1106), [1111](../../src/schema_registry.rs#L1111), [1116](../../src/schema_registry.rs#L1116) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `summary_schema` | `object` | [1148](../../src/schema_registry.rs#L1148) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `task_schema` | `nested` | [1162](../../src/schema_registry.rs#L1162) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1336) |
+| `task_schema` | `object` | [1162](../../src/schema_registry.rs#L1162), [1173](../../src/schema_registry.rs#L1173) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `verify_schema` | `nested` | [1193](../../src/schema_registry.rs#L1193), [1198](../../src/schema_registry.rs#L1198) | [tools::schema_registry::nested](../../src/schema_registry.rs#L1336) |
+| `verify_schema` | `object` | [1193](../../src/schema_registry.rs#L1193), [1198](../../src/schema_registry.rs#L1198), [1207](../../src/schema_registry.rs#L1207) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `fixed_schema` | `fixed_schema_registry()         .into_iter()         .find` | [1223](../../src/schema_registry.rs#L1223) | receiver-type-required |
+| `fixed_schema` | `fixed_schema_registry()         .into_iter` | [1223](../../src/schema_registry.rs#L1223) | receiver-type-required |
+| `fixed_schema` | `fixed_schema_registry` | [1223](../../src/schema_registry.rs#L1223) | [tools::schema_registry::fixed_schema_registry](../../src/schema_registry.rs#L713) |
+| `validate_fixed_arguments` | `fixed_schema(name)         .ok_or_else(&#124;&#124; SchemaValidationError::UnknownTool(name.to_owned()))?         .validate` | [1232](../../src/schema_registry.rs#L1232) | receiver-type-required |
+| `validate_fixed_arguments` | `fixed_schema(name)         .ok_or_else` | [1232](../../src/schema_registry.rs#L1232) | receiver-type-required |
+| `validate_fixed_arguments` | `fixed_schema` | [1232](../../src/schema_registry.rs#L1232) | [tools::schema_registry::fixed_schema](../../src/schema_registry.rs#L1222) |
+| `validate_fixed_arguments` | `SchemaValidationError::UnknownTool` | [1233](../../src/schema_registry.rs#L1233) | external-constructor-callback-or-unresolved |
+| `validate_fixed_arguments` | `name.to_owned` | [1233](../../src/schema_registry.rs#L1233) | receiver-type-required |
+| `object` | `required.to_vec` | [1257](../../src/schema_registry.rs#L1257) | receiver-type-required |
+| `integer_default` | `Some` | [1282](../../src/schema_registry.rs#L1282) | external-constructor-callback-or-unresolved |
+| `nonempty_string` | `Some` | [1296](../../src/schema_registry.rs#L1296) | external-constructor-callback-or-unresolved |
+| `array` | `Box::new` | [1317](../../src/schema_registry.rs#L1317) | external-constructor-callback-or-unresolved |
+| `string_array` | `array` | [1325](../../src/schema_registry.rs#L1325) | [tools::schema_registry::array](../../src/schema_registry.rs#L1310) |
+| `string_array` | `string` | [1325](../../src/schema_registry.rs#L1325) | [tools::schema_registry::string](../../src/schema_registry.rs#L1286) |
+| `nullable` | `ValueSchema::Nullable` | [1329](../../src/schema_registry.rs#L1329) | external-constructor-callback-or-unresolved |
+| `nullable` | `Box::new` | [1329](../../src/schema_registry.rs#L1329) | external-constructor-callback-or-unresolved |
+| `any_of` | `ValueSchema::AnyOf` | [1333](../../src/schema_registry.rs#L1333) | external-constructor-callback-or-unresolved |
+| `nested` | `ValueSchema::Object` | [1337](../../src/schema_registry.rs#L1337) | external-constructor-callback-or-unresolved |
+| `nested` | `Box::new` | [1337](../../src/schema_registry.rs#L1337) | external-constructor-callback-or-unresolved |
+| `search_schema` | `object` | [1341](../../src/schema_registry.rs#L1341) | [tools::schema_registry::object](../../src/schema_registry.rs#L1250) |
+| `string_equals` | `object.get(property).and_then` | [1352](../../src/schema_registry.rs#L1352) | receiver-type-required |
+| `string_equals` | `object.get` | [1352](../../src/schema_registry.rs#L1352) | receiver-type-required |
+| `string_equals` | `Some` | [1352](../../src/schema_registry.rs#L1352) | external-constructor-callback-or-unresolved |
+| `require_properties` | `object             .get(*property)             .ok_or_else` | [1362](../../src/schema_registry.rs#L1362) | receiver-type-required |
+| `require_properties` | `object             .get` | [1362](../../src/schema_registry.rs#L1362) | receiver-type-required |
+| `require_properties` | `invalid` | [1364](../../src/schema_registry.rs#L1364), [1366](../../src/schema_registry.rs#L1366) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) |
+| `require_properties` | `value.as_str().is_none_or` | [1365](../../src/schema_registry.rs#L1365) | receiver-type-required |
+| `require_properties` | `value.as_str` | [1365](../../src/schema_registry.rs#L1365) | receiver-type-required |
+| `require_properties` | `Err` | [1366](../../src/schema_registry.rs#L1366) | external-constructor-callback-or-unresolved |
+| `require_properties` | `Ok` | [1372](../../src/schema_registry.rs#L1372) | external-constructor-callback-or-unresolved |
+| `invalid` | `path.to_owned` | [1377](../../src/schema_registry.rs#L1377) | receiver-type-required |
+| `invalid` | `message.to_owned` | [1378](../../src/schema_registry.rs#L1378) | receiver-type-required |
+| `validate_project_relative` | `value.is_empty` | [1383](../../src/schema_registry.rs#L1383) | receiver-type-required |
+| `validate_project_relative` | `value.starts_with` | [1384](../../src/schema_registry.rs#L1384), [1385](../../src/schema_registry.rs#L1385) | receiver-type-required |
+| `validate_project_relative` | `value.split('/').any` | [1386](../../src/schema_registry.rs#L1386) | receiver-type-required |
+| `validate_project_relative` | `value.split` | [1386](../../src/schema_registry.rs#L1386) | receiver-type-required |
+| `validate_project_relative` | `Err` | [1388](../../src/schema_registry.rs#L1388) | external-constructor-callback-or-unresolved |
+| `validate_project_relative` | `invalid` | [1388](../../src/schema_registry.rs#L1388) | [tools::schema_registry::invalid](../../src/schema_registry.rs#L1375) |
+| `validate_project_relative` | `Ok` | [1393](../../src/schema_registry.rs#L1393) | external-constructor-callback-or-unresolved |

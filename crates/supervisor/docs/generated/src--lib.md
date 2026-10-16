@@ -15,26 +15,26 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::launch_failure](../../src/lib.rs#L88) | function_item | `private` |  |
 | [tekes-supervisor::WorkerLaunchSpec](../../src/lib.rs#L98) | struct_item | `pub` |  |
 | [tekes-supervisor::ProfiledWorkerLaunchSpec](../../src/lib.rs#L110) | struct_item | `pub` |  |
-| [tekes-supervisor::WorkerLaunch](../../src/lib.rs#L123) | struct_item | `pub` |  |
-| [tekes-supervisor::WorkerLaunchBindings](../../src/lib.rs#L136) | struct_item | `pub` |  |
-| [tekes-supervisor::WorkerLaunchBindingResolver](../../src/lib.rs#L144) | type_item | `private` |  |
-| [tekes-supervisor::WorkerLaunchBindings::default](../../src/lib.rs#L148) | function_item | `private` |  |
-| [tekes-supervisor::launch_profiled_worker_with_bindings](../../src/lib.rs#L160) | function_item | `pub` |  |
-| [tekes-supervisor::launch_profiled_worker_with_credentials](../../src/lib.rs#L168) | function_item | `pub` |  |
-| [tekes-supervisor::launch_profiled_worker_with_credentials_and_provider_test_redirect](../../src/lib.rs#L180) | function_item | `pub` |  |
-| [tekes-supervisor::launch_profiled_worker_with_secret_store_and_binding_resolver](../../src/lib.rs#L201) | function_item | `pub` |  |
-| [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L221) | function_item | `private` |  |
-| [tekes-supervisor::launch_worker_inner](../../src/lib.rs#L311) | function_item | `private` |  |
-| [tekes-supervisor::closed_command](../../src/lib.rs#L450) | function_item | `private` |  |
-| [tekes-supervisor::FORWARDED_PROXY_VARIABLES](../../src/lib.rs#L458) | const_item | `private` |  |
-| [tekes-supervisor::forwarded_worker_environment](../../src/lib.rs#L477) | function_item | `pub` |  |
-| [tekes-supervisor::forwarded_environment_from](../../src/lib.rs#L484) | function_item | `private` |  |
-| [tekes-supervisor::snapshot_path](../../src/lib.rs#L491) | function_item | `private` |  |
-| [tekes-supervisor::open_snapshot](../../src/lib.rs#L502) | function_item | `private` |  |
-| [tekes-supervisor::clear_cloexec](../../src/lib.rs#L509) | function_item | `private` |  |
-| [tekes-supervisor::LaunchError](../../src/lib.rs#L520) | enum_item | `pub` |  |
-| [tekes-supervisor::tests::worker_environment_forwards_only_the_evidence_capture_directory](../../src/lib.rs#L547) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::tests::worker_command_drops_the_complete_ambient_environment](../../src/lib.rs#L578) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::WorkerLaunch](../../src/lib.rs#L119) | struct_item | `pub` |  |
+| [tekes-supervisor::WorkerLaunchBindings](../../src/lib.rs#L132) | struct_item | `pub` |  |
+| [tekes-supervisor::WorkerLaunchBindingResolver](../../src/lib.rs#L140) | type_item | `private` |  |
+| [tekes-supervisor::WorkerLaunchBindings::default](../../src/lib.rs#L144) | function_item | `private` |  |
+| [tekes-supervisor::launch_profiled_worker_with_bindings](../../src/lib.rs#L156) | function_item | `pub` |  |
+| [tekes-supervisor::launch_profiled_worker_with_credentials](../../src/lib.rs#L164) | function_item | `pub` |  |
+| [tekes-supervisor::launch_profiled_worker_with_credentials_and_provider_test_redirect](../../src/lib.rs#L176) | function_item | `pub` |  |
+| [tekes-supervisor::launch_profiled_worker_with_secret_store_and_binding_resolver](../../src/lib.rs#L197) | function_item | `pub` |  |
+| [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L217) | function_item | `private` |  |
+| [tekes-supervisor::launch_worker_inner](../../src/lib.rs#L298) | function_item | `private` |  |
+| [tekes-supervisor::closed_command](../../src/lib.rs#L437) | function_item | `private` |  |
+| [tekes-supervisor::FORWARDED_PROXY_VARIABLES](../../src/lib.rs#L445) | const_item | `private` |  |
+| [tekes-supervisor::forwarded_worker_environment](../../src/lib.rs#L464) | function_item | `pub` |  |
+| [tekes-supervisor::forwarded_environment_from](../../src/lib.rs#L471) | function_item | `private` |  |
+| [tekes-supervisor::snapshot_path](../../src/lib.rs#L478) | function_item | `private` |  |
+| [tekes-supervisor::open_snapshot](../../src/lib.rs#L489) | function_item | `private` |  |
+| [tekes-supervisor::clear_cloexec](../../src/lib.rs#L496) | function_item | `private` |  |
+| [tekes-supervisor::LaunchError](../../src/lib.rs#L507) | enum_item | `pub` |  |
+| [tekes-supervisor::tests::worker_environment_forwards_only_the_evidence_capture_directory](../../src/lib.rs#L534) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::tests::worker_command_drops_the_complete_ambient_environment](../../src/lib.rs#L565) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -81,7 +81,6 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `tekes-supervisor::bootstrap` | `private` |  |
 | `tekes-supervisor::builtin` | `pub` |  |
 | `tekes-supervisor::catalog` | `private` |  |
-| `tekes-supervisor::client_admin` | `pub` |  |
 | `tekes-supervisor::client_extensions` | `pub` |  |
 | `tekes-supervisor::context_usage` | `private` |  |
 | `tekes-supervisor::continuation_journal` | `pub` |  |
@@ -97,13 +96,10 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `tekes-supervisor::production_tool_control` | `pub` |  |
 | `tekes-supervisor::request_index` | `private` |  |
 | `tekes-supervisor::resource_capability` | `pub` |  |
+| `tekes-supervisor::stdio_channels` | `pub` |  |
 | `tekes-supervisor::thread_card` | `private` |  |
 | `tekes-supervisor::tool_control` | `pub` |  |
-| `tekes-supervisor::workspace_routes` | `pub` |  |
 | `tekes-supervisor::tests` | `private` | #[cfg(test)] |
-| `tekes-supervisor::folder_trust` | `pub` |  |
-| `tekes-supervisor::mcp_admission` | `private` |  |
-| `tekes-supervisor::mcp_scope` | `private` |  |
 
 ## Function call graphs
 
@@ -187,158 +183,153 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `launch_failure` | `request.spawn_id.clone` | [91](../../src/lib.rs#L91) | receiver-type-required |
 | `launch_failure` | `Some` | [93](../../src/lib.rs#L93) | external-constructor-callback-or-unresolved |
 | `launch_failure` | `error.to_owned` | [93](../../src/lib.rs#L93) | receiver-type-required |
-| `default` | `Vec::new` | [153](../../src/lib.rs#L153), [155](../../src/lib.rs#L155) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_with_bindings` | `launch_profiled_worker_inner` | [165](../../src/lib.rs#L165) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L221) |
-| `launch_profiled_worker_with_bindings` | `Some` | [165](../../src/lib.rs#L165) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_with_credentials` | `launch_profiled_worker_inner` | [173](../../src/lib.rs#L173) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L221) |
-| `launch_profiled_worker_with_credentials` | `Some` | [173](../../src/lib.rs#L173) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_with_credentials_and_provider_test_redirect` | `launch_profiled_worker_inner` | [186](../../src/lib.rs#L186) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L221) |
-| `launch_profiled_worker_with_credentials_and_provider_test_redirect` | `Some` | [189](../../src/lib.rs#L189), [193](../../src/lib.rs#L193) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_with_secret_store_and_binding_resolver` | `launch_profiled_worker_inner` | [210](../../src/lib.rs#L210) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L221) |
-| `launch_profiled_worker_with_secret_store_and_binding_resolver` | `Some` | [214](../../src/lib.rs#L214), [216](../../src/lib.rs#L216) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `spec         .ledger         .parent()         .ok_or` | [230](../../src/lib.rs#L230) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec         .ledger         .parent` | [230](../../src/lib.rs#L230) | receiver-type-required |
-| `launch_profiled_worker_inner` | `store::AssetStore::new` | [234](../../src/lib.rs#L234) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `launch_profiled_worker_inner` | `folder.join` | [234](../../src/lib.rs#L234) | receiver-type-required |
-| `launch_profiled_worker_inner` | `profile::SessionScope::for_ledger` | [238](../../src/lib.rs#L238) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L54) |
-| `launch_profiled_worker_inner` | `scope.workspace_id` | [239](../../src/lib.rs#L239) | receiver-type-required |
-| `launch_profiled_worker_inner` | `scope.folder_binding` | [240](../../src/lib.rs#L240) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec.folder_binding.as_deref` | [240](../../src/lib.rs#L240) | receiver-type-required |
-| `launch_profiled_worker_inner` | `Err` | [242](../../src/lib.rs#L242), [260](../../src/lib.rs#L260) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `profile::ProfileError::InvalidReference {             path: spec.ledger.clone(),             reason: "launch spec does not match the ledger genesis scope".to_owned(),         }         .into` | [242](../../src/lib.rs#L242) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec.ledger.clone` | [243](../../src/lib.rs#L243), [273](../../src/lib.rs#L273) | receiver-type-required |
-| `launch_profiled_worker_inner` | `"launch spec does not match the ledger genesis scope".to_owned` | [244](../../src/lib.rs#L244) | receiver-type-required |
-| `launch_profiled_worker_inner` | `LaunchProfile::resolve_and_publish_for_scope` | [248](../../src/lib.rs#L248) | [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../../profile/src/instruction.rs#L177) |
-| `launch_profiled_worker_inner` | `resolver(&profile.config, &profile.instruction)             .map_err` | [256](../../src/lib.rs#L256) | receiver-type-required |
-| `launch_profiled_worker_inner` | `resolver` | [256](../../src/lib.rs#L256) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `WorkerLaunchBindings::default` | [258](../../src/lib.rs#L258) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `LaunchError::BindingResolution` | [260](../../src/lib.rs#L260) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `"launch bindings and a binding resolver are mutually exclusive".into` | [261](../../src/lib.rs#L261) | receiver-type-required |
-| `launch_profiled_worker_inner` | `LaunchBindings::bind_with_unavailable` | [265](../../src/lib.rs#L265) | [profile::launch::LaunchBindings::bind_with_unavailable](../../../profile/src/launch.rs#L193) |
-| `launch_profiled_worker_inner` | `spec.binary.clone` | [272](../../src/lib.rs#L272) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec.timestamp.clone` | [274](../../src/lib.rs#L274) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec.run_id.clone` | [275](../../src/lib.rs#L275) | receiver-type-required |
-| `launch_profiled_worker_inner` | `spec.binary_attribution.clone` | [276](../../src/lib.rs#L276) | receiver-type-required |
-| `launch_profiled_worker_inner` | `assets.root().to_path_buf` | [277](../../src/lib.rs#L277) | receiver-type-required |
-| `launch_profiled_worker_inner` | `assets.root` | [277](../../src/lib.rs#L277) | receiver-type-required |
-| `launch_profiled_worker_inner` | `resolve_config_credentials(&profile.config, store)             .map_err` | [283](../../src/lib.rs#L283) | receiver-type-required |
-| `launch_profiled_worker_inner` | `resolve_config_credentials` | [283](../../src/lib.rs#L283) | [provider::secret_store::resolve_config_credentials](../../../provider/src/secret_store.rs#L294) |
-| `launch_profiled_worker_inner` | `bindings.active.is_empty` | [285](../../src/lib.rs#L285) | receiver-type-required |
-| `launch_profiled_worker_inner` | `bindings.revoked.is_empty` | [285](../../src/lib.rs#L285) | receiver-type-required |
-| `launch_profiled_worker_inner` | `Some` | [288](../../src/lib.rs#L288), [290](../../src/lib.rs#L290), [304](../../src/lib.rs#L304) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `bindings.active.clone` | [288](../../src/lib.rs#L288) | receiver-type-required |
-| `launch_profiled_worker_inner` | `bindings.revoked.clone` | [288](../../src/lib.rs#L288) | receiver-type-required |
-| `launch_profiled_worker_inner` | `scopes.map` | [293](../../src/lib.rs#L293) | receiver-type-required |
-| `launch_profiled_worker_inner` | `Vec::new` | [293](../../src/lib.rs#L293) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `credentials         .map(&#124;(scopes, revoked)&#124; {             let (supervisor, worker) = UnixStream::pair()?;             Ok::<_, io::Error>((supervisor, worker, scopes, revoked))         })         .transpose` | [295](../../src/lib.rs#L295) | receiver-type-required |
-| `launch_profiled_worker_inner` | `credentials         .map` | [295](../../src/lib.rs#L295) | receiver-type-required |
-| `launch_profiled_worker_inner` | `UnixStream::pair` | [297](../../src/lib.rs#L297) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `Ok::<_, io::Error>` | [298](../../src/lib.rs#L298) | external-constructor-callback-or-unresolved |
-| `launch_profiled_worker_inner` | `launch_worker_inner` | [301](../../src/lib.rs#L301) | [tekes-supervisor::launch_worker_inner](../../src/lib.rs#L311) |
-| `launch_profiled_worker_inner` | `Ok` | [308](../../src/lib.rs#L308) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `snapshot_path` | [322](../../src/lib.rs#L322), [323](../../src/lib.rs#L323), [354](../../src/lib.rs#L354) | [tekes-supervisor::snapshot_path](../../src/lib.rs#L491) |
-| `launch_worker_inner` | `std::fs::read` | [327](../../src/lib.rs#L327), [328](../../src/lib.rs#L328), [355](../../src/lib.rs#L355) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `ConfigSnapshot::decode` | [329](../../src/lib.rs#L329) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L419) |
-| `launch_worker_inner` | `InstructionSnapshot::decode` | [330](../../src/lib.rs#L330) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L214) |
-| `launch_worker_inner` | `instruction.validate_against_config` | [331](../../src/lib.rs#L331) | receiver-type-required |
-| `launch_worker_inner` | `config.digest` | [332](../../src/lib.rs#L332) | receiver-type-required |
-| `launch_worker_inner` | `Err` | [333](../../src/lib.rs#L333), [336](../../src/lib.rs#L336) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `LaunchError::DigestMismatch` | [333](../../src/lib.rs#L333), [336](../../src/lib.rs#L336) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `instruction.digest` | [335](../../src/lib.rs#L335) | receiver-type-required |
-| `launch_worker_inner` | `bindings.validate_against` | [340](../../src/lib.rs#L340) | receiver-type-required |
-| `launch_worker_inner` | `bindings.clone` | [341](../../src/lib.rs#L341) | receiver-type-required |
-| `launch_worker_inner` | `LaunchBindings::bind` | [343](../../src/lib.rs#L343) | [profile::launch::LaunchBindings::bind](../../../profile/src/launch.rs#L181) |
-| `launch_worker_inner` | `Vec::new` | [348](../../src/lib.rs#L348) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `store::AssetStore::new` | [352](../../src/lib.rs#L352) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `launch_worker_inner` | `launch_bindings.publish` | [353](../../src/lib.rs#L353) | receiver-type-required |
-| `launch_worker_inner` | `LaunchBindings::decode_verified` | [356](../../src/lib.rs#L356) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
-| `launch_worker_inner` | `open_snapshot` | [358](../../src/lib.rs#L358), [359](../../src/lib.rs#L359), [360](../../src/lib.rs#L360) | [tekes-supervisor::open_snapshot](../../src/lib.rs#L502) |
-| `launch_worker_inner` | `config_file.as_raw_fd` | [362](../../src/lib.rs#L362) | receiver-type-required |
-| `launch_worker_inner` | `instruction_file.as_raw_fd` | [363](../../src/lib.rs#L363) | receiver-type-required |
-| `launch_worker_inner` | `launch_bindings_file.as_raw_fd` | [364](../../src/lib.rs#L364) | receiver-type-required |
-| `launch_worker_inner` | `credential         .as_ref()         .map` | [365](../../src/lib.rs#L365) | receiver-type-required |
-| `launch_worker_inner` | `credential         .as_ref` | [365](../../src/lib.rs#L365) | receiver-type-required |
-| `launch_worker_inner` | `worker.as_raw_fd` | [367](../../src/lib.rs#L367) | receiver-type-required |
-| `launch_worker_inner` | `config.providers.web_search.as_ref().is_some_and` | [368](../../src/lib.rs#L368) | receiver-type-required |
-| `launch_worker_inner` | `config.providers.web_search.as_ref` | [368](../../src/lib.rs#L368) | receiver-type-required |
-| `launch_worker_inner` | `provider::endpoint_origin` | [369](../../src/lib.rs#L369) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
-| `launch_worker_inner` | `credential.as_ref().is_some_and` | [372](../../src/lib.rs#L372) | receiver-type-required |
-| `launch_worker_inner` | `credential.as_ref` | [372](../../src/lib.rs#L372) | receiver-type-required |
-| `launch_worker_inner` | `active.iter().any` | [373](../../src/lib.rs#L373) | receiver-type-required |
-| `launch_worker_inner` | `active.iter` | [373](../../src/lib.rs#L373) | receiver-type-required |
-| `launch_worker_inner` | `closed_command` | [381](../../src/lib.rs#L381) | [tekes-supervisor::closed_command](../../src/lib.rs#L450) |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin(Stdio::piped())         .stdout(Stdio::piped())         .stderr` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin(Stdio::piped())         .stdout` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `command         .arg` | [382](../../src/lib.rs#L382) | receiver-type-required |
-| `launch_worker_inner` | `config_fd.to_string` | [387](../../src/lib.rs#L387) | receiver-type-required |
-| `launch_worker_inner` | `instruction_fd.to_string` | [388](../../src/lib.rs#L388) | receiver-type-required |
-| `launch_worker_inner` | `launch_bindings_fd.to_string` | [389](../../src/lib.rs#L389) | receiver-type-required |
-| `launch_worker_inner` | `Stdio::piped` | [391](../../src/lib.rs#L391), [392](../../src/lib.rs#L392), [393](../../src/lib.rs#L393) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `command.args` | [395](../../src/lib.rs#L395), [398](../../src/lib.rs#L398), [401](../../src/lib.rs#L401) | receiver-type-required |
-| `launch_worker_inner` | `fd.to_string` | [395](../../src/lib.rs#L395) | receiver-type-required |
-| `launch_worker_inner` | `forwarded_worker_environment` | [403](../../src/lib.rs#L403) | [tekes-supervisor::forwarded_worker_environment](../../src/lib.rs#L477) |
-| `launch_worker_inner` | `command.env` | [404](../../src/lib.rs#L404) | receiver-type-required |
-| `launch_worker_inner` | `command.pre_exec` | [411](../../src/lib.rs#L411) | receiver-type-required |
-| `launch_worker_inner` | `clear_cloexec` | [412](../../src/lib.rs#L412), [413](../../src/lib.rs#L413), [414](../../src/lib.rs#L414), [416](../../src/lib.rs#L416) | [tekes-supervisor::clear_cloexec](../../src/lib.rs#L509) |
-| `launch_worker_inner` | `Ok` | [418](../../src/lib.rs#L418), [437](../../src/lib.rs#L437) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `command.spawn` | [421](../../src/lib.rs#L421) | receiver-type-required |
-| `launch_worker_inner` | `credential.map_or` | [423](../../src/lib.rs#L423) | receiver-type-required |
-| `launch_worker_inner` | `drop` | [424](../../src/lib.rs#L424) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `start_credential_channel` | [425](../../src/lib.rs#L425) | [provider::credential::start_credential_channel](../../../provider/src/credential.rs#L519) |
-| `launch_worker_inner` | `CredentialBroker::with_revoked` | [427](../../src/lib.rs#L427) | [provider::credential::CredentialBroker::with_revoked](../../../provider/src/credential.rs#L360) |
-| `launch_worker_inner` | `std::thread::spawn` | [429](../../src/lib.rs#L429) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `service                     .join()                     .map_err(&#124;_&#124; "credential broker service panicked".to_owned())?                     .map_err` | [430](../../src/lib.rs#L430) | receiver-type-required |
-| `launch_worker_inner` | `service                     .join()                     .map_err` | [430](../../src/lib.rs#L430) | receiver-type-required |
-| `launch_worker_inner` | `service                     .join` | [430](../../src/lib.rs#L430) | receiver-type-required |
-| `launch_worker_inner` | `"credential broker service panicked".to_owned` | [432](../../src/lib.rs#L432) | receiver-type-required |
-| `launch_worker_inner` | `error.to_string` | [433](../../src/lib.rs#L433) | receiver-type-required |
-| `launch_worker_inner` | `Some` | [435](../../src/lib.rs#L435) | external-constructor-callback-or-unresolved |
-| `launch_worker_inner` | `spec.config_digest.clone` | [441](../../src/lib.rs#L441) | receiver-type-required |
-| `launch_worker_inner` | `spec.instruction_digest.clone` | [442](../../src/lib.rs#L442) | receiver-type-required |
-| `closed_command` | `Command::new` | [451](../../src/lib.rs#L451) | external-constructor-callback-or-unresolved |
-| `closed_command` | `command.env_clear` | [452](../../src/lib.rs#L452) | receiver-type-required |
-| `forwarded_worker_environment` | `forwarded_environment_from` | [478](../../src/lib.rs#L478) | [tekes-supervisor::forwarded_environment_from](../../src/lib.rs#L484) |
-| `forwarded_worker_environment` | `std::env::var(name).ok` | [478](../../src/lib.rs#L478) | receiver-type-required |
-| `forwarded_worker_environment` | `std::env::var` | [478](../../src/lib.rs#L478) | external-constructor-callback-or-unresolved |
-| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain(FORWARDED_PROXY_VARIABLES)         .filter_map(&#124;name&#124; lookup(name).map(&#124;value&#124; (name.to_owned(), value)))         .collect` | [485](../../src/lib.rs#L485) | receiver-type-required |
-| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain(FORWARDED_PROXY_VARIABLES)         .filter_map` | [485](../../src/lib.rs#L485) | receiver-type-required |
-| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain` | [485](../../src/lib.rs#L485) | receiver-type-required |
-| `forwarded_environment_from` | `std::iter::once` | [485](../../src/lib.rs#L485) | external-constructor-callback-or-unresolved |
-| `forwarded_environment_from` | `lookup(name).map` | [487](../../src/lib.rs#L487) | receiver-type-required |
-| `forwarded_environment_from` | `lookup` | [487](../../src/lib.rs#L487) | external-constructor-callback-or-unresolved |
-| `forwarded_environment_from` | `name.to_owned` | [487](../../src/lib.rs#L487) | receiver-type-required |
-| `snapshot_path` | `digest.len` | [492](../../src/lib.rs#L492) | receiver-type-required |
-| `snapshot_path` | `digest             .bytes()             .all` | [493](../../src/lib.rs#L493) | receiver-type-required |
-| `snapshot_path` | `digest             .bytes` | [493](../../src/lib.rs#L493) | receiver-type-required |
-| `snapshot_path` | `byte.is_ascii_hexdigit` | [495](../../src/lib.rs#L495) | receiver-type-required |
-| `snapshot_path` | `byte.is_ascii_uppercase` | [495](../../src/lib.rs#L495) | receiver-type-required |
-| `snapshot_path` | `Err` | [497](../../src/lib.rs#L497) | external-constructor-callback-or-unresolved |
-| `snapshot_path` | `Ok` | [499](../../src/lib.rs#L499) | external-constructor-callback-or-unresolved |
-| `snapshot_path` | `assets.join` | [499](../../src/lib.rs#L499) | receiver-type-required |
-| `open_snapshot` | `Ok` | [503](../../src/lib.rs#L503) | external-constructor-callback-or-unresolved |
-| `open_snapshot` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [503](../../src/lib.rs#L503) | receiver-type-required |
-| `open_snapshot` | `OpenOptions::new()         .read(true)         .custom_flags` | [503](../../src/lib.rs#L503) | receiver-type-required |
-| `open_snapshot` | `OpenOptions::new()         .read` | [503](../../src/lib.rs#L503) | receiver-type-required |
-| `open_snapshot` | `OpenOptions::new` | [503](../../src/lib.rs#L503) | external-constructor-callback-or-unresolved |
-| `clear_cloexec` | `libc::fcntl` | [512](../../src/lib.rs#L512) | external-constructor-callback-or-unresolved |
-| `clear_cloexec` | `Err` | [513](../../src/lib.rs#L513) | external-constructor-callback-or-unresolved |
-| `clear_cloexec` | `io::Error::last_os_error` | [513](../../src/lib.rs#L513) | external-constructor-callback-or-unresolved |
-| `clear_cloexec` | `Ok` | [515](../../src/lib.rs#L515) | external-constructor-callback-or-unresolved |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `std::collections::BTreeMap::from` | [549](../../src/lib.rs#L549) | external-constructor-callback-or-unresolved |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `closed_command` | [568](../../src/lib.rs#L568) | [tekes-supervisor::closed_command](../../src/lib.rs#L450) |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `std::path::Path::new` | [568](../../src/lib.rs#L568) | external-constructor-callback-or-unresolved |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.env` | [569](../../src/lib.rs#L569) | receiver-type-required |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.output().expect` | [570](../../src/lib.rs#L570) | receiver-type-required |
-| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.output` | [570](../../src/lib.rs#L570) | receiver-type-required |
-| `worker_command_drops_the_complete_ambient_environment` | `closed_command(std::path::Path::new("/usr/bin/env"))             .output()             .expect` | [579](../../src/lib.rs#L579) | receiver-type-required |
-| `worker_command_drops_the_complete_ambient_environment` | `closed_command(std::path::Path::new("/usr/bin/env"))             .output` | [579](../../src/lib.rs#L579) | receiver-type-required |
-| `worker_command_drops_the_complete_ambient_environment` | `closed_command` | [579](../../src/lib.rs#L579) | [tekes-supervisor::closed_command](../../src/lib.rs#L450) |
-| `worker_command_drops_the_complete_ambient_environment` | `std::path::Path::new` | [579](../../src/lib.rs#L579) | external-constructor-callback-or-unresolved |
+| `default` | `Vec::new` | [149](../../src/lib.rs#L149), [151](../../src/lib.rs#L151) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_with_bindings` | `launch_profiled_worker_inner` | [161](../../src/lib.rs#L161) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L217) |
+| `launch_profiled_worker_with_bindings` | `Some` | [161](../../src/lib.rs#L161) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_with_credentials` | `launch_profiled_worker_inner` | [169](../../src/lib.rs#L169) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L217) |
+| `launch_profiled_worker_with_credentials` | `Some` | [169](../../src/lib.rs#L169) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_with_credentials_and_provider_test_redirect` | `launch_profiled_worker_inner` | [182](../../src/lib.rs#L182) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L217) |
+| `launch_profiled_worker_with_credentials_and_provider_test_redirect` | `Some` | [185](../../src/lib.rs#L185), [189](../../src/lib.rs#L189) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_with_secret_store_and_binding_resolver` | `launch_profiled_worker_inner` | [206](../../src/lib.rs#L206) | [tekes-supervisor::launch_profiled_worker_inner](../../src/lib.rs#L217) |
+| `launch_profiled_worker_with_secret_store_and_binding_resolver` | `Some` | [210](../../src/lib.rs#L210), [212](../../src/lib.rs#L212) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `spec         .ledger         .parent()         .ok_or` | [226](../../src/lib.rs#L226) | receiver-type-required |
+| `launch_profiled_worker_inner` | `spec         .ledger         .parent` | [226](../../src/lib.rs#L226) | receiver-type-required |
+| `launch_profiled_worker_inner` | `store::AssetStore::new` | [230](../../src/lib.rs#L230) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `launch_profiled_worker_inner` | `folder.join` | [230](../../src/lib.rs#L230) | receiver-type-required |
+| `launch_profiled_worker_inner` | `profile::SessionScope::for_ledger` | [234](../../src/lib.rs#L234) | [profile::scope::SessionScope::for_ledger](../../../profile/src/scope.rs#L25) |
+| `launch_profiled_worker_inner` | `LaunchProfile::resolve_and_publish_for_scope` | [235](../../src/lib.rs#L235) | [profile::instruction::LaunchProfile::resolve_and_publish_for_scope](../../../profile/src/instruction.rs#L149) |
+| `launch_profiled_worker_inner` | `resolver(&profile.config, &profile.instruction)             .map_err` | [243](../../src/lib.rs#L243) | receiver-type-required |
+| `launch_profiled_worker_inner` | `resolver` | [243](../../src/lib.rs#L243) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `WorkerLaunchBindings::default` | [245](../../src/lib.rs#L245) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `Err` | [247](../../src/lib.rs#L247) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `LaunchError::BindingResolution` | [247](../../src/lib.rs#L247) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `"launch bindings and a binding resolver are mutually exclusive".into` | [248](../../src/lib.rs#L248) | receiver-type-required |
+| `launch_profiled_worker_inner` | `LaunchBindings::bind_with_unavailable` | [252](../../src/lib.rs#L252) | [profile::launch::LaunchBindings::bind_with_unavailable](../../../profile/src/launch.rs#L193) |
+| `launch_profiled_worker_inner` | `spec.binary.clone` | [259](../../src/lib.rs#L259) | receiver-type-required |
+| `launch_profiled_worker_inner` | `spec.ledger.clone` | [260](../../src/lib.rs#L260) | receiver-type-required |
+| `launch_profiled_worker_inner` | `spec.timestamp.clone` | [261](../../src/lib.rs#L261) | receiver-type-required |
+| `launch_profiled_worker_inner` | `spec.run_id.clone` | [262](../../src/lib.rs#L262) | receiver-type-required |
+| `launch_profiled_worker_inner` | `spec.binary_attribution.clone` | [263](../../src/lib.rs#L263) | receiver-type-required |
+| `launch_profiled_worker_inner` | `assets.root().to_path_buf` | [264](../../src/lib.rs#L264) | receiver-type-required |
+| `launch_profiled_worker_inner` | `assets.root` | [264](../../src/lib.rs#L264) | receiver-type-required |
+| `launch_profiled_worker_inner` | `resolve_config_credentials(&profile.config, store)             .map_err` | [270](../../src/lib.rs#L270) | receiver-type-required |
+| `launch_profiled_worker_inner` | `resolve_config_credentials` | [270](../../src/lib.rs#L270) | [provider::secret_store::resolve_config_credentials](../../../provider/src/secret_store.rs#L294) |
+| `launch_profiled_worker_inner` | `bindings.active.is_empty` | [272](../../src/lib.rs#L272) | receiver-type-required |
+| `launch_profiled_worker_inner` | `bindings.revoked.is_empty` | [272](../../src/lib.rs#L272) | receiver-type-required |
+| `launch_profiled_worker_inner` | `Some` | [275](../../src/lib.rs#L275), [277](../../src/lib.rs#L277), [291](../../src/lib.rs#L291) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `bindings.active.clone` | [275](../../src/lib.rs#L275) | receiver-type-required |
+| `launch_profiled_worker_inner` | `bindings.revoked.clone` | [275](../../src/lib.rs#L275) | receiver-type-required |
+| `launch_profiled_worker_inner` | `scopes.map` | [280](../../src/lib.rs#L280) | receiver-type-required |
+| `launch_profiled_worker_inner` | `Vec::new` | [280](../../src/lib.rs#L280) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `credentials         .map(&#124;(scopes, revoked)&#124; {             let (supervisor, worker) = UnixStream::pair()?;             Ok::<_, io::Error>((supervisor, worker, scopes, revoked))         })         .transpose` | [282](../../src/lib.rs#L282) | receiver-type-required |
+| `launch_profiled_worker_inner` | `credentials         .map` | [282](../../src/lib.rs#L282) | receiver-type-required |
+| `launch_profiled_worker_inner` | `UnixStream::pair` | [284](../../src/lib.rs#L284) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `Ok::<_, io::Error>` | [285](../../src/lib.rs#L285) | external-constructor-callback-or-unresolved |
+| `launch_profiled_worker_inner` | `launch_worker_inner` | [288](../../src/lib.rs#L288) | [tekes-supervisor::launch_worker_inner](../../src/lib.rs#L298) |
+| `launch_profiled_worker_inner` | `Ok` | [295](../../src/lib.rs#L295) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `snapshot_path` | [309](../../src/lib.rs#L309), [310](../../src/lib.rs#L310), [341](../../src/lib.rs#L341) | [tekes-supervisor::snapshot_path](../../src/lib.rs#L478) |
+| `launch_worker_inner` | `std::fs::read` | [314](../../src/lib.rs#L314), [315](../../src/lib.rs#L315), [342](../../src/lib.rs#L342) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `ConfigSnapshot::decode` | [316](../../src/lib.rs#L316) | [profile::config::ConfigSnapshot::decode](../../../profile/src/config.rs#L194) |
+| `launch_worker_inner` | `InstructionSnapshot::decode` | [317](../../src/lib.rs#L317) | [profile::instruction::InstructionSnapshot::decode](../../../profile/src/instruction.rs#L186) |
+| `launch_worker_inner` | `instruction.validate_against_config` | [318](../../src/lib.rs#L318) | receiver-type-required |
+| `launch_worker_inner` | `config.digest` | [319](../../src/lib.rs#L319) | receiver-type-required |
+| `launch_worker_inner` | `Err` | [320](../../src/lib.rs#L320), [323](../../src/lib.rs#L323) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `LaunchError::DigestMismatch` | [320](../../src/lib.rs#L320), [323](../../src/lib.rs#L323) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `instruction.digest` | [322](../../src/lib.rs#L322) | receiver-type-required |
+| `launch_worker_inner` | `bindings.validate_against` | [327](../../src/lib.rs#L327) | receiver-type-required |
+| `launch_worker_inner` | `bindings.clone` | [328](../../src/lib.rs#L328) | receiver-type-required |
+| `launch_worker_inner` | `LaunchBindings::bind` | [330](../../src/lib.rs#L330) | [profile::launch::LaunchBindings::bind](../../../profile/src/launch.rs#L181) |
+| `launch_worker_inner` | `Vec::new` | [335](../../src/lib.rs#L335) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `store::AssetStore::new` | [339](../../src/lib.rs#L339) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `launch_worker_inner` | `launch_bindings.publish` | [340](../../src/lib.rs#L340) | receiver-type-required |
+| `launch_worker_inner` | `LaunchBindings::decode_verified` | [343](../../src/lib.rs#L343) | [profile::launch::LaunchBindings::decode_verified](../../../profile/src/launch.rs#L235) |
+| `launch_worker_inner` | `open_snapshot` | [345](../../src/lib.rs#L345), [346](../../src/lib.rs#L346), [347](../../src/lib.rs#L347) | [tekes-supervisor::open_snapshot](../../src/lib.rs#L489) |
+| `launch_worker_inner` | `config_file.as_raw_fd` | [349](../../src/lib.rs#L349) | receiver-type-required |
+| `launch_worker_inner` | `instruction_file.as_raw_fd` | [350](../../src/lib.rs#L350) | receiver-type-required |
+| `launch_worker_inner` | `launch_bindings_file.as_raw_fd` | [351](../../src/lib.rs#L351) | receiver-type-required |
+| `launch_worker_inner` | `credential         .as_ref()         .map` | [352](../../src/lib.rs#L352) | receiver-type-required |
+| `launch_worker_inner` | `credential         .as_ref` | [352](../../src/lib.rs#L352) | receiver-type-required |
+| `launch_worker_inner` | `worker.as_raw_fd` | [354](../../src/lib.rs#L354) | receiver-type-required |
+| `launch_worker_inner` | `config.providers.web_search.as_ref().is_some_and` | [355](../../src/lib.rs#L355) | receiver-type-required |
+| `launch_worker_inner` | `config.providers.web_search.as_ref` | [355](../../src/lib.rs#L355) | receiver-type-required |
+| `launch_worker_inner` | `provider::endpoint_origin` | [356](../../src/lib.rs#L356) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
+| `launch_worker_inner` | `credential.as_ref().is_some_and` | [359](../../src/lib.rs#L359) | receiver-type-required |
+| `launch_worker_inner` | `credential.as_ref` | [359](../../src/lib.rs#L359) | receiver-type-required |
+| `launch_worker_inner` | `active.iter().any` | [360](../../src/lib.rs#L360) | receiver-type-required |
+| `launch_worker_inner` | `active.iter` | [360](../../src/lib.rs#L360) | receiver-type-required |
+| `launch_worker_inner` | `closed_command` | [368](../../src/lib.rs#L368) | [tekes-supervisor::closed_command](../../src/lib.rs#L437) |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin(Stdio::piped())         .stdout(Stdio::piped())         .stderr` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin(Stdio::piped())         .stdout` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args(["--launch-bindings-digest", &launch_bindings_digest])         .stdin` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args(["--launch-bindings-fd", &launch_bindings_fd.to_string()])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args(["--instruction-fd", &instruction_fd.to_string()])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args(["--config-fd", &config_fd.to_string()])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args(["--binary", &spec.binary_attribution])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args(["--run-id", &spec.run_id])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args(["--timestamp", &spec.timestamp])         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg(&spec.ledger)         .args` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `command         .arg` | [369](../../src/lib.rs#L369) | receiver-type-required |
+| `launch_worker_inner` | `config_fd.to_string` | [374](../../src/lib.rs#L374) | receiver-type-required |
+| `launch_worker_inner` | `instruction_fd.to_string` | [375](../../src/lib.rs#L375) | receiver-type-required |
+| `launch_worker_inner` | `launch_bindings_fd.to_string` | [376](../../src/lib.rs#L376) | receiver-type-required |
+| `launch_worker_inner` | `Stdio::piped` | [378](../../src/lib.rs#L378), [379](../../src/lib.rs#L379), [380](../../src/lib.rs#L380) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `command.args` | [382](../../src/lib.rs#L382), [385](../../src/lib.rs#L385), [388](../../src/lib.rs#L388) | receiver-type-required |
+| `launch_worker_inner` | `fd.to_string` | [382](../../src/lib.rs#L382) | receiver-type-required |
+| `launch_worker_inner` | `forwarded_worker_environment` | [390](../../src/lib.rs#L390) | [tekes-supervisor::forwarded_worker_environment](../../src/lib.rs#L464) |
+| `launch_worker_inner` | `command.env` | [391](../../src/lib.rs#L391) | receiver-type-required |
+| `launch_worker_inner` | `command.pre_exec` | [398](../../src/lib.rs#L398) | receiver-type-required |
+| `launch_worker_inner` | `clear_cloexec` | [399](../../src/lib.rs#L399), [400](../../src/lib.rs#L400), [401](../../src/lib.rs#L401), [403](../../src/lib.rs#L403) | [tekes-supervisor::clear_cloexec](../../src/lib.rs#L496) |
+| `launch_worker_inner` | `Ok` | [405](../../src/lib.rs#L405), [424](../../src/lib.rs#L424) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `command.spawn` | [408](../../src/lib.rs#L408) | receiver-type-required |
+| `launch_worker_inner` | `credential.map_or` | [410](../../src/lib.rs#L410) | receiver-type-required |
+| `launch_worker_inner` | `drop` | [411](../../src/lib.rs#L411) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `start_credential_channel` | [412](../../src/lib.rs#L412) | [provider::credential::start_credential_channel](../../../provider/src/credential.rs#L519) |
+| `launch_worker_inner` | `CredentialBroker::with_revoked` | [414](../../src/lib.rs#L414) | [provider::credential::CredentialBroker::with_revoked](../../../provider/src/credential.rs#L360) |
+| `launch_worker_inner` | `std::thread::spawn` | [416](../../src/lib.rs#L416) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `service                     .join()                     .map_err(&#124;_&#124; "credential broker service panicked".to_owned())?                     .map_err` | [417](../../src/lib.rs#L417) | receiver-type-required |
+| `launch_worker_inner` | `service                     .join()                     .map_err` | [417](../../src/lib.rs#L417) | receiver-type-required |
+| `launch_worker_inner` | `service                     .join` | [417](../../src/lib.rs#L417) | receiver-type-required |
+| `launch_worker_inner` | `"credential broker service panicked".to_owned` | [419](../../src/lib.rs#L419) | receiver-type-required |
+| `launch_worker_inner` | `error.to_string` | [420](../../src/lib.rs#L420) | receiver-type-required |
+| `launch_worker_inner` | `Some` | [422](../../src/lib.rs#L422) | external-constructor-callback-or-unresolved |
+| `launch_worker_inner` | `spec.config_digest.clone` | [428](../../src/lib.rs#L428) | receiver-type-required |
+| `launch_worker_inner` | `spec.instruction_digest.clone` | [429](../../src/lib.rs#L429) | receiver-type-required |
+| `closed_command` | `Command::new` | [438](../../src/lib.rs#L438) | external-constructor-callback-or-unresolved |
+| `closed_command` | `command.env_clear` | [439](../../src/lib.rs#L439) | receiver-type-required |
+| `forwarded_worker_environment` | `forwarded_environment_from` | [465](../../src/lib.rs#L465) | [tekes-supervisor::forwarded_environment_from](../../src/lib.rs#L471) |
+| `forwarded_worker_environment` | `std::env::var(name).ok` | [465](../../src/lib.rs#L465) | receiver-type-required |
+| `forwarded_worker_environment` | `std::env::var` | [465](../../src/lib.rs#L465) | external-constructor-callback-or-unresolved |
+| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain(FORWARDED_PROXY_VARIABLES)         .filter_map(&#124;name&#124; lookup(name).map(&#124;value&#124; (name.to_owned(), value)))         .collect` | [472](../../src/lib.rs#L472) | receiver-type-required |
+| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain(FORWARDED_PROXY_VARIABLES)         .filter_map` | [472](../../src/lib.rs#L472) | receiver-type-required |
+| `forwarded_environment_from` | `std::iter::once("TEKES_KERNEL_LIVE_ARTIFACT")         .chain` | [472](../../src/lib.rs#L472) | receiver-type-required |
+| `forwarded_environment_from` | `std::iter::once` | [472](../../src/lib.rs#L472) | external-constructor-callback-or-unresolved |
+| `forwarded_environment_from` | `lookup(name).map` | [474](../../src/lib.rs#L474) | receiver-type-required |
+| `forwarded_environment_from` | `lookup` | [474](../../src/lib.rs#L474) | external-constructor-callback-or-unresolved |
+| `forwarded_environment_from` | `name.to_owned` | [474](../../src/lib.rs#L474) | receiver-type-required |
+| `snapshot_path` | `digest.len` | [479](../../src/lib.rs#L479) | receiver-type-required |
+| `snapshot_path` | `digest             .bytes()             .all` | [480](../../src/lib.rs#L480) | receiver-type-required |
+| `snapshot_path` | `digest             .bytes` | [480](../../src/lib.rs#L480) | receiver-type-required |
+| `snapshot_path` | `byte.is_ascii_hexdigit` | [482](../../src/lib.rs#L482) | receiver-type-required |
+| `snapshot_path` | `byte.is_ascii_uppercase` | [482](../../src/lib.rs#L482) | receiver-type-required |
+| `snapshot_path` | `Err` | [484](../../src/lib.rs#L484) | external-constructor-callback-or-unresolved |
+| `snapshot_path` | `Ok` | [486](../../src/lib.rs#L486) | external-constructor-callback-or-unresolved |
+| `snapshot_path` | `assets.join` | [486](../../src/lib.rs#L486) | receiver-type-required |
+| `open_snapshot` | `Ok` | [490](../../src/lib.rs#L490) | external-constructor-callback-or-unresolved |
+| `open_snapshot` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [490](../../src/lib.rs#L490) | receiver-type-required |
+| `open_snapshot` | `OpenOptions::new()         .read(true)         .custom_flags` | [490](../../src/lib.rs#L490) | receiver-type-required |
+| `open_snapshot` | `OpenOptions::new()         .read` | [490](../../src/lib.rs#L490) | receiver-type-required |
+| `open_snapshot` | `OpenOptions::new` | [490](../../src/lib.rs#L490) | external-constructor-callback-or-unresolved |
+| `clear_cloexec` | `libc::fcntl` | [499](../../src/lib.rs#L499) | external-constructor-callback-or-unresolved |
+| `clear_cloexec` | `Err` | [500](../../src/lib.rs#L500) | external-constructor-callback-or-unresolved |
+| `clear_cloexec` | `io::Error::last_os_error` | [500](../../src/lib.rs#L500) | external-constructor-callback-or-unresolved |
+| `clear_cloexec` | `Ok` | [502](../../src/lib.rs#L502) | external-constructor-callback-or-unresolved |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `std::collections::BTreeMap::from` | [536](../../src/lib.rs#L536) | external-constructor-callback-or-unresolved |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `closed_command` | [555](../../src/lib.rs#L555) | [tekes-supervisor::closed_command](../../src/lib.rs#L437) |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `std::path::Path::new` | [555](../../src/lib.rs#L555) | external-constructor-callback-or-unresolved |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.env` | [556](../../src/lib.rs#L556) | receiver-type-required |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.output().expect` | [557](../../src/lib.rs#L557) | receiver-type-required |
+| `worker_environment_forwards_only_the_evidence_capture_directory` | `command.output` | [557](../../src/lib.rs#L557) | receiver-type-required |
+| `worker_command_drops_the_complete_ambient_environment` | `closed_command(std::path::Path::new("/usr/bin/env"))             .output()             .expect` | [566](../../src/lib.rs#L566) | receiver-type-required |
+| `worker_command_drops_the_complete_ambient_environment` | `closed_command(std::path::Path::new("/usr/bin/env"))             .output` | [566](../../src/lib.rs#L566) | receiver-type-required |
+| `worker_command_drops_the_complete_ambient_environment` | `closed_command` | [566](../../src/lib.rs#L566) | [tekes-supervisor::closed_command](../../src/lib.rs#L437) |
+| `worker_command_drops_the_complete_ambient_environment` | `std::path::Path::new` | [566](../../src/lib.rs#L566) | external-constructor-callback-or-unresolved |

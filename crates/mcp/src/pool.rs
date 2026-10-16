@@ -8,13 +8,10 @@ use crate::{McpError, McpPeer};
 
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
 pub struct McpPoolKey {
-    pub owner: String,
-    pub scope: String,
-    pub server: String,
+    pub session_id: String,
+    pub connection: String,
     pub config_digest: String,
     pub authorization_identity: String,
-    pub protocol_mode: String,
-    pub plugin_generation: Option<String>,
 }
 
 pub type PooledPeer = Arc<Mutex<Box<dyn McpPeer>>>;
@@ -231,9 +228,8 @@ impl McpPool {
         let stale_keys = peers
             .keys()
             .filter(|existing| {
-                existing.owner == key.owner
-                    && existing.scope == key.scope
-                    && existing.server == key.server
+                existing.session_id == key.session_id
+                    && existing.connection == key.connection
                     && *existing != &key
             })
             .cloned()

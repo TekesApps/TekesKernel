@@ -1,5 +1,10 @@
 # spec: Session Endpoint
 
+> 0.9.0 execution and responsibility changes are defined in
+> [Session execution](session-execution.md). Its Session creation and scope rules
+> replace the management-backed rules below; 0.8/0.7 compatibility is not a goal.
+
+
 The one boundary between TekesKernel and its Client: the public multiplexed
 stream and unary mutations (§Routes and streams), the durable projection of
 the semantic ledger those streams deliver (§Journal projection), the physical

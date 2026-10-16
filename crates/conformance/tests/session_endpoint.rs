@@ -11,12 +11,17 @@ fn public_route_authority_is_single_and_has_no_legacy_reads() {
     let public = transport::ROUTE_REGISTRY
         .into_iter()
         .collect::<BTreeSet<_>>();
-    assert_eq!(public.len(), 17);
+    assert_eq!(public.len(), 14);
     assert!(public.contains("models.list"));
+    assert!(public.contains("session.archive"));
+    assert!(public.contains("session.unarchive"));
     assert!(public.contains("remote.mux"));
     for removed in [
         "host.describe",
         "workspace.list",
+        "workspace.create",
+        "workspace.rename",
+        "workspace.relocate",
         "session.list",
         "session.history",
         "events.mux",

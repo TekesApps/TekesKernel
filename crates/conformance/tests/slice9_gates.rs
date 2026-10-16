@@ -285,9 +285,9 @@ fn slice9_gate_70_endpoint_archive_client_rematerialization() {
         key: "create-a".to_owned(),
     };
     endpoint
-        .create_session_for_endpoint(
+        .create_session(
             SESSION_A,
-            "workspace-a",
+            &test_support::execution_fixture(),
             &"0".repeat(64),
             ResumePolicy::Never,
             "2026-08-28T00:00:00.000Z",
@@ -658,7 +658,7 @@ fn rpc_record_count(root: &std::path::Path) -> usize {
 }
 
 fn rpc_record_files(root: &std::path::Path) -> Vec<PathBuf> {
-    let rpc = root.join("endpoint-management/rpc");
+    let rpc = root.join("endpoint-rpc/rpc");
     std::fs::read_dir(rpc)
         .expect("rpc root")
         .flat_map(|shard| {

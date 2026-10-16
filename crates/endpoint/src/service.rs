@@ -70,9 +70,7 @@ pub struct UnarchiveResult {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SessionInventoryItem {
     pub session_id: String,
-    pub workspace_id: String,
     pub cwd: String,
-    pub folder_binding: Option<String>,
     pub title: Option<String>,
     pub updated_at: u64,
     pub archived: bool,
@@ -93,75 +91,15 @@ pub struct SessionInventoryItem {
     pub ephemeral: bool,
 }
 
-impl SessionInventoryItem {
-    /// Follow an explicit stable binding after relocation. Legacy sessions
-    /// and missing configurations retain their own recorded cwd; inventory
-    /// never borrows another session's or workspace's primary folder.
-    #[must_use]
-    pub fn resolved_cwd(
-        &self,
-        paths: &std::collections::BTreeMap<(String, String), String>,
-    ) -> String {
-        self.folder_binding
-            .as_ref()
-            .and_then(|binding| {
-                paths
-                    .get(&(String::new(), binding.clone()))
-                    .or_else(|| paths.get(&(self.workspace_id.clone(), binding.clone())))
-            })
-            .cloned()
-            .unwrap_or_else(|| self.cwd.clone())
-    }
-}
-
-/// Inventory follows logical identity, while the ledger retains an old binding
-/// as its compatibility address. This prevents alias reuse moving old sessions.
-#[must_use]
-pub fn inventory_folder_binding(scope: &Value) -> Option<String> {
-    let binding = scope.get("folder_binding")?.as_str()?;
-    Some(
-        scope
-            .get("session_scope")
-            .and_then(|scope| scope.get("folder_refs"))
-            .and_then(|refs| refs.get(binding))
-            .and_then(Value::as_str)
-            .unwrap_or(binding)
-            .to_owned(),
-    )
-}
-
 /// File name of the durable per-session permission mode record (owned by the
 /// engine crate; mirrored here so inventory needs no engine dependency).
 const PERMISSION_MODE_FILE: &str = "permission-mode.json";
 const DEFAULT_PERMISSION_MODE: &str = "workspace-write";
 
-/// The session's own recorded cwd. Pre-0.8 ledgers store it in the genesis
-/// config asset instead. Never read mutable launch snapshots or workspace
-/// defaults, and never create an assets directory during inventory reads.
+/// The Session's immutable recorded cwd; inventory reads no configuration assets.
 #[must_use]
-pub fn genesis_cwd(folder: &Path, genesis: &schema::Event) -> String {
-    use sha2::{Digest, Sha256};
-    if let Some(cwd) = genesis.string_field("cwd") {
-        return cwd.to_owned();
-    }
-    let snapshot_cwd = || -> Option<String> {
-        let raw = serde_json::to_value(genesis.raw()).ok()?;
-        let digest = raw.get("config")?.get("digest")?.as_str()?;
-        if digest.len() != 64
-            || !digest
-                .bytes()
-                .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
-        {
-            return None;
-        }
-        let bytes = fs::read(folder.join("assets").join(format!("sha256-{digest}"))).ok()?;
-        if format!("{:x}", Sha256::digest(&bytes)) != digest {
-            return None;
-        }
-        let config = profile::ConfigSnapshot::decode(&bytes).ok()?;
-        Some(config.execution_cwd()?.to_owned())
-    };
-    snapshot_cwd().unwrap_or_default()
+pub fn genesis_cwd(_folder: &Path, genesis: &schema::Event) -> String {
+    genesis.string_field("cwd").unwrap_or_default().to_owned()
 }
 
 /// The mode a session folder declares, or the default when the record is
@@ -209,7 +147,6 @@ fn card_item(
     }
     Some(SessionInventoryItem {
         session_id: session_id.to_owned(),
-        workspace_id: card.summary.workspace.clone(),
         cwd: card.summary.cwd.clone().unwrap_or_else(|| {
             store::read_genesis(folder.join("main.jsonl"))
                 .ok()
@@ -217,7 +154,6 @@ fn card_item(
                 .map(|g| genesis_cwd(folder, &g))
                 .unwrap_or_default()
         }),
-        folder_binding: card.summary.folder_binding.clone(),
         title: card.summary.title.clone(),
         updated_at: card.summary.updated_ms,
         archived,
@@ -308,11 +244,6 @@ pub fn card_summary(
     let scope =
         schema::effective_session_genesis(&projection.events)?.expect("genesis checked above");
     Ok(store::card::CardSummary {
-        workspace: genesis
-            .string_field("workspace")
-            .ok_or(NativeEndpointError::InventoryWorkspace)?
-            .to_owned(),
-        folder_binding: inventory_folder_binding(&scope),
         cwd: scope.get("cwd").and_then(Value::as_str).map(str::to_owned),
         created: genesis.string_field("ts").unwrap_or_default().to_owned(),
         updated_ms,
@@ -326,16 +257,6 @@ pub fn card_summary(
 
 pub struct NativeEndpoint {
     store: ThreadStore,
-}
-
-struct CreateSessionWrite<'a> {
-    session_id: &'a str,
-    workspace: &'a str,
-    config_digest: &'a str,
-    resume: ResumePolicy,
-    timestamp: &'a str,
-    origin: &'a OriginTuple,
-    operation: &'a str,
 }
 
 impl NativeEndpoint {
@@ -425,14 +346,12 @@ impl NativeEndpoint {
                     identity_profile: summary.identity_profile,
                     preset: summary.preset,
                     ephemeral: summary.ephemeral,
-                    workspace_id: summary.workspace,
                     cwd: summary.cwd.unwrap_or_else(|| {
                         genesis_cwd(
                             &entry.path(),
                             projection.events.first().expect("validated genesis"),
                         )
                     }),
-                    folder_binding: summary.folder_binding,
                     title: summary.title,
                     updated_at: summary.updated_ms,
                     running: is_running,
@@ -456,13 +375,11 @@ impl NativeEndpoint {
             .session_settings
             .as_ref()
             .map(|settings| &settings.provider)
-            .or(snapshot.workspace.policy.provider.as_ref())
             .or(snapshot.settings.default_provider.as_ref());
         let selected_model = snapshot
             .session_settings
             .as_ref()
             .map(|settings| &settings.model)
-            .or(snapshot.workspace.policy.model.as_ref())
             .or(snapshot.settings.default_model.as_ref());
         let groups = snapshot
             .providers
@@ -541,13 +458,11 @@ impl NativeEndpoint {
             .session_settings
             .as_ref()
             .map(|s| s.provider.as_str())
-            .or(config.workspace.policy.provider.as_deref())
             .or(config.settings.default_provider.as_deref());
         let model = config
             .session_settings
             .as_ref()
             .map(|s| s.model.as_str())
-            .or(config.workspace.policy.model.as_deref())
             .or(config.settings.default_model.as_deref());
         Ok(IJsonValue::parse(&serde_json::to_vec(&json!({
             "configDigest": digest, "provider": provider, "model": model,
@@ -669,72 +584,24 @@ impl NativeEndpoint {
     pub fn create_session(
         &self,
         session_id: &str,
-        workspace: &str,
+        execution: &schema::ExecutionConfig,
         config_digest: &str,
         resume: ResumePolicy,
         timestamp: &str,
         origin: &OriginTuple,
     ) -> Result<bool, NativeEndpointError> {
-        self.create_session_with_operation(CreateSessionWrite {
-            session_id,
-            workspace,
-            config_digest,
-            resume,
-            timestamp,
-            origin,
-            operation: "create",
-        })
-    }
-
-    /// Session Endpoint v2 creation uses the registration name as the
-    /// durable origin operation; the generic Slice-6 API above retains its
-    /// original operation for existing callers.
-    pub fn create_session_for_endpoint(
-        &self,
-        session_id: &str,
-        workspace: &str,
-        config_digest: &str,
-        resume: ResumePolicy,
-        timestamp: &str,
-        origin: &OriginTuple,
-    ) -> Result<bool, NativeEndpointError> {
-        self.create_session_with_operation(CreateSessionWrite {
-            session_id,
-            workspace,
-            config_digest,
-            resume,
-            timestamp,
-            origin,
-            operation: "session.create",
-        })
-    }
-
-    fn create_session_with_operation(
-        &self,
-        write: CreateSessionWrite<'_>,
-    ) -> Result<bool, NativeEndpointError> {
-        validate_session_id(write.session_id)?;
-        if write.origin.target != write.session_id || write.origin.op != write.operation {
+        validate_session_id(session_id)?;
+        if origin.target != session_id {
             return Err(NativeEndpointError::Origin);
         }
-        let event = event(json!({
-            "v": 1,
-            "seq": 1,
-            "ts": write.timestamp,
-            "kind": "genesis",
-            "thread": write.session_id,
-            "workspace": write.workspace,
-            "format": 1,
-            "min_reader": 1,
-            "min_writer": 1,
-            "resume": write.resume,
-            "config": {"digest": write.config_digest},
-            "origin_key": write.origin.key,
-            "origin_tuple": write.origin,
-        }))?;
+        let execution =
+            profile::ConfigRepository::open(self.store.root())?.normalize_execution(execution)?;
+        let genesis = event(
+            json!({"v":1,"seq":1,"ts":timestamp,"kind":"genesis","thread":session_id,"cwd":execution.cwd,"execution":execution,"format":1,"min_reader":schema::EXECUTION_READER,"min_writer":1,"resume":resume,"config":{"digest":config_digest},"origin_key":origin.key,"origin_tuple":origin}),
+        )?;
         Ok(self
             .store
-            .create_thread(write.session_id, event)
+            .create_thread(session_id, genesis)
             .map_err(map_store_error)?
             .created)
     }

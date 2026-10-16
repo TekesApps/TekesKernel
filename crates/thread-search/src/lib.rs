@@ -25,7 +25,7 @@ const INDEX_NAME: &str = ".thread-search.json";
 /// The cache name before version suffixes were dropped; removed on sight.
 const LEGACY_INDEX_NAME: &str = ".thread-search-v1.json";
 const MAX_QUERY_BYTES: usize = 512;
-const MAX_WORKSPACE_BYTES: usize = 128;
+const MAX_SESSION_FILTER_BYTES: usize = 128;
 const MAX_PAGE_SIZE: usize = 50;
 
 #[derive(Clone, Copy, Debug, Deserialize, Eq, PartialEq, Serialize)]
@@ -38,7 +38,7 @@ pub enum ArchiveVisibility {
 
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct SearchRequest {
-    pub workspace_id: Option<String>,
+    pub session_filter: Option<String>,
     pub query: String,
     pub limit: usize,
     pub visibility: ArchiveVisibility,
@@ -57,7 +57,6 @@ pub enum MatchClass {
 #[serde(deny_unknown_fields)]
 pub struct SearchResult {
     pub session_id: String,
-    pub workspace_id: String,
     pub title: String,
     pub updated_at: String,
     pub archived: bool,
@@ -112,9 +111,9 @@ impl ThreadSearchAuthority {
             .into_iter()
             .filter(|entry| {
                 request
-                    .workspace_id
+                    .session_filter
                     .as_ref()
-                    .is_none_or(|filter| &entry.workspace_id == filter)
+                    .is_none_or(|filter| &entry.session_id == filter)
             })
             .filter(|entry| visibility_includes(request.visibility, entry.archived))
             .collect::<Vec<_>>();
@@ -152,7 +151,7 @@ impl ThreadSearchAuthority {
                 let last = results.last().ok_or(SearchError::CursorPosition)?;
                 encode_cursor(&CursorBody {
                     v: FORMAT,
-                    workspace_id: request.workspace_id.clone(),
+                    session_filter: request.session_filter.clone(),
                     visibility: request.visibility,
                     normalized_query: normalized_query.clone(),
                     catalog_digest: catalog_digest.clone(),
@@ -234,7 +233,6 @@ struct IndexFile {
 #[serde(deny_unknown_fields)]
 struct IndexEntry {
     session_id: String,
-    workspace_id: String,
     title: Option<String>,
     normalized_title: Option<String>,
     updated_at: String,
@@ -248,7 +246,7 @@ struct IndexEntry {
 #[serde(deny_unknown_fields)]
 struct CursorBody {
     v: u64,
-    workspace_id: Option<String>,
+    session_filter: Option<String>,
     visibility: ArchiveVisibility,
     normalized_query: String,
     catalog_digest: String,
@@ -258,11 +256,11 @@ struct CursorBody {
 
 fn validate_request(request: &SearchRequest) -> Result<(), SearchError> {
     if request
-        .workspace_id
+        .session_filter
         .as_deref()
-        .is_some_and(|value| !valid_workspace_id(value))
+        .is_some_and(|value| !valid_session_filter(value))
     {
-        return Err(SearchError::InvalidWorkspace);
+        return Err(SearchError::InvalidSessionFilter);
     }
     if request.query.len() > MAX_QUERY_BYTES
         || request
@@ -279,9 +277,9 @@ fn validate_request(request: &SearchRequest) -> Result<(), SearchError> {
     Ok(())
 }
 
-fn valid_workspace_id(value: &str) -> bool {
+fn valid_session_filter(value: &str) -> bool {
     !value.is_empty()
-        && value.len() <= MAX_WORKSPACE_BYTES
+        && value.len() <= MAX_SESSION_FILTER_BYTES
         && !value.starts_with('.')
         && value
             .bytes()
@@ -306,7 +304,6 @@ fn rank(entry: IndexEntry, query: &str) -> Option<SearchResult> {
     };
     Some(SearchResult {
         session_id: entry.session_id,
-        workspace_id: entry.workspace_id,
         title: entry.title.expect("normalized title requires source title"),
         updated_at: entry.updated_at,
         archived: entry.archived,
@@ -402,17 +399,6 @@ fn scan_session(
             "session {session_id} folder/genesis identity mismatch"
         )));
     }
-    let workspace_id = genesis
-        .string_field("workspace")
-        .ok_or_else(|| {
-            SearchError::SourceCorrupt(format!("session {session_id} genesis lacks workspace"))
-        })?
-        .to_owned();
-    if !valid_workspace_id(&workspace_id) {
-        return Err(SearchError::SourceCorrupt(format!(
-            "session {session_id} has an invalid workspace identity"
-        )));
-    }
     let superseded = superseded_sequences(&projection.events)?;
     let title = projection
         .events
@@ -435,7 +421,6 @@ fn scan_session(
         .to_owned();
     Ok(IndexEntry {
         session_id,
-        workspace_id,
         normalized_title: title.as_deref().map(normalize),
         title,
         updated_at,
@@ -481,7 +466,6 @@ fn publish_index(entry: &IndexEntry) -> Result<(), SearchError> {
 
 fn same_projection(left: &IndexEntry, right: &IndexEntry) -> bool {
     left.session_id == right.session_id
-        && left.workspace_id == right.workspace_id
         && left.title == right.title
         && left.normalized_title == right.normalized_title
         && left.updated_at == right.updated_at
@@ -506,8 +490,7 @@ fn decode_index(bytes: &[u8]) -> Result<IndexFile, SearchError> {
         ));
     }
     validate_session_id(&index.entry.session_id)?;
-    if !valid_workspace_id(&index.entry.workspace_id)
-        || index.entry.as_of_seq == 0
+    if index.entry.as_of_seq == 0
         || index.entry.normalized_title != index.entry.title.as_deref().map(normalize)
         || index.source_digest != digest_entries(std::slice::from_ref(&index.entry))?
     {
@@ -568,9 +551,9 @@ fn decode_cursor(value: &str) -> Result<CursorBody, SearchError> {
         || !matches!(cursor.score, 1_000 | 2_000 | 3_000)
         || validate_session_id(&cursor.session_id).is_err()
         || cursor
-            .workspace_id
+            .session_filter
             .as_deref()
-            .is_some_and(|value| !valid_workspace_id(value))
+            .is_some_and(|value| !valid_session_filter(value))
         || cursor.normalized_query.is_empty()
         || normalize(&cursor.normalized_query) != cursor.normalized_query
         || !valid_sha256_label(&cursor.catalog_digest)
@@ -594,7 +577,7 @@ fn validate_cursor_scope(
     normalized_query: &str,
     catalog_digest: &str,
 ) -> Result<(), SearchError> {
-    if cursor.workspace_id != request.workspace_id
+    if cursor.session_filter != request.session_filter
         || cursor.visibility != request.visibility
         || cursor.normalized_query != normalized_query
     {
@@ -650,8 +633,8 @@ fn is_search_whitespace(value: char) -> bool {
 
 #[derive(Debug, Error)]
 pub enum SearchError {
-    #[error("invalid workspace scope")]
-    InvalidWorkspace,
+    #[error("invalid Session filter")]
+    InvalidSessionFilter,
     #[error("invalid search query")]
     InvalidQuery,
     #[error("invalid search page limit")]

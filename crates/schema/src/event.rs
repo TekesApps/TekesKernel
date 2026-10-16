@@ -465,7 +465,33 @@ fn validate_genesis(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaE
             "thread must be a lower-case canonical UUID",
         ));
     }
-    required_str(object, "workspace", Some(seq))?;
+    if !object.contains_key("execution") {
+        required_str(object, "workspace", Some(seq))?;
+    }
+    if let Some(value) = object.get("execution") {
+        let execution: crate::ExecutionConfig = serde_json::from_value(value.clone())
+            .map_err(|error| SchemaError::event(Some(seq), error.to_string()))?;
+        execution
+            .validate()
+            .map_err(|reason| SchemaError::event(Some(seq), reason))?;
+        if required_u64(object, "min_reader", Some(seq))? < crate::EXECUTION_READER
+            || [
+                "session_scope",
+                "environment",
+                "folders",
+                "workspace",
+                "folder_binding",
+            ]
+            .iter()
+            .any(|key| object.contains_key(*key))
+            || object.get("cwd").and_then(Value::as_str) != Some(execution.cwd.as_str())
+        {
+            return Err(SchemaError::event(
+                Some(seq),
+                "execution requires reader 5, matching cwd and no legacy scope",
+            ));
+        }
+    }
     if object.contains_key("session_scope") {
         validate_session_scope(object, seq)?;
         if required_u64(object, "min_reader", Some(seq))? < crate::SESSION_SCOPE_READER {

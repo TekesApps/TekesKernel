@@ -291,7 +291,7 @@ pub(crate) fn ensure_durable_child(
     let mut genesis = json!({
         "v":1,"seq":1,"kind":"genesis","ts":options.event_timestamp(),
         "format":1,"min_reader":1,"min_writer":1,
-        "thread":child,"workspace":profile.config.workspace.id,
+        "thread":child,"workspace":profile.config.execution.session_id,
         "origin_key":origin_key,
         "origin_tuple":{
             "principal":"kernel-worker","client":"worker",
@@ -307,6 +307,12 @@ pub(crate) fn ensure_durable_child(
         .as_object_mut()
         .expect("genesis object")
         .extend(identity::inherited_opening(ledger)?);
+    if genesis.get("execution").is_some() {
+        genesis
+            .as_object_mut()
+            .expect("genesis")
+            .remove("workspace");
+    }
     if !options.instruction_digest.is_empty() {
         genesis.as_object_mut().expect("genesis object").insert(
             "instruction".to_owned(),

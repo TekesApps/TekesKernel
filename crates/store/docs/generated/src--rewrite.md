@@ -62,45 +62,45 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::rewrite::source_parent_file](../../src/rewrite.rs#L1246) | function_item | `private` |  |
 | [store::rewrite::project_file](../../src/rewrite.rs#L1259) | function_item | `private` |  |
 | [store::rewrite::build_genesis](../../src/rewrite.rs#L1617) | function_item | `private` |  |
-| [store::rewrite::rewrite_origin](../../src/rewrite.rs#L1732) | function_item | `private` |  |
-| [store::rewrite::materialize_input](../../src/rewrite.rs#L1739) | function_item | `private` |  |
-| [store::rewrite::materialize_turn_open](../../src/rewrite.rs#L1763) | function_item | `private` |  |
-| [store::rewrite::materialize_spawn](../../src/rewrite.rs#L1798) | function_item | `private` |  |
-| [store::rewrite::materialize_child_result](../../src/rewrite.rs#L1824) | function_item | `private` |  |
-| [store::rewrite::materialize_state](../../src/rewrite.rs#L1853) | function_item | `private` |  |
-| [store::rewrite::materialize_historical_state](../../src/rewrite.rs#L1867) | function_item | `private` |  |
-| [store::rewrite::event_value_ts](../../src/rewrite.rs#L1896) | function_item | `private` |  |
-| [store::rewrite::materialize_settle](../../src/rewrite.rs#L1903) | function_item | `private` |  |
-| [store::rewrite::materialize_meta](../../src/rewrite.rs#L1917) | function_item | `private` |  |
-| [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1941) | function_item | `private` |  |
-| [store::rewrite::mapped_turn](../../src/rewrite.rs#L1963) | function_item | `private` |  |
-| [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) | function_item | `private` |  |
-| [store::rewrite::envelope_fields](../../src/rewrite.rs#L1975) | function_item | `private` |  |
-| [store::rewrite::push_event](../../src/rewrite.rs#L1990) | function_item | `private` |  |
-| [store::rewrite::value_ranges](../../src/rewrite.rs#L1999) | function_item | `private` |  |
-| [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2024) | function_item | `private` |  |
-| [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2033) | function_item | `private` |  |
-| [store::rewrite::raw_digest_asset](../../src/rewrite.rs#L2052) | function_item | `private` |  |
-| [store::rewrite::collect_event_asset_names](../../src/rewrite.rs#L2065) | function_item | `private` |  |
-| [store::rewrite::collect_launch_binding_asset_name](../../src/rewrite.rs#L2095) | function_item | `private` |  |
-| [store::rewrite::value_references_any](../../src/rewrite.rs#L2108) | function_item | `private` |  |
-| [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2114) | function_item | `private` |  |
-| [store::rewrite::validate_payload](../../src/rewrite.rs#L2202) | function_item | `private` |  |
-| [store::rewrite::validate_seed_snapshot](../../src/rewrite.rs#L2257) | function_item | `private` |  |
-| [store::rewrite::close_operation](../../src/rewrite.rs#L2331) | function_item | `private` |  |
-| [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::origin](../../src/rewrite.rs#L2355) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2365) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id](../../src/rewrite.rs#L2376) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id](../../src/rewrite.rs#L2415) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed](../../src/rewrite.rs#L2451) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::startup_isolates_missing_fork_carrier_without_losing_source](../../src/rewrite.rs#L2513) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal](../../src/rewrite.rs#L2586) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::fork_preserves_runtime_identity_selection](../../src/rewrite.rs#L2731) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::fork_keeps_the_genesis_preset_and_reader_two](../../src/rewrite.rs#L2792) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::fork_copies_every_inherited_genesis_field](../../src/rewrite.rs#L2834) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::anchored_fork_remaps_complete_child_edges](../../src/rewrite.rs#L2884) | function_item | `private` | test; #[cfg(test)] |
-| [store::rewrite::tests::fork_and_redact_copy_unpoisoned_launch_binding_carriers](../../src/rewrite.rs#L3013) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::rewrite_origin](../../src/rewrite.rs#L1736) | function_item | `private` |  |
+| [store::rewrite::materialize_input](../../src/rewrite.rs#L1743) | function_item | `private` |  |
+| [store::rewrite::materialize_turn_open](../../src/rewrite.rs#L1767) | function_item | `private` |  |
+| [store::rewrite::materialize_spawn](../../src/rewrite.rs#L1802) | function_item | `private` |  |
+| [store::rewrite::materialize_child_result](../../src/rewrite.rs#L1828) | function_item | `private` |  |
+| [store::rewrite::materialize_state](../../src/rewrite.rs#L1857) | function_item | `private` |  |
+| [store::rewrite::materialize_historical_state](../../src/rewrite.rs#L1871) | function_item | `private` |  |
+| [store::rewrite::event_value_ts](../../src/rewrite.rs#L1900) | function_item | `private` |  |
+| [store::rewrite::materialize_settle](../../src/rewrite.rs#L1907) | function_item | `private` |  |
+| [store::rewrite::materialize_meta](../../src/rewrite.rs#L1921) | function_item | `private` |  |
+| [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1945) | function_item | `private` |  |
+| [store::rewrite::mapped_turn](../../src/rewrite.rs#L1967) | function_item | `private` |  |
+| [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) | function_item | `private` |  |
+| [store::rewrite::envelope_fields](../../src/rewrite.rs#L1979) | function_item | `private` |  |
+| [store::rewrite::push_event](../../src/rewrite.rs#L1994) | function_item | `private` |  |
+| [store::rewrite::value_ranges](../../src/rewrite.rs#L2003) | function_item | `private` |  |
+| [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2028) | function_item | `private` |  |
+| [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2037) | function_item | `private` |  |
+| [store::rewrite::raw_digest_asset](../../src/rewrite.rs#L2056) | function_item | `private` |  |
+| [store::rewrite::collect_event_asset_names](../../src/rewrite.rs#L2069) | function_item | `private` |  |
+| [store::rewrite::collect_launch_binding_asset_name](../../src/rewrite.rs#L2099) | function_item | `private` |  |
+| [store::rewrite::value_references_any](../../src/rewrite.rs#L2112) | function_item | `private` |  |
+| [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2118) | function_item | `private` |  |
+| [store::rewrite::validate_payload](../../src/rewrite.rs#L2206) | function_item | `private` |  |
+| [store::rewrite::validate_seed_snapshot](../../src/rewrite.rs#L2261) | function_item | `private` |  |
+| [store::rewrite::close_operation](../../src/rewrite.rs#L2335) | function_item | `private` |  |
+| [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::origin](../../src/rewrite.rs#L2359) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2369) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id](../../src/rewrite.rs#L2380) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id](../../src/rewrite.rs#L2419) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed](../../src/rewrite.rs#L2455) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::startup_isolates_missing_fork_carrier_without_losing_source](../../src/rewrite.rs#L2517) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal](../../src/rewrite.rs#L2590) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::fork_preserves_runtime_identity_selection](../../src/rewrite.rs#L2735) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::fork_keeps_the_genesis_preset_and_reader_two](../../src/rewrite.rs#L2796) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::fork_copies_every_inherited_genesis_field](../../src/rewrite.rs#L2838) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::anchored_fork_remaps_complete_child_edges](../../src/rewrite.rs#L2888) | function_item | `private` | test; #[cfg(test)] |
+| [store::rewrite::tests::fork_and_redact_copy_unpoisoned_launch_binding_carriers](../../src/rewrite.rs#L3017) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -518,7 +518,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `advance_rewrite` | `build_payload` | [343](../../src/rewrite.rs#L343) | [store::rewrite::build_payload](../../src/rewrite.rs#L1111) |
 | `advance_rewrite` | `write_operation` | [345](../../src/rewrite.rs#L345), [352](../../src/rewrite.rs#L352), [377](../../src/rewrite.rs#L377), [410](../../src/rewrite.rs#L410), [420](../../src/rewrite.rs#L420) | [store::rewrite::write_operation](../../src/rewrite.rs#L1102) |
 | `advance_rewrite` | `progress` | [346](../../src/rewrite.rs#L346), [353](../../src/rewrite.rs#L353), [378](../../src/rewrite.rs#L378), [411](../../src/rewrite.rs#L411), [421](../../src/rewrite.rs#L421) | [store::rewrite::progress](../../src/rewrite.rs#L584) |
-| `advance_rewrite` | `validate_payload` | [350](../../src/rewrite.rs#L350) | [store::rewrite::validate_payload](../../src/rewrite.rs#L2202) |
+| `advance_rewrite` | `validate_payload` | [350](../../src/rewrite.rs#L350) | [store::rewrite::validate_payload](../../src/rewrite.rs#L2206) |
 | `advance_rewrite` | `stage.join` | [357](../../src/rewrite.rs#L357) | receiver-type-required |
 | `advance_rewrite` | `payload.is_dir` | [359](../../src/rewrite.rs#L359) | receiver-type-required |
 | `advance_rewrite` | `destination.is_dir` | [359](../../src/rewrite.rs#L359) | receiver-type-required |
@@ -529,7 +529,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `advance_rewrite` | `self.root().to_path_buf` | [364](../../src/rewrite.rs#L364), [396](../../src/rewrite.rs#L396) | receiver-type-required |
 | `advance_rewrite` | `operation.dest.clone` | [365](../../src/rewrite.rs#L365) | receiver-type-required |
 | `advance_rewrite` | `"rewrite publication has ambiguous payload/destination state"                                 .to_owned` | [371](../../src/rewrite.rs#L371) | receiver-type-required |
-| `advance_rewrite` | `close_operation` | [382](../../src/rewrite.rs#L382), [429](../../src/rewrite.rs#L429) | [store::rewrite::close_operation](../../src/rewrite.rs#L2331) |
+| `advance_rewrite` | `close_operation` | [382](../../src/rewrite.rs#L382), [429](../../src/rewrite.rs#L429) | [store::rewrite::close_operation](../../src/rewrite.rs#L2335) |
 | `advance_rewrite` | `Ok` | [383](../../src/rewrite.rs#L383), [430](../../src/rewrite.rs#L430) | external-constructor-callback-or-unresolved |
 | `advance_rewrite` | `File::open(self.root().join(".rewrite-trash"))?.sync_all` | [394](../../src/rewrite.rs#L394), [417](../../src/rewrite.rs#L417) | receiver-type-required |
 | `advance_rewrite` | `operation.source.clone` | [397](../../src/rewrite.rs#L397) | receiver-type-required |
@@ -707,7 +707,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_operation` | `"redaction inventory must be sorted and unique".to_owned` | [753](../../src/rewrite.rs#L753) | receiver-type-required |
 | `validate_operation` | `redaction.assets.iter().any` | [756](../../src/rewrite.rs#L756) | receiver-type-required |
 | `validate_operation` | `redaction.assets.iter` | [756](../../src/rewrite.rs#L756) | receiver-type-required |
-| `validate_operation` | `valid_asset_name` | [756](../../src/rewrite.rs#L756), [760](../../src/rewrite.rs#L760) | [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2024) |
+| `validate_operation` | `valid_asset_name` | [756](../../src/rewrite.rs#L756), [760](../../src/rewrite.rs#L760) | [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2028) |
 | `validate_operation` | `redaction                 .fingerprints                 .iter()                 .any` | [757](../../src/rewrite.rs#L757) | receiver-type-required |
 | `validate_operation` | `redaction                 .fingerprints                 .iter` | [757](../../src/rewrite.rs#L757) | receiver-type-required |
 | `validate_operation` | `redaction                 .events                 .iter()                 .any` | [761](../../src/rewrite.rs#L761) | receiver-type-required |
@@ -933,8 +933,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `build_payload` | `fs::write` | [1135](../../src/rewrite.rs#L1135), [1142](../../src/rewrite.rs#L1142) | external-constructor-callback-or-unresolved |
 | `build_payload` | `File::open(&path)?.sync_all` | [1136](../../src/rewrite.rs#L1136) | receiver-type-required |
 | `build_payload` | `File::open` | [1136](../../src/rewrite.rs#L1136), [1143](../../src/rewrite.rs#L1143), [1151](../../src/rewrite.rs#L1151), [1152](../../src/rewrite.rs#L1152), [1153](../../src/rewrite.rs#L1153) | external-constructor-callback-or-unresolved |
-| `build_payload` | `copy_live_assets` | [1138](../../src/rewrite.rs#L1138) | [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2114) |
-| `build_payload` | `crate::session_settings_path` | [1139](../../src/rewrite.rs#L1139) | [store::management_root::session_settings_path](../../src/management_root.rs#L57) |
+| `build_payload` | `copy_live_assets` | [1138](../../src/rewrite.rs#L1138) | [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2118) |
+| `build_payload` | `crate::session_settings_path` | [1139](../../src/rewrite.rs#L1139) | [store::management_root::session_settings_path](../../src/management_root.rs#L44) |
 | `build_payload` | `session_settings.is_file` | [1140](../../src/rewrite.rs#L1140) | receiver-type-required |
 | `build_payload` | `fs::read` | [1142](../../src/rewrite.rs#L1142) | external-constructor-callback-or-unresolved |
 | `build_payload` | `File::open(&destination)?.sync_all` | [1143](../../src/rewrite.rs#L1143) | receiver-type-required |
@@ -1023,13 +1023,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `inventory.assets.iter` | [1285](../../src/rewrite.rs#L1285) | receiver-type-required |
 | `project_file` | `Vec::new` | [1288](../../src/rewrite.rs#L1288), [1380](../../src/rewrite.rs#L1380) | external-constructor-callback-or-unresolved |
 | `project_file` | `event_value` | [1290](../../src/rewrite.rs#L1290), [1315](../../src/rewrite.rs#L1315), [1338](../../src/rewrite.rs#L1338), [1354](../../src/rewrite.rs#L1354), [1391](../../src/rewrite.rs#L1391), [1438](../../src/rewrite.rs#L1438) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
-| `project_file` | `value_references_any` | [1291](../../src/rewrite.rs#L1291) | [store::rewrite::value_references_any](../../src/rewrite.rs#L2108) |
+| `project_file` | `value_references_any` | [1291](../../src/rewrite.rs#L1291) | [store::rewrite::value_references_any](../../src/rewrite.rs#L2112) |
 | `project_file` | `Value::Object` | [1291](../../src/rewrite.rs#L1291) | external-constructor-callback-or-unresolved |
 | `project_file` | `object.clone` | [1291](../../src/rewrite.rs#L1291) | receiver-type-required |
 | `project_file` | `dropped.insert` | [1292](../../src/rewrite.rs#L1292), [1356](../../src/rewrite.rs#L1356), [1366](../../src/rewrite.rs#L1366) | receiver-type-required |
 | `project_file` | `event.seq` | [1292](../../src/rewrite.rs#L1292), [1306](../../src/rewrite.rs#L1306), [1307](../../src/rewrite.rs#L1307), [1356](../../src/rewrite.rs#L1356), [1366](../../src/rewrite.rs#L1366), [1370](../../src/rewrite.rs#L1370), [1409](../../src/rewrite.rs#L1409), [1437](../../src/rewrite.rs#L1437) | receiver-type-required |
 | `project_file` | `object.contains_key` | [1294](../../src/rewrite.rs#L1294) | receiver-type-required |
-| `project_file` | `value_ranges` | [1295](../../src/rewrite.rs#L1295) | [store::rewrite::value_ranges](../../src/rewrite.rs#L1999) |
+| `project_file` | `value_ranges` | [1295](../../src/rewrite.rs#L1295) | [store::rewrite::value_ranges](../../src/rewrite.rs#L2003) |
 | `project_file` | `dropped.extend` | [1303](../../src/rewrite.rs#L1303), [1345](../../src/rewrite.rs#L1345) | receiver-type-required |
 | `project_file` | `dropped.contains` | [1306](../../src/rewrite.rs#L1306), [1325](../../src/rewrite.rs#L1325), [1370](../../src/rewrite.rs#L1370), [1409](../../src/rewrite.rs#L1409), [1440](../../src/rewrite.rs#L1440), [1446](../../src/rewrite.rs#L1446), [1466](../../src/rewrite.rs#L1466) | receiver-type-required |
 | `project_file` | `compact_summaries.push` | [1307](../../src/rewrite.rs#L1307) | receiver-type-required |
@@ -1078,7 +1078,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `events         .iter()         .filter` | [1407](../../src/rewrite.rs#L1407) | receiver-type-required |
 | `project_file` | `events         .iter` | [1407](../../src/rewrite.rs#L1407) | receiver-type-required |
 | `project_file` | `schema::effective_session_genesis(&scope_events)?         .ok_or_else` | [1412](../../src/rewrite.rs#L1412) | receiver-type-required |
-| `project_file` | `schema::effective_session_genesis` | [1412](../../src/rewrite.rs#L1412) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L48) |
+| `project_file` | `schema::effective_session_genesis` | [1412](../../src/rewrite.rs#L1412) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
 | `project_file` | `"source genesis missing".to_owned` | [1413](../../src/rewrite.rs#L1413) | receiver-type-required |
 | `project_file` | `Event::from_value` | [1414](../../src/rewrite.rs#L1414) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
 | `project_file` | `schema::IJsonValue::parse` | [1414](../../src/rewrite.rs#L1414) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
@@ -1086,7 +1086,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `serde_json::to_vec` | [1415](../../src/rewrite.rs#L1415) | external-constructor-callback-or-unresolved |
 | `project_file` | `error.to_string` | [1416](../../src/rewrite.rs#L1416) | receiver-type-required |
 | `project_file` | `build_genesis` | [1418](../../src/rewrite.rs#L1418) | [store::rewrite::build_genesis](../../src/rewrite.rs#L1617) |
-| `project_file` | `push_event` | [1430](../../src/rewrite.rs#L1430), [1550](../../src/rewrite.rs#L1550), [1559](../../src/rewrite.rs#L1559), [1564](../../src/rewrite.rs#L1564), [1576](../../src/rewrite.rs#L1576), [1585](../../src/rewrite.rs#L1585), [1595](../../src/rewrite.rs#L1595), [1605](../../src/rewrite.rs#L1605) | [store::rewrite::push_event](../../src/rewrite.rs#L1990) |
+| `project_file` | `push_event` | [1430](../../src/rewrite.rs#L1430), [1550](../../src/rewrite.rs#L1550), [1559](../../src/rewrite.rs#L1559), [1564](../../src/rewrite.rs#L1564), [1576](../../src/rewrite.rs#L1576), [1585](../../src/rewrite.rs#L1585), [1595](../../src/rewrite.rs#L1595), [1605](../../src/rewrite.rs#L1605) | [store::rewrite::push_event](../../src/rewrite.rs#L1994) |
 | `project_file` | `seq_map.insert` | [1431](../../src/rewrite.rs#L1431), [1551](../../src/rewrite.rs#L1551) | receiver-type-required |
 | `project_file` | `events[0].seq` | [1431](../../src/rewrite.rs#L1431) | receiver-type-required |
 | `project_file` | `Map::new` | [1434](../../src/rewrite.rs#L1434) | external-constructor-callback-or-unresolved |
@@ -1100,21 +1100,21 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `object                             .get("ts")                             .cloned` | [1457](../../src/rewrite.rs#L1457) | receiver-type-required |
 | `project_file` | `object                             .get` | [1457](../../src/rewrite.rs#L1457) | receiver-type-required |
 | `project_file` | `event.kind` | [1469](../../src/rewrite.rs#L1469) | receiver-type-required |
-| `project_file` | `materialize_input` | [1470](../../src/rewrite.rs#L1470) | [store::rewrite::materialize_input](../../src/rewrite.rs#L1739) |
+| `project_file` | `materialize_input` | [1470](../../src/rewrite.rs#L1470) | [store::rewrite::materialize_input](../../src/rewrite.rs#L1743) |
 | `project_file` | `turn_map.insert` | [1480](../../src/rewrite.rs#L1480) | receiver-type-required |
-| `project_file` | `materialize_turn_open` | [1481](../../src/rewrite.rs#L1481) | [store::rewrite::materialize_turn_open](../../src/rewrite.rs#L1763) |
-| `project_file` | `materialize_spawn` | [1485](../../src/rewrite.rs#L1485) | [store::rewrite::materialize_spawn](../../src/rewrite.rs#L1798) |
-| `project_file` | `mapped_turn` | [1488](../../src/rewrite.rs#L1488), [1494](../../src/rewrite.rs#L1494), [1500](../../src/rewrite.rs#L1500), [1510](../../src/rewrite.rs#L1510), [1515](../../src/rewrite.rs#L1515), [1528](../../src/rewrite.rs#L1528) | [store::rewrite::mapped_turn](../../src/rewrite.rs#L1963) |
-| `project_file` | `materialize_child_result` | [1491](../../src/rewrite.rs#L1491) | [store::rewrite::materialize_child_result](../../src/rewrite.rs#L1824) |
-| `project_file` | `materialize_state` | [1497](../../src/rewrite.rs#L1497) | [store::rewrite::materialize_state](../../src/rewrite.rs#L1853) |
-| `project_file` | `materialize_historical_state` | [1505](../../src/rewrite.rs#L1505), [1523](../../src/rewrite.rs#L1523) | [store::rewrite::materialize_historical_state](../../src/rewrite.rs#L1867) |
-| `project_file` | `materialize_settle` | [1512](../../src/rewrite.rs#L1512) | [store::rewrite::materialize_settle](../../src/rewrite.rs#L1903) |
+| `project_file` | `materialize_turn_open` | [1481](../../src/rewrite.rs#L1481) | [store::rewrite::materialize_turn_open](../../src/rewrite.rs#L1767) |
+| `project_file` | `materialize_spawn` | [1485](../../src/rewrite.rs#L1485) | [store::rewrite::materialize_spawn](../../src/rewrite.rs#L1802) |
+| `project_file` | `mapped_turn` | [1488](../../src/rewrite.rs#L1488), [1494](../../src/rewrite.rs#L1494), [1500](../../src/rewrite.rs#L1500), [1510](../../src/rewrite.rs#L1510), [1515](../../src/rewrite.rs#L1515), [1528](../../src/rewrite.rs#L1528) | [store::rewrite::mapped_turn](../../src/rewrite.rs#L1967) |
+| `project_file` | `materialize_child_result` | [1491](../../src/rewrite.rs#L1491) | [store::rewrite::materialize_child_result](../../src/rewrite.rs#L1828) |
+| `project_file` | `materialize_state` | [1497](../../src/rewrite.rs#L1497) | [store::rewrite::materialize_state](../../src/rewrite.rs#L1857) |
+| `project_file` | `materialize_historical_state` | [1505](../../src/rewrite.rs#L1505), [1523](../../src/rewrite.rs#L1523) | [store::rewrite::materialize_historical_state](../../src/rewrite.rs#L1871) |
+| `project_file` | `materialize_settle` | [1512](../../src/rewrite.rs#L1512) | [store::rewrite::materialize_settle](../../src/rewrite.rs#L1907) |
 | `project_file` | `event.effective_visibility` | [1517](../../src/rewrite.rs#L1517) | receiver-type-required |
 | `project_file` | `event.has_field` | [1522](../../src/rewrite.rs#L1522) | receiver-type-required |
 | `project_file` | `effective_meta.is_empty` | [1556](../../src/rewrite.rs#L1556) | receiver-type-required |
-| `project_file` | `materialize_meta` | [1557](../../src/rewrite.rs#L1557) | [store::rewrite::materialize_meta](../../src/rewrite.rs#L1917) |
+| `project_file` | `materialize_meta` | [1557](../../src/rewrite.rs#L1557) | [store::rewrite::materialize_meta](../../src/rewrite.rs#L1921) |
 | `project_file` | `compact_summaries.is_empty` | [1562](../../src/rewrite.rs#L1562) | receiver-type-required |
-| `project_file` | `materialize_epoch` | [1607](../../src/rewrite.rs#L1607) | [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1941) |
+| `project_file` | `materialize_epoch` | [1607](../../src/rewrite.rs#L1607) | [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1945) |
 | `project_file` | `validate_ledger` | [1610](../../src/rewrite.rs#L1610) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
 | `project_file` | `Ok` | [1611](../../src/rewrite.rs#L1611) | external-constructor-callback-or-unresolved |
 | `build_genesis` | `event_value` | [1618](../../src/rewrite.rs#L1618) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
@@ -1123,760 +1123,760 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `build_genesis` | `context.operation.genesis_origin.as_ref` | [1620](../../src/rewrite.rs#L1620) | receiver-type-required |
 | `build_genesis` | `supplied_origin.map_or_else` | [1622](../../src/rewrite.rs#L1622), [1631](../../src/rewrite.rs#L1631) | receiver-type-required |
 | `build_genesis` | `origin.key.clone` | [1629](../../src/rewrite.rs#L1629) | receiver-type-required |
-| `build_genesis` | `rewrite_origin` | [1632](../../src/rewrite.rs#L1632) | [store::rewrite::rewrite_origin](../../src/rewrite.rs#L1732) |
+| `build_genesis` | `rewrite_origin` | [1632](../../src/rewrite.rs#L1632) | [store::rewrite::rewrite_origin](../../src/rewrite.rs#L1736) |
 | `build_genesis` | `serde_json::to_value(origin).expect` | [1633](../../src/rewrite.rs#L1633) | receiver-type-required |
 | `build_genesis` | `serde_json::to_value` | [1633](../../src/rewrite.rs#L1633) | external-constructor-callback-or-unresolved |
 | `build_genesis` | `genesis.as_object_mut().expect` | [1647](../../src/rewrite.rs#L1647) | receiver-type-required |
 | `build_genesis` | `genesis.as_object_mut` | [1647](../../src/rewrite.rs#L1647) | receiver-type-required |
-| `build_genesis` | `target.insert` | [1652](../../src/rewrite.rs#L1652), [1661](../../src/rewrite.rs#L1661), [1674](../../src/rewrite.rs#L1674), [1679](../../src/rewrite.rs#L1679), [1688](../../src/rewrite.rs#L1688), [1696](../../src/rewrite.rs#L1696), [1720](../../src/rewrite.rs#L1720) | receiver-type-required |
+| `build_genesis` | `target.insert` | [1652](../../src/rewrite.rs#L1652), [1661](../../src/rewrite.rs#L1661), [1678](../../src/rewrite.rs#L1678), [1683](../../src/rewrite.rs#L1683), [1692](../../src/rewrite.rs#L1692), [1700](../../src/rewrite.rs#L1700), [1724](../../src/rewrite.rs#L1724) | receiver-type-required |
 | `build_genesis` | `"ephemeral".to_owned` | [1652](../../src/rewrite.rs#L1652) | receiver-type-required |
-| `build_genesis` | `target.contains_key` | [1657](../../src/rewrite.rs#L1657), [1683](../../src/rewrite.rs#L1683) | receiver-type-required |
-| `build_genesis` | `object.get` | [1659](../../src/rewrite.rs#L1659), [1671](../../src/rewrite.rs#L1671), [1693](../../src/rewrite.rs#L1693), [1698](../../src/rewrite.rs#L1698) | receiver-type-required |
+| `build_genesis` | `target.contains_key` | [1657](../../src/rewrite.rs#L1657), [1664](../../src/rewrite.rs#L1664), [1687](../../src/rewrite.rs#L1687) | receiver-type-required |
+| `build_genesis` | `object.get` | [1659](../../src/rewrite.rs#L1659), [1675](../../src/rewrite.rs#L1675), [1697](../../src/rewrite.rs#L1697), [1702](../../src/rewrite.rs#L1702) | receiver-type-required |
 | `build_genesis` | `(*field).to_owned` | [1661](../../src/rewrite.rs#L1661) | receiver-type-required |
 | `build_genesis` | `value.clone` | [1661](../../src/rewrite.rs#L1661) | receiver-type-required |
-| `build_genesis` | `target.remove` | [1668](../../src/rewrite.rs#L1668) | receiver-type-required |
-| `build_genesis` | `Some` | [1669](../../src/rewrite.rs#L1669) | external-constructor-callback-or-unresolved |
-| `build_genesis` | `"preset".to_owned` | [1674](../../src/rewrite.rs#L1674) | receiver-type-required |
-| `build_genesis` | `preset.clone` | [1674](../../src/rewrite.rs#L1674) | receiver-type-required |
-| `build_genesis` | `target             .get("min_reader")             .and_then(Value::as_u64)             .unwrap_or` | [1675](../../src/rewrite.rs#L1675), [1684](../../src/rewrite.rs#L1684) | receiver-type-required |
-| `build_genesis` | `target             .get("min_reader")             .and_then` | [1675](../../src/rewrite.rs#L1675), [1684](../../src/rewrite.rs#L1684) | receiver-type-required |
-| `build_genesis` | `target             .get` | [1675](../../src/rewrite.rs#L1675), [1684](../../src/rewrite.rs#L1684) | receiver-type-required |
-| `build_genesis` | `"min_reader".to_owned` | [1679](../../src/rewrite.rs#L1679), [1689](../../src/rewrite.rs#L1689) | receiver-type-required |
-| `build_genesis` | `value_references_any` | [1694](../../src/rewrite.rs#L1694) | [store::rewrite::value_references_any](../../src/rewrite.rs#L2108) |
-| `build_genesis` | `"seed".to_owned` | [1696](../../src/rewrite.rs#L1696) | receiver-type-required |
-| `build_genesis` | `seed.clone` | [1696](../../src/rewrite.rs#L1696) | receiver-type-required |
-| `build_genesis` | `object.get("parent").and_then` | [1698](../../src/rewrite.rs#L1698) | receiver-type-required |
-| `build_genesis` | `parent             .get("file")             .and_then(Value::as_str)             .ok_or_else` | [1699](../../src/rewrite.rs#L1699) | receiver-type-required |
-| `build_genesis` | `parent             .get("file")             .and_then` | [1699](../../src/rewrite.rs#L1699) | receiver-type-required |
-| `build_genesis` | `parent             .get` | [1699](../../src/rewrite.rs#L1699), [1703](../../src/rewrite.rs#L1703) | receiver-type-required |
-| `build_genesis` | `StoreError::Corruption` | [1702](../../src/rewrite.rs#L1702), [1706](../../src/rewrite.rs#L1706), [1708](../../src/rewrite.rs#L1708), [1716](../../src/rewrite.rs#L1716) | external-constructor-callback-or-unresolved |
-| `build_genesis` | `"child parent lacks file".to_owned` | [1702](../../src/rewrite.rs#L1702) | receiver-type-required |
-| `build_genesis` | `parent             .get("seq")             .and_then(Value::as_u64)             .ok_or_else` | [1703](../../src/rewrite.rs#L1703) | receiver-type-required |
-| `build_genesis` | `parent             .get("seq")             .and_then` | [1703](../../src/rewrite.rs#L1703) | receiver-type-required |
-| `build_genesis` | `"child parent lacks seq".to_owned` | [1706](../../src/rewrite.rs#L1706) | receiver-type-required |
-| `build_genesis` | `context.file_map.get(parent_file).ok_or_else` | [1707](../../src/rewrite.rs#L1707) | receiver-type-required |
-| `build_genesis` | `context.file_map.get` | [1707](../../src/rewrite.rs#L1707) | receiver-type-required |
-| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then(&#124;built&#124; built.seq_map.get(&parent_seq))             .copied()             .ok_or_else` | [1710](../../src/rewrite.rs#L1710) | receiver-type-required |
-| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then(&#124;built&#124; built.seq_map.get(&parent_seq))             .copied` | [1710](../../src/rewrite.rs#L1710) | receiver-type-required |
-| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then` | [1710](../../src/rewrite.rs#L1710) | receiver-type-required |
-| `build_genesis` | `context             .built_parents             .get` | [1710](../../src/rewrite.rs#L1710) | receiver-type-required |
-| `build_genesis` | `built.seq_map.get` | [1713](../../src/rewrite.rs#L1713) | receiver-type-required |
-| `build_genesis` | `"parent".to_owned` | [1721](../../src/rewrite.rs#L1721) | receiver-type-required |
-| `build_genesis` | `Ok` | [1729](../../src/rewrite.rs#L1729) | external-constructor-callback-or-unresolved |
-| `materialize_input` | `value.as_object_mut().expect` | [1754](../../src/rewrite.rs#L1754) | receiver-type-required |
-| `materialize_input` | `value.as_object_mut` | [1754](../../src/rewrite.rs#L1754) | receiver-type-required |
-| `materialize_input` | `source.get` | [1756](../../src/rewrite.rs#L1756) | receiver-type-required |
-| `materialize_input` | `object.insert` | [1757](../../src/rewrite.rs#L1757) | receiver-type-required |
-| `materialize_input` | `field.to_owned` | [1757](../../src/rewrite.rs#L1757) | receiver-type-required |
-| `materialize_input` | `field_value.clone` | [1757](../../src/rewrite.rs#L1757) | receiver-type-required |
-| `materialize_turn_open` | `source.get` | [1769](../../src/rewrite.rs#L1769) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter()                 .map(&#124;value&#124; {                     value                         .as_u64()                         .and_then(&#124;old&#124; seq_map.get(&old).copied())                         .ok_or_else(&#124;&#124; {                             StoreError::Corruption(                                 "turn trigger input was dropped during rewrite".to_owned(),                             )                         })                 })                 .collect::<Result<Vec<_>, _>>` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter()                 .map` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `trigger                 .get` | [1772](../../src/rewrite.rs#L1772) | receiver-type-required |
-| `materialize_turn_open` | `StoreError::Corruption` | [1775](../../src/rewrite.rs#L1775), [1782](../../src/rewrite.rs#L1782), [1790](../../src/rewrite.rs#L1790) | external-constructor-callback-or-unresolved |
-| `materialize_turn_open` | `"turn trigger lacks inputs".to_owned` | [1775](../../src/rewrite.rs#L1775) | receiver-type-required |
-| `materialize_turn_open` | `value                         .as_u64()                         .and_then(&#124;old&#124; seq_map.get(&old).copied())                         .ok_or_else` | [1778](../../src/rewrite.rs#L1778) | receiver-type-required |
-| `materialize_turn_open` | `value                         .as_u64()                         .and_then` | [1778](../../src/rewrite.rs#L1778) | receiver-type-required |
-| `materialize_turn_open` | `value                         .as_u64` | [1778](../../src/rewrite.rs#L1778) | receiver-type-required |
-| `materialize_turn_open` | `seq_map.get(&old).copied` | [1780](../../src/rewrite.rs#L1780) | receiver-type-required |
-| `materialize_turn_open` | `seq_map.get` | [1780](../../src/rewrite.rs#L1780) | receiver-type-required |
-| `materialize_turn_open` | `"turn trigger input was dropped during rewrite".to_owned` | [1783](../../src/rewrite.rs#L1783) | receiver-type-required |
-| `materialize_turn_open` | `Err` | [1790](../../src/rewrite.rs#L1790) | external-constructor-callback-or-unresolved |
-| `materialize_turn_open` | `"invalid turn trigger".to_owned` | [1790](../../src/rewrite.rs#L1790) | receiver-type-required |
-| `materialize_turn_open` | `Ok` | [1792](../../src/rewrite.rs#L1792) | external-constructor-callback-or-unresolved |
-| `materialize_spawn` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1804](../../src/rewrite.rs#L1804) | receiver-type-required |
-| `materialize_spawn` | `source         .get("ts")         .cloned` | [1804](../../src/rewrite.rs#L1804) | receiver-type-required |
-| `materialize_spawn` | `source         .get` | [1804](../../src/rewrite.rs#L1804), [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
-| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else(&#124;&#124; StoreError::Corruption("spawn child is not mapped".to_owned()))?         .clone` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
-| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
-| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
-| `materialize_spawn` | `source         .get("child")         .and_then` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
-| `materialize_spawn` | `thread_map.get` | [1811](../../src/rewrite.rs#L1811) | receiver-type-required |
-| `materialize_spawn` | `StoreError::Corruption` | [1812](../../src/rewrite.rs#L1812) | external-constructor-callback-or-unresolved |
-| `materialize_spawn` | `"spawn child is not mapped".to_owned` | [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
-| `materialize_spawn` | `retain_payload_fields` | [1814](../../src/rewrite.rs#L1814) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) |
-| `materialize_spawn` | `source.insert` | [1815](../../src/rewrite.rs#L1815), [1816](../../src/rewrite.rs#L1816), [1817](../../src/rewrite.rs#L1817), [1818](../../src/rewrite.rs#L1818), [1819](../../src/rewrite.rs#L1819), [1820](../../src/rewrite.rs#L1820) | receiver-type-required |
-| `materialize_spawn` | `"v".to_owned` | [1815](../../src/rewrite.rs#L1815) | receiver-type-required |
-| `materialize_spawn` | `"seq".to_owned` | [1816](../../src/rewrite.rs#L1816) | receiver-type-required |
-| `materialize_spawn` | `"kind".to_owned` | [1817](../../src/rewrite.rs#L1817) | receiver-type-required |
-| `materialize_spawn` | `"ts".to_owned` | [1818](../../src/rewrite.rs#L1818) | receiver-type-required |
-| `materialize_spawn` | `"turn".to_owned` | [1819](../../src/rewrite.rs#L1819) | receiver-type-required |
-| `materialize_spawn` | `"child".to_owned` | [1820](../../src/rewrite.rs#L1820) | receiver-type-required |
-| `materialize_spawn` | `Ok` | [1821](../../src/rewrite.rs#L1821) | external-constructor-callback-or-unresolved |
-| `materialize_spawn` | `Value::Object` | [1821](../../src/rewrite.rs#L1821) | external-constructor-callback-or-unresolved |
-| `materialize_child_result` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1830](../../src/rewrite.rs#L1830) | receiver-type-required |
-| `materialize_child_result` | `source         .get("ts")         .cloned` | [1830](../../src/rewrite.rs#L1830) | receiver-type-required |
-| `materialize_child_result` | `source         .get` | [1830](../../src/rewrite.rs#L1830), [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
-| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else(&#124;&#124; StoreError::Corruption("child_result child is not mapped".to_owned()))?         .clone` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
-| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
-| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
-| `materialize_child_result` | `source         .get("child")         .and_then` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
-| `materialize_child_result` | `thread_map.get` | [1837](../../src/rewrite.rs#L1837) | receiver-type-required |
-| `materialize_child_result` | `StoreError::Corruption` | [1838](../../src/rewrite.rs#L1838) | external-constructor-callback-or-unresolved |
-| `materialize_child_result` | `"child_result child is not mapped".to_owned` | [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
-| `materialize_child_result` | `retain_payload_fields` | [1840](../../src/rewrite.rs#L1840) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) |
-| `materialize_child_result` | `source.insert` | [1844](../../src/rewrite.rs#L1844), [1845](../../src/rewrite.rs#L1845), [1846](../../src/rewrite.rs#L1846), [1847](../../src/rewrite.rs#L1847), [1848](../../src/rewrite.rs#L1848), [1849](../../src/rewrite.rs#L1849) | receiver-type-required |
-| `materialize_child_result` | `"v".to_owned` | [1844](../../src/rewrite.rs#L1844) | receiver-type-required |
-| `materialize_child_result` | `"seq".to_owned` | [1845](../../src/rewrite.rs#L1845) | receiver-type-required |
-| `materialize_child_result` | `"kind".to_owned` | [1846](../../src/rewrite.rs#L1846) | receiver-type-required |
-| `materialize_child_result` | `"ts".to_owned` | [1847](../../src/rewrite.rs#L1847) | receiver-type-required |
-| `materialize_child_result` | `"turn".to_owned` | [1848](../../src/rewrite.rs#L1848) | receiver-type-required |
-| `materialize_child_result` | `"child".to_owned` | [1849](../../src/rewrite.rs#L1849) | receiver-type-required |
-| `materialize_child_result` | `Ok` | [1850](../../src/rewrite.rs#L1850) | external-constructor-callback-or-unresolved |
-| `materialize_child_result` | `Value::Object` | [1850](../../src/rewrite.rs#L1850) | external-constructor-callback-or-unresolved |
-| `materialize_state` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1854](../../src/rewrite.rs#L1854) | receiver-type-required |
-| `materialize_state` | `source         .get("ts")         .cloned` | [1854](../../src/rewrite.rs#L1854) | receiver-type-required |
-| `materialize_state` | `source         .get` | [1854](../../src/rewrite.rs#L1854) | receiver-type-required |
-| `materialize_state` | `retain_payload_fields` | [1858](../../src/rewrite.rs#L1858) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) |
-| `materialize_state` | `source.insert` | [1859](../../src/rewrite.rs#L1859), [1860](../../src/rewrite.rs#L1860), [1861](../../src/rewrite.rs#L1861), [1862](../../src/rewrite.rs#L1862), [1863](../../src/rewrite.rs#L1863) | receiver-type-required |
-| `materialize_state` | `"v".to_owned` | [1859](../../src/rewrite.rs#L1859) | receiver-type-required |
-| `materialize_state` | `"seq".to_owned` | [1860](../../src/rewrite.rs#L1860) | receiver-type-required |
-| `materialize_state` | `"kind".to_owned` | [1861](../../src/rewrite.rs#L1861) | receiver-type-required |
-| `materialize_state` | `"ts".to_owned` | [1862](../../src/rewrite.rs#L1862) | receiver-type-required |
-| `materialize_state` | `"turn".to_owned` | [1863](../../src/rewrite.rs#L1863) | receiver-type-required |
-| `materialize_state` | `Value::Object` | [1864](../../src/rewrite.rs#L1864) | external-constructor-callback-or-unresolved |
-| `materialize_historical_state` | `envelope_fields()             .into_iter()             .chain` | [1876](../../src/rewrite.rs#L1876) | receiver-type-required |
-| `materialize_historical_state` | `envelope_fields()             .into_iter` | [1876](../../src/rewrite.rs#L1876) | receiver-type-required |
-| `materialize_historical_state` | `envelope_fields` | [1876](../../src/rewrite.rs#L1876) | [store::rewrite::envelope_fields](../../src/rewrite.rs#L1975) |
-| `materialize_historical_state` | `payload.remove` | [1880](../../src/rewrite.rs#L1880) | receiver-type-required |
-| `materialize_historical_state` | `event.effective_visibility` | [1887](../../src/rewrite.rs#L1887) | receiver-type-required |
-| `materialize_historical_state` | `value             .as_object_mut()             .expect("state object")             .insert` | [1888](../../src/rewrite.rs#L1888) | receiver-type-required |
-| `materialize_historical_state` | `value             .as_object_mut()             .expect` | [1888](../../src/rewrite.rs#L1888) | receiver-type-required |
-| `materialize_historical_state` | `value             .as_object_mut` | [1888](../../src/rewrite.rs#L1888) | receiver-type-required |
-| `materialize_historical_state` | `"visibility".to_owned` | [1891](../../src/rewrite.rs#L1891) | receiver-type-required |
-| `event_value_ts` | `serde_json::to_value(event.raw())         .ok()         .and_then(&#124;value&#124; value.get("ts").cloned())         .unwrap_or_else` | [1897](../../src/rewrite.rs#L1897) | receiver-type-required |
-| `event_value_ts` | `serde_json::to_value(event.raw())         .ok()         .and_then` | [1897](../../src/rewrite.rs#L1897) | receiver-type-required |
-| `event_value_ts` | `serde_json::to_value(event.raw())         .ok` | [1897](../../src/rewrite.rs#L1897) | receiver-type-required |
-| `event_value_ts` | `serde_json::to_value` | [1897](../../src/rewrite.rs#L1897) | external-constructor-callback-or-unresolved |
-| `event_value_ts` | `event.raw` | [1897](../../src/rewrite.rs#L1897) | receiver-type-required |
-| `event_value_ts` | `value.get("ts").cloned` | [1899](../../src/rewrite.rs#L1899) | receiver-type-required |
-| `event_value_ts` | `value.get` | [1899](../../src/rewrite.rs#L1899) | receiver-type-required |
-| `materialize_settle` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1904](../../src/rewrite.rs#L1904) | receiver-type-required |
-| `materialize_settle` | `source         .get("ts")         .cloned` | [1904](../../src/rewrite.rs#L1904) | receiver-type-required |
-| `materialize_settle` | `source         .get` | [1904](../../src/rewrite.rs#L1904) | receiver-type-required |
-| `materialize_settle` | `retain_payload_fields` | [1908](../../src/rewrite.rs#L1908) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) |
-| `materialize_settle` | `source.insert` | [1909](../../src/rewrite.rs#L1909), [1910](../../src/rewrite.rs#L1910), [1911](../../src/rewrite.rs#L1911), [1912](../../src/rewrite.rs#L1912), [1913](../../src/rewrite.rs#L1913) | receiver-type-required |
-| `materialize_settle` | `"v".to_owned` | [1909](../../src/rewrite.rs#L1909) | receiver-type-required |
-| `materialize_settle` | `"seq".to_owned` | [1910](../../src/rewrite.rs#L1910) | receiver-type-required |
-| `materialize_settle` | `"kind".to_owned` | [1911](../../src/rewrite.rs#L1911) | receiver-type-required |
-| `materialize_settle` | `"ts".to_owned` | [1912](../../src/rewrite.rs#L1912) | receiver-type-required |
-| `materialize_settle` | `"turn".to_owned` | [1913](../../src/rewrite.rs#L1913) | receiver-type-required |
-| `materialize_settle` | `Value::Object` | [1914](../../src/rewrite.rs#L1914) | external-constructor-callback-or-unresolved |
-| `materialize_meta` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1918](../../src/rewrite.rs#L1918) | receiver-type-required |
-| `materialize_meta` | `source         .get("ts")         .cloned` | [1918](../../src/rewrite.rs#L1918) | receiver-type-required |
-| `materialize_meta` | `source         .get` | [1918](../../src/rewrite.rs#L1918) | receiver-type-required |
-| `materialize_meta` | `source.get("title").cloned` | [1922](../../src/rewrite.rs#L1922) | receiver-type-required |
-| `materialize_meta` | `source.get` | [1922](../../src/rewrite.rs#L1922), [1923](../../src/rewrite.rs#L1923) | receiver-type-required |
-| `materialize_meta` | `source.get("labels").cloned` | [1923](../../src/rewrite.rs#L1923) | receiver-type-required |
-| `materialize_meta` | `title.is_none` | [1924](../../src/rewrite.rs#L1924) | receiver-type-required |
-| `materialize_meta` | `labels.is_none` | [1924](../../src/rewrite.rs#L1924) | receiver-type-required |
-| `materialize_meta` | `source.clear` | [1927](../../src/rewrite.rs#L1927) | receiver-type-required |
-| `materialize_meta` | `source.insert` | [1928](../../src/rewrite.rs#L1928), [1929](../../src/rewrite.rs#L1929), [1930](../../src/rewrite.rs#L1930), [1931](../../src/rewrite.rs#L1931), [1933](../../src/rewrite.rs#L1933), [1936](../../src/rewrite.rs#L1936) | receiver-type-required |
-| `materialize_meta` | `"v".to_owned` | [1928](../../src/rewrite.rs#L1928) | receiver-type-required |
-| `materialize_meta` | `"seq".to_owned` | [1929](../../src/rewrite.rs#L1929) | receiver-type-required |
-| `materialize_meta` | `"kind".to_owned` | [1930](../../src/rewrite.rs#L1930) | receiver-type-required |
-| `materialize_meta` | `"ts".to_owned` | [1931](../../src/rewrite.rs#L1931) | receiver-type-required |
-| `materialize_meta` | `"title".to_owned` | [1933](../../src/rewrite.rs#L1933) | receiver-type-required |
-| `materialize_meta` | `"labels".to_owned` | [1936](../../src/rewrite.rs#L1936) | receiver-type-required |
-| `materialize_meta` | `Some` | [1938](../../src/rewrite.rs#L1938) | external-constructor-callback-or-unresolved |
-| `materialize_meta` | `Value::Object` | [1938](../../src/rewrite.rs#L1938) | external-constructor-callback-or-unresolved |
-| `materialize_epoch` | `retain_payload_fields` | [1947](../../src/rewrite.rs#L1947) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1970) |
-| `materialize_epoch` | `source.insert` | [1951](../../src/rewrite.rs#L1951), [1952](../../src/rewrite.rs#L1952), [1953](../../src/rewrite.rs#L1953), [1954](../../src/rewrite.rs#L1954), [1955](../../src/rewrite.rs#L1955), [1959](../../src/rewrite.rs#L1959) | receiver-type-required |
-| `materialize_epoch` | `"v".to_owned` | [1951](../../src/rewrite.rs#L1951) | receiver-type-required |
-| `materialize_epoch` | `"seq".to_owned` | [1952](../../src/rewrite.rs#L1952) | receiver-type-required |
-| `materialize_epoch` | `"kind".to_owned` | [1953](../../src/rewrite.rs#L1953) | receiver-type-required |
-| `materialize_epoch` | `"ts".to_owned` | [1954](../../src/rewrite.rs#L1954) | receiver-type-required |
-| `materialize_epoch` | `"id".to_owned` | [1956](../../src/rewrite.rs#L1956) | receiver-type-required |
-| `materialize_epoch` | `"reason".to_owned` | [1959](../../src/rewrite.rs#L1959) | receiver-type-required |
-| `materialize_epoch` | `Ok` | [1960](../../src/rewrite.rs#L1960) | external-constructor-callback-or-unresolved |
-| `materialize_epoch` | `Value::Object` | [1960](../../src/rewrite.rs#L1960) | external-constructor-callback-or-unresolved |
-| `mapped_turn` | `event         .turn()         .and_then(&#124;turn&#124; turn_map.get(&turn).copied())         .ok_or_else` | [1964](../../src/rewrite.rs#L1964) | receiver-type-required |
-| `mapped_turn` | `event         .turn()         .and_then` | [1964](../../src/rewrite.rs#L1964) | receiver-type-required |
-| `mapped_turn` | `event         .turn` | [1964](../../src/rewrite.rs#L1964) | receiver-type-required |
-| `mapped_turn` | `turn_map.get(&turn).copied` | [1966](../../src/rewrite.rs#L1966) | receiver-type-required |
-| `mapped_turn` | `turn_map.get` | [1966](../../src/rewrite.rs#L1966) | receiver-type-required |
-| `mapped_turn` | `StoreError::Corruption` | [1967](../../src/rewrite.rs#L1967) | external-constructor-callback-or-unresolved |
-| `mapped_turn` | `"turn-bound fact precedes turn_open".to_owned` | [1967](../../src/rewrite.rs#L1967) | receiver-type-required |
-| `retain_payload_fields` | `fields.iter().copied().collect::<BTreeSet<_>>` | [1971](../../src/rewrite.rs#L1971) | receiver-type-required |
-| `retain_payload_fields` | `fields.iter().copied` | [1971](../../src/rewrite.rs#L1971) | receiver-type-required |
-| `retain_payload_fields` | `fields.iter` | [1971](../../src/rewrite.rs#L1971) | receiver-type-required |
-| `retain_payload_fields` | `object.retain` | [1972](../../src/rewrite.rs#L1972) | receiver-type-required |
-| `retain_payload_fields` | `keep.contains` | [1972](../../src/rewrite.rs#L1972) | receiver-type-required |
-| `retain_payload_fields` | `key.as_str` | [1972](../../src/rewrite.rs#L1972) | receiver-type-required |
-| `push_event` | `serde_json_canonicalizer::to_vec(&value)         .map_err` | [1991](../../src/rewrite.rs#L1991) | receiver-type-required |
-| `push_event` | `serde_json_canonicalizer::to_vec` | [1991](../../src/rewrite.rs#L1991) | external-constructor-callback-or-unresolved |
-| `push_event` | `StoreError::Corruption` | [1992](../../src/rewrite.rs#L1992) | external-constructor-callback-or-unresolved |
-| `push_event` | `Event::decode_canonical` | [1993](../../src/rewrite.rs#L1993) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
-| `push_event` | `output.extend_from_slice` | [1994](../../src/rewrite.rs#L1994) | receiver-type-required |
-| `push_event` | `output.push` | [1995](../../src/rewrite.rs#L1995) | receiver-type-required |
-| `push_event` | `Ok` | [1996](../../src/rewrite.rs#L1996) | external-constructor-callback-or-unresolved |
-| `value_ranges` | `object.get` | [2000](../../src/rewrite.rs#L2000) | receiver-type-required |
-| `value_ranges` | `Ok` | [2001](../../src/rewrite.rs#L2001), [2019](../../src/rewrite.rs#L2019) | external-constructor-callback-or-unresolved |
-| `value_ranges` | `Vec::new` | [2001](../../src/rewrite.rs#L2001) | external-constructor-callback-or-unresolved |
-| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter()         .map(&#124;value&#124; {             let range = value                 .as_object()                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range is not object")))?;             let from = range                 .get("from")                 .and_then(Value::as_u64)                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range lacks from")))?;             let to = range                 .get("to")                 .and_then(Value::as_u64)                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range lacks to")))?;             Ok((from, to))         })         .collect` | [2003](../../src/rewrite.rs#L2003) | receiver-type-required |
-| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter()         .map` | [2003](../../src/rewrite.rs#L2003) | receiver-type-required |
-| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter` | [2003](../../src/rewrite.rs#L2003) | receiver-type-required |
-| `value_ranges` | `values         .as_array()         .ok_or_else` | [2003](../../src/rewrite.rs#L2003) | receiver-type-required |
-| `value_ranges` | `values         .as_array` | [2003](../../src/rewrite.rs#L2003) | receiver-type-required |
-| `value_ranges` | `StoreError::Corruption` | [2005](../../src/rewrite.rs#L2005), [2010](../../src/rewrite.rs#L2010), [2014](../../src/rewrite.rs#L2014), [2018](../../src/rewrite.rs#L2018) | external-constructor-callback-or-unresolved |
-| `value_ranges` | `value                 .as_object()                 .ok_or_else` | [2008](../../src/rewrite.rs#L2008) | receiver-type-required |
-| `value_ranges` | `value                 .as_object` | [2008](../../src/rewrite.rs#L2008) | receiver-type-required |
-| `value_ranges` | `range                 .get("from")                 .and_then(Value::as_u64)                 .ok_or_else` | [2011](../../src/rewrite.rs#L2011) | receiver-type-required |
-| `value_ranges` | `range                 .get("from")                 .and_then` | [2011](../../src/rewrite.rs#L2011) | receiver-type-required |
-| `value_ranges` | `range                 .get` | [2011](../../src/rewrite.rs#L2011), [2015](../../src/rewrite.rs#L2015) | receiver-type-required |
-| `value_ranges` | `range                 .get("to")                 .and_then(Value::as_u64)                 .ok_or_else` | [2015](../../src/rewrite.rs#L2015) | receiver-type-required |
-| `value_ranges` | `range                 .get("to")                 .and_then` | [2015](../../src/rewrite.rs#L2015) | receiver-type-required |
-| `valid_asset_name` | `value.strip_prefix("sha256-").is_some_and` | [2025](../../src/rewrite.rs#L2025) | receiver-type-required |
-| `valid_asset_name` | `value.strip_prefix` | [2025](../../src/rewrite.rs#L2025) | receiver-type-required |
-| `valid_asset_name` | `digest.len` | [2026](../../src/rewrite.rs#L2026) | receiver-type-required |
-| `valid_asset_name` | `digest                 .bytes()                 .all` | [2027](../../src/rewrite.rs#L2027) | receiver-type-required |
-| `valid_asset_name` | `digest                 .bytes` | [2027](../../src/rewrite.rs#L2027) | receiver-type-required |
-| `valid_asset_name` | `byte.is_ascii_digit` | [2029](../../src/rewrite.rs#L2029) | receiver-type-required |
-| `valid_asset_name` | `(b'a'..=b'f').contains` | [2029](../../src/rewrite.rs#L2029) | receiver-type-required |
-| `collect_asset_names` | `valid_asset_name` | [2035](../../src/rewrite.rs#L2035) | [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2024) |
-| `collect_asset_names` | `output.insert` | [2036](../../src/rewrite.rs#L2036) | receiver-type-required |
-| `collect_asset_names` | `value.clone` | [2036](../../src/rewrite.rs#L2036) | receiver-type-required |
-| `collect_asset_names` | `collect_asset_names` | [2040](../../src/rewrite.rs#L2040), [2045](../../src/rewrite.rs#L2045) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2033) |
-| `collect_asset_names` | `values.values` | [2044](../../src/rewrite.rs#L2044) | receiver-type-required |
-| `raw_digest_asset` | `value.as_str` | [2053](../../src/rewrite.rs#L2053) | receiver-type-required |
-| `raw_digest_asset` | `digest.len` | [2054](../../src/rewrite.rs#L2054) | receiver-type-required |
-| `raw_digest_asset` | `digest             .bytes()             .all` | [2055](../../src/rewrite.rs#L2055) | receiver-type-required |
-| `raw_digest_asset` | `digest             .bytes` | [2055](../../src/rewrite.rs#L2055) | receiver-type-required |
-| `raw_digest_asset` | `byte.is_ascii_digit` | [2057](../../src/rewrite.rs#L2057) | receiver-type-required |
-| `raw_digest_asset` | `(b'a'..=b'f').contains` | [2057](../../src/rewrite.rs#L2057) | receiver-type-required |
-| `raw_digest_asset` | `Some` | [2059](../../src/rewrite.rs#L2059) | external-constructor-callback-or-unresolved |
-| `collect_event_asset_names` | `collect_asset_names` | [2066](../../src/rewrite.rs#L2066) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2033) |
-| `collect_event_asset_names` | `value.as_object` | [2067](../../src/rewrite.rs#L2067) | receiver-type-required |
-| `collect_event_asset_names` | `object.get("kind").and_then` | [2070](../../src/rewrite.rs#L2070) | receiver-type-required |
-| `collect_event_asset_names` | `object.get` | [2070](../../src/rewrite.rs#L2070) | receiver-type-required |
-| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then(Value::as_object)                     .and_then(&#124;carrier&#124; carrier.get("digest"))                     .and_then` | [2073](../../src/rewrite.rs#L2073) | receiver-type-required |
-| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then(Value::as_object)                     .and_then` | [2073](../../src/rewrite.rs#L2073) | receiver-type-required |
-| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then` | [2073](../../src/rewrite.rs#L2073) | receiver-type-required |
-| `collect_event_asset_names` | `object                     .get` | [2073](../../src/rewrite.rs#L2073) | receiver-type-required |
-| `collect_event_asset_names` | `carrier.get` | [2076](../../src/rewrite.rs#L2076) | receiver-type-required |
-| `collect_event_asset_names` | `output.insert` | [2079](../../src/rewrite.rs#L2079), [2088](../../src/rewrite.rs#L2088) | receiver-type-required |
-| `collect_event_asset_names` | `object                 .get("launch_bindings_digest")                 .and_then` | [2084](../../src/rewrite.rs#L2084) | receiver-type-required |
-| `collect_event_asset_names` | `object                 .get` | [2084](../../src/rewrite.rs#L2084) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `value.as_object` | [2096](../../src/rewrite.rs#L2096) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `object.get("kind").and_then` | [2099](../../src/rewrite.rs#L2099) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `object.get` | [2099](../../src/rewrite.rs#L2099) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `Some` | [2099](../../src/rewrite.rs#L2099) | external-constructor-callback-or-unresolved |
-| `collect_launch_binding_asset_name` | `object             .get("launch_bindings_digest")             .and_then` | [2100](../../src/rewrite.rs#L2100) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `object             .get` | [2100](../../src/rewrite.rs#L2100) | receiver-type-required |
-| `collect_launch_binding_asset_name` | `output.insert` | [2104](../../src/rewrite.rs#L2104) | receiver-type-required |
-| `value_references_any` | `BTreeSet::new` | [2109](../../src/rewrite.rs#L2109) | external-constructor-callback-or-unresolved |
-| `value_references_any` | `collect_asset_names` | [2110](../../src/rewrite.rs#L2110) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2033) |
-| `value_references_any` | `found.iter().any` | [2111](../../src/rewrite.rs#L2111) | receiver-type-required |
-| `value_references_any` | `found.iter` | [2111](../../src/rewrite.rs#L2111) | receiver-type-required |
-| `value_references_any` | `assets.contains` | [2111](../../src/rewrite.rs#L2111) | receiver-type-required |
-| `copy_live_assets` | `operation         .redaction         .as_ref()         .map(&#124;inventory&#124; inventory.assets.iter().cloned().collect::<BTreeSet<_>>())         .unwrap_or_default` | [2119](../../src/rewrite.rs#L2119) | receiver-type-required |
-| `copy_live_assets` | `operation         .redaction         .as_ref()         .map` | [2119](../../src/rewrite.rs#L2119) | receiver-type-required |
-| `copy_live_assets` | `operation         .redaction         .as_ref` | [2119](../../src/rewrite.rs#L2119) | receiver-type-required |
-| `copy_live_assets` | `inventory.assets.iter().cloned().collect::<BTreeSet<_>>` | [2122](../../src/rewrite.rs#L2122) | receiver-type-required |
-| `copy_live_assets` | `inventory.assets.iter().cloned` | [2122](../../src/rewrite.rs#L2122) | receiver-type-required |
-| `copy_live_assets` | `inventory.assets.iter` | [2122](../../src/rewrite.rs#L2122) | receiver-type-required |
-| `copy_live_assets` | `BTreeSet::new` | [2124](../../src/rewrite.rs#L2124), [2167](../../src/rewrite.rs#L2167) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `operation         .source_anchor         .as_ref()         .map(&#124;_&#124; source_ledgers_for_operation(&read_source_ledgers(source_folder)?, operation))         .transpose` | [2128](../../src/rewrite.rs#L2128) | receiver-type-required |
-| `copy_live_assets` | `operation         .source_anchor         .as_ref()         .map` | [2128](../../src/rewrite.rs#L2128) | receiver-type-required |
-| `copy_live_assets` | `operation         .source_anchor         .as_ref` | [2128](../../src/rewrite.rs#L2128) | receiver-type-required |
-| `copy_live_assets` | `source_ledgers_for_operation` | [2131](../../src/rewrite.rs#L2131) | [store::rewrite::source_ledgers_for_operation](../../src/rewrite.rs#L803) |
-| `copy_live_assets` | `read_source_ledgers` | [2131](../../src/rewrite.rs#L2131) | [store::rewrite::read_source_ledgers](../../src/rewrite.rs#L774) |
-| `copy_live_assets` | `source_ledgers.as_ref` | [2134](../../src/rewrite.rs#L2134) | receiver-type-required |
-| `copy_live_assets` | `ledgers.get(&file.source).cloned().ok_or_else` | [2135](../../src/rewrite.rs#L2135) | receiver-type-required |
-| `copy_live_assets` | `ledgers.get(&file.source).cloned` | [2135](../../src/rewrite.rs#L2135) | receiver-type-required |
-| `copy_live_assets` | `ledgers.get` | [2135](../../src/rewrite.rs#L2135) | receiver-type-required |
-| `copy_live_assets` | `StoreError::Corruption` | [2136](../../src/rewrite.rs#L2136), [2148](../../src/rewrite.rs#L2148), [2160](../../src/rewrite.rs#L2160) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `fs::read` | [2141](../../src/rewrite.rs#L2141), [2154](../../src/rewrite.rs#L2154) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `source_folder.join` | [2141](../../src/rewrite.rs#L2141), [2165](../../src/rewrite.rs#L2165) | receiver-type-required |
-| `copy_live_assets` | `bytes             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2143](../../src/rewrite.rs#L2143), [2155](../../src/rewrite.rs#L2155) | receiver-type-required |
-| `copy_live_assets` | `bytes             .split` | [2143](../../src/rewrite.rs#L2143), [2155](../../src/rewrite.rs#L2155) | receiver-type-required |
-| `copy_live_assets` | `line.is_empty` | [2145](../../src/rewrite.rs#L2145), [2157](../../src/rewrite.rs#L2157), [2191](../../src/rewrite.rs#L2191) | receiver-type-required |
-| `copy_live_assets` | `serde_json::from_slice(line)                 .map_err` | [2147](../../src/rewrite.rs#L2147) | receiver-type-required |
-| `copy_live_assets` | `serde_json::from_slice` | [2147](../../src/rewrite.rs#L2147), [2159](../../src/rewrite.rs#L2159) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `collect_launch_binding_asset_name` | [2149](../../src/rewrite.rs#L2149) | [store::rewrite::collect_launch_binding_asset_name](../../src/rewrite.rs#L2095) |
-| `copy_live_assets` | `pending.retain` | [2152](../../src/rewrite.rs#L2152) | receiver-type-required |
-| `copy_live_assets` | `poisoned.contains` | [2152](../../src/rewrite.rs#L2152), [2172](../../src/rewrite.rs#L2172) | receiver-type-required |
-| `copy_live_assets` | `payload.join` | [2154](../../src/rewrite.rs#L2154), [2166](../../src/rewrite.rs#L2166) | receiver-type-required |
-| `copy_live_assets` | `serde_json::from_slice(line).map_err` | [2159](../../src/rewrite.rs#L2159) | receiver-type-required |
-| `copy_live_assets` | `collect_event_asset_names` | [2162](../../src/rewrite.rs#L2162), [2187](../../src/rewrite.rs#L2187), [2194](../../src/rewrite.rs#L2194) | [store::rewrite::collect_event_asset_names](../../src/rewrite.rs#L2065) |
-| `copy_live_assets` | `AssetStore::new` | [2165](../../src/rewrite.rs#L2165), [2166](../../src/rewrite.rs#L2166) | [store::asset::AssetStore::new](../../src/asset.rs#L27) |
-| `copy_live_assets` | `pending.pop_first` | [2168](../../src/rewrite.rs#L2168) | receiver-type-required |
-| `copy_live_assets` | `copied.insert` | [2169](../../src/rewrite.rs#L2169) | receiver-type-required |
-| `copy_live_assets` | `name.clone` | [2169](../../src/rewrite.rs#L2169) | receiver-type-required |
-| `copy_live_assets` | `Err` | [2173](../../src/rewrite.rs#L2173), [2182](../../src/rewrite.rs#L2182) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `StoreError::RewriteCarrierCorrupt` | [2173](../../src/rewrite.rs#L2173), [2179](../../src/rewrite.rs#L2179), [2182](../../src/rewrite.rs#L2182) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `source_assets             .read_verified(&name)             .map_err` | [2177](../../src/rewrite.rs#L2177) | receiver-type-required |
-| `copy_live_assets` | `source_assets             .read_verified` | [2177](../../src/rewrite.rs#L2177) | receiver-type-required |
-| `copy_live_assets` | `destination_assets.publish` | [2180](../../src/rewrite.rs#L2180) | receiver-type-required |
-| `copy_live_assets` | `"asset publication changed digest name".to_owned` | [2183](../../src/rewrite.rs#L2183) | receiver-type-required |
-| `copy_live_assets` | `serde_json::from_slice::<Value>` | [2186](../../src/rewrite.rs#L2186), [2193](../../src/rewrite.rs#L2193) | external-constructor-callback-or-unresolved |
-| `copy_live_assets` | `bytes                 .split(&#124;byte&#124; *byte == b'\n')                 .filter` | [2189](../../src/rewrite.rs#L2189) | receiver-type-required |
-| `copy_live_assets` | `bytes                 .split` | [2189](../../src/rewrite.rs#L2189) | receiver-type-required |
-| `copy_live_assets` | `Ok` | [2199](../../src/rewrite.rs#L2199) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `stage.join` | [2207](../../src/rewrite.rs#L2207) | receiver-type-required |
-| `validate_payload` | `payload.is_dir` | [2208](../../src/rewrite.rs#L2208) | receiver-type-required |
-| `validate_payload` | `Err` | [2209](../../src/rewrite.rs#L2209), [2221](../../src/rewrite.rs#L2221), [2227](../../src/rewrite.rs#L2227), [2236](../../src/rewrite.rs#L2236) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `StoreError::Corruption` | [2209](../../src/rewrite.rs#L2209), [2218](../../src/rewrite.rs#L2218), [2221](../../src/rewrite.rs#L2221), [2227](../../src/rewrite.rs#L2227), [2236](../../src/rewrite.rs#L2236) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `"validated rewrite lacks payload".to_owned` | [2210](../../src/rewrite.rs#L2210) | receiver-type-required |
-| `validate_payload` | `fs::read` | [2214](../../src/rewrite.rs#L2214), [2248](../../src/rewrite.rs#L2248) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `payload.join` | [2214](../../src/rewrite.rs#L2214), [2246](../../src/rewrite.rs#L2246), [2248](../../src/rewrite.rs#L2248) | receiver-type-required |
-| `validate_payload` | `validate_ledger` | [2215](../../src/rewrite.rs#L2215) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
-| `validate_payload` | `crate::tail::check_write_versions` | [2216](../../src/rewrite.rs#L2216) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
-| `validate_payload` | `projection.events.first().ok_or_else` | [2217](../../src/rewrite.rs#L2217) | receiver-type-required |
-| `validate_payload` | `projection.events.first` | [2217](../../src/rewrite.rs#L2217) | receiver-type-required |
-| `validate_payload` | `genesis.string_field` | [2220](../../src/rewrite.rs#L2220) | receiver-type-required |
-| `validate_payload` | `Some` | [2220](../../src/rewrite.rs#L2220) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `file.thread.as_str` | [2220](../../src/rewrite.rs#L2220) | receiver-type-required |
-| `validate_payload` | `projection.lifecycle.latest_turn.is_none` | [2226](../../src/rewrite.rs#L2226) | receiver-type-required |
-| `validate_payload` | `bytes             .windows(b"\"sealed\"".len())             .any` | [2232](../../src/rewrite.rs#L2232) | receiver-type-required |
-| `validate_payload` | `bytes             .windows` | [2232](../../src/rewrite.rs#L2232) | receiver-type-required |
-| `validate_payload` | `b"\"sealed\"".len` | [2233](../../src/rewrite.rs#L2233) | receiver-type-required |
-| `validate_payload` | `"rewritten ledger retained sealed carrier".to_owned` | [2237](../../src/rewrite.rs#L2237) | receiver-type-required |
-| `validate_payload` | `copy_live_assets` | [2241](../../src/rewrite.rs#L2241) | [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2114) |
-| `validate_payload` | `root.join("threads").join` | [2242](../../src/rewrite.rs#L2242) | receiver-type-required |
-| `validate_payload` | `root.join` | [2242](../../src/rewrite.rs#L2242) | receiver-type-required |
-| `validate_payload` | `AssetStore::new` | [2246](../../src/rewrite.rs#L2246) | [store::asset::AssetStore::new](../../src/asset.rs#L27) |
-| `validate_payload` | `decode_events` | [2249](../../src/rewrite.rs#L2249) | [store::rewrite::decode_events](../../src/rewrite.rs#L1208) |
-| `validate_payload` | `events.first` | [2250](../../src/rewrite.rs#L2250) | receiver-type-required |
-| `validate_payload` | `validate_seed_snapshot` | [2251](../../src/rewrite.rs#L2251) | [store::rewrite::validate_seed_snapshot](../../src/rewrite.rs#L2257) |
-| `validate_payload` | `Ok` | [2254](../../src/rewrite.rs#L2254) | external-constructor-callback-or-unresolved |
-| `validate_seed_snapshot` | `event_value` | [2258](../../src/rewrite.rs#L2258) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
-| `validate_seed_snapshot` | `object.get("seed").and_then` | [2259](../../src/rewrite.rs#L2259) | receiver-type-required |
-| `validate_seed_snapshot` | `object.get` | [2259](../../src/rewrite.rs#L2259) | receiver-type-required |
-| `validate_seed_snapshot` | `Ok` | [2260](../../src/rewrite.rs#L2260), [2328](../../src/rewrite.rs#L2328) | external-constructor-callback-or-unresolved |
-| `validate_seed_snapshot` | `seed         .get("snapshot")         .and_then(Value::as_object)         .ok_or_else` | [2262](../../src/rewrite.rs#L2262) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("snapshot")         .and_then` | [2262](../../src/rewrite.rs#L2262) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get` | [2262](../../src/rewrite.rs#L2262), [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `StoreError::RewriteCarrierCorrupt` | [2265](../../src/rewrite.rs#L2265), [2269](../../src/rewrite.rs#L2269), [2274](../../src/rewrite.rs#L2274), [2277](../../src/rewrite.rs#L2277), [2283](../../src/rewrite.rs#L2283), [2285](../../src/rewrite.rs#L2285), [2292](../../src/rewrite.rs#L2292), [2296](../../src/rewrite.rs#L2296), [2307](../../src/rewrite.rs#L2307), [2309](../../src/rewrite.rs#L2309), [2324](../../src/rewrite.rs#L2324) | external-constructor-callback-or-unresolved |
-| `validate_seed_snapshot` | `"seed lacks snapshot".to_owned` | [2265](../../src/rewrite.rs#L2265) | receiver-type-required |
-| `validate_seed_snapshot` | `snapshot         .get("asset")         .and_then(Value::as_str)         .ok_or_else` | [2266](../../src/rewrite.rs#L2266) | receiver-type-required |
-| `validate_seed_snapshot` | `snapshot         .get("asset")         .and_then` | [2266](../../src/rewrite.rs#L2266) | receiver-type-required |
-| `validate_seed_snapshot` | `snapshot         .get` | [2266](../../src/rewrite.rs#L2266), [2270](../../src/rewrite.rs#L2270) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed snapshot lacks asset".to_owned` | [2269](../../src/rewrite.rs#L2269) | receiver-type-required |
-| `validate_seed_snapshot` | `snapshot         .get("digest")         .and_then(Value::as_str)         .ok_or_else` | [2270](../../src/rewrite.rs#L2270) | receiver-type-required |
-| `validate_seed_snapshot` | `snapshot         .get("digest")         .and_then` | [2270](../../src/rewrite.rs#L2270) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed snapshot lacks digest".to_owned` | [2274](../../src/rewrite.rs#L2274) | receiver-type-required |
-| `validate_seed_snapshot` | `Err` | [2277](../../src/rewrite.rs#L2277), [2285](../../src/rewrite.rs#L2285), [2309](../../src/rewrite.rs#L2309), [2324](../../src/rewrite.rs#L2324) | external-constructor-callback-or-unresolved |
-| `validate_seed_snapshot` | `"seed snapshot asset/digest mismatch".to_owned` | [2278](../../src/rewrite.rs#L2278) | receiver-type-required |
-| `validate_seed_snapshot` | `assets         .read_verified(asset)         .map_err` | [2281](../../src/rewrite.rs#L2281) | receiver-type-required |
-| `validate_seed_snapshot` | `assets         .read_verified` | [2281](../../src/rewrite.rs#L2281) | receiver-type-required |
-| `validate_seed_snapshot` | `error.to_string` | [2283](../../src/rewrite.rs#L2283), [2307](../../src/rewrite.rs#L2307) | receiver-type-required |
-| `validate_seed_snapshot` | `bytes.is_empty` | [2284](../../src/rewrite.rs#L2284) | receiver-type-required |
-| `validate_seed_snapshot` | `bytes.ends_with` | [2284](../../src/rewrite.rs#L2284) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed snapshot is not LF terminated".to_owned` | [2286](../../src/rewrite.rs#L2286) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter()         .map(&#124;value&#124; {             value.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                 StoreError::RewriteCarrierCorrupt("seed kind is not a string".to_owned())             })         })         .collect::<Result<Vec<_>, _>>` | [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter()         .map` | [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter` | [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else` | [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then` | [2289](../../src/rewrite.rs#L2289) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed lacks kinds".to_owned` | [2292](../../src/rewrite.rs#L2292) | receiver-type-required |
-| `validate_seed_snapshot` | `value.as_str().map(ToOwned::to_owned).ok_or_else` | [2295](../../src/rewrite.rs#L2295) | receiver-type-required |
-| `validate_seed_snapshot` | `value.as_str().map` | [2295](../../src/rewrite.rs#L2295) | receiver-type-required |
-| `validate_seed_snapshot` | `value.as_str` | [2295](../../src/rewrite.rs#L2295) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed kind is not a string".to_owned` | [2296](../../src/rewrite.rs#L2296) | receiver-type-required |
-| `validate_seed_snapshot` | `BTreeSet::new` | [2300](../../src/rewrite.rs#L2300) | external-constructor-callback-or-unresolved |
-| `validate_seed_snapshot` | `bytes         .split(&#124;byte&#124; *byte == b'\n')         .filter` | [2302](../../src/rewrite.rs#L2302) | receiver-type-required |
-| `validate_seed_snapshot` | `bytes         .split` | [2302](../../src/rewrite.rs#L2302) | receiver-type-required |
-| `validate_seed_snapshot` | `line.is_empty` | [2304](../../src/rewrite.rs#L2304) | receiver-type-required |
-| `validate_seed_snapshot` | `Event::decode_canonical(line)             .map_err` | [2306](../../src/rewrite.rs#L2306) | receiver-type-required |
-| `validate_seed_snapshot` | `Event::decode_canonical` | [2306](../../src/rewrite.rs#L2306) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
-| `validate_seed_snapshot` | `event.seq` | [2308](../../src/rewrite.rs#L2308), [2313](../../src/rewrite.rs#L2313) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed snapshot seqs are not strictly increasing".to_owned` | [2310](../../src/rewrite.rs#L2310) | receiver-type-required |
-| `validate_seed_snapshot` | `observed.insert` | [2314](../../src/rewrite.rs#L2314) | receiver-type-required |
-| `validate_seed_snapshot` | `event                 .string_field("kind")                 .expect("validated event has kind")                 .to_owned` | [2315](../../src/rewrite.rs#L2315) | receiver-type-required |
-| `validate_seed_snapshot` | `event                 .string_field("kind")                 .expect` | [2315](../../src/rewrite.rs#L2315) | receiver-type-required |
-| `validate_seed_snapshot` | `event                 .string_field` | [2315](../../src/rewrite.rs#L2315) | receiver-type-required |
-| `validate_seed_snapshot` | `declared.iter().cloned().collect::<BTreeSet<_>>` | [2321](../../src/rewrite.rs#L2321) | receiver-type-required |
-| `validate_seed_snapshot` | `declared.iter().cloned` | [2321](../../src/rewrite.rs#L2321) | receiver-type-required |
-| `validate_seed_snapshot` | `declared.iter` | [2321](../../src/rewrite.rs#L2321) | receiver-type-required |
-| `validate_seed_snapshot` | `declared.windows(2).any` | [2322](../../src/rewrite.rs#L2322) | receiver-type-required |
-| `validate_seed_snapshot` | `declared.windows` | [2322](../../src/rewrite.rs#L2322) | receiver-type-required |
-| `validate_seed_snapshot` | `"seed kinds do not equal the sorted snapshot kind set".to_owned` | [2325](../../src/rewrite.rs#L2325) | receiver-type-required |
-| `close_operation` | `fs::remove_file` | [2332](../../src/rewrite.rs#L2332) | external-constructor-callback-or-unresolved |
-| `close_operation` | `stage.join` | [2332](../../src/rewrite.rs#L2332) | receiver-type-required |
-| `close_operation` | `File::open(stage)?.sync_all` | [2333](../../src/rewrite.rs#L2333) | receiver-type-required |
-| `close_operation` | `File::open` | [2333](../../src/rewrite.rs#L2333), [2335](../../src/rewrite.rs#L2335) | external-constructor-callback-or-unresolved |
-| `close_operation` | `fs::remove_dir` | [2334](../../src/rewrite.rs#L2334) | external-constructor-callback-or-unresolved |
-| `close_operation` | `File::open(root.join("staging"))?.sync_all` | [2335](../../src/rewrite.rs#L2335) | receiver-type-required |
-| `close_operation` | `root.join` | [2335](../../src/rewrite.rs#L2335) | receiver-type-required |
-| `close_operation` | `Ok` | [2336](../../src/rewrite.rs#L2336) | external-constructor-callback-or-unresolved |
-| `write_canonical_events` | `Vec::new` | [2344](../../src/rewrite.rs#L2344) | external-constructor-callback-or-unresolved |
-| `write_canonical_events` | `bytes.extend_from_slice` | [2346](../../src/rewrite.rs#L2346) | receiver-type-required |
-| `write_canonical_events` | `serde_json_canonicalizer::to_vec(event).expect` | [2347](../../src/rewrite.rs#L2347) | receiver-type-required |
-| `write_canonical_events` | `serde_json_canonicalizer::to_vec` | [2347](../../src/rewrite.rs#L2347) | external-constructor-callback-or-unresolved |
-| `write_canonical_events` | `bytes.push` | [2349](../../src/rewrite.rs#L2349) | receiver-type-required |
-| `write_canonical_events` | `validate_ledger(&bytes, schema::READER_VERSION).expect` | [2351](../../src/rewrite.rs#L2351) | receiver-type-required |
-| `write_canonical_events` | `validate_ledger` | [2351](../../src/rewrite.rs#L2351) | external-constructor-callback-or-unresolved |
-| `write_canonical_events` | `fs::write(path, bytes).expect` | [2352](../../src/rewrite.rs#L2352) | receiver-type-required |
-| `write_canonical_events` | `fs::write` | [2352](../../src/rewrite.rs#L2352) | external-constructor-callback-or-unresolved |
-| `origin` | `"uid:501".to_owned` | [2357](../../src/rewrite.rs#L2357) | receiver-type-required |
-| `origin` | `"session-endpoint".to_owned` | [2358](../../src/rewrite.rs#L2358) | receiver-type-required |
-| `origin` | `target.to_owned` | [2359](../../src/rewrite.rs#L2359) | receiver-type-required |
-| `origin` | `op.to_owned` | [2360](../../src/rewrite.rs#L2360) | receiver-type-required |
-| `origin` | `key.to_owned` | [2361](../../src/rewrite.rs#L2361) | receiver-type-required |
-| `baseline_source` | `store.root().join("threads").join` | [2366](../../src/rewrite.rs#L2366) | receiver-type-required |
-| `baseline_source` | `store.root().join` | [2366](../../src/rewrite.rs#L2366) | receiver-type-required |
-| `baseline_source` | `store.root` | [2366](../../src/rewrite.rs#L2366) | receiver-type-required |
-| `baseline_source` | `fs::create_dir(&source).unwrap` | [2367](../../src/rewrite.rs#L2367) | receiver-type-required |
-| `baseline_source` | `fs::create_dir` | [2367](../../src/rewrite.rs#L2367) | external-constructor-callback-or-unresolved |
-| `baseline_source` | `fs::write(source.join("main.jsonl"), baseline).unwrap` | [2369](../../src/rewrite.rs#L2369) | receiver-type-required |
-| `baseline_source` | `fs::write` | [2369](../../src/rewrite.rs#L2369) | external-constructor-callback-or-unresolved |
-| `baseline_source` | `source.join` | [2369](../../src/rewrite.rs#L2369) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `tempfile::tempdir().unwrap` | [2377](../../src/rewrite.rs#L2377) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `tempfile::tempdir` | [2377](../../src/rewrite.rs#L2377) | external-constructor-callback-or-unresolved |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `ThreadStore::open(directory.path()).unwrap` | [2378](../../src/rewrite.rs#L2378) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `ThreadStore::open` | [2378](../../src/rewrite.rs#L2378) | external-constructor-callback-or-unresolved |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `directory.path` | [2378](../../src/rewrite.rs#L2378), [2379](../../src/rewrite.rs#L2379) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `directory.path().to_path_buf` | [2379](../../src/rewrite.rs#L2379) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `baseline_source` | [2381](../../src/rewrite.rs#L2381) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2365) |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `crate::folder_events::arm_admission` | [2382](../../src/rewrite.rs#L2382) | [store::folder_events::arm_admission](../../src/folder_events.rs#L141) |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `crate::folder_events::record_events` | [2383](../../src/rewrite.rs#L2383) | [store::folder_events::record_events](../../src/folder_events.rs#L211) |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.root().join` | [2384](../../src/rewrite.rs#L2384) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.root` | [2384](../../src/rewrite.rs#L2384) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all(trash.join(format!("redact-op-{reserved}"))).unwrap` | [2388](../../src/rewrite.rs#L2388) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all` | [2388](../../src/rewrite.rs#L2388), [2396](../../src/rewrite.rs#L2396) | external-constructor-callback-or-unresolved |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `trash.join` | [2388](../../src/rewrite.rs#L2388), [2396](../../src/rewrite.rs#L2396), [2397](../../src/rewrite.rs#L2397) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all(trash.join(format!("discard-{reused}/assets"))).unwrap` | [2396](../../src/rewrite.rs#L2396) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::write(trash.join(format!("discard-{reused}/main.jsonl")), b"old").unwrap` | [2397](../../src/rewrite.rs#L2397) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::write` | [2397](../../src/rewrite.rs#L2397) | external-constructor-callback-or-unresolved |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store             .begin_fork("fork-1", source_id, reused, "2026-10-04T00:00:00.000Z")             .unwrap` | [2398](../../src/rewrite.rs#L2398) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store             .begin_fork` | [2398](../../src/rewrite.rs#L2398) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.recover_rewrites().unwrap` | [2402](../../src/rewrite.rs#L2402) | receiver-type-required |
-| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.recover_rewrites` | [2402](../../src/rewrite.rs#L2402) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tempfile::tempdir().unwrap` | [2418](../../src/rewrite.rs#L2418) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tempfile::tempdir` | [2418](../../src/rewrite.rs#L2418) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::sync::Arc::new` | [2419](../../src/rewrite.rs#L2419) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `ThreadStore::open(directory.path()).unwrap` | [2419](../../src/rewrite.rs#L2419) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `ThreadStore::open` | [2419](../../src/rewrite.rs#L2419) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `directory.path` | [2419](../../src/rewrite.rs#L2419) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `baseline_source` | [2420](../../src/rewrite.rs#L2420) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2365) |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root()                 .join(".rewrite-trash")                 .join` | [2422](../../src/rewrite.rs#L2422) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root()                 .join` | [2422](../../src/rewrite.rs#L2422) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root` | [2422](../../src/rewrite.rs#L2422) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::create_dir_all(tombstone.join(format!("assets/{file}"))).unwrap` | [2427](../../src/rewrite.rs#L2427) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::create_dir_all` | [2427](../../src/rewrite.rs#L2427) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tombstone.join` | [2427](../../src/rewrite.rs#L2427), [2428](../../src/rewrite.rs#L2428) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::write(tombstone.join(format!("assets/{file}/blob")), b"x").unwrap` | [2428](../../src/rewrite.rs#L2428) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::write` | [2428](../../src/rewrite.rs#L2428) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::sync::Arc::clone` | [2431](../../src/rewrite.rs#L2431) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::thread::spawn` | [2432](../../src/rewrite.rs#L2432) | external-constructor-callback-or-unresolved |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store.cleanup_discard_tombstones` | [2432](../../src/rewrite.rs#L2432) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store.begin_fork` | [2434](../../src/rewrite.rs#L2434) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `cleaner.join().unwrap` | [2440](../../src/rewrite.rs#L2440) | receiver-type-required |
-| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `cleaner.join` | [2440](../../src/rewrite.rs#L2440) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tempfile::tempdir().unwrap` | [2452](../../src/rewrite.rs#L2452) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tempfile::tempdir` | [2452](../../src/rewrite.rs#L2452) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `ThreadStore::open(directory.path()).unwrap` | [2453](../../src/rewrite.rs#L2453) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `ThreadStore::open` | [2453](../../src/rewrite.rs#L2453) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `directory.path` | [2453](../../src/rewrite.rs#L2453), [2494](../../src/rewrite.rs#L2494) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `baseline_source` | [2455](../../src/rewrite.rs#L2455) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2365) |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store.root().join` | [2457](../../src/rewrite.rs#L2457) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store.root` | [2457](../../src/rewrite.rs#L2457) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `trash.join` | [2458](../../src/rewrite.rs#L2458) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tombstone.join` | [2460](../../src/rewrite.rs#L2460) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::create_dir_all(&folder).unwrap` | [2461](../../src/rewrite.rs#L2461), [2497](../../src/rewrite.rs#L2497) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::create_dir_all` | [2461](../../src/rewrite.rs#L2461), [2497](../../src/rewrite.rs#L2497) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write(folder.join(format!("blob-{file}")), b"x").unwrap` | [2463](../../src/rewrite.rs#L2463) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write` | [2463](../../src/rewrite.rs#L2463), [2499](../../src/rewrite.rs#L2499) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `folder.join` | [2463](../../src/rewrite.rs#L2463), [2499](../../src/rewrite.rs#L2499) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store             .begin_fork(                 "fork-big",                 source_id,                 destination,                 "2026-10-04T00:00:00.000Z",             )             .unwrap` | [2466](../../src/rewrite.rs#L2466) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store             .begin_fork` | [2466](../../src/rewrite.rs#L2466) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Instant::now` | [2479](../../src/rewrite.rs#L2479) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Duration::from_secs` | [2479](../../src/rewrite.rs#L2479) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir(&trash).unwrap().any` | [2480](../../src/rewrite.rs#L2480) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir(&trash).unwrap` | [2480](../../src/rewrite.rs#L2480) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir` | [2480](../../src/rewrite.rs#L2480) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name()                 .to_string_lossy()                 .starts_with` | [2481](../../src/rewrite.rs#L2481) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name()                 .to_string_lossy` | [2481](../../src/rewrite.rs#L2481) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name` | [2481](../../src/rewrite.rs#L2481) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap` | [2481](../../src/rewrite.rs#L2481) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::thread::sleep` | [2491](../../src/rewrite.rs#L2491) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Duration::from_millis` | [2491](../../src/rewrite.rs#L2491) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `directory.path().join` | [2494](../../src/rewrite.rs#L2494) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `shared.join` | [2496](../../src/rewrite.rs#L2496) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write(folder.join(format!("f{file}")), b"x").unwrap` | [2499](../../src/rewrite.rs#L2499) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `shared.clone` | [2503](../../src/rewrite.rs#L2503) | receiver-type-required |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::thread::spawn` | [2504](../../src/rewrite.rs#L2504) | external-constructor-callback-or-unresolved |
-| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `crate::folder::remove_tree_if_present` | [2504](../../src/rewrite.rs#L2504), [2506](../../src/rewrite.rs#L2506) | [store::folder::remove_tree_if_present](../../src/folder.rs#L925) |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir().unwrap` | [2514](../../src/rewrite.rs#L2514) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir` | [2514](../../src/rewrite.rs#L2514) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `ThreadStore::open(directory.path()).unwrap` | [2515](../../src/rewrite.rs#L2515) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `ThreadStore::open` | [2515](../../src/rewrite.rs#L2515) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `directory.path` | [2515](../../src/rewrite.rs#L2515) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root().join("threads").join` | [2518](../../src/rewrite.rs#L2518) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root().join` | [2518](../../src/rewrite.rs#L2518), [2547](../../src/rewrite.rs#L2547), [2576](../../src/rewrite.rs#L2576) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root` | [2518](../../src/rewrite.rs#L2518), [2547](../../src/rewrite.rs#L2547), [2576](../../src/rewrite.rs#L2576) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::create_dir(&source).unwrap` | [2519](../../src/rewrite.rs#L2519) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::create_dir` | [2519](../../src/rewrite.rs#L2519) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).unwrap())             .collect::<Vec<_>>` | [2521](../../src/rewrite.rs#L2521) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2521](../../src/rewrite.rs#L2521) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2521](../../src/rewrite.rs#L2521) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split` | [2521](../../src/rewrite.rs#L2521) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `line.is_empty` | [2523](../../src/rewrite.rs#L2523) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `serde_json::from_slice::<Value>(line).unwrap` | [2524](../../src/rewrite.rs#L2524) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `serde_json::from_slice::<Value>` | [2524](../../src/rewrite.rs#L2524) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap` | [2526](../../src/rewrite.rs#L2526) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut()             .find` | [2526](../../src/rewrite.rs#L2526) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut` | [2526](../../src/rewrite.rs#L2526) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut()             .unwrap()             .insert` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut()             .unwrap` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `"launch_bindings_digest".into` | [2532](../../src/rewrite.rs#L2532) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_canonical_events` | [2533](../../src/rewrite.rs#L2533) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `source.join` | [2533](../../src/rewrite.rs#L2533), [2534](../../src/rewrite.rs#L2534) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::read(source.join("main.jsonl")).unwrap` | [2534](../../src/rewrite.rs#L2534) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::read` | [2534](../../src/rewrite.rs#L2534) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store             .begin_fork(                 "failed-fork",                 source_id,                 destination_id,                 "2026-10-04T00:00:00.000Z",             )             .unwrap` | [2535](../../src/rewrite.rs#L2535) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store             .begin_fork` | [2535](../../src/rewrite.rs#L2535) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `read_operation(&stage).unwrap` | [2548](../../src/rewrite.rs#L2548) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `read_operation` | [2548](../../src/rewrite.rs#L2548) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `operation.clone` | [2549](../../src/rewrite.rs#L2549) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation(&stage, &protected).unwrap` | [2551](../../src/rewrite.rs#L2551), [2565](../../src/rewrite.rs#L2565) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation` | [2551](../../src/rewrite.rs#L2551), [2565](../../src/rewrite.rs#L2565), [2572](../../src/rewrite.rs#L2572) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `StoreError::RewriteCarrierCorrupt` | [2552](../../src/rewrite.rs#L2552) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `"missing asset".into` | [2552](../../src/rewrite.rs#L2552) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `Some` | [2560](../../src/rewrite.rs#L2560) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `Vec::new` | [2561](../../src/rewrite.rs#L2561), [2562](../../src/rewrite.rs#L2562), [2563](../../src/rewrite.rs#L2563) | external-constructor-callback-or-unresolved |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation(&stage, &operation).unwrap` | [2572](../../src/rewrite.rs#L2572) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.gc_rewrite_debris().unwrap` | [2581](../../src/rewrite.rs#L2581) | receiver-type-required |
-| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.gc_rewrite_debris` | [2581](../../src/rewrite.rs#L2581) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `tempfile::tempdir().expect` | [2587](../../src/rewrite.rs#L2587) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `tempfile::tempdir` | [2587](../../src/rewrite.rs#L2587) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `ThreadStore::open(directory.path()).expect` | [2588](../../src/rewrite.rs#L2588) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `ThreadStore::open` | [2588](../../src/rewrite.rs#L2588) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `directory.path` | [2588](../../src/rewrite.rs#L2588) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root().join("threads").join` | [2591](../../src/rewrite.rs#L2591), [2677](../../src/rewrite.rs#L2677) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root().join` | [2591](../../src/rewrite.rs#L2591), [2677](../../src/rewrite.rs#L2677) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root` | [2591](../../src/rewrite.rs#L2591), [2677](../../src/rewrite.rs#L2677) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::create_dir(&source).expect` | [2592](../../src/rewrite.rs#L2592) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::create_dir` | [2592](../../src/rewrite.rs#L2592) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `AssetStore::new(source.join("assets")).expect` | [2593](../../src/rewrite.rs#L2593) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `AssetStore::new` | [2593](../../src/rewrite.rs#L2593) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `source.join` | [2593](../../src/rewrite.rs#L2593), [2629](../../src/rewrite.rs#L2629), [2630](../../src/rewrite.rs#L2630), [2634](../../src/rewrite.rs#L2634) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets             .publish(b"retained launch profile")             .expect` | [2594](../../src/rewrite.rs#L2594) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets             .publish` | [2594](../../src/rewrite.rs#L2594) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets.publish(b"later launch profile").expect` | [2597](../../src/rewrite.rs#L2597) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets.publish` | [2597](../../src/rewrite.rs#L2597) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2600](../../src/rewrite.rs#L2600) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2600](../../src/rewrite.rs#L2600) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2600](../../src/rewrite.rs#L2600) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split` | [2600](../../src/rewrite.rs#L2600) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `line.is_empty` | [2602](../../src/rewrite.rs#L2602) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `serde_json::from_slice::<Value>(line).expect` | [2603](../../src/rewrite.rs#L2603) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `serde_json::from_slice::<Value>` | [2603](../../src/rewrite.rs#L2603) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut().unwrap().insert` | [2605](../../src/rewrite.rs#L2605) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut().unwrap` | [2605](../../src/rewrite.rs#L2605) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut` | [2605](../../src/rewrite.rs#L2605) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `"launch_bindings_digest".to_owned` | [2606](../../src/rewrite.rs#L2606) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events.push` | [2609](../../src/rewrite.rs#L2609), [2615](../../src/rewrite.rs#L2615), [2621](../../src/rewrite.rs#L2621), [2625](../../src/rewrite.rs#L2625) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `write_canonical_events` | [2629](../../src/rewrite.rs#L2629) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write(source.join("endpoint.jsonl"), b"not a semantic ledger\n")             .expect` | [2630](../../src/rewrite.rs#L2630) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write` | [2630](../../src/rewrite.rs#L2630), [2634](../../src/rewrite.rs#L2634) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write(source.join(crate::SESSION_SETTINGS_FILE), settings)             .expect` | [2634](../../src/rewrite.rs#L2634) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.begin_fork_at_kernel_anchor` | [2637](../../src/rewrite.rs#L2637) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `"018f0000-0000-7000-8000-000000000005".to_owned` | [2642](../../src/rewrite.rs#L2642) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `origin` | [2643](../../src/rewrite.rs#L2643), [2660](../../src/rewrite.rs#L2660) | [store::rewrite::tests::origin](../../src/rewrite.rs#L2355) |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `destination_id.to_owned` | [2659](../../src/rewrite.rs#L2659) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork_at_kernel_anchor(                 "fork-prefix",                 source_id,                 8,                 binding.clone(),                 "2026-08-28T10:00:00.000Z",             )             .expect` | [2664](../../src/rewrite.rs#L2664) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork_at_kernel_anchor` | [2664](../../src/rewrite.rs#L2664) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `binding.clone` | [2669](../../src/rewrite.rs#L2669) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.recover_rewrites().expect` | [2675](../../src/rewrite.rs#L2675), [2719](../../src/rewrite.rs#L2719) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.recover_rewrites` | [2675](../../src/rewrite.rs#L2675), [2719](../../src/rewrite.rs#L2719) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).expect("destination ledger"),             1,         )         .expect` | [2678](../../src/rewrite.rs#L2678) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `validate_ledger` | [2678](../../src/rewrite.rs#L2678) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::read(destination.join("main.jsonl")).expect` | [2679](../../src/rewrite.rs#L2679) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::read` | [2679](../../src/rewrite.rs#L2679) | external-constructor-callback-or-unresolved |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `destination.join` | [2679](../../src/rewrite.rs#L2679) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `projected.events.first().expect` | [2683](../../src/rewrite.rs#L2683) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `projected.events.first` | [2683](../../src/rewrite.rs#L2683) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork(                 "fork-full-tail",                 source_id,                 full_destination,                 "2026-08-28T10:01:00.000Z",             )             .expect` | [2709](../../src/rewrite.rs#L2709) | receiver-type-required |
-| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork` | [2709](../../src/rewrite.rs#L2709) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `tempfile::tempdir().expect` | [2732](../../src/rewrite.rs#L2732) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `tempfile::tempdir` | [2732](../../src/rewrite.rs#L2732) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `ThreadStore::open(directory.path()).expect` | [2733](../../src/rewrite.rs#L2733) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `ThreadStore::open` | [2733](../../src/rewrite.rs#L2733) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `directory.path` | [2733](../../src/rewrite.rs#L2733) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store.root().join("threads").join` | [2736](../../src/rewrite.rs#L2736), [2771](../../src/rewrite.rs#L2771) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store.root().join` | [2736](../../src/rewrite.rs#L2736), [2771](../../src/rewrite.rs#L2771) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store.root` | [2736](../../src/rewrite.rs#L2736), [2771](../../src/rewrite.rs#L2771) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `fs::create_dir(&source).expect` | [2737](../../src/rewrite.rs#L2737) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `fs::create_dir` | [2737](../../src/rewrite.rs#L2737) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2739](../../src/rewrite.rs#L2739) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2739](../../src/rewrite.rs#L2739) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2739](../../src/rewrite.rs#L2739) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `baseline             .split` | [2739](../../src/rewrite.rs#L2739) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `line.is_empty` | [2741](../../src/rewrite.rs#L2741) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `serde_json::from_slice::<Value>(line).expect` | [2742](../../src/rewrite.rs#L2742) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `serde_json::from_slice::<Value>` | [2742](../../src/rewrite.rs#L2742) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut()             .unwrap()             .insert` | [2744](../../src/rewrite.rs#L2744) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut()             .unwrap` | [2744](../../src/rewrite.rs#L2744) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut` | [2744](../../src/rewrite.rs#L2744) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `"identity_profile".to_owned` | [2747](../../src/rewrite.rs#L2747) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event["seq"].as_u64().unwrap` | [2749](../../src/rewrite.rs#L2749) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event["seq"].as_u64` | [2749](../../src/rewrite.rs#L2749) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut()                 .unwrap()                 .insert` | [2750](../../src/rewrite.rs#L2750) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut()                 .unwrap` | [2750](../../src/rewrite.rs#L2750) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut` | [2750](../../src/rewrite.rs#L2750) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `"seq".to_owned` | [2753](../../src/rewrite.rs#L2753) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `events.insert` | [2755](../../src/rewrite.rs#L2755) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `write_canonical_events` | [2761](../../src/rewrite.rs#L2761) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `fork_preserves_runtime_identity_selection` | `source.join` | [2761](../../src/rewrite.rs#L2761) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store             .begin_fork(                 "fork-identity",                 source_id,                 destination_id,                 "2026-09-27T00:00:00.000Z",             )             .expect` | [2762](../../src/rewrite.rs#L2762) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store             .begin_fork` | [2762](../../src/rewrite.rs#L2762) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store.recover_rewrites().expect` | [2770](../../src/rewrite.rs#L2770) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `store.recover_rewrites` | [2770](../../src/rewrite.rs#L2770) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2772](../../src/rewrite.rs#L2772) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `validate_ledger` | [2772](../../src/rewrite.rs#L2772) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `fs::read(destination.join("main.jsonl")).unwrap` | [2773](../../src/rewrite.rs#L2773) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `fs::read` | [2773](../../src/rewrite.rs#L2773) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `destination.join` | [2773](../../src/rewrite.rs#L2773) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter()             .find(&#124;event&#124; event.string_field("subkind") == Some("identity.selected"))             .expect` | [2781](../../src/rewrite.rs#L2781) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter()             .find` | [2781](../../src/rewrite.rs#L2781) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter` | [2781](../../src/rewrite.rs#L2781) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `event.string_field` | [2784](../../src/rewrite.rs#L2784) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `Some` | [2784](../../src/rewrite.rs#L2784) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `serde_json::to_value(choice.raw()).unwrap` | [2787](../../src/rewrite.rs#L2787) | receiver-type-required |
-| `fork_preserves_runtime_identity_selection` | `serde_json::to_value` | [2787](../../src/rewrite.rs#L2787) | external-constructor-callback-or-unresolved |
-| `fork_preserves_runtime_identity_selection` | `choice.raw` | [2787](../../src/rewrite.rs#L2787) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `tempfile::tempdir().expect` | [2793](../../src/rewrite.rs#L2793) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `tempfile::tempdir` | [2793](../../src/rewrite.rs#L2793) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `ThreadStore::open(directory.path()).expect` | [2794](../../src/rewrite.rs#L2794) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `ThreadStore::open` | [2794](../../src/rewrite.rs#L2794) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `directory.path` | [2794](../../src/rewrite.rs#L2794) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root().join("threads").join` | [2797](../../src/rewrite.rs#L2797), [2819](../../src/rewrite.rs#L2819) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root().join` | [2797](../../src/rewrite.rs#L2797), [2819](../../src/rewrite.rs#L2819) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root` | [2797](../../src/rewrite.rs#L2797), [2819](../../src/rewrite.rs#L2819) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::create_dir(&source).expect` | [2798](../../src/rewrite.rs#L2798) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::create_dir` | [2798](../../src/rewrite.rs#L2798) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2800](../../src/rewrite.rs#L2800) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2800](../../src/rewrite.rs#L2800) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2800](../../src/rewrite.rs#L2800) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split` | [2800](../../src/rewrite.rs#L2800) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `line.is_empty` | [2802](../../src/rewrite.rs#L2802) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::from_slice::<Value>(line).expect` | [2803](../../src/rewrite.rs#L2803) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::from_slice::<Value>` | [2803](../../src/rewrite.rs#L2803) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `events[0].as_object_mut().unwrap` | [2806](../../src/rewrite.rs#L2806) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `events[0].as_object_mut` | [2806](../../src/rewrite.rs#L2806) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `genesis.insert` | [2807](../../src/rewrite.rs#L2807), [2808](../../src/rewrite.rs#L2808) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `"preset".to_owned` | [2807](../../src/rewrite.rs#L2807) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `preset.clone` | [2807](../../src/rewrite.rs#L2807) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `"min_reader".to_owned` | [2808](../../src/rewrite.rs#L2808) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `write_canonical_events` | [2809](../../src/rewrite.rs#L2809) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `source.join` | [2809](../../src/rewrite.rs#L2809) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store             .begin_fork(                 "fork-preset",                 source_id,                 destination_id,                 "2026-09-27T00:00:00.000Z",             )             .expect` | [2810](../../src/rewrite.rs#L2810) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store             .begin_fork` | [2810](../../src/rewrite.rs#L2810) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store.recover_rewrites().expect` | [2818](../../src/rewrite.rs#L2818) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `store.recover_rewrites` | [2818](../../src/rewrite.rs#L2818) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2820](../../src/rewrite.rs#L2820) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `validate_ledger` | [2820](../../src/rewrite.rs#L2820) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::read(destination.join("main.jsonl")).unwrap` | [2821](../../src/rewrite.rs#L2821) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::read` | [2821](../../src/rewrite.rs#L2821) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `destination.join` | [2821](../../src/rewrite.rs#L2821) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::to_value(projected.events[0].raw()).unwrap` | [2825](../../src/rewrite.rs#L2825) | receiver-type-required |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::to_value` | [2825](../../src/rewrite.rs#L2825) | external-constructor-callback-or-unresolved |
-| `fork_keeps_the_genesis_preset_and_reader_two` | `projected.events[0].raw` | [2825](../../src/rewrite.rs#L2825) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `tempfile::tempdir().expect` | [2835](../../src/rewrite.rs#L2835) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `tempfile::tempdir` | [2835](../../src/rewrite.rs#L2835) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `ThreadStore::open(directory.path()).expect` | [2836](../../src/rewrite.rs#L2836) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `ThreadStore::open` | [2836](../../src/rewrite.rs#L2836) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `directory.path` | [2836](../../src/rewrite.rs#L2836) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store.root().join("threads").join` | [2839](../../src/rewrite.rs#L2839), [2865](../../src/rewrite.rs#L2865) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store.root().join` | [2839](../../src/rewrite.rs#L2839), [2865](../../src/rewrite.rs#L2865) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store.root` | [2839](../../src/rewrite.rs#L2839), [2865](../../src/rewrite.rs#L2865) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `fs::create_dir(&source).expect` | [2840](../../src/rewrite.rs#L2840) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `fs::create_dir` | [2840](../../src/rewrite.rs#L2840) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2842](../../src/rewrite.rs#L2842) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2842](../../src/rewrite.rs#L2842) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2842](../../src/rewrite.rs#L2842) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `baseline             .split` | [2842](../../src/rewrite.rs#L2842) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `line.is_empty` | [2844](../../src/rewrite.rs#L2844) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `serde_json::from_slice::<Value>(line).expect` | [2845](../../src/rewrite.rs#L2845) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `serde_json::from_slice::<Value>` | [2845](../../src/rewrite.rs#L2845) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `events[0].as_object_mut().unwrap` | [2847](../../src/rewrite.rs#L2847) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `events[0].as_object_mut` | [2847](../../src/rewrite.rs#L2847) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `genesis.insert` | [2848](../../src/rewrite.rs#L2848), [2849](../../src/rewrite.rs#L2849), [2850](../../src/rewrite.rs#L2850), [2851](../../src/rewrite.rs#L2851), [2852](../../src/rewrite.rs#L2852), [2853](../../src/rewrite.rs#L2853) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"folder_binding".to_owned` | [2848](../../src/rewrite.rs#L2848) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"cwd".to_owned` | [2849](../../src/rewrite.rs#L2849) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"environment".to_owned` | [2850](../../src/rewrite.rs#L2850) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"folders".to_owned` | [2851](../../src/rewrite.rs#L2851) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"instruction".to_owned` | [2852](../../src/rewrite.rs#L2852) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `"identity_profile".to_owned` | [2853](../../src/rewrite.rs#L2853) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `genesis.clone` | [2854](../../src/rewrite.rs#L2854) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `write_canonical_events` | [2855](../../src/rewrite.rs#L2855) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `fork_copies_every_inherited_genesis_field` | `source.join` | [2855](../../src/rewrite.rs#L2855) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store             .begin_fork(                 "fork-fields",                 source_id,                 destination_id,                 "2026-10-15T00:00:00.000Z",             )             .expect` | [2856](../../src/rewrite.rs#L2856) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store             .begin_fork` | [2856](../../src/rewrite.rs#L2856) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store.recover_rewrites().expect` | [2864](../../src/rewrite.rs#L2864) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `store.recover_rewrites` | [2864](../../src/rewrite.rs#L2864) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2866](../../src/rewrite.rs#L2866) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `validate_ledger` | [2866](../../src/rewrite.rs#L2866) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `fs::read(destination.join("main.jsonl")).unwrap` | [2867](../../src/rewrite.rs#L2867) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `fs::read` | [2867](../../src/rewrite.rs#L2867) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `destination.join` | [2867](../../src/rewrite.rs#L2867) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `serde_json::to_value(projected.events[0].raw()).unwrap` | [2871](../../src/rewrite.rs#L2871) | receiver-type-required |
-| `fork_copies_every_inherited_genesis_field` | `serde_json::to_value` | [2871](../../src/rewrite.rs#L2871) | external-constructor-callback-or-unresolved |
-| `fork_copies_every_inherited_genesis_field` | `projected.events[0].raw` | [2871](../../src/rewrite.rs#L2871) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `tempfile::tempdir().expect` | [2885](../../src/rewrite.rs#L2885) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `tempfile::tempdir` | [2885](../../src/rewrite.rs#L2885) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `ThreadStore::open(directory.path()).expect` | [2886](../../src/rewrite.rs#L2886) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `ThreadStore::open` | [2886](../../src/rewrite.rs#L2886) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `directory.path` | [2886](../../src/rewrite.rs#L2886) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store.root().join("threads").join` | [2890](../../src/rewrite.rs#L2890), [2968](../../src/rewrite.rs#L2968) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store.root().join` | [2890](../../src/rewrite.rs#L2890), [2968](../../src/rewrite.rs#L2968) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store.root` | [2890](../../src/rewrite.rs#L2890), [2968](../../src/rewrite.rs#L2968) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `fs::create_dir(&source).expect` | [2891](../../src/rewrite.rs#L2891) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `fs::create_dir` | [2891](../../src/rewrite.rs#L2891) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `write_canonical_events` | [2892](../../src/rewrite.rs#L2892), [2929](../../src/rewrite.rs#L2929) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2343) |
-| `anchored_fork_remaps_complete_child_edges` | `source.join` | [2893](../../src/rewrite.rs#L2893), [2930](../../src/rewrite.rs#L2930) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store             .begin_fork_at_kernel_anchor(                 "fork-child-prefix",                 source_id,                 6,                 ForkGenesisBinding {                     thread: destination_id.to_owned(),                     origin: origin(destination_id, "fork-child", "session.fork"),                     ephemeral: false,                     preset: None,                 },                 "2026-08-28T10:00:00.000Z",             )             .expect` | [2952](../../src/rewrite.rs#L2952) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store             .begin_fork_at_kernel_anchor` | [2952](../../src/rewrite.rs#L2952) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `destination_id.to_owned` | [2958](../../src/rewrite.rs#L2958) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `origin` | [2959](../../src/rewrite.rs#L2959) | [store::rewrite::tests::origin](../../src/rewrite.rs#L2355) |
-| `anchored_fork_remaps_complete_child_edges` | `operation.files[1].clone` | [2966](../../src/rewrite.rs#L2966) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store.recover_rewrites().expect` | [2967](../../src/rewrite.rs#L2967) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `store.recover_rewrites` | [2967](../../src/rewrite.rs#L2967) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2969](../../src/rewrite.rs#L2969) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `validate_ledger` | [2969](../../src/rewrite.rs#L2969), [2974](../../src/rewrite.rs#L2974) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `fs::read(destination.join("main.jsonl")).unwrap` | [2970](../../src/rewrite.rs#L2970) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `fs::read` | [2970](../../src/rewrite.rs#L2970), [2975](../../src/rewrite.rs#L2975) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `destination.join` | [2970](../../src/rewrite.rs#L2970), [2975](../../src/rewrite.rs#L2975) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `validate_ledger(             &fs::read(destination.join(&mapped_child.dest)).unwrap(),             schema::READER_VERSION,         )         .expect` | [2974](../../src/rewrite.rs#L2974) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `fs::read(destination.join(&mapped_child.dest)).unwrap` | [2975](../../src/rewrite.rs#L2975) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find(&#124;event&#124; matches!(event.kind(), EventKind::Spawn))             .expect` | [2979](../../src/rewrite.rs#L2979) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find` | [2979](../../src/rewrite.rs#L2979), [2984](../../src/rewrite.rs#L2984) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter` | [2979](../../src/rewrite.rs#L2979), [2984](../../src/rewrite.rs#L2984) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find(&#124;event&#124; matches!(event.kind(), EventKind::ChildResult))             .expect` | [2984](../../src/rewrite.rs#L2984) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `event_value(&child.events[0]).expect` | [2997](../../src/rewrite.rs#L2997) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `event_value` | [2997](../../src/rewrite.rs#L2997) | external-constructor-callback-or-unresolved |
-| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get("parent")             .and_then(Value::as_object)             .expect` | [2998](../../src/rewrite.rs#L2998) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get("parent")             .and_then` | [2998](../../src/rewrite.rs#L2998) | receiver-type-required |
-| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get` | [2998](../../src/rewrite.rs#L2998) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `tempfile::tempdir().expect` | [3015](../../src/rewrite.rs#L3015) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `tempfile::tempdir` | [3015](../../src/rewrite.rs#L3015) | external-constructor-callback-or-unresolved |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `directory.path().join` | [3016](../../src/rewrite.rs#L3016), [3017](../../src/rewrite.rs#L3017) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `directory.path` | [3016](../../src/rewrite.rs#L3016), [3017](../../src/rewrite.rs#L3017) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all(source.join("assets")).expect` | [3018](../../src/rewrite.rs#L3018) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all` | [3018](../../src/rewrite.rs#L3018), [3019](../../src/rewrite.rs#L3019) | external-constructor-callback-or-unresolved |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `source.join` | [3018](../../src/rewrite.rs#L3018), [3020](../../src/rewrite.rs#L3020), [3029](../../src/rewrite.rs#L3029) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all(payload.join("assets")).expect` | [3019](../../src/rewrite.rs#L3019) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `payload.join` | [3019](../../src/rewrite.rs#L3019), [3033](../../src/rewrite.rs#L3033) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect("source store")                 .publish(b"launch bindings\n")                 .expect` | [3020](../../src/rewrite.rs#L3020) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect("source store")                 .publish` | [3020](../../src/rewrite.rs#L3020) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect` | [3020](../../src/rewrite.rs#L3020) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new` | [3020](../../src/rewrite.rs#L3020) | external-constructor-callback-or-unresolved |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `published                 .asset                 .strip_prefix("sha256-")                 .expect` | [3024](../../src/rewrite.rs#L3024) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `published                 .asset                 .strip_prefix` | [3024](../../src/rewrite.rs#L3024) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write(                 source.join("main.jsonl"),                 format!("{{\"kind\":\"run_start\",\"launch_bindings_digest\":\"{digest}\"}}\n"),             )             .expect` | [3028](../../src/rewrite.rs#L3028) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write` | [3028](../../src/rewrite.rs#L3028), [3033](../../src/rewrite.rs#L3033) | external-constructor-callback-or-unresolved |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write(payload.join("main.jsonl"), b"{}\n").expect` | [3033](../../src/rewrite.rs#L3033) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"rewrite-test".to_owned` | [3036](../../src/rewrite.rs#L3036) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"source".to_owned` | [3038](../../src/rewrite.rs#L3038) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"dest".to_owned` | [3039](../../src/rewrite.rs#L3039) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"2026-08-28T00:00:00.000Z".to_owned` | [3040](../../src/rewrite.rs#L3040) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `(kind == RewriteKind::Redact).then_some` | [3052](../../src/rewrite.rs#L3052) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `Vec::new` | [3053](../../src/rewrite.rs#L3053), [3054](../../src/rewrite.rs#L3054) | external-constructor-callback-or-unresolved |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `copy_live_assets(&source, &payload, &operation).expect` | [3059](../../src/rewrite.rs#L3059) | receiver-type-required |
-| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `copy_live_assets` | [3059](../../src/rewrite.rs#L3059) | external-constructor-callback-or-unresolved |
+| `build_genesis` | `target.remove` | [1665](../../src/rewrite.rs#L1665), [1666](../../src/rewrite.rs#L1666), [1672](../../src/rewrite.rs#L1672) | receiver-type-required |
+| `build_genesis` | `Some` | [1673](../../src/rewrite.rs#L1673) | external-constructor-callback-or-unresolved |
+| `build_genesis` | `"preset".to_owned` | [1678](../../src/rewrite.rs#L1678) | receiver-type-required |
+| `build_genesis` | `preset.clone` | [1678](../../src/rewrite.rs#L1678) | receiver-type-required |
+| `build_genesis` | `target             .get("min_reader")             .and_then(Value::as_u64)             .unwrap_or` | [1679](../../src/rewrite.rs#L1679), [1688](../../src/rewrite.rs#L1688) | receiver-type-required |
+| `build_genesis` | `target             .get("min_reader")             .and_then` | [1679](../../src/rewrite.rs#L1679), [1688](../../src/rewrite.rs#L1688) | receiver-type-required |
+| `build_genesis` | `target             .get` | [1679](../../src/rewrite.rs#L1679), [1688](../../src/rewrite.rs#L1688) | receiver-type-required |
+| `build_genesis` | `"min_reader".to_owned` | [1683](../../src/rewrite.rs#L1683), [1693](../../src/rewrite.rs#L1693) | receiver-type-required |
+| `build_genesis` | `value_references_any` | [1698](../../src/rewrite.rs#L1698) | [store::rewrite::value_references_any](../../src/rewrite.rs#L2112) |
+| `build_genesis` | `"seed".to_owned` | [1700](../../src/rewrite.rs#L1700) | receiver-type-required |
+| `build_genesis` | `seed.clone` | [1700](../../src/rewrite.rs#L1700) | receiver-type-required |
+| `build_genesis` | `object.get("parent").and_then` | [1702](../../src/rewrite.rs#L1702) | receiver-type-required |
+| `build_genesis` | `parent             .get("file")             .and_then(Value::as_str)             .ok_or_else` | [1703](../../src/rewrite.rs#L1703) | receiver-type-required |
+| `build_genesis` | `parent             .get("file")             .and_then` | [1703](../../src/rewrite.rs#L1703) | receiver-type-required |
+| `build_genesis` | `parent             .get` | [1703](../../src/rewrite.rs#L1703), [1707](../../src/rewrite.rs#L1707) | receiver-type-required |
+| `build_genesis` | `StoreError::Corruption` | [1706](../../src/rewrite.rs#L1706), [1710](../../src/rewrite.rs#L1710), [1712](../../src/rewrite.rs#L1712), [1720](../../src/rewrite.rs#L1720) | external-constructor-callback-or-unresolved |
+| `build_genesis` | `"child parent lacks file".to_owned` | [1706](../../src/rewrite.rs#L1706) | receiver-type-required |
+| `build_genesis` | `parent             .get("seq")             .and_then(Value::as_u64)             .ok_or_else` | [1707](../../src/rewrite.rs#L1707) | receiver-type-required |
+| `build_genesis` | `parent             .get("seq")             .and_then` | [1707](../../src/rewrite.rs#L1707) | receiver-type-required |
+| `build_genesis` | `"child parent lacks seq".to_owned` | [1710](../../src/rewrite.rs#L1710) | receiver-type-required |
+| `build_genesis` | `context.file_map.get(parent_file).ok_or_else` | [1711](../../src/rewrite.rs#L1711) | receiver-type-required |
+| `build_genesis` | `context.file_map.get` | [1711](../../src/rewrite.rs#L1711) | receiver-type-required |
+| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then(&#124;built&#124; built.seq_map.get(&parent_seq))             .copied()             .ok_or_else` | [1714](../../src/rewrite.rs#L1714) | receiver-type-required |
+| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then(&#124;built&#124; built.seq_map.get(&parent_seq))             .copied` | [1714](../../src/rewrite.rs#L1714) | receiver-type-required |
+| `build_genesis` | `context             .built_parents             .get(parent_file)             .and_then` | [1714](../../src/rewrite.rs#L1714) | receiver-type-required |
+| `build_genesis` | `context             .built_parents             .get` | [1714](../../src/rewrite.rs#L1714) | receiver-type-required |
+| `build_genesis` | `built.seq_map.get` | [1717](../../src/rewrite.rs#L1717) | receiver-type-required |
+| `build_genesis` | `"parent".to_owned` | [1725](../../src/rewrite.rs#L1725) | receiver-type-required |
+| `build_genesis` | `Ok` | [1733](../../src/rewrite.rs#L1733) | external-constructor-callback-or-unresolved |
+| `materialize_input` | `value.as_object_mut().expect` | [1758](../../src/rewrite.rs#L1758) | receiver-type-required |
+| `materialize_input` | `value.as_object_mut` | [1758](../../src/rewrite.rs#L1758) | receiver-type-required |
+| `materialize_input` | `source.get` | [1760](../../src/rewrite.rs#L1760) | receiver-type-required |
+| `materialize_input` | `object.insert` | [1761](../../src/rewrite.rs#L1761) | receiver-type-required |
+| `materialize_input` | `field.to_owned` | [1761](../../src/rewrite.rs#L1761) | receiver-type-required |
+| `materialize_input` | `field_value.clone` | [1761](../../src/rewrite.rs#L1761) | receiver-type-required |
+| `materialize_turn_open` | `source.get` | [1773](../../src/rewrite.rs#L1773) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter()                 .map(&#124;value&#124; {                     value                         .as_u64()                         .and_then(&#124;old&#124; seq_map.get(&old).copied())                         .ok_or_else(&#124;&#124; {                             StoreError::Corruption(                                 "turn trigger input was dropped during rewrite".to_owned(),                             )                         })                 })                 .collect::<Result<Vec<_>, _>>` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter()                 .map` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else(&#124;&#124; StoreError::Corruption("turn trigger lacks inputs".to_owned()))?                 .iter` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then(Value::as_array)                 .ok_or_else` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get("inputs")                 .and_then` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `trigger                 .get` | [1776](../../src/rewrite.rs#L1776) | receiver-type-required |
+| `materialize_turn_open` | `StoreError::Corruption` | [1779](../../src/rewrite.rs#L1779), [1786](../../src/rewrite.rs#L1786), [1794](../../src/rewrite.rs#L1794) | external-constructor-callback-or-unresolved |
+| `materialize_turn_open` | `"turn trigger lacks inputs".to_owned` | [1779](../../src/rewrite.rs#L1779) | receiver-type-required |
+| `materialize_turn_open` | `value                         .as_u64()                         .and_then(&#124;old&#124; seq_map.get(&old).copied())                         .ok_or_else` | [1782](../../src/rewrite.rs#L1782) | receiver-type-required |
+| `materialize_turn_open` | `value                         .as_u64()                         .and_then` | [1782](../../src/rewrite.rs#L1782) | receiver-type-required |
+| `materialize_turn_open` | `value                         .as_u64` | [1782](../../src/rewrite.rs#L1782) | receiver-type-required |
+| `materialize_turn_open` | `seq_map.get(&old).copied` | [1784](../../src/rewrite.rs#L1784) | receiver-type-required |
+| `materialize_turn_open` | `seq_map.get` | [1784](../../src/rewrite.rs#L1784) | receiver-type-required |
+| `materialize_turn_open` | `"turn trigger input was dropped during rewrite".to_owned` | [1787](../../src/rewrite.rs#L1787) | receiver-type-required |
+| `materialize_turn_open` | `Err` | [1794](../../src/rewrite.rs#L1794) | external-constructor-callback-or-unresolved |
+| `materialize_turn_open` | `"invalid turn trigger".to_owned` | [1794](../../src/rewrite.rs#L1794) | receiver-type-required |
+| `materialize_turn_open` | `Ok` | [1796](../../src/rewrite.rs#L1796) | external-constructor-callback-or-unresolved |
+| `materialize_spawn` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
+| `materialize_spawn` | `source         .get("ts")         .cloned` | [1808](../../src/rewrite.rs#L1808) | receiver-type-required |
+| `materialize_spawn` | `source         .get` | [1808](../../src/rewrite.rs#L1808), [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
+| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else(&#124;&#124; StoreError::Corruption("spawn child is not mapped".to_owned()))?         .clone` | [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
+| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else` | [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
+| `materialize_spawn` | `source         .get("child")         .and_then(Value::as_str)         .and_then` | [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
+| `materialize_spawn` | `source         .get("child")         .and_then` | [1812](../../src/rewrite.rs#L1812) | receiver-type-required |
+| `materialize_spawn` | `thread_map.get` | [1815](../../src/rewrite.rs#L1815) | receiver-type-required |
+| `materialize_spawn` | `StoreError::Corruption` | [1816](../../src/rewrite.rs#L1816) | external-constructor-callback-or-unresolved |
+| `materialize_spawn` | `"spawn child is not mapped".to_owned` | [1816](../../src/rewrite.rs#L1816) | receiver-type-required |
+| `materialize_spawn` | `retain_payload_fields` | [1818](../../src/rewrite.rs#L1818) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) |
+| `materialize_spawn` | `source.insert` | [1819](../../src/rewrite.rs#L1819), [1820](../../src/rewrite.rs#L1820), [1821](../../src/rewrite.rs#L1821), [1822](../../src/rewrite.rs#L1822), [1823](../../src/rewrite.rs#L1823), [1824](../../src/rewrite.rs#L1824) | receiver-type-required |
+| `materialize_spawn` | `"v".to_owned` | [1819](../../src/rewrite.rs#L1819) | receiver-type-required |
+| `materialize_spawn` | `"seq".to_owned` | [1820](../../src/rewrite.rs#L1820) | receiver-type-required |
+| `materialize_spawn` | `"kind".to_owned` | [1821](../../src/rewrite.rs#L1821) | receiver-type-required |
+| `materialize_spawn` | `"ts".to_owned` | [1822](../../src/rewrite.rs#L1822) | receiver-type-required |
+| `materialize_spawn` | `"turn".to_owned` | [1823](../../src/rewrite.rs#L1823) | receiver-type-required |
+| `materialize_spawn` | `"child".to_owned` | [1824](../../src/rewrite.rs#L1824) | receiver-type-required |
+| `materialize_spawn` | `Ok` | [1825](../../src/rewrite.rs#L1825) | external-constructor-callback-or-unresolved |
+| `materialize_spawn` | `Value::Object` | [1825](../../src/rewrite.rs#L1825) | external-constructor-callback-or-unresolved |
+| `materialize_child_result` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
+| `materialize_child_result` | `source         .get("ts")         .cloned` | [1834](../../src/rewrite.rs#L1834) | receiver-type-required |
+| `materialize_child_result` | `source         .get` | [1834](../../src/rewrite.rs#L1834), [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
+| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else(&#124;&#124; StoreError::Corruption("child_result child is not mapped".to_owned()))?         .clone` | [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
+| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then(&#124;value&#124; thread_map.get(value))         .ok_or_else` | [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
+| `materialize_child_result` | `source         .get("child")         .and_then(Value::as_str)         .and_then` | [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
+| `materialize_child_result` | `source         .get("child")         .and_then` | [1838](../../src/rewrite.rs#L1838) | receiver-type-required |
+| `materialize_child_result` | `thread_map.get` | [1841](../../src/rewrite.rs#L1841) | receiver-type-required |
+| `materialize_child_result` | `StoreError::Corruption` | [1842](../../src/rewrite.rs#L1842) | external-constructor-callback-or-unresolved |
+| `materialize_child_result` | `"child_result child is not mapped".to_owned` | [1842](../../src/rewrite.rs#L1842) | receiver-type-required |
+| `materialize_child_result` | `retain_payload_fields` | [1844](../../src/rewrite.rs#L1844) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) |
+| `materialize_child_result` | `source.insert` | [1848](../../src/rewrite.rs#L1848), [1849](../../src/rewrite.rs#L1849), [1850](../../src/rewrite.rs#L1850), [1851](../../src/rewrite.rs#L1851), [1852](../../src/rewrite.rs#L1852), [1853](../../src/rewrite.rs#L1853) | receiver-type-required |
+| `materialize_child_result` | `"v".to_owned` | [1848](../../src/rewrite.rs#L1848) | receiver-type-required |
+| `materialize_child_result` | `"seq".to_owned` | [1849](../../src/rewrite.rs#L1849) | receiver-type-required |
+| `materialize_child_result` | `"kind".to_owned` | [1850](../../src/rewrite.rs#L1850) | receiver-type-required |
+| `materialize_child_result` | `"ts".to_owned` | [1851](../../src/rewrite.rs#L1851) | receiver-type-required |
+| `materialize_child_result` | `"turn".to_owned` | [1852](../../src/rewrite.rs#L1852) | receiver-type-required |
+| `materialize_child_result` | `"child".to_owned` | [1853](../../src/rewrite.rs#L1853) | receiver-type-required |
+| `materialize_child_result` | `Ok` | [1854](../../src/rewrite.rs#L1854) | external-constructor-callback-or-unresolved |
+| `materialize_child_result` | `Value::Object` | [1854](../../src/rewrite.rs#L1854) | external-constructor-callback-or-unresolved |
+| `materialize_state` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1858](../../src/rewrite.rs#L1858) | receiver-type-required |
+| `materialize_state` | `source         .get("ts")         .cloned` | [1858](../../src/rewrite.rs#L1858) | receiver-type-required |
+| `materialize_state` | `source         .get` | [1858](../../src/rewrite.rs#L1858) | receiver-type-required |
+| `materialize_state` | `retain_payload_fields` | [1862](../../src/rewrite.rs#L1862) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) |
+| `materialize_state` | `source.insert` | [1863](../../src/rewrite.rs#L1863), [1864](../../src/rewrite.rs#L1864), [1865](../../src/rewrite.rs#L1865), [1866](../../src/rewrite.rs#L1866), [1867](../../src/rewrite.rs#L1867) | receiver-type-required |
+| `materialize_state` | `"v".to_owned` | [1863](../../src/rewrite.rs#L1863) | receiver-type-required |
+| `materialize_state` | `"seq".to_owned` | [1864](../../src/rewrite.rs#L1864) | receiver-type-required |
+| `materialize_state` | `"kind".to_owned` | [1865](../../src/rewrite.rs#L1865) | receiver-type-required |
+| `materialize_state` | `"ts".to_owned` | [1866](../../src/rewrite.rs#L1866) | receiver-type-required |
+| `materialize_state` | `"turn".to_owned` | [1867](../../src/rewrite.rs#L1867) | receiver-type-required |
+| `materialize_state` | `Value::Object` | [1868](../../src/rewrite.rs#L1868) | external-constructor-callback-or-unresolved |
+| `materialize_historical_state` | `envelope_fields()             .into_iter()             .chain` | [1880](../../src/rewrite.rs#L1880) | receiver-type-required |
+| `materialize_historical_state` | `envelope_fields()             .into_iter` | [1880](../../src/rewrite.rs#L1880) | receiver-type-required |
+| `materialize_historical_state` | `envelope_fields` | [1880](../../src/rewrite.rs#L1880) | [store::rewrite::envelope_fields](../../src/rewrite.rs#L1979) |
+| `materialize_historical_state` | `payload.remove` | [1884](../../src/rewrite.rs#L1884) | receiver-type-required |
+| `materialize_historical_state` | `event.effective_visibility` | [1891](../../src/rewrite.rs#L1891) | receiver-type-required |
+| `materialize_historical_state` | `value             .as_object_mut()             .expect("state object")             .insert` | [1892](../../src/rewrite.rs#L1892) | receiver-type-required |
+| `materialize_historical_state` | `value             .as_object_mut()             .expect` | [1892](../../src/rewrite.rs#L1892) | receiver-type-required |
+| `materialize_historical_state` | `value             .as_object_mut` | [1892](../../src/rewrite.rs#L1892) | receiver-type-required |
+| `materialize_historical_state` | `"visibility".to_owned` | [1895](../../src/rewrite.rs#L1895) | receiver-type-required |
+| `event_value_ts` | `serde_json::to_value(event.raw())         .ok()         .and_then(&#124;value&#124; value.get("ts").cloned())         .unwrap_or_else` | [1901](../../src/rewrite.rs#L1901) | receiver-type-required |
+| `event_value_ts` | `serde_json::to_value(event.raw())         .ok()         .and_then` | [1901](../../src/rewrite.rs#L1901) | receiver-type-required |
+| `event_value_ts` | `serde_json::to_value(event.raw())         .ok` | [1901](../../src/rewrite.rs#L1901) | receiver-type-required |
+| `event_value_ts` | `serde_json::to_value` | [1901](../../src/rewrite.rs#L1901) | external-constructor-callback-or-unresolved |
+| `event_value_ts` | `event.raw` | [1901](../../src/rewrite.rs#L1901) | receiver-type-required |
+| `event_value_ts` | `value.get("ts").cloned` | [1903](../../src/rewrite.rs#L1903) | receiver-type-required |
+| `event_value_ts` | `value.get` | [1903](../../src/rewrite.rs#L1903) | receiver-type-required |
+| `materialize_settle` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1908](../../src/rewrite.rs#L1908) | receiver-type-required |
+| `materialize_settle` | `source         .get("ts")         .cloned` | [1908](../../src/rewrite.rs#L1908) | receiver-type-required |
+| `materialize_settle` | `source         .get` | [1908](../../src/rewrite.rs#L1908) | receiver-type-required |
+| `materialize_settle` | `retain_payload_fields` | [1912](../../src/rewrite.rs#L1912) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) |
+| `materialize_settle` | `source.insert` | [1913](../../src/rewrite.rs#L1913), [1914](../../src/rewrite.rs#L1914), [1915](../../src/rewrite.rs#L1915), [1916](../../src/rewrite.rs#L1916), [1917](../../src/rewrite.rs#L1917) | receiver-type-required |
+| `materialize_settle` | `"v".to_owned` | [1913](../../src/rewrite.rs#L1913) | receiver-type-required |
+| `materialize_settle` | `"seq".to_owned` | [1914](../../src/rewrite.rs#L1914) | receiver-type-required |
+| `materialize_settle` | `"kind".to_owned` | [1915](../../src/rewrite.rs#L1915) | receiver-type-required |
+| `materialize_settle` | `"ts".to_owned` | [1916](../../src/rewrite.rs#L1916) | receiver-type-required |
+| `materialize_settle` | `"turn".to_owned` | [1917](../../src/rewrite.rs#L1917) | receiver-type-required |
+| `materialize_settle` | `Value::Object` | [1918](../../src/rewrite.rs#L1918) | external-constructor-callback-or-unresolved |
+| `materialize_meta` | `source         .get("ts")         .cloned()         .unwrap_or_else` | [1922](../../src/rewrite.rs#L1922) | receiver-type-required |
+| `materialize_meta` | `source         .get("ts")         .cloned` | [1922](../../src/rewrite.rs#L1922) | receiver-type-required |
+| `materialize_meta` | `source         .get` | [1922](../../src/rewrite.rs#L1922) | receiver-type-required |
+| `materialize_meta` | `source.get("title").cloned` | [1926](../../src/rewrite.rs#L1926) | receiver-type-required |
+| `materialize_meta` | `source.get` | [1926](../../src/rewrite.rs#L1926), [1927](../../src/rewrite.rs#L1927) | receiver-type-required |
+| `materialize_meta` | `source.get("labels").cloned` | [1927](../../src/rewrite.rs#L1927) | receiver-type-required |
+| `materialize_meta` | `title.is_none` | [1928](../../src/rewrite.rs#L1928) | receiver-type-required |
+| `materialize_meta` | `labels.is_none` | [1928](../../src/rewrite.rs#L1928) | receiver-type-required |
+| `materialize_meta` | `source.clear` | [1931](../../src/rewrite.rs#L1931) | receiver-type-required |
+| `materialize_meta` | `source.insert` | [1932](../../src/rewrite.rs#L1932), [1933](../../src/rewrite.rs#L1933), [1934](../../src/rewrite.rs#L1934), [1935](../../src/rewrite.rs#L1935), [1937](../../src/rewrite.rs#L1937), [1940](../../src/rewrite.rs#L1940) | receiver-type-required |
+| `materialize_meta` | `"v".to_owned` | [1932](../../src/rewrite.rs#L1932) | receiver-type-required |
+| `materialize_meta` | `"seq".to_owned` | [1933](../../src/rewrite.rs#L1933) | receiver-type-required |
+| `materialize_meta` | `"kind".to_owned` | [1934](../../src/rewrite.rs#L1934) | receiver-type-required |
+| `materialize_meta` | `"ts".to_owned` | [1935](../../src/rewrite.rs#L1935) | receiver-type-required |
+| `materialize_meta` | `"title".to_owned` | [1937](../../src/rewrite.rs#L1937) | receiver-type-required |
+| `materialize_meta` | `"labels".to_owned` | [1940](../../src/rewrite.rs#L1940) | receiver-type-required |
+| `materialize_meta` | `Some` | [1942](../../src/rewrite.rs#L1942) | external-constructor-callback-or-unresolved |
+| `materialize_meta` | `Value::Object` | [1942](../../src/rewrite.rs#L1942) | external-constructor-callback-or-unresolved |
+| `materialize_epoch` | `retain_payload_fields` | [1951](../../src/rewrite.rs#L1951) | [store::rewrite::retain_payload_fields](../../src/rewrite.rs#L1974) |
+| `materialize_epoch` | `source.insert` | [1955](../../src/rewrite.rs#L1955), [1956](../../src/rewrite.rs#L1956), [1957](../../src/rewrite.rs#L1957), [1958](../../src/rewrite.rs#L1958), [1959](../../src/rewrite.rs#L1959), [1963](../../src/rewrite.rs#L1963) | receiver-type-required |
+| `materialize_epoch` | `"v".to_owned` | [1955](../../src/rewrite.rs#L1955) | receiver-type-required |
+| `materialize_epoch` | `"seq".to_owned` | [1956](../../src/rewrite.rs#L1956) | receiver-type-required |
+| `materialize_epoch` | `"kind".to_owned` | [1957](../../src/rewrite.rs#L1957) | receiver-type-required |
+| `materialize_epoch` | `"ts".to_owned` | [1958](../../src/rewrite.rs#L1958) | receiver-type-required |
+| `materialize_epoch` | `"id".to_owned` | [1960](../../src/rewrite.rs#L1960) | receiver-type-required |
+| `materialize_epoch` | `"reason".to_owned` | [1963](../../src/rewrite.rs#L1963) | receiver-type-required |
+| `materialize_epoch` | `Ok` | [1964](../../src/rewrite.rs#L1964) | external-constructor-callback-or-unresolved |
+| `materialize_epoch` | `Value::Object` | [1964](../../src/rewrite.rs#L1964) | external-constructor-callback-or-unresolved |
+| `mapped_turn` | `event         .turn()         .and_then(&#124;turn&#124; turn_map.get(&turn).copied())         .ok_or_else` | [1968](../../src/rewrite.rs#L1968) | receiver-type-required |
+| `mapped_turn` | `event         .turn()         .and_then` | [1968](../../src/rewrite.rs#L1968) | receiver-type-required |
+| `mapped_turn` | `event         .turn` | [1968](../../src/rewrite.rs#L1968) | receiver-type-required |
+| `mapped_turn` | `turn_map.get(&turn).copied` | [1970](../../src/rewrite.rs#L1970) | receiver-type-required |
+| `mapped_turn` | `turn_map.get` | [1970](../../src/rewrite.rs#L1970) | receiver-type-required |
+| `mapped_turn` | `StoreError::Corruption` | [1971](../../src/rewrite.rs#L1971) | external-constructor-callback-or-unresolved |
+| `mapped_turn` | `"turn-bound fact precedes turn_open".to_owned` | [1971](../../src/rewrite.rs#L1971) | receiver-type-required |
+| `retain_payload_fields` | `fields.iter().copied().collect::<BTreeSet<_>>` | [1975](../../src/rewrite.rs#L1975) | receiver-type-required |
+| `retain_payload_fields` | `fields.iter().copied` | [1975](../../src/rewrite.rs#L1975) | receiver-type-required |
+| `retain_payload_fields` | `fields.iter` | [1975](../../src/rewrite.rs#L1975) | receiver-type-required |
+| `retain_payload_fields` | `object.retain` | [1976](../../src/rewrite.rs#L1976) | receiver-type-required |
+| `retain_payload_fields` | `keep.contains` | [1976](../../src/rewrite.rs#L1976) | receiver-type-required |
+| `retain_payload_fields` | `key.as_str` | [1976](../../src/rewrite.rs#L1976) | receiver-type-required |
+| `push_event` | `serde_json_canonicalizer::to_vec(&value)         .map_err` | [1995](../../src/rewrite.rs#L1995) | receiver-type-required |
+| `push_event` | `serde_json_canonicalizer::to_vec` | [1995](../../src/rewrite.rs#L1995) | external-constructor-callback-or-unresolved |
+| `push_event` | `StoreError::Corruption` | [1996](../../src/rewrite.rs#L1996) | external-constructor-callback-or-unresolved |
+| `push_event` | `Event::decode_canonical` | [1997](../../src/rewrite.rs#L1997) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `push_event` | `output.extend_from_slice` | [1998](../../src/rewrite.rs#L1998) | receiver-type-required |
+| `push_event` | `output.push` | [1999](../../src/rewrite.rs#L1999) | receiver-type-required |
+| `push_event` | `Ok` | [2000](../../src/rewrite.rs#L2000) | external-constructor-callback-or-unresolved |
+| `value_ranges` | `object.get` | [2004](../../src/rewrite.rs#L2004) | receiver-type-required |
+| `value_ranges` | `Ok` | [2005](../../src/rewrite.rs#L2005), [2023](../../src/rewrite.rs#L2023) | external-constructor-callback-or-unresolved |
+| `value_ranges` | `Vec::new` | [2005](../../src/rewrite.rs#L2005) | external-constructor-callback-or-unresolved |
+| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter()         .map(&#124;value&#124; {             let range = value                 .as_object()                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range is not object")))?;             let from = range                 .get("from")                 .and_then(Value::as_u64)                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range lacks from")))?;             let to = range                 .get("to")                 .and_then(Value::as_u64)                 .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} range lacks to")))?;             Ok((from, to))         })         .collect` | [2007](../../src/rewrite.rs#L2007) | receiver-type-required |
+| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter()         .map` | [2007](../../src/rewrite.rs#L2007) | receiver-type-required |
+| `value_ranges` | `values         .as_array()         .ok_or_else(&#124;&#124; StoreError::Corruption(format!("{field} is not an array")))?         .iter` | [2007](../../src/rewrite.rs#L2007) | receiver-type-required |
+| `value_ranges` | `values         .as_array()         .ok_or_else` | [2007](../../src/rewrite.rs#L2007) | receiver-type-required |
+| `value_ranges` | `values         .as_array` | [2007](../../src/rewrite.rs#L2007) | receiver-type-required |
+| `value_ranges` | `StoreError::Corruption` | [2009](../../src/rewrite.rs#L2009), [2014](../../src/rewrite.rs#L2014), [2018](../../src/rewrite.rs#L2018), [2022](../../src/rewrite.rs#L2022) | external-constructor-callback-or-unresolved |
+| `value_ranges` | `value                 .as_object()                 .ok_or_else` | [2012](../../src/rewrite.rs#L2012) | receiver-type-required |
+| `value_ranges` | `value                 .as_object` | [2012](../../src/rewrite.rs#L2012) | receiver-type-required |
+| `value_ranges` | `range                 .get("from")                 .and_then(Value::as_u64)                 .ok_or_else` | [2015](../../src/rewrite.rs#L2015) | receiver-type-required |
+| `value_ranges` | `range                 .get("from")                 .and_then` | [2015](../../src/rewrite.rs#L2015) | receiver-type-required |
+| `value_ranges` | `range                 .get` | [2015](../../src/rewrite.rs#L2015), [2019](../../src/rewrite.rs#L2019) | receiver-type-required |
+| `value_ranges` | `range                 .get("to")                 .and_then(Value::as_u64)                 .ok_or_else` | [2019](../../src/rewrite.rs#L2019) | receiver-type-required |
+| `value_ranges` | `range                 .get("to")                 .and_then` | [2019](../../src/rewrite.rs#L2019) | receiver-type-required |
+| `valid_asset_name` | `value.strip_prefix("sha256-").is_some_and` | [2029](../../src/rewrite.rs#L2029) | receiver-type-required |
+| `valid_asset_name` | `value.strip_prefix` | [2029](../../src/rewrite.rs#L2029) | receiver-type-required |
+| `valid_asset_name` | `digest.len` | [2030](../../src/rewrite.rs#L2030) | receiver-type-required |
+| `valid_asset_name` | `digest                 .bytes()                 .all` | [2031](../../src/rewrite.rs#L2031) | receiver-type-required |
+| `valid_asset_name` | `digest                 .bytes` | [2031](../../src/rewrite.rs#L2031) | receiver-type-required |
+| `valid_asset_name` | `byte.is_ascii_digit` | [2033](../../src/rewrite.rs#L2033) | receiver-type-required |
+| `valid_asset_name` | `(b'a'..=b'f').contains` | [2033](../../src/rewrite.rs#L2033) | receiver-type-required |
+| `collect_asset_names` | `valid_asset_name` | [2039](../../src/rewrite.rs#L2039) | [store::rewrite::valid_asset_name](../../src/rewrite.rs#L2028) |
+| `collect_asset_names` | `output.insert` | [2040](../../src/rewrite.rs#L2040) | receiver-type-required |
+| `collect_asset_names` | `value.clone` | [2040](../../src/rewrite.rs#L2040) | receiver-type-required |
+| `collect_asset_names` | `collect_asset_names` | [2044](../../src/rewrite.rs#L2044), [2049](../../src/rewrite.rs#L2049) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2037) |
+| `collect_asset_names` | `values.values` | [2048](../../src/rewrite.rs#L2048) | receiver-type-required |
+| `raw_digest_asset` | `value.as_str` | [2057](../../src/rewrite.rs#L2057) | receiver-type-required |
+| `raw_digest_asset` | `digest.len` | [2058](../../src/rewrite.rs#L2058) | receiver-type-required |
+| `raw_digest_asset` | `digest             .bytes()             .all` | [2059](../../src/rewrite.rs#L2059) | receiver-type-required |
+| `raw_digest_asset` | `digest             .bytes` | [2059](../../src/rewrite.rs#L2059) | receiver-type-required |
+| `raw_digest_asset` | `byte.is_ascii_digit` | [2061](../../src/rewrite.rs#L2061) | receiver-type-required |
+| `raw_digest_asset` | `(b'a'..=b'f').contains` | [2061](../../src/rewrite.rs#L2061) | receiver-type-required |
+| `raw_digest_asset` | `Some` | [2063](../../src/rewrite.rs#L2063) | external-constructor-callback-or-unresolved |
+| `collect_event_asset_names` | `collect_asset_names` | [2070](../../src/rewrite.rs#L2070) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2037) |
+| `collect_event_asset_names` | `value.as_object` | [2071](../../src/rewrite.rs#L2071) | receiver-type-required |
+| `collect_event_asset_names` | `object.get("kind").and_then` | [2074](../../src/rewrite.rs#L2074) | receiver-type-required |
+| `collect_event_asset_names` | `object.get` | [2074](../../src/rewrite.rs#L2074) | receiver-type-required |
+| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then(Value::as_object)                     .and_then(&#124;carrier&#124; carrier.get("digest"))                     .and_then` | [2077](../../src/rewrite.rs#L2077) | receiver-type-required |
+| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then(Value::as_object)                     .and_then` | [2077](../../src/rewrite.rs#L2077) | receiver-type-required |
+| `collect_event_asset_names` | `object                     .get(carrier)                     .and_then` | [2077](../../src/rewrite.rs#L2077) | receiver-type-required |
+| `collect_event_asset_names` | `object                     .get` | [2077](../../src/rewrite.rs#L2077) | receiver-type-required |
+| `collect_event_asset_names` | `carrier.get` | [2080](../../src/rewrite.rs#L2080) | receiver-type-required |
+| `collect_event_asset_names` | `output.insert` | [2083](../../src/rewrite.rs#L2083), [2092](../../src/rewrite.rs#L2092) | receiver-type-required |
+| `collect_event_asset_names` | `object                 .get("launch_bindings_digest")                 .and_then` | [2088](../../src/rewrite.rs#L2088) | receiver-type-required |
+| `collect_event_asset_names` | `object                 .get` | [2088](../../src/rewrite.rs#L2088) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `value.as_object` | [2100](../../src/rewrite.rs#L2100) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `object.get("kind").and_then` | [2103](../../src/rewrite.rs#L2103) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `object.get` | [2103](../../src/rewrite.rs#L2103) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `Some` | [2103](../../src/rewrite.rs#L2103) | external-constructor-callback-or-unresolved |
+| `collect_launch_binding_asset_name` | `object             .get("launch_bindings_digest")             .and_then` | [2104](../../src/rewrite.rs#L2104) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `object             .get` | [2104](../../src/rewrite.rs#L2104) | receiver-type-required |
+| `collect_launch_binding_asset_name` | `output.insert` | [2108](../../src/rewrite.rs#L2108) | receiver-type-required |
+| `value_references_any` | `BTreeSet::new` | [2113](../../src/rewrite.rs#L2113) | external-constructor-callback-or-unresolved |
+| `value_references_any` | `collect_asset_names` | [2114](../../src/rewrite.rs#L2114) | [store::rewrite::collect_asset_names](../../src/rewrite.rs#L2037) |
+| `value_references_any` | `found.iter().any` | [2115](../../src/rewrite.rs#L2115) | receiver-type-required |
+| `value_references_any` | `found.iter` | [2115](../../src/rewrite.rs#L2115) | receiver-type-required |
+| `value_references_any` | `assets.contains` | [2115](../../src/rewrite.rs#L2115) | receiver-type-required |
+| `copy_live_assets` | `operation         .redaction         .as_ref()         .map(&#124;inventory&#124; inventory.assets.iter().cloned().collect::<BTreeSet<_>>())         .unwrap_or_default` | [2123](../../src/rewrite.rs#L2123) | receiver-type-required |
+| `copy_live_assets` | `operation         .redaction         .as_ref()         .map` | [2123](../../src/rewrite.rs#L2123) | receiver-type-required |
+| `copy_live_assets` | `operation         .redaction         .as_ref` | [2123](../../src/rewrite.rs#L2123) | receiver-type-required |
+| `copy_live_assets` | `inventory.assets.iter().cloned().collect::<BTreeSet<_>>` | [2126](../../src/rewrite.rs#L2126) | receiver-type-required |
+| `copy_live_assets` | `inventory.assets.iter().cloned` | [2126](../../src/rewrite.rs#L2126) | receiver-type-required |
+| `copy_live_assets` | `inventory.assets.iter` | [2126](../../src/rewrite.rs#L2126) | receiver-type-required |
+| `copy_live_assets` | `BTreeSet::new` | [2128](../../src/rewrite.rs#L2128), [2171](../../src/rewrite.rs#L2171) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `operation         .source_anchor         .as_ref()         .map(&#124;_&#124; source_ledgers_for_operation(&read_source_ledgers(source_folder)?, operation))         .transpose` | [2132](../../src/rewrite.rs#L2132) | receiver-type-required |
+| `copy_live_assets` | `operation         .source_anchor         .as_ref()         .map` | [2132](../../src/rewrite.rs#L2132) | receiver-type-required |
+| `copy_live_assets` | `operation         .source_anchor         .as_ref` | [2132](../../src/rewrite.rs#L2132) | receiver-type-required |
+| `copy_live_assets` | `source_ledgers_for_operation` | [2135](../../src/rewrite.rs#L2135) | [store::rewrite::source_ledgers_for_operation](../../src/rewrite.rs#L803) |
+| `copy_live_assets` | `read_source_ledgers` | [2135](../../src/rewrite.rs#L2135) | [store::rewrite::read_source_ledgers](../../src/rewrite.rs#L774) |
+| `copy_live_assets` | `source_ledgers.as_ref` | [2138](../../src/rewrite.rs#L2138) | receiver-type-required |
+| `copy_live_assets` | `ledgers.get(&file.source).cloned().ok_or_else` | [2139](../../src/rewrite.rs#L2139) | receiver-type-required |
+| `copy_live_assets` | `ledgers.get(&file.source).cloned` | [2139](../../src/rewrite.rs#L2139) | receiver-type-required |
+| `copy_live_assets` | `ledgers.get` | [2139](../../src/rewrite.rs#L2139) | receiver-type-required |
+| `copy_live_assets` | `StoreError::Corruption` | [2140](../../src/rewrite.rs#L2140), [2152](../../src/rewrite.rs#L2152), [2164](../../src/rewrite.rs#L2164) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `fs::read` | [2145](../../src/rewrite.rs#L2145), [2158](../../src/rewrite.rs#L2158) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `source_folder.join` | [2145](../../src/rewrite.rs#L2145), [2169](../../src/rewrite.rs#L2169) | receiver-type-required |
+| `copy_live_assets` | `bytes             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2147](../../src/rewrite.rs#L2147), [2159](../../src/rewrite.rs#L2159) | receiver-type-required |
+| `copy_live_assets` | `bytes             .split` | [2147](../../src/rewrite.rs#L2147), [2159](../../src/rewrite.rs#L2159) | receiver-type-required |
+| `copy_live_assets` | `line.is_empty` | [2149](../../src/rewrite.rs#L2149), [2161](../../src/rewrite.rs#L2161), [2195](../../src/rewrite.rs#L2195) | receiver-type-required |
+| `copy_live_assets` | `serde_json::from_slice(line)                 .map_err` | [2151](../../src/rewrite.rs#L2151) | receiver-type-required |
+| `copy_live_assets` | `serde_json::from_slice` | [2151](../../src/rewrite.rs#L2151), [2163](../../src/rewrite.rs#L2163) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `collect_launch_binding_asset_name` | [2153](../../src/rewrite.rs#L2153) | [store::rewrite::collect_launch_binding_asset_name](../../src/rewrite.rs#L2099) |
+| `copy_live_assets` | `pending.retain` | [2156](../../src/rewrite.rs#L2156) | receiver-type-required |
+| `copy_live_assets` | `poisoned.contains` | [2156](../../src/rewrite.rs#L2156), [2176](../../src/rewrite.rs#L2176) | receiver-type-required |
+| `copy_live_assets` | `payload.join` | [2158](../../src/rewrite.rs#L2158), [2170](../../src/rewrite.rs#L2170) | receiver-type-required |
+| `copy_live_assets` | `serde_json::from_slice(line).map_err` | [2163](../../src/rewrite.rs#L2163) | receiver-type-required |
+| `copy_live_assets` | `collect_event_asset_names` | [2166](../../src/rewrite.rs#L2166), [2191](../../src/rewrite.rs#L2191), [2198](../../src/rewrite.rs#L2198) | [store::rewrite::collect_event_asset_names](../../src/rewrite.rs#L2069) |
+| `copy_live_assets` | `AssetStore::new` | [2169](../../src/rewrite.rs#L2169), [2170](../../src/rewrite.rs#L2170) | [store::asset::AssetStore::new](../../src/asset.rs#L27) |
+| `copy_live_assets` | `pending.pop_first` | [2172](../../src/rewrite.rs#L2172) | receiver-type-required |
+| `copy_live_assets` | `copied.insert` | [2173](../../src/rewrite.rs#L2173) | receiver-type-required |
+| `copy_live_assets` | `name.clone` | [2173](../../src/rewrite.rs#L2173) | receiver-type-required |
+| `copy_live_assets` | `Err` | [2177](../../src/rewrite.rs#L2177), [2186](../../src/rewrite.rs#L2186) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `StoreError::RewriteCarrierCorrupt` | [2177](../../src/rewrite.rs#L2177), [2183](../../src/rewrite.rs#L2183), [2186](../../src/rewrite.rs#L2186) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `source_assets             .read_verified(&name)             .map_err` | [2181](../../src/rewrite.rs#L2181) | receiver-type-required |
+| `copy_live_assets` | `source_assets             .read_verified` | [2181](../../src/rewrite.rs#L2181) | receiver-type-required |
+| `copy_live_assets` | `destination_assets.publish` | [2184](../../src/rewrite.rs#L2184) | receiver-type-required |
+| `copy_live_assets` | `"asset publication changed digest name".to_owned` | [2187](../../src/rewrite.rs#L2187) | receiver-type-required |
+| `copy_live_assets` | `serde_json::from_slice::<Value>` | [2190](../../src/rewrite.rs#L2190), [2197](../../src/rewrite.rs#L2197) | external-constructor-callback-or-unresolved |
+| `copy_live_assets` | `bytes                 .split(&#124;byte&#124; *byte == b'\n')                 .filter` | [2193](../../src/rewrite.rs#L2193) | receiver-type-required |
+| `copy_live_assets` | `bytes                 .split` | [2193](../../src/rewrite.rs#L2193) | receiver-type-required |
+| `copy_live_assets` | `Ok` | [2203](../../src/rewrite.rs#L2203) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `stage.join` | [2211](../../src/rewrite.rs#L2211) | receiver-type-required |
+| `validate_payload` | `payload.is_dir` | [2212](../../src/rewrite.rs#L2212) | receiver-type-required |
+| `validate_payload` | `Err` | [2213](../../src/rewrite.rs#L2213), [2225](../../src/rewrite.rs#L2225), [2231](../../src/rewrite.rs#L2231), [2240](../../src/rewrite.rs#L2240) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `StoreError::Corruption` | [2213](../../src/rewrite.rs#L2213), [2222](../../src/rewrite.rs#L2222), [2225](../../src/rewrite.rs#L2225), [2231](../../src/rewrite.rs#L2231), [2240](../../src/rewrite.rs#L2240) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `"validated rewrite lacks payload".to_owned` | [2214](../../src/rewrite.rs#L2214) | receiver-type-required |
+| `validate_payload` | `fs::read` | [2218](../../src/rewrite.rs#L2218), [2252](../../src/rewrite.rs#L2252) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `payload.join` | [2218](../../src/rewrite.rs#L2218), [2250](../../src/rewrite.rs#L2250), [2252](../../src/rewrite.rs#L2252) | receiver-type-required |
+| `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `validate_payload` | `crate::tail::check_write_versions` | [2220](../../src/rewrite.rs#L2220) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
+| `validate_payload` | `projection.events.first().ok_or_else` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
+| `validate_payload` | `projection.events.first` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
+| `validate_payload` | `genesis.string_field` | [2224](../../src/rewrite.rs#L2224) | receiver-type-required |
+| `validate_payload` | `Some` | [2224](../../src/rewrite.rs#L2224) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `file.thread.as_str` | [2224](../../src/rewrite.rs#L2224) | receiver-type-required |
+| `validate_payload` | `projection.lifecycle.latest_turn.is_none` | [2230](../../src/rewrite.rs#L2230) | receiver-type-required |
+| `validate_payload` | `bytes             .windows(b"\"sealed\"".len())             .any` | [2236](../../src/rewrite.rs#L2236) | receiver-type-required |
+| `validate_payload` | `bytes             .windows` | [2236](../../src/rewrite.rs#L2236) | receiver-type-required |
+| `validate_payload` | `b"\"sealed\"".len` | [2237](../../src/rewrite.rs#L2237) | receiver-type-required |
+| `validate_payload` | `"rewritten ledger retained sealed carrier".to_owned` | [2241](../../src/rewrite.rs#L2241) | receiver-type-required |
+| `validate_payload` | `copy_live_assets` | [2245](../../src/rewrite.rs#L2245) | [store::rewrite::copy_live_assets](../../src/rewrite.rs#L2118) |
+| `validate_payload` | `root.join("threads").join` | [2246](../../src/rewrite.rs#L2246) | receiver-type-required |
+| `validate_payload` | `root.join` | [2246](../../src/rewrite.rs#L2246) | receiver-type-required |
+| `validate_payload` | `AssetStore::new` | [2250](../../src/rewrite.rs#L2250) | [store::asset::AssetStore::new](../../src/asset.rs#L27) |
+| `validate_payload` | `decode_events` | [2253](../../src/rewrite.rs#L2253) | [store::rewrite::decode_events](../../src/rewrite.rs#L1208) |
+| `validate_payload` | `events.first` | [2254](../../src/rewrite.rs#L2254) | receiver-type-required |
+| `validate_payload` | `validate_seed_snapshot` | [2255](../../src/rewrite.rs#L2255) | [store::rewrite::validate_seed_snapshot](../../src/rewrite.rs#L2261) |
+| `validate_payload` | `Ok` | [2258](../../src/rewrite.rs#L2258) | external-constructor-callback-or-unresolved |
+| `validate_seed_snapshot` | `event_value` | [2262](../../src/rewrite.rs#L2262) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
+| `validate_seed_snapshot` | `object.get("seed").and_then` | [2263](../../src/rewrite.rs#L2263) | receiver-type-required |
+| `validate_seed_snapshot` | `object.get` | [2263](../../src/rewrite.rs#L2263) | receiver-type-required |
+| `validate_seed_snapshot` | `Ok` | [2264](../../src/rewrite.rs#L2264), [2332](../../src/rewrite.rs#L2332) | external-constructor-callback-or-unresolved |
+| `validate_seed_snapshot` | `seed         .get("snapshot")         .and_then(Value::as_object)         .ok_or_else` | [2266](../../src/rewrite.rs#L2266) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("snapshot")         .and_then` | [2266](../../src/rewrite.rs#L2266) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get` | [2266](../../src/rewrite.rs#L2266), [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `StoreError::RewriteCarrierCorrupt` | [2269](../../src/rewrite.rs#L2269), [2273](../../src/rewrite.rs#L2273), [2278](../../src/rewrite.rs#L2278), [2281](../../src/rewrite.rs#L2281), [2287](../../src/rewrite.rs#L2287), [2289](../../src/rewrite.rs#L2289), [2296](../../src/rewrite.rs#L2296), [2300](../../src/rewrite.rs#L2300), [2311](../../src/rewrite.rs#L2311), [2313](../../src/rewrite.rs#L2313), [2328](../../src/rewrite.rs#L2328) | external-constructor-callback-or-unresolved |
+| `validate_seed_snapshot` | `"seed lacks snapshot".to_owned` | [2269](../../src/rewrite.rs#L2269) | receiver-type-required |
+| `validate_seed_snapshot` | `snapshot         .get("asset")         .and_then(Value::as_str)         .ok_or_else` | [2270](../../src/rewrite.rs#L2270) | receiver-type-required |
+| `validate_seed_snapshot` | `snapshot         .get("asset")         .and_then` | [2270](../../src/rewrite.rs#L2270) | receiver-type-required |
+| `validate_seed_snapshot` | `snapshot         .get` | [2270](../../src/rewrite.rs#L2270), [2274](../../src/rewrite.rs#L2274) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed snapshot lacks asset".to_owned` | [2273](../../src/rewrite.rs#L2273) | receiver-type-required |
+| `validate_seed_snapshot` | `snapshot         .get("digest")         .and_then(Value::as_str)         .ok_or_else` | [2274](../../src/rewrite.rs#L2274) | receiver-type-required |
+| `validate_seed_snapshot` | `snapshot         .get("digest")         .and_then` | [2274](../../src/rewrite.rs#L2274) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed snapshot lacks digest".to_owned` | [2278](../../src/rewrite.rs#L2278) | receiver-type-required |
+| `validate_seed_snapshot` | `Err` | [2281](../../src/rewrite.rs#L2281), [2289](../../src/rewrite.rs#L2289), [2313](../../src/rewrite.rs#L2313), [2328](../../src/rewrite.rs#L2328) | external-constructor-callback-or-unresolved |
+| `validate_seed_snapshot` | `"seed snapshot asset/digest mismatch".to_owned` | [2282](../../src/rewrite.rs#L2282) | receiver-type-required |
+| `validate_seed_snapshot` | `assets         .read_verified(asset)         .map_err` | [2285](../../src/rewrite.rs#L2285) | receiver-type-required |
+| `validate_seed_snapshot` | `assets         .read_verified` | [2285](../../src/rewrite.rs#L2285) | receiver-type-required |
+| `validate_seed_snapshot` | `error.to_string` | [2287](../../src/rewrite.rs#L2287), [2311](../../src/rewrite.rs#L2311) | receiver-type-required |
+| `validate_seed_snapshot` | `bytes.is_empty` | [2288](../../src/rewrite.rs#L2288) | receiver-type-required |
+| `validate_seed_snapshot` | `bytes.ends_with` | [2288](../../src/rewrite.rs#L2288) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed snapshot is not LF terminated".to_owned` | [2290](../../src/rewrite.rs#L2290) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter()         .map(&#124;value&#124; {             value.as_str().map(ToOwned::to_owned).ok_or_else(&#124;&#124; {                 StoreError::RewriteCarrierCorrupt("seed kind is not a string".to_owned())             })         })         .collect::<Result<Vec<_>, _>>` | [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter()         .map` | [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else(&#124;&#124; StoreError::RewriteCarrierCorrupt("seed lacks kinds".to_owned()))?         .iter` | [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then(Value::as_array)         .ok_or_else` | [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `seed         .get("kinds")         .and_then` | [2293](../../src/rewrite.rs#L2293) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed lacks kinds".to_owned` | [2296](../../src/rewrite.rs#L2296) | receiver-type-required |
+| `validate_seed_snapshot` | `value.as_str().map(ToOwned::to_owned).ok_or_else` | [2299](../../src/rewrite.rs#L2299) | receiver-type-required |
+| `validate_seed_snapshot` | `value.as_str().map` | [2299](../../src/rewrite.rs#L2299) | receiver-type-required |
+| `validate_seed_snapshot` | `value.as_str` | [2299](../../src/rewrite.rs#L2299) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed kind is not a string".to_owned` | [2300](../../src/rewrite.rs#L2300) | receiver-type-required |
+| `validate_seed_snapshot` | `BTreeSet::new` | [2304](../../src/rewrite.rs#L2304) | external-constructor-callback-or-unresolved |
+| `validate_seed_snapshot` | `bytes         .split(&#124;byte&#124; *byte == b'\n')         .filter` | [2306](../../src/rewrite.rs#L2306) | receiver-type-required |
+| `validate_seed_snapshot` | `bytes         .split` | [2306](../../src/rewrite.rs#L2306) | receiver-type-required |
+| `validate_seed_snapshot` | `line.is_empty` | [2308](../../src/rewrite.rs#L2308) | receiver-type-required |
+| `validate_seed_snapshot` | `Event::decode_canonical(line)             .map_err` | [2310](../../src/rewrite.rs#L2310) | receiver-type-required |
+| `validate_seed_snapshot` | `Event::decode_canonical` | [2310](../../src/rewrite.rs#L2310) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `validate_seed_snapshot` | `event.seq` | [2312](../../src/rewrite.rs#L2312), [2317](../../src/rewrite.rs#L2317) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed snapshot seqs are not strictly increasing".to_owned` | [2314](../../src/rewrite.rs#L2314) | receiver-type-required |
+| `validate_seed_snapshot` | `observed.insert` | [2318](../../src/rewrite.rs#L2318) | receiver-type-required |
+| `validate_seed_snapshot` | `event                 .string_field("kind")                 .expect("validated event has kind")                 .to_owned` | [2319](../../src/rewrite.rs#L2319) | receiver-type-required |
+| `validate_seed_snapshot` | `event                 .string_field("kind")                 .expect` | [2319](../../src/rewrite.rs#L2319) | receiver-type-required |
+| `validate_seed_snapshot` | `event                 .string_field` | [2319](../../src/rewrite.rs#L2319) | receiver-type-required |
+| `validate_seed_snapshot` | `declared.iter().cloned().collect::<BTreeSet<_>>` | [2325](../../src/rewrite.rs#L2325) | receiver-type-required |
+| `validate_seed_snapshot` | `declared.iter().cloned` | [2325](../../src/rewrite.rs#L2325) | receiver-type-required |
+| `validate_seed_snapshot` | `declared.iter` | [2325](../../src/rewrite.rs#L2325) | receiver-type-required |
+| `validate_seed_snapshot` | `declared.windows(2).any` | [2326](../../src/rewrite.rs#L2326) | receiver-type-required |
+| `validate_seed_snapshot` | `declared.windows` | [2326](../../src/rewrite.rs#L2326) | receiver-type-required |
+| `validate_seed_snapshot` | `"seed kinds do not equal the sorted snapshot kind set".to_owned` | [2329](../../src/rewrite.rs#L2329) | receiver-type-required |
+| `close_operation` | `fs::remove_file` | [2336](../../src/rewrite.rs#L2336) | external-constructor-callback-or-unresolved |
+| `close_operation` | `stage.join` | [2336](../../src/rewrite.rs#L2336) | receiver-type-required |
+| `close_operation` | `File::open(stage)?.sync_all` | [2337](../../src/rewrite.rs#L2337) | receiver-type-required |
+| `close_operation` | `File::open` | [2337](../../src/rewrite.rs#L2337), [2339](../../src/rewrite.rs#L2339) | external-constructor-callback-or-unresolved |
+| `close_operation` | `fs::remove_dir` | [2338](../../src/rewrite.rs#L2338) | external-constructor-callback-or-unresolved |
+| `close_operation` | `File::open(root.join("staging"))?.sync_all` | [2339](../../src/rewrite.rs#L2339) | receiver-type-required |
+| `close_operation` | `root.join` | [2339](../../src/rewrite.rs#L2339) | receiver-type-required |
+| `close_operation` | `Ok` | [2340](../../src/rewrite.rs#L2340) | external-constructor-callback-or-unresolved |
+| `write_canonical_events` | `Vec::new` | [2348](../../src/rewrite.rs#L2348) | external-constructor-callback-or-unresolved |
+| `write_canonical_events` | `bytes.extend_from_slice` | [2350](../../src/rewrite.rs#L2350) | receiver-type-required |
+| `write_canonical_events` | `serde_json_canonicalizer::to_vec(event).expect` | [2351](../../src/rewrite.rs#L2351) | receiver-type-required |
+| `write_canonical_events` | `serde_json_canonicalizer::to_vec` | [2351](../../src/rewrite.rs#L2351) | external-constructor-callback-or-unresolved |
+| `write_canonical_events` | `bytes.push` | [2353](../../src/rewrite.rs#L2353) | receiver-type-required |
+| `write_canonical_events` | `validate_ledger(&bytes, schema::READER_VERSION).expect` | [2355](../../src/rewrite.rs#L2355) | receiver-type-required |
+| `write_canonical_events` | `validate_ledger` | [2355](../../src/rewrite.rs#L2355) | external-constructor-callback-or-unresolved |
+| `write_canonical_events` | `fs::write(path, bytes).expect` | [2356](../../src/rewrite.rs#L2356) | receiver-type-required |
+| `write_canonical_events` | `fs::write` | [2356](../../src/rewrite.rs#L2356) | external-constructor-callback-or-unresolved |
+| `origin` | `"uid:501".to_owned` | [2361](../../src/rewrite.rs#L2361) | receiver-type-required |
+| `origin` | `"session-endpoint".to_owned` | [2362](../../src/rewrite.rs#L2362) | receiver-type-required |
+| `origin` | `target.to_owned` | [2363](../../src/rewrite.rs#L2363) | receiver-type-required |
+| `origin` | `op.to_owned` | [2364](../../src/rewrite.rs#L2364) | receiver-type-required |
+| `origin` | `key.to_owned` | [2365](../../src/rewrite.rs#L2365) | receiver-type-required |
+| `baseline_source` | `store.root().join("threads").join` | [2370](../../src/rewrite.rs#L2370) | receiver-type-required |
+| `baseline_source` | `store.root().join` | [2370](../../src/rewrite.rs#L2370) | receiver-type-required |
+| `baseline_source` | `store.root` | [2370](../../src/rewrite.rs#L2370) | receiver-type-required |
+| `baseline_source` | `fs::create_dir(&source).unwrap` | [2371](../../src/rewrite.rs#L2371) | receiver-type-required |
+| `baseline_source` | `fs::create_dir` | [2371](../../src/rewrite.rs#L2371) | external-constructor-callback-or-unresolved |
+| `baseline_source` | `fs::write(source.join("main.jsonl"), baseline).unwrap` | [2373](../../src/rewrite.rs#L2373) | receiver-type-required |
+| `baseline_source` | `fs::write` | [2373](../../src/rewrite.rs#L2373) | external-constructor-callback-or-unresolved |
+| `baseline_source` | `source.join` | [2373](../../src/rewrite.rs#L2373) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `tempfile::tempdir().unwrap` | [2381](../../src/rewrite.rs#L2381) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `tempfile::tempdir` | [2381](../../src/rewrite.rs#L2381) | external-constructor-callback-or-unresolved |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `ThreadStore::open(directory.path()).unwrap` | [2382](../../src/rewrite.rs#L2382) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `ThreadStore::open` | [2382](../../src/rewrite.rs#L2382) | external-constructor-callback-or-unresolved |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `directory.path` | [2382](../../src/rewrite.rs#L2382), [2383](../../src/rewrite.rs#L2383) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `directory.path().to_path_buf` | [2383](../../src/rewrite.rs#L2383) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `baseline_source` | [2385](../../src/rewrite.rs#L2385) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2369) |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `crate::folder_events::arm_admission` | [2386](../../src/rewrite.rs#L2386) | [store::folder_events::arm_admission](../../src/folder_events.rs#L141) |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `crate::folder_events::record_events` | [2387](../../src/rewrite.rs#L2387) | [store::folder_events::record_events](../../src/folder_events.rs#L211) |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.root().join` | [2388](../../src/rewrite.rs#L2388) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.root` | [2388](../../src/rewrite.rs#L2388) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all(trash.join(format!("redact-op-{reserved}"))).unwrap` | [2392](../../src/rewrite.rs#L2392) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all` | [2392](../../src/rewrite.rs#L2392), [2400](../../src/rewrite.rs#L2400) | external-constructor-callback-or-unresolved |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `trash.join` | [2392](../../src/rewrite.rs#L2392), [2400](../../src/rewrite.rs#L2400), [2401](../../src/rewrite.rs#L2401) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::create_dir_all(trash.join(format!("discard-{reused}/assets"))).unwrap` | [2400](../../src/rewrite.rs#L2400) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::write(trash.join(format!("discard-{reused}/main.jsonl")), b"old").unwrap` | [2401](../../src/rewrite.rs#L2401) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `fs::write` | [2401](../../src/rewrite.rs#L2401) | external-constructor-callback-or-unresolved |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store             .begin_fork("fork-1", source_id, reused, "2026-10-04T00:00:00.000Z")             .unwrap` | [2402](../../src/rewrite.rs#L2402) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store             .begin_fork` | [2402](../../src/rewrite.rs#L2402) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.recover_rewrites().unwrap` | [2406](../../src/rewrite.rs#L2406) | receiver-type-required |
+| `fork_is_announced_and_a_stale_discard_tombstone_does_not_block_its_id` | `store.recover_rewrites` | [2406](../../src/rewrite.rs#L2406) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tempfile::tempdir().unwrap` | [2422](../../src/rewrite.rs#L2422) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tempfile::tempdir` | [2422](../../src/rewrite.rs#L2422) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::sync::Arc::new` | [2423](../../src/rewrite.rs#L2423) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `ThreadStore::open(directory.path()).unwrap` | [2423](../../src/rewrite.rs#L2423) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `ThreadStore::open` | [2423](../../src/rewrite.rs#L2423) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `directory.path` | [2423](../../src/rewrite.rs#L2423) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `baseline_source` | [2424](../../src/rewrite.rs#L2424) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2369) |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root()                 .join(".rewrite-trash")                 .join` | [2426](../../src/rewrite.rs#L2426) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root()                 .join` | [2426](../../src/rewrite.rs#L2426) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store                 .root` | [2426](../../src/rewrite.rs#L2426) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::create_dir_all(tombstone.join(format!("assets/{file}"))).unwrap` | [2431](../../src/rewrite.rs#L2431) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::create_dir_all` | [2431](../../src/rewrite.rs#L2431) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `tombstone.join` | [2431](../../src/rewrite.rs#L2431), [2432](../../src/rewrite.rs#L2432) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::write(tombstone.join(format!("assets/{file}/blob")), b"x").unwrap` | [2432](../../src/rewrite.rs#L2432) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `fs::write` | [2432](../../src/rewrite.rs#L2432) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::sync::Arc::clone` | [2435](../../src/rewrite.rs#L2435) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `std::thread::spawn` | [2436](../../src/rewrite.rs#L2436) | external-constructor-callback-or-unresolved |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store.cleanup_discard_tombstones` | [2436](../../src/rewrite.rs#L2436) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `store.begin_fork` | [2438](../../src/rewrite.rs#L2438) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `cleaner.join().unwrap` | [2444](../../src/rewrite.rs#L2444) | receiver-type-required |
+| `concurrent_tombstone_cleanup_never_fails_a_fork_to_the_same_id` | `cleaner.join` | [2444](../../src/rewrite.rs#L2444) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tempfile::tempdir().unwrap` | [2456](../../src/rewrite.rs#L2456) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tempfile::tempdir` | [2456](../../src/rewrite.rs#L2456) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `ThreadStore::open(directory.path()).unwrap` | [2457](../../src/rewrite.rs#L2457) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `ThreadStore::open` | [2457](../../src/rewrite.rs#L2457) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `directory.path` | [2457](../../src/rewrite.rs#L2457), [2498](../../src/rewrite.rs#L2498) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `baseline_source` | [2459](../../src/rewrite.rs#L2459) | [store::rewrite::tests::baseline_source](../../src/rewrite.rs#L2369) |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store.root().join` | [2461](../../src/rewrite.rs#L2461) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store.root` | [2461](../../src/rewrite.rs#L2461) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `trash.join` | [2462](../../src/rewrite.rs#L2462) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `tombstone.join` | [2464](../../src/rewrite.rs#L2464) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::create_dir_all(&folder).unwrap` | [2465](../../src/rewrite.rs#L2465), [2501](../../src/rewrite.rs#L2501) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::create_dir_all` | [2465](../../src/rewrite.rs#L2465), [2501](../../src/rewrite.rs#L2501) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write(folder.join(format!("blob-{file}")), b"x").unwrap` | [2467](../../src/rewrite.rs#L2467) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write` | [2467](../../src/rewrite.rs#L2467), [2503](../../src/rewrite.rs#L2503) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `folder.join` | [2467](../../src/rewrite.rs#L2467), [2503](../../src/rewrite.rs#L2503) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store             .begin_fork(                 "fork-big",                 source_id,                 destination,                 "2026-10-04T00:00:00.000Z",             )             .unwrap` | [2470](../../src/rewrite.rs#L2470) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `store             .begin_fork` | [2470](../../src/rewrite.rs#L2470) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Instant::now` | [2483](../../src/rewrite.rs#L2483) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Duration::from_secs` | [2483](../../src/rewrite.rs#L2483) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir(&trash).unwrap().any` | [2484](../../src/rewrite.rs#L2484) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir(&trash).unwrap` | [2484](../../src/rewrite.rs#L2484) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::read_dir` | [2484](../../src/rewrite.rs#L2484) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name()                 .to_string_lossy()                 .starts_with` | [2485](../../src/rewrite.rs#L2485) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name()                 .to_string_lossy` | [2485](../../src/rewrite.rs#L2485) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap()                 .file_name` | [2485](../../src/rewrite.rs#L2485) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `entry                 .unwrap` | [2485](../../src/rewrite.rs#L2485) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::thread::sleep` | [2495](../../src/rewrite.rs#L2495) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::time::Duration::from_millis` | [2495](../../src/rewrite.rs#L2495) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `directory.path().join` | [2498](../../src/rewrite.rs#L2498) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `shared.join` | [2500](../../src/rewrite.rs#L2500) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `fs::write(folder.join(format!("f{file}")), b"x").unwrap` | [2503](../../src/rewrite.rs#L2503) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `shared.clone` | [2507](../../src/rewrite.rs#L2507) | receiver-type-required |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `std::thread::spawn` | [2508](../../src/rewrite.rs#L2508) | external-constructor-callback-or-unresolved |
+| `a_large_stale_tombstone_is_parked_and_two_deleters_of_one_tree_both_succeed` | `crate::folder::remove_tree_if_present` | [2508](../../src/rewrite.rs#L2508), [2510](../../src/rewrite.rs#L2510) | [store::folder::remove_tree_if_present](../../src/folder.rs#L925) |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir().unwrap` | [2518](../../src/rewrite.rs#L2518) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `tempfile::tempdir` | [2518](../../src/rewrite.rs#L2518) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `ThreadStore::open(directory.path()).unwrap` | [2519](../../src/rewrite.rs#L2519) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `ThreadStore::open` | [2519](../../src/rewrite.rs#L2519) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `directory.path` | [2519](../../src/rewrite.rs#L2519) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root().join("threads").join` | [2522](../../src/rewrite.rs#L2522) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root().join` | [2522](../../src/rewrite.rs#L2522), [2551](../../src/rewrite.rs#L2551), [2580](../../src/rewrite.rs#L2580) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.root` | [2522](../../src/rewrite.rs#L2522), [2551](../../src/rewrite.rs#L2551), [2580](../../src/rewrite.rs#L2580) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::create_dir(&source).unwrap` | [2523](../../src/rewrite.rs#L2523) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::create_dir` | [2523](../../src/rewrite.rs#L2523) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).unwrap())             .collect::<Vec<_>>` | [2525](../../src/rewrite.rs#L2525) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2525](../../src/rewrite.rs#L2525) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2525](../../src/rewrite.rs#L2525) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `baseline             .split` | [2525](../../src/rewrite.rs#L2525) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `line.is_empty` | [2527](../../src/rewrite.rs#L2527) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `serde_json::from_slice::<Value>(line).unwrap` | [2528](../../src/rewrite.rs#L2528) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `serde_json::from_slice::<Value>` | [2528](../../src/rewrite.rs#L2528) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut()             .find(&#124;event&#124; event["kind"] == "run_start")             .unwrap` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut()             .find` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `events             .iter_mut` | [2530](../../src/rewrite.rs#L2530) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut()             .unwrap()             .insert` | [2534](../../src/rewrite.rs#L2534) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut()             .unwrap` | [2534](../../src/rewrite.rs#L2534) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `run.as_object_mut` | [2534](../../src/rewrite.rs#L2534) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `"launch_bindings_digest".into` | [2536](../../src/rewrite.rs#L2536) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_canonical_events` | [2537](../../src/rewrite.rs#L2537) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `source.join` | [2537](../../src/rewrite.rs#L2537), [2538](../../src/rewrite.rs#L2538) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::read(source.join("main.jsonl")).unwrap` | [2538](../../src/rewrite.rs#L2538) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `fs::read` | [2538](../../src/rewrite.rs#L2538) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store             .begin_fork(                 "failed-fork",                 source_id,                 destination_id,                 "2026-10-04T00:00:00.000Z",             )             .unwrap` | [2539](../../src/rewrite.rs#L2539) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store             .begin_fork` | [2539](../../src/rewrite.rs#L2539) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `read_operation(&stage).unwrap` | [2552](../../src/rewrite.rs#L2552) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `read_operation` | [2552](../../src/rewrite.rs#L2552) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `operation.clone` | [2553](../../src/rewrite.rs#L2553) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation(&stage, &protected).unwrap` | [2555](../../src/rewrite.rs#L2555), [2569](../../src/rewrite.rs#L2569) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation` | [2555](../../src/rewrite.rs#L2555), [2569](../../src/rewrite.rs#L2569), [2576](../../src/rewrite.rs#L2576) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `StoreError::RewriteCarrierCorrupt` | [2556](../../src/rewrite.rs#L2556) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `"missing asset".into` | [2556](../../src/rewrite.rs#L2556) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `Some` | [2564](../../src/rewrite.rs#L2564) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `Vec::new` | [2565](../../src/rewrite.rs#L2565), [2566](../../src/rewrite.rs#L2566), [2567](../../src/rewrite.rs#L2567) | external-constructor-callback-or-unresolved |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `write_operation(&stage, &operation).unwrap` | [2576](../../src/rewrite.rs#L2576) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.gc_rewrite_debris().unwrap` | [2585](../../src/rewrite.rs#L2585) | receiver-type-required |
+| `startup_isolates_missing_fork_carrier_without_losing_source` | `store.gc_rewrite_debris` | [2585](../../src/rewrite.rs#L2585) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `tempfile::tempdir().expect` | [2591](../../src/rewrite.rs#L2591) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `tempfile::tempdir` | [2591](../../src/rewrite.rs#L2591) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `ThreadStore::open(directory.path()).expect` | [2592](../../src/rewrite.rs#L2592) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `ThreadStore::open` | [2592](../../src/rewrite.rs#L2592) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `directory.path` | [2592](../../src/rewrite.rs#L2592) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root().join("threads").join` | [2595](../../src/rewrite.rs#L2595), [2681](../../src/rewrite.rs#L2681) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root().join` | [2595](../../src/rewrite.rs#L2595), [2681](../../src/rewrite.rs#L2681) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.root` | [2595](../../src/rewrite.rs#L2595), [2681](../../src/rewrite.rs#L2681) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::create_dir(&source).expect` | [2596](../../src/rewrite.rs#L2596) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::create_dir` | [2596](../../src/rewrite.rs#L2596) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `AssetStore::new(source.join("assets")).expect` | [2597](../../src/rewrite.rs#L2597) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `AssetStore::new` | [2597](../../src/rewrite.rs#L2597) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `source.join` | [2597](../../src/rewrite.rs#L2597), [2633](../../src/rewrite.rs#L2633), [2634](../../src/rewrite.rs#L2634), [2638](../../src/rewrite.rs#L2638) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets             .publish(b"retained launch profile")             .expect` | [2598](../../src/rewrite.rs#L2598) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets             .publish` | [2598](../../src/rewrite.rs#L2598) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets.publish(b"later launch profile").expect` | [2601](../../src/rewrite.rs#L2601) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `assets.publish` | [2601](../../src/rewrite.rs#L2601) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2604](../../src/rewrite.rs#L2604) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2604](../../src/rewrite.rs#L2604) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2604](../../src/rewrite.rs#L2604) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `baseline             .split` | [2604](../../src/rewrite.rs#L2604) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `line.is_empty` | [2606](../../src/rewrite.rs#L2606) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `serde_json::from_slice::<Value>(line).expect` | [2607](../../src/rewrite.rs#L2607) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `serde_json::from_slice::<Value>` | [2607](../../src/rewrite.rs#L2607) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut().unwrap().insert` | [2609](../../src/rewrite.rs#L2609) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut().unwrap` | [2609](../../src/rewrite.rs#L2609) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events[2].as_object_mut` | [2609](../../src/rewrite.rs#L2609) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `"launch_bindings_digest".to_owned` | [2610](../../src/rewrite.rs#L2610) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `events.push` | [2613](../../src/rewrite.rs#L2613), [2619](../../src/rewrite.rs#L2619), [2625](../../src/rewrite.rs#L2625), [2629](../../src/rewrite.rs#L2629) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `write_canonical_events` | [2633](../../src/rewrite.rs#L2633) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write(source.join("endpoint.jsonl"), b"not a semantic ledger\n")             .expect` | [2634](../../src/rewrite.rs#L2634) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write` | [2634](../../src/rewrite.rs#L2634), [2638](../../src/rewrite.rs#L2638) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::write(source.join(crate::SESSION_SETTINGS_FILE), settings)             .expect` | [2638](../../src/rewrite.rs#L2638) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.begin_fork_at_kernel_anchor` | [2641](../../src/rewrite.rs#L2641) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `"018f0000-0000-7000-8000-000000000005".to_owned` | [2646](../../src/rewrite.rs#L2646) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `origin` | [2647](../../src/rewrite.rs#L2647), [2664](../../src/rewrite.rs#L2664) | [store::rewrite::tests::origin](../../src/rewrite.rs#L2359) |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `destination_id.to_owned` | [2663](../../src/rewrite.rs#L2663) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork_at_kernel_anchor(                 "fork-prefix",                 source_id,                 8,                 binding.clone(),                 "2026-08-28T10:00:00.000Z",             )             .expect` | [2668](../../src/rewrite.rs#L2668) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork_at_kernel_anchor` | [2668](../../src/rewrite.rs#L2668) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `binding.clone` | [2673](../../src/rewrite.rs#L2673) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.recover_rewrites().expect` | [2679](../../src/rewrite.rs#L2679), [2723](../../src/rewrite.rs#L2723) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store.recover_rewrites` | [2679](../../src/rewrite.rs#L2679), [2723](../../src/rewrite.rs#L2723) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).expect("destination ledger"),             1,         )         .expect` | [2682](../../src/rewrite.rs#L2682) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `validate_ledger` | [2682](../../src/rewrite.rs#L2682) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::read(destination.join("main.jsonl")).expect` | [2683](../../src/rewrite.rs#L2683) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `fs::read` | [2683](../../src/rewrite.rs#L2683) | external-constructor-callback-or-unresolved |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `destination.join` | [2683](../../src/rewrite.rs#L2683) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `projected.events.first().expect` | [2687](../../src/rewrite.rs#L2687) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `projected.events.first` | [2687](../../src/rewrite.rs#L2687) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork(                 "fork-full-tail",                 source_id,                 full_destination,                 "2026-08-28T10:01:00.000Z",             )             .expect` | [2713](../../src/rewrite.rs#L2713) | receiver-type-required |
+| `anchored_fork_uses_terminal_prefix_binding_and_empty_endpoint_journal` | `store             .begin_fork` | [2713](../../src/rewrite.rs#L2713) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `tempfile::tempdir().expect` | [2736](../../src/rewrite.rs#L2736) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `tempfile::tempdir` | [2736](../../src/rewrite.rs#L2736) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `ThreadStore::open(directory.path()).expect` | [2737](../../src/rewrite.rs#L2737) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `ThreadStore::open` | [2737](../../src/rewrite.rs#L2737) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `directory.path` | [2737](../../src/rewrite.rs#L2737) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store.root().join("threads").join` | [2740](../../src/rewrite.rs#L2740), [2775](../../src/rewrite.rs#L2775) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store.root().join` | [2740](../../src/rewrite.rs#L2740), [2775](../../src/rewrite.rs#L2775) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store.root` | [2740](../../src/rewrite.rs#L2740), [2775](../../src/rewrite.rs#L2775) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `fs::create_dir(&source).expect` | [2741](../../src/rewrite.rs#L2741) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `fs::create_dir` | [2741](../../src/rewrite.rs#L2741) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2743](../../src/rewrite.rs#L2743) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2743](../../src/rewrite.rs#L2743) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2743](../../src/rewrite.rs#L2743) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `baseline             .split` | [2743](../../src/rewrite.rs#L2743) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `line.is_empty` | [2745](../../src/rewrite.rs#L2745) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `serde_json::from_slice::<Value>(line).expect` | [2746](../../src/rewrite.rs#L2746) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `serde_json::from_slice::<Value>` | [2746](../../src/rewrite.rs#L2746) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut()             .unwrap()             .insert` | [2748](../../src/rewrite.rs#L2748) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut()             .unwrap` | [2748](../../src/rewrite.rs#L2748) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `events[0]             .as_object_mut` | [2748](../../src/rewrite.rs#L2748) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `"identity_profile".to_owned` | [2751](../../src/rewrite.rs#L2751) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event["seq"].as_u64().unwrap` | [2753](../../src/rewrite.rs#L2753) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event["seq"].as_u64` | [2753](../../src/rewrite.rs#L2753) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut()                 .unwrap()                 .insert` | [2754](../../src/rewrite.rs#L2754) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut()                 .unwrap` | [2754](../../src/rewrite.rs#L2754) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event                 .as_object_mut` | [2754](../../src/rewrite.rs#L2754) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `"seq".to_owned` | [2757](../../src/rewrite.rs#L2757) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `events.insert` | [2759](../../src/rewrite.rs#L2759) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `write_canonical_events` | [2765](../../src/rewrite.rs#L2765) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `fork_preserves_runtime_identity_selection` | `source.join` | [2765](../../src/rewrite.rs#L2765) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store             .begin_fork(                 "fork-identity",                 source_id,                 destination_id,                 "2026-09-27T00:00:00.000Z",             )             .expect` | [2766](../../src/rewrite.rs#L2766) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store             .begin_fork` | [2766](../../src/rewrite.rs#L2766) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store.recover_rewrites().expect` | [2774](../../src/rewrite.rs#L2774) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `store.recover_rewrites` | [2774](../../src/rewrite.rs#L2774) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2776](../../src/rewrite.rs#L2776) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `validate_ledger` | [2776](../../src/rewrite.rs#L2776) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `fs::read(destination.join("main.jsonl")).unwrap` | [2777](../../src/rewrite.rs#L2777) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `fs::read` | [2777](../../src/rewrite.rs#L2777) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `destination.join` | [2777](../../src/rewrite.rs#L2777) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter()             .find(&#124;event&#124; event.string_field("subkind") == Some("identity.selected"))             .expect` | [2785](../../src/rewrite.rs#L2785) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter()             .find` | [2785](../../src/rewrite.rs#L2785) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `projected             .events             .iter` | [2785](../../src/rewrite.rs#L2785) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `event.string_field` | [2788](../../src/rewrite.rs#L2788) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `Some` | [2788](../../src/rewrite.rs#L2788) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `serde_json::to_value(choice.raw()).unwrap` | [2791](../../src/rewrite.rs#L2791) | receiver-type-required |
+| `fork_preserves_runtime_identity_selection` | `serde_json::to_value` | [2791](../../src/rewrite.rs#L2791) | external-constructor-callback-or-unresolved |
+| `fork_preserves_runtime_identity_selection` | `choice.raw` | [2791](../../src/rewrite.rs#L2791) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `tempfile::tempdir().expect` | [2797](../../src/rewrite.rs#L2797) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `tempfile::tempdir` | [2797](../../src/rewrite.rs#L2797) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `ThreadStore::open(directory.path()).expect` | [2798](../../src/rewrite.rs#L2798) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `ThreadStore::open` | [2798](../../src/rewrite.rs#L2798) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `directory.path` | [2798](../../src/rewrite.rs#L2798) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root().join("threads").join` | [2801](../../src/rewrite.rs#L2801), [2823](../../src/rewrite.rs#L2823) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root().join` | [2801](../../src/rewrite.rs#L2801), [2823](../../src/rewrite.rs#L2823) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store.root` | [2801](../../src/rewrite.rs#L2801), [2823](../../src/rewrite.rs#L2823) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::create_dir(&source).expect` | [2802](../../src/rewrite.rs#L2802) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::create_dir` | [2802](../../src/rewrite.rs#L2802) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2804](../../src/rewrite.rs#L2804) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2804](../../src/rewrite.rs#L2804) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2804](../../src/rewrite.rs#L2804) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `baseline             .split` | [2804](../../src/rewrite.rs#L2804) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `line.is_empty` | [2806](../../src/rewrite.rs#L2806) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::from_slice::<Value>(line).expect` | [2807](../../src/rewrite.rs#L2807) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::from_slice::<Value>` | [2807](../../src/rewrite.rs#L2807) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `events[0].as_object_mut().unwrap` | [2810](../../src/rewrite.rs#L2810) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `events[0].as_object_mut` | [2810](../../src/rewrite.rs#L2810) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `genesis.insert` | [2811](../../src/rewrite.rs#L2811), [2812](../../src/rewrite.rs#L2812) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `"preset".to_owned` | [2811](../../src/rewrite.rs#L2811) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `preset.clone` | [2811](../../src/rewrite.rs#L2811) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `"min_reader".to_owned` | [2812](../../src/rewrite.rs#L2812) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `write_canonical_events` | [2813](../../src/rewrite.rs#L2813) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `source.join` | [2813](../../src/rewrite.rs#L2813) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store             .begin_fork(                 "fork-preset",                 source_id,                 destination_id,                 "2026-09-27T00:00:00.000Z",             )             .expect` | [2814](../../src/rewrite.rs#L2814) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store             .begin_fork` | [2814](../../src/rewrite.rs#L2814) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store.recover_rewrites().expect` | [2822](../../src/rewrite.rs#L2822) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `store.recover_rewrites` | [2822](../../src/rewrite.rs#L2822) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2824](../../src/rewrite.rs#L2824) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `validate_ledger` | [2824](../../src/rewrite.rs#L2824) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::read(destination.join("main.jsonl")).unwrap` | [2825](../../src/rewrite.rs#L2825) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `fs::read` | [2825](../../src/rewrite.rs#L2825) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `destination.join` | [2825](../../src/rewrite.rs#L2825) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::to_value(projected.events[0].raw()).unwrap` | [2829](../../src/rewrite.rs#L2829) | receiver-type-required |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `serde_json::to_value` | [2829](../../src/rewrite.rs#L2829) | external-constructor-callback-or-unresolved |
+| `fork_keeps_the_genesis_preset_and_reader_two` | `projected.events[0].raw` | [2829](../../src/rewrite.rs#L2829) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `tempfile::tempdir().expect` | [2839](../../src/rewrite.rs#L2839) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `tempfile::tempdir` | [2839](../../src/rewrite.rs#L2839) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `ThreadStore::open(directory.path()).expect` | [2840](../../src/rewrite.rs#L2840) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `ThreadStore::open` | [2840](../../src/rewrite.rs#L2840) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `directory.path` | [2840](../../src/rewrite.rs#L2840) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store.root().join("threads").join` | [2843](../../src/rewrite.rs#L2843), [2869](../../src/rewrite.rs#L2869) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store.root().join` | [2843](../../src/rewrite.rs#L2843), [2869](../../src/rewrite.rs#L2869) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store.root` | [2843](../../src/rewrite.rs#L2843), [2869](../../src/rewrite.rs#L2869) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `fs::create_dir(&source).expect` | [2844](../../src/rewrite.rs#L2844) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `fs::create_dir` | [2844](../../src/rewrite.rs#L2844) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map(&#124;line&#124; serde_json::from_slice::<Value>(line).expect("baseline event"))             .collect::<Vec<_>>` | [2846](../../src/rewrite.rs#L2846) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter(&#124;line&#124; !line.is_empty())             .map` | [2846](../../src/rewrite.rs#L2846) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `baseline             .split(&#124;byte&#124; *byte == b'\n')             .filter` | [2846](../../src/rewrite.rs#L2846) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `baseline             .split` | [2846](../../src/rewrite.rs#L2846) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `line.is_empty` | [2848](../../src/rewrite.rs#L2848) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `serde_json::from_slice::<Value>(line).expect` | [2849](../../src/rewrite.rs#L2849) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `serde_json::from_slice::<Value>` | [2849](../../src/rewrite.rs#L2849) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `events[0].as_object_mut().unwrap` | [2851](../../src/rewrite.rs#L2851) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `events[0].as_object_mut` | [2851](../../src/rewrite.rs#L2851) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `genesis.insert` | [2852](../../src/rewrite.rs#L2852), [2853](../../src/rewrite.rs#L2853), [2854](../../src/rewrite.rs#L2854), [2855](../../src/rewrite.rs#L2855), [2856](../../src/rewrite.rs#L2856), [2857](../../src/rewrite.rs#L2857) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"folder_binding".to_owned` | [2852](../../src/rewrite.rs#L2852) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"cwd".to_owned` | [2853](../../src/rewrite.rs#L2853) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"environment".to_owned` | [2854](../../src/rewrite.rs#L2854) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"folders".to_owned` | [2855](../../src/rewrite.rs#L2855) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"instruction".to_owned` | [2856](../../src/rewrite.rs#L2856) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `"identity_profile".to_owned` | [2857](../../src/rewrite.rs#L2857) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `genesis.clone` | [2858](../../src/rewrite.rs#L2858) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `write_canonical_events` | [2859](../../src/rewrite.rs#L2859) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `fork_copies_every_inherited_genesis_field` | `source.join` | [2859](../../src/rewrite.rs#L2859) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store             .begin_fork(                 "fork-fields",                 source_id,                 destination_id,                 "2026-10-15T00:00:00.000Z",             )             .expect` | [2860](../../src/rewrite.rs#L2860) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store             .begin_fork` | [2860](../../src/rewrite.rs#L2860) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store.recover_rewrites().expect` | [2868](../../src/rewrite.rs#L2868) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `store.recover_rewrites` | [2868](../../src/rewrite.rs#L2868) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2870](../../src/rewrite.rs#L2870) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `validate_ledger` | [2870](../../src/rewrite.rs#L2870) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `fs::read(destination.join("main.jsonl")).unwrap` | [2871](../../src/rewrite.rs#L2871) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `fs::read` | [2871](../../src/rewrite.rs#L2871) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `destination.join` | [2871](../../src/rewrite.rs#L2871) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `serde_json::to_value(projected.events[0].raw()).unwrap` | [2875](../../src/rewrite.rs#L2875) | receiver-type-required |
+| `fork_copies_every_inherited_genesis_field` | `serde_json::to_value` | [2875](../../src/rewrite.rs#L2875) | external-constructor-callback-or-unresolved |
+| `fork_copies_every_inherited_genesis_field` | `projected.events[0].raw` | [2875](../../src/rewrite.rs#L2875) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `tempfile::tempdir().expect` | [2889](../../src/rewrite.rs#L2889) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `tempfile::tempdir` | [2889](../../src/rewrite.rs#L2889) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `ThreadStore::open(directory.path()).expect` | [2890](../../src/rewrite.rs#L2890) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `ThreadStore::open` | [2890](../../src/rewrite.rs#L2890) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `directory.path` | [2890](../../src/rewrite.rs#L2890) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store.root().join("threads").join` | [2894](../../src/rewrite.rs#L2894), [2972](../../src/rewrite.rs#L2972) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store.root().join` | [2894](../../src/rewrite.rs#L2894), [2972](../../src/rewrite.rs#L2972) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store.root` | [2894](../../src/rewrite.rs#L2894), [2972](../../src/rewrite.rs#L2972) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `fs::create_dir(&source).expect` | [2895](../../src/rewrite.rs#L2895) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `fs::create_dir` | [2895](../../src/rewrite.rs#L2895) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `write_canonical_events` | [2896](../../src/rewrite.rs#L2896), [2933](../../src/rewrite.rs#L2933) | [store::rewrite::tests::write_canonical_events](../../src/rewrite.rs#L2347) |
+| `anchored_fork_remaps_complete_child_edges` | `source.join` | [2897](../../src/rewrite.rs#L2897), [2934](../../src/rewrite.rs#L2934) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store             .begin_fork_at_kernel_anchor(                 "fork-child-prefix",                 source_id,                 6,                 ForkGenesisBinding {                     thread: destination_id.to_owned(),                     origin: origin(destination_id, "fork-child", "session.fork"),                     ephemeral: false,                     preset: None,                 },                 "2026-08-28T10:00:00.000Z",             )             .expect` | [2956](../../src/rewrite.rs#L2956) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store             .begin_fork_at_kernel_anchor` | [2956](../../src/rewrite.rs#L2956) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `destination_id.to_owned` | [2962](../../src/rewrite.rs#L2962) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `origin` | [2963](../../src/rewrite.rs#L2963) | [store::rewrite::tests::origin](../../src/rewrite.rs#L2359) |
+| `anchored_fork_remaps_complete_child_edges` | `operation.files[1].clone` | [2970](../../src/rewrite.rs#L2970) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store.recover_rewrites().expect` | [2971](../../src/rewrite.rs#L2971) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `store.recover_rewrites` | [2971](../../src/rewrite.rs#L2971) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `validate_ledger(             &fs::read(destination.join("main.jsonl")).unwrap(),             schema::READER_VERSION,         )         .expect` | [2973](../../src/rewrite.rs#L2973) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `validate_ledger` | [2973](../../src/rewrite.rs#L2973), [2978](../../src/rewrite.rs#L2978) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `fs::read(destination.join("main.jsonl")).unwrap` | [2974](../../src/rewrite.rs#L2974) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `fs::read` | [2974](../../src/rewrite.rs#L2974), [2979](../../src/rewrite.rs#L2979) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `destination.join` | [2974](../../src/rewrite.rs#L2974), [2979](../../src/rewrite.rs#L2979) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `validate_ledger(             &fs::read(destination.join(&mapped_child.dest)).unwrap(),             schema::READER_VERSION,         )         .expect` | [2978](../../src/rewrite.rs#L2978) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `fs::read(destination.join(&mapped_child.dest)).unwrap` | [2979](../../src/rewrite.rs#L2979) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find(&#124;event&#124; matches!(event.kind(), EventKind::Spawn))             .expect` | [2983](../../src/rewrite.rs#L2983) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find` | [2983](../../src/rewrite.rs#L2983), [2988](../../src/rewrite.rs#L2988) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter` | [2983](../../src/rewrite.rs#L2983), [2988](../../src/rewrite.rs#L2988) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `parent             .events             .iter()             .find(&#124;event&#124; matches!(event.kind(), EventKind::ChildResult))             .expect` | [2988](../../src/rewrite.rs#L2988) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `event_value(&child.events[0]).expect` | [3001](../../src/rewrite.rs#L3001) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `event_value` | [3001](../../src/rewrite.rs#L3001) | external-constructor-callback-or-unresolved |
+| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get("parent")             .and_then(Value::as_object)             .expect` | [3002](../../src/rewrite.rs#L3002) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get("parent")             .and_then` | [3002](../../src/rewrite.rs#L3002) | receiver-type-required |
+| `anchored_fork_remaps_complete_child_edges` | `child_genesis             .get` | [3002](../../src/rewrite.rs#L3002) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `tempfile::tempdir().expect` | [3019](../../src/rewrite.rs#L3019) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `tempfile::tempdir` | [3019](../../src/rewrite.rs#L3019) | external-constructor-callback-or-unresolved |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `directory.path().join` | [3020](../../src/rewrite.rs#L3020), [3021](../../src/rewrite.rs#L3021) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `directory.path` | [3020](../../src/rewrite.rs#L3020), [3021](../../src/rewrite.rs#L3021) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all(source.join("assets")).expect` | [3022](../../src/rewrite.rs#L3022) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all` | [3022](../../src/rewrite.rs#L3022), [3023](../../src/rewrite.rs#L3023) | external-constructor-callback-or-unresolved |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `source.join` | [3022](../../src/rewrite.rs#L3022), [3024](../../src/rewrite.rs#L3024), [3033](../../src/rewrite.rs#L3033) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::create_dir_all(payload.join("assets")).expect` | [3023](../../src/rewrite.rs#L3023) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `payload.join` | [3023](../../src/rewrite.rs#L3023), [3037](../../src/rewrite.rs#L3037) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect("source store")                 .publish(b"launch bindings\n")                 .expect` | [3024](../../src/rewrite.rs#L3024) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect("source store")                 .publish` | [3024](../../src/rewrite.rs#L3024) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new(source.join("assets"))                 .expect` | [3024](../../src/rewrite.rs#L3024) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `AssetStore::new` | [3024](../../src/rewrite.rs#L3024) | external-constructor-callback-or-unresolved |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `published                 .asset                 .strip_prefix("sha256-")                 .expect` | [3028](../../src/rewrite.rs#L3028) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `published                 .asset                 .strip_prefix` | [3028](../../src/rewrite.rs#L3028) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write(                 source.join("main.jsonl"),                 format!("{{\"kind\":\"run_start\",\"launch_bindings_digest\":\"{digest}\"}}\n"),             )             .expect` | [3032](../../src/rewrite.rs#L3032) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write` | [3032](../../src/rewrite.rs#L3032), [3037](../../src/rewrite.rs#L3037) | external-constructor-callback-or-unresolved |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `fs::write(payload.join("main.jsonl"), b"{}\n").expect` | [3037](../../src/rewrite.rs#L3037) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"rewrite-test".to_owned` | [3040](../../src/rewrite.rs#L3040) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"source".to_owned` | [3042](../../src/rewrite.rs#L3042) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"dest".to_owned` | [3043](../../src/rewrite.rs#L3043) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `"2026-08-28T00:00:00.000Z".to_owned` | [3044](../../src/rewrite.rs#L3044) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `(kind == RewriteKind::Redact).then_some` | [3056](../../src/rewrite.rs#L3056) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `Vec::new` | [3057](../../src/rewrite.rs#L3057), [3058](../../src/rewrite.rs#L3058) | external-constructor-callback-or-unresolved |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `copy_live_assets(&source, &payload, &operation).expect` | [3063](../../src/rewrite.rs#L3063) | receiver-type-required |
+| `fork_and_redact_copy_unpoisoned_launch_binding_carriers` | `copy_live_assets` | [3063](../../src/rewrite.rs#L3063) | external-constructor-callback-or-unresolved |

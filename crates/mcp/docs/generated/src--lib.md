@@ -8,12 +8,12 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
-| [mcp::LEGACY_PROTOCOL_VERSION](../../src/lib.rs#L39) | const_item | `pub` |  |
-| [mcp::MODERN_PROTOCOL_VERSION](../../src/lib.rs#L40) | const_item | `pub` |  |
-| [mcp::MAX_FRAME_BYTES](../../src/lib.rs#L41) | const_item | `pub` |  |
-| [mcp::MAX_CATALOG_ITEMS](../../src/lib.rs#L42) | const_item | `pub` |  |
-| [mcp::MAX_CATALOG_PAGES](../../src/lib.rs#L43) | const_item | `pub` |  |
-| [mcp::MAX_CONTINUATION_ROUNDS](../../src/lib.rs#L44) | const_item | `pub` |  |
+| [mcp::LEGACY_PROTOCOL_VERSION](../../src/lib.rs#L36) | const_item | `pub` |  |
+| [mcp::MODERN_PROTOCOL_VERSION](../../src/lib.rs#L37) | const_item | `pub` |  |
+| [mcp::MAX_FRAME_BYTES](../../src/lib.rs#L38) | const_item | `pub` |  |
+| [mcp::MAX_CATALOG_ITEMS](../../src/lib.rs#L39) | const_item | `pub` |  |
+| [mcp::MAX_CATALOG_PAGES](../../src/lib.rs#L40) | const_item | `pub` |  |
+| [mcp::MAX_CONTINUATION_ROUNDS](../../src/lib.rs#L41) | const_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -23,21 +23,6 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `McpClient` | `client::McpClient` | `pub` |
 | `McpPeer` | `client::McpPeer` | `pub` |
 | `McpPeerFuture` | `client::McpPeerFuture` | `pub` |
-| `CredentialValue` | `management::CredentialValue` | `pub` |
-| `McpCredentialFieldOperation` | `management::McpCredentialFieldOperation` | `pub` |
-| `McpCredentialReference` | `management::McpCredentialReference` | `pub` |
-| `McpCredentialReferenceState` | `management::McpCredentialReferenceState` | `pub` |
-| `McpManagementFault` | `management::McpManagementFault` | `pub` |
-| `McpManagementMutation` | `management::McpManagementMutation` | `pub` |
-| `McpManagementResult` | `management::McpManagementResult` | `pub` |
-| `McpMutationReceipt` | `management::McpMutationReceipt` | `pub` |
-| `McpRegistry` | `management::McpRegistry` | `pub` |
-| `McpRegistryError` | `management::McpRegistryError` | `pub` |
-| `McpRegistryStore` | `management::McpRegistryStore` | `pub` |
-| `McpScope` | `management::McpScope` | `pub` |
-| `McpServerConfig` | `management::McpServerConfig` | `pub` |
-| `McpServerReference` | `management::McpServerReference` | `pub` |
-| `McpTransportConfig` | `management::McpTransportConfig` | `pub` |
 | `McpPool` | `pool::McpPool` | `pub` |
 | `McpPoolError` | `pool::McpPoolError` | `pub` |
 | `McpPoolKey` | `pool::McpPoolKey` | `pub` |
@@ -58,6 +43,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `HttpRequestAuthorization` | `transport::HttpRequestAuthorization` | `pub` |
 | `HttpTransport` | `transport::HttpTransport` | `pub` |
 | `McpTransport` | `transport::McpTransport` | `pub` |
+| `PipeTransport` | `transport::PipeTransport` | `pub` |
 | `StdioTransport` | `transport::StdioTransport` | `pub` |
 | `JsonRpcError` | `types::JsonRpcError` | `pub` |
 | `JsonRpcRequest` | `types::JsonRpcRequest` | `pub` |
@@ -91,7 +77,6 @@ Visibility is the declaration spelling; trait members and reexports require thei
 |---|---|---|
 | `mcp::broker` | `private` |  |
 | `mcp::client` | `private` |  |
-| `mcp::management` | `private` |  |
 | `mcp::parameter_headers` | `private` |  |
 | `mcp::pool` | `private` |  |
 | `mcp::projection` | `private` |  |

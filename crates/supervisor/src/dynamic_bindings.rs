@@ -22,7 +22,7 @@ pub fn resolve_worker_launch_bindings(
         .map_err(|error| DynamicBindingError::Invalid(error.to_string()))?;
     // Touch the policy meet here so launch assembly is explicitly derived from
     // both frozen snapshots. The worker repeats the same meet when projecting.
-    let _effective_policy = instruction.meet_workspace_policy(&config.workspace.policy);
+    let _effective_policy = instruction.meet_workspace_policy(&config.execution.policy);
     let bindings = WorkerLaunchBindings {
         goal_id,
         dynamic_catalog,
@@ -48,8 +48,8 @@ pub enum DynamicBindingError {
 mod tests {
     use profile::{
         ConfigSnapshot, DynamicTool, DynamicToolEffect, DynamicToolSource, DynamicToolSourceKind,
-        EffectiveInstructions, InstructionSnapshot, ProvidersConfig, ResolvedWorkspace,
-        RevisionVector, SettingsConfig, WorkspacePolicy,
+        EffectiveInstructions, ExecutionPolicy, InstructionSnapshot, ProvidersConfig,
+        ResolvedExecution, RevisionVector, SettingsConfig,
     };
     use schema::IJsonValue;
 
@@ -59,15 +59,9 @@ mod tests {
         ConfigSnapshot {
             user_agent_dir: None,
             format: 1,
-            workspace: ResolvedWorkspace {
-                environment: None,
-                folders: None,
-                format: 1,
-                revision: 1,
-                id: "ws".to_owned(),
-                name: "ws".to_owned(),
-                folder_binding: None,
-                selected_cwd: None,
+            execution: ResolvedExecution {
+                session_id: "ws".to_owned(),
+
                 cwd: vec![
                     std::env::temp_dir()
                         .canonicalize()
@@ -75,9 +69,9 @@ mod tests {
                         .to_string_lossy()
                         .into_owned(),
                 ],
-                policy: WorkspacePolicy {
+                policy: ExecutionPolicy {
                     allowed_tools,
-                    ..WorkspacePolicy::default()
+                    ..ExecutionPolicy::default()
                 },
             },
             providers: ProvidersConfig {
@@ -86,14 +80,12 @@ mod tests {
                 providers: Vec::new(),
                 web_search: None,
             },
-            legacy_integrations: (),
+
             settings: SettingsConfig::default(),
             session_settings: None,
             revisions: RevisionVector {
-                environments: None,
-                workspace: 1,
                 providers: 1,
-                legacy_integrations: (),
+
                 settings: 0,
                 session_settings: None,
             },
@@ -102,7 +94,6 @@ mod tests {
 
     fn instruction() -> InstructionSnapshot {
         InstructionSnapshot {
-            folder_authority: None,
             format: 1,
             sources: Vec::new(),
             effective: EffectiveInstructions::default(),

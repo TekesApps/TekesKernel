@@ -1,22 +1,18 @@
 //! Versioned user configuration and immutable spawn-profile snapshots.
 
 mod config;
-mod folder_authority;
-mod folder_catalog;
+mod execution;
+
 mod instruction;
 mod launch;
 mod resources;
 mod scope;
 
 pub use config::{
-    ConfigRepository, ConfigSnapshot, Environment, EnvironmentsConfig, Limits, Model, Provider,
-    ProvidersConfig, ResolvedWorkspace, RevisionVector, ScopeSelection, SessionSettings,
-    SettingsConfig, WebSearch, WorkspaceConfig, WorkspaceFolder, WorkspacePolicy,
+    ConfigRepository, ConfigSnapshot, ExecutionPolicy, Limits, Model, Provider, ProvidersConfig,
+    ResolvedExecution, RevisionVector, SessionSettings, SettingsConfig, WebSearch,
 };
-pub use folder_authority::{
-    FolderAuthorityStore, FolderEffectLease, FolderIdentity, FolderTrust, FolderTrustReceipt,
-};
-pub use folder_catalog::{CatalogFolder, FolderCapture, FolderCatalog, SessionConfig};
+pub use execution::ExecutionConfig;
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,
     InstructionResolver, InstructionSettings, InstructionSnapshot, InstructionSource,
@@ -31,7 +27,7 @@ pub use resources::{
     CommandCatalogEntry, CommandExpansion, CommandSummary, ResourceCatalog, ResourceError,
     SkillPackage, SkillResource, SkillSummary,
 };
-pub use scope::{FolderRecord, SessionScope, workspace_instructions};
+pub use scope::SessionScope;
 
 use std::path::PathBuf;
 
@@ -143,5 +139,3 @@ fn contains_null(value: &serde_json::Value) -> bool {
         | serde_json::Value::String(_) => false,
     }
 }
-
-pub use instruction::FolderSnapshotAuthority;
