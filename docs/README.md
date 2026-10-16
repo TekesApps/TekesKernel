@@ -3,6 +3,9 @@
 TekesKernel records task history as durable events, executes tasks in workers, and manages their runtime through the supervisor.
 Start with how a thread progresses, then open the crate responsible for a particular step. Old numbered-chapter references are mapped in [history/document-map.md](history/document-map.md).
 
+For the upcoming session-based architecture and launcher adoption, read the
+[Environment migration guide](environment-migration.md).
+
 ## First reading
 
 Terms such as Slice, gate, D-NN, epoch or carrier are explained in the

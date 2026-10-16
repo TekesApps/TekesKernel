@@ -1405,7 +1405,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_server_cancellable` | `headers.clone` | [2028](../../src/mcp_runtime.rs#L2028) | receiver-type-required |
 | `prepare_server_cancellable` | `oauth.clone` | [2029](../../src/mcp_runtime.rs#L2029), [2030](../../src/mcp_runtime.rs#L2030) | receiver-type-required |
 | `prepare_server_cancellable` | `exchange.clone` | [2032](../../src/mcp_runtime.rs#L2032) | receiver-type-required |
-| `prepare_server_cancellable` | `HttpTransport::new_with_request_authorization_provider` | [2033](../../src/mcp_runtime.rs#L2033) | [mcp::transport::HttpTransport::new_with_request_authorization_provider](../../../mcp/src/transport.rs#L737) |
+| `prepare_server_cancellable` | `HttpTransport::new_with_request_authorization_provider` | [2033](../../src/mcp_runtime.rs#L2033) | [mcp::transport::HttpTransport::new_with_request_authorization_provider](../../../mcp/src/transport.rs#L743) |
 | `prepare_server_cancellable` | `BTreeMap::new` | [2035](../../src/mcp_runtime.rs#L2035) | external-constructor-callback-or-unresolved |
 | `prepare_server_cancellable` | `http_request_authorization` | [2037](../../src/mcp_runtime.rs#L2037) | [tekes-supervisor::mcp_runtime::http_request_authorization](../../src/mcp_runtime.rs#L2104) |
 | `prepare_server_cancellable` | `request_oauth.as_deref` | [2039](../../src/mcp_runtime.rs#L2039) | receiver-type-required |

@@ -610,7 +610,14 @@ remaining folder. The last folder cannot be removed. Duplicate adds and
 missing removes are `bad-request`, stale revisions are `stale-revision`.
 
 The append under the lifecycle and writer locks is the durable CAS and exact
-retry receipt. Reusing an RPC id with different parameters is
+retry receipt. A Folder edit validates its complete configuration before
+preparing a private catalog intent. The catalog lock is held across the ledger
+append and catalog publication; the catalog is published only when the exact
+prepared event is present in the valid ledger prefix. Recovery completes a
+committed publication, or discards a preparation with no matching event,
+before any subsequent catalog read or write. A partial trailing record never
+commits a Folder edit. An ambiguous I/O failure is retried with the same RPC id;
+it must never be converted into a new write with a fresh id. Reusing an RPC id with different parameters is
 `idempotency-conflict`; successful replay returns the original revision.
 A live worker holding the line writer lock causes `workspace-busy` (the
 compatibility error code); callers retry with a new operation after it exits.

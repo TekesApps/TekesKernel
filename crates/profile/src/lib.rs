@@ -16,7 +16,7 @@ pub use config::{
 pub use folder_authority::{
     FolderAuthorityStore, FolderEffectLease, FolderIdentity, FolderTrust, FolderTrustReceipt,
 };
-pub use folder_catalog::{CatalogFolder, FolderCatalog, SessionConfig};
+pub use folder_catalog::{CatalogFolder, FolderCapture, FolderCatalog, SessionConfig};
 pub use instruction::{
     EffectiveInstructions, EffectivePolicy, InstructionKind, InstructionOrigin, InstructionPolicy,
     InstructionResolver, InstructionSettings, InstructionSnapshot, InstructionSource,

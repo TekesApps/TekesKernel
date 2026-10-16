@@ -179,7 +179,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `environment` | `self.environment             .as_deref()             .unwrap_or` | [191](../../src/scope.rs#L191) | receiver-type-required |
 | `environment` | `self.environment             .as_deref` | [191](../../src/scope.rs#L191) | receiver-type-required |
 | `folders` | `crate::FolderCatalog::new(repository.root()).resolve` | [204](../../src/scope.rs#L204) | receiver-type-required |
-| `folders` | `crate::FolderCatalog::new` | [204](../../src/scope.rs#L204), [206](../../src/scope.rs#L206) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L68) |
+| `folders` | `crate::FolderCatalog::new` | [204](../../src/scope.rs#L204), [206](../../src/scope.rs#L206) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L138) |
 | `folders` | `repository.root` | [204](../../src/scope.rs#L204), [206](../../src/scope.rs#L206) | receiver-type-required |
 | `folders` | `crate::FolderCatalog::new(repository.root()).resolve_legacy` | [206](../../src/scope.rs#L206) | receiver-type-required |
 | `folders` | `repository.workspace` | [207](../../src/scope.rs#L207) | receiver-type-required |
@@ -195,7 +195,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `folders` | `Ok` | [222](../../src/scope.rs#L222) | external-constructor-callback-or-unresolved |
 | `folders` | `path.to_owned` | [224](../../src/scope.rs#L224) | receiver-type-required |
 | `config` | `crate::FolderCatalog::new(repository.root()).resolve` | [235](../../src/scope.rs#L235) | receiver-type-required |
-| `config` | `crate::FolderCatalog::new` | [235](../../src/scope.rs#L235), [244](../../src/scope.rs#L244) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L68) |
+| `config` | `crate::FolderCatalog::new` | [235](../../src/scope.rs#L235), [244](../../src/scope.rs#L244) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L138) |
 | `config` | `repository.root` | [235](../../src/scope.rs#L235), [244](../../src/scope.rs#L244) | receiver-type-required |
 | `config` | `repository.resolve_session_seed` | [236](../../src/scope.rs#L236), [245](../../src/scope.rs#L245) | receiver-type-required |
 | `config` | `Some` | [238](../../src/scope.rs#L238), [247](../../src/scope.rs#L247), [254](../../src/scope.rs#L254) | external-constructor-callback-or-unresolved |
@@ -204,7 +204,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `config` | `crate::FolderCatalog::new(repository.root()).resolve_legacy` | [244](../../src/scope.rs#L244) | receiver-type-required |
 | `config` | `repository.resolve_scoped` | [252](../../src/scope.rs#L252) | receiver-type-required |
 | `workspace_config` | `crate::FolderCatalog::new(repository.root()).resolve` | [268](../../src/scope.rs#L268) | receiver-type-required |
-| `workspace_config` | `crate::FolderCatalog::new` | [268](../../src/scope.rs#L268), [277](../../src/scope.rs#L277) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L68) |
+| `workspace_config` | `crate::FolderCatalog::new` | [268](../../src/scope.rs#L268), [277](../../src/scope.rs#L277) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L138) |
 | `workspace_config` | `repository.root` | [268](../../src/scope.rs#L268), [277](../../src/scope.rs#L277) | receiver-type-required |
 | `workspace_config` | `repository.resolve_session_seed` | [269](../../src/scope.rs#L269), [278](../../src/scope.rs#L278) | receiver-type-required |
 | `workspace_config` | `self.folder_binding.as_deref` | [272](../../src/scope.rs#L272), [281](../../src/scope.rs#L281), [288](../../src/scope.rs#L288) | receiver-type-required |
@@ -390,7 +390,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `std::fs::write` | [674](../../src/scope.rs#L674), [701](../../src/scope.rs#L701) | external-constructor-callback-or-unresolved |
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `std::fs::read(session.join("main.jsonl")).unwrap` | [675](../../src/scope.rs#L675) | receiver-type-required |
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `std::fs::read` | [675](../../src/scope.rs#L675) | external-constructor-callback-or-unresolved |
-| `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `crate::FolderCatalog::new` | [676](../../src/scope.rs#L676) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L68) |
+| `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `crate::FolderCatalog::new` | [676](../../src/scope.rs#L676) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L138) |
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `catalog.capture(&seed).unwrap` | [677](../../src/scope.rs#L677) | receiver-type-required |
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `catalog.capture` | [677](../../src/scope.rs#L677) | receiver-type-required |
 | `phase7_legacy_asset_is_lazy_frozen_and_follows_logical_relocation_without_workspace` | `std::fs::remove_dir_all(root.path().join("workspaces/workspace-1")).unwrap` | [678](../../src/scope.rs#L678) | receiver-type-required |
@@ -425,7 +425,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `Default::default` | [729](../../src/scope.rs#L729) | external-constructor-callback-or-unresolved |
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `crate::FolderCatalog::new(root.path())             .capture(&seed)             .unwrap` | [732](../../src/scope.rs#L732) | receiver-type-required |
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `crate::FolderCatalog::new(root.path())             .capture` | [732](../../src/scope.rs#L732) | receiver-type-required |
-| `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `crate::FolderCatalog::new` | [732](../../src/scope.rs#L732) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L68) |
+| `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `crate::FolderCatalog::new` | [732](../../src/scope.rs#L732) | [profile::folder_catalog::FolderCatalog::new](../../src/folder_catalog.rs#L138) |
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `write_genesis_with` | [736](../../src/scope.rs#L736) | [profile::scope::tests::write_genesis_with](../../src/scope.rs#L426) |
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `crate::Environment::local` | [742](../../src/scope.rs#L742) | [profile::config::Environment::local](../../src/config.rs#L296) |
 | `phase7_environment_is_live_while_workspace_policy_is_a_creation_seed` | `repository                 .publish_environments(                     revision - 1,                     &crate::EnvironmentsConfig {                         format: 1,                         revision,                         environments: vec![environment],                     },                 )                 .unwrap` | [744](../../src/scope.rs#L744) | receiver-type-required |

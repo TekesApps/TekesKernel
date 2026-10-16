@@ -1412,7 +1412,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `folder_paths` | `config.id.clone` | [975](../../src/management.rs#L975) | receiver-type-required |
 | `folder_paths` | `path.to_owned` | [975](../../src/management.rs#L975) | receiver-type-required |
 | `folder_paths` | `profile::FolderCatalog::new(&self.storage_root).folders` | [979](../../src/management.rs#L979) | receiver-type-required |
-| `folder_paths` | `profile::FolderCatalog::new` | [979](../../src/management.rs#L979) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `folder_paths` | `profile::FolderCatalog::new` | [979](../../src/management.rs#L979) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `folder_paths` | `paths.insert` | [980](../../src/management.rs#L980), [982](../../src/management.rs#L982) | receiver-type-required |
 | `folder_paths` | `String::new` | [980](../../src/management.rs#L980) | external-constructor-callback-or-unresolved |
 | `folder_paths` | `folder.id.clone` | [980](../../src/management.rs#L980) | receiver-type-required |
@@ -1463,7 +1463,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_session` | `Some` | [1076](../../src/management.rs#L1076), [1084](../../src/management.rs#L1084), [1087](../../src/management.rs#L1087), [1140](../../src/management.rs#L1140), [1184](../../src/management.rs#L1184) | external-constructor-callback-or-unresolved |
 | `create_session` | `default_workspace_policy` | [1076](../../src/management.rs#L1076) | [endpoint::management::default_workspace_policy](../../src/management.rs#L3607) |
 | `create_session` | `profile::FolderCatalog::new(&self.storage_root).capture` | [1078](../../src/management.rs#L1078) | receiver-type-required |
-| `create_session` | `profile::FolderCatalog::new` | [1078](../../src/management.rs#L1078) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `create_session` | `profile::FolderCatalog::new` | [1078](../../src/management.rs#L1078) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `create_session` | `request.workspace_id.is_some` | [1079](../../src/management.rs#L1079) | receiver-type-required |
 | `create_session` | `seed.folder_ids` | [1080](../../src/management.rs#L1080) | receiver-type-required |
 | `create_session` | `self.config.resolve_session_seed` | [1081](../../src/management.rs#L1081) | receiver-type-required |
@@ -1819,7 +1819,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `relocate_workspace` | `ManagementError::InvalidPath` | [1853](../../src/management.rs#L1853) | external-constructor-callback-or-unresolved |
 | `relocate_workspace` | `previous_path.to_owned` | [1853](../../src/management.rs#L1853) | receiver-type-required |
 | `relocate_workspace` | `target.id.clone` | [1854](../../src/management.rs#L1854) | receiver-type-required |
-| `relocate_workspace` | `profile::FolderCatalog::new` | [1857](../../src/management.rs#L1857) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `relocate_workspace` | `profile::FolderCatalog::new` | [1857](../../src/management.rs#L1857) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `relocate_workspace` | `catalog             .folders()?             .iter()             .any` | [1858](../../src/management.rs#L1858) | receiver-type-required |
 | `relocate_workspace` | `catalog             .folders()?             .iter` | [1858](../../src/management.rs#L1858) | receiver-type-required |
 | `relocate_workspace` | `catalog             .folders` | [1858](../../src/management.rs#L1858) | receiver-type-required |
@@ -2139,7 +2139,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `drive_workspace_operation` | `self.config.publish_workspace` | [2509](../../src/management.rs#L2509), [2511](../../src/management.rs#L2511) | receiver-type-required |
 | `drive_workspace_operation` | `"workspace publication does not match prepared revision".to_owned` | [2514](../../src/management.rs#L2514) | receiver-type-required |
 | `drive_workspace_operation` | `profile::FolderCatalog::new(&self.storage_root)                     .relocate_alias` | [2527](../../src/management.rs#L2527) | receiver-type-required |
-| `drive_workspace_operation` | `profile::FolderCatalog::new` | [2527](../../src/management.rs#L2527) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L68) |
+| `drive_workspace_operation` | `profile::FolderCatalog::new` | [2527](../../src/management.rs#L2527) | [profile::folder_catalog::FolderCatalog::new](../../../profile/src/folder_catalog.rs#L138) |
 | `drive_workspace_operation` | `self.operation_created` | [2530](../../src/management.rs#L2530), [2566](../../src/management.rs#L2566) | [endpoint::management::ManagementStore::operation_created](../../src/management.rs#L2595) |
 | `drive_workspace_operation` | `self.read_metadata_optional` | [2531](../../src/management.rs#L2531) | [endpoint::management::ManagementStore::read_metadata_optional](../../src/management.rs#L3258) |
 | `drive_workspace_operation` | `config.id.clone` | [2535](../../src/management.rs#L2535), [2543](../../src/management.rs#L2543) | receiver-type-required |

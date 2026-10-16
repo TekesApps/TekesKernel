@@ -44,7 +44,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/mcp/src/projection.rs](../../src/projection.rs) | 20 | 184 | [Symbols and calls](src--projection.md) |
 | [crates/mcp/src/recovery.rs](../../src/recovery.rs) | 3 | 0 | [Symbols and calls](src--recovery.md) |
 | [crates/mcp/src/subscription.rs](../../src/subscription.rs) | 7 | 48 | [Symbols and calls](src--subscription.md) |
-| [crates/mcp/src/transport.rs](../../src/transport.rs) | 77 | 822 | [Symbols and calls](src--transport.md) |
+| [crates/mcp/src/transport.rs](../../src/transport.rs) | 81 | 854 | [Symbols and calls](src--transport.md) |
 | [crates/mcp/src/types.rs](../../src/types.rs) | 47 | 199 | [Symbols and calls](src--types.md) |
 | [crates/mcp/tests/handshake_lifecycle.rs](../../tests/handshake_lifecycle.rs) | 15 | 95 | `inventory.json` |
 | [crates/mcp/tests/http_discovery.rs](../../tests/http_discovery.rs) | 19 | 743 | `inventory.json` |

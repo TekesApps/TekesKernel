@@ -124,14 +124,16 @@ impl ClientAdminRoutes {
                 other => internal_store(other),
             })?;
         let mut rejected = None;
+        let mut capture = None;
         let appended = store.append_keyed_with_projection(&input.session_id, &origin, |seq, projection| {
-            let build = || -> Result<schema::Event, ProductionRouteFailure> {
+            let mut build = || -> Result<schema::Event, ProductionRouteFailure> {
                 let actual = revision(&projection.events);
                 if actual != input.expected_revision { return Err(stale(input.expected_revision, actual)); }
                 let raw = schema::effective_session_genesis(&projection.events).map_err(|error| internal(error.to_string()))?
                     .ok_or_else(|| internal("session genesis missing"))?;
                 let scope = profile::SessionScope::from_genesis_value(self.root.join("threads").join(&input.session_id), &raw).map_err(internal_profile)?;
                 let catalog = profile::FolderCatalog::new(&self.root);
+                let catalog_revision = catalog.revision().map_err(internal_profile)?;
                 let mut seed = match scope.session_config() {
                     Some(config) => catalog.resolve(config).map_err(internal_profile)?,
                     None => {
@@ -168,18 +170,30 @@ impl ClientAdminRoutes {
                     if let Some(policy) = &mut seed.policy { policy.writable_roots.retain(|root| seed.folders.iter().any(|folder| Path::new(root).starts_with(&folder.path))); }
                 }
                 // Preserve immutable limits; only this session's selected folder set changes.
-                let mut next = catalog.capture(&seed).map_err(internal_profile)?;
-                next.compatibility_instructions = scope.session_config().is_none_or(|config| config.compatibility_instructions);
                 let folders = seed.folder_ids();
                 let config = self.repository.resolve_session_seed(&seed, Some(scope.session_folder()), Some(&binding), profile::ScopeSelection { environment:scope.environment(),folders:Some(&folders) }).map_err(internal_profile)?;
+                let staged = catalog.begin_capture(&seed, Some(catalog_revision)).map_err(|error| match error {
+                    profile::ProfileError::StaleRevision {..} => failure("workspace-busy", "Folder catalog changed during edit; retry with the same RPC id", json!({"sessionId":input.session_id})),
+                    other => internal_profile(other),
+                })?;
+                let mut next = staged.scope().clone();
+                next.compatibility_instructions = scope.session_config().is_none_or(|config| config.compatibility_instructions);
                 let timestamp = chrono::Utc::now().to_rfc3339_opts(chrono::SecondsFormat::Millis,true);
                 let value = json!({"v":1,"seq":seq,"ts":timestamp,"kind":"meta","min_reader":schema::SESSION_SCOPE_READER,
                     "scope_change":{"session_scope":next,"folders":folders,"folder_binding":binding,"cwd":config.execution_cwd(),"environment":scope.environment()},
                     "request_sha256":hash,"origin_key":origin.key,"origin_tuple":origin});
-                schema::Event::from_value(to_ijson(&value)?).map_err(|error| internal(error.to_string()))
+                let event = schema::Event::from_value(to_ijson(&value)?).map_err(|error| internal(error.to_string()))?;
+                staged.prepare(&scope.session_folder().join("main.jsonl"), &event).map_err(internal_profile)?;
+                capture = Some(staged);
+                Ok(event)
             };
             build().map_err(|error| { rejected = Some(error); store::StoreError::Corruption("session folder change rejected".to_owned()) })
         });
+        // Settle even an ambiguous append error from the exact durable prefix.
+        // A crash leaves the private intent for the next catalog access.
+        if let Some(capture) = capture {
+            capture.finish().map_err(internal_profile)?;
+        }
         if let Some(error) = rejected {
             return Err(error);
         }
@@ -273,6 +287,91 @@ mod tests {
     }
     fn json(value: IJsonValue) -> Value {
         serde_json::to_value(value).unwrap()
+    }
+
+    #[test]
+    fn rejected_folder_edit_does_not_publish_catalog_or_ledger() {
+        let temp = tempfile::tempdir().unwrap();
+        let root = temp.path().join("kernel");
+        let agents = temp.path().join("agents");
+        let a = temp.path().join("a");
+        let b = temp.path().join("b");
+        for path in [&agents, &a, &b] {
+            fs::create_dir_all(path).unwrap();
+        }
+        let host =
+            ProductionProcessHost::open(&root, "/usr/bin/true", "atomicity", &agents).unwrap();
+        let routes = ClientAdminRoutes::new(&root, host).unwrap();
+        let session = create(&root, &agents, &a, "create");
+        let folder = root.join("threads").join(&session);
+        let ledger_before = fs::read(folder.join("main.jsonl")).unwrap();
+        let catalog_before = fs::read(root.join("config/folders.json")).unwrap();
+        // Force a resolution failure after path validation, with no ledger write.
+        fs::write(
+            store::session_settings_path(&folder).unwrap(),
+            b"invalid settings",
+        )
+        .unwrap();
+        let call = request(
+            "add",
+            "session.addFolder",
+            json!({"sessionId":session,"expectedRevision":1,"path":b}),
+        );
+        assert!(
+            routes
+                .execute(&call, &serde_json::to_value(&call.payload).unwrap(), "test")
+                .is_err()
+        );
+        assert_eq!(fs::read(folder.join("main.jsonl")).unwrap(), ledger_before);
+        assert_eq!(
+            fs::read(root.join("config/folders.json")).unwrap(),
+            catalog_before
+        );
+        assert!(!call.handoff.is_durable());
+        fs::remove_file(store::session_settings_path(&folder).unwrap()).unwrap();
+        let retry = request(
+            "add",
+            "session.addFolder",
+            json!({"sessionId":session,"expectedRevision":1,"path":b}),
+        );
+        let result = json(
+            routes
+                .execute(
+                    &retry,
+                    &serde_json::to_value(&retry.payload).unwrap(),
+                    "test",
+                )
+                .unwrap(),
+        );
+        assert_eq!(result["revision"], 2);
+        let committed = fs::read(folder.join("main.jsonl")).unwrap();
+        let published = fs::read(root.join("config/folders.json")).unwrap();
+        drop(routes);
+        let host =
+            ProductionProcessHost::open(&root, "/usr/bin/true", "atomicity", &agents).unwrap();
+        let routes = ClientAdminRoutes::new(&root, host).unwrap();
+        let retry = request(
+            "add",
+            "session.addFolder",
+            json!({"sessionId":session,"expectedRevision":1,"path":b}),
+        );
+        assert_eq!(
+            json(
+                routes
+                    .execute(
+                        &retry,
+                        &serde_json::to_value(&retry.payload).unwrap(),
+                        "test"
+                    )
+                    .unwrap()
+            ),
+            result
+        );
+        assert_eq!(fs::read(folder.join("main.jsonl")).unwrap(), committed);
+        assert_eq!(
+            fs::read(root.join("config/folders.json")).unwrap(),
+            published
+        );
     }
 
     #[test]
