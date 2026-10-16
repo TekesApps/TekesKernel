@@ -102,3 +102,11 @@ additional P0/P1/P2 blockers in these repairs. Claude review could not authentic
 the independent review used the local Codex review CLI instead. The retained
 legacy web prototype is another unadapted v3 consumer; built-in launch disables
 that unauthenticated UI, and no rendering/UI migration is claimed here.
+
+## Linux CI portability repair
+
+The first PR CI run found `held_response_line` unused on both Linux targets. Its
+callers are all macOS-only tests; the helper now carries the same platform guard.
+No test caller was removed or newly skipped. The follow-up local verification
+runs fmt, all-target Clippy and the supervisor unit suite; the PR reruns native
+Linux x86_64/aarch64 sandbox and workspace checks before merge.

@@ -9281,6 +9281,7 @@ mod tests {
         lines
     }
 
+    #[cfg(target_os = "macos")]
     fn held_response_line(thread: &str) -> String {
         format!(
             r#"{{"call":"ask1","grant":true,"kind":"approval_response","origin_key":"r1","origin_tuple":{{"client":"cli","key":"r1","op":"approve","principal":"p","target":"{thread}"}},"seq":10,"ts":"{HELD_TS}","turn":1,"v":1}}"#
