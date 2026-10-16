@@ -6,7 +6,9 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
-### 0.9.0 execution boundary
+## 0.9.0 — 2026-10-17
+
+### Session execution boundary
 
 - Session creation accepts an immutable `ExecutionConfig` value, without named
   Environment, workspace or Folder catalog dependencies. Genesis records only
@@ -26,8 +28,12 @@ workspace version in `Cargo.toml`.
 - Keep project AGENTS text under explicit execution roots while excluding
   ambient project skills/hooks. The CLI relay observes disconnects even when
   an MCP server stops reading stdin, and reaps the blocked child.
-- No compatibility with 0.8 or 0.7 is provided. Consumer migration remains a
-  separate stage; no release/tag has been made.
+- No compatibility with 0.8 or 0.7 is provided. App hosts must supply immutable
+  execution values, private bootstrap v1 and Session Endpoint protocol v4. New
+  Session ledgers require reader version 5. Preserve older storage separately;
+  this release does not migrate it.
+- The standalone CLI owns local MCP process preparation and reaping; Kernel
+  connects HTTP or supplied stdio channels and performs Session-scoped calls.
 
 ## 0.8.0 — 2026-10-16
 
