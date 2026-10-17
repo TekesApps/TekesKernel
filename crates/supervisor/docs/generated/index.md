@@ -52,9 +52,10 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/examples/slice9_production_client_harness_server.rs](../../examples/slice9_production_client_harness_server.rs) | 18 | 106 | `inventory.json` |
 | [crates/supervisor/src/boot_trace.rs](../../src/boot_trace.rs) | 10 | 25 | [Symbols and calls](src--boot_trace.md) |
 | [crates/supervisor/src/bootstrap.rs](../../src/bootstrap.rs) | 25 | 144 | [Symbols and calls](src--bootstrap.md) |
+| [crates/supervisor/src/bounded_child_history.rs](../../src/bounded_child_history.rs) | 12 | 264 | [Symbols and calls](src--bounded_child_history.md) |
 | [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 3 | 165 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
-| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 84 | 895 | [Symbols and calls](src--client_extensions.md) |
+| [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 84 | 903 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 47 | [Symbols and calls](src--dynamic_bindings.md) |
@@ -97,59 +98,62 @@ flowchart LR
   m0["crates/supervisor/examples/slice9_production_client_harness_server.rs"]
   m1["boot_trace.rs"]
   m2["bootstrap.rs"]
-  m3["builtin.rs"]
-  m4["catalog.rs"]
-  m5["client_extensions.rs"]
-  m6["context_usage.rs"]
-  m7["continuation_journal.rs"]
-  m8["dynamic_bindings.rs"]
-  m9["endpoint_carrier.rs"]
-  m10["endpoint_host.rs"]
-  m11["file_leases.rs"]
-  m12["host_runtime.rs"]
-  m13["lib.rs"]
-  m14["main.rs"]
-  m15["mcp_continuation.rs"]
-  m16["mcp_runtime.rs"]
-  m17["process_host.rs"]
-  m18["production_tool_control.rs"]
-  m19["request_index.rs"]
-  m20["resource_capability.rs"]
-  m21["thread_card.rs"]
-  m22["tool_control.rs"]
-  m0 -->|"1"| m9
-  m0 -->|"2"| m10
-  m3 -->|"10"| m1
-  m3 -->|"2"| m2
-  m3 -->|"1"| m9
-  m3 -->|"6"| m12
-  m3 -->|"1"| m17
-  m4 -->|"1"| m1
-  m5 -->|"1"| m10
-  m5 -->|"2"| m20
-  m9 -->|"4"| m6
-  m9 -->|"1"| m11
-  m9 -->|"5"| m19
-  m12 -->|"1"| m1
-  m12 -->|"1"| m5
-  m12 -->|"3"| m10
-  m12 -->|"1"| m20
-  m14 -->|"1"| m3
-  m16 -->|"2"| m7
-  m16 -->|"2"| m15
-  m17 -->|"4"| m1
-  m17 -->|"1"| m4
+  m3["bounded_child_history.rs"]
+  m4["builtin.rs"]
+  m5["catalog.rs"]
+  m6["client_extensions.rs"]
+  m7["context_usage.rs"]
+  m8["continuation_journal.rs"]
+  m9["dynamic_bindings.rs"]
+  m10["endpoint_carrier.rs"]
+  m11["endpoint_host.rs"]
+  m12["file_leases.rs"]
+  m13["host_runtime.rs"]
+  m14["lib.rs"]
+  m15["main.rs"]
+  m16["mcp_continuation.rs"]
+  m17["mcp_runtime.rs"]
+  m18["process_host.rs"]
+  m19["production_tool_control.rs"]
+  m20["request_index.rs"]
+  m21["resource_capability.rs"]
+  m22["thread_card.rs"]
+  m23["tool_control.rs"]
+  m0 -->|"1"| m10
+  m0 -->|"2"| m11
+  m3 -->|"10"| m6
+  m4 -->|"10"| m1
+  m4 -->|"2"| m2
+  m4 -->|"1"| m10
+  m4 -->|"6"| m13
+  m4 -->|"1"| m18
+  m5 -->|"1"| m1
+  m6 -->|"2"| m3
+  m6 -->|"1"| m11
+  m6 -->|"2"| m21
+  m10 -->|"4"| m7
+  m10 -->|"1"| m12
+  m10 -->|"5"| m20
+  m13 -->|"1"| m1
+  m13 -->|"1"| m6
+  m13 -->|"3"| m11
+  m13 -->|"1"| m21
+  m15 -->|"1"| m4
   m17 -->|"2"| m8
-  m17 -->|"3"| m10
-  m17 -->|"152"| m12
-  m17 -->|"1"| m13
-  m17 -->|"1"| m16
-  m17 -->|"6"| m18
-  m17 -->|"5"| m21
-  m17 -->|"1"| m22
-  m18 -->|"1"| m22
-  m20 -->|"13"| m10
-  m21 -->|"1"| m1
-  m21 -->|"1"| m9
-  m21 -->|"1"| m12
+  m17 -->|"2"| m16
+  m18 -->|"4"| m1
+  m18 -->|"1"| m5
+  m18 -->|"2"| m9
+  m18 -->|"3"| m11
+  m18 -->|"152"| m13
+  m18 -->|"1"| m14
+  m18 -->|"1"| m17
+  m18 -->|"6"| m19
+  m18 -->|"5"| m22
+  m18 -->|"1"| m23
+  m19 -->|"1"| m23
+  m21 -->|"13"| m11
+  m22 -->|"1"| m1
+  m22 -->|"1"| m10
+  m22 -->|"1"| m13
 ```

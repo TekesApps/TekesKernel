@@ -23,7 +23,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/store/src/asset.rs](../../src/asset.rs) | 13 | 100 | [Symbols and calls](src--asset.md) |
+| [crates/store/src/asset.rs](../../src/asset.rs) | 14 | 111 | [Symbols and calls](src--asset.md) |
 | [crates/store/src/atomic.rs](../../src/atomic.rs) | 4 | 29 | [Symbols and calls](src--atomic.md) |
 | [crates/store/src/card/tests.rs](../../src/card/tests.rs) | 21 | 264 | [Symbols and calls](src--card--tests.md) |
 | [crates/store/src/card.rs](../../src/card.rs) | 50 | 298 | [Symbols and calls](src--card.md) |
