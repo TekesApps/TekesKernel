@@ -6,6 +6,14 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.1 — 2026-10-18
+
+- Add authenticated, read-only bounded child history with verified root/child ownership,
+  frozen endpoint cuts, prefix revisions and effective task-source context.
+- Reuse the endpoint projector in memory without activating workers, repairing ledgers
+  or creating endpoint journals. Bounded child control remains unavailable.
+- Refresh the generated architecture atlas for the added public API.
+
 ## 0.9.0 — 2026-10-17
 
 ### Session execution boundary

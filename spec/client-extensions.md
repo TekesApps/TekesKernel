@@ -219,7 +219,7 @@ fixes only membership, method class and the closed capability errors from
 | `feedback.v1` | `feedback.list` (read), `feedback.put` (mutation), `feedback.delete` (mutation) | `io`, `version-conflict` | [Message feedback](session-endpoint.md#message-feedback) |
 | `settings.v1` | `settings.describe` (read), `settings.mutate` (mutation), `settings.update` (mutation), `settings.document` (read) | `io`, `settings-invalid`, `stale-revision`, `unknown-namespace` | [Instruction settings](session-endpoint.md#instruction-settings) |
 | `goals.v1` | `goals.get` (read), `goals.edit`, `goals.clear`, `goals.pause`, `goals.resume` (mutation) | `goal-invalid-transition`, `goal-not-found`, `goal-stale`, `ledger-corrupt`, `session-not-found` | [Goals](session-endpoint.md#goals) |
-| `subagents.v1` | `subagents.list` (read) | `ledger-corrupt`, `session-not-found` | [Subagent catalog](session-endpoint.md#subagent-catalog) |
+| `subagents.v1` | `subagents.list`, `subagents.history` (read) | `ledger-corrupt`, `session-not-found`, `child-unavailable`, `history-stale`, `history-limit` | [Subagent catalog](session-endpoint.md#subagent-catalog) |
 
 ## Permanent dispositions
 

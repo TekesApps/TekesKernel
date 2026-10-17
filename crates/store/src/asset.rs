@@ -31,6 +31,20 @@ impl AssetStore {
         })
     }
 
+    /// Open an existing content store without creating any filesystem state.
+    pub fn open_read_only(root: impl AsRef<Path>) -> Result<Self, StoreError> {
+        let metadata = fs::symlink_metadata(root.as_ref())?;
+        if !metadata.is_dir() || metadata.file_type().is_symlink() {
+            return Err(StoreError::Io(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "invalid asset directory",
+            )));
+        }
+        Ok(Self {
+            root: root.as_ref().to_path_buf(),
+        })
+    }
+
     #[must_use]
     pub fn root(&self) -> &Path {
         &self.root

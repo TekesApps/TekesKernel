@@ -8,6 +8,33 @@ use crate::session_event_registry_generated::kernel_may_emit_event_type;
 use crate::{EndpointJournal, JournalError, SessionEvent, SurfaceOperation};
 use store::AssetStore;
 
+// The projector only reads prior projected rows and assets. Keep read-only child snapshots
+// on this same code path without creating/repairing a journal in the session directory.
+trait ProjectionRead {
+    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError>;
+    fn thread_folder(&self) -> &std::path::Path;
+}
+impl ProjectionRead for EndpointJournal {
+    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError> {
+        self.records()
+    }
+    fn thread_folder(&self) -> &std::path::Path {
+        self.thread_folder()
+    }
+}
+struct SnapshotJournal {
+    folder: std::path::PathBuf,
+    rows: Vec<crate::JournalRecord>,
+}
+impl ProjectionRead for SnapshotJournal {
+    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError> {
+        Ok(self.rows.clone())
+    }
+    fn thread_folder(&self) -> &std::path::Path {
+        &self.folder
+    }
+}
+
 #[derive(Clone, Debug)]
 struct AttemptInfo {
     turn: u64,
@@ -97,6 +124,55 @@ impl Projector {
         Ok(appended)
     }
 
+    /// Deterministic in-memory projection of a complete validated line. Does not create journal,
+    /// lock or asset files. Native children use the same surface/replacement semantics as main.
+    pub fn read_only_history(
+        events: &[Event],
+        folder: &std::path::Path,
+    ) -> Result<Vec<crate::JournalRecord>, ProjectionError> {
+        let mut projector = Self::default();
+        let mut journal = SnapshotJournal {
+            folder: folder.to_path_buf(),
+            rows: vec![],
+        };
+        for event in events {
+            let projected = projector.project(event, &journal)?;
+            let mut rows = Vec::new();
+            for (kernel_seqs, slot, mut wire) in projected {
+                apply_surface_supersedes(event, &journal, &mut wire)?;
+                let anchor = *kernel_seqs
+                    .last()
+                    .ok_or(ProjectionError::InvalidField("kernel_seqs"))?;
+                projector
+                    .expected_kernel_slots
+                    .insert((anchor, slot.clone()));
+                wire.seq = (journal.rows.len() + rows.len()) as u64;
+                let row = crate::JournalRecord {
+                    v: crate::journal::JOURNAL_RECORD_VERSION,
+                    event: wire,
+                    kernel_seqs,
+                    slot,
+                };
+                row.validate(row.event.seq)?;
+                rows.push(row);
+            }
+            journal.rows.extend(rows);
+            if matches!(event.kind(), EventKind::Output)
+                || matches!(event.kind(), EventKind::Error) && event.has_field("attempt")
+            {
+                projector.terminal_attempts.insert(
+                    event
+                        .string_field("attempt")
+                        .ok_or(ProjectionError::MissingField("attempt"))?
+                        .to_owned(),
+                );
+            }
+            projector.processed_through = Some(event.seq());
+        }
+        projector.validate_existing_kernel_slots(&journal)?;
+        Ok(journal.rows)
+    }
+
     /// Projects an adapter frame for the live presentation lane. Chunks are
     /// transient: they are never journaled, and the frame ordinal is only a
     /// per-attempt presentation version.
@@ -164,7 +240,7 @@ impl Projector {
     fn project(
         &mut self,
         event: &Event,
-        journal: &EndpointJournal,
+        journal: &dyn ProjectionRead,
     ) -> Result<Vec<Projected>, ProjectionError> {
         let value = event_value(event)?;
         let time = timestamp_millis(
@@ -559,7 +635,7 @@ impl Projector {
 
     fn validate_existing_kernel_slots(
         &self,
-        journal: &EndpointJournal,
+        journal: &dyn ProjectionRead,
     ) -> Result<(), ProjectionError> {
         let Some(processed_through) = self.processed_through else {
             return Ok(());
@@ -607,7 +683,7 @@ fn user_message(
 
 fn apply_surface_supersedes(
     kernel_event: &Event,
-    journal: &EndpointJournal,
+    journal: &dyn ProjectionRead,
     wire: &mut SessionEvent,
 ) -> Result<(), ProjectionError> {
     if wire.surface_op.is_none() {
@@ -742,7 +818,7 @@ mod reasoning_usage_projection_tests {
 
 fn tool_result_wire(
     value: &Value,
-    journal: &EndpointJournal,
+    journal: &dyn ProjectionRead,
 ) -> Result<(Value, Option<Value>, Value), ProjectionError> {
     let outcome = value
         .get("outcome")
@@ -902,7 +978,7 @@ fn response_error_message(classification: &str, detail: Option<&str>) -> &'stati
     }
 }
 
-fn resolve_spill(value: &Value, journal: &EndpointJournal) -> Result<Value, ProjectionError> {
+fn resolve_spill(value: &Value, journal: &dyn ProjectionRead) -> Result<Value, ProjectionError> {
     let Some(spill) = value.get("$spill").and_then(Value::as_object) else {
         return Ok(value.clone());
     };
@@ -914,7 +990,7 @@ fn resolve_spill(value: &Value, journal: &EndpointJournal) -> Result<Value, Proj
         .get("bytes")
         .and_then(Value::as_u64)
         .ok_or(ProjectionError::InvalidField("$spill.bytes"))?;
-    let assets = AssetStore::new(journal.thread_folder().join("assets"))?;
+    let assets = AssetStore::open_read_only(journal.thread_folder().join("assets"))?;
     let bytes = assets.read_verified(asset)?;
     if bytes.len() as u64 != expected_bytes {
         return Err(ProjectionError::SpillLength {
