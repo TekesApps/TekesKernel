@@ -2364,6 +2364,32 @@ Kernel children are bounded delegations without parent-owned continuation or
 interrupt; the native Swift client reports `subagent-control-unavailable` for
 `promptChild`/`cancelChild` and never cancels the parent.
 
+### Bounded child history
+
+The additive read-only method `subagents.history` accepts
+`{parentSessionId, childSessionId, maxMessages, throughSequence?, beforeSequence?, historyRevision?}`.
+Both identities are UUIDs; the parent is the root session and the child must be a direct,
+ledger-bound delegation of that root. Nested descendants are not addressed by this method.
+`maxMessages` is 1–200. A first read captures the latest complete child prefix. Earlier pages
+must reuse its `throughSequence` and should supply `historyRevision`; they set an exclusive
+`beforeSequence`. Cuts are endpoint sequence numbers, independent of the parent's cursor.
+A cut cannot split one causal event. Unknown cuts or changed prefixes fail `history-stale`.
+
+The result is
+`{parentSessionId, childSessionId, throughSequence, historyRevision, entries, hasMoreBefore, runOpen, sourceCall}`.
+Entries use the existing journal history page representation and dependency-aware paging.
+The SHA-256 revision binds the child's genesis and projected prefix. `sourceCall` is null or
+`{callId, name, arguments, phase}`, using the parent's effective delegation invocation.
+It supplies the child's synthetic task-source presentation turn without mixing parent history.
+
+The reader checks the parent spawn and child genesis binding, rejects redirected files,
+reads only complete LF-terminated records, and never activates a worker, repairs a ledger,
+or creates journal/lock/assets. Each ledger is capped at 32 MiB and each response at 4 MiB.
+Unavailable ownership is `child-unavailable`; invalid ledger data is `ledger-corrupt`;
+oversized input/output is `history-limit`. Existing read authentication applies.
+This method grants no child continuation or cancellation. Clients on the original 0.9.0
+release must detect method availability rather than infer it from the package version.
+
 ### Question cancellation
 
 A pending question can be rejected without stopping its session: the mux

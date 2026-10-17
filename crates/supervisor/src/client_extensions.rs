@@ -69,7 +69,10 @@ pub const GOAL_METHODS: [(&str, MethodClass); 5] = [
     ("goals.pause", MethodClass::Mutation),
     ("goals.resume", MethodClass::Mutation),
 ];
-pub const SUBAGENT_METHODS: [(&str, MethodClass); 1] = [("subagents.list", MethodClass::ReadOnly)];
+pub const SUBAGENT_METHODS: [(&str, MethodClass); 2] = [
+    ("subagents.list", MethodClass::ReadOnly),
+    ("subagents.history", MethodClass::ReadOnly),
+];
 
 pub const FILE_METHODS: [(&str, MethodClass); 3] = [
     ("session.files.stat", MethodClass::ReadOnly),
@@ -1061,6 +1064,11 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                 encode(&serde_json::json!({"mode": mode.as_str()}))
             }
 
+            "subagents.history" => {
+                let (folder, _) =
+                    self.session_folder(payload["parentSessionId"].as_str().unwrap_or_default())?;
+                encode(&crate::bounded_child_history::read(&folder, payload)?)
+            }
             operation if session_controls::METHODS.contains(&operation) => {
                 self.session_controls(operation, payload)
             }
@@ -1657,7 +1665,14 @@ fn error_allowed(operation: &str, class: Option<MethodClass>, code: &str) -> boo
                 | "session-not-found"
                 | "ledger-corrupt"
         ),
-        "subagents.list" => matches!(code, "session-not-found" | "ledger-corrupt"),
+        "subagents.list" | "subagents.history" => matches!(
+            code,
+            "session-not-found"
+                | "ledger-corrupt"
+                | "child-unavailable"
+                | "history-stale"
+                | "history-limit"
+        ),
         "skills/list" | "commands/list" => code == "resource-not-found",
         "commands/run" => matches!(
             code,
@@ -1751,6 +1766,9 @@ fn validate_payload(operation: &str, payload: &Value) -> Result<(), ProductionRo
                 return Err(bad_request("Invalid file range"));
             }
             Ok(())
+        }
+        "subagents.history" => {
+            crate::bounded_child_history::validate(payload).map_err(|reason| bad_request(&reason))
         }
         operation if session_controls::METHODS.contains(&operation) => {
             session_controls::validate(operation, payload).map_err(|reason| bad_request(&reason))

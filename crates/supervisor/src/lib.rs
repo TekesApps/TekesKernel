@@ -5,6 +5,7 @@ mod bootstrap;
 pub mod builtin;
 mod catalog;
 
+mod bounded_child_history;
 pub mod client_extensions;
 mod context_usage;
 pub mod continuation_journal;

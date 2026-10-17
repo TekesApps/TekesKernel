@@ -492,3 +492,18 @@ fn tool_argument_completion_keeps_attempt_identity_in_live_and_replay() {
     frame.name = None;
     assert!(projector.stream_event(&frame).is_err());
 }
+
+#[test]
+fn read_only_projection_matches_durable_journal_without_creating_state() {
+    let fixtures = FixtureRoot::discover().unwrap();
+    let source = read(&fixtures.join("endpoint/projection-source.jsonl")).unwrap();
+    let projection = validate_ledger(&source, schema::READER_VERSION).unwrap();
+    let folder = tempfile::tempdir().unwrap();
+    let rows = Projector::read_only_history(&projection.events, folder.path()).unwrap();
+    assert_eq!(fs::read_dir(folder.path()).unwrap().count(), 0);
+    let journal = EndpointJournal::open(folder.path()).unwrap();
+    Projector::default()
+        .reconcile(&projection.events, &journal)
+        .unwrap();
+    assert_eq!(rows, journal.records().unwrap());
+}
