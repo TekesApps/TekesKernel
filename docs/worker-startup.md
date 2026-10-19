@@ -7,6 +7,13 @@ incident had five consecutive pre-hello timeouts before the sixth launch worked.
 The system policy log named each affected worker PID; the normal sandbox probe
 completed within the first second. This was independent of tool access mode.
 
+The accepted prompt is persisted and acknowledged before worker startup. A
+background scheduler owns the launch, with a per-process reservation counted
+against capacity. It releases the process table while awaiting hello, so other
+sessions and metadata/cancellation requests remain responsive. Exact RPC retries
+retain their original input receipt without launching another worker. Shutdown
+cancels pre-adoption handshakes and waits for their guards to reap children.
+
 The supervisor now reports slow startup at ten seconds and retains the same child
 for a bounded 120-second macOS cold-start budget. Other platforms retain ten
 seconds. No signing checks, security policy, permissions or protocol validation

@@ -105,6 +105,11 @@ for line in sys.stdin:
         // This test takes over the queued receiver's launch. Remove its pending
         // entry before freeing capacity, otherwise the exit reconciliation can
         // race a second fixture against this explicit live-phase launch.
+        let pending_deadline = Instant::now() + Duration::from_secs(5);
+        while !host.pending_workers.lock().unwrap().contains_key(RECEIVER) {
+            assert!(Instant::now() < pending_deadline, "durable input was not scheduled");
+            std::thread::sleep(Duration::from_millis(5));
+        }
         host.pending_workers.lock().unwrap().remove(RECEIVER);
         let blocker = host.workers.lock().unwrap().remove(SENDER).unwrap();
         terminate_worker(&blocker);

@@ -436,6 +436,7 @@ pub struct ProductionProcessHost {
     secret_store: Arc<dyn provider::SecretStore>,
     mcp_runtime: Arc<McpRuntime>,
     workers: Mutex<HashMap<String, Arc<WorkerHandle>>>,
+    starting_workers: Mutex<HashSet<String>>,
     /// Pre-existing sessions the client has released with `sessions.recover` (DESIGN §6). A
     /// session is deferred iff it is neither admitted (created/forked/unarchived by this
     /// process, `store::folder_events`) nor in this set.
@@ -556,6 +557,23 @@ impl Drop for WorkerHandshakeGuard {
         if let Some(join) = self.credential_broker.take() {
             let _ = join.join();
         }
+    }
+}
+
+/// Count in-flight launches against capacity without holding the process table
+/// across exec/OS assessment. Every failure path releases the reservation.
+struct WorkerStartReservation<'a> {
+    host: &'a ProductionProcessHost,
+    key: &'a str,
+}
+impl Drop for WorkerStartReservation<'_> {
+    fn drop(&mut self) {
+        self.host
+            .starting_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(self.key);
+        self.host.workers_changed.notify_all();
     }
 }
 
@@ -813,6 +831,7 @@ impl ProductionProcessHost {
             secret_store,
             mcp_runtime,
             workers: Mutex::new(HashMap::new()),
+            starting_workers: Mutex::new(HashSet::new()),
             released: Mutex::new(HashSet::new()),
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
             threads: threads_store,
@@ -1893,6 +1912,25 @@ impl ProductionProcessHost {
             .clear();
         self.admission_changed.notify_all();
         self.workers_changed.notify_all();
+        // A pre-adoption child is not in the live process table yet. Let its
+        // shutdown-aware handshake guard kill/wait it before host exit.
+        let mut table = self
+            .workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        while !self
+            .starting_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .is_empty()
+        {
+            table = self
+                .workers_changed
+                .wait_timeout(table, Duration::from_millis(100))
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .0;
+        }
+        drop(table);
         let mut live_before = self.live_sessions_for_cleanup();
         live_before.extend(also_live.iter().cloned());
         let workers = self
@@ -2110,6 +2148,7 @@ impl ProductionProcessHost {
             &mut reader,
             handshake_deadline,
             handshake_started + WORKER_STARTUP_SLOW_AFTER.min(handshake_timeout),
+            || self.draining.load(Ordering::Acquire),
             || {
                 startup_log(
                     session_id,
@@ -2392,7 +2431,7 @@ impl ProductionProcessHost {
             ProductionProcessHost::ensure_verified(self, session_id)?;
         }
         self.refresh_limits(&ledger)?;
-        let mut workers = self
+        let workers = self
             .workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -2405,6 +2444,20 @@ impl ProductionProcessHost {
             self.refresh_worker_credentials(&worker)?;
             return Ok(ScheduledWorker {
                 worker: Some(worker),
+                startup_preloaded: false,
+            });
+        }
+        if self.draining.load(Ordering::Acquire) {
+            return Err(DaemonError::required_broker("server-draining"));
+        }
+        if self
+            .starting_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .contains(process_key)
+        {
+            return Ok(ScheduledWorker {
+                worker: None,
                 startup_preloaded: false,
             });
         }
@@ -2451,19 +2504,49 @@ impl ProductionProcessHost {
             (Some(requested), _) => Some(requested),
             (None, pending) => pending,
         };
-        let worker = self.spawn_worker_at(process_key, session_id, ledger, effective_startup)?;
-        self.pending_workers
+        self.starting_workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .remove(process_key);
-        workers.insert(process_key.to_owned(), Arc::clone(&worker));
+            .insert(process_key.to_owned());
         drop(workers);
-        self.workers_changed.notify_all();
-        self.publish_session_status(session_id);
+        let worker =
+            self.spawn_reserved_worker(process_key, session_id, ledger, effective_startup)?;
         Ok(ScheduledWorker {
             worker: Some(worker),
             startup_preloaded: effective_startup.is_some(),
         })
+    }
+
+    fn spawn_reserved_worker(
+        &self,
+        key: &str,
+        session: &str,
+        ledger: PathBuf,
+        startup: Option<&QueueTransaction>,
+    ) -> Result<Arc<WorkerHandle>, DaemonError> {
+        let reservation = WorkerStartReservation { host: self, key };
+        let worker = self.spawn_worker_at(key, session, ledger, startup)?;
+        let mut workers = self
+            .workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        if self.draining.load(Ordering::Acquire) {
+            drop(workers);
+            terminate_worker(&worker);
+            return Err(DaemonError::required_broker("server-draining"));
+        }
+        workers.insert(key.to_owned(), Arc::clone(&worker));
+        self.pending_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .remove(key);
+        // Release reservation while holding the process table, so capacity
+        // never counts this process twice or admits a duplicate launch.
+        drop(reservation);
+        drop(workers);
+        self.workers_changed.notify_all();
+        self.publish_session_status(session);
+        Ok(worker)
     }
 
     fn schedule_child_from_parent(
@@ -2474,7 +2557,7 @@ impl ProductionProcessHost {
         ledger: PathBuf,
     ) -> Result<Option<Arc<WorkerHandle>>, DaemonError> {
         self.refresh_limits(&ledger)?;
-        let mut workers = self
+        let workers = self
             .workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -2486,6 +2569,17 @@ impl ProductionProcessHost {
             drop(workers);
             self.refresh_worker_credentials(&worker)?;
             return Ok(Some(worker));
+        }
+        if self.draining.load(Ordering::Acquire) {
+            return Err(DaemonError::required_broker("server-draining"));
+        }
+        if self
+            .starting_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .contains(child_process_key)
+        {
+            return Ok(None);
         }
         let parent_is_live_waiter = workers
             .get(parent_process_key)
@@ -2502,16 +2596,13 @@ impl ProductionProcessHost {
                 });
             return Ok(None);
         }
-        let worker = self.spawn_worker_at(child_process_key, session_id, ledger, None)?;
-        self.pending_workers
+        self.starting_workers
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner)
-            .remove(child_process_key);
-        workers.insert(child_process_key.to_owned(), Arc::clone(&worker));
+            .insert(child_process_key.to_owned());
         drop(workers);
-        self.workers_changed.notify_all();
-        self.publish_session_status(session_id);
-        Ok(Some(worker))
+        self.spawn_reserved_worker(child_process_key, session_id, ledger, None)
+            .map(Some)
     }
 
     fn wait_for_worker(&self, process_key: &str) -> Result<Arc<WorkerHandle>, DaemonError> {
@@ -2547,7 +2638,7 @@ impl ProductionProcessHost {
             if self.draining.load(Ordering::Acquire) {
                 return;
             }
-            let mut workers = self
+            let workers = self
                 .workers
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner);
@@ -2559,7 +2650,11 @@ impl ProductionProcessHost {
                     .pending_workers
                     .lock()
                     .unwrap_or_else(std::sync::PoisonError::into_inner);
-                let Some(key) = pending.keys().next().cloned() else {
+                let starting = self
+                    .starting_workers
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                let Some(key) = pending.keys().find(|key| !starting.contains(*key)).cloned() else {
                     return;
                 };
                 pending.get(&key).cloned().map(|pending| (key, pending))
@@ -2567,6 +2662,7 @@ impl ProductionProcessHost {
             let Some((process_key, pending)) = next else {
                 continue;
             };
+            drop(workers);
             let needs_worker = if pending.startup.is_some() {
                 true
             } else {
@@ -2585,22 +2681,14 @@ impl ProductionProcessHost {
                     .remove(&process_key);
                 continue;
             }
-            match self.spawn_worker_at(
+            match self.schedule_worker_at_with_startup(
                 &process_key,
                 &pending.session_id,
                 pending.ledger.clone(),
                 pending.startup.as_ref(),
             ) {
-                Ok(worker) => {
-                    self.pending_workers
-                        .lock()
-                        .unwrap_or_else(std::sync::PoisonError::into_inner)
-                        .remove(&process_key);
-                    workers.insert(process_key, worker);
-                    drop(workers);
-                    self.workers_changed.notify_all();
-                    self.publish_session_status(&pending.session_id);
-                }
+                Ok(scheduled) if scheduled.worker.is_some() => {}
+                Ok(_) => return,
                 Err(error) => {
                     eprintln!("process-host-pending-start-failed: {error}");
                     return;
@@ -2614,7 +2702,12 @@ impl ProductionProcessHost {
             .values()
             .filter(|worker| worker.alive.load(Ordering::Acquire))
             .count() as u64;
-        live < self.max_workers.load(Ordering::Acquire)
+        let starting = self
+            .starting_workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .len() as u64;
+        live + starting < self.max_workers.load(Ordering::Acquire)
     }
 
     fn request_provider_lease(&self, lease: AdmissionLease) -> bool {
@@ -2675,13 +2768,36 @@ impl ProductionProcessHost {
             .unwrap_or_else(|| prompt_text(&prompt.blocks));
         let should_refine = self.seed_automatic_title(session_id, timestamp, &source);
         self.reset_restart_backoff(session_id);
-        if let Err(error) = self.schedule_main(session_id) {
-            self.record_spawn_failure("prompt", session_id, receipt.seq, &error);
+        if !receipt.deduplicated {
+            self.schedule_accepted_prompt(session_id, receipt.seq);
         }
         if should_refine {
             self.spawn_automatic_title_refinement(session_id.to_owned(), source);
         }
         Ok(receipt)
+    }
+
+    fn schedule_accepted_prompt(&self, session_id: &str, input_seq: u64) {
+        let owner = self.self_weak.clone();
+        let session = session_id.to_owned();
+        // The input is durable already. Disconnecting the observer must neither
+        // cancel it nor make a cold executable delay the mutation receipt.
+        if let Err(error) = std::thread::Builder::new()
+            .name("worker-start".into())
+            .spawn(move || {
+                let Some(owner) = owner.upgrade() else {
+                    return;
+                };
+                if owner.draining.load(Ordering::Acquire) {
+                    return;
+                }
+                if let Err(error) = owner.schedule_main(&session) {
+                    owner.record_spawn_failure("prompt", &session, input_seq, &error);
+                }
+            })
+        {
+            self.record_spawn_failure("prompt", session_id, input_seq, &DaemonError::io(error));
+        }
     }
 
     /// Manual compaction on a line with no live worker: the supervisor is the
@@ -6044,18 +6160,22 @@ fn read_worker_hello(
     reader: &mut BufReader<std::process::ChildStdout>,
     deadline: Instant,
 ) -> Result<worker_control::Hello, DaemonError> {
-    read_worker_hello_with_progress(reader, deadline, deadline, || {})
+    read_worker_hello_with_progress(reader, deadline, deadline, || false, || {})
 }
 
 fn read_worker_hello_with_progress(
     reader: &mut BufReader<std::process::ChildStdout>,
     deadline: Instant,
     slow_at: Instant,
+    cancelled: impl Fn() -> bool,
     mut slow: impl FnMut(),
 ) -> Result<worker_control::Hello, DaemonError> {
     let mut line = Vec::new();
     let mut slow_reported = false;
     loop {
+        if cancelled() {
+            return Err(DaemonError::protocol("worker startup cancelled"));
+        }
         let now = Instant::now();
         if !slow_reported && now >= slow_at {
             slow();
@@ -6065,7 +6185,8 @@ fn read_worker_hello_with_progress(
             deadline
         } else {
             slow_at.min(deadline)
-        };
+        }
+        .min(now + Duration::from_millis(100));
         // The child may already have written or closed its pipe while the
         // supervisor was freezing the rest of the launch authority.  At the
         // deadline, probe the descriptor once without blocking so a ready
@@ -6873,7 +6994,7 @@ mod tests {
         let ledger = folder.join("main.jsonl");
         write_test_genesis(&ledger, session);
         let worker = root.path().join("failing-worker");
-        fs::write(&worker, b"#!/bin/sh\nexit 1\n").expect("failing worker");
+        fs::write(&worker, b"#!/bin/sh\n/bin/sleep 1\nexit 1\n").expect("failing worker");
         fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).expect("worker mode");
         let helper = root.path().join("tekes-helper");
         fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
@@ -6900,6 +7021,7 @@ mod tests {
             files: Vec::new(),
         };
 
+        let accepted_started = Instant::now();
         let first = host
             .locked_prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, false)
             .expect("durable prompt is accepted despite spawn failure");
@@ -6907,10 +7029,36 @@ mod tests {
             .locked_prompt(session, "2026-08-28T00:00:01.000Z", &origin, &prompt, false)
             .expect("exact retry returns durable receipt");
 
+        assert!(
+            accepted_started.elapsed() < Duration::from_millis(700),
+            "durable receipt waited for cold startup"
+        );
+        let gate_deadline = Instant::now() + Duration::from_secs(2);
+        while host.starting_workers.lock().unwrap().is_empty() {
+            assert!(Instant::now() < gate_deadline);
+            std::thread::sleep(Duration::from_millis(5));
+        }
+        let lookup_started = Instant::now();
+        assert!(host.live_worker(session).is_none());
+        assert!(
+            lookup_started.elapsed() < Duration::from_millis(500),
+            "startup held the process table"
+        );
         assert!(!first.deduplicated);
         assert!(retry.deduplicated);
         assert_eq!(retry.seq, first.seq);
-        let bytes = fs::read(&ledger).expect("durable ledger");
+        let deadline = Instant::now() + Duration::from_secs(10);
+        let bytes = loop {
+            let bytes = fs::read(&ledger).expect("durable ledger");
+            if !session_notices(&bytes).is_empty() {
+                break bytes;
+            }
+            assert!(
+                Instant::now() < deadline,
+                "asynchronous startup diagnostic missing"
+            );
+            std::thread::sleep(Duration::from_millis(10));
+        };
         assert_eq!(
             bytes
                 .windows(b"\"kind\":\"input\"".len())
@@ -8564,6 +8712,29 @@ mod tests {
     }
 
     #[test]
+    fn shutdown_interrupts_pre_main_hello_wait() {
+        let mut child = std::process::Command::new("/bin/sleep")
+            .arg("30")
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .unwrap();
+        let mut reader = BufReader::new(child.stdout.take().unwrap());
+        let start = Instant::now();
+        let error = read_worker_hello_with_progress(
+            &mut reader,
+            start + WORKER_HANDSHAKE_TIMEOUT,
+            start + WORKER_STARTUP_SLOW_AFTER,
+            || start.elapsed() >= Duration::from_millis(20),
+            || {},
+        )
+        .unwrap_err();
+        child.kill().unwrap();
+        child.wait().unwrap();
+        assert!(error.to_string().contains("worker startup cancelled"));
+        assert!(start.elapsed() < Duration::from_secs(2));
+    }
+
+    #[test]
     fn cold_worker_keeps_same_pid_past_slow_threshold() {
         use std::process::Stdio;
         let hello =
@@ -8589,6 +8760,7 @@ mod tests {
             &mut reader,
             start + Duration::from_secs(3),
             start + Duration::from_millis(30),
+            || false,
             || slow += 1,
         );
         let _ = child.kill();
