@@ -1,4 +1,4 @@
-import os,json,tempfile,subprocess,select,secrets,urllib.request,base64,socket,struct,sys
+import os,json,tempfile,subprocess,select,secrets,urllib.request,base64,socket,struct,sys,time
 from pathlib import Path
 from urllib.parse import urlparse
 repo=Path(__file__).resolve().parent.parent
@@ -50,6 +50,18 @@ with tempfile.TemporaryDirectory(prefix='tekes-builtin-') as temporary:
     material='synthetic-builtin-test-key'
     payload=json.dumps({'endpointToken':token.hex(),'credentials':{'openai-main':material}}).encode()
     bootstrap=b'TEKES-KERNEL-BOOTSTRAP/1\n'+struct.pack('!I',len(payload))+payload
+    cold_delay=float(os.environ.get('TEKES_TEST_WORKER_STARTUP_DELAY','0'))
+    startup_records=[]
+    prompt_ack_seconds=[]
+    if cold_delay:
+        assert 10 < cold_delay <= 15, 'cold-start fixture delay must exceed the former ten-second timeout'
+        import shlex
+        wrapper=base/'tekes-worker'
+        wrapper.write_text('#!/bin/sh\n/bin/sleep '+str(cold_delay)+'\nexec '+shlex.quote(str(repo/'target/debug/tekes-worker'))+' "$@"\n')
+        wrapper.chmod(0o700)
+        (base/'tekes-helper').symlink_to(repo/'target/debug/tekes-helper')
+        value=json.loads(launch.read_text());value['worker']=str(wrapper)
+        launch.write_text(json.dumps(value))
     command=[str(repo/'target/debug/tekes-supervisor'),'--built-in',str(launch)]
     for legacy in ['TEKES_KERNEL_ENDPOINT_TOKEN','TEKES_BUILTIN_TEST_KEY']:
         legacy_env=env.copy();legacy_env[legacy]='synthetic-legacy-not-echoed'
@@ -141,7 +153,9 @@ for line in sys.stdin:
             rpc=secrets.token_hex(8)
             body=json.dumps({'type':'client-request','rpcId':rpc,'method':method,'payload':payload}).encode()
             request=urllib.request.Request(ready['url']+'/api/'+method,data=body,headers={'Authorization':'Bearer '+base64.urlsafe_b64encode(token).decode().rstrip('='),'Content-Type':'application/json'})
+            ack_started=time.monotonic()
             with urllib.request.urlopen(request,timeout=10) as response: result=json.load(response)
+            if method=='session.prompt':prompt_ack_seconds.append(time.monotonic()-ack_started)
             assert result['rpcId']==rpc,result
             assert result['result']['ok'],result
             return result['result']['value']
@@ -227,6 +241,10 @@ for line in sys.stdin:
                 stream.close();sock.close()
         inventory()
         p.stdin.close();p.wait(timeout=15);assert p.returncode==0,p.stderr.read()
+        for diagnostic in p.stderr.read().decode(errors='replace').splitlines():
+            try:record=json.loads(diagnostic)
+            except ValueError:continue
+            if record.get('event')=='worker_startup':startup_records.append(record)
         def no_mcp_processes():
             if not os.environ.get('TEKES_TEST_CLI_HOST'):return
             for pid in (base/'mcp-pids').read_text().splitlines():
@@ -258,10 +276,22 @@ for line in sys.stdin:
         for relative,content in retired.items():assert (Path(root)/relative).read_bytes()==content
         print('SESSION_EXECUTION_RESTART_RECONNECT_AND_RETIRED_STATE_ISOLATION_OK')
         p.stdin.close();p.wait(timeout=15);assert p.returncode==0,p.stderr.read()
+        for diagnostic in p.stderr.read().decode(errors='replace').splitlines():
+            try:record=json.loads(diagnostic)
+            except ValueError:continue
+            if record.get('event')=='worker_startup':startup_records.append(record)
         no_mcp_processes()
         if os.environ.get('TEKES_TEST_CLI_HOST'):
             assert tool_state['mcp'] and len((base/'mcp-pids').read_text().splitlines())>=2
             print('CLI_MCP_RESTART_AND_ALL_HOST_CHILDREN_REAPED_OK')
+        if cold_delay:
+            slow={r['pid'] for r in startup_records if r['phase']=='waiting_for_hello'}
+            ready_pids={r['pid'] for r in startup_records if r['phase']=='hello_received'}
+            assert slow and slow<=ready_pids, startup_records
+            assert not any(r['phase']=='hello_failed' for r in startup_records), startup_records
+            assert prompt_ack_seconds and max(prompt_ack_seconds)<10, prompt_ack_seconds
+            print('WORKER_COLD_START_GRACE_AND_NONBLOCKING_RECEIPTS_OK',
+                json.dumps({'delaySeconds':cold_delay,'maxPromptAckSeconds':max(prompt_ack_seconds),'samePidRecoveries':len(slow)}))
         print('EXIT',p.returncode)
     finally:
         if p.poll() is None:p.kill();p.wait()

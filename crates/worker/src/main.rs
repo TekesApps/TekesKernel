@@ -179,6 +179,7 @@ fn is_protocol_failure(mut error: &(dyn std::error::Error + 'static)) -> bool {
 }
 
 fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
+    eprintln!("tekes-worker-startup: phase=main_entered");
     let mut options = parse_options()?;
     let cancellation = RuntimeCancellation::default();
     let mut lines = spawn_control_reader(cancellation.clone());
@@ -186,6 +187,7 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
 
     stdout.write_all(&encode_line("hello", &Hello::default())?)?;
     stdout.flush()?;
+    eprintln!("tekes-worker-startup: phase=hello_sent");
     let Some(selection) = lines.next() else {
         return Ok(ExitCode::from(EX_PROTOCOL as u8));
     };

@@ -95,7 +95,7 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::lifecycle_hooks::LifecycleHooks::before_compact](../../src/lifecycle_hooks.rs#L196) | `pub(super)` | no resolved direct caller |
 | [tekes-worker::lifecycle_hooks::LifecycleHooks::observe](../../src/lifecycle_hooks.rs#L213) | `pub(super)` | no resolved direct caller |
 | [tekes-worker::live_tests::prepare_live_choice](../../src/live_tests.rs#L557) | `pub(super)` | no resolved direct caller |
-| [tekes-worker::main::exchange_tool_control](../../src/main.rs#L408) | `pub` | no resolved direct caller |
+| [tekes-worker::main::exchange_tool_control](../../src/main.rs#L410) | `pub` | no resolved direct caller |
 | [tekes-worker::provider_turn::ProviderOutcome](../../src/provider_turn.rs#L15) | `pub(crate)` | not a function |
 | [tekes-worker::provider_turn::ProviderContext](../../src/provider_turn.rs#L26) | `pub(crate)` | not a function |
 | [tekes-worker::provider_turn::run_provider_turn](../../src/provider_turn.rs#L33) | `pub(crate)` | no resolved direct caller |

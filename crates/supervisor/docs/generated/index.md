@@ -68,9 +68,9 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 344 | 6154 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 355 | 6340 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
-| [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 224 | [Symbols and calls](src--process_tool_visibility_tests.md) |
+| [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 839 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
@@ -145,7 +145,7 @@ flowchart LR
   m18 -->|"1"| m5
   m18 -->|"2"| m9
   m18 -->|"3"| m11
-  m18 -->|"154"| m13
+  m18 -->|"159"| m13
   m18 -->|"1"| m14
   m18 -->|"1"| m17
   m18 -->|"6"| m19
