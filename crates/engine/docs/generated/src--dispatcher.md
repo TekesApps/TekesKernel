@@ -119,7 +119,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `per_call_hold` | `serde_json::to_vec` | [102](../../src/dispatcher.rs#L102) | external-constructor-callback-or-unresolved |
 | `per_call_hold` | `IJsonValue::parse(&bytes).expect` | [104](../../src/dispatcher.rs#L104) | receiver-type-required |
 | `per_call_hold` | `IJsonValue::parse` | [104](../../src/dispatcher.rs#L104) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `for_session_folder` | `read_permission_mode` | [133](../../src/dispatcher.rs#L133) | [engine::permission_mode::read_permission_mode](../../src/permission_mode.rs#L85) |
+| `for_session_folder` | `read_permission_mode` | [133](../../src/dispatcher.rs#L133) | [engine::permission_mode::read_permission_mode](../../src/permission_mode.rs#L94) |
 | `decide` | `PolicyDecision::Deny` | [150](../../src/dispatcher.rs#L150) | external-constructor-callback-or-unresolved |
 | `decide` | `"read-only permission mode".to_owned` | [150](../../src/dispatcher.rs#L150) | receiver-type-required |
 | `decide` | `per_call_hold` | [156](../../src/dispatcher.rs#L156) | [engine::dispatcher::per_call_hold](../../src/dispatcher.rs#L91) |
@@ -204,9 +204,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `tempfile::tempdir().expect` | [450](../../src/dispatcher.rs#L450) | receiver-type-required |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `tempfile::tempdir` | [450](../../src/dispatcher.rs#L450) | external-constructor-callback-or-unresolved |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `crate::write_permission_mode(folder.path(), PermissionMode::ReadOnly).expect` | [458](../../src/dispatcher.rs#L458) | receiver-type-required |
-| `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `crate::write_permission_mode` | [458](../../src/dispatcher.rs#L458) | [engine::permission_mode::write_permission_mode](../../src/permission_mode.rs#L117) |
+| `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `crate::write_permission_mode` | [458](../../src/dispatcher.rs#L458) | [engine::permission_mode::write_permission_mode](../../src/permission_mode.rs#L126) |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `folder.path` | [458](../../src/dispatcher.rs#L458), [465](../../src/dispatcher.rs#L465), [466](../../src/dispatcher.rs#L466) | receiver-type-required |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `std::fs::write(crate::permission_mode_path(folder.path()), b"{").expect` | [465](../../src/dispatcher.rs#L465) | receiver-type-required |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `std::fs::write` | [465](../../src/dispatcher.rs#L465) | external-constructor-callback-or-unresolved |
-| `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `crate::permission_mode_path` | [465](../../src/dispatcher.rs#L465) | [engine::permission_mode::permission_mode_path](../../src/permission_mode.rs#L79) |
+| `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `crate::permission_mode_path` | [465](../../src/dispatcher.rs#L465) | [engine::permission_mode::permission_mode_path](../../src/permission_mode.rs#L88) |
 | `default_mode_is_workspace_write_and_folder_read_reports_corruption` | `PermissionModePolicy::for_session_folder` | [466](../../src/dispatcher.rs#L466) | external-constructor-callback-or-unresolved |

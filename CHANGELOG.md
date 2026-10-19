@@ -6,6 +6,20 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.2 — 2026-10-19
+
+### Fixed
+
+- Align Full Access approval mode with foreground shell/helper execution and
+  newly started background jobs. The trusted session grant removes Kernel
+  filesystem/network sandbox ceilings; OS permissions continue to apply.
+- Re-read permission selections for subsequent tool batches and job starts,
+  including revocation back to Workspace Write, without restarting a session.
+- Preserve restricted-mode fail-closed sandbox checks and private validator
+  isolation. Bind background job policy and launcher authority to the same mode.
+- Permit native host file paths under Full Access while keeping workspace undo
+  history scoped to workspace edits. Clarify the advertised permission description.
+
 ## 0.9.1 — 2026-10-18
 
 - Add authenticated, read-only bounded child history with verified root/child ownership,

@@ -341,12 +341,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `policy` | `fixture.inside.to_string_lossy().into_owned` | [666](../../src/linux_sandbox.rs#L666) | receiver-type-required |
 | `policy` | `fixture.inside.to_string_lossy` | [666](../../src/linux_sandbox.rs#L666) | receiver-type-required |
 | `policy` | `Vec::new` | [674](../../src/linux_sandbox.rs#L674) | external-constructor-callback-or-unresolved |
-| `run` | `probe_backend` | [679](../../src/linux_sandbox.rs#L679) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L506) |
+| `run` | `probe_backend` | [679](../../src/linux_sandbox.rs#L679) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L534) |
 | `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output()             .unwrap` | [681](../../src/linux_sandbox.rs#L681) | receiver-type-required |
 | `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args(args)             .output` | [681](../../src/linux_sandbox.rs#L681) | receiver-type-required |
 | `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap()             .args` | [681](../../src/linux_sandbox.rs#L681) | receiver-type-required |
 | `run` | `sandbox_command(policy, &probe, Path::new(executable))             .unwrap` | [681](../../src/linux_sandbox.rs#L681) | receiver-type-required |
-| `run` | `sandbox_command` | [681](../../src/linux_sandbox.rs#L681) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L515) |
+| `run` | `sandbox_command` | [681](../../src/linux_sandbox.rs#L681) | [tools::sandbox::sandbox_command](../../src/sandbox.rs#L543) |
 | `run` | `Path::new` | [681](../../src/linux_sandbox.rs#L681) | external-constructor-callback-or-unresolved |
 | `sh` | `run` | [689](../../src/linux_sandbox.rs#L689) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L678) |
 | `stderr` | `String::from_utf8_lossy(&output.stderr).into_owned` | [693](../../src/linux_sandbox.rs#L693) | receiver-type-required |
@@ -364,7 +364,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `denied_network_refuses_sockets_and_all_permits_them` | `run` | [748](../../src/linux_sandbox.rs#L748), [760](../../src/linux_sandbox.rs#L760) | [tools::linux_sandbox::tests::run](../../src/linux_sandbox.rs#L678) |
 | `denied_network_refuses_sockets_and_all_permits_them` | `policy` | [749](../../src/linux_sandbox.rs#L749), [761](../../src/linux_sandbox.rs#L761) | [tools::linux_sandbox::tests::policy](../../src/linux_sandbox.rs#L665) |
 | `loopback_only_network_is_refused` | `fixture` | [774](../../src/linux_sandbox.rs#L774) | external-constructor-callback-or-unresolved |
-| `loopback_only_network_is_refused` | `probe_backend` | [775](../../src/linux_sandbox.rs#L775) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L506) |
+| `loopback_only_network_is_refused` | `probe_backend` | [775](../../src/linux_sandbox.rs#L775) | [tools::sandbox::probe_backend](../../src/sandbox.rs#L534) |
 | `without_process_permission_only_the_requested_program_runs` | `fixture` | [788](../../src/linux_sandbox.rs#L788) | external-constructor-callback-or-unresolved |
 | `without_process_permission_only_the_requested_program_runs` | `policy` | [789](../../src/linux_sandbox.rs#L789) | external-constructor-callback-or-unresolved |
 | `without_process_permission_only_the_requested_program_runs` | `sh` | [790](../../src/linux_sandbox.rs#L790), [794](../../src/linux_sandbox.rs#L794), [796](../../src/linux_sandbox.rs#L796) | [tools::linux_sandbox::tests::sh](../../src/linux_sandbox.rs#L688) |

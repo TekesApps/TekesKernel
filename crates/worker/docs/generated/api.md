@@ -100,17 +100,17 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::provider_turn::ProviderContext](../../src/provider_turn.rs#L26) | `pub(crate)` | not a function |
 | [tekes-worker::provider_turn::run_provider_turn](../../src/provider_turn.rs#L33) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::provider_turn::ProviderRunContext](../../src/provider_turn.rs#L102) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1175) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1185) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1193) | `pub(crate)` | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1277) |
-| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1261) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1277) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1298) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1314) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1407) | `pub(crate)` | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1314); [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1396) |
-| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1467) | `pub(crate)` | not a function |
-| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1487) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1519) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1179) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1189) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1197) | `pub(crate)` | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1281) |
+| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1265) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1281) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1302) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1318) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1411) | `pub(crate)` | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1318); [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1400) |
+| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1471) | `pub(crate)` | not a function |
+| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1491) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
+| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1523) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
 | [tekes-worker::queue::execute_queue_transaction](../../src/queue.rs#L10) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::recovery::UnresolvedAttempt](../../src/recovery.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::PendingToolCall](../../src/recovery.rs#L17) | `pub(crate)` | not a function |
@@ -126,20 +126,21 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::tool_backends::AllowedToolBackend](../../src/tool_backends.rs#L33) | `pub(crate)` | not a function |
 | [tekes-worker::tool_backends::DeferredChildBackend](../../src/tool_backends.rs#L62) | `pub(crate)` | not a function |
 | [tekes-worker::tool_backends::ReplayedChildBackend](../../src/tool_backends.rs#L74) | `pub(crate)` | not a function |
-| [tekes-worker::tool_backends::exchange_tool_control_runtime](../../src/tool_backends.rs#L118) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) |
+| [tekes-worker::tool_backends::exchange_tool_control_runtime](../../src/tool_backends.rs#L118) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L262) |
 | [tekes-worker::tool_backends::tool_catalog_context](../../src/tool_backends.rs#L186) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::tool_backends::ToolBackendPlan](../../src/tool_backends.rs#L235) | `pub(crate)` | not a function |
-| [tekes-worker::tool_backends::ToolBackendRuntime](../../src/tool_backends.rs#L244) | `pub(crate)` | not a function |
-| [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_backends::preset_skill_catalog](../../src/tool_backends.rs#L503) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) |
-| [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L521) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L630) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L250) |
-| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L650) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::ToolBackendRuntime](../../src/tool_backends.rs#L245) | `pub(crate)` | not a function |
+| [tekes-worker::tool_backends::execution_access_for_profile](../../src/tool_backends.rs#L251) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L262) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_backends::preset_skill_catalog](../../src/tool_backends.rs#L536) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L262) |
+| [tekes-worker::tool_backends::invocation_write_roots_for_access](../../src/tool_backends.rs#L563) | `pub(crate)` | [tekes-worker::tool_backends::invocation_write_roots](../../src/tool_backends.rs#L555) |
+| [tekes-worker::tool_backends::storage_root_for_thread_folder](../../src/tool_backends.rs#L682) | `pub(crate)` | [tekes-worker::tool_backends::assemble_tool_backends](../../src/tool_backends.rs#L262) |
+| [tekes-worker::tool_backends::session_permission_policy](../../src/tool_backends.rs#L702) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_calls::append_tool_validation_error](../../src/tool_calls.rs#L197) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
-| [tekes-worker::tool_calls::frozen_hook_bindings](../../src/tool_calls.rs#L214) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
-| [tekes-worker::tool_calls::frozen_skill_catalog](../../src/tool_calls.rs#L246) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::tool_calls::ToolCallBatch](../../src/tool_calls.rs#L306) | `pub(crate)` | not a function |
+| [tekes-worker::tool_calls::append_tool_validation_error](../../src/tool_calls.rs#L201) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
+| [tekes-worker::tool_calls::frozen_hook_bindings](../../src/tool_calls.rs#L218) | `pub(crate)` | [tekes-worker::tool_calls::execute_provider_tool_calls](../../src/tool_calls.rs#L3) |
+| [tekes-worker::tool_calls::frozen_skill_catalog](../../src/tool_calls.rs#L250) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::tool_calls::ToolCallBatch](../../src/tool_calls.rs#L310) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::PROVIDER_RETRIES](../../src/turn_terminal.rs#L4) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::PROVIDER_ADMISSION_SUBKIND](../../src/turn_terminal.rs#L7) | `pub(crate)` | not a function |
 | [tekes-worker::turn_terminal::validate_terminal_tool_calls](../../src/turn_terminal.rs#L13) | `pub(crate)` | [tekes-worker::turn_terminal::append_terminal](../../src/turn_terminal.rs#L96) |

@@ -44,7 +44,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/engine/src/dynamic_catalog.rs](../../src/dynamic_catalog.rs) | 28 | 222 | [Symbols and calls](src--dynamic_catalog.md) |
 | [crates/engine/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/engine/src/lifecycle.rs](../../src/lifecycle.rs) | 17 | 16 | [Symbols and calls](src--lifecycle.md) |
-| [crates/engine/src/permission_mode.rs](../../src/permission_mode.rs) | 15 | 62 | [Symbols and calls](src--permission_mode.md) |
+| [crates/engine/src/permission_mode.rs](../../src/permission_mode.rs) | 16 | 62 | [Symbols and calls](src--permission_mode.md) |
 | [crates/engine/src/provider.rs](../../src/provider.rs) | 8 | 0 | [Symbols and calls](src--provider.md) |
 | [crates/engine/src/seams.rs](../../src/seams.rs) | 41 | 59 | [Symbols and calls](src--seams.md) |
 | [crates/engine/src/stop.rs](../../src/stop.rs) | 10 | 36 | [Symbols and calls](src--stop.md) |

@@ -174,7 +174,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `std::env::var_os("HOME")         .map` | [147](../../src/builtin.rs#L147) | receiver-type-required |
 | `run` | `std::env::var_os` | [147](../../src/builtin.rs#L147) | external-constructor-callback-or-unresolved |
 | `run` | `option_env!("TEKES_SELECTED_BUILD").unwrap_or` | [151](../../src/builtin.rs#L151) | receiver-type-required |
-| `run` | `ProductionProcessHost::open_with_secret_store` | [152](../../src/builtin.rs#L152) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_store](../../src/process_host.rs#L774) |
+| `run` | `ProductionProcessHost::open_with_secret_store` | [152](../../src/builtin.rs#L152) | [tekes-supervisor::process_host::ProductionProcessHost::open_with_secret_store](../../src/process_host.rs#L776) |
 | `run` | `process         .mcp_runtime()         .set_stdio_connector` | [159](../../src/builtin.rs#L159) | receiver-type-required |
 | `run` | `process         .mcp_runtime` | [159](../../src/builtin.rs#L159) | receiver-type-required |
 | `run` | `crate::stdio_channels::UnixStdioChannels` | [161](../../src/builtin.rs#L161) | external-constructor-callback-or-unresolved |
