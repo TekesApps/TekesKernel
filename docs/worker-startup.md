@@ -39,3 +39,14 @@ Historical replay uses the same rule, including errors from older Kernels.
 Regression coverage includes delayed hello past the slow threshold without a
 restart, hard timeout and child cleanup, early EOF, malformed negotiation, and
 stderr larger than pipe capacity without handshake deadlock or telemetry leaks.
+
+To reproduce cold startup using real Release binaries and the local mock provider,
+place the built binaries under `target/debug/` and run:
+
+```sh
+TEKES_TEST_CLI_HOST=1 TEKES_TEST_WORKER_STARTUP_DELAY=11 python3 scripts/test-builtin-launch.py
+```
+
+The fixture checks sub-ten-second prompt acknowledgements, slow-start telemetry,
+hello recovery with unchanged PIDs, execution, MCP, restart and child cleanup. It
+does not contact a model provider or change system security policy.
