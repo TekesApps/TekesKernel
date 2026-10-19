@@ -57,7 +57,15 @@ use crate::{
 
 const DELIVERY_TIMEOUT: Duration = Duration::from_secs(30);
 const MCP_ONLY_APP_SANDBOX_MARKER: &str = ".mcp-only-app-sandbox";
-const WORKER_HANDSHAKE_TIMEOUT: Duration = Duration::from_secs(10);
+// Newly installed macOS executables may remain in system policy assessment
+// before main(). Killing them at ten seconds caused a repeated cold-start loop.
+// Report the slow start at ten seconds, but let the SAME child finish assessment.
+const WORKER_HANDSHAKE_TIMEOUT: Duration = if cfg!(target_os = "macos") {
+    Duration::from_secs(120)
+} else {
+    Duration::from_secs(10)
+};
+const WORKER_STARTUP_SLOW_AFTER: Duration = Duration::from_secs(10);
 const WORKER_HELLO_MAX_BYTES: usize = 4_096;
 /// Seconds between two retries of pending management operations.
 const MANAGEMENT_RECOVERY_SECONDS: u64 = 30;
@@ -487,7 +495,7 @@ struct WorkerHandle {
     stdin: Mutex<ChildStdin>,
     child: Mutex<Child>,
     state: Mutex<WorkerState>,
-    stderr_tail: Mutex<Vec<u8>>,
+    stderr_tail: Arc<Mutex<Vec<u8>>>,
     changed: Condvar,
     alive: AtomicBool,
     permission_folder: PathBuf,
@@ -2048,12 +2056,23 @@ impl ProductionProcessHost {
         for notice in launch_notices {
             self.record_session_notice(session_id, &run_id, notice);
         }
-        let handshake_deadline = Instant::now() + handshake_timeout;
+        let handshake_started = Instant::now();
+        let handshake_deadline = handshake_started + handshake_timeout;
         let mut guard = WorkerHandshakeGuard {
             child: Some(launch.child),
             credential_control: launch.credential_control.take(),
             credential_broker: launch.credential_broker.take(),
         };
+        startup_log(
+            session_id,
+            &run_id,
+            guard.child_mut().id(),
+            "spawned",
+            handshake_started,
+            handshake_timeout,
+            None,
+            None,
+        );
         let (mut tool_launch_policy, tool_launcher) =
             self.freeze_tool_authority(&launch.config_snapshot, &launch.instruction_snapshot)?;
         let mut private_tool_authority = false;
@@ -2080,8 +2099,53 @@ impl ProductionProcessHost {
             .stderr
             .take()
             .ok_or_else(|| DaemonError::protocol("worker stderr was not piped"))?;
+        // Drain stderr BEFORE negotiation. Otherwise startup diagnostics can fill
+        // the pipe and prevent hello itself; a failed guard also lost all stderr.
+        let stderr_tail = Arc::new(Mutex::new(Vec::new()));
+        let stderr_capture = Arc::clone(&stderr_tail);
+        std::thread::spawn(move || capture_worker_stderr(BufReader::new(stderr), stderr_capture));
         let mut reader = BufReader::new(stdout);
-        let hello = read_worker_hello(&mut reader, handshake_deadline)?;
+        let pid = guard.child_mut().id();
+        let hello = read_worker_hello_with_progress(
+            &mut reader,
+            handshake_deadline,
+            handshake_started + WORKER_STARTUP_SLOW_AFTER.min(handshake_timeout),
+            || {
+                startup_log(
+                    session_id,
+                    &run_id,
+                    pid,
+                    "waiting_for_hello",
+                    handshake_started,
+                    handshake_timeout,
+                    Some(&stderr_tail),
+                    None,
+                )
+            },
+        )
+        .inspect_err(|_error| {
+            let status = guard.child_mut().try_wait().ok().flatten();
+            startup_log(
+                session_id,
+                &run_id,
+                pid,
+                "hello_failed",
+                handshake_started,
+                handshake_timeout,
+                Some(&stderr_tail),
+                status,
+            );
+        })?;
+        startup_log(
+            session_id,
+            &run_id,
+            pid,
+            "hello_received",
+            handshake_started,
+            handshake_timeout,
+            Some(&stderr_tail),
+            None,
+        );
         let selected = match worker_control::negotiate(
             &hello,
             worker_control::PROTOCOL_VERSION,
@@ -2144,7 +2208,7 @@ impl ProductionProcessHost {
             stdin: Mutex::new(stdin),
             child: Mutex::new(child),
             state: Mutex::new(WorkerState::default()),
-            stderr_tail: Mutex::new(Vec::new()),
+            stderr_tail,
             changed: Condvar::new(),
             alive: AtomicBool::new(true),
             permission_folder: ledger
@@ -2177,8 +2241,16 @@ impl ProductionProcessHost {
                 reader_ledger,
             )
         });
-        let stderr_handle = Arc::clone(&handle);
-        std::thread::spawn(move || worker_stderr_reader(BufReader::new(stderr), stderr_handle));
+        startup_log(
+            session_id,
+            &run_id,
+            pid,
+            "selected_sent",
+            handshake_started,
+            handshake_timeout,
+            Some(&handle.stderr_tail),
+            None,
+        );
         Ok(handle)
     }
 
@@ -4506,7 +4578,7 @@ fn fail_worker(handle: &WorkerHandle, message: String) {
     handle.changed.notify_all();
 }
 
-fn worker_stderr_reader(mut reader: BufReader<impl std::io::Read>, handle: Arc<WorkerHandle>) {
+fn capture_worker_stderr(mut reader: BufReader<impl std::io::Read>, tail: Arc<Mutex<Vec<u8>>>) {
     const MAX_STDERR_TAIL: usize = 4 * 1024;
     let mut chunk = [0_u8; 1024];
     loop {
@@ -4514,8 +4586,7 @@ fn worker_stderr_reader(mut reader: BufReader<impl std::io::Read>, handle: Arc<W
             Ok(0) | Err(_) => return,
             Ok(count) => count,
         };
-        let mut tail = handle
-            .stderr_tail
+        let mut tail = tail
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         tail.extend_from_slice(&chunk[..count]);
@@ -5925,22 +5996,85 @@ fn probe_line_lock(path: &Path) -> Result<LineLockState, DaemonError> {
     }
 }
 
+/// Only allowlisted startup witnesses enter logs; stderr can contain provider
+/// diagnostics or credentials and must never be copied into service telemetry.
+fn worker_startup_phase(tail: &[u8]) -> &'static str {
+    let text = String::from_utf8_lossy(tail);
+    for (marker, phase) in [
+        ("tekes-worker-startup: phase=hello_sent", "hello_sent"),
+        ("tekes-worker-startup: phase=main_entered", "main_entered"),
+    ] {
+        if text.lines().any(|line| line == marker) {
+            return phase;
+        }
+    }
+    "no_startup_witness"
+}
+
+#[allow(clippy::too_many_arguments)]
+fn startup_log(
+    session: &str,
+    run: &str,
+    pid: u32,
+    phase: &str,
+    started: Instant,
+    budget: Duration,
+    tail: Option<&Mutex<Vec<u8>>>,
+    status: Option<std::process::ExitStatus>,
+) {
+    let tail = tail.map(|tail| {
+        tail.lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    });
+    let bytes = tail.as_deref().map_or(&[][..], |value| value.as_slice());
+    eprintln!(
+        "{}",
+        serde_json::json!({
+            "event": "worker_startup", "time": Utc::now().to_rfc3339(),
+            "session": session, "run": run, "pid": pid, "phase": phase,
+            "elapsed_ms": started.elapsed().as_millis(), "budget_ms": budget.as_millis(),
+            "worker_phase": worker_startup_phase(bytes), "stderr_tail_bytes": bytes.len(),
+            "exit_status": status.map(|value| value.to_string()).unwrap_or_else(|| "running_or_unavailable".to_owned()),
+        })
+    );
+}
+
+#[cfg(test)]
 fn read_worker_hello(
     reader: &mut BufReader<std::process::ChildStdout>,
     deadline: Instant,
 ) -> Result<worker_control::Hello, DaemonError> {
+    read_worker_hello_with_progress(reader, deadline, deadline, || {})
+}
+
+fn read_worker_hello_with_progress(
+    reader: &mut BufReader<std::process::ChildStdout>,
+    deadline: Instant,
+    slow_at: Instant,
+    mut slow: impl FnMut(),
+) -> Result<worker_control::Hello, DaemonError> {
     let mut line = Vec::new();
+    let mut slow_reported = false;
     loop {
         let now = Instant::now();
+        if !slow_reported && now >= slow_at {
+            slow();
+            slow_reported = true;
+        }
+        let poll_deadline = if slow_reported {
+            deadline
+        } else {
+            slow_at.min(deadline)
+        };
         // The child may already have written or closed its pipe while the
         // supervisor was freezing the rest of the launch authority.  At the
         // deadline, probe the descriptor once without blocking so a ready
         // EOF remains an early-exit result instead of being misclassified as
         // a timeout under scheduler contention.
-        let timeout_ms = if now >= deadline {
+        let timeout_ms = if now >= poll_deadline {
             0
         } else {
-            let remaining = deadline - now;
+            let remaining = poll_deadline - now;
             remaining
                 .as_millis()
                 .saturating_add(u128::from(
@@ -5956,6 +6090,9 @@ fn read_worker_hello(
         // SAFETY: descriptor points to one initialized pollfd for this call.
         let status = unsafe { libc::poll(&mut descriptor, 1, timeout_ms) };
         if status == 0 {
+            if Instant::now() < deadline {
+                continue;
+            }
             return Err(DaemonError::protocol("worker hello timed out"));
         }
         if status < 0 {
@@ -8424,6 +8561,72 @@ mod tests {
             1,
         );
         host.shutdown();
+    }
+
+    #[test]
+    fn cold_worker_keeps_same_pid_past_slow_threshold() {
+        use std::process::Stdio;
+        let hello =
+            String::from_utf8(encode_line("hello", &worker_control::Hello::default()).unwrap())
+                .unwrap();
+        let mut child = std::process::Command::new("/bin/sh")
+            .args([
+                "-c",
+                "sleep 0.15; printf '%s' \"$1\"; read ignored",
+                "probe",
+                &hello,
+            ])
+            .stdin(Stdio::piped())
+            .stdout(Stdio::piped())
+            .stderr(Stdio::null())
+            .spawn()
+            .unwrap();
+        let pid = child.id();
+        let mut reader = BufReader::new(child.stdout.take().unwrap());
+        let start = Instant::now();
+        let mut slow = 0;
+        let result = read_worker_hello_with_progress(
+            &mut reader,
+            start + Duration::from_secs(3),
+            start + Duration::from_millis(30),
+            || slow += 1,
+        );
+        let _ = child.kill();
+        let _ = child.wait();
+        assert!(result.is_ok(), "{result:?}");
+        assert_eq!(slow, 1);
+        assert_eq!(child.id(), pid);
+        assert!(start.elapsed() >= Duration::from_millis(100));
+    }
+
+    #[test]
+    fn startup_stderr_drains_before_hello_and_logs_only_allowlisted_witnesses() {
+        use std::process::Stdio;
+        let hello =
+            String::from_utf8(encode_line("hello", &worker_control::Hello::default()).unwrap())
+                .unwrap();
+        let mut child = std::process::Command::new("/bin/sh")
+            .args(["-c", "i=0; while [ $i -lt 5000 ]; do echo PRIVATE_CREDENTIAL_SENTINEL >&2; i=$((i+1)); done; echo 'tekes-worker-startup: phase=main_entered' >&2; printf '%s' \"$1\"", "probe", &hello])
+            .stdin(Stdio::null()).stdout(Stdio::piped()).stderr(Stdio::piped())
+            .spawn().unwrap();
+        let tail = Arc::new(Mutex::new(Vec::new()));
+        let captured = Arc::clone(&tail);
+        let stderr = child.stderr.take().unwrap();
+        let drain =
+            std::thread::spawn(move || capture_worker_stderr(BufReader::new(stderr), captured));
+        let mut reader = BufReader::new(child.stdout.take().unwrap());
+        let result = read_worker_hello(&mut reader, Instant::now() + Duration::from_secs(5));
+        let _ = child.kill();
+        let _ = child.wait();
+        drain.join().unwrap();
+        assert!(result.is_ok(), "{result:?}");
+        let tail = tail.lock().unwrap();
+        assert!(tail.len() <= 4096);
+        assert_eq!(worker_startup_phase(&tail), "main_entered");
+        assert_eq!(
+            worker_startup_phase(b"PRIVATE_CREDENTIAL_SENTINEL"),
+            "no_startup_witness"
+        );
     }
 
     #[cfg(target_os = "macos")]
