@@ -64,8 +64,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `normalize_execution` | `value.parent().is_none` | [20](../../src/execution.rs#L20) | receiver-type-required |
 | `normalize_execution` | `value.parent` | [20](../../src/execution.rs#L20) | receiver-type-required |
 | `normalize_execution` | `tools::protected_root_containing(                     &tools::kernel_protected_roots(self.root()),                     &value,                 )                 .is_some` | [21](../../src/execution.rs#L21) | receiver-type-required |
-| `normalize_execution` | `tools::protected_root_containing` | [21](../../src/execution.rs#L21) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L213) |
-| `normalize_execution` | `tools::kernel_protected_roots` | [22](../../src/execution.rs#L22) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L151) |
+| `normalize_execution` | `tools::protected_root_containing` | [21](../../src/execution.rs#L21) | [tools::sandbox::protected_root_containing](../../../tools/src/sandbox.rs#L241) |
+| `normalize_execution` | `tools::kernel_protected_roots` | [22](../../src/execution.rs#L22) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L179) |
 | `normalize_execution` | `self.root` | [22](../../src/execution.rs#L22) | receiver-type-required |
 | `normalize_execution` | `Err` | [27](../../src/execution.rs#L27), [52](../../src/execution.rs#L52), [61](../../src/execution.rs#L61) | external-constructor-callback-or-unresolved |
 | `normalize_execution` | `value                 .into_os_string()                 .into_string()                 .map_err` | [31](../../src/execution.rs#L31) | receiver-type-required |

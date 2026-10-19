@@ -4705,6 +4705,143 @@ fn permission_mode_file_change_applies_to_the_next_tool_batch() {
 }
 
 #[test]
+fn full_access_is_host_selected_and_never_changes_validator_isolation() {
+    let root = tempfile::tempdir().unwrap();
+    let mut profile = tool_profile(root.path(), &["shell"]);
+    for mode in engine::PermissionMode::ALL {
+        assert_eq!(
+            execution_access_for_profile(&profile, mode),
+            mode.execution_access()
+        );
+    }
+    let call = provider::ToolCall {
+        call_id: "device".into(),
+        name: "shell".into(),
+        arguments: json!({"command":"true","writable_paths":["/dev"]}),
+    };
+    assert!(
+        invocation_write_roots_for_access(&profile, &call, &[], tools::ExecutionAccess::Sandboxed)
+            .is_err()
+    );
+    assert_eq!(
+        invocation_write_roots_for_access(&profile, &call, &[], tools::ExecutionAccess::FullAccess)
+            .unwrap(),
+        vec!["/dev"]
+    );
+    profile.validator = true;
+    for mode in engine::PermissionMode::ALL {
+        assert_eq!(
+            execution_access_for_profile(&profile, mode),
+            tools::ExecutionAccess::Sandboxed
+        );
+    }
+}
+
+/// The same live session must change OS execution authority as well as approvals.
+#[cfg(target_os = "macos")]
+#[test]
+fn full_access_shell_grant_and_revocation_apply_to_the_next_batch() {
+    let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
+    let options = test_options(&ledger);
+    let mut profile = tool_profile(directory.path(), &["shell"]);
+    profile.config.execution.policy.network = false;
+    let folder = ledger.path().parent().unwrap().to_path_buf();
+    let outside = tempfile::tempdir().unwrap();
+    let target = outside.path().join("host-write");
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let command = format!(
+        "printf full > '{}' && /bin/bash -c 'exec 3<>/dev/tcp/127.0.0.1/{}'",
+        target.display(),
+        listener.local_addr().unwrap().port()
+    );
+    append_test_attempt(&mut ledger, "access-attempt");
+    let cancelled = RuntimeCancellation::default();
+    let run = |ledger: &mut LockedLedger, id: &str, args: Value| {
+        let call = provider::ToolCall {
+            call_id: id.into(),
+            name: "shell".into(),
+            arguments: args,
+        };
+        append_provider_tool_call(
+            ledger,
+            &options,
+            &BuiltinManifest::compiled(),
+            2,
+            "access-attempt",
+            &call,
+        )
+        .unwrap();
+        assert!(
+            !execute_provider_tool_calls(
+                ledger,
+                ToolCallBatch {
+                    options: &options,
+                    profile: &profile,
+                    selected: Selected { version: 2 },
+                    attempt: "access-attempt",
+                    turn: 2,
+                    calls: std::slice::from_ref(&call),
+                    cancellation: &cancelled,
+                },
+                None,
+                &mut std::iter::empty::<io::Result<String>>(),
+                &mut Vec::new()
+            )
+            .unwrap()
+        );
+        let result = ledger
+            .projection()
+            .unwrap()
+            .events
+            .iter()
+            .rev()
+            .find(|event| {
+                *event.kind() == EventKind::ToolResult && event.string_field("call") == Some(id)
+            })
+            .unwrap();
+        serde_json::to_value(result.raw()).unwrap()
+    };
+    let args = json!({"command":command,"max_duration_ms":3000});
+    let result = run(&mut ledger, "workspace-before", args.clone());
+    assert!(
+        !target.exists(),
+        "restricted mode wrote outside its workspace: {result}"
+    );
+    engine::write_permission_mode(&folder, engine::PermissionMode::DangerFullAccess).unwrap();
+    let result = run(&mut ledger, "full", args.clone());
+    assert_eq!(
+        std::fs::read_to_string(&target).unwrap(),
+        "full",
+        "{result}"
+    );
+    let body: Value = serde_json::from_str(result["content"][0]["text"].as_str().unwrap()).unwrap();
+    assert_eq!(body["steps"][0]["exit_code"], 0, "{body}");
+    // Explicit /dev is no longer rejected by the workspace-root ceiling.
+    let result = run(
+        &mut ledger,
+        "device",
+        json!({"command":"exec 3<>/dev/zero", "writable_paths":["/dev"]}),
+    );
+    assert_eq!(result["outcome"], "ok", "{result}");
+    let body: Value = serde_json::from_str(result["content"][0]["text"].as_str().unwrap()).unwrap();
+    assert_eq!(
+        body["steps"][0]["exit_code"], 0,
+        "device open failed: {body}"
+    );
+    std::fs::remove_file(&target).unwrap();
+    engine::write_permission_mode(&folder, engine::PermissionMode::WorkspaceWrite).unwrap();
+    let result = run(&mut ledger, "workspace-after", args.clone());
+    assert!(!target.exists(), "revocation kept full access: {result}");
+    std::fs::write(engine::permission_mode_path(&folder), b"{").unwrap();
+    let result = run(&mut ledger, "corrupt", args);
+    assert!(
+        !target.exists(),
+        "corrupt record granted full access: {result}"
+    );
+    assert!(pending_tool_calls(&ledger).unwrap().is_empty());
+}
+
+#[test]
 fn tracked_approved_head_is_unstarted_until_the_execution_barrier() {
     for started in [false, true] {
         let (_directory, mut ledger) = context_ledger("openai_responses_v1", false);

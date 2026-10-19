@@ -64,8 +64,8 @@ impl Default for ApprovalPolicy {
                 ApprovalOption {
                     value: PERMISSION_MODE_DANGER_FULL_ACCESS,
                     title: "Full Access",
-                    description: "Every tool call runs without asking, including destructive \
-                                  actions.",
+                    description: "Tools run with host filesystem and network access, without the \
+                                  Kernel command sandbox or approval prompts. OS permissions still apply.",
                 },
             ],
             server_level: ServerApprovalState {

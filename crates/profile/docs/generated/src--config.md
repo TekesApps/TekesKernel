@@ -353,8 +353,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `default` | `Vec::new` | [87](../../src/config.rs#L87) | external-constructor-callback-or-unresolved |
 | `protected_roots` | `self.user_agent_dir.as_deref().map_or_else` | [174](../../src/config.rs#L174) | receiver-type-required |
 | `protected_roots` | `self.user_agent_dir.as_deref` | [174](../../src/config.rs#L174) | receiver-type-required |
-| `protected_roots` | `tools::kernel_protected_roots` | [175](../../src/config.rs#L175) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L151) |
-| `protected_roots` | `tools::kernel_protected_roots_with_user_agent_dir` | [176](../../src/config.rs#L176) | [tools::sandbox::kernel_protected_roots_with_user_agent_dir](../../../tools/src/sandbox.rs#L172) |
+| `protected_roots` | `tools::kernel_protected_roots` | [175](../../src/config.rs#L175) | [tools::sandbox::kernel_protected_roots](../../../tools/src/sandbox.rs#L179) |
+| `protected_roots` | `tools::kernel_protected_roots_with_user_agent_dir` | [176](../../src/config.rs#L176) | [tools::sandbox::kernel_protected_roots_with_user_agent_dir](../../../tools/src/sandbox.rs#L200) |
 | `protected_roots` | `Path::new` | [176](../../src/config.rs#L176) | external-constructor-callback-or-unresolved |
 | `execution_cwd` | `self.execution.cwd.first().map` | [182](../../src/config.rs#L182) | receiver-type-required |
 | `execution_cwd` | `self.execution.cwd.first` | [182](../../src/config.rs#L182) | receiver-type-required |
@@ -660,7 +660,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_web_search_origin` | `host.ends_with` | [943](../../src/config.rs#L943) | receiver-type-required |
 | `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>()             .is_ok_and` | [944](../../src/config.rs#L944) | receiver-type-required |
 | `validate_web_search_origin` | `address_literal             .parse::<std::net::IpAddr>` | [944](../../src/config.rs#L944) | receiver-type-required |
-| `validate_web_search_origin` | `tools::is_public_internet_address` | [946](../../src/config.rs#L946) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1689) |
+| `validate_web_search_origin` | `tools::is_public_internet_address` | [946](../../src/config.rs#L946) | [tools::runtime_backends::is_public_internet_address](../../../tools/src/runtime_backends.rs#L1744) |
 | `validate_web_search_origin` | `Ok` | [950](../../src/config.rs#L950) | external-constructor-callback-or-unresolved |
 | `validate_settings` | `validate_common` | [958](../../src/config.rs#L958) | [profile::config::validate_common](../../src/config.rs#L834) |
 | `validate_settings` | `Some` | [960](../../src/config.rs#L960) | external-constructor-callback-or-unresolved |

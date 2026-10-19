@@ -490,6 +490,8 @@ struct WorkerHandle {
     stderr_tail: Mutex<Vec<u8>>,
     changed: Condvar,
     alive: AtomicBool,
+    permission_folder: PathBuf,
+    private_tool_authority: bool,
     tool_launch_policy: tools::JobLaunchPolicy,
     tool_launcher: Arc<tools::HelperJobLauncher>,
     credential_control: Mutex<Option<provider::CredentialBrokerControl>>,
@@ -2054,12 +2056,14 @@ impl ProductionProcessHost {
         };
         let (mut tool_launch_policy, tool_launcher) =
             self.freeze_tool_authority(&launch.config_snapshot, &launch.instruction_snapshot)?;
+        let mut private_tool_authority = false;
         if let Some(private_policy) = validator_tool_launch_policy(
             &ledger,
             &launch.config_snapshot,
             &launch.instruction_snapshot,
         )? {
             tool_launch_policy = private_policy;
+            private_tool_authority = true;
         }
         let mut stdin = guard
             .child_mut()
@@ -2143,6 +2147,11 @@ impl ProductionProcessHost {
             stderr_tail: Mutex::new(Vec::new()),
             changed: Condvar::new(),
             alive: AtomicBool::new(true),
+            permission_folder: ledger
+                .parent()
+                .ok_or_else(|| DaemonError::protocol("worker ledger has no folder"))?
+                .to_path_buf(),
+            private_tool_authority,
             tool_launch_policy,
             tool_launcher,
             credential_control: Mutex::new(credential_control),
@@ -3044,16 +3053,58 @@ impl ProductionProcessHost {
         Ok(title)
     }
 
+    /// Re-read the trusted mode for every broker request, including a running
+    /// worker. Existing detached processes retain their launch authority.
+    fn current_tool_authority(
+        &self,
+        handle: &WorkerHandle,
+    ) -> Result<(tools::JobLaunchPolicy, Arc<tools::HelperJobLauncher>), DaemonError> {
+        self.tool_authority_for_session(
+            &handle.permission_folder,
+            handle.private_tool_authority,
+            &handle.tool_launch_policy,
+            &handle.tool_launcher,
+        )
+    }
+
+    fn tool_authority_for_session(
+        &self,
+        folder: &Path,
+        private: bool,
+        restricted_policy: &tools::JobLaunchPolicy,
+        restricted_launcher: &Arc<tools::HelperJobLauncher>,
+    ) -> Result<(tools::JobLaunchPolicy, Arc<tools::HelperJobLauncher>), DaemonError> {
+        let mode = engine::read_permission_mode(folder);
+        if private
+            || mode.mode.execution_access() != tools::ExecutionAccess::FullAccess
+            || self.is_mcp_only_app_sandbox_host()?
+        {
+            return Ok((restricted_policy.clone(), Arc::clone(restricted_launcher)));
+        }
+        let policy = restricted_policy.clone().full_access();
+        let launcher = tools::HelperJobLauncher::for_execution_access(
+            self.worker_binary.with_file_name("tekes-helper"),
+            tools::ProbeStatus::Unavailable {
+                class: tools::ProbeFailure::Rejected,
+                detail: "full access uses host execution".to_owned(),
+            },
+            tools::ExecutionAccess::FullAccess,
+        )
+        .map_err(|error| DaemonError::required_broker(error.to_string()))?;
+        Ok((policy, Arc::new(launcher)))
+    }
+
     fn handle_tool_control(
         &self,
         handle: &WorkerHandle,
         line: &[u8],
     ) -> Result<Vec<u8>, DaemonError> {
+        let (launch_policy, launcher) = self.current_tool_authority(handle)?;
         let jobs = JobBrokerSupervisorAuthority::new(
             self.root.join("jobs"),
             64 * 1024,
-            handle.tool_launch_policy.clone(),
-            Arc::clone(&handle.tool_launcher),
+            launch_policy,
+            launcher,
             handle.tool_cancellation.clone(),
         )
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
@@ -3094,11 +3145,12 @@ impl ProductionProcessHost {
                 "continuation names an unknown thread",
             ));
         }
+        let (launch_policy, launcher) = self.current_tool_authority(handle)?;
         let jobs = JobBrokerSupervisorAuthority::new(
             self.root.join("jobs"),
             64 * 1024,
-            handle.tool_launch_policy.clone(),
-            Arc::clone(&handle.tool_launcher),
+            launch_policy,
+            launcher,
             handle.tool_cancellation.clone(),
         )
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
@@ -6462,6 +6514,85 @@ mod tests {
                 .events
                 .iter()
                 .any(|event| *event.kind() == EventKind::Compact)
+        );
+        host.shutdown();
+    }
+
+    #[test]
+    fn full_access_job_authority_tracks_session_mode_and_preserves_private_boundaries() {
+        use tools::SandboxedJobLauncher as _;
+        let root = tempfile::tempdir().unwrap();
+        let workspace = tempfile::tempdir().unwrap();
+        let cwd = workspace
+            .path()
+            .canonicalize()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"fixture").unwrap();
+        let worker = root.path().join("tekes-worker");
+        fs::write(&worker, b"#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).unwrap();
+        let host = ProductionProcessHost::open(
+            root.path(),
+            worker,
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .unwrap();
+        let restricted = tools::JobLaunchPolicy::new(
+            cwd.clone(),
+            tools::SandboxPolicy {
+                format: 1,
+                read_roots: vec![cwd.clone()],
+                write_roots: Vec::new(),
+                network: tools::NetworkPolicy::Deny,
+                allow_process: true,
+                scratch: None,
+                protected_roots: Vec::new(),
+            },
+            vec![cwd],
+        )
+        .unwrap();
+        let launcher = Arc::new(tools::HelperJobLauncher::disabled(helper).unwrap());
+        let folder = root.path().join("threads/test-session");
+        fs::create_dir_all(&folder).unwrap();
+        let current = |private| {
+            host.tool_authority_for_session(&folder, private, &restricted, &launcher)
+                .unwrap()
+        };
+        assert_eq!(current(false).0, restricted);
+        engine::write_permission_mode(&folder, engine::PermissionMode::DangerFullAccess).unwrap();
+        let (full, full_launcher) = current(false);
+        assert_eq!(full.base_sandbox().network, tools::NetworkPolicy::All);
+        assert_eq!(full.permitted_write_roots(), &["/"]);
+        assert_eq!(
+            full_launcher.execution_access(),
+            tools::ExecutionAccess::FullAccess
+        );
+        assert_eq!(
+            current(true).0,
+            restricted,
+            "private validator must keep isolation"
+        );
+        engine::write_permission_mode(&folder, engine::PermissionMode::WorkspaceWrite).unwrap();
+        let (limited, limited_launcher) = current(false);
+        assert_eq!(limited, restricted);
+        assert_eq!(
+            limited_launcher.execution_access(),
+            tools::ExecutionAccess::Sandboxed
+        );
+        fs::write(engine::permission_mode_path(&folder), b"{").unwrap();
+        assert_eq!(current(false).0, restricted);
+        engine::write_permission_mode(&folder, engine::PermissionMode::DangerFullAccess).unwrap();
+        let marker = root.path().join(MCP_ONLY_APP_SANDBOX_MARKER);
+        fs::write(&marker, b"").unwrap();
+        fs::set_permissions(marker, fs::Permissions::from_mode(0o600)).unwrap();
+        assert_eq!(
+            current(false).0,
+            restricted,
+            "OS sandbox host stays enforced"
         );
         host.shutdown();
     }

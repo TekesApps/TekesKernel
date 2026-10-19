@@ -628,12 +628,12 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `map_attachment_read_error` | [1026](../../src/client_extensions.rs#L1026) | [tekes-supervisor::client_extensions::map_attachment_read_error](../../src/client_extensions.rs#L1610) |
 | `execute` | `endpoint::ApprovalPolicy::default` | [1029](../../src/client_extensions.rs#L1029) | external-constructor-callback-or-unresolved |
 | `execute` | `self.session_folder` | [1032](../../src/client_extensions.rs#L1032), [1043](../../src/client_extensions.rs#L1043), [1069](../../src/client_extensions.rs#L1069) | receiver-type-required |
-| `execute` | `engine::read_permission_mode` | [1033](../../src/client_extensions.rs#L1033) | [engine::permission_mode::read_permission_mode](../../../engine/src/permission_mode.rs#L85) |
+| `execute` | `engine::read_permission_mode` | [1033](../../src/client_extensions.rs#L1033) | [engine::permission_mode::read_permission_mode](../../../engine/src/permission_mode.rs#L94) |
 | `execute` | `engine::PermissionMode::parse(&request.mode)                     .ok_or_else` | [1041](../../src/client_extensions.rs#L1041) | receiver-type-required |
-| `execute` | `engine::PermissionMode::parse` | [1041](../../src/client_extensions.rs#L1041) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L51) |
+| `execute` | `engine::PermissionMode::parse` | [1041](../../src/client_extensions.rs#L1041) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
 | `execute` | `Err` | [1045](../../src/client_extensions.rs#L1045), [1169](../../src/client_extensions.rs#L1169) | external-constructor-callback-or-unresolved |
 | `execute` | `engine::write_permission_mode(&folder, mode).map_err` | [1051](../../src/client_extensions.rs#L1051) | receiver-type-required |
-| `execute` | `engine::write_permission_mode` | [1051](../../src/client_extensions.rs#L1051) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L117) |
+| `execute` | `engine::write_permission_mode` | [1051](../../src/client_extensions.rs#L1051) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L126) |
 | `execute` | `crate::endpoint_host::SessionDeliveryAuthority::session_metadata_changed` | [1060](../../src/client_extensions.rs#L1060) | external-constructor-callback-or-unresolved |
 | `execute` | `self.process.as_ref` | [1061](../../src/client_extensions.rs#L1061) | receiver-type-required |
 | `execute` | `payload["parentSessionId"].as_str().unwrap_or_default` | [1069](../../src/client_extensions.rs#L1069) | receiver-type-required |
@@ -837,7 +837,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_payload` | `user_documents::validate` | [1777](../../src/client_extensions.rs#L1777) | [user-documents::validate](../../../user-documents/src/lib.rs#L64) |
 | `validate_payload` | `endpoint::validate_session_id(&id)                     .map_err` | [1783](../../src/client_extensions.rs#L1783) | receiver-type-required |
 | `validate_payload` | `engine::PermissionMode::parse(&request.mode).is_none` | [1798](../../src/client_extensions.rs#L1798) | receiver-type-required |
-| `validate_payload` | `engine::PermissionMode::parse` | [1798](../../src/client_extensions.rs#L1798) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L51) |
+| `validate_payload` | `engine::PermissionMode::parse` | [1798](../../src/client_extensions.rs#L1798) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
 | `validate_payload` | `request.name.is_empty` | [1807](../../src/client_extensions.rs#L1807), [1844](../../src/client_extensions.rs#L1844) | receiver-type-required |
 | `validate_payload` | `request.data.is_empty` | [1807](../../src/client_extensions.rs#L1807) | receiver-type-required |
 | `validate_payload` | `request.attachment_id.is_empty` | [1816](../../src/client_extensions.rs#L1816) | receiver-type-required |

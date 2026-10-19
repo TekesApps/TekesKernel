@@ -70,9 +70,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `receiver_test` | `fs::read(&ledger).unwrap` | [65](../../src/process_tool_visibility_tests.rs#L65), [92](../../src/process_tool_visibility_tests.rs#L92) | receiver-type-required |
 | `receiver_test` | `fs::read` | [65](../../src/process_tool_visibility_tests.rs#L65), [67](../../src/process_tool_visibility_tests.rs#L67), [92](../../src/process_tool_visibility_tests.rs#L92) | external-constructor-callback-or-unresolved |
 | `receiver_test` | `engine::write_permission_mode(&folder, mode).unwrap` | [66](../../src/process_tool_visibility_tests.rs#L66) | receiver-type-required |
-| `receiver_test` | `engine::write_permission_mode` | [66](../../src/process_tool_visibility_tests.rs#L66) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L117) |
+| `receiver_test` | `engine::write_permission_mode` | [66](../../src/process_tool_visibility_tests.rs#L66) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L126) |
 | `receiver_test` | `fs::read(engine::permission_mode_path(&folder)).unwrap` | [67](../../src/process_tool_visibility_tests.rs#L67) | receiver-type-required |
-| `receiver_test` | `engine::permission_mode_path` | [67](../../src/process_tool_visibility_tests.rs#L67) | [engine::permission_mode::permission_mode_path](../../../engine/src/permission_mode.rs#L79) |
+| `receiver_test` | `engine::permission_mode_path` | [67](../../src/process_tool_visibility_tests.rs#L67) | [engine::permission_mode::permission_mode_path](../../../engine/src/permission_mode.rs#L88) |
 | `receiver_test` | `ProductionProcessHost::open(                 root.path(),                 &bin,                 "test",                 root.path().join("missing-agent-home"),             )             .unwrap` | [68](../../src/process_tool_visibility_tests.rs#L68) | receiver-type-required |
 | `receiver_test` | `ProductionProcessHost::open` | [68](../../src/process_tool_visibility_tests.rs#L68) | external-constructor-callback-or-unresolved |
 | `receiver_test` | `host                 .spawn_worker_at(SENDER, SENDER, sender_folder.join("main.jsonl"), None)                 .unwrap` | [77](../../src/process_tool_visibility_tests.rs#L77) | receiver-type-required |

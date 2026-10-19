@@ -103,6 +103,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `ResolvedPreset` | `preset::ResolvedPreset` | `pub` |
 | `describe_presets` | `preset::describe_value` | `pub` |
 | `*` | `runtime_backends::*` | `pub` |
+| `ExecutionAccess` | `sandbox::ExecutionAccess` | `pub` |
 | `NetworkPolicy` | `sandbox::NetworkPolicy` | `pub` |
 | `ProbeFailure` | `sandbox::ProbeFailure` | `pub` |
 | `ProbeStatus` | `sandbox::ProbeStatus` | `pub` |

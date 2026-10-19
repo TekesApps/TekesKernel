@@ -686,6 +686,28 @@ enum HelperIsolation {
 }
 
 impl HelperClient {
+    /// Construct from a trusted session grant, never from a tool argument.
+    /// Restricted modes retain the verified sandbox and private scratch directory.
+    pub fn for_execution_access(
+        executable: impl Into<PathBuf>,
+        roots: Vec<(String, PathBuf)>,
+        policy: SandboxPolicy,
+        probe: ProbeStatus,
+        access: crate::ExecutionAccess,
+    ) -> Result<Self, HelperError> {
+        match access {
+            crate::ExecutionAccess::Sandboxed => {
+                Self::sandboxed_with_scratch(executable, roots, policy, probe)
+            }
+            crate::ExecutionAccess::FullAccess => Ok(Self {
+                executable: executable.into(),
+                roots,
+                isolation: HelperIsolation::ApprovedUnsandboxed,
+                scratch_owner: None,
+            }),
+        }
+    }
+
     /// Own a private scratch directory until every client clone has finished.
     pub fn sandboxed_with_scratch(
         executable: impl Into<PathBuf>,

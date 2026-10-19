@@ -297,7 +297,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `commands_run_with_catalog` | `empty_details` | [237](../../src/resource_capability.rs#L237), [256](../../src/resource_capability.rs#L256) | [tekes-supervisor::resource_capability::empty_details](../../src/resource_capability.rs#L663) |
 | `commands_run_with_catalog` | `self.input.compact` | [241](../../src/resource_capability.rs#L241) | receiver-type-required |
 | `commands_run_with_catalog` | `permission_verb_mode` | [242](../../src/resource_capability.rs#L242) | [tekes-supervisor::resource_capability::permission_verb_mode](../../src/resource_capability.rs#L95) |
-| `commands_run_with_catalog` | `engine::PermissionMode::parse` | [246](../../src/resource_capability.rs#L246) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L51) |
+| `commands_run_with_catalog` | `engine::PermissionMode::parse` | [246](../../src/resource_capability.rs#L246) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
 | `commands_run_with_catalog` | `self.input.select_permission` | [260](../../src/resource_capability.rs#L260) | receiver-type-required |
 | `commands_run_with_catalog` | `self.input.submit` | [262](../../src/resource_capability.rs#L262) | receiver-type-required |
 | `commands_run_with_catalog` | `self.input                 .submit_with_attachments` | [264](../../src/resource_capability.rs#L264) | receiver-type-required |
@@ -376,7 +376,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `select_permission` | `self                     .admission                     .root()                     .join` | [538](../../src/resource_capability.rs#L538) | receiver-type-required |
 | `select_permission` | `self                     .admission                     .root` | [538](../../src/resource_capability.rs#L538) | receiver-type-required |
 | `select_permission` | `engine::write_permission_mode(&folder, mode)                     .map_err` | [543](../../src/resource_capability.rs#L543) | receiver-type-required |
-| `select_permission` | `engine::write_permission_mode` | [543](../../src/resource_capability.rs#L543) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L117) |
+| `select_permission` | `engine::write_permission_mode` | [543](../../src/resource_capability.rs#L543) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L126) |
 | `select_permission` | `ResourceCapabilityError::Delivery` | [544](../../src/resource_capability.rs#L544) | external-constructor-callback-or-unresolved |
 | `select_permission` | `internal_failure` | [544](../../src/resource_capability.rs#L544) | [tekes-supervisor::resource_capability::internal_failure](../../src/resource_capability.rs#L676) |
 | `select_permission` | `self.delivery.session_metadata_changed` | [547](../../src/resource_capability.rs#L547) | receiver-type-required |

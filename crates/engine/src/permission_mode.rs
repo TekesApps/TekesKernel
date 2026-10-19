@@ -30,6 +30,15 @@ pub enum PermissionMode {
 }
 
 impl PermissionMode {
+    /// The same host-selected mode governs approval and process isolation.
+    #[must_use]
+    pub const fn execution_access(self) -> tools::ExecutionAccess {
+        match self {
+            Self::DangerFullAccess => tools::ExecutionAccess::FullAccess,
+            Self::ReadOnly | Self::WorkspaceWrite => tools::ExecutionAccess::Sandboxed,
+        }
+    }
+
     /// Every mode in the order a Client menu presents them.
     pub const ALL: [PermissionMode; 3] = [
         PermissionMode::ReadOnly,
