@@ -313,6 +313,7 @@ pub struct JobLaunchPolicy {
     primary_workspace_cwd: String,
     base_sandbox: SandboxPolicy,
     permitted_write_roots: Vec<String>,
+    execution_access: crate::ExecutionAccess,
 }
 
 impl JobLaunchPolicy {
@@ -351,7 +352,16 @@ impl JobLaunchPolicy {
             primary_workspace_cwd,
             base_sandbox,
             permitted_write_roots,
+            execution_access: crate::ExecutionAccess::Sandboxed,
         })
+    }
+
+    /// Bind policy validation and process isolation to the same trusted grant.
+    pub fn full_access(mut self) -> Self {
+        self.base_sandbox = crate::ExecutionAccess::FullAccess.policy(self.base_sandbox);
+        self.permitted_write_roots = vec!["/".to_owned()];
+        self.execution_access = crate::ExecutionAccess::FullAccess;
+        self
     }
 
     #[must_use]
@@ -465,12 +475,14 @@ struct JobRunnerRequest {
     pid_namespace: bool,
 }
 
-/// Constructs the `tekes-helper` runner command with the mandatory effective
-/// platform sandbox already applied. The broker adds only its private
-/// `--job-runner` request path; the target inherits the runner's sandbox.
-/// The broker deliberately cannot construct an unsandboxed target command
-/// from a `JobSpec`; executable assembly supplies this boundary.
+/// Constructs the `tekes-helper` runner command from trusted host authority.
+/// Restricted launchers apply the mandatory sandbox. A full-access launcher
+/// requires an explicit session grant; a `JobSpec` cannot select that grant.
 pub trait SandboxedJobLauncher: Send + Sync {
+    fn execution_access(&self) -> crate::ExecutionAccess {
+        crate::ExecutionAccess::Sandboxed
+    }
+
     /// True only when the trusted launcher creates a private PID namespace.
     /// The broker then authenticates the real runner through kernel-supplied
     /// Unix socket credentials before making its start permit durable.
@@ -486,12 +498,13 @@ pub trait SandboxedJobLauncher: Send + Sync {
 }
 
 /// Production launcher for the sole `tekes-helper --job-runner` binary.
-/// Construction fails closed unless the platform sandbox probe succeeded, and
-/// every command is compiled from the per-call effective sandbox policy.
+/// Restricted construction fails closed unless the sandbox probe succeeded.
+/// Host execution is available only with an explicit trusted full-access grant.
 #[derive(Clone, Debug)]
 pub struct HelperJobLauncher {
     executable: PathBuf,
     probe: ProbeStatus,
+    access: crate::ExecutionAccess,
 }
 
 impl HelperJobLauncher {
@@ -507,7 +520,33 @@ impl HelperJobLauncher {
                 "job sandbox backend is unavailable ({class:?}): {detail}"
             )));
         }
-        Ok(Self { executable, probe })
+        Ok(Self {
+            executable,
+            probe,
+            access: crate::ExecutionAccess::Sandboxed,
+        })
+    }
+
+    /// Uses the same trusted session access as foreground helper execution.
+    pub fn for_execution_access(
+        executable: impl Into<PathBuf>,
+        probe: ProbeStatus,
+        access: crate::ExecutionAccess,
+    ) -> Result<Self, BackendFailure> {
+        let executable = executable.into();
+        if access == crate::ExecutionAccess::Sandboxed {
+            return Self::new(executable, probe);
+        }
+        if !executable.is_absolute() || !executable.is_file() {
+            return Err(BackendFailure::Unavailable(
+                "tekes-helper executable is not an absolute regular file".to_owned(),
+            ));
+        }
+        Ok(Self {
+            executable,
+            probe,
+            access,
+        })
     }
 
     /// Keeps the job broker present while refusing every job when a host has
@@ -522,6 +561,7 @@ impl HelperJobLauncher {
         }
         Ok(Self {
             executable,
+            access: crate::ExecutionAccess::Sandboxed,
             probe: ProbeStatus::Unavailable {
                 class: crate::ProbeFailure::Rejected,
                 detail: "per-job sandbox unavailable in MCP-only App Sandbox host".to_owned(),
@@ -531,8 +571,13 @@ impl HelperJobLauncher {
 }
 
 impl SandboxedJobLauncher for HelperJobLauncher {
+    fn execution_access(&self) -> crate::ExecutionAccess {
+        self.access
+    }
+
     fn uses_pid_namespace(&self) -> bool {
-        matches!(&self.probe, ProbeStatus::Available { backend, .. }
+        self.access == crate::ExecutionAccess::Sandboxed
+            && matches!(&self.probe, ProbeStatus::Available { backend, .. }
             if backend == "linux-bubblewrap-seccomp")
     }
 
@@ -541,6 +586,9 @@ impl SandboxedJobLauncher for HelperJobLauncher {
         _spec: &JobSpec,
         effective_policy: &SandboxPolicy,
     ) -> Result<Command, BackendFailure> {
+        if self.access == crate::ExecutionAccess::FullAccess {
+            return Ok(Command::new(&self.executable));
+        }
         #[cfg(all(
             target_os = "linux",
             any(target_arch = "x86_64", target_arch = "aarch64")
@@ -630,6 +678,11 @@ impl JobBroker {
                 "job program is empty or contains NUL".to_owned(),
             )));
         }
+        if launch_policy.execution_access != launcher.execution_access() {
+            return BackendOutcome::Completed(Err(BackendFailure::Denied(
+                "job policy and launcher execution access differ".to_owned(),
+            )));
+        }
         let (spec, effective_policy) = match launch_policy.resolve(spec) {
             Ok(resolved) => resolved,
             Err(error) => return BackendOutcome::Completed(Err(error)),
@@ -660,7 +713,9 @@ impl JobBroker {
             .chain(effective_policy.scratch.iter())
         {
             let canonical = fs::canonicalize(root).map_err(io_failure)?;
-            if self.launch_root.starts_with(canonical) {
+            if launcher.execution_access() != crate::ExecutionAccess::FullAccess
+                && self.launch_root.starts_with(canonical)
+            {
                 return Err(BackendFailure::Denied(
                     "job writable roots overlap private launch authority".to_owned(),
                 ));

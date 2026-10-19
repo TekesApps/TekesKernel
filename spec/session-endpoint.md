@@ -2128,7 +2128,18 @@ confined by the immutable sandbox policy. A hold is the same durable per-call
 approval request as before (`{call, tool, class}`), answered through the
 existing actionable protocol. The worker reads the mode from the session
 folder at the start of every tool batch, so a selection applies to the next
-tool call of a running session without a restart.
+tool batch of a running session without a restart.
+
+The mode also selects execution authority. `danger-full-access` runs foreground
+shell/helper commands and newly started background jobs with the service user's
+host permissions, without a Kernel child-process sandbox or workspace filesystem
+and network ceilings. Native file tools may address host paths. The grant is read
+from the durable session mode, never from model-supplied tool arguments.
+`read-only` and `workspace-write` keep the verified restricted sandbox; unavailable
+sandbox backends never fall back to host execution. Private validators retain
+their snapshot/scratch isolation in every mode. App Sandbox and macOS privacy
+permissions are still enforced by the OS. Switching back limits subsequent tool
+batches and job starts; processes already launched retain their original authority.
 
 `approvals.policy {sessionId?}` (session identity validated for shape only)
 returns `{threadLevel:[ApprovalOption], serverLevel:{options:[], currentValue:null}}`

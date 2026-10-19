@@ -591,3 +591,127 @@ fn managed_helper_scratch_survives_clones_and_is_removed_on_last_drop() {
     drop(pending);
     assert!(!path.exists());
 }
+
+#[test]
+fn full_access_helper_and_job_use_host_permissions_without_sandbox_probe() {
+    use tools::{
+        ExecRequest, ExecutionAccess, HelperJobLauncher, HelperResponse, HelperValue, ProbeFailure,
+        ProbeStatus,
+    };
+    let root = tempfile::tempdir().unwrap();
+    let workspace = root.path().join("workspace");
+    let outside = root.path().join("outside");
+    std::fs::create_dir(&workspace).unwrap();
+    std::fs::create_dir(&outside).unwrap();
+    let workspace = workspace.canonicalize().unwrap();
+    let outside = outside.canonicalize().unwrap();
+    let restricted = test_job_policy(&workspace);
+    let unavailable = ProbeStatus::Unavailable {
+        class: ProbeFailure::Missing,
+        detail: "regression: no sandbox backend".into(),
+    };
+    let roots = vec![("workspace".into(), workspace.clone())];
+    assert!(
+        HelperClient::for_execution_access(
+            env!("CARGO_BIN_EXE_tekes-helper"),
+            roots.clone(),
+            restricted.base_sandbox().clone(),
+            unavailable.clone(),
+            ExecutionAccess::Sandboxed,
+        )
+        .is_err(),
+        "restricted execution must never fall back to host execution"
+    );
+    let client = HelperClient::for_execution_access(
+        env!("CARGO_BIN_EXE_tekes-helper"),
+        roots,
+        restricted.base_sandbox().clone(),
+        unavailable.clone(),
+        ExecutionAccess::FullAccess,
+    )
+    .unwrap();
+    // Exercise an actual host write and network connection, not just policy values.
+    let listener = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let command = format!(
+        "printf host > \"$TARGET\" && exec 3<>/dev/tcp/127.0.0.1/{}",
+        listener.local_addr().unwrap().port()
+    );
+    let target = outside.join("foreground");
+    let result = client
+        .execute(&HelperRequest {
+            id: "full-access".into(),
+            operation: HelperOperation::Exec(ExecRequest {
+                argv: vec!["/bin/bash".into(), "-c".into(), command],
+                stdin: None,
+                cwd: None,
+                env: BTreeMap::from([("TARGET".into(), target.to_string_lossy().into_owned())]),
+                stdout_bytes: 4096,
+                stderr_bytes: 4096,
+                timeout_ms: Some(3000),
+            }),
+        })
+        .unwrap();
+    assert!(
+        matches!(result, HelperResponse::Result { value: HelperValue::Exec(ref value), .. }
+        if value.status == 0),
+        "{result:?}"
+    );
+    assert_eq!(std::fs::read_to_string(target).unwrap(), "host");
+
+    let launcher = Arc::new(
+        HelperJobLauncher::for_execution_access(
+            env!("CARGO_BIN_EXE_tekes-helper"),
+            unavailable,
+            ExecutionAccess::FullAccess,
+        )
+        .unwrap(),
+    );
+    assert!(!launcher.uses_pid_namespace());
+    let full = restricted.clone().full_access();
+    let broker = JobBroker::new(root.path().join("jobs"), 4096).unwrap();
+    let spec = JobSpec {
+        program: "/bin/sh".into(),
+        args: vec!["-c".into(), "printf job > result".into()],
+        working_directory: Some(outside.to_string_lossy().into_owned()),
+        writable_paths: vec![outside.to_string_lossy().into_owned()],
+        environment: BTreeMap::new(),
+    };
+    assert!(matches!(
+        broker.start(
+            "restricted",
+            spec.clone(),
+            &restricted,
+            Arc::clone(&launcher),
+            BackendGate::Ready,
+            &CancellationToken::default()
+        ),
+        BackendOutcome::Completed(Err(BackendFailure::Denied(_)))
+    ));
+    let started = broker.start(
+        "full",
+        spec,
+        &full,
+        launcher,
+        BackendGate::Ready,
+        &CancellationToken::default(),
+    );
+    assert!(
+        matches!(started, BackendOutcome::Completed(Ok(_))),
+        "{started:?}"
+    );
+    let deadline = std::time::Instant::now() + Duration::from_secs(5);
+    loop {
+        let status = broker.status("full");
+        if matches!(&status, BackendOutcome::Completed(Ok(record))
+            if record.state == (JobState::Exited { status: 0 }))
+        {
+            break;
+        }
+        assert!(std::time::Instant::now() < deadline, "{status:?}");
+        thread::sleep(Duration::from_millis(10));
+    }
+    assert_eq!(
+        std::fs::read_to_string(outside.join("result")).unwrap(),
+        "job"
+    );
+}

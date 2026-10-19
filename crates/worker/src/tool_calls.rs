@@ -36,6 +36,8 @@ where
     // Re-read per batch: a mode selected through the endpoint applies to the
     // next tool call of a running session without a restart.
     let mut policy = session_permission_policy(&thread_folder);
+    // Validators always retain their private snapshot/scratch boundary.
+    let execution_access = execution_access_for_profile(profile, policy.mode);
     for call in calls {
         let hooks = frozen_hook_bindings(&profile.instruction)?;
         if cancellation.supervisor_lost() {
@@ -75,8 +77,9 @@ where
         }
         let write_roots = match storage_root_for_thread_folder(&thread_folder)
             .map(|root| profile.config.protected_roots(&root))
-            .and_then(|protected| invocation_write_roots(profile, call, &protected))
-        {
+            .and_then(|protected| {
+                invocation_write_roots_for_access(profile, call, &protected, execution_access)
+            }) {
             Ok(roots) => roots,
             Err(error) => {
                 // Invalid model-supplied authority is a tool rejection, not
@@ -91,6 +94,7 @@ where
                 profile,
                 selected,
                 thread_folder: &thread_folder,
+                execution_access,
                 invocation_write_roots: &write_roots,
                 credential,
                 web_search_ready: options.web_search_ready,

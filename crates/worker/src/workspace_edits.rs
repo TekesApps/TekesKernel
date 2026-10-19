@@ -115,6 +115,15 @@ impl WorkspaceEditRecorder {
         let path = canonical_edit_target(target).map_err(|error| {
             BackendFailure::Unknown(format!("Canonical edit identity is unavailable: {error}"))
         })?;
+        // Full access may edit host files. Only workspace edits belong to
+        // this workspace's undo ledger; do not block an authorized host edit.
+        if !self
+            .workspace_roots
+            .iter()
+            .any(|root| path.starts_with(root))
+        {
+            return Ok(());
+        }
         let request = json!({"workspaceId":self.workspace_id,"sessionId":self.session_id,"turnId":execution.turn.to_string(),
             "edit":edit_payload(&execution.call, &path, before, after)});
         // The backend is synchronous and may itself run inside a runtime. A short

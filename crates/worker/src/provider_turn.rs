@@ -182,6 +182,10 @@ fn run_provider_turn_inner(
                 profile,
                 selected: *selected,
                 thread_folder: &thread_folder,
+                execution_access: execution_access_for_profile(
+                    profile,
+                    session_permission_policy(&thread_folder).mode,
+                ),
                 invocation_write_roots: &[],
                 credential: credential.as_ref(),
                 web_search_ready: options.web_search_ready,

@@ -236,6 +236,7 @@ pub(crate) struct ToolBackendPlan<'a> {
     pub(crate) profile: &'a RuntimeProfile,
     pub(crate) selected: Selected,
     pub(crate) thread_folder: &'a std::path::Path,
+    pub(crate) execution_access: tools::ExecutionAccess,
     pub(crate) invocation_write_roots: &'a [String],
     pub(crate) credential: Option<&'a Arc<Mutex<CredentialClient>>>,
     pub(crate) web_search_ready: bool,
@@ -245,6 +246,17 @@ pub(crate) struct ToolBackendRuntime<'a, I, O> {
     pub(crate) lines: &'a mut I,
     pub(crate) stdout: &'a mut O,
     pub(crate) cancellation: &'a RuntimeCancellation,
+}
+
+pub(crate) fn execution_access_for_profile(
+    profile: &RuntimeProfile,
+    mode: engine::PermissionMode,
+) -> tools::ExecutionAccess {
+    if profile.validator {
+        tools::ExecutionAccess::Sandboxed
+    } else {
+        mode.execution_access()
+    }
 }
 
 pub(crate) fn assemble_tool_backends<'a, I, O>(
@@ -259,6 +271,7 @@ where
         profile,
         selected,
         thread_folder,
+        execution_access,
         invocation_write_roots,
         credential,
         web_search_ready,
@@ -272,9 +285,13 @@ where
     let mut router = ToolBackendRouter::default();
     let storage_root = storage_root_for_thread_folder(thread_folder)?;
 
-    let effective = profile
+    let mut effective = profile
         .instruction
         .meet_workspace_policy(&profile.config.execution.policy);
+    if execution_access == tools::ExecutionAccess::FullAccess {
+        effective.network = true;
+        effective.writable_roots = vec!["/".to_owned()];
+    }
     let workspace = profile
         .config
         .execution
@@ -301,7 +318,7 @@ where
         &profile.config.protected_roots(&storage_root),
         &effective.writable_roots,
     );
-    let sandbox_policy = SandboxPolicy {
+    let sandbox_policy = execution_access.policy(SandboxPolicy {
         format: 1,
         read_roots: read_roots.clone(),
         write_roots,
@@ -313,7 +330,7 @@ where
         allow_process: true,
         scratch: None,
         protected_roots,
-    };
+    });
     #[cfg(target_os = "macos")]
     let sandbox_backend = SandboxBackend::DarwinSeatbeltV1;
     #[cfg(target_os = "linux")]
@@ -321,7 +338,7 @@ where
     #[cfg(not(any(target_os = "macos", target_os = "linux")))]
     let sandbox_backend = SandboxBackend::LinuxAutoV1;
     let probe = probe_backend(sandbox_backend);
-    let roots = profile
+    let mut roots = profile
         .config
         .execution
         .cwd
@@ -338,18 +355,28 @@ where
             )
         })
         .collect::<Vec<_>>();
-    let (helper, scratch_path) =
-        if helper_path.is_file() && matches!(probe, ProbeStatus::Available { .. }) {
-            let client =
-                HelperClient::sandboxed_with_scratch(helper_path, roots, sandbox_policy, probe)?;
-            let scratch_path = client.scratch_path().map(str::to_owned);
-            (
-                Some(Arc::new(client) as Arc<dyn HelperInvoker>),
-                scratch_path,
-            )
-        } else {
-            (None, None)
-        };
+    if execution_access == tools::ExecutionAccess::FullAccess {
+        roots.push(("host".to_owned(), PathBuf::from("/")));
+    }
+    let (helper, scratch_path) = if helper_path.is_file()
+        && (execution_access == tools::ExecutionAccess::FullAccess
+            || matches!(probe, ProbeStatus::Available { .. }))
+    {
+        let client = HelperClient::for_execution_access(
+            helper_path,
+            roots,
+            sandbox_policy,
+            probe,
+            execution_access,
+        )?;
+        let scratch_path = client.scratch_path().map(str::to_owned);
+        (
+            Some(Arc::new(client) as Arc<dyn HelperInvoker>),
+            scratch_path,
+        )
+    } else {
+        (None, None)
+    };
     let mut dynamic_backends: Vec<Box<dyn DynamicBackend + 'a>> = Vec::new();
     let artifact_versions = helper
         .as_ref()
@@ -421,6 +448,12 @@ where
             path: PathBuf::from(path),
         })
         .collect();
+    if execution_access == tools::ExecutionAccess::FullAccess {
+        system_config.extra_roots.push(engine::RootMount {
+            name: "host".to_owned(),
+            path: PathBuf::from("/"),
+        });
+    }
     let mut system_backend = SystemToolBackend::new(
         system_config,
         helper,
@@ -518,11 +551,23 @@ pub(crate) fn preset_skill_catalog(
     Ok(catalog)
 }
 
+#[cfg(test)]
 pub(crate) fn invocation_write_roots(
     profile: &RuntimeProfile,
     call: &provider::ToolCall,
     protected: &[String],
 ) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    invocation_write_roots_for_access(profile, call, protected, tools::ExecutionAccess::Sandboxed)
+}
+
+pub(crate) fn invocation_write_roots_for_access(
+    profile: &RuntimeProfile,
+    call: &provider::ToolCall,
+    protected: &[String],
+    access: tools::ExecutionAccess,
+) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let full_access = access == tools::ExecutionAccess::FullAccess;
+    let protected = if full_access { &[][..] } else { protected };
     let workspace = PathBuf::from(
         profile
             .config
@@ -538,18 +583,25 @@ pub(crate) fn invocation_write_roots(
         .iter()
         .any(|tool| tool.name == call.name && tool.effect == DynamicToolEffect::WorkspaceWrite)
     {
+        if full_access {
+            return Ok(vec!["/".to_owned()]);
+        }
         return Ok(profile
             .instruction
             .meet_workspace_policy(&profile.config.execution.policy)
             .writable_roots);
     }
-    let allowed = profile
-        .instruction
-        .meet_workspace_policy(&profile.config.execution.policy)
-        .writable_roots
-        .into_iter()
-        .map(PathBuf::from)
-        .collect::<Vec<_>>();
+    let allowed = if full_access {
+        vec![PathBuf::from("/")]
+    } else {
+        profile
+            .instruction
+            .meet_workspace_policy(&profile.config.execution.policy)
+            .writable_roots
+            .into_iter()
+            .map(PathBuf::from)
+            .collect::<Vec<_>>()
+    };
     let declared = match call.name.as_str() {
         "shell"
             if call.arguments.get("writable_paths").is_none_or(|value| {

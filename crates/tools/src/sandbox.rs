@@ -12,6 +12,34 @@ use thiserror::Error;
 // Earlier ABIs cannot deny truncate(2), including on files outside write roots.
 pub(crate) const LINUX_LANDLOCK_ABI_MIN: u32 = 3;
 
+/// Trusted host execution authority, separate from model-supplied tool arguments.
+/// Full access omits the Kernel's child-process sandbox; OS permissions still apply.
+#[derive(Clone, Copy, Debug, Default, Eq, PartialEq)]
+pub enum ExecutionAccess {
+    #[default]
+    Sandboxed,
+    FullAccess,
+}
+
+impl ExecutionAccess {
+    /// Filesystem/network authority used for per-call validation and job records.
+    /// The launcher must use the same access when constructing the child process.
+    pub fn policy(self, restricted: SandboxPolicy) -> SandboxPolicy {
+        match self {
+            Self::Sandboxed => restricted,
+            Self::FullAccess => SandboxPolicy {
+                format: 1,
+                read_roots: vec!["/".to_owned()],
+                write_roots: vec!["/".to_owned()],
+                network: NetworkPolicy::All,
+                allow_process: true,
+                scratch: None,
+                protected_roots: Vec::new(),
+            },
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum NetworkPolicy {
@@ -143,7 +171,7 @@ pub enum SandboxError {
     Io(#[from] std::io::Error),
 }
 
-/// Directories no session may write or use as a folder: the Kernel storage
+/// Directories restricted execution may not write or use as a folder: the Kernel storage
 /// root, shared user instructions and the service user's credential store.
 /// Resolve existing ancestors too: a not-yet-created directory must not
 /// become an unprotected writable alias when it is created later.
