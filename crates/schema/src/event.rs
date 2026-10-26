@@ -157,6 +157,9 @@ pub struct Event {
     min_reader: Option<u64>,
     visibility: Option<Visibility>,
     origin_key: Option<String>,
+    // Events decoded through the historical presentation-only path cannot be
+    // inserted into the normal execution fold.
+    historical_only: bool,
 }
 
 impl Event {
@@ -177,6 +180,28 @@ impl Event {
     }
 
     pub fn from_value(raw: IJsonValue) -> Result<Self, SchemaError> {
+        Self::from_value_mode(raw, false, false)
+    }
+
+    pub(crate) fn decode_historical_canonical(
+        bytes: &[u8],
+        allow_legacy_contract: bool,
+    ) -> Result<Self, SchemaError> {
+        let raw = IJsonValue::parse(bytes)?;
+        let event = Self::from_value_mode(raw, true, allow_legacy_contract)?;
+        if event.canonical_bytes()? != bytes {
+            return Err(SchemaError::Canonical(
+                "event bytes are not RFC 8785 canonical".to_owned(),
+            ));
+        }
+        Ok(event)
+    }
+
+    fn from_value_mode(
+        raw: IJsonValue,
+        historical_only: bool,
+        allow_legacy_payload: bool,
+    ) -> Result<Self, SchemaError> {
         let object = raw
             .value()
             .as_object()
@@ -193,6 +218,9 @@ impl Event {
         let kind = EventKind::parse(kind_text);
         validate_timestamp(required_str(object, "ts", Some(seq))?, seq)?;
         let turn = optional_u64(object, "turn", seq)?;
+        if historical_only && allow_legacy_payload && kind.as_str() == "usage" && turn.is_none() {
+            return Err(SchemaError::event(Some(seq), "legacy usage requires turn"));
+        }
         match kind.is_turn_bound() {
             Some(true) if turn.is_none() => {
                 return Err(SchemaError::event(
@@ -213,7 +241,28 @@ impl Event {
         optional_bool(object, "anchor", seq)?;
         validate_ranges_optional(object, "supersedes", seq)?;
         let origin_key = optional_str(object, "origin_key", seq)?.map(ToOwned::to_owned);
-        validate_payload(&kind, object, seq)?;
+        if allow_legacy_payload && matches!(&kind, EventKind::Epoch) {
+            validate_legacy_epoch(object, seq)?;
+        } else if allow_legacy_payload && matches!(&kind, EventKind::Attempt) {
+            // The evidenced writers predate durable attempt.request (archive
+            // 875edd3c). Absence is display-only, never reconstructed.
+            if object.contains_key("request") {
+                validate_attempt(object, seq)?;
+            } else {
+                required_id(object, "attempt", seq)?;
+                required_id(object, "epoch", seq)?;
+                required_str(object, "wire_digest", Some(seq))?;
+                validate_ranges_required_from_payload(object, "admits", seq)?;
+            }
+        } else if allow_legacy_payload && kind.as_str() == "usage" {
+            validate_legacy_usage(object, seq)?;
+        } else if historical_only && allow_legacy_payload && matches!(&kind, EventKind::Output) {
+            validate_legacy_output(object, seq)?;
+        } else if historical_only && allow_legacy_payload && matches!(&kind, EventKind::Error) {
+            validate_legacy_error(object, seq)?;
+        } else {
+            validate_payload(&kind, object, seq)?;
+        }
         validate_origin_equality(object, origin_key.as_deref(), seq)?;
         Ok(Self {
             raw,
@@ -223,7 +272,13 @@ impl Event {
             min_reader,
             visibility,
             origin_key,
+            historical_only,
         })
+    }
+
+    #[must_use]
+    pub const fn is_historical_only(&self) -> bool {
+        self.historical_only
     }
 
     #[must_use]
@@ -643,6 +698,122 @@ fn validate_epoch(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaErr
             "pending.withheld",
         )?;
     }
+    Ok(())
+}
+
+fn validate_legacy_epoch(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
+    required_id(object, "id", seq)?;
+    required_str(object, "reason", Some(seq))?;
+    required_str(object, "adapter", Some(seq))?;
+    required_str(object, "model", Some(seq))?;
+    let system = required_object(object, "system", seq)?;
+    required_str(system, "asset", Some(seq))?;
+    required_str(system, "digest", Some(seq))?;
+    let tools_digest = required_str(object, "tools_digest", Some(seq))?;
+    let hex = tools_digest.strip_prefix("sha256-").ok_or_else(|| {
+        SchemaError::event(
+            Some(seq),
+            "legacy epoch.tools_digest requires sha256- prefix",
+        )
+    })?;
+    validate_lower_sha256(hex, seq, "epoch.tools_digest")?;
+    if object.contains_key("tools") {
+        return Err(SchemaError::event(
+            Some(seq),
+            "legacy epoch cannot carry tools",
+        ));
+    }
+    required_u64(object, "renderer", Some(seq))?;
+    if let Some(pending) = optional_object(object, "pending", seq)? {
+        validate_u64_array(
+            required_array(pending, "eligible", seq)?,
+            seq,
+            "pending.eligible",
+        )?;
+        validate_u64_array(
+            required_array(pending, "withheld", seq)?,
+            seq,
+            "pending.withheld",
+        )?;
+    }
+    Ok(())
+}
+
+fn validate_legacy_usage(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
+    required_id(object, "attempt", seq)?;
+    let availability = required_enum(object, "availability", &["reported", "unavailable"], seq)?;
+    let figures = [
+        "input_tokens",
+        "output_tokens",
+        "cache_read",
+        "cache_miss",
+        "cache_write",
+        "reasoning_tokens",
+        "cost",
+    ];
+    if availability == "reported" {
+        for field in figures {
+            optional_str(object, field, seq)?;
+        }
+    } else if figures.into_iter().any(|field| object.contains_key(field)) {
+        return Err(SchemaError::event(
+            Some(seq),
+            "unavailable usage cannot carry figures",
+        ));
+    }
+    Ok(())
+}
+
+fn validate_legacy_output(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
+    if object.contains_key("usage") {
+        return Err(SchemaError::event(
+            Some(seq),
+            "legacy output carries usage separately",
+        ));
+    }
+    validate_output_before_inline_usage(object, seq)
+}
+
+fn validate_output_before_inline_usage(
+    object: &Map<String, Value>,
+    seq: u64,
+) -> Result<(), SchemaError> {
+    required_id(object, "attempt", seq)?;
+    optional_bool(object, "final_answer", seq)?;
+    validate_blocks(required_array(object, "content", seq)?, seq)?;
+    let sealed = required_object(object, "sealed", seq)?;
+    required_u64(sealed, "version", Some(seq))?;
+    required_str(sealed, "adapter", Some(seq))?;
+    validate_string_or_spill(required(sealed, "fragments", seq)?, seq)?;
+    if let Some(continuation) = optional_object(object, "continuation", seq)? {
+        required_id(continuation, "id", seq)?;
+    }
+    Ok(())
+}
+
+fn validate_legacy_error(object: &Map<String, Value>, seq: u64) -> Result<(), SchemaError> {
+    if object.contains_key("usage") {
+        return Err(SchemaError::event(
+            Some(seq),
+            "legacy error carries usage separately",
+        ));
+    }
+    required_bool(object, "recoverable", seq)?;
+    required_enum(
+        object,
+        "classification",
+        &[
+            "provider_terminal",
+            "unresolved_dispatch",
+            "transport",
+            "rate_limit",
+            "tool",
+            "internal",
+        ],
+        seq,
+    )?;
+    optional_str(object, "attempt", seq)?;
+    optional_str(object, "detail", seq)?;
     Ok(())
 }
 

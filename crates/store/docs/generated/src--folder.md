@@ -546,7 +546,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `find_by_origin` | `entry.path` | [703](../../src/folder.rs#L703) | receiver-type-required |
 | `find_by_origin` | `bytes.as_slice` | [704](../../src/folder.rs#L704) | receiver-type-required |
 | `find_by_origin` | `line.is_empty` | [705](../../src/folder.rs#L705) | receiver-type-required |
-| `find_by_origin` | `Event::decode_canonical` | [708](../../src/folder.rs#L708) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `find_by_origin` | `Event::decode_canonical` | [708](../../src/folder.rs#L708) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `find_by_origin` | `genesis.origin_tuple()?.as_ref` | [709](../../src/folder.rs#L709) | receiver-type-required |
 | `find_by_origin` | `genesis.origin_tuple` | [709](../../src/folder.rs#L709) | receiver-type-required |
 | `find_by_origin` | `Some` | [709](../../src/folder.rs#L709), [710](../../src/folder.rs#L710) | external-constructor-callback-or-unresolved |
@@ -568,7 +568,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `find_staged_create_by_origin` | `bytes.split(&#124;byte&#124; *byte == b'\n').next` | [733](../../src/folder.rs#L733) | receiver-type-required |
 | `find_staged_create_by_origin` | `bytes.split` | [733](../../src/folder.rs#L733) | receiver-type-required |
 | `find_staged_create_by_origin` | `line.is_empty` | [736](../../src/folder.rs#L736) | receiver-type-required |
-| `find_staged_create_by_origin` | `Event::decode_canonical` | [739](../../src/folder.rs#L739) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `find_staged_create_by_origin` | `Event::decode_canonical` | [739](../../src/folder.rs#L739) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `find_staged_create_by_origin` | `genesis.seq` | [740](../../src/folder.rs#L740) | receiver-type-required |
 | `find_staged_create_by_origin` | `genesis.origin_tuple()?.as_ref` | [743](../../src/folder.rs#L743) | receiver-type-required |
 | `find_staged_create_by_origin` | `genesis.origin_tuple` | [743](../../src/folder.rs#L743) | receiver-type-required |
@@ -601,7 +601,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `remove_incomplete_create_stages` | `bytes                     .split` | [775](../../src/folder.rs#L775) | receiver-type-required |
 | `remove_incomplete_create_stages` | `line.is_empty` | [779](../../src/folder.rs#L779) | receiver-type-required |
 | `remove_incomplete_create_stages` | `Event::decode_canonical(line).is_ok_and` | [780](../../src/folder.rs#L780) | receiver-type-required |
-| `remove_incomplete_create_stages` | `Event::decode_canonical` | [780](../../src/folder.rs#L780) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `remove_incomplete_create_stages` | `Event::decode_canonical` | [780](../../src/folder.rs#L780) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `remove_incomplete_create_stages` | `event.seq` | [782](../../src/folder.rs#L782) | receiver-type-required |
 | `remove_incomplete_create_stages` | `event.string_field` | [783](../../src/folder.rs#L783) | receiver-type-required |
 | `remove_incomplete_create_stages` | `Some` | [783](../../src/folder.rs#L783) | external-constructor-callback-or-unresolved |

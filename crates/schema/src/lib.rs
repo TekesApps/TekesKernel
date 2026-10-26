@@ -9,7 +9,10 @@ mod types;
 
 pub use event::{Event, EventKind, Visibility};
 pub use execution::{ExecutionConfig, McpConnection, McpConnectionTransport};
-pub use fold::{LedgerProjection, LedgerValidator, LifecycleFacts, RunRange, validate_ledger};
+pub use fold::{
+    HistoricalLedger, LedgerProjection, LedgerValidator, LifecycleFacts, RunRange,
+    validate_historical_ledger, validate_ledger,
+};
 pub use ijson::IJsonValue;
 pub use types::{Block, OriginTuple, ResumePolicy, SeqRange};
 

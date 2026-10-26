@@ -223,7 +223,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bind_execution_fixture` | `serde_json::to_value(execution).unwrap` | [261](../../src/lib.rs#L261) | receiver-type-required |
 | `bind_execution_fixture` | `serde_json::to_value` | [261](../../src/lib.rs#L261) | external-constructor-callback-or-unresolved |
 | `bind_execution_fixture` | `schema::Event::from_value(         schema::IJsonValue::parse(&serde_json::to_vec(&genesis).unwrap()).unwrap(),     )     .unwrap` | [268](../../src/lib.rs#L268) | receiver-type-required |
-| `bind_execution_fixture` | `schema::Event::from_value` | [268](../../src/lib.rs#L268) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `bind_execution_fixture` | `schema::Event::from_value` | [268](../../src/lib.rs#L268) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `bind_execution_fixture` | `schema::IJsonValue::parse(&serde_json::to_vec(&genesis).unwrap()).unwrap` | [269](../../src/lib.rs#L269) | receiver-type-required |
 | `bind_execution_fixture` | `schema::IJsonValue::parse` | [269](../../src/lib.rs#L269) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `bind_execution_fixture` | `serde_json::to_vec(&genesis).unwrap` | [269](../../src/lib.rs#L269) | receiver-type-required |

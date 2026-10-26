@@ -764,7 +764,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_execution_session` | `request.principal.to_owned` | [621](../../src/session_operations.rs#L621) | receiver-type-required |
 | `create_execution_session` | `ORIGIN_CLIENT.to_owned` | [622](../../src/session_operations.rs#L622) | receiver-type-required |
 | `create_execution_session` | `serde_json::to_value` | [633](../../src/session_operations.rs#L633) | external-constructor-callback-or-unresolved |
-| `create_execution_session` | `Event::from_value` | [641](../../src/session_operations.rs#L641) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `create_execution_session` | `Event::from_value` | [641](../../src/session_operations.rs#L641) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `create_execution_session` | `to_ijson` | [641](../../src/session_operations.rs#L641), [657](../../src/session_operations.rs#L657) | [endpoint::session_operations::to_ijson](../../src/session_operations.rs#L2018) |
 | `create_execution_session` | `canonical_event_line` | [642](../../src/session_operations.rs#L642) | [endpoint::session_operations::canonical_event_line](../../src/session_operations.rs#L1859) |
 | `create_execution_session` | `self.operation_payload_path` | [643](../../src/session_operations.rs#L643) | [endpoint::session_operations::SessionOperations::operation_payload_path](../../src/session_operations.rs#L1800) |
@@ -1316,7 +1316,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_canonical_event` | `Err` | [1868](../../src/session_operations.rs#L1868) | external-constructor-callback-or-unresolved |
 | `read_canonical_event` | `SessionOperationError::CorruptOperation` | [1868](../../src/session_operations.rs#L1868) | external-constructor-callback-or-unresolved |
 | `read_canonical_event` | `Event::decode_canonical(&bytes[..bytes.len() - 1]).map_err` | [1873](../../src/session_operations.rs#L1873) | receiver-type-required |
-| `read_canonical_event` | `Event::decode_canonical` | [1873](../../src/session_operations.rs#L1873) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `read_canonical_event` | `Event::decode_canonical` | [1873](../../src/session_operations.rs#L1873) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `verify_session_create_genesis` | `genesis.origin_tuple()?.ok_or_else` | [1881](../../src/session_operations.rs#L1881) | receiver-type-required |
 | `verify_session_create_genesis` | `genesis.origin_tuple` | [1881](../../src/session_operations.rs#L1881) | receiver-type-required |
 | `verify_session_create_genesis` | `SessionOperationError::CorruptOperation` | [1882](../../src/session_operations.rs#L1882), [1886](../../src/session_operations.rs#L1886), [1935](../../src/session_operations.rs#L1935) | external-constructor-callback-or-unresolved |

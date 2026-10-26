@@ -59,7 +59,8 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 47 | [Symbols and calls](src--dynamic_bindings.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 172 | 1608 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_carrier/legacy_history.rs](../../src/endpoint_carrier/legacy_history.rs) | 13 | 184 | [Symbols and calls](src--endpoint_carrier--legacy_history.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 172 | 1623 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 152 | 999 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 156 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |

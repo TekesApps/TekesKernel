@@ -637,7 +637,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `context_start` | `"caller has no genesis".into` | [720](../../src/production_tool_control.rs#L720) | receiver-type-required |
 | `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err(map_schema)?             .expect` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
 | `context_start` | `schema::effective_session_genesis(&resolved.projection.events)             .map_err` | [721](../../src/production_tool_control.rs#L721) | receiver-type-required |
-| `context_start` | `schema::effective_session_genesis` | [721](../../src/production_tool_control.rs#L721) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
+| `context_start` | `schema::effective_session_genesis` | [721](../../src/production_tool_control.rs#L721) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L57) |
 | `context_start` | `deterministic_uuid` | [724](../../src/production_tool_control.rs#L724) | [tekes-supervisor::production_tool_control::deterministic_uuid](../../src/production_tool_control.rs#L1364) |
 | `context_start` | `paired_tool_timestamp` | [725](../../src/production_tool_control.rs#L725) | [tekes-supervisor::production_tool_control::paired_tool_timestamp](../../src/production_tool_control.rs#L1216) |
 | `context_start` | `"kernel-worker".into` | [727](../../src/production_tool_control.rs#L727) | receiver-type-required |
@@ -1026,7 +1026,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `context_start_genesis` | `execution         .validate` | [1348](../../src/production_tool_control.rs#L1348) | receiver-type-required |
 | `context_start_genesis` | `value.clone` | [1358](../../src/production_tool_control.rs#L1358) | receiver-type-required |
 | `context_start_genesis` | `Event::from_value(to_ijson(&event)?).map_err` | [1361](../../src/production_tool_control.rs#L1361) | receiver-type-required |
-| `context_start_genesis` | `Event::from_value` | [1361](../../src/production_tool_control.rs#L1361) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `context_start_genesis` | `Event::from_value` | [1361](../../src/production_tool_control.rs#L1361) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `context_start_genesis` | `to_ijson` | [1361](../../src/production_tool_control.rs#L1361) | [tekes-supervisor::production_tool_control::to_ijson](../../src/production_tool_control.rs#L1408) |
 | `deterministic_uuid` | `request_id.as_bytes()[..32].to_vec` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |
 | `deterministic_uuid` | `request_id.as_bytes` | [1365](../../src/production_tool_control.rs#L1365) | receiver-type-required |

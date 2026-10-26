@@ -54,6 +54,9 @@ pub struct Projector {
     inputs: BTreeMap<u64, Value>,
     attempts: HashMap<String, AttemptInfo>,
     epochs: HashMap<String, EpochInfo>,
+    /// Pre-catalog Kernel ledgers persisted usage as a separate event. This is
+    /// populated only while projecting Event values marked historical-only.
+    historical_usage: HashMap<String, Value>,
     outputs: HashMap<u64, (u64, String)>,
     open_steps: HashMap<u64, AttemptInfo>,
     /// A tool-result trim is appended in the current turn but replaces a result from an
@@ -96,6 +99,9 @@ impl Projector {
         events: &[Event],
         journal: &EndpointJournal,
     ) -> Result<Vec<SessionEvent>, ProjectionError> {
+        if let Some(event) = events.iter().find(|event| event.is_historical_only()) {
+            return Err(ProjectionError::HistoricalOnlyEvent(event.seq()));
+        }
         let mut appended = Vec::new();
         for event in events {
             let mut projected = self.project(event, journal)?;
@@ -171,6 +177,16 @@ impl Projector {
         }
         projector.validate_existing_kernel_slots(&journal)?;
         Ok(journal.rows)
+    }
+
+    /// Projects an explicitly validated legacy ledger for display in memory.
+    /// The schema wrapper prevents these marked events from entering a durable
+    /// reconciliation or execution fold.
+    pub fn read_only_legacy_history(
+        ledger: &schema::HistoricalLedger,
+        folder: &std::path::Path,
+    ) -> Result<Vec<crate::JournalRecord>, ProjectionError> {
+        Self::read_only_history(ledger.events(), folder)
     }
 
     /// Projects an adapter frame for the live presentation lane. Chunks are
@@ -251,6 +267,13 @@ impl Projector {
         )?;
         let mut output = Vec::new();
         match event.kind() {
+            EventKind::Extension(name) if name == "usage" => {
+                if !event.is_historical_only() {
+                    return Err(ProjectionError::StandaloneUsageEvent(event.seq()));
+                }
+                self.historical_usage
+                    .insert(text(&value, "attempt")?.to_owned(), value);
+            }
             EventKind::Input => {
                 self.inputs.insert(event.seq(), value);
             }
@@ -420,7 +443,11 @@ impl Projector {
                         "source": source
                     }),
                 );
-                if let Some(usage) = value.get("usage") {
+                let usage = value
+                    .get("usage")
+                    .cloned()
+                    .or_else(|| self.historical_usage.remove(attempt));
+                if let Some(usage) = usage.as_ref() {
                     data.insert("usage".to_owned(), wire_usage(usage)?);
                 }
                 output.push((
@@ -1095,6 +1122,10 @@ pub enum ProjectionError {
     SettleOutcome(String),
     #[error("invalid timestamp {0}")]
     Timestamp(String),
+    #[error("historical-only event at Kernel sequence {0} cannot be reconciled")]
+    HistoricalOnlyEvent(u64),
+    #[error("standalone usage event at Kernel sequence {0} is only valid in legacy history")]
+    StandaloneUsageEvent(u64),
     #[error("SessionEvent {0} is not registered for the Kernel producer")]
     UnregisteredKernelEvent(String),
     #[error("journal contains unexpected kernel projection {anchor}:{slot}")]
@@ -1143,6 +1174,95 @@ mod tests {
         assert_eq!(data["chunk"]["usage"], json!({"outputTokens":12}));
         projector.terminal_attempts.insert("a".to_owned());
         assert!(projector.stream_event(&frame).is_err());
+    }
+
+    #[test]
+    fn ordinary_extension_cannot_smuggle_a_legacy_usage_record_into_projection() {
+        let folder = tempfile::tempdir().unwrap();
+        let mut projector = Projector::default();
+        projector.attempts.insert(
+            "attempt-1".to_owned(),
+            AttemptInfo {
+                turn: 1,
+                step: 1,
+                epoch: "epoch-1".to_owned(),
+                kernel_seq: 4,
+            },
+        );
+        let raw = json!({
+            "v": 1,
+            "seq": 5,
+            "kind": "usage",
+            "ts": "2026-10-26T00:00:00.000Z",
+            "turn": 1,
+            "attempt": "attempt-1",
+            "availability": "reported",
+            "input_tokens": "3"
+        });
+        let event = Event::decode(&serde_json::to_vec(&raw).unwrap()).unwrap();
+        let journal = SnapshotJournal {
+            folder: folder.path().to_path_buf(),
+            rows: Vec::new(),
+        };
+        assert!(matches!(
+            projector.project(&event, &journal),
+            Err(ProjectionError::StandaloneUsageEvent(5))
+        ));
+    }
+
+    #[test]
+    fn legacy_history_projection_attaches_separate_usage_to_the_assistant_message() {
+        let mut bytes = Vec::new();
+        let source = include_str!("../../../fixtures/invalid/_valid-baseline.jsonl");
+        for line in source.lines() {
+            let mut value: Value = serde_json::from_str(line).unwrap();
+            match value["kind"].as_str().unwrap() {
+                "run_start" => {
+                    value["binary"] = json!("dev-1e0ae8a671de-123456789abc");
+                }
+                "epoch" => {
+                    value.as_object_mut().unwrap().remove("tools");
+                    value["tools_digest"] = json!(format!("sha256-{}", "a".repeat(64)));
+                }
+                "output" => {
+                    value.as_object_mut().unwrap().remove("usage");
+                    value["seq"] = json!(9);
+                }
+                "settle" => value["seq"] = json!(10),
+                _ => {}
+            }
+            bytes.extend(serde_json_canonicalizer::to_vec(&value).unwrap());
+            bytes.push(b'\n');
+            if value["kind"] == "attempt" {
+                for event in [
+                    json!({"kind":"attempt_dispatched","attempt":"a1","turn":1,"seq":7,"ts":"2026-08-26T09:00:00.000Z","v":1}),
+                    json!({"kind":"usage","attempt":"a1","turn":1,"availability":"reported","input_tokens":"4","output_tokens":"2","seq":8,"ts":"2026-08-26T09:00:00.000Z","v":1}),
+                ] {
+                    bytes.extend(serde_json_canonicalizer::to_vec(&event).unwrap());
+                    bytes.push(b'\n');
+                }
+            }
+        }
+
+        let ledger = schema::validate_historical_ledger(&bytes, schema::READER_VERSION)
+            .expect("old writer contract is recognized");
+        let folder = tempfile::tempdir().unwrap();
+        let records = Projector::read_only_legacy_history(&ledger, folder.path()).unwrap();
+        let assistant = records
+            .iter()
+            .find(|record| record.event.event_type == "assistant/message")
+            .expect("assistant history entry");
+        let data = serde_json::to_value(&assistant.event.data).unwrap();
+        assert_eq!(data["usage"], json!({"inputTokens":4,"outputTokens":2}));
+        assert_eq!(
+            data["message"]["content"],
+            json!([{"type":"text","text":"done"}])
+        );
+        assert_eq!(
+            std::fs::read_dir(folder.path()).unwrap().count(),
+            0,
+            "legacy projection must not create journal or cache files"
+        );
     }
 
     #[test]

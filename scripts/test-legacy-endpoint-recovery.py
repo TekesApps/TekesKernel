@@ -14,12 +14,15 @@ import select
 import socket
 import struct
 import subprocess
+import urllib.request
+import urllib.error
 from urllib.parse import urlparse
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--binary-dir', type=Path, required=True)
 parser.add_argument('--output', type=Path, required=True)
 parser.add_argument('--expect-quarantine', action='store_true')
+parser.add_argument('--historical-read-only', action='store_true', help='exercise pre-catalog writer history and strict mutation rejection')
 args = parser.parse_args()
 repo = Path(__file__).resolve().parent.parent
 case = args.output.resolve()
@@ -46,6 +49,24 @@ events = [dict(config={'digest': 'fixture'}, format=1, kind='genesis', min_reade
                ts='2026-10-26T00:00:02.000Z', v=1),
           dict(kind='settle', outcome='completed', seq=4, turn=1,
                ts='2026-10-26T00:00:03.000Z', v=1)]
+if args.historical_read_only:
+    events = [json.loads(line) for line in (repo / 'fixtures/invalid/_valid-baseline.jsonl').read_text().splitlines()]
+    for event in events:
+        if event['kind'] == 'genesis':
+            event['thread'] = session
+            event['origin_tuple']['target'] = session
+        elif event['kind'] == 'input':
+            event['content'] = [{'type': 'text', 'text': 'LEGACY_RECOVERY_HISTORY'}]
+            event['origin_tuple']['target'] = session
+        elif event['kind'] == 'run_start':
+            event['binary'] = 'dev-cfa7a6be31c9-123456789abc'
+        elif event['kind'] == 'epoch':
+            del event['tools']
+            event['tools_digest'] = 'sha256-' + 'a' * 64
+        elif event['kind'] == 'attempt':
+            event.pop('request', None)
+        elif event['kind'] == 'output':
+            event.pop('usage', None)
 ledger = folder / 'main.jsonl'
 original = ''.join(json.dumps(e, sort_keys=True, separators=(',', ':')) + '\n'
                    for e in events).encode()
@@ -91,12 +112,55 @@ def journal(ready):
                 return json.loads(stream.read(length))
 
             assert receive()['type'] == 'ready'
-            payload = json.dumps({'type': 'open', 'streamId': 'legacy-history', 'target': {
-                'kind': 'session-journal', 'address': {'sessionId': session}, 'maxMessages': 10}}).encode()
-            mask = secrets.token_bytes(4)
-            header = bytes([129, 128 | len(payload)]) if len(payload) < 126 else bytes([129, 254]) + struct.pack('!H', len(payload))
-            sock.sendall(header + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(payload)))
-            return receive()
+            def send(value):
+                payload = json.dumps(value).encode()
+                mask = secrets.token_bytes(4)
+                header = bytes([129, 128 | len(payload)]) if len(payload) < 126 else bytes([129, 254]) + struct.pack('!H', len(payload))
+                sock.sendall(header + mask + bytes(b ^ mask[i % 4] for i, b in enumerate(payload)))
+
+            send({'type': 'open', 'streamId': 'legacy-history', 'target': {
+                'kind': 'session-journal', 'address': {'sessionId': session},
+                'maxMessages': 1 if args.historical_read_only else 10}})
+            frame = receive()
+            checks = {}
+            if args.historical_read_only and not args.expect_quarantine:
+                snapshot = frame['frame']['snapshot']
+                access = snapshot['projections']['values']['historyAccess']
+                assert access['mode'] == 'read-only'
+                assert access['sourceDigest'] == 'sha256-' + hashlib.sha256(original).hexdigest()
+                assert snapshot['hasMoreBefore']
+                before = snapshot['entries'][0]['event']['seq']
+                send({'type': 'journal-page', 'requestId': 'older-history',
+                    'address': {'sessionId': session}, 'throughSequence': snapshot['throughSequence'],
+                    'beforeSequence': before, 'maxMessages': 500})
+                page_frame = receive()
+                (case / f'public-page-{phase}.json').write_text(json.dumps(page_frame, indent=2) + '\n')
+                assert page_frame['type'] == 'journal-page-result'
+                assert 'LEGACY_RECOVERY_HISTORY' in json.dumps(page_frame['page']['entries'])
+                checks = {'readOnlyMarker': True, 'publicPagination': True}
+            return frame, checks
+
+
+def reject_mutations(ready):
+    results = []
+    for method, payload in [('session.rename', {'sessionId': session, 'title': 'must-not-write'}),
+                            ('session.cancel', {'sessionId': session}),
+                            ('session.prompt', {'sessionId': session, 'mode': 'queue', 'content': [{'type': 'text', 'text': 'must-not-run'}]})]:
+        rpc = secrets.token_hex(8)
+        body = json.dumps({'type': 'client-request', 'rpcId': rpc, 'method': method, 'payload': payload}).encode()
+        request = urllib.request.Request(ready['url'] + '/api/' + method, data=body,
+            headers={'Authorization': 'Bearer ' + bearer, 'Content-Type': 'application/json'})
+        try:
+            with urllib.request.urlopen(request, timeout=10) as response: reply = json.load(response)
+        except urllib.error.HTTPError as error:
+            reply = json.load(error)
+        assert reply['result']['ok'] is False, method + ' unexpectedly accepted'
+        code = reply['result']['error']['code']
+        assert code == 'internal', (method, code)
+        assert reply['result']['error']['details']['reason'] == 'legacy-history-read-only', method
+        results.append({'method': method, 'code': code})
+    return results
+
 
 
 phases = []
@@ -111,7 +175,10 @@ for phase in range(1 if args.expect_quarantine else 2):
             line = process.stdout.readline(65536)
             assert line, 'no readiness frame'
             ready = json.loads(line)
-            frame = journal(ready)
+            before_open_rejections = reject_mutations(ready) if args.historical_read_only and not args.expect_quarantine else None
+            frame, checks = journal(ready)
+            if before_open_rejections is not None:
+                checks['beforeOpenMutationsRejected'] = before_open_rejections
             (case / f'public-frame-{phase}.json').write_text(json.dumps(frame, indent=2) + '\n')
             if args.expect_quarantine:
                 assert 'quarantined' in json.dumps(frame), 'negative control did not reproduce quarantine'
@@ -119,17 +186,20 @@ for phase in range(1 if args.expect_quarantine else 2):
             else:
                 snapshot = frame['frame']['snapshot']
                 assert snapshot['sessionId'] == session
-                assert 'LEGACY_RECOVERY_HISTORY' in json.dumps(snapshot['entries'])
+                if not args.historical_read_only:
+                    assert 'LEGACY_RECOVERY_HISTORY' in json.dumps(snapshot['entries'])
+                else:
+                    checks['mutationsRejected'] = reject_mutations(ready)
                 assert ledger.read_bytes() == original, 'semantic history changed during recovery'
                 phases.append({'publicHistoryReadable': True, 'entries': len(snapshot['entries']),
-                               'semanticBytesUnchanged': True})
+                               'semanticBytesUnchanged': True, **checks})
         finally:
             process.stdin.close()
             process.wait(timeout=20)
         assert process.returncode == 0
 assert ledger.read_bytes() == original
 result = {'build': identity, 'scope': 'isolated real public mux history and process restart; synthetic fixture; no model calls',
-          'expectedOldFailure': args.expect_quarantine, 'phases': phases,
+          'expectedOldFailure': args.expect_quarantine, 'historicalReadOnly': args.historical_read_only, 'phases': phases,
           'semanticSha256': hashlib.sha256(original).hexdigest(), 'modelCalls': 0,
           'driverSha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           'programSha256': hashlib.sha256((args.binary_dir / 'tekes-supervisor').read_bytes()).hexdigest()}

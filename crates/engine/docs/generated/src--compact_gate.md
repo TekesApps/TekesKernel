@@ -89,7 +89,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `admits_all` | `range                     .get("to")                     .and_then` | [60](../../src/compact_gate.rs#L60) | receiver-type-required |
 | `admits_all` | `range                     .get` | [60](../../src/compact_gate.rs#L60) | receiver-type-required |
 | `event` | `Event::from_value(IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap()).unwrap` | [75](../../src/compact_gate.rs#L75) | receiver-type-required |
-| `event` | `Event::from_value` | [75](../../src/compact_gate.rs#L75) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `event` | `Event::from_value` | [75](../../src/compact_gate.rs#L75) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `event` | `IJsonValue::parse(&serde_json::to_vec(&value).unwrap()).unwrap` | [75](../../src/compact_gate.rs#L75) | receiver-type-required |
 | `event` | `IJsonValue::parse` | [75](../../src/compact_gate.rs#L75) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `event` | `serde_json::to_vec(&value).unwrap` | [75](../../src/compact_gate.rs#L75) | receiver-type-required |

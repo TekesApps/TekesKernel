@@ -2583,7 +2583,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_compact` | `IJsonValue::parse(&bytes)                     .map_err` | [2889](../../src/process_host.rs#L2889) | receiver-type-required |
 | `locked_compact` | `IJsonValue::parse` | [2889](../../src/process_host.rs#L2889) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `locked_compact` | `Ok` | [2891](../../src/process_host.rs#L2891), [2898](../../src/process_host.rs#L2898) | external-constructor-callback-or-unresolved |
-| `locked_compact` | `schema::Event::from_value` | [2891](../../src/process_host.rs#L2891) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `locked_compact` | `schema::Event::from_value` | [2891](../../src/process_host.rs#L2891) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `locked_compact` | `appended.ok_or_else` | [2894](../../src/process_host.rs#L2894) | receiver-type-required |
 | `locked_compact` | `internal` | [2894](../../src/process_host.rs#L2894) | [tekes-supervisor::process_host::internal](../../src/process_host.rs#L6334) |
 | `locked_compact` | `self.publish_appended(session_id).map_err` | [2896](../../src/process_host.rs#L2896) | receiver-type-required |
@@ -3048,7 +3048,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `propagate_parent_stop` | `LockedLedger::open(child_ledger, schema::READER_VERSION).map_err` | [3923](../../src/process_host.rs#L3923) | receiver-type-required |
 | `propagate_parent_stop` | `LockedLedger::open` | [3923](../../src/process_host.rs#L3923) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
 | `propagate_parent_stop` | `schema::Event::from_value(             IJsonValue::parse(                 &serde_json::to_vec(&serde_json::json!({                     "v":1,                     "seq":ledger.next_seq(),                     "ts":crate::host_runtime::system_timestamp().map_err(DaemonError::protocol)?,                     "kind":"stop_requested",                     "generation":generation,                     "origin_key":origin.key,                     "origin_tuple":origin,                 }))                 .map_err(&#124;error&#124; DaemonError::protocol(error.to_string()))?,             )             .map_err(&#124;error&#124; DaemonError::protocol(error.to_string()))?,         )         .map_err` | [3924](../../src/process_host.rs#L3924) | receiver-type-required |
-| `propagate_parent_stop` | `schema::Event::from_value` | [3924](../../src/process_host.rs#L3924) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `propagate_parent_stop` | `schema::Event::from_value` | [3924](../../src/process_host.rs#L3924) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `propagate_parent_stop` | `IJsonValue::parse(                 &serde_json::to_vec(&serde_json::json!({                     "v":1,                     "seq":ledger.next_seq(),                     "ts":crate::host_runtime::system_timestamp().map_err(DaemonError::protocol)?,                     "kind":"stop_requested",                     "generation":generation,                     "origin_key":origin.key,                     "origin_tuple":origin,                 }))                 .map_err(&#124;error&#124; DaemonError::protocol(error.to_string()))?,             )             .map_err` | [3925](../../src/process_host.rs#L3925) | receiver-type-required |
 | `propagate_parent_stop` | `IJsonValue::parse` | [3925](../../src/process_host.rs#L3925) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `propagate_parent_stop` | `serde_json::to_vec(&serde_json::json!({                     "v":1,                     "seq":ledger.next_seq(),                     "ts":crate::host_runtime::system_timestamp().map_err(DaemonError::protocol)?,                     "kind":"stop_requested",                     "generation":generation,                     "origin_key":origin.key,                     "origin_tuple":origin,                 }))                 .map_err` | [3926](../../src/process_host.rs#L3926) | receiver-type-required |
@@ -4296,7 +4296,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `store::LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)                     .expect` | [6737](../../src/process_host.rs#L6737) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `store::LockedLedger::open` | [6737](../../src/process_host.rs#L6737) | [store::tail::LockedLedger::open](../../../store/src/tail.rs#L186) |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                     .expect` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
-| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::Event::decode` | [6751](../../src/process_host.rs#L6751) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::Event::decode` | [6751](../../src/process_host.rs#L6751) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `serde_json::to_vec(&value).expect` | [6751](../../src/process_host.rs#L6751) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `serde_json::to_vec` | [6751](../../src/process_host.rs#L6751) | external-constructor-callback-or-unresolved |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `ledger                     .append_contract(event, store::BarrierContext::default())                     .expect` | [6753](../../src/process_host.rs#L6753) | receiver-type-required |
@@ -4321,7 +4321,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `events             .iter` | [6774](../../src/process_host.rs#L6774) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `host             .locked_compact(session, "2026-09-05T00:00:04.000Z", &origin)             .expect` | [6794](../../src/process_host.rs#L6794) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger(ledger.as_bytes(), schema::READER_VERSION)             .expect` | [6805](../../src/process_host.rs#L6805) | receiver-type-required |
-| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger` | [6805](../../src/process_host.rs#L6805) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `schema::validate_ledger` | [6805](../../src/process_host.rs#L6805) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `ledger.as_bytes` | [6805](../../src/process_host.rs#L6805) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `host.shutdown` | [6813](../../src/process_host.rs#L6813) | receiver-type-required |
 | `full_access_job_authority_tracks_session_mode_and_preserves_private_boundaries` | `tempfile::tempdir().unwrap` | [6819](../../src/process_host.rs#L6819), [6820](../../src/process_host.rs#L6820) | receiver-type-required |
@@ -4581,7 +4581,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `write_test_genesis` | [7407](../../src/process_host.rs#L7407) | [tekes-supervisor::process_host::tests::write_test_genesis](../../src/process_host.rs#L10932) |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `append_test_input` | [7408](../../src/process_host.rs#L7408) | [tekes-supervisor::process_host::tests::append_test_input](../../src/process_host.rs#L10966) |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [7420](../../src/process_host.rs#L7420) | receiver-type-required |
-| `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `schema::Event::decode` | [7420](../../src/process_host.rs#L7420) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `schema::Event::decode` | [7420](../../src/process_host.rs#L7420) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `serde_json::to_vec(&value).expect` | [7420](../../src/process_host.rs#L7420) | receiver-type-required |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `serde_json::to_vec` | [7420](../../src/process_host.rs#L7420) | external-constructor-callback-or-unresolved |
 | `appended_events_are_projected_before_any_endpoint_stream_is_attached` | `event.canonical_bytes().expect` | [7422](../../src/process_host.rs#L7422) | receiver-type-required |
@@ -5597,7 +5597,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `records.into_iter().enumerate` | [9574](../../src/process_host.rs#L9574) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `records.into_iter` | [9574](../../src/process_host.rs#L9574) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `schema::Event::decode(&serde_json::to_vec(&raw).unwrap()).unwrap` | [9578](../../src/process_host.rs#L9578), [9621](../../src/process_host.rs#L9621) | receiver-type-required |
-| `real_worker_recovers_final_before_settlement_with_resume_never` | `schema::Event::decode` | [9578](../../src/process_host.rs#L9578), [9621](../../src/process_host.rs#L9621) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `real_worker_recovers_final_before_settlement_with_resume_never` | `schema::Event::decode` | [9578](../../src/process_host.rs#L9578), [9621](../../src/process_host.rs#L9621) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `serde_json::to_vec(&raw).unwrap` | [9578](../../src/process_host.rs#L9578), [9621](../../src/process_host.rs#L9621) | receiver-type-required |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `serde_json::to_vec` | [9578](../../src/process_host.rs#L9578), [9621](../../src/process_host.rs#L9621) | external-constructor-callback-or-unresolved |
 | `real_worker_recovers_final_before_settlement_with_resume_never` | `bytes.extend` | [9579](../../src/process_host.rs#L9579) | receiver-type-required |
@@ -5676,7 +5676,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `held_ledger_lines` | `schema::Event::decode(&serde_json::to_vec(&genesis).unwrap())                 .unwrap()                 .canonical_bytes()                 .unwrap` | [9818](../../src/process_host.rs#L9818) | receiver-type-required |
 | `held_ledger_lines` | `schema::Event::decode(&serde_json::to_vec(&genesis).unwrap())                 .unwrap()                 .canonical_bytes` | [9818](../../src/process_host.rs#L9818) | receiver-type-required |
 | `held_ledger_lines` | `schema::Event::decode(&serde_json::to_vec(&genesis).unwrap())                 .unwrap` | [9818](../../src/process_host.rs#L9818) | receiver-type-required |
-| `held_ledger_lines` | `schema::Event::decode` | [9818](../../src/process_host.rs#L9818) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `held_ledger_lines` | `schema::Event::decode` | [9818](../../src/process_host.rs#L9818) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `held_ledger_lines` | `serde_json::to_vec(&genesis).unwrap` | [9818](../../src/process_host.rs#L9818) | receiver-type-required |
 | `held_ledger_lines` | `serde_json::to_vec` | [9818](../../src/process_host.rs#L9818) | external-constructor-callback-or-unresolved |
 | `held_host` | `root.join("threads").join` | [9844](../../src/process_host.rs#L9844) | receiver-type-required |
@@ -5920,7 +5920,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `host.arm_admission` | [10262](../../src/process_host.rs#L10262) | receiver-type-required |
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `host.catalog.ensure_loaded` | [10263](../../src/process_host.rs#L10263) | receiver-type-required |
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `schema::Event::decode_canonical(held_ledger_lines(fresh)[0].as_bytes())             .expect` | [10265](../../src/process_host.rs#L10265) | receiver-type-required |
-| `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `schema::Event::decode_canonical` | [10265](../../src/process_host.rs#L10265) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `schema::Event::decode_canonical` | [10265](../../src/process_host.rs#L10265) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `held_ledger_lines(fresh)[0].as_bytes` | [10265](../../src/process_host.rs#L10265) | receiver-type-required |
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `held_ledger_lines` | [10265](../../src/process_host.rs#L10265) | [tekes-supervisor::process_host::tests::held_ledger_lines](../../src/process_host.rs#L9782) |
 | `a_thread_published_after_the_catalog_loaded_is_listed_swept_and_blank` | `store::ThreadStore::open(root.path())             .expect("store")             .create_thread(fresh, genesis)             .expect` | [10267](../../src/process_host.rs#L10267) | receiver-type-required |
@@ -6129,7 +6129,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_published_folder_enters_the_catalog_unread` | `root.path` | [10678](../../src/process_host.rs#L10678), [10682](../../src/process_host.rs#L10682) | receiver-type-required |
 | `a_published_folder_enters_the_catalog_unread` | `host.arm_admission` | [10679](../../src/process_host.rs#L10679) | receiver-type-required |
 | `a_published_folder_enters_the_catalog_unread` | `schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())             .expect` | [10680](../../src/process_host.rs#L10680) | receiver-type-required |
-| `a_published_folder_enters_the_catalog_unread` | `schema::Event::decode_canonical` | [10680](../../src/process_host.rs#L10680) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `a_published_folder_enters_the_catalog_unread` | `schema::Event::decode_canonical` | [10680](../../src/process_host.rs#L10680) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `a_published_folder_enters_the_catalog_unread` | `held_ledger_lines(session)[0].as_bytes` | [10680](../../src/process_host.rs#L10680) | receiver-type-required |
 | `a_published_folder_enters_the_catalog_unread` | `held_ledger_lines` | [10680](../../src/process_host.rs#L10680) | [tekes-supervisor::process_host::tests::held_ledger_lines](../../src/process_host.rs#L9782) |
 | `a_published_folder_enters_the_catalog_unread` | `store::ThreadStore::open(root.path())             .expect("store")             .create_thread(session, genesis)             .expect` | [10682](../../src/process_host.rs#L10682) | receiver-type-required |
@@ -6290,7 +6290,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_test_genesis_with_identity` | `serde_json::from_slice` | [10951](../../src/process_host.rs#L10951) | external-constructor-callback-or-unresolved |
 | `write_test_genesis_with_identity` | `genesis["execution"]["cwd"].clone` | [10955](../../src/process_host.rs#L10955) | receiver-type-required |
 | `write_test_genesis_with_identity` | `schema::Event::decode(&serde_json::to_vec(&genesis).expect("genesis JSON"))             .expect` | [10959](../../src/process_host.rs#L10959) | receiver-type-required |
-| `write_test_genesis_with_identity` | `schema::Event::decode` | [10959](../../src/process_host.rs#L10959) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `write_test_genesis_with_identity` | `schema::Event::decode` | [10959](../../src/process_host.rs#L10959) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `write_test_genesis_with_identity` | `serde_json::to_vec(&genesis).expect` | [10959](../../src/process_host.rs#L10959) | receiver-type-required |
 | `write_test_genesis_with_identity` | `serde_json::to_vec` | [10959](../../src/process_host.rs#L10959) | external-constructor-callback-or-unresolved |
 | `write_test_genesis_with_identity` | `event.canonical_bytes().expect` | [10961](../../src/process_host.rs#L10961) | receiver-type-required |
@@ -6299,7 +6299,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_test_genesis_with_identity` | `fs::write(path, bytes).expect` | [10963](../../src/process_host.rs#L10963) | receiver-type-required |
 | `write_test_genesis_with_identity` | `fs::write` | [10963](../../src/process_host.rs#L10963) | external-constructor-callback-or-unresolved |
 | `append_test_input` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect("input JSON"),         )         .expect` | [10967](../../src/process_host.rs#L10967) | receiver-type-required |
-| `append_test_input` | `schema::Event::decode` | [10967](../../src/process_host.rs#L10967) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_input` | `schema::Event::decode` | [10967](../../src/process_host.rs#L10967) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `append_test_input` | `serde_json::to_vec(&json!({                 "v":1,"seq":2,"kind":"input","ts":"2026-08-28T00:00:01.000Z",                 "content":[{"type":"text","text":"recover"}],                 "origin_key":"periodic-input",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"submit","key":"periodic-input"}             }))             .expect` | [10968](../../src/process_host.rs#L10968) | receiver-type-required |
 | `append_test_input` | `serde_json::to_vec` | [10968](../../src/process_host.rs#L10968) | external-constructor-callback-or-unresolved |
 | `append_test_input` | `event.canonical_bytes().expect` | [10978](../../src/process_host.rs#L10978) | receiver-type-required |
@@ -6312,7 +6312,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_test_input` | `fs::OpenOptions::new()             .append` | [10980](../../src/process_host.rs#L10980) | receiver-type-required |
 | `append_test_input` | `fs::OpenOptions::new` | [10980](../../src/process_host.rs#L10980) | external-constructor-callback-or-unresolved |
 | `append_test_stop` | `schema::Event::decode(             &serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect("stop JSON"),         )         .expect` | [10990](../../src/process_host.rs#L10990) | receiver-type-required |
-| `append_test_stop` | `schema::Event::decode` | [10990](../../src/process_host.rs#L10990) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_stop` | `schema::Event::decode` | [10990](../../src/process_host.rs#L10990) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `append_test_stop` | `serde_json::to_vec(&json!({                 "v":1,"seq":seq,"kind":"stop_requested",                 "ts":"2026-08-28T00:00:05.000Z","generation":generation,                 "origin_key":"root-stop",                 "origin_tuple":{"principal":"test","client":"test","target":thread,                     "op":"session.cancel","key":"root-stop"}             }))             .expect` | [10991](../../src/process_host.rs#L10991) | receiver-type-required |
 | `append_test_stop` | `serde_json::to_vec` | [10991](../../src/process_host.rs#L10991) | external-constructor-callback-or-unresolved |
 | `append_test_stop` | `event.canonical_bytes().expect` | [11001](../../src/process_host.rs#L11001) | receiver-type-required |
@@ -6331,7 +6331,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_test_child_genesis` | `write_test_events` | [11079](../../src/process_host.rs#L11079) | [tekes-supervisor::process_host::tests::write_test_events](../../src/process_host.rs#L11096) |
 | `write_test_events` | `Vec::new` | [11097](../../src/process_host.rs#L11097) | external-constructor-callback-or-unresolved |
 | `write_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11099](../../src/process_host.rs#L11099) | receiver-type-required |
-| `write_test_events` | `schema::Event::decode` | [11099](../../src/process_host.rs#L11099) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `write_test_events` | `schema::Event::decode` | [11099](../../src/process_host.rs#L11099) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `write_test_events` | `serde_json::to_vec(&value).expect` | [11099](../../src/process_host.rs#L11099) | receiver-type-required |
 | `write_test_events` | `serde_json::to_vec` | [11099](../../src/process_host.rs#L11099) | external-constructor-callback-or-unresolved |
 | `write_test_events` | `bytes.extend_from_slice` | [11101](../../src/process_host.rs#L11101) | receiver-type-required |
@@ -6339,7 +6339,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write_test_events` | `event.canonical_bytes` | [11101](../../src/process_host.rs#L11101) | receiver-type-required |
 | `write_test_events` | `bytes.push` | [11102](../../src/process_host.rs#L11102) | receiver-type-required |
 | `write_test_events` | `schema::validate_ledger(&bytes, schema::READER_VERSION).expect` | [11104](../../src/process_host.rs#L11104) | receiver-type-required |
-| `write_test_events` | `schema::validate_ledger` | [11104](../../src/process_host.rs#L11104) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `write_test_events` | `schema::validate_ledger` | [11104](../../src/process_host.rs#L11104) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `write_test_events` | `fs::write(path, bytes).expect` | [11105](../../src/process_host.rs#L11105) | receiver-type-required |
 | `write_test_events` | `fs::write` | [11105](../../src/process_host.rs#L11105) | external-constructor-callback-or-unresolved |
 | `write_thread_with_child` | `root.join("threads").join` | [11115](../../src/process_host.rs#L11115) | receiver-type-required |
@@ -6354,7 +6354,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_test_events` | `fs::read(path).expect` | [11167](../../src/process_host.rs#L11167) | receiver-type-required |
 | `append_test_events` | `fs::read` | [11167](../../src/process_host.rs#L11167) | external-constructor-callback-or-unresolved |
 | `append_test_events` | `schema::Event::decode(&serde_json::to_vec(&value).expect("event JSON"))                 .expect` | [11169](../../src/process_host.rs#L11169) | receiver-type-required |
-| `append_test_events` | `schema::Event::decode` | [11169](../../src/process_host.rs#L11169) | [schema::event::Event::decode](../../../schema/src/event.rs#L163) |
+| `append_test_events` | `schema::Event::decode` | [11169](../../src/process_host.rs#L11169) | [schema::event::Event::decode](../../../schema/src/event.rs#L166) |
 | `append_test_events` | `serde_json::to_vec(&value).expect` | [11169](../../src/process_host.rs#L11169) | receiver-type-required |
 | `append_test_events` | `serde_json::to_vec` | [11169](../../src/process_host.rs#L11169) | external-constructor-callback-or-unresolved |
 | `append_test_events` | `bytes.extend_from_slice` | [11171](../../src/process_host.rs#L11171) | receiver-type-required |
@@ -6362,7 +6362,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `append_test_events` | `event.canonical_bytes` | [11171](../../src/process_host.rs#L11171) | receiver-type-required |
 | `append_test_events` | `bytes.push` | [11172](../../src/process_host.rs#L11172) | receiver-type-required |
 | `append_test_events` | `schema::validate_ledger(&bytes, schema::READER_VERSION).expect` | [11174](../../src/process_host.rs#L11174) | receiver-type-required |
-| `append_test_events` | `schema::validate_ledger` | [11174](../../src/process_host.rs#L11174) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `append_test_events` | `schema::validate_ledger` | [11174](../../src/process_host.rs#L11174) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `append_test_events` | `fs::write(path, bytes).expect` | [11175](../../src/process_host.rs#L11175) | receiver-type-required |
 | `append_test_events` | `fs::write` | [11175](../../src/process_host.rs#L11175) | external-constructor-callback-or-unresolved |
 | `child_rpc_id` | `endpoint::derive_line_request_rpc_id` | [11180](../../src/process_host.rs#L11180) | [endpoint::requests::derive_line_request_rpc_id](../../../endpoint/src/requests.rs#L128) |
