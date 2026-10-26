@@ -9,7 +9,7 @@ use rustix::fs::{Mode, OFlags, fchmod, fstat, mkdirat, open, openat};
 use serde::{Deserialize, Serialize};
 use store::{AssetRef, AssetStore, AtomicPublisher, NamedLock};
 
-use crate::{ProfileError, canonical_line, digest, parse_canonical};
+use crate::{ProfileError, canonical_line, digest, parse_canonical, parse_global_json};
 
 const FORMAT: u64 = 1;
 const MAX_SAFE_INTEGER: u64 = 9_007_199_254_740_991;
@@ -556,7 +556,7 @@ impl ConfigRepository {
     pub fn providers(&self) -> Result<ProvidersConfig, ProfileError> {
         let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
         let path = self.root.join("config/providers.json");
-        let value = self.read_optional(&path)?.unwrap_or_default();
+        let value = self.read_global_optional(&path)?.unwrap_or_default();
         validate_providers(&value, true, &path)?;
         Ok(value)
     }
@@ -565,7 +565,7 @@ impl ConfigRepository {
     pub fn settings(&self) -> Result<SettingsConfig, ProfileError> {
         let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
         let path = self.root.join("config/settings.json");
-        let value = self.read_optional(&path)?.unwrap_or_default();
+        let value = self.read_global_optional(&path)?.unwrap_or_default();
         validate_settings(&value, true, &path)?;
         Ok(value)
     }
@@ -601,7 +601,7 @@ impl ConfigRepository {
             .transpose()?;
         let _lock = NamedLock::exclusive(self.root.join("config/.lock"))?;
         let actual = self
-            .read_optional::<ProvidersConfig>(&path)?
+            .read_global_optional::<ProvidersConfig>(&path)?
             .unwrap_or_default();
         validate_providers(&actual, true, &path)?;
         check_publication_revision(expected_revision, actual.revision, value.revision)?;
@@ -609,7 +609,7 @@ impl ConfigRepository {
         self.validate_all_provider_references_unlocked(
             value,
             &self
-                .read_optional::<SettingsConfig>(&self.root.join("config/settings.json"))?
+                .read_global_optional::<SettingsConfig>(&self.root.join("config/settings.json"))?
                 .unwrap_or_default(),
         )?;
         AtomicPublisher::replace(&path, &canonical_line(&path, value)?)?;
@@ -638,13 +638,13 @@ impl ConfigRepository {
         let providers_path = self.root.join("config/providers.json");
         let _lock = NamedLock::exclusive(self.root.join("config/.lock"))?;
         let actual = self
-            .read_optional::<SettingsConfig>(&path)?
+            .read_global_optional::<SettingsConfig>(&path)?
             .unwrap_or_default();
         validate_settings(&actual, true, &path)?;
         check_publication_revision(expected_revision, actual.revision, value.revision)?;
         validate_settings(value, false, &path)?;
         let providers = self
-            .read_optional::<ProvidersConfig>(&providers_path)?
+            .read_global_optional::<ProvidersConfig>(&providers_path)?
             .unwrap_or_default();
         validate_providers(&providers, true, &providers_path)?;
         validate_references(&providers, value, &path)?;
@@ -670,7 +670,9 @@ impl ConfigRepository {
         check_publication_revision(expected_revision, actual, value.revision)?;
         validate_session_settings(value, false, &path)?;
         let providers_path = self.root.join("config/providers.json");
-        let providers = self.read_optional(&providers_path)?.unwrap_or_default();
+        let providers = self
+            .read_global_optional(&providers_path)?
+            .unwrap_or_default();
         validate_providers(&providers, true, &providers_path)?;
         validate_session_reference(&Some(value.clone()), &providers, &path)?;
         AtomicPublisher::replace(&path, &canonical_line(&path, value)?)?;
@@ -701,7 +703,7 @@ impl ConfigRepository {
         let _lock = NamedLock::exclusive(self.root.join("config/.lock"))?;
         let actual = match fs::read(path) {
             Ok(bytes) => {
-                let current: T = parse_canonical(path, &bytes)?;
+                let current: T = parse_global_json(path, &bytes)?;
                 validate(&current)?;
                 revision_from_value(path, &current)?
             }
@@ -722,10 +724,10 @@ impl ConfigRepository {
     ) -> Result<ConfigSnapshot, ProfileError> {
         let _lock = NamedLock::shared(self.root.join("config/.lock"))?;
         let providers: ProvidersConfig = self
-            .read_optional(&self.root.join("config/providers.json"))?
+            .read_global_optional(&self.root.join("config/providers.json"))?
             .unwrap_or_default();
         let settings: SettingsConfig = self
-            .read_optional(&self.root.join("config/settings.json"))?
+            .read_global_optional(&self.root.join("config/settings.json"))?
             .unwrap_or_default();
         let session_settings = session_folder
             .map(store::session_settings_path)
@@ -778,6 +780,17 @@ impl ConfigRepository {
     ) -> Result<Option<T>, ProfileError> {
         match fs::read(path) {
             Ok(bytes) => Ok(Some(parse_canonical(path, &bytes)?)),
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
+            Err(error) => Err(error.into()),
+        }
+    }
+
+    fn read_global_optional<T: for<'de> Deserialize<'de>>(
+        &self,
+        path: &Path,
+    ) -> Result<Option<T>, ProfileError> {
+        match fs::read(path) {
+            Ok(bytes) => Ok(Some(parse_global_json(path, &bytes)?)),
             Err(error) if error.kind() == std::io::ErrorKind::NotFound => Ok(None),
             Err(error) => Err(error.into()),
         }
