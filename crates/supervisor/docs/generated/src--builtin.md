@@ -190,7 +190,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run` | `listener.local_addr` | [187](../../src/builtin.rs#L187), [211](../../src/builtin.rs#L211) | receiver-type-required |
 | `run` | `transport::TransportConfig::loopback` | [192](../../src/builtin.rs#L192) | [transport::server::TransportConfig::loopback](../../../transport/src/server.rs#L108) |
 | `run` | `ProductionCarrierAssembly::assemble(&launch.root, unary, process.clone(), config)?             .with_file_changes` | [194](../../src/builtin.rs#L194) | receiver-type-required |
-| `run` | `ProductionCarrierAssembly::assemble` | [194](../../src/builtin.rs#L194) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2504) |
+| `run` | `ProductionCarrierAssembly::assemble` | [194](../../src/builtin.rs#L194) | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::assemble](../../src/endpoint_carrier.rs#L2789) |
 | `run` | `process.clone` | [194](../../src/builtin.rs#L194), [195](../../src/builtin.rs#L195) | receiver-type-required |
 | `run` | `process.attach_streams` | [197](../../src/builtin.rs#L197) | receiver-type-required |
 | `run` | `assembly.streams().clone` | [197](../../src/builtin.rs#L197) | receiver-type-required |
