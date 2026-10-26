@@ -34,7 +34,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/store/src/management_root.rs](../../src/management_root.rs) | 6 | 35 | [Symbols and calls](src--management_root.md) |
 | [crates/store/src/platform.rs](../../src/platform.rs) | 37 | 152 | [Symbols and calls](src--platform.md) |
 | [crates/store/src/rewrite.rs](../../src/rewrite.rs) | 93 | 1924 | [Symbols and calls](src--rewrite.md) |
-| [crates/store/src/tail.rs](../../src/tail.rs) | 41 | 349 | [Symbols and calls](src--tail.md) |
+| [crates/store/src/tail.rs](../../src/tail.rs) | 42 | 367 | [Symbols and calls](src--tail.md) |
 
 ## Cross-file direct calls
 

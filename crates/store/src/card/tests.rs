@@ -482,13 +482,20 @@ fn a_file_that_shrinks_during_classification_is_stale_not_an_io_error() {
 
 #[test]
 fn card_line_names_are_plain_jsonl_names() {
-    for good in ["main.jsonl", "018f0000-0000-7000-8000-000000000004.jsonl"] {
+    for good in [
+        "main.jsonl",
+        "018f0000-0000-7000-8000-000000000004.jsonl",
+        "endpoint-v2-extra.jsonl",
+        "endpoint-requests-v2-copy.jsonl",
+    ] {
         assert!(valid_line_name(good), "{good}");
     }
     for bad in [
         "",
         ".jsonl",
         "endpoint.jsonl",
+        "endpoint-v2.jsonl",
+        "endpoint-requests-v2.jsonl",
         "../main.jsonl",
         "a/b.jsonl",
         "..",

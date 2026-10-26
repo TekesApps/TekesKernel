@@ -310,7 +310,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `permission_mode_of` | `value.get` | [122](../../src/service.rs#L122) | receiver-type-required |
 | `card_item` | `store::card::read_card` | [139](../../src/service.rs#L139) | [store::card::read_card](../../../store/src/card.rs#L176) |
 | `card_item` | `store::card::classify(folder, &card).ok` | [140](../../src/service.rs#L140) | receiver-type-required |
-| `card_item` | `store::card::classify` | [140](../../src/service.rs#L140) | [store::card::classify](../../../store/src/card.rs#L391) |
+| `card_item` | `store::card::classify` | [140](../../src/service.rs#L140) | [store::card::classify](../../../store/src/card.rs#L395) |
 | `card_item` | `classified.freshness` | [141](../../src/service.rs#L141) | receiver-type-required |
 | `card_item` | `card.lines.first` | [144](../../src/service.rs#L144) | receiver-type-required |
 | `card_item` | `Some` | [148](../../src/service.rs#L148) | external-constructor-callback-or-unresolved |

@@ -1963,7 +1963,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `hydrate_unrecorded` | `self.catalog.mark_corrupt` | [1556](../../src/process_host.rs#L1556), [1581](../../src/process_host.rs#L1581) | receiver-type-required |
 | `hydrate_unrecorded` | `self.card_writer.governor().charge` | [1566](../../src/process_host.rs#L1566) | receiver-type-required |
 | `hydrate_unrecorded` | `self.card_writer.governor` | [1566](../../src/process_host.rs#L1566) | receiver-type-required |
-| `hydrate_unrecorded` | `store::card::remove_stale_card_temps` | [1570](../../src/process_host.rs#L1570) | [store::card::remove_stale_card_temps](../../../store/src/card.rs#L718) |
+| `hydrate_unrecorded` | `store::card::remove_stale_card_temps` | [1570](../../src/process_host.rs#L1570) | [store::card::remove_stale_card_temps](../../../store/src/card.rs#L722) |
 | `hydrate_unrecorded` | `self.card_writer.reset_window` | [1574](../../src/process_host.rs#L1574) | receiver-type-required |
 | `hydrate_unrecorded` | `self.hydrate_runs.fetch_add` | [1576](../../src/process_host.rs#L1576) | receiver-type-required |
 | `hydrate_unrecorded` | `self.publish_appended_with` | [1577](../../src/process_host.rs#L1577) | [tekes-supervisor::process_host::ProductionProcessHost::publish_appended_with](../../src/process_host.rs#L3398) |
@@ -5707,7 +5707,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `store::card::read_card(&folder).expect` | [9876](../../src/process_host.rs#L9876) | receiver-type-required |
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `store::card::read_card` | [9876](../../src/process_host.rs#L9876) | [store::card::read_card](../../../store/src/card.rs#L176) |
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `store::card::classify(&folder, &card).expect` | [9877](../../src/process_host.rs#L9877), [9909](../../src/process_host.rs#L9909) | receiver-type-required |
-| `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `store::card::classify` | [9877](../../src/process_host.rs#L9877), [9909](../../src/process_host.rs#L9909) | [store::card::classify](../../../store/src/card.rs#L391) |
+| `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `store::card::classify` | [9877](../../src/process_host.rs#L9877), [9909](../../src/process_host.rs#L9909) | [store::card::classify](../../../store/src/card.rs#L395) |
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `NativeEndpoint::open(root.path())             .expect("endpoint")             .list_sessions(&HashSet::new())             .expect("scan")             .into_iter()             .find(&#124;item&#124; item.session_id == session)             .expect` | [9884](../../src/process_host.rs#L9884) | receiver-type-required |
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `NativeEndpoint::open(root.path())             .expect("endpoint")             .list_sessions(&HashSet::new())             .expect("scan")             .into_iter()             .find` | [9884](../../src/process_host.rs#L9884) | receiver-type-required |
 | `publish_appended_writes_a_fresh_card_that_matches_the_inventory_scan` | `NativeEndpoint::open(root.path())             .expect("endpoint")             .list_sessions(&HashSet::new())             .expect("scan")             .into_iter` | [9884](../../src/process_host.rs#L9884) | receiver-type-required |
