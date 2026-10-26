@@ -61,7 +61,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `main` | `tokio::runtime::Builder::new_multi_thread()             .enable_all` | [25](../../src/main.rs#L25) | receiver-type-required |
 | `main` | `tokio::runtime::Builder::new_multi_thread` | [25](../../src/main.rs#L25) | external-constructor-callback-or-unresolved |
 | `main` | `runtime.block_on` | [30](../../src/main.rs#L30) | receiver-type-required |
-| `main` | `tekes_supervisor::builtin::run` | [30](../../src/main.rs#L30) | [tekes-supervisor::builtin::run](../../src/builtin.rs#L35) |
+| `main` | `tekes_supervisor::builtin::run` | [30](../../src/main.rs#L30) | [tekes-supervisor::builtin::run](../../src/builtin.rs#L166) |
 | `main` | `PathBuf::from` | [30](../../src/main.rs#L30) | external-constructor-callback-or-unresolved |
 | `main` | `Err` | [32](../../src/main.rs#L32) | external-constructor-callback-or-unresolved |
 | `main` | `Box::new` | [32](../../src/main.rs#L32) | external-constructor-callback-or-unresolved |

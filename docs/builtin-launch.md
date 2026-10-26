@@ -35,6 +35,7 @@ The launch document is non-secret JSON:
   "root": "/absolute/application-owned/kernel-state",
   "worker": "/absolute/bin/tekes-worker",
   "listen": "127.0.0.1:0",
+  "configuration_mode": "provided",
   "providers": {"format": 1, "revision": 1, "providers": []},
   "credential_bindings": {}
 }
@@ -48,16 +49,32 @@ expose that surface. Unknown fields are rejected. `tekes-helper` and
 `tekes-workspace-service` must be in the same directory as `worker`. `HOME`
 must be set; shared user skills are read from `$HOME/.agents`.
 
-`providers` is the Kernel execution configuration generated from the application's
-selected providers and their resolved direct/router connections. It is replaced
-on startup; its persisted revision is assigned by Kernel. It contains credential
-IDs, never credential material. `credential_bindings` retains each lookup ID's
-former environment-source name for compatibility diagnostics; no value is read
-from that environment. Its IDs must exactly match all provider and web-search
-credential references, and its source names must remain syntactically valid.
-The private frame's credential keys must be exactly this same set. Missing,
-extra, duplicate or empty selected credentials fail startup. There is no
-Keychain fallback. The application owns selection and restarts after changes.
+`configuration_mode` is optional. Omission means `provided` for compatibility.
+In `provided` mode, `providers` is required and is the Kernel execution
+configuration generated from the application's selected providers and their
+resolved direct/router connections. It is replaced on startup; its persisted
+revision is assigned by Kernel. It contains credential IDs, never credential
+material.
+
+Use `"configuration_mode": "existing"` to use the provider and settings
+configuration already stored under `root/config/providers.json` and
+`root/config/settings.json`. In this mode omit `providers`. Both files must
+already exist and validate; startup fails before creating thread storage if
+either is missing or invalid. Kernel reads them without publishing or changing
+their bytes, revisions, provider roster, or selected default. Existing
+configuration is not migrated. `credential_bindings` may contain only the
+configured credential IDs that the launcher can supply; other configured
+providers remain visible and configured, but requests needing an unbound
+credential fail closed. Unknown binding IDs are rejected. The private bootstrap
+frame's credential keys must exactly match `credential_bindings`.
+
+In both modes, `credential_bindings` retains each lookup ID's former
+environment-source name for compatibility diagnostics; no value is read from
+that environment. Source names must remain syntactically valid. In `provided`
+mode, binding IDs must cover all provider and web-search credential references.
+The private frame must contain exactly those IDs. Missing, extra, duplicate or
+empty selected credentials fail startup. There is no Keychain fallback. The
+application owns selection and restarts after changes.
 
 Before waiting for readiness, write one frame to the child's private stdin pipe:
 
