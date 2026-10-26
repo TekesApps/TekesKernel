@@ -3,7 +3,7 @@
 use crate::{
     endpoint_carrier::ProductionCarrierAssembly, host_runtime, process_host::ProductionProcessHost,
 };
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 use std::os::unix::fs::{DirBuilderExt, OpenOptionsExt};
 use std::{
     collections::BTreeMap,
@@ -23,13 +23,144 @@ pub struct BuiltInLaunch {
     pub root: PathBuf,
     pub worker: PathBuf,
     pub listen: SocketAddr,
-    pub providers: profile::ProvidersConfig,
+    /// `provided` is the legacy launch contract. `existing` consumes the
+    /// already-published configuration under `root` without replacing it.
+    #[serde(default)]
+    pub configuration_mode: ConfigurationMode,
+    #[serde(default)]
+    pub providers: LaunchProviders,
     pub credential_bindings: BTreeMap<String, String>,
     #[serde(default)]
     pub stdio_channels: BTreeMap<String, PathBuf>,
     /// Loopback address for the optional browser Web Client; absent means off.
     #[serde(default)]
     pub web_listen: Option<SocketAddr>,
+}
+
+#[derive(Debug, Default)]
+pub enum LaunchProviders {
+    #[default]
+    Omitted,
+    Supplied(profile::ProvidersConfig),
+}
+
+impl<'de> Deserialize<'de> for LaunchProviders {
+    fn deserialize<D>(deserializer: D) -> std::result::Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        profile::ProvidersConfig::deserialize(deserializer).map(Self::Supplied)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Default, Deserialize, Eq, PartialEq)]
+#[serde(rename_all = "snake_case")]
+pub enum ConfigurationMode {
+    #[default]
+    Provided,
+    Existing,
+}
+
+fn configured_providers(launch: &BuiltInLaunch) -> Result<profile::ProvidersConfig> {
+    match (launch.configuration_mode, &launch.providers) {
+        (ConfigurationMode::Provided, LaunchProviders::Supplied(providers)) => {
+            Ok(providers.clone())
+        }
+        (ConfigurationMode::Provided, LaunchProviders::Omitted) => {
+            Err(io::Error::other("provided configuration mode requires providers").into())
+        }
+        (ConfigurationMode::Existing, LaunchProviders::Supplied(_)) => {
+            Err(io::Error::other("existing configuration mode forbids launch providers").into())
+        }
+        (ConfigurationMode::Existing, LaunchProviders::Omitted) => {
+            read_existing_configuration(&launch.root)
+        }
+    }
+}
+
+fn read_existing_configuration(root: &std::path::Path) -> Result<profile::ProvidersConfig> {
+    // Check both durable authorities before opening ConfigRepository: its open
+    // path is allowed to prepare directories for new installations. Existing
+    // mode must never bootstrap or synthesize a missing config file.
+    for name in ["providers.json", "settings.json"] {
+        let path = root.join("config").join(name);
+        if !path.is_file() {
+            return Err(io::Error::other(format!(
+                "existing configuration requires {}",
+                path.display()
+            ))
+            .into());
+        }
+    }
+    // Reject malformed JSON before the repository acquires its config lock.
+    // Repository reads below retain the authoritative schema validation.
+    let _: profile::ProvidersConfig =
+        serde_json::from_slice(&std::fs::read(root.join("config/providers.json"))?)?;
+    let _: profile::SettingsConfig =
+        serde_json::from_slice(&std::fs::read(root.join("config/settings.json"))?)?;
+    let repository = profile::ConfigRepository::open(root)?;
+    let providers = repository.providers()?;
+    // Reading settings validates the selected default and ensures the existing
+    // configuration is complete before any session storage is touched.
+    let settings = repository.settings()?;
+    match settings.default_provider.as_deref() {
+        None if settings.default_model.is_some() => {
+            return Err(
+                io::Error::other("existing settings select a model without a provider").into(),
+            );
+        }
+        None => {}
+        Some(provider_id) => {
+            let provider = providers
+                .providers
+                .iter()
+                .find(|provider| provider.id == provider_id)
+                .ok_or_else(|| io::Error::other("existing settings select an unknown provider"))?;
+            if settings.default_model.as_deref().is_some_and(|model_id| {
+                !provider
+                    .models
+                    .iter()
+                    .any(|model| model.enabled && model.id == model_id)
+            }) {
+                return Err(
+                    io::Error::other("existing settings select an unavailable model").into(),
+                );
+            }
+        }
+    }
+    Ok(providers)
+}
+
+fn validate_credential_bindings(
+    launch: &BuiltInLaunch,
+    providers: &profile::ProvidersConfig,
+) -> Result<()> {
+    let configured: std::collections::BTreeSet<&str> = providers
+        .providers
+        .iter()
+        .filter_map(|provider| provider.credential_key.as_deref())
+        .chain(
+            providers
+                .web_search
+                .iter()
+                .map(|search| search.credential_key.as_str()),
+        )
+        .collect();
+    let supplied: std::collections::BTreeSet<&str> = launch
+        .credential_bindings
+        .keys()
+        .map(String::as_str)
+        .collect();
+    match launch.configuration_mode {
+        ConfigurationMode::Provided if !configured.is_subset(&supplied) => Err(io::Error::other(
+            "launch credentials must include every configured provider binding",
+        )
+        .into()),
+        ConfigurationMode::Existing if !supplied.is_subset(&configured) => {
+            Err(io::Error::other("existing configuration has unknown credential bindings").into())
+        }
+        _ => Ok(()),
+    }
 }
 
 pub async fn run(path: PathBuf) -> Result<()> {
@@ -50,6 +181,9 @@ pub async fn run(path: PathBuf) -> Result<()> {
     if launch.web_listen.is_some() {
         return Err(io::Error::other("unauthenticated-web-client-disabled").into());
     }
+    // Load and validate existing files before creating thread storage or any
+    // other root state. A malformed/missing config must fail without writes.
+    let providers = configured_providers(&launch)?;
     if launch.credential_bindings.values().any(|name| {
         name.is_empty()
             || !name.bytes().enumerate().all(|(index, byte)| {
@@ -61,30 +195,7 @@ pub async fn run(path: PathBuf) -> Result<()> {
     if crate::bootstrap::rejects_legacy_environment(&launch.credential_bindings) {
         return Err(io::Error::other("legacy-secret-environment-rejected").into());
     }
-    let required: std::collections::BTreeSet<&str> = launch
-        .providers
-        .providers
-        .iter()
-        .filter_map(|provider| provider.credential_key.as_deref())
-        .chain(
-            launch
-                .providers
-                .web_search
-                .iter()
-                .map(|search| search.credential_key.as_str()),
-        )
-        .collect();
-    let supplied: std::collections::BTreeSet<&str> = launch
-        .credential_bindings
-        .keys()
-        .map(String::as_str)
-        .collect();
-    if !required.is_subset(&supplied) {
-        return Err(io::Error::other(
-            "launch credentials must include every configured provider binding",
-        )
-        .into());
-    }
+    validate_credential_bindings(&launch, &providers)?;
     let bootstrap =
         crate::bootstrap::read(0, &launch.credential_bindings, crate::bootstrap::DEADLINE)?;
     let bearer = transport::BearerToken::new(*bootstrap.token);
@@ -107,40 +218,42 @@ pub async fn run(path: PathBuf) -> Result<()> {
     crate::boot_trace::phase("root_lock");
     host_runtime::preflight_storage(&storage)?;
     crate::boot_trace::phase("preflight_storage");
-    let repository = profile::ConfigRepository::open(&launch.root)?;
-    let current = repository.providers()?;
-    let mut providers = launch.providers;
-    providers.revision = current
-        .revision
-        .checked_add(1)
-        .ok_or_else(|| io::Error::other("provider revision overflow"))?;
-    repository.publish_providers(current.revision, &providers)?;
-    // Keep a still-selected default; otherwise new sessions use the first enabled
-    // model from the application's ordered launch configuration.
-    let mut settings = repository.settings()?;
-    let default_is_available = providers.providers.iter().any(|provider| {
-        settings.default_provider.as_deref() == Some(provider.id.as_str())
-            && provider.models.iter().any(|model| {
-                model.enabled && settings.default_model.as_deref() == Some(model.id.as_str())
-            })
-    });
-    if !default_is_available {
-        let selected = providers.providers.iter().find_map(|provider| {
-            provider
-                .models
-                .iter()
-                .find(|model| model.enabled)
-                .map(|model| (provider.id.clone(), model.id.clone()))
+    if launch.configuration_mode == ConfigurationMode::Provided {
+        let repository = profile::ConfigRepository::open(&launch.root)?;
+        let current = repository.providers()?;
+        let mut provided = providers.clone();
+        provided.revision = current
+            .revision
+            .checked_add(1)
+            .ok_or_else(|| io::Error::other("provider revision overflow"))?;
+        repository.publish_providers(current.revision, &provided)?;
+        // Keep a still-selected default; otherwise new sessions use the first enabled
+        // model from the application's ordered launch configuration.
+        let mut settings = repository.settings()?;
+        let default_is_available = provided.providers.iter().any(|provider| {
+            settings.default_provider.as_deref() == Some(provider.id.as_str())
+                && provider.models.iter().any(|model| {
+                    model.enabled && settings.default_model.as_deref() == Some(model.id.as_str())
+                })
         });
-        let (provider, model) = selected.map_or((None, None), |(p, m)| (Some(p), Some(m)));
-        if settings.default_provider != provider || settings.default_model != model {
-            let revision = settings.revision;
-            settings.revision = revision
-                .checked_add(1)
-                .ok_or_else(|| io::Error::other("settings revision overflow"))?;
-            settings.default_provider = provider;
-            settings.default_model = model;
-            repository.publish_settings(revision, &settings)?;
+        if !default_is_available {
+            let selected = provided.providers.iter().find_map(|provider| {
+                provider
+                    .models
+                    .iter()
+                    .find(|model| model.enabled)
+                    .map(|model| (provider.id.clone(), model.id.clone()))
+            });
+            let (provider, model) = selected.map_or((None, None), |(p, m)| (Some(p), Some(m)));
+            if settings.default_provider != provider || settings.default_model != model {
+                let revision = settings.revision;
+                settings.revision = revision
+                    .checked_add(1)
+                    .ok_or_else(|| io::Error::other("settings revision overflow"))?;
+                settings.default_provider = provider;
+                settings.default_model = model;
+                repository.publish_settings(revision, &settings)?;
+            }
         }
     }
     crate::boot_trace::phase("config");
@@ -258,4 +371,177 @@ pub async fn run(path: PathBuf) -> Result<()> {
         }
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use profile::{Model, Provider, ProvidersConfig, SettingsConfig};
+    use std::fs;
+
+    fn provider(id: &str) -> Provider {
+        Provider {
+            id: id.into(),
+            name: None,
+            adapter: "openai_compatible".into(),
+            dialect: "openai_chat_completions".into(),
+            endpoint_owner: "user".into(),
+            gateway_translation: "none".into(),
+            evidence_revision: "v1".into(),
+            endpoint: format!("https://{id}.example.com"),
+            credential_key: Some(format!("{id}-credential")),
+            models: vec![Model {
+                id: format!("{id}-model"),
+                profile: "test_profile".into(),
+                enabled: true,
+                context_window_tokens: 32_000,
+                compact_trigger_tokens: 28_000,
+            }],
+        }
+    }
+
+    fn eight_provider_config() -> ProvidersConfig {
+        ProvidersConfig {
+            format: 1,
+            revision: 7,
+            providers: [
+                "openai",
+                "anthropic",
+                "google",
+                "deepseek",
+                "glm",
+                "qwen",
+                "moonshot",
+                "minimax",
+            ]
+            .into_iter()
+            .map(provider)
+            .collect(),
+            web_search: None,
+        }
+    }
+
+    fn base_launch(root: PathBuf) -> BuiltInLaunch {
+        BuiltInLaunch {
+            format: 1,
+            bootstrap_version: crate::bootstrap::VERSION,
+            root,
+            worker: PathBuf::from("/tmp/worker"),
+            listen: "127.0.0.1:0".parse().unwrap(),
+            configuration_mode: ConfigurationMode::Existing,
+            providers: LaunchProviders::Omitted,
+            credential_bindings: BTreeMap::new(),
+            stdio_channels: BTreeMap::new(),
+            web_listen: None,
+        }
+    }
+
+    #[test]
+    fn existing_mode_reads_eight_providers_without_changing_config_bytes_or_revisions() {
+        let root = tempfile::tempdir().unwrap();
+        let repository = profile::ConfigRepository::open(root.path()).unwrap();
+        let providers = eight_provider_config();
+        fs::write(
+            root.path().join("config/providers.json"),
+            providers.canonical_bytes().unwrap(),
+        )
+        .unwrap();
+        let settings = SettingsConfig {
+            format: 1,
+            revision: 11,
+            default_provider: Some("glm".into()),
+            default_model: Some("glm-model".into()),
+            limits: None,
+        };
+        fs::write(
+            root.path().join("config/settings.json"),
+            settings.canonical_bytes().unwrap(),
+        )
+        .unwrap();
+        let providers_path = root.path().join("config/providers.json");
+        let settings_path = root.path().join("config/settings.json");
+        let provider_bytes = fs::read(&providers_path).unwrap();
+        let settings_bytes = fs::read(&settings_path).unwrap();
+
+        let launch = base_launch(root.path().to_path_buf());
+        let loaded = configured_providers(&launch).unwrap();
+        assert_eq!(loaded, providers);
+        assert_eq!(loaded.providers.len(), 8);
+        assert_eq!(
+            repository.settings().unwrap().default_provider.as_deref(),
+            Some("glm")
+        );
+        assert_eq!(fs::read(providers_path).unwrap(), provider_bytes);
+        assert_eq!(fs::read(settings_path).unwrap(), settings_bytes);
+    }
+
+    #[test]
+    fn existing_mode_allows_missing_secret_bindings_but_rejects_unknown_ones() {
+        let root = tempfile::tempdir().unwrap();
+        let launch = base_launch(root.path().to_path_buf());
+        let providers = eight_provider_config();
+        // The endpoint still has all configured provider authorities; absence
+        // from the bootstrap frame is a credential-store miss at invocation.
+        assert!(validate_credential_bindings(&launch, &providers).is_ok());
+        assert_eq!(providers.providers.len(), 8);
+        let mut launch = launch;
+        launch
+            .credential_bindings
+            .insert("not-configured".into(), "TEKES_UNUSED".into());
+        assert!(validate_credential_bindings(&launch, &providers).is_err());
+    }
+
+    #[test]
+    fn existing_mode_fails_missing_or_malformed_config_before_writing_root_state() {
+        let root = tempfile::tempdir().unwrap();
+        let launch = base_launch(root.path().to_path_buf());
+        assert!(configured_providers(&launch).is_err());
+        assert_eq!(fs::read_dir(root.path()).unwrap().count(), 0);
+
+        fs::create_dir(root.path().join("config")).unwrap();
+        fs::write(root.path().join("config/providers.json"), b"not-json").unwrap();
+        fs::write(root.path().join("config/settings.json"), b"{}\n").unwrap();
+        let before: Vec<_> = fs::read_dir(root.path().join("config"))
+            .unwrap()
+            .map(|entry| {
+                (
+                    entry.as_ref().unwrap().file_name(),
+                    fs::read(entry.unwrap().path()).unwrap(),
+                )
+            })
+            .collect();
+        assert!(configured_providers(&launch).is_err());
+        let after: Vec<_> = fs::read_dir(root.path().join("config"))
+            .unwrap()
+            .map(|entry| {
+                (
+                    entry.as_ref().unwrap().file_name(),
+                    fs::read(entry.unwrap().path()).unwrap(),
+                )
+            })
+            .collect();
+        assert_eq!(before, after);
+        assert!(!root.path().join("threads").exists());
+    }
+
+    #[test]
+    fn legacy_launch_defaults_to_provided_and_existing_mode_rejects_mixed_input() {
+        let providers = serde_json::to_value(eight_provider_config()).unwrap();
+        let legacy = serde_json::json!({
+            "format": 1,
+            "bootstrap_version": crate::bootstrap::VERSION,
+            "root": "/tmp/root",
+            "worker": "/tmp/worker",
+            "listen": "127.0.0.1:0",
+            "providers": providers,
+            "credential_bindings": {}
+        });
+        let launch: BuiltInLaunch = serde_json::from_value(legacy.clone()).unwrap();
+        assert_eq!(launch.configuration_mode, ConfigurationMode::Provided);
+        assert!(matches!(launch.providers, LaunchProviders::Supplied(_)));
+        let mut mixed = legacy;
+        mixed["configuration_mode"] = "existing".into();
+        let mixed: BuiltInLaunch = serde_json::from_value(mixed).unwrap();
+        assert!(configured_providers(&mixed).is_err());
+    }
 }
