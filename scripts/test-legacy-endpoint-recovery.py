@@ -41,7 +41,11 @@ events = [dict(config={'digest': 'fixture'}, format=1, kind='genesis', min_reade
                seq=1, thread=session, ts='2026-10-26T00:00:00.000Z', v=1, workspace='fixture'),
           dict(content=[{'type': 'text', 'text': 'LEGACY_RECOVERY_HISTORY'}], kind='input',
                origin_key='input', origin_tuple=dict(origin, op='submit', key='input'),
-               seq=2, ts='2026-10-26T00:00:01.000Z', v=1)]
+               seq=2, ts='2026-10-26T00:00:01.000Z', v=1),
+          dict(kind='turn_open', seq=3, trigger={'inputs': [2]}, turn=1,
+               ts='2026-10-26T00:00:02.000Z', v=1),
+          dict(kind='settle', outcome='completed', seq=4, turn=1,
+               ts='2026-10-26T00:00:03.000Z', v=1)]
 ledger = folder / 'main.jsonl'
 original = ''.join(json.dumps(e, sort_keys=True, separators=(',', ':')) + '\n'
                    for e in events).encode()
@@ -114,7 +118,7 @@ for phase in range(1 if args.expect_quarantine else 2):
                 phases.append({'quarantineReproduced': True})
             else:
                 snapshot = frame['frame']['snapshot']
-                assert snapshot['address']['sessionId'] == session
+                assert snapshot['sessionId'] == session
                 assert 'LEGACY_RECOVERY_HISTORY' in json.dumps(snapshot['entries'])
                 assert ledger.read_bytes() == original, 'semantic history changed during recovery'
                 phases.append({'publicHistoryReadable': True, 'entries': len(snapshot['entries']),
@@ -127,6 +131,7 @@ assert ledger.read_bytes() == original
 result = {'build': identity, 'scope': 'isolated real public mux history and process restart; synthetic fixture; no model calls',
           'expectedOldFailure': args.expect_quarantine, 'phases': phases,
           'semanticSha256': hashlib.sha256(original).hexdigest(), 'modelCalls': 0,
+          'driverSha256': hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
           'programSha256': hashlib.sha256((args.binary_dir / 'tekes-supervisor').read_bytes()).hexdigest()}
 (case / 'result.json').write_text(json.dumps(result, indent=2) + '\n')
 print(json.dumps(result))
