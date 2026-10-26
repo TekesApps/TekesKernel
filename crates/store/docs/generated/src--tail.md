@@ -164,13 +164,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 |---|---|---|---|
 | `last_seq` | `self.projection.as_ref().map_or` | [30](../../src/tail.rs#L30) | receiver-type-required |
 | `last_seq` | `self.projection.as_ref` | [30](../../src/tail.rs#L30) | receiver-type-required |
-| `scan_valid_prefix` | `LedgerValidator::new` | [38](../../src/tail.rs#L38) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L146) |
+| `scan_valid_prefix` | `LedgerValidator::new` | [38](../../src/tail.rs#L38) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
 | `scan_valid_prefix` | `bytes.len` | [42](../../src/tail.rs#L42), [69](../../src/tail.rs#L69) | receiver-type-required |
 | `scan_valid_prefix` | `rest.iter().position` | [44](../../src/tail.rs#L44) | receiver-type-required |
 | `scan_valid_prefix` | `rest.iter` | [44](../../src/tail.rs#L44) | receiver-type-required |
 | `scan_valid_prefix` | `Some` | [45](../../src/tail.rs#L45), [50](../../src/tail.rs#L50), [58](../../src/tail.rs#L58), [72](../../src/tail.rs#L72) | external-constructor-callback-or-unresolved |
 | `scan_valid_prefix` | `Event::decode_canonical(&bytes[cursor..line_end])             .and_then` | [53](../../src/tail.rs#L53) | receiver-type-required |
-| `scan_valid_prefix` | `Event::decode_canonical` | [53](../../src/tail.rs#L53) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `scan_valid_prefix` | `Event::decode_canonical` | [53](../../src/tail.rs#L53) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `scan_valid_prefix` | `validator.push` | [54](../../src/tail.rs#L54) | receiver-type-required |
 | `scan_valid_prefix` | `(cursor != 0)         .then(&#124;&#124; validator.clone().finish().ok())         .flatten` | [64](../../src/tail.rs#L64) | receiver-type-required |
 | `scan_valid_prefix` | `(cursor != 0)         .then` | [64](../../src/tail.rs#L64) | receiver-type-required |
@@ -188,8 +188,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_genesis` | `Ok` | [93](../../src/tail.rs#L93), [97](../../src/tail.rs#L97), [100](../../src/tail.rs#L100), [104](../../src/tail.rs#L104), [106](../../src/tail.rs#L106) | external-constructor-callback-or-unresolved |
 | `read_genesis` | `line.pop` | [95](../../src/tail.rs#L95) | receiver-type-required |
 | `read_genesis` | `line.is_empty` | [96](../../src/tail.rs#L96) | receiver-type-required |
-| `read_genesis` | `Event::decode_canonical` | [99](../../src/tail.rs#L99) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
-| `read_genesis` | `LedgerValidator::new` | [102](../../src/tail.rs#L102) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L146) |
+| `read_genesis` | `Event::decode_canonical` | [99](../../src/tail.rs#L99) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
+| `read_genesis` | `LedgerValidator::new` | [102](../../src/tail.rs#L102) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
 | `read_genesis` | `validator.push(event.clone()).is_err` | [103](../../src/tail.rs#L103) | receiver-type-required |
 | `read_genesis` | `validator.push` | [103](../../src/tail.rs#L103) | receiver-type-required |
 | `read_genesis` | `event.clone` | [103](../../src/tail.rs#L103) | receiver-type-required |
@@ -197,7 +197,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `frame_events` | `bytes.len` | [113](../../src/tail.rs#L113) | receiver-type-required |
 | `frame_events` | `rest.iter().position` | [115](../../src/tail.rs#L115) | receiver-type-required |
 | `frame_events` | `rest.iter` | [115](../../src/tail.rs#L115) | receiver-type-required |
-| `frame_events` | `Event::decode_canonical` | [122](../../src/tail.rs#L122) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `frame_events` | `Event::decode_canonical` | [122](../../src/tail.rs#L122) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `frame_events` | `events.push` | [124](../../src/tail.rs#L124) | receiver-type-required |
 | `check_ledger_write_versions` | `check_write_versions` | [151](../../src/tail.rs#L151) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
 | `check_ledger_write_versions` | `frame_events` | [151](../../src/tail.rs#L151) | [store::tail::frame_events](../../src/tail.rs#L110) |
@@ -241,7 +241,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_with_sync` | `sync.full_sync` | [213](../../src/tail.rs#L213) | receiver-type-required |
 | `open_with_sync` | `scan             .validator             .clone()             .unwrap_or_else` | [216](../../src/tail.rs#L216) | receiver-type-required |
 | `open_with_sync` | `scan             .validator             .clone` | [216](../../src/tail.rs#L216) | receiver-type-required |
-| `open_with_sync` | `LedgerValidator::new` | [219](../../src/tail.rs#L219) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L146) |
+| `open_with_sync` | `LedgerValidator::new` | [219](../../src/tail.rs#L219) | [schema::fold::LedgerValidator::new](../../../schema/src/fold.rs#L147) |
 | `open_with_sync` | `Ok` | [221](../../src/tail.rs#L221) | external-constructor-callback-or-unresolved |
 | `projection` | `self.projection.as_ref` | [239](../../src/tail.rs#L239) | receiver-type-required |
 | `next_seq` | `self.projection             .as_ref()             .map_or` | [244](../../src/tail.rs#L244) | receiver-type-required |
@@ -259,7 +259,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `create_checkpoint` | `serde_json_canonicalizer::to_vec(&json!({             "v": 1,             "seq": seq,             "kind": "checkpoint",             "ts": timestamp,             "covers": seq - 1,             "summary": summary         }))         .map_err` | [272](../../src/tail.rs#L272) | receiver-type-required |
 | `create_checkpoint` | `serde_json_canonicalizer::to_vec` | [272](../../src/tail.rs#L272) | external-constructor-callback-or-unresolved |
 | `create_checkpoint` | `error.to_string` | [280](../../src/tail.rs#L280) | receiver-type-required |
-| `create_checkpoint` | `Event::decode_canonical` | [281](../../src/tail.rs#L281) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `create_checkpoint` | `Event::decode_canonical` | [281](../../src/tail.rs#L281) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `create_checkpoint` | `self.append_contract` | [282](../../src/tail.rs#L282) | [store::tail::LockedLedger::append_contract](../../src/tail.rs#L320) |
 | `create_checkpoint` | `BarrierContext::default` | [282](../../src/tail.rs#L282) | external-constructor-callback-or-unresolved |
 | `create_checkpoint` | `Ok` | [283](../../src/tail.rs#L283) | external-constructor-callback-or-unresolved |

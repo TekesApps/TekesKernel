@@ -51,7 +51,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 |---|---|---|---|
 | `genesis` | `Value::Bool` | [17](../../src/folder_events/tests.rs#L17) | external-constructor-callback-or-unresolved |
 | `genesis` | `Event::decode_canonical(&serde_json_canonicalizer::to_vec(&value).unwrap()).unwrap` | [19](../../src/folder_events/tests.rs#L19) | receiver-type-required |
-| `genesis` | `Event::decode_canonical` | [19](../../src/folder_events/tests.rs#L19) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `genesis` | `Event::decode_canonical` | [19](../../src/folder_events/tests.rs#L19) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `genesis` | `serde_json_canonicalizer::to_vec(&value).unwrap` | [19](../../src/folder_events/tests.rs#L19) | receiver-type-required |
 | `genesis` | `serde_json_canonicalizer::to_vec` | [19](../../src/folder_events/tests.rs#L19) | external-constructor-callback-or-unresolved |
 | `kinds` | `seen.lock()         .unwrap()         .iter()         .map(&#124;event&#124; match event {             FolderEvent::Published { id, .. } => format!("published:{id}"),             FolderEvent::Moved { id, from, to, .. } => format!("moved:{id}:{from:?}>{to:?}"),             FolderEvent::Removed { id, reason, .. } => format!("removed:{id}:{reason:?}"),         })         .collect` | [23](../../src/folder_events/tests.rs#L23) | receiver-type-required |

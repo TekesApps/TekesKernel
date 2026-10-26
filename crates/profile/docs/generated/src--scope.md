@@ -101,7 +101,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `for_ledger` | `"session requires a newer reader".to_owned` | [45](../../src/scope.rs#L45) | receiver-type-required |
 | `for_ledger` | `schema::effective_session_genesis(&projection.events)             .map_err(&#124;error&#124; ProfileError::InvalidReference {                 path: ledger.clone(),                 reason: error.to_string(),             })?             .expect` | [48](../../src/scope.rs#L48) | receiver-type-required |
 | `for_ledger` | `schema::effective_session_genesis(&projection.events)             .map_err` | [48](../../src/scope.rs#L48) | receiver-type-required |
-| `for_ledger` | `schema::effective_session_genesis` | [48](../../src/scope.rs#L48) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
+| `for_ledger` | `schema::effective_session_genesis` | [48](../../src/scope.rs#L48) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L57) |
 | `for_ledger` | `error.to_string` | [51](../../src/scope.rs#L51) | receiver-type-required |
 | `for_ledger` | `Self::from_genesis_value` | [54](../../src/scope.rs#L54) | [profile::scope::SessionScope::from_genesis_value](../../src/scope.rs#L57) |
 | `from_genesis_value` | `folder.into` | [61](../../src/scope.rs#L61) | receiver-type-required |

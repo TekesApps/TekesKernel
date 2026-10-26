@@ -303,7 +303,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fold_goal_rounds` | `record.created_at.as_str` | [506](../../src/lib.rs#L506) | receiver-type-required |
 | `fold_goal_rounds` | `record.rounds_started.max` | [509](../../src/lib.rs#L509) | receiver-type-required |
 | `subagent_catalog` | `schema::validate_ledger(ledger_bytes, schema::READER_VERSION)         .map_err` | [521](../../src/lib.rs#L521) | receiver-type-required |
-| `subagent_catalog` | `schema::validate_ledger` | [521](../../src/lib.rs#L521) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `subagent_catalog` | `schema::validate_ledger` | [521](../../src/lib.rs#L521) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `subagent_catalog` | `Failure::LedgerCorrupt` | [522](../../src/lib.rs#L522), [528](../../src/lib.rs#L528), [541](../../src/lib.rs#L541), [544](../../src/lib.rs#L544) | external-constructor-callback-or-unresolved |
 | `subagent_catalog` | `error.to_string` | [522](../../src/lib.rs#L522), [528](../../src/lib.rs#L528) | receiver-type-required |
 | `subagent_catalog` | `BTreeMap::new` | [523](../../src/lib.rs#L523) | external-constructor-callback-or-unresolved |

@@ -134,7 +134,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `corrupt` | [84](../../src/bounded_child_history.rs#L84), [88](../../src/bounded_child_history.rs#L88), [92](../../src/bounded_child_history.rs#L92), [96](../../src/bounded_child_history.rs#L96), [114](../../src/bounded_child_history.rs#L114), [118](../../src/bounded_child_history.rs#L118), [119](../../src/bounded_child_history.rs#L119), [132](../../src/bounded_child_history.rs#L132), [166](../../src/bounded_child_history.rs#L166), [171](../../src/bounded_child_history.rs#L171), [191](../../src/bounded_child_history.rs#L191), [223](../../src/bounded_child_history.rs#L223) | [tekes-supervisor::bounded_child_history::corrupt](../../src/bounded_child_history.rs#L41) |
 | `read` | `Err` | [88](../../src/bounded_child_history.rs#L88), [96](../../src/bounded_child_history.rs#L96), [125](../../src/bounded_child_history.rs#L125), [140](../../src/bounded_child_history.rs#L140), [152](../../src/bounded_child_history.rs#L152), [180](../../src/bounded_child_history.rs#L180), [227](../../src/bounded_child_history.rs#L227) | external-constructor-callback-or-unresolved |
 | `read` | `schema::validate_ledger(&bytes(&folder.join("main.jsonl"))?, schema::READER_VERSION)             .map_err` | [91](../../src/bounded_child_history.rs#L91) | receiver-type-required |
-| `read` | `schema::validate_ledger` | [91](../../src/bounded_child_history.rs#L91), [113](../../src/bounded_child_history.rs#L113) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `read` | `schema::validate_ledger` | [91](../../src/bounded_child_history.rs#L91), [113](../../src/bounded_child_history.rs#L113) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `read` | `bytes` | [91](../../src/bounded_child_history.rs#L91), [113](../../src/bounded_child_history.rs#L113) | [tekes-supervisor::bounded_child_history::bytes](../../src/bounded_child_history.rs#L48) |
 | `read` | `folder.join` | [91](../../src/bounded_child_history.rs#L91), [113](../../src/bounded_child_history.rs#L113) | receiver-type-required |
 | `read` | `parent.events.first().and_then` | [93](../../src/bounded_child_history.rs#L93) | receiver-type-required |
@@ -159,7 +159,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `raw["parent"]["spawn_id"].as_str` | [123](../../src/bounded_child_history.rs#L123) | receiver-type-required |
 | `read` | `spawn.string_field` | [123](../../src/bounded_child_history.rs#L123), [203](../../src/bounded_child_history.rs#L203) | receiver-type-required |
 | `read` | `endpoint::Projector::read_only_history(&child.events, folder)         .map_err` | [131](../../src/bounded_child_history.rs#L131) | receiver-type-required |
-| `read` | `endpoint::Projector::read_only_history` | [131](../../src/bounded_child_history.rs#L131) | [endpoint::projection::Projector::read_only_history](../../../endpoint/src/projection.rs#L129) |
+| `read` | `endpoint::Projector::read_only_history` | [131](../../src/bounded_child_history.rs#L131) | [endpoint::projection::Projector::read_only_history](../../../endpoint/src/projection.rs#L135) |
 | `read` | `records.last().map_or` | [133](../../src/bounded_child_history.rs#L133) | receiver-type-required |
 | `read` | `records.last` | [133](../../src/bounded_child_history.rs#L133) | receiver-type-required |
 | `read` | `request.through_sequence.unwrap_or` | [134](../../src/bounded_child_history.rs#L134) | receiver-type-required |
@@ -227,7 +227,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `fixture` | `events             .into_iter` | [254](../../src/bounded_child_history.rs#L254) | receiver-type-required |
 | `fixture` | `v.to_string` | [256](../../src/bounded_child_history.rs#L256), [268](../../src/bounded_child_history.rs#L268) | receiver-type-required |
 | `fixture` | `schema::validate_ledger(text.as_bytes(), schema::READER_VERSION).unwrap` | [258](../../src/bounded_child_history.rs#L258), [270](../../src/bounded_child_history.rs#L270) | receiver-type-required |
-| `fixture` | `schema::validate_ledger` | [258](../../src/bounded_child_history.rs#L258), [270](../../src/bounded_child_history.rs#L270) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `fixture` | `schema::validate_ledger` | [258](../../src/bounded_child_history.rs#L258), [270](../../src/bounded_child_history.rs#L270) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `fixture` | `text.as_bytes` | [258](../../src/bounded_child_history.rs#L258), [270](../../src/bounded_child_history.rs#L270) | receiver-type-required |
 | `fixture` | `fs::write(root.path().join("main.jsonl"), text).unwrap` | [259](../../src/bounded_child_history.rs#L259) | receiver-type-required |
 | `fixture` | `fs::write` | [259](../../src/bounded_child_history.rs#L259), [271](../../src/bounded_child_history.rs#L271) | external-constructor-callback-or-unresolved |

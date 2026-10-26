@@ -336,7 +336,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `card_updated_ms` | `projection         .events         .last` | [173](../../src/service.rs#L173) | receiver-type-required |
 | `card_updated_ms` | `event.string_field` | [176](../../src/service.rs#L176) | receiver-type-required |
 | `card_updated_ms` | `timestamp_millis(value).map_err` | [178](../../src/service.rs#L178) | receiver-type-required |
-| `card_updated_ms` | `timestamp_millis` | [178](../../src/service.rs#L178) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1020) |
+| `card_updated_ms` | `timestamp_millis` | [178](../../src/service.rs#L178) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1047) |
 | `last_record_updated_ms` | `fs::File::open(path).ok` | [190](../../src/service.rs#L190) | receiver-type-required |
 | `last_record_updated_ms` | `fs::File::open` | [190](../../src/service.rs#L190) | external-constructor-callback-or-unresolved |
 | `last_record_updated_ms` | `file.metadata().ok()?.len` | [191](../../src/service.rs#L191) | receiver-type-required |
@@ -360,7 +360,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `last_record_updated_ms` | `serde_json::from_slice(&bytes[line_start..end]).ok` | [203](../../src/service.rs#L203) | receiver-type-required |
 | `last_record_updated_ms` | `serde_json::from_slice` | [203](../../src/service.rs#L203) | external-constructor-callback-or-unresolved |
 | `last_record_updated_ms` | `timestamp_millis(record.get("ts")?.as_str()?).ok` | [204](../../src/service.rs#L204) | receiver-type-required |
-| `last_record_updated_ms` | `timestamp_millis` | [204](../../src/service.rs#L204) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1020) |
+| `last_record_updated_ms` | `timestamp_millis` | [204](../../src/service.rs#L204) | [endpoint::projection::timestamp_millis](../../src/projection.rs#L1047) |
 | `last_record_updated_ms` | `record.get("ts")?.as_str` | [204](../../src/service.rs#L204) | receiver-type-required |
 | `last_record_updated_ms` | `record.get` | [204](../../src/service.rs#L204) | receiver-type-required |
 | `last_record_updated_ms` | `Some` | [205](../../src/service.rs#L205) | external-constructor-callback-or-unresolved |
@@ -392,7 +392,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `card_summary` | `serde_json::to_value` | [236](../../src/service.rs#L236) | external-constructor-callback-or-unresolved |
 | `card_summary` | `event.raw` | [236](../../src/service.rs#L236) | receiver-type-required |
 | `card_summary` | `schema::effective_session_genesis(&projection.events)?.expect` | [245](../../src/service.rs#L245) | receiver-type-required |
-| `card_summary` | `schema::effective_session_genesis` | [245](../../src/service.rs#L245) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
+| `card_summary` | `schema::effective_session_genesis` | [245](../../src/service.rs#L245) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L57) |
 | `card_summary` | `Ok` | [246](../../src/service.rs#L246) | external-constructor-callback-or-unresolved |
 | `card_summary` | `scope.get("cwd").and_then(Value::as_str).map` | [247](../../src/service.rs#L247) | receiver-type-required |
 | `card_summary` | `scope.get("cwd").and_then` | [247](../../src/service.rs#L247) | receiver-type-required |
@@ -697,7 +697,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `active_folder` | `Ok` | [1021](../../src/service.rs#L1021) | external-constructor-callback-or-unresolved |
 | `event` | `serde_json::to_vec` | [1026](../../src/service.rs#L1026) | external-constructor-callback-or-unresolved |
 | `event` | `Ok` | [1027](../../src/service.rs#L1027) | external-constructor-callback-or-unresolved |
-| `event` | `Event::from_value` | [1027](../../src/service.rs#L1027) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `event` | `Event::from_value` | [1027](../../src/service.rs#L1027) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `event` | `IJsonValue::parse` | [1027](../../src/service.rs#L1027) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `store_error` | `store::StoreError::Corruption` | [1031](../../src/service.rs#L1031) | external-constructor-callback-or-unresolved |
 | `store_error` | `error.to_string` | [1031](../../src/service.rs#L1031) | receiver-type-required |

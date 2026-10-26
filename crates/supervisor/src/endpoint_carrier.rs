@@ -37,6 +37,9 @@ use crate::request_index::{
     RequestIndex, children_may_hold_requests, ledger_signature, may_hold_requests,
 };
 
+mod legacy_history;
+use legacy_history::FrozenLegacyHistory;
+
 const HOST_STREAM_MAX_FRAMES: usize = 4_096;
 const HOST_STREAM_MAX_BYTES: usize = 4 * 1024 * 1024;
 
@@ -535,6 +538,7 @@ struct CarrierStreamsInner {
     hub: EndpointSubscriptionHub,
     generations: Mutex<StreamGenerations>,
     controls: Mutex<BTreeMap<String, SessionControlItem>>,
+    legacy_histories: Mutex<HashMap<String, Arc<FrozenLegacyHistory>>>,
     context_projection_lock: Mutex<()>,
     session_authority: Mutex<Option<Weak<dyn SupervisorSessionAuthority>>>,
     next_rpc: AtomicU64,
@@ -729,6 +733,12 @@ impl Drop for JournalLease {
             *count = count.saturating_sub(1);
             if *count == 0 {
                 attachments.journal_leases.remove(&self.session);
+                self.streams
+                    .inner
+                    .legacy_histories
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .remove(&self.session);
             }
         }
     }
@@ -996,6 +1006,7 @@ impl ProductionCarrierStreams {
                 hub: EndpointSubscriptionHub::default(),
                 generations: Mutex::new(StreamGenerations::default()),
                 controls: Mutex::new(BTreeMap::new()),
+                legacy_histories: Mutex::new(HashMap::new()),
                 context_projection_lock: Mutex::new(()),
                 session_authority: Mutex::new(None),
                 next_rpc: AtomicU64::new(1),
@@ -2106,7 +2117,16 @@ impl ProductionCarrierStreams {
         max_messages: usize,
     ) -> Result<SessionStreamReceiver, ProductionCarrierError> {
         let lease = self.claim_journal(&address.session_id)?;
-        self.verify_session_carrier(&address.session_id)?;
+        if let Err(error) = self.verify_session_carrier(&address.session_id) {
+            if matches!(error, ProductionCarrierError::Quarantined(_)) {
+                // Display-only fallback. The catalog remains quarantined and all
+                // mutating/recovery gates keep the strict verifier.
+                return self
+                    .open_legacy_journal(generation, address, max_messages, lease)
+                    .map_err(|_| error);
+            }
+            return Err(error);
+        }
         // A stale journal (projection failed after settle, or a supervisor locked
         // append with no worker) must not become the snapshot a client folds
         // from. Failure only logs: the periodic sweep repairs within one tick.
@@ -2331,6 +2351,12 @@ impl ProductionCarrierStreams {
                 "expected a V3 journal-page request".to_owned(),
             ));
         };
+        if let Some(page) =
+            self.legacy_journal_page(&address, through_sequence, before_sequence, max_messages)?
+        {
+            return Ok(page);
+        }
+        self.verify_session_carrier(&address.session_id)?;
         let session = load_mux_session(&self.inner.root, &address.session_id)?;
         let mut page = endpoint::frozen_history_page(
             &session.endpoint,
@@ -2355,6 +2381,7 @@ enum ProductionStreamKind {
         items: BTreeMap<String, SessionSummary>,
     },
     Journal(SessionAddress),
+    Historical,
     Control,
     Actionables {
         items: BTreeMap<String, SessionActionable>,
@@ -2377,6 +2404,7 @@ impl ProductionStream {
         envelope: ServerRequest,
     ) -> Result<Option<SessionSyncFrame>, ProductionCarrierError> {
         match &mut self.kind {
+            ProductionStreamKind::Historical => Ok(None),
             ProductionStreamKind::Inventory { items } => {
                 let value: Value = serde_json::from_slice(&envelope.payload.canonical_bytes()?)?;
                 let kind = value
@@ -2582,6 +2610,11 @@ impl SessionStream for ProductionStream {
             if let Some(frame) = self.pending.pop_front() {
                 return Some(Ok(frame));
             }
+            if matches!(self.kind, ProductionStreamKind::Historical) {
+                // A frozen history has no live source. Stay attached until the
+                // client closes; EOF would incorrectly trigger reconnection.
+                return std::future::pending().await;
+            }
             loop {
                 let source = self.source.as_mut()?;
                 let envelope = match source.recv().await? {
@@ -2725,6 +2758,11 @@ impl EndpointHost for LifecycleCarrierHost {
 
     fn call(&self, request: EndpointHostCall) -> EndpointHostFuture<'_> {
         Box::pin(async move {
+            if self.unary.method_class(&request.operation) == endpoint::MethodClass::Mutation
+                && let Some(failure) = self.streams.legacy_mutation_failure(&request)
+            {
+                return failure;
+            }
             let lifecycle = lifecycle_target(&request);
             let result = self.unary.call(request).await;
             if result.ok {

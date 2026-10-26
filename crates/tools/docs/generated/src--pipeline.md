@@ -467,7 +467,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `event` | `ToolPipelineError::Json` | [962](../../src/pipeline.rs#L962) | external-constructor-callback-or-unresolved |
 | `event` | `error.to_string` | [962](../../src/pipeline.rs#L962) | receiver-type-required |
 | `event` | `Ok` | [963](../../src/pipeline.rs#L963) | external-constructor-callback-or-unresolved |
-| `event` | `Event::decode_canonical` | [963](../../src/pipeline.rs#L963) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `event` | `Event::decode_canonical` | [963](../../src/pipeline.rs#L963) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `value_to_ijson` | `serde_json::to_vec(&value).map_err` | [968](../../src/pipeline.rs#L968) | receiver-type-required |
 | `value_to_ijson` | `serde_json::to_vec` | [968](../../src/pipeline.rs#L968) | external-constructor-callback-or-unresolved |
 | `value_to_ijson` | `ToolPipelineError::Json` | [968](../../src/pipeline.rs#L968) | external-constructor-callback-or-unresolved |

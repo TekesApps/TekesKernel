@@ -57,7 +57,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
 | `event` | `Event::decode_canonical(&serde_json_canonicalizer::to_vec(&value).unwrap()).unwrap` | [12](../../src/card/tests.rs#L12) | receiver-type-required |
-| `event` | `Event::decode_canonical` | [12](../../src/card/tests.rs#L12) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `event` | `Event::decode_canonical` | [12](../../src/card/tests.rs#L12) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `event` | `serde_json_canonicalizer::to_vec(&value).unwrap` | [12](../../src/card/tests.rs#L12) | receiver-type-required |
 | `event` | `serde_json_canonicalizer::to_vec` | [12](../../src/card/tests.rs#L12) | external-constructor-callback-or-unresolved |
 | `genesis` | `event` | [16](../../src/card/tests.rs#L16) | [store::card::tests::event](../../src/card/tests.rs#L8) |

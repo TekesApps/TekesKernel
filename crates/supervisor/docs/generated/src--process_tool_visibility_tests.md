@@ -87,7 +87,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `receiver_test` | `test` | [85](../../src/process_tool_visibility_tests.rs#L85) | external-constructor-callback-or-unresolved |
 | `receiver_test` | `host.shutdown` | [87](../../src/process_tool_visibility_tests.rs#L87) | receiver-type-required |
 | `receiver_test` | `schema::validate_ledger(&after, schema::READER_VERSION).unwrap` | [97](../../src/process_tool_visibility_tests.rs#L97) | receiver-type-required |
-| `receiver_test` | `schema::validate_ledger` | [97](../../src/process_tool_visibility_tests.rs#L97) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `receiver_test` | `schema::validate_ledger` | [97](../../src/process_tool_visibility_tests.rs#L97) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `receiver_test` | `std::panic::resume_unwind` | [99](../../src/process_tool_visibility_tests.rs#L99) | external-constructor-callback-or-unresolved |
 | `live_receiver` | `Instant::now` | [108](../../src/process_tool_visibility_tests.rs#L108), [124](../../src/process_tool_visibility_tests.rs#L124) | external-constructor-callback-or-unresolved |
 | `live_receiver` | `Duration::from_secs` | [108](../../src/process_tool_visibility_tests.rs#L108), [124](../../src/process_tool_visibility_tests.rs#L124) | external-constructor-callback-or-unresolved |
@@ -186,7 +186,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `serde_json::to_vec(&fact).unwrap` | [298](../../src/process_tool_visibility_tests.rs#L298) | receiver-type-required |
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `bytes.push` | [303](../../src/process_tool_visibility_tests.rs#L303) | receiver-type-required |
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `schema::validate_ledger(&bytes, schema::READER_VERSION).unwrap` | [304](../../src/process_tool_visibility_tests.rs#L304) | receiver-type-required |
-| `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `schema::validate_ledger` | [304](../../src/process_tool_visibility_tests.rs#L304) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `schema::validate_ledger` | [304](../../src/process_tool_visibility_tests.rs#L304) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `fs::write(ledger, &bytes).unwrap` | [310](../../src/process_tool_visibility_tests.rs#L310), [336](../../src/process_tool_visibility_tests.rs#L336) | receiver-type-required |
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `fs::write` | [310](../../src/process_tool_visibility_tests.rs#L310), [336](../../src/process_tool_visibility_tests.rs#L336) | external-constructor-callback-or-unresolved |
 | `legacy_hot_interrupt_replays_only_the_exact_stop_before_source_receipt` | `ToolControlSession::new` | [312](../../src/process_tool_visibility_tests.rs#L312) | external-constructor-callback-or-unresolved |

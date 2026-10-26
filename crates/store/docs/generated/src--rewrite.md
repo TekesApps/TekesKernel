@@ -647,7 +647,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_operation` | `"rewrite operation format must equal 1".to_owned` | [616](../../src/rewrite.rs#L616) | receiver-type-required |
 | `validate_operation` | `validate_path_id` | [619](../../src/rewrite.rs#L619) | [store::rewrite::validate_path_id](../../src/rewrite.rs#L591) |
 | `validate_operation` | `validate_uuid` | [620](../../src/rewrite.rs#L620), [621](../../src/rewrite.rs#L621), [724](../../src/rewrite.rs#L724) | [store::rewrite::validate_uuid](../../src/rewrite.rs#L602) |
-| `validate_operation` | `Event::decode_canonical` | [626](../../src/rewrite.rs#L626) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `validate_operation` | `Event::decode_canonical` | [626](../../src/rewrite.rs#L626) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `validate_operation` | `serde_json_canonicalizer::to_vec(&timestamp_probe)             .map_err` | [627](../../src/rewrite.rs#L627) | receiver-type-required |
 | `validate_operation` | `serde_json_canonicalizer::to_vec` | [627](../../src/rewrite.rs#L627) | external-constructor-callback-or-unresolved |
 | `validate_operation` | `error.to_string` | [628](../../src/rewrite.rs#L628) | receiver-type-required |
@@ -728,7 +728,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read_source_ledgers` | `entry.file_name().to_string_lossy` | [783](../../src/rewrite.rs#L783) | receiver-type-required |
 | `read_source_ledgers` | `entry.file_name` | [783](../../src/rewrite.rs#L783) | receiver-type-required |
 | `read_source_ledgers` | `fs::read` | [787](../../src/rewrite.rs#L787) | external-constructor-callback-or-unresolved |
-| `read_source_ledgers` | `validate_ledger` | [788](../../src/rewrite.rs#L788) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `read_source_ledgers` | `validate_ledger` | [788](../../src/rewrite.rs#L788) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `read_source_ledgers` | `Err` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `StoreError::Corruption` | [790](../../src/rewrite.rs#L790), [796](../../src/rewrite.rs#L796) | external-constructor-callback-or-unresolved |
 | `read_source_ledgers` | `"empty rewrite ledger".to_owned` | [790](../../src/rewrite.rs#L790) | receiver-type-required |
@@ -783,7 +783,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encoded_prefix` | `event.canonical_bytes` | [877](../../src/rewrite.rs#L877) | receiver-type-required |
 | `encoded_prefix` | `bytes.push` | [878](../../src/rewrite.rs#L878) | receiver-type-required |
 | `encoded_prefix` | `validate_ledger(&bytes, schema::READER_VERSION)         .map_err` | [880](../../src/rewrite.rs#L880) | receiver-type-required |
-| `encoded_prefix` | `validate_ledger` | [880](../../src/rewrite.rs#L880) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `encoded_prefix` | `validate_ledger` | [880](../../src/rewrite.rs#L880) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `encoded_prefix` | `StoreError::InvalidForkAnchor` | [881](../../src/rewrite.rs#L881) | external-constructor-callback-or-unresolved |
 | `encoded_prefix` | `Ok` | [882](../../src/rewrite.rs#L882) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `ledgers         .iter()         .map(&#124;(name, bytes)&#124; Ok((name.clone(), decode_events(bytes)?)))         .collect::<Result<BTreeMap<_, _>, StoreError>>` | [886](../../src/rewrite.rs#L886) | receiver-type-required |
@@ -792,7 +792,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_terminal_source` | `Ok` | [888](../../src/rewrite.rs#L888), [981](../../src/rewrite.rs#L981) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `name.clone` | [888](../../src/rewrite.rs#L888) | receiver-type-required |
 | `validate_terminal_source` | `decode_events` | [888](../../src/rewrite.rs#L888) | [store::rewrite::decode_events](../../src/rewrite.rs#L1208) |
-| `validate_terminal_source` | `validate_ledger` | [891](../../src/rewrite.rs#L891) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `validate_terminal_source` | `validate_ledger` | [891](../../src/rewrite.rs#L891) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `validate_terminal_source` | `Err` | [894](../../src/rewrite.rs#L894), [901](../../src/rewrite.rs#L901), [955](../../src/rewrite.rs#L955), [976](../../src/rewrite.rs#L976) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `StoreError::RewriteSourceNotTerminal` | [894](../../src/rewrite.rs#L894), [901](../../src/rewrite.rs#L901), [911](../../src/rewrite.rs#L911), [915](../../src/rewrite.rs#L915), [921](../../src/rewrite.rs#L921), [924](../../src/rewrite.rs#L924), [927](../../src/rewrite.rs#L927), [933](../../src/rewrite.rs#L933), [938](../../src/rewrite.rs#L938), [946](../../src/rewrite.rs#L946), [955](../../src/rewrite.rs#L955), [963](../../src/rewrite.rs#L963), [976](../../src/rewrite.rs#L976) | external-constructor-callback-or-unresolved |
 | `validate_terminal_source` | `decoded         .iter()         .filter` | [906](../../src/rewrite.rs#L906) | receiver-type-required |
@@ -873,7 +873,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `scan_redaction` | `forbidden.iter().any` | [1050](../../src/rewrite.rs#L1050) | receiver-type-required |
 | `scan_redaction` | `forbidden.iter` | [1050](../../src/rewrite.rs#L1050) | receiver-type-required |
 | `scan_redaction` | `contains_bytes` | [1050](../../src/rewrite.rs#L1050), [1068](../../src/rewrite.rs#L1068) | [store::rewrite::contains_bytes](../../src/rewrite.rs#L1088) |
-| `scan_redaction` | `Event::decode_canonical` | [1051](../../src/rewrite.rs#L1051) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `scan_redaction` | `Event::decode_canonical` | [1051](../../src/rewrite.rs#L1051) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `scan_redaction` | `events.insert` | [1052](../../src/rewrite.rs#L1052) | receiver-type-required |
 | `scan_redaction` | `file.clone` | [1053](../../src/rewrite.rs#L1053) | receiver-type-required |
 | `scan_redaction` | `event.seq` | [1054](../../src/rewrite.rs#L1054) | receiver-type-required |
@@ -1078,9 +1078,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `events         .iter()         .filter` | [1407](../../src/rewrite.rs#L1407) | receiver-type-required |
 | `project_file` | `events         .iter` | [1407](../../src/rewrite.rs#L1407) | receiver-type-required |
 | `project_file` | `schema::effective_session_genesis(&scope_events)?         .ok_or_else` | [1412](../../src/rewrite.rs#L1412) | receiver-type-required |
-| `project_file` | `schema::effective_session_genesis` | [1412](../../src/rewrite.rs#L1412) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L54) |
+| `project_file` | `schema::effective_session_genesis` | [1412](../../src/rewrite.rs#L1412) | [schema::effective_session_genesis](../../../schema/src/lib.rs#L57) |
 | `project_file` | `"source genesis missing".to_owned` | [1413](../../src/rewrite.rs#L1413) | receiver-type-required |
-| `project_file` | `Event::from_value` | [1414](../../src/rewrite.rs#L1414) | [schema::event::Event::from_value](../../../schema/src/event.rs#L179) |
+| `project_file` | `Event::from_value` | [1414](../../src/rewrite.rs#L1414) | [schema::event::Event::from_value](../../../schema/src/event.rs#L182) |
 | `project_file` | `schema::IJsonValue::parse` | [1414](../../src/rewrite.rs#L1414) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `project_file` | `serde_json::to_vec(&effective_genesis)             .map_err` | [1415](../../src/rewrite.rs#L1415) | receiver-type-required |
 | `project_file` | `serde_json::to_vec` | [1415](../../src/rewrite.rs#L1415) | external-constructor-callback-or-unresolved |
@@ -1115,7 +1115,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `project_file` | `materialize_meta` | [1557](../../src/rewrite.rs#L1557) | [store::rewrite::materialize_meta](../../src/rewrite.rs#L1921) |
 | `project_file` | `compact_summaries.is_empty` | [1562](../../src/rewrite.rs#L1562) | receiver-type-required |
 | `project_file` | `materialize_epoch` | [1607](../../src/rewrite.rs#L1607) | [store::rewrite::materialize_epoch](../../src/rewrite.rs#L1945) |
-| `project_file` | `validate_ledger` | [1610](../../src/rewrite.rs#L1610) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `project_file` | `validate_ledger` | [1610](../../src/rewrite.rs#L1610) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `project_file` | `Ok` | [1611](../../src/rewrite.rs#L1611) | external-constructor-callback-or-unresolved |
 | `build_genesis` | `event_value` | [1618](../../src/rewrite.rs#L1618) | [store::rewrite::event_value](../../src/rewrite.rs#L1217) |
 | `build_genesis` | `(context.source_file == "main.jsonl")         .then_some(context.operation.genesis_origin.as_ref())         .flatten` | [1619](../../src/rewrite.rs#L1619) | receiver-type-required |
@@ -1309,7 +1309,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `push_event` | `serde_json_canonicalizer::to_vec(&value)         .map_err` | [1995](../../src/rewrite.rs#L1995) | receiver-type-required |
 | `push_event` | `serde_json_canonicalizer::to_vec` | [1995](../../src/rewrite.rs#L1995) | external-constructor-callback-or-unresolved |
 | `push_event` | `StoreError::Corruption` | [1996](../../src/rewrite.rs#L1996) | external-constructor-callback-or-unresolved |
-| `push_event` | `Event::decode_canonical` | [1997](../../src/rewrite.rs#L1997) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `push_event` | `Event::decode_canonical` | [1997](../../src/rewrite.rs#L1997) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `push_event` | `output.extend_from_slice` | [1998](../../src/rewrite.rs#L1998) | receiver-type-required |
 | `push_event` | `output.push` | [1999](../../src/rewrite.rs#L1999) | receiver-type-required |
 | `push_event` | `Ok` | [2000](../../src/rewrite.rs#L2000) | external-constructor-callback-or-unresolved |
@@ -1423,7 +1423,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_payload` | `"validated rewrite lacks payload".to_owned` | [2214](../../src/rewrite.rs#L2214) | receiver-type-required |
 | `validate_payload` | `fs::read` | [2218](../../src/rewrite.rs#L2218), [2252](../../src/rewrite.rs#L2252) | external-constructor-callback-or-unresolved |
 | `validate_payload` | `payload.join` | [2218](../../src/rewrite.rs#L2218), [2250](../../src/rewrite.rs#L2250), [2252](../../src/rewrite.rs#L2252) | receiver-type-required |
-| `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1053) |
+| `validate_payload` | `validate_ledger` | [2219](../../src/rewrite.rs#L2219) | [schema::fold::validate_ledger](../../../schema/src/fold.rs#L1092) |
 | `validate_payload` | `crate::tail::check_write_versions` | [2220](../../src/rewrite.rs#L2220) | [store::tail::check_write_versions](../../src/tail.rs#L154) |
 | `validate_payload` | `projection.events.first().ok_or_else` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
 | `validate_payload` | `projection.events.first` | [2221](../../src/rewrite.rs#L2221) | receiver-type-required |
@@ -1482,7 +1482,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_seed_snapshot` | `bytes         .split` | [2306](../../src/rewrite.rs#L2306) | receiver-type-required |
 | `validate_seed_snapshot` | `line.is_empty` | [2308](../../src/rewrite.rs#L2308) | receiver-type-required |
 | `validate_seed_snapshot` | `Event::decode_canonical(line)             .map_err` | [2310](../../src/rewrite.rs#L2310) | receiver-type-required |
-| `validate_seed_snapshot` | `Event::decode_canonical` | [2310](../../src/rewrite.rs#L2310) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L168) |
+| `validate_seed_snapshot` | `Event::decode_canonical` | [2310](../../src/rewrite.rs#L2310) | [schema::event::Event::decode_canonical](../../../schema/src/event.rs#L171) |
 | `validate_seed_snapshot` | `event.seq` | [2312](../../src/rewrite.rs#L2312), [2317](../../src/rewrite.rs#L2317) | receiver-type-required |
 | `validate_seed_snapshot` | `"seed snapshot seqs are not strictly increasing".to_owned` | [2314](../../src/rewrite.rs#L2314) | receiver-type-required |
 | `validate_seed_snapshot` | `observed.insert` | [2318](../../src/rewrite.rs#L2318) | receiver-type-required |

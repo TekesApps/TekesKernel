@@ -89,6 +89,7 @@ enum AttemptStage {
     Open,
     Dispatched,
     Recovered,
+    Usage,
     Terminal,
 }
 
@@ -171,6 +172,26 @@ impl LedgerValidator {
     }
 
     pub fn push(&mut self, event: Event) -> Result<(), SchemaError> {
+        if event.is_historical_only() {
+            return Err(SchemaError::event(
+                Some(event.seq()),
+                "historical-only event cannot enter the execution validator",
+            ));
+        }
+        self.push_inner(event)
+    }
+
+    fn push_historical(&mut self, event: Event) -> Result<(), SchemaError> {
+        if !event.is_historical_only() {
+            return Err(SchemaError::event(
+                Some(event.seq()),
+                "historical fold requires a historical-only event",
+            ));
+        }
+        self.push_inner(event)
+    }
+
+    fn push_inner(&mut self, event: Event) -> Result<(), SchemaError> {
         let seq = event.seq();
         let expected = self.events.len() as u64 + 1;
         if seq != expected {
@@ -681,7 +702,10 @@ impl LedgerValidator {
                     .attempts
                     .get_mut(id)
                     .ok_or_else(|| SchemaError::constraint(2, seq, "recovery without attempt"))?;
-                if !matches!(attempt.stage, AttemptStage::Open | AttemptStage::Dispatched) {
+                if !matches!(
+                    attempt.stage,
+                    AttemptStage::Open | AttemptStage::Dispatched | AttemptStage::Usage
+                ) {
                     return Err(SchemaError::constraint(
                         2,
                         seq,
@@ -696,13 +720,28 @@ impl LedgerValidator {
                     .attempts
                     .get(id)
                     .ok_or_else(|| SchemaError::constraint(2, seq, "reasoning without attempt"))?;
-                if attempt.stage == AttemptStage::Terminal {
+                if matches!(attempt.stage, AttemptStage::Usage | AttemptStage::Terminal) {
                     return Err(SchemaError::constraint(
                         2,
                         seq,
                         "reasoning after attempt outcome",
                     ));
                 }
+            }
+            EventKind::Extension(name) if name == "usage" && event.is_historical_only() => {
+                let id = value_str(object, "attempt", seq)?;
+                let attempt = self
+                    .attempts
+                    .get_mut(id)
+                    .ok_or_else(|| SchemaError::constraint(2, seq, "usage without attempt"))?;
+                if attempt.stage == AttemptStage::Terminal {
+                    return Err(SchemaError::constraint(
+                        2,
+                        seq,
+                        "usage appended after terminal outcome",
+                    ));
+                }
+                attempt.stage = AttemptStage::Usage;
             }
             EventKind::Output => self.finish_attempt(event)?,
             EventKind::Error if object.contains_key("attempt") => self.finish_attempt(event)?,
@@ -1068,6 +1107,184 @@ pub fn validate_ledger(bytes: &[u8], reader_version: u64) -> Result<LedgerProjec
         validator.push(Event::decode_canonical(line)?)?;
     }
     validator.finish()
+}
+
+/// A ledger validated for historical presentation only. Its events retain the
+/// original canonical records and carry an unforgeable marker that makes the
+/// normal execution validator reject them.
+#[derive(Clone, Debug)]
+pub struct HistoricalLedger {
+    events: Vec<Event>,
+    last_seq: u64,
+}
+
+impl HistoricalLedger {
+    #[must_use]
+    pub fn events(&self) -> &[Event] {
+        &self.events
+    }
+
+    #[must_use]
+    pub const fn last_seq(&self) -> u64 {
+        self.last_seq
+    }
+}
+
+const LEGACY_TOOLS_DIGEST_WRITERS: &[&str] = &[
+    "1e0ae8a671de",
+    "2a6ddb4555f7",
+    "3b7fe137fbbd",
+    "5ef6d88f22ce",
+    "7350540354bf",
+    "92f3f18163df",
+    "9d5849d52fc1",
+    "a8fa646e2214",
+    "b690a708901a",
+    "cfa7a6be31c9",
+    "d0fc9902917c",
+    "da1d795fcca0",
+    "f31b1a57fc88",
+];
+
+fn is_proven_legacy_writer(binary: &str) -> bool {
+    let Some(rest) = binary.strip_prefix("dev-") else {
+        return false;
+    };
+    let Some((source, build)) = rest.split_once('-') else {
+        return false;
+    };
+    LEGACY_TOOLS_DIGEST_WRITERS.contains(&source)
+        && build.len() == 12
+        && build
+            .bytes()
+            .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
+}
+
+fn is_historical_core_kind(kind: &str) -> bool {
+    matches!(
+        kind,
+        "genesis"
+            | "run_start"
+            | "epoch"
+            | "input"
+            | "turn_open"
+            | "queue_edit"
+            | "output"
+            | "reasoning"
+            | "tool_call"
+            | "effective_execution"
+            | "tool_execution_started"
+            | "tool_result"
+            | "approval_request"
+            | "approval_response"
+            | "spawn"
+            | "child_result"
+            | "attempt"
+            | "attempt_dispatched"
+            | "attempt_recovery"
+            | "usage"
+            | "error"
+            | "settle"
+            | "checkpoint"
+            | "compact"
+            | "stop_requested"
+            | "meta"
+            | "state"
+    )
+}
+
+/// Validates a narrowly recognized pre-catalog ledger for read-only history
+/// presentation. Normal `validate_ledger` and all execution folds remain
+/// strict about the current epoch contract.
+pub fn validate_historical_ledger(
+    bytes: &[u8],
+    reader_version: u64,
+) -> Result<HistoricalLedger, SchemaError> {
+    if bytes.is_empty() {
+        return Err(SchemaError::event(None, "ledger is empty"));
+    }
+    if !bytes.ends_with(b"\n") {
+        return Err(SchemaError::event(
+            None,
+            "ledger must end each event with LF",
+        ));
+    }
+    let content = &bytes[..bytes.len() - 1];
+    if content.is_empty() {
+        return Err(SchemaError::event(None, "ledger is empty"));
+    }
+
+    let mut validator = LedgerValidator::new(reader_version);
+    let mut events = Vec::new();
+    let mut run_binary: Option<String> = None;
+    let mut legacy_epochs = 0usize;
+    for line in content.split(|byte| *byte == b'\n') {
+        if line.is_empty() {
+            return Err(SchemaError::event(None, "ledger contains an empty line"));
+        }
+        let raw = crate::IJsonValue::parse(line)?;
+        let object = raw
+            .value()
+            .as_object()
+            .ok_or_else(|| SchemaError::event(None, "event must be a JSON object"))?;
+        let kind = object
+            .get("kind")
+            .and_then(Value::as_str)
+            .unwrap_or_default();
+        if !is_historical_core_kind(kind) {
+            return Err(SchemaError::event(
+                object.get("seq").and_then(Value::as_u64),
+                "historical ledger contains an unrecognized event kind",
+            ));
+        }
+        let legacy_writer = run_binary.as_deref().is_some_and(is_proven_legacy_writer);
+        if kind == "run_start" {
+            let binary = object
+                .get("binary")
+                .and_then(Value::as_str)
+                .unwrap_or_default();
+            if !is_proven_legacy_writer(binary) {
+                return Err(SchemaError::event(
+                    object.get("seq").and_then(Value::as_u64),
+                    "historical ledger has an unproven run_start writer",
+                ));
+            }
+        }
+        if kind == "usage" && !legacy_writer {
+            return Err(SchemaError::event(
+                object.get("seq").and_then(Value::as_u64),
+                "historical usage event has no proven legacy writer",
+            ));
+        }
+        let event = Event::decode_historical_canonical(line, legacy_writer)?;
+
+        if event.seq() == 1
+            && (event.integer_field("format") != Some(1)
+                || event.integer_field("min_reader") != Some(1)
+                || event.integer_field("min_writer") != Some(1))
+        {
+            return Err(SchemaError::event(
+                Some(1),
+                "historical compatibility requires format and reader/writer version 1",
+            ));
+        }
+        if kind == "epoch" && legacy_writer {
+            legacy_epochs += 1;
+        }
+        if kind == "run_start" {
+            run_binary = event.string_field("binary").map(ToOwned::to_owned);
+        }
+        validator.push_historical(event.clone())?;
+        events.push(event);
+    }
+    if legacy_epochs == 0 {
+        return Err(SchemaError::event(
+            None,
+            "ledger has no recognized legacy epoch",
+        ));
+    }
+    let last_seq = validator.finish()?.last_seq;
+    Ok(HistoricalLedger { events, last_seq })
 }
 
 fn trigger_inputs(object: &Map<String, Value>, seq: u64) -> Result<Option<Vec<u64>>, SchemaError> {
