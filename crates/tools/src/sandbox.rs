@@ -815,7 +815,15 @@ fn probe_output(command: &mut Command) -> Result<std::process::Output, SandboxEr
             let _ = child.wait();
             return Err(SandboxError::Probe("sandbox probe timed out".to_owned()));
         }
-        std::thread::sleep(Duration::from_millis(10));
+        // A completed probe child can otherwise wait almost a full 10ms poll
+        // interval before collection, for each of the three confinement
+        // checks (read, write, and denied write). Keep the waits short while
+        // still sleeping between non-blocking status checks.
+        std::thread::sleep(
+            deadline
+                .saturating_duration_since(Instant::now())
+                .min(Duration::from_millis(1)),
+        );
     }
     Ok(child.wait_with_output()?)
 }
@@ -889,6 +897,23 @@ mod tests {
             class: ProbeFailure::Missing,
             detail: "missing".to_owned(),
         }
+    }
+    #[cfg(any(
+        target_os = "macos",
+        all(
+            target_os = "linux",
+            any(target_arch = "x86_64", target_arch = "aarch64")
+        )
+    ))]
+    #[test]
+    fn probe_output_reaps_completed_child_and_preserves_both_streams() {
+        let output = probe_output(
+            Command::new("/bin/sh").args(["-c", "printf probe-out; printf probe-err >&2"]),
+        )
+        .unwrap();
+        assert!(output.status.success());
+        assert_eq!(output.stdout, b"probe-out");
+        assert_eq!(output.stderr, b"probe-err");
     }
     #[test]
     fn linux_auto_prefers_bubblewrap_without_probing_landlock() {
