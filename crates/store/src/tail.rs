@@ -768,9 +768,9 @@ mod repair_tests {
             report.corrupt,
             vec![("main.jsonl".to_owned(), "ledger is empty".to_owned())]
         );
-        assert_eq!(std::fs::read(empty_projection).unwrap(), b"");
-        assert_eq!(std::fs::read(empty_request_cache).unwrap(), b"");
-        assert_eq!(std::fs::read(empty_semantic).unwrap(), b"");
+        assert_eq!(std::fs::read(&empty_projection).unwrap(), b"");
+        assert_eq!(std::fs::read(&empty_request_cache).unwrap(), b"");
+        assert_eq!(std::fs::read(&empty_semantic).unwrap(), b"");
 
         // The legacy projection's prior, nonempty representation is also not a
         // semantic ledger and remains byte-for-byte untouched by tail repair.
@@ -781,11 +781,11 @@ mod repair_tests {
             vec![("main.jsonl".to_owned(), "ledger is empty".to_owned())]
         );
         assert_eq!(
-            std::fs::read(empty_projection).unwrap(),
+            std::fs::read(&empty_projection).unwrap(),
             retained_projection
         );
-        assert_eq!(std::fs::read(empty_request_cache).unwrap(), b"");
-        assert_eq!(std::fs::read(empty_semantic).unwrap(), b"");
+        assert_eq!(std::fs::read(&empty_request_cache).unwrap(), b"");
+        assert_eq!(std::fs::read(&empty_semantic).unwrap(), b"");
     }
 
     #[test]
