@@ -610,9 +610,6 @@ fn public_queue_items(
         if let Some(rpc_id) = value.get("origin_key") {
             message["source"]["rpcId"] = rpc_id.clone();
         }
-        if let Some(submission) = value.get("submission") {
-            message["submission"] = submission.clone();
-        }
         let item = json!({
             "id":format!("input:{seq}"),
             "placement":if value.get("steer").and_then(Value::as_bool) == Some(true) {
@@ -633,7 +630,7 @@ mod public_queue_projection_tests {
 
     fn projection(live_inputs: Vec<u64>) -> schema::LedgerProjection {
         let input = schema::Event::decode(
-            br#"{"v":1,"seq":2,"kind":"input","ts":"2026-10-26T00:00:00.000Z","content":[{"type":"text","text":"queued"}],"source":"cross_thread","origin_key":"rpc-2","origin_tuple":{"principal":"p","client":"c","target":"session","op":"submit","key":"rpc-2"}}"#,
+            br#"{"v":1,"seq":2,"kind":"input","ts":"2026-10-26T00:00:00.000Z","content":[{"type":"text","text":"queued"}],"source":"cross_thread","origin_key":"rpc-2","submission":{"provider":"fixture","model":"test"},"origin_tuple":{"principal":"p","client":"c","target":"session","op":"submit","key":"rpc-2"}}"#,
         )
         .expect("valid input event");
         schema::LedgerProjection {
@@ -682,6 +679,13 @@ mod public_queue_projection_tests {
     #[test]
     fn queue_snapshot_uses_only_live_inputs_and_preserves_public_message_source() {
         let items = public_queue_items(&projection(vec![2])).expect("queue snapshot");
+        let first: Value = serde_json::from_slice(&items[0].canonical_bytes().unwrap()).unwrap();
+        assert_eq!(
+            first["message"].as_object().unwrap().len(),
+            4,
+            "queue wire contract excludes endpoint submission metadata"
+        );
+
         let values = items
             .iter()
             .map(|item| serde_json::from_slice::<Value>(&item.canonical_bytes().unwrap()).unwrap())

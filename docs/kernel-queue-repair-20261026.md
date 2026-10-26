@@ -21,3 +21,10 @@ Independent final source review found no blocking defect. None of these is the
 real busy-queue acceptance: exact-source binary/protocol, performance and final
 CI must be recorded before release. Old Kernel0.9.3 queue failures stay valid at
 their original identities.
+
+The first real protocol attempt stopped at a stale fixture version assertion before
+the workflow; the exact 0.9.4 expectation was corrected in a new fixture snapshot.
+The next attempt received real nonempty queue facts but rejected extra
+`submission` metadata. The producer now keeps the documented four-field imported
+queue message; no queue assertion was relaxed. Both failed attempts and process
+retirement receipts are preserved; a new exact-source replay remains required.
