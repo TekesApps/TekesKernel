@@ -34,30 +34,30 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::card::pread](../../src/card.rs#L237) | function_item | `private` |  |
 | [store::card::pread_if_present](../../src/card.rs#L245) | function_item | `private` |  |
 | [store::card::valid_line_name](../../src/card.rs#L256) | function_item | `pub` |  |
-| [store::card::Identity](../../src/card.rs#L266) | struct_item | `private` |  |
-| [store::card::Identity::of](../../src/card.rs#L275) | function_item | `private` |  |
-| [store::card::LineVerdict](../../src/card.rs#L292) | enum_item | `pub` |  |
-| [store::card::JournalVerdict](../../src/card.rs#L302) | enum_item | `pub` |  |
-| [store::card::Classified](../../src/card.rs#L311) | struct_item | `pub` |  |
-| [store::card::Freshness](../../src/card.rs#L320) | enum_item | `pub` |  |
-| [store::card::Classified::freshness](../../src/card.rs#L329) | function_item | `pub` |  |
-| [store::card::open_nofollow](../../src/card.rs#L342) | function_item | `private` |  |
-| [store::card::verify_prefix](../../src/card.rs#L350) | function_item | `private` |  |
-| [store::card::classify](../../src/card.rs#L391) | function_item | `pub` |  |
-| [store::card::JournalCard::head_len](../../src/card.rs#L468) | function_item | `private` |  |
-| [store::card::LineInput](../../src/card.rs#L477) | struct_item | `pub` |  |
-| [store::card::JournalInput](../../src/card.rs#L491) | struct_item | `pub` |  |
-| [store::card::CardInput](../../src/card.rs#L498) | struct_item | `pub` |  |
-| [store::card::WriteOutcome](../../src/card.rs#L508) | enum_item | `pub` |  |
-| [store::card::SkipReason](../../src/card.rs#L516) | enum_item | `pub` |  |
-| [store::card::errno_is_gone](../../src/card.rs#L524) | function_item | `private` |  |
-| [store::card::openat](../../src/card.rs#L531) | function_item | `private` |  |
-| [store::card::renameat](../../src/card.rs#L555) | function_item | `private` |  |
-| [store::card::unlinkat](../../src/card.rs#L568) | function_item | `private` |  |
-| [store::card::write_card](../../src/card.rs#L582) | function_item | `pub` |  |
-| [store::card::remove_stale_card_temps](../../src/card.rs#L718) | function_item | `pub` |  |
-| [store::card::journal_tail_len](../../src/card.rs#L754) | function_item | `private` |  |
-| [store::card::journal_samples](../../src/card.rs#L769) | function_item | `private` |  |
+| [store::card::Identity](../../src/card.rs#L270) | struct_item | `private` |  |
+| [store::card::Identity::of](../../src/card.rs#L279) | function_item | `private` |  |
+| [store::card::LineVerdict](../../src/card.rs#L296) | enum_item | `pub` |  |
+| [store::card::JournalVerdict](../../src/card.rs#L306) | enum_item | `pub` |  |
+| [store::card::Classified](../../src/card.rs#L315) | struct_item | `pub` |  |
+| [store::card::Freshness](../../src/card.rs#L324) | enum_item | `pub` |  |
+| [store::card::Classified::freshness](../../src/card.rs#L333) | function_item | `pub` |  |
+| [store::card::open_nofollow](../../src/card.rs#L346) | function_item | `private` |  |
+| [store::card::verify_prefix](../../src/card.rs#L354) | function_item | `private` |  |
+| [store::card::classify](../../src/card.rs#L395) | function_item | `pub` |  |
+| [store::card::JournalCard::head_len](../../src/card.rs#L472) | function_item | `private` |  |
+| [store::card::LineInput](../../src/card.rs#L481) | struct_item | `pub` |  |
+| [store::card::JournalInput](../../src/card.rs#L495) | struct_item | `pub` |  |
+| [store::card::CardInput](../../src/card.rs#L502) | struct_item | `pub` |  |
+| [store::card::WriteOutcome](../../src/card.rs#L512) | enum_item | `pub` |  |
+| [store::card::SkipReason](../../src/card.rs#L520) | enum_item | `pub` |  |
+| [store::card::errno_is_gone](../../src/card.rs#L528) | function_item | `private` |  |
+| [store::card::openat](../../src/card.rs#L535) | function_item | `private` |  |
+| [store::card::renameat](../../src/card.rs#L559) | function_item | `private` |  |
+| [store::card::unlinkat](../../src/card.rs#L572) | function_item | `private` |  |
+| [store::card::write_card](../../src/card.rs#L586) | function_item | `pub` |  |
+| [store::card::remove_stale_card_temps](../../src/card.rs#L722) | function_item | `pub` |  |
+| [store::card::journal_tail_len](../../src/card.rs#L758) | function_item | `private` |  |
+| [store::card::journal_samples](../../src/card.rs#L773) | function_item | `private` |  |
 
 ## Imports / reexports
 
@@ -256,155 +256,155 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `valid_line_name` | `name.ends_with` | [258](../../src/card.rs#L258) | receiver-type-required |
 | `valid_line_name` | `name.starts_with` | [259](../../src/card.rs#L259) | receiver-type-required |
 | `valid_line_name` | `name.contains` | [260](../../src/card.rs#L260) | receiver-type-required |
-| `of` | `line_extents` | [276](../../src/card.rs#L276) | [store::card::line_extents](../../src/card.rs#L219) |
-| `of` | `Some` | [277](../../src/card.rs#L277) | external-constructor-callback-or-unresolved |
-| `of` | `sha256_hex` | [279](../../src/card.rs#L279), [281](../../src/card.rs#L281) | [store::card::sha256_hex](../../src/card.rs#L199) |
-| `of` | `prefix.len` | [281](../../src/card.rs#L281) | receiver-type-required |
-| `of` | `samples_of` | [282](../../src/card.rs#L282) | [store::card::samples_of](../../src/card.rs#L226) |
-| `freshness` | `self.lines.iter().any` | [330](../../src/card.rs#L330) | receiver-type-required |
-| `freshness` | `self.lines.iter` | [330](../../src/card.rs#L330), [332](../../src/card.rs#L332) | receiver-type-required |
-| `freshness` | `self.lines.iter().all` | [332](../../src/card.rs#L332) | receiver-type-required |
-| `freshness` | `self.unlisted_lines.is_empty` | [333](../../src/card.rs#L333) | receiver-type-required |
-| `open_nofollow` | `std::fs::OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [344](../../src/card.rs#L344) | receiver-type-required |
-| `open_nofollow` | `std::fs::OpenOptions::new()         .read(true)         .custom_flags` | [344](../../src/card.rs#L344) | receiver-type-required |
-| `open_nofollow` | `std::fs::OpenOptions::new()         .read` | [344](../../src/card.rs#L344) | receiver-type-required |
-| `open_nofollow` | `std::fs::OpenOptions::new` | [344](../../src/card.rs#L344) | external-constructor-callback-or-unresolved |
-| `verify_prefix` | `file.metadata()?.len` | [359](../../src/card.rs#L359) | receiver-type-required |
-| `verify_prefix` | `file.metadata` | [359](../../src/card.rs#L359) | receiver-type-required |
-| `verify_prefix` | `Ok` | [362](../../src/card.rs#L362), [365](../../src/card.rs#L365), [368](../../src/card.rs#L368), [371](../../src/card.rs#L371), [375](../../src/card.rs#L375), [379](../../src/card.rs#L379), [382](../../src/card.rs#L382) | external-constructor-callback-or-unresolved |
-| `verify_prefix` | `pread_if_present` | [364](../../src/card.rs#L364), [367](../../src/card.rs#L367), [377](../../src/card.rs#L377) | [store::card::pread_if_present](../../src/card.rs#L245) |
-| `verify_prefix` | `sha256_hex` | [370](../../src/card.rs#L370), [378](../../src/card.rs#L378) | [store::card::sha256_hex](../../src/card.rs#L199) |
-| `verify_prefix` | `sample.off.saturating_add` | [374](../../src/card.rs#L374) | receiver-type-required |
-| `classify` | `folder         .file_name()         .and_then(&#124;name&#124; name.to_str())         .is_some_and` | [392](../../src/card.rs#L392) | receiver-type-required |
-| `classify` | `folder         .file_name()         .and_then` | [392](../../src/card.rs#L392) | receiver-type-required |
-| `classify` | `folder         .file_name` | [392](../../src/card.rs#L392) | receiver-type-required |
-| `classify` | `name.to_str` | [394](../../src/card.rs#L394) | receiver-type-required |
-| `classify` | `Vec::with_capacity` | [396](../../src/card.rs#L396) | external-constructor-callback-or-unresolved |
-| `classify` | `card.lines.len` | [396](../../src/card.rs#L396) | receiver-type-required |
-| `classify` | `valid_line_name` | [398](../../src/card.rs#L398), [421](../../src/card.rs#L421) | [store::card::valid_line_name](../../src/card.rs#L256) |
-| `classify` | `open_nofollow` | [401](../../src/card.rs#L401), [437](../../src/card.rs#L437) | [store::card::open_nofollow](../../src/card.rs#L342) |
-| `classify` | `folder.join` | [401](../../src/card.rs#L401), [431](../../src/card.rs#L431), [437](../../src/card.rs#L437) | receiver-type-required |
-| `classify` | `verify_prefix` | [402](../../src/card.rs#L402), [438](../../src/card.rs#L438) | [store::card::verify_prefix](../../src/card.rs#L350) |
-| `classify` | `error.kind` | [411](../../src/card.rs#L411), [434](../../src/card.rs#L434), [451](../../src/card.rs#L451), [454](../../src/card.rs#L454) | receiver-type-required |
-| `classify` | `Err` | [412](../../src/card.rs#L412), [435](../../src/card.rs#L435), [455](../../src/card.rs#L455) | external-constructor-callback-or-unresolved |
-| `classify` | `lines.push` | [415](../../src/card.rs#L415) | receiver-type-required |
-| `classify` | `line.file.clone` | [415](../../src/card.rs#L415) | receiver-type-required |
-| `classify` | `Vec::new` | [417](../../src/card.rs#L417) | external-constructor-callback-or-unresolved |
-| `classify` | `std::fs::read_dir` | [418](../../src/card.rs#L418) | external-constructor-callback-or-unresolved |
-| `classify` | `entry.file_name().to_string_lossy().into_owned` | [420](../../src/card.rs#L420) | receiver-type-required |
-| `classify` | `entry.file_name().to_string_lossy` | [420](../../src/card.rs#L420) | receiver-type-required |
-| `classify` | `entry.file_name` | [420](../../src/card.rs#L420) | receiver-type-required |
-| `classify` | `entry.file_type()?.is_file` | [422](../../src/card.rs#L422) | receiver-type-required |
-| `classify` | `entry.file_type` | [422](../../src/card.rs#L422) | receiver-type-required |
-| `classify` | `card.lines.iter().any` | [423](../../src/card.rs#L423) | receiver-type-required |
-| `classify` | `card.lines.iter` | [423](../../src/card.rs#L423) | receiver-type-required |
-| `classify` | `unlisted_lines.push` | [425](../../src/card.rs#L425) | receiver-type-required |
-| `classify` | `unlisted_lines.sort` | [428](../../src/card.rs#L428) | receiver-type-required |
-| `classify` | `std::fs::metadata` | [431](../../src/card.rs#L431) | external-constructor-callback-or-unresolved |
-| `classify` | `metadata.len` | [432](../../src/card.rs#L432) | receiver-type-required |
-| `classify` | `journal.head_len` | [441](../../src/card.rs#L441) | receiver-type-required |
-| `classify` | `Ok` | [458](../../src/card.rs#L458) | external-constructor-callback-or-unresolved |
-| `head_len` | `SAMPLE_LEN.min` | [469](../../src/card.rs#L469) | receiver-type-required |
-| `openat` | `CString::new(name).map_err` | [532](../../src/card.rs#L532) | receiver-type-required |
-| `openat` | `CString::new` | [532](../../src/card.rs#L532) | external-constructor-callback-or-unresolved |
-| `openat` | `libc::openat` | [537](../../src/card.rs#L537) | external-constructor-callback-or-unresolved |
-| `openat` | `dir.as_raw_fd` | [538](../../src/card.rs#L538) | receiver-type-required |
-| `openat` | `name.as_ptr` | [539](../../src/card.rs#L539) | receiver-type-required |
-| `openat` | `libc::c_uint::from` | [541](../../src/card.rs#L541) | external-constructor-callback-or-unresolved |
-| `openat` | `Ok` | [546](../../src/card.rs#L546) | external-constructor-callback-or-unresolved |
-| `openat` | `File::from_raw_fd` | [546](../../src/card.rs#L546) | external-constructor-callback-or-unresolved |
-| `openat` | `io::Error::last_os_error` | [548](../../src/card.rs#L548) | external-constructor-callback-or-unresolved |
-| `openat` | `error.kind` | [549](../../src/card.rs#L549) | receiver-type-required |
-| `openat` | `Err` | [550](../../src/card.rs#L550) | external-constructor-callback-or-unresolved |
-| `renameat` | `CString::new(from).map_err` | [556](../../src/card.rs#L556) | receiver-type-required |
-| `renameat` | `CString::new` | [556](../../src/card.rs#L556), [557](../../src/card.rs#L557) | external-constructor-callback-or-unresolved |
-| `renameat` | `CString::new(to).map_err` | [557](../../src/card.rs#L557) | receiver-type-required |
-| `renameat` | `libc::renameat` | [560](../../src/card.rs#L560) | external-constructor-callback-or-unresolved |
-| `renameat` | `dir.as_raw_fd` | [560](../../src/card.rs#L560) | receiver-type-required |
-| `renameat` | `from.as_ptr` | [560](../../src/card.rs#L560) | receiver-type-required |
-| `renameat` | `to.as_ptr` | [560](../../src/card.rs#L560) | receiver-type-required |
-| `renameat` | `Ok` | [562](../../src/card.rs#L562) | external-constructor-callback-or-unresolved |
-| `renameat` | `Err` | [564](../../src/card.rs#L564) | external-constructor-callback-or-unresolved |
-| `renameat` | `io::Error::last_os_error` | [564](../../src/card.rs#L564) | external-constructor-callback-or-unresolved |
-| `unlinkat` | `CString::new` | [569](../../src/card.rs#L569) | external-constructor-callback-or-unresolved |
-| `unlinkat` | `libc::unlinkat` | [571](../../src/card.rs#L571) | external-constructor-callback-or-unresolved |
-| `unlinkat` | `dir.as_raw_fd` | [571](../../src/card.rs#L571) | receiver-type-required |
-| `unlinkat` | `name.as_ptr` | [571](../../src/card.rs#L571) | receiver-type-required |
-| `write_card` | `File::open` | [583](../../src/card.rs#L583) | external-constructor-callback-or-unresolved |
-| `write_card` | `errno_is_gone` | [585](../../src/card.rs#L585), [600](../../src/card.rs#L600), [618](../../src/card.rs#L618), [668](../../src/card.rs#L668), [669](../../src/card.rs#L669), [706](../../src/card.rs#L706) | [store::card::errno_is_gone](../../src/card.rs#L524) |
-| `write_card` | `Ok` | [586](../../src/card.rs#L586), [593](../../src/card.rs#L593), [596](../../src/card.rs#L596), [601](../../src/card.rs#L601), [617](../../src/card.rs#L617), [619](../../src/card.rs#L619), [644](../../src/card.rs#L644), [648](../../src/card.rs#L648), [655](../../src/card.rs#L655), [670](../../src/card.rs#L670), [703](../../src/card.rs#L703), [707](../../src/card.rs#L707) | external-constructor-callback-or-unresolved |
-| `write_card` | `WriteOutcome::Skipped` | [586](../../src/card.rs#L586), [593](../../src/card.rs#L593), [596](../../src/card.rs#L596), [601](../../src/card.rs#L601), [617](../../src/card.rs#L617), [619](../../src/card.rs#L619), [644](../../src/card.rs#L644), [648](../../src/card.rs#L648), [655](../../src/card.rs#L655), [670](../../src/card.rs#L670), [707](../../src/card.rs#L707) | external-constructor-callback-or-unresolved |
-| `write_card` | `Err` | [588](../../src/card.rs#L588), [603](../../src/card.rs#L603), [621](../../src/card.rs#L621), [672](../../src/card.rs#L672), [709](../../src/card.rs#L709) | external-constructor-callback-or-unresolved |
-| `write_card` | `error.into` | [588](../../src/card.rs#L588), [603](../../src/card.rs#L603), [621](../../src/card.rs#L621), [672](../../src/card.rs#L672), [709](../../src/card.rs#L709) | receiver-type-required |
-| `write_card` | `Vec::with_capacity` | [590](../../src/card.rs#L590) | external-constructor-callback-or-unresolved |
-| `write_card` | `input.lines.len` | [590](../../src/card.rs#L590) | receiver-type-required |
-| `write_card` | `valid_line_name` | [592](../../src/card.rs#L592) | [store::card::valid_line_name](../../src/card.rs#L256) |
-| `write_card` | `Identity::of` | [595](../../src/card.rs#L595) | [store::card::Identity::of](../../src/card.rs#L275) |
-| `write_card` | `openat` | [598](../../src/card.rs#L598), [641](../../src/card.rs#L641), [692](../../src/card.rs#L692) | [store::card::openat](../../src/card.rs#L531) |
-| `write_card` | `line.verified_prefix.len` | [605](../../src/card.rs#L605) | receiver-type-required |
-| `write_card` | `verify_prefix` | [607](../../src/card.rs#L607) | [store::card::verify_prefix](../../src/card.rs#L350) |
-| `write_card` | `FullSync::full_sync` | [623](../../src/card.rs#L623) | [store::platform::FullSync::full_sync](../../src/platform.rs#L31) |
-| `write_card` | `lines.push` | [624](../../src/card.rs#L624) | receiver-type-required |
-| `write_card` | `line.file.to_owned` | [625](../../src/card.rs#L625) | receiver-type-required |
-| `write_card` | `line.line.clone` | [633](../../src/card.rs#L633) | receiver-type-required |
-| `write_card` | `line.parent_file.clone` | [634](../../src/card.rs#L634) | receiver-type-required |
-| `write_card` | `line.facts.clone` | [635](../../src/card.rs#L635) | receiver-type-required |
-| `write_card` | `line.holds.clone` | [636](../../src/card.rs#L636) | receiver-type-required |
-| `write_card` | `file.metadata()?.len` | [643](../../src/card.rs#L643) | receiver-type-required |
-| `write_card` | `file.metadata` | [643](../../src/card.rs#L643) | receiver-type-required |
-| `write_card` | `SAMPLE_LEN.min` | [646](../../src/card.rs#L646) | receiver-type-required |
-| `write_card` | `journal_tail_len` | [647](../../src/card.rs#L647) | [store::card::journal_tail_len](../../src/card.rs#L754) |
-| `write_card` | `pread_if_present` | [651](../../src/card.rs#L651), [652](../../src/card.rs#L652) | [store::card::pread_if_present](../../src/card.rs#L245) |
-| `write_card` | `journal_samples` | [653](../../src/card.rs#L653) | [store::card::journal_samples](../../src/card.rs#L769) |
-| `write_card` | `Some` | [657](../../src/card.rs#L657) | external-constructor-callback-or-unresolved |
-| `write_card` | `sha256_hex` | [662](../../src/card.rs#L662), [663](../../src/card.rs#L663) | [store::card::sha256_hex](../../src/card.rs#L199) |
-| `write_card` | `input.kernel.to_owned` | [677](../../src/card.rs#L677) | receiver-type-required |
-| `write_card` | `input.thread.to_owned` | [678](../../src/card.rs#L678) | receiver-type-required |
-| `write_card` | `input.written.clone` | [679](../../src/card.rs#L679) | receiver-type-required |
-| `write_card` | `input.summary.clone` | [681](../../src/card.rs#L681) | receiver-type-required |
-| `write_card` | `String::new` | [683](../../src/card.rs#L683) | external-constructor-callback-or-unresolved |
-| `write_card` | `card.encode` | [685](../../src/card.rs#L685) | receiver-type-required |
-| `write_card` | `(&#124;&#124; -> io::Result<()> {         let file = openat(             &dir,             &temp,             libc::O_WRONLY &#124; libc::O_CREAT &#124; libc::O_EXCL,             0o600,         )?;         file.write_all_at(&bytes, 0)?;         drop(file);         renameat(&dir, &temp, CARD_FILE)     })` | [691](../../src/card.rs#L691) | external-constructor-callback-or-unresolved |
-| `write_card` | `file.write_all_at` | [698](../../src/card.rs#L698) | receiver-type-required |
-| `write_card` | `drop` | [699](../../src/card.rs#L699) | external-constructor-callback-or-unresolved |
-| `write_card` | `renameat` | [700](../../src/card.rs#L700) | [store::card::renameat](../../src/card.rs#L555) |
-| `write_card` | `unlinkat` | [705](../../src/card.rs#L705) | [store::card::unlinkat](../../src/card.rs#L568) |
-| `remove_stale_card_temps` | `std::fs::read_dir` | [720](../../src/card.rs#L720) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `entries.flatten` | [724](../../src/card.rs#L724) | receiver-type-required |
-| `remove_stale_card_temps` | `entry.file_name().to_string_lossy().into_owned` | [725](../../src/card.rs#L725) | receiver-type-required |
-| `remove_stale_card_temps` | `entry.file_name().to_string_lossy` | [725](../../src/card.rs#L725) | receiver-type-required |
-| `remove_stale_card_temps` | `entry.file_name` | [725](../../src/card.rs#L725) | receiver-type-required |
-| `remove_stale_card_temps` | `name             .strip_prefix(&prefix)             .and_then` | [726](../../src/card.rs#L726) | receiver-type-required |
-| `remove_stale_card_temps` | `name             .strip_prefix` | [726](../../src/card.rs#L726) | receiver-type-required |
-| `remove_stale_card_temps` | `rest.strip_suffix` | [728](../../src/card.rs#L728) | receiver-type-required |
-| `remove_stale_card_temps` | `rest             .split('.')             .next()             .and_then` | [732](../../src/card.rs#L732) | receiver-type-required |
-| `remove_stale_card_temps` | `rest             .split('.')             .next` | [732](../../src/card.rs#L732) | receiver-type-required |
-| `remove_stale_card_temps` | `rest             .split` | [732](../../src/card.rs#L732) | receiver-type-required |
-| `remove_stale_card_temps` | `pid.parse::<i32>().ok` | [735](../../src/card.rs#L735) | receiver-type-required |
-| `remove_stale_card_temps` | `pid.parse::<i32>` | [735](../../src/card.rs#L735) | receiver-type-required |
-| `remove_stale_card_temps` | `u32::try_from(pid).is_ok_and` | [739](../../src/card.rs#L739) | receiver-type-required |
-| `remove_stale_card_temps` | `u32::try_from` | [739](../../src/card.rs#L739) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `std::process::id` | [739](../../src/card.rs#L739) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `libc::kill` | [743](../../src/card.rs#L743) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `io::Error::last_os_error().raw_os_error` | [744](../../src/card.rs#L744) | receiver-type-required |
-| `remove_stale_card_temps` | `io::Error::last_os_error` | [744](../../src/card.rs#L744) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `Some` | [744](../../src/card.rs#L744) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `std::fs::remove_file(entry.path()).is_ok` | [745](../../src/card.rs#L745) | receiver-type-required |
-| `remove_stale_card_temps` | `std::fs::remove_file` | [745](../../src/card.rs#L745) | external-constructor-callback-or-unresolved |
-| `remove_stale_card_temps` | `entry.path` | [745](../../src/card.rs#L745) | receiver-type-required |
-| `journal_tail_len` | `Ok` | [756](../../src/card.rs#L756), [760](../../src/card.rs#L760), [763](../../src/card.rs#L763) | external-constructor-callback-or-unresolved |
-| `journal_tail_len` | `Some` | [756](../../src/card.rs#L756), [763](../../src/card.rs#L763) | external-constructor-callback-or-unresolved |
-| `journal_tail_len` | `len.min` | [758](../../src/card.rs#L758) | receiver-type-required |
-| `journal_tail_len` | `pread_if_present` | [759](../../src/card.rs#L759) | [store::card::pread_if_present](../../src/card.rs#L245) |
-| `journal_tail_len` | `bytes.strip_suffix(b"\n").unwrap_or` | [762](../../src/card.rs#L762) | receiver-type-required |
-| `journal_tail_len` | `bytes.strip_suffix` | [762](../../src/card.rs#L762) | receiver-type-required |
-| `journal_tail_len` | `body.iter().rposition` | [763](../../src/card.rs#L763) | receiver-type-required |
-| `journal_tail_len` | `body.iter` | [763](../../src/card.rs#L763) | receiver-type-required |
-| `journal_tail_len` | `bytes.len` | [764](../../src/card.rs#L764) | receiver-type-required |
-| `journal_samples` | `Vec::new` | [770](../../src/card.rs#L770) | external-constructor-callback-or-unresolved |
-| `journal_samples` | `sample_offsets` | [771](../../src/card.rs#L771) | [store::card::sample_offsets](../../src/card.rs#L204) |
-| `journal_samples` | `pread_if_present` | [772](../../src/card.rs#L772) | [store::card::pread_if_present](../../src/card.rs#L245) |
-| `journal_samples` | `Ok` | [773](../../src/card.rs#L773), [781](../../src/card.rs#L781) | external-constructor-callback-or-unresolved |
-| `journal_samples` | `samples.push` | [775](../../src/card.rs#L775) | receiver-type-required |
-| `journal_samples` | `sha256_hex` | [778](../../src/card.rs#L778) | [store::card::sha256_hex](../../src/card.rs#L199) |
-| `journal_samples` | `Some` | [781](../../src/card.rs#L781) | external-constructor-callback-or-unresolved |
+| `of` | `line_extents` | [280](../../src/card.rs#L280) | [store::card::line_extents](../../src/card.rs#L219) |
+| `of` | `Some` | [281](../../src/card.rs#L281) | external-constructor-callback-or-unresolved |
+| `of` | `sha256_hex` | [283](../../src/card.rs#L283), [285](../../src/card.rs#L285) | [store::card::sha256_hex](../../src/card.rs#L199) |
+| `of` | `prefix.len` | [285](../../src/card.rs#L285) | receiver-type-required |
+| `of` | `samples_of` | [286](../../src/card.rs#L286) | [store::card::samples_of](../../src/card.rs#L226) |
+| `freshness` | `self.lines.iter().any` | [334](../../src/card.rs#L334) | receiver-type-required |
+| `freshness` | `self.lines.iter` | [334](../../src/card.rs#L334), [336](../../src/card.rs#L336) | receiver-type-required |
+| `freshness` | `self.lines.iter().all` | [336](../../src/card.rs#L336) | receiver-type-required |
+| `freshness` | `self.unlisted_lines.is_empty` | [337](../../src/card.rs#L337) | receiver-type-required |
+| `open_nofollow` | `std::fs::OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [348](../../src/card.rs#L348) | receiver-type-required |
+| `open_nofollow` | `std::fs::OpenOptions::new()         .read(true)         .custom_flags` | [348](../../src/card.rs#L348) | receiver-type-required |
+| `open_nofollow` | `std::fs::OpenOptions::new()         .read` | [348](../../src/card.rs#L348) | receiver-type-required |
+| `open_nofollow` | `std::fs::OpenOptions::new` | [348](../../src/card.rs#L348) | external-constructor-callback-or-unresolved |
+| `verify_prefix` | `file.metadata()?.len` | [363](../../src/card.rs#L363) | receiver-type-required |
+| `verify_prefix` | `file.metadata` | [363](../../src/card.rs#L363) | receiver-type-required |
+| `verify_prefix` | `Ok` | [366](../../src/card.rs#L366), [369](../../src/card.rs#L369), [372](../../src/card.rs#L372), [375](../../src/card.rs#L375), [379](../../src/card.rs#L379), [383](../../src/card.rs#L383), [386](../../src/card.rs#L386) | external-constructor-callback-or-unresolved |
+| `verify_prefix` | `pread_if_present` | [368](../../src/card.rs#L368), [371](../../src/card.rs#L371), [381](../../src/card.rs#L381) | [store::card::pread_if_present](../../src/card.rs#L245) |
+| `verify_prefix` | `sha256_hex` | [374](../../src/card.rs#L374), [382](../../src/card.rs#L382) | [store::card::sha256_hex](../../src/card.rs#L199) |
+| `verify_prefix` | `sample.off.saturating_add` | [378](../../src/card.rs#L378) | receiver-type-required |
+| `classify` | `folder         .file_name()         .and_then(&#124;name&#124; name.to_str())         .is_some_and` | [396](../../src/card.rs#L396) | receiver-type-required |
+| `classify` | `folder         .file_name()         .and_then` | [396](../../src/card.rs#L396) | receiver-type-required |
+| `classify` | `folder         .file_name` | [396](../../src/card.rs#L396) | receiver-type-required |
+| `classify` | `name.to_str` | [398](../../src/card.rs#L398) | receiver-type-required |
+| `classify` | `Vec::with_capacity` | [400](../../src/card.rs#L400) | external-constructor-callback-or-unresolved |
+| `classify` | `card.lines.len` | [400](../../src/card.rs#L400) | receiver-type-required |
+| `classify` | `valid_line_name` | [402](../../src/card.rs#L402), [425](../../src/card.rs#L425) | [store::card::valid_line_name](../../src/card.rs#L256) |
+| `classify` | `open_nofollow` | [405](../../src/card.rs#L405), [441](../../src/card.rs#L441) | [store::card::open_nofollow](../../src/card.rs#L346) |
+| `classify` | `folder.join` | [405](../../src/card.rs#L405), [435](../../src/card.rs#L435), [441](../../src/card.rs#L441) | receiver-type-required |
+| `classify` | `verify_prefix` | [406](../../src/card.rs#L406), [442](../../src/card.rs#L442) | [store::card::verify_prefix](../../src/card.rs#L354) |
+| `classify` | `error.kind` | [415](../../src/card.rs#L415), [438](../../src/card.rs#L438), [455](../../src/card.rs#L455), [458](../../src/card.rs#L458) | receiver-type-required |
+| `classify` | `Err` | [416](../../src/card.rs#L416), [439](../../src/card.rs#L439), [459](../../src/card.rs#L459) | external-constructor-callback-or-unresolved |
+| `classify` | `lines.push` | [419](../../src/card.rs#L419) | receiver-type-required |
+| `classify` | `line.file.clone` | [419](../../src/card.rs#L419) | receiver-type-required |
+| `classify` | `Vec::new` | [421](../../src/card.rs#L421) | external-constructor-callback-or-unresolved |
+| `classify` | `std::fs::read_dir` | [422](../../src/card.rs#L422) | external-constructor-callback-or-unresolved |
+| `classify` | `entry.file_name().to_string_lossy().into_owned` | [424](../../src/card.rs#L424) | receiver-type-required |
+| `classify` | `entry.file_name().to_string_lossy` | [424](../../src/card.rs#L424) | receiver-type-required |
+| `classify` | `entry.file_name` | [424](../../src/card.rs#L424) | receiver-type-required |
+| `classify` | `entry.file_type()?.is_file` | [426](../../src/card.rs#L426) | receiver-type-required |
+| `classify` | `entry.file_type` | [426](../../src/card.rs#L426) | receiver-type-required |
+| `classify` | `card.lines.iter().any` | [427](../../src/card.rs#L427) | receiver-type-required |
+| `classify` | `card.lines.iter` | [427](../../src/card.rs#L427) | receiver-type-required |
+| `classify` | `unlisted_lines.push` | [429](../../src/card.rs#L429) | receiver-type-required |
+| `classify` | `unlisted_lines.sort` | [432](../../src/card.rs#L432) | receiver-type-required |
+| `classify` | `std::fs::metadata` | [435](../../src/card.rs#L435) | external-constructor-callback-or-unresolved |
+| `classify` | `metadata.len` | [436](../../src/card.rs#L436) | receiver-type-required |
+| `classify` | `journal.head_len` | [445](../../src/card.rs#L445) | receiver-type-required |
+| `classify` | `Ok` | [462](../../src/card.rs#L462) | external-constructor-callback-or-unresolved |
+| `head_len` | `SAMPLE_LEN.min` | [473](../../src/card.rs#L473) | receiver-type-required |
+| `openat` | `CString::new(name).map_err` | [536](../../src/card.rs#L536) | receiver-type-required |
+| `openat` | `CString::new` | [536](../../src/card.rs#L536) | external-constructor-callback-or-unresolved |
+| `openat` | `libc::openat` | [541](../../src/card.rs#L541) | external-constructor-callback-or-unresolved |
+| `openat` | `dir.as_raw_fd` | [542](../../src/card.rs#L542) | receiver-type-required |
+| `openat` | `name.as_ptr` | [543](../../src/card.rs#L543) | receiver-type-required |
+| `openat` | `libc::c_uint::from` | [545](../../src/card.rs#L545) | external-constructor-callback-or-unresolved |
+| `openat` | `Ok` | [550](../../src/card.rs#L550) | external-constructor-callback-or-unresolved |
+| `openat` | `File::from_raw_fd` | [550](../../src/card.rs#L550) | external-constructor-callback-or-unresolved |
+| `openat` | `io::Error::last_os_error` | [552](../../src/card.rs#L552) | external-constructor-callback-or-unresolved |
+| `openat` | `error.kind` | [553](../../src/card.rs#L553) | receiver-type-required |
+| `openat` | `Err` | [554](../../src/card.rs#L554) | external-constructor-callback-or-unresolved |
+| `renameat` | `CString::new(from).map_err` | [560](../../src/card.rs#L560) | receiver-type-required |
+| `renameat` | `CString::new` | [560](../../src/card.rs#L560), [561](../../src/card.rs#L561) | external-constructor-callback-or-unresolved |
+| `renameat` | `CString::new(to).map_err` | [561](../../src/card.rs#L561) | receiver-type-required |
+| `renameat` | `libc::renameat` | [564](../../src/card.rs#L564) | external-constructor-callback-or-unresolved |
+| `renameat` | `dir.as_raw_fd` | [564](../../src/card.rs#L564) | receiver-type-required |
+| `renameat` | `from.as_ptr` | [564](../../src/card.rs#L564) | receiver-type-required |
+| `renameat` | `to.as_ptr` | [564](../../src/card.rs#L564) | receiver-type-required |
+| `renameat` | `Ok` | [566](../../src/card.rs#L566) | external-constructor-callback-or-unresolved |
+| `renameat` | `Err` | [568](../../src/card.rs#L568) | external-constructor-callback-or-unresolved |
+| `renameat` | `io::Error::last_os_error` | [568](../../src/card.rs#L568) | external-constructor-callback-or-unresolved |
+| `unlinkat` | `CString::new` | [573](../../src/card.rs#L573) | external-constructor-callback-or-unresolved |
+| `unlinkat` | `libc::unlinkat` | [575](../../src/card.rs#L575) | external-constructor-callback-or-unresolved |
+| `unlinkat` | `dir.as_raw_fd` | [575](../../src/card.rs#L575) | receiver-type-required |
+| `unlinkat` | `name.as_ptr` | [575](../../src/card.rs#L575) | receiver-type-required |
+| `write_card` | `File::open` | [587](../../src/card.rs#L587) | external-constructor-callback-or-unresolved |
+| `write_card` | `errno_is_gone` | [589](../../src/card.rs#L589), [604](../../src/card.rs#L604), [622](../../src/card.rs#L622), [672](../../src/card.rs#L672), [673](../../src/card.rs#L673), [710](../../src/card.rs#L710) | [store::card::errno_is_gone](../../src/card.rs#L528) |
+| `write_card` | `Ok` | [590](../../src/card.rs#L590), [597](../../src/card.rs#L597), [600](../../src/card.rs#L600), [605](../../src/card.rs#L605), [621](../../src/card.rs#L621), [623](../../src/card.rs#L623), [648](../../src/card.rs#L648), [652](../../src/card.rs#L652), [659](../../src/card.rs#L659), [674](../../src/card.rs#L674), [707](../../src/card.rs#L707), [711](../../src/card.rs#L711) | external-constructor-callback-or-unresolved |
+| `write_card` | `WriteOutcome::Skipped` | [590](../../src/card.rs#L590), [597](../../src/card.rs#L597), [600](../../src/card.rs#L600), [605](../../src/card.rs#L605), [621](../../src/card.rs#L621), [623](../../src/card.rs#L623), [648](../../src/card.rs#L648), [652](../../src/card.rs#L652), [659](../../src/card.rs#L659), [674](../../src/card.rs#L674), [711](../../src/card.rs#L711) | external-constructor-callback-or-unresolved |
+| `write_card` | `Err` | [592](../../src/card.rs#L592), [607](../../src/card.rs#L607), [625](../../src/card.rs#L625), [676](../../src/card.rs#L676), [713](../../src/card.rs#L713) | external-constructor-callback-or-unresolved |
+| `write_card` | `error.into` | [592](../../src/card.rs#L592), [607](../../src/card.rs#L607), [625](../../src/card.rs#L625), [676](../../src/card.rs#L676), [713](../../src/card.rs#L713) | receiver-type-required |
+| `write_card` | `Vec::with_capacity` | [594](../../src/card.rs#L594) | external-constructor-callback-or-unresolved |
+| `write_card` | `input.lines.len` | [594](../../src/card.rs#L594) | receiver-type-required |
+| `write_card` | `valid_line_name` | [596](../../src/card.rs#L596) | [store::card::valid_line_name](../../src/card.rs#L256) |
+| `write_card` | `Identity::of` | [599](../../src/card.rs#L599) | [store::card::Identity::of](../../src/card.rs#L279) |
+| `write_card` | `openat` | [602](../../src/card.rs#L602), [645](../../src/card.rs#L645), [696](../../src/card.rs#L696) | [store::card::openat](../../src/card.rs#L535) |
+| `write_card` | `line.verified_prefix.len` | [609](../../src/card.rs#L609) | receiver-type-required |
+| `write_card` | `verify_prefix` | [611](../../src/card.rs#L611) | [store::card::verify_prefix](../../src/card.rs#L354) |
+| `write_card` | `FullSync::full_sync` | [627](../../src/card.rs#L627) | [store::platform::FullSync::full_sync](../../src/platform.rs#L31) |
+| `write_card` | `lines.push` | [628](../../src/card.rs#L628) | receiver-type-required |
+| `write_card` | `line.file.to_owned` | [629](../../src/card.rs#L629) | receiver-type-required |
+| `write_card` | `line.line.clone` | [637](../../src/card.rs#L637) | receiver-type-required |
+| `write_card` | `line.parent_file.clone` | [638](../../src/card.rs#L638) | receiver-type-required |
+| `write_card` | `line.facts.clone` | [639](../../src/card.rs#L639) | receiver-type-required |
+| `write_card` | `line.holds.clone` | [640](../../src/card.rs#L640) | receiver-type-required |
+| `write_card` | `file.metadata()?.len` | [647](../../src/card.rs#L647) | receiver-type-required |
+| `write_card` | `file.metadata` | [647](../../src/card.rs#L647) | receiver-type-required |
+| `write_card` | `SAMPLE_LEN.min` | [650](../../src/card.rs#L650) | receiver-type-required |
+| `write_card` | `journal_tail_len` | [651](../../src/card.rs#L651) | [store::card::journal_tail_len](../../src/card.rs#L758) |
+| `write_card` | `pread_if_present` | [655](../../src/card.rs#L655), [656](../../src/card.rs#L656) | [store::card::pread_if_present](../../src/card.rs#L245) |
+| `write_card` | `journal_samples` | [657](../../src/card.rs#L657) | [store::card::journal_samples](../../src/card.rs#L773) |
+| `write_card` | `Some` | [661](../../src/card.rs#L661) | external-constructor-callback-or-unresolved |
+| `write_card` | `sha256_hex` | [666](../../src/card.rs#L666), [667](../../src/card.rs#L667) | [store::card::sha256_hex](../../src/card.rs#L199) |
+| `write_card` | `input.kernel.to_owned` | [681](../../src/card.rs#L681) | receiver-type-required |
+| `write_card` | `input.thread.to_owned` | [682](../../src/card.rs#L682) | receiver-type-required |
+| `write_card` | `input.written.clone` | [683](../../src/card.rs#L683) | receiver-type-required |
+| `write_card` | `input.summary.clone` | [685](../../src/card.rs#L685) | receiver-type-required |
+| `write_card` | `String::new` | [687](../../src/card.rs#L687) | external-constructor-callback-or-unresolved |
+| `write_card` | `card.encode` | [689](../../src/card.rs#L689) | receiver-type-required |
+| `write_card` | `(&#124;&#124; -> io::Result<()> {         let file = openat(             &dir,             &temp,             libc::O_WRONLY &#124; libc::O_CREAT &#124; libc::O_EXCL,             0o600,         )?;         file.write_all_at(&bytes, 0)?;         drop(file);         renameat(&dir, &temp, CARD_FILE)     })` | [695](../../src/card.rs#L695) | external-constructor-callback-or-unresolved |
+| `write_card` | `file.write_all_at` | [702](../../src/card.rs#L702) | receiver-type-required |
+| `write_card` | `drop` | [703](../../src/card.rs#L703) | external-constructor-callback-or-unresolved |
+| `write_card` | `renameat` | [704](../../src/card.rs#L704) | [store::card::renameat](../../src/card.rs#L559) |
+| `write_card` | `unlinkat` | [709](../../src/card.rs#L709) | [store::card::unlinkat](../../src/card.rs#L572) |
+| `remove_stale_card_temps` | `std::fs::read_dir` | [724](../../src/card.rs#L724) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `entries.flatten` | [728](../../src/card.rs#L728) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name().to_string_lossy().into_owned` | [729](../../src/card.rs#L729) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name().to_string_lossy` | [729](../../src/card.rs#L729) | receiver-type-required |
+| `remove_stale_card_temps` | `entry.file_name` | [729](../../src/card.rs#L729) | receiver-type-required |
+| `remove_stale_card_temps` | `name             .strip_prefix(&prefix)             .and_then` | [730](../../src/card.rs#L730) | receiver-type-required |
+| `remove_stale_card_temps` | `name             .strip_prefix` | [730](../../src/card.rs#L730) | receiver-type-required |
+| `remove_stale_card_temps` | `rest.strip_suffix` | [732](../../src/card.rs#L732) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split('.')             .next()             .and_then` | [736](../../src/card.rs#L736) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split('.')             .next` | [736](../../src/card.rs#L736) | receiver-type-required |
+| `remove_stale_card_temps` | `rest             .split` | [736](../../src/card.rs#L736) | receiver-type-required |
+| `remove_stale_card_temps` | `pid.parse::<i32>().ok` | [739](../../src/card.rs#L739) | receiver-type-required |
+| `remove_stale_card_temps` | `pid.parse::<i32>` | [739](../../src/card.rs#L739) | receiver-type-required |
+| `remove_stale_card_temps` | `u32::try_from(pid).is_ok_and` | [743](../../src/card.rs#L743) | receiver-type-required |
+| `remove_stale_card_temps` | `u32::try_from` | [743](../../src/card.rs#L743) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `std::process::id` | [743](../../src/card.rs#L743) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `libc::kill` | [747](../../src/card.rs#L747) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `io::Error::last_os_error().raw_os_error` | [748](../../src/card.rs#L748) | receiver-type-required |
+| `remove_stale_card_temps` | `io::Error::last_os_error` | [748](../../src/card.rs#L748) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `Some` | [748](../../src/card.rs#L748) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `std::fs::remove_file(entry.path()).is_ok` | [749](../../src/card.rs#L749) | receiver-type-required |
+| `remove_stale_card_temps` | `std::fs::remove_file` | [749](../../src/card.rs#L749) | external-constructor-callback-or-unresolved |
+| `remove_stale_card_temps` | `entry.path` | [749](../../src/card.rs#L749) | receiver-type-required |
+| `journal_tail_len` | `Ok` | [760](../../src/card.rs#L760), [764](../../src/card.rs#L764), [767](../../src/card.rs#L767) | external-constructor-callback-or-unresolved |
+| `journal_tail_len` | `Some` | [760](../../src/card.rs#L760), [767](../../src/card.rs#L767) | external-constructor-callback-or-unresolved |
+| `journal_tail_len` | `len.min` | [762](../../src/card.rs#L762) | receiver-type-required |
+| `journal_tail_len` | `pread_if_present` | [763](../../src/card.rs#L763) | [store::card::pread_if_present](../../src/card.rs#L245) |
+| `journal_tail_len` | `bytes.strip_suffix(b"\n").unwrap_or` | [766](../../src/card.rs#L766) | receiver-type-required |
+| `journal_tail_len` | `bytes.strip_suffix` | [766](../../src/card.rs#L766) | receiver-type-required |
+| `journal_tail_len` | `body.iter().rposition` | [767](../../src/card.rs#L767) | receiver-type-required |
+| `journal_tail_len` | `body.iter` | [767](../../src/card.rs#L767) | receiver-type-required |
+| `journal_tail_len` | `bytes.len` | [768](../../src/card.rs#L768) | receiver-type-required |
+| `journal_samples` | `Vec::new` | [774](../../src/card.rs#L774) | external-constructor-callback-or-unresolved |
+| `journal_samples` | `sample_offsets` | [775](../../src/card.rs#L775) | [store::card::sample_offsets](../../src/card.rs#L204) |
+| `journal_samples` | `pread_if_present` | [776](../../src/card.rs#L776) | [store::card::pread_if_present](../../src/card.rs#L245) |
+| `journal_samples` | `Ok` | [777](../../src/card.rs#L777), [785](../../src/card.rs#L785) | external-constructor-callback-or-unresolved |
+| `journal_samples` | `samples.push` | [779](../../src/card.rs#L779) | receiver-type-required |
+| `journal_samples` | `sha256_hex` | [782](../../src/card.rs#L782) | [store::card::sha256_hex](../../src/card.rs#L199) |
+| `journal_samples` | `Some` | [785](../../src/card.rs#L785) | external-constructor-callback-or-unresolved |

@@ -749,6 +749,46 @@ mod repair_tests {
     }
 
     #[test]
+    fn empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed() {
+        let dir = tempfile::tempdir().unwrap();
+        let folder = dir.path();
+        let empty_projection = folder.join("endpoint-v2.jsonl");
+        let empty_request_cache = folder.join("endpoint-requests-v2.jsonl");
+        let empty_semantic = folder.join("main.jsonl");
+        std::fs::write(&empty_projection, b"").unwrap();
+        std::fs::write(&empty_request_cache, b"").unwrap();
+        let retained_projection = b"legacy projection bytes\n";
+        std::fs::write(&empty_semantic, b"").unwrap();
+
+        let report = repair_thread_tails(folder).unwrap();
+
+        assert_eq!(report.truncated_bytes, 0);
+        assert!(report.busy.is_empty());
+        assert_eq!(
+            report.corrupt,
+            vec![("main.jsonl".to_owned(), "ledger is empty".to_owned())]
+        );
+        assert_eq!(std::fs::read(empty_projection).unwrap(), b"");
+        assert_eq!(std::fs::read(empty_request_cache).unwrap(), b"");
+        assert_eq!(std::fs::read(empty_semantic).unwrap(), b"");
+
+        // The legacy projection's prior, nonempty representation is also not a
+        // semantic ledger and remains byte-for-byte untouched by tail repair.
+        std::fs::write(&empty_projection, retained_projection).unwrap();
+        let report = repair_thread_tails(folder).unwrap();
+        assert_eq!(
+            report.corrupt,
+            vec![("main.jsonl".to_owned(), "ledger is empty".to_owned())]
+        );
+        assert_eq!(
+            std::fs::read(empty_projection).unwrap(),
+            retained_projection
+        );
+        assert_eq!(std::fs::read(empty_request_cache).unwrap(), b"");
+        assert_eq!(std::fs::read(empty_semantic).unwrap(), b"");
+    }
+
+    #[test]
     fn partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left() {
         let dir = tempfile::tempdir().unwrap();
         let folder = dir.path();

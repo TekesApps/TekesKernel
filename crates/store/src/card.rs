@@ -251,7 +251,7 @@ fn pread_if_present(file: &File, off: u64, len: u64) -> io::Result<Option<Vec<u8
 }
 
 /// A ledger line name as the card may list it: a plain `*.jsonl` file name in the thread
-/// folder (no separator, no `.`/`..`, no dot-prefix, no NUL), never the endpoint journal.
+/// folder (no separator, no `.`/`..`, no dot-prefix, no NUL), never an endpoint projection.
 #[must_use]
 pub fn valid_line_name(name: &str) -> bool {
     name.len() > ".jsonl".len()
@@ -259,6 +259,10 @@ pub fn valid_line_name(name: &str) -> bool {
         && !name.starts_with('.')
         && !name.contains(['/', '\\', '\0'])
         && name != JOURNAL_FILE
+        // Retired endpoint sidecars are disposable projections, not semantic ledgers.
+        // Recovery must not quarantine a session because one of these files is empty.
+        && name != "endpoint-v2.jsonl"
+        && name != "endpoint-requests-v2.jsonl"
 }
 
 /// Identity fields computed from the exact bytes of a verified prefix (ends with LF).

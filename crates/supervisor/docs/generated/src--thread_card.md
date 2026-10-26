@@ -295,7 +295,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `write` | `prepared.summary.clone` | [288](../../src/thread_card.rs#L288) | receiver-type-required |
 | `write` | `prepared.journal.as_ref().map` | [289](../../src/thread_card.rs#L289) | receiver-type-required |
 | `write` | `prepared.journal.as_ref` | [289](../../src/thread_card.rs#L289) | receiver-type-required |
-| `write` | `store::card::write_card` | [296](../../src/thread_card.rs#L296) | [store::card::write_card](../../../store/src/card.rs#L582) |
+| `write` | `store::card::write_card` | [296](../../src/thread_card.rs#L296) | [store::card::write_card](../../../store/src/card.rs#L586) |
 | `write` | `WriteOutcome::Skipped` | [303](../../src/thread_card.rs#L303) | external-constructor-callback-or-unresolved |
 | `new` | `Duration::from_secs` | [323](../../src/thread_card.rs#L323) | external-constructor-callback-or-unresolved |
 | `new` | `Mutex::new` | [325](../../src/thread_card.rs#L325) | external-constructor-callback-or-unresolved |

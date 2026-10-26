@@ -151,3 +151,11 @@ Reads validate I-JSON members/numbers, null and the typed schema after in-memory
 canonicalization; they do not rewrite either file. Explicit config publication
 continues to emit canonical JSON. Session configuration and ledger byte contracts
 remain strict.
+
+Recovery distinguishes semantic ledgers from the exact retired endpoint projection
+names `endpoint-v2.jsonl` and `endpoint-requests-v2.jsonl`. These sidecars are not
+semantic input; their existing endpoint-journal lifecycle owns retirement/rebuild.
+Empty or corrupt genuine semantic ledgers still fail closed. The isolated public
+process regression is `scripts/test-legacy-endpoint-recovery.py --binary-dir DIR
+--output NEW_EVIDENCE_DIR`; it verifies history and a full restart without model
+calls. `--expect-quarantine` records the old binary negative control separately.

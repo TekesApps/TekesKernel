@@ -48,7 +48,8 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [store::tail::repair_thread_tails](../../src/tail.rs#L676) | function_item | `pub` |  |
 | [store::tail::repair_tests::event](../../src/tail.rs#L722) | function_item | `private` | test; #[cfg(test)] |
 | [store::tail::repair_tests::ledger](../../src/tail.rs#L729) | function_item | `private` | test; #[cfg(test)] |
-| [store::tail::repair_tests::partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left](../../src/tail.rs#L752) | function_item | `private` | test; #[cfg(test)] |
+| [store::tail::repair_tests::empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed](../../src/tail.rs#L752) | function_item | `private` | test; #[cfg(test)] |
+| [store::tail::repair_tests::partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left](../../src/tail.rs#L792) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -443,24 +444,35 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `ledger` | `bytes.push` | [739](../../src/tail.rs#L739), [746](../../src/tail.rs#L746) | receiver-type-required |
 | `ledger` | `event(json!({"kind":"meta","title":"t"}), seq)                     .canonical_bytes()                     .unwrap` | [742](../../src/tail.rs#L742) | receiver-type-required |
 | `ledger` | `event(json!({"kind":"meta","title":"t"}), seq)                     .canonical_bytes` | [742](../../src/tail.rs#L742) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `tempfile::tempdir().unwrap` | [753](../../src/tail.rs#L753) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `tempfile::tempdir` | [753](../../src/tail.rs#L753) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `dir.path` | [754](../../src/tail.rs#L754) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `ledger` | [755](../../src/tail.rs#L755) | [store::tail::repair_tests::ledger](../../src/tail.rs#L729) |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `good.clone` | [757](../../src/tail.rs#L757), [761](../../src/tail.rs#L761) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `torn.extend_from_slice` | [758](../../src/tail.rs#L758) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join("main.jsonl"), &torn).unwrap` | [759](../../src/tail.rs#L759) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write` | [759](../../src/tail.rs#L759), [764](../../src/tail.rs#L764), [767](../../src/tail.rs#L767), [770](../../src/tail.rs#L770), [772](../../src/tail.rs#L772) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `folder.join` | [759](../../src/tail.rs#L759), [764](../../src/tail.rs#L764), [767](../../src/tail.rs#L767), [768](../../src/tail.rs#L768), [770](../../src/tail.rs#L770), [773](../../src/tail.rs#L773), [788](../../src/tail.rs#L788), [791](../../src/tail.rs#L791) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `invalid.extend_from_slice` | [762](../../src/tail.rs#L762) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join(child_a), &invalid).unwrap` | [764](../../src/tail.rs#L764) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join(child_b), &torn).unwrap` | [767](../../src/tail.rs#L767), [770](../../src/tail.rs#L770) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `LockedLedger::open(folder.join(child_b), 1).unwrap` | [768](../../src/tail.rs#L768) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `LockedLedger::open` | [768](../../src/tail.rs#L768) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(             folder.join("018f0000-0000-7000-8000-00000000000c.jsonl"),             &good,         )         .unwrap` | [772](../../src/tail.rs#L772) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `repair_thread_tails(folder).unwrap` | [778](../../src/tail.rs#L778) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `repair_thread_tails` | [778](../../src/tail.rs#L778) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `drop` | [786](../../src/tail.rs#L786) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired(folder.join(child_b)).unwrap` | [788](../../src/tail.rs#L788) | receiver-type-required |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired` | [788](../../src/tail.rs#L788), [791](../../src/tail.rs#L791) | external-constructor-callback-or-unresolved |
-| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired(folder.join(child_a)).unwrap` | [791](../../src/tail.rs#L791) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `tempfile::tempdir().unwrap` | [753](../../src/tail.rs#L753) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `tempfile::tempdir` | [753](../../src/tail.rs#L753) | external-constructor-callback-or-unresolved |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `dir.path` | [754](../../src/tail.rs#L754) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `folder.join` | [755](../../src/tail.rs#L755), [756](../../src/tail.rs#L756), [757](../../src/tail.rs#L757) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `std::fs::write(&empty_projection, b"").unwrap` | [758](../../src/tail.rs#L758) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `std::fs::write` | [758](../../src/tail.rs#L758), [759](../../src/tail.rs#L759), [761](../../src/tail.rs#L761), [777](../../src/tail.rs#L777) | external-constructor-callback-or-unresolved |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `std::fs::write(&empty_request_cache, b"").unwrap` | [759](../../src/tail.rs#L759) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `std::fs::write(&empty_semantic, b"").unwrap` | [761](../../src/tail.rs#L761) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `repair_thread_tails(folder).unwrap` | [763](../../src/tail.rs#L763), [778](../../src/tail.rs#L778) | receiver-type-required |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `repair_thread_tails` | [763](../../src/tail.rs#L763), [778](../../src/tail.rs#L778) | external-constructor-callback-or-unresolved |
+| `empty_legacy_endpoint_sidecars_are_ignored_but_empty_semantic_ledgers_fail_closed` | `std::fs::write(&empty_projection, retained_projection).unwrap` | [777](../../src/tail.rs#L777) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `tempfile::tempdir().unwrap` | [793](../../src/tail.rs#L793) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `tempfile::tempdir` | [793](../../src/tail.rs#L793) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `dir.path` | [794](../../src/tail.rs#L794) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `ledger` | [795](../../src/tail.rs#L795) | [store::tail::repair_tests::ledger](../../src/tail.rs#L729) |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `good.clone` | [797](../../src/tail.rs#L797), [801](../../src/tail.rs#L801) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `torn.extend_from_slice` | [798](../../src/tail.rs#L798) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join("main.jsonl"), &torn).unwrap` | [799](../../src/tail.rs#L799) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write` | [799](../../src/tail.rs#L799), [804](../../src/tail.rs#L804), [807](../../src/tail.rs#L807), [810](../../src/tail.rs#L810), [812](../../src/tail.rs#L812) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `folder.join` | [799](../../src/tail.rs#L799), [804](../../src/tail.rs#L804), [807](../../src/tail.rs#L807), [808](../../src/tail.rs#L808), [810](../../src/tail.rs#L810), [813](../../src/tail.rs#L813), [828](../../src/tail.rs#L828), [831](../../src/tail.rs#L831) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `invalid.extend_from_slice` | [802](../../src/tail.rs#L802) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join(child_a), &invalid).unwrap` | [804](../../src/tail.rs#L804) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(folder.join(child_b), &torn).unwrap` | [807](../../src/tail.rs#L807), [810](../../src/tail.rs#L810) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `LockedLedger::open(folder.join(child_b), 1).unwrap` | [808](../../src/tail.rs#L808) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `LockedLedger::open` | [808](../../src/tail.rs#L808) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `std::fs::write(             folder.join("018f0000-0000-7000-8000-00000000000c.jsonl"),             &good,         )         .unwrap` | [812](../../src/tail.rs#L812) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `repair_thread_tails(folder).unwrap` | [818](../../src/tail.rs#L818) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `repair_thread_tails` | [818](../../src/tail.rs#L818) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `drop` | [826](../../src/tail.rs#L826) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired(folder.join(child_b)).unwrap` | [828](../../src/tail.rs#L828) | receiver-type-required |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired` | [828](../../src/tail.rs#L828), [831](../../src/tail.rs#L831) | external-constructor-callback-or-unresolved |
+| `partial_tails_are_repaired_complete_invalid_records_are_corruption_and_busy_is_left` | `read_ledger_repaired(folder.join(child_a)).unwrap` | [831](../../src/tail.rs#L831) | receiver-type-required |
