@@ -59,7 +59,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 47 | [Symbols and calls](src--dynamic_bindings.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 163 | 1487 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 172 | 1606 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 152 | 999 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 156 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 12 | 79 | [Symbols and calls](src--file_observation.md) |
@@ -68,7 +68,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 355 | 6340 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 356 | 6351 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 839 | [Symbols and calls](src--production_tool_control.md) |

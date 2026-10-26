@@ -27,7 +27,7 @@ use endpoint::{
 use engine::{LockFacts, classify};
 use schema::{Event, EventKind, IJsonValue, OriginTuple};
 use serde_json::{Value, json};
-use store::{StoreError, ThreadStore, scan_valid_prefix};
+use store::{AtomicPublisher, NamedLock, StoreError, ThreadStore, scan_valid_prefix};
 use thiserror::Error;
 use transport::{TransportConfig, TransportConfigError, TransportServer};
 use worker_control::{ApprovalResponse, Receipt};
@@ -556,6 +556,155 @@ struct Attachments {
     /// (session, line) pairs with an unresolved request: kept in step with
     /// `published_actionables` so the registration logic never takes that lock.
     pending_lines: HashSet<(String, Option<String>)>,
+}
+
+#[derive(serde::Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
+struct SavedQueueProjection {
+    format: u64,
+    sequence: u64,
+    ledger_length: u64,
+    items: Vec<IJsonValue>,
+}
+
+fn read_queue_projection(folder: &Path) -> Option<SavedQueueProjection> {
+    let saved: SavedQueueProjection =
+        serde_json::from_slice(&fs::read(folder.join("session-queue.projection.json")).ok()?)
+            .ok()?;
+    (saved.format == 1).then_some(saved)
+}
+
+fn queue_projection_is_older_than(
+    previous: &SavedQueueProjection,
+    ledger_length: u64,
+    sequence: u64,
+) -> bool {
+    previous.ledger_length == ledger_length && previous.sequence > sequence
+}
+
+fn public_queue_items(
+    projection: &schema::LedgerProjection,
+) -> Result<Vec<IJsonValue>, ProductionCarrierError> {
+    let live = projection
+        .lifecycle
+        .live_inputs
+        .iter()
+        .copied()
+        .collect::<BTreeSet<_>>();
+    let mut items = Vec::with_capacity(live.len());
+    for event in projection
+        .events
+        .iter()
+        .filter(|event| event.kind() == &schema::EventKind::Input && live.contains(&event.seq()))
+    {
+        let value: Value = serde_json::from_slice(&event.raw().canonical_bytes()?)?;
+        let seq = event.seq();
+        let mut message = json!({
+            "id":format!("input-{seq}"),
+            "role":"user",
+            "content":endpoint::project_content_blocks(
+                value.get("content").unwrap_or(&Value::Null)
+            ),
+            "source":{"kind":value.get("source").and_then(Value::as_str).unwrap_or("user")},
+        });
+        if let Some(rpc_id) = value.get("origin_key") {
+            message["source"]["rpcId"] = rpc_id.clone();
+        }
+        if let Some(submission) = value.get("submission") {
+            message["submission"] = submission.clone();
+        }
+        let item = json!({
+            "id":format!("input:{seq}"),
+            "placement":if value.get("steer").and_then(Value::as_bool) == Some(true) {
+                "steering"
+            } else {
+                "queued"
+            },
+            "message":message,
+        });
+        items.push(IJsonValue::parse(&serde_json::to_vec(&item)?)?);
+    }
+    Ok(items)
+}
+
+#[cfg(test)]
+mod public_queue_projection_tests {
+    use super::*;
+
+    fn projection(live_inputs: Vec<u64>) -> schema::LedgerProjection {
+        let input = schema::Event::decode(
+            br#"{"v":1,"seq":2,"kind":"input","ts":"2026-10-26T00:00:00.000Z","content":[{"type":"text","text":"queued"}],"source":"cross_thread","origin_key":"rpc-2","origin_tuple":{"principal":"p","client":"c","target":"session","op":"submit","key":"rpc-2"}}"#,
+        )
+        .expect("valid input event");
+        schema::LedgerProjection {
+            events: vec![input],
+            last_seq: 2,
+            latest_turn: None,
+            terminal_tail: false,
+            required_reader: schema::READER_VERSION,
+            read_only: false,
+            origin_keys: BTreeMap::new(),
+            origin_tuples: BTreeMap::new(),
+            lifecycle: schema::LifecycleFacts {
+                latest_turn: None,
+                terminal_tail: false,
+                stop_active: false,
+                stop_closure_point: None,
+                open_hold: false,
+                answered_hold: false,
+                runnable_inputs: live_inputs.clone(),
+                turn_open_inputs: Vec::new(),
+                live_inputs,
+                unstarted: false,
+                unresolved_work: false,
+                resume_policy: schema::ResumePolicy::Never,
+                recovery_ordinal: 0,
+                continuation_wait_until: None,
+                admission_wait_until: None,
+            },
+            run_ranges: Vec::new(),
+        }
+    }
+
+    #[test]
+    fn ledger_recovery_starts_a_new_queue_generation() {
+        let previous = SavedQueueProjection {
+            format: 1,
+            sequence: 42,
+            ledger_length: 4096,
+            items: Vec::new(),
+        };
+        assert!(queue_projection_is_older_than(&previous, 4096, 41));
+        // A repaired/replaced ledger is a new generation, even when its valid sequence regresses.
+        assert!(!queue_projection_is_older_than(&previous, 2048, 7));
+    }
+
+    #[test]
+    fn queue_snapshot_uses_only_live_inputs_and_preserves_public_message_source() {
+        let items = public_queue_items(&projection(vec![2])).expect("queue snapshot");
+        let values = items
+            .iter()
+            .map(|item| serde_json::from_slice::<Value>(&item.canonical_bytes().unwrap()).unwrap())
+            .collect::<Vec<_>>();
+        assert_eq!(
+            values,
+            vec![json!({
+                "id":"input:2",
+                "placement":"queued",
+                "message":{
+                    "id":"input-2",
+                    "role":"user",
+                    "content":[{"type":"text","text":"queued"}],
+                    "source":{"kind":"cross_thread","rpcId":"rpc-2"},
+                },
+            })]
+        );
+        assert!(
+            public_queue_items(&projection(Vec::new()))
+                .expect("consumed snapshot")
+                .is_empty()
+        );
+    }
 }
 
 /// An open journal stream pins its session on the mux while it lives.
@@ -1166,6 +1315,97 @@ impl ProductionCarrierStreams {
             .publish_frame(session_id, self.next_rpc_id("mux"), frame)?)
     }
 
+    /// Recompute and publish the complete public queue snapshot from the validated semantic
+    /// ledger. Prompt admission is durable before this is called, so the lifecycle fold is the
+    /// authority for which input events remain live; journal rows and worker status are not.
+    pub fn publish_queue_snapshot(
+        &self,
+        session_id: &str,
+    ) -> Result<usize, ProductionCarrierError> {
+        let folder = self.inner.root.join("threads").join(session_id);
+        let ledger = folder.join("main.jsonl");
+        if !fs::symlink_metadata(&ledger)?.file_type().is_file() {
+            return Err(ProductionCarrierError::Lifecycle(
+                "queue ledger must be a regular file".to_owned(),
+            ));
+        }
+        // Fold the same immutable byte buffer whose exact length is bound to the projection.
+        // Never pair a semantic fold from an earlier version with later file metadata.
+        let contents = fs::read(&ledger)?;
+        let projection = scan_valid_prefix(&contents, schema::READER_VERSION)
+            .projection
+            .ok_or_else(|| {
+                ProductionCarrierError::Lifecycle("queue ledger has no valid prefix".to_owned())
+            })?;
+        self.publish_queue_projection_for_delivery(
+            session_id,
+            &folder,
+            &projection,
+            contents.len() as u64,
+        )
+    }
+
+    pub(crate) fn publish_queue_projection_for_delivery(
+        &self,
+        session_id: &str,
+        folder: &Path,
+        projection: &schema::LedgerProjection,
+        ledger_length: u64,
+    ) -> Result<usize, ProductionCarrierError> {
+        let _publication = NamedLock::exclusive(folder.join("session-queue.projection.lock"))?;
+        let current_length = fs::metadata(folder.join("main.jsonl"))?.len();
+        if current_length != ledger_length {
+            return Err(ProductionCarrierError::Lifecycle(
+                "queue ledger changed during snapshot projection".to_owned(),
+            ));
+        }
+        let items = public_queue_items(projection)?;
+        let sequence = projection.last_seq;
+        if let Some(previous) = read_queue_projection(folder) {
+            // Sequence is monotonic only within one exact ledger generation. A repaired or
+            // replaced ledger may legitimately have a smaller sequence; its byte length binds
+            // that reset. Never let an old fold overwrite a projection for the current bytes.
+            let same_ledger = previous.ledger_length == ledger_length;
+            if queue_projection_is_older_than(&previous, ledger_length, sequence) {
+                return Ok(0);
+            }
+            if same_ledger && previous.sequence == sequence && previous.items != items {
+                return Err(ProductionCarrierError::Lifecycle(
+                    "queue projection changed at an unchanged ledger sequence".to_owned(),
+                ));
+            }
+            if same_ledger && (previous.sequence == sequence || previous.items == items) {
+                if previous.sequence == sequence {
+                    return Ok(0);
+                }
+                let bytes = serde_json::to_vec(&SavedQueueProjection {
+                    format: 1,
+                    sequence,
+                    ledger_length,
+                    items,
+                })?;
+                AtomicPublisher::replace(folder.join("session-queue.projection.json"), &bytes)
+                    .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
+                return Ok(0);
+            }
+        }
+        let bytes = serde_json::to_vec(&SavedQueueProjection {
+            format: 1,
+            sequence,
+            ledger_length,
+            items: items.clone(),
+        })?;
+        AtomicPublisher::replace(folder.join("session-queue.projection.json"), &bytes)
+            .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
+        self.publish_session_frame(
+            session_id,
+            endpoint::MuxFrame::Queue {
+                session_id: session_id.to_owned(),
+                items,
+            },
+        )
+    }
+
     /// Registers the session on the live generations before something is published for it.
     /// A refused registration (more than 256 pinned sessions) is an error; anything else
     /// (the folder vanished, an unreadable journal) only costs the generations this frame.
@@ -1526,23 +1766,54 @@ impl ProductionCarrierStreams {
             .session_authority()
             .is_some_and(|authority| authority.has_catalog());
         let mut unprojected = Vec::new();
+        let mut queue_unprojected = Vec::new();
         {
             let mut controls = self.inner.controls.lock().map_err(|_| poisoned())?;
             for session in active_session_ids(&self.inner.root)? {
+                let mut was_projected = controls.contains_key(&session);
                 if controls.contains_key(&session) && trust_files {
-                    continue;
-                }
-                if !trust_files {
+                    // The in-memory cache already contains context and queue updates.
+                } else if !trust_files {
                     // No catalog (a bare carrier): fold every thread, as the baseline always did.
-                    unprojected.push(session);
+                    was_projected = true;
+                    unprojected.push(session.clone());
+                } else {
+                    let folder = self.inner.root.join("threads").join(&session);
+                    match crate::context_usage::saved_control_item(&folder, &session) {
+                        Some(item) => {
+                            was_projected = true;
+                            controls.insert(session.clone(), item);
+                        }
+                        None => unprojected.push(session.clone()),
+                    }
+                }
+                // A catalog-backed session with no prior context projection has never been
+                // observed. Keep the lazy-baseline contract: do not scan its ledger just to
+                // synthesize an empty queue. Its first real operation publishes the snapshot.
+                if !was_projected {
                     continue;
                 }
                 let folder = self.inner.root.join("threads").join(&session);
-                match crate::context_usage::saved_control_item(&folder, &session) {
-                    Some(item) => {
-                        controls.insert(session, item);
+                match read_queue_projection(&folder).filter(|saved| {
+                    fs::metadata(folder.join("main.jsonl"))
+                        .is_ok_and(|metadata| metadata.len() == saved.ledger_length)
+                }) {
+                    Some(saved) => {
+                        let item =
+                            controls
+                                .entry(session.clone())
+                                .or_insert_with(|| SessionControlItem {
+                                    session_id: session.clone(),
+                                    queue: Vec::new(),
+                                    jobs: Vec::new(),
+                                    projections: IJsonValue::parse_str(
+                                        r#"{"asOfSeq":-1,"values":{}}"#,
+                                    )
+                                    .expect("empty control projection is I-JSON"),
+                                });
+                        item.queue = saved.items;
                     }
-                    None => unprojected.push(session),
+                    None => queue_unprojected.push(session),
                 }
             }
         }
@@ -1556,6 +1827,16 @@ impl ProductionCarrierStreams {
                     eprintln!("carrier-context-projection-failed: session={session} error={error}");
                 }
             }
+        }
+        // Queue snapshots were introduced after the context sidecar. Rebuild only missing
+        // snapshots from the semantic ledger, then all later baselines read the durable bounded
+        // projection instead of rescanning histories on every connection.
+        for session in queue_unprojected {
+            self.publish_queue_snapshot(&session).map_err(|error| {
+                ProductionCarrierError::Lifecycle(format!(
+                    "cannot rebuild authoritative queue baseline for {session}: {error}"
+                ))
+            })?;
         }
         let items = self
             .inner

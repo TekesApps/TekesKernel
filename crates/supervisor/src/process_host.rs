@@ -2769,12 +2769,27 @@ impl ProductionProcessHost {
         let should_refine = self.seed_automatic_title(session_id, timestamp, &source);
         self.reset_restart_backoff(session_id);
         if !receipt.deduplicated {
+            // Publish durable queue authority before a fast worker can consume the input.
+            self.publish_queue_snapshot(session_id);
             self.schedule_accepted_prompt(session_id, receipt.seq);
         }
         if should_refine {
             self.spawn_automatic_title_refinement(session_id.to_owned(), source);
         }
         Ok(receipt)
+    }
+
+    fn publish_queue_snapshot(&self, session_id: &str) {
+        let streams = self
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone();
+        if let Some(streams) = streams
+            && let Err(error) = streams.publish_queue_snapshot(session_id)
+        {
+            eprintln!("process-host-queue-snapshot-failed: session={session_id} error={error}");
+        }
     }
 
     fn schedule_accepted_prompt(&self, session_id: &str, input_seq: u64) {
@@ -3497,6 +3512,27 @@ impl ProductionProcessHost {
             }
         }
         if let Some(streams) = &streams {
+            let queue = if ledger_unchanged(kernel_file_len) {
+                streams.publish_queue_projection_for_delivery(
+                    session_id,
+                    &folder,
+                    &projection,
+                    kernel_file_len,
+                )
+            } else {
+                streams.publish_queue_snapshot(session_id)
+            };
+            match queue {
+                Ok(_) => {}
+                // The durable queue sidecar and control cache were updated before
+                // lazy mux registration. Like actionables, exhausting pinned mux
+                // sessions must not fail the durable doorbell; a later baseline
+                // reads the authoritative queue even when this live frame is refused.
+                Err(error @ ProductionCarrierError::ActiveSessionLimit(_)) => {
+                    eprintln!("process-host-queue-limit: session={session_id} {error}");
+                }
+                Err(error) => return Err(DaemonError::from(error)),
+            }
             let refreshed = if ledger_unchanged(kernel_file_len) {
                 streams.refresh_context_projection_shared(session_id, &projection, &journal)
             } else {
@@ -4781,6 +4817,7 @@ impl SessionDeliveryAuthority for ProductionProcessHost {
                 .map_err(internal)
                 .and_then(|()| worker.receipt(&delivery));
             if let Ok(receipt) = delivered {
+                self.publish_queue_snapshot(session_id);
                 self.spawn_automatic_title_seed_and_refinement(
                     session_id.to_owned(),
                     timestamp.to_owned(),
