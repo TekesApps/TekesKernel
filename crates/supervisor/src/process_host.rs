@@ -2788,7 +2788,7 @@ impl ProductionProcessHost {
         if let Some(streams) = streams
             && let Err(error) = streams.publish_queue_snapshot(session_id)
         {
-            eprintln!("process-host-queue-snapshot-failed: session={session_id} error={error}");
+            eprintln!("process-host-queue-snapshot-failed: error={error}");
         }
     }
 
@@ -3529,7 +3529,7 @@ impl ProductionProcessHost {
                 // sessions must not fail the durable doorbell; a later baseline
                 // reads the authoritative queue even when this live frame is refused.
                 Err(error @ ProductionCarrierError::ActiveSessionLimit(_)) => {
-                    eprintln!("process-host-queue-limit: session={session_id} {error}");
+                    eprintln!("process-host-queue-limit: {error}");
                 }
                 Err(error) => return Err(DaemonError::from(error)),
             }
