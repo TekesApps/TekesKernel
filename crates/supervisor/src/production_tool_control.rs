@@ -95,6 +95,19 @@ pub trait SupervisorRuntimeAuthority {
         request: &InterruptRequest,
     ) -> Result<IJsonValue, SupervisorOperationError>;
 
+    fn archive_session(
+        &mut self,
+        session: &str,
+        request_id: &str,
+        request_sha256: &str,
+        started_at: &str,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        let _ = (session, request_id, request_sha256, started_at);
+        Err(SupervisorOperationError::Unsupported(
+            "session archive lifecycle authority is unavailable".to_owned(),
+        ))
+    }
+
     fn ensure_child(
         &mut self,
         proof: &ChildLaunchProof,
@@ -524,11 +537,15 @@ impl<R: SupervisorRuntimeAuthority, J: SupervisorJobAuthority> ProductionToolCon
                         "a running worker cannot archive its containing session".into(),
                     ));
                 }
-                require_active_session(&self.root, target)?;
-                ThreadStore::open(&self.root)
-                    .map_err(map_store)?
-                    .archive(target)
-                    .map_err(map_store)?;
+                let timestamp = paired_tool_timestamp(&resolved.projection, request)?;
+                let request_bytes = request.arguments.canonical_bytes().map_err(map_schema)?;
+                let request_sha256 = format!("{:x}", Sha256::digest(request_bytes));
+                self.runtime.archive_session(
+                    target,
+                    &request.request_id,
+                    &request_sha256,
+                    timestamp,
+                )?;
                 to_ijson(&json!({"operation":"archive","session_id":target,"archived":true}))
             }
             "interrupt" => {
@@ -1147,16 +1164,6 @@ fn visible_sessions(root: &Path) -> Result<Vec<String>, SupervisorOperationError
         }
     }
     Ok(sessions.into_iter().collect())
-}
-
-fn require_active_session(root: &Path, session: &str) -> Result<(), SupervisorOperationError> {
-    let (_, archived) = session_folder(root, session)?;
-    if archived {
-        return Err(SupervisorOperationError::NotFound(
-            "active thread not found".into(),
-        ));
-    }
-    Ok(())
 }
 
 fn validate_session_folder(folder: &Path, session: &str) -> Result<(), SupervisorOperationError> {

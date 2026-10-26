@@ -1,6 +1,6 @@
 use std::fs;
 
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
@@ -635,10 +635,28 @@ fn foreign_session(root: &Path, id: &str) {
 }
 
 fn visibility_call(root: &Path, id: &str, name: &str, arguments: Value) -> ToolControlResult {
+    let archive = name == "context" && arguments["operation"] == "archive";
     let request = write_bound_request(root, id, name, arguments);
-    let response = production_session(root)
-        .handle_line(&encode_tool_control(&request).unwrap())
-        .unwrap();
+    let encoded = encode_tool_control(&request).unwrap();
+    let response = if archive {
+        ToolControlSession::new(
+            root,
+            Selected { version: 2 },
+            ProductionToolControlHandler::new(
+                root,
+                VisibilityRuntime(
+                    Arc::new(std::sync::Mutex::new(Vec::new())),
+                    root.to_path_buf(),
+                ),
+                NoJobAuthority,
+            ),
+            ProductionToolControlPolicy::default(),
+        )
+        .handle_line(&encoded)
+        .unwrap()
+    } else {
+        production_session(root).handle_line(&encoded).unwrap()
+    };
     decode_tool_control_result(&response).unwrap()
 }
 
@@ -732,7 +750,7 @@ fn context_reads_messages_and_controls_are_visible_across_workspace_and_folder_i
             Selected { version: 2 },
             ProductionToolControlHandler::new(
                 root.path(),
-                VisibilityRuntime(Arc::clone(&calls)),
+                VisibilityRuntime(Arc::clone(&calls), root.path().to_path_buf()),
                 NoJobAuthority,
             ),
             ProductionToolControlPolicy::default(),
@@ -745,7 +763,7 @@ fn context_reads_messages_and_controls_are_visible_across_workspace_and_folder_i
             Selected { version: 2 },
             ProductionToolControlHandler::new(
                 root.path(),
-                VisibilityRuntime(Arc::clone(&calls)),
+                VisibilityRuntime(Arc::clone(&calls), root.path().to_path_buf()),
                 NoJobAuthority,
             ),
             ProductionToolControlPolicy::default(),
@@ -880,7 +898,7 @@ fn context_search_cursors_bind_targets_filters_and_reject_legacy_ambiguous_ident
     }
 }
 
-struct VisibilityRuntime(Arc<std::sync::Mutex<Vec<&'static str>>>);
+struct VisibilityRuntime(Arc<std::sync::Mutex<Vec<&'static str>>>, PathBuf);
 impl SupervisorRuntimeAuthority for VisibilityRuntime {
     fn ensure_running(
         &mut self,
@@ -907,6 +925,23 @@ impl SupervisorRuntimeAuthority for VisibilityRuntime {
         assert_eq!(request.target_session, FOREIGN);
         self.0.lock().unwrap().push("interrupt");
         Ok(ijson(json!({"seq":5})))
+    }
+    fn archive_session(
+        &mut self,
+        session: &str,
+        _request_id: &str,
+        _request_sha256: &str,
+        _started_at: &str,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        assert_eq!(session, FOREIGN);
+        store::ThreadStore::open(&self.1)
+            .map_err(|error| SupervisorOperationError::Unavailable(error.to_string()))?
+            .archive(session)
+            .map_err(|error| SupervisorOperationError::Unavailable(error.to_string()))?;
+        self.0.lock().unwrap().push("archive");
+        Ok(ijson(
+            json!({"operation":"archive","archived_session_ids":[session]}),
+        ))
     }
     fn ensure_child(
         &mut self,
