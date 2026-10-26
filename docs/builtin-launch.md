@@ -145,3 +145,9 @@ rejection.
 History cursors follow the current Client contract: `beforeSequence` is optional,
 accepts `-1` for an exhausted page, and cannot exceed `throughSequence`.
 Application tests and contract tests do not constitute visual UI acceptance.
+
+Global `providers.json` and `settings.json` may retain existing formatted JSON.
+Reads validate I-JSON members/numbers, null and the typed schema after in-memory
+canonicalization; they do not rewrite either file. Explicit config publication
+continues to emit canonical JSON. Session configuration and ledger byte contracts
+remain strict.

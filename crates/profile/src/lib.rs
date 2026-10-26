@@ -111,6 +111,30 @@ pub(crate) fn parse_canonical<T: DeserializeOwned>(
     })
 }
 
+/// Reads a global authority that predates canonical-byte publication.
+/// Parsing still enforces unique I-JSON members, finite numbers and the same
+/// schema/null rules as `parse_canonical`; only insignificant JSON whitespace
+/// and object member order are normalized in memory. Callers never write these
+/// normalized bytes back implicitly.
+pub(crate) fn parse_global_json<T: DeserializeOwned>(
+    path: impl Into<PathBuf>,
+    bytes: &[u8],
+) -> Result<T, ProfileError> {
+    let path = path.into();
+    let value = schema::IJsonValue::parse(bytes).map_err(|error| ProfileError::InvalidBytes {
+        path: path.clone(),
+        reason: error.to_string(),
+    })?;
+    let mut canonical = value
+        .canonical_bytes()
+        .map_err(|error| ProfileError::InvalidBytes {
+            path: path.clone(),
+            reason: error.to_string(),
+        })?;
+    canonical.push(b'\n');
+    parse_canonical(path, &canonical)
+}
+
 pub(crate) fn canonical_line<T: Serialize>(
     path: impl Into<PathBuf>,
     value: &T,

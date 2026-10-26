@@ -225,15 +225,15 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `decode` | `Ok` | [46](../../src/instruction.rs#L46) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `validate_settings` | [50](../../src/instruction.rs#L50) | [profile::instruction::validate_settings](../../src/instruction.rs#L819) |
 | `canonical_bytes` | `Path::new` | [50](../../src/instruction.rs#L50) | external-constructor-callback-or-unresolved |
-| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L114) |
+| `canonical_bytes` | `canonical_line` | [51](../../src/instruction.rs#L51) | [profile::canonical_line](../../src/lib.rs#L138) |
 | `admit_source` | `Err` | [106](../../src/instruction.rs#L106) | external-constructor-callback-or-unresolved |
 | `admit_source` | `std::io::Error::other` | [106](../../src/instruction.rs#L106) | external-constructor-callback-or-unresolved |
 | `admit_source` | `Ok` | [110](../../src/instruction.rs#L110) | external-constructor-callback-or-unresolved |
 | `source_authorized` | `self.admit_source(source).is_ok` | [115](../../src/instruction.rs#L115) | receiver-type-required |
 | `source_authorized` | `self.admit_source` | [115](../../src/instruction.rs#L115) | [profile::instruction::InstructionSnapshot::admit_source](../../src/instruction.rs#L102) |
 | `digest` | `Ok` | [130](../../src/instruction.rs#L130) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [130](../../src/instruction.rs#L130) | [profile::digest](../../src/lib.rs#L128) |
-| `digest` | `canonical_line` | [130](../../src/instruction.rs#L130) | [profile::canonical_line](../../src/lib.rs#L114) |
+| `digest` | `digest` | [130](../../src/instruction.rs#L130) | [profile::digest](../../src/lib.rs#L152) |
+| `digest` | `canonical_line` | [130](../../src/instruction.rs#L130) | [profile::canonical_line](../../src/lib.rs#L138) |
 | `resolve_and_publish_for_scope` | `scope.config` | [155](../../src/instruction.rs#L155) | receiver-type-required |
 | `resolve_and_publish_for_scope` | `Some` | [156](../../src/instruction.rs#L156) | external-constructor-callback-or-unresolved |
 | `resolve_and_publish_for_scope` | `user_agent_dir.as_ref().to_string_lossy().into_owned` | [156](../../src/instruction.rs#L156) | receiver-type-required |
@@ -247,9 +247,9 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `resolve_and_publish_for_scope` | `instruction.publish` | [163](../../src/instruction.rs#L163) | receiver-type-required |
 | `resolve_and_publish_for_scope` | `Ok` | [164](../../src/instruction.rs#L164) | external-constructor-callback-or-unresolved |
 | `canonical_bytes` | `validate_snapshot` | [178](../../src/instruction.rs#L178) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L865) |
-| `canonical_bytes` | `canonical_line` | [179](../../src/instruction.rs#L179) | [profile::canonical_line](../../src/lib.rs#L114) |
+| `canonical_bytes` | `canonical_line` | [179](../../src/instruction.rs#L179) | [profile::canonical_line](../../src/lib.rs#L138) |
 | `digest` | `Ok` | [183](../../src/instruction.rs#L183) | external-constructor-callback-or-unresolved |
-| `digest` | `digest` | [183](../../src/instruction.rs#L183) | [profile::digest](../../src/lib.rs#L128) |
+| `digest` | `digest` | [183](../../src/instruction.rs#L183) | [profile::digest](../../src/lib.rs#L152) |
 | `digest` | `self.canonical_bytes` | [183](../../src/instruction.rs#L183) | [profile::instruction::InstructionSnapshot::canonical_bytes](../../src/instruction.rs#L177) |
 | `decode` | `parse_canonical` | [187](../../src/instruction.rs#L187) | [profile::parse_canonical](../../src/lib.rs#L69) |
 | `decode` | `validate_snapshot` | [188](../../src/instruction.rs#L188) | [profile::instruction::validate_snapshot](../../src/instruction.rs#L865) |
@@ -391,7 +391,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `maybe_source` | `normalize_logical` | [603](../../src/instruction.rs#L603) | [profile::instruction::normalize_logical](../../src/instruction.rs#L694) |
 | `maybe_source` | `sources.push` | [604](../../src/instruction.rs#L604) | receiver-type-required |
 | `maybe_source` | `origin.clone` | [605](../../src/instruction.rs#L605) | receiver-type-required |
-| `maybe_source` | `digest` | [609](../../src/instruction.rs#L609) | [profile::digest](../../src/lib.rs#L128) |
+| `maybe_source` | `digest` | [609](../../src/instruction.rs#L609) | [profile::digest](../../src/lib.rs#L152) |
 | `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags(libc::O_CLOEXEC &#124; libc::O_NOFOLLOW)         .open` | [615](../../src/instruction.rs#L615) | receiver-type-required |
 | `read_stable_file` | `OpenOptions::new()         .read(true)         .custom_flags` | [615](../../src/instruction.rs#L615) | receiver-type-required |
 | `read_stable_file` | `OpenOptions::new()         .read` | [615](../../src/instruction.rs#L615) | receiver-type-required |
@@ -547,7 +547,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_snapshot` | `source                 .content_sha256                 .bytes` | [900](../../src/instruction.rs#L900) | receiver-type-required |
 | `validate_snapshot` | `byte.is_ascii_hexdigit` | [903](../../src/instruction.rs#L903) | receiver-type-required |
 | `validate_snapshot` | `byte.is_ascii_uppercase` | [903](../../src/instruction.rs#L903) | receiver-type-required |
-| `validate_snapshot` | `digest` | [910](../../src/instruction.rs#L910) | [profile::digest](../../src/lib.rs#L128) |
+| `validate_snapshot` | `digest` | [910](../../src/instruction.rs#L910) | [profile::digest](../../src/lib.rs#L152) |
 | `validate_snapshot` | `source.content.as_bytes` | [910](../../src/instruction.rs#L910), [945](../../src/instruction.rs#L945), [950](../../src/instruction.rs#L950) | receiver-type-required |
 | `validate_snapshot` | `source.content_sha256.clone` | [913](../../src/instruction.rs#L913) | receiver-type-required |
 | `validate_snapshot` | `normalize_logical` | [917](../../src/instruction.rs#L917) | [profile::instruction::normalize_logical](../../src/instruction.rs#L694) |
