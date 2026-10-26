@@ -41,25 +41,26 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tools::sandbox::probe_linux](../../src/sandbox.rs#L684) | function_item | `private` |  |
 | [tools::sandbox::probe_confinement](../../src/sandbox.rs#L719) | function_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
 | [tools::sandbox::probe_output](../../src/sandbox.rs#L797) | function_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
-| [tools::sandbox::validate_roots](../../src/sandbox.rs#L823) | function_item | `private` |  |
-| [tools::sandbox::validate_absolute](../../src/sandbox.rs#L840) | function_item | `private` |  |
-| [tools::sandbox::escape_sbpl](../../src/sandbox.rs#L856) | function_item | `private` |  |
-| [tools::sandbox::probe_nonce](../../src/sandbox.rs#L872) | function_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
-| [tools::sandbox::probe_nonce::NONCE](../../src/sandbox.rs#L874) | static_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
-| [tools::sandbox::tests::available](../../src/sandbox.rs#L881) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::missing](../../src/sandbox.rs#L887) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::linux_auto_prefers_bubblewrap_without_probing_landlock](../../src/sandbox.rs#L894) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::linux_auto_falls_back_only_to_available_landlock](../../src/sandbox.rs#L903) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::bubblewrap_plan_matches_golden_bytes](../../src/sandbox.rs#L914) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L925) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::protected_roots_are_omitted_from_serialization_when_empty](../../src/sandbox.rs#L938) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::darwin_profile_denies_protected_root_and_its_writable_ancestors](../../src/sandbox.rs#L953) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::protected_exceptions_must_be_strictly_beneath](../../src/sandbox.rs#L986) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::unsorted_protected_roots_are_rejected](../../src/sandbox.rs#L1001) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::exposed_roots_keep_only_protected_roots_inside_write_roots](../../src/sandbox.rs#L1010) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::protected_root_lookup_resolves_symlinked_aliases](../../src/sandbox.rs#L1024) | function_item | `private` | test; #[cfg(test)] |
-| [tools::sandbox::tests::user_instructions_stay_protected_through_absent_paths_and_aliases](../../src/sandbox.rs#L1050) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
-| [tools::sandbox::tests::seatbelt_keeps_protected_root_read_only_beneath_a_writable_home](../../src/sandbox.rs#L1110) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tools::sandbox::validate_roots](../../src/sandbox.rs#L831) | function_item | `private` |  |
+| [tools::sandbox::validate_absolute](../../src/sandbox.rs#L848) | function_item | `private` |  |
+| [tools::sandbox::escape_sbpl](../../src/sandbox.rs#L864) | function_item | `private` |  |
+| [tools::sandbox::probe_nonce](../../src/sandbox.rs#L880) | function_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
+| [tools::sandbox::probe_nonce::NONCE](../../src/sandbox.rs#L882) | static_item | `private` | #[cfg(any(     target_os = "macos",     all(         target_os = "linux",         any(target_arch = "x86_64", target_arch = "aarch64")     ) ))] |
+| [tools::sandbox::tests::available](../../src/sandbox.rs#L889) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::missing](../../src/sandbox.rs#L895) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::probe_output_reaps_completed_child_and_preserves_both_streams](../../src/sandbox.rs#L909) | function_item | `private` | test; #[cfg(test)] #[cfg(any(         target_os = "macos",         all(             target_os = "linux",             any(target_arch = "x86_64", target_arch = "aarch64")         )     ))] |
+| [tools::sandbox::tests::linux_auto_prefers_bubblewrap_without_probing_landlock](../../src/sandbox.rs#L919) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::linux_auto_falls_back_only_to_available_landlock](../../src/sandbox.rs#L928) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::bubblewrap_plan_matches_golden_bytes](../../src/sandbox.rs#L939) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L950) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::protected_roots_are_omitted_from_serialization_when_empty](../../src/sandbox.rs#L963) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::darwin_profile_denies_protected_root_and_its_writable_ancestors](../../src/sandbox.rs#L978) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::protected_exceptions_must_be_strictly_beneath](../../src/sandbox.rs#L1011) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::unsorted_protected_roots_are_rejected](../../src/sandbox.rs#L1026) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::exposed_roots_keep_only_protected_roots_inside_write_roots](../../src/sandbox.rs#L1035) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::protected_root_lookup_resolves_symlinked_aliases](../../src/sandbox.rs#L1049) | function_item | `private` | test; #[cfg(test)] |
+| [tools::sandbox::tests::user_instructions_stay_protected_through_absent_paths_and_aliases](../../src/sandbox.rs#L1075) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
+| [tools::sandbox::tests::seatbelt_keeps_protected_root_read_only_beneath_a_writable_home](../../src/sandbox.rs#L1135) | function_item | `private` | test; #[cfg(test)] #[cfg(target_os = "macos")] |
 
 ## Imports / reexports
 
@@ -175,8 +176,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `policy` | `Vec::new` | [37](../../src/sandbox.rs#L37) | external-constructor-callback-or-unresolved |
 | `validate` | `Err` | [73](../../src/sandbox.rs#L73), [87](../../src/sandbox.rs#L87) | external-constructor-callback-or-unresolved |
 | `validate` | `SandboxError::Invalid` | [73](../../src/sandbox.rs#L73), [87](../../src/sandbox.rs#L87) | external-constructor-callback-or-unresolved |
-| `validate` | `validate_roots` | [75](../../src/sandbox.rs#L75), [76](../../src/sandbox.rs#L76), [77](../../src/sandbox.rs#L77) | [tools::sandbox::validate_roots](../../src/sandbox.rs#L823) |
-| `validate` | `validate_absolute` | [79](../../src/sandbox.rs#L79) | [tools::sandbox::validate_absolute](../../src/sandbox.rs#L840) |
+| `validate` | `validate_roots` | [75](../../src/sandbox.rs#L75), [76](../../src/sandbox.rs#L76), [77](../../src/sandbox.rs#L77) | [tools::sandbox::validate_roots](../../src/sandbox.rs#L831) |
+| `validate` | `validate_absolute` | [79](../../src/sandbox.rs#L79) | [tools::sandbox::validate_absolute](../../src/sandbox.rs#L848) |
 | `validate` | `self                 .read_roots                 .iter()                 .any` | [82](../../src/sandbox.rs#L82) | receiver-type-required |
 | `validate` | `self                 .read_roots                 .iter` | [82](../../src/sandbox.rs#L82) | receiver-type-required |
 | `validate` | `Path::new(root).starts_with` | [85](../../src/sandbox.rs#L85) | receiver-type-required |
@@ -427,7 +428,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `probe_output` | `command         .process_group` | [801](../../src/sandbox.rs#L801) | receiver-type-required |
 | `probe_output` | `Stdio::null` | [803](../../src/sandbox.rs#L803) | external-constructor-callback-or-unresolved |
 | `probe_output` | `Stdio::piped` | [804](../../src/sandbox.rs#L804), [805](../../src/sandbox.rs#L805) | external-constructor-callback-or-unresolved |
-| `probe_output` | `Instant::now` | [807](../../src/sandbox.rs#L807), [809](../../src/sandbox.rs#L809) | external-constructor-callback-or-unresolved |
+| `probe_output` | `Instant::now` | [807](../../src/sandbox.rs#L807), [809](../../src/sandbox.rs#L809), [824](../../src/sandbox.rs#L824) | external-constructor-callback-or-unresolved |
 | `probe_output` | `Duration::from_secs` | [807](../../src/sandbox.rs#L807) | external-constructor-callback-or-unresolved |
 | `probe_output` | `child.try_wait()?.is_none` | [808](../../src/sandbox.rs#L808) | receiver-type-required |
 | `probe_output` | `child.try_wait` | [808](../../src/sandbox.rs#L808) | receiver-type-required |
@@ -438,133 +439,139 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `probe_output` | `Err` | [816](../../src/sandbox.rs#L816) | external-constructor-callback-or-unresolved |
 | `probe_output` | `SandboxError::Probe` | [816](../../src/sandbox.rs#L816) | external-constructor-callback-or-unresolved |
 | `probe_output` | `"sandbox probe timed out".to_owned` | [816](../../src/sandbox.rs#L816) | receiver-type-required |
-| `probe_output` | `std::thread::sleep` | [818](../../src/sandbox.rs#L818) | external-constructor-callback-or-unresolved |
-| `probe_output` | `Duration::from_millis` | [818](../../src/sandbox.rs#L818) | external-constructor-callback-or-unresolved |
-| `probe_output` | `Ok` | [820](../../src/sandbox.rs#L820) | external-constructor-callback-or-unresolved |
-| `probe_output` | `child.wait_with_output` | [820](../../src/sandbox.rs#L820) | receiver-type-required |
-| `validate_roots` | `BTreeSet::new` | [825](../../src/sandbox.rs#L825) | external-constructor-callback-or-unresolved |
-| `validate_roots` | `validate_absolute` | [827](../../src/sandbox.rs#L827) | [tools::sandbox::validate_absolute](../../src/sandbox.rs#L840) |
-| `validate_roots` | `previous.is_some_and` | [828](../../src/sandbox.rs#L828) | receiver-type-required |
-| `validate_roots` | `last.as_bytes` | [828](../../src/sandbox.rs#L828) | receiver-type-required |
-| `validate_roots` | `value.as_bytes` | [828](../../src/sandbox.rs#L828) | receiver-type-required |
-| `validate_roots` | `unique.insert` | [829](../../src/sandbox.rs#L829) | receiver-type-required |
-| `validate_roots` | `value.as_str` | [829](../../src/sandbox.rs#L829) | receiver-type-required |
-| `validate_roots` | `Err` | [831](../../src/sandbox.rs#L831) | external-constructor-callback-or-unresolved |
-| `validate_roots` | `SandboxError::Invalid` | [831](../../src/sandbox.rs#L831) | external-constructor-callback-or-unresolved |
-| `validate_roots` | `Some` | [835](../../src/sandbox.rs#L835) | external-constructor-callback-or-unresolved |
-| `validate_roots` | `Ok` | [837](../../src/sandbox.rs#L837) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `Path::new` | [841](../../src/sandbox.rs#L841) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `path.is_absolute` | [842](../../src/sandbox.rs#L842) | receiver-type-required |
-| `validate_absolute` | `value.contains` | [843](../../src/sandbox.rs#L843) | receiver-type-required |
-| `validate_absolute` | `value.chars().any` | [844](../../src/sandbox.rs#L844) | receiver-type-required |
-| `validate_absolute` | `value.chars` | [844](../../src/sandbox.rs#L844) | receiver-type-required |
-| `validate_absolute` | `path             .components()             .any` | [845](../../src/sandbox.rs#L845) | receiver-type-required |
-| `validate_absolute` | `path             .components` | [845](../../src/sandbox.rs#L845) | receiver-type-required |
-| `validate_absolute` | `Err` | [849](../../src/sandbox.rs#L849) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `SandboxError::Invalid` | [849](../../src/sandbox.rs#L849) | external-constructor-callback-or-unresolved |
-| `validate_absolute` | `Ok` | [853](../../src/sandbox.rs#L853) | external-constructor-callback-or-unresolved |
-| `escape_sbpl` | `value.chars().any` | [857](../../src/sandbox.rs#L857) | receiver-type-required |
-| `escape_sbpl` | `value.chars` | [857](../../src/sandbox.rs#L857) | receiver-type-required |
-| `escape_sbpl` | `Err` | [858](../../src/sandbox.rs#L858) | external-constructor-callback-or-unresolved |
-| `escape_sbpl` | `SandboxError::Invalid` | [858](../../src/sandbox.rs#L858) | external-constructor-callback-or-unresolved |
-| `escape_sbpl` | `Ok` | [862](../../src/sandbox.rs#L862) | external-constructor-callback-or-unresolved |
-| `escape_sbpl` | `value.replace('\\', "\\\\").replace` | [862](../../src/sandbox.rs#L862) | receiver-type-required |
-| `escape_sbpl` | `value.replace` | [862](../../src/sandbox.rs#L862) | receiver-type-required |
-| `probe_nonce` | `NONCE.fetch_add` | [875](../../src/sandbox.rs#L875) | receiver-type-required |
-| `NONCE` | `AtomicU64::new` | [874](../../src/sandbox.rs#L874) | external-constructor-callback-or-unresolved |
-| `available` | `backend.to_owned` | [883](../../src/sandbox.rs#L883) | receiver-type-required |
-| `available` | `"test".to_owned` | [884](../../src/sandbox.rs#L884) | receiver-type-required |
-| `missing` | `"missing".to_owned` | [890](../../src/sandbox.rs#L890) | receiver-type-required |
-| `bubblewrap_plan_matches_golden_bytes` | `serde_json::from_str(include_str!(             "../../../fixtures/sandbox/policy.canonical.json"         ))         .unwrap` | [915](../../src/sandbox.rs#L915) | receiver-type-required |
-| `bubblewrap_plan_matches_golden_bytes` | `serde_json::from_str` | [915](../../src/sandbox.rs#L915) | external-constructor-callback-or-unresolved |
-| `protected_policy` | `writes.iter().map(&#124;root&#124; (*root).to_owned()).collect` | [929](../../src/sandbox.rs#L929) | receiver-type-required |
-| `protected_policy` | `writes.iter().map` | [929](../../src/sandbox.rs#L929) | receiver-type-required |
-| `protected_policy` | `writes.iter` | [929](../../src/sandbox.rs#L929) | receiver-type-required |
-| `protected_policy` | `(*root).to_owned` | [929](../../src/sandbox.rs#L929) | receiver-type-required |
-| `protected_roots_are_omitted_from_serialization_when_empty` | `serde_json::from_str(include_str!(             "../../../fixtures/sandbox/policy.canonical.json"         ))         .unwrap` | [939](../../src/sandbox.rs#L939) | receiver-type-required |
-| `protected_roots_are_omitted_from_serialization_when_empty` | `serde_json::from_str` | [939](../../src/sandbox.rs#L939) | external-constructor-callback-or-unresolved |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `protected_policy` | [954](../../src/sandbox.rs#L954) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L925) |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `String::from_utf8(compile_darwin_profile(&policy).unwrap()).unwrap` | [959](../../src/sandbox.rs#L959) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `String::from_utf8` | [959](../../src/sandbox.rs#L959) | external-constructor-callback-or-unresolved |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `compile_darwin_profile(&policy).unwrap` | [959](../../src/sandbox.rs#L959) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `compile_darwin_profile` | [959](../../src/sandbox.rs#L959) | external-constructor-callback-or-unresolved |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `profile.lines().collect::<Vec<_>>` | [960](../../src/sandbox.rs#L960) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `profile.lines` | [960](../../src/sandbox.rs#L960) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter()                 .position(&#124;candidate&#124; *candidate == line)                 .unwrap_or_else` | [962](../../src/sandbox.rs#L962) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter()                 .position` | [962](../../src/sandbox.rs#L962) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter` | [962](../../src/sandbox.rs#L962) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `position` | [967](../../src/sandbox.rs#L967), [968](../../src/sandbox.rs#L968), [969](../../src/sandbox.rs#L969), [970](../../src/sandbox.rs#L970) | external-constructor-callback-or-unresolved |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter()             .rposition(&#124;line&#124; {                 *line == "(allow file-write* (subpath \"/Users/u/Library/Kernel/jobs/j1\"))"             })             .unwrap` | [971](../../src/sandbox.rs#L971) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter()             .rposition` | [971](../../src/sandbox.rs#L971) | receiver-type-required |
-| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter` | [971](../../src/sandbox.rs#L971) | receiver-type-required |
-| `protected_exceptions_must_be_strictly_beneath` | `protected_policy` | [987](../../src/sandbox.rs#L987) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L925) |
-| `unsorted_protected_roots_are_rejected` | `protected_policy` | [1002](../../src/sandbox.rs#L1002) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L925) |
-| `protected_root_lookup_resolves_symlinked_aliases` | `tempfile::tempdir().unwrap` | [1025](../../src/sandbox.rs#L1025) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `tempfile::tempdir` | [1025](../../src/sandbox.rs#L1025) | external-constructor-callback-or-unresolved |
-| `protected_root_lookup_resolves_symlinked_aliases` | `root.path().canonicalize().unwrap` | [1026](../../src/sandbox.rs#L1026) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `root.path().canonicalize` | [1026](../../src/sandbox.rs#L1026) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `root.path` | [1026](../../src/sandbox.rs#L1026) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `base.join` | [1027](../../src/sandbox.rs#L1027), [1029](../../src/sandbox.rs#L1029), [1035](../../src/sandbox.rs#L1035), [1036](../../src/sandbox.rs#L1036) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `fs::create_dir_all(storage.join("threads")).unwrap` | [1028](../../src/sandbox.rs#L1028) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `fs::create_dir_all` | [1028](../../src/sandbox.rs#L1028) | external-constructor-callback-or-unresolved |
-| `protected_root_lookup_resolves_symlinked_aliases` | `storage.join` | [1028](../../src/sandbox.rs#L1028), [1034](../../src/sandbox.rs#L1034) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `std::os::unix::fs::symlink(&storage, base.join("alias")).unwrap` | [1029](../../src/sandbox.rs#L1029) | receiver-type-required |
-| `protected_root_lookup_resolves_symlinked_aliases` | `std::os::unix::fs::symlink` | [1029](../../src/sandbox.rs#L1029) | external-constructor-callback-or-unresolved |
-| `protected_root_lookup_resolves_symlinked_aliases` | `kernel_protected_roots` | [1030](../../src/sandbox.rs#L1030) | external-constructor-callback-or-unresolved |
-| `protected_root_lookup_resolves_symlinked_aliases` | `storage.clone` | [1033](../../src/sandbox.rs#L1033) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `tempfile::tempdir().unwrap` | [1051](../../src/sandbox.rs#L1051) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `tempfile::tempdir` | [1051](../../src/sandbox.rs#L1051) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path().canonicalize().unwrap` | [1052](../../src/sandbox.rs#L1052) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path().canonicalize` | [1052](../../src/sandbox.rs#L1052) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path` | [1052](../../src/sandbox.rs#L1052) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `home.join` | [1053](../../src/sandbox.rs#L1053), [1054](../../src/sandbox.rs#L1054), [1057](../../src/sandbox.rs#L1057), [1058](../../src/sandbox.rs#L1058) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&storage).unwrap` | [1055](../../src/sandbox.rs#L1055) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all` | [1055](../../src/sandbox.rs#L1055), [1056](../../src/sandbox.rs#L1056), [1069](../../src/sandbox.rs#L1069) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&authored).unwrap` | [1056](../../src/sandbox.rs#L1056) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `std::os::unix::fs::symlink(&authored, home.join("alias")).unwrap` | [1057](../../src/sandbox.rs#L1057) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `std::os::unix::fs::symlink` | [1057](../../src/sandbox.rs#L1057) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `kernel_protected_roots_with_user_agent_dir` | [1059](../../src/sandbox.rs#L1059) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `authored.join` | [1060](../../src/sandbox.rs#L1060) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&canonical_user).unwrap` | [1069](../../src/sandbox.rs#L1069) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::write(canonical_user.join("original"), b"original").unwrap` | [1070](../../src/sandbox.rs#L1070) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::write` | [1070](../../src/sandbox.rs#L1070) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `canonical_user.join` | [1070](../../src/sandbox.rs#L1070) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `path.to_string_lossy().into_owned` | [1071](../../src/sandbox.rs#L1071) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `path.to_string_lossy` | [1071](../../src/sandbox.rs#L1071) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `exposed_protected_roots` | [1079](../../src/sandbox.rs#L1079) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `text` | [1079](../../src/sandbox.rs#L1079) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap()                 .status                 .success` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command` | [1082](../../src/sandbox.rs#L1082) | external-constructor-callback-or-unresolved |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `available` | [1082](../../src/sandbox.rs#L1082) | [tools::sandbox::tests::available](../../src/sandbox.rs#L881) |
-| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `Path::new` | [1082](../../src/sandbox.rs#L1082) | external-constructor-callback-or-unresolved |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `tempfile::tempdir().unwrap` | [1111](../../src/sandbox.rs#L1111) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `tempfile::tempdir` | [1111](../../src/sandbox.rs#L1111) | external-constructor-callback-or-unresolved |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path().canonicalize().unwrap` | [1112](../../src/sandbox.rs#L1112) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path().canonicalize` | [1112](../../src/sandbox.rs#L1112) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path` | [1112](../../src/sandbox.rs#L1112) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `home.join` | [1113](../../src/sandbox.rs#L1113), [1116](../../src/sandbox.rs#L1116) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `storage.join` | [1114](../../src/sandbox.rs#L1114), [1117](../../src/sandbox.rs#L1117) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all(&job).unwrap` | [1115](../../src/sandbox.rs#L1115) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all` | [1115](../../src/sandbox.rs#L1115), [1116](../../src/sandbox.rs#L1116) | external-constructor-callback-or-unresolved |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all(home.join("project")).unwrap` | [1116](../../src/sandbox.rs#L1116) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::write(storage.join("ledger"), b"original").unwrap` | [1117](../../src/sandbox.rs#L1117) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::write` | [1117](../../src/sandbox.rs#L1117) | external-constructor-callback-or-unresolved |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `path.to_string_lossy().into_owned` | [1118](../../src/sandbox.rs#L1118) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `path.to_string_lossy` | [1118](../../src/sandbox.rs#L1118) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `writes.sort` | [1120](../../src/sandbox.rs#L1120) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `available` | [1130](../../src/sandbox.rs#L1130) | [tools::sandbox::tests::available](../../src/sandbox.rs#L881) |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap()                 .status                 .success` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap` | [1132](../../src/sandbox.rs#L1132) | receiver-type-required |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command` | [1132](../../src/sandbox.rs#L1132) | external-constructor-callback-or-unresolved |
-| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `Path::new` | [1132](../../src/sandbox.rs#L1132) | external-constructor-callback-or-unresolved |
+| `probe_output` | `std::thread::sleep` | [822](../../src/sandbox.rs#L822) | external-constructor-callback-or-unresolved |
+| `probe_output` | `deadline                 .saturating_duration_since(Instant::now())                 .min` | [823](../../src/sandbox.rs#L823) | receiver-type-required |
+| `probe_output` | `deadline                 .saturating_duration_since` | [823](../../src/sandbox.rs#L823) | receiver-type-required |
+| `probe_output` | `Duration::from_millis` | [825](../../src/sandbox.rs#L825) | external-constructor-callback-or-unresolved |
+| `probe_output` | `Ok` | [828](../../src/sandbox.rs#L828) | external-constructor-callback-or-unresolved |
+| `probe_output` | `child.wait_with_output` | [828](../../src/sandbox.rs#L828) | receiver-type-required |
+| `validate_roots` | `BTreeSet::new` | [833](../../src/sandbox.rs#L833) | external-constructor-callback-or-unresolved |
+| `validate_roots` | `validate_absolute` | [835](../../src/sandbox.rs#L835) | [tools::sandbox::validate_absolute](../../src/sandbox.rs#L848) |
+| `validate_roots` | `previous.is_some_and` | [836](../../src/sandbox.rs#L836) | receiver-type-required |
+| `validate_roots` | `last.as_bytes` | [836](../../src/sandbox.rs#L836) | receiver-type-required |
+| `validate_roots` | `value.as_bytes` | [836](../../src/sandbox.rs#L836) | receiver-type-required |
+| `validate_roots` | `unique.insert` | [837](../../src/sandbox.rs#L837) | receiver-type-required |
+| `validate_roots` | `value.as_str` | [837](../../src/sandbox.rs#L837) | receiver-type-required |
+| `validate_roots` | `Err` | [839](../../src/sandbox.rs#L839) | external-constructor-callback-or-unresolved |
+| `validate_roots` | `SandboxError::Invalid` | [839](../../src/sandbox.rs#L839) | external-constructor-callback-or-unresolved |
+| `validate_roots` | `Some` | [843](../../src/sandbox.rs#L843) | external-constructor-callback-or-unresolved |
+| `validate_roots` | `Ok` | [845](../../src/sandbox.rs#L845) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `Path::new` | [849](../../src/sandbox.rs#L849) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `path.is_absolute` | [850](../../src/sandbox.rs#L850) | receiver-type-required |
+| `validate_absolute` | `value.contains` | [851](../../src/sandbox.rs#L851) | receiver-type-required |
+| `validate_absolute` | `value.chars().any` | [852](../../src/sandbox.rs#L852) | receiver-type-required |
+| `validate_absolute` | `value.chars` | [852](../../src/sandbox.rs#L852) | receiver-type-required |
+| `validate_absolute` | `path             .components()             .any` | [853](../../src/sandbox.rs#L853) | receiver-type-required |
+| `validate_absolute` | `path             .components` | [853](../../src/sandbox.rs#L853) | receiver-type-required |
+| `validate_absolute` | `Err` | [857](../../src/sandbox.rs#L857) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `SandboxError::Invalid` | [857](../../src/sandbox.rs#L857) | external-constructor-callback-or-unresolved |
+| `validate_absolute` | `Ok` | [861](../../src/sandbox.rs#L861) | external-constructor-callback-or-unresolved |
+| `escape_sbpl` | `value.chars().any` | [865](../../src/sandbox.rs#L865) | receiver-type-required |
+| `escape_sbpl` | `value.chars` | [865](../../src/sandbox.rs#L865) | receiver-type-required |
+| `escape_sbpl` | `Err` | [866](../../src/sandbox.rs#L866) | external-constructor-callback-or-unresolved |
+| `escape_sbpl` | `SandboxError::Invalid` | [866](../../src/sandbox.rs#L866) | external-constructor-callback-or-unresolved |
+| `escape_sbpl` | `Ok` | [870](../../src/sandbox.rs#L870) | external-constructor-callback-or-unresolved |
+| `escape_sbpl` | `value.replace('\\', "\\\\").replace` | [870](../../src/sandbox.rs#L870) | receiver-type-required |
+| `escape_sbpl` | `value.replace` | [870](../../src/sandbox.rs#L870) | receiver-type-required |
+| `probe_nonce` | `NONCE.fetch_add` | [883](../../src/sandbox.rs#L883) | receiver-type-required |
+| `NONCE` | `AtomicU64::new` | [882](../../src/sandbox.rs#L882) | external-constructor-callback-or-unresolved |
+| `available` | `backend.to_owned` | [891](../../src/sandbox.rs#L891) | receiver-type-required |
+| `available` | `"test".to_owned` | [892](../../src/sandbox.rs#L892) | receiver-type-required |
+| `missing` | `"missing".to_owned` | [898](../../src/sandbox.rs#L898) | receiver-type-required |
+| `probe_output_reaps_completed_child_and_preserves_both_streams` | `probe_output(             Command::new("/bin/sh").args(["-c", "printf probe-out; printf probe-err >&2"]),         )         .unwrap` | [910](../../src/sandbox.rs#L910) | receiver-type-required |
+| `probe_output_reaps_completed_child_and_preserves_both_streams` | `probe_output` | [910](../../src/sandbox.rs#L910) | external-constructor-callback-or-unresolved |
+| `probe_output_reaps_completed_child_and_preserves_both_streams` | `Command::new("/bin/sh").args` | [911](../../src/sandbox.rs#L911) | receiver-type-required |
+| `probe_output_reaps_completed_child_and_preserves_both_streams` | `Command::new` | [911](../../src/sandbox.rs#L911) | external-constructor-callback-or-unresolved |
+| `bubblewrap_plan_matches_golden_bytes` | `serde_json::from_str(include_str!(             "../../../fixtures/sandbox/policy.canonical.json"         ))         .unwrap` | [940](../../src/sandbox.rs#L940) | receiver-type-required |
+| `bubblewrap_plan_matches_golden_bytes` | `serde_json::from_str` | [940](../../src/sandbox.rs#L940) | external-constructor-callback-or-unresolved |
+| `protected_policy` | `writes.iter().map(&#124;root&#124; (*root).to_owned()).collect` | [954](../../src/sandbox.rs#L954) | receiver-type-required |
+| `protected_policy` | `writes.iter().map` | [954](../../src/sandbox.rs#L954) | receiver-type-required |
+| `protected_policy` | `writes.iter` | [954](../../src/sandbox.rs#L954) | receiver-type-required |
+| `protected_policy` | `(*root).to_owned` | [954](../../src/sandbox.rs#L954) | receiver-type-required |
+| `protected_roots_are_omitted_from_serialization_when_empty` | `serde_json::from_str(include_str!(             "../../../fixtures/sandbox/policy.canonical.json"         ))         .unwrap` | [964](../../src/sandbox.rs#L964) | receiver-type-required |
+| `protected_roots_are_omitted_from_serialization_when_empty` | `serde_json::from_str` | [964](../../src/sandbox.rs#L964) | external-constructor-callback-or-unresolved |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `protected_policy` | [979](../../src/sandbox.rs#L979) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L950) |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `String::from_utf8(compile_darwin_profile(&policy).unwrap()).unwrap` | [984](../../src/sandbox.rs#L984) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `String::from_utf8` | [984](../../src/sandbox.rs#L984) | external-constructor-callback-or-unresolved |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `compile_darwin_profile(&policy).unwrap` | [984](../../src/sandbox.rs#L984) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `compile_darwin_profile` | [984](../../src/sandbox.rs#L984) | external-constructor-callback-or-unresolved |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `profile.lines().collect::<Vec<_>>` | [985](../../src/sandbox.rs#L985) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `profile.lines` | [985](../../src/sandbox.rs#L985) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter()                 .position(&#124;candidate&#124; *candidate == line)                 .unwrap_or_else` | [987](../../src/sandbox.rs#L987) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter()                 .position` | [987](../../src/sandbox.rs#L987) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines                 .iter` | [987](../../src/sandbox.rs#L987) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `position` | [992](../../src/sandbox.rs#L992), [993](../../src/sandbox.rs#L993), [994](../../src/sandbox.rs#L994), [995](../../src/sandbox.rs#L995) | external-constructor-callback-or-unresolved |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter()             .rposition(&#124;line&#124; {                 *line == "(allow file-write* (subpath \"/Users/u/Library/Kernel/jobs/j1\"))"             })             .unwrap` | [996](../../src/sandbox.rs#L996) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter()             .rposition` | [996](../../src/sandbox.rs#L996) | receiver-type-required |
+| `darwin_profile_denies_protected_root_and_its_writable_ancestors` | `lines             .iter` | [996](../../src/sandbox.rs#L996) | receiver-type-required |
+| `protected_exceptions_must_be_strictly_beneath` | `protected_policy` | [1012](../../src/sandbox.rs#L1012) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L950) |
+| `unsorted_protected_roots_are_rejected` | `protected_policy` | [1027](../../src/sandbox.rs#L1027) | [tools::sandbox::tests::protected_policy](../../src/sandbox.rs#L950) |
+| `protected_root_lookup_resolves_symlinked_aliases` | `tempfile::tempdir().unwrap` | [1050](../../src/sandbox.rs#L1050) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `tempfile::tempdir` | [1050](../../src/sandbox.rs#L1050) | external-constructor-callback-or-unresolved |
+| `protected_root_lookup_resolves_symlinked_aliases` | `root.path().canonicalize().unwrap` | [1051](../../src/sandbox.rs#L1051) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `root.path().canonicalize` | [1051](../../src/sandbox.rs#L1051) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `root.path` | [1051](../../src/sandbox.rs#L1051) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `base.join` | [1052](../../src/sandbox.rs#L1052), [1054](../../src/sandbox.rs#L1054), [1060](../../src/sandbox.rs#L1060), [1061](../../src/sandbox.rs#L1061) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `fs::create_dir_all(storage.join("threads")).unwrap` | [1053](../../src/sandbox.rs#L1053) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `fs::create_dir_all` | [1053](../../src/sandbox.rs#L1053) | external-constructor-callback-or-unresolved |
+| `protected_root_lookup_resolves_symlinked_aliases` | `storage.join` | [1053](../../src/sandbox.rs#L1053), [1059](../../src/sandbox.rs#L1059) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `std::os::unix::fs::symlink(&storage, base.join("alias")).unwrap` | [1054](../../src/sandbox.rs#L1054) | receiver-type-required |
+| `protected_root_lookup_resolves_symlinked_aliases` | `std::os::unix::fs::symlink` | [1054](../../src/sandbox.rs#L1054) | external-constructor-callback-or-unresolved |
+| `protected_root_lookup_resolves_symlinked_aliases` | `kernel_protected_roots` | [1055](../../src/sandbox.rs#L1055) | external-constructor-callback-or-unresolved |
+| `protected_root_lookup_resolves_symlinked_aliases` | `storage.clone` | [1058](../../src/sandbox.rs#L1058) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `tempfile::tempdir().unwrap` | [1076](../../src/sandbox.rs#L1076) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `tempfile::tempdir` | [1076](../../src/sandbox.rs#L1076) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path().canonicalize().unwrap` | [1077](../../src/sandbox.rs#L1077) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path().canonicalize` | [1077](../../src/sandbox.rs#L1077) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `root.path` | [1077](../../src/sandbox.rs#L1077) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `home.join` | [1078](../../src/sandbox.rs#L1078), [1079](../../src/sandbox.rs#L1079), [1082](../../src/sandbox.rs#L1082), [1083](../../src/sandbox.rs#L1083) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&storage).unwrap` | [1080](../../src/sandbox.rs#L1080) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all` | [1080](../../src/sandbox.rs#L1080), [1081](../../src/sandbox.rs#L1081), [1094](../../src/sandbox.rs#L1094) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&authored).unwrap` | [1081](../../src/sandbox.rs#L1081) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `std::os::unix::fs::symlink(&authored, home.join("alias")).unwrap` | [1082](../../src/sandbox.rs#L1082) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `std::os::unix::fs::symlink` | [1082](../../src/sandbox.rs#L1082) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `kernel_protected_roots_with_user_agent_dir` | [1084](../../src/sandbox.rs#L1084) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `authored.join` | [1085](../../src/sandbox.rs#L1085) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::create_dir_all(&canonical_user).unwrap` | [1094](../../src/sandbox.rs#L1094) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::write(canonical_user.join("original"), b"original").unwrap` | [1095](../../src/sandbox.rs#L1095) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `fs::write` | [1095](../../src/sandbox.rs#L1095) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `canonical_user.join` | [1095](../../src/sandbox.rs#L1095) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `path.to_string_lossy().into_owned` | [1096](../../src/sandbox.rs#L1096) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `path.to_string_lossy` | [1096](../../src/sandbox.rs#L1096) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `exposed_protected_roots` | [1104](../../src/sandbox.rs#L1104) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `text` | [1104](../../src/sandbox.rs#L1104) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap()                 .status                 .success` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap()                 .args` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command(&policy, &available("darwin-seatbelt"), Path::new("/bin/sh"))                 .unwrap` | [1107](../../src/sandbox.rs#L1107) | receiver-type-required |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `sandbox_command` | [1107](../../src/sandbox.rs#L1107) | external-constructor-callback-or-unresolved |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `available` | [1107](../../src/sandbox.rs#L1107) | [tools::sandbox::tests::available](../../src/sandbox.rs#L889) |
+| `user_instructions_stay_protected_through_absent_paths_and_aliases` | `Path::new` | [1107](../../src/sandbox.rs#L1107) | external-constructor-callback-or-unresolved |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `tempfile::tempdir().unwrap` | [1136](../../src/sandbox.rs#L1136) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `tempfile::tempdir` | [1136](../../src/sandbox.rs#L1136) | external-constructor-callback-or-unresolved |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path().canonicalize().unwrap` | [1137](../../src/sandbox.rs#L1137) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path().canonicalize` | [1137](../../src/sandbox.rs#L1137) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `root.path` | [1137](../../src/sandbox.rs#L1137) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `home.join` | [1138](../../src/sandbox.rs#L1138), [1141](../../src/sandbox.rs#L1141) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `storage.join` | [1139](../../src/sandbox.rs#L1139), [1142](../../src/sandbox.rs#L1142) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all(&job).unwrap` | [1140](../../src/sandbox.rs#L1140) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all` | [1140](../../src/sandbox.rs#L1140), [1141](../../src/sandbox.rs#L1141) | external-constructor-callback-or-unresolved |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::create_dir_all(home.join("project")).unwrap` | [1141](../../src/sandbox.rs#L1141) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::write(storage.join("ledger"), b"original").unwrap` | [1142](../../src/sandbox.rs#L1142) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `fs::write` | [1142](../../src/sandbox.rs#L1142) | external-constructor-callback-or-unresolved |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `path.to_string_lossy().into_owned` | [1143](../../src/sandbox.rs#L1143) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `path.to_string_lossy` | [1143](../../src/sandbox.rs#L1143) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `writes.sort` | [1145](../../src/sandbox.rs#L1145) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `available` | [1155](../../src/sandbox.rs#L1155) | [tools::sandbox::tests::available](../../src/sandbox.rs#L889) |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap()                 .status                 .success` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output()                 .unwrap` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear()                 .output` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir(&home)                 .env_clear` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args(["-c", script])                 .current_dir` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap()                 .args` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command(&policy, &status, Path::new("/bin/sh"))                 .unwrap` | [1157](../../src/sandbox.rs#L1157) | receiver-type-required |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `sandbox_command` | [1157](../../src/sandbox.rs#L1157) | external-constructor-callback-or-unresolved |
+| `seatbelt_keeps_protected_root_read_only_beneath_a_writable_home` | `Path::new` | [1157](../../src/sandbox.rs#L1157) | external-constructor-callback-or-unresolved |
