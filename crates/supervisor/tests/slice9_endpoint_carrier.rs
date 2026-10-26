@@ -20,7 +20,7 @@ use tekes_supervisor::endpoint_carrier::{
 use tekes_supervisor::endpoint_host::{
     ProductionEndpointHost, ProductionEndpointRoutes, ProductionRouteFailure,
     ProviderReadinessAuthority, QueueTransactionAuthority, RuntimeProviderReadiness,
-    SessionDeliveryAuthority,
+    SessionDeliveryAuthority, SessionInputAdmissionAuthority,
 };
 use transport::{BearerToken, ROUTE_REGISTRY, TransportConfig};
 
@@ -935,11 +935,42 @@ fn carrier_stream_hooks_attach_detach_and_emit_inventory_invalidations() {
         endpoint::StreamChannel::Host,
     ))
     .expect("host");
-    store::ThreadStore::open(root.path())
-        .expect("store")
-        .archive(SESSION)
-        .expect("archive");
-    streams.detach_for_archive(SESSION).expect("detach");
+    let admission = Arc::new(SessionInputAdmissionAuthority::new(root.path()));
+    streams.attach_session_admission(Arc::clone(&admission));
+    let gate = admission.gates().gate(SESSION).expect("session gate");
+    let held = gate.lock().expect("session gate lock");
+    let worker_streams = streams.clone();
+    let (started_tx, started_rx) = std::sync::mpsc::channel();
+    let (result_tx, result_rx) = std::sync::mpsc::channel();
+    let archive = std::thread::spawn(move || {
+        started_tx.send(()).expect("signal archive start");
+        result_tx
+            .send(worker_streams.archive_session(
+                "archive-context-request",
+                &"a".repeat(64),
+                SESSION,
+                TIMESTAMP,
+            ))
+            .expect("send archive result");
+    });
+    started_rx.recv().expect("archive started");
+    assert!(
+        matches!(
+            result_rx.recv_timeout(Duration::from_millis(25)),
+            Err(std::sync::mpsc::RecvTimeoutError::Timeout)
+        ),
+        "archive must wait for the same session admission gate"
+    );
+    assert!(root.path().join("threads").join(SESSION).is_dir());
+    drop(held);
+    assert_eq!(
+        result_rx
+            .recv_timeout(Duration::from_secs(2))
+            .expect("archive completes after gate release")
+            .expect("archive succeeds"),
+        vec![SESSION]
+    );
+    archive.join().expect("archive thread");
     let removed = block_on_ready(host.recv())
         .expect("removed item")
         .expect("removed frame");
@@ -948,6 +979,54 @@ fn carrier_stream_hooks_attach_detach_and_emit_inventory_invalidations() {
         .expect("archived frame");
     assert_eq!(removed.method, "host/session-removed");
     assert_eq!(archived.method, "host/archived-sessions-changed");
+
+    assert_eq!(
+        streams
+            .archive_session(
+                "archive-context-request",
+                &"a".repeat(64),
+                SESSION,
+                TIMESTAMP
+            )
+            .expect("same archive request replays after the folder moved"),
+        vec![SESSION]
+    );
+    assert_eq!(
+        block_on_ready(host.recv()).unwrap().unwrap().method,
+        "host/session-removed"
+    );
+    assert_eq!(
+        block_on_ready(host.recv()).unwrap().unwrap().method,
+        "host/archived-sessions-changed"
+    );
+    assert!(
+        streams
+            .archive_session(
+                "archive-context-request",
+                &"c".repeat(64),
+                SESSION,
+                TIMESTAMP
+            )
+            .is_err(),
+        "a changed request body cannot reuse the management operation id"
+    );
+
+    let missing = streams.archive_session(
+        "archive-missing-request",
+        &"b".repeat(64),
+        "018f0000-0000-7000-8000-000000000099",
+        TIMESTAMP,
+    );
+    assert!(missing.is_err(), "missing session must not archive");
+    let pending = host.recv();
+    let mut context = Context::from_waker(Waker::noop());
+    assert!(
+        matches!(
+            std::pin::pin!(pending).as_mut().poll(&mut context),
+            Poll::Pending
+        ),
+        "failed archive must not publish successful lifecycle invalidations"
+    );
 
     store::ThreadStore::open(root.path())
         .expect("store")

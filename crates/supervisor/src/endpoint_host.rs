@@ -761,6 +761,11 @@ impl ProductionEndpointHost {
         self.input_admission.gates()
     }
 
+    /// Shared lifecycle authority used by the carrier and supervisor-owned tools.
+    pub fn session_admission_authority(&self) -> Arc<SessionInputAdmissionAuthority> {
+        Arc::clone(&self.input_admission)
+    }
+
     pub fn has_incomplete_management_operation(
         &self,
         session_id: &str,

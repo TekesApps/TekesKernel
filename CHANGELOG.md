@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.9 — 2026-10-26
+
+### Fixed
+
+- Route approved `context archive` calls through the existing session admission gate and idempotent management journal. Notify connected SessionEndpoint consumers when the archived session leaves the active list, preserving tool result and archive safety contracts.
+
 ## 0.9.2 — 2026-10-19
 
 ### Fixed

@@ -32,7 +32,10 @@ use thiserror::Error;
 use transport::{TransportConfig, TransportConfigError, TransportServer};
 use worker_control::{ApprovalResponse, Receipt};
 
-use crate::endpoint_host::{ProductionEndpointHost, ProductionRouteFailure, SessionAdmissionGates};
+use crate::endpoint_host::{
+    ProductionEndpointHost, ProductionRouteFailure, SessionAdmissionGates,
+    SessionInputAdmissionAuthority,
+};
 use crate::request_index::{
     RequestIndex, children_may_hold_requests, ledger_signature, may_hold_requests,
 };
@@ -541,6 +544,7 @@ struct CarrierStreamsInner {
     legacy_histories: Mutex<HashMap<String, Arc<FrozenLegacyHistory>>>,
     context_projection_lock: Mutex<()>,
     session_authority: Mutex<Option<Weak<dyn SupervisorSessionAuthority>>>,
+    session_admission: Mutex<Option<Arc<SessionInputAdmissionAuthority>>>,
     next_rpc: AtomicU64,
     /// Pending request ids last published per (session, line): the trigger
     /// for subscribers to re-diff their actionable baseline.
@@ -1009,6 +1013,7 @@ impl ProductionCarrierStreams {
                 legacy_histories: Mutex::new(HashMap::new()),
                 context_projection_lock: Mutex::new(()),
                 session_authority: Mutex::new(None),
+                session_admission: Mutex::new(None),
                 next_rpc: AtomicU64::new(1),
                 published_actionables: Mutex::new(HashMap::new()),
                 requests: RequestIndex::default(),
@@ -1025,6 +1030,49 @@ impl ProductionCarrierStreams {
             .session_authority
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(authority);
+    }
+
+    pub fn attach_session_admission(&self, authority: Arc<SessionInputAdmissionAuthority>) {
+        *self
+            .inner
+            .session_admission
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(authority);
+    }
+
+    /// Runs a supervisor-owned archive through the same admission gate,
+    /// management journal, and stream detach hook as the public archive route.
+    pub fn archive_session(
+        &self,
+        request_id: &str,
+        request_sha256: &str,
+        session_id: &str,
+        started_at: &str,
+    ) -> Result<Vec<String>, ProductionCarrierError> {
+        let admission = self
+            .inner
+            .session_admission
+            .lock()
+            .map_err(|_| poisoned())?
+            .as_ref()
+            .cloned()
+            .ok_or_else(|| {
+                ProductionCarrierError::Lifecycle(
+                    "session archive admission authority is not attached".to_owned(),
+                )
+            })?;
+        admission.with_session_gate(
+            session_id,
+            |failure| {
+                ProductionCarrierError::Lifecycle(format!("{}: {}", failure.code, failure.message))
+            },
+            || {
+                let archived = endpoint::SessionOperations::open_sessions(&self.inner.root)?
+                    .archive_session(request_id, request_sha256, session_id, started_at)?;
+                self.detach_for_archive(session_id)?;
+                Ok(archived)
+            },
+        )
     }
 
     fn session_authority(&self) -> Option<Arc<dyn SupervisorSessionAuthority>> {
@@ -2832,7 +2880,9 @@ impl ProductionCarrierAssembly {
     ) -> Result<Self, ProductionCarrierError> {
         let root = root.as_ref();
         let admission = unary.admission_gates();
+        let session_admission = unary.session_admission_authority();
         let streams = ProductionCarrierStreams::with_description(root, unary.mux_description());
+        streams.attach_session_admission(session_admission);
         let respond = JournalRespondHandler::new(
             ProductionRespondAuthority::open(root, admission, live_respond)?
                 .with_streams(streams.clone()),

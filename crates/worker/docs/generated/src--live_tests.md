@@ -219,8 +219,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `live_kernel_turn` | `std::sync::Mutex::new` | [146](../../src/live_tests.rs#L146) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `provider::CredentialClient::new` | [146](../../src/live_tests.rs#L146) | [provider::credential::CredentialClient::new](../../../provider/src/credential.rs#L271) |
 | `live_kernel_turn` | `LiveControl::default` | [147](../../src/live_tests.rs#L147) | external-constructor-callback-or-unresolved |
-| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlHandler::new` | [148](../../src/live_tests.rs#L148) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::new](../../../supervisor/src/production_tool_control.rs#L273) |
-| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlPolicy::new` | [150](../../src/live_tests.rs#L150) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../../supervisor/src/production_tool_control.rs#L853) |
+| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlHandler::new` | [148](../../src/live_tests.rs#L148) | [tekes-supervisor::production_tool_control::ProductionToolControlHandler::new](../../../supervisor/src/production_tool_control.rs#L286) |
+| `live_kernel_turn` | `tekes_supervisor::production_tool_control::ProductionToolControlPolicy::new` | [150](../../src/live_tests.rs#L150) | [tekes-supervisor::production_tool_control::ProductionToolControlPolicy::new](../../../supervisor/src/production_tool_control.rs#L870) |
 | `live_kernel_turn` | `SecretScanner::default` | [150](../../src/live_tests.rs#L150) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `std::rc::Rc::new` | [151](../../src/live_tests.rs#L151), [153](../../src/live_tests.rs#L153), [161](../../src/live_tests.rs#L161) | external-constructor-callback-or-unresolved |
 | `live_kernel_turn` | `std::cell::RefCell::new` | [151](../../src/live_tests.rs#L151) | external-constructor-callback-or-unresolved |

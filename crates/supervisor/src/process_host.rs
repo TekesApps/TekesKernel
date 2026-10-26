@@ -5761,6 +5761,32 @@ impl SupervisorRuntimeAuthority for ProcessToolRuntime {
         }))
     }
 
+    fn archive_session(
+        &mut self,
+        session: &str,
+        request_id: &str,
+        request_sha256: &str,
+        started_at: &str,
+    ) -> Result<IJsonValue, SupervisorOperationError> {
+        endpoint::validate_session_id(session)
+            .map_err(|error| SupervisorOperationError::Invalid(error.to_string()))?;
+        let host = self.host()?;
+        let streams = host
+            .streams
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .clone()
+            .ok_or_else(|| {
+                SupervisorOperationError::Unavailable(
+                    "session archive carrier is not attached".to_owned(),
+                )
+            })?;
+        let archived = streams
+            .archive_session(request_id, request_sha256, session, started_at)
+            .map_err(map_tool_archive_failure)?;
+        operation_value(serde_json::json!({"operation":"archive","archived_session_ids":archived}))
+    }
+
     fn interrupt(
         &mut self,
         request: &InterruptRequest,
@@ -5995,6 +6021,59 @@ fn line_schedule_target(
 
 fn operation_unavailable(error: DaemonError) -> SupervisorOperationError {
     SupervisorOperationError::Unavailable(error.to_string())
+}
+
+fn map_tool_archive_failure(
+    error: crate::endpoint_carrier::ProductionCarrierError,
+) -> SupervisorOperationError {
+    use crate::endpoint_carrier::ProductionCarrierError;
+    use endpoint::SessionOperationError;
+    match error {
+        ProductionCarrierError::Management(
+            SessionOperationError::SessionNotFound(_) | SessionOperationError::SessionArchived(_),
+        ) => SupervisorOperationError::NotFound("active thread not found".to_owned()),
+        ProductionCarrierError::Management(
+            error @ (SessionOperationError::IdempotencyConflict { .. }
+            | SessionOperationError::SessionRunning(_)
+            | SessionOperationError::SessionEphemeral(_)),
+        ) => SupervisorOperationError::Conflict(error.to_string()),
+        other => SupervisorOperationError::Unavailable(other.to_string()),
+    }
+}
+
+#[cfg(test)]
+mod archive_runtime_error_tests {
+    use super::*;
+    use crate::endpoint_carrier::ProductionCarrierError;
+    use endpoint::SessionOperationError;
+
+    #[test]
+    fn archive_missing_or_inactive_target_is_not_a_retryable_outage() {
+        for failure in [
+            SessionOperationError::SessionNotFound("missing".into()),
+            SessionOperationError::SessionArchived("archived".into()),
+        ] {
+            assert!(matches!(
+                map_tool_archive_failure(ProductionCarrierError::Management(failure)),
+                SupervisorOperationError::NotFound(_)
+            ));
+        }
+        assert!(matches!(
+            map_tool_archive_failure(ProductionCarrierError::Management(
+                SessionOperationError::IdempotencyConflict {
+                    rpc_id: "same".into(),
+                    operation: "archive".into()
+                }
+            )),
+            SupervisorOperationError::Conflict(_)
+        ));
+        assert!(matches!(
+            map_tool_archive_failure(ProductionCarrierError::Management(
+                SessionOperationError::SessionRunning("active".into())
+            )),
+            SupervisorOperationError::Conflict(_)
+        ));
+    }
 }
 
 fn operation_value(value: serde_json::Value) -> Result<IJsonValue, SupervisorOperationError> {
