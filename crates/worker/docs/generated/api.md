@@ -112,7 +112,7 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1574) | `pub(crate)` | not a function |
 | [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1594) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L205) |
 | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1626) | `pub(crate)` | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L205) |
-| [tekes-worker::queue::execute_queue_transaction](../../src/queue.rs#L10) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::queue::execute_queue_transaction](../../src/queue.rs#L11) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::recovery::UnresolvedAttempt](../../src/recovery.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::PendingToolCall](../../src/recovery.rs#L17) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::RecoveryProgress](../../src/recovery.rs#L29) | `pub(crate)` | not a function |

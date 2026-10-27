@@ -21,6 +21,10 @@ fn queue_origin(key: &str) -> schema::OriginTuple {
 }
 
 fn queue_ledger() -> (tempfile::TempDir, LockedLedger) {
+    queue_ledger_with_submission(None)
+}
+
+fn queue_ledger_with_submission(submission: Option<Value>) -> (tempfile::TempDir, LockedLedger) {
     let directory = tempfile::tempdir().expect("queue tempdir");
     let path = directory.path().join("main.jsonl");
     let genesis = json!({
@@ -37,15 +41,18 @@ fn queue_ledger() -> (tempfile::TempDir, LockedLedger) {
     bytes.push(b'\n');
     fs::write(&path, bytes).expect("genesis ledger");
     let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).expect("queue ledger");
-    let input = make_event(json!({
+    let mut input_value = json!({
         "v":1,"seq":2,"kind":"input","ts":"2026-08-28T09:00:01.000Z",
         "origin_key":"input-1","origin_tuple":{
             "principal":"uid:501","client":"session-endpoint",
             "target":"018f0000-0000-7000-8000-000000000003",
             "op":"session.prompt","key":"input-1"
         },"content":[{"type":"text","text":"old"}],"steer":false
-    }))
-    .expect("input");
+    });
+    if let Some(submission) = submission {
+        input_value["submission"] = submission;
+    }
+    let input = make_event(input_value).expect("input");
     ledger
         .append_contract(input, BarrierContext::default())
         .expect("input append");
@@ -119,6 +126,137 @@ fn queue_transaction_commits_pair_and_reacks_without_new_events() {
         }
     );
     assert_eq!(ledger.next_seq(), before, "retry must not append");
+}
+
+#[test]
+fn queue_edit_preserves_captured_submission_and_retry_checks_it() {
+    let captured = json!({
+        "provider":"browser-pilot-synthetic",
+        "model":"deepseek-flash",
+        "reasoningEffort":null,
+        "configDigest":"captured-at-send"
+    });
+    let (_directory, mut ledger) = queue_ledger_with_submission(Some(captured.clone()));
+    let transaction = edit_transaction();
+    execute_queue_transaction(&mut ledger, "2026-08-28T09:00:02.000Z", &transaction)
+        .expect("edit transaction");
+    assert_eq!(
+        event_json(event_at(&ledger, 4).unwrap()).unwrap()["submission"],
+        captured
+    );
+
+    let before = ledger.next_seq();
+    let retry = execute_queue_transaction(&mut ledger, "2026-08-28T09:00:03.000Z", &transaction)
+        .expect("idempotent retry");
+    assert!(matches!(
+        retry.outcome,
+        QueueTransactionOutcome::Committed {
+            deduplicated: true,
+            ..
+        }
+    ));
+    assert_eq!(ledger.next_seq(), before);
+}
+
+#[test]
+fn queue_edit_keeps_legacy_missing_submission_missing() {
+    let (_directory, mut ledger) = queue_ledger();
+    execute_queue_transaction(&mut ledger, "2026-08-28T09:00:02.000Z", &edit_transaction())
+        .expect("edit legacy target");
+    assert!(
+        event_json(event_at(&ledger, 4).unwrap())
+            .unwrap()
+            .get("submission")
+            .is_none()
+    );
+}
+
+#[test]
+fn queue_edit_retry_rejects_replacement_with_changed_submission() {
+    let captured = json!({"provider":"p","model":"m","configDigest":"sent"});
+    let (_directory, mut ledger) = queue_ledger_with_submission(Some(captured));
+    let transaction = edit_transaction();
+    let mut retraction = origin_event(
+        &ledger,
+        "2026-08-28T09:00:02.000Z",
+        "queue_edit",
+        &transaction.retract_origin,
+    );
+    retraction.insert("supersedes".to_owned(), json!([{"from":2,"to":2}]));
+    ledger
+        .append_contract(
+            make_event(Value::Object(retraction)).unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+    let QueueTransactionAction::Edit {
+        replacement_origin,
+        content,
+        steer,
+        assets,
+    } = &transaction.action
+    else {
+        unreachable!();
+    };
+    let mut replacement = origin_event(
+        &ledger,
+        "2026-08-28T09:00:03.000Z",
+        "input",
+        replacement_origin,
+    );
+    replacement.insert("content".to_owned(), serde_json::to_value(content).unwrap());
+    replacement.insert("steer".to_owned(), Value::Bool(*steer));
+    if let Some(assets) = assets {
+        replacement.insert("assets".to_owned(), serde_json::to_value(assets).unwrap());
+    }
+    ledger
+        .append_contract(
+            make_event(Value::Object(replacement)).unwrap(),
+            BarrierContext::default(),
+        )
+        .unwrap();
+
+    let error = execute_queue_transaction(&mut ledger, "2026-08-28T09:00:04.000Z", &transaction)
+        .expect_err("retry must reject mismatched captured submission");
+    assert!(
+        error
+            .to_string()
+            .contains("replacement origin resolves to mismatched bytes")
+    );
+}
+
+#[test]
+fn queue_steer_preserves_target_submission_snapshot() {
+    let captured = json!({"provider":"p","model":"m","configDigest":"captured"});
+    let (_directory, mut ledger) = queue_ledger_with_submission(Some(captured.clone()));
+    append_turn_open(&mut ledger, "2026-08-28T09:00:02.000Z", "inputs", &[2], 1).unwrap();
+    let extra_input = make_event(json!({
+        "v":1,"seq":4,"kind":"input","ts":"2026-08-28T09:00:03.000Z",
+        "origin_key":"input-2","origin_tuple":{
+            "principal":"uid:501","client":"session-endpoint",
+            "target":"018f0000-0000-7000-8000-000000000003",
+            "op":"session.prompt","key":"input-2"
+        },"content":[{"type":"text","text":"queued input"}],"steer":false,"submission":captured
+    }))
+    .unwrap();
+    ledger
+        .append_contract(extra_input, BarrierContext::default())
+        .unwrap();
+
+    let transaction = QueueTransaction {
+        delivery: "delivery-steer-1".to_owned(),
+        rpc_id: "rpc-steer-1".to_owned(),
+        target_seq: 4,
+        retract_origin: queue_origin("rpc-steer-1/retract"),
+        action: QueueTransactionAction::Steer {
+            replacement_origin: queue_origin("rpc-steer-1/replacement"),
+        },
+    };
+    execute_queue_transaction(&mut ledger, "2026-08-28T09:00:04.000Z", &transaction)
+        .expect("steer transaction");
+    let replacement = event_json(event_at(&ledger, 6).unwrap()).unwrap();
+    assert_eq!(replacement["submission"], captured);
+    assert_eq!(replacement["steer"], true);
 }
 
 #[test]
