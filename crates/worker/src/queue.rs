@@ -5,6 +5,7 @@ struct QueueTarget {
     content: Vec<schema::Block>,
     steer: bool,
     assets: Option<Vec<worker_control::AssetRef>>,
+    submission: Option<Value>,
 }
 
 pub(crate) fn execute_queue_transaction(
@@ -77,15 +78,23 @@ pub(crate) fn execute_queue_transaction(
                 )
                 .into());
             }
-            Some((content.clone(), *steer, assets.clone()))
+            Some((
+                content.clone(),
+                *steer,
+                assets.clone(),
+                target.submission.clone(),
+            ))
         }
         QueueTransactionAction::Remove => None,
-        QueueTransactionAction::Steer { .. } => {
-            Some((target.content.clone(), true, target.assets.clone()))
-        }
+        QueueTransactionAction::Steer { .. } => Some((
+            target.content.clone(),
+            true,
+            target.assets.clone(),
+            target.submission.clone(),
+        )),
     };
 
-    if let Some((_, _, assets)) = &replacement
+    if let Some((_, _, assets, _)) = &replacement
         && let Err(error) = verify_queue_assets(ledger, assets.as_deref().unwrap_or_default())
     {
         if retract_seq.is_some() {
@@ -128,7 +137,7 @@ pub(crate) fn execute_queue_transaction(
     let last_seq = match (replacement, replacement_seq) {
         (None, None) => first_seq,
         (Some(_), Some(seq)) => seq,
-        (Some((content, steer, assets)), None) => {
+        (Some((content, steer, assets, submission)), None) => {
             let origin = transaction
                 .replacement_origin()
                 .expect("replacement action has origin");
@@ -138,6 +147,9 @@ pub(crate) fn execute_queue_transaction(
             object.insert("steer".to_owned(), Value::Bool(steer));
             if let Some(assets) = assets {
                 object.insert("assets".to_owned(), serde_json::to_value(assets)?);
+            }
+            if let Some(submission) = submission {
+                object.insert("submission".to_owned(), submission);
             }
             ledger.append_contract(
                 make_event(Value::Object(object))?,
@@ -260,6 +272,7 @@ fn queue_target(
         content,
         steer: value.get("steer").and_then(Value::as_bool).unwrap_or(false),
         assets,
+        submission: value.get("submission").cloned(),
     }))
 }
 
@@ -315,6 +328,7 @@ fn validate_existing_replacement(
         Vec<schema::Block>,
         bool,
         Option<Vec<worker_control::AssetRef>>,
+        Option<Value>,
     ),
 ) -> Result<(), StoreError> {
     let event = event_at(ledger, seq)?;
@@ -332,6 +346,7 @@ fn validate_existing_replacement(
         || value.get("content") != Some(&content)
         || value.get("steer").and_then(Value::as_bool) != Some(replacement.1)
         || value.get("assets") != assets.as_ref()
+        || value.get("submission") != replacement.3.as_ref()
     {
         return Err(StoreError::Corruption(
             "queue transaction replacement origin resolves to mismatched bytes".to_owned(),

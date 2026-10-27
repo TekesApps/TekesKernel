@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.14 — 2026-10-28
+
+### Fixed
+
+- Preserve the target input’s sealed submission snapshot when editing or steering queued input, including durable retries, so live messages and reopened history retain identical metadata. Legacy inputs without a snapshot remain unchanged.
+
 ## 0.9.13 — 2026-10-27
 
 ### Fixed

@@ -194,7 +194,9 @@ queue_transaction {
 
 The target is one live unconsumed input. `retract_origin.key` is
 `rpc_id+"/retract"`; each replacement key is
-`rpc_id+"/replacement"`. Edit carries replacement content. Steer copies the
+`rpc_id+"/replacement"`. Edit carries replacement content. Edit and steer
+inherit the target's optional `submission` snapshot unchanged when present;
+they do not re-read current settings or synthesize one. Steer also copies the
 target's exact content/assets and authors the replacement with `steer:true`.
 For edit, `steer` equals the target input's steer bit, so editing pending
 steering remains steering; for a queued input it is false. Remove accepts

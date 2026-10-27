@@ -1727,7 +1727,10 @@ one locked tail snapshot:
   has its own later ledger seq and therefore appears at the live queue tail;
   there is no durable position field with which to preserve the old row position.
   Editing a pending steer preserves `steer:true`; editing a queued item keeps
-  it non-steer. Endpoint-private prompt metadata is not copied into the
+  it non-steer. A replacement inherits the target input's optional public
+  `submission` snapshot unchanged, when present; it does not re-read current
+  settings or synthesize a snapshot. Endpoint-private prompt metadata (for
+  example, fields used only by the prompt carrier) is not copied into the
   replacement or any public projection.
 - The native endpoint requires nonempty edit content and accepts only
   `{type:"text",text:str}` blocks;
