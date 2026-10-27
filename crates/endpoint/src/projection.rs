@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 
 use schema::{Event, EventKind, IJsonValue};
@@ -11,12 +12,12 @@ use store::AssetStore;
 // The projector only reads prior projected rows and assets. Keep read-only child snapshots
 // on this same code path without creating/repairing a journal in the session directory.
 trait ProjectionRead {
-    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError>;
+    fn records(&self) -> Result<Cow<'_, [crate::JournalRecord]>, JournalError>;
     fn thread_folder(&self) -> &std::path::Path;
 }
 impl ProjectionRead for EndpointJournal {
-    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError> {
-        self.records()
+    fn records(&self) -> Result<Cow<'_, [crate::JournalRecord]>, JournalError> {
+        self.records().map(Cow::Owned)
     }
     fn thread_folder(&self) -> &std::path::Path {
         self.thread_folder()
@@ -27,8 +28,8 @@ struct SnapshotJournal {
     rows: Vec<crate::JournalRecord>,
 }
 impl ProjectionRead for SnapshotJournal {
-    fn records(&self) -> Result<Vec<crate::JournalRecord>, JournalError> {
-        Ok(self.rows.clone())
+    fn records(&self) -> Result<Cow<'_, [crate::JournalRecord]>, JournalError> {
+        Ok(Cow::Borrowed(&self.rows))
     }
     fn thread_folder(&self) -> &std::path::Path {
         &self.folder
@@ -667,15 +668,18 @@ impl Projector {
         let Some(processed_through) = self.processed_through else {
             return Ok(());
         };
-        for record in journal.records()? {
-            let slot = record.slot;
+        for record in journal.records()?.iter() {
+            let slot = &record.slot;
             let Some(anchor) = record.kernel_seqs.last().copied() else {
                 continue;
             };
             if anchor <= processed_through
                 && !self.expected_kernel_slots.contains(&(anchor, slot.clone()))
             {
-                return Err(ProjectionError::UnexpectedKernelSlot { anchor, slot });
+                return Err(ProjectionError::UnexpectedKernelSlot {
+                    anchor,
+                    slot: slot.clone(),
+                });
             }
         }
         Ok(())
@@ -728,7 +732,7 @@ fn apply_surface_supersedes(
         .collect::<BTreeSet<_>>();
     let records = journal.records()?;
     let mut replaced = Vec::new();
-    for record in records {
+    for record in records.iter() {
         let surface = matches!(
             record.event.event_type.as_str(),
             "user/message" | "assistant/message" | "tool/result"
