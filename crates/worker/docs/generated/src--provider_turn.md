@@ -9,27 +9,36 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
 | [tekes-worker::provider_turn::set_provider_test_redirect](../../src/provider_turn.rs#L11) | function_item | `pub(crate)` | test; #[cfg(test)] |
-| [tekes-worker::provider_turn::ProviderOutcome](../../src/provider_turn.rs#L15) | struct_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::ProviderContext](../../src/provider_turn.rs#L26) | struct_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::run_provider_turn](../../src/provider_turn.rs#L33) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::ProviderLoopBudget](../../src/provider_turn.rs#L93) | struct_item | `private` |  |
-| [tekes-worker::provider_turn::ProviderRunContext](../../src/provider_turn.rs#L102) | struct_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) | function_item | `private` |  |
-| [tekes-worker::provider_turn::forward_provider_frame](../../src/provider_turn.rs#L1125) | function_item | `private` |  |
-| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1179) | struct_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1189) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1197) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1265) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1281) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1302) | struct_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1318) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1400) | function_item | `pub(crate)` | test; #[cfg(test)] |
-| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1411) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::settle_provider_unavailable](../../src/provider_turn.rs#L1445) | function_item | `private` |  |
-| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1471) | enum_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::SelectedProviderFailure::detail](../../src/provider_turn.rs#L1480) | function_item | `private` |  |
-| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1491) | function_item | `pub(crate)` |  |
-| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1523) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::ProviderControlInput](../../src/provider_turn.rs#L15) | trait_item | `private` |  |
+| [tekes-worker::provider_turn::ProviderControlInput::drain_provider_deliveries](../../src/provider_turn.rs#L16) | function_signature_item | `private` |  |
+| [tekes-worker::provider_turn::IteratorControlInput](../../src/provider_turn.rs#L27) | struct_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::Item](../../src/provider_turn.rs#L31) | type_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::IteratorControlInput::next](../../src/provider_turn.rs#L33) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::IteratorControlInput::drain_provider_deliveries](../../src/provider_turn.rs#L40) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::ControlLines::drain_provider_deliveries](../../src/provider_turn.rs#L53) | function_item | `private` |  |
+| [tekes-worker::provider_turn::ProviderOutcome](../../src/provider_turn.rs#L65) | struct_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::ProviderContext](../../src/provider_turn.rs#L76) | struct_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::run_provider_turn](../../src/provider_turn.rs#L84) | function_item | `pub(crate)` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::run_provider_turn_with_controls](../../src/provider_turn.rs#L107) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::run_provider_turn_with_input](../../src/provider_turn.rs#L130) | function_item | `private` |  |
+| [tekes-worker::provider_turn::ProviderLoopBudget](../../src/provider_turn.rs#L190) | struct_item | `private` |  |
+| [tekes-worker::provider_turn::ProviderRunContext](../../src/provider_turn.rs#L199) | struct_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L205) | function_item | `private` |  |
+| [tekes-worker::provider_turn::forward_provider_frame](../../src/provider_turn.rs#L1228) | function_item | `private` |  |
+| [tekes-worker::provider_turn::EagerDispatch](../../src/provider_turn.rs#L1282) | struct_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::EagerDispatch::contains](../../src/provider_turn.rs#L1292) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1300) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1368) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1384) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::EagerReadyCall](../../src/provider_turn.rs#L1405) | struct_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1421) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::append_provider_tool_call](../../src/provider_turn.rs#L1503) | function_item | `pub(crate)` | test; #[cfg(test)] |
+| [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1514) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::settle_provider_unavailable](../../src/provider_turn.rs#L1548) | function_item | `private` |  |
+| [tekes-worker::provider_turn::SelectedProviderFailure](../../src/provider_turn.rs#L1574) | enum_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::SelectedProviderFailure::detail](../../src/provider_turn.rs#L1583) | function_item | `private` |  |
+| [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1594) | function_item | `pub(crate)` |  |
+| [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1626) | function_item | `pub(crate)` |  |
 
 ## Imports / reexports
 
@@ -46,7 +55,7 @@ Visibility is the declaration spelling; trait members and reexports require thei
 
 Edges below are syntactically resolved calls only, including private functions. Graphs partition callers into groups of 20; they are not execution order. All unresolved sites are listed below and in the JSON inventory.
 
-<details><summary>Functions 1–13: 20 direct edges</summary>
+<details><summary>Functions 1–15: 21 direct edges</summary>
 
 ```mermaid
 flowchart TD
@@ -59,39 +68,42 @@ flowchart TD
   n6["session-controls::read_goal"]
   n7["store::asset::AssetStore::new"]
   n8["tools::schema_registry::fixed_schema"]
-  n9["tekes-worker::provider_turn::run_provider_turn_inner"]
+  n9["tekes-worker::provider_turn::run_provider_turn_with_controls"]
   n10["tekes-worker::provider_turn::forward_provider_frame"]
   n11["tekes-worker::provider_turn::EagerDispatch::contains"]
   n12["tekes-worker::provider_turn::local_provider_call_id"]
-  n13["tekes-worker::provider_turn::repair_provider_call_arguments"]
-  n14["tekes-worker::provider_turn::localize_provider_frame"]
-  n15["tekes-worker::provider_turn::eager_dispatch_ready_call"]
-  n16["tekes-worker::provider_turn::append_provider_tool_call_with_wire_id"]
-  n17["tekes-worker::provider_turn::settle_provider_unavailable"]
-  n18["tekes-worker::provider_turn::SelectedProviderFailure::detail"]
-  n19["tekes-worker::provider_turn::selected_provider"]
-  n20["tekes-worker::provider_turn::current_turn_inputs"]
-  n21["tekes-worker::provider_turn::run_provider_turn"]
-  n9 --> n0
-  n9 --> n1
-  n9 --> n3
-  n9 --> n4
-  n9 --> n5
-  n9 --> n6
-  n9 --> n7
-  n9 --> n9
-  n9 --> n10
+  n13["tekes-worker::provider_turn::run_provider_turn_with_input"]
+  n14["tekes-worker::provider_turn::repair_provider_call_arguments"]
+  n15["tekes-worker::provider_turn::localize_provider_frame"]
+  n16["tekes-worker::provider_turn::eager_dispatch_ready_call"]
+  n17["tekes-worker::provider_turn::append_provider_tool_call_with_wire_id"]
+  n18["tekes-worker::provider_turn::settle_provider_unavailable"]
+  n19["tekes-worker::provider_turn::SelectedProviderFailure::detail"]
+  n20["tekes-worker::provider_turn::selected_provider"]
+  n21["tekes-worker::provider_turn::current_turn_inputs"]
+  n22["tekes-worker::provider_turn::run_provider_turn_inner"]
+  n23["tekes-worker::provider_turn::ControlLines::drain_provider_deliveries"]
   n9 --> n13
-  n9 --> n14
-  n9 --> n15
-  n9 --> n17
-  n9 --> n19
-  n9 --> n20
-  n13 --> n8
-  n14 --> n12
-  n15 --> n16
-  n16 --> n2
-  n21 --> n9
+  n13 --> n22
+  n14 --> n8
+  n15 --> n12
+  n16 --> n17
+  n17 --> n2
+  n22 --> n0
+  n22 --> n1
+  n22 --> n3
+  n22 --> n4
+  n22 --> n5
+  n22 --> n6
+  n22 --> n7
+  n22 --> n10
+  n22 --> n14
+  n22 --> n15
+  n22 --> n16
+  n22 --> n18
+  n22 --> n20
+  n22 --> n21
+  n22 --> n22
 ```
 
 </details>
@@ -104,428 +116,436 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 |---|---|---|---|
 | `set_provider_test_redirect` | `PROVIDER_TEST_REDIRECT.with` | [12](../../src/provider_turn.rs#L12) | receiver-type-required |
 | `set_provider_test_redirect` | `slot.borrow_mut` | [12](../../src/provider_turn.rs#L12) | receiver-type-required |
-| `run_provider_turn` | `ledger.sync_prefix` | [44](../../src/provider_turn.rs#L44) | receiver-type-required |
-| `run_provider_turn` | `ledger.projection().and_then` | [45](../../src/provider_turn.rs#L45) | receiver-type-required |
-| `run_provider_turn` | `ledger.projection` | [45](../../src/provider_turn.rs#L45), [46](../../src/provider_turn.rs#L46) | receiver-type-required |
-| `run_provider_turn` | `ledger.projection().is_some_and` | [46](../../src/provider_turn.rs#L46) | receiver-type-required |
-| `run_provider_turn` | `hooks.before_turn` | [48](../../src/provider_turn.rs#L48) | receiver-type-required |
-| `run_provider_turn` | `profile.clone` | [51](../../src/provider_turn.rs#L51) | receiver-type-required |
-| `run_provider_turn` | `validation_runtime::activate_validator_profile` | [52](../../src/provider_turn.rs#L52) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `profile         .config         .execution         .policy         .max_wall_seconds         .map` | [54](../../src/provider_turn.rs#L54) | receiver-type-required |
-| `run_provider_turn` | `Instant::now` | [59](../../src/provider_turn.rs#L59) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `Duration::from_secs` | [59](../../src/provider_turn.rs#L59) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `run_provider_turn_inner` | [60](../../src/provider_turn.rs#L60) | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| `run_provider_turn` | `Ok` | [80](../../src/provider_turn.rs#L80), [84](../../src/provider_turn.rs#L84), [86](../../src/provider_turn.rs#L86) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `is_protocol_failure` | [81](../../src/provider_turn.rs#L81) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `error.as_ref` | [81](../../src/provider_turn.rs#L81), [85](../../src/provider_turn.rs#L85) | receiver-type-required |
-| `run_provider_turn` | `Err` | [81](../../src/provider_turn.rs#L81), [87](../../src/provider_turn.rs#L87) | external-constructor-callback-or-unresolved |
-| `run_provider_turn` | `cancellation.stop_requested` | [84](../../src/provider_turn.rs#L84) | receiver-type-required |
-| `run_provider_turn` | `settle_internal_worker_failure` | [85](../../src/provider_turn.rs#L85) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.latest_turn)         .ok_or` | [122](../../src/provider_turn.rs#L122) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .projection()         .and_then` | [122](../../src/provider_turn.rs#L122) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .projection` | [122](../../src/provider_turn.rs#L122), [139](../../src/provider_turn.rs#L139) | receiver-type-required |
-| `run_provider_turn_inner` | `budget         .wall_deadline         .is_some_and` | [126](../../src/provider_turn.rs#L126) | receiver-type-required |
-| `run_provider_turn_inner` | `Instant::now` | [128](../../src/provider_turn.rs#L128), [690](../../src/provider_turn.rs#L690) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `append_settle` | [130](../../src/provider_turn.rs#L130), [923](../../src/provider_turn.rs#L923), [934](../../src/provider_turn.rs#L934), [1084](../../src/provider_turn.rs#L1084) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `options.event_timestamp` | [132](../../src/provider_turn.rs#L132), [274](../../src/provider_turn.rs#L274), [806](../../src/provider_turn.rs#L806), [925](../../src/provider_turn.rs#L925), [936](../../src/provider_turn.rs#L936), [1086](../../src/provider_turn.rs#L1086) | receiver-type-required |
-| `run_provider_turn_inner` | `Some` | [135](../../src/provider_turn.rs#L135), [238](../../src/provider_turn.rs#L238), [322](../../src/provider_turn.rs#L322), [450](../../src/provider_turn.rs#L450), [484](../../src/provider_turn.rs#L484), [736](../../src/provider_turn.rs#L736), [781](../../src/provider_turn.rs#L781), [928](../../src/provider_turn.rs#L928), [939](../../src/provider_turn.rs#L939) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Ok` | [137](../../src/provider_turn.rs#L137), [143](../../src/provider_turn.rs#L143), [147](../../src/provider_turn.rs#L147), [150](../../src/provider_turn.rs#L150), [156](../../src/provider_turn.rs#L156), [170](../../src/provider_turn.rs#L170), [402](../../src/provider_turn.rs#L402), [432](../../src/provider_turn.rs#L432), [453](../../src/provider_turn.rs#L453), [461](../../src/provider_turn.rs#L461), [470](../../src/provider_turn.rs#L470), [648](../../src/provider_turn.rs#L648), [790](../../src/provider_turn.rs#L790), [892](../../src/provider_turn.rs#L892), [930](../../src/provider_turn.rs#L930), [941](../../src/provider_turn.rs#L941), [957](../../src/provider_turn.rs#L957), [1008](../../src/provider_turn.rs#L1008), [1043](../../src/provider_turn.rs#L1043), [1046](../../src/provider_turn.rs#L1046), [1067](../../src/provider_turn.rs#L1067), [1091](../../src/provider_turn.rs#L1091), [1094](../../src/provider_turn.rs#L1094), [1102](../../src/provider_turn.rs#L1102) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ledger         .projection()         .is_some_and` | [139](../../src/provider_turn.rs#L139) | receiver-type-required |
-| `run_provider_turn_inner` | `recover_provider_attempt_for_ordinary` | [145](../../src/provider_turn.rs#L145) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `validation_runtime::advance` | [149](../../src/provider_turn.rs#L149), [1066](../../src/provider_turn.rs#L1066) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `selected_provider` | [152](../../src/provider_turn.rs#L152) | [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1491) |
-| `run_provider_turn_inner` | `settle_provider_unavailable` | [155](../../src/provider_turn.rs#L155), [169](../../src/provider_turn.rs#L169), [401](../../src/provider_turn.rs#L401), [431](../../src/provider_turn.rs#L431), [452](../../src/provider_turn.rs#L452), [456](../../src/provider_turn.rs#L456), [465](../../src/provider_turn.rs#L465), [1097](../../src/provider_turn.rs#L1097) | [tekes-worker::provider_turn::settle_provider_unavailable](../../src/provider_turn.rs#L1445) |
-| `run_provider_turn_inner` | `reason.detail` | [155](../../src/provider_turn.rs#L155) | receiver-type-required |
-| `run_provider_turn_inner` | `BuiltinManifest::compiled` | [159](../../src/provider_turn.rs#L159) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `manifest.validate` | [160](../../src/provider_turn.rs#L160) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .path()         .parent()         .ok_or("worker ledger has no thread folder")?         .to_path_buf` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .path()         .parent()         .ok_or` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .path()         .parent` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger         .path` | [161](../../src/provider_turn.rs#L161) | receiver-type-required |
-| `run_provider_turn_inner` | `provider::resolve_profile` | [166](../../src/provider_turn.rs#L166) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
-| `run_provider_turn_inner` | `resolved_profile.native_deferred_tools` | [177](../../src/provider_turn.rs#L177) | receiver-type-required |
-| `run_provider_turn_inner` | `assemble_tool_backends` | [180](../../src/provider_turn.rs#L180) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `execution_access_for_profile` | [185](../../src/provider_turn.rs#L185) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `session_permission_policy` | [187](../../src/provider_turn.rs#L187) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `credential.as_ref` | [190](../../src/provider_turn.rs#L190), [438](../../src/provider_turn.rs#L438), [771](../../src/provider_turn.rs#L771), [1039](../../src/provider_turn.rs#L1039) | receiver-type-required |
-| `run_provider_turn_inner` | `DynamicToolDispatcher::new` | [199](../../src/provider_turn.rs#L199) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `dynamic_dispatcher.deferred_search_entries` | [200](../../src/provider_turn.rs#L200) | receiver-type-required |
-| `run_provider_turn_inner` | `deferred.is_empty` | [201](../../src/provider_turn.rs#L201) | receiver-type-required |
-| `run_provider_turn_inner` | `tool_catalog_context` | [203](../../src/provider_turn.rs#L203) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ToolDispatcher::new(&manifest, &catalog_context).provider_catalog` | [205](../../src/provider_turn.rs#L205) | receiver-type-required |
-| `run_provider_turn_inner` | `ToolDispatcher::new` | [205](../../src/provider_turn.rs#L205) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ledger.next_seq` | [206](../../src/provider_turn.rs#L206) | receiver-type-required |
-| `run_provider_turn_inner` | `ToolPipeline::new` | [207](../../src/provider_turn.rs#L207) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `AssetStore::new` | [209](../../src/provider_turn.rs#L209) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `thread_folder.join` | [209](../../src/provider_turn.rs#L209), [414](../../src/provider_turn.rs#L414) | receiver-type-required |
-| `run_provider_turn_inner` | `SecretScanner::default` | [210](../../src/provider_turn.rs#L210) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `catalog.extend` | [212](../../src/provider_turn.rs#L212) | receiver-type-required |
-| `run_provider_turn_inner` | `dynamic_dispatcher.provider_catalog_visible` | [212](../../src/provider_turn.rs#L212) | receiver-type-required |
-| `run_provider_turn_inner` | `native_mode.is_some` | [217](../../src/provider_turn.rs#L217) | receiver-type-required |
-| `run_provider_turn_inner` | `catalog                 .iter()                 .filter_map(&#124;schema&#124; {                     serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str()                         .map(str::to_owned)                 })                 .collect::<BTreeSet<_>>` | [221](../../src/provider_turn.rs#L221) | receiver-type-required |
-| `run_provider_turn_inner` | `catalog                 .iter()                 .filter_map` | [221](../../src/provider_turn.rs#L221) | receiver-type-required |
-| `run_provider_turn_inner` | `catalog                 .iter` | [221](../../src/provider_turn.rs#L221) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str()                         .map` | [224](../../src/provider_turn.rs#L224) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str` | [224](../../src/provider_turn.rs#L224) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get` | [224](../../src/provider_turn.rs#L224) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok` | [224](../../src/provider_turn.rs#L224) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value` | [224](../../src/provider_turn.rs#L224), [262](../../src/provider_turn.rs#L262) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `declared.contains` | [232](../../src/provider_turn.rs#L232) | receiver-type-required |
-| `run_provider_turn_inner` | `catalog.push` | [233](../../src/provider_turn.rs#L233) | receiver-type-required |
-| `run_provider_turn_inner` | `entry.content.clone` | [233](../../src/provider_turn.rs#L233), [251](../../src/provider_turn.rs#L251) | receiver-type-required |
-| `run_provider_turn_inner` | `dynamic_catalog_revision` | [236](../../src/provider_turn.rs#L236) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `drop` | [237](../../src/provider_turn.rs#L237), [486](../../src/provider_turn.rs#L486), [516](../../src/provider_turn.rs#L516), [573](../../src/provider_turn.rs#L573), [647](../../src/provider_turn.rs#L647), [881](../../src/provider_turn.rs#L881) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `native_search_references` | [239](../../src/provider_turn.rs#L239) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `"tool_search".to_owned` | [247](../../src/provider_turn.rs#L247) | receiver-type-required |
-| `run_provider_turn_inner` | `deferred                     .iter()                     .map(&#124;entry&#124; provider::DeferredToolDefinition {                         schema: entry.content.clone(),                         schema_digest: entry.schema_digest.clone(),                     })                     .collect` | [248](../../src/provider_turn.rs#L248) | receiver-type-required |
-| `run_provider_turn_inner` | `deferred                     .iter()                     .map` | [248](../../src/provider_turn.rs#L248) | receiver-type-required |
-| `run_provider_turn_inner` | `deferred                     .iter` | [248](../../src/provider_turn.rs#L248) | receiver-type-required |
-| `run_provider_turn_inner` | `entry.schema_digest.clone` | [252](../../src/provider_turn.rs#L252) | receiver-type-required |
-| `run_provider_turn_inner` | `ijson` | [259](../../src/provider_turn.rs#L259) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Value::Array` | [259](../../src/provider_turn.rs#L259) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `provider_catalog             .into_iter()             .map(&#124;value&#124; serde_json::to_value(value).expect("tool schema is JSON"))             .collect` | [260](../../src/provider_turn.rs#L260) | receiver-type-required |
-| `run_provider_turn_inner` | `provider_catalog             .into_iter()             .map` | [260](../../src/provider_turn.rs#L260) | receiver-type-required |
-| `run_provider_turn_inner` | `provider_catalog             .into_iter` | [260](../../src/provider_turn.rs#L260) | receiver-type-required |
-| `run_provider_turn_inner` | `serde_json::to_value(value).expect` | [262](../../src/provider_turn.rs#L262) | receiver-type-required |
-| `run_provider_turn_inner` | `current_turn_inputs` | [266](../../src/provider_turn.rs#L266) | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1523) |
-| `run_provider_turn_inner` | `validation_runtime::JUDGE_SYSTEM.to_owned` | [272](../../src/provider_turn.rs#L272) | receiver-type-required |
-| `run_provider_turn_inner` | `identity::resolve_preset` | [274](../../src/provider_turn.rs#L274) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `preset.render` | [275](../../src/provider_turn.rs#L275) | receiver-type-required |
-| `run_provider_turn_inner` | `resolved_profile.wire_model` | [276](../../src/provider_turn.rs#L276) | receiver-type-required |
-| `run_provider_turn_inner` | `profile.config.execution_cwd` | [277](../../src/provider_turn.rs#L277) | receiver-type-required |
-| `run_provider_turn_inner` | `effective_system` | [278](../../src/provider_turn.rs#L278) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `profile.bindings.goal_id.as_deref` | [280](../../src/provider_turn.rs#L280) | receiver-type-required |
-| `run_provider_turn_inner` | `goal_store_location` | [281](../../src/provider_turn.rs#L281) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `session_controls::read_goal` | [282](../../src/provider_turn.rs#L282) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
-| `run_provider_turn_inner` | `provider::epoch_profile` | [303](../../src/provider_turn.rs#L303) | [provider::dialect::epoch_profile](../../../provider/src/dialect.rs#L783) |
-| `run_provider_turn_inner` | `profile.config.session_settings.as_ref` | [306](../../src/provider_turn.rs#L306) | receiver-type-required |
-| `run_provider_turn_inner` | `(!reset_epoch)         .then(&#124;&#124; {             latest_compatible_epoch(                 ledger,                 dialect,                 &model.id,                 &profile_digest,                 &tools_digest,                 CONTEXT_RENDERER_VERSION,             )         })         .flatten` | [309](../../src/provider_turn.rs#L309) | receiver-type-required |
-| `run_provider_turn_inner` | `(!reset_epoch)         .then` | [309](../../src/provider_turn.rs#L309) | receiver-type-required |
-| `run_provider_turn_inner` | `latest_compatible_epoch` | [311](../../src/provider_turn.rs#L311), [475](../../src/provider_turn.rs#L475) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `epoch.is_none` | [321](../../src/provider_turn.rs#L321) | receiver-type-required |
-| `run_provider_turn_inner` | `append_provider_epoch` | [322](../../src/provider_turn.rs#L322), [520](../../src/provider_turn.rs#L520), [575](../../src/provider_turn.rs#L575), [898](../../src/provider_turn.rs#L898), [961](../../src/provider_turn.rs#L961) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ledger                         .projection()                         .map(&#124;p&#124; p.events.as_slice())                         .unwrap_or_default` | [331](../../src/provider_turn.rs#L331) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger                         .projection()                         .map` | [331](../../src/provider_turn.rs#L331) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger                         .projection` | [331](../../src/provider_turn.rs#L331) | receiver-type-required |
-| `run_provider_turn_inner` | `p.events.as_slice` | [333](../../src/provider_turn.rs#L333) | receiver-type-required |
-| `run_provider_turn_inner` | `events.iter().rev().find` | [335](../../src/provider_turn.rs#L335) | receiver-type-required |
-| `run_provider_turn_inner` | `events.iter().rev` | [335](../../src/provider_turn.rs#L335) | receiver-type-required |
-| `run_provider_turn_inner` | `events.iter` | [335](../../src/provider_turn.rs#L335) | receiver-type-required |
-| `run_provider_turn_inner` | `e.kind` | [335](../../src/provider_turn.rs#L335), [339](../../src/provider_turn.rs#L339) | receiver-type-required |
-| `run_provider_turn_inner` | `previous.is_some_and` | [336](../../src/provider_turn.rs#L336) | receiver-type-required |
-| `run_provider_turn_inner` | `events                             .iter()                             .any` | [337](../../src/provider_turn.rs#L337) | receiver-type-required |
-| `run_provider_turn_inner` | `events                             .iter` | [337](../../src/provider_turn.rs#L337) | receiver-type-required |
-| `run_provider_turn_inner` | `e.seq` | [339](../../src/provider_turn.rs#L339) | receiver-type-required |
-| `run_provider_turn_inner` | `epoch.seq` | [339](../../src/provider_turn.rs#L339) | receiver-type-required |
-| `run_provider_turn_inner` | `epoch_open_reason` | [341](../../src/provider_turn.rs#L341) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `epoch.expect` | [353](../../src/provider_turn.rs#L353) | receiver-type-required |
-| `run_provider_turn_inner` | `hooks.observe` | [357](../../src/provider_turn.rs#L357) | receiver-type-required |
-| `run_provider_turn_inner` | `project_provider_context_mode` | [360](../../src/provider_turn.rs#L360) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `native_tools.is_some` | [360](../../src/provider_turn.rs#L360) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger.sync_prefix` | [362](../../src/provider_turn.rs#L362) | receiver-type-required |
-| `run_provider_turn_inner` | `hooks.prepare` | [363](../../src/provider_turn.rs#L363) | receiver-type-required |
-| `run_provider_turn_inner` | `context.items.push` | [364](../../src/provider_turn.rs#L364) | receiver-type-required |
-| `run_provider_turn_inner` | `IJsonValue::parse` | [364](../../src/provider_turn.rs#L364) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `serde_json::to_vec` | [364](../../src/provider_turn.rs#L364) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `context.items.is_empty` | [369](../../src/provider_turn.rs#L369) | receiver-type-required |
-| `run_provider_turn_inner` | `context.continuation_id.is_none` | [369](../../src/provider_turn.rs#L369) | receiver-type-required |
-| `run_provider_turn_inner` | `Err` | [373](../../src/provider_turn.rs#L373), [634](../../src/provider_turn.rs#L634), [788](../../src/provider_turn.rs#L788), [883](../../src/provider_turn.rs#L883), [1049](../../src/provider_turn.rs#L1049) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `format!("turn {turn} rendered no model-visible context").into` | [373](../../src/provider_turn.rs#L373) | receiver-type-required |
-| `run_provider_turn_inner` | `attempt.clone` | [377](../../src/provider_turn.rs#L377), [444](../../src/provider_turn.rs#L444), [605](../../src/provider_turn.rs#L605), [853](../../src/provider_turn.rs#L853) | receiver-type-required |
-| `run_provider_turn_inner` | `resolved_profile.target.clone` | [378](../../src/provider_turn.rs#L378) | receiver-type-required |
-| `run_provider_turn_inner` | `provider_config.endpoint.clone` | [379](../../src/provider_turn.rs#L379) | receiver-type-required |
-| `run_provider_turn_inner` | `profile_value.clone` | [380](../../src/provider_turn.rs#L380) | receiver-type-required |
-| `run_provider_turn_inner` | `context.continuation_id.clone` | [381](../../src/provider_turn.rs#L381) | receiver-type-required |
-| `run_provider_turn_inner` | `tool_catalog.clone` | [383](../../src/provider_turn.rs#L383) | receiver-type-required |
-| `run_provider_turn_inner` | `native_tools.as_ref` | [386](../../src/provider_turn.rs#L386) | receiver-type-required |
-| `run_provider_turn_inner` | `provider::prepare_with_native_deferred_tools` | [387](../../src/provider_turn.rs#L387) | [provider::request::prepare_with_native_deferred_tools](../../../provider/src/request.rs#L144) |
-| `run_provider_turn_inner` | `prepare` | [391](../../src/provider_turn.rs#L391) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `provider_context_tests::prepare_live_choice` | [395](../../src/provider_turn.rs#L395) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `options.provider_test_redirect.as_deref` | [405](../../src/provider_turn.rs#L405) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .path()             .parent()             .ok_or` | [410](../../src/provider_turn.rs#L410) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .path()             .parent` | [410](../../src/provider_turn.rs#L410) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .path` | [410](../../src/provider_turn.rs#L410) | receiver-type-required |
-| `run_provider_turn_inner` | `store::AssetStore::new(thread_folder.join("assets"))?.publish` | [414](../../src/provider_turn.rs#L414) | receiver-type-required |
-| `run_provider_turn_inner` | `store::AssetStore::new` | [414](../../src/provider_turn.rs#L414) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `run_provider_turn_inner` | `std::env::var` | [418](../../src/provider_turn.rs#L418), [693](../../src/provider_turn.rs#L693), [796](../../src/provider_turn.rs#L796) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `fs::write` | [419](../../src/provider_turn.rs#L419), [726](../../src/provider_turn.rs#L726), [798](../../src/provider_turn.rs#L798) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `PathBuf::from(directory).join` | [420](../../src/provider_turn.rs#L420), [696](../../src/provider_turn.rs#L696), [799](../../src/provider_turn.rs#L799) | receiver-type-required |
-| `run_provider_turn_inner` | `PathBuf::from` | [420](../../src/provider_turn.rs#L420), [696](../../src/provider_turn.rs#L696), [799](../../src/provider_turn.rs#L799) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `PROVIDER_TEST_REDIRECT.with` | [425](../../src/provider_turn.rs#L425) | receiver-type-required |
-| `run_provider_turn_inner` | `slot.borrow().clone` | [425](../../src/provider_turn.rs#L425) | receiver-type-required |
-| `run_provider_turn_inner` | `slot.borrow` | [425](../../src/provider_turn.rs#L425) | receiver-type-required |
-| `run_provider_turn_inner` | `thread_transport_endpoint.as_deref().or` | [427](../../src/provider_turn.rs#L427) | receiver-type-required |
-| `run_provider_turn_inner` | `thread_transport_endpoint.as_deref` | [427](../../src/provider_turn.rs#L427) | receiver-type-required |
-| `run_provider_turn_inner` | `endpoint_origin` | [428](../../src/provider_turn.rs#L428) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Arc::clone` | [435](../../src/provider_turn.rs#L435), [705](../../src/provider_turn.rs#L705) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `client             .lock()             .map_err(&#124;_&#124; "credential client lock poisoned")?             .get` | [439](../../src/provider_turn.rs#L439) | receiver-type-required |
-| `run_provider_turn_inner` | `client             .lock()             .map_err` | [439](../../src/provider_turn.rs#L439) | receiver-type-required |
-| `run_provider_turn_inner` | `client             .lock` | [439](../../src/provider_turn.rs#L439) | receiver-type-required |
-| `run_provider_turn_inner` | `credential_request_id` | [443](../../src/provider_turn.rs#L443) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `key.clone` | [445](../../src/provider_turn.rs#L445) | receiver-type-required |
-| `run_provider_turn_inner` | `"provider".to_owned` | [446](../../src/provider_turn.rs#L446), [606](../../src/provider_turn.rs#L606) | receiver-type-required |
-| `run_provider_turn_inner` | `provider_config.adapter.clone` | [447](../../src/provider_turn.rs#L447) | receiver-type-required |
-| `run_provider_turn_inner` | `drain_parked_deliveries` | [474](../../src/provider_turn.rs#L474), [777](../../src/provider_turn.rs#L777), [1053](../../src/provider_turn.rs#L1053), [1104](../../src/provider_turn.rs#L1104) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `latest_compatible_epoch(         ledger,         dialect,         &model.id,         &profile_digest,         &tools_digest,         CONTEXT_RENDERER_VERSION,     )     .as_deref` | [475](../../src/provider_turn.rs#L475) | receiver-type-required |
-| `run_provider_turn_inner` | `epoch.as_str` | [484](../../src/provider_turn.rs#L484) | receiver-type-required |
-| `run_provider_turn_inner` | `run_provider_turn_inner` | [487](../../src/provider_turn.rs#L487), [533](../../src/provider_turn.rs#L533), [589](../../src/provider_turn.rs#L589), [910](../../src/provider_turn.rs#L910), [974](../../src/provider_turn.rs#L974), [1054](../../src/provider_turn.rs#L1054), [1071](../../src/provider_turn.rs#L1071), [1105](../../src/provider_turn.rs#L1105) | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L108) |
-| `run_provider_turn_inner` | `preflight_compaction_due` | [507](../../src/provider_turn.rs#L507) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `engine::plan_tool_result_trim` | [509](../../src/provider_turn.rs#L509) | [engine::context::plan_tool_result_trim](../../../engine/src/context.rs#L431) |
-| `run_provider_turn_inner` | `ledger                 .projection()                 .ok_or` | [510](../../src/provider_turn.rs#L510), [550](../../src/provider_turn.rs#L550) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger                 .projection` | [510](../../src/provider_turn.rs#L510), [550](../../src/provider_turn.rs#L550) | receiver-type-required |
-| `run_provider_turn_inner` | `trims.is_empty` | [515](../../src/provider_turn.rs#L515) | receiver-type-required |
-| `run_provider_turn_inner` | `append_tool_result_trim` | [518](../../src/provider_turn.rs#L518) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `announce_appended` | [532](../../src/provider_turn.rs#L532), [587](../../src/provider_turn.rs#L587) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `engine::plan_context_compaction(             &ledger                 .projection()                 .ok_or("ledger projection missing")?                 .events,             turn,         )?         .covers         .is_empty` | [549](../../src/provider_turn.rs#L549) | receiver-type-required |
-| `run_provider_turn_inner` | `engine::plan_context_compaction` | [549](../../src/provider_turn.rs#L549) | [engine::context::plan_context_compaction](../../../engine/src/context.rs#L106) |
-| `run_provider_turn_inner` | `run_compaction_summary` | [559](../../src/provider_turn.rs#L559), [864](../../src/provider_turn.rs#L864) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `credential_material                 .as_ref()                 .map_or` | [565](../../src/provider_turn.rs#L565), [870](../../src/provider_turn.rs#L870) | receiver-type-required |
-| `run_provider_turn_inner` | `credential_material                 .as_ref` | [565](../../src/provider_turn.rs#L565), [870](../../src/provider_turn.rs#L870) | receiver-type-required |
-| `run_provider_turn_inner` | `material.material.as_str` | [567](../../src/provider_turn.rs#L567), [687](../../src/provider_turn.rs#L687), [872](../../src/provider_turn.rs#L872) | receiver-type-required |
-| `run_provider_turn_inner` | `auto_compact_for_turn` | [574](../../src/provider_turn.rs#L574), [896](../../src/provider_turn.rs#L896) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `stdout.write_all` | [602](../../src/provider_turn.rs#L602), [624](../../src/provider_turn.rs#L624), [850](../../src/provider_turn.rs#L850) | receiver-type-required |
-| `run_provider_turn_inner` | `encode_line` | [602](../../src/provider_turn.rs#L602), [624](../../src/provider_turn.rs#L624), [850](../../src/provider_turn.rs#L850) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `stdout.flush` | [609](../../src/provider_turn.rs#L609), [625](../../src/provider_turn.rs#L625), [857](../../src/provider_turn.rs#L857) | receiver-type-required |
-| `run_provider_turn_inner` | `lines             .next()             .ok_or_else(&#124;&#124; {                 ProtocolFailure("supervisor EOF while awaiting provider lease".to_owned())             })?             .map_err` | [611](../../src/provider_turn.rs#L611) | receiver-type-required |
-| `run_provider_turn_inner` | `lines             .next()             .ok_or_else` | [611](../../src/provider_turn.rs#L611) | receiver-type-required |
-| `run_provider_turn_inner` | `lines             .next` | [611](../../src/provider_turn.rs#L611) | receiver-type-required |
-| `run_provider_turn_inner` | `ProtocolFailure` | [614](../../src/provider_turn.rs#L614), [617](../../src/provider_turn.rs#L617), [634](../../src/provider_turn.rs#L634), [883](../../src/provider_turn.rs#L883), [1049](../../src/provider_turn.rs#L1049) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `"supervisor EOF while awaiting provider lease".to_owned` | [614](../../src/provider_turn.rs#L614) | receiver-type-required |
-| `run_provider_turn_inner` | `decode_supervisor` | [621](../../src/provider_turn.rs#L621) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `line.as_bytes` | [621](../../src/provider_turn.rs#L621) | receiver-type-required |
-| `run_provider_turn_inner` | `cancellation.cancel` | [628](../../src/provider_turn.rs#L628) | receiver-type-required |
-| `run_provider_turn_inner` | `cancellation.defer` | [629](../../src/provider_turn.rs#L629) | receiver-type-required |
-| `run_provider_turn_inner` | `cancellation.park_delivery` | [632](../../src/provider_turn.rs#L632) | receiver-type-required |
-| `run_provider_turn_inner` | `Box::new` | [634](../../src/provider_turn.rs#L634), [883](../../src/provider_turn.rs#L883), [1049](../../src/provider_turn.rs#L1049) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `"unexpected supervisor message while awaiting provider lease".to_owned` | [635](../../src/provider_turn.rs#L635) | receiver-type-required |
-| `run_provider_turn_inner` | `make_event` | [651](../../src/provider_turn.rs#L651), [665](../../src/provider_turn.rs#L665) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `ledger.append_contract` | [663](../../src/provider_turn.rs#L663), [673](../../src/provider_turn.rs#L673) | receiver-type-required |
-| `run_provider_turn_inner` | `BarrierContext::default` | [663](../../src/provider_turn.rs#L663), [673](../../src/provider_turn.rs#L673) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `EagerDispatch::default` | [676](../../src/provider_turn.rs#L676) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `cancelled.load` | [677](../../src/provider_turn.rs#L677), [862](../../src/provider_turn.rs#L862) | receiver-type-required |
-| `run_provider_turn_inner` | `ProviderCompletion::Failure` | [678](../../src/provider_turn.rs#L678) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `credential_material             .as_ref()             .map_or` | [685](../../src/provider_turn.rs#L685) | receiver-type-required |
-| `run_provider_turn_inner` | `credential_material             .as_ref` | [685](../../src/provider_turn.rs#L685) | receiver-type-required |
-| `run_provider_turn_inner` | `budget             .wall_deadline             .map` | [688](../../src/provider_turn.rs#L688) | receiver-type-required |
-| `run_provider_turn_inner` | `deadline.saturating_duration_since` | [690](../../src/provider_turn.rs#L690) | receiver-type-required |
-| `run_provider_turn_inner` | `std::sync::mpsc::channel::<ProviderFrame>` | [691](../../src/provider_turn.rs#L691) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `std::env::var("TEKES_KERNEL_LIVE_ARTIFACT")             .ok()             .map` | [693](../../src/provider_turn.rs#L693) | receiver-type-required |
-| `run_provider_turn_inner` | `std::env::var("TEKES_KERNEL_LIVE_ARTIFACT")             .ok` | [693](../../src/provider_turn.rs#L693) | receiver-type-required |
-| `run_provider_turn_inner` | `std::thread::scope` | [699](../../src/provider_turn.rs#L699) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `scope.spawn` | [701](../../src/provider_turn.rs#L701) | receiver-type-required |
-| `run_provider_turn_inner` | `HttpRuntime::new` | [702](../../src/provider_turn.rs#L702) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Arc::new` | [703](../../src/provider_turn.rs#L703) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Mutex::new` | [703](../../src/provider_turn.rs#L703) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `Vec::new` | [703](../../src/provider_turn.rs#L703) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `capture_path.is_some` | [704](../../src/provider_turn.rs#L704) | receiver-type-required |
-| `run_provider_turn_inner` | `runtime.with_response_capture` | [705](../../src/provider_turn.rs#L705) | receiver-type-required |
-| `run_provider_turn_inner` | `runtime.send_dialect_with_frames_and_wall_transport` | [709](../../src/provider_turn.rs#L709) | receiver-type-required |
-| `run_provider_turn_inner` | `frame_sender.send(frame).map_err` | [717](../../src/provider_turn.rs#L717) | receiver-type-required |
-| `run_provider_turn_inner` | `frame_sender.send` | [717](../../src/provider_turn.rs#L717) | receiver-type-required |
-| `run_provider_turn_inner` | `provider::HttpRuntimeError::Request` | [718](../../src/provider_turn.rs#L718), [727](../../src/provider_turn.rs#L727) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `"provider frame receiver closed".to_owned` | [719](../../src/provider_turn.rs#L719) | receiver-type-required |
-| `run_provider_turn_inner` | `capture.lock().expect` | [725](../../src/provider_turn.rs#L725) | receiver-type-required |
-| `run_provider_turn_inner` | `capture.lock` | [725](../../src/provider_turn.rs#L725) | receiver-type-required |
-| `run_provider_turn_inner` | `fs::write(path, &*body).map_err` | [726](../../src/provider_turn.rs#L726) | receiver-type-required |
-| `run_provider_turn_inner` | `error.to_string` | [727](../../src/provider_turn.rs#L727) | receiver-type-required |
-| `run_provider_turn_inner` | `frame_receiver.recv_timeout` | [735](../../src/provider_turn.rs#L735) | receiver-type-required |
-| `run_provider_turn_inner` | `Duration::from_millis` | [735](../../src/provider_turn.rs#L735) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `main_failure.is_some` | [740](../../src/provider_turn.rs#L740) | receiver-type-required |
-| `run_provider_turn_inner` | `(&#124;&#124; -> Result<(), Box<dyn std::error::Error>> {                         if let Some(mut frame) = frame {                             if let ProviderFrame::ToolCallReady(call) = &mut frame {                                 repair_provider_call_arguments(dialect, call);                             }                             localize_provider_frame(ledger, &attempt, &mut eager, &mut frame)?;                             let ledger_seq =                                 ledger.projection().map(&#124;projection&#124; projection.last_seq);                             if let Some(call) = forward_provider_frame(                                 ledger_seq, &attempt, &mut block, frame, stdout,                             )? {                                 // Eager dispatch: the call's arguments are complete                                 // and validated, so it executes now, while the                                 // response keeps streaming on its own thread. The                                 // terminal later has to name it unchanged.                                 eager_dispatch_ready_call(                                     ledger,                                     EagerReadyCall {                                         options,                                         profile,                                         selected: *selected,                                         manifest: &manifest,                                         attempt: &attempt,                                         turn,                                         cancellation,                                     },                                     call,                                     &mut eager,                                     credential.as_ref(),                                     lines,                                     stdout,                                 )?;                             }                         }                         drain_parked_deliveries(ledger, options, run.selected, cancellation, stdout)                     })` | [743](../../src/provider_turn.rs#L743) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `repair_provider_call_arguments` | [746](../../src/provider_turn.rs#L746) | [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1265) |
-| `run_provider_turn_inner` | `localize_provider_frame` | [748](../../src/provider_turn.rs#L748) | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1281) |
-| `run_provider_turn_inner` | `ledger.projection().map` | [750](../../src/provider_turn.rs#L750) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger.projection` | [750](../../src/provider_turn.rs#L750) | receiver-type-required |
-| `run_provider_turn_inner` | `forward_provider_frame` | [751](../../src/provider_turn.rs#L751) | [tekes-worker::provider_turn::forward_provider_frame](../../src/provider_turn.rs#L1125) |
-| `run_provider_turn_inner` | `eager_dispatch_ready_call` | [758](../../src/provider_turn.rs#L758) | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1318) |
-| `run_provider_turn_inner` | `cancelled_flag.store` | [780](../../src/provider_turn.rs#L780) | receiver-type-required |
-| `run_provider_turn_inner` | `request                     .join()                     .map_err` | [784](../../src/provider_turn.rs#L784) | receiver-type-required |
-| `run_provider_turn_inner` | `request                     .join` | [784](../../src/provider_turn.rs#L784) | receiver-type-required |
-| `run_provider_turn_inner` | `record_input_transformations` | [806](../../src/provider_turn.rs#L806) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `append_provider_terminal_error` | [819](../../src/provider_turn.rs#L819) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `append_context_overflow` | [824](../../src/provider_turn.rs#L824) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `terminal.usage.as_ref` | [824](../../src/provider_turn.rs#L824) | receiver-type-required |
-| `run_provider_turn_inner` | `append_terminal` | [826](../../src/provider_turn.rs#L826) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `dialect.server_managed` | [833](../../src/provider_turn.rs#L833), [960](../../src/provider_turn.rs#L960) | receiver-type-required |
-| `run_provider_turn_inner` | `append_provider_failure` | [839](../../src/provider_turn.rs#L839) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `cancellation.supervisor_lost` | [882](../../src/provider_turn.rs#L882), [956](../../src/provider_turn.rs#L956), [1001](../../src/provider_turn.rs#L1001), [1048](../../src/provider_turn.rs#L1048) | receiver-type-required |
-| `run_provider_turn_inner` | `"supervisor EOF during provider request".to_owned` | [884](../../src/provider_turn.rs#L884) | receiver-type-required |
-| `run_provider_turn_inner` | `cancellation.stop_requested` | [887](../../src/provider_turn.rs#L887), [956](../../src/provider_turn.rs#L956), [1000](../../src/provider_turn.rs#L1000), [1045](../../src/provider_turn.rs#L1045), [1093](../../src/provider_turn.rs#L1093) | receiver-type-required |
-| `run_provider_turn_inner` | `outcome.retry_classification.unwrap_or` | [939](../../src/provider_turn.rs#L939) | receiver-type-required |
-| `run_provider_turn_inner` | `wait_provider_admission` | [944](../../src/provider_turn.rs#L944) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `outcome.tool_calls.is_empty` | [987](../../src/provider_turn.rs#L987) | receiver-type-required |
-| `run_provider_turn_inner` | `pending_tool_calls(ledger)?.iter().any` | [993](../../src/provider_turn.rs#L993) | receiver-type-required |
-| `run_provider_turn_inner` | `pending_tool_calls(ledger)?.iter` | [993](../../src/provider_turn.rs#L993) | receiver-type-required |
-| `run_provider_turn_inner` | `pending_tool_calls` | [993](../../src/provider_turn.rs#L993) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `eager.contains` | [994](../../src/provider_turn.rs#L994) | receiver-type-required |
-| `run_provider_turn_inner` | `call.approval_response.is_some` | [996](../../src/provider_turn.rs#L996) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger                     .projection()                     .ok_or` | [1002](../../src/provider_turn.rs#L1002) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger                     .projection` | [1002](../../src/provider_turn.rs#L1002) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter(&#124;event&#124; *event.kind() == EventKind::ToolResult)             .filter_map(&#124;event&#124; event.string_field("call").map(str::to_owned))             .collect::<BTreeSet<_>>` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter(&#124;event&#124; *event.kind() == EventKind::ToolResult)             .filter_map` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection()             .ok_or` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `ledger             .projection` | [1014](../../src/provider_turn.rs#L1014) | receiver-type-required |
-| `run_provider_turn_inner` | `event.kind` | [1019](../../src/provider_turn.rs#L1019) | receiver-type-required |
-| `run_provider_turn_inner` | `event.string_field("call").map` | [1020](../../src/provider_turn.rs#L1020) | receiver-type-required |
-| `run_provider_turn_inner` | `event.string_field` | [1020](../../src/provider_turn.rs#L1020) | receiver-type-required |
-| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter(&#124;call&#124; !paired.contains(&call.call_id))             .cloned()             .collect::<Vec<_>>` | [1022](../../src/provider_turn.rs#L1022) | receiver-type-required |
-| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter(&#124;call&#124; !paired.contains(&call.call_id))             .cloned` | [1022](../../src/provider_turn.rs#L1022) | receiver-type-required |
-| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter` | [1022](../../src/provider_turn.rs#L1022) | receiver-type-required |
-| `run_provider_turn_inner` | `outcome             .tool_calls             .iter` | [1022](../../src/provider_turn.rs#L1022) | receiver-type-required |
-| `run_provider_turn_inner` | `paired.contains` | [1025](../../src/provider_turn.rs#L1025) | receiver-type-required |
-| `run_provider_turn_inner` | `execute_provider_tool_calls` | [1028](../../src/provider_turn.rs#L1028) | external-constructor-callback-or-unresolved |
-| `run_provider_turn_inner` | `cancellation.protocol_failed` | [1048](../../src/provider_turn.rs#L1048) | receiver-type-required |
-| `run_provider_turn_inner` | `"supervisor lost during tool execution".to_owned` | [1050](../../src/provider_turn.rs#L1050) | receiver-type-required |
-| `run_provider_turn_inner` | `budget.nonfinal_responses_left.saturating_sub` | [1078](../../src/provider_turn.rs#L1078) | receiver-type-required |
-| `forward_provider_frame` | `Some` | [1141](../../src/provider_turn.rs#L1141), [1143](../../src/provider_turn.rs#L1143), [1145](../../src/provider_turn.rs#L1145), [1146](../../src/provider_turn.rs#L1146), [1151](../../src/provider_turn.rs#L1151) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `call.call_id.clone` | [1144](../../src/provider_turn.rs#L1144) | receiver-type-required |
-| `forward_provider_frame` | `call.name.clone` | [1144](../../src/provider_turn.rs#L1144) | receiver-type-required |
-| `forward_provider_frame` | `String::new` | [1146](../../src/provider_turn.rs#L1146) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `serde_json::to_string` | [1151](../../src/provider_turn.rs#L1151) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `usage_object` | [1151](../../src/provider_turn.rs#L1151) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `Ok` | [1155](../../src/provider_turn.rs#L1155), [1172](../../src/provider_turn.rs#L1172) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `stdout.write_all` | [1157](../../src/provider_turn.rs#L1157) | receiver-type-required |
-| `forward_provider_frame` | `encode_line` | [1157](../../src/provider_turn.rs#L1157) | external-constructor-callback-or-unresolved |
-| `forward_provider_frame` | `attempt.to_owned` | [1162](../../src/provider_turn.rs#L1162) | receiver-type-required |
-| `forward_provider_frame` | `stdout.flush` | [1170](../../src/provider_turn.rs#L1170) | receiver-type-required |
-| `forward_provider_frame` | `block.saturating_add` | [1171](../../src/provider_turn.rs#L1171) | receiver-type-required |
-| `contains` | `self.calls.iter().any` | [1190](../../src/provider_turn.rs#L1190) | receiver-type-required |
-| `contains` | `self.calls.iter` | [1190](../../src/provider_turn.rs#L1190) | receiver-type-required |
-| `local_provider_call_id` | `ledger         .projection()         .ok_or` | [1202](../../src/provider_turn.rs#L1202) | receiver-type-required |
-| `local_provider_call_id` | `ledger         .projection` | [1202](../../src/provider_turn.rs#L1202) | receiver-type-required |
-| `local_provider_call_id` | `events         .iter()         .filter(&#124;event&#124; {             *event.kind() == EventKind::ToolCall                 && event                     .string_field("provider_call")                     .or_else(&#124;&#124; event.string_field("call"))                     == Some(wire_id)         })         .collect::<Vec<_>>` | [1206](../../src/provider_turn.rs#L1206) | receiver-type-required |
-| `local_provider_call_id` | `events         .iter()         .filter` | [1206](../../src/provider_turn.rs#L1206) | receiver-type-required |
-| `local_provider_call_id` | `events         .iter` | [1206](../../src/provider_turn.rs#L1206) | receiver-type-required |
-| `local_provider_call_id` | `event.kind` | [1209](../../src/provider_turn.rs#L1209), [1237](../../src/provider_turn.rs#L1237), [1242](../../src/provider_turn.rs#L1242), [1245](../../src/provider_turn.rs#L1245), [1258](../../src/provider_turn.rs#L1258) | receiver-type-required |
-| `local_provider_call_id` | `event                     .string_field("provider_call")                     .or_else` | [1210](../../src/provider_turn.rs#L1210) | receiver-type-required |
-| `local_provider_call_id` | `event                     .string_field` | [1210](../../src/provider_turn.rs#L1210) | receiver-type-required |
-| `local_provider_call_id` | `event.string_field` | [1212](../../src/provider_turn.rs#L1212), [1218](../../src/provider_turn.rs#L1218), [1235](../../src/provider_turn.rs#L1235), [1237](../../src/provider_turn.rs#L1237), [1258](../../src/provider_turn.rs#L1258) | receiver-type-required |
-| `local_provider_call_id` | `Some` | [1213](../../src/provider_turn.rs#L1213), [1218](../../src/provider_turn.rs#L1218), [1235](../../src/provider_turn.rs#L1235), [1258](../../src/provider_turn.rs#L1258) | external-constructor-callback-or-unresolved |
-| `local_provider_call_id` | `previous         .iter()         .find` | [1216](../../src/provider_turn.rs#L1216) | receiver-type-required |
-| `local_provider_call_id` | `previous         .iter` | [1216](../../src/provider_turn.rs#L1216) | receiver-type-required |
-| `local_provider_call_id` | `Ok` | [1220](../../src/provider_turn.rs#L1220), [1226](../../src/provider_turn.rs#L1226), [1262](../../src/provider_turn.rs#L1262) | external-constructor-callback-or-unresolved |
-| `local_provider_call_id` | `call             .string_field("call")             .ok_or("tool_call lacks call")?             .to_owned` | [1220](../../src/provider_turn.rs#L1220) | receiver-type-required |
-| `local_provider_call_id` | `call             .string_field("call")             .ok_or` | [1220](../../src/provider_turn.rs#L1220) | receiver-type-required |
-| `local_provider_call_id` | `call             .string_field` | [1220](../../src/provider_turn.rs#L1220) | receiver-type-required |
-| `local_provider_call_id` | `previous.is_empty` | [1225](../../src/provider_turn.rs#L1225) | receiver-type-required |
-| `local_provider_call_id` | `wire_id.to_owned` | [1226](../../src/provider_turn.rs#L1226) | receiver-type-required |
-| `local_provider_call_id` | `call.string_field("call").ok_or` | [1229](../../src/provider_turn.rs#L1229) | receiver-type-required |
-| `local_provider_call_id` | `call.string_field` | [1229](../../src/provider_turn.rs#L1229), [1230](../../src/provider_turn.rs#L1230) | receiver-type-required |
-| `local_provider_call_id` | `events             .iter()             .filter(&#124;event&#124; {                 event.seq() == call.seq()                     &#124;&#124; event.string_field("call") == Some(id)                         && matches!(event.kind(), EventKind::ToolResult &#124; EventKind::ChildResult)                     &#124;&#124; *event.kind() == EventKind::Output && event.string_field("attempt") == owner             })             .collect::<Vec<_>>` | [1231](../../src/provider_turn.rs#L1231) | receiver-type-required |
-| `local_provider_call_id` | `events             .iter()             .filter` | [1231](../../src/provider_turn.rs#L1231) | receiver-type-required |
-| `local_provider_call_id` | `events             .iter` | [1231](../../src/provider_turn.rs#L1231) | receiver-type-required |
-| `local_provider_call_id` | `event.seq` | [1234](../../src/provider_turn.rs#L1234) | receiver-type-required |
-| `local_provider_call_id` | `call.seq` | [1234](../../src/provider_turn.rs#L1234) | receiver-type-required |
-| `local_provider_call_id` | `related             .iter()             .any` | [1240](../../src/provider_turn.rs#L1240) | receiver-type-required |
-| `local_provider_call_id` | `related             .iter` | [1240](../../src/provider_turn.rs#L1240) | receiver-type-required |
-| `local_provider_call_id` | `related                 .iter()                 .any` | [1243](../../src/provider_turn.rs#L1243) | receiver-type-required |
-| `local_provider_call_id` | `related                 .iter` | [1243](../../src/provider_turn.rs#L1243) | receiver-type-required |
-| `local_provider_call_id` | `Err` | [1247](../../src/provider_turn.rs#L1247), [1260](../../src/provider_turn.rs#L1260) | external-constructor-callback-or-unresolved |
-| `local_provider_call_id` | `format!(                 "provider tool call id {wire_id} reuses an unresolved durable call"             )             .into` | [1247](../../src/provider_turn.rs#L1247) | receiver-type-required |
-| `local_provider_call_id` | `Sha256::digest` | [1253](../../src/provider_turn.rs#L1253) | external-constructor-callback-or-unresolved |
-| `local_provider_call_id` | `serde_json_canonicalizer::to_vec` | [1253](../../src/provider_turn.rs#L1253) | external-constructor-callback-or-unresolved |
-| `local_provider_call_id` | `events.iter().any` | [1257](../../src/provider_turn.rs#L1257) | receiver-type-required |
-| `local_provider_call_id` | `events.iter` | [1257](../../src/provider_turn.rs#L1257) | receiver-type-required |
-| `local_provider_call_id` | `"scoped provider call identity collision".into` | [1260](../../src/provider_turn.rs#L1260) | receiver-type-required |
-| `repair_provider_call_arguments` | `tools::fixed_schema(&call.name)         .and_then` | [1272](../../src/provider_turn.rs#L1272) | receiver-type-required |
-| `repair_provider_call_arguments` | `tools::fixed_schema` | [1272](../../src/provider_turn.rs#L1272) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
-| `repair_provider_call_arguments` | `schema.repair_quoted_null_exclusive` | [1273](../../src/provider_turn.rs#L1273) | receiver-type-required |
-| `localize_provider_frame` | `Ok` | [1290](../../src/provider_turn.rs#L1290), [1299](../../src/provider_turn.rs#L1299) | external-constructor-callback-or-unresolved |
-| `localize_provider_frame` | `id.clone` | [1292](../../src/provider_turn.rs#L1292), [1297](../../src/provider_turn.rs#L1297) | receiver-type-required |
-| `localize_provider_frame` | `eager.wire_ids.iter().find` | [1293](../../src/provider_turn.rs#L1293) | receiver-type-required |
-| `localize_provider_frame` | `eager.wire_ids.iter` | [1293](../../src/provider_turn.rs#L1293) | receiver-type-required |
-| `localize_provider_frame` | `local_id.clone` | [1294](../../src/provider_turn.rs#L1294) | receiver-type-required |
-| `localize_provider_frame` | `local_provider_call_id` | [1296](../../src/provider_turn.rs#L1296) | [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1197) |
-| `localize_provider_frame` | `eager.wire_ids.insert` | [1297](../../src/provider_turn.rs#L1297) | receiver-type-required |
-| `eager_dispatch_ready_call` | `Ok` | [1332](../../src/provider_turn.rs#L1332), [1396](../../src/provider_turn.rs#L1396) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `call.call_id.is_empty` | [1343](../../src/provider_turn.rs#L1343) | receiver-type-required |
-| `eager_dispatch_ready_call` | `eager.contains` | [1343](../../src/provider_turn.rs#L1343) | receiver-type-required |
-| `eager_dispatch_ready_call` | `Err` | [1344](../../src/provider_turn.rs#L1344), [1360](../../src/provider_turn.rs#L1360) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `format!(             "provider tool call id {} is empty or duplicated",             call.call_id         )         .into` | [1344](../../src/provider_turn.rs#L1344) | receiver-type-required |
-| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .any` | [1350](../../src/provider_turn.rs#L1350) | receiver-type-required |
-| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter` | [1350](../../src/provider_turn.rs#L1350) | receiver-type-required |
-| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or` | [1350](../../src/provider_turn.rs#L1350) | receiver-type-required |
-| `eager_dispatch_ready_call` | `ledger         .projection` | [1350](../../src/provider_turn.rs#L1350) | receiver-type-required |
-| `eager_dispatch_ready_call` | `event.kind` | [1356](../../src/provider_turn.rs#L1356) | receiver-type-required |
-| `eager_dispatch_ready_call` | `event.string_field` | [1357](../../src/provider_turn.rs#L1357) | receiver-type-required |
-| `eager_dispatch_ready_call` | `Some` | [1357](../../src/provider_turn.rs#L1357) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `call.call_id.as_str` | [1357](../../src/provider_turn.rs#L1357) | receiver-type-required |
-| `eager_dispatch_ready_call` | `format!(             "provider tool call id {} reuses a durable call",             call.call_id         )         .into` | [1360](../../src/provider_turn.rs#L1360) | receiver-type-required |
-| `eager_dispatch_ready_call` | `append_provider_tool_call_with_wire_id` | [1366](../../src/provider_turn.rs#L1366) | [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1411) |
-| `eager_dispatch_ready_call` | `eager.wire_ids.get(&call.call_id).map` | [1373](../../src/provider_turn.rs#L1373) | receiver-type-required |
-| `eager_dispatch_ready_call` | `eager.wire_ids.get` | [1373](../../src/provider_turn.rs#L1373) | receiver-type-required |
-| `eager_dispatch_ready_call` | `announce_appended` | [1375](../../src/provider_turn.rs#L1375), [1395](../../src/provider_turn.rs#L1395) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `execute_provider_tool_calls` | [1376](../../src/provider_turn.rs#L1376) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `std::slice::from_ref` | [1384](../../src/provider_turn.rs#L1384) | external-constructor-callback-or-unresolved |
-| `eager_dispatch_ready_call` | `eager.calls.push` | [1391](../../src/provider_turn.rs#L1391) | receiver-type-required |
-| `append_provider_tool_call` | `append_provider_tool_call_with_wire_id` | [1408](../../src/provider_turn.rs#L1408) | [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1411) |
-| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find(&#124;tool&#124; tool.name == call.name)         .map(&#124;tool&#124; engine::side_effectful(tool.effect))         .unwrap_or` | [1420](../../src/provider_turn.rs#L1420) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find(&#124;tool&#124; tool.name == call.name)         .map` | [1420](../../src/provider_turn.rs#L1420) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find` | [1420](../../src/provider_turn.rs#L1420) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter` | [1420](../../src/provider_turn.rs#L1420) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `engine::side_effectful` | [1424](../../src/provider_turn.rs#L1424) | [engine::dispatcher::side_effectful](../../../engine/src/dispatcher.rs#L276) |
-| `append_provider_tool_call_with_wire_id` | `spill_json` | [1426](../../src/provider_turn.rs#L1426) | external-constructor-callback-or-unresolved |
-| `append_provider_tool_call_with_wire_id` | `wire_id.filter` | [1432](../../src/provider_turn.rs#L1432) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `make_event` | [1435](../../src/provider_turn.rs#L1435) | external-constructor-callback-or-unresolved |
-| `append_provider_tool_call_with_wire_id` | `ledger.append_contract` | [1436](../../src/provider_turn.rs#L1436) | receiver-type-required |
-| `append_provider_tool_call_with_wire_id` | `Ok` | [1442](../../src/provider_turn.rs#L1442) | external-constructor-callback-or-unresolved |
-| `settle_provider_unavailable` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.latest_turn)         .ok_or` | [1450](../../src/provider_turn.rs#L1450) | receiver-type-required |
-| `settle_provider_unavailable` | `ledger         .projection()         .and_then` | [1450](../../src/provider_turn.rs#L1450) | receiver-type-required |
-| `settle_provider_unavailable` | `ledger         .projection` | [1450](../../src/provider_turn.rs#L1450) | receiver-type-required |
-| `settle_provider_unavailable` | `make_event` | [1454](../../src/provider_turn.rs#L1454) | external-constructor-callback-or-unresolved |
-| `settle_provider_unavailable` | `ledger.append_contract` | [1459](../../src/provider_turn.rs#L1459) | receiver-type-required |
-| `settle_provider_unavailable` | `BarrierContext::default` | [1459](../../src/provider_turn.rs#L1459) | external-constructor-callback-or-unresolved |
-| `settle_provider_unavailable` | `append_settle` | [1460](../../src/provider_turn.rs#L1460) | external-constructor-callback-or-unresolved |
-| `settle_provider_unavailable` | `options.event_timestamp` | [1462](../../src/provider_turn.rs#L1462) | receiver-type-required |
-| `settle_provider_unavailable` | `Some` | [1465](../../src/provider_turn.rs#L1465) | external-constructor-callback-or-unresolved |
-| `settle_provider_unavailable` | `Ok` | [1467](../../src/provider_turn.rs#L1467) | external-constructor-callback-or-unresolved |
-| `detail` | `"provider_not_selected".to_owned` | [1482](../../src/provider_turn.rs#L1482) | receiver-type-required |
-| `detail` | `"model_not_selected".to_owned` | [1484](../../src/provider_turn.rs#L1484) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.settings.default_provider.as_deref())         .ok_or` | [1494](../../src/provider_turn.rs#L1494) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or` | [1494](../../src/provider_turn.rs#L1494) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map` | [1494](../../src/provider_turn.rs#L1494), [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref` | [1494](../../src/provider_turn.rs#L1494), [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
-| `selected_provider` | `settings.provider.as_str` | [1497](../../src/provider_turn.rs#L1497) | receiver-type-required |
-| `selected_provider` | `config.settings.default_provider.as_deref` | [1498](../../src/provider_turn.rs#L1498) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.settings.default_model.as_deref())         .ok_or` | [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
-| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [1500](../../src/provider_turn.rs#L1500) | receiver-type-required |
-| `selected_provider` | `settings.model.as_str` | [1503](../../src/provider_turn.rs#L1503) | receiver-type-required |
-| `selected_provider` | `config.settings.default_model.as_deref` | [1504](../../src/provider_turn.rs#L1504) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == provider_id)         .ok_or_else` | [1506](../../src/provider_turn.rs#L1506) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter()         .find` | [1506](../../src/provider_turn.rs#L1506) | receiver-type-required |
-| `selected_provider` | `config         .providers         .providers         .iter` | [1506](../../src/provider_turn.rs#L1506) | receiver-type-required |
-| `selected_provider` | `SelectedProviderFailure::ProviderNotConfigured` | [1511](../../src/provider_turn.rs#L1511) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `provider_id.to_owned` | [1511](../../src/provider_turn.rs#L1511) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter()         .find(&#124;model&#124; model.id == model_id)         .ok_or_else` | [1512](../../src/provider_turn.rs#L1512) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter()         .find` | [1512](../../src/provider_turn.rs#L1512) | receiver-type-required |
-| `selected_provider` | `provider         .models         .iter` | [1512](../../src/provider_turn.rs#L1512) | receiver-type-required |
-| `selected_provider` | `SelectedProviderFailure::ModelNotConfigured` | [1516](../../src/provider_turn.rs#L1516) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `model_id.to_owned` | [1516](../../src/provider_turn.rs#L1516), [1518](../../src/provider_turn.rs#L1518) | receiver-type-required |
-| `selected_provider` | `Err` | [1518](../../src/provider_turn.rs#L1518) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `SelectedProviderFailure::ModelDisabled` | [1518](../../src/provider_turn.rs#L1518) | external-constructor-callback-or-unresolved |
-| `selected_provider` | `Ok` | [1520](../../src/provider_turn.rs#L1520) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `ledger.projection().ok_or` | [1527](../../src/provider_turn.rs#L1527) | receiver-type-required |
-| `current_turn_inputs` | `ledger.projection` | [1527](../../src/provider_turn.rs#L1527) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; *event.kind() == EventKind::TurnOpen && event.turn() == Some(turn))         .ok_or` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter()         .rev` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
-| `current_turn_inputs` | `projection         .events         .iter` | [1528](../../src/provider_turn.rs#L1528) | receiver-type-required |
-| `current_turn_inputs` | `event.kind` | [1532](../../src/provider_turn.rs#L1532) | receiver-type-required |
-| `current_turn_inputs` | `event.turn` | [1532](../../src/provider_turn.rs#L1532) | receiver-type-required |
-| `current_turn_inputs` | `Some` | [1532](../../src/provider_turn.rs#L1532) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `serde_json::to_value` | [1534](../../src/provider_turn.rs#L1534) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `open.raw` | [1534](../../src/provider_turn.rs#L1534) | receiver-type-required |
-| `current_turn_inputs` | `Ok` | [1535](../../src/provider_turn.rs#L1535) | external-constructor-callback-or-unresolved |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map(Value::as_u64)         .collect` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object()         .expect` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `raw         .as_object` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
-| `current_turn_inputs` | `trigger.get` | [1540](../../src/provider_turn.rs#L1540) | receiver-type-required |
+| `next` | `self.0.next` | [34](../../src/provider_turn.rs#L34) | receiver-type-required |
+| `drain_provider_deliveries` | `drain_parked_deliveries` | [48](../../src/provider_turn.rs#L48) | external-constructor-callback-or-unresolved |
+| `drain_provider_deliveries` | `drain_ready_deliveries` | [61](../../src/provider_turn.rs#L61) | external-constructor-callback-or-unresolved |
+| `run_provider_turn` | `IteratorControlInput` | [94](../../src/provider_turn.rs#L94) | external-constructor-callback-or-unresolved |
+| `run_provider_turn` | `run_provider_turn_with_input` | [95](../../src/provider_turn.rs#L95) | [tekes-worker::provider_turn::run_provider_turn_with_input](../../src/provider_turn.rs#L130) |
+| `run_provider_turn_with_controls` | `lines.cancellation.clone` | [116](../../src/provider_turn.rs#L116) | receiver-type-required |
+| `run_provider_turn_with_controls` | `run_provider_turn_with_input` | [117](../../src/provider_turn.rs#L117) | [tekes-worker::provider_turn::run_provider_turn_with_input](../../src/provider_turn.rs#L130) |
+| `run_provider_turn_with_input` | `ledger.sync_prefix` | [141](../../src/provider_turn.rs#L141) | receiver-type-required |
+| `run_provider_turn_with_input` | `ledger.projection().and_then` | [142](../../src/provider_turn.rs#L142) | receiver-type-required |
+| `run_provider_turn_with_input` | `ledger.projection` | [142](../../src/provider_turn.rs#L142), [143](../../src/provider_turn.rs#L143) | receiver-type-required |
+| `run_provider_turn_with_input` | `ledger.projection().is_some_and` | [143](../../src/provider_turn.rs#L143) | receiver-type-required |
+| `run_provider_turn_with_input` | `hooks.before_turn` | [145](../../src/provider_turn.rs#L145) | receiver-type-required |
+| `run_provider_turn_with_input` | `profile.clone` | [148](../../src/provider_turn.rs#L148) | receiver-type-required |
+| `run_provider_turn_with_input` | `validation_runtime::activate_validator_profile` | [149](../../src/provider_turn.rs#L149) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `profile         .config         .execution         .policy         .max_wall_seconds         .map` | [151](../../src/provider_turn.rs#L151) | receiver-type-required |
+| `run_provider_turn_with_input` | `Instant::now` | [156](../../src/provider_turn.rs#L156) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `Duration::from_secs` | [156](../../src/provider_turn.rs#L156) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `run_provider_turn_inner` | [157](../../src/provider_turn.rs#L157) | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L205) |
+| `run_provider_turn_with_input` | `Ok` | [177](../../src/provider_turn.rs#L177), [181](../../src/provider_turn.rs#L181), [183](../../src/provider_turn.rs#L183) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `is_protocol_failure` | [178](../../src/provider_turn.rs#L178) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `error.as_ref` | [178](../../src/provider_turn.rs#L178), [182](../../src/provider_turn.rs#L182) | receiver-type-required |
+| `run_provider_turn_with_input` | `Err` | [178](../../src/provider_turn.rs#L178), [184](../../src/provider_turn.rs#L184) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_with_input` | `cancellation.stop_requested` | [181](../../src/provider_turn.rs#L181) | receiver-type-required |
+| `run_provider_turn_with_input` | `settle_internal_worker_failure` | [182](../../src/provider_turn.rs#L182) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.latest_turn)         .ok_or` | [219](../../src/provider_turn.rs#L219) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .projection()         .and_then` | [219](../../src/provider_turn.rs#L219) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .projection` | [219](../../src/provider_turn.rs#L219), [236](../../src/provider_turn.rs#L236) | receiver-type-required |
+| `run_provider_turn_inner` | `budget         .wall_deadline         .is_some_and` | [223](../../src/provider_turn.rs#L223) | receiver-type-required |
+| `run_provider_turn_inner` | `Instant::now` | [225](../../src/provider_turn.rs#L225), [787](../../src/provider_turn.rs#L787) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `append_settle` | [227](../../src/provider_turn.rs#L227), [1026](../../src/provider_turn.rs#L1026), [1037](../../src/provider_turn.rs#L1037), [1187](../../src/provider_turn.rs#L1187) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `options.event_timestamp` | [229](../../src/provider_turn.rs#L229), [371](../../src/provider_turn.rs#L371), [909](../../src/provider_turn.rs#L909), [1028](../../src/provider_turn.rs#L1028), [1039](../../src/provider_turn.rs#L1039), [1189](../../src/provider_turn.rs#L1189) | receiver-type-required |
+| `run_provider_turn_inner` | `Some` | [232](../../src/provider_turn.rs#L232), [335](../../src/provider_turn.rs#L335), [419](../../src/provider_turn.rs#L419), [547](../../src/provider_turn.rs#L547), [581](../../src/provider_turn.rs#L581), [833](../../src/provider_turn.rs#L833), [884](../../src/provider_turn.rs#L884), [1031](../../src/provider_turn.rs#L1031), [1042](../../src/provider_turn.rs#L1042) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Ok` | [234](../../src/provider_turn.rs#L234), [240](../../src/provider_turn.rs#L240), [244](../../src/provider_turn.rs#L244), [247](../../src/provider_turn.rs#L247), [253](../../src/provider_turn.rs#L253), [267](../../src/provider_turn.rs#L267), [499](../../src/provider_turn.rs#L499), [529](../../src/provider_turn.rs#L529), [550](../../src/provider_turn.rs#L550), [558](../../src/provider_turn.rs#L558), [567](../../src/provider_turn.rs#L567), [745](../../src/provider_turn.rs#L745), [893](../../src/provider_turn.rs#L893), [995](../../src/provider_turn.rs#L995), [1033](../../src/provider_turn.rs#L1033), [1044](../../src/provider_turn.rs#L1044), [1060](../../src/provider_turn.rs#L1060), [1111](../../src/provider_turn.rs#L1111), [1146](../../src/provider_turn.rs#L1146), [1149](../../src/provider_turn.rs#L1149), [1170](../../src/provider_turn.rs#L1170), [1194](../../src/provider_turn.rs#L1194), [1197](../../src/provider_turn.rs#L1197), [1205](../../src/provider_turn.rs#L1205) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ledger         .projection()         .is_some_and` | [236](../../src/provider_turn.rs#L236) | receiver-type-required |
+| `run_provider_turn_inner` | `recover_provider_attempt_for_ordinary` | [242](../../src/provider_turn.rs#L242) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `validation_runtime::advance` | [246](../../src/provider_turn.rs#L246), [1169](../../src/provider_turn.rs#L1169) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `selected_provider` | [249](../../src/provider_turn.rs#L249) | [tekes-worker::provider_turn::selected_provider](../../src/provider_turn.rs#L1594) |
+| `run_provider_turn_inner` | `settle_provider_unavailable` | [252](../../src/provider_turn.rs#L252), [266](../../src/provider_turn.rs#L266), [498](../../src/provider_turn.rs#L498), [528](../../src/provider_turn.rs#L528), [549](../../src/provider_turn.rs#L549), [553](../../src/provider_turn.rs#L553), [562](../../src/provider_turn.rs#L562), [1200](../../src/provider_turn.rs#L1200) | [tekes-worker::provider_turn::settle_provider_unavailable](../../src/provider_turn.rs#L1548) |
+| `run_provider_turn_inner` | `reason.detail` | [252](../../src/provider_turn.rs#L252) | receiver-type-required |
+| `run_provider_turn_inner` | `BuiltinManifest::compiled` | [256](../../src/provider_turn.rs#L256) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `manifest.validate` | [257](../../src/provider_turn.rs#L257) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .path()         .parent()         .ok_or("worker ledger has no thread folder")?         .to_path_buf` | [258](../../src/provider_turn.rs#L258) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .path()         .parent()         .ok_or` | [258](../../src/provider_turn.rs#L258) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .path()         .parent` | [258](../../src/provider_turn.rs#L258) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger         .path` | [258](../../src/provider_turn.rs#L258) | receiver-type-required |
+| `run_provider_turn_inner` | `provider::resolve_profile` | [263](../../src/provider_turn.rs#L263) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `run_provider_turn_inner` | `resolved_profile.native_deferred_tools` | [274](../../src/provider_turn.rs#L274) | receiver-type-required |
+| `run_provider_turn_inner` | `assemble_tool_backends` | [277](../../src/provider_turn.rs#L277) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `execution_access_for_profile` | [282](../../src/provider_turn.rs#L282) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `session_permission_policy` | [284](../../src/provider_turn.rs#L284) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `credential.as_ref` | [287](../../src/provider_turn.rs#L287), [535](../../src/provider_turn.rs#L535), [868](../../src/provider_turn.rs#L868), [1142](../../src/provider_turn.rs#L1142) | receiver-type-required |
+| `run_provider_turn_inner` | `DynamicToolDispatcher::new` | [296](../../src/provider_turn.rs#L296) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `dynamic_dispatcher.deferred_search_entries` | [297](../../src/provider_turn.rs#L297) | receiver-type-required |
+| `run_provider_turn_inner` | `deferred.is_empty` | [298](../../src/provider_turn.rs#L298) | receiver-type-required |
+| `run_provider_turn_inner` | `tool_catalog_context` | [300](../../src/provider_turn.rs#L300) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ToolDispatcher::new(&manifest, &catalog_context).provider_catalog` | [302](../../src/provider_turn.rs#L302) | receiver-type-required |
+| `run_provider_turn_inner` | `ToolDispatcher::new` | [302](../../src/provider_turn.rs#L302) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ledger.next_seq` | [303](../../src/provider_turn.rs#L303) | receiver-type-required |
+| `run_provider_turn_inner` | `ToolPipeline::new` | [304](../../src/provider_turn.rs#L304) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `AssetStore::new` | [306](../../src/provider_turn.rs#L306) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `thread_folder.join` | [306](../../src/provider_turn.rs#L306), [511](../../src/provider_turn.rs#L511) | receiver-type-required |
+| `run_provider_turn_inner` | `SecretScanner::default` | [307](../../src/provider_turn.rs#L307) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `catalog.extend` | [309](../../src/provider_turn.rs#L309) | receiver-type-required |
+| `run_provider_turn_inner` | `dynamic_dispatcher.provider_catalog_visible` | [309](../../src/provider_turn.rs#L309) | receiver-type-required |
+| `run_provider_turn_inner` | `native_mode.is_some` | [314](../../src/provider_turn.rs#L314) | receiver-type-required |
+| `run_provider_turn_inner` | `catalog                 .iter()                 .filter_map(&#124;schema&#124; {                     serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str()                         .map(str::to_owned)                 })                 .collect::<BTreeSet<_>>` | [318](../../src/provider_turn.rs#L318) | receiver-type-required |
+| `run_provider_turn_inner` | `catalog                 .iter()                 .filter_map` | [318](../../src/provider_turn.rs#L318) | receiver-type-required |
+| `run_provider_turn_inner` | `catalog                 .iter` | [318](../../src/provider_turn.rs#L318) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str()                         .map` | [321](../../src/provider_turn.rs#L321) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get("name")?                         .as_str` | [321](../../src/provider_turn.rs#L321) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok()?                         .get` | [321](../../src/provider_turn.rs#L321) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value(schema)                         .ok` | [321](../../src/provider_turn.rs#L321) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value` | [321](../../src/provider_turn.rs#L321), [359](../../src/provider_turn.rs#L359) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `declared.contains` | [329](../../src/provider_turn.rs#L329) | receiver-type-required |
+| `run_provider_turn_inner` | `catalog.push` | [330](../../src/provider_turn.rs#L330) | receiver-type-required |
+| `run_provider_turn_inner` | `entry.content.clone` | [330](../../src/provider_turn.rs#L330), [348](../../src/provider_turn.rs#L348) | receiver-type-required |
+| `run_provider_turn_inner` | `dynamic_catalog_revision` | [333](../../src/provider_turn.rs#L333) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `drop` | [334](../../src/provider_turn.rs#L334), [583](../../src/provider_turn.rs#L583), [613](../../src/provider_turn.rs#L613), [670](../../src/provider_turn.rs#L670), [744](../../src/provider_turn.rs#L744), [984](../../src/provider_turn.rs#L984) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `native_search_references` | [336](../../src/provider_turn.rs#L336) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `"tool_search".to_owned` | [344](../../src/provider_turn.rs#L344) | receiver-type-required |
+| `run_provider_turn_inner` | `deferred                     .iter()                     .map(&#124;entry&#124; provider::DeferredToolDefinition {                         schema: entry.content.clone(),                         schema_digest: entry.schema_digest.clone(),                     })                     .collect` | [345](../../src/provider_turn.rs#L345) | receiver-type-required |
+| `run_provider_turn_inner` | `deferred                     .iter()                     .map` | [345](../../src/provider_turn.rs#L345) | receiver-type-required |
+| `run_provider_turn_inner` | `deferred                     .iter` | [345](../../src/provider_turn.rs#L345) | receiver-type-required |
+| `run_provider_turn_inner` | `entry.schema_digest.clone` | [349](../../src/provider_turn.rs#L349) | receiver-type-required |
+| `run_provider_turn_inner` | `ijson` | [356](../../src/provider_turn.rs#L356) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Value::Array` | [356](../../src/provider_turn.rs#L356) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `provider_catalog             .into_iter()             .map(&#124;value&#124; serde_json::to_value(value).expect("tool schema is JSON"))             .collect` | [357](../../src/provider_turn.rs#L357) | receiver-type-required |
+| `run_provider_turn_inner` | `provider_catalog             .into_iter()             .map` | [357](../../src/provider_turn.rs#L357) | receiver-type-required |
+| `run_provider_turn_inner` | `provider_catalog             .into_iter` | [357](../../src/provider_turn.rs#L357) | receiver-type-required |
+| `run_provider_turn_inner` | `serde_json::to_value(value).expect` | [359](../../src/provider_turn.rs#L359) | receiver-type-required |
+| `run_provider_turn_inner` | `current_turn_inputs` | [363](../../src/provider_turn.rs#L363) | [tekes-worker::provider_turn::current_turn_inputs](../../src/provider_turn.rs#L1626) |
+| `run_provider_turn_inner` | `validation_runtime::JUDGE_SYSTEM.to_owned` | [369](../../src/provider_turn.rs#L369) | receiver-type-required |
+| `run_provider_turn_inner` | `identity::resolve_preset` | [371](../../src/provider_turn.rs#L371) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `preset.render` | [372](../../src/provider_turn.rs#L372) | receiver-type-required |
+| `run_provider_turn_inner` | `resolved_profile.wire_model` | [373](../../src/provider_turn.rs#L373) | receiver-type-required |
+| `run_provider_turn_inner` | `profile.config.execution_cwd` | [374](../../src/provider_turn.rs#L374) | receiver-type-required |
+| `run_provider_turn_inner` | `effective_system` | [375](../../src/provider_turn.rs#L375) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `profile.bindings.goal_id.as_deref` | [377](../../src/provider_turn.rs#L377) | receiver-type-required |
+| `run_provider_turn_inner` | `goal_store_location` | [378](../../src/provider_turn.rs#L378) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `session_controls::read_goal` | [379](../../src/provider_turn.rs#L379) | [session-controls::read_goal](../../../session-controls/src/lib.rs#L366) |
+| `run_provider_turn_inner` | `provider::epoch_profile` | [400](../../src/provider_turn.rs#L400) | [provider::dialect::epoch_profile](../../../provider/src/dialect.rs#L783) |
+| `run_provider_turn_inner` | `profile.config.session_settings.as_ref` | [403](../../src/provider_turn.rs#L403) | receiver-type-required |
+| `run_provider_turn_inner` | `(!reset_epoch)         .then(&#124;&#124; {             latest_compatible_epoch(                 ledger,                 dialect,                 &model.id,                 &profile_digest,                 &tools_digest,                 CONTEXT_RENDERER_VERSION,             )         })         .flatten` | [406](../../src/provider_turn.rs#L406) | receiver-type-required |
+| `run_provider_turn_inner` | `(!reset_epoch)         .then` | [406](../../src/provider_turn.rs#L406) | receiver-type-required |
+| `run_provider_turn_inner` | `latest_compatible_epoch` | [408](../../src/provider_turn.rs#L408), [572](../../src/provider_turn.rs#L572) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `epoch.is_none` | [418](../../src/provider_turn.rs#L418) | receiver-type-required |
+| `run_provider_turn_inner` | `append_provider_epoch` | [419](../../src/provider_turn.rs#L419), [617](../../src/provider_turn.rs#L617), [672](../../src/provider_turn.rs#L672), [1001](../../src/provider_turn.rs#L1001), [1064](../../src/provider_turn.rs#L1064) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ledger                         .projection()                         .map(&#124;p&#124; p.events.as_slice())                         .unwrap_or_default` | [428](../../src/provider_turn.rs#L428) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger                         .projection()                         .map` | [428](../../src/provider_turn.rs#L428) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger                         .projection` | [428](../../src/provider_turn.rs#L428) | receiver-type-required |
+| `run_provider_turn_inner` | `p.events.as_slice` | [430](../../src/provider_turn.rs#L430) | receiver-type-required |
+| `run_provider_turn_inner` | `events.iter().rev().find` | [432](../../src/provider_turn.rs#L432) | receiver-type-required |
+| `run_provider_turn_inner` | `events.iter().rev` | [432](../../src/provider_turn.rs#L432) | receiver-type-required |
+| `run_provider_turn_inner` | `events.iter` | [432](../../src/provider_turn.rs#L432) | receiver-type-required |
+| `run_provider_turn_inner` | `e.kind` | [432](../../src/provider_turn.rs#L432), [436](../../src/provider_turn.rs#L436) | receiver-type-required |
+| `run_provider_turn_inner` | `previous.is_some_and` | [433](../../src/provider_turn.rs#L433) | receiver-type-required |
+| `run_provider_turn_inner` | `events                             .iter()                             .any` | [434](../../src/provider_turn.rs#L434) | receiver-type-required |
+| `run_provider_turn_inner` | `events                             .iter` | [434](../../src/provider_turn.rs#L434) | receiver-type-required |
+| `run_provider_turn_inner` | `e.seq` | [436](../../src/provider_turn.rs#L436) | receiver-type-required |
+| `run_provider_turn_inner` | `epoch.seq` | [436](../../src/provider_turn.rs#L436) | receiver-type-required |
+| `run_provider_turn_inner` | `epoch_open_reason` | [438](../../src/provider_turn.rs#L438) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `epoch.expect` | [450](../../src/provider_turn.rs#L450) | receiver-type-required |
+| `run_provider_turn_inner` | `hooks.observe` | [454](../../src/provider_turn.rs#L454) | receiver-type-required |
+| `run_provider_turn_inner` | `project_provider_context_mode` | [457](../../src/provider_turn.rs#L457) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `native_tools.is_some` | [457](../../src/provider_turn.rs#L457) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger.sync_prefix` | [459](../../src/provider_turn.rs#L459) | receiver-type-required |
+| `run_provider_turn_inner` | `hooks.prepare` | [460](../../src/provider_turn.rs#L460) | receiver-type-required |
+| `run_provider_turn_inner` | `context.items.push` | [461](../../src/provider_turn.rs#L461) | receiver-type-required |
+| `run_provider_turn_inner` | `IJsonValue::parse` | [461](../../src/provider_turn.rs#L461) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `serde_json::to_vec` | [461](../../src/provider_turn.rs#L461) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `context.items.is_empty` | [466](../../src/provider_turn.rs#L466) | receiver-type-required |
+| `run_provider_turn_inner` | `context.continuation_id.is_none` | [466](../../src/provider_turn.rs#L466) | receiver-type-required |
+| `run_provider_turn_inner` | `Err` | [470](../../src/provider_turn.rs#L470), [731](../../src/provider_turn.rs#L731), [891](../../src/provider_turn.rs#L891), [986](../../src/provider_turn.rs#L986), [1152](../../src/provider_turn.rs#L1152) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `format!("turn {turn} rendered no model-visible context").into` | [470](../../src/provider_turn.rs#L470) | receiver-type-required |
+| `run_provider_turn_inner` | `attempt.clone` | [474](../../src/provider_turn.rs#L474), [541](../../src/provider_turn.rs#L541), [702](../../src/provider_turn.rs#L702), [956](../../src/provider_turn.rs#L956) | receiver-type-required |
+| `run_provider_turn_inner` | `resolved_profile.target.clone` | [475](../../src/provider_turn.rs#L475) | receiver-type-required |
+| `run_provider_turn_inner` | `provider_config.endpoint.clone` | [476](../../src/provider_turn.rs#L476) | receiver-type-required |
+| `run_provider_turn_inner` | `profile_value.clone` | [477](../../src/provider_turn.rs#L477) | receiver-type-required |
+| `run_provider_turn_inner` | `context.continuation_id.clone` | [478](../../src/provider_turn.rs#L478) | receiver-type-required |
+| `run_provider_turn_inner` | `tool_catalog.clone` | [480](../../src/provider_turn.rs#L480) | receiver-type-required |
+| `run_provider_turn_inner` | `native_tools.as_ref` | [483](../../src/provider_turn.rs#L483) | receiver-type-required |
+| `run_provider_turn_inner` | `provider::prepare_with_native_deferred_tools` | [484](../../src/provider_turn.rs#L484) | [provider::request::prepare_with_native_deferred_tools](../../../provider/src/request.rs#L144) |
+| `run_provider_turn_inner` | `prepare` | [488](../../src/provider_turn.rs#L488) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `provider_context_tests::prepare_live_choice` | [492](../../src/provider_turn.rs#L492) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `options.provider_test_redirect.as_deref` | [502](../../src/provider_turn.rs#L502) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .path()             .parent()             .ok_or` | [507](../../src/provider_turn.rs#L507) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .path()             .parent` | [507](../../src/provider_turn.rs#L507) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .path` | [507](../../src/provider_turn.rs#L507) | receiver-type-required |
+| `run_provider_turn_inner` | `store::AssetStore::new(thread_folder.join("assets"))?.publish` | [511](../../src/provider_turn.rs#L511) | receiver-type-required |
+| `run_provider_turn_inner` | `store::AssetStore::new` | [511](../../src/provider_turn.rs#L511) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `run_provider_turn_inner` | `std::env::var` | [515](../../src/provider_turn.rs#L515), [790](../../src/provider_turn.rs#L790), [899](../../src/provider_turn.rs#L899) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `fs::write` | [516](../../src/provider_turn.rs#L516), [823](../../src/provider_turn.rs#L823), [901](../../src/provider_turn.rs#L901) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `PathBuf::from(directory).join` | [517](../../src/provider_turn.rs#L517), [793](../../src/provider_turn.rs#L793), [902](../../src/provider_turn.rs#L902) | receiver-type-required |
+| `run_provider_turn_inner` | `PathBuf::from` | [517](../../src/provider_turn.rs#L517), [793](../../src/provider_turn.rs#L793), [902](../../src/provider_turn.rs#L902) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `PROVIDER_TEST_REDIRECT.with` | [522](../../src/provider_turn.rs#L522) | receiver-type-required |
+| `run_provider_turn_inner` | `slot.borrow().clone` | [522](../../src/provider_turn.rs#L522) | receiver-type-required |
+| `run_provider_turn_inner` | `slot.borrow` | [522](../../src/provider_turn.rs#L522) | receiver-type-required |
+| `run_provider_turn_inner` | `thread_transport_endpoint.as_deref().or` | [524](../../src/provider_turn.rs#L524) | receiver-type-required |
+| `run_provider_turn_inner` | `thread_transport_endpoint.as_deref` | [524](../../src/provider_turn.rs#L524) | receiver-type-required |
+| `run_provider_turn_inner` | `endpoint_origin` | [525](../../src/provider_turn.rs#L525) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Arc::clone` | [532](../../src/provider_turn.rs#L532), [802](../../src/provider_turn.rs#L802) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `client             .lock()             .map_err(&#124;_&#124; "credential client lock poisoned")?             .get` | [536](../../src/provider_turn.rs#L536) | receiver-type-required |
+| `run_provider_turn_inner` | `client             .lock()             .map_err` | [536](../../src/provider_turn.rs#L536) | receiver-type-required |
+| `run_provider_turn_inner` | `client             .lock` | [536](../../src/provider_turn.rs#L536) | receiver-type-required |
+| `run_provider_turn_inner` | `credential_request_id` | [540](../../src/provider_turn.rs#L540) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `key.clone` | [542](../../src/provider_turn.rs#L542) | receiver-type-required |
+| `run_provider_turn_inner` | `"provider".to_owned` | [543](../../src/provider_turn.rs#L543), [703](../../src/provider_turn.rs#L703) | receiver-type-required |
+| `run_provider_turn_inner` | `provider_config.adapter.clone` | [544](../../src/provider_turn.rs#L544) | receiver-type-required |
+| `run_provider_turn_inner` | `drain_parked_deliveries` | [571](../../src/provider_turn.rs#L571), [1156](../../src/provider_turn.rs#L1156), [1207](../../src/provider_turn.rs#L1207) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `latest_compatible_epoch(         ledger,         dialect,         &model.id,         &profile_digest,         &tools_digest,         CONTEXT_RENDERER_VERSION,     )     .as_deref` | [572](../../src/provider_turn.rs#L572) | receiver-type-required |
+| `run_provider_turn_inner` | `epoch.as_str` | [581](../../src/provider_turn.rs#L581) | receiver-type-required |
+| `run_provider_turn_inner` | `run_provider_turn_inner` | [584](../../src/provider_turn.rs#L584), [630](../../src/provider_turn.rs#L630), [686](../../src/provider_turn.rs#L686), [1013](../../src/provider_turn.rs#L1013), [1077](../../src/provider_turn.rs#L1077), [1157](../../src/provider_turn.rs#L1157), [1174](../../src/provider_turn.rs#L1174), [1208](../../src/provider_turn.rs#L1208) | [tekes-worker::provider_turn::run_provider_turn_inner](../../src/provider_turn.rs#L205) |
+| `run_provider_turn_inner` | `preflight_compaction_due` | [604](../../src/provider_turn.rs#L604) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `engine::plan_tool_result_trim` | [606](../../src/provider_turn.rs#L606) | [engine::context::plan_tool_result_trim](../../../engine/src/context.rs#L431) |
+| `run_provider_turn_inner` | `ledger                 .projection()                 .ok_or` | [607](../../src/provider_turn.rs#L607), [647](../../src/provider_turn.rs#L647) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger                 .projection` | [607](../../src/provider_turn.rs#L607), [647](../../src/provider_turn.rs#L647) | receiver-type-required |
+| `run_provider_turn_inner` | `trims.is_empty` | [612](../../src/provider_turn.rs#L612) | receiver-type-required |
+| `run_provider_turn_inner` | `append_tool_result_trim` | [615](../../src/provider_turn.rs#L615) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `announce_appended` | [629](../../src/provider_turn.rs#L629), [684](../../src/provider_turn.rs#L684) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `engine::plan_context_compaction(             &ledger                 .projection()                 .ok_or("ledger projection missing")?                 .events,             turn,         )?         .covers         .is_empty` | [646](../../src/provider_turn.rs#L646) | receiver-type-required |
+| `run_provider_turn_inner` | `engine::plan_context_compaction` | [646](../../src/provider_turn.rs#L646) | [engine::context::plan_context_compaction](../../../engine/src/context.rs#L106) |
+| `run_provider_turn_inner` | `run_compaction_summary` | [656](../../src/provider_turn.rs#L656), [967](../../src/provider_turn.rs#L967) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `credential_material                 .as_ref()                 .map_or` | [662](../../src/provider_turn.rs#L662), [973](../../src/provider_turn.rs#L973) | receiver-type-required |
+| `run_provider_turn_inner` | `credential_material                 .as_ref` | [662](../../src/provider_turn.rs#L662), [973](../../src/provider_turn.rs#L973) | receiver-type-required |
+| `run_provider_turn_inner` | `material.material.as_str` | [664](../../src/provider_turn.rs#L664), [784](../../src/provider_turn.rs#L784), [975](../../src/provider_turn.rs#L975) | receiver-type-required |
+| `run_provider_turn_inner` | `auto_compact_for_turn` | [671](../../src/provider_turn.rs#L671), [999](../../src/provider_turn.rs#L999) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `stdout.write_all` | [699](../../src/provider_turn.rs#L699), [721](../../src/provider_turn.rs#L721), [953](../../src/provider_turn.rs#L953) | receiver-type-required |
+| `run_provider_turn_inner` | `encode_line` | [699](../../src/provider_turn.rs#L699), [721](../../src/provider_turn.rs#L721), [953](../../src/provider_turn.rs#L953) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `stdout.flush` | [706](../../src/provider_turn.rs#L706), [722](../../src/provider_turn.rs#L722), [960](../../src/provider_turn.rs#L960) | receiver-type-required |
+| `run_provider_turn_inner` | `lines             .next()             .ok_or_else(&#124;&#124; {                 ProtocolFailure("supervisor EOF while awaiting provider lease".to_owned())             })?             .map_err` | [708](../../src/provider_turn.rs#L708) | receiver-type-required |
+| `run_provider_turn_inner` | `lines             .next()             .ok_or_else` | [708](../../src/provider_turn.rs#L708) | receiver-type-required |
+| `run_provider_turn_inner` | `lines             .next` | [708](../../src/provider_turn.rs#L708) | receiver-type-required |
+| `run_provider_turn_inner` | `ProtocolFailure` | [711](../../src/provider_turn.rs#L711), [714](../../src/provider_turn.rs#L714), [731](../../src/provider_turn.rs#L731), [986](../../src/provider_turn.rs#L986), [1152](../../src/provider_turn.rs#L1152) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `"supervisor EOF while awaiting provider lease".to_owned` | [711](../../src/provider_turn.rs#L711) | receiver-type-required |
+| `run_provider_turn_inner` | `decode_supervisor` | [718](../../src/provider_turn.rs#L718) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `line.as_bytes` | [718](../../src/provider_turn.rs#L718) | receiver-type-required |
+| `run_provider_turn_inner` | `cancellation.cancel` | [725](../../src/provider_turn.rs#L725) | receiver-type-required |
+| `run_provider_turn_inner` | `cancellation.defer` | [726](../../src/provider_turn.rs#L726) | receiver-type-required |
+| `run_provider_turn_inner` | `cancellation.park_delivery` | [729](../../src/provider_turn.rs#L729) | receiver-type-required |
+| `run_provider_turn_inner` | `Box::new` | [731](../../src/provider_turn.rs#L731), [986](../../src/provider_turn.rs#L986), [1152](../../src/provider_turn.rs#L1152) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `"unexpected supervisor message while awaiting provider lease".to_owned` | [732](../../src/provider_turn.rs#L732) | receiver-type-required |
+| `run_provider_turn_inner` | `make_event` | [748](../../src/provider_turn.rs#L748), [762](../../src/provider_turn.rs#L762) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `ledger.append_contract` | [760](../../src/provider_turn.rs#L760), [770](../../src/provider_turn.rs#L770) | receiver-type-required |
+| `run_provider_turn_inner` | `BarrierContext::default` | [760](../../src/provider_turn.rs#L760), [770](../../src/provider_turn.rs#L770) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `EagerDispatch::default` | [773](../../src/provider_turn.rs#L773) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `cancelled.load` | [774](../../src/provider_turn.rs#L774), [965](../../src/provider_turn.rs#L965) | receiver-type-required |
+| `run_provider_turn_inner` | `ProviderCompletion::Failure` | [775](../../src/provider_turn.rs#L775) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `credential_material             .as_ref()             .map_or` | [782](../../src/provider_turn.rs#L782) | receiver-type-required |
+| `run_provider_turn_inner` | `credential_material             .as_ref` | [782](../../src/provider_turn.rs#L782) | receiver-type-required |
+| `run_provider_turn_inner` | `budget             .wall_deadline             .map` | [785](../../src/provider_turn.rs#L785) | receiver-type-required |
+| `run_provider_turn_inner` | `deadline.saturating_duration_since` | [787](../../src/provider_turn.rs#L787) | receiver-type-required |
+| `run_provider_turn_inner` | `std::sync::mpsc::channel::<ProviderFrame>` | [788](../../src/provider_turn.rs#L788) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `std::env::var("TEKES_KERNEL_LIVE_ARTIFACT")             .ok()             .map` | [790](../../src/provider_turn.rs#L790) | receiver-type-required |
+| `run_provider_turn_inner` | `std::env::var("TEKES_KERNEL_LIVE_ARTIFACT")             .ok` | [790](../../src/provider_turn.rs#L790) | receiver-type-required |
+| `run_provider_turn_inner` | `std::thread::scope` | [796](../../src/provider_turn.rs#L796) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `scope.spawn` | [798](../../src/provider_turn.rs#L798) | receiver-type-required |
+| `run_provider_turn_inner` | `HttpRuntime::new` | [799](../../src/provider_turn.rs#L799) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Arc::new` | [800](../../src/provider_turn.rs#L800) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Mutex::new` | [800](../../src/provider_turn.rs#L800) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `Vec::new` | [800](../../src/provider_turn.rs#L800) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `capture_path.is_some` | [801](../../src/provider_turn.rs#L801) | receiver-type-required |
+| `run_provider_turn_inner` | `runtime.with_response_capture` | [802](../../src/provider_turn.rs#L802) | receiver-type-required |
+| `run_provider_turn_inner` | `runtime.send_dialect_with_frames_and_wall_transport` | [806](../../src/provider_turn.rs#L806) | receiver-type-required |
+| `run_provider_turn_inner` | `frame_sender.send(frame).map_err` | [814](../../src/provider_turn.rs#L814) | receiver-type-required |
+| `run_provider_turn_inner` | `frame_sender.send` | [814](../../src/provider_turn.rs#L814) | receiver-type-required |
+| `run_provider_turn_inner` | `provider::HttpRuntimeError::Request` | [815](../../src/provider_turn.rs#L815), [824](../../src/provider_turn.rs#L824) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `"provider frame receiver closed".to_owned` | [816](../../src/provider_turn.rs#L816) | receiver-type-required |
+| `run_provider_turn_inner` | `capture.lock().expect` | [822](../../src/provider_turn.rs#L822) | receiver-type-required |
+| `run_provider_turn_inner` | `capture.lock` | [822](../../src/provider_turn.rs#L822) | receiver-type-required |
+| `run_provider_turn_inner` | `fs::write(path, &*body).map_err` | [823](../../src/provider_turn.rs#L823) | receiver-type-required |
+| `run_provider_turn_inner` | `error.to_string` | [824](../../src/provider_turn.rs#L824) | receiver-type-required |
+| `run_provider_turn_inner` | `frame_receiver.recv_timeout` | [832](../../src/provider_turn.rs#L832) | receiver-type-required |
+| `run_provider_turn_inner` | `Duration::from_millis` | [832](../../src/provider_turn.rs#L832) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `main_failure.is_some` | [837](../../src/provider_turn.rs#L837) | receiver-type-required |
+| `run_provider_turn_inner` | `(&#124;&#124; -> Result<(), Box<dyn std::error::Error>> {                         if let Some(mut frame) = frame {                             if let ProviderFrame::ToolCallReady(call) = &mut frame {                                 repair_provider_call_arguments(dialect, call);                             }                             localize_provider_frame(ledger, &attempt, &mut eager, &mut frame)?;                             let ledger_seq =                                 ledger.projection().map(&#124;projection&#124; projection.last_seq);                             if let Some(call) = forward_provider_frame(                                 ledger_seq, &attempt, &mut block, frame, stdout,                             )? {                                 // Eager dispatch: the call's arguments are complete                                 // and validated, so it executes now, while the                                 // response keeps streaming on its own thread. The                                 // terminal later has to name it unchanged.                                 eager_dispatch_ready_call(                                     ledger,                                     EagerReadyCall {                                         options,                                         profile,                                         selected: *selected,                                         manifest: &manifest,                                         attempt: &attempt,                                         turn,                                         cancellation,                                     },                                     call,                                     &mut eager,                                     credential.as_ref(),                                     lines,                                     stdout,                                 )?;                             }                         }                         lines.drain_provider_deliveries(                             ledger,                             options,                             run.selected,                             cancellation,                             stdout,                         )                     })` | [840](../../src/provider_turn.rs#L840) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `repair_provider_call_arguments` | [843](../../src/provider_turn.rs#L843) | [tekes-worker::provider_turn::repair_provider_call_arguments](../../src/provider_turn.rs#L1368) |
+| `run_provider_turn_inner` | `localize_provider_frame` | [845](../../src/provider_turn.rs#L845) | [tekes-worker::provider_turn::localize_provider_frame](../../src/provider_turn.rs#L1384) |
+| `run_provider_turn_inner` | `ledger.projection().map` | [847](../../src/provider_turn.rs#L847) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger.projection` | [847](../../src/provider_turn.rs#L847) | receiver-type-required |
+| `run_provider_turn_inner` | `forward_provider_frame` | [848](../../src/provider_turn.rs#L848) | [tekes-worker::provider_turn::forward_provider_frame](../../src/provider_turn.rs#L1228) |
+| `run_provider_turn_inner` | `eager_dispatch_ready_call` | [855](../../src/provider_turn.rs#L855) | [tekes-worker::provider_turn::eager_dispatch_ready_call](../../src/provider_turn.rs#L1421) |
+| `run_provider_turn_inner` | `lines.drain_provider_deliveries` | [874](../../src/provider_turn.rs#L874) | receiver-type-required |
+| `run_provider_turn_inner` | `cancelled_flag.store` | [883](../../src/provider_turn.rs#L883) | receiver-type-required |
+| `run_provider_turn_inner` | `request                     .join()                     .map_err` | [887](../../src/provider_turn.rs#L887) | receiver-type-required |
+| `run_provider_turn_inner` | `request                     .join` | [887](../../src/provider_turn.rs#L887) | receiver-type-required |
+| `run_provider_turn_inner` | `record_input_transformations` | [909](../../src/provider_turn.rs#L909) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `append_provider_terminal_error` | [922](../../src/provider_turn.rs#L922) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `append_context_overflow` | [927](../../src/provider_turn.rs#L927) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `terminal.usage.as_ref` | [927](../../src/provider_turn.rs#L927) | receiver-type-required |
+| `run_provider_turn_inner` | `append_terminal` | [929](../../src/provider_turn.rs#L929) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `dialect.server_managed` | [936](../../src/provider_turn.rs#L936), [1063](../../src/provider_turn.rs#L1063) | receiver-type-required |
+| `run_provider_turn_inner` | `append_provider_failure` | [942](../../src/provider_turn.rs#L942) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `cancellation.supervisor_lost` | [985](../../src/provider_turn.rs#L985), [1059](../../src/provider_turn.rs#L1059), [1104](../../src/provider_turn.rs#L1104), [1151](../../src/provider_turn.rs#L1151) | receiver-type-required |
+| `run_provider_turn_inner` | `"supervisor EOF during provider request".to_owned` | [987](../../src/provider_turn.rs#L987) | receiver-type-required |
+| `run_provider_turn_inner` | `cancellation.stop_requested` | [990](../../src/provider_turn.rs#L990), [1059](../../src/provider_turn.rs#L1059), [1103](../../src/provider_turn.rs#L1103), [1148](../../src/provider_turn.rs#L1148), [1196](../../src/provider_turn.rs#L1196) | receiver-type-required |
+| `run_provider_turn_inner` | `outcome.retry_classification.unwrap_or` | [1042](../../src/provider_turn.rs#L1042) | receiver-type-required |
+| `run_provider_turn_inner` | `wait_provider_admission` | [1047](../../src/provider_turn.rs#L1047) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `outcome.tool_calls.is_empty` | [1090](../../src/provider_turn.rs#L1090) | receiver-type-required |
+| `run_provider_turn_inner` | `pending_tool_calls(ledger)?.iter().any` | [1096](../../src/provider_turn.rs#L1096) | receiver-type-required |
+| `run_provider_turn_inner` | `pending_tool_calls(ledger)?.iter` | [1096](../../src/provider_turn.rs#L1096) | receiver-type-required |
+| `run_provider_turn_inner` | `pending_tool_calls` | [1096](../../src/provider_turn.rs#L1096) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `eager.contains` | [1097](../../src/provider_turn.rs#L1097) | receiver-type-required |
+| `run_provider_turn_inner` | `call.approval_response.is_some` | [1099](../../src/provider_turn.rs#L1099) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger                     .projection()                     .ok_or` | [1105](../../src/provider_turn.rs#L1105) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger                     .projection` | [1105](../../src/provider_turn.rs#L1105) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter(&#124;event&#124; *event.kind() == EventKind::ToolResult)             .filter_map(&#124;event&#124; event.string_field("call").map(str::to_owned))             .collect::<BTreeSet<_>>` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter(&#124;event&#124; *event.kind() == EventKind::ToolResult)             .filter_map` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter()             .filter` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection()             .ok_or("ledger projection missing")?             .events             .iter` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection()             .ok_or` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `ledger             .projection` | [1117](../../src/provider_turn.rs#L1117) | receiver-type-required |
+| `run_provider_turn_inner` | `event.kind` | [1122](../../src/provider_turn.rs#L1122) | receiver-type-required |
+| `run_provider_turn_inner` | `event.string_field("call").map` | [1123](../../src/provider_turn.rs#L1123) | receiver-type-required |
+| `run_provider_turn_inner` | `event.string_field` | [1123](../../src/provider_turn.rs#L1123) | receiver-type-required |
+| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter(&#124;call&#124; !paired.contains(&call.call_id))             .cloned()             .collect::<Vec<_>>` | [1125](../../src/provider_turn.rs#L1125) | receiver-type-required |
+| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter(&#124;call&#124; !paired.contains(&call.call_id))             .cloned` | [1125](../../src/provider_turn.rs#L1125) | receiver-type-required |
+| `run_provider_turn_inner` | `outcome             .tool_calls             .iter()             .filter` | [1125](../../src/provider_turn.rs#L1125) | receiver-type-required |
+| `run_provider_turn_inner` | `outcome             .tool_calls             .iter` | [1125](../../src/provider_turn.rs#L1125) | receiver-type-required |
+| `run_provider_turn_inner` | `paired.contains` | [1128](../../src/provider_turn.rs#L1128) | receiver-type-required |
+| `run_provider_turn_inner` | `execute_provider_tool_calls` | [1131](../../src/provider_turn.rs#L1131) | external-constructor-callback-or-unresolved |
+| `run_provider_turn_inner` | `cancellation.protocol_failed` | [1151](../../src/provider_turn.rs#L1151) | receiver-type-required |
+| `run_provider_turn_inner` | `"supervisor lost during tool execution".to_owned` | [1153](../../src/provider_turn.rs#L1153) | receiver-type-required |
+| `run_provider_turn_inner` | `budget.nonfinal_responses_left.saturating_sub` | [1181](../../src/provider_turn.rs#L1181) | receiver-type-required |
+| `forward_provider_frame` | `Some` | [1244](../../src/provider_turn.rs#L1244), [1246](../../src/provider_turn.rs#L1246), [1248](../../src/provider_turn.rs#L1248), [1249](../../src/provider_turn.rs#L1249), [1254](../../src/provider_turn.rs#L1254) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `call.call_id.clone` | [1247](../../src/provider_turn.rs#L1247) | receiver-type-required |
+| `forward_provider_frame` | `call.name.clone` | [1247](../../src/provider_turn.rs#L1247) | receiver-type-required |
+| `forward_provider_frame` | `String::new` | [1249](../../src/provider_turn.rs#L1249) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `serde_json::to_string` | [1254](../../src/provider_turn.rs#L1254) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `usage_object` | [1254](../../src/provider_turn.rs#L1254) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `Ok` | [1258](../../src/provider_turn.rs#L1258), [1275](../../src/provider_turn.rs#L1275) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `stdout.write_all` | [1260](../../src/provider_turn.rs#L1260) | receiver-type-required |
+| `forward_provider_frame` | `encode_line` | [1260](../../src/provider_turn.rs#L1260) | external-constructor-callback-or-unresolved |
+| `forward_provider_frame` | `attempt.to_owned` | [1265](../../src/provider_turn.rs#L1265) | receiver-type-required |
+| `forward_provider_frame` | `stdout.flush` | [1273](../../src/provider_turn.rs#L1273) | receiver-type-required |
+| `forward_provider_frame` | `block.saturating_add` | [1274](../../src/provider_turn.rs#L1274) | receiver-type-required |
+| `contains` | `self.calls.iter().any` | [1293](../../src/provider_turn.rs#L1293) | receiver-type-required |
+| `contains` | `self.calls.iter` | [1293](../../src/provider_turn.rs#L1293) | receiver-type-required |
+| `local_provider_call_id` | `ledger         .projection()         .ok_or` | [1305](../../src/provider_turn.rs#L1305) | receiver-type-required |
+| `local_provider_call_id` | `ledger         .projection` | [1305](../../src/provider_turn.rs#L1305) | receiver-type-required |
+| `local_provider_call_id` | `events         .iter()         .filter(&#124;event&#124; {             *event.kind() == EventKind::ToolCall                 && event                     .string_field("provider_call")                     .or_else(&#124;&#124; event.string_field("call"))                     == Some(wire_id)         })         .collect::<Vec<_>>` | [1309](../../src/provider_turn.rs#L1309) | receiver-type-required |
+| `local_provider_call_id` | `events         .iter()         .filter` | [1309](../../src/provider_turn.rs#L1309) | receiver-type-required |
+| `local_provider_call_id` | `events         .iter` | [1309](../../src/provider_turn.rs#L1309) | receiver-type-required |
+| `local_provider_call_id` | `event.kind` | [1312](../../src/provider_turn.rs#L1312), [1340](../../src/provider_turn.rs#L1340), [1345](../../src/provider_turn.rs#L1345), [1348](../../src/provider_turn.rs#L1348), [1361](../../src/provider_turn.rs#L1361) | receiver-type-required |
+| `local_provider_call_id` | `event                     .string_field("provider_call")                     .or_else` | [1313](../../src/provider_turn.rs#L1313) | receiver-type-required |
+| `local_provider_call_id` | `event                     .string_field` | [1313](../../src/provider_turn.rs#L1313) | receiver-type-required |
+| `local_provider_call_id` | `event.string_field` | [1315](../../src/provider_turn.rs#L1315), [1321](../../src/provider_turn.rs#L1321), [1338](../../src/provider_turn.rs#L1338), [1340](../../src/provider_turn.rs#L1340), [1361](../../src/provider_turn.rs#L1361) | receiver-type-required |
+| `local_provider_call_id` | `Some` | [1316](../../src/provider_turn.rs#L1316), [1321](../../src/provider_turn.rs#L1321), [1338](../../src/provider_turn.rs#L1338), [1361](../../src/provider_turn.rs#L1361) | external-constructor-callback-or-unresolved |
+| `local_provider_call_id` | `previous         .iter()         .find` | [1319](../../src/provider_turn.rs#L1319) | receiver-type-required |
+| `local_provider_call_id` | `previous         .iter` | [1319](../../src/provider_turn.rs#L1319) | receiver-type-required |
+| `local_provider_call_id` | `Ok` | [1323](../../src/provider_turn.rs#L1323), [1329](../../src/provider_turn.rs#L1329), [1365](../../src/provider_turn.rs#L1365) | external-constructor-callback-or-unresolved |
+| `local_provider_call_id` | `call             .string_field("call")             .ok_or("tool_call lacks call")?             .to_owned` | [1323](../../src/provider_turn.rs#L1323) | receiver-type-required |
+| `local_provider_call_id` | `call             .string_field("call")             .ok_or` | [1323](../../src/provider_turn.rs#L1323) | receiver-type-required |
+| `local_provider_call_id` | `call             .string_field` | [1323](../../src/provider_turn.rs#L1323) | receiver-type-required |
+| `local_provider_call_id` | `previous.is_empty` | [1328](../../src/provider_turn.rs#L1328) | receiver-type-required |
+| `local_provider_call_id` | `wire_id.to_owned` | [1329](../../src/provider_turn.rs#L1329) | receiver-type-required |
+| `local_provider_call_id` | `call.string_field("call").ok_or` | [1332](../../src/provider_turn.rs#L1332) | receiver-type-required |
+| `local_provider_call_id` | `call.string_field` | [1332](../../src/provider_turn.rs#L1332), [1333](../../src/provider_turn.rs#L1333) | receiver-type-required |
+| `local_provider_call_id` | `events             .iter()             .filter(&#124;event&#124; {                 event.seq() == call.seq()                     &#124;&#124; event.string_field("call") == Some(id)                         && matches!(event.kind(), EventKind::ToolResult &#124; EventKind::ChildResult)                     &#124;&#124; *event.kind() == EventKind::Output && event.string_field("attempt") == owner             })             .collect::<Vec<_>>` | [1334](../../src/provider_turn.rs#L1334) | receiver-type-required |
+| `local_provider_call_id` | `events             .iter()             .filter` | [1334](../../src/provider_turn.rs#L1334) | receiver-type-required |
+| `local_provider_call_id` | `events             .iter` | [1334](../../src/provider_turn.rs#L1334) | receiver-type-required |
+| `local_provider_call_id` | `event.seq` | [1337](../../src/provider_turn.rs#L1337) | receiver-type-required |
+| `local_provider_call_id` | `call.seq` | [1337](../../src/provider_turn.rs#L1337) | receiver-type-required |
+| `local_provider_call_id` | `related             .iter()             .any` | [1343](../../src/provider_turn.rs#L1343) | receiver-type-required |
+| `local_provider_call_id` | `related             .iter` | [1343](../../src/provider_turn.rs#L1343) | receiver-type-required |
+| `local_provider_call_id` | `related                 .iter()                 .any` | [1346](../../src/provider_turn.rs#L1346) | receiver-type-required |
+| `local_provider_call_id` | `related                 .iter` | [1346](../../src/provider_turn.rs#L1346) | receiver-type-required |
+| `local_provider_call_id` | `Err` | [1350](../../src/provider_turn.rs#L1350), [1363](../../src/provider_turn.rs#L1363) | external-constructor-callback-or-unresolved |
+| `local_provider_call_id` | `format!(                 "provider tool call id {wire_id} reuses an unresolved durable call"             )             .into` | [1350](../../src/provider_turn.rs#L1350) | receiver-type-required |
+| `local_provider_call_id` | `Sha256::digest` | [1356](../../src/provider_turn.rs#L1356) | external-constructor-callback-or-unresolved |
+| `local_provider_call_id` | `serde_json_canonicalizer::to_vec` | [1356](../../src/provider_turn.rs#L1356) | external-constructor-callback-or-unresolved |
+| `local_provider_call_id` | `events.iter().any` | [1360](../../src/provider_turn.rs#L1360) | receiver-type-required |
+| `local_provider_call_id` | `events.iter` | [1360](../../src/provider_turn.rs#L1360) | receiver-type-required |
+| `local_provider_call_id` | `"scoped provider call identity collision".into` | [1363](../../src/provider_turn.rs#L1363) | receiver-type-required |
+| `repair_provider_call_arguments` | `tools::fixed_schema(&call.name)         .and_then` | [1375](../../src/provider_turn.rs#L1375) | receiver-type-required |
+| `repair_provider_call_arguments` | `tools::fixed_schema` | [1375](../../src/provider_turn.rs#L1375) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
+| `repair_provider_call_arguments` | `schema.repair_quoted_null_exclusive` | [1376](../../src/provider_turn.rs#L1376) | receiver-type-required |
+| `localize_provider_frame` | `Ok` | [1393](../../src/provider_turn.rs#L1393), [1402](../../src/provider_turn.rs#L1402) | external-constructor-callback-or-unresolved |
+| `localize_provider_frame` | `id.clone` | [1395](../../src/provider_turn.rs#L1395), [1400](../../src/provider_turn.rs#L1400) | receiver-type-required |
+| `localize_provider_frame` | `eager.wire_ids.iter().find` | [1396](../../src/provider_turn.rs#L1396) | receiver-type-required |
+| `localize_provider_frame` | `eager.wire_ids.iter` | [1396](../../src/provider_turn.rs#L1396) | receiver-type-required |
+| `localize_provider_frame` | `local_id.clone` | [1397](../../src/provider_turn.rs#L1397) | receiver-type-required |
+| `localize_provider_frame` | `local_provider_call_id` | [1399](../../src/provider_turn.rs#L1399) | [tekes-worker::provider_turn::local_provider_call_id](../../src/provider_turn.rs#L1300) |
+| `localize_provider_frame` | `eager.wire_ids.insert` | [1400](../../src/provider_turn.rs#L1400) | receiver-type-required |
+| `eager_dispatch_ready_call` | `Ok` | [1435](../../src/provider_turn.rs#L1435), [1499](../../src/provider_turn.rs#L1499) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `call.call_id.is_empty` | [1446](../../src/provider_turn.rs#L1446) | receiver-type-required |
+| `eager_dispatch_ready_call` | `eager.contains` | [1446](../../src/provider_turn.rs#L1446) | receiver-type-required |
+| `eager_dispatch_ready_call` | `Err` | [1447](../../src/provider_turn.rs#L1447), [1463](../../src/provider_turn.rs#L1463) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `format!(             "provider tool call id {} is empty or duplicated",             call.call_id         )         .into` | [1447](../../src/provider_turn.rs#L1447) | receiver-type-required |
+| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter()         .any` | [1453](../../src/provider_turn.rs#L1453) | receiver-type-required |
+| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or("ledger projection missing")?         .events         .iter` | [1453](../../src/provider_turn.rs#L1453) | receiver-type-required |
+| `eager_dispatch_ready_call` | `ledger         .projection()         .ok_or` | [1453](../../src/provider_turn.rs#L1453) | receiver-type-required |
+| `eager_dispatch_ready_call` | `ledger         .projection` | [1453](../../src/provider_turn.rs#L1453) | receiver-type-required |
+| `eager_dispatch_ready_call` | `event.kind` | [1459](../../src/provider_turn.rs#L1459) | receiver-type-required |
+| `eager_dispatch_ready_call` | `event.string_field` | [1460](../../src/provider_turn.rs#L1460) | receiver-type-required |
+| `eager_dispatch_ready_call` | `Some` | [1460](../../src/provider_turn.rs#L1460) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `call.call_id.as_str` | [1460](../../src/provider_turn.rs#L1460) | receiver-type-required |
+| `eager_dispatch_ready_call` | `format!(             "provider tool call id {} reuses a durable call",             call.call_id         )         .into` | [1463](../../src/provider_turn.rs#L1463) | receiver-type-required |
+| `eager_dispatch_ready_call` | `append_provider_tool_call_with_wire_id` | [1469](../../src/provider_turn.rs#L1469) | [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1514) |
+| `eager_dispatch_ready_call` | `eager.wire_ids.get(&call.call_id).map` | [1476](../../src/provider_turn.rs#L1476) | receiver-type-required |
+| `eager_dispatch_ready_call` | `eager.wire_ids.get` | [1476](../../src/provider_turn.rs#L1476) | receiver-type-required |
+| `eager_dispatch_ready_call` | `announce_appended` | [1478](../../src/provider_turn.rs#L1478), [1498](../../src/provider_turn.rs#L1498) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `execute_provider_tool_calls` | [1479](../../src/provider_turn.rs#L1479) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `std::slice::from_ref` | [1487](../../src/provider_turn.rs#L1487) | external-constructor-callback-or-unresolved |
+| `eager_dispatch_ready_call` | `eager.calls.push` | [1494](../../src/provider_turn.rs#L1494) | receiver-type-required |
+| `append_provider_tool_call` | `append_provider_tool_call_with_wire_id` | [1511](../../src/provider_turn.rs#L1511) | [tekes-worker::provider_turn::append_provider_tool_call_with_wire_id](../../src/provider_turn.rs#L1514) |
+| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find(&#124;tool&#124; tool.name == call.name)         .map(&#124;tool&#124; engine::side_effectful(tool.effect))         .unwrap_or` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find(&#124;tool&#124; tool.name == call.name)         .map` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter()         .find` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `manifest         .tools         .iter` | [1523](../../src/provider_turn.rs#L1523) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `engine::side_effectful` | [1527](../../src/provider_turn.rs#L1527) | [engine::dispatcher::side_effectful](../../../engine/src/dispatcher.rs#L276) |
+| `append_provider_tool_call_with_wire_id` | `spill_json` | [1529](../../src/provider_turn.rs#L1529) | external-constructor-callback-or-unresolved |
+| `append_provider_tool_call_with_wire_id` | `wire_id.filter` | [1535](../../src/provider_turn.rs#L1535) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `make_event` | [1538](../../src/provider_turn.rs#L1538) | external-constructor-callback-or-unresolved |
+| `append_provider_tool_call_with_wire_id` | `ledger.append_contract` | [1539](../../src/provider_turn.rs#L1539) | receiver-type-required |
+| `append_provider_tool_call_with_wire_id` | `Ok` | [1545](../../src/provider_turn.rs#L1545) | external-constructor-callback-or-unresolved |
+| `settle_provider_unavailable` | `ledger         .projection()         .and_then(&#124;projection&#124; projection.latest_turn)         .ok_or` | [1553](../../src/provider_turn.rs#L1553) | receiver-type-required |
+| `settle_provider_unavailable` | `ledger         .projection()         .and_then` | [1553](../../src/provider_turn.rs#L1553) | receiver-type-required |
+| `settle_provider_unavailable` | `ledger         .projection` | [1553](../../src/provider_turn.rs#L1553) | receiver-type-required |
+| `settle_provider_unavailable` | `make_event` | [1557](../../src/provider_turn.rs#L1557) | external-constructor-callback-or-unresolved |
+| `settle_provider_unavailable` | `ledger.append_contract` | [1562](../../src/provider_turn.rs#L1562) | receiver-type-required |
+| `settle_provider_unavailable` | `BarrierContext::default` | [1562](../../src/provider_turn.rs#L1562) | external-constructor-callback-or-unresolved |
+| `settle_provider_unavailable` | `append_settle` | [1563](../../src/provider_turn.rs#L1563) | external-constructor-callback-or-unresolved |
+| `settle_provider_unavailable` | `options.event_timestamp` | [1565](../../src/provider_turn.rs#L1565) | receiver-type-required |
+| `settle_provider_unavailable` | `Some` | [1568](../../src/provider_turn.rs#L1568) | external-constructor-callback-or-unresolved |
+| `settle_provider_unavailable` | `Ok` | [1570](../../src/provider_turn.rs#L1570) | external-constructor-callback-or-unresolved |
+| `detail` | `"provider_not_selected".to_owned` | [1585](../../src/provider_turn.rs#L1585) | receiver-type-required |
+| `detail` | `"model_not_selected".to_owned` | [1587](../../src/provider_turn.rs#L1587) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or(config.settings.default_provider.as_deref())         .ok_or` | [1597](../../src/provider_turn.rs#L1597) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.provider.as_str())         .or` | [1597](../../src/provider_turn.rs#L1597) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map` | [1597](../../src/provider_turn.rs#L1597), [1603](../../src/provider_turn.rs#L1603) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref` | [1597](../../src/provider_turn.rs#L1597), [1603](../../src/provider_turn.rs#L1603) | receiver-type-required |
+| `selected_provider` | `settings.provider.as_str` | [1600](../../src/provider_turn.rs#L1600) | receiver-type-required |
+| `selected_provider` | `config.settings.default_provider.as_deref` | [1601](../../src/provider_turn.rs#L1601) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or(config.settings.default_model.as_deref())         .ok_or` | [1603](../../src/provider_turn.rs#L1603) | receiver-type-required |
+| `selected_provider` | `config         .session_settings         .as_ref()         .map(&#124;settings&#124; settings.model.as_str())         .or` | [1603](../../src/provider_turn.rs#L1603) | receiver-type-required |
+| `selected_provider` | `settings.model.as_str` | [1606](../../src/provider_turn.rs#L1606) | receiver-type-required |
+| `selected_provider` | `config.settings.default_model.as_deref` | [1607](../../src/provider_turn.rs#L1607) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter()         .find(&#124;provider&#124; provider.id == provider_id)         .ok_or_else` | [1609](../../src/provider_turn.rs#L1609) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter()         .find` | [1609](../../src/provider_turn.rs#L1609) | receiver-type-required |
+| `selected_provider` | `config         .providers         .providers         .iter` | [1609](../../src/provider_turn.rs#L1609) | receiver-type-required |
+| `selected_provider` | `SelectedProviderFailure::ProviderNotConfigured` | [1614](../../src/provider_turn.rs#L1614) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `provider_id.to_owned` | [1614](../../src/provider_turn.rs#L1614) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter()         .find(&#124;model&#124; model.id == model_id)         .ok_or_else` | [1615](../../src/provider_turn.rs#L1615) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter()         .find` | [1615](../../src/provider_turn.rs#L1615) | receiver-type-required |
+| `selected_provider` | `provider         .models         .iter` | [1615](../../src/provider_turn.rs#L1615) | receiver-type-required |
+| `selected_provider` | `SelectedProviderFailure::ModelNotConfigured` | [1619](../../src/provider_turn.rs#L1619) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `model_id.to_owned` | [1619](../../src/provider_turn.rs#L1619), [1621](../../src/provider_turn.rs#L1621) | receiver-type-required |
+| `selected_provider` | `Err` | [1621](../../src/provider_turn.rs#L1621) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `SelectedProviderFailure::ModelDisabled` | [1621](../../src/provider_turn.rs#L1621) | external-constructor-callback-or-unresolved |
+| `selected_provider` | `Ok` | [1623](../../src/provider_turn.rs#L1623) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `ledger.projection().ok_or` | [1630](../../src/provider_turn.rs#L1630) | receiver-type-required |
+| `current_turn_inputs` | `ledger.projection` | [1630](../../src/provider_turn.rs#L1630) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find(&#124;event&#124; *event.kind() == EventKind::TurnOpen && event.turn() == Some(turn))         .ok_or` | [1631](../../src/provider_turn.rs#L1631) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev()         .find` | [1631](../../src/provider_turn.rs#L1631) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter()         .rev` | [1631](../../src/provider_turn.rs#L1631) | receiver-type-required |
+| `current_turn_inputs` | `projection         .events         .iter` | [1631](../../src/provider_turn.rs#L1631) | receiver-type-required |
+| `current_turn_inputs` | `event.kind` | [1635](../../src/provider_turn.rs#L1635) | receiver-type-required |
+| `current_turn_inputs` | `event.turn` | [1635](../../src/provider_turn.rs#L1635) | receiver-type-required |
+| `current_turn_inputs` | `Some` | [1635](../../src/provider_turn.rs#L1635) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `serde_json::to_value` | [1637](../../src/provider_turn.rs#L1637) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `open.raw` | [1637](../../src/provider_turn.rs#L1637) | receiver-type-required |
+| `current_turn_inputs` | `Ok` | [1638](../../src/provider_turn.rs#L1638) | external-constructor-callback-or-unresolved |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map(Value::as_u64)         .collect` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten()         .filter_map` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter()         .flatten` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then(Value::as_array)         .into_iter` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then(&#124;trigger&#124; trigger.get("inputs"))         .and_then` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then(Value::as_object)         .and_then` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get("trigger")         .and_then` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect("event object")         .get` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object()         .expect` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `raw         .as_object` | [1638](../../src/provider_turn.rs#L1638) | receiver-type-required |
+| `current_turn_inputs` | `trigger.get` | [1643](../../src/provider_turn.rs#L1643) | receiver-type-required |

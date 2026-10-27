@@ -6,6 +6,13 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.13 — 2026-10-27
+
+### Fixed
+
+- Receipt public queue transactions while a provider request is still active, preserving startup protocol ordering and the existing single-writer transaction ledger.
+- Publish durable turn-open notifications before provider dispatch so consumed inputs retire from connected consumers' queue projections.
+
 ## 0.9.9 — 2026-10-26
 
 ### Fixed

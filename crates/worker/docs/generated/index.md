@@ -42,12 +42,12 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/worker/src/control_channel.rs](../../src/control_channel.rs) | 24 | 61 | [Symbols and calls](src--control_channel.md) |
 | [crates/worker/src/delivery.rs](../../src/delivery.rs) | 4 | 124 | [Symbols and calls](src--delivery.md) |
 | [crates/worker/src/identity.rs](../../src/identity.rs) | 14 | 208 | [Symbols and calls](src--identity.md) |
-| [crates/worker/src/ledger_events.rs](../../src/ledger_events.rs) | 12 | 115 | [Symbols and calls](src--ledger_events.md) |
+| [crates/worker/src/ledger_events.rs](../../src/ledger_events.rs) | 13 | 119 | [Symbols and calls](src--ledger_events.md) |
 | [crates/worker/src/lifecycle_hooks.rs](../../src/lifecycle_hooks.rs) | 11 | 135 | [Symbols and calls](src--lifecycle_hooks.md) |
 | [crates/worker/src/live_tests.rs](../../src/live_tests.rs) | 17 | 795 | [Symbols and calls](src--live_tests.md) |
-| [crates/worker/src/main.rs](../../src/main.rs) | 14 | 311 | [Symbols and calls](src--main.md) |
-| [crates/worker/src/provider_context_tests.rs](../../src/provider_context_tests.rs) | 181 | 4188 | [Symbols and calls](src--provider_context_tests.md) |
-| [crates/worker/src/provider_turn.rs](../../src/provider_turn.rs) | 22 | 588 | [Symbols and calls](src--provider_turn.md) |
+| [crates/worker/src/main.rs](../../src/main.rs) | 14 | 316 | [Symbols and calls](src--main.md) |
+| [crates/worker/src/provider_context_tests.rs](../../src/provider_context_tests.rs) | 183 | 4289 | [Symbols and calls](src--provider_context_tests.md) |
+| [crates/worker/src/provider_turn.rs](../../src/provider_turn.rs) | 31 | 595 | [Symbols and calls](src--provider_turn.md) |
 | [crates/worker/src/queue.rs](../../src/queue.rs) | 8 | 223 | [Symbols and calls](src--queue.md) |
 | [crates/worker/src/recovery.rs](../../src/recovery.rs) | 11 | 351 | [Symbols and calls](src--recovery.md) |
 | [crates/worker/src/result_presentation.rs](../../src/result_presentation.rs) | 16 | 158 | [Symbols and calls](src--result_presentation.md) |
@@ -58,7 +58,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/worker/src/validation_tests.rs](../../src/validation_tests.rs) | 19 | 451 | [Symbols and calls](src--validation_tests.md) |
 | [crates/worker/src/web_search.rs](../../src/web_search.rs) | 14 | 159 | [Symbols and calls](src--web_search.md) |
 | [crates/worker/src/workspace_edits.rs](../../src/workspace_edits.rs) | 10 | 158 | [Symbols and calls](src--workspace_edits.md) |
-| [crates/worker/tests/shell.rs](../../tests/shell.rs) | 20 | 1004 | `inventory.json` |
+| [crates/worker/tests/shell.rs](../../tests/shell.rs) | 20 | 1011 | `inventory.json` |
 
 ## Cross-file direct calls
 

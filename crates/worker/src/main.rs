@@ -277,10 +277,15 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
         // A crash between a completed final and the next goal turn must not
         // strand an active goal on a settled tail. This is idempotent because
         // only a settled tail can admit the next turn.
-        if startup_transaction.is_none()
+        let goal_continuation_opened = if startup_transaction.is_none()
             && let Some(profile) = &runtime_profile
         {
-            open_goal_continuation(&mut ledger, &options, profile, &cancellation)?;
+            open_goal_continuation(&mut ledger, &options, profile, &cancellation)?
+        } else {
+            false
+        };
+        if goal_continuation_opened {
+            announce_appended(&ledger, &mut stdout)?;
         }
         let facts = ledger
             .projection()
@@ -326,7 +331,18 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
             announce_appended(&ledger, &mut stdout)?;
             return Ok(ExitCode::SUCCESS);
         }
-        open_ready_turn(&mut ledger, &options.event_timestamp(), mode)?;
+        if runtime_profile.is_some() {
+            open_ready_turn_and_announce(
+                &mut ledger,
+                &options.event_timestamp(),
+                mode,
+                &mut stdout,
+            )?;
+        } else {
+            // No provider request can block here; the final yield announces
+            // this append together with ready deliveries.
+            open_ready_turn(&mut ledger, &options.event_timestamp(), mode)?;
+        }
         if matches!(state, TailState::StoppedActive) && facts.unstarted {
             let event = make_event(json!({
                 "v": 1,
@@ -365,7 +381,7 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
         if matches!(mode, RunMode::Ordinary) {
             if let Some(profile) = &runtime_profile {
                 loop {
-                    let provider_result = run_provider_turn(
+                    let provider_result = run_provider_turn_with_controls(
                         &mut ledger,
                         &options,
                         profile,
@@ -373,7 +389,6 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
                         &mut credential,
                         &mut lines,
                         &mut stdout,
-                        &cancellation,
                     );
                     if let Err(error) = provider_result {
                         if is_protocol_failure(error.as_ref()) {
@@ -391,6 +406,7 @@ fn run() -> Result<ExitCode, Box<dyn std::error::Error>> {
                     if !open_goal_continuation(&mut ledger, &options, profile, &cancellation)? {
                         break;
                     }
+                    announce_appended(&ledger, &mut stdout)?;
                 }
             } else {
                 drain_ready_deliveries(&mut ledger, &options, &selected, &mut lines, &mut stdout)?;
