@@ -3418,7 +3418,7 @@ impl ProductionProcessHost {
         // taken on a read under the line's lock: one unlocked read can straddle another process's
         // repair or append and show a record that never existed (O-final m3); while a live holder
         // owns the line the decision is deferred.
-        if ledger_damage(&bytes).is_some() {
+        if ledger_damage_from_scan(&bytes, &scan).is_some() {
             match damage_under_lock(&ledger_path) {
                 DamageVerdict::Damaged(offset) => {
                     let reason = format!("main.jsonl: no valid record at byte {offset}");
@@ -5103,6 +5103,12 @@ fn neutral_lifecycle() -> schema::LifecycleFacts {
 /// offset of the first invalid byte.
 fn ledger_damage(bytes: &[u8]) -> Option<u64> {
     let scan = scan_valid_prefix(bytes, schema::READER_VERSION);
+    ledger_damage_from_scan(bytes, &scan)
+}
+
+/// Applies the ledger-damage rule to an existing scan, avoiding a second decode of the same
+/// immutable bytes when the caller already has the authoritative prefix scan.
+fn ledger_damage_from_scan(bytes: &[u8], scan: &store::TailScan) -> Option<u64> {
     let valid = usize::try_from(scan.valid_bytes).unwrap_or(usize::MAX);
     (scan.projection.is_none()
         || (scan.needs_repair() && bytes.get(valid..).is_some_and(|tail| tail.contains(&b'\n'))))
@@ -11537,6 +11543,37 @@ mod tests {
             damage_under_lock(&dir.path().join("absent.jsonl")),
             DamageVerdict::Deferred
         );
+    }
+
+    #[test]
+    fn ledger_damage_from_scan_matches_wrapper_for_ledger_shapes() {
+        let valid = format!(
+            "{}\n",
+            held_ledger_lines("018f0000-0000-7000-8000-0000000000c6")[0]
+        );
+        let complete_invalid = format!("{valid}{{\"not\":\"a record\"}}\n");
+        let torn_tail = format!("{valid}{{\"partial\":true");
+        let cases = [
+            ("valid ledger", valid.as_str(), None),
+            ("missing genesis", "", Some(0)),
+            (
+                "complete invalid record",
+                complete_invalid.as_str(),
+                Some(valid.len() as u64),
+            ),
+            ("torn tail", torn_tail.as_str(), None),
+        ];
+
+        for (name, bytes, expected) in cases {
+            let scan = scan_valid_prefix(bytes.as_bytes(), schema::READER_VERSION);
+            let reused = ledger_damage_from_scan(bytes.as_bytes(), &scan);
+            assert_eq!(reused, expected, "unexpected reused-scan result for {name}");
+            assert_eq!(
+                reused,
+                ledger_damage(bytes.as_bytes()),
+                "wrapper and reused scan differ for {name}"
+            );
+        }
     }
 
     #[test]
