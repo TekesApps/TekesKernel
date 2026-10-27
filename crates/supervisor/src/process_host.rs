@@ -11547,10 +11547,60 @@ mod tests {
 
     #[test]
     fn ledger_damage_from_scan_matches_wrapper_for_ledger_shapes() {
+        const CHILD_ENV: &str = "TEKES_LEDGER_DAMAGE_SCAN_COUNTER_CHILD";
+        const TEST_NAME: &str =
+            "process_host::tests::ledger_damage_from_scan_matches_wrapper_for_ledger_shapes";
+
+        if std::env::var_os(CHILD_ENV).is_none() {
+            let output =
+                std::process::Command::new(std::env::current_exe().expect("test executable"))
+                    .args(["--exact", TEST_NAME, "--nocapture"])
+                    .env(CHILD_ENV, "1")
+                    .output()
+                    .expect("run isolated ledger damage counter test");
+            assert!(
+                output.status.success(),
+                "isolated test failed (status: {}):\nstdout:\n{}\nstderr:\n{}",
+                output.status,
+                String::from_utf8_lossy(&output.stdout),
+                String::from_utf8_lossy(&output.stderr),
+            );
+            assert!(
+                String::from_utf8_lossy(&output.stderr)
+                    .contains("SCAN_COUNTER_PROOF reused=0 wrapper=1"),
+                "isolated counter test did not produce its execution proof: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            return;
+        }
+
         let valid = format!(
             "{}\n",
             held_ledger_lines("018f0000-0000-7000-8000-0000000000c6")[0]
         );
+        let scan = scan_valid_prefix(valid.as_bytes(), schema::READER_VERSION);
+        let before_reused_scan = schema::metrics::snapshot();
+        assert!(ledger_damage_from_scan(valid.as_bytes(), &scan).is_none());
+        assert_eq!(
+            schema::metrics::snapshot()
+                .since(before_reused_scan)
+                .ledger_decodes,
+            0,
+            "reusing the supplied scan must not decode ledger records"
+        );
+
+        let before_wrapper = schema::metrics::snapshot();
+        assert!(ledger_damage(valid.as_bytes()).is_none());
+        assert_eq!(
+            schema::metrics::snapshot()
+                .since(before_wrapper)
+                .ledger_decodes,
+            1,
+            "the wrapper control must decode the ledger"
+        );
+
+        eprintln!("SCAN_COUNTER_PROOF reused=0 wrapper=1");
+
         let complete_invalid = format!("{valid}{{\"not\":\"a record\"}}\n");
         let torn_tail = format!("{valid}{{\"partial\":true");
         let cases = [

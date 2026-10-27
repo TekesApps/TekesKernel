@@ -101,8 +101,19 @@ class LocalMCPHost:
                 return
             self._stopped.add(child)
         # A group may outlive its leader, so always signal the host-owned pgid.
-        with contextlib.suppress(ProcessLookupError):
+        try:
             os.killpg(child.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        except PermissionError:
+            # A failed signal is only harmless when the leader is reaped and
+            # the process group is demonstrably gone. Keep EPERM fail-closed.
+            child.wait(timeout=5)
+            try:
+                os.killpg(child.pid, 0)
+            except ProcessLookupError:
+                return
+            raise
         child.wait(timeout=5)
 
     def _serve(self, connection, config):

@@ -368,7 +368,9 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11480) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::process_host::tests::damage_is_decided_under_the_line_lock](../../src/process_host.rs#L11494) | function_item | `private` | test; #[cfg(test)] |
 | [tekes-supervisor::process_host::tests::ledger_damage_from_scan_matches_wrapper_for_ledger_shapes](../../src/process_host.rs#L11549) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::process_host::tests::provider_admission_waits_fairly_and_drain_denies_waiter](../../src/process_host.rs#L11580) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::ledger_damage_from_scan_matches_wrapper_for_ledger_shapes::CHILD_ENV](../../src/process_host.rs#L11550) | const_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::ledger_damage_from_scan_matches_wrapper_for_ledger_shapes::TEST_NAME](../../src/process_host.rs#L11551) | const_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::process_host::tests::provider_admission_waits_fairly_and_drain_denies_waiter](../../src/process_host.rs#L11630) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -6517,37 +6519,48 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `damage_is_decided_under_the_line_lock` | `fs::OpenOptions::new` | [11529](../../src/process_host.rs#L11529) | external-constructor-callback-or-unresolved |
 | `damage_is_decided_under_the_line_lock` | `hold_line_lock` | [11534](../../src/process_host.rs#L11534) | [tekes-supervisor::process_host::tests::hold_line_lock](../../src/process_host.rs#L11480) |
 | `damage_is_decided_under_the_line_lock` | `drop` | [11536](../../src/process_host.rs#L11536) | external-constructor-callback-or-unresolved |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `valid.as_str` | [11557](../../src/process_host.rs#L11557) | receiver-type-required |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `Some` | [11558](../../src/process_host.rs#L11558), [11562](../../src/process_host.rs#L11562) | external-constructor-callback-or-unresolved |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `complete_invalid.as_str` | [11561](../../src/process_host.rs#L11561) | receiver-type-required |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `valid.len` | [11562](../../src/process_host.rs#L11562) | receiver-type-required |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `torn_tail.as_str` | [11564](../../src/process_host.rs#L11564) | receiver-type-required |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `scan_valid_prefix` | [11568](../../src/process_host.rs#L11568) | external-constructor-callback-or-unresolved |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `bytes.as_bytes` | [11568](../../src/process_host.rs#L11568), [11569](../../src/process_host.rs#L11569) | receiver-type-required |
-| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `ledger_damage_from_scan` | [11569](../../src/process_host.rs#L11569) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir().expect` | [11581](../../src/process_host.rs#L11581) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir` | [11581](../../src/process_host.rs#L11581) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open(             root.path(),             std::env::current_exe().expect("test executable"),             "test-build",             root.path().join("missing-agent-home"),         )         .expect` | [11582](../../src/process_host.rs#L11582) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open` | [11582](../../src/process_host.rs#L11582) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path` | [11583](../../src/process_host.rs#L11583), [11586](../../src/process_host.rs#L11586) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe().expect` | [11584](../../src/process_host.rs#L11584) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe` | [11584](../../src/process_host.rs#L11584) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path().join` | [11586](../../src/process_host.rs#L11586) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.max_provider_leases.store` | [11589](../../src/process_host.rs#L11589) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `mpsc::channel` | [11595](../../src/process_host.rs#L11595), [11620](../../src/process_host.rs#L11620) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `Arc::clone` | [11596](../../src/process_host.rs#L11596), [11621](../../src/process_host.rs#L11621) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::thread::spawn` | [11597](../../src/process_host.rs#L11597), [11622](../../src/process_host.rs#L11622) | external-constructor-callback-or-unresolved |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-b".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11598](../../src/process_host.rs#L11598) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send` | [11598](../../src/process_host.rs#L11598), [11623](../../src/process_host.rs#L11623) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `waiter.request_provider_lease` | [11598](../../src/process_host.rs#L11598), [11623](../../src/process_host.rs#L11623) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-b".to_owned` | [11599](../../src/process_host.rs#L11599) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"provider".to_owned` | [11600](../../src/process_host.rs#L11600), [11625](../../src/process_host.rs#L11625) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .settle` | [11608](../../src/process_host.rs#L11608) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else` | [11608](../../src/process_host.rs#L11608) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock` | [11608](../../src/process_host.rs#L11608) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission_changed.notify_all` | [11612](../../src/process_host.rs#L11612), [11631](../../src/process_host.rs#L11631) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join().expect` | [11618](../../src/process_host.rs#L11618), [11637](../../src/process_host.rs#L11637) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join` | [11618](../../src/process_host.rs#L11618), [11637](../../src/process_host.rs#L11637) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-c".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11623](../../src/process_host.rs#L11623) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-c".to_owned` | [11624](../../src/process_host.rs#L11624) | receiver-type-required |
-| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.draining.store` | [11630](../../src/process_host.rs#L11630) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::env::var_os(CHILD_ENV).is_none` | [11554](../../src/process_host.rs#L11554) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::env::var_os` | [11554](../../src/process_host.rs#L11554) | external-constructor-callback-or-unresolved |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::process::Command::new(std::env::current_exe().expect("test executable"))                     .args(["--exact", TEST_NAME, "--nocapture"])                     .env(CHILD_ENV, "1")                     .output()                     .expect` | [11556](../../src/process_host.rs#L11556) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::process::Command::new(std::env::current_exe().expect("test executable"))                     .args(["--exact", TEST_NAME, "--nocapture"])                     .env(CHILD_ENV, "1")                     .output` | [11556](../../src/process_host.rs#L11556) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::process::Command::new(std::env::current_exe().expect("test executable"))                     .args(["--exact", TEST_NAME, "--nocapture"])                     .env` | [11556](../../src/process_host.rs#L11556) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::process::Command::new(std::env::current_exe().expect("test executable"))                     .args` | [11556](../../src/process_host.rs#L11556) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::process::Command::new` | [11556](../../src/process_host.rs#L11556) | external-constructor-callback-or-unresolved |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::env::current_exe().expect` | [11556](../../src/process_host.rs#L11556) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `std::env::current_exe` | [11556](../../src/process_host.rs#L11556) | external-constructor-callback-or-unresolved |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `scan_valid_prefix` | [11581](../../src/process_host.rs#L11581), [11618](../../src/process_host.rs#L11618) | external-constructor-callback-or-unresolved |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `valid.as_bytes` | [11581](../../src/process_host.rs#L11581) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `schema::metrics::snapshot` | [11582](../../src/process_host.rs#L11582), [11592](../../src/process_host.rs#L11592) | [schema::metrics::snapshot](../../../schema/src/metrics.rs#L41) |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `valid.as_str` | [11607](../../src/process_host.rs#L11607) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `Some` | [11608](../../src/process_host.rs#L11608), [11612](../../src/process_host.rs#L11612) | external-constructor-callback-or-unresolved |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `complete_invalid.as_str` | [11611](../../src/process_host.rs#L11611) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `valid.len` | [11612](../../src/process_host.rs#L11612) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `torn_tail.as_str` | [11614](../../src/process_host.rs#L11614) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `bytes.as_bytes` | [11618](../../src/process_host.rs#L11618), [11619](../../src/process_host.rs#L11619) | receiver-type-required |
+| `ledger_damage_from_scan_matches_wrapper_for_ledger_shapes` | `ledger_damage_from_scan` | [11619](../../src/process_host.rs#L11619) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir().expect` | [11631](../../src/process_host.rs#L11631) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `tempfile::tempdir` | [11631](../../src/process_host.rs#L11631) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open(             root.path(),             std::env::current_exe().expect("test executable"),             "test-build",             root.path().join("missing-agent-home"),         )         .expect` | [11632](../../src/process_host.rs#L11632) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `ProductionProcessHost::open` | [11632](../../src/process_host.rs#L11632) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path` | [11633](../../src/process_host.rs#L11633), [11636](../../src/process_host.rs#L11636) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe().expect` | [11634](../../src/process_host.rs#L11634) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::env::current_exe` | [11634](../../src/process_host.rs#L11634) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `root.path().join` | [11636](../../src/process_host.rs#L11636) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.max_provider_leases.store` | [11639](../../src/process_host.rs#L11639) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `mpsc::channel` | [11645](../../src/process_host.rs#L11645), [11670](../../src/process_host.rs#L11670) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `Arc::clone` | [11646](../../src/process_host.rs#L11646), [11671](../../src/process_host.rs#L11671) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `std::thread::spawn` | [11647](../../src/process_host.rs#L11647), [11672](../../src/process_host.rs#L11672) | external-constructor-callback-or-unresolved |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-b".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11648](../../src/process_host.rs#L11648) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send` | [11648](../../src/process_host.rs#L11648), [11673](../../src/process_host.rs#L11673) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `waiter.request_provider_lease` | [11648](../../src/process_host.rs#L11648), [11673](../../src/process_host.rs#L11673) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-b".to_owned` | [11649](../../src/process_host.rs#L11649) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"provider".to_owned` | [11650](../../src/process_host.rs#L11650), [11675](../../src/process_host.rs#L11675) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else(std::sync::PoisonError::into_inner)             .settle` | [11658](../../src/process_host.rs#L11658) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock()             .unwrap_or_else` | [11658](../../src/process_host.rs#L11658) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission             .lock` | [11658](../../src/process_host.rs#L11658) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.admission_changed.notify_all` | [11662](../../src/process_host.rs#L11662), [11681](../../src/process_host.rs#L11681) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join().expect` | [11668](../../src/process_host.rs#L11668), [11687](../../src/process_host.rs#L11687) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `join.join` | [11668](../../src/process_host.rs#L11668), [11687](../../src/process_host.rs#L11687) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `sent.send(waiter.request_provider_lease(AdmissionLease {                 attempt: "attempt-c".to_owned(),                 class: "provider".to_owned(),             }))             .expect` | [11673](../../src/process_host.rs#L11673) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `"attempt-c".to_owned` | [11674](../../src/process_host.rs#L11674) | receiver-type-required |
+| `provider_admission_waits_fairly_and_drain_denies_waiter` | `host.draining.store` | [11680](../../src/process_host.rs#L11680) | receiver-type-required |

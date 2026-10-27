@@ -69,7 +69,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
 | [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 361 | 6386 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 363 | 6399 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 836 | [Symbols and calls](src--production_tool_control.md) |

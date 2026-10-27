@@ -2,12 +2,16 @@ import contextlib
 import json
 import os
 from pathlib import Path
+import signal
 import socket
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 import unittest
+from unittest import mock
+import weakref
 from kernel_cli import LocalMCPHost
 
 
@@ -29,6 +33,48 @@ def eventually(predicate, timeout=4):
 
 
 class LocalMCPHostTests(unittest.TestCase):
+    def make_stop_target(self):
+        class FakeChild:
+            pid = 48291
+
+            def __init__(self):
+                self.wait = mock.Mock()
+
+        host = LocalMCPHost.__new__(LocalMCPHost)
+        host._lock = threading.Lock()
+        host._stopped = weakref.WeakSet()
+        return host, FakeChild()
+
+    def test_stop_permission_error_accepts_reaped_child_and_gone_group(self):
+        host, child = self.make_stop_target()
+        with mock.patch("kernel_cli.os.killpg", side_effect=[PermissionError("signal denied"), ProcessLookupError]):
+            host._stop(child)
+        child.wait.assert_called_once_with(timeout=5)
+
+    def test_stop_permission_error_fails_when_group_still_exists(self):
+        host, child = self.make_stop_target()
+        with mock.patch("kernel_cli.os.killpg", side_effect=[PermissionError("signal denied"), None]) as killpg:
+            with self.assertRaisesRegex(PermissionError, "signal denied"):
+                host._stop(child)
+        child.wait.assert_called_once_with(timeout=5)
+        self.assertEqual(killpg.call_args_list[-1].args, (child.pid, 0))
+
+    def test_stop_permission_error_propagates_probe_permission_error(self):
+        host, child = self.make_stop_target()
+        with mock.patch("kernel_cli.os.killpg", side_effect=[PermissionError("signal denied"), PermissionError("probe denied")]):
+            with self.assertRaisesRegex(PermissionError, "probe denied"):
+                host._stop(child)
+        child.wait.assert_called_once_with(timeout=5)
+
+    def test_stop_permission_error_propagates_wait_timeout_without_probe(self):
+        host, child = self.make_stop_target()
+        child.wait.side_effect = subprocess.TimeoutExpired("child.wait", 5)
+        with mock.patch("kernel_cli.os.killpg", side_effect=PermissionError("signal denied")) as killpg:
+            with self.assertRaises(subprocess.TimeoutExpired):
+                host._stop(child)
+        child.wait.assert_called_once_with(timeout=5)
+        killpg.assert_called_once_with(child.pid, signal.SIGKILL)
+
     def connect(self, host, name="fixture"):
         connection = socket.socket(socket.AF_UNIX)
         connection.settimeout(3)
