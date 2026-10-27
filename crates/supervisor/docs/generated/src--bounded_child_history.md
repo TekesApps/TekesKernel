@@ -159,7 +159,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `read` | `raw["parent"]["spawn_id"].as_str` | [123](../../src/bounded_child_history.rs#L123) | receiver-type-required |
 | `read` | `spawn.string_field` | [123](../../src/bounded_child_history.rs#L123), [203](../../src/bounded_child_history.rs#L203) | receiver-type-required |
 | `read` | `endpoint::Projector::read_only_history(&child.events, folder)         .map_err` | [131](../../src/bounded_child_history.rs#L131) | receiver-type-required |
-| `read` | `endpoint::Projector::read_only_history` | [131](../../src/bounded_child_history.rs#L131) | [endpoint::projection::Projector::read_only_history](../../../endpoint/src/projection.rs#L135) |
+| `read` | `endpoint::Projector::read_only_history` | [131](../../src/bounded_child_history.rs#L131) | [endpoint::projection::Projector::read_only_history](../../../endpoint/src/projection.rs#L136) |
 | `read` | `records.last().map_or` | [133](../../src/bounded_child_history.rs#L133) | receiver-type-required |
 | `read` | `records.last` | [133](../../src/bounded_child_history.rs#L133) | receiver-type-required |
 | `read` | `request.through_sequence.unwrap_or` | [134](../../src/bounded_child_history.rs#L134) | receiver-type-required |

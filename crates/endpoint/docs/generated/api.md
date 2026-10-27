@@ -229,15 +229,15 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [endpoint::mux::ActionableRegistry::baseline](../../src/mux.rs#L777) | `pub` | no resolved direct caller |
 | [endpoint::mux::ActionableRegistry::resolve](../../src/mux.rs#L787) | `pub` | no resolved direct caller |
 | [endpoint::mux::MuxProtocolError](../../src/mux.rs#L874) | `pub` | not a function |
-| [endpoint::projection::Projector](../../src/projection.rs#L53) | `pub` | not a function |
-| [endpoint::projection::AcceptedStreamFrame](../../src/projection.rs#L76) | `pub` | not a function |
-| [endpoint::projection::Projector::processed_through](../../src/projection.rs#L93) | `pub` | no resolved direct caller |
-| [endpoint::projection::Projector::reconcile](../../src/projection.rs#L97) | `pub` | no resolved direct caller |
-| [endpoint::projection::Projector::read_only_history](../../src/projection.rs#L135) | `pub` | [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L185); [endpoint::tests::slice6_gates::read_only_projection_matches_durable_journal_without_creating_state](../../tests/slice6_gates.rs#L497); [tekes-supervisor::bounded_child_history::read](../../../supervisor/src/bounded_child_history.rs#L80) |
-| [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L185) | `pub` | [tekes-supervisor::endpoint_carrier::legacy_history::ProductionCarrierStreams::open_legacy_journal](../../../supervisor/src/endpoint_carrier/legacy_history.rs#L76) |
-| [endpoint::projection::Projector::stream_event](../../src/projection.rs#L195) | `pub` | no resolved direct caller |
-| [endpoint::projection::timestamp_millis](../../src/projection.rs#L1047) | `pub(crate)` | [endpoint::projection::Projector::project](../../src/projection.rs#L256); [endpoint::service::card_updated_ms](../../src/service.rs#L172); [endpoint::service::last_record_updated_ms](../../src/service.rs#L187) |
-| [endpoint::projection::ProjectionError](../../src/projection.rs#L1094) | `pub` | not a function |
+| [endpoint::projection::Projector](../../src/projection.rs#L54) | `pub` | not a function |
+| [endpoint::projection::AcceptedStreamFrame](../../src/projection.rs#L77) | `pub` | not a function |
+| [endpoint::projection::Projector::processed_through](../../src/projection.rs#L94) | `pub` | no resolved direct caller |
+| [endpoint::projection::Projector::reconcile](../../src/projection.rs#L98) | `pub` | no resolved direct caller |
+| [endpoint::projection::Projector::read_only_history](../../src/projection.rs#L136) | `pub` | [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L186); [endpoint::tests::slice6_gates::read_only_projection_matches_durable_journal_without_creating_state](../../tests/slice6_gates.rs#L497); [tekes-supervisor::bounded_child_history::read](../../../supervisor/src/bounded_child_history.rs#L80) |
+| [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L186) | `pub` | [tekes-supervisor::endpoint_carrier::legacy_history::ProductionCarrierStreams::open_legacy_journal](../../../supervisor/src/endpoint_carrier/legacy_history.rs#L76) |
+| [endpoint::projection::Projector::stream_event](../../src/projection.rs#L196) | `pub` | no resolved direct caller |
+| [endpoint::projection::timestamp_millis](../../src/projection.rs#L1051) | `pub(crate)` | [endpoint::projection::Projector::project](../../src/projection.rs#L257); [endpoint::service::card_updated_ms](../../src/service.rs#L172); [endpoint::service::last_record_updated_ms](../../src/service.rs#L187) |
+| [endpoint::projection::ProjectionError](../../src/projection.rs#L1098) | `pub` | not a function |
 | [endpoint::requests::RequestFrameType](../../src/requests.rs#L14) | `pub` | not a function |
 | [endpoint::requests::RequestFrameType::as_str](../../src/requests.rs#L23) | `pub` | no resolved direct caller |
 | [endpoint::requests::ResolutionOutcome](../../src/requests.rs#L33) | `pub` | not a function |
@@ -331,7 +331,7 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [endpoint::session_event_registry_generated::SESSION_EVENT_REGISTRY](../../src/session_event_registry_generated.rs#L35) | `pub(crate)` | not a function |
 | [endpoint::session_event_registry_generated::session_event_registry_entry](../../src/session_event_registry_generated.rs#L422) | `pub(crate)` | [endpoint::session_event_registry_generated::is_surface_event_type](../../src/session_event_registry_generated.rs#L430); [endpoint::session_event_registry_generated::kernel_may_emit_event_type](../../src/session_event_registry_generated.rs#L435); [endpoint::types::SessionEvent::validate](../../src/types.rs#L46) |
 | [endpoint::session_event_registry_generated::is_surface_event_type](../../src/session_event_registry_generated.rs#L430) | `pub(crate)` | [endpoint::types::SessionEvent::validate](../../src/types.rs#L46) |
-| [endpoint::session_event_registry_generated::kernel_may_emit_event_type](../../src/session_event_registry_generated.rs#L435) | `pub(crate)` | [endpoint::projection::session_event](../../src/projection.rs#L763) |
+| [endpoint::session_event_registry_generated::kernel_may_emit_event_type](../../src/session_event_registry_generated.rs#L435) | `pub(crate)` | [endpoint::projection::session_event](../../src/projection.rs#L767) |
 | [endpoint::session_operations::ORIGIN_CLIENT](../../src/session_operations.rs#L125) | `pub` | not a function |
 | [endpoint::session_operations::is_endpoint_origin_client](../../src/session_operations.rs#L128) | `pub` | [endpoint::session_operations::verify_session_create_genesis](../../src/session_operations.rs#L1876) |
 | [endpoint::session_operations::PresetModelSource](../../src/session_operations.rs#L148) | `pub` | not a function |
