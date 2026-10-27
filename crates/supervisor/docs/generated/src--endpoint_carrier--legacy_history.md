@@ -129,7 +129,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `open_legacy_journal` | `address.session_id.as_str` | [97](../../src/endpoint_carrier/legacy_history.rs#L97) | receiver-type-required |
 | `open_legacy_journal` | `"historical ledger address mismatch".into` | [100](../../src/endpoint_carrier/legacy_history.rs#L100) | receiver-type-required |
 | `open_legacy_journal` | `endpoint::Projector::read_only_legacy_history(&ledger, &folder)             .map_err` | [103](../../src/endpoint_carrier/legacy_history.rs#L103) | receiver-type-required |
-| `open_legacy_journal` | `endpoint::Projector::read_only_legacy_history` | [103](../../src/endpoint_carrier/legacy_history.rs#L103) | [endpoint::projection::Projector::read_only_legacy_history](../../../endpoint/src/projection.rs#L185) |
+| `open_legacy_journal` | `endpoint::Projector::read_only_legacy_history` | [103](../../src/endpoint_carrier/legacy_history.rs#L103) | [endpoint::projection::Projector::read_only_legacy_history](../../../endpoint/src/projection.rs#L186) |
 | `open_legacy_journal` | `Arc::new` | [105](../../src/endpoint_carrier/legacy_history.rs#L105) | external-constructor-callback-or-unresolved |
 | `open_legacy_journal` | `digest` | [106](../../src/endpoint_carrier/legacy_history.rs#L106), [109](../../src/endpoint_carrier/legacy_history.rs#L109) | [tekes-supervisor::endpoint_carrier::legacy_history::digest](../../src/endpoint_carrier/legacy_history.rs#L32) |
 | `open_legacy_journal` | `"historical source changed during projection".into` | [111](../../src/endpoint_carrier/legacy_history.rs#L111) | receiver-type-required |
