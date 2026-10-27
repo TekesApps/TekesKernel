@@ -64,6 +64,19 @@ pub(crate) fn open_ready_turn(
     Ok(None)
 }
 
+pub(crate) fn open_ready_turn_and_announce(
+    ledger: &mut LockedLedger,
+    timestamp: &str,
+    mode: RunMode,
+    stdout: &mut impl Write,
+) -> Result<Option<u64>, Box<dyn std::error::Error>> {
+    let opened = open_ready_turn(ledger, timestamp, mode)?;
+    if opened.is_some() {
+        announce_appended(ledger, stdout)?;
+    }
+    Ok(opened)
+}
+
 /// A completed turn is not a completed goal. Admit the next turn only from
 /// the separately persisted goal state, after all queued user input is drained.
 pub(crate) fn open_goal_continuation(

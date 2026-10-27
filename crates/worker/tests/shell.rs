@@ -626,6 +626,24 @@ fn assert_worker_provider_loop(commentary: bool, manual: bool) {
         .expect("select worker");
     stdin.flush().expect("flush select");
     line.clear();
+    stdout.read_line(&mut line).expect("turn-open notification");
+    assert!(
+        matches!(
+            decode_worker(line.as_bytes()).expect("turn-open wire"),
+            WorkerMessage::Appended(appended) if appended.seq == 4
+        ),
+        "{line}"
+    );
+    let opened = validate_ledger(
+        &fs::read(&ledger).expect("opened ledger"),
+        schema::READER_VERSION,
+    )
+    .expect("valid turn-open prefix");
+    assert!(
+        opened.lifecycle.live_inputs.is_empty(),
+        "consumed input must leave the queue before the provider starts"
+    );
+    line.clear();
     stdout.read_line(&mut line).expect("lease request");
     assert!(line.contains("\"lease_request\""), "{line}");
     if manual {

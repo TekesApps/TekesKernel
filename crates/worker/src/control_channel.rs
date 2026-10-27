@@ -11,11 +11,12 @@ pub(crate) struct RuntimeCancellation {
     cause: Arc<AtomicU8>,
     protocol_failed: Arc<AtomicBool>,
     deferred: Arc<Mutex<VecDeque<String>>>,
-    /// Deliveries (`input`, `queue_edit`, `meta`, `approval_response`,
-    /// `queue_transaction`) the reader thread took off the pipe. They never
-    /// enter the control channel, so a wait for `lease`/`tool_control_result`/
+    /// Deliveries the reader thread took off the pipe. They never enter the
+    /// control channel, so a wait for `lease`/`tool_control_result`/
     /// `launch_result` cannot mistake them for a protocol error; the main
-    /// thread appends and receipts them at its next yield point.
+    /// thread appends and receipts them at its next yield point. Queue
+    /// transactions remain in the channel for startup ordering and are drained
+    /// directly at active provider yield points.
     parked_deliveries: Arc<Mutex<VecDeque<String>>>,
 }
 
@@ -172,7 +173,8 @@ fn is_stop_control_line(line: &str) -> bool {
 }
 
 /// `queue_transaction` is not parked: at startup it is the protocol line the run
-/// consumes right after `selected`; mid-run the waits park it themselves.
+/// consumes right after `selected`; a lease wait parks it, and an active provider
+/// stream drains it from the channel at the next yield point.
 pub(crate) fn is_delivery_control_line(line: &str) -> bool {
     matches!(
         control_line_key(line).as_deref(),

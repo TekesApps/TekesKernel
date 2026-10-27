@@ -122,6 +122,51 @@ fn queue_transaction_commits_pair_and_reacks_without_new_events() {
 }
 
 #[test]
+fn newly_opened_turn_is_announced_once_before_provider_dispatch() {
+    let (_directory, mut ledger) = queue_ledger();
+    let mut output = Vec::new();
+    assert_eq!(
+        open_ready_turn_and_announce(
+            &mut ledger,
+            "2026-08-28T09:00:02.000Z",
+            RunMode::Ordinary,
+            &mut output,
+        )
+        .expect("open and announce"),
+        Some(1)
+    );
+    let notification: Value = serde_json::from_slice(
+        String::from_utf8(output.clone())
+            .expect("UTF-8")
+            .lines()
+            .next()
+            .expect("appended notification")
+            .as_bytes(),
+    )
+    .expect("notification JSON");
+    assert_eq!(
+        notification["appended"]["seq"],
+        ledger.projection().unwrap().last_seq
+    );
+    assert_eq!(
+        ledger.projection().unwrap().events.last().unwrap().kind(),
+        &EventKind::TurnOpen
+    );
+
+    assert_eq!(
+        open_ready_turn_and_announce(
+            &mut ledger,
+            "2026-08-28T09:00:03.000Z",
+            RunMode::Ordinary,
+            &mut output,
+        )
+        .expect("existing turn is unchanged"),
+        None
+    );
+    assert_eq!(output.iter().filter(|byte| **byte == b'\n').count(), 1);
+}
+
+#[test]
 fn queue_transaction_completes_retraction_only_crash_window() {
     let (_directory, mut ledger) = queue_ledger();
     let transaction = edit_transaction();
@@ -1762,6 +1807,148 @@ fn deliveries_are_receipted_while_the_provider_request_is_in_flight() {
         "receipt precedes the attempt outcome: {output}"
     );
     assert!(cancellation.take_parked_deliveries().is_empty());
+}
+
+#[test]
+fn queue_transaction_from_control_receiver_is_acked_during_active_provider_request() {
+    let (directory, mut ledger) = context_ledger("openai_responses_v1", true);
+    let queue_target_seq = ledger.next_seq();
+    let queue_item_origin = queue_origin("active-queued-input");
+    let mut queued_input = origin_event(
+        &ledger,
+        "2026-08-28T09:00:02.000Z",
+        "input",
+        &queue_item_origin,
+    );
+    queued_input.insert(
+        "content".to_owned(),
+        json!([{"type":"text","text":"queued during active turn"}]),
+    );
+    ledger
+        .append_contract(
+            make_event(Value::Object(queued_input)).expect("queued input"),
+            BarrierContext::default(),
+        )
+        .expect("append queued input");
+    let listener = TcpListener::bind("127.0.0.1:0").expect("provider listener");
+    let endpoint = format!(
+        "http://{}",
+        listener.local_addr().expect("provider address")
+    );
+    set_provider_test_redirect(Some(endpoint));
+
+    let cancellation = RuntimeCancellation::default();
+    let (control_sender, control_receiver) = sync_channel(1);
+    let mut lines = ControlLines {
+        receiver: control_receiver,
+        cancellation: cancellation.clone(),
+    };
+    let (incoming_sender, incoming_receiver) = std::sync::mpsc::channel();
+    let reader_cancellation = cancellation.clone();
+    let reader = std::thread::spawn(move || {
+        forward_control_lines(
+            incoming_receiver.into_iter(),
+            control_sender,
+            reader_cancellation,
+        )
+    });
+    let (request_started_sender, request_started_receiver) = std::sync::mpsc::channel();
+    let transaction_sender = incoming_sender.clone();
+    let transaction = QueueTransaction {
+        delivery: "delivery-active-remove".to_owned(),
+        rpc_id: "rpc-active-remove".to_owned(),
+        target_seq: queue_target_seq,
+        retract_origin: queue_origin("rpc-active-remove/retract"),
+        action: QueueTransactionAction::Remove,
+    };
+    let transaction_line = String::from_utf8(
+        worker_control::encode_queue_transaction(&transaction).expect("transaction line"),
+    )
+    .expect("UTF-8 transaction");
+    assert!(!is_delivery_control_line(&transaction_line));
+    let transaction_thread = std::thread::spawn(move || {
+        request_started_receiver
+            .recv()
+            .expect("provider request started");
+        transaction_sender
+            .send(Ok(transaction_line))
+            .expect("send transaction through control reader");
+    });
+
+    let server = std::thread::spawn(move || {
+        let (mut stream, _) = listener.accept().expect("provider accept");
+        let mut request = [0_u8; 4096];
+        let _ = stream.read(&mut request).expect("provider request");
+        request_started_sender
+            .send(())
+            .expect("signal active provider request");
+        // Keep the provider request open long enough for the worker's 20 ms
+        // streaming yield to consume and receipt the transaction.
+        std::thread::sleep(Duration::from_millis(300));
+        let body = br#"{"error":{"code":"invalid_api_key","message":"unauthorized"}}"#;
+        write!(stream, "HTTP/1.1 401 Unauthorized\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n", body.len()).expect("provider response header");
+        stream.write_all(body).expect("provider response body");
+    });
+
+    let profile = configured_test_provider_profile(directory.path());
+    let options = test_options(&ledger);
+    // The configured profile appends one replacement epoch before dispatch.
+    let attempt = format!("{}-attempt-{}", options.run_id, ledger.next_seq() + 1);
+    incoming_sender
+        .send(Ok(
+            json!({"lease":{"attempt":attempt,"granted":true}}).to_string()
+        ))
+        .expect("grant provider lease through real reader");
+    let mut output = Vec::new();
+    let result = run_provider_turn_with_controls(
+        &mut ledger,
+        &options,
+        &profile,
+        &Selected { version: 2 },
+        &mut None,
+        &mut lines,
+        &mut output,
+    );
+    set_provider_test_redirect(None);
+    result.expect("provider turn result");
+    transaction_thread.join().expect("transaction sender");
+    drop(incoming_sender);
+    reader.join().expect("control reader");
+    server.join().expect("provider server");
+
+    let events = &ledger.projection().expect("projection").events;
+    let retract_seq = events
+        .iter()
+        .find(|event| event.string_field("origin_key") == Some("rpc-active-remove/retract"))
+        .map(Event::seq)
+        .expect("durable queue removal before provider completion");
+    assert!(events.iter().any(|event| {
+        *event.kind() == EventKind::QueueEdit
+            && event.seq() == retract_seq
+            && serde_json::to_value(event.raw()).is_ok_and(|value| {
+                value["supersedes"] == json!([{"from":queue_target_seq,"to":queue_target_seq}])
+            })
+    }));
+    let provider_outcome_seq = events
+        .iter()
+        .find(|event| {
+            matches!(event.kind(), EventKind::Output | EventKind::Error)
+                && event.string_field("attempt") == Some(attempt.as_str())
+        })
+        .map(Event::seq)
+        .expect("provider outcome");
+    assert!(retract_seq < provider_outcome_seq);
+    let output = String::from_utf8(output).expect("UTF-8");
+    let receipt = output
+        .find("\"queue_transaction_result\":{\"delivery\":\"delivery-active-remove\"")
+        .expect("queue transaction ACK while request remains active");
+    let settled = output
+        .find("\"attempt_settled\"")
+        .expect("provider outcome after transaction ACK");
+    assert!(
+        receipt < settled,
+        "receipt precedes provider outcome: {output}"
+    );
 }
 
 #[test]

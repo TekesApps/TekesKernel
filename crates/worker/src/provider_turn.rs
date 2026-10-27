@@ -12,6 +12,56 @@ pub(crate) fn set_provider_test_redirect(endpoint: Option<String>) {
     PROVIDER_TEST_REDIRECT.with(|slot| *slot.borrow_mut() = endpoint);
 }
 
+trait ProviderControlInput: Iterator<Item = io::Result<String>> {
+    fn drain_provider_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<(), Box<dyn std::error::Error>>;
+}
+
+#[cfg(test)]
+struct IteratorControlInput<'a, I>(&'a mut I);
+
+#[cfg(test)]
+impl<I: Iterator<Item = io::Result<String>>> Iterator for IteratorControlInput<'_, I> {
+    type Item = io::Result<String>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        self.0.next()
+    }
+}
+
+#[cfg(test)]
+impl<I: Iterator<Item = io::Result<String>>> ProviderControlInput for IteratorControlInput<'_, I> {
+    fn drain_provider_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        drain_parked_deliveries(ledger, options, selected, cancellation, stdout)
+    }
+}
+
+impl ProviderControlInput for ControlLines {
+    fn drain_provider_deliveries(
+        &mut self,
+        ledger: &mut LockedLedger,
+        options: &Options,
+        selected: &Selected,
+        _cancellation: &RuntimeCancellation,
+        stdout: &mut impl Write,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        drain_ready_deliveries(ledger, options, selected, self, stdout)
+    }
+}
+
 pub(crate) struct ProviderOutcome {
     pub(crate) seq: u64,
     pub(crate) settle: Option<(&'static str, Option<&'static str>)>,
@@ -30,6 +80,7 @@ pub(crate) struct ProviderContext {
 }
 
 #[allow(clippy::too_many_arguments)]
+#[cfg(test)]
 pub(crate) fn run_provider_turn(
     ledger: &mut LockedLedger,
     options: &Options,
@@ -37,6 +88,52 @@ pub(crate) fn run_provider_turn(
     selected: &Selected,
     credential: &mut Option<Arc<Mutex<CredentialClient>>>,
     lines: &mut impl Iterator<Item = io::Result<String>>,
+    stdout: &mut impl Write,
+    cancellation: &RuntimeCancellation,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut lines = IteratorControlInput(lines);
+    run_provider_turn_with_input(
+        ledger,
+        options,
+        profile,
+        selected,
+        credential,
+        &mut lines,
+        stdout,
+        cancellation,
+    )
+}
+
+pub(crate) fn run_provider_turn_with_controls(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    profile: &RuntimeProfile,
+    selected: &Selected,
+    credential: &mut Option<Arc<Mutex<CredentialClient>>>,
+    lines: &mut ControlLines,
+    stdout: &mut impl Write,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let cancellation = lines.cancellation.clone();
+    run_provider_turn_with_input(
+        ledger,
+        options,
+        profile,
+        selected,
+        credential,
+        lines,
+        stdout,
+        &cancellation,
+    )
+}
+
+#[allow(clippy::too_many_arguments)]
+fn run_provider_turn_with_input(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    profile: &RuntimeProfile,
+    selected: &Selected,
+    credential: &mut Option<Arc<Mutex<CredentialClient>>>,
+    lines: &mut impl ProviderControlInput,
     stdout: &mut impl Write,
     cancellation: &RuntimeCancellation,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -109,7 +206,7 @@ fn run_provider_turn_inner(
     ledger: &mut LockedLedger,
     run: ProviderRunContext<'_>,
     credential: &mut Option<Arc<Mutex<CredentialClient>>>,
-    lines: &mut impl Iterator<Item = io::Result<String>>,
+    lines: &mut impl ProviderControlInput,
     stdout: &mut impl Write,
     budget: ProviderLoopBudget,
     cancellation: &RuntimeCancellation,
@@ -774,7 +871,13 @@ fn run_provider_turn_inner(
                                 )?;
                             }
                         }
-                        drain_parked_deliveries(ledger, options, run.selected, cancellation, stdout)
+                        lines.drain_provider_deliveries(
+                            ledger,
+                            options,
+                            run.selected,
+                            cancellation,
+                            stdout,
+                        )
                     })();
                     if let Err(error) = step {
                         cancelled_flag.store(true, std::sync::atomic::Ordering::Release);
