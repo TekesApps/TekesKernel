@@ -288,16 +288,17 @@ clients re-baseline.
 Each line is canonical I-JSON plus LF:
 
 ```text
-{v: 4, event: SessionEvent, kernel_seqs: [int], slot: str}
+{v: 6, event: SessionEvent, kernel_seqs: [int], slot: str}
 ```
 
 `v` is the projection record version. It is bumped whenever the deterministic
-projection of an existing ledger changes shape (v3: durable reasoning folds
+projection of an existing ledger changes bytes, including fixed error text (v3: durable reasoning folds
 into `assistant/message`; v4: `tool/result.error` is absent on success and a
-structured `{code, name}` on failure instead of a boolean); a journal whose records carry an earlier `v` is
+structured `{code, name}` on failure instead of a boolean; v6: exact user-stop errors carry a cancellation message); a journal whose records carry an earlier `v` is
 retired when the folder is next opened and rebuilt from the ledger, its
 endpoint seqs are reassigned and clients re-baseline, exactly like the
-`endpoint-v2.jsonl` retirement.
+`endpoint-v2.jsonl` retirement. Only derived cache files are retired; semantic
+ledger bytes and pending input are not rewritten.
 
 `event` is the exact public `SessionEvent` byte shape. `kernel_seqs` is a
 sorted, unique list of Kernel event seqs that caused the projection and is

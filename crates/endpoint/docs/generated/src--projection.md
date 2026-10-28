@@ -59,10 +59,11 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [endpoint::projection::tests::session_notice_meta_projects_as_a_turn_independent_surface_event](../../src/projection.rs#L1436) | function_item | `private` | test; #[cfg(test)] |
 | [endpoint::projection::tests::trim_of_closed_prior_turn_tool_result_keeps_original_surface_step](../../src/projection.rs#L1475) | function_item | `private` | test; #[cfg(test)] |
 | [endpoint::projection::tests::kernel_producer_rejects_dsh_private_state_events](../../src/projection.rs#L1510) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::projection::tests::known_user_stop_projects_cancellation_without_leaking_transport_details](../../src/projection.rs#L1525) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::projection::tests::provider_error_projects_as_turn_scoped_transcript_surface](../../src/projection.rs#L1590) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::projection::tests::a_failed_effect_reports_its_message_and_its_own_code](../../src/projection.rs#L1620) | function_item | `private` | test; #[cfg(test)] |
-| [endpoint::projection::tests::non_success_tool_results_have_closed_wire_shapes_and_spills_resolve](../../src/projection.rs#L1675) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::projection::tests::user_stop_replays_a_prior_v5_projection_cache_after_upgrade](../../src/projection.rs#L1525) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::projection::tests::known_user_stop_projects_cancellation_without_leaking_transport_details](../../src/projection.rs#L1580) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::projection::tests::provider_error_projects_as_turn_scoped_transcript_surface](../../src/projection.rs#L1645) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::projection::tests::a_failed_effect_reports_its_message_and_its_own_code](../../src/projection.rs#L1675) | function_item | `private` | test; #[cfg(test)] |
+| [endpoint::projection::tests::non_success_tool_results_have_closed_wire_shapes_and_spills_resolve](../../src/projection.rs#L1730) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -805,53 +806,84 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `trim_of_closed_prior_turn_tool_result_keeps_original_surface_step` | `serde_json::to_value` | [1503](../../src/projection.rs#L1503) | external-constructor-callback-or-unresolved |
 | `kernel_producer_rejects_dsh_private_state_events` | `session_event("turn/start", 1.0, json!({"turn": 0}), false).expect` | [1521](../../src/projection.rs#L1521) | receiver-type-required |
 | `kernel_producer_rejects_dsh_private_state_events` | `session_event` | [1521](../../src/projection.rs#L1521) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `tempfile::tempdir().expect` | [1526](../../src/projection.rs#L1526) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `tempfile::tempdir` | [1526](../../src/projection.rs#L1526) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `EndpointJournal::open(folder.path()).expect` | [1527](../../src/projection.rs#L1527) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `EndpointJournal::open` | [1527](../../src/projection.rs#L1527) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `folder.path` | [1527](../../src/projection.rs#L1527) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Some` | [1531](../../src/projection.rs#L1531), [1537](../../src/projection.rs#L1537), [1542](../../src/projection.rs#L1542), [1547](../../src/projection.rs#L1547), [1552](../../src/projection.rs#L1552), [1557](../../src/projection.rs#L1557) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Event::decode(&serde_json::to_vec(&raw).expect("raw")).expect` | [1568](../../src/projection.rs#L1568) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Event::decode` | [1568](../../src/projection.rs#L1568) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_vec(&raw).expect` | [1568](../../src/projection.rs#L1568) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_vec` | [1568](../../src/projection.rs#L1568) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default()                 .project(&event, &journal)                 .expect` | [1569](../../src/projection.rs#L1569) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default()                 .project` | [1569](../../src/projection.rs#L1569) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default` | [1569](../../src/projection.rs#L1569) | external-constructor-callback-or-unresolved |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_value(&wire.data).expect` | [1575](../../src/projection.rs#L1575) | receiver-type-required |
-| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_value` | [1575](../../src/projection.rs#L1575) | external-constructor-callback-or-unresolved |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `tempfile::tempdir().expect` | [1591](../../src/projection.rs#L1591) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `tempfile::tempdir` | [1591](../../src/projection.rs#L1591) | external-constructor-callback-or-unresolved |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `EndpointJournal::open(folder.path()).expect` | [1592](../../src/projection.rs#L1592) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `EndpointJournal::open` | [1592](../../src/projection.rs#L1592) | external-constructor-callback-or-unresolved |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `folder.path` | [1592](../../src/projection.rs#L1592) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `Event::decode(             br#"{"classification":"provider_terminal","detail":"network_disabled","kind":"error","recoverable":false,"seq":5,"ts":"2026-09-02T14:12:34.029Z","turn":1,"v":1}"#,         )         .expect` | [1593](../../src/projection.rs#L1593) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `Event::decode` | [1593](../../src/projection.rs#L1593) | external-constructor-callback-or-unresolved |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default()             .project(&event, &journal)             .expect` | [1598](../../src/projection.rs#L1598) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default()             .project` | [1598](../../src/projection.rs#L1598) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default` | [1598](../../src/projection.rs#L1598) | external-constructor-callback-or-unresolved |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `projected.first().expect` | [1601](../../src/projection.rs#L1601) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `projected.first` | [1601](../../src/projection.rs#L1601) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `serde_json::to_value(&wire.data).expect` | [1602](../../src/projection.rs#L1602) | receiver-type-required |
-| `provider_error_projects_as_turn_scoped_transcript_surface` | `serde_json::to_value` | [1602](../../src/projection.rs#L1602) | external-constructor-callback-or-unresolved |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `tempfile::tempdir().expect` | [1621](../../src/projection.rs#L1621) | receiver-type-required |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `tempfile::tempdir` | [1621](../../src/projection.rs#L1621) | external-constructor-callback-or-unresolved |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `EndpointJournal::open(folder.path()).expect` | [1622](../../src/projection.rs#L1622) | receiver-type-required |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `EndpointJournal::open` | [1622](../../src/projection.rs#L1622) | external-constructor-callback-or-unresolved |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `folder.path` | [1622](../../src/projection.rs#L1622) | receiver-type-required |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `tool_result_wire(&value, &journal).expect` | [1633](../../src/projection.rs#L1633), [1650](../../src/projection.rs#L1650), [1668](../../src/projection.rs#L1668) | receiver-type-required |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `tool_result_wire` | [1633](../../src/projection.rs#L1633), [1650](../../src/projection.rs#L1650), [1668](../../src/projection.rs#L1668) | external-constructor-callback-or-unresolved |
-| `a_failed_effect_reports_its_message_and_its_own_code` | `error.expect` | [1634](../../src/projection.rs#L1634) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tempfile::tempdir().expect` | [1676](../../src/projection.rs#L1676) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tempfile::tempdir` | [1676](../../src/projection.rs#L1676) | external-constructor-callback-or-unresolved |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `EndpointJournal::open(folder.path()).expect` | [1677](../../src/projection.rs#L1677) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `EndpointJournal::open` | [1677](../../src/projection.rs#L1677) | external-constructor-callback-or-unresolved |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `folder.path` | [1677](../../src/projection.rs#L1677), [1715](../../src/projection.rs#L1715) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tool_result_wire(&value, &journal).expect` | [1705](../../src/projection.rs#L1705), [1723](../../src/projection.rs#L1723) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tool_result_wire` | [1705](../../src/projection.rs#L1705), [1723](../../src/projection.rs#L1723) | external-constructor-callback-or-unresolved |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `error.expect` | [1706](../../src/projection.rs#L1706) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect("assets")             .publish(bytes)             .expect` | [1715](../../src/projection.rs#L1715) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect("assets")             .publish` | [1715](../../src/projection.rs#L1715) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect` | [1715](../../src/projection.rs#L1715) | receiver-type-required |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new` | [1715](../../src/projection.rs#L1715) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `folder.path().join` | [1715](../../src/projection.rs#L1715) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `tempfile::tempdir().expect` | [1526](../../src/projection.rs#L1526) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `tempfile::tempdir` | [1526](../../src/projection.rs#L1526) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `EndpointJournal::open(folder.path()).expect` | [1527](../../src/projection.rs#L1527), [1557](../../src/projection.rs#L1557) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `EndpointJournal::open` | [1527](../../src/projection.rs#L1527), [1557](../../src/projection.rs#L1557) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `folder.path` | [1527](../../src/projection.rs#L1527), [1553](../../src/projection.rs#L1553), [1555](../../src/projection.rs#L1555), [1557](../../src/projection.rs#L1557) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Event::decode(             br#"{"classification":"transport","detail":"user_stop","kind":"error","recoverable":false,"seq":5,"ts":"2026-10-28T00:00:00.000Z","turn":1,"v":1}"#,         ).expect` | [1528](../../src/projection.rs#L1528) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Event::decode` | [1528](../../src/projection.rs#L1528) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Projector::default()             .project(&event, &journal)             .expect` | [1531](../../src/projection.rs#L1531) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Projector::default()             .project` | [1531](../../src/projection.rs#L1531) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Projector::default` | [1531](../../src/projection.rs#L1531), [1558](../../src/projection.rs#L1558) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `projected[0].2.clone` | [1534](../../src/projection.rs#L1534) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `schema::IJsonValue::parse(             &serde_json::to_vec(&json!({                 "turn":1,"classification":"transport","recoverable":false,                 "message":"The provider request failed."             }))             .unwrap(),         )         .unwrap` | [1536](../../src/projection.rs#L1536) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `schema::IJsonValue::parse` | [1536](../../src/projection.rs#L1536) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `serde_json::to_vec(&json!({                 "turn":1,"classification":"transport","recoverable":false,                 "message":"The provider request failed."             }))             .unwrap` | [1537](../../src/projection.rs#L1537) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `serde_json::to_vec` | [1537](../../src/projection.rs#L1537) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `"response-error".to_owned` | [1548](../../src/projection.rs#L1548) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `old_record.canonical_bytes().expect` | [1550](../../src/projection.rs#L1550) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `old_record.canonical_bytes` | [1550](../../src/projection.rs#L1550) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `old_bytes.push` | [1551](../../src/projection.rs#L1551) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `drop` | [1552](../../src/projection.rs#L1552) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `std::fs::write(folder.path().join(crate::journal::JOURNAL_FILE), &old_bytes).unwrap` | [1553](../../src/projection.rs#L1553) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `std::fs::write` | [1553](../../src/projection.rs#L1553), [1555](../../src/projection.rs#L1555) | external-constructor-callback-or-unresolved |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `folder.path().join` | [1553](../../src/projection.rs#L1553), [1555](../../src/projection.rs#L1555) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `event.raw().canonical_bytes().unwrap` | [1554](../../src/projection.rs#L1554) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `event.raw().canonical_bytes` | [1554](../../src/projection.rs#L1554) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `event.raw` | [1554](../../src/projection.rs#L1554) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `std::fs::write(folder.path().join("main.jsonl"), &original_semantic).unwrap` | [1555](../../src/projection.rs#L1555) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Projector::default()             .reconcile(&[event], &reopened)             .expect` | [1558](../../src/projection.rs#L1558) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `Projector::default()             .reconcile` | [1558](../../src/projection.rs#L1558) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `reopened.records().unwrap` | [1566](../../src/projection.rs#L1566) | receiver-type-required |
+| `user_stop_replays_a_prior_v5_projection_cache_after_upgrade` | `reopened.records` | [1566](../../src/projection.rs#L1566) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `tempfile::tempdir().expect` | [1581](../../src/projection.rs#L1581) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `tempfile::tempdir` | [1581](../../src/projection.rs#L1581) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `EndpointJournal::open(folder.path()).expect` | [1582](../../src/projection.rs#L1582) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `EndpointJournal::open` | [1582](../../src/projection.rs#L1582) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `folder.path` | [1582](../../src/projection.rs#L1582) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Some` | [1586](../../src/projection.rs#L1586), [1592](../../src/projection.rs#L1592), [1597](../../src/projection.rs#L1597), [1602](../../src/projection.rs#L1602), [1607](../../src/projection.rs#L1607), [1612](../../src/projection.rs#L1612) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Event::decode(&serde_json::to_vec(&raw).expect("raw")).expect` | [1623](../../src/projection.rs#L1623) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Event::decode` | [1623](../../src/projection.rs#L1623) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_vec(&raw).expect` | [1623](../../src/projection.rs#L1623) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_vec` | [1623](../../src/projection.rs#L1623) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default()                 .project(&event, &journal)                 .expect` | [1624](../../src/projection.rs#L1624) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default()                 .project` | [1624](../../src/projection.rs#L1624) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `Projector::default` | [1624](../../src/projection.rs#L1624) | external-constructor-callback-or-unresolved |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_value(&wire.data).expect` | [1630](../../src/projection.rs#L1630) | receiver-type-required |
+| `known_user_stop_projects_cancellation_without_leaking_transport_details` | `serde_json::to_value` | [1630](../../src/projection.rs#L1630) | external-constructor-callback-or-unresolved |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `tempfile::tempdir().expect` | [1646](../../src/projection.rs#L1646) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `tempfile::tempdir` | [1646](../../src/projection.rs#L1646) | external-constructor-callback-or-unresolved |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `EndpointJournal::open(folder.path()).expect` | [1647](../../src/projection.rs#L1647) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `EndpointJournal::open` | [1647](../../src/projection.rs#L1647) | external-constructor-callback-or-unresolved |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `folder.path` | [1647](../../src/projection.rs#L1647) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `Event::decode(             br#"{"classification":"provider_terminal","detail":"network_disabled","kind":"error","recoverable":false,"seq":5,"ts":"2026-09-02T14:12:34.029Z","turn":1,"v":1}"#,         )         .expect` | [1648](../../src/projection.rs#L1648) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `Event::decode` | [1648](../../src/projection.rs#L1648) | external-constructor-callback-or-unresolved |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default()             .project(&event, &journal)             .expect` | [1653](../../src/projection.rs#L1653) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default()             .project` | [1653](../../src/projection.rs#L1653) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `Projector::default` | [1653](../../src/projection.rs#L1653) | external-constructor-callback-or-unresolved |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `projected.first().expect` | [1656](../../src/projection.rs#L1656) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `projected.first` | [1656](../../src/projection.rs#L1656) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `serde_json::to_value(&wire.data).expect` | [1657](../../src/projection.rs#L1657) | receiver-type-required |
+| `provider_error_projects_as_turn_scoped_transcript_surface` | `serde_json::to_value` | [1657](../../src/projection.rs#L1657) | external-constructor-callback-or-unresolved |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `tempfile::tempdir().expect` | [1676](../../src/projection.rs#L1676) | receiver-type-required |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `tempfile::tempdir` | [1676](../../src/projection.rs#L1676) | external-constructor-callback-or-unresolved |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `EndpointJournal::open(folder.path()).expect` | [1677](../../src/projection.rs#L1677) | receiver-type-required |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `EndpointJournal::open` | [1677](../../src/projection.rs#L1677) | external-constructor-callback-or-unresolved |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `folder.path` | [1677](../../src/projection.rs#L1677) | receiver-type-required |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `tool_result_wire(&value, &journal).expect` | [1688](../../src/projection.rs#L1688), [1705](../../src/projection.rs#L1705), [1723](../../src/projection.rs#L1723) | receiver-type-required |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `tool_result_wire` | [1688](../../src/projection.rs#L1688), [1705](../../src/projection.rs#L1705), [1723](../../src/projection.rs#L1723) | external-constructor-callback-or-unresolved |
+| `a_failed_effect_reports_its_message_and_its_own_code` | `error.expect` | [1689](../../src/projection.rs#L1689) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tempfile::tempdir().expect` | [1731](../../src/projection.rs#L1731) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tempfile::tempdir` | [1731](../../src/projection.rs#L1731) | external-constructor-callback-or-unresolved |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `EndpointJournal::open(folder.path()).expect` | [1732](../../src/projection.rs#L1732) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `EndpointJournal::open` | [1732](../../src/projection.rs#L1732) | external-constructor-callback-or-unresolved |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `folder.path` | [1732](../../src/projection.rs#L1732), [1770](../../src/projection.rs#L1770) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tool_result_wire(&value, &journal).expect` | [1760](../../src/projection.rs#L1760), [1778](../../src/projection.rs#L1778) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `tool_result_wire` | [1760](../../src/projection.rs#L1760), [1778](../../src/projection.rs#L1778) | external-constructor-callback-or-unresolved |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `error.expect` | [1761](../../src/projection.rs#L1761) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect("assets")             .publish(bytes)             .expect` | [1770](../../src/projection.rs#L1770) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect("assets")             .publish` | [1770](../../src/projection.rs#L1770) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new(folder.path().join("assets"))             .expect` | [1770](../../src/projection.rs#L1770) | receiver-type-required |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `AssetStore::new` | [1770](../../src/projection.rs#L1770) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `non_success_tool_results_have_closed_wire_shapes_and_spills_resolve` | `folder.path().join` | [1770](../../src/projection.rs#L1770) | receiver-type-required |
