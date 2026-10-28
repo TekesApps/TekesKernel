@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.16 — 2026-10-28
+
+### Changed
+
+- Reuse a successful fixed macOS Seatbelt helper backend preflight within one Resident Host; Linux automatic backend selection remains fresh. Failed probes are retried; worker-local probing, helper file and policy checks, MCP-only authority and actual sandbox confinement remain per their existing boundaries.
+
 ## 0.9.15 — 2026-10-28
 
 ### Fixed
