@@ -1522,6 +1522,61 @@ mod tests {
     }
 
     #[test]
+    fn user_stop_replays_a_prior_v5_projection_cache_after_upgrade() {
+        let folder = tempfile::tempdir().expect("folder");
+        let journal = EndpointJournal::open(folder.path()).expect("journal");
+        let event = Event::decode(
+            br#"{"classification":"transport","detail":"user_stop","kind":"error","recoverable":false,"seq":5,"ts":"2026-10-28T00:00:00.000Z","turn":1,"v":1}"#,
+        ).expect("old semantic event");
+        let projected = Projector::default()
+            .project(&event, &journal)
+            .expect("projection");
+        let mut old_event = projected[0].2.clone();
+        old_event.seq = 0;
+        old_event.data = schema::IJsonValue::parse(
+            &serde_json::to_vec(&json!({
+                "turn":1,"classification":"transport","recoverable":false,
+                "message":"The provider request failed."
+            }))
+            .unwrap(),
+        )
+        .unwrap();
+        let old_record = crate::journal::JournalRecord {
+            v: 5,
+            event: old_event,
+            kernel_seqs: vec![5],
+            slot: "response-error".to_owned(),
+        };
+        let mut old_bytes = old_record.canonical_bytes().expect("old cache");
+        old_bytes.push(b'\n');
+        drop(journal);
+        std::fs::write(folder.path().join(crate::journal::JOURNAL_FILE), &old_bytes).unwrap();
+        let original_semantic = event.raw().canonical_bytes().unwrap();
+        std::fs::write(folder.path().join("main.jsonl"), &original_semantic).unwrap();
+
+        let reopened = EndpointJournal::open(folder.path()).expect("open old cache");
+        let appended = Projector::default()
+            .reconcile(&[event], &reopened)
+            .expect("upgrade must not conflict with prior cache bytes");
+        assert_eq!(appended.len(), 1);
+        assert_eq!(
+            serde_json::to_value(&appended[0].data).unwrap()["message"],
+            "The response was stopped by the user."
+        );
+        let records = reopened.records().unwrap();
+        assert_eq!(records.len(), 1);
+        assert_eq!(records[0].v, crate::journal::JOURNAL_RECORD_VERSION);
+        assert_ne!(
+            records[0].v, 5,
+            "changed deterministic projection needs a new cache generation"
+        );
+        assert_eq!(
+            std::fs::read(folder.path().join("main.jsonl")).unwrap(),
+            original_semantic
+        );
+    }
+
+    #[test]
     fn known_user_stop_projects_cancellation_without_leaking_transport_details() {
         let folder = tempfile::tempdir().expect("folder");
         let journal = EndpointJournal::open(folder.path()).expect("journal");

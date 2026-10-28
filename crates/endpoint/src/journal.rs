@@ -11,10 +11,10 @@ use thiserror::Error;
 use crate::types::{EndpointTypeError, MAX_SAFE_SEQUENCE, SessionEvent};
 
 /// Record version of the durable projection. Bumped whenever the deterministic
-/// projection of an existing ledger changes shape; a journal written under an
+/// projection of an existing ledger changes bytes, including fixed text; a journal written under an
 /// earlier version is retired on open and rebuilt from the ledger (endpoint
 /// seqs are reassigned, clients re-baseline), never merged.
-pub const JOURNAL_RECORD_VERSION: u64 = 5;
+pub const JOURNAL_RECORD_VERSION: u64 = 6;
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]

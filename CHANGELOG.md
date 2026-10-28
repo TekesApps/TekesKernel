@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.17 — 2026-10-28
+
+### Fixed
+
+- Rebuild version-5 derived endpoint caches before replaying the changed user-stop projection, preventing an immutable-slot identity conflict after upgrade. Only the existing derived-cache retirement path is used; semantic ledger bytes, configuration, and pending input are not rewritten. Clients re-baseline through the existing journal-generation contract.
+
 ## 0.9.16 — 2026-10-28
 
 ### Fixed
