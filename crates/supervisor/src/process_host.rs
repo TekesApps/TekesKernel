@@ -8,7 +8,7 @@ use std::os::unix::fs::{MetadataExt, OpenOptionsExt};
 use std::path::{Path, PathBuf};
 use std::process::{Child, ChildStdin};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Condvar, Mutex, TryLockError, Weak};
+use std::sync::{Arc, Condvar, Mutex, OnceLock, TryLockError, Weak};
 use std::time::{Duration, Instant, UNIX_EPOCH};
 
 use chrono::Utc;
@@ -435,6 +435,7 @@ pub struct ProductionProcessHost {
     user_agent_dir: PathBuf,
     secret_store: Arc<dyn provider::SecretStore>,
     mcp_runtime: Arc<McpRuntime>,
+    successful_sandbox_probe: OnceLock<tools::ProbeStatus>,
     workers: Mutex<HashMap<String, Arc<WorkerHandle>>>,
     starting_workers: Mutex<HashSet<String>>,
     /// Pre-existing sessions the client has released with `sessions.recover` (DESIGN §6). A
@@ -830,6 +831,7 @@ impl ProductionProcessHost {
             user_agent_dir: user_agent_dir.into(),
             secret_store,
             mcp_runtime,
+            successful_sandbox_probe: OnceLock::new(),
             workers: Mutex::new(HashMap::new()),
             starting_workers: Mutex::new(HashSet::new()),
             released: Mutex::new(HashSet::new()),
@@ -2321,6 +2323,28 @@ impl ProductionProcessHost {
         Ok(())
     }
 
+    // Only the generic backend/version result is reusable within this host. Helper files,
+    // session policies and MCP-only authority are still checked for each launcher.
+    fn sandbox_probe_with(
+        &self,
+        backend: tools::SandboxBackend,
+        probe: impl FnOnce() -> tools::ProbeStatus,
+    ) -> tools::ProbeStatus {
+        // Linux Auto must keep selecting an available backend on each call.
+        if backend != tools::SandboxBackend::DarwinSeatbeltV1 {
+            return probe();
+        }
+        if let Some(status) = self.successful_sandbox_probe.get() {
+            return status.clone();
+        }
+        let status = probe();
+        if matches!(&status, tools::ProbeStatus::Available { .. }) {
+            // Concurrent first callers may both probe; either successful result may win.
+            let _ = self.successful_sandbox_probe.set(status.clone());
+        }
+        status
+    }
+
     pub fn preflight_mandatory_authorities(&self) -> Result<(), DaemonError> {
         if !self.root.join("jobs").is_dir() {
             return Err(DaemonError::required_broker(
@@ -2333,7 +2357,9 @@ impl ProductionProcessHost {
         } else {
             tools::HelperJobLauncher::new(
                 self.worker_binary.with_file_name("tekes-helper"),
-                tools::probe_backend(production_sandbox_backend()),
+                self.sandbox_probe_with(production_sandbox_backend(), || {
+                    tools::probe_backend(production_sandbox_backend())
+                }),
             )
             .map_err(|error| DaemonError::required_broker(error.to_string()))?;
         }
@@ -2372,7 +2398,9 @@ impl ProductionProcessHost {
         } else {
             tools::HelperJobLauncher::new(
                 executable,
-                tools::probe_backend(production_sandbox_backend()),
+                self.sandbox_probe_with(production_sandbox_backend(), || {
+                    tools::probe_backend(production_sandbox_backend())
+                }),
             )
         }
         .map_err(|error| DaemonError::required_broker(error.to_string()))?;
@@ -6928,6 +6956,214 @@ mod tests {
                 .iter()
                 .any(|event| *event.kind() == EventKind::Compact)
         );
+        host.shutdown();
+    }
+
+    #[test]
+    fn sandbox_probe_reuses_success_within_host() {
+        let root = tempfile::tempdir().unwrap();
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().unwrap(),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .unwrap();
+        let available = tools::ProbeStatus::Available {
+            backend: "fixture-backend".to_owned(),
+            version: "1".to_owned(),
+        };
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || available
+                .clone()),
+            available
+        );
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || panic!(
+                "successful probe must be reused"
+            )),
+            available
+        );
+        host.shutdown();
+    }
+
+    #[test]
+    fn sandbox_probe_retries_failure_and_caches_recovery() {
+        let root = tempfile::tempdir().unwrap();
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().unwrap(),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .unwrap();
+        let unavailable = tools::ProbeStatus::Unavailable {
+            class: tools::ProbeFailure::Rejected,
+            detail: "fixture failure".to_owned(),
+        };
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || unavailable
+                .clone()),
+            unavailable
+        );
+        assert!(host.successful_sandbox_probe.get().is_none());
+        let available = tools::ProbeStatus::Available {
+            backend: "fixture-backend".to_owned(),
+            version: "1".to_owned(),
+        };
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || available
+                .clone()),
+            available
+        );
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || panic!(
+                "recovered probe must be reused"
+            )),
+            available
+        );
+        host.shutdown();
+    }
+
+    #[test]
+    fn sandbox_probe_cache_is_scoped_to_host() {
+        let first_root = tempfile::tempdir().unwrap();
+        let second_root = tempfile::tempdir().unwrap();
+        let mut hosts = Vec::new();
+        for root in [&first_root, &second_root] {
+            hosts.push(
+                ProductionProcessHost::open(
+                    root.path(),
+                    std::env::current_exe().unwrap(),
+                    "test-build",
+                    root.path().join("missing-agent-home"),
+                )
+                .unwrap(),
+            );
+        }
+        let first = tools::ProbeStatus::Available {
+            backend: "fixture-first".to_owned(),
+            version: "1".to_owned(),
+        };
+        let second = tools::ProbeStatus::Available {
+            backend: "fixture-second".to_owned(),
+            version: "2".to_owned(),
+        };
+        assert_eq!(
+            hosts[0].sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || first.clone()),
+            first
+        );
+        assert_eq!(
+            hosts[1].sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || second.clone()),
+            second
+        );
+        for host in hosts {
+            host.shutdown();
+        }
+    }
+
+    #[test]
+    fn sandbox_probe_keeps_linux_auto_selection_fresh() {
+        let root = tempfile::tempdir().unwrap();
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().unwrap(),
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .unwrap();
+        let first = tools::ProbeStatus::Available {
+            backend: "linux-bubblewrap-seccomp".to_owned(),
+            version: "1".to_owned(),
+        };
+        let second = tools::ProbeStatus::Available {
+            backend: "linux-landlock".to_owned(),
+            version: "2".to_owned(),
+        };
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::LinuxAutoV1, || first.clone()),
+            first
+        );
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::LinuxAutoV1, || second.clone()),
+            second
+        );
+        assert!(host.successful_sandbox_probe.get().is_none());
+        host.shutdown();
+    }
+
+    #[test]
+    fn cached_sandbox_probe_preserves_helper_and_mcp_only_checks() {
+        use tools::SandboxedJobLauncher as _;
+        let root = tempfile::tempdir().unwrap();
+        let workspace = tempfile::tempdir().unwrap();
+        fs::create_dir_all(root.path().join("jobs")).unwrap();
+        write_test_execution_config(
+            root.path(),
+            json!({"cwd":[workspace.path()],
+                "policy":{"allowed_tools":[],"writable_roots":[],"network":false}}),
+        );
+        let worker = root.path().join("tekes-worker");
+        fs::write(&worker, b"#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&worker, fs::Permissions::from_mode(0o700)).unwrap();
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"fixture").unwrap();
+        let host = ProductionProcessHost::open(
+            root.path(),
+            worker,
+            "test-build",
+            root.path().join("missing-agent-home"),
+        )
+        .unwrap();
+        let available = tools::ProbeStatus::Available {
+            backend: "fixture-backend".to_owned(),
+            version: "1".to_owned(),
+        };
+        assert_eq!(
+            host.sandbox_probe_with(tools::SandboxBackend::DarwinSeatbeltV1, || available
+                .clone()),
+            available
+        );
+        let config =
+            test_support::resolve_execution_fixture(&host.repository, "test", None).unwrap();
+        let instruction = profile::InstructionSnapshot {
+            format: 1,
+            sources: Vec::new(),
+            effective: profile::EffectiveInstructions::default(),
+        };
+        host.preflight_mandatory_authorities().unwrap();
+        host.freeze_tool_authority(&config, &instruction).unwrap();
+        fs::remove_file(&helper).unwrap();
+        assert!(host.preflight_mandatory_authorities().is_err());
+        assert!(host.freeze_tool_authority(&config, &instruction).is_err());
+        fs::create_dir(&helper).unwrap();
+        assert!(host.preflight_mandatory_authorities().is_err());
+        assert!(host.freeze_tool_authority(&config, &instruction).is_err());
+        fs::remove_dir(&helper).unwrap();
+        fs::write(&helper, b"fixture").unwrap();
+        let marker = root.path().join(MCP_ONLY_APP_SANDBOX_MARKER);
+        fs::write(&marker, b"").unwrap();
+        fs::set_permissions(&marker, fs::Permissions::from_mode(0o600)).unwrap();
+        host.preflight_mandatory_authorities().unwrap();
+        let (policy, launcher) = host.freeze_tool_authority(&config, &instruction).unwrap();
+        let spec = tools::JobSpec {
+            program: "/bin/true".to_owned(),
+            args: Vec::new(),
+            working_directory: None,
+            writable_paths: Vec::new(),
+            environment: BTreeMap::new(),
+        };
+        let error = launcher
+            .runner_command(&spec, policy.base_sandbox())
+            .unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("sandbox probe did not report available")
+        );
+        fs::set_permissions(&marker, fs::Permissions::from_mode(0o644)).unwrap();
+        assert!(host.preflight_mandatory_authorities().is_err());
+        assert!(host.freeze_tool_authority(&config, &instruction).is_err());
         host.shutdown();
     }
 
