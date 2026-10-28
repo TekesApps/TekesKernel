@@ -236,8 +236,8 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [endpoint::projection::Projector::read_only_history](../../src/projection.rs#L136) | `pub` | [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L186); [endpoint::tests::slice6_gates::read_only_projection_matches_durable_journal_without_creating_state](../../tests/slice6_gates.rs#L497); [tekes-supervisor::bounded_child_history::read](../../../supervisor/src/bounded_child_history.rs#L80) |
 | [endpoint::projection::Projector::read_only_legacy_history](../../src/projection.rs#L186) | `pub` | [tekes-supervisor::endpoint_carrier::legacy_history::ProductionCarrierStreams::open_legacy_journal](../../../supervisor/src/endpoint_carrier/legacy_history.rs#L76) |
 | [endpoint::projection::Projector::stream_event](../../src/projection.rs#L196) | `pub` | no resolved direct caller |
-| [endpoint::projection::timestamp_millis](../../src/projection.rs#L1051) | `pub(crate)` | [endpoint::projection::Projector::project](../../src/projection.rs#L257); [endpoint::service::card_updated_ms](../../src/service.rs#L172); [endpoint::service::last_record_updated_ms](../../src/service.rs#L187) |
-| [endpoint::projection::ProjectionError](../../src/projection.rs#L1098) | `pub` | not a function |
+| [endpoint::projection::timestamp_millis](../../src/projection.rs#L1052) | `pub(crate)` | [endpoint::projection::Projector::project](../../src/projection.rs#L257); [endpoint::service::card_updated_ms](../../src/service.rs#L172); [endpoint::service::last_record_updated_ms](../../src/service.rs#L187) |
+| [endpoint::projection::ProjectionError](../../src/projection.rs#L1099) | `pub` | not a function |
 | [endpoint::requests::RequestFrameType](../../src/requests.rs#L14) | `pub` | not a function |
 | [endpoint::requests::RequestFrameType::as_str](../../src/requests.rs#L23) | `pub` | no resolved direct caller |
 | [endpoint::requests::ResolutionOutcome](../../src/requests.rs#L33) | `pub` | not a function |

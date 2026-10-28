@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.16 — 2026-10-28
+
+### Fixed
+
+- Describe the exact known `transport` / `user_stop` response as a user-requested stop. Preserve the public error classification and shape; unknown details remain sanitized and existing history is not rewritten.
+
 ## 0.9.15 — 2026-10-28
 
 ### Fixed
