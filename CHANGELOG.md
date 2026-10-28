@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.15 — 2026-10-28
+
+### Fixed
+
+- Hand off an interrupted queue transaction once after its worker has conclusively exited, preserving the original transaction identity and startup ordering. A still-running worker retains its failure, so cancelling a run and immediately removing a pending message cannot introduce a second ledger writer.
+
 ## 0.9.14 — 2026-10-28
 
 ### Fixed

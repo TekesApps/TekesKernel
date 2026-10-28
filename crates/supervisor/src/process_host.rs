@@ -5594,19 +5594,52 @@ impl QueueTransactionAuthority for ProductionProcessHost {
             .join("threads")
             .join(session_id)
             .join("main.jsonl");
+        let bytes = encode_queue_transaction(transaction).map_err(internal)?;
         let scheduled = self
-            .schedule_worker_at_with_startup(session_id, session_id, ledger, Some(transaction))
+            .schedule_worker_at_with_startup(
+                session_id,
+                session_id,
+                ledger.clone(),
+                Some(transaction),
+            )
             .map_err(internal)?;
         let worker = match scheduled.worker {
             Some(worker) => worker,
             None => self.wait_for_worker(session_id).map_err(internal)?,
         };
-        if !scheduled.startup_preloaded {
-            worker
-                .write(&encode_queue_transaction(transaction).map_err(internal)?)
-                .map_err(internal)?;
+        let delivered = if scheduled.startup_preloaded {
+            Ok(())
+        } else {
+            worker.write(&bytes).map_err(internal)
+        };
+        match delivered.and_then(|()| worker.queue_result(&transaction.delivery)) {
+            Ok(result) => Ok(result),
+            Err(error) => {
+                // A closed pipe or lost result alone does not relinquish the
+                // ledger. Confirm exit before one handoff of this exact keyed
+                // transaction; startup recovery deduplicates a partial commit.
+                if !child_exited_within(&worker.child, Duration::from_secs(1)) {
+                    return Err(error);
+                }
+                worker.alive.store(false, Ordering::Release);
+                let recovery = self
+                    .schedule_worker_at_with_startup(
+                        session_id,
+                        session_id,
+                        ledger,
+                        Some(transaction),
+                    )
+                    .map_err(internal)?;
+                let recovery_worker = match recovery.worker {
+                    Some(worker) => worker,
+                    None => self.wait_for_worker(session_id).map_err(internal)?,
+                };
+                if !recovery.startup_preloaded {
+                    recovery_worker.write(&bytes).map_err(internal)?;
+                }
+                recovery_worker.queue_result(&transaction.delivery)
+            }
         }
-        worker.queue_result(&transaction.delivery)
     }
 }
 
@@ -8641,6 +8674,215 @@ mod tests {
             transaction,
         );
         assert!(lines.next().is_none());
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn queue_transaction_retries_same_identity_after_confirmed_child_exit() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let captured_startup = root.path().join("recovery-startup.jsonl");
+        let result = QueueTransactionResult {
+            delivery: "rpc-retirement".to_owned(),
+            outcome: worker_control::QueueTransactionOutcome::Committed {
+                first_seq: 2,
+                last_seq: 2,
+                deduplicated: true,
+            },
+        };
+        let result_line = String::from_utf8(
+            worker_control::encode_queue_transaction_result(&result).expect("queue result line"),
+        )
+        .expect("queue result UTF-8");
+        let bin = root.path().join("fake-worker");
+        fs::write(
+            &bin,
+            format!(
+                "#!/bin/sh\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nIFS= read -r selected\ncase \"$selected\" in\n  *queue-transaction*) IFS= read -r startup; printf '%s\\n' \"$startup\" > '{}'; printf '%s\\n' '{}'; while IFS= read -r line; do :; done ;;\n  *) while IFS= read -r line; do :; done ;;\nesac\n",
+                captured_startup.display(),
+                result_line.trim_end()
+            ),
+        )
+        .expect("fake worker");
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+
+        let session = "018f0000-0000-7000-8000-000000000122";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+        let transaction = QueueTransaction {
+            delivery: "rpc-retirement".to_owned(),
+            rpc_id: "rpc-retirement".to_owned(),
+            target_seq: 1,
+            retract_origin: OriginTuple {
+                client: "client".to_owned(),
+                principal: "principal".to_owned(),
+                op: "session.updateQueue".to_owned(),
+                target: session.to_owned(),
+                key: "rpc-retirement/retract".to_owned(),
+            },
+            action: worker_control::QueueTransactionAction::Remove,
+        };
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        let stale = host
+            .schedule_worker_at(session, session, ledger)
+            .expect("initial worker start")
+            .expect("initial worker");
+        {
+            let mut child = stale
+                .child
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            child.kill().expect("retire initial worker");
+            child.wait().expect("reap initial worker");
+        }
+        // Wait until the real reader has retired its handle, then install the
+        // controlled stale table entry. This freezes the exit/table gap instead
+        // of racing EOF handling in the regression itself.
+        {
+            let mut workers = host
+                .workers
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner);
+            while workers.get(session).is_some_and(|w| Arc::ptr_eq(w, &stale)) {
+                let (next, timeout) = host
+                    .workers_changed
+                    .wait_timeout(workers, Duration::from_secs(2))
+                    .unwrap_or_else(std::sync::PoisonError::into_inner);
+                workers = next;
+                assert!(!timeout.timed_out(), "initial worker reader retired");
+            }
+            assert!(!workers.contains_key(session), "no unrelated replacement");
+            stale.alive.store(true, Ordering::Release);
+            workers.insert(session.to_owned(), stale.clone());
+        }
+
+        let observed = QueueTransactionAuthority::execute(&*host, session, &transaction)
+            .expect("same transaction is replayed through replacement startup");
+        assert_eq!(observed, result);
+        let captured = fs::read(&captured_startup).expect("captured preloaded transaction");
+        let retried = worker_control::decode_queue_transaction(&captured)
+            .expect("recovery startup transaction");
+        assert_eq!(retried, transaction);
+        let replacement = host
+            .workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(session)
+            .cloned()
+            .expect("replacement worker remains registered");
+        assert!(!Arc::ptr_eq(&stale, &replacement));
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn queue_transaction_does_not_retry_a_live_worker_failure() {
+        let root = tempfile::tempdir().expect("process host root");
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).expect("workspace");
+        fs::create_dir_all(root.path().join("config")).expect("config");
+        fs::create_dir_all(root.path().join("workspaces/ws")).expect("workspaces");
+        write_test_execution_config(
+            root.path(),
+            json!({
+                "format":1,"revision":1,"id":"ws","name":"ws",
+                "cwd":[workspace.to_string_lossy()],
+                "policy":{"allowed_tools":[],"network":false,"writable_roots":[]}
+            }),
+        );
+        let bin = root.path().join("fake-worker");
+        fs::write(
+            &bin,
+            b"#!/bin/sh\nprintf '%s\\n' '{\"hello\":{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}'\nIFS= read -r selected\nwhile IFS= read -r line; do :; done\n",
+        )
+        .expect("fake worker");
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).expect("worker mode");
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, b"#!/bin/sh\nexit 0\n").expect("fake helper");
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).expect("helper mode");
+
+        let session = "018f0000-0000-7000-8000-000000000123";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).expect("thread folder");
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+        let transaction = QueueTransaction {
+            delivery: "rpc-live-failure".to_owned(),
+            rpc_id: "rpc-live-failure".to_owned(),
+            target_seq: 1,
+            retract_origin: OriginTuple {
+                client: "client".to_owned(),
+                principal: "principal".to_owned(),
+                op: "session.updateQueue".to_owned(),
+                target: session.to_owned(),
+                key: "rpc-live-failure/retract".to_owned(),
+            },
+            action: worker_control::QueueTransactionAction::Remove,
+        };
+        let host = ProductionProcessHost::open(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join("missing-agent-home"),
+        )
+        .expect("process host");
+        let worker = host
+            .schedule_worker_at(session, session, ledger)
+            .expect("initial worker start")
+            .expect("initial worker");
+        worker
+            .state
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .failure = Some("controlled live worker failure".to_owned());
+
+        let failure = QueueTransactionAuthority::execute(&*host, session, &transaction)
+            .expect_err("a live worker failure remains a failure");
+        assert!(failure.message.contains("controlled live worker failure"));
+        let still_registered = host
+            .workers
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+            .get(session)
+            .cloned()
+            .expect("live worker remains registered");
+        assert!(Arc::ptr_eq(&worker, &still_registered));
+        assert!(worker.alive.load(Ordering::Acquire));
+        assert!(
+            worker
+                .child
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .try_wait()
+                .expect("inspect live worker")
+                .is_none(),
+            "the negative fixture must still be running"
+        );
         host.shutdown();
     }
 
