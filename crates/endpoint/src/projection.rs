@@ -996,6 +996,7 @@ fn text_content(value: &str) -> Value {
 
 fn response_error_message(classification: &str, detail: Option<&str>) -> &'static str {
     match (classification, detail) {
+        ("transport", Some("user_stop")) => "The response was stopped by the user.",
         ("provider_terminal", Some("network_disabled")) => {
             "Network access is disabled for this workspace."
         }
@@ -1518,6 +1519,71 @@ mod tests {
             ));
         }
         session_event("turn/start", 1.0, json!({"turn": 0}), false).expect("shared Kernel event");
+    }
+
+    #[test]
+    fn known_user_stop_projects_cancellation_without_leaking_transport_details() {
+        let folder = tempfile::tempdir().expect("folder");
+        let journal = EndpointJournal::open(folder.path()).expect("journal");
+        for (classification, detail, expected) in [
+            (
+                "transport",
+                Some("user_stop"),
+                "The response was stopped by the user.",
+            ),
+            ("transport", None, "The provider request failed."),
+            (
+                "transport",
+                Some("User_stop"),
+                "The provider request failed.",
+            ),
+            (
+                "transport",
+                Some("user_stop extra"),
+                "The provider request failed.",
+            ),
+            (
+                "transport",
+                Some("Bearer sk-private-detail"),
+                "The provider request failed.",
+            ),
+            (
+                "provider_terminal",
+                Some("user_stop"),
+                "The provider ended the response with an error.",
+            ),
+            (
+                "transport",
+                Some("context_overflow"),
+                "The model context window was exceeded.",
+            ),
+        ] {
+            let mut raw = json!({
+                "v":1,"seq":5,"kind":"error","ts":"2026-10-28T00:00:00.000Z",
+                "turn":1,"classification":classification,"recoverable":false
+            });
+            if let Some(detail) = detail {
+                raw["detail"] = json!(detail);
+            }
+            let event = Event::decode(&serde_json::to_vec(&raw).expect("raw")).expect("error");
+            let projected = Projector::default()
+                .project(&event, &journal)
+                .expect("projection");
+            assert_eq!(projected.len(), 1);
+            let wire = &projected[0].2;
+            assert_eq!(wire.event_type, "response/error");
+            let data = serde_json::to_value(&wire.data).expect("data");
+            assert_eq!(
+                data,
+                json!({
+                    "turn":1,"message":expected,"classification":classification,"recoverable":false
+                })
+            );
+            assert_eq!(
+                wire.surface_op,
+                Some(SurfaceOperation::Append("append".to_owned()))
+            );
+        }
     }
 
     #[test]

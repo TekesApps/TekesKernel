@@ -47,7 +47,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/journal.rs](../../src/journal.rs) | 37 | 393 | [Symbols and calls](src--journal.md) |
 | [crates/endpoint/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/endpoint/src/mux.rs](../../src/mux.rs) | 50 | 170 | [Symbols and calls](src--mux.md) |
-| [crates/endpoint/src/projection.rs](../../src/projection.rs) | 54 | 841 | [Symbols and calls](src--projection.md) |
+| [crates/endpoint/src/projection.rs](../../src/projection.rs) | 55 | 861 | [Symbols and calls](src--projection.md) |
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
 | [crates/endpoint/src/respond.rs](../../src/respond.rs) | 17 | 133 | [Symbols and calls](src--respond.md) |
 | [crates/endpoint/src/rpc.rs](../../src/rpc.rs) | 25 | 72 | [Symbols and calls](src--rpc.md) |
