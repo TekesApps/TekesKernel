@@ -2186,13 +2186,13 @@ impl ProductionCarrierStreams {
                 address.session_id
             );
         }
-        let session = load_mux_session(&self.inner.root, &address.session_id)?;
+        let journal = load_mux_journal(&self.inner.root, &address.session_id)?;
         let rpc_id = self.next_rpc_id("journal-follow");
         let mux = AllSessionMux::open(
             &self.inner.hub,
             &[endpoint::MuxRegistration {
                 session_id: &address.session_id,
-                journal: &session.endpoint,
+                journal: &journal,
                 subscribed_rpc_id: &rpc_id,
             }],
         )?;
@@ -2206,7 +2206,7 @@ impl ProductionCarrierStreams {
             })?
             .last_seq;
         let mut page =
-            endpoint::frozen_history_page(&session.endpoint, through_sequence, None, max_messages)
+            endpoint::frozen_history_page(&journal, through_sequence, None, max_messages)
                 .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
         endpoint::NativeEndpoint::open(&self.inner.root)?
             .hydrate_historical_submissions(&address.session_id, &mut page.events);
@@ -2405,9 +2405,9 @@ impl ProductionCarrierStreams {
             return Ok(page);
         }
         self.verify_session_carrier(&address.session_id)?;
-        let session = load_mux_session(&self.inner.root, &address.session_id)?;
+        let journal = load_mux_journal(&self.inner.root, &address.session_id)?;
         let mut page = endpoint::frozen_history_page(
-            &session.endpoint,
+            &journal,
             through_sequence,
             before_sequence,
             max_messages,
@@ -2971,11 +2971,20 @@ fn active_session_ids(root: &Path) -> Result<Vec<String>, ProductionCarrierError
     Ok(ids)
 }
 
-fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, ProductionCarrierError> {
+fn load_mux_journal(
+    root: &Path,
+    session_id: &str,
+) -> Result<EndpointJournal, ProductionCarrierError> {
     endpoint::validate_session_id(session_id)
         .map_err(|error| ProductionCarrierError::Lifecycle(error.to_string()))?;
+    Ok(EndpointJournal::open(
+        root.join("threads").join(session_id),
+    )?)
+}
+
+fn load_mux_session(root: &Path, session_id: &str) -> Result<MuxSession, ProductionCarrierError> {
+    let endpoint = load_mux_journal(root, session_id)?;
     let folder = root.join("threads").join(session_id);
-    let endpoint = EndpointJournal::open(&folder)?;
     let unresolved = pending_session_requests_mode(&folder, session_id, true)
         .map_err(internal_carrier)?
         .into_iter()

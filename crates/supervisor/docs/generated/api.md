@@ -141,8 +141,8 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::mark_ready](../../src/endpoint_carrier.rs#L2939) | `pub` | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::finish_recovery](../../src/endpoint_carrier.rs#L2944) |
 | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::finish_recovery](../../src/endpoint_carrier.rs#L2944) | `pub` | no resolved direct caller |
 | [tekes-supervisor::endpoint_carrier::ProductionCarrierAssembly::begin_drain](../../src/endpoint_carrier.rs#L2949) | `pub` | no resolved direct caller |
-| [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L3122) | `pub(crate)` | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L3225); [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::reconcile_actionables_from](../../src/endpoint_carrier.rs#L846); [tekes-supervisor::thread_card::holds_of](../../src/thread_card.rs#L87) |
-| [tekes-supervisor::endpoint_carrier::ProductionCarrierError](../../src/endpoint_carrier.rs#L3517) | `pub` | not a function |
+| [tekes-supervisor::endpoint_carrier::line_requests](../../src/endpoint_carrier.rs#L3131) | `pub(crate)` | [tekes-supervisor::endpoint_carrier::session_requests_mode](../../src/endpoint_carrier.rs#L3234); [tekes-supervisor::endpoint_carrier::ProductionCarrierStreams::reconcile_actionables_from](../../src/endpoint_carrier.rs#L846); [tekes-supervisor::thread_card::holds_of](../../src/thread_card.rs#L87) |
+| [tekes-supervisor::endpoint_carrier::ProductionCarrierError](../../src/endpoint_carrier.rs#L3526) | `pub` | not a function |
 | [tekes-supervisor::endpoint_host::EndpointRouteClass](../../src/endpoint_host.rs#L29) | `pub` | not a function |
 | [tekes-supervisor::endpoint_host::EndpointRoute](../../src/endpoint_host.rs#L37) | `pub` | not a function |
 | [tekes-supervisor::endpoint_host::TEKES_UNARY_ROUTES](../../src/endpoint_host.rs#L43) | `pub` | not a function |

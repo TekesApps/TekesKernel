@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.18 — 2026-10-29
+
+### Changed
+
+- Journal follow and page reads load their validated endpoint journal without computing an unused actionable-request list. Mux registration retains its complete actionable loading; verification, reconciliation, frozen cuts, historical submission hydration, and quarantined-history fallback are unchanged.
+
 ## 0.9.17 — 2026-10-28
 
 ### Fixed
