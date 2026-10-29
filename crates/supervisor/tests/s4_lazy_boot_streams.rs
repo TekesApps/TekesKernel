@@ -1508,3 +1508,188 @@ fn a_doorbell_over_the_session_limit_is_not_an_error() {
         .expect("the limit does not fail the doorbell");
     host.shutdown();
 }
+
+/// A journal page consumes journal records, not the session's actionable request list.
+/// The legacy input still requires one semantic scan for submission hydration.
+#[test]
+fn journal_page_does_not_rescan_unused_actionable_requests() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let session = blank_id(118);
+    write_session_at(root.path(), &session, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let snapshot = open_snapshot(&assembly, 118, &session);
+    assert!(!snapshot.entries.is_empty());
+    let request = endpoint::SessionMuxClientFrame::JournalPage {
+        request_id: "journal-page-count".to_owned(),
+        address: SessionAddress {
+            session_id: session.clone(),
+        },
+        through_sequence: snapshot.through_sequence,
+        before_sequence: None,
+        max_messages: 50,
+    };
+    // Obtain the necessary hydration cost through its public API, outside the page count.
+    let mut expected = snapshot.entries.clone();
+    let endpoint = endpoint::NativeEndpoint::open(root.path()).expect("endpoint");
+    let before = schema::metrics::snapshot();
+    endpoint.hydrate_historical_submissions(&session, &mut expected);
+    let hydration_decodes = decodes_since(before);
+    assert!(
+        hydration_decodes > 0,
+        "legacy input exercises necessary hydration"
+    );
+    let before = schema::metrics::snapshot();
+    let page = block_on_ready(assembly.host().journal_page(request.clone())).expect("page");
+    let page_decodes = decodes_since(before);
+    assert_eq!(page.through_sequence, snapshot.through_sequence);
+    assert_eq!(page.has_more_before, snapshot.has_more_before);
+    assert_eq!(
+        serde_json::to_value(&page.entries).expect("page JSON"),
+        serde_json::to_value(&expected).expect("expected JSON"),
+        "source content and order retained"
+    );
+    let repeated = block_on_ready(assembly.host().journal_page(request)).expect("repeated page");
+    assert_eq!(
+        serde_json::to_value(&repeated).expect("repeat JSON"),
+        serde_json::to_value(&page).expect("page JSON")
+    );
+    println!(
+        "page_decodes={page_decodes} necessary_hydration_decodes={hydration_decodes} entries={}",
+        page.entries.len()
+    );
+    host.shutdown();
+    assert_eq!(
+        page_decodes, hydration_decodes,
+        "journal page must not decode the unused actionable request list"
+    );
+}
+
+#[test]
+fn journal_page_retains_path_cut_and_quarantine_denials() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let session = blank_id(119);
+    write_session_at(root.path(), &session, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let snapshot = open_snapshot(&assembly, 119, &session);
+    let request = endpoint::SessionMuxClientFrame::JournalPage {
+        request_id: "journal-page-denials".to_owned(),
+        address: SessionAddress {
+            session_id: session.clone(),
+        },
+        through_sequence: snapshot.through_sequence,
+        before_sequence: None,
+        max_messages: 50,
+    };
+    let mut bad_cut = request.clone();
+    if let endpoint::SessionMuxClientFrame::JournalPage {
+        through_sequence, ..
+    } = &mut bad_cut
+    {
+        *through_sequence += 1;
+    }
+    assert!(block_on_ready(assembly.host().journal_page(bad_cut)).is_err());
+    let mut bad_path = request.clone();
+    if let endpoint::SessionMuxClientFrame::JournalPage { address, .. } = &mut bad_path {
+        address.session_id = "../outside".to_owned();
+    }
+    assert!(block_on_ready(assembly.host().journal_page(bad_path)).is_err());
+    assert!(!root.path().join("outside").exists());
+    host.shutdown();
+    struct Deny;
+    impl SupervisorSessionAuthority for Deny {
+        fn live_sessions(&self) -> HashSet<String> {
+            HashSet::new()
+        }
+        fn reconcile_projection(&self, _: &str) -> Result<(), String> {
+            Ok(())
+        }
+        fn ensure_verified(
+            &self,
+            _: &str,
+        ) -> Result<(), tekes_supervisor::endpoint_carrier::SessionGateError> {
+            Err(
+                tekes_supervisor::endpoint_carrier::SessionGateError::Quarantined(
+                    "test quarantine".to_owned(),
+                ),
+            )
+        }
+    }
+    let deny: Arc<dyn SupervisorSessionAuthority> = Arc::new(Deny);
+    assembly
+        .streams()
+        .attach_session_authority(Arc::downgrade(&deny));
+    let before = schema::metrics::snapshot();
+    assert!(
+        matches!(block_on_ready(assembly.host().journal_page(request)),
+        Err(HostFailure::Quarantined(reason)) if reason == "test quarantine")
+    );
+    assert_eq!(
+        decodes_since(before),
+        0,
+        "quarantine rejects before ledger reads"
+    );
+}
+
+#[test]
+fn journal_open_does_not_rescan_unused_actionable_requests() {
+    let _serial = SERIAL
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let root = tempfile::tempdir().expect("root");
+    write_workspace(root.path());
+    let session = blank_id(120);
+    write_session_at(root.path(), &session, true);
+    let assembly = assembly(root.path());
+    let host = process_host(root.path());
+    host.attach_streams(assembly.streams().clone());
+    assembly.finish_recovery().expect("ready");
+    let snapshot = open_snapshot(&assembly, 120, &session);
+    assert_client_accepts(&snapshot, "first open");
+    let before = schema::metrics::snapshot();
+    SupervisorSessionAuthority::ensure_verified(&*host, &session).expect("verified");
+    SupervisorSessionAuthority::reconcile_projection(&*host, &session).expect("reconciled");
+    let authority_decodes = decodes_since(before);
+    let endpoint = endpoint::NativeEndpoint::open(root.path()).expect("endpoint");
+    let mut expected = snapshot.entries.clone();
+    let before = schema::metrics::snapshot();
+    endpoint.hydrate_historical_submissions(&session, &mut expected);
+    let hydration_decodes = decodes_since(before);
+    assert!(hydration_decodes > 0);
+    let before = schema::metrics::snapshot();
+    let reopened = open_snapshot(&assembly, 121, &session);
+    let open_decodes = decodes_since(before);
+    assert_client_accepts(&reopened, "reopen");
+    assert_eq!(
+        serde_json::to_value(&reopened).expect("reopen JSON"),
+        serde_json::to_value(&snapshot).expect("original JSON"),
+        "full snapshot including cut/projections retained"
+    );
+    assert_eq!(
+        serde_json::to_value(&reopened.entries).expect("entries"),
+        serde_json::to_value(&expected).expect("hydrated entries")
+    );
+    println!(
+        "open_decodes={open_decodes} necessary_authority_decodes={authority_decodes} necessary_hydration_decodes={hydration_decodes} entries={}",
+        reopened.entries.len()
+    );
+    host.shutdown();
+    assert_eq!(
+        open_decodes,
+        authority_decodes + hydration_decodes,
+        "journal open must not decode the unused actionable request list"
+    );
+}
