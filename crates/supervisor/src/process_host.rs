@@ -10757,6 +10757,105 @@ mod tests {
         host.shutdown();
     }
 
+    /// A notification can be consumed while a non-worker author/probe holds the semantic
+    /// line lock. Once it is released, the same inventory must recover its settled state.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn idle_title_inventory_recovers_after_a_transient_line_lock() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000121";
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        let mut inventory = streams
+            .open_mux(1, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("original inventory");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. }))
+                if items.is_empty()
+        ));
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create idle session");
+        host.hydrate(session).expect("verify created session");
+        streams.attach_session(session).expect("announce create");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.session_id == session && !row.running && row.tail == "settled"
+        ));
+        let origin = OriginTuple {
+            principal: "test".into(),
+            client: "session-endpoint".into(),
+            target: session.into(),
+            op: "session.rename".into(),
+            key: "rename-before-transient-lock".into(),
+        };
+        host.rename(session, HELD_TS, &origin, "Native topic")
+            .expect("idle rename");
+        host.sweep_once().expect("publish the changed title");
+        assert!(host.live_sessions().is_empty());
+
+        let held = LockedLedger::open(
+            root.path().join("threads").join(session).join("main.jsonl"),
+            schema::READER_VERSION,
+        )
+        .expect("test-owned transient semantic line lock");
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: busy, .. })) =
+            block_on_ready(inventory.recv())
+        else {
+            panic!("expected title upsert while test holds the semantic lock");
+        };
+        assert!(busy.running, "the held lock must still count as busy");
+        assert_eq!(busy.tail, "running");
+        assert!(host.live_sessions().is_empty(), "there is no live worker");
+        drop(held);
+
+        host.sweep_once().expect("explicit tick after lock release");
+        let mut fresh = streams
+            .open_mux(2, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("fresh comparison inventory");
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. })) =
+            block_on_ready(fresh.recv())
+        else {
+            panic!("expected fresh inventory baseline after lock release");
+        };
+        let settled = items
+            .into_iter()
+            .find(|row| row.session_id == session)
+            .unwrap();
+        assert!(!settled.running);
+        assert_eq!(settled.tail, "settled");
+        assert_eq!(
+            busy.projections, settled.projections,
+            "same authoritative title"
+        );
+        assert!(host.live_sessions().is_empty());
+
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
+        let received = {
+            let mut next = std::pin::pin!(inventory.recv());
+            match next.as_mut().poll(&mut context) {
+                Poll::Ready(frame) => frame,
+                Poll::Pending => {
+                    panic!("KERNEL120_LOCK_RELEASED_FRESH_SETTLED_ORIGINAL_STILL_BUSY")
+                }
+            }
+        };
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert {
+            session: restored, ..
+        })) = received
+        else {
+            panic!("expected original inventory settled upsert after lock release");
+        };
+        assert_eq!(restored, settled);
+        host.shutdown();
+    }
+
     /// E832 M2: hydrations of different threads fold concurrently (they all reach the point
     /// after the fold before any proceeds), and a doorbell for another thread completes while a
     /// cold hydration is held outside the lock.
