@@ -1245,9 +1245,8 @@ impl ProductionProcessHost {
         }
     }
 
-    /// Announces a worker start or exit so inventory `running` follows the
-    /// process table instead of freezing at the stream baseline (audit I5).
-    /// Failure is logged only: the next inventory baseline recomputes the flag.
+    /// Refreshes one inventory row after a worker start/exit or a verified title change.
+    /// Failure is logged only: the next inventory baseline recomputes the row.
     fn publish_session_status(&self, session_id: &str) {
         let streams = self
             .streams
@@ -3572,7 +3571,14 @@ impl ProductionProcessHost {
             match prepared {
                 Some(card) => {
                     let card = card.with_journal(journal_snapshot);
-                    if self.catalog.set_fresh_main(session_id, card.view()) {
+                    let view = card.view();
+                    let title_changed = self
+                        .catalog
+                        .get(session_id)
+                        .and_then(|entry| entry.view)
+                        .and_then(|view| view.summary.title.clone())
+                        != view.summary.title;
+                    if self.catalog.set_fresh_main(session_id, view) {
                         if due {
                             self.card_writer.submit(card);
                         } else {
@@ -3581,6 +3587,9 @@ impl ProductionProcessHost {
                                 folder.clone(),
                                 journal_snapshot,
                             );
+                        }
+                        if title_changed {
+                            self.publish_session_status(session_id);
                         }
                     }
                 }
