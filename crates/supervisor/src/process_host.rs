@@ -441,6 +441,9 @@ pub struct ProductionProcessHost {
     /// session is deferred iff it is neither admitted (created/forked/unarchived by this
     /// process, `store::folder_events`) nor in this set.
     released: Mutex<HashSet<String>>,
+    /// Targeted inventory readers observed a semantic line lock without a registered worker.
+    /// The existing sweep rechecks only these sessions until their lock authority is idle.
+    inventory_line_rechecks: Mutex<HashSet<String>>,
     catalog: Arc<crate::catalog::Catalog>,
     /// Opened once: `ThreadStore::open` probes the filesystem (a full sync), which a per-row
     /// `running` check must not repeat.
@@ -833,6 +836,7 @@ impl ProductionProcessHost {
             workers: Mutex::new(HashMap::new()),
             starting_workers: Mutex::new(HashSet::new()),
             released: Mutex::new(HashSet::new()),
+            inventory_line_rechecks: Mutex::new(HashSet::new()),
             catalog: Arc::new(crate::catalog::Catalog::new(&root_for_catalog)),
             threads: threads_store,
             hydrating: Mutex::new(HashMap::new()),
@@ -1212,6 +1216,10 @@ impl ProductionProcessHost {
             streams.forget_session(id);
         }
         if matches!(event, FolderEvent::Removed { .. }) {
+            self.inventory_line_rechecks
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .remove(id);
             self.released
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
@@ -1245,9 +1253,8 @@ impl ProductionProcessHost {
         }
     }
 
-    /// Announces a worker start or exit so inventory `running` follows the
-    /// process table instead of freezing at the stream baseline (audit I5).
-    /// Failure is logged only: the next inventory baseline recomputes the flag.
+    /// Refreshes one inventory row after a worker start/exit or a verified title change.
+    /// Failure is logged only: the next inventory baseline recomputes the row.
     fn publish_session_status(&self, session_id: &str) {
         let streams = self
             .streams
@@ -1731,6 +1738,25 @@ impl ProductionProcessHost {
                     "sweep_session",
                     &format!("session={session_id} ms={}", started.elapsed().as_millis()),
                 );
+            }
+        }
+        // Take observations before probing: a reader that sees Busy during this recheck or
+        // while consuming its queued correction rearms the shared set, and is never erased
+        // by a later remove. No observation guard is held across I/O or frame publication.
+        let rechecks = std::mem::take(
+            &mut *self
+                .inventory_line_rechecks
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner),
+        );
+        for session_id in rechecks {
+            if self.is_running(&session_id, &self.live_sessions()) {
+                self.inventory_line_rechecks
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner)
+                    .insert(session_id);
+            } else {
+                self.publish_session_status(&session_id);
             }
         }
         Ok(())
@@ -3572,7 +3598,14 @@ impl ProductionProcessHost {
             match prepared {
                 Some(card) => {
                     let card = card.with_journal(journal_snapshot);
-                    if self.catalog.set_fresh_main(session_id, card.view()) {
+                    let view = card.view();
+                    let title_changed = self
+                        .catalog
+                        .get(session_id)
+                        .and_then(|entry| entry.view)
+                        .and_then(|view| view.summary.title.clone())
+                        != view.summary.title;
+                    if self.catalog.set_fresh_main(session_id, view) {
                         if due {
                             self.card_writer.submit(card);
                         } else {
@@ -3581,6 +3614,9 @@ impl ProductionProcessHost {
                                 folder.clone(),
                                 journal_snapshot,
                             );
+                        }
+                        if title_changed {
+                            self.publish_session_status(session_id);
                         }
                     }
                 }
@@ -5558,9 +5594,14 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
             }
             entry = self.catalog.get(session_id);
         }
-        Some(Ok(entry.and_then(|entry| {
-            self.catalog_item(session_id, &entry, &live)
-        })))
+        let item = entry.and_then(|entry| self.catalog_item(session_id, &entry, &live));
+        if item.as_ref().is_some_and(|item| item.running) && !live.contains(session_id) {
+            self.inventory_line_rechecks
+                .lock()
+                .unwrap_or_else(std::sync::PoisonError::into_inner)
+                .insert(session_id.to_owned());
+        }
+        Some(Ok(item))
     }
 
     fn live_sessions(&self) -> HashSet<String> {
@@ -10626,6 +10667,335 @@ mod tests {
             panic!("expected an inventory baseline")
         };
         assert_eq!(items.len(), 2);
+        host.shutdown();
+    }
+
+    /// An idle rename must refresh the existing inventory without a journal lease. A fresh
+    /// baseline is only a comparison, not a substitute for notifying the original observer.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn idle_rename_sweep_updates_existing_unmounted_inventory() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000120";
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        let mut inventory = streams
+            .open_mux(1, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("original inventory");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. }))
+                if items.is_empty()
+        ));
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create idle session");
+        host.hydrate(session).expect("verify created session");
+        streams.attach_session(session).expect("announce create");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.session_id == session && row.blank && row.projections.is_none()
+        ));
+
+        for (index, title) in ["First title", "Second title"].into_iter().enumerate() {
+            let origin = OriginTuple {
+                principal: "test".into(),
+                client: "session-endpoint".into(),
+                target: session.into(),
+                op: "session.rename".into(),
+                key: format!("rename-{index}"),
+            };
+            let receipt = host
+                .rename(session, HELD_TS, &origin, title)
+                .expect("idle rename");
+            assert!(!receipt.deduplicated);
+            let duplicate = host
+                .rename(session, HELD_TS, &origin, title)
+                .expect("same receipt");
+            assert!(duplicate.deduplicated);
+            assert_eq!(duplicate.seq, receipt.seq);
+            host.sweep_once().expect("one explicit sweep");
+            assert_eq!(
+                host.catalog
+                    .get(session)
+                    .unwrap()
+                    .view
+                    .as_ref()
+                    .unwrap()
+                    .summary
+                    .title
+                    .as_deref(),
+                Some(title),
+                "the sweep refreshed the catalog before checking either observer"
+            );
+
+            let mut fresh = streams
+                .open_mux(
+                    2 + index as u64,
+                    endpoint::SessionStreamTarget::SessionInventory,
+                )
+                .expect("fresh comparison inventory");
+            let Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. })) =
+                block_on_ready(fresh.recv())
+            else {
+                panic!("expected fresh baseline");
+            };
+            let expected = items
+                .into_iter()
+                .find(|row| row.session_id == session)
+                .unwrap();
+            let projection: Value = serde_json::from_slice(
+                &expected
+                    .projections
+                    .as_ref()
+                    .unwrap()
+                    .canonical_bytes()
+                    .unwrap(),
+            )
+            .unwrap();
+            assert_eq!(projection["values"]["sessionTitle"]["title"], title);
+            // The repair is synchronous. There is no worker or periodic sweep to wait for:
+            // pending here is the missing notification, not a reason to poll or reopen.
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let received = {
+                let mut next = std::pin::pin!(inventory.recv());
+                match next.as_mut().poll(&mut context) {
+                    Poll::Ready(frame) => frame,
+                    Poll::Pending => panic!(
+                        "idle rename: catalog and fresh title verified but original inventory notification missing"
+                    ),
+                }
+            };
+            let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert {
+                session: updated, ..
+            })) = received
+            else {
+                panic!("expected the original inventory to receive the renamed title");
+            };
+            assert_eq!(updated, expected);
+            assert!(host.live_sessions().is_empty());
+
+            host.sweep_once().expect("unchanged sweep");
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        host.shutdown();
+    }
+
+    /// A notification can be consumed while a non-worker author/probe holds the semantic
+    /// line lock. Once it is released, the same inventory must recover its settled state.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn idle_title_inventory_recovers_after_a_transient_line_lock() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000121";
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        let mut inventory = streams
+            .open_mux(1, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("original inventory");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. }))
+                if items.is_empty()
+        ));
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create idle session");
+        host.hydrate(session).expect("verify created session");
+        streams.attach_session(session).expect("announce create");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.session_id == session && !row.running && row.tail == "settled"
+        ));
+        let origin = OriginTuple {
+            principal: "test".into(),
+            client: "session-endpoint".into(),
+            target: session.into(),
+            op: "session.rename".into(),
+            key: "rename-before-transient-lock".into(),
+        };
+        host.rename(session, HELD_TS, &origin, "Native topic")
+            .expect("idle rename");
+        host.sweep_once().expect("publish the changed title");
+        assert!(host.live_sessions().is_empty());
+
+        let held = LockedLedger::open(
+            root.path().join("threads").join(session).join("main.jsonl"),
+            schema::READER_VERSION,
+        )
+        .expect("test-owned transient semantic line lock");
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: busy, .. })) =
+            block_on_ready(inventory.recv())
+        else {
+            panic!("expected title upsert while test holds the semantic lock");
+        };
+        assert!(busy.running, "the held lock must still count as busy");
+        assert_eq!(busy.tail, "running");
+        assert!(host.live_sessions().is_empty(), "there is no live worker");
+        for _ in 0..2 {
+            host.sweep_once().expect("tick while semantic lock is held");
+            assert!(
+                host.inventory_line_rechecks
+                    .lock()
+                    .unwrap()
+                    .contains(session),
+                "held line locks must remain pending rather than being declared idle"
+            );
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        drop(held);
+
+        host.sweep_once().expect("explicit tick after lock release");
+        let mut fresh = streams
+            .open_mux(2, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("fresh comparison inventory");
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. })) =
+            block_on_ready(fresh.recv())
+        else {
+            panic!("expected fresh inventory baseline after lock release");
+        };
+        let settled = items
+            .into_iter()
+            .find(|row| row.session_id == session)
+            .unwrap();
+        assert!(!settled.running);
+        assert_eq!(settled.tail, "settled");
+        assert_eq!(
+            busy.projections, settled.projections,
+            "same authoritative title"
+        );
+        assert!(host.live_sessions().is_empty());
+
+        let waker = Waker::noop();
+        let mut context = Context::from_waker(waker);
+        let received = {
+            let mut next = std::pin::pin!(inventory.recv());
+            match next.as_mut().poll(&mut context) {
+                Poll::Ready(frame) => frame,
+                Poll::Pending => {
+                    panic!("KERNEL120_LOCK_RELEASED_FRESH_SETTLED_ORIGINAL_STILL_BUSY")
+                }
+            }
+        };
+        let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert {
+            session: restored, ..
+        })) = received
+        else {
+            panic!("expected original inventory settled upsert after lock release");
+        };
+        assert_eq!(restored, settled);
+
+        // A correction is only a queued invalidation: another lock can exist when the
+        // reader consumes it. That observation must rearm the next tick's correction.
+        let path = root.path().join("threads").join(session).join("main.jsonl");
+        let held = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+        host.publish_session_status(session);
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.running
+        ));
+        drop(held);
+        host.sweep_once().expect("queue idle correction");
+        let held = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+        {
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        assert!(
+            host.inventory_line_rechecks
+                .lock()
+                .unwrap()
+                .contains(session)
+        );
+        drop(held);
+        host.sweep_once().expect("rearmed correction");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row == settled
+        ));
+        assert!(host.inventory_line_rechecks.lock().unwrap().is_empty());
+        // A child/named semantic line uses the same session-wide lock authority: an idle
+        // main line is not sufficient to clear busy while another line is still held.
+        let child = "018f0000-0000-7000-8000-000000000122";
+        let child_path = path.parent().unwrap().join(format!("{child}.jsonl"));
+        fs::write(&child_path, format!("{}\n", held_ledger_lines(child)[0])).unwrap();
+        let child_lock = LockedLedger::open(&child_path, schema::READER_VERSION).unwrap();
+        host.publish_session_status(session);
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.running
+        ));
+        host.sweep_once()
+            .expect("tick while child line remains held");
+        assert!(
+            host.inventory_line_rechecks
+                .lock()
+                .unwrap()
+                .contains(session)
+        );
+        {
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        drop(child_lock);
+        host.sweep_once().expect("child line released");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row == settled
+        ));
+        assert!(host.inventory_line_rechecks.lock().unwrap().is_empty());
+        host.sweep_once().expect("unchanged idle tick");
+        {
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+
+        let held = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+        host.publish_session_status(session);
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.running
+        ));
+        assert!(
+            host.inventory_line_rechecks
+                .lock()
+                .unwrap()
+                .contains(session)
+        );
+        drop(held);
+        fs::remove_dir_all(path.parent().unwrap()).expect("remove test-owned session");
+        host.on_folder_event(&store::folder_events::FolderEvent::Removed {
+            root: root.path().to_path_buf(),
+            id: session.to_owned(),
+            reason: store::folder_events::RemoveReason::Discarded,
+        });
+        assert!(host.inventory_line_rechecks.lock().unwrap().is_empty());
         host.shutdown();
     }
 
