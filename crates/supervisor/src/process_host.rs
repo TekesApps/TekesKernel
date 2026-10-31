@@ -10933,6 +10933,40 @@ mod tests {
                 if row == settled
         ));
         assert!(host.inventory_line_rechecks.lock().unwrap().is_empty());
+        // A child/named semantic line uses the same session-wide lock authority: an idle
+        // main line is not sufficient to clear busy while another line is still held.
+        let child = "018f0000-0000-7000-8000-000000000122";
+        let child_path = path.parent().unwrap().join(format!("{child}.jsonl"));
+        fs::write(&child_path, format!("{}\n", held_ledger_lines(child)[0])).unwrap();
+        let child_lock = LockedLedger::open(&child_path, schema::READER_VERSION).unwrap();
+        host.publish_session_status(session);
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.running
+        ));
+        host.sweep_once()
+            .expect("tick while child line remains held");
+        assert!(
+            host.inventory_line_rechecks
+                .lock()
+                .unwrap()
+                .contains(session)
+        );
+        {
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        drop(child_lock);
+        host.sweep_once().expect("child line released");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row == settled
+        ));
+        assert!(host.inventory_line_rechecks.lock().unwrap().is_empty());
         host.sweep_once().expect("unchanged idle tick");
         {
             let waker = Waker::noop();
