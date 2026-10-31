@@ -10719,9 +10719,20 @@ mod tests {
             assert_eq!(projection["values"]["sessionTitle"]["title"], title);
             // The repair is synchronous. There is no worker or periodic sweep to wait for:
             // pending here is the missing notification, not a reason to poll or reopen.
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let received = {
+                let mut next = std::pin::pin!(inventory.recv());
+                match next.as_mut().poll(&mut context) {
+                    Poll::Ready(frame) => frame,
+                    Poll::Pending => panic!(
+                        "idle rename: catalog and fresh title verified but original inventory notification missing"
+                    ),
+                }
+            };
             let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert {
                 session: updated, ..
-            })) = block_on_ready(inventory.recv())
+            })) = received
             else {
                 panic!("expected the original inventory to receive the renamed title");
             };
