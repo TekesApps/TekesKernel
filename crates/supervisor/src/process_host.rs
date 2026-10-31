@@ -10629,6 +10629,114 @@ mod tests {
         host.shutdown();
     }
 
+    /// An idle rename must refresh the existing inventory without a journal lease. A fresh
+    /// baseline is only a comparison, not a substitute for notifying the original observer.
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn idle_rename_sweep_updates_existing_unmounted_inventory() {
+        let root = tempfile::tempdir().expect("root");
+        let session = "018f0000-0000-7000-8000-000000000120";
+        let (host, streams) = open_host(root.path());
+        host.arm_admission();
+        let mut inventory = streams
+            .open_mux(1, endpoint::SessionStreamTarget::SessionInventory)
+            .expect("original inventory");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. }))
+                if items.is_empty()
+        ));
+        let genesis = schema::Event::decode_canonical(held_ledger_lines(session)[0].as_bytes())
+            .expect("genesis");
+        store::ThreadStore::open(root.path())
+            .expect("store")
+            .create_thread(session, genesis)
+            .expect("create idle session");
+        host.hydrate(session).expect("verify created session");
+        streams.attach_session(session).expect("announce create");
+        assert!(matches!(
+            block_on_ready(inventory.recv()),
+            Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert { session: row, .. }))
+                if row.session_id == session && row.blank && row.projections.is_none()
+        ));
+
+        for (index, title) in ["First title", "Second title"].into_iter().enumerate() {
+            let origin = OriginTuple {
+                principal: "test".into(),
+                client: "session-endpoint".into(),
+                target: session.into(),
+                op: "session.rename".into(),
+                key: format!("rename-{index}"),
+            };
+            let receipt = host
+                .rename(session, HELD_TS, &origin, title)
+                .expect("idle rename");
+            assert!(!receipt.deduplicated);
+            let duplicate = host
+                .rename(session, HELD_TS, &origin, title)
+                .expect("same receipt");
+            assert!(duplicate.deduplicated);
+            assert_eq!(duplicate.seq, receipt.seq);
+            host.sweep_once().expect("one explicit sweep");
+            assert_eq!(
+                host.catalog
+                    .get(session)
+                    .unwrap()
+                    .view
+                    .as_ref()
+                    .unwrap()
+                    .summary
+                    .title
+                    .as_deref(),
+                Some(title),
+                "the sweep refreshed the catalog before checking either observer"
+            );
+
+            let mut fresh = streams
+                .open_mux(
+                    2 + index as u64,
+                    endpoint::SessionStreamTarget::SessionInventory,
+                )
+                .expect("fresh comparison inventory");
+            let Some(Ok(endpoint::SessionSyncFrame::InventoryBaseline { items, .. })) =
+                block_on_ready(fresh.recv())
+            else {
+                panic!("expected fresh baseline");
+            };
+            let expected = items
+                .into_iter()
+                .find(|row| row.session_id == session)
+                .unwrap();
+            let projection: Value = serde_json::from_slice(
+                &expected
+                    .projections
+                    .as_ref()
+                    .unwrap()
+                    .canonical_bytes()
+                    .unwrap(),
+            )
+            .unwrap();
+            assert_eq!(projection["values"]["sessionTitle"]["title"], title);
+            // The repair is synchronous. There is no worker or periodic sweep to wait for:
+            // pending here is the missing notification, not a reason to poll or reopen.
+            let Some(Ok(endpoint::SessionSyncFrame::InventoryUpsert {
+                session: updated, ..
+            })) = block_on_ready(inventory.recv())
+            else {
+                panic!("expected the original inventory to receive the renamed title");
+            };
+            assert_eq!(updated, expected);
+            assert!(host.live_sessions().is_empty());
+
+            host.sweep_once().expect("unchanged sweep");
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = std::pin::pin!(inventory.recv());
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        host.shutdown();
+    }
+
     /// E832 M2: hydrations of different threads fold concurrently (they all reach the point
     /// after the fold before any proceeds), and a doorbell for another thread completes while a
     /// cold hydration is held outside the lock.
