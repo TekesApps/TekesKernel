@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.20 — 2026-11-05
+
+### Fixed
+
+- Publish durable buffered-provider tool calls and results before a subsequent model request, including approval parking. Connected consumers can deliver completed tool output without waiting for that request; eager dispatch, journal ordering and protocol versions remain unchanged.
+
 ## 0.9.18 — 2026-10-29
 
 ### Changed

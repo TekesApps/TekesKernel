@@ -1128,7 +1128,10 @@ fn run_provider_turn_inner(
             .filter(|call| !paired.contains(&call.call_id))
             .cloned()
             .collect::<Vec<_>>();
-        if execute_provider_tool_calls(
+        if !remaining.is_empty() {
+            announce_appended(ledger, stdout)?;
+        }
+        let parked = execute_provider_tool_calls(
             ledger,
             ToolCallBatch {
                 options,
@@ -1142,7 +1145,11 @@ fn run_provider_turn_inner(
             credential.as_ref(),
             lines,
             stdout,
-        )? {
+        )?;
+        if !remaining.is_empty() {
+            announce_appended(ledger, stdout)?;
+        }
+        if parked {
             return Ok(());
         }
         if cancellation.stop_requested() {

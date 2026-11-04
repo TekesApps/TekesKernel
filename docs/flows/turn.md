@@ -77,10 +77,13 @@ loop:
                     carrying the attempt's usage; ONE barrier commits it; only
                     then attempt_settled (R4-1 — error outcomes identically)
   if tool_calls:
+      if buffered remaining batch is nonempty: doorbell  # durable calls/output
       for each call without a result (never an eager one):
                 append tool_call (fsync if side-effectful)
                 → execute (spawn / in-process / daemon socket)
                 → append tool_result
+      if buffered remaining batch was nonempty: doorbell  # results/parked state
+      if parked: return                 # after publishing the batch state
       continue                          # one continuation after the whole batch
   if response is nonfinal: continue
   settle the final output with its exact output reference
