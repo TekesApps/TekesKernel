@@ -46,8 +46,8 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/worker/src/lifecycle_hooks.rs](../../src/lifecycle_hooks.rs) | 11 | 135 | [Symbols and calls](src--lifecycle_hooks.md) |
 | [crates/worker/src/live_tests.rs](../../src/live_tests.rs) | 17 | 795 | [Symbols and calls](src--live_tests.md) |
 | [crates/worker/src/main.rs](../../src/main.rs) | 14 | 316 | [Symbols and calls](src--main.md) |
-| [crates/worker/src/provider_context_tests.rs](../../src/provider_context_tests.rs) | 188 | 4355 | [Symbols and calls](src--provider_context_tests.md) |
-| [crates/worker/src/provider_turn.rs](../../src/provider_turn.rs) | 31 | 595 | [Symbols and calls](src--provider_turn.md) |
+| [crates/worker/src/provider_context_tests.rs](../../src/provider_context_tests.rs) | 194 | 4454 | [Symbols and calls](src--provider_context_tests.md) |
+| [crates/worker/src/provider_turn.rs](../../src/provider_turn.rs) | 31 | 599 | [Symbols and calls](src--provider_turn.md) |
 | [crates/worker/src/queue.rs](../../src/queue.rs) | 8 | 231 | [Symbols and calls](src--queue.md) |
 | [crates/worker/src/recovery.rs](../../src/recovery.rs) | 11 | 351 | [Symbols and calls](src--recovery.md) |
 | [crates/worker/src/result_presentation.rs](../../src/result_presentation.rs) | 16 | 158 | [Symbols and calls](src--result_presentation.md) |

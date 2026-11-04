@@ -6113,6 +6113,178 @@ const EAGER_TOOL_SSE_PREFIX: &str = concat!(
 const EAGER_TOOL_SSE_TERMINAL: &str = "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"response-tool\",\"status\":\"completed\",\"output\":[{\"type\":\"function_call\",\"call_id\":\"call-think\",\"name\":\"think\",\"arguments\":\"{\\\"thought\\\":\\\"inspect\\\"}\"}],\"usage\":{\"input_tokens\":2,\"output_tokens\":1}}}\n\n";
 const FINAL_JSON_RESPONSE: &[u8] = br#"{"id":"response-done","output":[{"content":[{"text":"done","type":"output_text"}],"type":"message"}],"status":"completed","usage":{"input_tokens":2,"output_tokens":1}}"#;
 
+/// A buffered response has no eager frames. Its durable tool events must
+/// reach the supervisor before a blocked continuation can finish, including
+/// the approval path that returns without any continuation.
+#[test]
+fn buffered_tool_results_are_announced_before_continuation_completes() {
+    buffered_tool_publication_case(false);
+}
+
+#[test]
+fn buffered_tool_approval_is_announced_before_parking() {
+    buffered_tool_publication_case(true);
+}
+
+fn buffered_tool_publication_case(park: bool) {
+    let (directory, mut ledger) = context_ledger("openai_responses_v1", true);
+    let ledger_path = ledger.path().to_owned();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    set_provider_test_redirect(Some(format!("http://{}", listener.local_addr().unwrap())));
+    let (sender, receiver) = std::sync::mpsc::channel::<u64>();
+    let server = std::thread::spawn(move || {
+        let (mut stream, _) = listener.accept().unwrap();
+        read_http_request(&mut stream);
+        let (name, arguments) = if park {
+            (
+                "ask_user_questions",
+                json!({"question":"Continue?","options":null}),
+            )
+        } else {
+            ("think", json!({"thought":"inspect"}))
+        };
+        let body = json!({"id":"buffered-tool","status":"completed",
+            "output":[{"type":"function_call","call_id":"call-buffered",
+            "name":name,"arguments":arguments.to_string()}],
+            "usage":{"input_tokens":2,"output_tokens":1}})
+        .to_string();
+        write!(stream, "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n{}", body.len(), body).unwrap();
+        drop(stream);
+        if park {
+            return true;
+        }
+        let (mut stream, _) = listener.accept().unwrap();
+        let request = read_http_request(&mut stream);
+        assert!(String::from_utf8_lossy(&request).contains("call-buffered"));
+        let rows = fs::read_to_string(ledger_path).unwrap();
+        let result_seq = rows
+            .lines()
+            .map(|line| serde_json::from_str::<Value>(line).unwrap())
+            .find(|row| row["kind"] == "tool_result" && row["call"] == "call-buffered")
+            .expect("result durable before continuation")["seq"]
+            .as_u64()
+            .unwrap();
+        // The continuation response remains withheld while we observe the
+        // already-open worker control stream, not a fresh ledger subscription.
+        let deadline = Instant::now() + Duration::from_secs(2);
+        let published = loop {
+            match receiver.recv_timeout(deadline.saturating_duration_since(Instant::now())) {
+                Ok(seq) if seq >= result_seq => break true,
+                Ok(_) => {}
+                Err(_) => break false,
+            }
+        };
+        write!(stream, "HTTP/1.1 200 OK\r\ncontent-type: application/json\r\ncontent-length: {}\r\nconnection: close\r\n\r\n", FINAL_JSON_RESPONSE.len()).unwrap();
+        stream.write_all(FINAL_JSON_RESPONSE).unwrap();
+        published
+    });
+    struct Observer {
+        bytes: Rc<RefCell<Vec<u8>>>,
+        sender: std::sync::mpsc::Sender<u64>,
+        consumed: usize,
+    }
+    impl Write for Observer {
+        fn write(&mut self, bytes: &[u8]) -> io::Result<usize> {
+            self.bytes.borrow_mut().extend_from_slice(bytes);
+            Ok(bytes.len())
+        }
+        fn flush(&mut self) -> io::Result<()> {
+            let bytes = self.bytes.borrow();
+            for line in bytes[self.consumed..].split(|byte| *byte == b'\n') {
+                if let Ok(row) = serde_json::from_slice::<Value>(line)
+                    && let Some(seq) = row["appended"]["seq"].as_u64()
+                {
+                    let _ = self.sender.send(seq);
+                }
+            }
+            self.consumed = bytes.len();
+            Ok(())
+        }
+    }
+    let (profile, mut credential, control, service) =
+        eager_responses_profile(directory.path(), &["ask_user_questions", "think"]);
+    let options = test_options(&ledger);
+    let bytes = Rc::new(RefCell::new(Vec::new()));
+    let wire = Rc::clone(&bytes);
+    let mut replies = std::iter::from_fn(move || {
+        let bytes = wire.borrow();
+        let request = bytes
+            .split(|byte| *byte == b'\n')
+            .rev()
+            .filter_map(|line| serde_json::from_slice::<Value>(line).ok())
+            .find_map(|row| row.get("lease_request").cloned())
+            .unwrap();
+        Some(Ok(
+            json!({"lease":{"attempt":request["attempt"],"granted":true}}).to_string(),
+        ))
+    });
+    let mut output = Observer {
+        bytes: Rc::clone(&bytes),
+        sender,
+        consumed: 0,
+    };
+    let result = run_provider_turn(
+        &mut ledger,
+        &options,
+        &profile,
+        &Selected { version: 2 },
+        &mut credential,
+        &mut replies,
+        &mut output,
+        &RuntimeCancellation::default(),
+    );
+    set_provider_test_redirect(None);
+    result.expect("buffered tool turn");
+    let published = server.join().unwrap();
+    drop(credential);
+    drop(control);
+    service.join().unwrap().unwrap();
+    assert!(
+        published,
+        "durable tool result must be announced before continuation response"
+    );
+    let events = &ledger.projection().unwrap().events;
+    let target_kind = if park {
+        EventKind::ApprovalRequest
+    } else {
+        EventKind::ToolResult
+    };
+    let target = events
+        .iter()
+        .find(|event| {
+            *event.kind() == target_kind && event.string_field("call") == Some("call-buffered")
+        })
+        .unwrap();
+    assert_eq!(
+        events
+            .iter()
+            .filter(|event| *event.kind() == target_kind
+                && event.string_field("call") == Some("call-buffered"))
+            .count(),
+        1,
+        "exactly one result or approval request per buffered call"
+    );
+    let wire = bytes.borrow();
+    let announced = wire
+        .split(|byte| *byte == b'\n')
+        .filter_map(|line| serde_json::from_slice::<Value>(line).ok())
+        .filter_map(|row| row["appended"]["seq"].as_u64())
+        .max()
+        .unwrap();
+    assert!(
+        announced >= target.seq(),
+        "parked approval must also reach the supervisor"
+    );
+    assert_eq!(
+        events
+            .iter()
+            .filter(|event| *event.kind() == EventKind::ToolCall
+                && event.string_field("call") == Some("call-buffered"))
+            .count(),
+        1
+    );
+}
+
 /// The response terminal bytes are withheld until the eagerly dispatched
 /// call's result is durable: execution demonstrably precedes the terminal,
 /// the terminal then reuses the call without a second record or result,
