@@ -7388,6 +7388,15 @@ fn remote_task_continuation_parks_on_input_and_resumes_to_one_result() {
 /// remote task never becomes a successful result.
 #[test]
 fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
+    assert_remote_task_stop_control_lines(false);
+}
+
+#[test]
+fn remote_task_continuation_deferred_stop_preserves_delivery_and_reads_cancel_reply() {
+    assert_remote_task_stop_control_lines(true);
+}
+
+fn assert_remote_task_stop_control_lines(deferred_stop: bool) {
     let (directory, mut ledger) = context_ledger("anthropic_messages_v1", false);
     let name = "mcp__fixture__async";
     let mut profile = tool_profile(directory.path(), &[]);
@@ -7411,6 +7420,18 @@ fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
         &call,
     )
     .unwrap();
+    // A normal remote task starts after the provider sealed the tool-call
+    // response. Keep that completed attempt in this durable fixture as well.
+    let provider_output = make_event(json!({
+        "v":1,"seq":ledger.next_seq(),"turn":2,"kind":"output",
+        "ts":options.timestamp,"attempt":"async-attempt","content":[],
+        "sealed":{"version":1,"adapter":"anthropic_messages_v1","fragments":"[]"},
+        "usage":{"availability":"unavailable"}
+    }))
+    .unwrap();
+    ledger
+        .append_contract(provider_output, BarrierContext::default())
+        .unwrap();
     let session = "018f0000-0000-7000-8000-000000000003";
     let invocation = IJsonValue::parse(&serde_json::to_vec(&arguments).unwrap()).unwrap();
     let original =
@@ -7458,13 +7479,39 @@ fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
             },
         },
     };
-    let mut replies = [line(
-        worker_control::continuation::encode_tool_continuation_result(&reply).unwrap(),
-    )]
-    .into_iter();
-    let mut output = Vec::new();
+    let stop_origin = json!({
+        "client":"cli", "key":"remote-stop-key", "op":"session.cancel",
+        "principal":"p", "target":session
+    });
+    let stop_line = json!({"stop":{
+        "delivery":"remote-stop-delivery", "generation":1, "origin":stop_origin
+    }})
+    .to_string();
     let cancellation = RuntimeCancellation::default();
-    cancellation.cancel(CANCEL_STOP);
+    let (sender, receiver) = sync_channel(2);
+    let reply_line =
+        line(worker_control::continuation::encode_tool_continuation_result(&reply).unwrap())
+            .unwrap();
+    if deferred_stop {
+        cancellation.cancel(CANCEL_STOP);
+        cancellation.defer(stop_line.clone());
+        forward_control_lines([Ok(reply_line)].into_iter(), sender, cancellation.clone());
+    } else {
+        forward_control_lines(
+            [Ok(stop_line.clone()), Ok(reply_line)].into_iter(),
+            sender,
+            cancellation.clone(),
+        );
+    }
+    let mut control = ControlLines {
+        receiver,
+        cancellation: cancellation.clone(),
+    };
+    let mut output = Vec::new();
+    // Bound reads around the real ControlLines. The broken deferred-Stop loop
+    // exhausts four reads and fails instead of spinning forever; a healthy
+    // cancellation reads the original Stop once and then the real reply.
+    let mut replies = control.by_ref().take(4);
     assert!(
         recover_unpaired_tool_calls(
             &mut ledger,
@@ -7478,7 +7525,12 @@ fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
         )
         .expect("stop path")
     );
-    let sent = String::from_utf8(output).unwrap();
+    assert!(
+        !cancellation.protocol_failed(),
+        "Stop self-fed from deferred instead of reading the real cancellation reply (deferred={deferred_stop})"
+    );
+    drop(replies);
+    let sent = String::from_utf8(output.clone()).unwrap();
     let requests = sent
         .lines()
         .filter_map(|line| {
@@ -7501,6 +7553,75 @@ fn remote_task_continuation_stop_cancels_remotely_and_terminalizes_as_error() {
     assert!(
         text.contains("cancelled") && text.contains("MCP task cancelled"),
         "{text}"
+    );
+
+    // Normal durable delivery owns the original Stop and its receipt, after
+    // the remote cancellation response has terminalized the pending call.
+    let path = ledger.path().to_owned();
+    for _ in 0..2 {
+        drain_ready_deliveries(
+            &mut ledger,
+            &options,
+            &Selected { version: 2 },
+            &mut control,
+            &mut output,
+        )
+        .expect("normal stop delivery drain");
+    }
+    let stops = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| *event.kind() == EventKind::StopRequested)
+        .collect::<Vec<_>>();
+    assert_eq!(
+        stops.len(),
+        1,
+        "one durable Stop despite repeated yield drains"
+    );
+    let stop = serde_json::to_value(stops[0].raw()).unwrap();
+    assert_eq!(stop["generation"], 1);
+    assert_eq!(stop["origin_tuple"], stop_origin);
+    let stop_seq = stops[0].seq();
+    let receipts = String::from_utf8(output.clone())
+        .unwrap()
+        .lines()
+        .filter_map(|line| serde_json::from_str::<Value>(line).ok())
+        .filter_map(|value| value.get("receipt").cloned())
+        .collect::<Vec<_>>();
+    assert_eq!(
+        receipts,
+        [json!({
+            "delivery":"remote-stop-delivery", "seq":stop_seq, "deduplicated":false
+        })]
+    );
+    let code = post_turn_exit(&mut ledger, &options, &cancellation, &mut output)
+        .expect("normal user-stop terminal settlement");
+    assert!(exit_code_is(code, ExitCode::SUCCESS));
+    let settle = ledger.projection().unwrap().events.last().unwrap();
+    assert_eq!(settle.string_field("outcome"), Some("interrupted"));
+    assert_eq!(settle.string_field("reason"), Some("user_stop"));
+    assert!(stop_seq < settle.seq());
+    eprintln!(
+        "stop_cancellation_delivery_evidence={}",
+        json!({
+            "deferred_stop":deferred_stop, "stop":stop, "receipts":receipts,
+            "settle":serde_json::to_value(settle.raw()).unwrap()
+        })
+    );
+    drop(ledger);
+    let reopened = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+    assert!(reopened.projection().unwrap().terminal_tail);
+    assert_eq!(
+        reopened
+            .projection()
+            .unwrap()
+            .events
+            .iter()
+            .filter(|event| *event.kind() == EventKind::StopRequested)
+            .count(),
+        1
     );
 }
 
