@@ -1509,6 +1509,6 @@ fn stage_live_stdio(root:&Path,name:&str) {
 fn attach_live_stdio(host:&ProductionProcessHost, root:&Path) {
     if let Ok(bytes)=fs::read(root.join("test-host-mcp.json")) {
         let value:Value=serde_json::from_slice(&bytes).unwrap();
-        host.mcp_runtime().set_stdio_connector(Arc::new(crate::stdio_channels::UnixStdioChannels([("test".into(),PathBuf::from(value["socket"].as_str().unwrap()))].into())));
+        host.mcp_runtime().set_stdio_connector(Arc::new(crate::stdio_channels::UnixStdioChannels::new([("test".into(),PathBuf::from(value["socket"].as_str().unwrap()))].into())));
     }
 }

@@ -20,6 +20,8 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | `FileChangeAuthority` | `server::FileChangeAuthority` | `pub` |
 | `FileChangeFeed` | `server::FileChangeFeed` | `pub` |
 | `FileTransferAuthority` | `server::FileTransferAuthority` | `pub` |
+| `HostStdioChannelAuthority` | `server::HostStdioChannelAuthority` | `pub` |
+| `HostStdioChannelError` | `server::HostStdioChannelError` | `pub` |
 | `MAX_REQUEST_BYTES` | `server::MAX_REQUEST_BYTES` | `pub` |
 | `OriginPolicy` | `server::OriginPolicy` | `pub` |
 | `ROUTE_REGISTRY` | `server::ROUTE_REGISTRY` | `pub` |

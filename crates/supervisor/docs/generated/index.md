@@ -53,7 +53,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/boot_trace.rs](../../src/boot_trace.rs) | 10 | 25 | [Symbols and calls](src--boot_trace.md) |
 | [crates/supervisor/src/bootstrap.rs](../../src/bootstrap.rs) | 25 | 144 | [Symbols and calls](src--bootstrap.md) |
 | [crates/supervisor/src/bounded_child_history.rs](../../src/bounded_child_history.rs) | 12 | 264 | [Symbols and calls](src--bounded_child_history.md) |
-| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 16 | 327 | [Symbols and calls](src--builtin.md) |
+| [crates/supervisor/src/builtin.rs](../../src/builtin.rs) | 16 | 329 | [Symbols and calls](src--builtin.md) |
 | [crates/supervisor/src/catalog.rs](../../src/catalog.rs) | 25 | 168 | [Symbols and calls](src--catalog.md) |
 | [crates/supervisor/src/client_extensions.rs](../../src/client_extensions.rs) | 84 | 903 | [Symbols and calls](src--client_extensions.md) |
 | [crates/supervisor/src/context_usage.rs](../../src/context_usage.rs) | 26 | 348 | [Symbols and calls](src--context_usage.md) |
@@ -75,7 +75,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 836 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
-| [crates/supervisor/src/stdio_channels.rs](../../src/stdio_channels.rs) | 2 | 29 | [Symbols and calls](src--stdio_channels.md) |
+| [crates/supervisor/src/stdio_channels.rs](../../src/stdio_channels.rs) | 9 | 139 | [Symbols and calls](src--stdio_channels.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |
 | [crates/supervisor/src/thread_card.rs](../../src/thread_card.rs) | 46 | 270 | [Symbols and calls](src--thread_card.md) |
 | [crates/supervisor/src/tool_control.rs](../../src/tool_control.rs) | 45 | 304 | [Symbols and calls](src--tool_control.md) |
@@ -118,8 +118,9 @@ flowchart LR
   m19["production_tool_control.rs"]
   m20["request_index.rs"]
   m21["resource_capability.rs"]
-  m22["thread_card.rs"]
-  m23["tool_control.rs"]
+  m22["stdio_channels.rs"]
+  m23["thread_card.rs"]
+  m24["tool_control.rs"]
   m0 -->|"1"| m10
   m0 -->|"2"| m11
   m3 -->|"10"| m6
@@ -128,6 +129,7 @@ flowchart LR
   m4 -->|"1"| m10
   m4 -->|"6"| m13
   m4 -->|"1"| m18
+  m4 -->|"1"| m22
   m5 -->|"1"| m1
   m6 -->|"2"| m3
   m6 -->|"1"| m11
@@ -150,11 +152,11 @@ flowchart LR
   m18 -->|"1"| m14
   m18 -->|"1"| m17
   m18 -->|"6"| m19
-  m18 -->|"5"| m22
-  m18 -->|"1"| m23
-  m19 -->|"1"| m23
+  m18 -->|"5"| m23
+  m18 -->|"1"| m24
+  m19 -->|"1"| m24
   m21 -->|"13"| m11
-  m22 -->|"1"| m1
-  m22 -->|"1"| m10
-  m22 -->|"1"| m13
+  m23 -->|"1"| m1
+  m23 -->|"1"| m10
+  m23 -->|"1"| m13
 ```
