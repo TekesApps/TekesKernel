@@ -525,7 +525,9 @@ fn exchange_tool_continuation_runtime(
                 }
                 Ok(SupervisorMessage::Stop(_)) => {
                     cancellation.cancel(CANCEL_STOP);
-                    cancellation.defer(line);
+                    // Keep Stop for ordinary durable delivery, not this reply
+                    // iterator: an allowed cancellation must read its response.
+                    cancellation.park_delivery(line);
                     if !allow_stop {
                         return Err("tool continuation cancelled by stop".into());
                     }
