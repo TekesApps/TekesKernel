@@ -350,7 +350,8 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-supervisor::resource_capability::map_prompt_materialize_error](../../src/resource_capability.rs#L465) | `pub(crate)` | [tekes-supervisor::client_extensions::ProductionClientExtensions::execute](../../src/client_extensions.rs#L897); [tekes-supervisor::resource_capability::EndpointCommandInputAuthority::deliver](../../src/resource_capability.rs#L405) |
 | [tekes-supervisor::resource_capability::ResourceCapabilityError](../../src/resource_capability.rs#L560) | `pub` | not a function |
 | [tekes-supervisor::resource_capability::map_resource_failure](../../src/resource_capability.rs#L598) | `pub(crate)` | no resolved direct caller |
-| [tekes-supervisor::stdio_channels::UnixStdioChannels](../../src/stdio_channels.rs#L11) | `pub` | not a function |
+| [tekes-supervisor::stdio_channels::UnixStdioChannels](../../src/stdio_channels.rs#L12) | `pub` | not a function |
+| [tekes-supervisor::stdio_channels::UnixStdioChannels::new](../../src/stdio_channels.rs#L15) | `pub` | [tekes-supervisor::builtin::run](../../src/builtin.rs#L166); [tekes-supervisor::process_live_tests::attach_live_stdio](../../src/process_live_tests.rs#L1509) |
 | [tekes-supervisor::thread_card::DEFAULT_DEBOUNCE](../../src/thread_card.rs#L22) | `pub(crate)` | not a function |
 | [tekes-supervisor::thread_card::PreparedLine](../../src/thread_card.rs#L24) | `pub(crate)` | not a function |
 | [tekes-supervisor::thread_card::PreparedCard](../../src/thread_card.rs#L36) | `pub(crate)` | not a function |

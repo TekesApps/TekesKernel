@@ -1803,7 +1803,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `assemble` | `LifecycleCarrierHost::new` | [2892](../../src/endpoint_carrier.rs#L2892) | [tekes-supervisor::endpoint_carrier::LifecycleCarrierHost::new](../../src/endpoint_carrier.rs#L2785) |
 | `assemble` | `host.set_readiness` | [2897](../../src/endpoint_carrier.rs#L2897) | receiver-type-required |
 | `assemble` | `TransportServer::new(Arc::clone(&host) as Arc<dyn EndpointCarrierHost>, config)?                 .with_file_transfer` | [2899](../../src/endpoint_carrier.rs#L2899) | receiver-type-required |
-| `assemble` | `TransportServer::new` | [2899](../../src/endpoint_carrier.rs#L2899) | [transport::server::TransportServer::new](../../../transport/src/server.rs#L293) |
+| `assemble` | `TransportServer::new` | [2899](../../src/endpoint_carrier.rs#L2899) | [transport::server::TransportServer::new](../../../transport/src/server.rs#L310) |
 | `assemble` | `Arc::clone` | [2899](../../src/endpoint_carrier.rs#L2899) | external-constructor-callback-or-unresolved |
 | `assemble` | `crate::file_leases::SessionFileTransfer::open(root)                         .map_err` | [2901](../../src/endpoint_carrier.rs#L2901) | receiver-type-required |
 | `assemble` | `crate::file_leases::SessionFileTransfer::open` | [2901](../../src/endpoint_carrier.rs#L2901) | [tekes-supervisor::file_leases::SessionFileTransfer::open](../../src/file_leases.rs#L29) |

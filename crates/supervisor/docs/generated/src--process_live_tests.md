@@ -1332,7 +1332,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `attach_live_stdio` | `host.mcp_runtime().set_stdio_connector` | [1512](../../src/process_live_tests.rs#L1512) | receiver-type-required |
 | `attach_live_stdio` | `host.mcp_runtime` | [1512](../../src/process_live_tests.rs#L1512) | receiver-type-required |
 | `attach_live_stdio` | `Arc::new` | [1512](../../src/process_live_tests.rs#L1512) | external-constructor-callback-or-unresolved |
-| `attach_live_stdio` | `crate::stdio_channels::UnixStdioChannels` | [1512](../../src/process_live_tests.rs#L1512) | external-constructor-callback-or-unresolved |
+| `attach_live_stdio` | `crate::stdio_channels::UnixStdioChannels::new` | [1512](../../src/process_live_tests.rs#L1512) | [tekes-supervisor::stdio_channels::UnixStdioChannels::new](../../src/stdio_channels.rs#L15) |
 | `attach_live_stdio` | `[("test".into(),PathBuf::from(value["socket"].as_str().unwrap()))].into` | [1512](../../src/process_live_tests.rs#L1512) | receiver-type-required |
 | `attach_live_stdio` | `"test".into` | [1512](../../src/process_live_tests.rs#L1512) | receiver-type-required |
 | `attach_live_stdio` | `PathBuf::from` | [1512](../../src/process_live_tests.rs#L1512) | external-constructor-callback-or-unresolved |
