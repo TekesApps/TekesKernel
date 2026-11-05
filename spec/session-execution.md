@@ -109,3 +109,29 @@ Inventory and title search use Session identity without Folder bindings; context
 search supports current, explicit or all Sessions, without a project registry filter.
 ClientKit/Tekes consumption is a separate stage. No rendering or workspace/RunView
 changes are part of this Kernel work.
+
+### Append-only host stdio attachment
+
+The private launcher may attach a new document channel without restarting Kernel:
+`POST /api/host.stdioChannels.register`, using the existing launcher bearer token,
+no Origin header, and `Content-Type: application/json`. The strict body is
+`{"channel":"document-id","socketPath":"/canonical/private/relay.sock"}`.
+This is a host transport operation, not a Session RPC, model tool, Web Client
+route, process registry or permission grant. Executable, cwd, environment and roots
+remain exclusively in the host. Existing Session execution/genesis is unchanged.
+
+The host prepares its listener before registration and creates the new Session
+only after acknowledgment. A channel has 1–128 ASCII alphanumeric, underscore or
+hyphen bytes. Socket and canonical parent directory must be private and owned by
+the current user, under the same checks used at connection time. Kernel rechecks
+the filesystem on each connection because a host can remove or replace a socket.
+
+Success is HTTP 200 `{"registered":true}`. The same channel/path pair is
+idempotent. An existing channel with another path returns 409 `channel-conflict`
+and remains unchanged. Invalid channel/socket returns 400 `invalid-channel`;
+malformed, duplicate-key or unknown-field JSON returns 400 `invalid-request`.
+Existing bearer/Origin refusals are 401/403. A server without this optional host
+authority returns 404; draining/unready servers return 503. The operation is bound
+by the carrier's existing body, concurrency and response limits. A lost response
+may follow a committed append, so retry only the same pair, retaining the prepared
+listener until the outcome is known. There is no unregister or rebind operation.

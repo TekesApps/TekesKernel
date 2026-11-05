@@ -1409,3 +1409,161 @@ async fn thread_open_failures_are_the_closed_tables_503_on_http() {
         );
     }
 }
+
+#[tokio::test]
+async fn host_stdio_registration_is_private_strict_and_preserves_conflicts() {
+    struct Channels(Mutex<std::collections::BTreeMap<String, std::path::PathBuf>>);
+    impl transport::HostStdioChannelAuthority for Channels {
+        fn register(
+            &self,
+            channel: String,
+            path: std::path::PathBuf,
+        ) -> Result<(), transport::HostStdioChannelError> {
+            if channel == "invalid" {
+                return Err(transport::HostStdioChannelError::Invalid);
+            }
+            let mut channels = self.0.lock().unwrap();
+            if let Some(old) = channels.get(&channel) {
+                return if old == &path {
+                    Ok(())
+                } else {
+                    Err(transport::HostStdioChannelError::Conflict)
+                };
+            }
+            channels.insert(channel, path);
+            Ok(())
+        }
+    }
+    let channels = Arc::new(Channels(Mutex::new(Default::default())));
+    let server = TransportServer::new(Arc::new(MockHost::new(true)), config())
+        .unwrap()
+        .with_host_stdio_channels(channels.clone());
+    let router = server.router();
+    let path = "/api/host.stdioChannels.register";
+    let body = r#"{"channel":"document-a","socketPath":"/private/a.sock"}"#;
+    let mut unauthenticated = request(Method::POST, path, body);
+    unauthenticated.headers_mut().remove("authorization");
+    assert_eq!(
+        router
+            .clone()
+            .oneshot(unauthenticated)
+            .await
+            .unwrap()
+            .status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let mut wrong_bearer = request(Method::POST, path, body);
+    wrong_bearer.headers_mut().insert(
+        "authorization",
+        "Bearer AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE"
+            .parse()
+            .unwrap(),
+    );
+    assert_eq!(
+        router.clone().oneshot(wrong_bearer).await.unwrap().status(),
+        StatusCode::UNAUTHORIZED
+    );
+    let mut browser = request(Method::POST, path, body);
+    browser
+        .headers_mut()
+        .insert("origin", "http://localhost".parse().unwrap());
+    assert_eq!(
+        router.clone().oneshot(browser).await.unwrap().status(),
+        StatusCode::FORBIDDEN
+    );
+    for malformed in [
+        r#"{"channel":"a","socketPath":"/a","executable":"/bin/sh"}"#,
+        r#"{"channel":"a","channel":"b","socketPath":"/a"}"#,
+        r#"{"channel":"a"}"#,
+    ] {
+        let response = router
+            .clone()
+            .oneshot(request(Method::POST, path, malformed))
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::BAD_REQUEST);
+        assert_eq!(
+            response_json(response).await["error"]["code"],
+            "invalid-request"
+        );
+    }
+    // The browser listener must not expose this launcher-only operation even
+    // when the browser's ordinary Host/Origin credentials are valid.
+    let web = server
+        .web_client(WebClientConfig::loopback("127.0.0.1:7357".parse().unwrap()))
+        .unwrap();
+    let web_request = Request::builder()
+        .method(Method::POST)
+        .uri("/web/api/host.stdioChannels.register")
+        .header("host", "127.0.0.1:7357")
+        .header("origin", "http://127.0.0.1:7357")
+        .header("content-type", "application/json")
+        .body(Body::from(body))
+        .unwrap();
+    let response = web.router().oneshot(web_request).await.unwrap();
+    assert_eq!(response.status(), StatusCode::NOT_FOUND);
+    assert_eq!(response_json(response).await["error"]["code"], "not-found");
+    assert!(channels.0.lock().unwrap().is_empty());
+    let invalid = router
+        .clone()
+        .oneshot(request(
+            Method::POST,
+            path,
+            r#"{"channel":"invalid","socketPath":"/private/a.sock"}"#,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(invalid.status(), StatusCode::BAD_REQUEST);
+    assert_eq!(
+        response_json(invalid).await["error"]["code"],
+        "invalid-channel"
+    );
+    assert!(channels.0.lock().unwrap().is_empty());
+    for _ in 0..2 {
+        let response = router
+            .clone()
+            .oneshot(request(Method::POST, path, body))
+            .await
+            .unwrap();
+        assert_eq!(response.status(), StatusCode::OK);
+        assert_eq!(response_json(response).await, json!({"registered":true}));
+    }
+    let conflict = router
+        .clone()
+        .oneshot(request(
+            Method::POST,
+            path,
+            r#"{"channel":"document-a","socketPath":"/private/b.sock"}"#,
+        ))
+        .await
+        .unwrap();
+    assert_eq!(conflict.status(), StatusCode::CONFLICT);
+    assert_eq!(
+        response_json(conflict).await["error"]["code"],
+        "channel-conflict"
+    );
+    assert_eq!(
+        channels.0.lock().unwrap().get("document-a").unwrap(),
+        &std::path::PathBuf::from("/private/a.sock")
+    );
+    assert!(!transport::ROUTE_REGISTRY.contains(&"host.stdioChannels.register"));
+    server.handle().begin_drain();
+    assert_eq!(
+        router
+            .oneshot(request(Method::POST, path, body))
+            .await
+            .unwrap()
+            .status(),
+        StatusCode::SERVICE_UNAVAILABLE
+    );
+    let absent = TransportServer::new(Arc::new(MockHost::new(true)), config()).unwrap();
+    assert_eq!(
+        absent
+            .router()
+            .oneshot(request(Method::POST, path, body))
+            .await
+            .unwrap()
+            .status(),
+        StatusCode::NOT_FOUND
+    );
+}

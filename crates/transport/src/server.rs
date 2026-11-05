@@ -159,6 +159,7 @@ impl TransportConfig {
 }
 
 struct Shared {
+    host_stdio_channels: Option<Arc<dyn HostStdioChannelAuthority>>,
     file_changes: Option<Arc<dyn FileChangeAuthority>>,
     file_transfer: Option<Arc<dyn FileTransferAuthority>>,
     host: Arc<dyn EndpointCarrierHost>,
@@ -243,6 +244,22 @@ pub struct TransportServer {
     shared: Arc<Shared>,
 }
 
+/// Private launcher attachment, deliberately outside the Session method registry.
+/// The launcher owns process execution; Kernel only receives an opaque channel/socket pair.
+pub trait HostStdioChannelAuthority: Send + Sync + 'static {
+    fn register(
+        &self,
+        channel: String,
+        socket_path: std::path::PathBuf,
+    ) -> Result<(), HostStdioChannelError>;
+}
+
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub enum HostStdioChannelError {
+    Invalid,
+    Conflict,
+}
+
 /// File authority remains with the host; the carrier supplies authenticated,
 /// bounded HTTP framing for immutable preview leases.
 pub trait FileTransferAuthority: Send + Sync + 'static {
@@ -321,6 +338,7 @@ impl TransportServer {
         }
         Ok(Self {
             shared: Arc::new(Shared {
+                host_stdio_channels: None,
                 file_transfer: None,
                 file_changes: None,
                 unary: Arc::new(Semaphore::new(config.limits.concurrent_unary)),
@@ -334,6 +352,17 @@ impl TransportServer {
                 extension_routes: extensions,
             }),
         })
+    }
+
+    #[must_use]
+    pub fn with_host_stdio_channels(
+        mut self,
+        authority: Arc<dyn HostStdioChannelAuthority>,
+    ) -> Self {
+        Arc::get_mut(&mut self.shared)
+            .expect("Configure host channels before sharing server")
+            .host_stdio_channels = Some(authority);
+        self
     }
 
     #[must_use]
@@ -363,6 +392,10 @@ impl TransportServer {
             .route("/health/live", get(live))
             .route("/health/ready", get(ready))
             .route("/api/remote.mux", get(remote_mux))
+            .route(
+                "/api/host.stdioChannels.register",
+                post(host_stdio_register),
+            )
             .route("/api/session.files.changes", get(file_changes))
             .route(
                 "/api/tekesWorkspace.fileTransfer/prepare",
@@ -478,6 +511,63 @@ async fn file_changes(
         }
         let _ = socket.send(Message::Close(None)).await;
     }).into_response()
+}
+
+async fn host_stdio_register(State(shared): State<Arc<Shared>>, request: Request) -> Response {
+    let Some(authority) = shared.host_stdio_channels.clone() else {
+        return carrier_error(StatusCode::NOT_FOUND, "not-found", "Path not found");
+    };
+    if shared.draining.load(Ordering::Acquire) || shared.host.readiness() != HostReadiness::Ready {
+        return unavailable(&shared);
+    }
+    let permit = match acquire(&shared.unary) {
+        Ok(value) => value,
+        Err(response) => return response,
+    };
+    let bytes = match read_json_body(&shared, request).await {
+        Ok(value) => value,
+        Err(response) => return response,
+    };
+    #[derive(serde::Deserialize)]
+    #[serde(rename_all = "camelCase", deny_unknown_fields)]
+    struct Registration {
+        channel: String,
+        socket_path: std::path::PathBuf,
+    }
+    let registration: Registration = match decode_strict(&bytes) {
+        Ok(value) => value,
+        Err(()) => {
+            return carrier_error(
+                StatusCode::BAD_REQUEST,
+                "invalid-request",
+                "Request is malformed",
+            );
+        }
+    };
+    // Filesystem inspection must not block the HTTP executor. A response timeout
+    // may leave a committed registration; same-pair retry is intentionally idempotent.
+    let work = tokio::task::spawn_blocking(move || {
+        let _permit = permit;
+        authority.register(registration.channel, registration.socket_path)
+    });
+    match timeout(shared.config.limits.response_timeout, work).await {
+        Ok(Ok(Ok(()))) => canonical_json(StatusCode::OK, &serde_json::json!({"registered":true})),
+        Ok(Ok(Err(HostStdioChannelError::Invalid))) => carrier_error(
+            StatusCode::BAD_REQUEST,
+            "invalid-channel",
+            "Channel or socket is invalid",
+        ),
+        Ok(Ok(Err(HostStdioChannelError::Conflict))) => carrier_error(
+            StatusCode::CONFLICT,
+            "channel-conflict",
+            "Channel already has another socket",
+        ),
+        _ => carrier_error(
+            StatusCode::SERVICE_UNAVAILABLE,
+            "unavailable",
+            "Channel registration did not complete",
+        ),
+    }
 }
 
 async fn file_prepare(State(shared): State<Arc<Shared>>, request: Request) -> Response {

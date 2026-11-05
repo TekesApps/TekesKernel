@@ -269,11 +269,12 @@ pub async fn run(path: PathBuf) -> Result<()> {
         &user_agent_dir,
         secrets,
     )?;
+    let stdio_channels = Arc::new(crate::stdio_channels::UnixStdioChannels::new(
+        launch.stdio_channels,
+    ));
     process
         .mcp_runtime()
-        .set_stdio_connector(Arc::new(crate::stdio_channels::UnixStdioChannels(
-            launch.stdio_channels,
-        )));
+        .set_stdio_connector(stdio_channels.clone());
     crate::boot_trace::phase("process_host");
     process.preflight_mandatory_authorities()?;
     crate::boot_trace::phase("preflight_authorities");
@@ -315,7 +316,9 @@ pub async fn run(path: PathBuf) -> Result<()> {
     process.start_periodic_sweep();
     crate::boot_trace::phase("ready_marked");
     host_runtime::install_termination_handler()?;
-    let server = assembly.into_server();
+    let server = assembly
+        .into_server()
+        .with_host_stdio_channels(stdio_channels);
     let handle = server.handle();
     // The Web Client checks Host and Origin against its configured address,
     // so configure it with the bound address rather than a requested port 0.

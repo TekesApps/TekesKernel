@@ -12,8 +12,9 @@ mod web;
 pub use access::{AccessLogRecord, AccessLogSink, NoopAccessLog};
 pub use auth::BearerToken;
 pub use server::{
-    FileChangeAuthority, FileChangeFeed, FileTransferAuthority, MAX_REQUEST_BYTES, OriginPolicy,
-    ROUTE_REGISTRY, TransportConfig, TransportConfigError, TransportHandle, TransportLimits,
-    TransportServer, WebClientConfig, WebClientService,
+    FileChangeAuthority, FileChangeFeed, FileTransferAuthority, HostStdioChannelAuthority,
+    HostStdioChannelError, MAX_REQUEST_BYTES, OriginPolicy, ROUTE_REGISTRY, TransportConfig,
+    TransportConfigError, TransportHandle, TransportLimits, TransportServer, WebClientConfig,
+    WebClientService,
 };
 pub use web::WEB_CLIENT_SHA256;
