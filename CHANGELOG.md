@@ -6,6 +6,12 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.22 - 2026-11-08
+
+### Fixed
+
+- Return only verified and released sessions in `sessions.recover` receipts. Quarantined or unreadable sessions are no longer incorrectly reported as recovered; healthy sessions in the same request continue to recover.
+
 ## 0.9.21 - 2026-11-08
 
 ### Fixed

@@ -99,7 +99,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `request` | `Ok` | [36](../../src/bounded_child_history.rs#L36) | external-constructor-callback-or-unresolved |
 | `validate` | `request(value).map` | [39](../../src/bounded_child_history.rs#L39) | receiver-type-required |
 | `validate` | `request` | [39](../../src/bounded_child_history.rs#L39) | [tekes-supervisor::bounded_child_history::request](../../src/bounded_child_history.rs#L19) |
-| `corrupt` | `failure` | [42](../../src/bounded_child_history.rs#L42) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `corrupt` | `failure` | [42](../../src/bounded_child_history.rs#L42) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `bytes` | `fs::symlink_metadata(path).map_err` | [49](../../src/bounded_child_history.rs#L49) | receiver-type-required |
 | `bytes` | `fs::symlink_metadata` | [49](../../src/bounded_child_history.rs#L49) | external-constructor-callback-or-unresolved |
 | `bytes` | `corrupt` | [49](../../src/bounded_child_history.rs#L49), [63](../../src/bounded_child_history.rs#L63), [67](../../src/bounded_child_history.rs#L67) | [tekes-supervisor::bounded_child_history::corrupt](../../src/bounded_child_history.rs#L41) |
@@ -108,7 +108,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bytes` | `metadata.file_type` | [50](../../src/bounded_child_history.rs#L50) | receiver-type-required |
 | `bytes` | `metadata.len` | [50](../../src/bounded_child_history.rs#L50) | receiver-type-required |
 | `bytes` | `Err` | [51](../../src/bounded_child_history.rs#L51), [69](../../src/bounded_child_history.rs#L69) | external-constructor-callback-or-unresolved |
-| `bytes` | `failure` | [51](../../src/bounded_child_history.rs#L51), [69](../../src/bounded_child_history.rs#L69) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `bytes` | `failure` | [51](../../src/bounded_child_history.rs#L51), [69](../../src/bounded_child_history.rs#L69) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `bytes` | `fs::OpenOptions::new()         .read(true)         .custom_flags(libc::O_NOFOLLOW)         .open(path)         .map_err` | [59](../../src/bounded_child_history.rs#L59) | receiver-type-required |
 | `bytes` | `fs::OpenOptions::new()         .read(true)         .custom_flags(libc::O_NOFOLLOW)         .open` | [59](../../src/bounded_child_history.rs#L59) | receiver-type-required |
 | `bytes` | `fs::OpenOptions::new()         .read(true)         .custom_flags` | [59](../../src/bounded_child_history.rs#L59) | receiver-type-required |
@@ -126,7 +126,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `bytes` | `Ok` | [78](../../src/bounded_child_history.rs#L78) | external-constructor-callback-or-unresolved |
 | `read` | `request(payload).map_err` | [82](../../src/bounded_child_history.rs#L82) | receiver-type-required |
 | `read` | `request` | [82](../../src/bounded_child_history.rs#L82) | external-constructor-callback-or-unresolved |
-| `read` | `failure` | [82](../../src/bounded_child_history.rs#L82), [107](../../src/bounded_child_history.rs#L107), [125](../../src/bounded_child_history.rs#L125), [140](../../src/bounded_child_history.rs#L140), [152](../../src/bounded_child_history.rs#L152), [180](../../src/bounded_child_history.rs#L180), [227](../../src/bounded_child_history.rs#L227) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `read` | `failure` | [82](../../src/bounded_child_history.rs#L82), [107](../../src/bounded_child_history.rs#L107), [125](../../src/bounded_child_history.rs#L125), [140](../../src/bounded_child_history.rs#L140), [152](../../src/bounded_child_history.rs#L152), [180](../../src/bounded_child_history.rs#L180), [227](../../src/bounded_child_history.rs#L227) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `read` | `fs::symlink_metadata(folder)         .map_err(&#124;_&#124; corrupt("session folder unavailable"))?         .file_type()         .is_symlink` | [83](../../src/bounded_child_history.rs#L83) | receiver-type-required |
 | `read` | `fs::symlink_metadata(folder)         .map_err(&#124;_&#124; corrupt("session folder unavailable"))?         .file_type` | [83](../../src/bounded_child_history.rs#L83) | receiver-type-required |
 | `read` | `fs::symlink_metadata(folder)         .map_err` | [83](../../src/bounded_child_history.rs#L83) | receiver-type-required |

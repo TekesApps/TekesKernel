@@ -1423,7 +1423,7 @@ impl ProductionProcessHost {
     /// view to a verified state (repair a torn tail, project the journal), un-defer it, and give
     /// it its share of a sweep -- which is where an interrupted turn gets its reconcile-only
     /// worker. Other sessions are not touched.
-    pub fn recover_client_sessions(&self, sessions: &[String]) -> Result<(), DaemonError> {
+    pub fn recover_client_sessions(&self, sessions: &[String]) -> Result<Vec<String>, DaemonError> {
         for session in sessions {
             if session.is_empty()
                 || session.contains(['/', '\\'])
@@ -1439,6 +1439,7 @@ impl ProductionProcessHost {
                 return Err(DaemonError::invalid_config("recovery session not found"));
             }
         }
+        let mut recovered = Vec::new();
         for session in sessions {
             if let Err(error) = self.ensure_verified(session) {
                 // A quarantined or unreadable thread is not recovered; the others still are.
@@ -1449,6 +1450,7 @@ impl ProductionProcessHost {
                 .lock()
                 .unwrap_or_else(std::sync::PoisonError::into_inner)
                 .insert(session.clone());
+            recovered.push(session.clone());
             let _sweep = self
                 .sweep_lock
                 .lock()
@@ -1457,7 +1459,7 @@ impl ProductionProcessHost {
                 eprintln!("process-host-sweep-session-failed: session={session} error={error}");
             }
         }
-        Ok(())
+        Ok(recovered)
     }
 
     /// Brings one thread to a verified state: `Fresh` in the catalog. A view that a fold has
@@ -8230,6 +8232,81 @@ mod tests {
     #[test]
     fn builtin_recovery_waits_for_explicit_request_and_is_idempotent() {
         check_sweep_recovery(true);
+    }
+
+    #[test]
+    fn client_recovery_receipt_lists_only_verified_released_sessions() {
+        use crate::client_extensions::{ClientExtensionAuthority, ProductionClientExtensions};
+        use crate::endpoint_host::SessionInputAdmissionAuthority;
+        use crate::resource_capability::EndpointCommandInputAuthority;
+
+        let root = tempfile::tempdir().expect("process host root");
+        let corrupt = "018f0000-0000-7000-8000-000000000135";
+        let healthy = "018f0000-0000-7000-8000-000000000136";
+        for session in [corrupt, healthy] {
+            fs::create_dir_all(root.path().join("threads").join(session).join("assets"))
+                .expect("thread folder");
+        }
+        fs::write(
+            root.path().join("threads").join(corrupt).join("main.jsonl"),
+            b"corrupt\n",
+        )
+        .expect("corrupt ledger");
+        write_test_genesis(
+            &root.path().join("threads").join(healthy).join("main.jsonl"),
+            healthy,
+        );
+        let host = ProductionProcessHost::open(
+            root.path(),
+            std::env::current_exe().expect("test executable"),
+            "test-build",
+            root.path().join(".agent"),
+        )
+        .expect("process host");
+        host.arm_admission();
+        let commands = EndpointCommandInputAuthority::new(
+            Arc::clone(&host) as Arc<dyn SessionDeliveryAuthority>,
+            Arc::new(|| Ok("2026-08-29T00:00:00.000Z".to_owned())),
+            Arc::new(SessionInputAdmissionAuthority::new(
+                root.path().to_path_buf(),
+            )),
+        );
+        let extensions = ProductionClientExtensions::open(
+            root.path(),
+            profile::ResourceCatalog::default(),
+            commands,
+            Arc::clone(&host),
+        )
+        .expect("extensions");
+        assert!(host.is_deferred(corrupt));
+        assert!(host.is_deferred(healthy));
+
+        for rpc_id in ["recover-mixed", "recover-mixed-again"] {
+            let receipt = ClientExtensionAuthority::execute(
+                &extensions,
+                "sessions.recover",
+                &json!({"sessionIds":[corrupt, healthy]}),
+                "test-client",
+                rpc_id,
+                false,
+            )
+            .expect("one corrupt session must not block the healthy session");
+            assert_eq!(
+                serde_json::to_value(receipt).expect("recovery receipt JSON"),
+                json!({"recoveredSessionIds":[healthy]}),
+                "only verified and released sessions may be reported recovered"
+            );
+            assert!(
+                host.is_deferred(corrupt),
+                "quarantined session stays deferred"
+            );
+            assert!(!host.is_deferred(healthy), "healthy session was released");
+            assert!(
+                host.live_sessions().is_empty(),
+                "idle recovery needs no worker"
+            );
+        }
+        host.shutdown();
     }
 
     #[cfg(target_os = "macos")]
