@@ -91,3 +91,10 @@ Provider response adoption checks every already-durable call in the recovering
 attempt before appending response facts. The adopted response must retain each
 call ID, tool name, and materialized JSON arguments, including spilled assets.
 An omitted or changed call fails recovery instead of silently reusing its ID.
+
+Reconcile settlement preserves an active durable Stop as `interrupted/user_stop`,
+which the public endpoint projects as `aborted` (issue #130). This also applies
+when the previous worker recorded its provider error or an adopt decision before
+exiting without a settle. Without an active Stop, reconciliation remains
+`interrupted/recovered`; a Stop closed by an earlier turn cannot cancel a later
+turn. Repeating recovery after settlement does not append another terminal.

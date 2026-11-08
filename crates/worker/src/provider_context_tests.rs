@@ -2229,6 +2229,283 @@ fn channel_stop_is_echoed_before_the_user_stop_settle() {
     assert!(!projection.lifecycle.stop_active);
 }
 
+fn recovery_after_provider_error(stop: bool) -> (tempfile::TempDir, LockedLedger) {
+    let (directory, mut ledger) = context_ledger("openai_responses_v1", false);
+    append_test_attempt(&mut ledger, "recovery-cancel-attempt");
+    let options = test_options(&ledger);
+    let cancellation = if stop {
+        let (mut lines, cancellation) = stop_control_lines(Some(
+            r#"{"stop":{"delivery":"recovery-stop","generation":1,"origin":{"client":"cli","key":"recovery-stop-key","op":"session.cancel","principal":"p","target":"t"}}}"#,
+        ));
+        drain_ready_deliveries(
+            &mut ledger,
+            &options,
+            &Selected { version: 2 },
+            &mut lines,
+            &mut Vec::new(),
+        )
+        .expect("persist the stop receipt before the provider outcome");
+        cancellation
+    } else {
+        RuntimeCancellation::default()
+    };
+    append_provider_failure(
+        &mut ledger,
+        &options,
+        2,
+        "recovery-cancel-attempt",
+        ProviderFailure::Cancelled,
+        &cancellation,
+        DialectId::OpenaiResponsesV1,
+        &EagerDispatch::default(),
+    )
+    .expect("persist provider error without post_turn_exit settlement");
+    assert!(!ledger.projection().unwrap().terminal_tail);
+    assert!(unresolved_attempt(&ledger).unwrap().is_none());
+    // Reopen after the original worker disappears: recovery must use the
+    // durable ledger, without its in-memory cancellation flag.
+    let path = ledger.path().to_owned();
+    drop(ledger);
+    let mut ledger =
+        LockedLedger::open(&path, schema::READER_VERSION).expect("reopen for recovery");
+    let options = test_options(&ledger);
+    append_run_start(&mut ledger, &options, RunMode::Reconcile, 0).expect("reconcile run");
+    (directory, ledger)
+}
+
+#[test]
+fn recovery_preserves_durable_user_stop_after_provider_error_and_settles_once() {
+    let (_directory, mut ledger) = recovery_after_provider_error(true);
+    assert!(ledger.projection().unwrap().lifecycle.stop_active);
+    let options = test_options(&ledger);
+    let mut output = Vec::new();
+    reconcile_provider_attempt(&mut ledger, &options, &mut output).expect("recover stopped turn");
+    let projection = ledger.projection().unwrap();
+    let settle = projection.events.last().expect("recovery settle");
+    assert_eq!(settle.kind(), &EventKind::Settle);
+    assert_eq!(settle.string_field("outcome"), Some("interrupted"));
+    assert_eq!(settle.string_field("reason"), Some("user_stop"));
+    assert!(projection.terminal_tail);
+    assert!(!projection.lifecycle.stop_active);
+    let wire =
+        endpoint::Projector::read_only_history(&projection.events, ledger.path().parent().unwrap())
+            .expect("public endpoint projection");
+    let ends = wire
+        .iter()
+        .filter(|row| row.event.event_type == "turn/end")
+        .map(|row| serde_json::to_value(&row.event.data).unwrap())
+        .filter(|data| data["turn"] == 2)
+        .collect::<Vec<_>>();
+    assert_eq!(ends, vec![json!({"turn":2,"reason":"aborted"})]);
+    let settled_bytes = fs::read(ledger.path()).unwrap();
+    reconcile_provider_attempt(&mut ledger, &options, &mut output).expect("repeat recovery");
+    assert_eq!(fs::read(ledger.path()).unwrap(), settled_bytes);
+}
+
+#[test]
+fn recovery_without_durable_stop_keeps_the_recovered_terminal() {
+    let (_directory, mut ledger) = recovery_after_provider_error(false);
+    assert!(!ledger.projection().unwrap().lifecycle.stop_active);
+    let options = test_options(&ledger);
+    reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new()).expect("ordinary recovery");
+    let projection = ledger.projection().unwrap();
+    let settle = projection.events.last().expect("recovery settle");
+    assert_eq!(settle.string_field("outcome"), Some("interrupted"));
+    assert_eq!(settle.string_field("reason"), Some("recovered"));
+    let wire =
+        endpoint::Projector::read_only_history(&projection.events, ledger.path().parent().unwrap())
+            .expect("public endpoint projection");
+    assert!(wire.iter().any(|row| {
+        row.event.event_type == "turn/end"
+            && serde_json::to_value(&row.event.data).unwrap()
+                == json!({"turn":2,"reason":"interrupted"})
+    }));
+}
+
+#[test]
+fn recovery_does_not_inherit_a_previous_turns_user_stop() {
+    let (_directory, mut ledger) = recovery_after_provider_error(true);
+    let options = test_options(&ledger);
+    append_settle(
+        &mut ledger,
+        &options.event_timestamp(),
+        2,
+        "interrupted",
+        Some("user_stop"),
+    )
+    .expect("previous turn stopped normally");
+    let input_seq = ledger.next_seq();
+    ledger
+        .append_contract(
+            make_event(json!({
+                "v":1,"seq":input_seq,"kind":"input","ts":options.event_timestamp(),
+                "content":[{"type":"text","text":"next turn"}],"origin_key":"recovery-next-input",
+                "origin_tuple":{"principal":"p","client":"cli","target":"t","op":"submit","key":"recovery-next-input"}
+            }))
+            .unwrap(),
+            BarrierContext::default(),
+        )
+        .expect("next input");
+    append_turn_open(
+        &mut ledger,
+        &options.event_timestamp(),
+        "inputs",
+        &[input_seq],
+        3,
+    )
+    .expect("next turn");
+    assert!(!ledger.projection().unwrap().lifecycle.stop_active);
+    reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new()).expect("recover next turn");
+    let settle = ledger.projection().unwrap().events.last().unwrap();
+    assert_eq!(settle.integer_field("turn"), Some(3));
+    assert_eq!(settle.string_field("reason"), Some("recovered"));
+}
+
+#[test]
+fn recovery_adopted_response_keeps_stop_reason_and_outcome_exactly_once() {
+    for finish in ["stop", "content_filter", "provider_error"] {
+        for stopped in [false, true] {
+            let (_directory, mut ledger) = context_ledger("openai_chat_v1", false);
+            let options = test_options(&ledger);
+            append_test_attempt(&mut ledger, "adopt-stop-attempt");
+            let response = if finish == "provider_error" {
+                json!({"error":{"code":"provider_error","message":"provider failed"}})
+            } else {
+                json!({
+                    "id":"chatcmpl-stop-recovery","object":"chat.completion","model":"m",
+                    "choices":[{"message":{"role":"assistant","content":"saved answer"},"finish_reason":finish}]
+                })
+            };
+            let asset = store::AssetStore::new(ledger.path().parent().unwrap().join("assets"))
+                .unwrap()
+                .publish(&serde_json::to_vec(&response).unwrap())
+                .unwrap();
+            for row in [
+                json!({"v":1,"seq":ledger.next_seq(),"turn":2,"kind":"attempt_dispatched","ts":options.event_timestamp(),"attempt":"adopt-stop-attempt"}),
+                json!({"v":1,"seq":ledger.next_seq()+1,"turn":2,"kind":"attempt_recovery","ts":options.event_timestamp(),"attempt":"adopt-stop-attempt","decision":"adopt","inventory":[],"response":{"asset":asset.asset}}),
+            ] {
+                ledger
+                    .append_contract(make_event(row).unwrap(), BarrierContext::default())
+                    .expect("persist saved adopt response");
+            }
+            if stopped {
+                let (mut lines, _cancellation) = stop_control_lines(Some(
+                    r#"{"stop":{"delivery":"adopt-stop","generation":1,"origin":{"client":"cli","key":"adopt-stop-key","op":"session.cancel","principal":"p","target":"t"}}}"#,
+                ));
+                drain_ready_deliveries(
+                    &mut ledger,
+                    &options,
+                    &Selected { version: 2 },
+                    &mut lines,
+                    &mut Vec::new(),
+                )
+                .expect("persist stop after saved response");
+            }
+            let path = ledger.path().to_owned();
+            drop(ledger);
+            let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+            let options = test_options(&ledger);
+            append_run_start(&mut ledger, &options, RunMode::Reconcile, 0).unwrap();
+            reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new())
+                .expect("reconcile saved response");
+            let projection = ledger.projection().unwrap();
+            let settle = projection.events.last().unwrap();
+            assert_eq!(
+                settle.kind(),
+                &EventKind::Settle,
+                "{finish}, stop={stopped}"
+            );
+            assert_eq!(settle.string_field("outcome"), Some("interrupted"));
+            assert_eq!(
+                settle.string_field("reason"),
+                Some(if stopped { "user_stop" } else { "recovered" }),
+                "{finish}, stop={stopped}"
+            );
+            let outcome_kind = if finish == "stop" {
+                EventKind::Output
+            } else {
+                EventKind::Error
+            };
+            assert_eq!(
+                projection
+                    .events
+                    .iter()
+                    .filter(|event| {
+                        *event.kind() == outcome_kind
+                            && event.string_field("attempt") == Some("adopt-stop-attempt")
+                    })
+                    .count(),
+                1,
+                "adoption writes its output/error once"
+            );
+            let settled_bytes = fs::read(&path).unwrap();
+            reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new())
+                .expect("repeat saved response recovery");
+            assert_eq!(fs::read(&path).unwrap(), settled_bytes);
+        }
+    }
+}
+
+#[test]
+fn recovery_unresolved_attempt_keeps_stop_reason_with_and_without_dispatch() {
+    for dispatched in [false, true] {
+        for stopped in [false, true] {
+            let (_directory, mut ledger) = context_ledger("openai_responses_v1", false);
+            let options = test_options(&ledger);
+            append_test_attempt(&mut ledger, "unresolved-stop-attempt");
+            if dispatched {
+                ledger
+                    .append_contract(
+                        make_event(json!({"v":1,"seq":ledger.next_seq(),"turn":2,"kind":"attempt_dispatched","ts":options.event_timestamp(),"attempt":"unresolved-stop-attempt"})).unwrap(),
+                        BarrierContext::default(),
+                    )
+                    .unwrap();
+            }
+            if stopped {
+                let (mut lines, _cancellation) = stop_control_lines(Some(
+                    r#"{"stop":{"delivery":"unresolved-stop","generation":1,"origin":{"client":"cli","key":"unresolved-stop-key","op":"session.cancel","principal":"p","target":"t"}}}"#,
+                ));
+                drain_ready_deliveries(
+                    &mut ledger,
+                    &options,
+                    &Selected { version: 2 },
+                    &mut lines,
+                    &mut Vec::new(),
+                )
+                .unwrap();
+            }
+            let path = ledger.path().to_owned();
+            drop(ledger);
+            let mut ledger = LockedLedger::open(&path, schema::READER_VERSION).unwrap();
+            let options = test_options(&ledger);
+            append_run_start(&mut ledger, &options, RunMode::Reconcile, 0).unwrap();
+            reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new()).unwrap();
+            let projection = ledger.projection().unwrap();
+            let settle = projection.events.last().unwrap();
+            assert_eq!(settle.kind(), &EventKind::Settle);
+            assert_eq!(
+                settle.string_field("reason"),
+                Some(if stopped { "user_stop" } else { "recovered" }),
+                "dispatched={dispatched}, stop={stopped}"
+            );
+            assert_eq!(
+                projection
+                    .events
+                    .iter()
+                    .filter(|event| {
+                        *event.kind() == EventKind::Error
+                            && event.string_field("attempt") == Some("unresolved-stop-attempt")
+                    })
+                    .count(),
+                1
+            );
+            let settled_bytes = fs::read(&path).unwrap();
+            reconcile_provider_attempt(&mut ledger, &options, &mut Vec::new()).unwrap();
+            assert_eq!(fs::read(&path).unwrap(), settled_bytes);
+        }
+    }
+}
+
 #[test]
 fn lease_denial_leaves_the_turn_open_for_tail_recovery() {
     let (directory, mut ledger) = context_ledger("openai_responses_v1", true);

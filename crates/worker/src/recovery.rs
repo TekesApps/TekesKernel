@@ -31,6 +31,27 @@ pub(crate) enum RecoveryProgress {
     Stop,
 }
 
+// Recovery must retain a durable Stop even if the original worker exited
+// after acknowledging cancellation but before writing its terminal event.
+fn append_recovery_settle(
+    ledger: &mut LockedLedger,
+    options: &Options,
+    turn: u64,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let reason = if ledger.projection().is_some_and(|p| p.lifecycle.stop_active) {
+        "user_stop"
+    } else {
+        "recovered"
+    };
+    append_settle(
+        ledger,
+        &options.event_timestamp(),
+        turn,
+        "interrupted",
+        Some(reason),
+    )
+}
+
 pub(crate) fn reconcile_provider_attempt(
     ledger: &mut LockedLedger,
     options: &Options,
@@ -43,13 +64,7 @@ pub(crate) fn reconcile_provider_attempt(
             && !projection.lifecycle.open_hold
             && let Some(turn) = projection.latest_turn
         {
-            append_settle(
-                ledger,
-                &options.event_timestamp(),
-                turn,
-                "interrupted",
-                Some("recovered"),
-            )?;
+            append_recovery_settle(ledger, options, turn)?;
         }
         return Ok(());
     };
@@ -87,13 +102,7 @@ pub(crate) fn reconcile_provider_attempt(
         },
     )?)?;
     stdout.flush()?;
-    append_settle(
-        ledger,
-        &options.event_timestamp(),
-        attempt.turn,
-        "interrupted",
-        Some("recovered"),
-    )?;
+    append_recovery_settle(ledger, options, attempt.turn)?;
     Ok(())
 }
 
@@ -647,13 +656,7 @@ fn complete_adopt(
         )?)?;
         stdout.flush()?;
         if reconcile_only {
-            append_settle(
-                ledger,
-                &options.event_timestamp(),
-                attempt.turn,
-                "interrupted",
-                Some("recovered"),
-            )?;
+            append_recovery_settle(ledger, options, attempt.turn)?;
         } else {
             append_settle(
                 ledger,
@@ -727,13 +730,7 @@ fn complete_adopt(
         }
     }
     if reconcile_only {
-        append_settle(
-            ledger,
-            &options.event_timestamp(),
-            attempt.turn,
-            "interrupted",
-            Some("recovered"),
-        )?;
+        append_recovery_settle(ledger, options, attempt.turn)?;
         return Ok(false);
     }
     match terminal.finish_reason {
