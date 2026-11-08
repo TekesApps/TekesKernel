@@ -6,6 +6,13 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.21 - 2026-11-08
+
+### Fixed
+
+- Preserve a durable user Stop through recovery settlement so Session Endpoint consumers observe `aborted`, including interrupted provider and reconcile-only adopted responses.
+- Preserve Stop delivery while reading remote-task cancellation replies, avoiding a repeated deferred Stop in the reply iterator.
+
 ## 0.9.20 — 2026-11-05
 
 ### Fixed
