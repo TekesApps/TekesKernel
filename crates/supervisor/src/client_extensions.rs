@@ -1079,7 +1079,8 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
             }
             "sessions.recover" => {
                 let request: RecoveryRequest = decode(payload)?;
-                self.process
+                let recovered = self
+                    .process
                     .recover_client_sessions(&request.session_ids)
                     .map_err(|error| {
                         failure(
@@ -1088,7 +1089,7 @@ impl ClientExtensionAuthority for ProductionClientExtensions {
                             serde_json::json!({"reason":error.to_string()}),
                         )
                     })?;
-                encode(&serde_json::json!({"recoveredSessionIds":request.session_ids}))
+                encode(&serde_json::json!({"recoveredSessionIds":recovered}))
             }
             "skills/list" | "commands/list" => {
                 if let Some(session_id) = payload.get("sessionId").and_then(Value::as_str) {

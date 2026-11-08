@@ -82,6 +82,10 @@ Client calls it after control and actionable baselines are installed. Built-in
 startup records existing sessions as deferred: projection repair remains
 enabled, but boot/periodic sweeps cannot restart their workers until explicitly
 released by this method. Repeated recovery retains an already-live worker.
+The response lists only sessions that were verified and released; a quarantined
+or unreadable session stays deferred and is omitted while other valid sessions
+can still be released. This is an admission receipt, not proof that a worker has
+started or completed execution.
 
 ### Multiplexing
 

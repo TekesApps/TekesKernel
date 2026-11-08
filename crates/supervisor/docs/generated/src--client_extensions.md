@@ -73,25 +73,25 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | [tekes-supervisor::client_extensions::ProductionClientExtensions::session_folder](../../src/client_extensions.rs#L845) | function_item | `private` |  |
 | [tekes-supervisor::client_extensions::ProductionClientExtensions::session_controls](../../src/client_extensions.rs#L861) | function_item | `private` |  |
 | [tekes-supervisor::client_extensions::ProductionClientExtensions::execute](../../src/client_extensions.rs#L897) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::ProductionClientExtensions::resources_list](../../src/client_extensions.rs#L1179) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::ProductionClientExtensions::resources_read](../../src/client_extensions.rs#L1244) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::ProductionClientExtensions::tools](../../src/client_extensions.rs#L1307) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::ProductionClientExtensions::thread_search](../../src/client_extensions.rs#L1370) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::ProductionClientExtensions::usage](../../src/client_extensions.rs#L1389) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::map_attachment_read_error](../../src/client_extensions.rs#L1610) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::error_allowed](../../src/client_extensions.rs#L1638) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::validate_payload](../../src/client_extensions.rs#L1714) | function_item | `private` |  |
-| [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) | function_item | `pub(crate)` |  |
-| [tekes-supervisor::client_extensions::FOLDER_TRUST_METHODS](../../src/client_extensions.rs#L1872) | const_item | `pub` |  |
-| [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::initial_presets_disclose_profile_text_without_creating_a_session](../../src/client_extensions.rs#L1917) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::session_presets_describe_and_resolve_without_creating_a_session](../../src/client_extensions.rs#L1960) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::approvals_select_persists_the_session_mode_and_refuses_archived_sessions](../../src/client_extensions.rs#L2004) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::tools_list_is_closed_and_includes_every_fixed_tool](../../src/client_extensions.rs#L2109) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::append_canonical](../../src/client_extensions.rs#L2162) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::epoch_profile_asset](../../src/client_extensions.rs#L2167) | function_item | `private` | test; #[cfg(test)] |
-| [tekes-supervisor::client_extensions::tests::usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets](../../src/client_extensions.rs#L2196) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::ProductionClientExtensions::resources_list](../../src/client_extensions.rs#L1180) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::ProductionClientExtensions::resources_read](../../src/client_extensions.rs#L1245) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::ProductionClientExtensions::tools](../../src/client_extensions.rs#L1308) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::ProductionClientExtensions::thread_search](../../src/client_extensions.rs#L1371) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::ProductionClientExtensions::usage](../../src/client_extensions.rs#L1390) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::map_attachment_read_error](../../src/client_extensions.rs#L1611) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::error_allowed](../../src/client_extensions.rs#L1639) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::validate_payload](../../src/client_extensions.rs#L1715) | function_item | `private` |  |
+| [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) | function_item | `pub(crate)` |  |
+| [tekes-supervisor::client_extensions::FOLDER_TRUST_METHODS](../../src/client_extensions.rs#L1873) | const_item | `pub` |  |
+| [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::initial_presets_disclose_profile_text_without_creating_a_session](../../src/client_extensions.rs#L1918) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::session_presets_describe_and_resolve_without_creating_a_session](../../src/client_extensions.rs#L1961) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::approvals_select_persists_the_session_mode_and_refuses_archived_sessions](../../src/client_extensions.rs#L2005) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::tools_list_is_closed_and_includes_every_fixed_tool](../../src/client_extensions.rs#L2110) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::append_canonical](../../src/client_extensions.rs#L2163) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::epoch_profile_asset](../../src/client_extensions.rs#L2168) | function_item | `private` | test; #[cfg(test)] |
+| [tekes-supervisor::client_extensions::tests::usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets](../../src/client_extensions.rs#L2197) | function_item | `private` | test; #[cfg(test)] |
 
 ## Imports / reexports
 
@@ -349,14 +349,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `validate_extension_payload` | `self.class` | [213](../../src/client_extensions.rs#L213) | receiver-type-required |
 | `validate_extension_payload` | `payload.is_object` | [213](../../src/client_extensions.rs#L213) | receiver-type-required |
 | `validate_extension_payload` | `Err` | [214](../../src/client_extensions.rs#L214) | external-constructor-callback-or-unresolved |
-| `validate_extension_payload` | `failure` | [214](../../src/client_extensions.rs#L214) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `validate_extension_payload` | `validate_payload` | [220](../../src/client_extensions.rs#L220) | [tekes-supervisor::client_extensions::validate_payload](../../src/client_extensions.rs#L1714) |
-| `extension_failure_is_exact` | `error_allowed` | [231](../../src/client_extensions.rs#L231) | [tekes-supervisor::client_extensions::error_allowed](../../src/client_extensions.rs#L1638) |
+| `validate_extension_payload` | `failure` | [214](../../src/client_extensions.rs#L214) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `validate_extension_payload` | `validate_payload` | [220](../../src/client_extensions.rs#L220) | [tekes-supervisor::client_extensions::validate_payload](../../src/client_extensions.rs#L1715) |
+| `extension_failure_is_exact` | `error_allowed` | [231](../../src/client_extensions.rs#L231) | [tekes-supervisor::client_extensions::error_allowed](../../src/client_extensions.rs#L1639) |
 | `extension_failure_is_exact` | `self.class` | [231](../../src/client_extensions.rs#L231) | receiver-type-required |
 | `execute` | `self.class(&request.operation).is_none` | [240](../../src/client_extensions.rs#L240) | receiver-type-required |
 | `execute` | `self.class` | [240](../../src/client_extensions.rs#L240), [254](../../src/client_extensions.rs#L254) | receiver-type-required |
 | `execute` | `Err` | [241](../../src/client_extensions.rs#L241) | external-constructor-callback-or-unresolved |
-| `execute` | `failure` | [241](../../src/client_extensions.rs#L241), [266](../../src/client_extensions.rs#L266) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `execute` | `failure` | [241](../../src/client_extensions.rs#L241), [266](../../src/client_extensions.rs#L266) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `execute` | `self.authority.execute` | [247](../../src/client_extensions.rs#L247) | receiver-type-required |
 | `execute` | `Some` | [254](../../src/client_extensions.rs#L254), [259](../../src/client_extensions.rs#L259) | external-constructor-callback-or-unresolved |
 | `execute` | `request                 .handoff                 .mark_handed_off(DurableHandoffProof {                     delivery: "extension-authority-barrier".to_owned(),                     durable_identity: Some(RpcDurableIdentity {                         kind: "extension-rpc".to_owned(),                         id: request.rpc_id.clone(),                         seq: None,                     }),                 })                 .map_err` | [255](../../src/client_extensions.rs#L255) | receiver-type-required |
@@ -410,16 +410,16 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `encode` | `IJsonValue::parse` | [435](../../src/client_extensions.rs#L435) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
 | `encode` | `serde_json::to_vec(value).map_err` | [435](../../src/client_extensions.rs#L435) | receiver-type-required |
 | `encode` | `serde_json::to_vec` | [435](../../src/client_extensions.rs#L435) | external-constructor-callback-or-unresolved |
-| `encode` | `failure` | [436](../../src/client_extensions.rs#L436), [442](../../src/client_extensions.rs#L442) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `encode` | `failure` | [436](../../src/client_extensions.rs#L436), [442](../../src/client_extensions.rs#L442) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `ijson_value` | `serde_json::from_slice(&value.canonical_bytes().map_err(&#124;_&#124; {         failure(             "internal",             "I-JSON serialization failed",             serde_json::json!({}),         )     })?)     .map_err` | [445](../../src/client_extensions.rs#L445) | receiver-type-required |
 | `ijson_value` | `serde_json::from_slice` | [445](../../src/client_extensions.rs#L445) | external-constructor-callback-or-unresolved |
 | `ijson_value` | `value.canonical_bytes().map_err` | [445](../../src/client_extensions.rs#L445) | receiver-type-required |
 | `ijson_value` | `value.canonical_bytes` | [445](../../src/client_extensions.rs#L445) | receiver-type-required |
-| `ijson_value` | `failure` | [446](../../src/client_extensions.rs#L446), [452](../../src/client_extensions.rs#L452) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `bad_request` | `failure` | [455](../../src/client_extensions.rs#L455) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `ijson_value` | `failure` | [446](../../src/client_extensions.rs#L446), [452](../../src/client_extensions.rs#L452) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `bad_request` | `failure` | [455](../../src/client_extensions.rs#L455) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `decode_resource_cursor` | `value.rsplit_once(':').ok_or_else` | [463](../../src/client_extensions.rs#L463) | receiver-type-required |
 | `decode_resource_cursor` | `value.rsplit_once` | [463](../../src/client_extensions.rs#L463) | receiver-type-required |
-| `decode_resource_cursor` | `failure` | [464](../../src/client_extensions.rs#L464), [471](../../src/client_extensions.rs#L471), [478](../../src/client_extensions.rs#L478) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `decode_resource_cursor` | `failure` | [464](../../src/client_extensions.rs#L464), [471](../../src/client_extensions.rs#L471), [478](../../src/client_extensions.rs#L478) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `decode_resource_cursor` | `Err` | [471](../../src/client_extensions.rs#L471) | external-constructor-callback-or-unresolved |
 | `decode_resource_cursor` | `offset.parse().map_err` | [477](../../src/client_extensions.rs#L477) | receiver-type-required |
 | `decode_resource_cursor` | `offset.parse` | [477](../../src/client_extensions.rs#L477) | receiver-type-required |
@@ -427,13 +427,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `numeric_token` | `Ok` | [488](../../src/client_extensions.rs#L488) | external-constructor-callback-or-unresolved |
 | `numeric_token` | `value.parse().map_err` | [489](../../src/client_extensions.rs#L489) | receiver-type-required |
 | `numeric_token` | `value.parse` | [489](../../src/client_extensions.rs#L489) | receiver-type-required |
-| `numeric_token` | `failure` | [490](../../src/client_extensions.rs#L490) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `numeric_token` | `failure` | [490](../../src/client_extensions.rs#L490) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `new` | `BTreeSet::new` | [514](../../src/client_extensions.rs#L514) | external-constructor-callback-or-unresolved |
 | `new` | `"0".to_owned` | [515](../../src/client_extensions.rs#L515), [516](../../src/client_extensions.rs#L516), [517](../../src/client_extensions.rs#L517) | receiver-type-required |
 | `add` | `self.attempts.insert` | [531](../../src/client_extensions.rs#L531) | receiver-type-required |
 | `add` | `attempt.to_owned` | [531](../../src/client_extensions.rs#L531) | receiver-type-required |
 | `add` | `Err` | [532](../../src/client_extensions.rs#L532), [550](../../src/client_extensions.rs#L550) | external-constructor-callback-or-unresolved |
-| `add` | `failure` | [532](../../src/client_extensions.rs#L532), [550](../../src/client_extensions.rs#L550) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `add` | `failure` | [532](../../src/client_extensions.rs#L532), [550](../../src/client_extensions.rs#L550) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `add` | `add_unsigned_decimal` | [538](../../src/client_extensions.rs#L538), [539](../../src/client_extensions.rs#L539), [540](../../src/client_extensions.rs#L540) | [tekes-supervisor::client_extensions::add_unsigned_decimal](../../src/client_extensions.rs#L603) |
 | `add` | `Some` | [543](../../src/client_extensions.rs#L543) | external-constructor-callback-or-unresolved |
 | `add` | `canonical_cost` | [543](../../src/client_extensions.rs#L543) | [tekes-supervisor::client_extensions::canonical_cost](../../src/client_extensions.rs#L649) |
@@ -442,7 +442,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `value` | `u64::try_from(self.attempts.len()).map_err` | [562](../../src/client_extensions.rs#L562) | receiver-type-required |
 | `value` | `u64::try_from` | [562](../../src/client_extensions.rs#L562) | external-constructor-callback-or-unresolved |
 | `value` | `self.attempts.len` | [562](../../src/client_extensions.rs#L562) | receiver-type-required |
-| `value` | `failure` | [563](../../src/client_extensions.rs#L563), [570](../../src/client_extensions.rs#L570) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `value` | `failure` | [563](../../src/client_extensions.rs#L563), [570](../../src/client_extensions.rs#L570) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `value` | `Err` | [570](../../src/client_extensions.rs#L570) | external-constructor-callback-or-unresolved |
 | `value` | `Value::String` | [584](../../src/client_extensions.rs#L584) | external-constructor-callback-or-unresolved |
 | `value` | `Ok` | [586](../../src/client_extensions.rs#L586) | external-constructor-callback-or-unresolved |
@@ -452,7 +452,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `canonical_unsigned` | `byte.is_ascii_digit` | [591](../../src/client_extensions.rs#L591) | receiver-type-required |
 | `canonical_unsigned` | `Ok` | [593](../../src/client_extensions.rs#L593) | external-constructor-callback-or-unresolved |
 | `canonical_unsigned` | `Err` | [595](../../src/client_extensions.rs#L595) | external-constructor-callback-or-unresolved |
-| `canonical_unsigned` | `failure` | [595](../../src/client_extensions.rs#L595) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `canonical_unsigned` | `failure` | [595](../../src/client_extensions.rs#L595) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `add_unsigned_decimal` | `canonical_unsigned` | [604](../../src/client_extensions.rs#L604), [605](../../src/client_extensions.rs#L605) | [tekes-supervisor::client_extensions::canonical_unsigned](../../src/client_extensions.rs#L590) |
 | `add_unsigned_decimal` | `add_decimal_digits` | [606](../../src/client_extensions.rs#L606) | [tekes-supervisor::client_extensions::add_decimal_digits](../../src/client_extensions.rs#L609) |
 | `add_decimal_digits` | `left.bytes().all` | [610](../../src/client_extensions.rs#L610) | receiver-type-required |
@@ -461,7 +461,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `add_decimal_digits` | `right.bytes().all` | [611](../../src/client_extensions.rs#L611) | receiver-type-required |
 | `add_decimal_digits` | `right.bytes` | [611](../../src/client_extensions.rs#L611), [622](../../src/client_extensions.rs#L622) | receiver-type-required |
 | `add_decimal_digits` | `Err` | [613](../../src/client_extensions.rs#L613) | external-constructor-callback-or-unresolved |
-| `add_decimal_digits` | `failure` | [613](../../src/client_extensions.rs#L613), [635](../../src/client_extensions.rs#L635) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `add_decimal_digits` | `failure` | [613](../../src/client_extensions.rs#L613), [635](../../src/client_extensions.rs#L635) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `add_decimal_digits` | `Vec::with_capacity` | [620](../../src/client_extensions.rs#L620) | external-constructor-callback-or-unresolved |
 | `add_decimal_digits` | `left.len().max` | [620](../../src/client_extensions.rs#L620) | receiver-type-required |
 | `add_decimal_digits` | `left.len` | [620](../../src/client_extensions.rs#L620) | receiver-type-required |
@@ -494,7 +494,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `canonical_cost` | `byte.is_ascii_digit` | [657](../../src/client_extensions.rs#L657) | receiver-type-required |
 | `canonical_cost` | `fraction.ends_with` | [658](../../src/client_extensions.rs#L658) | receiver-type-required |
 | `canonical_cost` | `Err` | [660](../../src/client_extensions.rs#L660), [667](../../src/client_extensions.rs#L667) | external-constructor-callback-or-unresolved |
-| `canonical_cost` | `failure` | [660](../../src/client_extensions.rs#L660), [667](../../src/client_extensions.rs#L667) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `canonical_cost` | `failure` | [660](../../src/client_extensions.rs#L660), [667](../../src/client_extensions.rs#L667) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `canonical_cost` | `fraction.is_some_and` | [666](../../src/client_extensions.rs#L666) | receiver-type-required |
 | `canonical_cost` | `digits.bytes().all` | [666](../../src/client_extensions.rs#L666) | receiver-type-required |
 | `canonical_cost` | `digits.bytes` | [666](../../src/client_extensions.rs#L666) | receiver-type-required |
@@ -519,7 +519,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `usage_route_target` | `epoch         .pointer("/system/asset")         .and_then(Value::as_str)         .ok_or_else` | [706](../../src/client_extensions.rs#L706) | receiver-type-required |
 | `usage_route_target` | `epoch         .pointer("/system/asset")         .and_then` | [706](../../src/client_extensions.rs#L706) | receiver-type-required |
 | `usage_route_target` | `epoch         .pointer` | [706](../../src/client_extensions.rs#L706), [716](../../src/client_extensions.rs#L716) | receiver-type-required |
-| `usage_route_target` | `failure` | [710](../../src/client_extensions.rs#L710), [720](../../src/client_extensions.rs#L720), [727](../../src/client_extensions.rs#L727), [734](../../src/client_extensions.rs#L734), [741](../../src/client_extensions.rs#L741), [748](../../src/client_extensions.rs#L748), [755](../../src/client_extensions.rs#L755), [766](../../src/client_extensions.rs#L766), [776](../../src/client_extensions.rs#L776), [789](../../src/client_extensions.rs#L789), [806](../../src/client_extensions.rs#L806) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `usage_route_target` | `failure` | [710](../../src/client_extensions.rs#L710), [720](../../src/client_extensions.rs#L720), [727](../../src/client_extensions.rs#L727), [734](../../src/client_extensions.rs#L734), [741](../../src/client_extensions.rs#L741), [748](../../src/client_extensions.rs#L748), [755](../../src/client_extensions.rs#L755), [766](../../src/client_extensions.rs#L766), [776](../../src/client_extensions.rs#L776), [789](../../src/client_extensions.rs#L789), [806](../../src/client_extensions.rs#L806) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `usage_route_target` | `epoch         .pointer("/system/digest")         .and_then(Value::as_str)         .ok_or_else` | [716](../../src/client_extensions.rs#L716) | receiver-type-required |
 | `usage_route_target` | `epoch         .pointer("/system/digest")         .and_then` | [716](../../src/client_extensions.rs#L716) | receiver-type-required |
 | `usage_route_target` | `Err` | [727](../../src/client_extensions.rs#L727), [755](../../src/client_extensions.rs#L755), [806](../../src/client_extensions.rs#L806) | external-constructor-callback-or-unresolved |
@@ -550,7 +550,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `usage_route_target` | `epoch.get("model").and_then` | [804](../../src/client_extensions.rs#L804) | receiver-type-required |
 | `usage_route_target` | `exact_sku.as_str` | [804](../../src/client_extensions.rs#L804) | receiver-type-required |
 | `usage_route_target` | `Ok` | [812](../../src/client_extensions.rs#L812) | external-constructor-callback-or-unresolved |
-| `map_search_error` | `failure` | [836](../../src/client_extensions.rs#L836) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `map_search_error` | `failure` | [836](../../src/client_extensions.rs#L836) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `session_folder` | `endpoint::validate_session_id(session_id)             .map_err` | [846](../../src/client_extensions.rs#L846) | receiver-type-required |
 | `session_folder` | `endpoint::validate_session_id` | [846](../../src/client_extensions.rs#L846) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
 | `session_folder` | `bad_request` | [847](../../src/client_extensions.rs#L847) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
@@ -561,8 +561,8 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_folder` | `self.root.join(area).join` | [850](../../src/client_extensions.rs#L850) | receiver-type-required |
 | `session_folder` | `self.root.join` | [850](../../src/client_extensions.rs#L850) | receiver-type-required |
 | `session_folder` | `folder.is_dir` | [851](../../src/client_extensions.rs#L851) | receiver-type-required |
-| `session_folder` | `failure` | [853](../../src/client_extensions.rs#L853) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `session_controls` | `failure` | [867](../../src/client_extensions.rs#L867), [873](../../src/client_extensions.rs#L873) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `session_folder` | `failure` | [853](../../src/client_extensions.rs#L853) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `session_controls` | `failure` | [867](../../src/client_extensions.rs#L867), [873](../../src/client_extensions.rs#L873) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `session_controls` | `error.code` | [867](../../src/client_extensions.rs#L867) | receiver-type-required |
 | `session_controls` | `error.to_string` | [867](../../src/client_extensions.rs#L867) | receiver-type-required |
 | `session_controls` | `error.details` | [867](../../src/client_extensions.rs#L867) | receiver-type-required |
@@ -579,7 +579,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_controls` | `session_controls::execute_goal(&self.root, operation, payload, None)                 .map_err` | [884](../../src/client_extensions.rs#L884) | receiver-type-required |
 | `session_controls` | `session_controls::execute_goal` | [884](../../src/client_extensions.rs#L884) | [session-controls::execute_goal](../../../session-controls/src/lib.rs#L245) |
 | `session_controls` | `encode` | [892](../../src/client_extensions.rs#L892) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `execute` | `encode` | [906](../../src/client_extensions.rs#L906), [966](../../src/client_extensions.rs#L966), [968](../../src/client_extensions.rs#L968), [1005](../../src/client_extensions.rs#L1005), [1007](../../src/client_extensions.rs#L1007), [1019](../../src/client_extensions.rs#L1019), [1027](../../src/client_extensions.rs#L1027), [1029](../../src/client_extensions.rs#L1029), [1037](../../src/client_extensions.rs#L1037), [1064](../../src/client_extensions.rs#L1064), [1070](../../src/client_extensions.rs#L1070), [1078](../../src/client_extensions.rs#L1078), [1091](../../src/client_extensions.rs#L1091), [1106](../../src/client_extensions.rs#L1106), [1112](../../src/client_extensions.rs#L1112), [1119](../../src/client_extensions.rs#L1119), [1121](../../src/client_extensions.rs#L1121), [1139](../../src/client_extensions.rs#L1139), [1160](../../src/client_extensions.rs#L1160) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `execute` | `encode` | [906](../../src/client_extensions.rs#L906), [966](../../src/client_extensions.rs#L966), [968](../../src/client_extensions.rs#L968), [1005](../../src/client_extensions.rs#L1005), [1007](../../src/client_extensions.rs#L1007), [1019](../../src/client_extensions.rs#L1019), [1027](../../src/client_extensions.rs#L1027), [1029](../../src/client_extensions.rs#L1029), [1037](../../src/client_extensions.rs#L1037), [1064](../../src/client_extensions.rs#L1064), [1070](../../src/client_extensions.rs#L1070), [1078](../../src/client_extensions.rs#L1078), [1092](../../src/client_extensions.rs#L1092), [1107](../../src/client_extensions.rs#L1107), [1113](../../src/client_extensions.rs#L1113), [1120](../../src/client_extensions.rs#L1120), [1122](../../src/client_extensions.rs#L1122), [1140](../../src/client_extensions.rs#L1140), [1161](../../src/client_extensions.rs#L1161) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
 | `execute` | `tools::describe_presets` | [906](../../src/client_extensions.rs#L906) | [tools::preset::describe_value](../../../tools/src/preset.rs#L1055) |
 | `execute` | `serde_json::from_value(payload["execution"].clone())                         .map_err` | [909](../../src/client_extensions.rs#L909) | receiver-type-required |
 | `execute` | `serde_json::from_value` | [909](../../src/client_extensions.rs#L909) | external-constructor-callback-or-unresolved |
@@ -600,14 +600,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `snapshot.execution.cwd.iter` | [922](../../src/client_extensions.rs#L922) | receiver-type-required |
 | `execute` | `endpoint::SessionPresetEnvironment::new(&instruction, &execution.mcp)                         .with_models` | [927](../../src/client_extensions.rs#L927) | receiver-type-required |
 | `execute` | `endpoint::SessionPresetEnvironment::new` | [927](../../src/client_extensions.rs#L927) | [endpoint::session_operations::SessionPresetEnvironment::new](../../../endpoint/src/session_operations.rs#L174) |
-| `execute` | `Some` | [928](../../src/client_extensions.rs#L928), [1154](../../src/client_extensions.rs#L1154) | external-constructor-callback-or-unresolved |
+| `execute` | `Some` | [928](../../src/client_extensions.rs#L928), [1155](../../src/client_extensions.rs#L1155) | external-constructor-callback-or-unresolved |
 | `execute` | `tools::PresetBase::default` | [929](../../src/client_extensions.rs#L929) | external-constructor-callback-or-unresolved |
 | `execute` | `tools::ResolvedPreset::resolve_request(&payload["preset"], base, &environment)                         .map_err` | [931](../../src/client_extensions.rs#L931) | receiver-type-required |
 | `execute` | `tools::ResolvedPreset::resolve_request` | [931](../../src/client_extensions.rs#L931) | [tools::preset::ResolvedPreset::resolve_request](../../../tools/src/preset.rs#L721) |
-| `execute` | `failure` | [934](../../src/client_extensions.rs#L934), [994](../../src/client_extensions.rs#L994), [1045](../../src/client_extensions.rs#L1045), [1052](../../src/client_extensions.rs#L1052), [1077](../../src/client_extensions.rs#L1077), [1085](../../src/client_extensions.rs#L1085), [1099](../../src/client_extensions.rs#L1099), [1133](../../src/client_extensions.rs#L1133), [1169](../../src/client_extensions.rs#L1169) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
+| `execute` | `failure` | [934](../../src/client_extensions.rs#L934), [994](../../src/client_extensions.rs#L994), [1045](../../src/client_extensions.rs#L1045), [1052](../../src/client_extensions.rs#L1052), [1077](../../src/client_extensions.rs#L1077), [1086](../../src/client_extensions.rs#L1086), [1100](../../src/client_extensions.rs#L1100), [1134](../../src/client_extensions.rs#L1134), [1170](../../src/client_extensions.rs#L1170) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
 | `execute` | `invalid.detail` | [937](../../src/client_extensions.rs#L937) | receiver-type-required |
 | `execute` | `preset.mcp.is_empty` | [949](../../src/client_extensions.rs#L949), [963](../../src/client_extensions.rs#L963) | receiver-type-required |
-| `execute` | `decode` | [976](../../src/client_extensions.rs#L976), [1009](../../src/client_extensions.rs#L1009), [1022](../../src/client_extensions.rs#L1022), [1031](../../src/client_extensions.rs#L1031), [1040](../../src/client_extensions.rs#L1040), [1081](../../src/client_extensions.rs#L1081), [1125](../../src/client_extensions.rs#L1125), [1149](../../src/client_extensions.rs#L1149), [1153](../../src/client_extensions.rs#L1153), [1159](../../src/client_extensions.rs#L1159) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `execute` | `decode` | [976](../../src/client_extensions.rs#L976), [1009](../../src/client_extensions.rs#L1009), [1022](../../src/client_extensions.rs#L1022), [1031](../../src/client_extensions.rs#L1031), [1040](../../src/client_extensions.rs#L1040), [1081](../../src/client_extensions.rs#L1081), [1126](../../src/client_extensions.rs#L1126), [1150](../../src/client_extensions.rs#L1150), [1154](../../src/client_extensions.rs#L1154), [1160](../../src/client_extensions.rs#L1160) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
 | `execute` | `self                     .process                     .client_file_page(                         &request.session_id,                         &request.path,                         text,                         request.offset.unwrap_or(if text { 1 } else { 0 }),                         request.limit.unwrap_or(if text {                             200                         } else if operation == "session.files.stat" {                             1                         } else {                             256 * 1024                         }),                     )                     .map_err` | [978](../../src/client_extensions.rs#L978) | receiver-type-required |
 | `execute` | `self                     .process                     .client_file_page` | [978](../../src/client_extensions.rs#L978) | receiver-type-required |
 | `execute` | `request.offset.unwrap_or` | [984](../../src/client_extensions.rs#L984) | receiver-type-required |
@@ -625,13 +625,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `map_prompt_materialize_error` | [1018](../../src/client_extensions.rs#L1018) | [tekes-supervisor::resource_capability::map_prompt_materialize_error](../../src/resource_capability.rs#L465) |
 | `execute` | `self                     .attachments()                     .read_authorized_file(&request.session_id, &request.attachment_id)                     .map_err` | [1023](../../src/client_extensions.rs#L1023) | receiver-type-required |
 | `execute` | `self                     .attachments()                     .read_authorized_file` | [1023](../../src/client_extensions.rs#L1023) | receiver-type-required |
-| `execute` | `map_attachment_read_error` | [1026](../../src/client_extensions.rs#L1026) | [tekes-supervisor::client_extensions::map_attachment_read_error](../../src/client_extensions.rs#L1610) |
+| `execute` | `map_attachment_read_error` | [1026](../../src/client_extensions.rs#L1026) | [tekes-supervisor::client_extensions::map_attachment_read_error](../../src/client_extensions.rs#L1611) |
 | `execute` | `endpoint::ApprovalPolicy::default` | [1029](../../src/client_extensions.rs#L1029) | external-constructor-callback-or-unresolved |
 | `execute` | `self.session_folder` | [1032](../../src/client_extensions.rs#L1032), [1043](../../src/client_extensions.rs#L1043), [1069](../../src/client_extensions.rs#L1069) | receiver-type-required |
 | `execute` | `engine::read_permission_mode` | [1033](../../src/client_extensions.rs#L1033) | [engine::permission_mode::read_permission_mode](../../../engine/src/permission_mode.rs#L94) |
 | `execute` | `engine::PermissionMode::parse(&request.mode)                     .ok_or_else` | [1041](../../src/client_extensions.rs#L1041) | receiver-type-required |
 | `execute` | `engine::PermissionMode::parse` | [1041](../../src/client_extensions.rs#L1041) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
-| `execute` | `Err` | [1045](../../src/client_extensions.rs#L1045), [1169](../../src/client_extensions.rs#L1169) | external-constructor-callback-or-unresolved |
+| `execute` | `Err` | [1045](../../src/client_extensions.rs#L1045), [1170](../../src/client_extensions.rs#L1170) | external-constructor-callback-or-unresolved |
 | `execute` | `engine::write_permission_mode(&folder, mode).map_err` | [1051](../../src/client_extensions.rs#L1051) | receiver-type-required |
 | `execute` | `engine::write_permission_mode` | [1051](../../src/client_extensions.rs#L1051) | [engine::permission_mode::write_permission_mode](../../../engine/src/permission_mode.rs#L126) |
 | `execute` | `crate::endpoint_host::SessionDeliveryAuthority::session_metadata_changed` | [1060](../../src/client_extensions.rs#L1060) | external-constructor-callback-or-unresolved |
@@ -644,333 +644,333 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute` | `user_documents::METHODS.contains` | [1075](../../src/client_extensions.rs#L1075) | receiver-type-required |
 | `execute` | `user_documents::execute(&self.root, operation, payload)                     .map_err` | [1076](../../src/client_extensions.rs#L1076) | receiver-type-required |
 | `execute` | `user_documents::execute` | [1076](../../src/client_extensions.rs#L1076) | [user-documents::execute](../../../user-documents/src/lib.rs#L75) |
-| `execute` | `self.process                     .recover_client_sessions(&request.session_ids)                     .map_err` | [1082](../../src/client_extensions.rs#L1082) | receiver-type-required |
-| `execute` | `self.process                     .recover_client_sessions` | [1082](../../src/client_extensions.rs#L1082) | receiver-type-required |
-| `execute` | `payload.get("sessionId").and_then` | [1094](../../src/client_extensions.rs#L1094) | receiver-type-required |
-| `execute` | `payload.get` | [1094](../../src/client_extensions.rs#L1094) | receiver-type-required |
-| `execute` | `self.process                             .client_resource_catalog(session_id)                             .map_err` | [1096](../../src/client_extensions.rs#L1096) | receiver-type-required |
-| `execute` | `self.process                             .client_resource_catalog` | [1096](../../src/client_extensions.rs#L1096) | receiver-type-required |
-| `execute` | `self.commands.skills_list` | [1119](../../src/client_extensions.rs#L1119) | receiver-type-required |
-| `execute` | `self.commands.commands_list` | [1121](../../src/client_extensions.rs#L1121) | receiver-type-required |
-| `execute` | `self.commands                     .validate_session(&input.session_id)                     .map_err` | [1126](../../src/client_extensions.rs#L1126) | receiver-type-required |
-| `execute` | `self.commands                     .validate_session` | [1126](../../src/client_extensions.rs#L1126) | receiver-type-required |
-| `execute` | `self                     .process                     .client_resource_catalog(&input.session_id)                     .map_err` | [1129](../../src/client_extensions.rs#L1129) | receiver-type-required |
-| `execute` | `self                     .process                     .client_resource_catalog` | [1129](../../src/client_extensions.rs#L1129) | receiver-type-required |
-| `execute` | `self                         .commands                         .commands_run_with_catalog(&catalog, &input, principal)                         .map_err` | [1140](../../src/client_extensions.rs#L1140) | receiver-type-required |
-| `execute` | `self                         .commands                         .commands_run_with_catalog` | [1140](../../src/client_extensions.rs#L1140) | receiver-type-required |
-| `execute` | `self.resources_list` | [1146](../../src/client_extensions.rs#L1146) | receiver-type-required |
-| `execute` | `self.resources_read` | [1147](../../src/client_extensions.rs#L1147) | receiver-type-required |
-| `execute` | `self.tools` | [1150](../../src/client_extensions.rs#L1150), [1154](../../src/client_extensions.rs#L1154) | receiver-type-required |
-| `execute` | `self.thread_search` | [1157](../../src/client_extensions.rs#L1157) | receiver-type-required |
-| `execute` | `self                         .search                         .search_sessions(&request.query)                         .map_err` | [1161](../../src/client_extensions.rs#L1161) | receiver-type-required |
-| `execute` | `self                         .search                         .search_sessions` | [1161](../../src/client_extensions.rs#L1161) | receiver-type-required |
-| `execute` | `self.usage` | [1167](../../src/client_extensions.rs#L1167), [1168](../../src/client_extensions.rs#L1168) | receiver-type-required |
-| `resources_list` | `decode` | [1180](../../src/client_extensions.rs#L1180) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `resources_list` | `request.limit.unwrap_or` | [1181](../../src/client_extensions.rs#L1181) | receiver-type-required |
-| `resources_list` | `(1..=100).contains` | [1182](../../src/client_extensions.rs#L1182) | receiver-type-required |
-| `resources_list` | `Err` | [1183](../../src/client_extensions.rs#L1183), [1225](../../src/client_extensions.rs#L1225), [1240](../../src/client_extensions.rs#L1240) | external-constructor-callback-or-unresolved |
-| `resources_list` | `bad_request` | [1183](../../src/client_extensions.rs#L1183), [1240](../../src/client_extensions.rs#L1240) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
-| `resources_list` | `request.source.as_str` | [1185](../../src/client_extensions.rs#L1185) | receiver-type-required |
-| `resources_list` | `self                     .process                     .client_resource_catalog(&request.session_id)                     .map_err` | [1187](../../src/client_extensions.rs#L1187) | receiver-type-required |
-| `resources_list` | `self                     .process                     .client_resource_catalog` | [1187](../../src/client_extensions.rs#L1187) | receiver-type-required |
-| `resources_list` | `failure` | [1191](../../src/client_extensions.rs#L1191), [1225](../../src/client_extensions.rs#L1225) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `resources_list` | `Vec::new` | [1198](../../src/client_extensions.rs#L1198) | external-constructor-callback-or-unresolved |
-| `resources_list` | `catalog.skill_packages` | [1199](../../src/client_extensions.rs#L1199) | receiver-type-required |
-| `resources_list` | `items.push` | [1201](../../src/client_extensions.rs#L1201) | receiver-type-required |
-| `resources_list` | `items.sort_by` | [1209](../../src/client_extensions.rs#L1209) | receiver-type-required |
-| `resources_list` | `left["uri"].as_str().cmp` | [1209](../../src/client_extensions.rs#L1209) | receiver-type-required |
-| `resources_list` | `left["uri"].as_str` | [1209](../../src/client_extensions.rs#L1209) | receiver-type-required |
-| `resources_list` | `right["uri"].as_str` | [1209](../../src/client_extensions.rs#L1209) | receiver-type-required |
-| `resources_list` | `decode_resource_cursor` | [1222](../../src/client_extensions.rs#L1222) | [tekes-supervisor::client_extensions::decode_resource_cursor](../../src/client_extensions.rs#L462) |
-| `resources_list` | `items.len` | [1224](../../src/client_extensions.rs#L1224), [1231](../../src/client_extensions.rs#L1231), [1232](../../src/client_extensions.rs#L1232) | receiver-type-required |
-| `resources_list` | `start.saturating_add(limit).min` | [1231](../../src/client_extensions.rs#L1231) | receiver-type-required |
-| `resources_list` | `start.saturating_add` | [1231](../../src/client_extensions.rs#L1231) | receiver-type-required |
-| `resources_list` | `(end < items.len()).then` | [1232](../../src/client_extensions.rs#L1232) | receiver-type-required |
-| `resources_list` | `Value::String` | [1235](../../src/client_extensions.rs#L1235) | external-constructor-callback-or-unresolved |
-| `resources_list` | `encode` | [1237](../../src/client_extensions.rs#L1237) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `resources_read` | `decode` | [1245](../../src/client_extensions.rs#L1245) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `resources_read` | `serde_json::from_value::<ResourceReference>(request.reference)             .map_err` | [1246](../../src/client_extensions.rs#L1246) | receiver-type-required |
-| `resources_read` | `serde_json::from_value::<ResourceReference>` | [1246](../../src/client_extensions.rs#L1246) | external-constructor-callback-or-unresolved |
-| `resources_read` | `bad_request` | [1247](../../src/client_extensions.rs#L1247) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
-| `resources_read` | `Err` | [1255](../../src/client_extensions.rs#L1255), [1280](../../src/client_extensions.rs#L1280), [1294](../../src/client_extensions.rs#L1294) | external-constructor-callback-or-unresolved |
-| `resources_read` | `failure` | [1255](../../src/client_extensions.rs#L1255), [1265](../../src/client_extensions.rs#L1265), [1273](../../src/client_extensions.rs#L1273), [1280](../../src/client_extensions.rs#L1280), [1287](../../src/client_extensions.rs#L1287), [1294](../../src/client_extensions.rs#L1294) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `resources_read` | `self                     .process                     .client_resource_catalog(&request.session_id)                     .map_err` | [1261](../../src/client_extensions.rs#L1261) | receiver-type-required |
-| `resources_read` | `self                     .process                     .client_resource_catalog` | [1261](../../src/client_extensions.rs#L1261) | receiver-type-required |
-| `resources_read` | `catalog.skill(&name).map_err` | [1272](../../src/client_extensions.rs#L1272) | receiver-type-required |
-| `resources_read` | `catalog.skill` | [1272](../../src/client_extensions.rs#L1272) | receiver-type-required |
-| `resources_read` | `catalog.skill_resource(&name, &request.uri).map_err` | [1286](../../src/client_extensions.rs#L1286) | receiver-type-required |
-| `resources_read` | `catalog.skill_resource` | [1286](../../src/client_extensions.rs#L1286) | receiver-type-required |
-| `resources_read` | `text.len` | [1293](../../src/client_extensions.rs#L1293) | receiver-type-required |
-| `resources_read` | `encode` | [1300](../../src/client_extensions.rs#L1300) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `tools` | `self.process.client_tool_catalog(session_id).map_err` | [1312](../../src/client_extensions.rs#L1312) | receiver-type-required |
-| `tools` | `self.process.client_tool_catalog` | [1312](../../src/client_extensions.rs#L1312) | receiver-type-required |
-| `tools` | `failure` | [1313](../../src/client_extensions.rs#L1313), [1323](../../src/client_extensions.rs#L1323), [1358](../../src/client_extensions.rs#L1358) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `tools` | `Vec::new` | [1319](../../src/client_extensions.rs#L1319) | external-constructor-callback-or-unresolved |
-| `tools` | `BuiltinManifest::compiled` | [1320](../../src/client_extensions.rs#L1320) | [tools::builtin::BuiltinManifest::compiled](../../../tools/src/builtin.rs#L315) |
-| `tools` | `fixed_schema(&tool.name).ok_or_else` | [1322](../../src/client_extensions.rs#L1322) | receiver-type-required |
-| `tools` | `fixed_schema` | [1322](../../src/client_extensions.rs#L1322) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
-| `tools` | `rows.push` | [1329](../../src/client_extensions.rs#L1329), [1337](../../src/client_extensions.rs#L1337) | receiver-type-required |
-| `tools` | `ijson_value` | [1336](../../src/client_extensions.rs#L1336) | [tekes-supervisor::client_extensions::ijson_value](../../src/client_extensions.rs#L444) |
-| `tools` | `rows.sort_by` | [1344](../../src/client_extensions.rs#L1344) | receiver-type-required |
-| `tools` | `left["name"].as_str().cmp` | [1344](../../src/client_extensions.rs#L1344) | receiver-type-required |
-| `tools` | `left["name"].as_str` | [1344](../../src/client_extensions.rs#L1344) | receiver-type-required |
-| `tools` | `right["name"].as_str` | [1344](../../src/client_extensions.rs#L1344) | receiver-type-required |
-| `tools` | `rows                 .into_iter()                 .find(&#124;row&#124; row["name"] == name)                 .ok_or_else` | [1354](../../src/client_extensions.rs#L1354) | receiver-type-required |
-| `tools` | `rows                 .into_iter()                 .find` | [1354](../../src/client_extensions.rs#L1354) | receiver-type-required |
-| `tools` | `rows                 .into_iter` | [1354](../../src/client_extensions.rs#L1354) | receiver-type-required |
-| `tools` | `encode` | [1364](../../src/client_extensions.rs#L1364), [1366](../../src/client_extensions.rs#L1366) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `thread_search` | `decode` | [1371](../../src/client_extensions.rs#L1371) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `thread_search` | `self             .search             .search(&SearchRequest {                 session_filter: request.session_id,                 query: request.query,                 limit: request.limit,                 visibility: request.visibility,                 after: request.after,             })             .map_err` | [1372](../../src/client_extensions.rs#L1372) | receiver-type-required |
-| `thread_search` | `self             .search             .search` | [1372](../../src/client_extensions.rs#L1372) | receiver-type-required |
-| `thread_search` | `Value::String` | [1384](../../src/client_extensions.rs#L1384) | external-constructor-callback-or-unresolved |
-| `thread_search` | `encode` | [1386](../../src/client_extensions.rs#L1386) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `usage` | `decode` | [1390](../../src/client_extensions.rs#L1390) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `usage` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(&request.session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1391](../../src/client_extensions.rs#L1391) | receiver-type-required |
-| `usage` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(&request.session_id))             .find` | [1391](../../src/client_extensions.rs#L1391) | receiver-type-required |
-| `usage` | `["threads", "archive"]             .into_iter()             .map` | [1391](../../src/client_extensions.rs#L1391) | receiver-type-required |
-| `usage` | `["threads", "archive"]             .into_iter` | [1391](../../src/client_extensions.rs#L1391) | receiver-type-required |
-| `usage` | `self.root.join(area).join` | [1393](../../src/client_extensions.rs#L1393) | receiver-type-required |
-| `usage` | `self.root.join` | [1393](../../src/client_extensions.rs#L1393) | receiver-type-required |
-| `usage` | `path.is_dir` | [1394](../../src/client_extensions.rs#L1394) | receiver-type-required |
-| `usage` | `failure` | [1396](../../src/client_extensions.rs#L1396), [1403](../../src/client_extensions.rs#L1403), [1410](../../src/client_extensions.rs#L1410), [1425](../../src/client_extensions.rs#L1425), [1432](../../src/client_extensions.rs#L1432), [1446](../../src/client_extensions.rs#L1446), [1454](../../src/client_extensions.rs#L1454), [1463](../../src/client_extensions.rs#L1463), [1470](../../src/client_extensions.rs#L1470), [1480](../../src/client_extensions.rs#L1480), [1510](../../src/client_extensions.rs#L1510), [1517](../../src/client_extensions.rs#L1517), [1535](../../src/client_extensions.rs#L1535), [1542](../../src/client_extensions.rs#L1542), [1549](../../src/client_extensions.rs#L1549), [1556](../../src/client_extensions.rs#L1556), [1584](../../src/client_extensions.rs#L1584), [1594](../../src/client_extensions.rs#L1594) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `usage` | `std::fs::read(folder.join("main.jsonl")).map_err` | [1402](../../src/client_extensions.rs#L1402) | receiver-type-required |
-| `usage` | `std::fs::read` | [1402](../../src/client_extensions.rs#L1402) | external-constructor-callback-or-unresolved |
-| `usage` | `folder.join` | [1402](../../src/client_extensions.rs#L1402), [1409](../../src/client_extensions.rs#L1409) | receiver-type-required |
-| `usage` | `store::AssetStore::new(folder.join("assets")).map_err` | [1409](../../src/client_extensions.rs#L1409) | receiver-type-required |
-| `usage` | `store::AssetStore::new` | [1409](../../src/client_extensions.rs#L1409) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `usage` | `store::scan_valid_prefix` | [1416](../../src/client_extensions.rs#L1416) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
-| `usage` | `usize::try_from(scan.valid_bytes).unwrap_or` | [1419](../../src/client_extensions.rs#L1419) | receiver-type-required |
-| `usage` | `usize::try_from` | [1419](../../src/client_extensions.rs#L1419) | external-constructor-callback-or-unresolved |
-| `usage` | `scan.needs_repair` | [1420](../../src/client_extensions.rs#L1420) | receiver-type-required |
-| `usage` | `bytes                 .get(valid_len..)                 .is_some_and` | [1421](../../src/client_extensions.rs#L1421) | receiver-type-required |
-| `usage` | `bytes                 .get` | [1421](../../src/client_extensions.rs#L1421) | receiver-type-required |
-| `usage` | `tail.contains` | [1423](../../src/client_extensions.rs#L1423) | receiver-type-required |
-| `usage` | `Err` | [1425](../../src/client_extensions.rs#L1425), [1454](../../src/client_extensions.rs#L1454), [1480](../../src/client_extensions.rs#L1480), [1594](../../src/client_extensions.rs#L1594) | external-constructor-callback-or-unresolved |
-| `usage` | `scan.projection.ok_or_else` | [1431](../../src/client_extensions.rs#L1431) | receiver-type-required |
-| `usage` | `BTreeMap::<String, Value>::new` | [1438](../../src/client_extensions.rs#L1438) | external-constructor-callback-or-unresolved |
-| `usage` | `BTreeMap::<String, String>::new` | [1439](../../src/client_extensions.rs#L1439) | external-constructor-callback-or-unresolved |
-| `usage` | `event.kind` | [1442](../../src/client_extensions.rs#L1442) | receiver-type-required |
-| `usage` | `ijson_value` | [1444](../../src/client_extensions.rs#L1444), [1501](../../src/client_extensions.rs#L1501) | [tekes-supervisor::client_extensions::ijson_value](../../src/client_extensions.rs#L444) |
-| `usage` | `event.raw` | [1444](../../src/client_extensions.rs#L1444), [1501](../../src/client_extensions.rs#L1501) | receiver-type-required |
-| `usage` | `event.string_field("id").ok_or_else` | [1445](../../src/client_extensions.rs#L1445) | receiver-type-required |
-| `usage` | `event.string_field` | [1445](../../src/client_extensions.rs#L1445), [1462](../../src/client_extensions.rs#L1462), [1469](../../src/client_extensions.rs#L1469), [1534](../../src/client_extensions.rs#L1534) | receiver-type-required |
-| `usage` | `usage_route_target` | [1452](../../src/client_extensions.rs#L1452) | [tekes-supervisor::client_extensions::usage_route_target](../../src/client_extensions.rs#L702) |
-| `usage` | `epoch_targets.insert(id.to_owned(), target).is_some` | [1453](../../src/client_extensions.rs#L1453) | receiver-type-required |
-| `usage` | `epoch_targets.insert` | [1453](../../src/client_extensions.rs#L1453) | receiver-type-required |
-| `usage` | `id.to_owned` | [1453](../../src/client_extensions.rs#L1453) | receiver-type-required |
-| `usage` | `event.string_field("attempt").ok_or_else` | [1462](../../src/client_extensions.rs#L1462), [1534](../../src/client_extensions.rs#L1534) | receiver-type-required |
-| `usage` | `event.string_field("epoch").ok_or_else` | [1469](../../src/client_extensions.rs#L1469) | receiver-type-required |
-| `usage` | `attempt_epochs                             .insert(attempt.to_owned(), epoch.to_owned())                             .is_some` | [1476](../../src/client_extensions.rs#L1476) | receiver-type-required |
-| `usage` | `attempt_epochs                             .insert` | [1476](../../src/client_extensions.rs#L1476) | receiver-type-required |
-| `usage` | `attempt.to_owned` | [1477](../../src/client_extensions.rs#L1477) | receiver-type-required |
-| `usage` | `epoch.to_owned` | [1477](../../src/client_extensions.rs#L1477) | receiver-type-required |
-| `usage` | `BTreeMap::<Vec<u8>, CacheAttributionGroup>::new` | [1493](../../src/client_extensions.rs#L1493) | external-constructor-callback-or-unresolved |
-| `usage` | `event.has_field` | [1497](../../src/client_extensions.rs#L1497) | receiver-type-required |
-| `usage` | `outcome.get("usage").cloned().unwrap_or` | [1502](../../src/client_extensions.rs#L1502) | receiver-type-required |
-| `usage` | `outcome.get("usage").cloned` | [1502](../../src/client_extensions.rs#L1502) | receiver-type-required |
-| `usage` | `outcome.get` | [1502](../../src/client_extensions.rs#L1502) | receiver-type-required |
-| `usage` | `raw                 .get("availability")                 .and_then(Value::as_str)                 .unwrap_or` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
-| `usage` | `raw                 .get("availability")                 .and_then` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
-| `usage` | `raw                 .get` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
-| `usage` | `numeric_token` | [1507](../../src/client_extensions.rs#L1507), [1508](../../src/client_extensions.rs#L1508) | [tekes-supervisor::client_extensions::numeric_token](../../src/client_extensions.rs#L486) |
-| `usage` | `raw.get` | [1507](../../src/client_extensions.rs#L1507), [1508](../../src/client_extensions.rs#L1508), [1525](../../src/client_extensions.rs#L1525), [1526](../../src/client_extensions.rs#L1526), [1527](../../src/client_extensions.rs#L1527), [1570](../../src/client_extensions.rs#L1570) | receiver-type-required |
-| `usage` | `input.checked_add(parsed_input).ok_or_else` | [1509](../../src/client_extensions.rs#L1509) | receiver-type-required |
-| `usage` | `input.checked_add` | [1509](../../src/client_extensions.rs#L1509), [1583](../../src/client_extensions.rs#L1583) | receiver-type-required |
-| `usage` | `output.checked_add(parsed_output).ok_or_else` | [1516](../../src/client_extensions.rs#L1516) | receiver-type-required |
-| `usage` | `output.checked_add` | [1516](../../src/client_extensions.rs#L1516) | receiver-type-required |
-| `usage` | `raw.get("input_tokens").and_then` | [1525](../../src/client_extensions.rs#L1525) | receiver-type-required |
-| `usage` | `raw.get("output_tokens").and_then` | [1526](../../src/client_extensions.rs#L1526) | receiver-type-required |
-| `usage` | `raw.get("cache_read").and_then` | [1527](../../src/client_extensions.rs#L1527) | receiver-type-required |
-| `usage` | `canonical_unsigned` | [1531](../../src/client_extensions.rs#L1531), [1532](../../src/client_extensions.rs#L1532), [1533](../../src/client_extensions.rs#L1533) | [tekes-supervisor::client_extensions::canonical_unsigned](../../src/client_extensions.rs#L590) |
-| `usage` | `attempt_epochs.get(attempt).ok_or_else` | [1541](../../src/client_extensions.rs#L1541) | receiver-type-required |
-| `usage` | `attempt_epochs.get` | [1541](../../src/client_extensions.rs#L1541) | receiver-type-required |
-| `usage` | `epoch_targets.get(epoch).ok_or_else` | [1548](../../src/client_extensions.rs#L1548) | receiver-type-required |
-| `usage` | `epoch_targets.get` | [1548](../../src/client_extensions.rs#L1548) | receiver-type-required |
-| `usage` | `serde_json_canonicalizer::to_vec(target).map_err` | [1555](../../src/client_extensions.rs#L1555) | receiver-type-required |
-| `usage` | `serde_json_canonicalizer::to_vec` | [1555](../../src/client_extensions.rs#L1555) | external-constructor-callback-or-unresolved |
-| `usage` | `groups                     .entry(key)                     .or_insert_with(&#124;&#124; CacheAttributionGroup::new(target.clone()))                     .add` | [1562](../../src/client_extensions.rs#L1562) | receiver-type-required |
-| `usage` | `groups                     .entry(key)                     .or_insert_with` | [1562](../../src/client_extensions.rs#L1562) | receiver-type-required |
-| `usage` | `groups                     .entry` | [1562](../../src/client_extensions.rs#L1562) | receiver-type-required |
-| `usage` | `CacheAttributionGroup::new` | [1564](../../src/client_extensions.rs#L1564) | [tekes-supervisor::client_extensions::CacheAttributionGroup::new](../../src/client_extensions.rs#L511) |
-| `usage` | `target.clone` | [1564](../../src/client_extensions.rs#L1564) | receiver-type-required |
-| `usage` | `raw.get("cost").and_then` | [1570](../../src/client_extensions.rs#L1570) | receiver-type-required |
-| `usage` | `groups                 .into_values()                 .map(CacheAttributionGroup::value)                 .collect::<Result<Vec<_>, _>>` | [1575](../../src/client_extensions.rs#L1575) | receiver-type-required |
-| `usage` | `groups                 .into_values()                 .map` | [1575](../../src/client_extensions.rs#L1575) | receiver-type-required |
-| `usage` | `groups                 .into_values` | [1575](../../src/client_extensions.rs#L1575) | receiver-type-required |
-| `usage` | `encode` | [1579](../../src/client_extensions.rs#L1579), [1600](../../src/client_extensions.rs#L1600) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
-| `usage` | `input.checked_add(output).ok_or_else` | [1583](../../src/client_extensions.rs#L1583) | receiver-type-required |
-| `usage` | `[input, output, total]                 .into_iter()                 .any` | [1590](../../src/client_extensions.rs#L1590) | receiver-type-required |
-| `usage` | `[input, output, total]                 .into_iter` | [1590](../../src/client_extensions.rs#L1590) | receiver-type-required |
-| `map_attachment_read_error` | `failure` | [1615](../../src/client_extensions.rs#L1615), [1620](../../src/client_extensions.rs#L1620), [1625](../../src/client_extensions.rs#L1625), [1630](../../src/client_extensions.rs#L1630) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `error_allowed` | `Some` | [1640](../../src/client_extensions.rs#L1640) | external-constructor-callback-or-unresolved |
-| `error_allowed` | `value.starts_with` | [1655](../../src/client_extensions.rs#L1655), [1656](../../src/client_extensions.rs#L1656), [1660](../../src/client_extensions.rs#L1660) | receiver-type-required |
-| `validate_payload` | `payload.as_object().is_some_and` | [1717](../../src/client_extensions.rs#L1717), [1726](../../src/client_extensions.rs#L1726), [1741](../../src/client_extensions.rs#L1741) | receiver-type-required |
-| `validate_payload` | `payload.as_object` | [1717](../../src/client_extensions.rs#L1717), [1726](../../src/client_extensions.rs#L1726), [1741](../../src/client_extensions.rs#L1741) | receiver-type-required |
-| `validate_payload` | `Ok` | [1718](../../src/client_extensions.rs#L1718), [1735](../../src/client_extensions.rs#L1735), [1742](../../src/client_extensions.rs#L1742), [1768](../../src/client_extensions.rs#L1768), [1786](../../src/client_extensions.rs#L1786), [1792](../../src/client_extensions.rs#L1792), [1801](../../src/client_extensions.rs#L1801), [1810](../../src/client_extensions.rs#L1810), [1819](../../src/client_extensions.rs#L1819), [1833](../../src/client_extensions.rs#L1833), [1845](../../src/client_extensions.rs#L1845) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `Err` | [1720](../../src/client_extensions.rs#L1720), [1737](../../src/client_extensions.rs#L1737), [1744](../../src/client_extensions.rs#L1744), [1766](../../src/client_extensions.rs#L1766), [1799](../../src/client_extensions.rs#L1799), [1808](../../src/client_extensions.rs#L1808), [1817](../../src/client_extensions.rs#L1817), [1835](../../src/client_extensions.rs#L1835), [1847](../../src/client_extensions.rs#L1847), [1856](../../src/client_extensions.rs#L1856) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `bad_request` | [1720](../../src/client_extensions.rs#L1720), [1737](../../src/client_extensions.rs#L1737), [1744](../../src/client_extensions.rs#L1744), [1750](../../src/client_extensions.rs#L1750), [1766](../../src/client_extensions.rs#L1766), [1771](../../src/client_extensions.rs#L1771), [1774](../../src/client_extensions.rs#L1774), [1777](../../src/client_extensions.rs#L1777), [1784](../../src/client_extensions.rs#L1784), [1791](../../src/client_extensions.rs#L1791), [1797](../../src/client_extensions.rs#L1797), [1799](../../src/client_extensions.rs#L1799), [1806](../../src/client_extensions.rs#L1806), [1808](../../src/client_extensions.rs#L1808), [1815](../../src/client_extensions.rs#L1815), [1817](../../src/client_extensions.rs#L1817), [1825](../../src/client_extensions.rs#L1825), [1835](../../src/client_extensions.rs#L1835), [1847](../../src/client_extensions.rs#L1847) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
-| `validate_payload` | `object.len` | [1727](../../src/client_extensions.rs#L1727), [1827](../../src/client_extensions.rs#L1827) | receiver-type-required |
-| `validate_payload` | `object.get("execution").is_some_and` | [1728](../../src/client_extensions.rs#L1728) | receiver-type-required |
-| `validate_payload` | `object.get` | [1728](../../src/client_extensions.rs#L1728) | receiver-type-required |
-| `validate_payload` | `serde_json::from_value::<schema::ExecutionConfig>(value.clone())                             .is_ok_and` | [1729](../../src/client_extensions.rs#L1729) | receiver-type-required |
-| `validate_payload` | `serde_json::from_value::<schema::ExecutionConfig>` | [1729](../../src/client_extensions.rs#L1729) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `value.clone` | [1729](../../src/client_extensions.rs#L1729) | receiver-type-required |
-| `validate_payload` | `execution.validate().is_ok` | [1730](../../src/client_extensions.rs#L1730) | receiver-type-required |
-| `validate_payload` | `execution.validate` | [1730](../../src/client_extensions.rs#L1730) | receiver-type-required |
-| `validate_payload` | `object.contains_key` | [1732](../../src/client_extensions.rs#L1732) | receiver-type-required |
-| `validate_payload` | `decode` | [1748](../../src/client_extensions.rs#L1748), [1781](../../src/client_extensions.rs#L1781), [1789](../../src/client_extensions.rs#L1789), [1795](../../src/client_extensions.rs#L1795), [1804](../../src/client_extensions.rs#L1804), [1813](../../src/client_extensions.rs#L1813) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `endpoint::validate_session_id(&request.session_id)                 .map_err` | [1749](../../src/client_extensions.rs#L1749), [1790](../../src/client_extensions.rs#L1790), [1796](../../src/client_extensions.rs#L1796), [1805](../../src/client_extensions.rs#L1805), [1814](../../src/client_extensions.rs#L1814) | receiver-type-required |
-| `validate_payload` | `endpoint::validate_session_id` | [1749](../../src/client_extensions.rs#L1749), [1783](../../src/client_extensions.rs#L1783), [1790](../../src/client_extensions.rs#L1790), [1796](../../src/client_extensions.rs#L1796), [1805](../../src/client_extensions.rs#L1805), [1814](../../src/client_extensions.rs#L1814) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
-| `validate_payload` | `request.path.is_empty` | [1751](../../src/client_extensions.rs#L1751) | receiver-type-required |
-| `validate_payload` | `request.path.contains` | [1752](../../src/client_extensions.rs#L1752) | receiver-type-required |
-| `validate_payload` | `Some` | [1753](../../src/client_extensions.rs#L1753), [1754](../../src/client_extensions.rs#L1754) | external-constructor-callback-or-unresolved |
-| `validate_payload` | `request.offset.is_some` | [1756](../../src/client_extensions.rs#L1756) | receiver-type-required |
-| `validate_payload` | `request.limit.is_some` | [1756](../../src/client_extensions.rs#L1756) | receiver-type-required |
-| `validate_payload` | `request.limit.is_some_and` | [1757](../../src/client_extensions.rs#L1757) | receiver-type-required |
-| `validate_payload` | `crate::bounded_child_history::validate(payload).map_err` | [1771](../../src/client_extensions.rs#L1771) | receiver-type-required |
-| `validate_payload` | `crate::bounded_child_history::validate` | [1771](../../src/client_extensions.rs#L1771) | [tekes-supervisor::bounded_child_history::validate](../../src/bounded_child_history.rs#L38) |
-| `validate_payload` | `session_controls::METHODS.contains` | [1773](../../src/client_extensions.rs#L1773) | receiver-type-required |
-| `validate_payload` | `session_controls::validate(operation, payload).map_err` | [1774](../../src/client_extensions.rs#L1774) | receiver-type-required |
-| `validate_payload` | `session_controls::validate` | [1774](../../src/client_extensions.rs#L1774) | [session-controls::validate](../../../session-controls/src/lib.rs#L180) |
-| `validate_payload` | `user_documents::METHODS.contains` | [1776](../../src/client_extensions.rs#L1776) | receiver-type-required |
-| `validate_payload` | `user_documents::validate(operation, payload).map_err` | [1777](../../src/client_extensions.rs#L1777) | receiver-type-required |
-| `validate_payload` | `user_documents::validate` | [1777](../../src/client_extensions.rs#L1777) | [user-documents::validate](../../../user-documents/src/lib.rs#L64) |
-| `validate_payload` | `endpoint::validate_session_id(&id)                     .map_err` | [1783](../../src/client_extensions.rs#L1783) | receiver-type-required |
-| `validate_payload` | `engine::PermissionMode::parse(&request.mode).is_none` | [1798](../../src/client_extensions.rs#L1798) | receiver-type-required |
-| `validate_payload` | `engine::PermissionMode::parse` | [1798](../../src/client_extensions.rs#L1798) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
-| `validate_payload` | `request.name.is_empty` | [1807](../../src/client_extensions.rs#L1807), [1844](../../src/client_extensions.rs#L1844) | receiver-type-required |
-| `validate_payload` | `request.data.is_empty` | [1807](../../src/client_extensions.rs#L1807) | receiver-type-required |
-| `validate_payload` | `request.attachment_id.is_empty` | [1816](../../src/client_extensions.rs#L1816) | receiver-type-required |
-| `validate_payload` | `decode::<RecoveryRequest>(payload).map` | [1821](../../src/client_extensions.rs#L1821) | receiver-type-required |
-| `validate_payload` | `decode::<RecoveryRequest>` | [1821](../../src/client_extensions.rs#L1821) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `payload                 .as_object()                 .ok_or_else` | [1823](../../src/client_extensions.rs#L1823) | receiver-type-required |
-| `validate_payload` | `payload                 .as_object` | [1823](../../src/client_extensions.rs#L1823) | receiver-type-required |
-| `validate_payload` | `object.is_empty` | [1826](../../src/client_extensions.rs#L1826) | receiver-type-required |
-| `validate_payload` | `object                         .get("sessionId")                         .and_then(Value::as_str)                         .is_some_and` | [1828](../../src/client_extensions.rs#L1828) | receiver-type-required |
-| `validate_payload` | `object                         .get("sessionId")                         .and_then` | [1828](../../src/client_extensions.rs#L1828) | receiver-type-required |
-| `validate_payload` | `object                         .get` | [1828](../../src/client_extensions.rs#L1828) | receiver-type-required |
-| `validate_payload` | `id.is_empty` | [1831](../../src/client_extensions.rs#L1831) | receiver-type-required |
-| `validate_payload` | `decode::<CommandRunRequest>(payload).map` | [1838](../../src/client_extensions.rs#L1838) | receiver-type-required |
-| `validate_payload` | `decode::<CommandRunRequest>` | [1838](../../src/client_extensions.rs#L1838) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<ResourceListRequest>(payload).map` | [1839](../../src/client_extensions.rs#L1839) | receiver-type-required |
-| `validate_payload` | `decode::<ResourceListRequest>` | [1839](../../src/client_extensions.rs#L1839) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<ResourceReadRequest>(payload).map` | [1840](../../src/client_extensions.rs#L1840) | receiver-type-required |
-| `validate_payload` | `decode::<ResourceReadRequest>` | [1840](../../src/client_extensions.rs#L1840) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<ToolListRequest>(payload).map` | [1841](../../src/client_extensions.rs#L1841) | receiver-type-required |
-| `validate_payload` | `decode::<ToolListRequest>` | [1841](../../src/client_extensions.rs#L1841) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<ToolResolveRequest>` | [1843](../../src/client_extensions.rs#L1843) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<ThreadSearchRequest>(payload).map` | [1851](../../src/client_extensions.rs#L1851) | receiver-type-required |
-| `validate_payload` | `decode::<ThreadSearchRequest>` | [1851](../../src/client_extensions.rs#L1851) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<SessionSearchRequest>(payload).map` | [1852](../../src/client_extensions.rs#L1852) | receiver-type-required |
-| `validate_payload` | `decode::<SessionSearchRequest>` | [1852](../../src/client_extensions.rs#L1852) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `decode::<SessionIdRequest>(payload).map` | [1854](../../src/client_extensions.rs#L1854) | receiver-type-required |
-| `validate_payload` | `decode::<SessionIdRequest>` | [1854](../../src/client_extensions.rs#L1854) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
-| `validate_payload` | `failure` | [1856](../../src/client_extensions.rs#L1856) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1864) |
-| `failure` | `IJsonValue::parse(         &serde_json::to_vec(&details).expect("extension failure details are JSON"),     )     .expect` | [1865](../../src/client_extensions.rs#L1865) | receiver-type-required |
-| `failure` | `IJsonValue::parse` | [1865](../../src/client_extensions.rs#L1865) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
-| `failure` | `serde_json::to_vec(&details).expect` | [1866](../../src/client_extensions.rs#L1866) | receiver-type-required |
-| `failure` | `serde_json::to_vec` | [1866](../../src/client_extensions.rs#L1866) | external-constructor-callback-or-unresolved |
-| `failure` | `ProductionRouteFailure::new` | [1869](../../src/client_extensions.rs#L1869) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
-| `production_extensions` | `root.join` | [1889](../../src/client_extensions.rs#L1889) | receiver-type-required |
-| `production_extensions` | `fs::create_dir_all(&agent).expect` | [1890](../../src/client_extensions.rs#L1890) | receiver-type-required |
-| `production_extensions` | `fs::create_dir_all` | [1890](../../src/client_extensions.rs#L1890) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `ProductionProcessHost::open(             root,             std::env::current_exe().expect("test executable"),             "1.0.0",             &agent,         )         .expect` | [1891](../../src/client_extensions.rs#L1891) | receiver-type-required |
-| `production_extensions` | `ProductionProcessHost::open` | [1891](../../src/client_extensions.rs#L1891) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `std::env::current_exe().expect` | [1893](../../src/client_extensions.rs#L1893) | receiver-type-required |
-| `production_extensions` | `std::env::current_exe` | [1893](../../src/client_extensions.rs#L1893) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `Arc::new` | [1898](../../src/client_extensions.rs#L1898), [1901](../../src/client_extensions.rs#L1901), [1904](../../src/client_extensions.rs#L1904) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `SessionInputAdmissionAuthority::new` | [1898](../../src/client_extensions.rs#L1898) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L272) |
-| `production_extensions` | `root.to_path_buf` | [1898](../../src/client_extensions.rs#L1898) | receiver-type-required |
-| `production_extensions` | `EndpointCommandInputAuthority::new` | [1899](../../src/client_extensions.rs#L1899) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `Arc::clone` | [1900](../../src/client_extensions.rs#L1900), [1909](../../src/client_extensions.rs#L1909) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `Ok` | [1901](../../src/client_extensions.rs#L1901) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `"2026-08-29T00:00:00.000Z".to_owned` | [1901](../../src/client_extensions.rs#L1901) | receiver-type-required |
-| `production_extensions` | `ProductionClientExtensions::open(                 root,                 ResourceCatalog::default(),                 commands,                 Arc::clone(&process),             )             .expect` | [1905](../../src/client_extensions.rs#L1905) | receiver-type-required |
-| `production_extensions` | `ProductionClientExtensions::open` | [1905](../../src/client_extensions.rs#L1905) | external-constructor-callback-or-unresolved |
-| `production_extensions` | `ResourceCatalog::default` | [1907](../../src/client_extensions.rs#L1907) | external-constructor-callback-or-unresolved |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir().expect` | [1918](../../src/client_extensions.rs#L1918) | receiver-type-required |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir` | [1918](../../src/client_extensions.rs#L1918) | external-constructor-callback-or-unresolved |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `production_extensions` | [1919](../../src/client_extensions.rs#L1919) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `root.path` | [1919](../../src/client_extensions.rs#L1919) | receiver-type-required |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute(             &extensions,             "session.initialPresets",             &serde_json::json!({}),             "presets",         )         .expect` | [1920](../../src/client_extensions.rs#L1920) | receiver-type-required |
-| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute` | [1920](../../src/client_extensions.rs#L1920) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `tempfile::tempdir().unwrap` | [1961](../../src/client_extensions.rs#L1961), [1962](../../src/client_extensions.rs#L1962) | receiver-type-required |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `tempfile::tempdir` | [1961](../../src/client_extensions.rs#L1961), [1962](../../src/client_extensions.rs#L1962) | external-constructor-callback-or-unresolved |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `production_extensions` | [1963](../../src/client_extensions.rs#L1963) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `root.path` | [1963](../../src/client_extensions.rs#L1963) | receiver-type-required |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `execute(             &extensions,             "session.presets.describe",             &serde_json::json!({}),             "describe",         )         .unwrap` | [1964](../../src/client_extensions.rs#L1964) | receiver-type-required |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `execute` | [1964](../../src/client_extensions.rs#L1964), [1972](../../src/client_extensions.rs#L1972) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) |
-| `session_presets_describe_and_resolve_without_creating_a_session` | `execute(&extensions,"session.presets.resolve",&serde_json::json!({"execution":{"cwd":project.path(),"allowed_tools":["read"]},"preset":{"tools":["read"]}}),"preview").unwrap` | [1972](../../src/client_extensions.rs#L1972) | receiver-type-required |
-| `execute` | `ClientExtensionAuthority::execute` | [1988](../../src/client_extensions.rs#L1988) | external-constructor-callback-or-unresolved |
-| `execute` | `ijson_value` | [1996](../../src/client_extensions.rs#L1996) | external-constructor-callback-or-unresolved |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `tempfile::tempdir().expect` | [2005](../../src/client_extensions.rs#L2005) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `tempfile::tempdir` | [2005](../../src/client_extensions.rs#L2005) | external-constructor-callback-or-unresolved |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `production_extensions` | [2006](../../src/client_extensions.rs#L2006) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path` | [2006](../../src/client_extensions.rs#L2006), [2009](../../src/client_extensions.rs#L2009), [2011](../../src/client_extensions.rs#L2011) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join("threads").join` | [2009](../../src/client_extensions.rs#L2009) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join` | [2009](../../src/client_extensions.rs#L2009), [2011](../../src/client_extensions.rs#L2011) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all(&folder).expect` | [2010](../../src/client_extensions.rs#L2010) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all` | [2010](../../src/client_extensions.rs#L2010), [2011](../../src/client_extensions.rs#L2011) | external-constructor-callback-or-unresolved |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all(root.path().join("archive").join(archived)).expect` | [2011](../../src/client_extensions.rs#L2011) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join("archive").join` | [2011](../../src/client_extensions.rs#L2011) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.policy",             &serde_json::json!({}),             "policy",         )         .expect` | [2013](../../src/client_extensions.rs#L2013) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute` | [2013](../../src/client_extensions.rs#L2013), [2035](../../src/client_extensions.rs#L2035), [2044](../../src/client_extensions.rs#L2044), [2056](../../src/client_extensions.rs#L2056), [2065](../../src/client_extensions.rs#L2065), [2073](../../src/client_extensions.rs#L2073), [2089](../../src/client_extensions.rs#L2089) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter()             .map(&#124;option&#124; option["value"].as_str().expect("value"))             .collect` | [2020](../../src/client_extensions.rs#L2020) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter()             .map` | [2020](../../src/client_extensions.rs#L2020) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter` | [2020](../../src/client_extensions.rs#L2020) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect` | [2020](../../src/client_extensions.rs#L2020) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array` | [2020](../../src/client_extensions.rs#L2020) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `option["value"].as_str().expect` | [2024](../../src/client_extensions.rs#L2024) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `option["value"].as_str` | [2024](../../src/client_extensions.rs#L2024) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.mode",             &serde_json::json!({"sessionId":session}),             "mode-0",         )         .expect` | [2035](../../src/client_extensions.rs#L2035) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":session,"mode":"read-only"}),             "select-1",         )         .expect` | [2044](../../src/client_extensions.rs#L2044) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.mode",             &serde_json::json!({"sessionId":session}),             "mode-1",         )         .expect` | [2056](../../src/client_extensions.rs#L2056) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":session,"mode":"yolo"}),             "select-2",         )         .expect_err` | [2065](../../src/client_extensions.rs#L2065) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":archived,"mode":"read-only"}),             "select-3",         )         .expect_err` | [2073](../../src/client_extensions.rs#L2073) | receiver-type-required |
-| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033","mode":"read-only"}),             "select-4",         )         .expect_err` | [2089](../../src/client_extensions.rs#L2089) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `tempfile::tempdir().expect` | [2118](../../src/client_extensions.rs#L2118) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `tempfile::tempdir` | [2118](../../src/client_extensions.rs#L2118) | external-constructor-callback-or-unresolved |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap()             .create_session(                 session,                 &test_support::execution_fixture(),                 "cfg",                 schema::ResumePolicy::Never,                 "2026-08-29T00:00:00.000Z",                 &schema::OriginTuple {                     principal: "test".into(),                     client: "test".into(),                     target: session.into(),                     op: "create".into(),                     key: "create".into(),                 },             )             .unwrap` | [2120](../../src/client_extensions.rs#L2120) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap()             .create_session` | [2120](../../src/client_extensions.rs#L2120) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap` | [2120](../../src/client_extensions.rs#L2120) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open` | [2120](../../src/client_extensions.rs#L2120) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `root.path` | [2120](../../src/client_extensions.rs#L2120), [2137](../../src/client_extensions.rs#L2137) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `test_support::execution_fixture` | [2124](../../src/client_extensions.rs#L2124) | [test-support::execution_fixture](../../../test-support/src/lib.rs#L188) |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `"test".into` | [2129](../../src/client_extensions.rs#L2129), [2130](../../src/client_extensions.rs#L2130) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `session.into` | [2131](../../src/client_extensions.rs#L2131) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `"create".into` | [2132](../../src/client_extensions.rs#L2132), [2133](../../src/client_extensions.rs#L2133) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `production_extensions` | [2137](../../src/client_extensions.rs#L2137) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute(             &extensions,             "tools/list",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033"}),             "rpc-tools-list",         )         .expect` | [2138](../../src/client_extensions.rs#L2138) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute` | [2138](../../src/client_extensions.rs#L2138), [2152](../../src/client_extensions.rs#L2152) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `result["tools"].as_array().expect` | [2145](../../src/client_extensions.rs#L2145) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `result["tools"].as_array` | [2145](../../src/client_extensions.rs#L2145) | receiver-type-required |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `BuiltinManifest::compiled` | [2146](../../src/client_extensions.rs#L2146) | external-constructor-callback-or-unresolved |
-| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute(             &extensions,             "tools/resolve",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033","name":"web_search"}),             "rpc-tools-resolve",         )         .expect` | [2152](../../src/client_extensions.rs#L2152) | receiver-type-required |
-| `append_canonical` | `lines.extend` | [2163](../../src/client_extensions.rs#L2163) | receiver-type-required |
-| `append_canonical` | `serde_json_canonicalizer::to_vec(&value).expect` | [2163](../../src/client_extensions.rs#L2163) | receiver-type-required |
-| `append_canonical` | `serde_json_canonicalizer::to_vec` | [2163](../../src/client_extensions.rs#L2163) | external-constructor-callback-or-unresolved |
-| `append_canonical` | `lines.push` | [2164](../../src/client_extensions.rs#L2164) | receiver-type-required |
-| `epoch_profile_asset` | `assets             .publish(&serde_json_canonicalizer::to_vec(&value).expect("profile bytes"))             .expect` | [2190](../../src/client_extensions.rs#L2190) | receiver-type-required |
-| `epoch_profile_asset` | `assets             .publish` | [2190](../../src/client_extensions.rs#L2190) | receiver-type-required |
-| `epoch_profile_asset` | `serde_json_canonicalizer::to_vec(&value).expect` | [2191](../../src/client_extensions.rs#L2191) | receiver-type-required |
-| `epoch_profile_asset` | `serde_json_canonicalizer::to_vec` | [2191](../../src/client_extensions.rs#L2191) | external-constructor-callback-or-unresolved |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `tempfile::tempdir().expect` | [2197](../../src/client_extensions.rs#L2197) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `tempfile::tempdir` | [2197](../../src/client_extensions.rs#L2197) | external-constructor-callback-or-unresolved |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `production_extensions` | [2198](../../src/client_extensions.rs#L2198) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1886) |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path` | [2198](../../src/client_extensions.rs#L2198), [2200](../../src/client_extensions.rs#L2200) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path().join("threads").join` | [2200](../../src/client_extensions.rs#L2200) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path().join` | [2200](../../src/client_extensions.rs#L2200) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::create_dir_all(&folder).expect` | [2201](../../src/client_extensions.rs#L2201) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::create_dir_all` | [2201](../../src/client_extensions.rs#L2201) | external-constructor-callback-or-unresolved |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `store::AssetStore::new(folder.join("assets")).expect` | [2202](../../src/client_extensions.rs#L2202) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `store::AssetStore::new` | [2202](../../src/client_extensions.rs#L2202) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `folder.join` | [2202](../../src/client_extensions.rs#L2202), [2314](../../src/client_extensions.rs#L2314) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `epoch_profile_asset` | [2203](../../src/client_extensions.rs#L2203), [2210](../../src/client_extensions.rs#L2210) | [tekes-supervisor::client_extensions::tests::epoch_profile_asset](../../src/client_extensions.rs#L2167) |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `Vec::new` | [2217](../../src/client_extensions.rs#L2217) | external-constructor-callback-or-unresolved |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `append_canonical` | [2218](../../src/client_extensions.rs#L2218), [2222](../../src/client_extensions.rs#L2222), [2226](../../src/client_extensions.rs#L2226), [2230](../../src/client_extensions.rs#L2230), [2234](../../src/client_extensions.rs#L2234), [2238](../../src/client_extensions.rs#L2238), [2242](../../src/client_extensions.rs#L2242), [2246](../../src/client_extensions.rs#L2246), [2250](../../src/client_extensions.rs#L2250), [2254](../../src/client_extensions.rs#L2254), [2258](../../src/client_extensions.rs#L2258), [2262](../../src/client_extensions.rs#L2262), [2266](../../src/client_extensions.rs#L2266), [2270](../../src/client_extensions.rs#L2270), [2274](../../src/client_extensions.rs#L2274), [2278](../../src/client_extensions.rs#L2278), [2282](../../src/client_extensions.rs#L2282), [2286](../../src/client_extensions.rs#L2286), [2290](../../src/client_extensions.rs#L2290), [2294](../../src/client_extensions.rs#L2294), [2298](../../src/client_extensions.rs#L2298), [2302](../../src/client_extensions.rs#L2302), [2306](../../src/client_extensions.rs#L2306), [2310](../../src/client_extensions.rs#L2310) | [tekes-supervisor::client_extensions::tests::append_canonical](../../src/client_extensions.rs#L2162) |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::write(folder.join("main.jsonl"), ledger).expect` | [2314](../../src/client_extensions.rs#L2314) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::write` | [2314](../../src/client_extensions.rs#L2314) | external-constructor-callback-or-unresolved |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute(             &extensions,             "usage.cacheAttribution",             &serde_json::json!({"sessionId":session}),             "usage-cache",         )         .expect` | [2316](../../src/client_extensions.rs#L2316) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute` | [2316](../../src/client_extensions.rs#L2316), [2338](../../src/client_extensions.rs#L2338) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1982) |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute(             &extensions,             "usage.summary",             &serde_json::json!({"sessionId":session}),             "usage-summary",         )         .expect` | [2338](../../src/client_extensions.rs#L2338) | receiver-type-required |
-| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `process.shutdown` | [2347](../../src/client_extensions.rs#L2347) | receiver-type-required |
+| `execute` | `self                     .process                     .recover_client_sessions(&request.session_ids)                     .map_err` | [1082](../../src/client_extensions.rs#L1082) | receiver-type-required |
+| `execute` | `self                     .process                     .recover_client_sessions` | [1082](../../src/client_extensions.rs#L1082) | receiver-type-required |
+| `execute` | `payload.get("sessionId").and_then` | [1095](../../src/client_extensions.rs#L1095) | receiver-type-required |
+| `execute` | `payload.get` | [1095](../../src/client_extensions.rs#L1095) | receiver-type-required |
+| `execute` | `self.process                             .client_resource_catalog(session_id)                             .map_err` | [1097](../../src/client_extensions.rs#L1097) | receiver-type-required |
+| `execute` | `self.process                             .client_resource_catalog` | [1097](../../src/client_extensions.rs#L1097) | receiver-type-required |
+| `execute` | `self.commands.skills_list` | [1120](../../src/client_extensions.rs#L1120) | receiver-type-required |
+| `execute` | `self.commands.commands_list` | [1122](../../src/client_extensions.rs#L1122) | receiver-type-required |
+| `execute` | `self.commands                     .validate_session(&input.session_id)                     .map_err` | [1127](../../src/client_extensions.rs#L1127) | receiver-type-required |
+| `execute` | `self.commands                     .validate_session` | [1127](../../src/client_extensions.rs#L1127) | receiver-type-required |
+| `execute` | `self                     .process                     .client_resource_catalog(&input.session_id)                     .map_err` | [1130](../../src/client_extensions.rs#L1130) | receiver-type-required |
+| `execute` | `self                     .process                     .client_resource_catalog` | [1130](../../src/client_extensions.rs#L1130) | receiver-type-required |
+| `execute` | `self                         .commands                         .commands_run_with_catalog(&catalog, &input, principal)                         .map_err` | [1141](../../src/client_extensions.rs#L1141) | receiver-type-required |
+| `execute` | `self                         .commands                         .commands_run_with_catalog` | [1141](../../src/client_extensions.rs#L1141) | receiver-type-required |
+| `execute` | `self.resources_list` | [1147](../../src/client_extensions.rs#L1147) | receiver-type-required |
+| `execute` | `self.resources_read` | [1148](../../src/client_extensions.rs#L1148) | receiver-type-required |
+| `execute` | `self.tools` | [1151](../../src/client_extensions.rs#L1151), [1155](../../src/client_extensions.rs#L1155) | receiver-type-required |
+| `execute` | `self.thread_search` | [1158](../../src/client_extensions.rs#L1158) | receiver-type-required |
+| `execute` | `self                         .search                         .search_sessions(&request.query)                         .map_err` | [1162](../../src/client_extensions.rs#L1162) | receiver-type-required |
+| `execute` | `self                         .search                         .search_sessions` | [1162](../../src/client_extensions.rs#L1162) | receiver-type-required |
+| `execute` | `self.usage` | [1168](../../src/client_extensions.rs#L1168), [1169](../../src/client_extensions.rs#L1169) | receiver-type-required |
+| `resources_list` | `decode` | [1181](../../src/client_extensions.rs#L1181) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `resources_list` | `request.limit.unwrap_or` | [1182](../../src/client_extensions.rs#L1182) | receiver-type-required |
+| `resources_list` | `(1..=100).contains` | [1183](../../src/client_extensions.rs#L1183) | receiver-type-required |
+| `resources_list` | `Err` | [1184](../../src/client_extensions.rs#L1184), [1226](../../src/client_extensions.rs#L1226), [1241](../../src/client_extensions.rs#L1241) | external-constructor-callback-or-unresolved |
+| `resources_list` | `bad_request` | [1184](../../src/client_extensions.rs#L1184), [1241](../../src/client_extensions.rs#L1241) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
+| `resources_list` | `request.source.as_str` | [1186](../../src/client_extensions.rs#L1186) | receiver-type-required |
+| `resources_list` | `self                     .process                     .client_resource_catalog(&request.session_id)                     .map_err` | [1188](../../src/client_extensions.rs#L1188) | receiver-type-required |
+| `resources_list` | `self                     .process                     .client_resource_catalog` | [1188](../../src/client_extensions.rs#L1188) | receiver-type-required |
+| `resources_list` | `failure` | [1192](../../src/client_extensions.rs#L1192), [1226](../../src/client_extensions.rs#L1226) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `resources_list` | `Vec::new` | [1199](../../src/client_extensions.rs#L1199) | external-constructor-callback-or-unresolved |
+| `resources_list` | `catalog.skill_packages` | [1200](../../src/client_extensions.rs#L1200) | receiver-type-required |
+| `resources_list` | `items.push` | [1202](../../src/client_extensions.rs#L1202) | receiver-type-required |
+| `resources_list` | `items.sort_by` | [1210](../../src/client_extensions.rs#L1210) | receiver-type-required |
+| `resources_list` | `left["uri"].as_str().cmp` | [1210](../../src/client_extensions.rs#L1210) | receiver-type-required |
+| `resources_list` | `left["uri"].as_str` | [1210](../../src/client_extensions.rs#L1210) | receiver-type-required |
+| `resources_list` | `right["uri"].as_str` | [1210](../../src/client_extensions.rs#L1210) | receiver-type-required |
+| `resources_list` | `decode_resource_cursor` | [1223](../../src/client_extensions.rs#L1223) | [tekes-supervisor::client_extensions::decode_resource_cursor](../../src/client_extensions.rs#L462) |
+| `resources_list` | `items.len` | [1225](../../src/client_extensions.rs#L1225), [1232](../../src/client_extensions.rs#L1232), [1233](../../src/client_extensions.rs#L1233) | receiver-type-required |
+| `resources_list` | `start.saturating_add(limit).min` | [1232](../../src/client_extensions.rs#L1232) | receiver-type-required |
+| `resources_list` | `start.saturating_add` | [1232](../../src/client_extensions.rs#L1232) | receiver-type-required |
+| `resources_list` | `(end < items.len()).then` | [1233](../../src/client_extensions.rs#L1233) | receiver-type-required |
+| `resources_list` | `Value::String` | [1236](../../src/client_extensions.rs#L1236) | external-constructor-callback-or-unresolved |
+| `resources_list` | `encode` | [1238](../../src/client_extensions.rs#L1238) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `resources_read` | `decode` | [1246](../../src/client_extensions.rs#L1246) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `resources_read` | `serde_json::from_value::<ResourceReference>(request.reference)             .map_err` | [1247](../../src/client_extensions.rs#L1247) | receiver-type-required |
+| `resources_read` | `serde_json::from_value::<ResourceReference>` | [1247](../../src/client_extensions.rs#L1247) | external-constructor-callback-or-unresolved |
+| `resources_read` | `bad_request` | [1248](../../src/client_extensions.rs#L1248) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
+| `resources_read` | `Err` | [1256](../../src/client_extensions.rs#L1256), [1281](../../src/client_extensions.rs#L1281), [1295](../../src/client_extensions.rs#L1295) | external-constructor-callback-or-unresolved |
+| `resources_read` | `failure` | [1256](../../src/client_extensions.rs#L1256), [1266](../../src/client_extensions.rs#L1266), [1274](../../src/client_extensions.rs#L1274), [1281](../../src/client_extensions.rs#L1281), [1288](../../src/client_extensions.rs#L1288), [1295](../../src/client_extensions.rs#L1295) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `resources_read` | `self                     .process                     .client_resource_catalog(&request.session_id)                     .map_err` | [1262](../../src/client_extensions.rs#L1262) | receiver-type-required |
+| `resources_read` | `self                     .process                     .client_resource_catalog` | [1262](../../src/client_extensions.rs#L1262) | receiver-type-required |
+| `resources_read` | `catalog.skill(&name).map_err` | [1273](../../src/client_extensions.rs#L1273) | receiver-type-required |
+| `resources_read` | `catalog.skill` | [1273](../../src/client_extensions.rs#L1273) | receiver-type-required |
+| `resources_read` | `catalog.skill_resource(&name, &request.uri).map_err` | [1287](../../src/client_extensions.rs#L1287) | receiver-type-required |
+| `resources_read` | `catalog.skill_resource` | [1287](../../src/client_extensions.rs#L1287) | receiver-type-required |
+| `resources_read` | `text.len` | [1294](../../src/client_extensions.rs#L1294) | receiver-type-required |
+| `resources_read` | `encode` | [1301](../../src/client_extensions.rs#L1301) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `tools` | `self.process.client_tool_catalog(session_id).map_err` | [1313](../../src/client_extensions.rs#L1313) | receiver-type-required |
+| `tools` | `self.process.client_tool_catalog` | [1313](../../src/client_extensions.rs#L1313) | receiver-type-required |
+| `tools` | `failure` | [1314](../../src/client_extensions.rs#L1314), [1324](../../src/client_extensions.rs#L1324), [1359](../../src/client_extensions.rs#L1359) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `tools` | `Vec::new` | [1320](../../src/client_extensions.rs#L1320) | external-constructor-callback-or-unresolved |
+| `tools` | `BuiltinManifest::compiled` | [1321](../../src/client_extensions.rs#L1321) | [tools::builtin::BuiltinManifest::compiled](../../../tools/src/builtin.rs#L315) |
+| `tools` | `fixed_schema(&tool.name).ok_or_else` | [1323](../../src/client_extensions.rs#L1323) | receiver-type-required |
+| `tools` | `fixed_schema` | [1323](../../src/client_extensions.rs#L1323) | [tools::schema_registry::fixed_schema](../../../tools/src/schema_registry.rs#L1222) |
+| `tools` | `rows.push` | [1330](../../src/client_extensions.rs#L1330), [1338](../../src/client_extensions.rs#L1338) | receiver-type-required |
+| `tools` | `ijson_value` | [1337](../../src/client_extensions.rs#L1337) | [tekes-supervisor::client_extensions::ijson_value](../../src/client_extensions.rs#L444) |
+| `tools` | `rows.sort_by` | [1345](../../src/client_extensions.rs#L1345) | receiver-type-required |
+| `tools` | `left["name"].as_str().cmp` | [1345](../../src/client_extensions.rs#L1345) | receiver-type-required |
+| `tools` | `left["name"].as_str` | [1345](../../src/client_extensions.rs#L1345) | receiver-type-required |
+| `tools` | `right["name"].as_str` | [1345](../../src/client_extensions.rs#L1345) | receiver-type-required |
+| `tools` | `rows                 .into_iter()                 .find(&#124;row&#124; row["name"] == name)                 .ok_or_else` | [1355](../../src/client_extensions.rs#L1355) | receiver-type-required |
+| `tools` | `rows                 .into_iter()                 .find` | [1355](../../src/client_extensions.rs#L1355) | receiver-type-required |
+| `tools` | `rows                 .into_iter` | [1355](../../src/client_extensions.rs#L1355) | receiver-type-required |
+| `tools` | `encode` | [1365](../../src/client_extensions.rs#L1365), [1367](../../src/client_extensions.rs#L1367) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `thread_search` | `decode` | [1372](../../src/client_extensions.rs#L1372) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `thread_search` | `self             .search             .search(&SearchRequest {                 session_filter: request.session_id,                 query: request.query,                 limit: request.limit,                 visibility: request.visibility,                 after: request.after,             })             .map_err` | [1373](../../src/client_extensions.rs#L1373) | receiver-type-required |
+| `thread_search` | `self             .search             .search` | [1373](../../src/client_extensions.rs#L1373) | receiver-type-required |
+| `thread_search` | `Value::String` | [1385](../../src/client_extensions.rs#L1385) | external-constructor-callback-or-unresolved |
+| `thread_search` | `encode` | [1387](../../src/client_extensions.rs#L1387) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `usage` | `decode` | [1391](../../src/client_extensions.rs#L1391) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `usage` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(&request.session_id))             .find(&#124;path&#124; path.is_dir())             .ok_or_else` | [1392](../../src/client_extensions.rs#L1392) | receiver-type-required |
+| `usage` | `["threads", "archive"]             .into_iter()             .map(&#124;area&#124; self.root.join(area).join(&request.session_id))             .find` | [1392](../../src/client_extensions.rs#L1392) | receiver-type-required |
+| `usage` | `["threads", "archive"]             .into_iter()             .map` | [1392](../../src/client_extensions.rs#L1392) | receiver-type-required |
+| `usage` | `["threads", "archive"]             .into_iter` | [1392](../../src/client_extensions.rs#L1392) | receiver-type-required |
+| `usage` | `self.root.join(area).join` | [1394](../../src/client_extensions.rs#L1394) | receiver-type-required |
+| `usage` | `self.root.join` | [1394](../../src/client_extensions.rs#L1394) | receiver-type-required |
+| `usage` | `path.is_dir` | [1395](../../src/client_extensions.rs#L1395) | receiver-type-required |
+| `usage` | `failure` | [1397](../../src/client_extensions.rs#L1397), [1404](../../src/client_extensions.rs#L1404), [1411](../../src/client_extensions.rs#L1411), [1426](../../src/client_extensions.rs#L1426), [1433](../../src/client_extensions.rs#L1433), [1447](../../src/client_extensions.rs#L1447), [1455](../../src/client_extensions.rs#L1455), [1464](../../src/client_extensions.rs#L1464), [1471](../../src/client_extensions.rs#L1471), [1481](../../src/client_extensions.rs#L1481), [1511](../../src/client_extensions.rs#L1511), [1518](../../src/client_extensions.rs#L1518), [1536](../../src/client_extensions.rs#L1536), [1543](../../src/client_extensions.rs#L1543), [1550](../../src/client_extensions.rs#L1550), [1557](../../src/client_extensions.rs#L1557), [1585](../../src/client_extensions.rs#L1585), [1595](../../src/client_extensions.rs#L1595) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `usage` | `std::fs::read(folder.join("main.jsonl")).map_err` | [1403](../../src/client_extensions.rs#L1403) | receiver-type-required |
+| `usage` | `std::fs::read` | [1403](../../src/client_extensions.rs#L1403) | external-constructor-callback-or-unresolved |
+| `usage` | `folder.join` | [1403](../../src/client_extensions.rs#L1403), [1410](../../src/client_extensions.rs#L1410) | receiver-type-required |
+| `usage` | `store::AssetStore::new(folder.join("assets")).map_err` | [1410](../../src/client_extensions.rs#L1410) | receiver-type-required |
+| `usage` | `store::AssetStore::new` | [1410](../../src/client_extensions.rs#L1410) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `usage` | `store::scan_valid_prefix` | [1417](../../src/client_extensions.rs#L1417) | [store::tail::scan_valid_prefix](../../../store/src/tail.rs#L37) |
+| `usage` | `usize::try_from(scan.valid_bytes).unwrap_or` | [1420](../../src/client_extensions.rs#L1420) | receiver-type-required |
+| `usage` | `usize::try_from` | [1420](../../src/client_extensions.rs#L1420) | external-constructor-callback-or-unresolved |
+| `usage` | `scan.needs_repair` | [1421](../../src/client_extensions.rs#L1421) | receiver-type-required |
+| `usage` | `bytes                 .get(valid_len..)                 .is_some_and` | [1422](../../src/client_extensions.rs#L1422) | receiver-type-required |
+| `usage` | `bytes                 .get` | [1422](../../src/client_extensions.rs#L1422) | receiver-type-required |
+| `usage` | `tail.contains` | [1424](../../src/client_extensions.rs#L1424) | receiver-type-required |
+| `usage` | `Err` | [1426](../../src/client_extensions.rs#L1426), [1455](../../src/client_extensions.rs#L1455), [1481](../../src/client_extensions.rs#L1481), [1595](../../src/client_extensions.rs#L1595) | external-constructor-callback-or-unresolved |
+| `usage` | `scan.projection.ok_or_else` | [1432](../../src/client_extensions.rs#L1432) | receiver-type-required |
+| `usage` | `BTreeMap::<String, Value>::new` | [1439](../../src/client_extensions.rs#L1439) | external-constructor-callback-or-unresolved |
+| `usage` | `BTreeMap::<String, String>::new` | [1440](../../src/client_extensions.rs#L1440) | external-constructor-callback-or-unresolved |
+| `usage` | `event.kind` | [1443](../../src/client_extensions.rs#L1443) | receiver-type-required |
+| `usage` | `ijson_value` | [1445](../../src/client_extensions.rs#L1445), [1502](../../src/client_extensions.rs#L1502) | [tekes-supervisor::client_extensions::ijson_value](../../src/client_extensions.rs#L444) |
+| `usage` | `event.raw` | [1445](../../src/client_extensions.rs#L1445), [1502](../../src/client_extensions.rs#L1502) | receiver-type-required |
+| `usage` | `event.string_field("id").ok_or_else` | [1446](../../src/client_extensions.rs#L1446) | receiver-type-required |
+| `usage` | `event.string_field` | [1446](../../src/client_extensions.rs#L1446), [1463](../../src/client_extensions.rs#L1463), [1470](../../src/client_extensions.rs#L1470), [1535](../../src/client_extensions.rs#L1535) | receiver-type-required |
+| `usage` | `usage_route_target` | [1453](../../src/client_extensions.rs#L1453) | [tekes-supervisor::client_extensions::usage_route_target](../../src/client_extensions.rs#L702) |
+| `usage` | `epoch_targets.insert(id.to_owned(), target).is_some` | [1454](../../src/client_extensions.rs#L1454) | receiver-type-required |
+| `usage` | `epoch_targets.insert` | [1454](../../src/client_extensions.rs#L1454) | receiver-type-required |
+| `usage` | `id.to_owned` | [1454](../../src/client_extensions.rs#L1454) | receiver-type-required |
+| `usage` | `event.string_field("attempt").ok_or_else` | [1463](../../src/client_extensions.rs#L1463), [1535](../../src/client_extensions.rs#L1535) | receiver-type-required |
+| `usage` | `event.string_field("epoch").ok_or_else` | [1470](../../src/client_extensions.rs#L1470) | receiver-type-required |
+| `usage` | `attempt_epochs                             .insert(attempt.to_owned(), epoch.to_owned())                             .is_some` | [1477](../../src/client_extensions.rs#L1477) | receiver-type-required |
+| `usage` | `attempt_epochs                             .insert` | [1477](../../src/client_extensions.rs#L1477) | receiver-type-required |
+| `usage` | `attempt.to_owned` | [1478](../../src/client_extensions.rs#L1478) | receiver-type-required |
+| `usage` | `epoch.to_owned` | [1478](../../src/client_extensions.rs#L1478) | receiver-type-required |
+| `usage` | `BTreeMap::<Vec<u8>, CacheAttributionGroup>::new` | [1494](../../src/client_extensions.rs#L1494) | external-constructor-callback-or-unresolved |
+| `usage` | `event.has_field` | [1498](../../src/client_extensions.rs#L1498) | receiver-type-required |
+| `usage` | `outcome.get("usage").cloned().unwrap_or` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
+| `usage` | `outcome.get("usage").cloned` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
+| `usage` | `outcome.get` | [1503](../../src/client_extensions.rs#L1503) | receiver-type-required |
+| `usage` | `raw                 .get("availability")                 .and_then(Value::as_str)                 .unwrap_or` | [1504](../../src/client_extensions.rs#L1504) | receiver-type-required |
+| `usage` | `raw                 .get("availability")                 .and_then` | [1504](../../src/client_extensions.rs#L1504) | receiver-type-required |
+| `usage` | `raw                 .get` | [1504](../../src/client_extensions.rs#L1504) | receiver-type-required |
+| `usage` | `numeric_token` | [1508](../../src/client_extensions.rs#L1508), [1509](../../src/client_extensions.rs#L1509) | [tekes-supervisor::client_extensions::numeric_token](../../src/client_extensions.rs#L486) |
+| `usage` | `raw.get` | [1508](../../src/client_extensions.rs#L1508), [1509](../../src/client_extensions.rs#L1509), [1526](../../src/client_extensions.rs#L1526), [1527](../../src/client_extensions.rs#L1527), [1528](../../src/client_extensions.rs#L1528), [1571](../../src/client_extensions.rs#L1571) | receiver-type-required |
+| `usage` | `input.checked_add(parsed_input).ok_or_else` | [1510](../../src/client_extensions.rs#L1510) | receiver-type-required |
+| `usage` | `input.checked_add` | [1510](../../src/client_extensions.rs#L1510), [1584](../../src/client_extensions.rs#L1584) | receiver-type-required |
+| `usage` | `output.checked_add(parsed_output).ok_or_else` | [1517](../../src/client_extensions.rs#L1517) | receiver-type-required |
+| `usage` | `output.checked_add` | [1517](../../src/client_extensions.rs#L1517) | receiver-type-required |
+| `usage` | `raw.get("input_tokens").and_then` | [1526](../../src/client_extensions.rs#L1526) | receiver-type-required |
+| `usage` | `raw.get("output_tokens").and_then` | [1527](../../src/client_extensions.rs#L1527) | receiver-type-required |
+| `usage` | `raw.get("cache_read").and_then` | [1528](../../src/client_extensions.rs#L1528) | receiver-type-required |
+| `usage` | `canonical_unsigned` | [1532](../../src/client_extensions.rs#L1532), [1533](../../src/client_extensions.rs#L1533), [1534](../../src/client_extensions.rs#L1534) | [tekes-supervisor::client_extensions::canonical_unsigned](../../src/client_extensions.rs#L590) |
+| `usage` | `attempt_epochs.get(attempt).ok_or_else` | [1542](../../src/client_extensions.rs#L1542) | receiver-type-required |
+| `usage` | `attempt_epochs.get` | [1542](../../src/client_extensions.rs#L1542) | receiver-type-required |
+| `usage` | `epoch_targets.get(epoch).ok_or_else` | [1549](../../src/client_extensions.rs#L1549) | receiver-type-required |
+| `usage` | `epoch_targets.get` | [1549](../../src/client_extensions.rs#L1549) | receiver-type-required |
+| `usage` | `serde_json_canonicalizer::to_vec(target).map_err` | [1556](../../src/client_extensions.rs#L1556) | receiver-type-required |
+| `usage` | `serde_json_canonicalizer::to_vec` | [1556](../../src/client_extensions.rs#L1556) | external-constructor-callback-or-unresolved |
+| `usage` | `groups                     .entry(key)                     .or_insert_with(&#124;&#124; CacheAttributionGroup::new(target.clone()))                     .add` | [1563](../../src/client_extensions.rs#L1563) | receiver-type-required |
+| `usage` | `groups                     .entry(key)                     .or_insert_with` | [1563](../../src/client_extensions.rs#L1563) | receiver-type-required |
+| `usage` | `groups                     .entry` | [1563](../../src/client_extensions.rs#L1563) | receiver-type-required |
+| `usage` | `CacheAttributionGroup::new` | [1565](../../src/client_extensions.rs#L1565) | [tekes-supervisor::client_extensions::CacheAttributionGroup::new](../../src/client_extensions.rs#L511) |
+| `usage` | `target.clone` | [1565](../../src/client_extensions.rs#L1565) | receiver-type-required |
+| `usage` | `raw.get("cost").and_then` | [1571](../../src/client_extensions.rs#L1571) | receiver-type-required |
+| `usage` | `groups                 .into_values()                 .map(CacheAttributionGroup::value)                 .collect::<Result<Vec<_>, _>>` | [1576](../../src/client_extensions.rs#L1576) | receiver-type-required |
+| `usage` | `groups                 .into_values()                 .map` | [1576](../../src/client_extensions.rs#L1576) | receiver-type-required |
+| `usage` | `groups                 .into_values` | [1576](../../src/client_extensions.rs#L1576) | receiver-type-required |
+| `usage` | `encode` | [1580](../../src/client_extensions.rs#L1580), [1601](../../src/client_extensions.rs#L1601) | [tekes-supervisor::client_extensions::encode](../../src/client_extensions.rs#L434) |
+| `usage` | `input.checked_add(output).ok_or_else` | [1584](../../src/client_extensions.rs#L1584) | receiver-type-required |
+| `usage` | `[input, output, total]                 .into_iter()                 .any` | [1591](../../src/client_extensions.rs#L1591) | receiver-type-required |
+| `usage` | `[input, output, total]                 .into_iter` | [1591](../../src/client_extensions.rs#L1591) | receiver-type-required |
+| `map_attachment_read_error` | `failure` | [1616](../../src/client_extensions.rs#L1616), [1621](../../src/client_extensions.rs#L1621), [1626](../../src/client_extensions.rs#L1626), [1631](../../src/client_extensions.rs#L1631) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `error_allowed` | `Some` | [1641](../../src/client_extensions.rs#L1641) | external-constructor-callback-or-unresolved |
+| `error_allowed` | `value.starts_with` | [1656](../../src/client_extensions.rs#L1656), [1657](../../src/client_extensions.rs#L1657), [1661](../../src/client_extensions.rs#L1661) | receiver-type-required |
+| `validate_payload` | `payload.as_object().is_some_and` | [1718](../../src/client_extensions.rs#L1718), [1727](../../src/client_extensions.rs#L1727), [1742](../../src/client_extensions.rs#L1742) | receiver-type-required |
+| `validate_payload` | `payload.as_object` | [1718](../../src/client_extensions.rs#L1718), [1727](../../src/client_extensions.rs#L1727), [1742](../../src/client_extensions.rs#L1742) | receiver-type-required |
+| `validate_payload` | `Ok` | [1719](../../src/client_extensions.rs#L1719), [1736](../../src/client_extensions.rs#L1736), [1743](../../src/client_extensions.rs#L1743), [1769](../../src/client_extensions.rs#L1769), [1787](../../src/client_extensions.rs#L1787), [1793](../../src/client_extensions.rs#L1793), [1802](../../src/client_extensions.rs#L1802), [1811](../../src/client_extensions.rs#L1811), [1820](../../src/client_extensions.rs#L1820), [1834](../../src/client_extensions.rs#L1834), [1846](../../src/client_extensions.rs#L1846) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `Err` | [1721](../../src/client_extensions.rs#L1721), [1738](../../src/client_extensions.rs#L1738), [1745](../../src/client_extensions.rs#L1745), [1767](../../src/client_extensions.rs#L1767), [1800](../../src/client_extensions.rs#L1800), [1809](../../src/client_extensions.rs#L1809), [1818](../../src/client_extensions.rs#L1818), [1836](../../src/client_extensions.rs#L1836), [1848](../../src/client_extensions.rs#L1848), [1857](../../src/client_extensions.rs#L1857) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `bad_request` | [1721](../../src/client_extensions.rs#L1721), [1738](../../src/client_extensions.rs#L1738), [1745](../../src/client_extensions.rs#L1745), [1751](../../src/client_extensions.rs#L1751), [1767](../../src/client_extensions.rs#L1767), [1772](../../src/client_extensions.rs#L1772), [1775](../../src/client_extensions.rs#L1775), [1778](../../src/client_extensions.rs#L1778), [1785](../../src/client_extensions.rs#L1785), [1792](../../src/client_extensions.rs#L1792), [1798](../../src/client_extensions.rs#L1798), [1800](../../src/client_extensions.rs#L1800), [1807](../../src/client_extensions.rs#L1807), [1809](../../src/client_extensions.rs#L1809), [1816](../../src/client_extensions.rs#L1816), [1818](../../src/client_extensions.rs#L1818), [1826](../../src/client_extensions.rs#L1826), [1836](../../src/client_extensions.rs#L1836), [1848](../../src/client_extensions.rs#L1848) | [tekes-supervisor::client_extensions::bad_request](../../src/client_extensions.rs#L454) |
+| `validate_payload` | `object.len` | [1728](../../src/client_extensions.rs#L1728), [1828](../../src/client_extensions.rs#L1828) | receiver-type-required |
+| `validate_payload` | `object.get("execution").is_some_and` | [1729](../../src/client_extensions.rs#L1729) | receiver-type-required |
+| `validate_payload` | `object.get` | [1729](../../src/client_extensions.rs#L1729) | receiver-type-required |
+| `validate_payload` | `serde_json::from_value::<schema::ExecutionConfig>(value.clone())                             .is_ok_and` | [1730](../../src/client_extensions.rs#L1730) | receiver-type-required |
+| `validate_payload` | `serde_json::from_value::<schema::ExecutionConfig>` | [1730](../../src/client_extensions.rs#L1730) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `value.clone` | [1730](../../src/client_extensions.rs#L1730) | receiver-type-required |
+| `validate_payload` | `execution.validate().is_ok` | [1731](../../src/client_extensions.rs#L1731) | receiver-type-required |
+| `validate_payload` | `execution.validate` | [1731](../../src/client_extensions.rs#L1731) | receiver-type-required |
+| `validate_payload` | `object.contains_key` | [1733](../../src/client_extensions.rs#L1733) | receiver-type-required |
+| `validate_payload` | `decode` | [1749](../../src/client_extensions.rs#L1749), [1782](../../src/client_extensions.rs#L1782), [1790](../../src/client_extensions.rs#L1790), [1796](../../src/client_extensions.rs#L1796), [1805](../../src/client_extensions.rs#L1805), [1814](../../src/client_extensions.rs#L1814) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `endpoint::validate_session_id(&request.session_id)                 .map_err` | [1750](../../src/client_extensions.rs#L1750), [1791](../../src/client_extensions.rs#L1791), [1797](../../src/client_extensions.rs#L1797), [1806](../../src/client_extensions.rs#L1806), [1815](../../src/client_extensions.rs#L1815) | receiver-type-required |
+| `validate_payload` | `endpoint::validate_session_id` | [1750](../../src/client_extensions.rs#L1750), [1784](../../src/client_extensions.rs#L1784), [1791](../../src/client_extensions.rs#L1791), [1797](../../src/client_extensions.rs#L1797), [1806](../../src/client_extensions.rs#L1806), [1815](../../src/client_extensions.rs#L1815) | [endpoint::types::validate_session_id](../../../endpoint/src/types.rs#L130) |
+| `validate_payload` | `request.path.is_empty` | [1752](../../src/client_extensions.rs#L1752) | receiver-type-required |
+| `validate_payload` | `request.path.contains` | [1753](../../src/client_extensions.rs#L1753) | receiver-type-required |
+| `validate_payload` | `Some` | [1754](../../src/client_extensions.rs#L1754), [1755](../../src/client_extensions.rs#L1755) | external-constructor-callback-or-unresolved |
+| `validate_payload` | `request.offset.is_some` | [1757](../../src/client_extensions.rs#L1757) | receiver-type-required |
+| `validate_payload` | `request.limit.is_some` | [1757](../../src/client_extensions.rs#L1757) | receiver-type-required |
+| `validate_payload` | `request.limit.is_some_and` | [1758](../../src/client_extensions.rs#L1758) | receiver-type-required |
+| `validate_payload` | `crate::bounded_child_history::validate(payload).map_err` | [1772](../../src/client_extensions.rs#L1772) | receiver-type-required |
+| `validate_payload` | `crate::bounded_child_history::validate` | [1772](../../src/client_extensions.rs#L1772) | [tekes-supervisor::bounded_child_history::validate](../../src/bounded_child_history.rs#L38) |
+| `validate_payload` | `session_controls::METHODS.contains` | [1774](../../src/client_extensions.rs#L1774) | receiver-type-required |
+| `validate_payload` | `session_controls::validate(operation, payload).map_err` | [1775](../../src/client_extensions.rs#L1775) | receiver-type-required |
+| `validate_payload` | `session_controls::validate` | [1775](../../src/client_extensions.rs#L1775) | [session-controls::validate](../../../session-controls/src/lib.rs#L180) |
+| `validate_payload` | `user_documents::METHODS.contains` | [1777](../../src/client_extensions.rs#L1777) | receiver-type-required |
+| `validate_payload` | `user_documents::validate(operation, payload).map_err` | [1778](../../src/client_extensions.rs#L1778) | receiver-type-required |
+| `validate_payload` | `user_documents::validate` | [1778](../../src/client_extensions.rs#L1778) | [user-documents::validate](../../../user-documents/src/lib.rs#L64) |
+| `validate_payload` | `endpoint::validate_session_id(&id)                     .map_err` | [1784](../../src/client_extensions.rs#L1784) | receiver-type-required |
+| `validate_payload` | `engine::PermissionMode::parse(&request.mode).is_none` | [1799](../../src/client_extensions.rs#L1799) | receiver-type-required |
+| `validate_payload` | `engine::PermissionMode::parse` | [1799](../../src/client_extensions.rs#L1799) | [engine::permission_mode::PermissionMode::parse](../../../engine/src/permission_mode.rs#L60) |
+| `validate_payload` | `request.name.is_empty` | [1808](../../src/client_extensions.rs#L1808), [1845](../../src/client_extensions.rs#L1845) | receiver-type-required |
+| `validate_payload` | `request.data.is_empty` | [1808](../../src/client_extensions.rs#L1808) | receiver-type-required |
+| `validate_payload` | `request.attachment_id.is_empty` | [1817](../../src/client_extensions.rs#L1817) | receiver-type-required |
+| `validate_payload` | `decode::<RecoveryRequest>(payload).map` | [1822](../../src/client_extensions.rs#L1822) | receiver-type-required |
+| `validate_payload` | `decode::<RecoveryRequest>` | [1822](../../src/client_extensions.rs#L1822) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `payload                 .as_object()                 .ok_or_else` | [1824](../../src/client_extensions.rs#L1824) | receiver-type-required |
+| `validate_payload` | `payload                 .as_object` | [1824](../../src/client_extensions.rs#L1824) | receiver-type-required |
+| `validate_payload` | `object.is_empty` | [1827](../../src/client_extensions.rs#L1827) | receiver-type-required |
+| `validate_payload` | `object                         .get("sessionId")                         .and_then(Value::as_str)                         .is_some_and` | [1829](../../src/client_extensions.rs#L1829) | receiver-type-required |
+| `validate_payload` | `object                         .get("sessionId")                         .and_then` | [1829](../../src/client_extensions.rs#L1829) | receiver-type-required |
+| `validate_payload` | `object                         .get` | [1829](../../src/client_extensions.rs#L1829) | receiver-type-required |
+| `validate_payload` | `id.is_empty` | [1832](../../src/client_extensions.rs#L1832) | receiver-type-required |
+| `validate_payload` | `decode::<CommandRunRequest>(payload).map` | [1839](../../src/client_extensions.rs#L1839) | receiver-type-required |
+| `validate_payload` | `decode::<CommandRunRequest>` | [1839](../../src/client_extensions.rs#L1839) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<ResourceListRequest>(payload).map` | [1840](../../src/client_extensions.rs#L1840) | receiver-type-required |
+| `validate_payload` | `decode::<ResourceListRequest>` | [1840](../../src/client_extensions.rs#L1840) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<ResourceReadRequest>(payload).map` | [1841](../../src/client_extensions.rs#L1841) | receiver-type-required |
+| `validate_payload` | `decode::<ResourceReadRequest>` | [1841](../../src/client_extensions.rs#L1841) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<ToolListRequest>(payload).map` | [1842](../../src/client_extensions.rs#L1842) | receiver-type-required |
+| `validate_payload` | `decode::<ToolListRequest>` | [1842](../../src/client_extensions.rs#L1842) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<ToolResolveRequest>` | [1844](../../src/client_extensions.rs#L1844) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<ThreadSearchRequest>(payload).map` | [1852](../../src/client_extensions.rs#L1852) | receiver-type-required |
+| `validate_payload` | `decode::<ThreadSearchRequest>` | [1852](../../src/client_extensions.rs#L1852) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<SessionSearchRequest>(payload).map` | [1853](../../src/client_extensions.rs#L1853) | receiver-type-required |
+| `validate_payload` | `decode::<SessionSearchRequest>` | [1853](../../src/client_extensions.rs#L1853) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `decode::<SessionIdRequest>(payload).map` | [1855](../../src/client_extensions.rs#L1855) | receiver-type-required |
+| `validate_payload` | `decode::<SessionIdRequest>` | [1855](../../src/client_extensions.rs#L1855) | [tekes-supervisor::client_extensions::decode](../../src/client_extensions.rs#L431) |
+| `validate_payload` | `failure` | [1857](../../src/client_extensions.rs#L1857) | [tekes-supervisor::client_extensions::failure](../../src/client_extensions.rs#L1865) |
+| `failure` | `IJsonValue::parse(         &serde_json::to_vec(&details).expect("extension failure details are JSON"),     )     .expect` | [1866](../../src/client_extensions.rs#L1866) | receiver-type-required |
+| `failure` | `IJsonValue::parse` | [1866](../../src/client_extensions.rs#L1866) | [schema::ijson::IJsonValue::parse](../../../schema/src/ijson.rs#L16) |
+| `failure` | `serde_json::to_vec(&details).expect` | [1867](../../src/client_extensions.rs#L1867) | receiver-type-required |
+| `failure` | `serde_json::to_vec` | [1867](../../src/client_extensions.rs#L1867) | external-constructor-callback-or-unresolved |
+| `failure` | `ProductionRouteFailure::new` | [1870](../../src/client_extensions.rs#L1870) | [tekes-supervisor::endpoint_host::ProductionRouteFailure::new](../../src/endpoint_host.rs#L499) |
+| `production_extensions` | `root.join` | [1890](../../src/client_extensions.rs#L1890) | receiver-type-required |
+| `production_extensions` | `fs::create_dir_all(&agent).expect` | [1891](../../src/client_extensions.rs#L1891) | receiver-type-required |
+| `production_extensions` | `fs::create_dir_all` | [1891](../../src/client_extensions.rs#L1891) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `ProductionProcessHost::open(             root,             std::env::current_exe().expect("test executable"),             "1.0.0",             &agent,         )         .expect` | [1892](../../src/client_extensions.rs#L1892) | receiver-type-required |
+| `production_extensions` | `ProductionProcessHost::open` | [1892](../../src/client_extensions.rs#L1892) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `std::env::current_exe().expect` | [1894](../../src/client_extensions.rs#L1894) | receiver-type-required |
+| `production_extensions` | `std::env::current_exe` | [1894](../../src/client_extensions.rs#L1894) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `Arc::new` | [1899](../../src/client_extensions.rs#L1899), [1902](../../src/client_extensions.rs#L1902), [1905](../../src/client_extensions.rs#L1905) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `SessionInputAdmissionAuthority::new` | [1899](../../src/client_extensions.rs#L1899) | [tekes-supervisor::endpoint_host::SessionInputAdmissionAuthority::new](../../src/endpoint_host.rs#L272) |
+| `production_extensions` | `root.to_path_buf` | [1899](../../src/client_extensions.rs#L1899) | receiver-type-required |
+| `production_extensions` | `EndpointCommandInputAuthority::new` | [1900](../../src/client_extensions.rs#L1900) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `Arc::clone` | [1901](../../src/client_extensions.rs#L1901), [1910](../../src/client_extensions.rs#L1910) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `Ok` | [1902](../../src/client_extensions.rs#L1902) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `"2026-08-29T00:00:00.000Z".to_owned` | [1902](../../src/client_extensions.rs#L1902) | receiver-type-required |
+| `production_extensions` | `ProductionClientExtensions::open(                 root,                 ResourceCatalog::default(),                 commands,                 Arc::clone(&process),             )             .expect` | [1906](../../src/client_extensions.rs#L1906) | receiver-type-required |
+| `production_extensions` | `ProductionClientExtensions::open` | [1906](../../src/client_extensions.rs#L1906) | external-constructor-callback-or-unresolved |
+| `production_extensions` | `ResourceCatalog::default` | [1908](../../src/client_extensions.rs#L1908) | external-constructor-callback-or-unresolved |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir().expect` | [1919](../../src/client_extensions.rs#L1919) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `tempfile::tempdir` | [1919](../../src/client_extensions.rs#L1919) | external-constructor-callback-or-unresolved |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `production_extensions` | [1920](../../src/client_extensions.rs#L1920) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `root.path` | [1920](../../src/client_extensions.rs#L1920) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute(             &extensions,             "session.initialPresets",             &serde_json::json!({}),             "presets",         )         .expect` | [1921](../../src/client_extensions.rs#L1921) | receiver-type-required |
+| `initial_presets_disclose_profile_text_without_creating_a_session` | `execute` | [1921](../../src/client_extensions.rs#L1921) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `tempfile::tempdir().unwrap` | [1962](../../src/client_extensions.rs#L1962), [1963](../../src/client_extensions.rs#L1963) | receiver-type-required |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `tempfile::tempdir` | [1962](../../src/client_extensions.rs#L1962), [1963](../../src/client_extensions.rs#L1963) | external-constructor-callback-or-unresolved |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `production_extensions` | [1964](../../src/client_extensions.rs#L1964) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `root.path` | [1964](../../src/client_extensions.rs#L1964) | receiver-type-required |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `execute(             &extensions,             "session.presets.describe",             &serde_json::json!({}),             "describe",         )         .unwrap` | [1965](../../src/client_extensions.rs#L1965) | receiver-type-required |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `execute` | [1965](../../src/client_extensions.rs#L1965), [1973](../../src/client_extensions.rs#L1973) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) |
+| `session_presets_describe_and_resolve_without_creating_a_session` | `execute(&extensions,"session.presets.resolve",&serde_json::json!({"execution":{"cwd":project.path(),"allowed_tools":["read"]},"preset":{"tools":["read"]}}),"preview").unwrap` | [1973](../../src/client_extensions.rs#L1973) | receiver-type-required |
+| `execute` | `ClientExtensionAuthority::execute` | [1989](../../src/client_extensions.rs#L1989) | external-constructor-callback-or-unresolved |
+| `execute` | `ijson_value` | [1997](../../src/client_extensions.rs#L1997) | external-constructor-callback-or-unresolved |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `tempfile::tempdir().expect` | [2006](../../src/client_extensions.rs#L2006) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `tempfile::tempdir` | [2006](../../src/client_extensions.rs#L2006) | external-constructor-callback-or-unresolved |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `production_extensions` | [2007](../../src/client_extensions.rs#L2007) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path` | [2007](../../src/client_extensions.rs#L2007), [2010](../../src/client_extensions.rs#L2010), [2012](../../src/client_extensions.rs#L2012) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join("threads").join` | [2010](../../src/client_extensions.rs#L2010) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join` | [2010](../../src/client_extensions.rs#L2010), [2012](../../src/client_extensions.rs#L2012) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all(&folder).expect` | [2011](../../src/client_extensions.rs#L2011) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all` | [2011](../../src/client_extensions.rs#L2011), [2012](../../src/client_extensions.rs#L2012) | external-constructor-callback-or-unresolved |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `fs::create_dir_all(root.path().join("archive").join(archived)).expect` | [2012](../../src/client_extensions.rs#L2012) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `root.path().join("archive").join` | [2012](../../src/client_extensions.rs#L2012) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.policy",             &serde_json::json!({}),             "policy",         )         .expect` | [2014](../../src/client_extensions.rs#L2014) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute` | [2014](../../src/client_extensions.rs#L2014), [2036](../../src/client_extensions.rs#L2036), [2045](../../src/client_extensions.rs#L2045), [2057](../../src/client_extensions.rs#L2057), [2066](../../src/client_extensions.rs#L2066), [2074](../../src/client_extensions.rs#L2074), [2090](../../src/client_extensions.rs#L2090) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter()             .map(&#124;option&#124; option["value"].as_str().expect("value"))             .collect` | [2021](../../src/client_extensions.rs#L2021) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter()             .map` | [2021](../../src/client_extensions.rs#L2021) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect("thread options")             .iter` | [2021](../../src/client_extensions.rs#L2021) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array()             .expect` | [2021](../../src/client_extensions.rs#L2021) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `policy["threadLevel"]             .as_array` | [2021](../../src/client_extensions.rs#L2021) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `option["value"].as_str().expect` | [2025](../../src/client_extensions.rs#L2025) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `option["value"].as_str` | [2025](../../src/client_extensions.rs#L2025) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.mode",             &serde_json::json!({"sessionId":session}),             "mode-0",         )         .expect` | [2036](../../src/client_extensions.rs#L2036) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":session,"mode":"read-only"}),             "select-1",         )         .expect` | [2045](../../src/client_extensions.rs#L2045) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.mode",             &serde_json::json!({"sessionId":session}),             "mode-1",         )         .expect` | [2057](../../src/client_extensions.rs#L2057) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":session,"mode":"yolo"}),             "select-2",         )         .expect_err` | [2066](../../src/client_extensions.rs#L2066) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":archived,"mode":"read-only"}),             "select-3",         )         .expect_err` | [2074](../../src/client_extensions.rs#L2074) | receiver-type-required |
+| `approvals_select_persists_the_session_mode_and_refuses_archived_sessions` | `execute(             &extensions,             "approvals.select",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033","mode":"read-only"}),             "select-4",         )         .expect_err` | [2090](../../src/client_extensions.rs#L2090) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `tempfile::tempdir().expect` | [2119](../../src/client_extensions.rs#L2119) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `tempfile::tempdir` | [2119](../../src/client_extensions.rs#L2119) | external-constructor-callback-or-unresolved |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap()             .create_session(                 session,                 &test_support::execution_fixture(),                 "cfg",                 schema::ResumePolicy::Never,                 "2026-08-29T00:00:00.000Z",                 &schema::OriginTuple {                     principal: "test".into(),                     client: "test".into(),                     target: session.into(),                     op: "create".into(),                     key: "create".into(),                 },             )             .unwrap` | [2121](../../src/client_extensions.rs#L2121) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap()             .create_session` | [2121](../../src/client_extensions.rs#L2121) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open(root.path())             .unwrap` | [2121](../../src/client_extensions.rs#L2121) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `endpoint::NativeEndpoint::open` | [2121](../../src/client_extensions.rs#L2121) | [endpoint::service::NativeEndpoint::open](../../../endpoint/src/service.rs#L263) |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `root.path` | [2121](../../src/client_extensions.rs#L2121), [2138](../../src/client_extensions.rs#L2138) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `test_support::execution_fixture` | [2125](../../src/client_extensions.rs#L2125) | [test-support::execution_fixture](../../../test-support/src/lib.rs#L188) |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `"test".into` | [2130](../../src/client_extensions.rs#L2130), [2131](../../src/client_extensions.rs#L2131) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `session.into` | [2132](../../src/client_extensions.rs#L2132) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `"create".into` | [2133](../../src/client_extensions.rs#L2133), [2134](../../src/client_extensions.rs#L2134) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `production_extensions` | [2138](../../src/client_extensions.rs#L2138) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute(             &extensions,             "tools/list",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033"}),             "rpc-tools-list",         )         .expect` | [2139](../../src/client_extensions.rs#L2139) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute` | [2139](../../src/client_extensions.rs#L2139), [2153](../../src/client_extensions.rs#L2153) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `result["tools"].as_array().expect` | [2146](../../src/client_extensions.rs#L2146) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `result["tools"].as_array` | [2146](../../src/client_extensions.rs#L2146) | receiver-type-required |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `BuiltinManifest::compiled` | [2147](../../src/client_extensions.rs#L2147) | external-constructor-callback-or-unresolved |
+| `tools_list_is_closed_and_includes_every_fixed_tool` | `execute(             &extensions,             "tools/resolve",             &serde_json::json!({"sessionId":"018f0000-0000-7000-8000-000000000033","name":"web_search"}),             "rpc-tools-resolve",         )         .expect` | [2153](../../src/client_extensions.rs#L2153) | receiver-type-required |
+| `append_canonical` | `lines.extend` | [2164](../../src/client_extensions.rs#L2164) | receiver-type-required |
+| `append_canonical` | `serde_json_canonicalizer::to_vec(&value).expect` | [2164](../../src/client_extensions.rs#L2164) | receiver-type-required |
+| `append_canonical` | `serde_json_canonicalizer::to_vec` | [2164](../../src/client_extensions.rs#L2164) | external-constructor-callback-or-unresolved |
+| `append_canonical` | `lines.push` | [2165](../../src/client_extensions.rs#L2165) | receiver-type-required |
+| `epoch_profile_asset` | `assets             .publish(&serde_json_canonicalizer::to_vec(&value).expect("profile bytes"))             .expect` | [2191](../../src/client_extensions.rs#L2191) | receiver-type-required |
+| `epoch_profile_asset` | `assets             .publish` | [2191](../../src/client_extensions.rs#L2191) | receiver-type-required |
+| `epoch_profile_asset` | `serde_json_canonicalizer::to_vec(&value).expect` | [2192](../../src/client_extensions.rs#L2192) | receiver-type-required |
+| `epoch_profile_asset` | `serde_json_canonicalizer::to_vec` | [2192](../../src/client_extensions.rs#L2192) | external-constructor-callback-or-unresolved |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `tempfile::tempdir().expect` | [2198](../../src/client_extensions.rs#L2198) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `tempfile::tempdir` | [2198](../../src/client_extensions.rs#L2198) | external-constructor-callback-or-unresolved |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `production_extensions` | [2199](../../src/client_extensions.rs#L2199) | [tekes-supervisor::client_extensions::tests::production_extensions](../../src/client_extensions.rs#L1887) |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path` | [2199](../../src/client_extensions.rs#L2199), [2201](../../src/client_extensions.rs#L2201) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path().join("threads").join` | [2201](../../src/client_extensions.rs#L2201) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `root.path().join` | [2201](../../src/client_extensions.rs#L2201) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::create_dir_all(&folder).expect` | [2202](../../src/client_extensions.rs#L2202) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::create_dir_all` | [2202](../../src/client_extensions.rs#L2202) | external-constructor-callback-or-unresolved |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `store::AssetStore::new(folder.join("assets")).expect` | [2203](../../src/client_extensions.rs#L2203) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `store::AssetStore::new` | [2203](../../src/client_extensions.rs#L2203) | [store::asset::AssetStore::new](../../../store/src/asset.rs#L27) |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `folder.join` | [2203](../../src/client_extensions.rs#L2203), [2315](../../src/client_extensions.rs#L2315) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `epoch_profile_asset` | [2204](../../src/client_extensions.rs#L2204), [2211](../../src/client_extensions.rs#L2211) | [tekes-supervisor::client_extensions::tests::epoch_profile_asset](../../src/client_extensions.rs#L2168) |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `Vec::new` | [2218](../../src/client_extensions.rs#L2218) | external-constructor-callback-or-unresolved |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `append_canonical` | [2219](../../src/client_extensions.rs#L2219), [2223](../../src/client_extensions.rs#L2223), [2227](../../src/client_extensions.rs#L2227), [2231](../../src/client_extensions.rs#L2231), [2235](../../src/client_extensions.rs#L2235), [2239](../../src/client_extensions.rs#L2239), [2243](../../src/client_extensions.rs#L2243), [2247](../../src/client_extensions.rs#L2247), [2251](../../src/client_extensions.rs#L2251), [2255](../../src/client_extensions.rs#L2255), [2259](../../src/client_extensions.rs#L2259), [2263](../../src/client_extensions.rs#L2263), [2267](../../src/client_extensions.rs#L2267), [2271](../../src/client_extensions.rs#L2271), [2275](../../src/client_extensions.rs#L2275), [2279](../../src/client_extensions.rs#L2279), [2283](../../src/client_extensions.rs#L2283), [2287](../../src/client_extensions.rs#L2287), [2291](../../src/client_extensions.rs#L2291), [2295](../../src/client_extensions.rs#L2295), [2299](../../src/client_extensions.rs#L2299), [2303](../../src/client_extensions.rs#L2303), [2307](../../src/client_extensions.rs#L2307), [2311](../../src/client_extensions.rs#L2311) | [tekes-supervisor::client_extensions::tests::append_canonical](../../src/client_extensions.rs#L2163) |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::write(folder.join("main.jsonl"), ledger).expect` | [2315](../../src/client_extensions.rs#L2315) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `fs::write` | [2315](../../src/client_extensions.rs#L2315) | external-constructor-callback-or-unresolved |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute(             &extensions,             "usage.cacheAttribution",             &serde_json::json!({"sessionId":session}),             "usage-cache",         )         .expect` | [2317](../../src/client_extensions.rs#L2317) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute` | [2317](../../src/client_extensions.rs#L2317), [2339](../../src/client_extensions.rs#L2339) | [tekes-supervisor::client_extensions::tests::execute](../../src/client_extensions.rs#L1983) |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `execute(             &extensions,             "usage.summary",             &serde_json::json!({"sessionId":session}),             "usage-summary",         )         .expect` | [2339](../../src/client_extensions.rs#L2339) | receiver-type-required |
+| `usage_cache_attribution_joins_effective_attempts_to_exact_epoch_targets` | `process.shutdown` | [2348](../../src/client_extensions.rs#L2348) | receiver-type-required |
