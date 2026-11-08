@@ -116,12 +116,12 @@ Includes pub, pub(crate), pub(super), and other restricted declarations; a pub m
 | [tekes-worker::recovery::UnresolvedAttempt](../../src/recovery.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::PendingToolCall](../../src/recovery.rs#L17) | `pub(crate)` | not a function |
 | [tekes-worker::recovery::RecoveryProgress](../../src/recovery.rs#L29) | `pub(crate)` | not a function |
-| [tekes-worker::recovery::reconcile_provider_attempt](../../src/recovery.rs#L34) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::recovery::recover_unpaired_tool_calls](../../src/recovery.rs#L101) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::recovery::pending_tool_calls](../../src/recovery.rs#L222) | `pub(crate)` | [tekes-worker::recovery::recover_unpaired_tool_calls](../../src/recovery.rs#L101) |
-| [tekes-worker::recovery::recover_provider_attempt_for_ordinary](../../src/recovery.rs#L313) | `pub(crate)` | no resolved direct caller |
-| [tekes-worker::recovery::unresolved_attempt](../../src/recovery.rs#L415) | `pub(crate)` | [tekes-worker::recovery::recover_provider_attempt_for_ordinary](../../src/recovery.rs#L313); [tekes-worker::recovery::reconcile_provider_attempt](../../src/recovery.rs#L34) |
-| [tekes-worker::recovery::validate_adopted_calls](../../src/recovery.rs#L532) | `pub(crate)` | [tekes-worker::recovery::complete_adopt](../../src/recovery.rs#L562) |
+| [tekes-worker::recovery::reconcile_provider_attempt](../../src/recovery.rs#L55) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::recovery::recover_unpaired_tool_calls](../../src/recovery.rs#L110) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::recovery::pending_tool_calls](../../src/recovery.rs#L231) | `pub(crate)` | [tekes-worker::recovery::recover_unpaired_tool_calls](../../src/recovery.rs#L110) |
+| [tekes-worker::recovery::recover_provider_attempt_for_ordinary](../../src/recovery.rs#L322) | `pub(crate)` | no resolved direct caller |
+| [tekes-worker::recovery::unresolved_attempt](../../src/recovery.rs#L424) | `pub(crate)` | [tekes-worker::recovery::recover_provider_attempt_for_ordinary](../../src/recovery.rs#L322); [tekes-worker::recovery::reconcile_provider_attempt](../../src/recovery.rs#L55) |
+| [tekes-worker::recovery::validate_adopted_calls](../../src/recovery.rs#L541) | `pub(crate)` | [tekes-worker::recovery::complete_adopt](../../src/recovery.rs#L571) |
 | [tekes-worker::result_presentation::present](../../src/result_presentation.rs#L13) | `pub(crate)` | no resolved direct caller |
 | [tekes-worker::tool_backends::AllowedDynamicBackend](../../src/tool_backends.rs#L3) | `pub(crate)` | not a function |
 | [tekes-worker::tool_backends::AllowedToolBackend](../../src/tool_backends.rs#L33) | `pub(crate)` | not a function |
