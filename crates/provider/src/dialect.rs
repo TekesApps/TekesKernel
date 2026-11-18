@@ -71,21 +71,21 @@ impl DialectId {
     #[must_use]
     pub const fn input_blocks(self) -> &'static [&'static str] {
         match self {
-            Self::OpenaiResponsesV1 | Self::GoogleGenerationV1 => {
-                &["text", "image", "file", "tool_call", "tool_result"]
-            }
-            Self::AnthropicMessagesV1 => &["text", "image", "file", "tool_call", "tool_result"],
-            // DeepSeek Flash accepts input_image on the Responses API. Images
-            // must use that path; arbitrary input_file blocks remain unsupported.
-            Self::GenericChatV1 | Self::OpenaiChatV1 | Self::DeepseekResponsesV1 => {
-                &["text", "image", "tool_call", "tool_result"]
-            }
-            Self::DeepseekChatV1
+            Self::OpenaiResponsesV1
+            | Self::GoogleGenerationV1
+            | Self::GoogleInteractionsV1
+            | Self::AnthropicMessagesV1 => &["text", "image", "file", "tool_call", "tool_result"],
+            // DeepSeek accepts input_image on Responses, Chat, and Anthropic;
+            // Kimi and GLM accept image_url on Chat; Generic/OpenAI Chat also
+            // accept image_url. Arbitrary input_file blocks degrade to text.
+            Self::GenericChatV1
+            | Self::OpenaiChatV1
+            | Self::DeepseekResponsesV1
+            | Self::DeepseekChatV1
             | Self::KimiChatV1
             | Self::GlmChatV1
-            | Self::OllamaChatV1
-            | Self::DeepseekAnthropicV1
-            | Self::GoogleInteractionsV1 => &["text", "tool_call", "tool_result"],
+            | Self::DeepseekAnthropicV1 => &["text", "image", "tool_call", "tool_result"],
+            Self::OllamaChatV1 => &["text", "tool_call", "tool_result"],
         }
     }
 
@@ -106,7 +106,7 @@ impl DialectId {
         match self {
             Self::OpenaiResponsesV1 | Self::GoogleInteractionsV1 => "server_managed",
             Self::DeepseekChatV1 | Self::KimiChatV1 | Self::GlmChatV1 => "implicit_prefix",
-            Self::AnthropicMessagesV1 => "explicit_breakpoint",
+            Self::AnthropicMessagesV1 | Self::DeepseekAnthropicV1 => "explicit_breakpoint",
             _ => "none",
         }
     }
@@ -225,7 +225,7 @@ pub struct SupportedDialect {
 const MODEL_CAPABILITY_CATALOG: &[u8] =
     include_bytes!("../../../fixtures/provider-dialects/model-capabilities.canonical.json");
 const MODEL_CAPABILITY_CATALOG_SHA256: &str =
-    "c5f8926749325403cca2c0f1fa7e10a0a6cb93095550df78bad0a84b6b7bd1c0";
+    "8e162282f6661488abf17974e994b5e6d6df90780d1a60043aaaf33834e5bfee";
 
 #[derive(Clone, Debug, Eq, PartialEq, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -246,8 +246,18 @@ pub enum ThinkingWire {
     /// Anthropic 4.6+ generations: `{"type":"adaptive","display":"summarized"}`
     /// plus `output_config.effort`; `budget_tokens` is rejected.
     Adaptive,
-    /// Pre-4.6 Anthropic generations: `{"type":"enabled","budget_tokens":N}`.
+    /// Pre-4.6 Anthropic and compatible budgeted generations:
+    /// `{"type":"enabled","budget_tokens":N}` scaled by effort.
     Budget,
+    /// DeepSeek `/anthropic/v1/messages`: `{"type":"enabled"}` plus
+    /// `output_config.effort`.
+    DeepseekAnthropic,
+    /// Gemini 2.5 generations: `generationConfig.thinkingConfig` with
+    /// `includeThoughts: true` and `thinkingBudget`.
+    GoogleBudget,
+    /// Gemini 3.x/4.x generations: `generationConfig.thinkingConfig` with
+    /// `includeThoughts: true` and `thinkingLevel`.
+    GoogleLevel,
 }
 
 /// Native deferred-tool protocol a model speaks on an exact route. Declared in
@@ -363,21 +373,21 @@ const DEFINITIONS: &[Definition] = &[
     Definition {
         dialect: DialectId::DeepseekChatV1,
         family: "chat_completions",
-        serializer_revision: "deepseek-chat-serializer-1",
+        serializer_revision: "deepseek-chat-serializer-2",
         credential_header: "authorization",
         credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::KimiChatV1,
         family: "chat_completions",
-        serializer_revision: "kimi-chat-serializer-1",
+        serializer_revision: "kimi-chat-serializer-2",
         credential_header: "authorization",
         credential_prefix: "Bearer ",
     },
     Definition {
         dialect: DialectId::GlmChatV1,
         family: "chat_completions",
-        serializer_revision: "glm-chat-serializer-1",
+        serializer_revision: "glm-chat-serializer-2",
         credential_header: "authorization",
         credential_prefix: "Bearer ",
     },
@@ -391,28 +401,28 @@ const DEFINITIONS: &[Definition] = &[
     Definition {
         dialect: DialectId::AnthropicMessagesV1,
         family: "anthropic_messages",
-        serializer_revision: "anthropic-messages-serializer-2",
+        serializer_revision: "anthropic-messages-serializer-3",
         credential_header: "x-api-key",
         credential_prefix: "",
     },
     Definition {
         dialect: DialectId::DeepseekAnthropicV1,
         family: "anthropic_messages",
-        serializer_revision: "deepseek-anthropic-serializer-1",
+        serializer_revision: "deepseek-anthropic-serializer-2",
         credential_header: "x-api-key",
         credential_prefix: "",
     },
     Definition {
         dialect: DialectId::GoogleGenerationV1,
         family: "google_generation",
-        serializer_revision: "google-generation-serializer-1",
+        serializer_revision: "google-generation-serializer-2",
         credential_header: "x-goog-api-key",
         credential_prefix: "",
     },
     Definition {
         dialect: DialectId::GoogleInteractionsV1,
         family: "google_interactions",
-        serializer_revision: "google-interactions-serializer-1",
+        serializer_revision: "google-interactions-serializer-2",
         credential_header: "x-goog-api-key",
         credential_prefix: "",
     },
@@ -584,6 +594,18 @@ fn load_model_capabilities() -> Result<Vec<ModelCapabilityProfile>, String> {
                 profile.model_profile_id
             ));
         }
+        if dialect == DialectId::GoogleGenerationV1
+            && !profile.reasoning.levels.is_empty()
+            && !matches!(
+                profile.reasoning.thinking,
+                Some(ThinkingWire::GoogleBudget | ThinkingWire::GoogleLevel)
+            )
+        {
+            return Err(format!(
+                "Google Generation capability {} declares reasoning levels without a Google thinking wire",
+                profile.model_profile_id
+            ));
+        }
         if profile
             .reasoning
             .default
@@ -728,9 +750,17 @@ fn resolve_configured_target(
 ) -> Result<ResolvedDialectProfile, DialectError> {
     let mut credential_header = definition.credential_header.to_owned();
     let mut credential_prefix = definition.credential_prefix.to_owned();
-    if dialect == DialectId::AnthropicMessagesV1
-        && target.route.endpoint_owner == "cloudflare"
-        && target.route.gateway_translation == "cloudflare-native-anthropic"
+    if target.route.endpoint_owner == "cloudflare"
+        && ((dialect == DialectId::AnthropicMessagesV1
+            && target.route.gateway_translation == "cloudflare-native-anthropic")
+            || (matches!(
+                dialect,
+                DialectId::OpenaiResponsesV1 | DialectId::OpenaiChatV1
+            ) && target.route.gateway_translation == "cloudflare-native-openai")
+            || (matches!(
+                dialect,
+                DialectId::GoogleGenerationV1 | DialectId::GoogleInteractionsV1
+            ) && target.route.gateway_translation == "cloudflare-native-google"))
     {
         credential_header = "cf-aig-authorization".to_owned();
         credential_prefix = "Bearer ".to_owned();

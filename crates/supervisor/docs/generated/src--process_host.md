@@ -1553,7 +1553,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `automatic_title_origin` | `operation.to_owned` | [248](../../src/process_host.rs#L248) | receiver-type-required |
 | `automatic_title_route` | `configured.models.iter().filter` | [267](../../src/process_host.rs#L267) | receiver-type-required |
 | `automatic_title_route` | `configured.models.iter` | [267](../../src/process_host.rs#L267) | receiver-type-required |
-| `automatic_title_route` | `provider::resolve_profile` | [268](../../src/process_host.rs#L268) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `automatic_title_route` | `provider::resolve_profile` | [268](../../src/process_host.rs#L268) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L714) |
 | `automatic_title_route` | `configured.clone` | [277](../../src/process_host.rs#L277) | receiver-type-required |
 | `automatic_title_route` | `model.clone` | [277](../../src/process_host.rs#L277) | receiver-type-required |
 | `automatic_title_route` | `model.id.contains` | [278](../../src/process_host.rs#L278) | receiver-type-required |
@@ -1583,7 +1583,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `session_model_route` | `configured         .models         .iter()         .find` | [330](../../src/process_host.rs#L330) | receiver-type-required |
 | `session_model_route` | `configured         .models         .iter` | [330](../../src/process_host.rs#L330) | receiver-type-required |
 | `session_model_route` | `provider::resolve_profile(configured, model)         .map_err` | [335](../../src/process_host.rs#L335) | receiver-type-required |
-| `session_model_route` | `provider::resolve_profile` | [335](../../src/process_host.rs#L335) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `session_model_route` | `provider::resolve_profile` | [335](../../src/process_host.rs#L335) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L714) |
 | `session_model_route` | `Ok` | [337](../../src/process_host.rs#L337) | external-constructor-callback-or-unresolved |
 | `session_model_route` | `configured.clone` | [337](../../src/process_host.rs#L337) | receiver-type-required |
 | `session_model_route` | `model.clone` | [337](../../src/process_host.rs#L337) | receiver-type-required |
@@ -2769,7 +2769,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `summary_for_manual_compaction` | `serde_json::to_vec` | [3225](../../src/process_host.rs#L3225) | external-constructor-callback-or-unresolved |
 | `summary_for_manual_compaction` | `provider::prepare_summary_request` | [3229](../../src/process_host.rs#L3229) | [provider::compaction_summary::prepare_summary_request](../../../provider/src/compaction_summary.rs#L14) |
 | `summary_for_manual_compaction` | `self.complete_automatic_terminal` | [3237](../../src/process_host.rs#L3237) | [tekes-supervisor::process_host::ProductionProcessHost::complete_automatic_terminal](../../src/process_host.rs#L3127) |
-| `summary_for_manual_compaction` | `provider::summary_completion_artifact` | [3246](../../src/process_host.rs#L3246) | [provider::compaction_summary::summary_completion_artifact](../../../provider/src/compaction_summary.rs#L62) |
+| `summary_for_manual_compaction` | `provider::summary_completion_artifact` | [3246](../../src/process_host.rs#L3246) | [provider::compaction_summary::summary_completion_artifact](../../../provider/src/compaction_summary.rs#L73) |
 | `summary_for_manual_compaction` | `provider::ProviderCompletion::Terminal` | [3247](../../src/process_host.rs#L3247) | external-constructor-callback-or-unresolved |
 | `summary_for_manual_compaction` | `artifact                         .and_then` | [3250](../../src/process_host.rs#L3250) | receiver-type-required |
 | `summary_for_manual_compaction` | `engine::admit_summary_artifact` | [3251](../../src/process_host.rs#L3251) | [engine::compaction_summary::admit_summary_artifact](../../../engine/src/compaction_summary.rs#L103) |
@@ -3866,14 +3866,14 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `readiness` | `config             .providers             .providers             .iter()             .map` | [5697](../../src/process_host.rs#L5697) | receiver-type-required |
 | `readiness` | `config             .providers             .providers             .iter` | [5697](../../src/process_host.rs#L5697) | receiver-type-required |
 | `readiness` | `provider::validate_provider(configured).is_err` | [5702](../../src/process_host.rs#L5702) | receiver-type-required |
-| `readiness` | `provider::validate_provider` | [5702](../../src/process_host.rs#L5702) | [provider::dialect::validate_provider](../../../provider/src/dialect.rs#L683) |
+| `readiness` | `provider::validate_provider` | [5702](../../src/process_host.rs#L5702) | [provider::dialect::validate_provider](../../../provider/src/dialect.rs#L705) |
 | `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map(&#124;model&#124; {                         provider::resolve_profile(configured, model)                             .ok()                             .map(&#124;profile&#124; (model, profile))                     })                     .collect::<Vec<_>>` | [5703](../../src/process_host.rs#L5703) | receiver-type-required |
 | `readiness` | `configured                     .models                     .iter()                     .filter(&#124;model&#124; model.enabled)                     .filter_map` | [5703](../../src/process_host.rs#L5703) | receiver-type-required |
 | `readiness` | `configured                     .models                     .iter()                     .filter` | [5703](../../src/process_host.rs#L5703) | receiver-type-required |
 | `readiness` | `configured                     .models                     .iter` | [5703](../../src/process_host.rs#L5703) | receiver-type-required |
 | `readiness` | `provider::resolve_profile(configured, model)                             .ok()                             .map` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
 | `readiness` | `provider::resolve_profile(configured, model)                             .ok` | [5708](../../src/process_host.rs#L5708) | receiver-type-required |
-| `readiness` | `provider::resolve_profile` | [5708](../../src/process_host.rs#L5708) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `readiness` | `provider::resolve_profile` | [5708](../../src/process_host.rs#L5708) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L714) |
 | `readiness` | `provider::endpoint_origin(&configured.endpoint).is_err` | [5714](../../src/process_host.rs#L5714) | receiver-type-required |
 | `readiness` | `provider::endpoint_origin` | [5714](../../src/process_host.rs#L5714) | [provider::request::endpoint_origin](../../../provider/src/request.rs#L113) |
 | `readiness` | `resolved_models.is_empty` | [5715](../../src/process_host.rs#L5715) | receiver-type-required |
@@ -4373,7 +4373,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `automatic_title_request_fails_closed_without_a_reasoning_off_switch` | `"openai-2026-08-01".to_owned` | [6854](../../src/process_host.rs#L6854) | receiver-type-required |
 | `automatic_title_request_fails_closed_without_a_reasoning_off_switch` | `"https://api.openai.com/v1".to_owned` | [6855](../../src/process_host.rs#L6855) | receiver-type-required |
 | `automatic_title_request_fails_closed_without_a_reasoning_off_switch` | `provider::resolve_profile(&configured, &configured.models[0]).expect` | [6866](../../src/process_host.rs#L6866) | receiver-type-required |
-| `automatic_title_request_fails_closed_without_a_reasoning_off_switch` | `provider::resolve_profile` | [6866](../../src/process_host.rs#L6866) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L692) |
+| `automatic_title_request_fails_closed_without_a_reasoning_off_switch` | `provider::resolve_profile` | [6866](../../src/process_host.rs#L6866) | [provider::dialect::resolve_profile](../../../provider/src/dialect.rs#L714) |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `tempfile::tempdir().expect` | [6880](../../src/process_host.rs#L6880) | receiver-type-required |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `tempfile::tempdir` | [6880](../../src/process_host.rs#L6880) | external-constructor-callback-or-unresolved |
 | `locked_manual_compact_covers_settled_history_and_is_keyed_by_origin` | `ProductionProcessHost::open(             root.path(),             std::env::current_exe().expect("test executable"),             "test-build",             root.path().join("missing-agent-home"),         )         .expect` | [6881](../../src/process_host.rs#L6881) | receiver-type-required |

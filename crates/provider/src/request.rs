@@ -217,7 +217,12 @@ fn prepare_inner(
         reasoning_effort,
         reasoning_disabled,
     )?;
-    let anthropic_max_tokens = Value::from(anthropic_max_tokens(&resolved, input.stream));
+    let budget_tokens = controls
+        .get("thinking")
+        .and_then(|thinking| thinking.get("budget_tokens"))
+        .and_then(Value::as_u64);
+    let anthropic_max_tokens =
+        Value::from(anthropic_max_tokens(&resolved, input.stream, budget_tokens));
     if input.continuation_id.is_some() && !dialect.server_managed() {
         return Err(PrepareError::InvalidJson(
             "stateless adapter cannot receive continuation_id".to_owned(),
@@ -269,10 +274,13 @@ fn prepare_inner(
             .expect("Responses body is an object")
             .insert("store".to_owned(), Value::Bool(true));
     }
-    if dialect == DialectId::AnthropicMessagesV1 {
+    if matches!(
+        dialect,
+        DialectId::AnthropicMessagesV1 | DialectId::DeepseekAnthropicV1
+    ) {
         attach_anthropic_breakpoints(&mut body)?;
         let object = body.as_object_mut().expect("Messages body is an object");
-        if resolved.refusal_fallback() {
+        if dialect == DialectId::AnthropicMessagesV1 && resolved.refusal_fallback() {
             object.insert("fallbacks".to_owned(), Value::String("default".to_owned()));
         }
     }
@@ -295,7 +303,12 @@ fn prepare_inner(
     // Prefix edits (compaction, result trimming, system/tool changes) are
     // intentional Kernel operations. Let Anthropic drop only invalid thinking
     // for this request; never erase the durable native carrier on a model switch.
-    let thinking_binding = dialect == DialectId::AnthropicMessagesV1
+    // Scope block_binding and its beta header strictly to native Anthropic routes.
+    let native_anthropic_route = dialect == DialectId::AnthropicMessagesV1
+        && (resolved.target.route.endpoint_owner == "anthropic"
+            || (resolved.target.route.endpoint_owner == "cloudflare"
+                && resolved.target.route.gateway_translation == "cloudflare-native-anthropic"));
+    let thinking_binding = native_anthropic_route
         && matches!(
             body.pointer("/thinking/type").and_then(Value::as_str),
             Some("adaptive" | "enabled")
@@ -311,15 +324,18 @@ fn prepare_inner(
             AdapterId::Responses | AdapterId::ChatCompletion => {
                 body["tool_choice"] = json!(match choice {
                     ToolChoice::Auto => "auto",
-                    ToolChoice::Required => "required",
+                    ToolChoice::Required if resolved.forced_tool_choice() => "required",
+                    ToolChoice::Required => "auto",
                     ToolChoice::None => "none",
                 });
             }
             AdapterId::Anthropic => {
-                // Generations without forced tool use (Fable 5.1) reject `any`;
-                // the catalog keeps strict schemas and the prompt carries the
-                // instruction, so the closest accepted policy is `auto`.
-                let required = if resolved.forced_tool_choice() {
+                // Generations without forced tool use (Fable 5.1) and enabled
+                // thinking routes (budgeted Anthropic, Moonshot, DeepSeek)
+                // reject `any`; fall back to `auto`.
+                let thinking_enabled =
+                    body.pointer("/thinking/type").and_then(Value::as_str) == Some("enabled");
+                let required = if resolved.forced_tool_choice() && !thinking_enabled {
                     "any"
                 } else {
                     "auto"
@@ -334,9 +350,20 @@ fn prepare_inner(
                 }}});
             }
             AdapterId::GoogleInteractions => {
-                return Err(invalid(
-                    "explicit tool choice is not proved for Google Interactions",
-                ));
+                let mode = match choice {
+                    ToolChoice::Auto => "auto",
+                    ToolChoice::Required => "any",
+                    ToolChoice::None => "none",
+                };
+                let config = body
+                    .as_object_mut()
+                    .expect("Interactions body is an object")
+                    .entry("generation_config".to_owned())
+                    .or_insert_with(|| json!({}));
+                config
+                    .as_object_mut()
+                    .ok_or_else(|| invalid("generation_config must be an object"))?
+                    .insert("tool_choice".to_owned(), json!(mode));
             }
         }
     }
@@ -538,16 +565,38 @@ fn values(values: &[IJsonValue]) -> Vec<Value> {
 /// `max_tokens` for the Messages adapter: the catalog ceiling when declared,
 /// otherwise room for a full answer (the cap truncates tool arguments
 /// mid-JSON, so it is not a cost control). Streaming lifts the transport
-/// timeout concern, so it gets the larger default. The DeepSeek Anthropic
-/// facade keeps its documented 8192 ceiling.
-fn anthropic_max_tokens(profile: &crate::ResolvedDialectProfile, stream: bool) -> u64 {
-    if let Some(ceiling) = profile.max_output_tokens() {
-        return ceiling;
+/// timeout concern, so it gets the larger default. Budgeted thinking ensures
+/// `max_tokens` stays above `budget_tokens`. The DeepSeek Anthropic legacy V3
+/// facade keeps its documented 8192 ceiling unless the catalog pins higher.
+fn anthropic_max_tokens(
+    profile: &crate::ResolvedDialectProfile,
+    stream: bool,
+    budget_tokens: Option<u64>,
+) -> u64 {
+    let base = if let Some(ceiling) = profile.max_output_tokens() {
+        ceiling
+    } else {
+        match profile.dialect {
+            DialectId::AnthropicMessagesV1 if stream => 64_000,
+            DialectId::AnthropicMessagesV1 => 16_000,
+            _ => 8192,
+        }
+    };
+    match budget_tokens {
+        Some(budget) => base.max(budget.saturating_add(4_096)),
+        None => base,
     }
-    match profile.dialect {
-        DialectId::AnthropicMessagesV1 if stream => 64_000,
-        DialectId::AnthropicMessagesV1 => 16_000,
-        _ => 8192,
+}
+
+fn anthropic_budget_for_effort(effort: &str) -> Result<u64, PrepareError> {
+    match effort {
+        "low" => Ok(2_048),
+        "medium" => Ok(4_096),
+        "high" => Ok(16_384),
+        "max" => Ok(32_000),
+        other => Err(invalid(format!(
+            "unsupported budgeted thinking effort {other}"
+        ))),
     }
 }
 
@@ -619,40 +668,63 @@ fn apply_dialect_controls(
                         controls.insert("output_config".to_owned(), json!({"effort":effort}));
                     }
                 }
-                Some(crate::ThinkingWire::Budget) if effort.is_some() => {
-                    controls.insert(
-                        "thinking".to_owned(),
-                        json!({"budget_tokens":4096,"type":"enabled"}),
-                    );
+                Some(crate::ThinkingWire::Budget) => {
+                    if let Some(effort) = effort {
+                        let budget = anthropic_budget_for_effort(effort)?;
+                        controls.insert(
+                            "thinking".to_owned(),
+                            json!({"budget_tokens":budget,"type":"enabled"}),
+                        );
+                    }
                 }
-                Some(crate::ThinkingWire::Budget) | None => {}
+                Some(crate::ThinkingWire::DeepseekAnthropic) => {
+                    if let Some(effort) = effort {
+                        controls.insert("thinking".to_owned(), json!({"type":"enabled"}));
+                        controls.insert("output_config".to_owned(), json!({"effort":effort}));
+                    }
+                }
+                Some(crate::ThinkingWire::GoogleBudget | crate::ThinkingWire::GoogleLevel)
+                | None => {}
             }
         }
         DialectId::GoogleGenerationV1 if effort.is_some() => {
-            // Only the three efforts with a budget mapping are renderable. A
-            // catalog entry that declares another level passes control
-            // validation and would otherwise reach an unreachable arm, so this
-            // fails closed instead of panicking on a configuration mistake.
-            let budget = match effort {
-                Some("low") => 1_024,
-                Some("medium") => 2_048,
-                Some("high") => 4_096,
-                other => {
+            let effort = effort.expect("checked is_some");
+            let thinking_config = match profile.thinking_wire() {
+                Some(crate::ThinkingWire::GoogleLevel) => {
+                    json!({"includeThoughts":true,"thinkingLevel":effort})
+                }
+                Some(crate::ThinkingWire::GoogleBudget) | None => {
+                    // Only the three efforts with a budget mapping are renderable. A
+                    // catalog entry that declares another level passes control
+                    // validation and would otherwise reach an unreachable arm, so this
+                    // fails closed instead of panicking on a configuration mistake.
+                    let budget = match effort {
+                        "low" => 1_024,
+                        "medium" => 2_048,
+                        "high" => 4_096,
+                        other => {
+                            return Err(invalid(format!(
+                                "google_generation_v1 has no thinking budget for reasoning_effort {other}"
+                            )));
+                        }
+                    };
+                    json!({"includeThoughts":true,"thinkingBudget":budget})
+                }
+                Some(other) => {
                     return Err(invalid(format!(
-                        "google_generation_v1 has no thinking budget for reasoning_effort {}",
-                        other.unwrap_or("<none>")
+                        "google_generation_v1 cannot use thinking wire {other:?}"
                     )));
                 }
             };
             controls.insert(
                 "generationConfig".to_owned(),
-                json!({"thinkingConfig":{"thinkingBudget":budget}}),
+                json!({"thinkingConfig":thinking_config}),
             );
         }
         DialectId::GoogleInteractionsV1 if effort.is_some() => {
             controls.insert(
                 "generation_config".to_owned(),
-                json!({"thinking_level":effort}),
+                json!({"thinking_level":effort,"thinking_summaries":"auto"}),
             );
         }
         _ => {}
@@ -682,7 +754,7 @@ fn apply_reasoning_disabled(
         DialectId::DeepseekResponsesV1 => {
             controls.insert("reasoning".to_owned(), json!({"effort":"none"}));
         }
-        DialectId::DeepseekChatV1 => {
+        DialectId::DeepseekChatV1 | DialectId::DeepseekAnthropicV1 => {
             controls.insert("thinking".to_owned(), json!({"type":"disabled"}));
         }
         _ => {
@@ -698,7 +770,7 @@ fn apply_reasoning_disabled(
 /// Output ceiling for the automatic thread-title request only (control
 /// `title_max_output_tokens`), so a model that ignores the title instruction
 /// cannot generate thousands of tokens. Rendered as each dialect's wire field
-/// (`max_output_tokens` on Responses, `max_tokens` on chat). Like
+/// (`max_output_tokens` on Responses, `max_tokens` on chat/anthropic). Like
 /// `reasoning_disabled`, only verified DeepSeek dialects accept it.
 fn apply_title_output_cap(
     dialect: DialectId,
@@ -712,7 +784,7 @@ fn apply_title_output_cap(
         DialectId::DeepseekResponsesV1 => {
             object.insert("max_output_tokens".to_owned(), Value::from(cap));
         }
-        DialectId::DeepseekChatV1 => {
+        DialectId::DeepseekChatV1 | DialectId::DeepseekAnthropicV1 => {
             let ceiling = object
                 .get("max_tokens")
                 .and_then(Value::as_u64)
@@ -972,80 +1044,132 @@ fn render_chat(
         }
         let role = item_role(item)?;
         let content = item_content(item)?;
-        if content
-            .iter()
-            .all(|block| matches!(block_type(block), Ok("text" | "reasoning")))
-        {
-            let text = content
-                .iter()
-                .filter(|block| block_type(block).ok() == Some("text"))
-                .map(|block| required_text(block, "text"))
-                .collect::<Result<Vec<_>, _>>()?
-                .join("");
-            let reasoning = content
-                .iter()
-                .filter(|block| block_type(block).ok() == Some("reasoning"))
-                .map(|block| required_text(block, "text"))
-                .collect::<Result<Vec<_>, _>>()?
-                .join("");
-            let mut message = json!({"content": text, "role": role});
-            if !reasoning.is_empty() {
-                if !dialect.supports_reasoning_blocks() {
-                    return Err(invalid(format!(
-                        "{} rejects reasoning blocks",
-                        dialect.as_str()
-                    )));
-                }
-                if role != "assistant" {
-                    return Err(invalid("chat reasoning content must have assistant role"));
-                }
-                message
-                    .as_object_mut()
-                    .expect("chat message object")
-                    .insert("reasoning_content".to_owned(), Value::String(reasoning));
-            }
-            messages.push(message);
-            continue;
-        }
-        for block in content {
-            match block_type(block)? {
-                "text" => {
-                    messages.push(json!({"content": required_text(block, "text")?, "role": role}))
-                }
-                "reasoning" if dialect.supports_reasoning_blocks() => messages.push(json!({
-                    "content":required_text(block, "text")?,"role":role
-                })),
-                "reasoning" => return Err(invalid(format!(
-                    "{} rejects reasoning blocks",
-                    dialect.as_str()
-                ))),
-                "file" if required_text(block, "mime")?.starts_with("image/")
-                    && dialect.input_blocks().contains(&"image") => messages.push(json!({
-                    "content":[{"image_url":{"url":data_url(block)?},"type":"image_url"}],"role":role
-                })),
-                "file" => messages.push(json!({
-                    "content": degraded_file_text(block, dialect)?, "role": role
-                })),
-                "tool_call" => messages.push(json!({
-                    "content": Value::Null,
-                    "role": "assistant",
-                    "tool_calls": [{
+        if role == "assistant" {
+            let mut text = String::new();
+            let mut reasoning = String::new();
+            let mut tool_calls = Vec::new();
+            for block in content {
+                match block_type(block)? {
+                    "text" => text.push_str(&required_text(block, "text")?),
+                    "reasoning" => {
+                        if !dialect.supports_reasoning_blocks() {
+                            return Err(invalid(format!(
+                                "{} rejects reasoning blocks",
+                                dialect.as_str()
+                            )));
+                        }
+                        reasoning.push_str(&required_text(block, "text")?);
+                    }
+                    "tool_call" => tool_calls.push(json!({
                         "function": {
                             "arguments": canonical_argument_string(block.get("arguments"))?,
                             "name": required_text(block, "name")?
                         },
                         "id": required_text(block, "call_id")?,
                         "type": "function"
-                    }]
+                    })),
+                    "file" => text.push_str(&degraded_file_text(block, dialect)?),
+                    other => return Err(invalid(format!("unsupported Chat block {other}"))),
+                }
+            }
+            let message_content = if text.is_empty() && !tool_calls.is_empty() {
+                Value::Null
+            } else {
+                Value::String(text)
+            };
+            let mut message = json!({"content": message_content, "role": "assistant"});
+            let object = message.as_object_mut().expect("chat message object");
+            if !reasoning.is_empty() {
+                object.insert("reasoning_content".to_owned(), Value::String(reasoning));
+            }
+            if !tool_calls.is_empty() {
+                object.insert("tool_calls".to_owned(), Value::Array(tool_calls));
+            }
+            messages.push(message);
+            continue;
+        }
+        let mut user_parts: Vec<Value> = Vec::new();
+        let mut has_image = false;
+        let flush_user_parts =
+            |messages: &mut Vec<Value>, parts: &mut Vec<Value>, has_image: &mut bool| {
+                if parts.is_empty() {
+                    return;
+                }
+                if *has_image {
+                    messages.push(json!({
+                        "content": std::mem::take(parts),
+                        "role": role,
+                    }));
+                } else {
+                    let joined = parts
+                        .drain(..)
+                        .filter_map(|p| p.get("text").and_then(Value::as_str).map(str::to_owned))
+                        .collect::<Vec<_>>()
+                        .join("");
+                    messages.push(json!({"content": joined, "role": role}));
+                }
+                *has_image = false;
+            };
+        if content.is_empty() {
+            messages.push(json!({"content": "", "role": role}));
+            continue;
+        }
+        for block in content {
+            match block_type(block)? {
+                "text" => user_parts.push(json!({
+                    "text": required_text(block, "text")?,
+                    "type": "text"
                 })),
-                "tool_result" => messages.push(json!({
-                    "content": tool_result_text(block)?,
-                    "role": "tool",
-                    "tool_call_id": required_text(block, "call_id")?
+                "reasoning" => {
+                    if !dialect.supports_reasoning_blocks() {
+                        return Err(invalid(format!(
+                            "{} rejects reasoning blocks",
+                            dialect.as_str()
+                        )));
+                    }
+                    return Err(invalid("chat reasoning content must have assistant role"));
+                }
+                "file"
+                    if required_text(block, "mime")?.starts_with("image/")
+                        && dialect.input_blocks().contains(&"image") =>
+                {
+                    has_image = true;
+                    user_parts.push(json!({
+                        "image_url": {"url": data_url(block)?},
+                        "type": "image_url"
+                    }));
+                }
+                "file" => user_parts.push(json!({
+                    "text": degraded_file_text(block, dialect)?,
+                    "type": "text"
                 })),
+                "tool_call" => {
+                    flush_user_parts(&mut messages, &mut user_parts, &mut has_image);
+                    messages.push(json!({
+                        "content": Value::Null,
+                        "role": "assistant",
+                        "tool_calls": [{
+                            "function": {
+                                "arguments": canonical_argument_string(block.get("arguments"))?,
+                                "name": required_text(block, "name")?
+                            },
+                            "id": required_text(block, "call_id")?,
+                            "type": "function"
+                        }]
+                    }));
+                }
+                "tool_result" => {
+                    flush_user_parts(&mut messages, &mut user_parts, &mut has_image);
+                    messages.push(json!({
+                        "content": tool_result_text(block)?,
+                        "role": "tool",
+                        "tool_call_id": required_text(block, "call_id")?
+                    }));
+                }
                 other => return Err(invalid(format!("unsupported Chat block {other}"))),
             }
         }
+        flush_user_parts(&mut messages, &mut user_parts, &mut has_image);
     }
     Ok(messages)
 }
@@ -1085,8 +1209,8 @@ fn render_google(items: &[Value], dialect: DialectId) -> Result<Vec<Value>, Prep
                     } else if let Some(data) = block.get("data").and_then(Value::as_str) {
                         parts.push(json!({"inlineData":{"data":data,"mimeType":mime}}));
                     } else {
-                        parts.push(json!({"file_data":{
-                            "file_uri":required_text(block, "uri")?,"mime_type":mime
+                        parts.push(json!({"fileData":{
+                            "fileUri":required_text(block, "uri")?,"mimeType":mime
                         }}));
                     }
                 }
@@ -1107,7 +1231,28 @@ fn render_google(items: &[Value], dialect: DialectId) -> Result<Vec<Value>, Prep
             json!({"parts": parts, "role": if role == "assistant" { "model" } else { "user" }}),
         );
     }
-    Ok(contents)
+    // Merge adjacent user/tool turns and keep functionResponse parts ahead of
+    // user text/files, matching Gemini's model(functionCall) -> user(functionResponse) contract.
+    let mut merged: Vec<Value> = Vec::new();
+    for entry in contents {
+        if entry["role"] == "user" && merged.last().is_some_and(|last| last["role"] == "user") {
+            merged.last_mut().unwrap()["parts"]
+                .as_array_mut()
+                .unwrap()
+                .extend(entry["parts"].as_array().unwrap().iter().cloned());
+        } else {
+            merged.push(entry);
+        }
+    }
+    for entry in &mut merged {
+        if entry["role"] == "user" {
+            entry["parts"]
+                .as_array_mut()
+                .unwrap()
+                .sort_by_key(|part| part.get("functionResponse").is_none());
+        }
+    }
+    Ok(merged)
 }
 
 fn google_function_response(result: Value) -> Value {
@@ -1141,20 +1286,19 @@ fn render_interactions(
         let role = item_role(item)?;
         for block in item_content(item)? {
             match block_type(block)? {
-                // A model turn carries no role: `role` on a `model_output` is
-                // an unknown parameter.
+                // Model and user turns in v1beta Interactions do not accept a
+                // `role` field on `model_output`, `thought`, or `user_input`.
                 "text" if role == "assistant" => steps.push(json!({
                     "content": [{"text": required_text(block, "text")?, "type": "text"}],
                     "type": "model_output"
                 })),
                 "text" => steps.push(json!({
                     "content": [{"text": required_text(block, "text")?, "type": "text"}],
-                    "role": role,
-                    "type": "content"
+                    "type": "user_input"
                 })),
                 "reasoning" if dialect.supports_reasoning_blocks() => steps.push(json!({
-                    "content":[{"text":required_text(block, "text")?,"type":"thought"}],
-                    "role":role,"type":"model_output"
+                    "summary":[{"text":required_text(block, "text")?,"type":"text"}],
+                    "type":"thought"
                 })),
                 "reasoning" => {
                     return Err(invalid(format!(
@@ -1162,11 +1306,35 @@ fn render_interactions(
                         dialect.as_str()
                     )));
                 }
-                "file" => steps.push(json!({
-                    "content": [{"text": degraded_file_text(block, dialect)?, "type": "text"}],
-                    "role": role,
-                    "type": "content"
-                })),
+                "file" => {
+                    let mime = required_text(block, "mime")?;
+                    let media_type = if mime.starts_with("image/")
+                        && dialect.input_blocks().contains(&"image")
+                    {
+                        Some("image")
+                    } else if mime == "application/pdf" && dialect.input_blocks().contains(&"file")
+                    {
+                        Some("document")
+                    } else {
+                        None
+                    };
+                    if let Some(kind) = media_type {
+                        let part = if let Some(data) = block.get("data").and_then(Value::as_str) {
+                            json!({"data": data, "mime_type": mime, "type": kind})
+                        } else {
+                            json!({"mime_type": mime, "type": kind, "uri": required_text(block, "uri")?})
+                        };
+                        steps.push(json!({
+                            "content": [part],
+                            "type": "user_input"
+                        }));
+                    } else {
+                        steps.push(json!({
+                            "content": [{"text": degraded_file_text(block, dialect)?, "type": "text"}],
+                            "type": "user_input"
+                        }));
+                    }
+                }
                 "tool_call" => steps.push(json!({
                     "arguments": required_value(block, "arguments")?,
                     "id": required_text(block, "call_id")?,
@@ -1222,7 +1390,7 @@ fn render_interactions(
             *step = if role == "assistant" {
                 json!({"type":"model_output","content":[{"type":"text","text":text}]})
             } else {
-                json!({"type":"content","role":"user","content":[{"type":"text","text":text}]})
+                json!({"type":"user_input","content":[{"type":"text","text":text}]})
             };
         }
     }
@@ -1911,7 +2079,7 @@ mod file_degradation_tests {
         .unwrap();
         assert_eq!(
             steps[0],
-            json!({"content":[{"text":"Attached file t.csv (text/csv, 3 bytes):\n```\na,b\n```","type":"text"}],"role":"user","type":"content"})
+            json!({"content":[{"text":"Attached file t.csv (text/csv, 3 bytes):\n```\na,b\n```","type":"text"}],"type":"user_input"})
         );
     }
 
@@ -1920,7 +2088,7 @@ mod file_degradation_tests {
         let error = render_chat(
             &user(file("image/png", "p.png", b"\x89PNG")),
             "",
-            DialectId::DeepseekChatV1,
+            DialectId::OllamaChatV1,
         )
         .unwrap_err();
         assert!(
@@ -1928,6 +2096,22 @@ mod file_degradation_tests {
                 .to_string()
                 .contains("rejects the requested file block"),
             "{error}"
+        );
+        let messages = render_chat(
+            &user(file("image/png", "p.png", b"\x89PNG")),
+            "",
+            DialectId::DeepseekChatV1,
+        )
+        .unwrap();
+        assert_eq!(
+            messages[0],
+            json!({
+                "content": [{
+                    "image_url": {"url": "data:image/png;base64,iVBORw=="},
+                    "type": "image_url"
+                }],
+                "role": "user"
+            })
         );
     }
 }

@@ -119,7 +119,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `run_compaction_summary` | `runtime.send_dialect_with_frames_and_wall_transport` | [106](../../src/compaction.rs#L106) | receiver-type-required |
 | `run_compaction_summary` | `Some` | [112](../../src/compaction.rs#L112), [126](../../src/compaction.rs#L126) | external-constructor-callback-or-unresolved |
 | `run_compaction_summary` | `Duration::from_secs` | [112](../../src/compaction.rs#L112) | external-constructor-callback-or-unresolved |
-| `run_compaction_summary` | `provider::summary_completion_artifact` | [118](../../src/compaction.rs#L118) | [provider::compaction_summary::summary_completion_artifact](../../../provider/src/compaction_summary.rs#L62) |
+| `run_compaction_summary` | `provider::summary_completion_artifact` | [118](../../src/compaction.rs#L118) | [provider::compaction_summary::summary_completion_artifact](../../../provider/src/compaction_summary.rs#L73) |
 | `run_compaction_summary` | `artifact.and_then` | [120](../../src/compaction.rs#L120) | receiver-type-required |
 | `run_compaction_summary` | `engine::admit_summary_artifact` | [120](../../src/compaction.rs#L120) | [engine::compaction_summary::admit_summary_artifact](../../../engine/src/compaction_summary.rs#L103) |
 | `run_compaction_summary` | `Err` | [124](../../src/compaction.rs#L124) | external-constructor-callback-or-unresolved |

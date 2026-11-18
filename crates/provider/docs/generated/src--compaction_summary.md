@@ -9,8 +9,8 @@ Visibility is the declaration spelling; trait members and reexports require thei
 | Symbol | Kind | Visibility | Test / cfg |
 |---|---|---|---|
 | [provider::compaction_summary::prepare_summary_request](../../src/compaction_summary.rs#L14) | function_item | `pub` |  |
-| [provider::compaction_summary::summary_completion_artifact](../../src/compaction_summary.rs#L62) | function_item | `pub` |  |
-| [provider::compaction_summary::summary_artifact_arguments](../../src/compaction_summary.rs#L90) | function_item | `pub` |  |
+| [provider::compaction_summary::summary_completion_artifact](../../src/compaction_summary.rs#L73) | function_item | `pub` |  |
+| [provider::compaction_summary::summary_artifact_arguments](../../src/compaction_summary.rs#L101) | function_item | `pub` |  |
 
 ## Imports / reexports
 
@@ -41,16 +41,16 @@ Edges below are syntactically resolved calls only, including private functions. 
 
 ```mermaid
 flowchart TD
-  n0["provider::compaction_summary::prepare_summary_request"]
-  n1["provider::compaction_summary::summary_completion_artifact"]
-  n2["provider::compaction_summary::summary_artifact_arguments"]
+  n0["provider::compaction_summary::summary_artifact_arguments"]
+  n1["provider::compaction_summary::prepare_summary_request"]
+  n2["provider::compaction_summary::summary_completion_artifact"]
   n3["provider::dialect::epoch_profile"]
   n4["provider::request::prepare_with_tool_choice"]
   n5["schema::ijson::IJsonValue::parse"]
-  n0 --> n3
-  n0 --> n4
-  n0 --> n5
-  n1 --> n2
+  n1 --> n3
+  n1 --> n4
+  n1 --> n5
+  n2 --> n0
 ```
 
 </details>
@@ -66,34 +66,35 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_summary_request` | `serde_json_canonicalizer::to_vec(value).map_err` | [24](../../src/compaction_summary.rs#L24) | receiver-type-required |
 | `prepare_summary_request` | `serde_json_canonicalizer::to_vec` | [24](../../src/compaction_summary.rs#L24) | external-constructor-callback-or-unresolved |
 | `prepare_summary_request` | `crate::epoch_profile(resolved, system, None)         .map_err` | [28](../../src/compaction_summary.rs#L28) | receiver-type-required |
-| `prepare_summary_request` | `crate::epoch_profile` | [28](../../src/compaction_summary.rs#L28) | [provider::dialect::epoch_profile](../../src/dialect.rs#L783) |
+| `prepare_summary_request` | `crate::epoch_profile` | [28](../../src/compaction_summary.rs#L28) | [provider::dialect::epoch_profile](../../src/dialect.rs#L813) |
 | `prepare_summary_request` | `canonical` | [30](../../src/compaction_summary.rs#L30) | external-constructor-callback-or-unresolved |
-| `prepare_summary_request` | `Some` | [39](../../src/compaction_summary.rs#L39), [41](../../src/compaction_summary.rs#L41) | external-constructor-callback-or-unresolved |
-| `prepare_summary_request` | `prepare_with_tool_choice(         &PrepareInput {             attempt_id,             target: resolved.target.clone(),             endpoint: endpoint.to_owned(),             epoch_profile,             continuation_id: None,             rendered_items: vec![rendered],             tool_catalog,             stream: false,         },         choice,     )     .map_err` | [43](../../src/compaction_summary.rs#L43) | receiver-type-required |
-| `prepare_summary_request` | `prepare_with_tool_choice` | [43](../../src/compaction_summary.rs#L43) | [provider::request::prepare_with_tool_choice](../../src/request.rs#L137) |
-| `prepare_summary_request` | `resolved.target.clone` | [46](../../src/compaction_summary.rs#L46) | receiver-type-required |
-| `prepare_summary_request` | `endpoint.to_owned` | [47](../../src/compaction_summary.rs#L47) | receiver-type-required |
-| `summary_completion_artifact` | `terminal                 .usage                 .as_ref()                 .and_then` | [67](../../src/compaction_summary.rs#L67) | receiver-type-required |
-| `summary_completion_artifact` | `terminal                 .usage                 .as_ref` | [67](../../src/compaction_summary.rs#L67) | receiver-type-required |
-| `summary_completion_artifact` | `serde_json::to_value(usage).ok` | [70](../../src/compaction_summary.rs#L70) | receiver-type-required |
-| `summary_completion_artifact` | `serde_json::to_value` | [70](../../src/compaction_summary.rs#L70) | external-constructor-callback-or-unresolved |
-| `summary_completion_artifact` | `summary_artifact_arguments(&terminal).ok_or_else` | [71](../../src/compaction_summary.rs#L71) | receiver-type-required |
-| `summary_completion_artifact` | `summary_artifact_arguments` | [71](../../src/compaction_summary.rs#L71) | [provider::compaction_summary::summary_artifact_arguments](../../src/compaction_summary.rs#L90) |
-| `summary_completion_artifact` | `Err` | [80](../../src/compaction_summary.rs#L80), [82](../../src/compaction_summary.rs#L82) | external-constructor-callback-or-unresolved |
-| `summary_artifact_arguments` | `terminal         .tool_calls         .iter()         .find` | [91](../../src/compaction_summary.rs#L91) | receiver-type-required |
-| `summary_artifact_arguments` | `terminal         .tool_calls         .iter` | [91](../../src/compaction_summary.rs#L91) | receiver-type-required |
-| `summary_artifact_arguments` | `Some` | [96](../../src/compaction_summary.rs#L96), [102](../../src/compaction_summary.rs#L102) | external-constructor-callback-or-unresolved |
-| `summary_artifact_arguments` | `call.arguments.clone` | [96](../../src/compaction_summary.rs#L96) | receiver-type-required |
-| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map(&#124;block&#124; match block {             ContentBlock::Text(text) => Some(text.as_str()),             ContentBlock::Reasoning(_) => None,         })         .collect::<Vec<_>>()         .join` | [98](../../src/compaction_summary.rs#L98) | receiver-type-required |
-| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map(&#124;block&#124; match block {             ContentBlock::Text(text) => Some(text.as_str()),             ContentBlock::Reasoning(_) => None,         })         .collect::<Vec<_>>` | [98](../../src/compaction_summary.rs#L98) | receiver-type-required |
-| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map` | [98](../../src/compaction_summary.rs#L98) | receiver-type-required |
-| `summary_artifact_arguments` | `terminal         .content         .iter` | [98](../../src/compaction_summary.rs#L98) | receiver-type-required |
-| `summary_artifact_arguments` | `text.as_str` | [102](../../src/compaction_summary.rs#L102) | receiver-type-required |
-| `summary_artifact_arguments` | `text.find` | [107](../../src/compaction_summary.rs#L107) | receiver-type-required |
-| `summary_artifact_arguments` | `text.rfind` | [108](../../src/compaction_summary.rs#L108) | receiver-type-required |
-| `summary_artifact_arguments` | `serde_json::from_str::<Value>(&text[start..=end])         .ok()         .filter` | [112](../../src/compaction_summary.rs#L112) | receiver-type-required |
-| `summary_artifact_arguments` | `serde_json::from_str::<Value>(&text[start..=end])         .ok` | [112](../../src/compaction_summary.rs#L112) | receiver-type-required |
-| `summary_artifact_arguments` | `serde_json::from_str::<Value>` | [112](../../src/compaction_summary.rs#L112) | external-constructor-callback-or-unresolved |
-| `summary_artifact_arguments` | `value.get("continuation").is_some` | [114](../../src/compaction_summary.rs#L114) | receiver-type-required |
-| `summary_artifact_arguments` | `value.get` | [114](../../src/compaction_summary.rs#L114) | receiver-type-required |
-| `summary_artifact_arguments` | `value.get("evidence_refs").is_some` | [114](../../src/compaction_summary.rs#L114) | receiver-type-required |
+| `prepare_summary_request` | `Some` | [43](../../src/compaction_summary.rs#L43), [50](../../src/compaction_summary.rs#L50), [52](../../src/compaction_summary.rs#L52) | external-constructor-callback-or-unresolved |
+| `prepare_summary_request` | `resolved.forced_tool_choice` | [44](../../src/compaction_summary.rs#L44) | receiver-type-required |
+| `prepare_summary_request` | `prepare_with_tool_choice(         &PrepareInput {             attempt_id,             target: resolved.target.clone(),             endpoint: endpoint.to_owned(),             epoch_profile,             continuation_id: None,             rendered_items: vec![rendered],             tool_catalog,             stream: false,         },         choice,     )     .map_err` | [54](../../src/compaction_summary.rs#L54) | receiver-type-required |
+| `prepare_summary_request` | `prepare_with_tool_choice` | [54](../../src/compaction_summary.rs#L54) | [provider::request::prepare_with_tool_choice](../../src/request.rs#L137) |
+| `prepare_summary_request` | `resolved.target.clone` | [57](../../src/compaction_summary.rs#L57) | receiver-type-required |
+| `prepare_summary_request` | `endpoint.to_owned` | [58](../../src/compaction_summary.rs#L58) | receiver-type-required |
+| `summary_completion_artifact` | `terminal                 .usage                 .as_ref()                 .and_then` | [78](../../src/compaction_summary.rs#L78) | receiver-type-required |
+| `summary_completion_artifact` | `terminal                 .usage                 .as_ref` | [78](../../src/compaction_summary.rs#L78) | receiver-type-required |
+| `summary_completion_artifact` | `serde_json::to_value(usage).ok` | [81](../../src/compaction_summary.rs#L81) | receiver-type-required |
+| `summary_completion_artifact` | `serde_json::to_value` | [81](../../src/compaction_summary.rs#L81) | external-constructor-callback-or-unresolved |
+| `summary_completion_artifact` | `summary_artifact_arguments(&terminal).ok_or_else` | [82](../../src/compaction_summary.rs#L82) | receiver-type-required |
+| `summary_completion_artifact` | `summary_artifact_arguments` | [82](../../src/compaction_summary.rs#L82) | [provider::compaction_summary::summary_artifact_arguments](../../src/compaction_summary.rs#L101) |
+| `summary_completion_artifact` | `Err` | [91](../../src/compaction_summary.rs#L91), [93](../../src/compaction_summary.rs#L93) | external-constructor-callback-or-unresolved |
+| `summary_artifact_arguments` | `terminal         .tool_calls         .iter()         .find` | [102](../../src/compaction_summary.rs#L102) | receiver-type-required |
+| `summary_artifact_arguments` | `terminal         .tool_calls         .iter` | [102](../../src/compaction_summary.rs#L102) | receiver-type-required |
+| `summary_artifact_arguments` | `Some` | [107](../../src/compaction_summary.rs#L107), [113](../../src/compaction_summary.rs#L113) | external-constructor-callback-or-unresolved |
+| `summary_artifact_arguments` | `call.arguments.clone` | [107](../../src/compaction_summary.rs#L107) | receiver-type-required |
+| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map(&#124;block&#124; match block {             ContentBlock::Text(text) => Some(text.as_str()),             ContentBlock::Reasoning(_) => None,         })         .collect::<Vec<_>>()         .join` | [109](../../src/compaction_summary.rs#L109) | receiver-type-required |
+| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map(&#124;block&#124; match block {             ContentBlock::Text(text) => Some(text.as_str()),             ContentBlock::Reasoning(_) => None,         })         .collect::<Vec<_>>` | [109](../../src/compaction_summary.rs#L109) | receiver-type-required |
+| `summary_artifact_arguments` | `terminal         .content         .iter()         .filter_map` | [109](../../src/compaction_summary.rs#L109) | receiver-type-required |
+| `summary_artifact_arguments` | `terminal         .content         .iter` | [109](../../src/compaction_summary.rs#L109) | receiver-type-required |
+| `summary_artifact_arguments` | `text.as_str` | [113](../../src/compaction_summary.rs#L113) | receiver-type-required |
+| `summary_artifact_arguments` | `text.find` | [118](../../src/compaction_summary.rs#L118) | receiver-type-required |
+| `summary_artifact_arguments` | `text.rfind` | [119](../../src/compaction_summary.rs#L119) | receiver-type-required |
+| `summary_artifact_arguments` | `serde_json::from_str::<Value>(&text[start..=end])         .ok()         .filter` | [123](../../src/compaction_summary.rs#L123) | receiver-type-required |
+| `summary_artifact_arguments` | `serde_json::from_str::<Value>(&text[start..=end])         .ok` | [123](../../src/compaction_summary.rs#L123) | receiver-type-required |
+| `summary_artifact_arguments` | `serde_json::from_str::<Value>` | [123](../../src/compaction_summary.rs#L123) | external-constructor-callback-or-unresolved |
+| `summary_artifact_arguments` | `value.get("continuation").is_some` | [125](../../src/compaction_summary.rs#L125) | receiver-type-required |
+| `summary_artifact_arguments` | `value.get` | [125](../../src/compaction_summary.rs#L125) | receiver-type-required |
+| `summary_artifact_arguments` | `value.get("evidence_refs").is_some` | [125](../../src/compaction_summary.rs#L125) | receiver-type-required |

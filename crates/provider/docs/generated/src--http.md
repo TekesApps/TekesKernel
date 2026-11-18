@@ -227,7 +227,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `send_async` | `value.split(';').next` | [368](../../src/http.rs#L368) | receiver-type-required |
 | `send_async` | `value.split` | [368](../../src/http.rs#L368) | receiver-type-required |
 | `send_async` | `is_sse.then` | [369](../../src/http.rs#L369) | receiver-type-required |
-| `send_async` | `ProviderStreamDecoder::new` | [371](../../src/http.rs#L371) | [provider::normalize::ProviderStreamDecoder::new](../../src/normalize.rs#L643) |
+| `send_async` | `ProviderStreamDecoder::new` | [371](../../src/http.rs#L371) | [provider::normalize::ProviderStreamDecoder::new](../../src/normalize.rs#L673) |
 | `send_async` | `Instant::now` | [376](../../src/http.rs#L376), [467](../../src/http.rs#L467) | external-constructor-callback-or-unresolved |
 | `send_async` | `RESPONSE_IDLE.saturating_sub` | [384](../../src/http.rs#L384) | receiver-type-required |
 | `send_async` | `since_frame.elapsed` | [384](../../src/http.rs#L384) | receiver-type-required |

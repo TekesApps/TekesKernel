@@ -43,27 +43,27 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 
 | File | Symbols | Call sites | Detail |
 |---|---:|---:|---|
-| [crates/provider/src/compaction_summary.rs](../../src/compaction_summary.rs) | 3 | 40 | [Symbols and calls](src--compaction_summary.md) |
+| [crates/provider/src/compaction_summary.rs](../../src/compaction_summary.rs) | 3 | 42 | [Symbols and calls](src--compaction_summary.md) |
 | [crates/provider/src/credential.rs](../../src/credential.rs) | 52 | 390 | [Symbols and calls](src--credential.md) |
-| [crates/provider/src/dialect.rs](../../src/dialect.rs) | 57 | 209 | [Symbols and calls](src--dialect.md) |
+| [crates/provider/src/dialect.rs](../../src/dialect.rs) | 57 | 211 | [Symbols and calls](src--dialect.md) |
 | [crates/provider/src/environment_secrets.rs](../../src/environment_secrets.rs) | 6 | 39 | [Symbols and calls](src--environment_secrets.md) |
 | [crates/provider/src/http.rs](../../src/http.rs) | 23 | 297 | [Symbols and calls](src--http.md) |
 | [crates/provider/src/lib.rs](../../src/lib.rs) | 0 | 0 | [Symbols and calls](src--lib.md) |
 | [crates/provider/src/native_deferred.rs](../../src/native_deferred.rs) | 11 | 170 | [Symbols and calls](src--native_deferred.md) |
-| [crates/provider/src/normalize.rs](../../src/normalize.rs) | 92 | 1767 | [Symbols and calls](src--normalize.md) |
+| [crates/provider/src/normalize.rs](../../src/normalize.rs) | 101 | 1895 | [Symbols and calls](src--normalize.md) |
 | [crates/provider/src/oauth.rs](../../src/oauth.rs) | 27 | 294 | [Symbols and calls](src--oauth.md) |
-| [crates/provider/src/request.rs](../../src/request.rs) | 72 | 847 | [Symbols and calls](src--request.md) |
+| [crates/provider/src/request.rs](../../src/request.rs) | 73 | 926 | [Symbols and calls](src--request.md) |
 | [crates/provider/src/secret_store.rs](../../src/secret_store.rs) | 35 | 131 | [Symbols and calls](src--secret_store.md) |
 | [crates/provider/src/sse.rs](../../src/sse.rs) | 15 | 92 | [Symbols and calls](src--sse.md) |
-| [crates/provider/tests/anthropic_messages_alignment.rs](../../tests/anthropic_messages_alignment.rs) | 21 | 176 | `inventory.json` |
-| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 34 | 744 | `inventory.json` |
+| [crates/provider/tests/anthropic_messages_alignment.rs](../../tests/anthropic_messages_alignment.rs) | 24 | 205 | `inventory.json` |
+| [crates/provider/tests/dialect_profiles.rs](../../tests/dialect_profiles.rs) | 37 | 895 | `inventory.json` |
 | [crates/provider/tests/live_anthropic_thinking.rs](../../tests/live_anthropic_thinking.rs) | 2 | 153 | `inventory.json` |
 | [crates/provider/tests/live_cache.rs](../../tests/live_cache.rs) | 5 | 107 | `inventory.json` |
 | [crates/provider/tests/live_chat_layout.rs](../../tests/live_chat_layout.rs) | 1 | 57 | `inventory.json` |
 | [crates/provider/tests/live_compaction_summary.rs](../../tests/live_compaction_summary.rs) | 1 | 85 | `inventory.json` |
 | [crates/provider/tests/live_deepseek_continuation.rs](../../tests/live_deepseek_continuation.rs) | 1 | 82 | `inventory.json` |
 | [crates/provider/tests/live_f2_causality.rs](../../tests/live_f2_causality.rs) | 2 | 141 | `inventory.json` |
-| [crates/provider/tests/live_google_schema.rs](../../tests/live_google_schema.rs) | 2 | 138 | `inventory.json` |
+| [crates/provider/tests/live_google_schema.rs](../../tests/live_google_schema.rs) | 2 | 147 | `inventory.json` |
 | [crates/provider/tests/live_kimi_schema.rs](../../tests/live_kimi_schema.rs) | 1 | 77 | `inventory.json` |
 | [crates/provider/tests/live_native_deferred.rs](../../tests/live_native_deferred.rs) | 4 | 77 | `inventory.json` |
 | [crates/provider/tests/live_parallel_tools.rs](../../tests/live_parallel_tools.rs) | 1 | 61 | `inventory.json` |

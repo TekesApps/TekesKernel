@@ -81,10 +81,10 @@ The first parity closure covers every currently retained predecessor route:
 
 | protocol family | required dialect/profile coverage |
 |---|---|
-| Responses | OpenAI Responses; DeepSeek Responses |
+| Responses | OpenAI Responses (direct and Cloudflare); DeepSeek Responses |
 | Chat Completions | generic OpenAI-compatible baseline; direct OpenAI; DeepSeek; Kimi/Moonshot; GLM/z.ai; Ollama |
-| Anthropic Messages | direct Anthropic; DeepSeek Anthropic-compatible API |
-| Google | direct Generation and Interactions profiles |
+| Anthropic Messages | direct/Cloudflare Anthropic; Moonshot Anthropic-compatible; DeepSeek Anthropic-compatible |
+| Google | direct/Cloudflare Generation (Gemini 2.5/3.x/4.x) and Interactions profiles |
 
 Adding a provider or gateway later requires a new evidenced row when it changes
 any request byte, authentication rule, state/continuation behavior, stream

@@ -1375,7 +1375,10 @@ pub(crate) fn local_provider_call_id(
 pub(crate) fn repair_provider_call_arguments(dialect: DialectId, call: &mut provider::ToolCall) {
     if !matches!(
         dialect,
-        DialectId::GlmChatV1 | DialectId::DeepseekResponsesV1
+        DialectId::GlmChatV1
+            | DialectId::DeepseekResponsesV1
+            | DialectId::DeepseekChatV1
+            | DialectId::DeepseekAnthropicV1
     ) {
         return;
     }
@@ -1653,4 +1656,51 @@ pub(crate) fn current_turn_inputs(
         .flatten()
         .filter_map(Value::as_u64)
         .collect())
+}
+
+#[cfg(test)]
+mod repair_dialect_tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn repairs_quoted_null_exclusive_for_deepseek_chat_and_anthropic() {
+        let raw_args = json!({
+            "working_directory": ".",
+            "max_duration_ms": 1000,
+            "command": "pwd",
+            "program": "null",
+            "args": null,
+            "steps": [],
+            "failure_policy": "stop_on_error",
+            "writable_paths": [],
+            "artifact_outputs": []
+        });
+        let mut untouched = provider::ToolCall {
+            call_id: "call_0".to_owned(),
+            name: "shell".to_owned(),
+            arguments: raw_args.clone(),
+        };
+        repair_provider_call_arguments(DialectId::OpenaiResponsesV1, &mut untouched);
+        assert_eq!(untouched.arguments, raw_args);
+
+        for dialect in [DialectId::DeepseekChatV1, DialectId::DeepseekAnthropicV1] {
+            let mut call = provider::ToolCall {
+                call_id: "call_1".to_owned(),
+                name: "shell".to_owned(),
+                arguments: raw_args.clone(),
+            };
+            repair_provider_call_arguments(dialect, &mut call);
+            assert_eq!(
+                call.arguments["program"],
+                Value::Null,
+                "{}",
+                dialect.as_str()
+            );
+            tools::fixed_schema("shell")
+                .unwrap()
+                .validate(&call.arguments)
+                .unwrap();
+        }
+    }
 }

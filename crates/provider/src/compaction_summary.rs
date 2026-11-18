@@ -31,13 +31,24 @@ pub fn prepare_summary_request(
         &json!({"content": [{"text": rendered_history, "type": "text"}], "role": "user"}),
         "summary request input",
     )?;
-    // DeepSeek rejects forced tool choice with thinking enabled. Preserve the
-    // model's reasoning configuration and admit the returned artifact normally.
-    // Interactions has no explicit tool-choice wire contract; its single-tool
-    // catalog and the compactor instruction carry the request instead.
+    // Models/dialects without forced tool choice (DeepSeek, Kimi/GLM thinking,
+    // budgeted/DeepSeek Anthropic) reject `required`/`any` with thinking enabled.
+    // Interactions uses its single-tool catalog and compactor instruction instead.
     let choice = match resolved.dialect {
-        DialectId::DeepseekResponsesV1 => Some(ToolChoice::Auto),
         DialectId::GoogleInteractionsV1 => None,
+        DialectId::DeepseekResponsesV1
+        | DialectId::DeepseekChatV1
+        | DialectId::DeepseekAnthropicV1
+        | DialectId::KimiChatV1
+        | DialectId::GlmChatV1 => Some(ToolChoice::Auto),
+        _ if !resolved.forced_tool_choice()
+            || matches!(
+                resolved.thinking_wire(),
+                Some(crate::ThinkingWire::Budget | crate::ThinkingWire::DeepseekAnthropic)
+            ) =>
+        {
+            Some(ToolChoice::Auto)
+        }
         _ => Some(ToolChoice::Required),
     };
     prepare_with_tool_choice(

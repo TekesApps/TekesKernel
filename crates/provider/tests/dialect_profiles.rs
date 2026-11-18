@@ -7,8 +7,9 @@ use engine::{
 };
 use profile::{Model, Provider, SessionSettings};
 use provider::{
-    DialectId, PrepareInput, ProviderTarget, epoch_profile, normalize_dialect_response,
-    normalize_dialect_sse_stream, prepare, repair_tool_arguments, resolve_profile, validate_target,
+    DialectId, PrepareInput, ProviderTarget, ThinkingWire, epoch_profile,
+    normalize_dialect_response, normalize_dialect_sse_stream, prepare, repair_tool_arguments,
+    resolve_profile, validate_target,
 };
 use schema::IJsonValue;
 use serde_json::{Value, json};
@@ -274,7 +275,12 @@ fn tool_terminal_summary(terminal: &provider::ProviderTerminal) -> Value {
     })
 }
 
-fn assert_reasoning_wire(dialect: DialectId, effort: &str, body: &[u8]) {
+fn assert_reasoning_wire(
+    dialect: DialectId,
+    thinking_wire: Option<ThinkingWire>,
+    effort: &str,
+    body: &[u8],
+) {
     let body: Value = serde_json::from_slice(body).expect("reasoning request JSON");
     match dialect {
         DialectId::OpenaiResponsesV1 | DialectId::DeepseekResponsesV1 => {
@@ -296,21 +302,43 @@ fn assert_reasoning_wire(dialect: DialectId, effort: &str, body: &[u8]) {
             );
         }
         DialectId::GoogleGenerationV1 => {
-            let budget = match effort {
-                "low" => 1_024,
-                "medium" => 2_048,
-                "high" => 4_096,
-                other => panic!("unproved Google effort {other}"),
-            };
             assert_eq!(
-                body.pointer("/generationConfig/thinkingConfig/thinkingBudget"),
-                Some(&json!(budget))
+                body.pointer("/generationConfig/thinkingConfig/includeThoughts"),
+                Some(&json!(true))
             );
+            match thinking_wire {
+                Some(ThinkingWire::GoogleLevel) => {
+                    assert_eq!(
+                        body.pointer("/generationConfig/thinkingConfig/thinkingLevel"),
+                        Some(&json!(effort))
+                    );
+                    assert!(
+                        body.pointer("/generationConfig/thinkingConfig/thinkingBudget")
+                            .is_none()
+                    );
+                }
+                _ => {
+                    let budget = match effort {
+                        "low" => 1_024,
+                        "medium" => 2_048,
+                        "high" => 4_096,
+                        other => panic!("unproved Google effort {other}"),
+                    };
+                    assert_eq!(
+                        body.pointer("/generationConfig/thinkingConfig/thinkingBudget"),
+                        Some(&json!(budget))
+                    );
+                }
+            }
         }
         DialectId::GoogleInteractionsV1 => {
             assert_eq!(
                 body.pointer("/generation_config/thinking_level"),
                 Some(&json!(effort))
+            );
+            assert_eq!(
+                body.pointer("/generation_config/thinking_summaries"),
+                Some(&json!("auto"))
             );
         }
         DialectId::GenericChatV1
@@ -1604,7 +1632,7 @@ fn provider_dialect_gate_96_session_controls_to_wire() {
                 stream: true,
             })
             .expect("proved reasoning level reaches projector");
-            assert_reasoning_wire(dialect, effort, &request.body);
+            assert_reasoning_wire(dialect, resolved.thinking_wire(), effort, &request.body);
         }
         let unsupported = SessionSettings {
             format: 1,
@@ -1641,10 +1669,6 @@ fn explicit_tool_choice_is_dialect_encoded_and_digest_bound() {
         let mut digests = BTreeSet::new();
         for choice in [ToolChoice::Auto, ToolChoice::Required, ToolChoice::None] {
             let result = prepare_with_tool_choice(&input, Some(choice));
-            if adapter == AdapterId::GoogleInteractions {
-                assert!(result.is_err());
-                continue;
-            }
             let request = result.unwrap();
             let body: Value = serde_json::from_slice(&request.body).unwrap();
             let label = match choice {
@@ -1672,14 +1696,19 @@ fn explicit_tool_choice_is_dialect_encoded_and_digest_bound() {
                         label.to_uppercase()
                     }
                 ),
-                _ => unreachable!(),
+                AdapterId::GoogleInteractions => assert_eq!(
+                    body["generation_config"]["tool_choice"],
+                    if choice == ToolChoice::Required {
+                        "any"
+                    } else {
+                        label
+                    }
+                ),
             }
             assert_ne!(request.request_digest, ordinary.request_digest);
             digests.insert(request.request_digest);
         }
-        if adapter != AdapterId::GoogleInteractions {
-            assert_eq!(digests.len(), 3);
-        }
+        assert_eq!(digests.len(), 3);
         input.tool_catalog = ijson(&json!([]));
         assert!(prepare_with_tool_choice(&input, Some(ToolChoice::Required)).is_err());
     }
@@ -1876,11 +1905,12 @@ fn reasoning_disabled_has_a_verified_off_switch_or_fails_closed() {
                 assert_eq!(body["reasoning"], json!({"effort": "none"}));
                 covered.insert(resolved.dialect);
             }
-            DialectId::DeepseekChatV1 => {
+            DialectId::DeepseekChatV1 | DialectId::DeepseekAnthropicV1 => {
                 let body: Value =
                     serde_json::from_slice(&disabled.expect("prepared").body).unwrap();
                 assert_eq!(body["thinking"], json!({"type": "disabled"}));
                 assert!(body.get("reasoning_effort").is_none());
+                assert!(body.get("output_config").is_none());
                 covered.insert(resolved.dialect);
             }
             _ => assert!(
@@ -1890,7 +1920,11 @@ fn reasoning_disabled_has_a_verified_off_switch_or_fails_closed() {
             ),
         }
     }
-    assert_eq!(covered.len(), 2, "both DeepSeek dialects are in the corpus");
+    assert_eq!(
+        covered.len(),
+        3,
+        "all three DeepSeek dialects are in the corpus"
+    );
 }
 
 #[test]
@@ -1926,7 +1960,7 @@ fn title_output_cap_renders_on_deepseek_dialects_and_fails_closed_elsewhere() {
                 assert_eq!(body["max_output_tokens"], json!(64));
                 covered.insert(resolved.dialect);
             }
-            DialectId::DeepseekChatV1 => {
+            DialectId::DeepseekChatV1 | DialectId::DeepseekAnthropicV1 => {
                 let body: Value = serde_json::from_slice(&capped.expect("prepared").body).unwrap();
                 assert_eq!(body["max_tokens"], json!(64));
                 covered.insert(resolved.dialect);
@@ -1938,5 +1972,451 @@ fn title_output_cap_renders_on_deepseek_dialects_and_fails_closed_elsewhere() {
             ),
         }
     }
-    assert_eq!(covered.len(), 2, "both DeepSeek dialects are in the corpus");
+    assert_eq!(
+        covered.len(),
+        3,
+        "all three DeepSeek dialects are in the corpus"
+    );
+}
+
+#[test]
+fn openai_responses_extended_terminals_refusals_and_cache_writes_normalize() {
+    use provider::{
+        AdapterId, FinishReason, ProviderStreamDecoder, normalize_response, normalize_sse_stream,
+    };
+
+    for (reason, expected_finish) in [
+        ("turn_limit", FinishReason::Paused),
+        ("pause_turn", FinishReason::Paused),
+        ("content_filter", FinishReason::ContentFilter),
+        ("max_output_tokens", FinishReason::Length),
+        ("context_length_exceeded", FinishReason::ContextOverflow),
+        (
+            "model_context_window_exceeded",
+            FinishReason::ContextOverflow,
+        ),
+    ] {
+        let raw = serde_json_canonicalizer::to_vec(&json!({
+            "id": "resp_inc",
+            "status": "incomplete",
+            "incomplete_details": {"reason": reason},
+            "input_transformations": [{"type": "trim"}],
+            "usage": {"input_tokens": 10, "output_tokens": 5, "input_tokens_details": {"cache_write_tokens": 7}}
+        }))
+        .unwrap();
+        let terminal = normalize_response(AdapterId::Responses, &raw).unwrap();
+        assert_eq!(terminal.finish_reason, expected_finish, "{reason}");
+        assert_eq!(terminal.incomplete_reason.as_deref(), Some(reason));
+        assert_eq!(
+            terminal.input_transformations,
+            Some(json!([{"type": "trim"}]))
+        );
+        assert_eq!(terminal.usage.unwrap().cache_write.as_deref(), Some("7"));
+
+        let sse = format!(
+            "data: {}\n\n",
+            json!({
+                "type": "response.incomplete",
+                "response": {
+                    "id": "resp_inc",
+                    "status": "incomplete",
+                    "incomplete_details": {"reason": reason},
+                    "input_transformations": [{"type": "trim"}],
+                    "usage": {"input_tokens": 10, "output_tokens": 5, "input_tokens_details": {"cache_write_tokens": 7}}
+                }
+            })
+        );
+        let (_, stream_terminal) =
+            normalize_sse_stream(AdapterId::Responses, sse.as_bytes()).unwrap();
+        assert_eq!(stream_terminal.finish_reason, expected_finish);
+        assert_eq!(stream_terminal.incomplete_reason.as_deref(), Some(reason));
+        assert_eq!(
+            stream_terminal.input_transformations,
+            Some(json!([{"type": "trim"}]))
+        );
+        assert_eq!(
+            stream_terminal.usage.unwrap().cache_write.as_deref(),
+            Some("7")
+        );
+    }
+
+    let failed_raw = serde_json_canonicalizer::to_vec(&json!({
+        "id": "resp_fail",
+        "status": "failed",
+        "error": {"code": "context_length_exceeded", "message": "too long"}
+    }))
+    .unwrap();
+    let failed = normalize_response(AdapterId::Responses, &failed_raw).unwrap();
+    assert_eq!(failed.finish_reason, FinishReason::ContextOverflow);
+    assert_eq!(
+        failed.provider_error.unwrap()["code"],
+        "context_length_exceeded"
+    );
+
+    let refusal_raw = serde_json_canonicalizer::to_vec(&json!({
+        "id": "resp_ref",
+        "status": "completed",
+        "output": [{"type": "message", "role": "assistant", "content": [{"type": "refusal", "refusal": "declined"}]}]
+    }))
+    .unwrap();
+    let refusal = normalize_response(AdapterId::Responses, &refusal_raw).unwrap();
+    assert_eq!(refusal.finish_reason, FinishReason::ContentFilter);
+    assert!(refusal.content.is_empty());
+    assert_eq!(
+        refusal.stop_details,
+        Some(json!({"refusal": "declined", "type": "refusal"}))
+    );
+
+    let refusal_sse = concat!(
+        "data: {\"type\":\"response.output_item.added\",\"output_index\":0,\"item\":{\"type\":\"message\",\"role\":\"assistant\",\"content\":[]}}\n\n",
+        "data: {\"type\":\"response.content_part.added\",\"output_index\":0,\"content_index\":0,\"part\":{\"type\":\"refusal\",\"refusal\":\"\"}}\n\n",
+        "data: {\"type\":\"response.refusal.delta\",\"output_index\":0,\"content_index\":0,\"delta\":\"cannot comply\"}\n\n",
+        "data: {\"type\":\"response.refusal.done\",\"output_index\":0,\"content_index\":0,\"refusal\":\"cannot comply\"}\n\n",
+        "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_ref_s\",\"status\":\"completed\",\"output\":[{\"type\":\"message\",\"role\":\"assistant\",\"content\":[{\"type\":\"refusal\",\"refusal\":\"cannot comply\"}]}]}}\n\n"
+    );
+    let (_, stream_refusal) =
+        normalize_sse_stream(AdapterId::Responses, refusal_sse.as_bytes()).unwrap();
+    assert_eq!(stream_refusal.finish_reason, FinishReason::ContentFilter);
+    assert!(stream_refusal.content.is_empty());
+    assert_eq!(
+        stream_refusal.stop_details,
+        Some(json!({"refusal": "cannot comply", "type": "refusal"}))
+    );
+
+    let err_sse =
+        "data: {\"type\":\"error\",\"error\":{\"code\":\"server_error\",\"message\":\"boom\"}}\n\n";
+    let mut dec = ProviderStreamDecoder::new(AdapterId::Responses);
+    dec.push(err_sse.as_bytes()).unwrap();
+    let (_, err_terminal) = dec.finish().unwrap();
+    assert_eq!(err_terminal.finish_reason, FinishReason::ProviderError);
+    assert_eq!(err_terminal.provider_error.unwrap()["code"], "server_error");
+}
+
+#[test]
+fn chat_multimodal_and_assistant_block_grouping_and_cf_gateways() {
+    for (dialect, owner, translation, sku) in [
+        (
+            "openai_responses_v1",
+            "cloudflare",
+            "cloudflare-native-openai",
+            "gpt-5",
+        ),
+        (
+            "google_generation_v1",
+            "cloudflare",
+            "cloudflare-native-google",
+            "gemini-4-argon",
+        ),
+        (
+            "google_interactions_v1",
+            "cloudflare",
+            "cloudflare-native-google",
+            "gemini-4-hydrogen",
+        ),
+    ] {
+        let adapter = dialect.parse::<DialectId>().unwrap().family();
+        let provider = Provider {
+            id: format!("cf-{dialect}"),
+            name: None,
+            adapter: match adapter {
+                provider::AdapterId::ChatCompletion => "chat_completions",
+                provider::AdapterId::Anthropic => "anthropic_messages",
+                _ => adapter.as_str(),
+            }
+            .to_owned(),
+            dialect: dialect.to_owned(),
+            endpoint_owner: owner.to_owned(),
+            gateway_translation: translation.to_owned(),
+            evidence_revision: "cf-v1".to_owned(),
+            endpoint: "https://gateway.ai.cloudflare.test/v1/acct/gw".to_owned(),
+            credential_key: Some("cf-key".to_owned()),
+            models: vec![Model {
+                id: sku.to_owned(),
+                profile: format!("{dialect}:{sku}"),
+                enabled: true,
+                context_window_tokens: 128_000,
+                compact_trigger_tokens: 100_000,
+            }],
+        };
+        let resolved = resolve_profile(&provider, &provider.models[0]).unwrap();
+        assert_eq!(resolved.credential_header, "cf-aig-authorization");
+        assert_eq!(resolved.credential_prefix, "Bearer ");
+    }
+
+    let chat_provider = Provider {
+        id: "ds-chat".to_owned(),
+        name: None,
+        adapter: "chat_completions".to_owned(),
+        dialect: "deepseek_chat_v1".to_owned(),
+        endpoint_owner: "deepseek".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision: "ds-v1".to_owned(),
+        endpoint: "https://api.deepseek.com".to_owned(),
+        credential_key: Some("k".to_owned()),
+        models: vec![Model {
+            id: "deepseek-flash".to_owned(),
+            profile: "deepseek_chat_v1:deepseek-flash".to_owned(),
+            enabled: true,
+            context_window_tokens: 128_000,
+            compact_trigger_tokens: 100_000,
+        }],
+    };
+    let resolved = resolve_profile(&chat_provider, &chat_provider.models[0]).unwrap();
+    let epoch = epoch_profile(&resolved, "sys", None).unwrap();
+    let prepared = prepare(&PrepareInput {
+        attempt_id: "chat-group".to_owned(),
+        target: resolved.target.clone(),
+        endpoint: chat_provider.endpoint.clone(),
+        epoch_profile: epoch,
+        continuation_id: None,
+        rendered_items: vec![
+            ijson(&json!({"role":"user","content":[{"type":"text","text":"look:"},{"type":"file","mime":"image/png","data":"AA=="}]})),
+            ijson(&json!({"role":"assistant","content":[{"type":"reasoning","text":"think"},{"type":"text","text":"say"},{"type":"tool_call","call_id":"c1","name":"lookup","arguments":{"q":"x"}}]})),
+            ijson(&json!({"role":"tool","content":[{"type":"tool_result","call_id":"c1","result":"ok"}]})),
+        ],
+        tool_catalog: ijson(&json!([{"name":"lookup","description":"d","parameters":{"type":"object","properties":{"q":{"type":"string"}},"required":["q"]}}])),
+        stream: false,
+    })
+    .unwrap();
+    let body: Value = serde_json::from_slice(&prepared.body).unwrap();
+    assert_eq!(body["messages"][1]["role"], "user");
+    assert_eq!(body["messages"][1]["content"][1]["type"], "image_url");
+    assert_eq!(body["messages"][2]["role"], "assistant");
+    assert_eq!(body["messages"][2]["reasoning_content"], "think");
+    assert_eq!(body["messages"][2]["content"], "say");
+    assert_eq!(body["messages"][2]["tool_calls"][0]["id"], "c1");
+}
+
+#[test]
+fn google_generation_and_interactions_wire_and_normalization_extensions() {
+    use provider::{
+        AdapterId, FinishReason, ProviderStreamDecoder, normalize_response, normalize_sse_stream,
+        prepare_summary_request,
+    };
+
+    // Google Generation fileData camelCase + user adjacency merge
+    let g_provider = Provider {
+        id: "google".to_owned(),
+        name: None,
+        adapter: "google_generation".to_owned(),
+        dialect: "google_generation_v1".to_owned(),
+        endpoint_owner: "google".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision: "g-v1".to_owned(),
+        endpoint: "https://generativelanguage.googleapis.com/v1beta".to_owned(),
+        credential_key: Some("k".to_owned()),
+        models: vec![Model {
+            id: "gemini-4-hydrogen".to_owned(),
+            profile: "google_generation_v1:gemini-4-hydrogen".to_owned(),
+            enabled: true,
+            context_window_tokens: 1_000_000,
+            compact_trigger_tokens: 800_000,
+        }],
+    };
+    let resolved = resolve_profile(&g_provider, &g_provider.models[0]).unwrap();
+    let settings = SessionSettings {
+        format: 1,
+        revision: 1,
+        provider: g_provider.id.clone(),
+        model: g_provider.models[0].id.clone(),
+        reasoning_effort: Some("xhigh".to_owned()),
+    };
+    let epoch = epoch_profile(&resolved, "sys", Some(&settings)).unwrap();
+    let prepared = prepare(&PrepareInput {
+        attempt_id: "g4".to_owned(),
+        target: resolved.target.clone(),
+        endpoint: g_provider.endpoint.clone(),
+        epoch_profile: epoch,
+        continuation_id: None,
+        rendered_items: vec![
+            ijson(&json!({"role":"tool","content":[{"type":"tool_result","call_id":"c1","name":"lookup","result":"ok"}]})),
+            ijson(&json!({"role":"user","content":[{"type":"file","mime":"image/png","uri":"https://files.example.test/1"},{"type":"text","text":"next"}]})),
+        ],
+        tool_catalog: ijson(&json!([])),
+        stream: false,
+    })
+    .unwrap();
+    let body: Value = serde_json::from_slice(&prepared.body).unwrap();
+    assert_eq!(
+        body["generationConfig"]["thinkingConfig"],
+        json!({"includeThoughts":true,"thinkingLevel":"xhigh"})
+    );
+    assert_eq!(body["contents"].as_array().unwrap().len(), 1);
+    assert!(
+        body["contents"][0]["parts"][0]
+            .get("functionResponse")
+            .is_some()
+    );
+    assert_eq!(
+        body["contents"][0]["parts"][1]["fileData"],
+        json!({"fileUri":"https://files.example.test/1","mimeType":"image/png"})
+    );
+    assert_eq!(body["contents"][0]["parts"][2]["text"], "next");
+
+    // Stream completed_fragments, trailing metadata chunk after finishReason, totalThoughtTokens
+    let mut decoder = ProviderStreamDecoder::for_dialect(DialectId::GoogleGenerationV1);
+    decoder
+        .push(
+            b"data: {\"responseId\":\"r1\",\"candidates\":[{\"content\":{\"parts\":[{\"functionCall\":{\"id\":\"c1\",\"name\":\"lookup\",\"args\":{\"q\":\"x\"}},\"thoughtSignature\":\"sig1\"}]}}]}\n\n",
+        )
+        .unwrap();
+    let partial = decoder
+        .completed_fragments()
+        .expect("google partial fragments");
+    assert_eq!(partial["parts"][0]["thoughtSignature"], "sig1");
+    decoder.push(concat!(
+        "data: {\"candidates\":[{\"finishReason\":\"STOP\"}]}\n\n",
+        "data: {\"usageMetadata\":{\"promptTokenCount\":10,\"candidatesTokenCount\":4,\"totalThoughtTokens\":3}}\n\n",
+    ).as_bytes()).unwrap();
+    let (_, terminal) = decoder.finish().unwrap();
+    assert_eq!(terminal.finish_reason, FinishReason::ToolCalls);
+    assert_eq!(
+        terminal.usage.unwrap().reasoning_tokens.as_deref(),
+        Some("3")
+    );
+
+    // Gemini 2.5 omits optional functionCall.id in non-stream and SSE on GoogleGenerationV1;
+    // explicit empty id and untyped AdapterId::GoogleGeneration parity still fail closed.
+    let no_id_raw = serde_json_canonicalizer::to_vec(&json!({
+        "candidates": [{
+            "finishReason": "STOP",
+            "content": {"role": "model", "parts": [{"functionCall": {"name": "lookup", "args": {"q": "21"}}}]}
+        }]
+    })).unwrap();
+    let no_id_term = normalize_dialect_response(DialectId::GoogleGenerationV1, &no_id_raw).unwrap();
+    assert_eq!(no_id_term.tool_calls[0].call_id, "gemini_call_0");
+    assert_eq!(no_id_term.finish_reason, FinishReason::ToolCalls);
+
+    let no_id_sse = "data: {\"candidates\":[{\"finishReason\":\"STOP\",\"content\":{\"role\":\"model\",\"parts\":[{\"functionCall\":{\"name\":\"lookup\",\"args\":{\"q\":\"21\"}}}]}}]}\n\n";
+    let (_, no_id_stream) =
+        normalize_dialect_sse_stream(DialectId::GoogleGenerationV1, no_id_sse.as_bytes()).unwrap();
+    assert_eq!(no_id_stream.tool_calls[0].call_id, "gemini_call_0");
+    assert_eq!(no_id_stream.finish_reason, FinishReason::ToolCalls);
+
+    let empty_id_raw = serde_json_canonicalizer::to_vec(&json!({
+        "candidates": [{
+            "finishReason": "STOP",
+            "content": {"role": "model", "parts": [{"functionCall": {"id": "", "name": "lookup", "args": {"q": "21"}}}]}
+        }]
+    })).unwrap();
+    assert!(normalize_dialect_response(DialectId::GoogleGenerationV1, &empty_id_raw).is_err());
+
+    // PromptFeedback empty candidates -> ContentFilter + stop_details
+    let blocked = serde_json_canonicalizer::to_vec(&json!({
+        "candidates": [],
+        "promptFeedback": {"blockReason": "PROHIBITED_CONTENT"}
+    }))
+    .unwrap();
+    let blocked_term = normalize_response(AdapterId::GoogleGeneration, &blocked).unwrap();
+    assert_eq!(blocked_term.finish_reason, FinishReason::ContentFilter);
+    assert_eq!(
+        blocked_term.stop_details.unwrap()["blockReason"],
+        "PROHIBITED_CONTENT"
+    );
+
+    // Gemini extended finishReasons
+    for (reason, finish) in [
+        ("MALFORMED_FUNCTION_CALL", FinishReason::ProviderError),
+        ("UNEXPECTED_TOOL_CALL", FinishReason::ProviderError),
+        ("TOO_MANY_TOOL_CALLS", FinishReason::ProviderError),
+        ("OTHER", FinishReason::ProviderError),
+        ("LANGUAGE", FinishReason::ProviderError),
+        ("PROHIBITED_CONTENT", FinishReason::ContentFilter),
+        ("SPII", FinishReason::ContentFilter),
+        ("BLOCKLIST", FinishReason::ContentFilter),
+        ("IMAGE_SAFETY", FinishReason::ContentFilter),
+        ("MODEL_ARMOR", FinishReason::ContentFilter),
+    ] {
+        let raw = serde_json_canonicalizer::to_vec(&json!({
+            "candidates": [{"finishReason": reason, "content": {"parts": []}}]
+        }))
+        .unwrap();
+        assert_eq!(
+            normalize_response(AdapterId::GoogleGeneration, &raw)
+                .unwrap()
+                .finish_reason,
+            finish,
+            "{reason}"
+        );
+    }
+
+    // Interactions media + thought rendering + compaction_summary ToolChoice::Auto
+    let gi_provider = Provider {
+        id: "gi".to_owned(),
+        name: None,
+        adapter: "google_interactions".to_owned(),
+        dialect: "google_interactions_v1".to_owned(),
+        endpoint_owner: "google".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision: "gi-v1".to_owned(),
+        endpoint: "https://generativelanguage.googleapis.com/v1beta".to_owned(),
+        credential_key: Some("k".to_owned()),
+        models: vec![Model {
+            id: "gemini-4-argon".to_owned(),
+            profile: "google_interactions_v1:gemini-4-argon".to_owned(),
+            enabled: true,
+            context_window_tokens: 1_000_000,
+            compact_trigger_tokens: 800_000,
+        }],
+    };
+    let gi_resolved = resolve_profile(&gi_provider, &gi_provider.models[0]).unwrap();
+    let gi_epoch = epoch_profile(&gi_resolved, "sys", None).unwrap();
+    let gi_req = prepare(&PrepareInput {
+        attempt_id: "gi4".to_owned(),
+        target: gi_resolved.target.clone(),
+        endpoint: gi_provider.endpoint.clone(),
+        epoch_profile: gi_epoch,
+        continuation_id: Some("int_0".to_owned()),
+        rendered_items: vec![
+            ijson(&json!({"role":"assistant","content":[{"type":"reasoning","text":"hmm"}]})),
+            ijson(&json!({"role":"user","content":[{"type":"file","mime":"image/png","data":"AA=="},{"type":"file","mime":"application/pdf","uri":"https://files.example.test/doc.pdf"}]})),
+        ],
+        tool_catalog: ijson(&json!([])),
+        stream: false,
+    }).unwrap();
+    let gi_body: Value = serde_json::from_slice(&gi_req.body).unwrap();
+    assert_eq!(
+        gi_body["input"][0],
+        json!({"summary":[{"text":"hmm","type":"text"}],"type":"thought"})
+    );
+    assert_eq!(
+        gi_body["input"][1],
+        json!({"content":[{"data":"AA==","mime_type":"image/png","type":"image"}],"type":"user_input"})
+    );
+    assert_eq!(
+        gi_body["input"][2],
+        json!({"content":[{"mime_type":"application/pdf","type":"document","uri":"https://files.example.test/doc.pdf"}],"type":"user_input"})
+    );
+
+    // compaction_summary uses ToolChoice::Auto on Kimi/DeepSeek/GLM
+    let ds_provider = Provider {
+        id: "ds-ant".to_owned(),
+        name: None,
+        adapter: "anthropic_messages".to_owned(),
+        dialect: "deepseek_anthropic_v1".to_owned(),
+        endpoint_owner: "deepseek".to_owned(),
+        gateway_translation: "direct".to_owned(),
+        evidence_revision: "ds-v1".to_owned(),
+        endpoint: "https://api.deepseek.com/anthropic/v1".to_owned(),
+        credential_key: Some("k".to_owned()),
+        models: vec![Model {
+            id: "deepseek-flash".to_owned(),
+            profile: "deepseek_anthropic_v1:deepseek-flash".to_owned(),
+            enabled: true,
+            context_window_tokens: 128_000,
+            compact_trigger_tokens: 100_000,
+        }],
+    };
+    let ds_resolved = resolve_profile(&ds_provider, &ds_provider.models[0]).unwrap();
+    let summary_req = prepare_summary_request(
+        &ds_provider.endpoint,
+        &ds_resolved,
+        "sys",
+        "history",
+        ijson(&json!([{"name":"emit","description":"d","parameters":{"type":"object","properties":{},"required":[]}}])),
+        "sum-1".to_owned(),
+    ).unwrap();
+    let summary_body: Value = serde_json::from_slice(&summary_req.body).unwrap();
+    assert_eq!(summary_body["tool_choice"], json!({"type":"auto"}));
+    let _ = normalize_sse_stream;
 }

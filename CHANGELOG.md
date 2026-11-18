@@ -6,6 +6,14 @@ workspace version in `Cargo.toml`.
 
 ## Unreleased
 
+## 0.9.23 - 2026-11-18
+
+### Changed
+
+- DeepSeek, GLM, and Kimi adapters (#135): add `image` input support on `deepseek_chat_v1`, `glm_chat_v1`, `kimi_chat_v1`, and `deepseek_anthropic_v1`, group assistant `[reasoning, text, tool_call*]` into a single Chat message, enable `cache_control` breakpoints and `ThinkingWire::DeepseekAnthropic` (`deepseek-flash`, `deepseek-v4-pro`, `max_tokens: 64000`, `reasoning_disabled`, `title_max_output_tokens`) on `deepseek_anthropic_v1`, extend worker quoted-null repair to `deepseek_chat_v1` and `deepseek_anthropic_v1`, use `ToolChoice::Auto` in compaction summaries for non-forcing thinking profiles, and catalog GLM-5/5.1/5.3* plus Kimi K3.1 Pro SKUs.
+- OpenAI Responses and Anthropic Messages alignment (#136): normalize `turn_limit` / `pause_turn` / `content_filter` / overflow `incomplete` terminals, `failed` structured errors, `refusal` parts/deltas (`content_filter` + `stop_details`), SSE `error` frames, `cache_write_tokens`, and `input_transformations` on Responses; scope `thinking.block_binding` + `thinking-binding-controls-2026-08-01` strictly to native Anthropic routes, scale `ThinkingWire::Budget` effort budgets with `max_tokens >= budget_tokens + 4096`, degrade forced `tool_choice` to `auto` when `thinking.type == "enabled"`, handle `model_context_window_exceeded` / `stop_sequence` / SSE `error`, and route `cloudflare-native-openai` Gateway requests with `cf-aig-authorization`.
+- Gemini Generation and Interactions upgrades (#137): distinguish `ThinkingWire::GoogleBudget` (Gemini 2.5) from `ThinkingWire::GoogleLevel` (Gemini 3.x / 4.x) with `includeThoughts: true`, add Gemini 2.5/3.1/4 SKUs (`gemini-2.5-pro`, `gemini-2.5-flash-lite`, `gemini-3.1-pro-preview`, `gemini-4-argon`, `gemini-4-carbon`, `gemini-4-hydrogen`), fix camelCase `fileData` and adjacent `user`/`tool` merging, support deterministic `gemini_call_{index}` IDs when `GoogleGenerationV1` omits optional `functionCall.id`, retain streamed `completed_fragments`, tolerate trailing metadata-only SSE chunks, normalize empty-candidate `promptFeedback`, Gemini `finishReason` codes, and `totalThoughtTokens`, align `google_interactions_v1` with `user_input` / `thought` / `thinking_summaries: "auto"` / media inputs / explicit `tool_choice`, and support `cloudflare-native-google` Gateway authentication.
+
 ## 0.9.22 - 2026-11-08
 
 ### Fixed
