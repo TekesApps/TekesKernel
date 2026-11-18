@@ -53,14 +53,28 @@ fn anthropic(sku: &str) -> (Provider, Model) {
     )
 }
 
-fn deepseek_anthropic() -> (Provider, Model) {
+fn moonshot_anthropic(sku: &str) -> (Provider, Model) {
+    route(
+        "anthropic_messages_v1",
+        "moonshot",
+        "direct",
+        "https://api.moonshot.cn/anthropic/v1",
+        sku,
+    )
+}
+
+fn deepseek_anthropic_sku(sku: &str) -> (Provider, Model) {
     route(
         "deepseek_anthropic_v1",
         "deepseek",
         "direct",
         "https://api.deepseek.com/anthropic/v1",
-        "deepseek-chat",
+        sku,
     )
+}
+
+fn deepseek_anthropic() -> (Provider, Model) {
+    deepseek_anthropic_sku("deepseek-chat")
 }
 
 #[derive(Debug)]
@@ -378,7 +392,7 @@ fn breakpoints_move_with_the_last_message_and_never_sit_on_the_root() {
 }
 
 #[test]
-fn deepseek_anthropic_facade_keeps_its_legacy_shape() {
+fn deepseek_anthropic_facade_keeps_its_legacy_shape_and_adds_breakpoints() {
     let target = deepseek_anthropic();
     let prepared = prepare(
         &target,
@@ -390,6 +404,14 @@ fn deepseek_anthropic_facade_keeps_its_legacy_shape() {
     )
     .expect("deepseek");
     assert!(prepared.body.get("cache_control").is_none());
+    assert_eq!(
+        prepared.body["messages"][0]["content"][0]["cache_control"],
+        json!({"type":"ephemeral"})
+    );
+    assert_eq!(
+        prepared.body["tools"][0]["cache_control"],
+        json!({"type":"ephemeral"})
+    );
     assert!(prepared.body.get("fallbacks").is_none());
     assert!(prepared.body.get("thinking").is_none());
     assert_eq!(prepared.body["max_tokens"], json!(8192));
@@ -398,6 +420,62 @@ fn deepseek_anthropic_facade_keeps_its_legacy_shape() {
         "strict is an Anthropic-only field"
     );
     assert_eq!(prepared.body["tool_choice"], json!({"type":"any"}));
+}
+
+#[test]
+fn deepseek_flash_and_moonshot_anthropic_scopes_controls_and_tool_choice() {
+    // DeepSeek Flash / Anthropic thinking + max_tokens 64000 + tool_choice auto degradation
+    let flash = deepseek_anthropic_sku("deepseek-flash");
+    let prepared = prepare(
+        &flash,
+        Some("high"),
+        true,
+        hello(),
+        strict_tool(),
+        Some(ToolChoice::Required),
+    )
+    .expect("deepseek flash");
+    assert_eq!(prepared.body["thinking"], json!({"type":"enabled"}));
+    assert_eq!(prepared.body["output_config"], json!({"effort":"high"}));
+    assert_eq!(prepared.body["max_tokens"], json!(64_000));
+    assert_eq!(prepared.body["tool_choice"], json!({"type":"auto"}));
+    assert!(!prepared.headers.contains_key("anthropic-beta"));
+
+    // Moonshot Kimi K3: ThinkingWire::Budget scaled by effort, max_tokens >= budget + 4096,
+    // no Anthropic block_binding or Anthropic-only beta header, and auto tool_choice with thinking.
+    let kimi = moonshot_anthropic("kimi-k3");
+    let kimi_low = prepare(
+        &kimi,
+        Some("low"),
+        true,
+        hello(),
+        strict_tool(),
+        Some(ToolChoice::Required),
+    )
+    .expect("kimi low");
+    assert_eq!(
+        kimi_low.body["thinking"],
+        json!({"budget_tokens": 2048, "type": "enabled"})
+    );
+    assert!(kimi_low.body["max_tokens"].as_u64().unwrap() >= 2048 + 4096);
+    assert_eq!(kimi_low.body["tool_choice"], json!({"type":"auto"}));
+    assert!(!kimi_low.headers.contains_key("anthropic-beta"));
+
+    let kimi_max = prepare(
+        &kimi,
+        Some("max"),
+        false,
+        hello(),
+        strict_tool(),
+        Some(ToolChoice::Required),
+    )
+    .expect("kimi max");
+    assert_eq!(
+        kimi_max.body["thinking"],
+        json!({"budget_tokens": 32_000, "type": "enabled"})
+    );
+    assert_eq!(kimi_max.body["max_tokens"], json!(32_000 + 4096));
+    assert!(kimi_max.body["thinking"].get("block_binding").is_none());
 }
 
 #[test]
@@ -459,11 +537,11 @@ fn pdf_files_become_document_blocks_and_other_mimes_degrade_to_text() {
     );
     let image =
         vec![json!({"role":"user","content":[{"type":"file","mime":"image/png","data":"AA=="}]})];
-    let error = prepare(&deepseek_anthropic(), None, true, image, json!([]), None)
-        .expect_err("image files are not degraded");
-    assert!(
-        error.contains("rejects the requested file block"),
-        "{error}"
+    let prepared = prepare(&deepseek_anthropic(), None, true, image, json!([]), None)
+        .expect("deepseek anthropic now accepts image blocks");
+    assert_eq!(
+        prepared.body["messages"][0]["content"][0]["type"],
+        json!("image")
     );
 }
 
@@ -616,4 +694,36 @@ fn unknown_stop_reasons_still_fail_closed() {
     }))
     .unwrap();
     assert!(normalize_dialect_response(DialectId::AnthropicMessagesV1, &response).is_err());
+
+    let overflow = serde_json_canonicalizer::to_vec(&json!({
+        "content":[],"id":"m","stop_reason":"model_context_window_exceeded"
+    }))
+    .unwrap();
+    assert_eq!(
+        normalize_dialect_response(DialectId::AnthropicMessagesV1, &overflow)
+            .unwrap()
+            .finish_reason,
+        FinishReason::ContextOverflow
+    );
+
+    let stop_seq = serde_json_canonicalizer::to_vec(&json!({
+        "content":[{"text":"ok","type":"text"}],"id":"m","stop_reason":"stop_sequence"
+    }))
+    .unwrap();
+    assert_eq!(
+        normalize_dialect_response(DialectId::AnthropicMessagesV1, &stop_seq)
+            .unwrap()
+            .finish_reason,
+        FinishReason::Completed
+    );
+
+    let err_stream = concat!(
+        "data: {\"message\":{\"id\":\"msg_1\",\"usage\":{\"input_tokens\":2}},\"type\":\"message_start\"}\n\n",
+        "data: {\"type\":\"error\",\"error\":{\"type\":\"overloaded_error\",\"message\":\"Overloaded\"}}\n\n"
+    );
+    let (_, term) =
+        normalize_dialect_sse_stream(DialectId::AnthropicMessagesV1, err_stream.as_bytes())
+            .expect("error SSE decodes as ProviderError terminal");
+    assert_eq!(term.finish_reason, FinishReason::ProviderError);
+    assert_eq!(term.provider_error.unwrap()["type"], "overloaded_error");
 }

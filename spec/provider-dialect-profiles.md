@@ -39,8 +39,9 @@ The kernel has no runtime route allow-list. A configured provider is runnable
 when its `dialect` is one this build serializes and its `adapter` is that
 dialect's protocol family; `endpoint_owner`, `gateway_translation`,
 `evidence_revision`, model SKU and endpoint are taken as configured. The
-credential header and prefix come from the dialect (`cloudflare` /
-`cloudflare-native-anthropic` uses `cf-aig-authorization: Bearer`). The
+credential header and prefix come from the dialect (`cloudflare` with
+`cloudflare-native-anthropic`, `cloudflare-native-openai`, or
+`cloudflare-native-google` uses `cf-aig-authorization: Bearer`). The
 configured endpoint is used as the request base unchanged. A route the upstream
 does not accept fails at request time with the provider's error; an unknown
 dialect or a family/dialect disagreement is `misconfigured` readiness.
@@ -173,32 +174,34 @@ One runtime-internal control has no product author path:
 titles) that must not reason whatever the model's default. It is independent
 of `reasoning.levels`, is never advertised to clients, and cannot be combined
 with `reasoning_effort`. Only dialects with a verified off switch accept it:
-`deepseek_responses_v1` renders `reasoning: {effort: "none"}` and
-`deepseek_chat_v1` renders `thinking: {type: "disabled"}`. Every other dialect
-fails to prepare, so the helper sends nothing.
+`deepseek_responses_v1` renders `reasoning: {effort: "none"}`, and
+`deepseek_chat_v1` and `deepseek_anthropic_v1` render
+`thinking: {type: "disabled"}`. Every other dialect fails to prepare, so the
+helper sends nothing.
 
 A second runtime-internal control is title-only: `title_max_output_tokens`
 (a positive integer), the output ceiling of the automatic thread-title request
 (64). It is not a session control and never limits ordinary turns.
 `deepseek_responses_v1` renders it as the wire field `max_output_tokens`;
-`deepseek_chat_v1` renders it as `max_tokens`, keeping a smaller catalog
-ceiling. Every other dialect fails to prepare. A title response cut at the
-ceiling ends with a length terminal, which the supervisor treats as failure,
-so the deterministic seed title stays.
+`deepseek_chat_v1` and `deepseek_anthropic_v1` render it as `max_tokens`,
+keeping a smaller catalog ceiling. Every other dialect fails to prepare. A title
+response cut at the ceiling ends with a length terminal, which the supervisor
+treats as failure, so the deterministic seed title stays.
 
 `capability_cases` binds each profile's closed product default; a test may not
 manufacture an otherwise unreachable epoch control and call it product proof.
 
-## Initial closed dialect registry
+## Closed conformance registry
 
-The initial closure has twelve distinct testable dialect profiles. Eleven are
-advertised exact tuples. `generic_chat_v1` is a conservative codec fixture. The
-exact fixture SKU is a conformance identity, not a wildcard declaration:
+The proof fixture corpus has fourteen distinct testable dialect profile rows across twelve
+dialects (`thirteen` advertised exact tuples, plus `generic_chat_v1` as an unadvertised
+conservative codec fixture). The exact fixture SKU is a conformance identity, not a wildcard
+declaration:
 
-| dialect id | family | endpoint owner | exact fixture SKU | continuation |
+| dialect id | family | endpoint owner | exact fixture SKU(s) | continuation |
 |---|---|---|---|---|
 | `openai_responses_v1` | responses | `openai` | `gpt-5` | server-managed |
-| `deepseek_responses_v1` | responses | `deepseek` | `deepseek-v4-flash` | stateless full history |
+| `deepseek_responses_v1` | responses | `deepseek` | `deepseek-v4-flash`, `deepseek-v4-pro` | stateless full history |
 | `generic_chat_v1` | chat completions | `fixture` | `generic-chat-fixture-1` | test-only; never advertised |
 | `openai_chat_v1` | chat completions | `openai` | `gpt-4.1` | stateless full history |
 | `deepseek_chat_v1` | chat completions | `deepseek` | `deepseek-v4-flash` | stateless full history |
@@ -207,7 +210,7 @@ exact fixture SKU is a conformance identity, not a wildcard declaration:
 | `ollama_chat_v1` | chat completions | `ollama` | `llama3.3` | stateless full history |
 | `anthropic_messages_v1` | anthropic messages | `anthropic` | `claude-sonnet-4-20250514` | stateless full history |
 | `deepseek_anthropic_v1` | anthropic messages | `deepseek` | `deepseek-chat` | stateless full history |
-| `google_generation_v1` | google generation | `google` | `gemini-2.5-flash` | stateless full history |
+| `google_generation_v1` | google generation | `google` | `gemini-2.5-flash`, `gemini-3.6-flash` | stateless full history |
 | `google_interactions_v1` | google interactions | `google` | `gemini-2.5-flash` | server-managed |
 
 Rows pin serializer behavior; they do not enumerate the SKUs or gateways a
@@ -221,8 +224,8 @@ deployment may configure.
   server-managed continuation field;
 - every attempt sends the complete eligible history rendered for its epoch;
 - a continuation id in input is a pre-send `dialect_mismatch` error;
-- image/file inputs and unsupported built-in tools are rejected before send,
-  including fields the server might silently replace or ignore;
+- image inputs (`input_image`) are accepted while non-image `file` inputs
+  degrade deterministically to fenced or stub text before send;
 - only profile-declared controls are emitted; unsupported OpenAI Responses
   parameters fail closed rather than being dropped;
 - `response.reasoning_text.delta` and `.done` are reasoning arms;
@@ -256,17 +259,21 @@ profiles remain distinct.
   reasoning, no cache claim and no vendor repair.
 - `openai_chat_v1` declares only controls and structured-output shapes proven
   for its exact SKU.
-- `deepseek_chat_v1` preserves `reasoning_content` through tool-call rounds.
-  Thinking omits `temperature` and `top_p`; forced/named tool choice while
-  thinking is rejected or deterministically mapped only where its profile
-  proof says so. Known tool-argument repair is signature-bound and bounded.
-- `glm_chat_v1` is the exact GLM-5.2 profile: it maps `high|max` to the
-  top-level `reasoning_effort`, keeps `thinking.clear_thinking=false` so
-  replayed reasoning remains legal, and rejects sampling controls that are not
-  represented by the session-control contract.
-- `kimi_chat_v1` is the exact Kimi-K3 profile: it maps `low|high|max` to the
-  top-level `reasoning_effort`, omits provider-fixed sampling, and advertises
-  only the implicit-auto tool-choice surface that Kernel actually projects.
+- `deepseek_chat_v1` accepts `image` (`image_url`) blocks, groups assistant
+  `[reasoning, text, tool_call*]` into a single message, and preserves
+  `reasoning_content` through tool-call rounds. Thinking omits `temperature`
+  and `top_p`; explicit/compaction tool choice avoids forced selection where
+  thinking rejects it. Known tool-argument repair is bounded and
+  worker-boundary reversible.
+- `glm_chat_v1` accepts `image` (`image_url`) blocks, groups assistant blocks
+  into one message, covers GLM-5 / GLM-5.1 / GLM-5.2 / GLM-5.3* profiles in the
+  capability catalog, maps catalog levels to top-level `reasoning_effort`,
+  keeps `thinking.clear_thinking=false` so replayed reasoning remains legal,
+  and rejects unrepresented sampling controls.
+- `kimi_chat_v1` accepts `image` (`image_url`) blocks, groups assistant blocks
+  into one message, covers Kimi-K3 / Kimi-K3.1* profiles in the capability
+  catalog, maps `low|high|max` to top-level `reasoning_effort`, and omits
+  provider-fixed sampling.
 - `ollama_chat_v1` normalizes the configured owner route to its exact `/v1`
   form before digesting, rejects reasoning for the named profile, and has no
   credential-dependent capability inference.
@@ -285,35 +292,62 @@ preserves ordered content blocks, including empty signed `thinking`, streamed
 Reasoning controls remain exact-model catalog capabilities, not capabilities
 inferred from an endpoint accepting `/messages`.
 
-Native requests with adaptive or enabled thinking use
+Native Anthropic requests (`endpoint_owner == "anthropic"` or `cloudflare` /
+`cloudflare-native-anthropic`) with adaptive or enabled thinking use
 `thinking.block_binding.prefix_mismatch_behavior=drop_block` with the
 `thinking-binding-controls-2026-08-01` beta header. Compaction, result trimming,
 and system/tool changes may intentionally change a prefix; the server decides
-which thinking blocks remain valid for that request. Kernel does not erase
-durable native blocks on model changes or locally guess signature validity.
-Provider `input_transformations` reports are retained as runtime diagnostics,
-never appended to the model context. Streaming reports may arrive at message
-start and be updated by a final message delta.
+which thinking blocks remain valid for that request. Compatible non-Anthropic
+routes on `anthropic_messages_v1` (such as Moonshot `kimi-k3` / `kimi-k3.1-pro`)
+use budgeted thinking (`ThinkingWire::Budget`: scaled `budget_tokens` of
+`low=2048`, `medium=4096`, `high=16384`, `max=32000` with
+`max_tokens >= budget_tokens + 4096`) and omit `block_binding`, Anthropic beta
+headers, and `fallbacks`; whenever `thinking.type == "enabled"` or
+`!forced_tool_choice`, `tool_choice` `required` degrades to `auto`. Kernel does
+not erase durable native blocks on model changes or locally guess signature
+validity. Provider `input_transformations` reports are retained as runtime
+diagnostics, never appended to the model context. Streaming reports may arrive
+at message start and be updated by a final message delta.
 
-The established last-tool and latest-message content cache breakpoints remain
-unchanged. This policy does not replace tool-catalog stability or epoch/reset
-management and does not itself guarantee a cache hit. DeepSeek's compatible
-route has its own evidence and never inherits direct-Anthropic controls merely
-because it accepts `/messages`. Live Fable 5.1 binding acceptance is separate
-from codec fixtures and the successful Opus gateway smoke test; see
+Both `anthropic_messages_v1` and `deepseek_anthropic_v1` attach last-tool and
+latest-message content `cache_control: {"type": "ephemeral"}` breakpoints and
+accept base64 `image` blocks. This policy does not replace tool-catalog
+stability or epoch/reset management and does not itself guarantee a cache hit.
+`deepseek_anthropic_v1` models with `ThinkingWire::DeepseekAnthropic`
+(`deepseek-flash`, `deepseek-v4-pro`, `max_tokens: 64000`) encode
+`thinking: {"type": "enabled"}` with `output_config.effort`, support
+`reasoning_disabled` (`thinking: {"type": "disabled"}`) and
+`title_max_output_tokens`, and retain isolated legacy facade behavior on
+`deepseek-chat`. Live Fable 5.1 binding acceptance is separate from codec
+fixtures and the successful Opus gateway smoke test; see
 `docs/verification/audits/anthropic-preserved-thinking-2026-09-09.md`.
 
 ## Google dialects
 
 `google_generation_v1` sends complete history with the exact
 `generateContent` or `streamGenerateContent?alt=sse` route. Controls live in
-the profile-declared `generationConfig`; tools, thought parts, usage metadata,
-safety terminals and cached-content behavior are explicit proof arms.
+the profile-declared `generationConfig`: `ThinkingWire::GoogleBudget` (Gemini
+2.5) emits `includeThoughts: true` + `thinkingBudget`, while
+`ThinkingWire::GoogleLevel` (Gemini 3.x / 4.x) emits `includeThoughts: true` +
+`thinkingLevel`. Adjacent `user`/`tool` contents are merged with `functionResponse`
+parts placed ahead of other parts, REST `fileData` uses camelCase (`fileUri`,
+`mimeType`), streamed completed `functionCall` parts yield recoverable
+`partial_fragments`, trailing metadata-only SSE chunks after `finishReason` are
+tolerated, omitted optional `functionCall.id` fields (such as Gemini 2.5) are
+assigned deterministic positional `gemini_call_{index}` identifiers while
+malformed or empty explicit `id` fields remain rejected, empty-candidate
+`promptFeedback` responses map to `content_filter`
+with `stop_details`, `totalThoughtTokens` maps to reasoning usage, and Gemini
+3/4 `finishReason` codes (`MALFORMED_FUNCTION_CALL`, `PROHIBITED_CONTENT`, `SPII`,
+`BLOCKLIST`, `MODEL_ARMOR`, etc.) map strictly without falling back to generic
+success.
 
 `google_interactions_v1` is independently stateful. Only it may use
 `previous_interaction_id`, and only after a terminal from the same target
-tuple. Its `store`, input-step, response-format, stream and terminal behavior
-is not inferred from Generation.
+tuple. Its requests send `type: "user_input"` steps (without `role`),
+`type: "thought"` `summary` steps, `generation_config.thinking_summaries: "auto"`,
+native `image` and PDF `document` user inputs, and explicit
+`generation_config.tool_choice` (`"auto" | "any" | "none"`).
 
 ## Session controls and epoch bytes
 

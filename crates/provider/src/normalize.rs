@@ -211,7 +211,7 @@ pub fn normalize_response(adapter: AdapterId, bytes: &[u8]) -> Result<ProviderTe
         AdapterId::GoogleInteractions => normalize_interactions(bytes, &value),
         AdapterId::Anthropic => normalize_anthropic(bytes, &value),
         AdapterId::ChatCompletion => normalize_chat(bytes, &value),
-        AdapterId::GoogleGeneration => normalize_google(bytes, &value),
+        AdapterId::GoogleGeneration => normalize_google(bytes, &value, None),
     }
 }
 
@@ -245,35 +245,29 @@ pub fn normalize_dialect_response(
             terminal.finish_reason = match value.get("status").and_then(Value::as_str) {
                 Some("completed") => terminal.finish_reason,
                 Some("incomplete") => {
-                    let reason = value
-                        .get("incomplete_details")
-                        .and_then(|details| details.get("reason"))
-                        .and_then(Value::as_str)
-                        .ok_or("DeepSeek Responses incomplete terminal lacks reason")?;
-                    terminal.incomplete_reason = Some(reason.to_owned());
-                    match reason {
-                        "max_output_tokens" => FinishReason::Length,
-                        "content_filter" => FinishReason::ContentFilter,
-                        other => {
-                            return Err(format!(
-                                "unknown DeepSeek Responses incomplete reason {other}"
-                            ));
-                        }
-                    }
+                    let (reason, finish) = responses_incomplete_finish_reason(&value)?;
+                    terminal.incomplete_reason = Some(reason);
+                    finish
                 }
                 Some("failed") => {
-                    let error = value
-                        .get("error")
-                        .filter(|error| error.is_object())
-                        .cloned()
-                        .ok_or("DeepSeek Responses failed terminal lacks structured error")?;
+                    let (error, finish) = responses_failed_error(&value)?;
                     terminal.provider_error = Some(error);
-                    FinishReason::ProviderError
+                    finish
                 }
                 Some(other) => return Err(format!("unknown DeepSeek Responses status {other}")),
                 None => return Err("DeepSeek Responses terminal lacks status".to_owned()),
             };
             terminal
+        }
+    } else if dialect == DialectId::GoogleGenerationV1 {
+        let value = parse_ijson(bytes)?;
+        if value.get("error").is_some_and(|error| !error.is_null())
+            || value.get("functionCalls").is_some()
+            || value.get("isFinalAnswer").is_some()
+        {
+            normalize_response(dialect.family(), bytes)?
+        } else {
+            normalize_google(bytes, &value, Some(dialect))?
         }
     } else {
         if matches!(
@@ -602,9 +596,45 @@ fn is_context_overflow(value: &Value) -> bool {
                 "context_length_exceeded"
                     | "context_window_exceeded"
                     | "max_context_length_exceeded"
+                    | "model_context_window_exceeded"
                     | "CONTEXT_LENGTH_EXCEEDED"
             )
         })
+}
+
+fn responses_incomplete_finish_reason(response: &Value) -> Result<(String, FinishReason), String> {
+    let reason = response
+        .get("incomplete_details")
+        .and_then(|details| details.get("reason"))
+        .and_then(Value::as_str)
+        .ok_or("Responses incomplete terminal lacks reason")?;
+    let finish = match reason {
+        "max_output_tokens" => FinishReason::Length,
+        "content_filter" => FinishReason::ContentFilter,
+        "turn_limit" | "pause_turn" => FinishReason::Paused,
+        "context_length_exceeded"
+        | "context_window_exceeded"
+        | "max_context_length_exceeded"
+        | "model_context_window_exceeded" => FinishReason::ContextOverflow,
+        other => {
+            return Err(format!("unknown Responses incomplete reason {other}"));
+        }
+    };
+    Ok((reason.to_owned(), finish))
+}
+
+fn responses_failed_error(response: &Value) -> Result<(Value, FinishReason), String> {
+    let error = response
+        .get("error")
+        .filter(|error| error.is_object())
+        .cloned()
+        .ok_or("Responses failed terminal lacks structured error")?;
+    let finish = if is_context_overflow(&error) {
+        FinishReason::ContextOverflow
+    } else {
+        FinishReason::ProviderError
+    };
+    Ok((error, finish))
 }
 
 pub fn normalize_sse_stream(
@@ -719,6 +749,7 @@ struct StreamAccumulator {
     frames: Vec<ProviderFrame>,
     text: String,
     reasoning: String,
+    refusal_text: String,
     calls: std::collections::BTreeMap<usize, PartialCall>,
     response_identity: Option<String>,
     usage: Option<Usage>,
@@ -857,6 +888,16 @@ impl StreamAccumulator {
     /// eagerly dispatched one. Only families whose sealed carrier is an
     /// ordered item array are supported; the rest report `None`.
     fn completed_fragments(&self, adapter: AdapterId, dialect: Option<DialectId>) -> Option<Value> {
+        if adapter == AdapterId::GoogleGeneration {
+            return (self.calls.values().any(|call| call.arguments_done)
+                && !self.google_parts.is_empty())
+            .then(|| {
+                serde_json::json!({
+                    "parts": self.google_parts,
+                    "role": "model",
+                })
+            });
+        }
         let items = match adapter {
             AdapterId::Responses => &self.response_items,
             AdapterId::Anthropic => &self.anthropic_blocks,
@@ -898,7 +939,9 @@ impl StreamAccumulator {
         dialect: Option<DialectId>,
         value: &Value,
     ) -> Result<(), String> {
-        if self.done {
+        if self.done
+            && !(adapter == AdapterId::GoogleGeneration && is_google_trailing_metadata(value))
+        {
             return Err("provider data follows terminal".to_owned());
         }
         match adapter {
@@ -906,7 +949,7 @@ impl StreamAccumulator {
             AdapterId::GoogleInteractions => self.interactions(value),
             AdapterId::Anthropic => self.anthropic(value, dialect),
             AdapterId::ChatCompletion => self.chat(value, dialect),
-            AdapterId::GoogleGeneration => self.google(value),
+            AdapterId::GoogleGeneration => self.google(value, dialect),
         }?;
         // Report after this event's content: its watermark covers all content in
         // the same frame. Preserve partial reports instead of replaying old usage.
@@ -964,6 +1007,18 @@ impl StreamAccumulator {
                 let delta = delta_string(value, "delta")?;
                 append_response_part_text(&mut self.response_items, value, "content", &delta)?;
                 self.push_reasoning(delta);
+            }
+            Some("response.refusal.delta") => {
+                let delta = delta_string(value, "delta")?;
+                append_response_part_refusal(&mut self.response_items, value, &delta)?;
+                self.refusal_text.push_str(&delta);
+            }
+            Some("response.refusal.done") => {
+                if self.refusal_text.is_empty()
+                    && let Some(refusal) = value.get("refusal").and_then(Value::as_str)
+                {
+                    self.refusal_text.push_str(refusal);
+                }
             }
             Some("response.function_call_arguments.delta") => {
                 let index = value
@@ -1054,6 +1109,10 @@ impl StreamAccumulator {
                             self.record_native_search_call(index, item, dialect)?;
                         }
                     }
+                    if self.refusal_text.is_empty() {
+                        self.refusal_text =
+                            extract_responses_refusal(output.as_array().expect("validated output"));
+                    }
                     self.terminal_fragments = Some(output.clone());
                 }
                 self.response_identity = response
@@ -1061,10 +1120,17 @@ impl StreamAccumulator {
                     .and_then(Value::as_str)
                     .map(str::to_owned);
                 self.usage = usage_from_any(response.get("usage"));
+                if let Some(changes) = response
+                    .get("input_transformations")
+                    .filter(|v| v.is_array())
+                {
+                    self.input_transformations = Some(changes.clone());
+                }
                 let event = value
                     .get("type")
                     .and_then(Value::as_str)
                     .unwrap_or_default();
+                let status = response.get("status").and_then(Value::as_str);
                 if event != "response.done" {
                     let expected_status = match event {
                         "response.completed" => "completed",
@@ -1072,44 +1138,22 @@ impl StreamAccumulator {
                         "response.failed" => "failed",
                         _ => unreachable!("known Responses terminal event"),
                     };
-                    if response.get("status").and_then(Value::as_str) != Some(expected_status) {
+                    if status != Some(expected_status) {
                         return Err(format!("Responses {event} terminal status mismatch"));
                     }
                 }
-                self.finish_reason = Some(match event {
-                    "response.incomplete" => {
-                        let reason = response
-                            .get("incomplete_details")
-                            .and_then(|details| details.get("reason"))
-                            .and_then(Value::as_str)
-                            .ok_or("DeepSeek Responses incomplete terminal lacks reason")?;
-                        self.incomplete_reason = Some(reason.to_owned());
-                        match reason {
-                            "max_output_tokens" => FinishReason::Length,
-                            "content_filter" => FinishReason::ContentFilter,
-                            other => {
-                                return Err(format!(
-                                    "unknown DeepSeek Responses incomplete reason {other}"
-                                ));
-                            }
-                        }
+                self.finish_reason = Some(match (event, status) {
+                    ("response.incomplete", _) | ("response.done", Some("incomplete")) => {
+                        let (reason, finish) = responses_incomplete_finish_reason(response)?;
+                        self.incomplete_reason = Some(reason);
+                        finish
                     }
-                    "response.failed" => {
-                        self.provider_error = Some(
-                            response
-                                .get("error")
-                                .filter(|error| error.is_object())
-                                .cloned()
-                                .ok_or(
-                                    "DeepSeek Responses failed terminal lacks structured error",
-                                )?,
-                        );
-                        FinishReason::ProviderError
+                    ("response.failed", _) | ("response.done", Some("failed")) => {
+                        let (error, finish) = responses_failed_error(response)?;
+                        self.provider_error = Some(error);
+                        finish
                     }
-                    _ => finish_from_reason(
-                        response.get("status").and_then(Value::as_str),
-                        !self.calls.is_empty(),
-                    )?,
+                    _ => finish_from_reason(status, !self.calls.is_empty())?,
                 });
                 self.done = true;
             }
@@ -1172,6 +1216,7 @@ impl StreamAccumulator {
                 }
             }
             Some("response.reasoning_summary_text.done" | "response.reasoning_text.done") => {}
+            Some("error") => self.record_stream_error(value),
             // Response event vocabularies are open-ended. Unknown, well-formed
             // events may describe provider-managed work or future metadata;
             // the terminal response remains the native replay authority.
@@ -1340,14 +1385,7 @@ impl StreamAccumulator {
                 )?);
                 self.done = true;
             }
-            Some("error") => {
-                self.finish_reason = Some(if is_context_overflow(value) {
-                    FinishReason::ContextOverflow
-                } else {
-                    FinishReason::ProviderError
-                });
-                self.done = true;
-            }
+            Some("error") => self.record_stream_error(value),
             Some(_) => {}
             None => return Err("provider event lacks event_type/type".to_owned()),
         }
@@ -1505,6 +1543,7 @@ impl StreamAccumulator {
                 }
             }
             Some("ping") => {}
+            Some("error") => self.record_stream_error(value),
             Some(_) => {}
             None => return Err("provider event lacks type".to_owned()),
         }
@@ -1623,7 +1662,7 @@ impl StreamAccumulator {
         Ok(())
     }
 
-    fn google(&mut self, value: &Value) -> Result<(), String> {
+    fn google(&mut self, value: &Value, dialect: Option<DialectId>) -> Result<(), String> {
         self.response_identity = self.response_identity.take().or_else(|| {
             value
                 .get("responseId")
@@ -1632,6 +1671,17 @@ impl StreamAccumulator {
         });
         if let Some(usage) = usage_from_any(value.get("usageMetadata")) {
             self.usage = Some(usage);
+        }
+        if value.get("promptFeedback").is_some()
+            && value
+                .get("candidates")
+                .and_then(Value::as_array)
+                .is_none_or(Vec::is_empty)
+        {
+            self.finish_reason = Some(FinishReason::ContentFilter);
+            self.stop_details = value.get("promptFeedback").cloned();
+            self.done = true;
+            return Ok(());
         }
         for candidate in value
             .get("candidates")
@@ -1659,8 +1709,9 @@ impl StreamAccumulator {
                 }
                 if let Some(function) = part.get("functionCall") {
                     let index = self.calls.len();
+                    let call_id = google_function_call_id(function, index, dialect)?;
                     let call = self.calls.entry(index).or_default();
-                    call.id = required_string(function, "id")?;
+                    call.id = call_id;
                     call.name = required_string(function, "name")?;
                     call.value_arguments = function.get("args").cloned();
                     self.mark_call_ready(index, None)?;
@@ -1673,6 +1724,16 @@ impl StreamAccumulator {
             }
         }
         Ok(())
+    }
+
+    fn record_stream_error(&mut self, value: &Value) {
+        self.provider_error = Some(value.get("error").unwrap_or(value).clone());
+        self.finish_reason = Some(if is_context_overflow(value) {
+            FinishReason::ContextOverflow
+        } else {
+            FinishReason::ProviderError
+        });
+        self.done = true;
     }
 
     fn push_text(&mut self, value: String) {
@@ -1740,7 +1801,7 @@ impl StreamAccumulator {
                 arguments,
             });
         }
-        let reason = self.finish_reason.unwrap_or({
+        let mut reason = self.finish_reason.unwrap_or({
             if tool_calls.is_empty() {
                 FinishReason::Completed
             } else {
@@ -1833,6 +1894,21 @@ impl StreamAccumulator {
                     .content
                     .into_iter()
                     .filter(|block| matches!(block, ContentBlock::Text(_))),
+            );
+        }
+        let has_text = content
+            .iter()
+            .any(|block| matches!(block, ContentBlock::Text(text) if !text.is_empty()));
+        if adapter == AdapterId::Responses
+            && !self.refusal_text.is_empty()
+            && tool_calls.is_empty()
+            && !has_text
+        {
+            if reason == FinishReason::Completed {
+                reason = FinishReason::ContentFilter;
+            }
+            self.stop_details.get_or_insert_with(
+                || serde_json::json!({"refusal": self.refusal_text, "type": "refusal"}),
             );
         }
         Ok((
@@ -2124,6 +2200,24 @@ fn append_response_part_text(
     field: &str,
     piece: &str,
 ) -> Result<(), String> {
+    append_response_part_field(items, event, field, None, piece)
+}
+
+fn append_response_part_refusal(
+    items: &mut std::collections::BTreeMap<usize, Value>,
+    event: &Value,
+    piece: &str,
+) -> Result<(), String> {
+    append_response_part_field(items, event, "content", Some("refusal"), piece)
+}
+
+fn append_response_part_field(
+    items: &mut std::collections::BTreeMap<usize, Value>,
+    event: &Value,
+    field: &str,
+    preferred_key: Option<&str>,
+    piece: &str,
+) -> Result<(), String> {
     let (Some(output_index), Some(content_index)) = (
         event.get("output_index").and_then(Value::as_u64),
         event.get("content_index").and_then(Value::as_u64),
@@ -2139,7 +2233,51 @@ fn append_response_part_text(
     let Some(part) = parts.get_mut(content_index as usize) else {
         return Ok(());
     };
-    append_string_field(Some(part), "text", piece)
+    let target_field = match preferred_key {
+        Some(key) if part.get(key).is_some() => key,
+        Some(_) if part.get("text").is_some() => "text",
+        Some(key) => key,
+        None => "text",
+    };
+    append_string_field(Some(part), target_field, piece)
+}
+
+fn is_google_trailing_metadata(value: &Value) -> bool {
+    value.get("promptFeedback").is_none()
+        && value
+            .get("candidates")
+            .and_then(Value::as_array)
+            .is_none_or(|candidates| {
+                candidates.iter().all(|candidate| {
+                    candidate.get("finishReason").is_none()
+                        && candidate
+                            .pointer("/content/parts")
+                            .and_then(Value::as_array)
+                            .is_none_or(Vec::is_empty)
+                })
+            })
+}
+
+fn message_part_refusal(part: &Value) -> Option<&str> {
+    (part.get("type").and_then(Value::as_str) == Some("refusal"))
+        .then(|| {
+            part.get("refusal")
+                .or_else(|| part.get("text"))
+                .and_then(Value::as_str)
+        })
+        .flatten()
+        .filter(|text| !text.is_empty())
+}
+
+fn extract_responses_refusal(output: &[Value]) -> String {
+    output
+        .iter()
+        .filter(|item| item.get("type").and_then(Value::as_str) == Some("message"))
+        .filter_map(|item| item.get("content").and_then(Value::as_array))
+        .flatten()
+        .filter_map(message_part_refusal)
+        .collect::<Vec<_>>()
+        .join("")
 }
 
 fn required_usize(value: &Value, field: &str) -> Result<usize, String> {
@@ -2186,19 +2324,37 @@ fn merge_usage(target: &mut Option<Usage>, incoming: Usage) {
 
 fn finish_from_reason(reason: Option<&str>, has_calls: bool) -> Result<FinishReason, String> {
     match reason.unwrap_or("completed").to_ascii_lowercase().as_str() {
-        "completed" | "stop" | "end_turn" => Ok(if has_calls {
+        "completed" | "stop" | "end_turn" | "stop_sequence" => Ok(if has_calls {
             FinishReason::ToolCalls
         } else {
             FinishReason::Completed
         }),
         "tool_calls" | "tool_use" | "requires_action" => Ok(FinishReason::ToolCalls),
-        "pause_turn" => Ok(FinishReason::Paused),
-        "length" | "max_tokens" => Ok(FinishReason::Length),
-        "context_length_exceeded" | "context_window_exceeded" | "max_context_length_exceeded" => {
-            Ok(FinishReason::ContextOverflow)
-        }
-        "content_filter" | "safety" | "recitation" | "refusal" => Ok(FinishReason::ContentFilter),
-        "failed" | "error" | "incomplete" => Ok(FinishReason::ProviderError),
+        "pause_turn" | "turn_limit" => Ok(FinishReason::Paused),
+        "length" | "max_tokens" | "max_output_tokens" => Ok(FinishReason::Length),
+        "context_length_exceeded"
+        | "context_window_exceeded"
+        | "max_context_length_exceeded"
+        | "model_context_window_exceeded" => Ok(FinishReason::ContextOverflow),
+        "content_filter"
+        | "safety"
+        | "recitation"
+        | "refusal"
+        | "blocklist"
+        | "prohibited_content"
+        | "spii"
+        | "image_safety"
+        | "image_prohibited_content"
+        | "image_recitation"
+        | "model_armor" => Ok(FinishReason::ContentFilter),
+        "failed"
+        | "error"
+        | "incomplete"
+        | "malformed_function_call"
+        | "unexpected_tool_call"
+        | "too_many_tool_calls"
+        | "other"
+        | "language" => Ok(FinishReason::ProviderError),
         other => Err(format!("unknown finish reason {other}")),
     }
 }
@@ -2299,6 +2455,7 @@ fn native_search_call(item: &Value) -> Result<ToolCall, String> {
 fn normalize_responses(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, String> {
     let mut content = Vec::new();
     let mut tool_calls = Vec::new();
+    let mut refusal_parts = Vec::new();
     for item in value
         .get("output")
         .and_then(Value::as_array)
@@ -2315,7 +2472,11 @@ fn normalize_responses(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, 
                     if !part.is_object() || part.get("type").and_then(Value::as_str).is_none() {
                         return Err("Responses message part lacks type".to_owned());
                     }
-                    if let Some(text) = part.get("text").and_then(Value::as_str) {
+                    if let Some(refusal) = message_part_refusal(part) {
+                        refusal_parts.push(refusal.to_owned());
+                    } else if part.get("type").and_then(Value::as_str) != Some("refusal")
+                        && let Some(text) = part.get("text").and_then(Value::as_str)
+                    {
                         content.push(ContentBlock::Text(text.to_owned()));
                     }
                 }
@@ -2344,7 +2505,8 @@ fn normalize_responses(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, 
             None => return Err("Responses output item lacks type".to_owned()),
         }
     }
-    terminal(
+    let status = value.get("status").and_then(Value::as_str);
+    let mut term = terminal(
         bytes,
         content,
         tool_calls,
@@ -2354,8 +2516,37 @@ fn normalize_responses(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, 
             .unwrap_or(Value::Array(Vec::new())),
         value.get("id").and_then(Value::as_str),
         value.get("usage"),
-        value.get("status").and_then(Value::as_str),
-    )
+        match status {
+            Some("incomplete" | "failed") => Some("completed"),
+            other => other,
+        },
+    )?;
+    if status == Some("incomplete") {
+        let (reason, finish) = responses_incomplete_finish_reason(value)?;
+        term.incomplete_reason = Some(reason);
+        term.finish_reason = finish;
+    } else if status == Some("failed") {
+        let (error, finish) = responses_failed_error(value)?;
+        term.provider_error = Some(error);
+        term.finish_reason = finish;
+    }
+    term.input_transformations = value
+        .get("input_transformations")
+        .filter(|v| v.is_array())
+        .cloned();
+    let has_text = term
+        .content
+        .iter()
+        .any(|block| matches!(block, ContentBlock::Text(text) if !text.is_empty()));
+    if !refusal_parts.is_empty() && term.tool_calls.is_empty() && !has_text {
+        if matches!(status, None | Some("completed")) {
+            term.finish_reason = FinishReason::ContentFilter;
+        }
+        term.stop_details.get_or_insert_with(
+            || serde_json::json!({"refusal": refusal_parts.join(""), "type": "refusal"}),
+        );
+    }
+    Ok(term)
 }
 
 fn normalize_interactions(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, String> {
@@ -2516,17 +2707,40 @@ fn normalize_chat(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, Strin
     )
 }
 
-fn normalize_google(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, String> {
-    if value.get("promptFeedback").is_some() && value.get("candidates").is_none() {
-        return terminal(
+fn google_function_call_id(
+    function: &Value,
+    index: usize,
+    dialect: Option<DialectId>,
+) -> Result<String, String> {
+    if function.get("id").is_some() || dialect != Some(DialectId::GoogleGenerationV1) {
+        required_string(function, "id")
+    } else {
+        Ok(format!("gemini_call_{index}"))
+    }
+}
+
+fn normalize_google(
+    bytes: &[u8],
+    value: &Value,
+    dialect: Option<DialectId>,
+) -> Result<ProviderTerminal, String> {
+    if value.get("promptFeedback").is_some()
+        && value
+            .get("candidates")
+            .and_then(Value::as_array)
+            .is_none_or(Vec::is_empty)
+    {
+        let mut term = terminal(
             bytes,
             Vec::new(),
             Vec::new(),
             Value::Array(Vec::new()),
-            None,
+            value.get("responseId").and_then(Value::as_str),
             value.get("usageMetadata"),
             Some("SAFETY"),
-        );
+        )?;
+        term.stop_details = value.get("promptFeedback").cloned();
+        return Ok(term);
     }
     let candidate = value
         .get("candidates")
@@ -2553,8 +2767,9 @@ fn normalize_google(bytes: &[u8], value: &Value) -> Result<ProviderTerminal, Str
             }
         }
         if let Some(call) = part.get("functionCall") {
+            let call_id = google_function_call_id(call, calls.len(), dialect)?;
             calls.push(ToolCall {
-                call_id: required_string(call, "id")?,
+                call_id,
                 name: required_string(call, "name")?,
                 arguments: parse_foreign_value(
                     &serde_json::to_vec(
@@ -2662,10 +2877,17 @@ fn usage_from_any(value: Option<&Value>) -> Option<Usage> {
         .or_else(|| numeric_string(value.pointer("/input_tokens_details/cached_tokens")))
         .or_else(|| numeric_string(value.pointer("/prompt_tokens_details/cached_tokens"))),
         cache_miss: numeric_string(value.get("prompt_cache_miss_tokens")),
-        cache_write: numeric_string(value.get("cache_creation_input_tokens")),
+        cache_write: numeric_string(value.get("cache_creation_input_tokens"))
+            .or_else(|| numeric_string(value.pointer("/input_tokens_details/cache_write_tokens"))),
         reasoning_tokens: first_numeric(
             value,
-            &["reasoningTokens", "thoughtsTokenCount", "reasoning_tokens"],
+            &[
+                "reasoningTokens",
+                "thoughtsTokenCount",
+                "totalThoughtTokens",
+                "reasoning_tokens",
+                "total_thought_tokens",
+            ],
         )
         .or_else(|| numeric_string(value.pointer("/output_tokens_details/reasoning_tokens")))
         .or_else(|| numeric_string(value.pointer("/output_tokens_details/thinking_tokens")))

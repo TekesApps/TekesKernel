@@ -191,7 +191,7 @@ input only; event semantic facts are emitted from the terminal.
   arguments;
 - continuation/query identities when supported;
 - usage values as decimal strings, or explicit `unavailable`;
-- a closed finish reason: `completed`, `tool_calls`, `length`,
+- a closed finish reason: `completed`, `tool_calls`, `length`, `paused`,
   `context_overflow`, `content_filter`, or `provider_error`.
 
 The adapter rejects NaN/infinity, invalid UTF-8, duplicate tool-call ids,
@@ -199,8 +199,9 @@ arguments that are not I-JSON, or a spill-discriminant collision. It never
 guesses a missing tool name or call id. Terminal native bytes used by adopt are
 published as the provider-adapter response asset before the recovery decision.
 
-At the worker normalization boundary, GLM Chat and DeepSeek Responses opt into
-the fixed-schema quoted-null repair. An invalid call may replace literal
+At the worker normalization boundary, GLM Chat and the DeepSeek dialects
+(Responses, Chat, and Anthropic) opt into the fixed-schema quoted-null repair.
+An invalid call may replace literal
 `"null"` with JSON null only in nullable-string fields of an exactly-one-non-null
 group, and only when exactly one candidate satisfies the complete schema.
 Valid calls, ambiguous repairs and unrelated invalid fields are unchanged.
@@ -261,9 +262,11 @@ finish or failure arm is mapped by implementation convention.
 A `transport` failure that interrupts a streaming body carries
 `partial_fragments`: the native output items the decoder had already
 completed, in output order and in the adapter's sealed-fragment shape — every
-item the stream closed (`response.output_item.done`, `content_block_stop`) and
+item the stream closed (`response.output_item.done`, `content_block_stop`),
 every tool call whose arguments completed (the fact that made it eligible for
-eager dispatch), with the same resolved arguments the terminal would carry.
+eager dispatch), with the same resolved arguments the terminal would carry, and
+any `GoogleGeneration` `{role: "model", parts}` turn containing a completed
+streamed `functionCall` (preserving Gemini `thoughtSignature` parts).
 Frames still never reach the semantic ledger (step 6); the worker consumes the
 partial at step 8. When the lost response had eagerly dispatched calls and the
 partial covers all of them, the recoverable `error` seals it as the attempt's

@@ -69,21 +69,39 @@ fn google_thinking_tool_result_preserves_signature() {
         .unwrap();
         let body: Value = serde_json::from_slice(&request.body).unwrap();
         assert_eq!(
-            body["generationConfig"]["thinkingConfig"]["thinkingBudget"],
-            4096
+            body["generationConfig"]["thinkingConfig"]["includeThoughts"],
+            true
         );
+        if resolved.thinking_wire() == Some(provider::ThinkingWire::GoogleLevel) {
+            assert_eq!(
+                body["generationConfig"]["thinkingConfig"]["thinkingLevel"],
+                "high"
+            );
+        } else {
+            assert_eq!(
+                body["generationConfig"]["thinkingConfig"]["thinkingBudget"],
+                4096
+            );
+        }
         if round == 1 {
+            let sealed_parts = sealed["parts"].as_array().unwrap();
             assert!(
-                body["contents"].as_array().unwrap().contains(&sealed),
+                body["contents"].as_array().unwrap().iter().any(|entry| {
+                    entry.get("role").and_then(Value::as_str) == Some("model")
+                        && entry["parts"].as_array() == Some(sealed_parts)
+                }),
                 "signature carrier changed during replay"
             );
         }
         capture.lock().unwrap().clear();
-        let completion = runtime.send(
-            provider::AdapterId::GoogleGeneration,
+        let completion = runtime.send_dialect_with_frames_and_wall_transport(
+            provider::DialectId::GoogleGenerationV1,
             &request,
+            None,
             &key,
             &std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false)),
+            None,
+            |_| Ok(()),
         );
         let raw = String::from_utf8_lossy(&capture.lock().unwrap()).replace(&key, "[REDACTED]");
         std::fs::write(directory.join(format!("round-{round}.response.json")), &raw).unwrap();
@@ -113,19 +131,13 @@ fn google_thinking_tool_result_preserves_signature() {
                     .as_str()
                     .is_some_and(|s| !s.is_empty())
             }));
-            assert!(
-                raw_value["usageMetadata"]["thoughtsTokenCount"]
-                    .as_u64()
-                    .unwrap_or(0)
-                    > 0
-            );
+            let thought_tokens = raw_value["usageMetadata"]
+                .get("thoughtsTokenCount")
+                .or_else(|| raw_value["usageMetadata"].get("totalThoughtTokens"));
+            assert!(thought_tokens.and_then(Value::as_u64).unwrap_or(0) > 0);
             assert_eq!(
                 terminal.usage.as_ref().unwrap().reasoning_tokens.as_deref(),
-                Some(
-                    raw_value["usageMetadata"]["thoughtsTokenCount"]
-                        .to_string()
-                        .as_str()
-                )
+                thought_tokens.map(ToString::to_string).as_deref()
             );
             items.push(ij(
                 json!({"role":"sealed","adapter":"google_generation_v1","fragments":sealed}),
@@ -158,7 +170,11 @@ fn google_accepts_legacy_nullable_union_tool_schema() {
     let provider: profile::Provider =
         serde_json::from_slice(&std::fs::read(directory.join("provider.json")).unwrap()).unwrap();
     assert_eq!(provider.dialect, "google_generation_v1");
-    assert_eq!(provider.endpoint_owner, "google");
+    assert!(
+        provider.endpoint_owner == "google"
+            || (provider.endpoint_owner == "cloudflare"
+                && provider.gateway_translation == "cloudflare-native-google")
+    );
     let model = provider.models.iter().find(|model| model.enabled).unwrap();
     let resolved = resolve_profile(&provider, model).unwrap();
     let ij = |v: Value| IJsonValue::parse(&serde_json_canonicalizer::to_vec(&v).unwrap()).unwrap();
@@ -183,11 +199,14 @@ fn google_accepts_legacy_nullable_union_tool_schema() {
     let runtime = provider::HttpRuntime::new()
         .unwrap()
         .with_response_capture(capture.clone());
-    let result = runtime.send(
-        provider::AdapterId::GoogleGeneration,
+    let result = runtime.send_dialect_with_frames_and_wall_transport(
+        provider::DialectId::GoogleGenerationV1,
         &prepared,
+        None,
         &key,
         &std::sync::Arc::new(std::sync::atomic::AtomicBool::new(false)),
+        None,
+        |_| Ok(()),
     );
     let bytes = capture.lock().unwrap().clone();
     let raw = String::from_utf8_lossy(&bytes).replace(&key, "[REDACTED]");

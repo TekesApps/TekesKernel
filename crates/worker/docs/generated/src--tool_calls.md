@@ -78,7 +78,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `execute_provider_tool_calls` | `cancellation.stop_requested` | [48](../../src/tool_calls.rs#L48), [161](../../src/tool_calls.rs#L161) | receiver-type-required |
 | `execute_provider_tool_calls` | `Ok` | [49](../../src/tool_calls.rs#L49), [68](../../src/tool_calls.rs#L68), [162](../../src/tool_calls.rs#L162), [170](../../src/tool_calls.rs#L170), [194](../../src/tool_calls.rs#L194), [198](../../src/tool_calls.rs#L198) | external-constructor-callback-or-unresolved |
 | `execute_provider_tool_calls` | `execute_child_spawn_tool` | [52](../../src/tool_calls.rs#L52) | external-constructor-callback-or-unresolved |
-| `execute_provider_tool_calls` | `provider::invalid_arguments_detail` | [72](../../src/tool_calls.rs#L72) | [provider::normalize::invalid_arguments_detail](../../../provider/src/normalize.rs#L790) |
+| `execute_provider_tool_calls` | `provider::invalid_arguments_detail` | [72](../../src/tool_calls.rs#L72) | [provider::normalize::invalid_arguments_detail](../../../provider/src/normalize.rs#L821) |
 | `execute_provider_tool_calls` | `append_tool_validation_error` | [75](../../src/tool_calls.rs#L75), [88](../../src/tool_calls.rs#L88), [152](../../src/tool_calls.rs#L152) | [tekes-worker::tool_calls::append_tool_validation_error](../../src/tool_calls.rs#L201) |
 | `execute_provider_tool_calls` | `storage_root_for_thread_folder(&thread_folder)             .map(&#124;root&#124; profile.config.protected_roots(&root))             .and_then` | [78](../../src/tool_calls.rs#L78) | receiver-type-required |
 | `execute_provider_tool_calls` | `storage_root_for_thread_folder(&thread_folder)             .map` | [78](../../src/tool_calls.rs#L78) | receiver-type-required |
