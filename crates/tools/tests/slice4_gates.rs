@@ -1148,3 +1148,147 @@ fn lines(lines: &[&str]) -> Vec<u8> {
     }
     output
 }
+
+#[test]
+fn execution_started_resume_skips_pre_hooks_gate_and_duplicate_start_marker() {
+    // 1. Direct start (no approval): pre-hook mutated invocation before crash right after
+    //    `tool_execution_started`. Recovery must skip pre-hooks, policy gate, and a second
+    //    `tool_execution_started`, and pass the durable `effective_execution` invocation.
+    let dir = tool_ledger();
+    let path = dir.path().join("main.jsonl");
+    let assets = AssetStore::new(dir.path().join("assets")).unwrap();
+    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let execution = tool_execution();
+    let mutated = IJsonValue::parse_str(r#"{"argv":["/usr/bin/printf","mutated"]}"#).unwrap();
+    for raw in [
+        json!({"v":1,"seq":ledger.next_seq(),"turn":1,"kind":"effective_execution","ts":TS,"call":"c1","invocation":mutated}),
+        json!({"v":1,"seq":ledger.next_seq() + 1,"turn":1,"kind":"tool_execution_started","ts":TS,"call":"c1"}),
+    ] {
+        ledger
+            .append_contract(event(raw), BarrierContext::default())
+            .unwrap();
+    }
+    drop(ledger);
+
+    let mut ledger = LockedLedger::open(&path, 1).unwrap();
+    let fail_pre_hook = shell_hook("pre-must-not-run", HookPhase::Pre, "exit 1");
+    let decision = ToolPipeline::new(&mut ledger, assets.clone(), SecretScanner::default())
+        .with_resume_started(true)
+        .execute_terminal_with_gate_and_resume(
+            &execution,
+            &[fail_pre_hook],
+            |_, _| panic!("gate must not re-run after tool_execution_started"),
+            |_, invocation, approval| {
+                assert!(approval.is_none());
+                assert_eq!(*invocation, mutated);
+                tools::BackendTerminal::Completed(IJsonValue::from("reconciled"))
+            },
+        )
+        .unwrap();
+    assert!(matches!(decision, PipelineDecision::Completed { .. }));
+    let start_count = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| *event.kind() == schema::EventKind::ToolExecutionStarted)
+        .count();
+    let result_count = ledger
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| *event.kind() == schema::EventKind::ToolResult)
+        .count();
+    assert_eq!(start_count, 1);
+    assert_eq!(result_count, 1);
+
+    // 2. Post-approval start: `approval_request` -> `approval_response` -> `tool_execution_started`.
+    //    Recovery passes `Some(approval)` without appending a second `tool_execution_started`.
+    let dir2 = tool_ledger();
+    let path2 = dir2.path().join("main.jsonl");
+    let assets2 = AssetStore::new(dir2.path().join("assets")).unwrap();
+    let mut ledger2 = LockedLedger::open(&path2, 1).unwrap();
+    for raw in [
+        json!({"v":1,"seq":ledger2.next_seq(),"turn":1,"kind":"approval_request","ts":TS,"call":"c1","scope":"execute"}),
+        json!({"v":1,"seq":ledger2.next_seq() + 1,"turn":1,"kind":"approval_response","ts":TS,"call":"c1","grant":true,"origin_key":"approve-started","origin_tuple":{"principal":"p","client":"cli","target":"t","op":"approve","key":"approve-started"}}),
+        json!({"v":1,"seq":ledger2.next_seq() + 2,"turn":1,"kind":"tool_execution_started","ts":TS,"call":"c1"}),
+    ] {
+        ledger2
+            .append_contract(event(raw), BarrierContext::default())
+            .unwrap();
+    }
+    drop(ledger2);
+
+    let mut ledger2 = LockedLedger::open(&path2, 1).unwrap();
+    let decision2 = ToolPipeline::new(&mut ledger2, assets2, SecretScanner::default())
+        .with_resume_started(true)
+        .execute_terminal_with_gate_and_resume(
+            &execution,
+            &[],
+            |_, _| panic!("gate must not re-run after post-approval start"),
+            |_, invocation, approval| {
+                assert!(approval.is_some());
+                assert_eq!(*invocation, execution.invocation);
+                tools::BackendTerminal::Completed(IJsonValue::from("approved-reconciled"))
+            },
+        )
+        .unwrap();
+    assert!(matches!(decision2, PipelineDecision::Completed { .. }));
+    let start_count2 = ledger2
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| *event.kind() == schema::EventKind::ToolExecutionStarted)
+        .count();
+    assert_eq!(start_count2, 1);
+
+    // 3. BackendTerminal::Hold after an earlier start: `tool_execution_started` precedes
+    //    `approval_request` -> `approval_response`, so resume enters `Granted`, not `Started`,
+    //    and records the post-approval start marker cleanly.
+    let dir3 = tool_ledger();
+    let path3 = dir3.path().join("main.jsonl");
+    let assets3 = AssetStore::new(dir3.path().join("assets")).unwrap();
+    let mut ledger3 = LockedLedger::open(&path3, 1).unwrap();
+    let parked = ToolPipeline::new(&mut ledger3, assets3.clone(), SecretScanner::default())
+        .execute_terminal_with_gate_and_resume(
+            &execution,
+            &[],
+            |_, _| tools::ApprovalGate::Allow,
+            |_, _, _| tools::BackendTerminal::Hold {
+                scope: "execute".to_owned(),
+                question: IJsonValue::from("confirm?"),
+            },
+        )
+        .unwrap();
+    assert!(matches!(parked, PipelineDecision::Parked { .. }));
+    let grant = json!({"v":1,"seq":ledger3.next_seq(),"turn":1,"kind":"approval_response","ts":TS,"call":"c1","grant":true,"origin_key":"approve-hold","origin_tuple":{"principal":"p","client":"cli","target":"t","op":"approve","key":"approve-hold"}});
+    ledger3
+        .append_contract(event(grant), BarrierContext::default())
+        .unwrap();
+    drop(ledger3);
+
+    let mut ledger3 = LockedLedger::open(&path3, 1).unwrap();
+    let resumed3 = ToolPipeline::new(&mut ledger3, assets3, SecretScanner::default())
+        .with_resume_started(true)
+        .execute_terminal_with_gate_and_resume(
+            &execution,
+            &[],
+            |_, _| panic!("gate must not re-run"),
+            |_, _, approval| {
+                assert!(approval.is_some());
+                tools::BackendTerminal::Completed(IJsonValue::from("hold-completed"))
+            },
+        )
+        .unwrap();
+    assert!(matches!(resumed3, PipelineDecision::Completed { .. }));
+    let start_count3 = ledger3
+        .projection()
+        .unwrap()
+        .events
+        .iter()
+        .filter(|event| *event.kind() == schema::EventKind::ToolExecutionStarted)
+        .count();
+    assert_eq!(start_count3, 2);
+}

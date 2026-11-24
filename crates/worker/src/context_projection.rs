@@ -476,7 +476,9 @@ pub(crate) fn project_provider_context_mode(
             EventKind::State => event.turn() == Some(turn),
             _ => false,
         };
-        let eligible_at_epoch = event.seq() >= epoch_seq || epoch_pending.contains(&event.seq());
+        let eligible_at_epoch = event.seq() >= epoch_seq
+            || epoch_pending.contains(&event.seq())
+            || (admit_eligible && matches!(event.kind(), EventKind::Input));
         if !eligible
             || (incremental_continuation
                 && (!host_born || admitted.contains(&event.seq()) || !eligible_at_epoch))
@@ -977,6 +979,21 @@ pub(crate) fn append_provider_epoch(
     // epoch of the thread.
     let tools_bytes = tools.canonical_bytes()?;
     let tools_asset = assets.publish(&tools_bytes)?;
+    let withheld = ledger
+        .projection()
+        .map(|projection| {
+            let mut seqs = projection
+                .lifecycle
+                .live_inputs
+                .iter()
+                .copied()
+                .filter(|seq| !pending.contains(seq))
+                .collect::<Vec<_>>();
+            seqs.sort_unstable();
+            seqs.dedup();
+            seqs
+        })
+        .unwrap_or_default();
     let event = make_event(json!({
         "v": 1,
         "seq": ledger.next_seq(),
@@ -995,7 +1012,7 @@ pub(crate) fn append_provider_epoch(
             "digest": format!("{:x}", Sha256::digest(&tools_bytes))
         },
         "renderer": CONTEXT_RENDERER_VERSION,
-        "pending": {"eligible": pending, "withheld": []}
+        "pending": {"eligible": pending, "withheld": withheld}
     }))?;
     ledger.append_contract(event, BarrierContext::default())?;
     Ok(id)

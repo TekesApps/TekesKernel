@@ -311,7 +311,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `prepare_storage` | `store::probe_local_filesystem(root).map_err` | [191](../../src/host_runtime.rs#L191) | receiver-type-required |
 | `prepare_storage` | `store::probe_local_filesystem` | [191](../../src/host_runtime.rs#L191) | [store::platform::probe_local_filesystem](../../../store/src/platform.rs#L231) |
 | `prepare_storage` | `ThreadStore::open(root).map_err` | [192](../../src/host_runtime.rs#L192) | receiver-type-required |
-| `prepare_storage` | `ThreadStore::open` | [192](../../src/host_runtime.rs#L192) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `prepare_storage` | `ThreadStore::open` | [192](../../src/host_runtime.rs#L192) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `prepare_storage` | `store         .recover_rewrites_for_startup()         .map_err` | [193](../../src/host_runtime.rs#L193) | receiver-type-required |
 | `prepare_storage` | `store         .recover_rewrites_for_startup` | [193](../../src/host_runtime.rs#L193) | receiver-type-required |
 | `prepare_storage` | `store.gc_rewrite_debris().map_err` | [196](../../src/host_runtime.rs#L196) | receiver-type-required |

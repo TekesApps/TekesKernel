@@ -51,7 +51,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/endpoint/src/requests.rs](../../src/requests.rs) | 17 | 74 | [Symbols and calls](src--requests.md) |
 | [crates/endpoint/src/respond.rs](../../src/respond.rs) | 17 | 133 | [Symbols and calls](src--respond.md) |
 | [crates/endpoint/src/rpc.rs](../../src/rpc.rs) | 25 | 72 | [Symbols and calls](src--rpc.md) |
-| [crates/endpoint/src/service.rs](../../src/service.rs) | 60 | 460 | [Symbols and calls](src--service.md) |
+| [crates/endpoint/src/service.rs](../../src/service.rs) | 61 | 462 | [Symbols and calls](src--service.md) |
 | [crates/endpoint/src/session_event_registry_generated.rs](../../src/session_event_registry_generated.rs) | 8 | 7 | [Symbols and calls](src--session_event_registry_generated.md) |
 | [crates/endpoint/src/session_operations.rs](../../src/session_operations.rs) | 108 | 1241 | [Symbols and calls](src--session_operations.md) |
 | [crates/endpoint/src/stitch.rs](../../src/stitch.rs) | 4 | 36 | [Symbols and calls](src--stitch.md) |

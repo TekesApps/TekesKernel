@@ -224,7 +224,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `Arc::clone` | [377](../../src/card/tests.rs#L377) | external-constructor-callback-or-unresolved |
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `std::thread::spawn` | [378](../../src/card/tests.rs#L378) | external-constructor-callback-or-unresolved |
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `LockedLedger::open(&ledger, schema::READER_VERSION).expect` | [383](../../src/card/tests.rs#L383) | receiver-type-required |
-| `card_writes_never_disturb_a_worker_appending_under_the_flock` | `LockedLedger::open` | [383](../../src/card/tests.rs#L383) | [store::tail::LockedLedger::open](../../src/tail.rs#L186) |
+| `card_writes_never_disturb_a_worker_appending_under_the_flock` | `LockedLedger::open` | [383](../../src/card/tests.rs#L383) | [store::tail::LockedLedger::open](../../src/tail.rs#L187) |
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `writer                     .append(title(&format!("event-{seq}"), seq), seq % 7 == 0)                     .expect` | [385](../../src/card/tests.rs#L385) | receiver-type-required |
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `writer                     .append` | [385](../../src/card/tests.rs#L385) | receiver-type-required |
 | `card_writes_never_disturb_a_worker_appending_under_the_flock` | `title` | [386](../../src/card/tests.rs#L386) | [store::card::tests::title](../../src/card/tests.rs#L25) |

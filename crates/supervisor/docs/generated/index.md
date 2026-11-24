@@ -60,7 +60,7 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/continuation_journal.rs](../../src/continuation_journal.rs) | 20 | 287 | [Symbols and calls](src--continuation_journal.md) |
 | [crates/supervisor/src/dynamic_bindings.rs](../../src/dynamic_bindings.rs) | 8 | 47 | [Symbols and calls](src--dynamic_bindings.md) |
 | [crates/supervisor/src/endpoint_carrier/legacy_history.rs](../../src/endpoint_carrier/legacy_history.rs) | 13 | 184 | [Symbols and calls](src--endpoint_carrier--legacy_history.md) |
-| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 177 | 1655 | [Symbols and calls](src--endpoint_carrier.md) |
+| [crates/supervisor/src/endpoint_carrier.rs](../../src/endpoint_carrier.rs) | 186 | 1772 | [Symbols and calls](src--endpoint_carrier.md) |
 | [crates/supervisor/src/endpoint_host.rs](../../src/endpoint_host.rs) | 174 | 1227 | [Symbols and calls](src--endpoint_host.md) |
 | [crates/supervisor/src/file_leases.rs](../../src/file_leases.rs) | 20 | 156 | [Symbols and calls](src--file_leases.md) |
 | [crates/supervisor/src/file_observation.rs](../../src/file_observation.rs) | 13 | 134 | [Symbols and calls](src--file_observation.md) |
@@ -68,23 +68,23 @@ File-derived paths below are lexical navigation, not a compiler-resolved module 
 | [crates/supervisor/src/lib.rs](../../src/lib.rs) | 27 | 184 | [Symbols and calls](src--lib.md) |
 | [crates/supervisor/src/main.rs](../../src/main.rs) | 1 | 39 | [Symbols and calls](src--main.md) |
 | [crates/supervisor/src/mcp_continuation.rs](../../src/mcp_continuation.rs) | 8 | 173 | [Symbols and calls](src--mcp_continuation.md) |
-| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 50 | 519 | [Symbols and calls](src--mcp_runtime.md) |
-| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 401 | 7872 | [Symbols and calls](src--process_host.md) |
+| [crates/supervisor/src/mcp_runtime.rs](../../src/mcp_runtime.rs) | 54 | 560 | [Symbols and calls](src--mcp_runtime.md) |
+| [crates/supervisor/src/process_host.rs](../../src/process_host.rs) | 406 | 8016 | [Symbols and calls](src--process_host.md) |
 | [crates/supervisor/src/process_live_tests.rs](../../src/process_live_tests.rs) | 18 | 1840 | [Symbols and calls](src--process_live_tests.md) |
 | [crates/supervisor/src/process_tool_visibility_tests.rs](../../src/process_tool_visibility_tests.rs) | 13 | 231 | [Symbols and calls](src--process_tool_visibility_tests.md) |
-| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 83 | 836 | [Symbols and calls](src--production_tool_control.md) |
+| [crates/supervisor/src/production_tool_control.rs](../../src/production_tool_control.rs) | 85 | 843 | [Symbols and calls](src--production_tool_control.md) |
 | [crates/supervisor/src/request_index.rs](../../src/request_index.rs) | 30 | 169 | [Symbols and calls](src--request_index.md) |
 | [crates/supervisor/src/resource_capability.rs](../../src/resource_capability.rs) | 71 | 438 | [Symbols and calls](src--resource_capability.md) |
 | [crates/supervisor/src/stdio_channels.rs](../../src/stdio_channels.rs) | 2 | 29 | [Symbols and calls](src--stdio_channels.md) |
 | [crates/supervisor/src/thread_card/tests.rs](../../src/thread_card/tests.rs) | 13 | 162 | [Symbols and calls](src--thread_card--tests.md) |
 | [crates/supervisor/src/thread_card.rs](../../src/thread_card.rs) | 46 | 270 | [Symbols and calls](src--thread_card.md) |
-| [crates/supervisor/src/tool_control.rs](../../src/tool_control.rs) | 45 | 304 | [Symbols and calls](src--tool_control.md) |
+| [crates/supervisor/src/tool_control.rs](../../src/tool_control.rs) | 48 | 345 | [Symbols and calls](src--tool_control.md) |
 | [crates/supervisor/tests/ready_reads_no_thread.rs](../../tests/ready_reads_no_thread.rs) | 6 | 139 | `inventory.json` |
 | [crates/supervisor/tests/s4_lazy_boot_streams.rs](../../tests/s4_lazy_boot_streams.rs) | 72 | 1018 | `inventory.json` |
 | [crates/supervisor/tests/secret_store.rs](../../tests/secret_store.rs) | 9 | 60 | `inventory.json` |
 | [crates/supervisor/tests/session_execution_endpoint.rs](../../tests/session_execution_endpoint.rs) | 6 | 98 | `inventory.json` |
 | [crates/supervisor/tests/session_mcp.rs](../../tests/session_mcp.rs) | 18 | 189 | `inventory.json` |
-| [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 42 | 437 | `inventory.json` |
+| [crates/supervisor/tests/shell.rs](../../tests/shell.rs) | 50 | 659 | `inventory.json` |
 | [crates/supervisor/tests/slice14f_common_routes.rs](../../tests/slice14f_common_routes.rs) | 6 | 111 | `inventory.json` |
 | [crates/supervisor/tests/slice8_tool_control.rs](../../tests/slice8_tool_control.rs) | 7 | 106 | `inventory.json` |
 | [crates/supervisor/tests/slice9_endpoint_carrier.rs](../../tests/slice9_endpoint_carrier.rs) | 48 | 880 | `inventory.json` |
@@ -145,6 +145,7 @@ flowchart LR
   m18 -->|"4"| m1
   m18 -->|"1"| m5
   m18 -->|"2"| m9
+  m18 -->|"1"| m10
   m18 -->|"5"| m11
   m18 -->|"163"| m13
   m18 -->|"1"| m14

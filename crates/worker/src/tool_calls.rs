@@ -11,6 +11,21 @@ where
     I: Iterator<Item = io::Result<String>>,
     O: Write,
 {
+    execute_provider_tool_calls_with_resume(ledger, batch, credential, lines, stdout, false)
+}
+
+pub(crate) fn execute_provider_tool_calls_with_resume<I, O>(
+    ledger: &mut LockedLedger,
+    batch: ToolCallBatch<'_>,
+    credential: Option<&Arc<Mutex<CredentialClient>>>,
+    lines: &mut I,
+    stdout: &mut O,
+    resume_started: bool,
+) -> Result<bool, Box<dyn std::error::Error>>
+where
+    I: Iterator<Item = io::Result<String>>,
+    O: Write,
+{
     let ToolCallBatch {
         options,
         profile,
@@ -119,7 +134,8 @@ where
             .deferred_search_entries(&dynamic_backend)?
             .is_empty();
         let context = tool_catalog_context(profile, has_deferred, options.web_search_ready)?;
-        let mut pipeline = ToolPipeline::new(ledger, assets.clone(), SecretScanner::default());
+        let mut pipeline = ToolPipeline::new(ledger, assets.clone(), SecretScanner::default())
+            .with_resume_started(resume_started);
         let decision = if manifest
             .tools
             .iter()

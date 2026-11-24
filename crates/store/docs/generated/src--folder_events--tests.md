@@ -64,7 +64,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `every_membership_change_is_announced_and_admission_follows_it` | `dir.path().to_path_buf` | [37](../../src/folder_events/tests.rs#L37) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `dir.path` | [37](../../src/folder_events/tests.rs#L37) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `ThreadStore::open(&root).unwrap` | [38](../../src/folder_events/tests.rs#L38) | receiver-type-required |
-| `every_membership_change_is_announced_and_admission_follows_it` | `ThreadStore::open` | [38](../../src/folder_events/tests.rs#L38) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `every_membership_change_is_announced_and_admission_follows_it` | `ThreadStore::open` | [38](../../src/folder_events/tests.rs#L38) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `every_membership_change_is_announced_and_admission_follows_it` | `record_events` | [39](../../src/folder_events/tests.rs#L39) | external-constructor-callback-or-unresolved |
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.create_thread(A, genesis(A, false)).unwrap` | [42](../../src/folder_events/tests.rs#L42) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.create_thread` | [42](../../src/folder_events/tests.rs#L42), [47](../../src/folder_events/tests.rs#L47), [61](../../src/folder_events/tests.rs#L61), [65](../../src/folder_events/tests.rs#L65) | receiver-type-required |
@@ -76,7 +76,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.unarchive(A).unwrap` | [53](../../src/folder_events/tests.rs#L53) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `store.unarchive` | [53](../../src/folder_events/tests.rs#L53) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder(&root.join("threads").join(B), &root.join("archive").join(B)).unwrap` | [57](../../src/folder_events/tests.rs#L57) | receiver-type-required |
-| `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | [store::folder::move_thread_folder](../../src/folder.rs#L986) |
+| `every_membership_change_is_announced_and_admission_follows_it` | `move_thread_folder` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | [store::folder::move_thread_folder](../../src/folder.rs#L1029) |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join("threads").join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
 | `every_membership_change_is_announced_and_admission_follows_it` | `root.join("archive").join` | [57](../../src/folder_events/tests.rs#L57), [58](../../src/folder_events/tests.rs#L58) | receiver-type-required |
@@ -88,7 +88,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `tempfile::tempdir` | [86](../../src/folder_events/tests.rs#L86) | external-constructor-callback-or-unresolved |
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `dir.path` | [87](../../src/folder_events/tests.rs#L87) | receiver-type-required |
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `ThreadStore::open(root).unwrap` | [88](../../src/folder_events/tests.rs#L88) | receiver-type-required |
-| `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `ThreadStore::open` | [88](../../src/folder_events/tests.rs#L88) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `ThreadStore::open` | [88](../../src/folder_events/tests.rs#L88) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `store.create_thread(A, genesis(A, false)).unwrap` | [89](../../src/folder_events/tests.rs#L89) | receiver-type-required |
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `store.create_thread` | [89](../../src/folder_events/tests.rs#L89) | receiver-type-required |
 | `the_chokepoint_refuses_moves_that_are_not_between_areas_of_one_root` | `genesis` | [89](../../src/folder_events/tests.rs#L89) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
@@ -101,13 +101,13 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `dir.path().to_path_buf` | [102](../../src/folder_events/tests.rs#L102) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `dir.path` | [102](../../src/folder_events/tests.rs#L102) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `ThreadStore::open(&root).unwrap` | [103](../../src/folder_events/tests.rs#L103) | receiver-type-required |
-| `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `ThreadStore::open` | [103](../../src/folder_events/tests.rs#L103) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `ThreadStore::open` | [103](../../src/folder_events/tests.rs#L103) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `store.create_thread(id, genesis(id, true)).unwrap` | [109](../../src/folder_events/tests.rs#L109) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `store.create_thread` | [109](../../src/folder_events/tests.rs#L109), [111](../../src/folder_events/tests.rs#L111) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `genesis` | [109](../../src/folder_events/tests.rs#L109), [111](../../src/folder_events/tests.rs#L111) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `store.create_thread(A, genesis(A, false)).unwrap` | [111](../../src/folder_events/tests.rs#L111) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `crate::LockedLedger::open(         root.join("threads").join(held).join("main.jsonl"),         schema::READER_VERSION,     )     .unwrap` | [112](../../src/folder_events/tests.rs#L112) | receiver-type-required |
-| `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `crate::LockedLedger::open` | [112](../../src/folder_events/tests.rs#L112) | [store::tail::LockedLedger::open](../../src/tail.rs#L186) |
+| `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `crate::LockedLedger::open` | [112](../../src/folder_events/tests.rs#L112) | [store::tail::LockedLedger::open](../../src/tail.rs#L187) |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `root.join("threads").join(held).join` | [113](../../src/folder_events/tests.rs#L113) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `root.join("threads").join` | [113](../../src/folder_events/tests.rs#L113) | receiver-type-required |
 | `cleanup_removes_only_stale_ephemeral_threads_and_never_owned_or_held_ones` | `root.join` | [113](../../src/folder_events/tests.rs#L113), [124](../../src/folder_events/tests.rs#L124) | receiver-type-required |
@@ -121,7 +121,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `dir.path().to_path_buf` | [135](../../src/folder_events/tests.rs#L135) | receiver-type-required |
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `dir.path` | [135](../../src/folder_events/tests.rs#L135) | receiver-type-required |
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `ThreadStore::open(&root).unwrap` | [136](../../src/folder_events/tests.rs#L136) | receiver-type-required |
-| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `ThreadStore::open` | [136](../../src/folder_events/tests.rs#L136) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `deleting_a_swept_threads_tombstone_announces_nothing_more` | `ThreadStore::open` | [136](../../src/folder_events/tests.rs#L136) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.create_thread(C, genesis(C, true)).unwrap` | [137](../../src/folder_events/tests.rs#L137), [144](../../src/folder_events/tests.rs#L144) | receiver-type-required |
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `store.create_thread` | [137](../../src/folder_events/tests.rs#L137), [144](../../src/folder_events/tests.rs#L144) | receiver-type-required |
 | `deleting_a_swept_threads_tombstone_announces_nothing_more` | `genesis` | [137](../../src/folder_events/tests.rs#L137), [144](../../src/folder_events/tests.rs#L144) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
@@ -133,7 +133,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `tempfile::tempdir` | [155](../../src/folder_events/tests.rs#L155) | external-constructor-callback-or-unresolved |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `dir.path` | [156](../../src/folder_events/tests.rs#L156) | receiver-type-required |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open(root).unwrap` | [157](../../src/folder_events/tests.rs#L157) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open` | [157](../../src/folder_events/tests.rs#L157) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `ThreadStore::open` | [157](../../src/folder_events/tests.rs#L157) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `root.join` | [158](../../src/folder_events/tests.rs#L158) | receiver-type-required |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{A}/assets"))).unwrap` | [159](../../src/folder_events/tests.rs#L159) | receiver-type-required |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all` | [159](../../src/folder_events/tests.rs#L159), [161](../../src/folder_events/tests.rs#L161), [162](../../src/folder_events/tests.rs#L162) | external-constructor-callback-or-unresolved |
@@ -143,7 +143,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join(format!("discard-{B}.deleting-1-1"))).unwrap` | [161](../../src/folder_events/tests.rs#L161) | receiver-type-required |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `fs::create_dir_all(trash.join("redact-op-keepme")).unwrap` | [162](../../src/folder_events/tests.rs#L162) | receiver-type-required |
 | `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present(&trash.join("nope")).unwrap` | [167](../../src/folder_events/tests.rs#L167) | receiver-type-required |
-| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present` | [167](../../src/folder_events/tests.rs#L167) | [store::folder::remove_tree_if_present](../../src/folder.rs#L925) |
+| `leftover_tombstones_are_cleaned_and_vanishing_ones_are_not_errors` | `crate::folder::remove_tree_if_present` | [167](../../src/folder_events/tests.rs#L167) | [store::folder::remove_tree_if_present](../../src/folder.rs#L968) |
 | `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir().unwrap` | [174](../../src/folder_events/tests.rs#L174) | receiver-type-required |
 | `admission_is_keyed_by_the_canonical_root` | `tempfile::tempdir` | [174](../../src/folder_events/tests.rs#L174) | external-constructor-callback-or-unresolved |
 | `admission_is_keyed_by_the_canonical_root` | `fs::canonicalize(dir.path()).unwrap` | [175](../../src/folder_events/tests.rs#L175) | receiver-type-required |
@@ -155,7 +155,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `admission_is_keyed_by_the_canonical_root` | `real.join("threads").join` | [178](../../src/folder_events/tests.rs#L178) | receiver-type-required |
 | `admission_is_keyed_by_the_canonical_root` | `arm_admission` | [179](../../src/folder_events/tests.rs#L179) | external-constructor-callback-or-unresolved |
 | `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open(&alias).unwrap` | [180](../../src/folder_events/tests.rs#L180) | receiver-type-required |
-| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open` | [180](../../src/folder_events/tests.rs#L180) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `admission_is_keyed_by_the_canonical_root` | `ThreadStore::open` | [180](../../src/folder_events/tests.rs#L180) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `admission_is_keyed_by_the_canonical_root` | `store.create_thread(C, genesis(C, false)).unwrap` | [181](../../src/folder_events/tests.rs#L181) | receiver-type-required |
 | `admission_is_keyed_by_the_canonical_root` | `store.create_thread` | [181](../../src/folder_events/tests.rs#L181) | receiver-type-required |
 | `admission_is_keyed_by_the_canonical_root` | `genesis` | [181](../../src/folder_events/tests.rs#L181) | [store::folder_events::tests::genesis](../../src/folder_events/tests.rs#L11) |
@@ -164,7 +164,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path().to_path_buf` | [192](../../src/folder_events/tests.rs#L192) | receiver-type-required |
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `dir.path` | [192](../../src/folder_events/tests.rs#L192) | receiver-type-required |
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open(&root).unwrap` | [193](../../src/folder_events/tests.rs#L193) | receiver-type-required |
-| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open` | [193](../../src/folder_events/tests.rs#L193) | [store::folder::ThreadStore::open](../../src/folder.rs#L36) |
+| `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `ThreadStore::open` | [193](../../src/folder_events/tests.rs#L193) | [store::folder::ThreadStore::open](../../src/folder.rs#L48) |
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join(".rewrite-trash").join` | [194](../../src/folder_events/tests.rs#L194) | receiver-type-required |
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `root.join` | [194](../../src/folder_events/tests.rs#L194), [197](../../src/folder_events/tests.rs#L197), [199](../../src/folder_events/tests.rs#L199) | receiver-type-required |
 | `tombstones_are_cleaned_even_when_the_ephemeral_scan_fails` | `fs::create_dir_all(tombstone.join("assets")).unwrap` | [195](../../src/folder_events/tests.rs#L195) | receiver-type-required |
@@ -189,5 +189,5 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions` | [216](../../src/folder_events/tests.rs#L216), [219](../../src/folder_events/tests.rs#L219) | external-constructor-callback-or-unresolved |
 | `a_real_removal_failure_is_not_waited_for` | `fs::Permissions::from_mode` | [216](../../src/folder_events/tests.rs#L216), [219](../../src/folder_events/tests.rs#L219) | external-constructor-callback-or-unresolved |
 | `a_real_removal_failure_is_not_waited_for` | `std::time::Instant::now` | [217](../../src/folder_events/tests.rs#L217) | external-constructor-callback-or-unresolved |
-| `a_real_removal_failure_is_not_waited_for` | `crate::folder::remove_tree_if_present` | [218](../../src/folder_events/tests.rs#L218) | [store::folder::remove_tree_if_present](../../src/folder.rs#L925) |
+| `a_real_removal_failure_is_not_waited_for` | `crate::folder::remove_tree_if_present` | [218](../../src/folder_events/tests.rs#L218) | [store::folder::remove_tree_if_present](../../src/folder.rs#L968) |
 | `a_real_removal_failure_is_not_waited_for` | `fs::set_permissions(&locked, fs::Permissions::from_mode(0o700)).unwrap` | [219](../../src/folder_events/tests.rs#L219) | receiver-type-required |

@@ -136,6 +136,7 @@ pub struct LockedLedger {
     validator: LedgerValidator,
     projection: Option<LedgerProjection>,
     sync: Arc<dyn SyncPolicy>,
+    synced_through_seq: u64,
     poisoned: bool,
     reader_version: u64,
 }
@@ -208,10 +209,13 @@ impl LockedLedger {
         // format's valid suffix must never be truncated by an older writer.
         check_ledger_write_versions(&bytes, reader_version)?;
         let scan = scan_valid_prefix(&bytes, reader_version);
-        if scan.needs_repair() {
+        let synced_through_seq = if scan.needs_repair() {
             file.set_len(scan.valid_bytes)?;
             sync.full_sync(&file)?;
-        }
+            scan.last_seq()
+        } else {
+            0
+        };
 
         let validator = scan
             .validator
@@ -224,6 +228,7 @@ impl LockedLedger {
             validator,
             projection,
             sync,
+            synced_through_seq,
             poisoned: false,
             reader_version,
         })
@@ -250,11 +255,29 @@ impl LockedLedger {
     /// This creates no semantic event and cannot revive a poisoned writer.
     pub fn sync_prefix(&mut self) -> Result<(), StoreError> {
         if self.poisoned {
-            return Err(StoreError::Corruption("writer is poisoned".to_owned()));
+            return Err(StoreError::Corruption(
+                "writer is poisoned by an earlier append/sync failure".to_owned(),
+            ));
         }
         if let Err(error) = self.sync.full_sync(&self.file) {
             self.poisoned = true;
             return Err(StoreError::Io(error));
+        }
+        let last_seq = self.projection.as_ref().map_or(0, |value| value.last_seq);
+        self.synced_through_seq = self.synced_through_seq.max(last_seq);
+        Ok(())
+    }
+
+    /// Ensure the prefix through `seq` has crossed this handle's sync barrier
+    /// before acknowledging an already-present or committed record.
+    pub fn ensure_synced_through(&mut self, seq: u64) -> Result<(), StoreError> {
+        if self.poisoned {
+            return Err(StoreError::Corruption(
+                "writer is poisoned by an earlier append/sync failure".to_owned(),
+            ));
+        }
+        if self.synced_through_seq < seq {
+            self.sync_prefix()?;
         }
         Ok(())
     }
@@ -293,6 +316,7 @@ impl LockedLedger {
             ));
         }
         check_write_versions(std::iter::once(&event), self.reader_version)?;
+        let seq = event.seq();
         let mut next = self.validator.clone();
         next.push(event.clone())?;
         let mut bytes = event.canonical_bytes()?;
@@ -307,6 +331,7 @@ impl LockedLedger {
                 self.poisoned = true;
                 return Err(StoreError::Io(error));
             }
+            self.synced_through_seq = self.synced_through_seq.max(seq);
         } else if let Err(error) = self.file.flush() {
             self.poisoned = true;
             return Err(StoreError::Io(error));

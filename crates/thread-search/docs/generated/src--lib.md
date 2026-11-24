@@ -204,7 +204,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | Caller | Callee expression | Source lines | Target / classification |
 |---|---|---|---|
 | `open` | `Ok` | [121](../../src/lib.rs#L121) | external-constructor-callback-or-unresolved |
-| `open` | `ThreadStore::open` | [122](../../src/lib.rs#L122) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L36) |
+| `open` | `ThreadStore::open` | [122](../../src/lib.rs#L122) | [store::folder::ThreadStore::open](../../../store/src/folder.rs#L48) |
 | `open` | `Arc::new` | [123](../../src/lib.rs#L123), [124](../../src/lib.rs#L124) | external-constructor-callback-or-unresolved |
 | `open` | `SearchMetrics::default` | [123](../../src/lib.rs#L123) | external-constructor-callback-or-unresolved |
 | `open` | `Mutex::new` | [124](../../src/lib.rs#L124) | external-constructor-callback-or-unresolved |

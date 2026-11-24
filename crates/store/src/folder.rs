@@ -1,12 +1,14 @@
+use std::fmt;
 use std::fs::{self, File};
 use std::io::Read;
 use std::os::unix::fs::OpenOptionsExt;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use schema::{Event, EventKind, OriginTuple};
 
 use crate::folder_events::{Area, FolderEvent, RemoveReason};
-use crate::platform::{DirectoryLock, NamedLock, open_exclusive_create};
+use crate::platform::{DirectoryLock, NamedLock, SyncPolicy, SystemSync, open_exclusive_create};
 use crate::{AssetStore, BarrierContext, LockedLedger, StoreError, probe_local_filesystem};
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -27,13 +29,30 @@ pub enum ConditionalAppendOutcome {
     Skipped,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone)]
 pub struct ThreadStore {
     root: PathBuf,
+    sync: Arc<dyn SyncPolicy>,
+}
+
+impl fmt::Debug for ThreadStore {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter
+            .debug_struct("ThreadStore")
+            .field("root", &self.root)
+            .finish_non_exhaustive()
+    }
 }
 
 impl ThreadStore {
     pub fn open(root: impl AsRef<Path>) -> Result<Self, StoreError> {
+        Self::open_with_sync(root, Arc::new(SystemSync))
+    }
+
+    pub fn open_with_sync(
+        root: impl AsRef<Path>,
+        sync: Arc<dyn SyncPolicy>,
+    ) -> Result<Self, StoreError> {
         let root = root.as_ref().to_path_buf();
         probe_local_filesystem(&root)?;
         for name in [
@@ -58,7 +77,7 @@ impl ThreadStore {
                 Err(error) => return Err(StoreError::Io(error)),
             }
         }
-        Ok(Self { root })
+        Ok(Self { root, sync })
     }
 
     #[must_use]
@@ -167,6 +186,14 @@ impl ThreadStore {
                 schema::READER_VERSION,
             )?;
             publish_create_assets(&stage.join("assets"), assets)?;
+            {
+                let mut ledger = LockedLedger::open_with_sync(
+                    stage.join("main.jsonl"),
+                    schema::READER_VERSION,
+                    Arc::clone(&self.sync),
+                )?;
+                ledger.ensure_synced_through(1)?;
+            }
             fs::rename(&stage, &destination)?;
             File::open(self.root.join(".create-staging"))?.sync_all()?;
             File::open(self.root.join("threads"))?.sync_all()?;
@@ -200,7 +227,11 @@ impl ThreadStore {
         let line = stage.join("main.jsonl");
         File::create(&line)?;
         {
-            let mut ledger = LockedLedger::open(&line, schema::READER_VERSION)?;
+            let mut ledger = LockedLedger::open_with_sync(
+                &line,
+                schema::READER_VERSION,
+                Arc::clone(&self.sync),
+            )?;
             ledger.append_contract(genesis, BarrierContext::default())?;
         }
         File::open(&stage)?.sync_all()?;
@@ -351,7 +382,11 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        let mut ledger = LockedLedger::open(folder.join(line_file), schema::READER_VERSION)?;
+        let mut ledger = LockedLedger::open_with_sync(
+            folder.join(line_file),
+            schema::READER_VERSION,
+            Arc::clone(&self.sync),
+        )?;
         if line_file != "main.jsonl" {
             validate_line_ancestry(&folder, thread_id, line_file, ledger.projection())?;
         }
@@ -360,9 +395,11 @@ impl ThreadStore {
             .ok_or_else(|| StoreError::Corruption("empty thread ledger".to_owned()))?
             .origin_tuples
             .get(origin)
+            .copied()
         {
+            ledger.ensure_synced_through(seq)?;
             return Ok(ConditionalAppendOutcome::Appended(AppendOutcome {
-                seq: *seq,
+                seq,
                 deduplicated: true,
             }));
         }
@@ -431,15 +468,21 @@ impl ThreadStore {
         if self.source_has_live_rewrite(thread_id)? {
             return Err(StoreError::RewriteInProgress);
         }
-        let mut ledger = LockedLedger::open(folder.join("main.jsonl"), schema::READER_VERSION)?;
+        let mut ledger = LockedLedger::open_with_sync(
+            folder.join("main.jsonl"),
+            schema::READER_VERSION,
+            Arc::clone(&self.sync),
+        )?;
         if let Some(seq) = ledger
             .projection()
             .ok_or_else(|| StoreError::Corruption("empty thread ledger".to_owned()))?
             .origin_tuples
             .get(origin)
+            .copied()
         {
+            ledger.ensure_synced_through(seq)?;
             return Ok(ConditionalAppendOutcome::Appended(AppendOutcome {
-                seq: *seq,
+                seq,
                 deduplicated: true,
             }));
         }
@@ -1247,5 +1290,250 @@ mod ephemeral_tests {
                 .count(),
             0
         );
+    }
+}
+
+#[cfg(test)]
+mod durability_barrier_tests {
+    use super::*;
+    use serde_json::json;
+    use std::collections::VecDeque;
+    use std::io;
+    use std::sync::Mutex;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    struct ScriptedSync {
+        outcomes: Mutex<VecDeque<Result<(), io::ErrorKind>>>,
+        successful_syncs: AtomicUsize,
+        last_synced_len: Mutex<Option<u64>>,
+    }
+
+    impl ScriptedSync {
+        fn new(outcomes: impl IntoIterator<Item = Result<(), io::ErrorKind>>) -> Self {
+            Self {
+                outcomes: Mutex::new(outcomes.into_iter().collect()),
+                successful_syncs: AtomicUsize::new(0),
+                last_synced_len: Mutex::new(None),
+            }
+        }
+
+        fn push(&self, outcome: Result<(), io::ErrorKind>) {
+            self.outcomes.lock().unwrap().push_back(outcome);
+        }
+
+        fn successful_syncs(&self) -> usize {
+            self.successful_syncs.load(Ordering::SeqCst)
+        }
+
+        fn last_synced_len(&self) -> Option<u64> {
+            *self.last_synced_len.lock().unwrap()
+        }
+    }
+
+    impl SyncPolicy for ScriptedSync {
+        fn full_sync(&self, file: &File) -> io::Result<()> {
+            let next = self.outcomes.lock().unwrap().pop_front().unwrap_or(Ok(()));
+            match next {
+                Ok(()) => {
+                    let len = file.metadata()?.len();
+                    *self.last_synced_len.lock().unwrap() = Some(len);
+                    self.successful_syncs.fetch_add(1, Ordering::SeqCst);
+                    Ok(())
+                }
+                Err(kind) => Err(io::Error::from(kind)),
+            }
+        }
+    }
+
+    fn test_origin(target: &str, op: &str, key: &str) -> OriginTuple {
+        OriginTuple {
+            principal: "p".to_owned(),
+            client: "c".to_owned(),
+            target: target.to_owned(),
+            op: op.to_owned(),
+            key: key.to_owned(),
+        }
+    }
+
+    fn genesis_event(thread_id: &str, key: &str) -> Event {
+        let raw = json!({
+            "v": 1,
+            "seq": 1,
+            "kind": "genesis",
+            "ts": "2026-08-28T09:00:00.000Z",
+            "format": 1,
+            "min_reader": 1,
+            "min_writer": 1,
+            "thread": thread_id,
+            "workspace": "ws",
+            "resume": "never",
+            "config": {"digest": "cfg"},
+            "origin_key": key,
+            "origin_tuple": test_origin(thread_id, "create", key),
+        });
+        Event::decode_canonical(&serde_json_canonicalizer::to_vec(&raw).unwrap()).unwrap()
+    }
+
+    fn meta_event(thread_id: &str, seq: u64, key: &str, title: &str) -> Event {
+        let raw = json!({
+            "v": 1,
+            "seq": seq,
+            "kind": "meta",
+            "ts": "2026-08-28T09:01:00.000Z",
+            "title": title,
+            "origin_key": key,
+            "origin_tuple": test_origin(thread_id, "meta", key),
+        });
+        Event::decode_canonical(&serde_json_canonicalizer::to_vec(&raw).unwrap()).unwrap()
+    }
+
+    #[test]
+    fn deduplicated_retry_after_sync_failure_requires_sync_barrier_before_ok() {
+        let temp = tempfile::tempdir().unwrap();
+        let sync = Arc::new(ScriptedSync::new([Ok(())]));
+        let store = ThreadStore::open_with_sync(temp.path(), sync.clone()).unwrap();
+        let thread_id = "018f0000-0000-7000-8000-000000000158";
+        let ledger_path = temp
+            .path()
+            .join("threads")
+            .join(thread_id)
+            .join("main.jsonl");
+        store
+            .create_thread(thread_id, genesis_event(thread_id, "create-1"))
+            .unwrap();
+        assert_eq!(sync.successful_syncs(), 1);
+
+        // 1. append_keyed: initial barrier sync fails -> reopen + retry also fails while sync fails
+        //    -> retry succeeds once sync succeeds, with exactly 1 durable record.
+        let origin_a = test_origin(thread_id, "meta", "meta-a");
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.append_keyed(thread_id, &origin_a, |seq| Ok(meta_event(
+                thread_id, seq, "meta-a", "A"
+            ))),
+            Err(StoreError::Io(_))
+        ));
+        assert_eq!(sync.successful_syncs(), 1);
+
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.append_keyed(thread_id, &origin_a, |_| panic!(
+                "duplicate origin must not rebuild event"
+            )),
+            Err(StoreError::Io(_))
+        ));
+        assert_eq!(sync.successful_syncs(), 1);
+
+        sync.push(Ok(()));
+        let outcome_a = store
+            .append_keyed(thread_id, &origin_a, |_| {
+                panic!("duplicate origin must not rebuild event")
+            })
+            .unwrap();
+        assert_eq!(
+            outcome_a,
+            AppendOutcome {
+                seq: 2,
+                deduplicated: true,
+            }
+        );
+        assert_eq!(sync.successful_syncs(), 2);
+        assert_eq!(
+            sync.last_synced_len(),
+            Some(fs::metadata(&ledger_path).unwrap().len())
+        );
+
+        // 2. append_keyed_with_ledger_if follows the same barrier discipline.
+        let origin_b = test_origin(thread_id, "meta", "meta-b");
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.append_keyed_with_ledger_if(thread_id, &origin_b, |ledger| Ok(Some(meta_event(
+                thread_id,
+                ledger.next_seq(),
+                "meta-b",
+                "B"
+            )))),
+            Err(StoreError::Io(_))
+        ));
+        assert_eq!(sync.successful_syncs(), 2);
+
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.append_keyed_with_ledger_if(thread_id, &origin_b, |_| panic!(
+                "duplicate origin must not rerun builder"
+            )),
+            Err(StoreError::Io(_))
+        ));
+        assert_eq!(sync.successful_syncs(), 2);
+
+        sync.push(Ok(()));
+        let outcome_b = store
+            .append_keyed_with_ledger_if(thread_id, &origin_b, |_| {
+                panic!("duplicate origin must not rerun builder")
+            })
+            .unwrap();
+        assert_eq!(
+            outcome_b,
+            ConditionalAppendOutcome::Appended(AppendOutcome {
+                seq: 3,
+                deduplicated: true,
+            })
+        );
+        assert_eq!(sync.successful_syncs(), 3);
+        assert_eq!(
+            sync.last_synced_len(),
+            Some(fs::metadata(&ledger_path).unwrap().len())
+        );
+
+        // 3. create_thread staged retry also enforces the sync barrier before publishing.
+        let staged_id = "018f0000-0000-7000-8000-000000000159";
+        let staged_genesis = genesis_event(staged_id, "create-staged");
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.create_thread(staged_id, staged_genesis.clone()),
+            Err(StoreError::Io(_))
+        ));
+        assert!(!temp.path().join("threads").join(staged_id).exists());
+        assert_eq!(sync.successful_syncs(), 3);
+
+        sync.push(Err(io::ErrorKind::Other));
+        assert!(matches!(
+            store.create_thread(staged_id, staged_genesis.clone()),
+            Err(StoreError::Io(_))
+        ));
+        assert!(!temp.path().join("threads").join(staged_id).exists());
+        assert_eq!(sync.successful_syncs(), 3);
+
+        sync.push(Ok(()));
+        let created = store.create_thread(staged_id, staged_genesis).unwrap();
+        assert_eq!(
+            created,
+            CreateOutcome {
+                thread_id: staged_id.to_owned(),
+                created: false,
+            }
+        );
+        assert!(temp.path().join("threads").join(staged_id).is_dir());
+        assert_eq!(sync.successful_syncs(), 4);
+
+        // 4. An already-synced handle executes 0 extra syncs on ensure_synced_through.
+        let mut ledger =
+            LockedLedger::open_with_sync(&ledger_path, schema::READER_VERSION, sync.clone())
+                .unwrap();
+        ledger
+            .append_contract(
+                meta_event(thread_id, ledger.next_seq(), "meta-c", "C"),
+                BarrierContext::default(),
+            )
+            .unwrap();
+        assert_eq!(sync.successful_syncs(), 5);
+        ledger.ensure_synced_through(4).unwrap();
+        ledger.ensure_synced_through(4).unwrap();
+        assert_eq!(sync.successful_syncs(), 5);
+
+        let raw_lines = fs::read_to_string(&ledger_path).unwrap();
+        assert_eq!(raw_lines.matches("\"origin_key\":\"meta-a\"").count(), 1);
+        assert_eq!(raw_lines.matches("\"origin_key\":\"meta-b\"").count(), 1);
+        assert_eq!(raw_lines.matches("\"origin_key\":\"meta-c\"").count(), 1);
     }
 }

@@ -22,7 +22,7 @@ use engine::{AdmissionLease, AdmissionPool, EnsureAction, LockFacts, classify, e
 use profile::{ConfigRepository, ConfigSnapshot, DynamicToolCatalog};
 use schema::{Block, Event, EventKind, IJsonValue, OriginTuple};
 use sha2::{Digest, Sha256};
-use store::{AssetStore, LockedLedger, ThreadStore, scan_valid_prefix};
+use store::{AssetStore, LockedLedger, SyncPolicy, SystemSync, ThreadStore, scan_valid_prefix};
 use worker_control::{
     ApprovalResponse, Frame, FrameChannel, Input, LaunchChild, LaunchResult, Lease, Meta, Receipt,
     Reject, Stop, WorkerMessage, decode_hello, decode_worker, encode_line,
@@ -34,8 +34,8 @@ use worker_control::{
 
 use crate::dynamic_bindings::resolve_worker_launch_bindings;
 use crate::endpoint_carrier::{
-    HoldCatalog, HoldRef, LiveRespondAuthority, ProductionCarrierError, ProductionCarrierStreams,
-    SessionGateError, SupervisorSessionAuthority, VerifiedHolds,
+    HoldCatalog, HoldRef, LedgerSyncGate, LiveRespondAuthority, ProductionCarrierError,
+    ProductionCarrierStreams, SessionGateError, SupervisorSessionAuthority, VerifiedHolds,
 };
 use crate::endpoint_host::ProductionRouteFailure;
 use crate::endpoint_host::{
@@ -486,6 +486,7 @@ pub struct ProductionProcessHost {
     max_provider_leases: AtomicU64,
     self_weak: Weak<ProductionProcessHost>,
     streams: Mutex<Option<ProductionCarrierStreams>>,
+    sync_gate: Arc<LedgerSyncGate>,
     sweep_scans: Mutex<HashMap<PathBuf, Arc<SweepLedgerScan>>>,
     projection_repair_failures: Mutex<HashSet<String>>,
     context_projection_retries: Mutex<HashSet<String>>,
@@ -566,6 +567,23 @@ struct CachedReconcileOutcome {
     preserved_next_frames: HashMap<String, u64>,
     #[cfg(test)]
     telemetry_delta: (u64, u64),
+}
+
+fn historical_mcp_tool_calls(ledger: &Path) -> BTreeSet<String> {
+    let Ok(bytes) = fs::read(ledger) else {
+        return BTreeSet::new();
+    };
+    let Some(projection) = scan_valid_prefix(&bytes, schema::READER_VERSION).projection else {
+        return BTreeSet::new();
+    };
+    projection
+        .events
+        .iter()
+        .filter(|event| *event.kind() == EventKind::ToolCall)
+        .filter_map(|event| event.string_field("name"))
+        .filter(|name| name.starts_with("mcp__"))
+        .map(str::to_owned)
+        .collect()
 }
 
 fn file_dev_ino(path: &Path) -> Result<(u64, u64), DaemonError> {
@@ -998,20 +1016,40 @@ impl ProductionProcessHost {
         user_agent_dir: impl Into<PathBuf>,
         secret_store: Arc<dyn provider::SecretStore>,
     ) -> Result<Arc<Self>, DaemonError> {
+        Self::open_with_secret_store_and_sync(
+            root,
+            worker_binary,
+            build,
+            user_agent_dir,
+            secret_store,
+            Arc::new(SystemSync),
+        )
+    }
+
+    pub(crate) fn open_with_secret_store_and_sync(
+        root: impl AsRef<Path>,
+        worker_binary: impl Into<PathBuf>,
+        build: impl Into<String>,
+        user_agent_dir: impl Into<PathBuf>,
+        secret_store: Arc<dyn provider::SecretStore>,
+        sync: Arc<dyn SyncPolicy>,
+    ) -> Result<Arc<Self>, DaemonError> {
         let root = root.as_ref().to_path_buf();
         let worker_binary = worker_binary.into();
         validate_worker_binary(&worker_binary)?;
         let repository = ConfigRepository::open(&root)
             .map_err(|error| DaemonError::invalid_config(error.to_string()))?;
-        let endpoint =
-            NativeEndpoint::open(&root).map_err(|error| DaemonError::corrupt(error.to_string()))?;
+        let endpoint = NativeEndpoint::open_with_sync(&root, Arc::clone(&sync))
+            .map_err(|error| DaemonError::corrupt(error.to_string()))?;
         let build = build.into();
         let mcp_runtime = Arc::new(
             McpRuntime::new(Arc::clone(&secret_store))
                 .map_err(|error| DaemonError::required_broker(error.to_string()))?,
         );
         let root_for_catalog = root.clone();
-        let threads_store = ThreadStore::open(&root_for_catalog).map_err(DaemonError::store)?;
+        let threads_store = ThreadStore::open_with_sync(&root_for_catalog, Arc::clone(&sync))
+            .map_err(DaemonError::store)?;
+        let sync_gate = Arc::new(LedgerSyncGate::new(sync));
         let host = Arc::new_cyclic(|weak| Self {
             card_writer: crate::thread_card::CardWriter::spawn_from_env(),
             repository,
@@ -1056,6 +1094,7 @@ impl ProductionProcessHost {
             max_provider_leases: AtomicU64::new(1),
             self_weak: weak.clone(),
             streams: Mutex::new(None),
+            sync_gate,
             sweep_scans: Mutex::new(HashMap::new()),
             projection_repair_failures: Mutex::new(HashSet::new()),
             context_projection_retries: Mutex::new(HashSet::new()),
@@ -1264,7 +1303,16 @@ impl ProductionProcessHost {
             .mcp_runtime
             .prepare_session(scope.session_id(), &scope.execution().mcp)
             .map_err(|e| DaemonError::required_broker(e.to_string()))?;
-        let unavailable = mcp.unavailable_tools(&config.execution.policy.allowed_tools);
+        let ledger_path = self
+            .root
+            .join("threads")
+            .join(scope.session_id())
+            .join("main.jsonl");
+        let prior_calls = historical_mcp_tool_calls(&ledger_path);
+        let unavailable = mcp.unavailable_tools_with_prior_calls(
+            &config.execution.policy.allowed_tools,
+            &prior_calls,
+        );
         resolve_worker_launch_bindings(&config, &instruction, None, mcp.catalog.tools, unavailable)
             .map(|b| b.dynamic_catalog)
             .map_err(|e| DaemonError::required_broker(e.to_string()))
@@ -1445,6 +1493,7 @@ impl ProductionProcessHost {
 
     pub fn attach_streams(&self, streams: ProductionCarrierStreams) {
         streams.attach_session_authority(self.self_weak.clone());
+        streams.attach_sync_gate(Arc::clone(&self.sync_gate));
         *self
             .streams
             .lock()
@@ -1904,7 +1953,10 @@ impl ProductionProcessHost {
         {
             return Ok(Arc::clone(cached));
         }
-        let bytes = fs::read(path).map_err(DaemonError::io)?;
+        let bytes = self
+            .sync_gate
+            .ensure_durable_bytes(path)
+            .map_err(DaemonError::io)?;
         // The identity is taken before the bytes: a write landing between the two changes the
         // identity, so the next tick rescans rather than trusting facts from a shorter file.
         let scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
@@ -2317,6 +2369,7 @@ impl ProductionProcessHost {
         let launch_notices_capture = Arc::clone(&launch_notices);
         let preset_skills = genesis_preset_skills(&ledger);
         let execution = detached_scope.execution().clone();
+        let prior_calls = historical_mcp_tool_calls(&ledger);
         let mut launch = launch_profiled_worker_with_secret_store_and_binding_resolver(
             &self.repository,
             &ProfiledWorkerLaunchSpec {
@@ -2339,7 +2392,10 @@ impl ProductionProcessHost {
                     missing_preset_skill_notice(preset_skills.as_deref(), instruction)
                         .into_iter()
                         .collect();
-                let unavailable = mcp.unavailable_tools(&config.execution.policy.allowed_tools);
+                let unavailable = mcp.unavailable_tools_with_prior_calls(
+                    &config.execution.policy.allowed_tools,
+                    &prior_calls,
+                );
                 let bindings = resolve_worker_launch_bindings(
                     config,
                     instruction,
@@ -3097,6 +3153,12 @@ impl ProductionProcessHost {
         prompt: &MaterializedPrompt,
         steer: bool,
     ) -> Result<MutationReceipt, ProductionRouteFailure> {
+        let ledger_path = self
+            .root
+            .join("threads")
+            .join(session_id)
+            .join("main.jsonl");
+        let needs_publish = self.sync_gate.is_unsynced(&ledger_path);
         let content = IJsonValue::parse(&serde_json::to_vec(&prompt.blocks).map_err(internal)?)
             .map_err(internal)?;
         let receipt = self
@@ -3113,7 +3175,7 @@ impl ProductionProcessHost {
             .unwrap_or_else(|| prompt_text(&prompt.blocks));
         let should_refine = self.seed_automatic_title(session_id, timestamp, &source);
         self.reset_restart_backoff(session_id);
-        if !receipt.deduplicated {
+        if !receipt.deduplicated || (needs_publish && self.live_worker(session_id).is_none()) {
             // Publish durable queue authority before a fast worker can consume the input.
             self.publish_queue_snapshot(session_id);
             self.schedule_accepted_prompt(session_id, receipt.seq);
@@ -3708,7 +3770,8 @@ impl ProductionProcessHost {
             worker_control::Selected { version: 2 },
             handler,
             ProductionToolControlPolicy::new(tools::SecretScanner::default()),
-        );
+        )
+        .with_cancellation(handle.tool_cancellation.clone());
         session
             .handle_line(line)
             .map_err(|error| DaemonError::protocol(error.to_string()))
@@ -3794,7 +3857,10 @@ impl ProductionProcessHost {
         // Phase 1, no lock: read and fold the ledger and build the card. This is the part that
         // grows with the thread, so concurrent folds of different threads (a cold List, the
         // upgrade pass) run in parallel and never hold up a live session's doorbell (E832 M2).
-        let mut bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+        let mut bytes = self
+            .sync_gate
+            .ensure_durable_bytes(&ledger_path)
+            .map_err(DaemonError::io)?;
         let mut scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
         // A complete line that does not validate (or a ledger with no valid genesis) is damage a
         // repair cannot fix: quarantine the thread (E832 M3). A torn tail -- no complete line
@@ -3812,7 +3878,10 @@ impl ProductionProcessHost {
                 }
                 DamageVerdict::Sound | DamageVerdict::Deferred => {
                     // Not damage (now): the new read is the truth.
-                    bytes = fs::read(&ledger_path).map_err(DaemonError::io)?;
+                    bytes = self
+                        .sync_gate
+                        .ensure_durable_bytes(&ledger_path)
+                        .map_err(DaemonError::io)?;
                     scan = scan_valid_prefix(&bytes, schema::READER_VERSION);
                 }
             }
@@ -4675,7 +4744,10 @@ impl ProductionProcessHost {
                 self.publish_appended(session_id)?;
             }
             self.refresh_limits(ledger)?;
-            let bytes = fs::read(ledger).map_err(DaemonError::io)?;
+            let bytes = self
+                .sync_gate
+                .ensure_durable_bytes(ledger)
+                .map_err(DaemonError::io)?;
             let facts = scan_valid_prefix(&bytes, schema::READER_VERSION)
                 .projection
                 .ok_or_else(|| DaemonError::corrupt("worker ledger has no projection"))?
@@ -6325,7 +6397,7 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
                     );
                 }
             } else {
-                verify_existing_journal_matches_ledger(&self.root, session_id)?;
+                verify_existing_journal_matches_ledger(&self.root, &self.sync_gate, session_id)?;
             }
             return Ok(());
         }
@@ -6371,6 +6443,7 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
             && !has_live_worker
             && clean_read
             && (!has_streams || published_with_streams)
+            && !self.sync_gate.is_unsynced(&ledger_path)
             && let Ok(actual_ledger_id) = file_dev_ino(&ledger_path)
             && actual_ledger_id == expected_ledger_id
             && let Ok(ledger_meta) = fs::metadata(&ledger_path)
@@ -6387,7 +6460,11 @@ impl SupervisorSessionAuthority for ProductionProcessHost {
     }
 }
 
-fn verify_existing_journal_matches_ledger(root: &Path, session_id: &str) -> Result<(), String> {
+fn verify_existing_journal_matches_ledger(
+    root: &Path,
+    sync_gate: &LedgerSyncGate,
+    session_id: &str,
+) -> Result<(), String> {
     let folder = root.join("threads").join(session_id);
     let journal_path = folder.join("endpoint.jsonl");
     let ledger_path = folder.join("main.jsonl");
@@ -6397,7 +6474,9 @@ fn verify_existing_journal_matches_ledger(root: &Path, session_id: &str) -> Resu
     if journal_bytes.is_empty() {
         return Ok(());
     }
-    let ledger_bytes = fs::read(&ledger_path).map_err(|error| error.to_string())?;
+    let ledger_bytes = sync_gate
+        .ensure_durable_bytes(&ledger_path)
+        .map_err(|error| error.to_string())?;
     let scan = scan_valid_prefix(&ledger_bytes, schema::READER_VERSION);
     if scan.needs_repair() {
         return Ok(());
@@ -14240,6 +14319,213 @@ mod tests {
         fs::write(&ledger, corrupt_main).unwrap();
         fs::write(&journal_path, &tampered).unwrap();
         assert!(host.publish_appended(session).is_err());
+
+        host.shutdown();
+    }
+
+    #[cfg(target_os = "macos")]
+    #[test]
+    fn unsynced_prompt_and_same_id_retries_do_not_leak_to_control_baseline_or_sweep() {
+        struct ToggleSync {
+            fail: AtomicBool,
+            ok_syncs: AtomicU64,
+        }
+        impl SyncPolicy for ToggleSync {
+            fn full_sync(&self, file: &fs::File) -> std::io::Result<()> {
+                if self.fail.load(Ordering::Acquire) {
+                    return Err(std::io::Error::other("scripted full_sync failure"));
+                }
+                self.ok_syncs.fetch_add(1, Ordering::Relaxed);
+                store::SystemSync.full_sync(file)
+            }
+        }
+
+        let root = tempfile::tempdir().unwrap();
+        let project_root = tempfile::tempdir().unwrap();
+        let workspace = project_root.path().to_path_buf();
+        fs::create_dir_all(&workspace).unwrap();
+        write_test_execution_config(
+            root.path(),
+            json!({"format":1,"revision":1,"id":"ws","name":"ws","cwd":[workspace],
+                "policy":{"allowed_tools":[],"writable_roots":[],"network":false}}),
+        );
+        let spawn_count_path = root.path().join("worker-spawns.log");
+        let bin = root.path().join("fake-worker");
+        fs::write(
+            &bin,
+            format!(
+                "#!/bin/sh\necho spawned >> \"{}\"\nprintf '%s\\n' '{{\"hello\":{{\"max\":2,\"min\":2,\"proto\":\"tekes-worker\"}}}}'\nwhile IFS= read -r _; do :; done\n",
+                spawn_count_path.display()
+            ),
+        )
+        .unwrap();
+        fs::set_permissions(&bin, fs::Permissions::from_mode(0o700)).unwrap();
+        let helper = root.path().join("tekes-helper");
+        fs::write(&helper, "#!/bin/sh\nexit 0\n").unwrap();
+        fs::set_permissions(&helper, fs::Permissions::from_mode(0o700)).unwrap();
+
+        let session = "018f0000-0000-7000-8000-000000000158";
+        let folder = root.path().join("threads").join(session);
+        fs::create_dir_all(folder.join("assets")).unwrap();
+        let ledger = folder.join("main.jsonl");
+        write_test_genesis(&ledger, session);
+
+        let sync = Arc::new(ToggleSync {
+            fail: AtomicBool::new(false),
+            ok_syncs: AtomicU64::new(0),
+        });
+        let host = ProductionProcessHost::open_with_secret_store_and_sync(
+            root.path(),
+            &bin,
+            "test",
+            root.path().join(".agent"),
+            Arc::new(provider::MemorySecretStore::new()),
+            sync.clone(),
+        )
+        .unwrap();
+        let streams = ProductionCarrierStreams::new(root.path());
+        host.attach_streams(streams.clone());
+        host.release_for_test(session);
+        host.publish_appended(session).unwrap();
+
+        // Subscribe to SessionControl while disk sync is healthy, establish empty queue baseline.
+        let mut control = streams
+            .open_mux(1, endpoint::SessionStreamTarget::SessionControl)
+            .expect("open control stream");
+        let baseline_frame = block_on_ready(endpoint::SessionStream::recv(&mut *control))
+            .expect("baseline recv")
+            .expect("baseline frame");
+        let endpoint::SessionSyncFrame::ControlBaseline { items, .. } = baseline_frame else {
+            panic!("expected ControlBaseline");
+        };
+        let initial_item = items.iter().find(|i| i.session_id == session);
+        assert!(initial_item.is_none_or(|item| item.queue.is_empty()));
+        assert!(streams.publish_queue_snapshot(session).is_ok());
+
+        // Inject persistent sync failure, then send prompt + same-ID retries.
+        sync.fail.store(true, Ordering::Release);
+        let origin = OriginTuple {
+            principal: "test".into(),
+            client: "test".into(),
+            target: session.into(),
+            op: "session.prompt".into(),
+            key: "sync-fail-158".into(),
+        };
+        let prompt = MaterializedPrompt {
+            blocks: vec![schema::Block::Text {
+                text: "unsynced input must stay hidden".into(),
+            }],
+            attachments: vec![],
+            files: Vec::new(),
+        };
+        for attempt in 0..2 {
+            let err = SessionDeliveryAuthority::prompt(
+                &*host,
+                session,
+                "2026-08-28T00:00:02.000Z",
+                &origin,
+                &prompt,
+                false,
+            )
+            .expect_err("prompt must fail when ledger sync fails");
+            assert_eq!(err.code, "internal", "attempt {attempt}: {err:?}");
+        }
+        // Raw bytes exist on disk from write_all before full_sync failed, yet:
+        assert!(
+            fs::read_to_string(&ledger)
+                .unwrap()
+                .contains("unsynced input must stay hidden")
+        );
+        // 1. Live control stream did NOT receive any queue frame for the unsynced input.
+        assert!(streams.publish_queue_snapshot(session).is_err());
+        assert!(host.publish_appended(session).is_err());
+        {
+            let waker = Waker::noop();
+            let mut context = Context::from_waker(waker);
+            let mut next = endpoint::SessionStream::recv(&mut *control);
+            assert!(matches!(next.as_mut().poll(&mut context), Poll::Pending));
+        }
+        // 2. Reconnect control baseline reports empty queue (no unsynced input).
+        let mut reconnect = streams
+            .open_mux(2, endpoint::SessionStreamTarget::SessionControl)
+            .expect("reconnect control stream");
+        let endpoint::SessionSyncFrame::ControlBaseline {
+            items: reconnect_items,
+            ..
+        } = block_on_ready(endpoint::SessionStream::recv(&mut *reconnect))
+            .expect("reconnect baseline")
+            .expect("reconnect frame")
+        else {
+            panic!("expected ControlBaseline");
+        };
+        let reconnect_item = reconnect_items
+            .iter()
+            .find(|i| i.session_id == session)
+            .expect("session control item");
+        assert!(
+            reconnect_item.queue.is_empty(),
+            "unsynced input leaked into reconnect baseline: {:?}",
+            reconnect_item.queue
+        );
+        // 3. Sweep refuses unsynced ledger and spawns 0 workers.
+        let _ = host.sweep_once();
+        assert!(host.live_worker(session).is_none());
+        assert!(!spawn_count_path.exists());
+
+        // Restore sync -> same-ID retry succeeds (deduplicated: true), publishes queue, and schedules once.
+        sync.fail.store(false, Ordering::Release);
+        let receipt = SessionDeliveryAuthority::prompt(
+            &*host,
+            session,
+            "2026-08-28T00:00:03.000Z",
+            &origin,
+            &prompt,
+            false,
+        )
+        .expect("retry succeeds once sync recovers");
+        assert!(receipt.deduplicated);
+        assert_eq!(
+            fs::read_to_string(&ledger)
+                .unwrap()
+                .matches("\"origin_key\":\"sync-fail-158\"")
+                .count(),
+            1
+        );
+        // Reconnect control baseline now exposes the durable queued item.
+        let mut recovered_baseline = streams
+            .open_mux(3, endpoint::SessionStreamTarget::SessionControl)
+            .expect("recovered control baseline");
+        let endpoint::SessionSyncFrame::ControlBaseline {
+            items: recovered_items,
+            ..
+        } = block_on_ready(endpoint::SessionStream::recv(&mut *recovered_baseline))
+            .expect("recovered baseline")
+            .expect("recovered frame")
+        else {
+            panic!("expected ControlBaseline");
+        };
+        let recovered_item = recovered_items
+            .iter()
+            .find(|i| i.session_id == session)
+            .expect("recovered session control item");
+        assert_eq!(recovered_item.queue.len(), 1);
+        // Wait briefly for scheduled fake-worker to spawn once.
+        let deadline = Instant::now() + Duration::from_secs(3);
+        while Instant::now() < deadline {
+            if spawn_count_path.exists() {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(20));
+        }
+        assert_eq!(
+            fs::read_to_string(&spawn_count_path)
+                .unwrap()
+                .lines()
+                .count(),
+            1
+        );
+        let final_text = fs::read_to_string(&ledger).unwrap();
+        assert_eq!(final_text.matches("\"kind\":\"input\"").count(), 1);
 
         host.shutdown();
     }

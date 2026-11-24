@@ -3,6 +3,24 @@ use super::*;
 pub(crate) struct AllowedDynamicBackend<'a> {
     allowed: BTreeSet<String>,
     inner: Vec<Box<dyn DynamicBackend + 'a>>,
+    cancellation: &'a RuntimeCancellation,
+}
+
+fn suppress_interrupted_control_terminal(
+    cancellation: &RuntimeCancellation,
+    terminal: BackendTerminal,
+) -> BackendTerminal {
+    if matches!(
+        terminal,
+        BackendTerminal::Unavailable { ref code, .. } if code == "transport"
+    ) && (cancellation.protocol_failed()
+        || cancellation.supervisor_lost()
+        || cancellation.stop_requested())
+    {
+        BackendTerminal::Deferred
+    } else {
+        terminal
+    }
 }
 
 impl DynamicBackend for AllowedDynamicBackend<'_> {
@@ -16,7 +34,8 @@ impl DynamicBackend for AllowedDynamicBackend<'_> {
         execution: &ToolExecution,
         invocation: &IJsonValue,
     ) -> BackendTerminal {
-        self.inner
+        let terminal = self
+            .inner
             .iter_mut()
             .find(|backend| backend.supports(tool))
             .map_or_else(
@@ -26,13 +45,15 @@ impl DynamicBackend for AllowedDynamicBackend<'_> {
                     retryable: false,
                 },
                 |backend| backend.execute(tool, execution, invocation),
-            )
+            );
+        suppress_interrupted_control_terminal(self.cancellation, terminal)
     }
 }
 
 pub(crate) struct AllowedToolBackend<'a> {
     allowed: BTreeSet<String>,
     inner: ToolBackendRouter<'a>,
+    cancellation: &'a RuntimeCancellation,
 }
 
 impl ToolBackend for AllowedToolBackend<'_> {
@@ -41,7 +62,8 @@ impl ToolBackend for AllowedToolBackend<'_> {
     }
 
     fn execute(&mut self, execution: &ToolExecution, invocation: &IJsonValue) -> BackendTerminal {
-        self.inner.execute(execution, invocation)
+        let terminal = self.inner.execute(execution, invocation);
+        suppress_interrupted_control_terminal(self.cancellation, terminal)
     }
 
     fn resume_after_approval(
@@ -50,8 +72,10 @@ impl ToolBackend for AllowedToolBackend<'_> {
         invocation: &IJsonValue,
         approval: &DurableApprovalResponse,
     ) -> BackendTerminal {
-        self.inner
-            .resume_after_approval(execution, invocation, approval)
+        let terminal = self
+            .inner
+            .resume_after_approval(execution, invocation, approval);
+        suppress_interrupted_control_terminal(self.cancellation, terminal)
     }
 }
 
@@ -511,6 +535,7 @@ where
     let dynamic = AllowedDynamicBackend {
         allowed: allowed.clone(),
         inner: dynamic_backends,
+        cancellation,
     };
     let deferred_tools = DynamicToolDispatcher::new(&profile.bindings.dynamic_catalog)
         .deferred_search_entries(&dynamic)?;
@@ -525,6 +550,7 @@ where
         AllowedToolBackend {
             allowed,
             inner: router,
+            cancellation,
         },
         dynamic,
     ))

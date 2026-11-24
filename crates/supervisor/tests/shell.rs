@@ -957,3 +957,403 @@ impl SupervisorRuntimeAuthority for VisibilityRuntime {
         panic!("not parent report")
     }
 }
+
+#[test]
+fn stopped_session_reconciles_external_effect_and_blocks_fresh_execution() {
+    let append_stop = |root: &Path| {
+        let mut ledger = store::LockedLedger::open(
+            root.join("threads").join(SESSION).join("main.jsonl"),
+            schema::READER_VERSION,
+        )
+        .expect("open ledger");
+        let stop = serde_json_canonicalizer::to_vec(&json!({
+            "v": 1,
+            "seq": ledger.next_seq(),
+            "kind": "stop_requested",
+            "ts": TS,
+            "generation": 1,
+            "origin_key": "stop-shell",
+            "origin_tuple": {
+                "principal": "p",
+                "client": "cli",
+                "target": SESSION,
+                "op": "session.cancel",
+                "key": "stop-shell"
+            }
+        }))
+        .expect("canonical stop");
+        ledger
+            .append_contract(
+                schema::Event::decode_canonical(&stop).expect("stop event"),
+                store::BarrierContext::default(),
+            )
+            .expect("append stop");
+    };
+
+    // Case 1: unsettled external-effect intent + Confirmed + stop_active -> adopts & settles receipt.
+    {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let request = write_bound_request(
+            directory.path(),
+            "call-stop-confirmed",
+            "plugin.frame",
+            json!({"quality": 7}),
+        );
+        append_stop(directory.path());
+        publish_interrupted_intent(directory.path(), &request);
+        let calls = Arc::new(AtomicUsize::new(0));
+        let reconciliations = Arc::new(AtomicUsize::new(0));
+        let route: Arc<dyn DynamicSupervisorAuthority> = Arc::new(FakeDynamicRoute {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            reconcile_status: FakeReconcileStatus::Confirmed,
+            execute_unknown: false,
+            execute_conflicted: false,
+        });
+        let handler =
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(dynamic_catalog(), route);
+        let mut session = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            handler,
+            ProductionToolControlPolicy::default(),
+        );
+        let wire = encode_tool_control(&request).expect("control line");
+        let first = session.handle_line(&wire).expect("confirmed stop recovery");
+        let result = decode_tool_control_result(&first).expect("result");
+        assert!(result.error.is_none());
+        assert_eq!(calls.load(Ordering::Acquire), 0);
+        assert_eq!(reconciliations.load(Ordering::Acquire), 1);
+
+        // Settled receipt replays without touching reconcile or execute even while stopped.
+        let replay = session.handle_line(&wire).expect("replay settled receipt");
+        assert_eq!(replay, first);
+        assert_eq!(calls.load(Ordering::Acquire), 0);
+        assert_eq!(reconciliations.load(Ordering::Acquire), 1);
+    }
+
+    // Case 2: unsettled external-effect intent + NotFound + stop_active -> reconciles, blocks
+    //         `handler.execute`, and returns Unavailable.
+    {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let request = write_bound_request(
+            directory.path(),
+            "call-stop-not-found",
+            "plugin.frame",
+            json!({"quality": 7}),
+        );
+        append_stop(directory.path());
+        publish_interrupted_intent(directory.path(), &request);
+        let calls = Arc::new(AtomicUsize::new(0));
+        let reconciliations = Arc::new(AtomicUsize::new(0));
+        let route: Arc<dyn DynamicSupervisorAuthority> = Arc::new(FakeDynamicRoute {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            reconcile_status: FakeReconcileStatus::NotFound,
+            execute_unknown: false,
+            execute_conflicted: false,
+        });
+        let handler =
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(dynamic_catalog(), route);
+        let mut session = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            handler,
+            ProductionToolControlPolicy::default(),
+        );
+        let response = session
+            .handle_line(&encode_tool_control(&request).expect("control line"))
+            .expect("not_found stop result");
+        let result = decode_tool_control_result(&response).expect("result");
+        assert_eq!(
+            result.error.as_ref().map(|error| error.code),
+            Some(ToolControlErrorCode::Unavailable)
+        );
+        assert_eq!(reconciliations.load(Ordering::Acquire), 1);
+        assert_eq!(calls.load(Ordering::Acquire), 0);
+    }
+}
+
+#[test]
+fn mcp_catalog_changes_preserve_intent_and_settled_receipt_without_reexecution() {
+    struct VersionedAuthority {
+        calls: Arc<AtomicUsize>,
+        reconciliations: Arc<AtomicUsize>,
+        authority: Option<String>,
+    }
+
+    impl DynamicSupervisorAuthority for VersionedAuthority {
+        fn supports(&self, tool: &DynamicTool) -> bool {
+            tool.name == "mcp__fixture__charge"
+        }
+
+        fn execute(
+            &self,
+            _tool: &DynamicTool,
+            _request: &ToolControl,
+        ) -> Result<IJsonValue, SupervisorOperationError> {
+            self.calls.fetch_add(1, Ordering::AcqRel);
+            Ok(ijson(
+                json!({"content":[{"type":"text","text":"charged"}],"isError":false}),
+            ))
+        }
+
+        fn reconcile(
+            &self,
+            _tool: &DynamicTool,
+            _request: &ToolControl,
+        ) -> ExternalEffectResolution {
+            self.reconciliations.fetch_add(1, Ordering::AcqRel);
+            ExternalEffectResolution::NotFound
+        }
+
+        fn authority_fingerprint(&self, _tool: &DynamicTool) -> Option<String> {
+            self.authority.clone()
+        }
+    }
+
+    fn effectful_tool(with_reconcile: Option<&str>) -> DynamicToolCatalog {
+        let mut tool = DynamicTool::declared(
+            "mcp__fixture__charge",
+            DynamicToolSource {
+                kind: DynamicToolSourceKind::Mcp,
+                id: "fixture".to_owned(),
+            },
+            DynamicToolEffect::ComputerControl,
+            true,
+            Vec::new(),
+            ijson(json!({
+                "name":"mcp__fixture__charge",
+                "description":"Charge once",
+                "parameters":{
+                    "type":"object",
+                    "properties":{"amount":{"type":"integer"}},
+                    "required":["amount"],
+                    "additionalProperties":false
+                }
+            })),
+        )
+        .expect("dynamic tool");
+        if let Some(reconcile_tool) = with_reconcile {
+            tool.external_effect = Some(ExternalEffectBinding {
+                protocol: ExternalEffectProtocol::IdempotencyReconcileV1,
+                reconcile_tool: reconcile_tool.to_owned(),
+            });
+        }
+        DynamicToolCatalog::resolve(vec![tool]).expect("catalog")
+    }
+
+    // Case 1: existing unsettled intent recorded under lookup -> reconcile domain changes to lookup_v2
+    // -> must reject as EffectConflicted, 0 calls to new lookup_v2 or execute, intent untouched.
+    {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let request = write_bound_request(
+            directory.path(),
+            "call-mcp-domain-change",
+            "mcp__fixture__charge",
+            json!({"amount": 42}),
+        );
+        let store =
+            ToolControlReceiptStore::new(directory.path().join("threads").join(SESSION), SESSION);
+        let record_path = store.record_path(&request.request_id);
+        fs::create_dir_all(record_path.parent().unwrap()).unwrap();
+        let intent_bytes = serde_json_canonicalizer::to_vec(&json!({
+            "format": 1,
+            "request": request,
+            "authority": "sha256-lookup-v1",
+        }))
+        .unwrap();
+        fs::write(&record_path, &intent_bytes).unwrap();
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let reconciliations = Arc::new(AtomicUsize::new(0));
+        let route: Arc<dyn DynamicSupervisorAuthority> = Arc::new(VersionedAuthority {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            authority: Some("sha256-lookup-v2".to_owned()),
+        });
+        let handler =
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(effectful_tool(Some("mcp__fixture__lookup_v2")), route);
+        let mut session = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            handler,
+            ProductionToolControlPolicy::default(),
+        );
+        let wire = encode_tool_control(&request).unwrap();
+        for _ in 0..2 {
+            let reply = session.handle_line(&wire).unwrap();
+            let result = decode_tool_control_result(&reply).unwrap();
+            assert_eq!(
+                result.error.as_ref().map(|e| e.code),
+                Some(ToolControlErrorCode::EffectConflicted),
+                "{result:?}"
+            );
+        }
+        assert_eq!(calls.load(Ordering::Acquire), 0);
+        assert_eq!(reconciliations.load(Ordering::Acquire), 0);
+        assert_eq!(fs::read(&record_path).unwrap(), intent_bytes);
+    }
+
+    // Case 2a & 2b: externalEffect removed -> settled receipt replays; unsettled intent -> EffectConflicted.
+    {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let request = write_bound_request(
+            directory.path(),
+            "call-mcp-settled-strip-ext",
+            "mcp__fixture__charge",
+            json!({"amount": 7}),
+        );
+        let calls = Arc::new(AtomicUsize::new(0));
+        let reconciliations = Arc::new(AtomicUsize::new(0));
+        let route1: Arc<dyn DynamicSupervisorAuthority> = Arc::new(VersionedAuthority {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            authority: Some("sha256-lookup-v1".to_owned()),
+        });
+        let handler1 =
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(effectful_tool(Some("mcp__fixture__lookup")), route1);
+        let mut session1 = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            handler1,
+            ProductionToolControlPolicy::default(),
+        );
+        let wire = encode_tool_control(&request).unwrap();
+        let original = session1.handle_line(&wire).unwrap();
+        assert_eq!(calls.load(Ordering::Acquire), 1);
+
+        // Reload catalog with externalEffect stripped: settled receipt still replays cleanly.
+        let route2: Arc<dyn DynamicSupervisorAuthority> = Arc::new(VersionedAuthority {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            authority: None,
+        });
+        let handler2 =
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(effectful_tool(None), route2);
+        let mut session2 = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            handler2,
+            ProductionToolControlPolicy::default(),
+        );
+        for _ in 0..2 {
+            let replay = session2.handle_line(&wire).unwrap();
+            assert_eq!(replay, original);
+        }
+        assert_eq!(calls.load(Ordering::Acquire), 1);
+        assert_eq!(reconciliations.load(Ordering::Acquire), 0);
+
+        // Unsettled intent + externalEffect removed -> EffectConflicted, intent preserved.
+        let request_intent = write_bound_request(
+            directory.path(),
+            "call-mcp-intent-strip-ext",
+            "mcp__fixture__charge",
+            json!({"amount": 8}),
+        );
+        publish_interrupted_intent(directory.path(), &request_intent);
+        let reply = session2
+            .handle_line(&encode_tool_control(&request_intent).unwrap())
+            .unwrap();
+        assert_eq!(
+            decode_tool_control_result(&reply)
+                .unwrap()
+                .error
+                .map(|e| e.code),
+            Some(ToolControlErrorCode::EffectConflicted)
+        );
+        assert_eq!(calls.load(Ordering::Acquire), 1);
+    }
+
+    // Case 3: original tool removed from catalog -> settled receipt replays, intent -> EffectConflicted,
+    // no prior record -> Unavailable (never ReplaySafe execution).
+    {
+        let directory = tempfile::tempdir().expect("tempdir");
+        let req_settled = write_bound_request(
+            directory.path(),
+            "call-mcp-removed-settled",
+            "mcp__fixture__charge",
+            json!({"amount": 11}),
+        );
+        let calls = Arc::new(AtomicUsize::new(0));
+        let reconciliations = Arc::new(AtomicUsize::new(0));
+        let route1: Arc<dyn DynamicSupervisorAuthority> = Arc::new(VersionedAuthority {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            authority: Some("sha256-lookup-v1".to_owned()),
+        });
+        let mut session1 = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(effectful_tool(Some("mcp__fixture__lookup")), route1),
+            ProductionToolControlPolicy::default(),
+        );
+        let original = session1
+            .handle_line(&encode_tool_control(&req_settled).unwrap())
+            .unwrap();
+        assert_eq!(calls.load(Ordering::Acquire), 1);
+
+        let empty_route: Arc<dyn DynamicSupervisorAuthority> = Arc::new(VersionedAuthority {
+            calls: Arc::clone(&calls),
+            reconciliations: Arc::clone(&reconciliations),
+            authority: None,
+        });
+        let mut session_removed = ToolControlSession::new(
+            directory.path(),
+            Selected { version: 2 },
+            ProductionToolControlHandler::new(directory.path(), NoRuntimeAuthority, NoJobAuthority)
+                .with_dynamic_routes(DynamicToolCatalog::default(), empty_route),
+            ProductionToolControlPolicy::default(),
+        );
+        // Settled receipt replays verbatim.
+        let replay = session_removed
+            .handle_line(&encode_tool_control(&req_settled).unwrap())
+            .unwrap();
+        assert_eq!(replay, original);
+
+        // Unsettled intent -> EffectConflicted.
+        let req_intent = write_bound_request(
+            directory.path(),
+            "call-mcp-removed-intent",
+            "mcp__fixture__charge",
+            json!({"amount": 12}),
+        );
+        publish_interrupted_intent(directory.path(), &req_intent);
+        let intent_reply = session_removed
+            .handle_line(&encode_tool_control(&req_intent).unwrap())
+            .unwrap();
+        assert_eq!(
+            decode_tool_control_result(&intent_reply)
+                .unwrap()
+                .error
+                .map(|e| e.code),
+            Some(ToolControlErrorCode::EffectConflicted)
+        );
+
+        // Unrecorded -> Unsupported.
+        let req_fresh = write_bound_request(
+            directory.path(),
+            "call-mcp-removed-fresh",
+            "mcp__fixture__charge",
+            json!({"amount": 13}),
+        );
+        let fresh_reply = session_removed
+            .handle_line(&encode_tool_control(&req_fresh).unwrap())
+            .unwrap();
+        assert_eq!(
+            decode_tool_control_result(&fresh_reply)
+                .unwrap()
+                .error
+                .map(|e| e.code),
+            Some(ToolControlErrorCode::Unsupported)
+        );
+        assert_eq!(calls.load(Ordering::Acquire), 1);
+        assert_eq!(reconciliations.load(Ordering::Acquire), 0);
+    }
+}

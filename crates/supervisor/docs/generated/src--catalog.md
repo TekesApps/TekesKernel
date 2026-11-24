@@ -218,7 +218,7 @@ Includes test functions (marked in declarations). Receiver-type-required sites n
 | `refresh_light` | `event.string_field` | [333](../../src/catalog.rs#L333) | receiver-type-required |
 | `refresh_light` | `event.kind` | [334](../../src/catalog.rs#L334) | receiver-type-required |
 | `refresh_light` | `event.has_field` | [334](../../src/catalog.rs#L334) | receiver-type-required |
-| `refresh_light` | `endpoint::card_updated_ms` | [345](../../src/catalog.rs#L345) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L172) |
+| `refresh_light` | `endpoint::card_updated_ms` | [345](../../src/catalog.rs#L345) | [endpoint::service::card_updated_ms](../../../endpoint/src/service.rs#L173) |
 | `refresh_light` | `(**view).clone` | [348](../../src/catalog.rs#L348) | receiver-type-required |
 | `refresh_light` | `projection.lifecycle.latest_turn.is_none` | [351](../../src/catalog.rs#L351) | receiver-type-required |
 | `refresh_light` | `next.lines.first_mut` | [352](../../src/catalog.rs#L352) | receiver-type-required |
